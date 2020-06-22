@@ -74,7 +74,7 @@ def spectral_density(
     Parameters
     ----------
 
-    wavelengths : astropy.units.Quantity ndarray (required)
+    wavelengths : `~astropy.units.Quantity`
         Array of wavelengths over which the spectral density function
         will be calculated, convertable to nm.
 
