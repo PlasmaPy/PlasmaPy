@@ -61,7 +61,7 @@ def spectral_density(
         \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{io}
         \bigg ( \frac{\omega}{k} \bigg )
 
-    where :math:`\chi_e` is the electron component succeptibility of the
+    where :math:`\chi_e` is the electron component susceptibility of the
     plasma and :math:`\epsilon = 1 + \chi_e + \sum_i \chi_i` is the total
     plasma dielectric  function (with :math:`\chi_i` being the ion component
     of the succeptibility), :math:`Z_i` is the charge of each ion, :math:`k`
