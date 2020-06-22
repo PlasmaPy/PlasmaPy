@@ -145,6 +145,7 @@ def spectral_density(
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
     .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
     """
+    fract = np.asarray(fract, dtype=np.float64)
 
     # If ion drift velocity is not specified, create an array corresponding
     # to zero drift
