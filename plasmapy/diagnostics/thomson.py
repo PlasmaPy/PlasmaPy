@@ -72,7 +72,7 @@ def spectral_density(
     function equivalent to Eq. 3.4.6 in `Sheffield`_.
 
     Parameters
-    ---------
+    ----------
 
     wavelengths : astropy.units.Quantity ndarray (required)
         Array of wavelengths over which the spectral density function
