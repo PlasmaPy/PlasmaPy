@@ -64,7 +64,7 @@ def gen_multiple_ion_species_spectrum():
     fluid_vel = np.array([300, 0, 0]) * u.km / u.s
     ion_vel = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
 
-    # Use this to also test inputing ion species as Particle objects
+    # Use this to also test passing in ion species as Particle objects
     ion_species = [Particle("p+"), Particle("C-12 5+")]
 
     alpha, Skw = thomson.spectral_density(
