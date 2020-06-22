@@ -126,6 +126,20 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscale
     n_e : `~astropy.units.Quantity`
         The electron number density of the plasma.
 
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T`, `E_jk`, or `n_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e`, `E_jk`, or `n` not in appropriate units.
+
     Returns
     -------
     ratio: `~astropy.units.Quantity`
