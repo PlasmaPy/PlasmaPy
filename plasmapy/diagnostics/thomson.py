@@ -124,8 +124,8 @@ def spectral_density(
         mean scattering parameter. alpha > 1 corresponds to collective
         scattering, while alpha < 1 indicates non-collective scattering.
 
-    Skw : astropy.units.Quantity ndarray
-        Computed spectral density function over the input wavelength array
+    Skw : `~astropy.units.Quantity`
+        Computed spectral density function over the input `wavelengths` array
         with units of s/rad.
 
     Notes
