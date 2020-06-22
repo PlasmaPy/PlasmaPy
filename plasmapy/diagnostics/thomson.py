@@ -121,8 +121,8 @@ def spectral_density(
     Returns
     -------
     alpha : float
-        mean scattering parameter. alpha > 1 corresponds to collective
-        scattering, while alpha < 1 indicates non-collective scattering.
+        Mean scattering parameter, where `alpha` > 1 corresponds to collective
+        scattering and `alpha` < 1 indicates non-collective scattering.
 
     Skw : `~astropy.units.Quantity`
         Computed spectral density function over the input `wavelengths` array
