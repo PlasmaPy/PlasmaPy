@@ -113,7 +113,7 @@ def spectral_density(
         Unit vector in the direction of the probe laser. Defaults to
         [1, 0, 0].
 
-    scatter_vec : float ndarray, shape [3]
+    scatter_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default probe_vec,
         corresponds to a 90 degree scattering angle geometry.
