@@ -16,7 +16,6 @@ from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from typing import List, Tuple, Union
-from warnings import warn
 
 
 # TODO: interface for inputting a multi-species configuration could be
