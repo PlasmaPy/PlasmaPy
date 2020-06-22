@@ -109,7 +109,7 @@ def spectral_density(
         fluid velocit in units convertable to cm/s. Defaults zero drift
         for all specified ion species.
 
-    probe_vec : float ndarray, shape [3]
+    probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
         [1, 0, 0].
 
