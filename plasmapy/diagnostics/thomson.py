@@ -68,7 +68,7 @@ def spectral_density(
 
     In this function the electron and ion distribution functions
     :math:`f_{e0}` and :math:`f_{i0}` are assumed to be Maxwellian, making this
-    function equivalent to Eq. 3.4.6 in Sheffield.
+    function equivalent to Eq. 3.4.6 in `Sheffield`_.
 
     Parameters
     ---------
