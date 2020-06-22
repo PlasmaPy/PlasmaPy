@@ -2,10 +2,9 @@
 Tests for Thomson scattering analysis functions
 """
 
+import astropy.units as u
 import numpy as np
-from astropy import units as u
-import pytest
-from astropy import units as u
+
 from plasmapy.diagnostics import thomson
 
 
