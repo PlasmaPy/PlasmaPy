@@ -76,7 +76,7 @@ def spectral_density(
 
     wavelengths : `~astropy.units.Quantity`
         Array of wavelengths over which the spectral density function
-        will be calculated, convertable to nm.
+        will be calculated. (convertible to nm)
 
     probe_wavelength : astropy.units.Quantity (required)
         Wavelength of the probe laser convertable to nm
