@@ -1,6 +1,6 @@
 """ This module gathers functions relating to ionization states and the properties thereof.
 """
-__all__ = ["ionization_balance"]
+__all__ = ["ionization_balance", "Saha"]
 
 from astropy import units as u
 from plasmapy.utils.decorators import (
@@ -88,3 +88,55 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
 Z_bal = ionization_balance
 """alias for :func:`ionization_balance`"""
+
+
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+)
+def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscaled:
+    r"""
+    The Saha equation, derived in statistical mechanics, gives an approximation of
+    the ratio of population of ions in two different ionization states in a plasma.
+    This approximation applies to plasmas in thermodynamic equilibrium where ionization
+    and recombination of ions with electrons are balanced.
+
+    .. math::
+        \frac{N_j}{N_k} = \frac{g_j}{4 g_k a_0^{3}} (\frac{k_B T_e}{\pi E_H})^{\frac{3}{2}}
+         \exp(\frac{-E_{jk}}{k_B T_e})
+
+    Where :math:`k_B` is the Boltzmann constant,
+    :math:`a_0` is the Bohr radius,
+    :math:`E_H` is the ionization energy of Hydrogen,
+    :math:`N_j` amd :math:`N_k` are the population of ions in the j and k states respectively.
+
+    Parameters
+    ----------
+    T : `~astropy.units.Quantity`
+        The electron temperature.
+
+    g_j : int
+        The degeneracy of the 'j'th ionization state.
+
+    g_k : int
+        The degeneracy of the 'k'th ionization state.
+
+    E_jk : `~astropy.units.Quantity`
+        The energy difference between ionization states j and k.
+
+    n_e : `~astropy.units.Quantity`
+        The electron number density of the plasma.
+
+    Returns
+    -------
+    ratio: `~astropy.units.Quantity`
+        The ratio of population of ions in ionization state j to state k.
+
+    """
+    E_h = 1 * u.Ry
+    A = g_j / (4 * g_k * a0 ** 3) * 1 / n_e
+    B = (k_B * T / (pi * E_h)) ** (3 / 2)
+    C = exp(-E_jk / (k_B * T))
+
+    ratio = A * B * C
+
+    return ratio
