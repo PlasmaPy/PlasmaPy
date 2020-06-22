@@ -40,7 +40,7 @@ def spectral_density(
     Ti: u.K,
     fract: np.ndarray = np.ones(1),
     ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
-    fluid_vel: u.m / u.s = np.zeros(3) * u.cm / u.s,
+    fluid_vel: u.m / u.s = np.zeros(3) * u.m / u.s,
     ion_vel: u.m / u.s = None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
