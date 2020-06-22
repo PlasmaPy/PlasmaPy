@@ -81,8 +81,8 @@ def spectral_density(
     probe_wavelength : `~astropy.units.Quantity`
         Wavelength of the probe laser. (convertible to nm)
 
-    ne : astropy.units.Quantity, ndarray (required)
-        mean (0th order) electron density of all plasma components combined
+    ne : `~astropy.units.Quantity`
+        Mean (0th order) electron density of all plasma components combined.
         (convertible to cm^-3.)
 
     Te : astropy.units.Quantity (required)
