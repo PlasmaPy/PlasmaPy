@@ -162,9 +162,9 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     """
     E_h = 1 * u.Ry
-    A = g_j / (4 * g_k * a0 ** 3) * 1 / n_e
+    A = g_j / (4 * g_k * a0 ** 3)
     B = (k_B * T_e / (pi * E_h)) ** (3 / 2)
-    C = exp(-E_jk / (k_B * T_e))
+    C = exp(-E_jk / (k_B * T_e)) / n_e
 
     ratio = A * B * C
 
