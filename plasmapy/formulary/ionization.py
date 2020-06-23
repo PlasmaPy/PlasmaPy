@@ -160,7 +160,6 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 1114595.58601976>
 
-
     """
     E_h = 1 * u.Ry
     A = g_j / (4 * g_k * a0 ** 3) * 1 / n_e
