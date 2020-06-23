@@ -11,3 +11,4 @@ Plasma parameters (`plasmapy.formulary.parameters`)
     :caption: Examples
 
     /notebooks/distribution
+    /notebooks/thermal_speed

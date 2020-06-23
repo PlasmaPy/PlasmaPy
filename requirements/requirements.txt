@@ -5,6 +5,6 @@ h5py >= 2.8
 lmfit >= 1.0.1
 matplotlib >= 2.0
 mpmath >= 1.0.0
-numpy >= 1.16.6
+numpy >= 1.18.1
 scipy >= 1.2
 setuptools >= 41.2
