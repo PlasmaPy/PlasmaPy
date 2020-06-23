@@ -142,7 +142,7 @@ class MHDNormalizations(IdealMHDNormalizations):
     @property
     def resistivity(self) -> u.ohm * u.m:
         """The normalization for the resistivity."""
-        return mu0 * self.length * self.velocity
+        return const.mu0 * self.length * self.velocity
 
     @property
     def diffusivity(self) -> u.m ** 2 / u.s:  #
