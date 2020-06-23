@@ -1,8 +1,8 @@
 """ This module gathers functions relating to ionization states and the properties thereof.
 """
-__all__ = ["ionization_balance", "Saha"]
+__all__ = ["ionization_balance", "Z_bal", "Saha"]
 
-from astropy import units as u
+import astropy.units as u
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
