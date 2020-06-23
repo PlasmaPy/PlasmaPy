@@ -27,7 +27,8 @@ def test_Saha():
     T_e = 5000 * u.K
 
     assert (
-        Saha(g_j, g_k, n_e, E_jk, T_e) * u.dimensionless_unscaled).unit == u.dimensionless_unscaled
+        Saha(g_j, g_k, n_e, E_jk, T_e) * u.dimensionless_unscaled
+    ).unit == u.dimensionless_unscaled
 
     with pytest.warns(u.UnitsWarning):
         Saha(g_j, g_k, 1e19, E_jk, T_e)
