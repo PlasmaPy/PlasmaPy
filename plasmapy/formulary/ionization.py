@@ -91,9 +91,9 @@ Z_bal = ionization_balance
 
 
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscaled:
+def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
     The Saha equation, derived in statistical mechanics, gives an approximation of
     the ratio of population of ions in two different ionization states in a plasma.
@@ -111,7 +111,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscale
 
     Parameters
     ----------
-    T : `~astropy.units.Quantity`
+    T_e : `~astropy.units.Quantity`
         The electron temperature.
 
     g_j : int
@@ -134,7 +134,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscale
     Raises
     ------
     TypeError
-        The `T`, `E_jk`, or `n_e` is not a `~astropy.units.Quantity` and cannot be
+        The `T_e`, `E_jk`, or `n_e` is not a `~astropy.units.Quantity` and cannot be
         converted into a ~astropy.units.Quantity.
 
     ~astropy.units.UnitConversionError
@@ -145,11 +145,27 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T: u.K) -> u.dimensionless_unscale
     ratio: `~astropy.units.Quantity`
         The ratio of population of ions in ionization state j to state k.
 
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> g_j = 2
+    >>> g_k = 2
+    >>> E_jk = 1 * u.Ry
+    >>> Saha(g_j, g_k, n, E_jk, T_e)
+    <Quantity 3.29921072e-06>
+    >>> T_e = 1 * u.Ry
+    >>> n = 1e23 * u.m ** -3
+    >>> Saha(g_j, g_k, n, E_jk, T_e)
+    <Quantity 1114595.58601976>
+
+
     """
     E_h = 1 * u.Ry
     A = g_j / (4 * g_k * a0 ** 3) * 1 / n_e
-    B = (k_B * T / (pi * E_h)) ** (3 / 2)
-    C = exp(-E_jk / (k_B * T))
+    B = (k_B * T_e / (pi * E_h)) ** (3 / 2)
+    C = exp(-E_jk / (k_B * T_e))
 
     ratio = A * B * C
 

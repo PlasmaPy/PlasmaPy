@@ -24,13 +24,13 @@ def test_Saha():
     g_k = 1
     n_e = 1e19 * u.m ** -3
     E_jk = 10 * u.Ry
-    T = 5000 * u.K
+    T_e = 5000 * u.K
 
     assert (
-        Saha(g_j, g_k, n_e, E_jk, T) * u.dimensionless_unscaled).unit == u.dimensionless_unscaled
+        Saha(g_j, g_k, n_e, E_jk, T_e) * u.dimensionless_unscaled).unit == u.dimensionless_unscaled
 
     with pytest.warns(u.UnitsWarning):
-        Saha(g_j, g_k, 1e19, E_jk, T)
+        Saha(g_j, g_k, 1e19, E_jk, T_e)
 
     with pytest.raises(u.UnitTypeError):
-        Saha(g_j, g_k, 1e19 * u.kg, E_jk, T)
+        Saha(g_j, g_k, 1e19 * u.kg, E_jk, T_e)
