@@ -1,0 +1,1 @@
+Start checking docstring style using automated tools - https://pypi.org/project/flake8-docstrings/ and https://github.com/terrencepreilly/darglint .
