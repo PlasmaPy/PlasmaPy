@@ -24,6 +24,7 @@ physical quantities helpful for plasma physics.
    relativity
    braginskii
    collisions
+   ionization
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
