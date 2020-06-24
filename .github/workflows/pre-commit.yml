@@ -1,4 +1,4 @@
-name: Automatic pre-commit fixes
+name: Automatic fixes
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   pre-commit:
-    name: pre-commit (black)
+    name: pre-commit
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
