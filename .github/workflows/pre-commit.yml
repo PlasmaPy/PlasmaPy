@@ -1,4 +1,4 @@
-name: Style
+name: Automatic pre-commit fixes
 
 on:
   pull_request:

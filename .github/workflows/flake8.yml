@@ -3,7 +3,7 @@ on:
   push:
     branches: [master]
 
-name: Lint
+name: Flake8 automated checks
 jobs:
   gitHubActionForFlake8:
     name: flake8
