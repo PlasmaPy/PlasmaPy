@@ -101,8 +101,8 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     and recombination of ions with electrons are balanced.
 
     .. math::
-        \frac{N_j}{N_k} = \frac{g_j}{4 g_k a_0^{3}} (\frac{k_B T_e}{\pi E_H})^{\frac{3}{2}}
-         \exp(\frac{-E_{jk}}{k_B T_e})
+        \frac{N_j}{N_k} = \frac{g_j}{4 g_k a_0^{3}} \left(\frac{k_B T_e}{\pi E_H}\right)^{\frac{3}{2}}
+         \exp\left(\frac{-E_{jk}}{k_B T_e}\right)
 
     Where :math:`k_B` is the Boltzmann constant,
     :math:`a_0` is the Bohr radius,
