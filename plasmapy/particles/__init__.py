@@ -2,6 +2,7 @@
 The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
+import json
 
 from plasmapy.particles.atomic import (
     atomic_number,
@@ -27,6 +28,7 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
+from plasmapy.particles.particle_class import ParticleJSONDecoder
 from plasmapy.particles.particle_input import particle_input
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
@@ -37,10 +39,6 @@ from plasmapy.particles.symbols import (
     particle_symbol,
 )
 
-# load the JSON decoder
-import json
-from plasmapy.particles.particle_class import ParticleJSONDecoder
-
 # Create instances of the most commonly used particles
 
 proton = Particle("p+")
@@ -50,7 +48,6 @@ positron = Particle("e+")
 deuteron = Particle("D 1+")
 triton = Particle("T 1+")
 alpha = Particle("He-4 2+")
-
 
 def from_json(json_string):
     return json.loads(json_string, cls=ParticleJSONDecoder)
