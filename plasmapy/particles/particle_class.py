@@ -2,17 +2,18 @@
 
 __all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
 
+import astropy.constants as const
+import astropy.units as u
+import json
+import numpy as np
 import warnings
+
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
+from datetime import datetime
 from numbers import Complex, Integral, Real
 from typing import List, Optional, Set, Tuple, Union
 
-import astropy.constants as const
-import astropy.units as u
-from datetime import datetime
-import json
-import numpy as np
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     AtomicError,
