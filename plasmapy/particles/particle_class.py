@@ -1971,15 +1971,18 @@ class CustomParticle(AbstractParticle):
     @mass.setter
     def mass(self, m: u.kg):
         if m is None:
-            self._mass = np.nan * u.kg
+            m = np.nan * u.kg
             warnings.warn("CustomParticle mass set to NaN kg", MissingAtomicDataWarning)
+        elif isinstance(m, str):
+            m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
             raise TypeError(
                 "The mass of a custom particle must be a nonnegative Quantity "
                 "with units of mass."
             )
+        if np.isnan(m):
+            self._mass = m
         else:
-
             if not isinstance(m.value, Real):
                 raise TypeError(
                     "The mass of a custom particle must be a real number "
@@ -1997,10 +2000,15 @@ class CustomParticle(AbstractParticle):
     @charge.setter
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
-            self._charge = np.nan * u.C
+            q = np.nan * u.C
             warnings.warn(
                 "CustomParticle charge set to NaN C", MissingAtomicDataWarning
             )
+        elif isinstance(q, str):
+            q = u.Quantity(q)
+
+        if np.isnan(q):
+            self._charge = q
         elif isinstance(q, Real):
             self._charge = q * const.e.si
             warnings.warn(

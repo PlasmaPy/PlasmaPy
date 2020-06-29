@@ -412,6 +412,16 @@ def ion_sound_speed(
     return V_S
 
 
+# This dictionary defines coefficients for thermal speeds
+# calculated for different methods and values of ndim.
+# Created here to avoid re-instantiating on each call
+_coefficients = {
+    1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
+    2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
+    3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
+}
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -423,6 +433,7 @@ def thermal_speed(
     particle: particles.Particle = "e-",
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
+    ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
@@ -447,6 +458,10 @@ def thermal_speed(
         The particle's mass override. Defaults to NaN and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
+
+    ndim : int
+        Dimensionality of space in which to calculate thermal velocity. Valid
+        values are 1,2,3.
 
     Returns
     -------
@@ -479,10 +494,34 @@ def thermal_speed(
     The particle thermal speed is given by:
 
     .. math::
-        V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
+        V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
 
-    This function yields the most probable speed within a distribution
-    function.  However, the definition of thermal velocity varies by
+    where the value of N depends on the dimensionality and the definition of
+    :math:`v_{th}`: most probable, root-mean-square (RMS), or mean magnitude.
+    The value of N in each case is
+
+    .. list-table:: Values of constant N
+       :widths: 50, 25, 25, 25
+       :header-rows: 1
+
+       * - Dim.
+         - Most-Probable
+         - RMS
+         - Mean-Magnitude
+       * - 1D
+         - 0
+         - 1
+         - :math:`2/\pi`
+       * - 2D
+         - 1
+         - 2
+         - :math:`\pi/2`
+       * - 3D
+         - 2
+         - 3
+         - :math:`8/\pi`
+
+    The definition of thermal velocity varies by
     the square root of two depending on whether or not this velocity
     absorbs that factor in the expression for a Maxwellian
     distribution.  In particular, the expression given in the NRL
@@ -509,16 +548,16 @@ def thermal_speed(
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    if method == "most_probable":
-        V = np.sqrt(2 * k_B * T / m)
-    elif method == "rms":
-        V = np.sqrt(3 * k_B * T / m)
-    elif method == "mean_magnitude":
-        V = np.sqrt(8 * k_B * T / (m * np.pi))
-    else:
+    try:
+        coef = _coefficients[ndim]
+    except KeyError:
+        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
+    try:
+        coef = coef[method]
+    except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return V
+    return np.sqrt(coef * k_B * T / m)
 
 
 @validate_quantities(
@@ -1604,6 +1643,13 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     the diffusion of early fusion energy machines.
     The rate predicted by Bohm diffusion is much higher than classical diffusion
     and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    .. math::
+
+        D_B = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
 
     Parameters
     ----------

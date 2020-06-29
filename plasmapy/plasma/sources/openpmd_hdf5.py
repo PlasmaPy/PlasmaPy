@@ -4,8 +4,8 @@ from distutils.version import StrictVersion
 import astropy.units as u
 import numpy as np
 
-from plasmapy.classes.exceptions import DataStandardError
-from plasmapy.classes.plasma_base import GenericPlasma
+from plasmapy.plasma.exceptions import DataStandardError
+from plasmapy.plasma.plasma_base import GenericPlasma
 
 _OUTDATED_VERSION = "1.1.0"
 _NEWER_VERSION = "2.0.0"

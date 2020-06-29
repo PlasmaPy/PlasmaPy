@@ -42,6 +42,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
 * `Colby Haggerty <https://github.com/colbych>`__
+* `Peter Heuer <https://github.com/pheuer>`__ (`0000-0001-5050-6606 <https://orcid.org/0000-0001-5050-6606>`__)
 * `Julien Hillairet <https://github.com/jhillairet>`__ (`0000-0002-1073-6383 <https://orcid.org/0000-0002-1073-6383>`__)
 * `Poh Zi How <https://github.com/pohzipohzi>`__
 * `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)

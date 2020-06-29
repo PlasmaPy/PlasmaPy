@@ -1,0 +1,2 @@
+Update :class:`~plasmapy.particles.particle_class.CustomParticle` so input parameters
+`mass` and `charge` can accept string representations of astropy `Quantities`.
