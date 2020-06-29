@@ -905,9 +905,9 @@ customized_particle_tests = [
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
     (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
     (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
-    (CustomParticle, {"mass": "100. g"}, "mass", 100. * u.g),
+    (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
-    (CustomParticle, {"charge": "5. C"}, "charge", 5. * u.C),
+    (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
 ]
 
 
@@ -950,7 +950,7 @@ customized_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j)}, InvalidParticleError),
     (CustomParticle, {"mass": -1e-36 * u.kg}, InvalidParticleError),
     (CustomParticle, {"mass": "not a mass"}, InvalidParticleError),
-    (CustomParticle, {"mass": "5. km"}, InvalidParticleError),
+    (CustomParticle, {"mass": "5.0 km"}, InvalidParticleError),
     (CustomParticle, {"mass": np.array([1, 1]) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": np.array([1, 1]) * u.C}, InvalidParticleError),
     (CustomParticle, {"charge": (5 + 2j) * u.C}, InvalidParticleError),
@@ -958,7 +958,7 @@ customized_particle_errors = [
     (CustomParticle, {"charge": np.complex128(5 + 2j) * u.C}, InvalidParticleError),
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
-    (CustomParticle, {"charge": "5. km"}, InvalidParticleError),
+    (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
 ]
 
 
