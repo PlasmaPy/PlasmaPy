@@ -162,10 +162,10 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     """
     E_h = 1 * u.Ry
-    A = g_j / (4 * g_k * a0 ** 3)
-    B = (k_B * T_e / (pi * E_h)) ** (3 / 2)
-    C = exp(-E_jk / (k_B * T_e)) / n_e
+    degeneracy_factor = 1 / n_e * g_j / (4 * g_k * a0 ** 3)
+    physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
+    boltzmann_factor = exp(-E_jk / (k_B * T_e))
 
-    ratio = A * B * C
+    ratio = degeneracy_factor * physical_constants * boltzmann_factor
 
     return ratio
