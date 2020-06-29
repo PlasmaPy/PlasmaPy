@@ -28,14 +28,14 @@ Examples
 
 >>> xdiagnostics
 <plasmapy.diagnostics.core.XDiagnosticEnabler>
-Enabled   Available Diagnostic
+Enabled   Available Diagnostic   Bound As
     [ ]   swept_langmuir
 
 >>> xdiagnostics.enable('swept_langmuir')
 >>> xdiagnostics
 <plasmapy.diagnostics.core.XDiagnosticEnabler>
-Enabled   Available Diagnostic
-    [x]   swept_langmuir
+Enabled   Available Diagnostic   Bound As
+    [x]   swept_langmuir         swept_langmuir
 
 >>> hasattr(xr.Dataset, 'swept_langmuir')
 True
