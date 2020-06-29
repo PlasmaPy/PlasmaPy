@@ -5,20 +5,18 @@ isotopes.
 __all__ = ["IonizationStates"]
 
 import collections
-import numpy as np
-
-from astropy import units as u
-from numbers import Real, Integral
-from plasmapy.particles import (
-    atomic_number,
-    Particle,
-    particle_symbol,
-    IonizationState,
-    State,
-)
-from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
-from plasmapy.utils.decorators import validate_quantities
+from numbers import Integral, Real
 from typing import Dict, List, Optional, Tuple, Union
+
+import numpy as np
+from astropy import units as u
+
+from plasmapy.particles.atomic import atomic_number
+from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles.ionization_state import IonizationState, State
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.symbols import particle_symbol
+from plasmapy.utils.decorators import validate_quantities
 
 
 class IonizationStates:
@@ -49,7 +47,7 @@ class IonizationStates:
 
     T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
-        energy per base_particle.
+        energy per particle.
 
     kappa: float, optional, keyword-only
         The value of kappa for a kappa distribution function.
@@ -207,11 +205,11 @@ class IonizationStates:
             else:
                 if not isinstance(int_charge, Integral):
                     raise TypeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 elif not 0 <= int_charge <= atomic_number(particle):
                     raise ChargeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 return State(
                     integer_charge=int_charge,
@@ -769,15 +767,15 @@ class IonizationStates:
             )
         else:
             old_keys = abundances_dict.keys()
-            try:
-                new_keys_dict = {
-                    particle_symbol(old_key): old_key for old_key in old_keys
-                }
-            except Exception:
-                raise AtomicError(
-                    f"The key {repr(old_key)} in the abundances "
-                    f"dictionary is not a valid element or isotope."
-                )
+            new_keys_dict = {}
+            for old_key in old_keys:
+                try:
+                    new_keys_dict[particle_symbol(old_key)] = old_key
+                except Exception:
+                    raise AtomicError(
+                        f"The key {repr(old_key)} in the abundances "
+                        f"dictionary is not a valid element or isotope."
+                    )
 
             new_elements = new_keys_dict.keys()
 

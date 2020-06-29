@@ -8,4 +8,3 @@ Magnetostatics (`plasmapy.formulary.magnetostatics`)
 
 .. automodapi:: plasmapy.formulary.magnetostatics
    :no-heading:
-

@@ -2,15 +2,13 @@
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 
-import numpy as np
-import astropy.units as u
 import itertools
 
-from plasmapy.formulary.magnetostatics import MagnetoStatics
-
+import astropy.units as u
+import numpy as np
 from astropy.constants import mu0
-
-from plasmapy.classes import GenericPlasma
+from plasmapy.formulary.magnetostatics import MagnetoStatics
+from plasmapy.plasma.plasma_base import GenericPlasma
 
 __all__ = ["Plasma3D"]
 

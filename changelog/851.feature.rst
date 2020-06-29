@@ -1,0 +1,2 @@
+Create `plasmapy/formulary/ionization.py`
+Create :func:`~plasmapy.formulary.ionization.Z_bal` function.

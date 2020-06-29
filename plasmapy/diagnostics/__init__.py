@@ -1,15 +1,20 @@
-"""The diagnostics subpackage contains tools for experimental research.
-Currently, we have functionality for analyzing data from Langmuir probes.
+"""
+The diagnostics subpackage contains functionality for defining diagnostic parameters
+and processing data collected by diagnostics, synthetic or experimental.
 """
 __all__ = [
     "AbstractProbe",
     "XAbstractDiagnostic",
     "xdiagnostics",
     "core",
+    "langmuir",
+    "thomson",
 ]
 
-from . import core
+from plasmapy.diagnostics import core, langmuir, thomson
+
 from .core import AbstractProbe, XAbstractDiagnostic, XDiagnosticEnabler
+
 
 xdiagnostics = XDiagnosticEnabler()
 """

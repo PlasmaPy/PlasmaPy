@@ -1,35 +1,33 @@
-import pytest
-import inspect
 import collections
+import inspect
 
 import numpy as np
-from astropy import units as u, constants as const
+import pytest
+from astropy import constants as const
+from astropy import units as u
+from astropy.constants import c, e, m_e, m_n, m_p
 
-from plasmapy.utils import roman
-from astropy.constants import m_p, m_e, m_n, e, c
 from plasmapy.particles.atomic import known_isotopes
-from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import (
-    Particle,
-    CustomParticle,
-    DimensionlessParticle,
-)
-from plasmapy.particles.special_particles import ParticleZoo
-
-from plasmapy.utils import call_string
-from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
-
 from plasmapy.particles.exceptions import (
     AtomicError,
-    MissingAtomicDataError,
+    AtomicWarning,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
-    AtomicWarning,
+    MissingAtomicDataError,
     MissingAtomicDataWarning,
 )
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import (
+    CustomParticle,
+    DimensionlessParticle,
+    Particle,
+)
+from plasmapy.particles.special_particles import ParticleZoo
+from plasmapy.utils import call_string, roman
+from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [
@@ -907,7 +905,9 @@ customized_particle_tests = [
     (CustomParticle, {"charge": -0.1 * u.C}, "charge", -0.1 * u.C),
     (CustomParticle, {"charge": -2}, "charge", -2 * const.e.si),
     (CustomParticle, {"mass": np.inf * u.g}, "mass", np.inf * u.kg),
+    (CustomParticle, {"mass": "100.0 g"}, "mass", 100.0 * u.g),
     (CustomParticle, {"charge": -np.inf * u.kC}, "charge", -np.inf * u.C),
+    (CustomParticle, {"charge": "5.0 C"}, "charge", 5.0 * u.C),
 ]
 
 
@@ -949,12 +949,16 @@ customized_particle_errors = [
     (CustomParticle, {"charge": np.complex128(5 + 2j)}, InvalidParticleError),
     (CustomParticle, {"mass": np.complex128(5 + 2j)}, InvalidParticleError),
     (CustomParticle, {"mass": -1e-36 * u.kg}, InvalidParticleError),
+    (CustomParticle, {"mass": "not a mass"}, InvalidParticleError),
+    (CustomParticle, {"mass": "5.0 km"}, InvalidParticleError),
     (CustomParticle, {"mass": np.array([1, 1]) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": np.array([1, 1]) * u.C}, InvalidParticleError),
     (CustomParticle, {"charge": (5 + 2j) * u.C}, InvalidParticleError),
     (CustomParticle, {"mass": (5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": np.complex128(5 + 2j) * u.C}, InvalidParticleError),
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
+    (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
+    (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
 ]
 
 
