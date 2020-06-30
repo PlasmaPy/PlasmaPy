@@ -104,16 +104,16 @@ class ParticleJSONDecoder(json.JSONDecoder):
 
     def object_hook(self, json_dict):
         """
-        Returns the appropriate particle object corresponding to the input JSON
-        string. If not a particle, returns a dictionary object. Logic Implementation for
-        plasmapy.particles.from_json method.
+        An `object_hook` utilized by the `json` deserialization processes to decode
+        json strings into a `plasmapy` particle class (`AbstractParticle`,
+        `CustomParticle`, `DimensionlessParticle`, `Particle`).
         """
         particle_types = {
+            "AbstractParticle": AbstractParticle,
             "CustomParticle": CustomParticle,
             "DimensionlessParticle": DimensionlessParticle,
             "Particle": Particle,
         }
-        # print(json_dict)
         if "plasmapy_particle" in json_dict:
             try:
                 print(json_dict)
