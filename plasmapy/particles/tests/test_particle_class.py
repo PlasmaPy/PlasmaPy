@@ -1010,22 +1010,38 @@ custom_particles_from_json_tests = [
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2},
-        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": 5.2, "charge": NaN}}}}',
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": 5.2, "charge": NaN}}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
-        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+        '{"plasmapy_particle": {"type": "CustomParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg},
-        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
+        '{"plasmapy_particle": {"type": "CustomParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
     ),
 ]
 
@@ -1054,12 +1070,16 @@ particles_from_json_tests = [
     (
         Particle,
         {"argument": "Pb"},
-        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+        '{"plasmapy_particle": {"type": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
     ),
     (
         Particle,
         {"argument": "e-"},
-        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": ["e-"], "kwargs": {}}}}',
+        '{"plasmapy_particle": {"type": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": {"args": ["e-"], "kwargs": {}}}}',
     ),
 ]
 
@@ -1080,17 +1100,35 @@ particle_json_repr_table = [
     (
         Particle,
         {"argument": "lead"},
-        '{"plasmapy_particle": {"type": "Particle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+        '{"plasmapy_particle": {"type": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", \
+        "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+    ),
+    (
+        Particle,
+        {"argument": "lead"},
+        '{"plasmapy_particle": {"type": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
     ),
     (
         CustomParticle,
         {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
-        '{"plasmapy_particle": {"type": "CustomParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+        '{"plasmapy_particle": {"type": "CustomParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": {\
+            "args": [], \
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
     ),
     (
         DimensionlessParticle,
         {"mass": 5.2, "charge": 6.3},
-        '{"plasmapy_particle": {"type": "DimensionlessParticle", "module": "plasmapy.particles.particle_class", "date_created": "...", "__init__": {"args": [], "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+        '{"plasmapy_particle": {"type": "DimensionlessParticle",\
+        "module": "plasmapy.particles.particle_class",\
+        "date_created": "...", "__init__": {\
+            "args": [], \
+            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
     ),
 ]
 
