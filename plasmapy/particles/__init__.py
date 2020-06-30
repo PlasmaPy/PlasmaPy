@@ -53,4 +53,7 @@ alpha = Particle("He-4 2+")
 
 
 def from_json(json_string):
+    """
+    Returns the appropriate object from its JSON string representation
+    """
     return json.loads(json_string, cls=ParticleJSONDecoder)
