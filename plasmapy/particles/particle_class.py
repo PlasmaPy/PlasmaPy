@@ -645,7 +645,8 @@ class Particle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        Return a dictionary representation of the minimum description of a particle.
+        A `json` friendly dictionary representation of the particle. (see 
+        `AbstractParticle.json_dict` for more details)
 
         Examples
         --------
@@ -1807,7 +1808,8 @@ class DimensionlessParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        Return a dictionary representation of a dimensionless particle.
+        A `json` friendly dictionary representation of the particle. (see 
+        `AbstractParticle.json_dict` for more details)
 
         Examples
         --------
@@ -1942,7 +1944,8 @@ class CustomParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        Return a dictionary representation of the minimum description of a CustomParticle.
+        A `json` friendly dictionary representation of the particle. (see 
+        `AbstractParticle.json_dict` for more details)
 
         Examples
         --------
