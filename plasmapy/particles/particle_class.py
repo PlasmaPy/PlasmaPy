@@ -166,7 +166,7 @@ class AbstractParticle(ABC):
                 "type": type(self).__name__,
                 "module": self.__module__,
                 "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
-                "__init__": {"args": (), "kwargs": {},},
+                "__init__": {"args": (), "kwargs": {}, },
             }
         }
         return json_dictionary
@@ -645,7 +645,7 @@ class Particle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see 
+        A `json` friendly dictionary representation of the particle. (see
         `AbstractParticle.json_dict` for more details)
 
         Examples
@@ -658,7 +658,7 @@ class Particle(AbstractParticle):
             '__init__': {'args': ('Pb',), 'kwargs': {}}}}
         >>> electron = Particle('e-')
         >>> electron.json_dict
-        {'plasmapy_particle': {'type': 'Particle', 
+        {'plasmapy_particle': {'type': 'Particle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': ('e-',), 'kwargs': {}}}}
@@ -1808,7 +1808,7 @@ class DimensionlessParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see 
+        A `json` friendly dictionary representation of the particle. (see
         `AbstractParticle.json_dict` for more details)
 
         Examples
@@ -1816,17 +1816,16 @@ class DimensionlessParticle(AbstractParticle):
         >>> from plasmapy.particles import DimensionlessParticle
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
         >>> dimensionless_particle.json_dict
-        {'plasmapy_particle': {'type': 'DimensionlessParticle', 
+        {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0}}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
-        {'plasmapy_particle': {'type': 'DimensionlessParticle', 
+        {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan}}}}
-        
         """
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
@@ -1944,7 +1943,7 @@ class CustomParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see 
+        A `json` friendly dictionary representation of the particle. (see
         `AbstractParticle.json_dict` for more details)
 
         Examples
@@ -1957,7 +1956,7 @@ class CustomParticle(AbstractParticle):
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C'}}}}
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
-        {'plasmapy_particle': {'type': 'CustomParticle', 
+        {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}}
