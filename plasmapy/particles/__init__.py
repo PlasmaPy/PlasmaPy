@@ -49,5 +49,6 @@ deuteron = Particle("D 1+")
 triton = Particle("T 1+")
 alpha = Particle("He-4 2+")
 
+
 def from_json(json_string):
     return json.loads(json_string, cls=ParticleJSONDecoder)
