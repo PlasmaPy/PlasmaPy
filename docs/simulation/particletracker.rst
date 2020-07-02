@@ -15,6 +15,9 @@ stepper implementing the Boris algorithm.
     :caption: Examples
 
     /notebooks/particle_stepper
+    /notebooks/TokamakParticles
+    /notebooks/TokamakParticlesMultiple
+    /notebooks/TokamakParticlesOtherSolvers
 
 Reference/API
 =============
