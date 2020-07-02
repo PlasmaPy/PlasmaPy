@@ -3,32 +3,36 @@
 import numpy as np
 import pytest
 from astropy import units as u
+from astropy.constants import c, e, m_e, m_p, mu0
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.utils.exceptions import RelativityWarning, RelativityError
-from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
-from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-from astropy.constants import c, m_p, m_e, e, mu0
-
 from plasmapy.formulary.parameters import (
-    mass_density,
     Alfven_speed,
-    gyrofrequency,
-    gyroradius,
-    thermal_speed,
-    thermal_pressure,
-    kappa_thermal_speed,
-    plasma_frequency,
+    Bohm_diffusion,
     Debye_length,
     Debye_number,
+    gyrofrequency,
+    gyroradius,
     inertial_length,
     ion_sound_speed,
+    kappa_thermal_speed,
+    lower_hybrid_frequency,
     magnetic_energy_density,
     magnetic_pressure,
+    mass_density,
+    plasma_frequency,
+    thermal_pressure,
+    thermal_speed,
     upper_hybrid_frequency,
-    lower_hybrid_frequency,
 )
+from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.utils.exceptions import (
+    PhysicsError,
+    PhysicsWarning,
+    RelativityError,
+    RelativityWarning,
+)
+from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 B = 1.0 * u.T
 Z = 1
@@ -361,6 +365,45 @@ def test_thermal_speed():
         thermal_speed(1 * u.MK, particle="p").si.value, 128486.56960876315
     )
 
+    # Explicitly check all three modes and dimensionalities
+    # ndim = 1
+    assert np.isclose(thermal_speed(T_e, method="most_probable", ndim=1).si.value, 0.0)
+
+    # Regression tests start here!
+    assert np.isclose(
+        thermal_speed(T_e, method="rms", ndim=1).si.value, 3893114.2008620175
+    )
+
+    assert np.isclose(
+        thermal_speed(T_e, method="mean_magnitude", ndim=1).si.value, 3106255.714310189
+    )
+
+    # ndim = 2
+    assert np.isclose(
+        thermal_speed(T_e, method="most_probable", ndim=2).si.value, 3893114.2008620175
+    )
+
+    assert np.isclose(
+        thermal_speed(T_e, method="rms", ndim=2).si.value, 5505694.902726359
+    )
+
+    assert np.isclose(
+        thermal_speed(T_e, method="mean_magnitude", ndim=2).si.value, 4879295.066124102
+    )
+
+    # ndim = 3
+    assert np.isclose(
+        thermal_speed(T_e, method="most_probable", ndim=3).si.value, 5505694.902726359
+    )
+
+    assert np.isclose(
+        thermal_speed(T_e, method="rms", ndim=3).si.value, 6743071.595560921
+    )
+
+    assert np.isclose(
+        thermal_speed(T_e, method="mean_magnitude", ndim=3).si.value, 6212511.428620378
+    )
+
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
@@ -394,8 +437,13 @@ def test_thermal_speed():
         thermal_speed(1e6 * u.K, method="rms").si.value, 6743070.475775486
     )
 
+    # Test invalid method
     with pytest.raises(ValueError):
         thermal_speed(T_i, method="sadks")
+
+    # Test invalid ndim
+    with pytest.raises(ValueError):
+        thermal_speed(T_i, ndim=4)
 
     assert_can_handle_nparray(thermal_speed)
 
@@ -1039,3 +1087,18 @@ def test_lower_hybrid_frequency():
             1.3 * u.T, 1e19 * u.m ** -3
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
+
+
+def test_Bohm_diffusion():
+    r"""Test Mag_Reynolds in dimensionless.py"""
+
+    T_e = 5000 * u.K
+    B = 10 * u.T
+
+    assert (Bohm_diffusion(T_e, B)).unit == u.m ** 2 / u.s
+
+    with pytest.warns(u.UnitsWarning):
+        Bohm_diffusion(5000, B)
+
+    with pytest.raises(u.UnitTypeError):
+        Bohm_diffusion(2.2 * u.kg, B)

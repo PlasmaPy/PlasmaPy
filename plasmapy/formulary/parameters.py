@@ -20,14 +20,17 @@ __all__ = [
     "magnetic_energy_density",
     "upper_hybrid_frequency",
     "lower_hybrid_frequency",
+    "Bohm_diffusion",
 ]
 
 import numbers
-import numpy as np
 import warnings
+from typing import Optional
 
+import numpy as np
 from astropy import units as u
-from astropy.constants.si import m_p, m_e, c, mu0, k_B, e, eps0
+from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+
 from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
@@ -36,7 +39,6 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
-from typing import Optional
 
 
 def _grab_charge(ion, z_mean=None):
@@ -218,7 +220,7 @@ def Alfven_speed(
     >>> Alfven_speed(B, rho, ion)
     <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738... cm / us>
+    <Quantity 4.317387 cm / us>
 
     """
     rho = mass_density(density, ion, z_mean)
@@ -410,6 +412,16 @@ def ion_sound_speed(
     return V_S
 
 
+# This dictionary defines coefficients for thermal speeds
+# calculated for different methods and values of ndim.
+# Created here to avoid re-instantiating on each call
+_coefficients = {
+    1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
+    2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
+    3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
+}
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -421,6 +433,7 @@ def thermal_speed(
     particle: particles.Particle = "e-",
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
+    ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
@@ -445,6 +458,10 @@ def thermal_speed(
         The particle's mass override. Defaults to NaN and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
+
+    ndim : int
+        Dimensionality of space in which to calculate thermal velocity. Valid
+        values are 1,2,3.
 
     Returns
     -------
@@ -477,10 +494,34 @@ def thermal_speed(
     The particle thermal speed is given by:
 
     .. math::
-        V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
+        V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
 
-    This function yields the most probable speed within a distribution
-    function.  However, the definition of thermal velocity varies by
+    where the value of N depends on the dimensionality and the definition of
+    :math:`v_{th}`: most probable, root-mean-square (RMS), or mean magnitude.
+    The value of N in each case is
+
+    .. list-table:: Values of constant N
+       :widths: 50, 25, 25, 25
+       :header-rows: 1
+
+       * - Dim.
+         - Most-Probable
+         - RMS
+         - Mean-Magnitude
+       * - 1D
+         - 0
+         - 1
+         - :math:`2/\pi`
+       * - 2D
+         - 1
+         - 2
+         - :math:`\pi/2`
+       * - 3D
+         - 2
+         - 3
+         - :math:`8/\pi`
+
+    The definition of thermal velocity varies by
     the square root of two depending on whether or not this velocity
     absorbs that factor in the expression for a Maxwellian
     distribution.  In particular, the expression given in the NRL
@@ -507,16 +548,16 @@ def thermal_speed(
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    if method == "most_probable":
-        V = np.sqrt(2 * k_B * T / m)
-    elif method == "rms":
-        V = np.sqrt(3 * k_B * T / m)
-    elif method == "mean_magnitude":
-        V = np.sqrt(8 * k_B * T / (m * np.pi))
-    else:
+    try:
+        coef = _coefficients[ndim]
+    except KeyError:
+        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
+    try:
+        coef = coef[method]
+    except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return V
+    return np.sqrt(coef * k_B * T / m)
 
 
 @validate_quantities(
@@ -1588,3 +1629,66 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     omega_lh = omega_lh
 
     return omega_lh
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    B={"can_be_negative": False},
+)
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+
+    r"""
+    The Bohm diffusion coefficient was conjectured to follow Bohm model of
+    the diffusion of plasma across a magnetic field and describe
+    the diffusion of early fusion energy machines.
+    The rate predicted by Bohm diffusion is much higher than classical diffusion
+    and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    .. math::
+
+        D_B = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
+
+    Parameters
+    ----------
+    T_e: `~astropy.units.Quantity`
+        The electron temperature.
+    B: `~astropy.units.Quantity`
+        The magnitude of the magnetic field in the plasma.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e` is not in appropriate units.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.00269292 m2 / s>
+    >>> T_e = 50 * u.eV
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.3125 m2 / s>
+
+    Returns
+    -------
+    D_B: `~astropy.units.Quantity`
+    The Bohm diffusion coefficient in meters squared per second.
+
+    """
+    D_B = k_B * T_e / (16 * e * B)
+    return D_B

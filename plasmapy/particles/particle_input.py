@@ -6,19 +6,19 @@ as arguments and pass through the corresponding instance of the
 
 import functools
 import inspect
-from typing import Callable, Union, Any, Set, List, Tuple, Optional
 import numbers
-
-from .particle_class import Particle
+from typing import Any, Callable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.exceptions import (
     AtomicError,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
 )
+
+from .particle_class import Particle
 
 __all__ = ["particle_input"]
 

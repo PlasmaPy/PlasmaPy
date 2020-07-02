@@ -1,12 +1,13 @@
+from typing import List, Optional, Tuple, Union
+
 import pytest
-from typing import Optional, Union, Tuple, List
 
 from plasmapy.particles.exceptions import (
     AtomicError,
     ChargeError,
+    InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
-    InvalidElementError,
     InvalidParticleError,
 )
 
@@ -509,7 +510,7 @@ def test_optional_particle_annotation_argname():
 
     @particle_input
     def func_optional_particle_with_list(
-        particles: [Optional[Particle]]
+        particles: [Optional[Particle]],
     ) -> [Optional[Particle]]:
         return particles
 

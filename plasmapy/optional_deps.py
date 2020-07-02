@@ -34,15 +34,15 @@ def _optional_import_error_template(
     {library} could not be found. Try either
 
         conda install {conda_channel}{pkgname}
-        
+
     on Anaconda environments or
-        
+
         pip install {pkgname}
 
     in general. In case of trouble refer to
-    
-        {url} 
-    
+
+        {url}
+
     (link active as of 2018.10.31 - please report dead links on GitHub!)"""
 
     return ImportError(template)

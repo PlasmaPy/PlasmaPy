@@ -5,8 +5,8 @@ neutrons.
 
 import json
 import pkgutil
-import astropy.units as u
 
+import astropy.units as u
 
 # this code was used to create the JSON file as per vn-ki on Riot:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/
@@ -29,5 +29,6 @@ def _isotope_obj_hook(obj):
 
 
 _Isotopes = json.loads(
-    pkgutil.get_data("plasmapy", "data/isotopes.json"), object_hook=_isotope_obj_hook
+    pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
+    object_hook=_isotope_obj_hook,
 )

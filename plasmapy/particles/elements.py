@@ -4,9 +4,10 @@ Dictionaries containing basic atomic data.
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 """
 
+import collections
 import json
 import pkgutil
-import collections
+
 import astropy.units as u
 
 _PeriodicTable = collections.namedtuple(
@@ -36,7 +37,8 @@ def _element_obj_hook(obj):
 
 
 _Elements = json.loads(
-    pkgutil.get_data("plasmapy", "data/elements.json"), object_hook=_element_obj_hook
+    pkgutil.get_data("plasmapy", "particles/data/elements.json"),
+    object_hook=_element_obj_hook,
 )
 
 
