@@ -77,7 +77,7 @@ def entropy_across_shock_polytropic(
 
     """
     pressure_ratio = p_2 / p_1
-    density_ratio = (rho_1 / rho_2)
+    density_ratio = rho_1 / rho_2
 
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
     return ds
