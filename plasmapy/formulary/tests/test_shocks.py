@@ -16,6 +16,6 @@ def test_entropy_across_shock_polytropic():
     entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
 
     assert (
-            entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
-        ).unit == u.J / u.K
+        entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
+    ).unit == u.J / u.K
 

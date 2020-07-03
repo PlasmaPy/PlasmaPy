@@ -15,16 +15,17 @@ validate_quantities(
     rho_1={"can_be_negative": False},
     rho_2={"can_be_negative": False},
     ds={"can_be_negative": False},
-    c_v={"can_be_negative": False})
+    c_v={"can_be_negative": False},
+)
 
 
 def entropy_across_shock_polytropic(
-        c_v: u.J / u.K,
-        p_1: u.Pa,
-        p_2: u.Pa,
-        rho_1: u.kg / u.m ** 3,
-        rho_2: u.kg / u.m ** 3,
-        gamma,
+    c_v: u.J / u.K,
+    p_1: u.Pa,
+    p_2: u.Pa,
+    rho_1: u.kg / u.m ** 3,
+    rho_2: u.kg / u.m ** 3,
+    gamma,
 ) -> u.J / u.K:
     r"""
     Entropy is not conserved across a shock, since a shock is
