@@ -18,8 +18,14 @@ validate_quantities(
     c_v={"can_be_negative": False})
 
 
-def entropy_across_shock_polytropic(c_v: u.J / u.K, p_1: u.Pa, p_2: u.Pa, rho_1: u.kg / u.m ** 3,
-                                    rho_2: u.kg / u.m ** 3, gamma) -> u.J / u.K:
+def entropy_across_shock_polytropic(
+        c_v: u.J / u.K,
+        p_1: u.Pa,
+        p_2: u.Pa,
+        rho_1: u.kg / u.m ** 3,
+        rho_2: u.kg / u.m ** 3,
+        gamma,
+) -> u.J / u.K:
     r"""
     Entropy is not conserved across a shock, since a shock is
     an irreversible, non-adiabatic process. This equation is based on the specific entropy
