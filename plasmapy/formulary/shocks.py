@@ -50,12 +50,12 @@ def entropy_across_shock_polytropic(c_v: u.J / u.K, p_1: u.Bar, p_2: u.Bar, rho_
 
     Returns
     -------
-    delta_s: `~astropy.units.Quantity`
+    ds: `~astropy.units.Quantity`
         The change of entropy due to the shock on the gas.
 
     """
     pressure_ratio = p_2 / p_1
     density_ratio = (rho_1 / rho_2)
 
-    delta_s = c_v * log(pressure_ratio * density_ratio ** gamma)
-    return delta_s
+    ds = c_v * log(pressure_ratio * density_ratio ** gamma)
+    return ds
