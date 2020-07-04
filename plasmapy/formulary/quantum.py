@@ -4,9 +4,9 @@ gases and warm dense matter.
 
 """
 __all__ = [
-    "deBroglie_wavelength",
-    "thermal_deBroglie_wavelength",
-    "Fermi_energy",
+    "deBroglie_wavelength", "lambdaDB",
+    "thermal_deBroglie_wavelength", "lambdaDBTh",
+    "Fermi_energy", "Efermi",
     "Thomas_Fermi_length",
     "Wigner_Seitz_radius",
     "chemical_potential",
@@ -128,6 +128,10 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     return lambda_dBr
 
 
+lambdaDB = deBroglie_wavelength
+""" Alias to :func:`deBroglie_wavelength`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     validations_on_return={"can_be_negative": False},
@@ -179,6 +183,10 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     """
     lambda_dbTh = h / np.sqrt(2 * np.pi * m_e * k_B * T_e)
     return lambda_dbTh
+
+
+lambdaDBTh = thermal_deBroglie_wavelength
+""" Alias to :func:`lambdaDBTh`. """
 
 
 @validate_quantities(
@@ -240,6 +248,10 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
     return energy_F
+
+
+Efermi = Fermi_energy
+""" Alias to :func:`Fermi_energy`. """
 
 
 @validate_quantities(
