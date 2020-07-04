@@ -9,7 +9,7 @@ __all__ = [
     "thermal_speed", "vth",
     "thermal_pressure", "pth",
     "kappa_thermal_speed", "vth_kappa",
-    "Hall_parameter", "beta",
+    "Hall_parameter", "betaH",
     "gyrofrequency", "oc", "wc",
     "gyroradius", "rc", "rhoc",
     "plasma_frequency", "wp",
@@ -813,7 +813,7 @@ def Hall_parameter(
     return gyro_frequency / coll_rate
 
 
-beta = Hall_parameter
+betaH = Hall_parameter
 """ Alias to :func:`Hall_parameter`. """
 
 
