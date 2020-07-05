@@ -114,10 +114,10 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     T_e : `~astropy.units.Quantity`
         The electron temperature.
 
-    g_j : int
+    g_j : `int`
         The degeneracy of the 'j'th ionization state.
 
-    g_k : int
+    g_k : `int`
         The degeneracy of the 'k'th ionization state.
 
     E_jk : `~astropy.units.Quantity`
@@ -162,6 +162,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     """
     E_h = 1 * u.Ry
+
     degeneracy_factor = 1 / n_e * g_j / (4 * g_k * a0 ** 3)
     physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
     boltzmann_factor = exp(-E_jk / (k_B * T_e))
