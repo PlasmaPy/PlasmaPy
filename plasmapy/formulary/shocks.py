@@ -1,6 +1,6 @@
 """ This module gathers functions relating to shocks and the properties thereof.
 """
-__all__ = ["entropy_across_shock_polytropic"]
+__all__ = ["entropy_across_shock_polytropic", "ds_polytropic"]
 
 from astropy import units as u
 from plasmapy.utils.decorators import (
