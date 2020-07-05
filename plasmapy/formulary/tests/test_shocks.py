@@ -19,5 +19,5 @@ def test_entropy_across_shock_polytropic():
         entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
     ).unit == u.J / u.K
 
-    with pytest.raises(ValueError):
-        entropy_across_shock_polytropic(c_v, p_1, 0.25 * p_1, rho_1, rho_2, gamma)
+    with pytest.raises(Exception):
+        entropy_across_shock_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)

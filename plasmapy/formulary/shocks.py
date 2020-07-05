@@ -81,7 +81,11 @@ def entropy_across_shock_polytropic(
     density_ratio = rho_1 / rho_2
 
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
-    return ds
+
+    if ds < 0:
+        raise Exception("Entropy change cannot be negative")
+    else:
+        return ds
 
 
 ds_polytropic = entropy_across_shock_polytropic
