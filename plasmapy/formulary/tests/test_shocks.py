@@ -21,4 +21,3 @@ def test_entropy_across_shock_polytropic():
 
     with pytest.raises(ValueError):
         entropy_across_shock_polytropic(c_v, p_1, 0.25 * p_1, rho_1, rho_2, gamma)
-
