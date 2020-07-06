@@ -4,9 +4,12 @@ gases and warm dense matter.
 
 """
 __all__ = [
-    "deBroglie_wavelength", "lambdaDB",
-    "thermal_deBroglie_wavelength", "lambdaDBTh",
-    "Fermi_energy", "Efermi",
+    "deBroglie_wavelength",
+    "lambdaDB",
+    "thermal_deBroglie_wavelength",
+    "lambdaDBTh",
+    "Fermi_energy",
+    "Efermi",
     "Thomas_Fermi_length",
     "Wigner_Seitz_radius",
     "chemical_potential",

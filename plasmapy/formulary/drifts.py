@@ -2,8 +2,10 @@
 Formulas for calculating particle drifts.
 """
 __all__ = [
-    "ExB_drift", "veb",
-    "force_drift", "vfd",
+    "ExB_drift",
+    "veb",
+    "force_drift",
+    "vfd",
 ]
 
 import astropy.units as u

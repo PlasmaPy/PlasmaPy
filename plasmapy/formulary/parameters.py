@@ -3,24 +3,44 @@ This module gathers basic and general plasma parameters such as the
 plasma frequency or Debye length.
 """
 __all__ = [
-    "mass_density", "rho",
-    "Alfven_speed", "va",
-    "ion_sound_speed", "cs",
-    "thermal_speed", "vth",
-    "thermal_pressure", "pth",
-    "kappa_thermal_speed", "vth_kappa",
-    "Hall_parameter", "betaH",
-    "gyrofrequency", "oc", "wc",
-    "gyroradius", "rc", "rhoc",
-    "plasma_frequency", "wp",
-    "Debye_length", "lambdaD",
-    "Debye_number", "nD",
-    "inertial_length", "lp",
-    "magnetic_pressure", "pmag",
-    "magnetic_energy_density", "ub",
-    "upper_hybrid_frequency", "wuh",
-    "lower_hybrid_frequency", "wlh",
-    "Bohm_diffusion", "DB",
+    "mass_density",
+    "rho",
+    "Alfven_speed",
+    "va",
+    "ion_sound_speed",
+    "cs",
+    "thermal_speed",
+    "vth",
+    "thermal_pressure",
+    "pth",
+    "kappa_thermal_speed",
+    "vth_kappa",
+    "Hall_parameter",
+    "betaH",
+    "gyrofrequency",
+    "oc",
+    "wc",
+    "gyroradius",
+    "rc",
+    "rhoc",
+    "plasma_frequency",
+    "wp",
+    "Debye_length",
+    "lambdaD",
+    "Debye_number",
+    "nD",
+    "inertial_length",
+    "lp",
+    "magnetic_pressure",
+    "pmag",
+    "magnetic_energy_density",
+    "ub",
+    "upper_hybrid_frequency",
+    "wuh",
+    "lower_hybrid_frequency",
+    "wlh",
+    "Bohm_diffusion",
+    "DB",
 ]
 
 import numbers
@@ -925,7 +945,10 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     return omega_ci
 
 
-oc = wc = gyrofrequency
+oc = gyrofrequency
+""" Alias to :func:`gyrofrequency`. """
+
+wc = gyrofrequency
 """ Alias to :func:`gyrofrequency`. """
 
 
@@ -1084,6 +1107,9 @@ def gyroradius(
 
 
 rc = rhoc = gyroradius
+""" Alias to :func:`gyroradius`. """
+
+rhoc = gyroradius
 """ Alias to :func:`gyroradius`. """
 
 
