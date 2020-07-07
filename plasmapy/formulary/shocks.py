@@ -72,7 +72,7 @@ def entropy_across_shock_polytropic(
     >>> rho_1 = 2 * u.kg / u.m ** 3
     >>> rho_2 = 3 * u.kg / u.m ** 3
     >>> entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
-    <Quantity 0.260... J / K>
+    <Quantity 0.2605... J / K>
 
     """
     pressure_ratio = p_2 / p_1
