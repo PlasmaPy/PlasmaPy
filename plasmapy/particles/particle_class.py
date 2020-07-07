@@ -116,7 +116,6 @@ class ParticleJSONDecoder(json.JSONDecoder):
         }
         if "plasmapy_particle" in json_dict:
             try:
-                print(json_dict)
                 pardict = json_dict["plasmapy_particle"]
                 partype = pardict["type"]
                 args = pardict["__init__"]["args"]
