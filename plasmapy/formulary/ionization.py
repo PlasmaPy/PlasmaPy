@@ -64,11 +64,11 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     >>> T_e = 5000 * u.K
     >>> n = 1e19 * u.m ** -3
     >>> ionization_balance(n, T_e)
-    <Quantity 0.27478417>
+    <Quantity 0.274...>
     >>> T_e = 50 * u.eV
     >>> n = 1e10 * u.m ** -3
     >>> ionization_balance(n, T_e)
-    <Quantity 12.61576334>
+    <Quantity 12.615...>
 
     Returns
     -------
