@@ -1,6 +1,6 @@
 """ This module gathers functions relating to ionization states and the properties thereof.
 """
-__all__ = ["ionization_balance", "Z_bal", "Saha"]
+__all__ = ["ionization_balance", "Z_bal_", "Saha"]
 
 import astropy.units as u
 from plasmapy.utils.decorators import (
@@ -86,7 +86,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     return Z
 
 
-Z_bal = ionization_balance
+Z_bal_ = ionization_balance
 """alias for :func:`ionization_balance`"""
 
 
