@@ -11,14 +11,12 @@ from plasmapy.utils.decorators import (
 from astropy.constants import c, a0, k_B
 from numpy import pi, exp, sqrt, log
 
-validate_quantities(
+@validate_quantities(
     rho_1={"can_be_negative": False},
     rho_2={"can_be_negative": False},
     ds={"can_be_negative": False},
     c_v={"can_be_negative": False},
 )
-
-
 def entropy_across_shock_polytropic(
     c_v: u.J / u.K,
     p_1: u.Pa,
