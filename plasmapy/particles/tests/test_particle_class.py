@@ -1015,6 +1015,7 @@ custom_particles_from_json_tests = [
         "date_created": "...", "__init__": { \
             "args": [], \
             "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+        None,
     ),
     (
         DimensionlessParticle,
@@ -1024,6 +1025,7 @@ custom_particles_from_json_tests = [
         "date_created": "...", "__init__": { \
             "args": [], \
             "kwargs": {"mass": 5.2, "charge": NaN}}}}',
+        None,
     ),
     (
         CustomParticle,
@@ -1033,6 +1035,7 @@ custom_particles_from_json_tests = [
         "date_created": "...", "__init__": { \
             "args": [], \
             "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+        None,
     ),
     (
         CustomParticle,
@@ -1042,28 +1045,79 @@ custom_particles_from_json_tests = [
         "date_created": "...", "__init__": { \
             "args": [], \
             "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
+        None,
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        '{"plasmapy_particle": {"notatype": "DimensionlessParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+        InvalidElementError,
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg},
+        '{"plasmapy_particle": {"notatype": "CustomParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": { \
+            "args": [], \
+            "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
+        InvalidElementError,
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        '{"plasmapy_particle": {"type": "DimensionlessParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "fake__init__": { \
+            "args": [], \
+            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+        InvalidElementError,
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg},
+        '{"plasmapy_particle": {"type": "CustomParticle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "fake__init__": { \
+            "args": [], \
+            "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
+        InvalidElementError,
     ),
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, json_string", custom_particles_from_json_tests)
-def test_custom_particles_from_json(cls, kwargs, json_string):
+@pytest.mark.parametrize(
+    "cls, kwargs, json_string, expected_exception", custom_particles_from_json_tests
+)
+def test_custom_particles_from_json(cls, kwargs, json_string, expected_exception):
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
-    instance = cls(**kwargs)
-    instance_from_json = from_json(json_string)
-    assert u.isclose(
-        instance.mass, instance_from_json.mass, equal_nan=True
-    ), pytest.fail(
-        f"Expected a mass value of {instance.mass}\n"
-        f"Received a mass value of {instance_from_json.mass}"
-    )
-    assert u.isclose(
-        instance.charge, instance_from_json.charge, equal_nan=True
-    ), pytest.fail(
-        f"Expected a charge value of {instance.charge}\n"
-        f"Received a charge value of {instance_from_json.charge}"
-    )
+    if expected_exception is None:
+        instance = cls(**kwargs)
+        instance_from_json = from_json(json_string)
+        assert u.isclose(
+            instance.mass, instance_from_json.mass, equal_nan=True
+        ), pytest.fail(
+            f"Expected a mass value of {instance.mass}\n"
+            f"Received a mass value of {instance_from_json.mass}"
+        )
+        assert u.isclose(
+            instance.charge, instance_from_json.charge, equal_nan=True
+        ), pytest.fail(
+            f"Expected a charge value of {instance.charge}\n"
+            f"Received a charge value of {instance_from_json.charge}"
+        )
+    else:
+        with pytest.raises(expected_exception):
+            instance_from_json = from_json(json_string)
+            pytest.fail(
+                f"{cls.__name__} with ({json_string})"
+                f" did not raise: {expected_exception.__name__}."
+            )
 
 
 particles_from_json_tests = [
@@ -1073,6 +1127,7 @@ particles_from_json_tests = [
         '{"plasmapy_particle": {"type": "Particle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {"args": ["Pb"], "kwargs": {}}}}',
+        None,
     ),
     (
         Particle,
@@ -1080,20 +1135,47 @@ particles_from_json_tests = [
         '{"plasmapy_particle": {"type": "Particle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {"args": ["e-"], "kwargs": {}}}}',
+        None,
+    ),
+    (
+        Particle,
+        {"argument": "e-"},
+        '{"plasmapy_particle": {"notatype": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "__init__": {"args": ["e-"], "kwargs": {}}}}',
+        InvalidElementError,
+    ),
+    (
+        Particle,
+        {"argument": "e-"},
+        '{"plasmapy_particle": {"type": "Particle", \
+        "module": "plasmapy.particles.particle_class", \
+        "date_created": "...", "fake__init__": {"args": ["e-"], "kwargs": {}}}}',
+        InvalidElementError,
     ),
 ]
 
 
-@pytest.mark.parametrize("cls, kwargs, json_string", particles_from_json_tests)
-def test_particles_from_json(cls, kwargs, json_string):
+@pytest.mark.parametrize(
+    "cls, kwargs, json_string, expected_exception", particles_from_json_tests
+)
+def test_particles_from_json(cls, kwargs, json_string, expected_exception):
     """Test the attributes of Particle objects created from JSON representation."""
-    instance = cls(**kwargs)
-    instance_from_json = from_json(json_string)
-    expected_particle = instance.particle
-    actual_particle = instance_from_json.particle
-    assert expected_particle == actual_particle, pytest.fail(
-        f"Expected {expected_particle}\n" f"Got {actual_particle}"
-    )
+    if expected_exception is None:
+        instance = cls(**kwargs)
+        instance_from_json = from_json(json_string)
+        expected_particle = instance.particle
+        actual_particle = instance_from_json.particle
+        assert expected_particle == actual_particle, pytest.fail(
+            f"Expected {expected_particle}\n" f"Got {actual_particle}"
+        )
+    else:
+        with pytest.raises(expected_exception):
+            instance_from_json = from_json(json_string)
+            pytest.fail(
+                f"{cls.__name__} with ({json_string})"
+                f" did not raise: {expected_exception.__name__}."
+            )
 
 
 particle_json_repr_table = [
