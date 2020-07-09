@@ -5,11 +5,11 @@ gases and warm dense matter.
 """
 __all__ = [
     "deBroglie_wavelength",
-    "lambdaDB",
+    "lambdaDB_",
     "thermal_deBroglie_wavelength",
-    "lambdaDBTh",
+    "lambdaDB_th_",
     "Fermi_energy",
-    "Efermi",
+    "Ef_",
     "Thomas_Fermi_length",
     "Wigner_Seitz_radius",
     "chemical_potential",
@@ -33,6 +33,8 @@ from plasmapy.utils.decorators import validate_quantities
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
+
+    **Aliases:** `lambdaDB_`
 
     Parameters
     ----------
@@ -131,7 +133,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     return lambda_dBr
 
 
-lambdaDB = deBroglie_wavelength
+lambdaDB_ = deBroglie_wavelength
 """ Alias to :func:`deBroglie_wavelength`. """
 
 
@@ -142,6 +144,8 @@ lambdaDB = deBroglie_wavelength
 def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
+
+    **Aliases:** `lambdaDB_th_`
 
     Parameters
     ----------
@@ -188,8 +192,8 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     return lambda_dbTh
 
 
-lambdaDBTh = thermal_deBroglie_wavelength
-""" Alias to :func:`lambdaDBTh`. """
+lambdaDB_th_ = thermal_deBroglie_wavelength
+""" Alias to :func:`thermal_deBroglie_wavelength`. """
 
 
 @validate_quantities(
@@ -198,6 +202,8 @@ lambdaDBTh = thermal_deBroglie_wavelength
 def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
+
+    **Aliases:** `Ef_`
 
     Parameters
     ----------
@@ -253,7 +259,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     return energy_F
 
 
-Efermi = Fermi_energy
+Ef_ = Fermi_energy
 """ Alias to :func:`Fermi_energy`. """
 
 

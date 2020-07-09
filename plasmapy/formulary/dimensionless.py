@@ -12,9 +12,9 @@ __all__ = [
     "beta",
     "quantum_theta",
     "Reynolds_number",
-    "Re",
+    "Re_",
     "Mag_Reynolds",
-    "Rm",
+    "Rm_",
 ]
 
 from astropy import constants
@@ -116,6 +116,8 @@ def Reynolds_number(
 
         Re = \frac{\rho U L }{\mu}
 
+    **Aliases:** `Re_`
+
     Parameters
     ----------
     rho : `~astropy.units.Quantity`
@@ -170,7 +172,7 @@ def Reynolds_number(
     return Re
 
 
-Re = Reynolds_number
+Re_ = Reynolds_number
 """ Alias to :func:`Reynolds_number`. """
 
 
@@ -187,6 +189,8 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     where :math:`\eta = \frac{1}{\mu_0 \sigma}`
     and :math:`\mu_0` is the permeability of free space.
+
+    **Aliases:** `Rm_`
 
     Parameters
     ----------
@@ -238,5 +242,5 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     return Rm
 
 
-Rm = Mag_Reynolds
+Rm_ = Mag_Reynolds
 """ Alias to :func:`Mag_Reynolds`. """
