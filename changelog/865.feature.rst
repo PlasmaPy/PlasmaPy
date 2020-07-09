@@ -1,0 +1,26 @@
+.. Added aliases (with trailing underscores) for parameters in formulary::
+    * (formulary/dimensionless.py)  | Re_           -> Reynolds_number
+    * (formulary/dimensionless.py)  | Rm_           -> Mag_Reynolds
+    * (formulary/drifts.py)         | veb_          -> ExB_drift
+    * (formulary/drifts.py)         | vfd_          -> force_drift
+    * (formulary/parameters.py)     | rho_          -> mass_density
+    * (formulary/parameters.py)     | va_           -> Alfven_speed
+    * (formulary/parameters.py)     | cs_           -> ion_sound_speed
+    * (formulary/parameters.py)     | vth_          -> thermal_speed
+    * (formulary/parameters.py)     | pth_          -> thermal_pressure
+    * (formulary/parameters.py)     | vth_kappa_    -> kappa_thermal_speed
+    * (formulary/parameters.py)     | betaH_        -> Hall_parameter
+    * (formulary/parameters.py)     | oc_, wc_      -> gyrofrequency
+    * (formulary/parameters.py)     | rc_, rhoc_    -> gyroradius
+    * (formulary/parameters.py)     | wp_           -> plasma_frequency
+    * (formulary/parameters.py)     | lambdaD_      -> Debye_length
+    * (formulary/parameters.py)     | nD_           -> Debye_number
+    * (formulary/parameters.py)     | lp_           -> inertial_length
+    * (formulary/parameters.py)     | pmag_         -> magnetic_pressure
+    * (formulary/parameters.py)     | ub_           -> magnetic_energy_density
+    * (formulary/parameters.py)     | wuh_          -> upper_hybrid_frequency
+    * (formulary/parameters.py)     | wlh_          -> lower_hybrid_frequency
+    * (formulary/parameters.py)     | DB_           -> Bohm_diffusion
+    * (formulary/quantum.py)        | lambdaDB_     -> deBroglie_wavelength
+    * (formulary/quantum.py)        | lambdaDB_th_  -> thermal_deBroglie_wavelength
+    * (formulary/quantum.py)        | Ef_           -> Fermi_energy
