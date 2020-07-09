@@ -190,7 +190,7 @@ class AbstractParticle(ABC):
         """
         raise AtomicError("The truth value of a particle is not defined.")
 
-    def to_json(self) -> str:
+    def json_dumps(self) -> str:
         """
         Return a JSON string representation of the minimum description of a particle.
         """
