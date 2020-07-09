@@ -108,6 +108,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     :math:`a_0` is the Bohr radius,
     :math:`E_H` is the ionization energy of Hydrogen,
     :math:`N_j` and :math:`N_k` are the population of ions in the j and k states respectively.
+    This function is equivalent to Eq. 3.47 in `Drake`_.
 
     Parameters
     ----------
@@ -160,6 +161,13 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 1114595.586...>
 
+    Notes
+    -----
+    For reference to this function and for more information regarding the Saha equation,
+    see chapter 3 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
+    Inertial Fusion and Experimental Astrophysics"
+
+    .. _`Drake`: https://www.springer.com/gp/book/9783319677101
     """
     E_h = 1 * u.Ry
 
