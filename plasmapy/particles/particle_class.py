@@ -178,7 +178,7 @@ class AbstractParticle(ABC):
                 "type": type(self).__name__,
                 "module": self.__module__,
                 "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
-                "__init__": {"args": (), "kwargs": {},},
+                "__init__": {"args": (), "kwargs": {}},
             }
         }
         return json_dictionary
