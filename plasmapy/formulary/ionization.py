@@ -87,7 +87,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
 
 Z_bal_ = ionization_balance
-"""alias for :func:`ionization_balance`"""
+"""Alias for :func:`ionization_balance`."""
 
 
 @validate_quantities(
