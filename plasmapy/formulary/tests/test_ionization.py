@@ -10,7 +10,9 @@ def test_ionization_balance():
     n = 1e19 * u.m ** -3
     T_e = 5000 * u.K
 
-    assert (ionization_balance(n, T_e) * u.dimensionless_unscaled).unit == u.dimensionless_unscaled
+    assert (
+        ionization_balance(n, T_e) * u.dimensionless_unscaled
+    ).unit == u.dimensionless_unscaled
 
     with pytest.warns(u.UnitsWarning):
         ionization_balance(1e19, T_e)
