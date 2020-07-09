@@ -2,7 +2,13 @@
 The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
-__all__ = ["from_json"]
+__all__ = [
+    "from_json",
+    "AbstractParticle",
+    "CustomParticle",
+    "DimensionlessParticle",
+    "Particle",
+]
 
 import json
 
