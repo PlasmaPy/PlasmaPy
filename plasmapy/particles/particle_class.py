@@ -1,6 +1,12 @@
 """The Particle class."""
 
-__all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
+__all__ = [
+    "AbstractParticle",
+    "CustomParticle",
+    "DimensionlessParticle", 
+    "Particle",
+    "ParticleJSONDecoder",
+]
 
 import astropy.constants as const
 import astropy.units as u
