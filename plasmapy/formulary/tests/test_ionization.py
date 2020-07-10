@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from astropy.constants import c
 
-from plasmapy.formulary.ionization import Saha, ionization_balance
+from plasmapy.formulary.ionization import Saha, ionization_balance, Z_bal_
 
 
 def test_ionization_balance():
