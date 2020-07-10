@@ -12,7 +12,7 @@ def test_ionization_balance():
     val = ionization_balance(n, T_e)
     assert val.unit == u.dimensionless_unscaled
     assert np.isclose(val.value, 0.27478417234035346)
-    
+
     # aliases must be the same function
     assert Z_bal_ is ionization_balance
 
