@@ -37,6 +37,8 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     Where :math:`k_B` is the Boltzmann constant,
     :math:`a_0` is the Bohr radius, and
     :math:`E_H` is the ionization energy of Hydrogen
+    
+    **Aliases:** `Z_bal_`
 
     Parameters
     ----------
