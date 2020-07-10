@@ -8,7 +8,7 @@ from plasmapy.utils.decorators import (
     check_relativistic,
     validate_quantities,
 )
-from astropy.constants import c, a0, k_B
+from astropy.constants import a0, k_B
 from numpy import pi, exp, sqrt, log
 
 
