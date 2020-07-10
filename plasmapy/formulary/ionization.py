@@ -3,13 +3,15 @@
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 
 import astropy.units as u
+
+from astropy.constants import a0, k_B
+from numpy import pi, exp, sqrt, log
+
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
 )
-from astropy.constants import a0, k_B
-from numpy import pi, exp, sqrt, log
 
 
 @validate_quantities(
