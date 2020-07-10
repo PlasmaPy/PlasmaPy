@@ -165,7 +165,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     -----
     For reference to this function and for more information regarding the Saha equation,
     see chapter 3 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
-    Inertial Fusion and Experimental Astrophysics"
+    Inertial Fusion and Experimental Astrophysics (`DOI: 10.1007/978-3-319-67711-8_3`_)."
 
     .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
     .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
