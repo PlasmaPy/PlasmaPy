@@ -1,15 +1,16 @@
 """ This module gathers functions relating to ionization states and the properties thereof.
 """
-__all__ = ["ionization_balance", "Z_bal"]
+__all__ = ["ionization_balance", "Saha", "Z_bal_"]
 
-from astropy import units as u
+import astropy.units as u
+
+from astropy.constants import a0, k_B
+from numpy import pi, exp, sqrt, log
+
 from plasmapy.utils.decorators import (
-    angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
 )
-from astropy.constants import c, a0, k_B
-from numpy import pi, exp, sqrt, log
 
 
 @validate_quantities(
@@ -36,6 +37,8 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     :math:`a_0` is the Bohr radius, and
     :math:`E_H` is the ionization energy of Hydrogen
 
+    **Aliases:** `Z_bal_`
+
     Parameters
     ----------
     T_e : `~astropy.units.Quantity`
@@ -46,7 +49,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
@@ -64,11 +67,11 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     >>> T_e = 5000 * u.K
     >>> n = 1e19 * u.m ** -3
     >>> ionization_balance(n, T_e)
-    <Quantity 0.27478417>
+    <Quantity 0.274...>
     >>> T_e = 50 * u.eV
     >>> n = 1e10 * u.m ** -3
     >>> ionization_balance(n, T_e)
-    <Quantity 12.61576334>
+    <Quantity 12.615...>
 
     Returns
     -------
@@ -86,5 +89,96 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     return Z
 
 
-Z_bal = ionization_balance
-"""alias for :func:`ionization_balance`"""
+Z_bal_ = ionization_balance
+"""Alias for :func:`ionization_balance`."""
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+)
+def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
+    r"""
+    The Saha equation, derived in statistical mechanics, gives an approximation of
+    the ratio of population of ions in two different ionization states in a plasma.
+    This approximation applies to plasmas in thermodynamic equilibrium where ionization
+    and recombination of ions with electrons are balanced.
+
+    .. math::
+        \frac{N_j}{N_k} = \frac{1}{n_e} \frac{g_j}{4 g_k a_0^{3}} \left( \frac{k_B T_e}{\pi E_H} \right)^{\frac{3}{2}}
+         \exp\left( \frac{-E_{jk}}{k_B T_e} \right)
+
+    Where :math:`k_B` is the Boltzmann constant,
+    :math:`a_0` is the Bohr radius,
+    :math:`E_H` is the ionization energy of Hydrogen,
+    :math:`N_j` and :math:`N_k` are the population of ions in the j and k states respectively.
+    This function is equivalent to Eq. 3.47 in `Drake`_.
+
+    Parameters
+    ----------
+    T_e : `~astropy.units.Quantity`
+        The electron temperature.
+
+    g_j : `int`
+        The degeneracy of the 'j'th ionization state.
+
+    g_k : `int`
+        The degeneracy of the 'k'th ionization state.
+
+    E_jk : `~astropy.units.Quantity`
+        The energy difference between ionization states j and k.
+
+    n_e : `~astropy.units.Quantity`
+        The electron number density of the plasma.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T_e`, `E_jk`, or `n_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e`, `E_jk`, or `n` not in appropriate units.
+
+    Returns
+    -------
+    ratio: `~astropy.units.Quantity`
+        The ratio of population of ions in ionization state j to state k.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> g_j = 2
+    >>> g_k = 2
+    >>> E_jk = 1 * u.Ry
+    >>> Saha(g_j, g_k, n, E_jk, T_e)
+    <Quantity 3.299...e-06>
+    >>> T_e = 1 * u.Ry
+    >>> n = 1e23 * u.m ** -3
+    >>> Saha(g_j, g_k, n, E_jk, T_e)
+    <Quantity 1114595.586...>
+
+    Notes
+    -----
+    For reference to this function and for more information regarding the Saha equation,
+    see chapter 3 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
+    Inertial Fusion and Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
+
+    .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
+    .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
+    """
+    E_h = 1 * u.Ry
+
+    degeneracy_factor = (1 / n_e) * g_j / (4 * g_k * a0 ** 3)
+    physical_constants = (k_B * T_e / (pi * E_h)) ** (3 / 2)
+    boltzmann_factor = exp(-E_jk / (k_B * T_e))
+
+    ratio = degeneracy_factor * physical_constants * boltzmann_factor
+
+    return ratio
