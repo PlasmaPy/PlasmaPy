@@ -8,7 +8,6 @@ from astropy.constants import a0, k_B
 from numpy import pi, exp, sqrt, log
 
 from plasmapy.utils.decorators import (
-    angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
 )
