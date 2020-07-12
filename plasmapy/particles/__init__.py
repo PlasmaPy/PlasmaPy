@@ -3,7 +3,8 @@ The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
 __all__ = [
-    "from_json",
+    "json_load_particle",
+    "json_loads_particle",
     "AbstractParticle",
     "CustomParticle",
     "DimensionlessParticle",
@@ -58,8 +59,24 @@ triton = Particle("T 1+")
 alpha = Particle("He-4 2+")
 
 
-def from_json(json_string):
+def json_load_particle(json_file_object):
     """
-    Returns the appropriate object from its JSON string representation
+    Returns the appropriate object from input JSON file object
+
+    :param json_file_object: file object of the JSON file that contains the JSON
+    string describing the particle
+    :type json_file_object: file object
+    """
+    json_string = None
+    json_string = json_file_object.read()
+    return json_loads_particle(json_string)
+
+
+def json_loads_particle(json_string):
+    """
+    Returns the appropriate object from input JSON string representation
+
+    :param json_string: JSON string that represents a particle
+    :type json_string: string
     """
     return json.loads(json_string, cls=ParticleJSONDecoder)
