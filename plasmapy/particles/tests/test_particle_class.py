@@ -1,9 +1,10 @@
 import collections
-import json
 import inspect
-
+import io
+import json
 import numpy as np
 import pytest
+
 from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
@@ -30,7 +31,7 @@ from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import call_string, roman
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
-from plasmapy.particles import from_json
+from plasmapy.particles import json_load_particle, json_loads_particle
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [
@@ -1093,12 +1094,14 @@ custom_particles_from_json_tests = [
 @pytest.mark.parametrize(
     "cls, kwargs, json_string, expected_exception", custom_particles_from_json_tests
 )
-def test_custom_particles_from_json(cls, kwargs, json_string, expected_exception):
+def test_custom_particles_from_json_string(
+    cls, kwargs, json_string, expected_exception
+):
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
         instance = cls(**kwargs)
-        instance_from_json = from_json(json_string)
+        instance_from_json = json_loads_particle(json_string)
         assert u.isclose(
             instance.mass, instance_from_json.mass, equal_nan=True
         ), pytest.fail(
@@ -1113,7 +1116,39 @@ def test_custom_particles_from_json(cls, kwargs, json_string, expected_exception
         )
     else:
         with pytest.raises(expected_exception):
-            instance_from_json = from_json(json_string)
+            instance_from_json = json_loads_particle(json_string)
+            pytest.fail(
+                f"{cls.__name__} with ({json_string})"
+                f" did not raise: {expected_exception.__name__}."
+            )
+
+
+@pytest.mark.parametrize(
+    "cls, kwargs, json_string, expected_exception", custom_particles_from_json_tests
+)
+def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exception):
+    """Test the attributes of dimensionless and custom particles generated from
+    JSON representation"""
+    if expected_exception is None:
+        instance = cls(**kwargs)
+        test_file_object = io.StringIO(json_string)
+        instance_from_json = json_load_particle(test_file_object)
+        assert u.isclose(
+            instance.mass, instance_from_json.mass, equal_nan=True
+        ), pytest.fail(
+            f"Expected a mass value of {instance.mass}\n"
+            f"Received a mass value of {instance_from_json.mass}"
+        )
+        assert u.isclose(
+            instance.charge, instance_from_json.charge, equal_nan=True
+        ), pytest.fail(
+            f"Expected a charge value of {instance.charge}\n"
+            f"Received a charge value of {instance_from_json.charge}"
+        )
+    else:
+        with pytest.raises(expected_exception):
+            test_file_object = io.StringIO(json_string)
+            instance_from_json = json_load_particle(test_file_object)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
                 f" did not raise: {expected_exception.__name__}."
@@ -1159,11 +1194,11 @@ particles_from_json_tests = [
 @pytest.mark.parametrize(
     "cls, kwargs, json_string, expected_exception", particles_from_json_tests
 )
-def test_particles_from_json(cls, kwargs, json_string, expected_exception):
+def test_particles_from_json_string(cls, kwargs, json_string, expected_exception):
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
         instance = cls(**kwargs)
-        instance_from_json = from_json(json_string)
+        instance_from_json = json_loads_particle(json_string)
         expected_particle = instance.particle
         actual_particle = instance_from_json.particle
         assert expected_particle == actual_particle, pytest.fail(
@@ -1171,7 +1206,32 @@ def test_particles_from_json(cls, kwargs, json_string, expected_exception):
         )
     else:
         with pytest.raises(expected_exception):
-            instance_from_json = from_json(json_string)
+            instance_from_json = json_loads_particle(json_string)
+            pytest.fail(
+                f"{cls.__name__} with ({json_string})"
+                f" did not raise: {expected_exception.__name__}."
+            )
+
+
+@pytest.mark.parametrize(
+    "cls, kwargs, json_string, expected_exception", particles_from_json_tests
+)
+def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
+    """Test the attributes of Particle objects created from JSON representation."""
+    if expected_exception is None:
+        instance = cls(**kwargs)
+        test_file_object = io.StringIO(json_string)
+        test_file_object.seek(0, io.SEEK_SET)
+        instance_from_json = json_load_particle(test_file_object)
+        expected_particle = instance.particle
+        actual_particle = instance_from_json.particle
+        assert expected_particle == actual_particle, pytest.fail(
+            f"Expected {expected_particle}\n" f"Got {actual_particle}"
+        )
+    else:
+        with pytest.raises(expected_exception):
+            test_file_object = io.StringIO(json_string)
+            instance_from_json = json_load_particle(test_file_object)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
                 f" did not raise: {expected_exception.__name__}."
@@ -1216,10 +1276,34 @@ particle_json_repr_table = [
 
 
 @pytest.mark.parametrize("cls, kwargs, expected_repr", particle_json_repr_table)
-def test_particle_json_repr(cls, kwargs, expected_repr):
+def test_particle_to_json_string(cls, kwargs, expected_repr):
     """Test the JSON representations of normal, dimensionless and custom particles."""
     instance = cls(**kwargs)
-    json_repr = instance.to_json()
+    json_repr = instance.json_dumps()
+    test_dict = json.loads(json_repr)["plasmapy_particle"]
+    expected_repr = json.loads(expected_repr)["plasmapy_particle"]
+    assert test_dict["type"] == expected_repr["type"], pytest.fail(
+        f"Problem with JSON representation of {cls.__name__} "
+        f"with kwargs = {kwargs}.\n\n"
+        f"expected type = {expected_repr['type']}\n\n"
+        f"got type: {test_dict['type']}"
+    )
+    assert expected_repr["__init__"] == test_dict["__init__"], pytest.fail(
+        f"Problem with JSON representation of {cls.__name__} "
+        f"with kwargs = {kwargs}.\n\n"
+        f"expected_repr = {expected_repr['__init__']}.\n\n"
+        f"json_repr: {test_dict['__init__']}"
+    )
+
+
+@pytest.mark.parametrize("cls, kwargs, expected_repr", particle_json_repr_table)
+def test_particle_to_json_file(cls, kwargs, expected_repr):
+    """Test the JSON representations of normal, dimensionless and custom particles."""
+    instance = cls(**kwargs)
+    test_file_object = io.StringIO("")
+    instance.json_dump(test_file_object)
+    test_file_object.seek(0, io.SEEK_SET)
+    json_repr = test_file_object.read()
     test_dict = json.loads(json_repr)["plasmapy_particle"]
     expected_repr = json.loads(expected_repr)["plasmapy_particle"]
     assert test_dict["type"] == expected_repr["type"], pytest.fail(
