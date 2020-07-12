@@ -10,10 +10,10 @@ numbers.
 """
 __all__ = [
     "beta",
-    "quantum_theta",
-    "Reynolds_number",
-    "Re_",
     "Mag_Reynolds",
+    "quantum_theta",
+    "Re_",
+    "Reynolds_number",
     "Rm_",
 ]
 

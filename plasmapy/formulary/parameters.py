@@ -3,44 +3,44 @@ This module gathers basic and general plasma parameters such as the
 plasma frequency or Debye length.
 """
 __all__ = [
-    "mass_density",
-    "rho_",
     "Alfven_speed",
-    "va_",
-    "ion_sound_speed",
-    "cs_",
-    "thermal_speed",
-    "vth_",
-    "thermal_pressure",
-    "pth_",
-    "kappa_thermal_speed",
-    "vth_kappa_",
-    "Hall_parameter",
+    "Bohm_diffusion",
     "betaH_",
-    "gyrofrequency",
-    "oc_",
-    "wc_",
-    "gyroradius",
-    "rc_",
-    "rhoc_",
-    "plasma_frequency",
-    "wp_",
+    "cs_",
+    "cwp_",
+    "DB_",
     "Debye_length",
-    "lambdaD_",
     "Debye_number",
-    "nD_",
+    "gyrofrequency",
+    "gyroradius",
+    "Hall_parameter",
     "inertial_length",
-    "lp_",
-    "magnetic_pressure",
-    "pmag_",
+    "ion_sound_speed",
+    "kappa_thermal_speed",
+    "lambdaD_",
+    "lower_hybrid_frequency",
     "magnetic_energy_density",
+    "magnetic_pressure",
+    "mass_density",
+    "nD_",
+    "oc_",
+    "plasma_frequency",
+    "pmag_",
+    "pth_",
+    "rc_",
+    "rho_",
+    "rhoc_",
+    "thermal_pressure",
+    "thermal_speed",
     "ub_",
     "upper_hybrid_frequency",
-    "wuh_",
-    "lower_hybrid_frequency",
+    "va_",
+    "vth_",
+    "vth_kappa_",
+    "wc_",
+    "wp_",
     "wlh_",
-    "Bohm_diffusion",
-    "DB_",
+    "wuh_",
 ]
 
 import numbers
@@ -1397,7 +1397,7 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
-    **Aliases:** `lp_`
+    **Aliases:** `cwp_`
 
     Parameters
     ----------
@@ -1456,7 +1456,7 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     return c / omega_p
 
 
-lp_ = inertial_length
+cwp_ = inertial_length
 """ Alias to :func:`inertial_Length`. """
 
 

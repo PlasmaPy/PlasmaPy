@@ -3,8 +3,8 @@ Formulas for calculating particle drifts.
 """
 __all__ = [
     "ExB_drift",
-    "veb_",
     "force_drift",
+    "veb_",
     "vfd_",
 ]
 

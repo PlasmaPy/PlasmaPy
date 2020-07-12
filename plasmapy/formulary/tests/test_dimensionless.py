@@ -8,6 +8,8 @@ from plasmapy.formulary.dimensionless import (
     Reynolds_number,
     beta,
     quantum_theta,
+    Re_,
+    Rm_,
 )
 from plasmapy.utils import RelativityError
 
@@ -70,3 +72,10 @@ def test_Mag_Reynolds():
 
     with pytest.raises(u.UnitTypeError):
         Mag_Reynolds(2.2 * u.kg, L, sigma)
+
+
+def test_dimensionless_aliases():
+    r"""Test all aliases defined in dimensionless.py"""
+
+    assert Re_ is Reynolds_number
+    assert Rm_ is Mag_Reynolds
