@@ -210,8 +210,9 @@ class AbstractParticle(ABC):
         Provides the standard format for JSON representation of particles which
         inherit from AbstractParticle.
 
-        Keys
-        ----
+        Notes
+        -----
+        Structure of JSON
         plasmapy_particle : Specifies that this JSON is for some particle
             type : The type of the particle (e.g Particle or CustomParticle)
             module : Specifies the module where the class was declared
