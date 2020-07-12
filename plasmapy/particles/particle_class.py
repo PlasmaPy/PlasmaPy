@@ -212,14 +212,14 @@ class AbstractParticle(ABC):
 
         Notes
         -----
-        Structure of JSON
+        JSON keys
         plasmapy_particle : Specifies that this JSON is for some particle
-            type : The type of the particle (e.g Particle or CustomParticle)
-            module : Specifies the module where the class was declared
-            date_created : Presents the UTC date and time of serialization
-            __init__ : contains a dictionary of the arguments used to create the particle
-                args : non keyword arguments used to create a particle
-                kwargs : keyword arguments used to create a particle
+        type : The type of the particle (e.g Particle or CustomParticle)
+        module : Specifies the module where the class was declared
+        date_created : Presents the UTC date and time of serialization
+        __init__ : contains a dictionary of the arguments used to create the particle
+        args : non keyword arguments used to create a particle
+        kwargs : keyword arguments used to create a particle
         """
         json_dictionary = {
             "plasmapy_particle": {
