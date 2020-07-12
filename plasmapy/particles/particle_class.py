@@ -38,13 +38,13 @@ from plasmapy.particles.parsing import (
     _invalid_particle_errmsg,
     _parse_and_check_atomic_input,
 )
-from plasmapy.utils import roman
 from plasmapy.particles.special_particles import (
     ParticleZoo,
     _antiparticles,
     _Particles,
     _special_ion_masses,
 )
+from plasmapy.utils import roman
 
 _classification_categories = {
     "lepton",
@@ -105,6 +105,14 @@ def _category_errmsg(particle, category: str) -> str:
 
 
 class ParticleJSONDecoder(json.JSONDecoder):
+    """
+    A custom `JSONDecoder` class to deserialize particles.
+    Inherits from `json.JSONDecoder`. Refer to documentation at:
+    https://docs.python.org/3/library/json.html#json.JSONDecoder
+
+
+    """
+
     def __init__(
         self,
         *,
@@ -179,14 +187,15 @@ class AbstractParticle(ABC):
         Provides the standard format for JSON representation of particles which
         inherit from AbstractParticle.
 
-        Keys:
-            plasmapy_particle - Specifies that this JSON is for some particle
-                type - The type of the particle (e.g Particle or CustomParticle)
-                module - Specifies the module where the class was declared
-                date_created - Presents the UTC date and time of serialization
-                __init__ - contains a dictionary of the arguments used to create the particle
-                    args - non keyword arguments used to create a particle
-                    kwargs - keyword arguments used to create a particle
+        Keys
+        ----
+        plasmapy_particle : Specifies that this JSON is for some particle
+            type : The type of the particle (e.g Particle or CustomParticle)
+            module : Specifies the module where the class was declared
+            date_created : Presents the UTC date and time of serialization
+            __init__ : contains a dictionary of the arguments used to create the particle
+                args : non keyword arguments used to create a particle
+                kwargs : keyword arguments used to create a particle
         """
         json_dictionary = {
             "plasmapy_particle": {
@@ -204,6 +213,16 @@ class AbstractParticle(ABC):
         do not have a truth value.
         """
         raise AtomicError("The truth value of a particle is not defined.")
+
+    def json_dump(self, dest_file_object):
+        """
+        Writes a particle's JSON representation to the given file object
+
+        :param dest_file_object: destination file object to which the
+        particle's JSON representation will be written
+        :type dest_file_object: file object
+        """
+        return json.dump(self.json_dict, dest_file_object)
 
     def json_dumps(self) -> str:
         """
