@@ -63,9 +63,11 @@ def json_load_particle(json_file_object):
     """
     Returns the appropriate object from input JSON file object
 
-    :param json_file_object: file object of the JSON file that contains the JSON
-    string describing the particle
-    :type json_file_object: file object
+    Parameters
+    ----------
+    json_file_object: file object
+        file object of the JSON file that contains the JSON string describing 
+        the particle
     """
     json_string = None
     json_string = json_file_object.read()
@@ -76,7 +78,9 @@ def json_loads_particle(json_string):
     """
     Returns the appropriate object from input JSON string representation
 
-    :param json_string: JSON string that represents a particle
-    :type json_string: string
+    Parameters
+    ----------
+    json_string: string
+        JSON string that represents a particle
     """
     return json.loads(json_string, cls=ParticleJSONDecoder)
