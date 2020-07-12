@@ -66,7 +66,7 @@ def json_load_particle(json_file_object):
     Parameters
     ----------
     json_file_object: file object
-        file object of the JSON file that contains the JSON string describing 
+        file object of the JSON file that contains the JSON string describing
         the particle
     """
     json_string = None
