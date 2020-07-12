@@ -110,7 +110,18 @@ class ParticleJSONDecoder(json.JSONDecoder):
     Inherits from `json.JSONDecoder`. Refer to documentation at:
     https://docs.python.org/3/library/json.html#json.JSONDecoder
 
+    :param object_hook: operation to be performed to deserialize the
+    JSON string to a `dict`. The ParticleJSONDecoder uses a custom hook
+    called `particle_hook` to deserialize particle JSON strings.
 
+    :param parse_float: Specifies how to handle floating point numbers
+    in a JSON string. Refer to documentation link above for more details.
+    :param parse_int: Specifies how to handle integer numbers.
+    Refer to documentation link above for more details.
+    :param parse_constant: Specifies how to handle constants.
+    Refer to documentation link above for more details.
+    :param strict: Refer to documentation link above for details.
+    :param object_pairs_hook: Refer to documentation link above for details.
     """
 
     def __init__(
