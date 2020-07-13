@@ -43,13 +43,16 @@ For a general overview of how unit-based input works, take a look at the
 following example:
 
 
+Examples
+========
+
 .. nbgallery::
-    :caption: Examples
 
     /notebooks/physics
 
 Notes for developers
 ====================
+
 Values should be returned as an Astropy Quantity in SI units.
 
 If a quantity has several names, then the function name should be the
