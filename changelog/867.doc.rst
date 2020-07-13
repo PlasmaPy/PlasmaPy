@@ -1,0 +1,2 @@
+Improve readability of the `plasmapy.formulary` page by replacing the `toctree`
+list with a cleaner reST table.
