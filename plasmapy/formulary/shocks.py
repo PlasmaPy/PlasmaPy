@@ -5,9 +5,7 @@ __all__ = ["entropy_across_shock_polytropic", "ds_"]
 import numpy as np
 from _pytest import warnings
 from astropy import units as u
-from plasmapy.utils.exceptions import (
-    PhysicsWarning,
-)
+from plasmapy.utils.exceptions import PhysicsWarning
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
