@@ -1,4 +1,4 @@
-.. Added aliases (with trailing underscores) for parameters in formulary::
+Added aliases (with trailing underscores) for parameters in the formulary:
     * `plasmapy.formulary.dimensionless.Reynolds_number` -> `~plasmapy.formulary.dimensionless.Re_`
     * `plasmapy.formulary.dimensionless.Mag_Reynolds` -> `~plasmapy.formulary.dimensionless.Rm_`
     * `plasmapy.formulary.drifts.ExB_drift` -> `~plasmapy.formulary.drifts.veb_`

@@ -1458,7 +1458,7 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to :func:`inertial_Length`.
+Alias to :func:`inertial_length`.
 
 * Name is shorthand for :math:`c / \\omega_p`.
 """
