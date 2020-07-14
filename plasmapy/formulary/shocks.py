@@ -84,7 +84,9 @@ def entropy_across_shock_polytropic(
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
 
     if ds < 0:
-        warnings.warn("Entropy change cannot be negative, perhaps regions 1 and 2 are switched", PhysicsWarning)
+        warnings.warn(
+            "Entropy change cannot be negative, perhaps regions 1 and 2 are switched", PhysicsWarning
+        )
         return nan
 
     elif isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
