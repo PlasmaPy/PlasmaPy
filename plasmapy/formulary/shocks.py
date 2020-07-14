@@ -2,7 +2,7 @@
 """
 __all__ = ["entropy_across_shock_polytropic", "ds_"]
 
-import numpy as np
+
 from _pytest import warnings
 from astropy import units as u
 from plasmapy.utils.exceptions import PhysicsWarning
@@ -12,7 +12,7 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from astropy.constants import c, a0, k_B
-from numpy import pi, exp, sqrt, log
+from numpy import pi, exp, sqrt, log, nan, isclose
 
 
 @validate_quantities(
@@ -85,13 +85,13 @@ def entropy_across_shock_polytropic(
 
     if ds < 0:
         warnings.warn("Entropy change cannot be negative", PhysicsWarning)
-        return np.nan
+        return nan
 
-    elif np.isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
+    elif isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
         warnings.warn(
             "Irreversible process, entropy change cannot be 0", PhysicsWarning
         )
-        return np.nan
+        return nan
 
     else:
         return ds
