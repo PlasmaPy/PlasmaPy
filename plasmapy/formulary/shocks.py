@@ -26,7 +26,7 @@ def entropy_across_shock_polytropic(
     p_2: u.Pa,
     rho_1: u.kg / u.m ** 3,
     rho_2: u.kg / u.m ** 3,
-    gamma = 5 / 3,
+    gamma=5/3,
 ) -> u.J / u.K:
     r"""
     Entropy is not conserved across a shock, since a shock is
@@ -88,7 +88,9 @@ def entropy_across_shock_polytropic(
         return np.nan
 
     elif np.isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
-        warnings.warn("Irreversible process, entropy change cannot be 0", PhysicsWarning)
+        warnings.warn(
+            "Irreversible process, entropy change cannot be 0", PhysicsWarning
+        )
         return np.nan
 
     else:
