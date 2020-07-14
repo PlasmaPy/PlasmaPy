@@ -2,7 +2,12 @@
 """
 __all__ = ["entropy_across_shock_polytropic", "ds_"]
 
+import numpy as np
+from _pytest import warnings
 from astropy import units as u
+from plasmapy.utils.exceptions import (
+    PhysicsWarning,
+)
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
@@ -18,12 +23,12 @@ from numpy import pi, exp, sqrt, log
     c_v={"can_be_negative": False},
 )
 def entropy_across_shock_polytropic(
-    c_v: u.J / u.K,
-    p_1: u.Pa,
-    p_2: u.Pa,
-    rho_1: u.kg / u.m ** 3,
-    rho_2: u.kg / u.m ** 3,
-    gamma,
+        c_v: u.J / u.K,
+        p_1: u.Pa,
+        p_2: u.Pa,
+        rho_1: u.kg / u.m ** 3,
+        rho_2: u.kg / u.m ** 3,
+        gamma,
 ) -> u.J / u.K:
     r"""
     Entropy is not conserved across a shock, since a shock is
@@ -81,7 +86,13 @@ def entropy_across_shock_polytropic(
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
 
     if ds < 0:
-        raise Exception("Entropy change cannot be negative")
+        warnings.warn("Entropy change cannot be negative", PhysicsWarning)
+        return np.nan
+
+    elif np.isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
+        warnings.warn("Irreversible process, entropy change cannot be 0", PhysicsWarning)
+        return np.nan
+
     else:
         return ds
 

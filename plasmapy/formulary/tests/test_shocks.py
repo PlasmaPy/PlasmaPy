@@ -4,6 +4,7 @@ import pytest
 from astropy.constants import c
 
 from plasmapy.formulary import entropy_across_shock_polytropic
+from plasmapy.utils import PhysicsWarning
 
 
 def test_entropy_across_shock_polytropic():
@@ -18,5 +19,5 @@ def test_entropy_across_shock_polytropic():
     assert val.unit == u.J / u.K
     assert np.isclose(val.value, 0.26058001)
 
-    with pytest.raises(Exception):
+    with pytest.warnings.warn(PhysicsWarning):
         entropy_across_shock_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
