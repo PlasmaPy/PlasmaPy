@@ -8,7 +8,14 @@ For example, plasmas at high (much larger than 1) Reynolds numbers are
 highly turbulent, while turbulence is negligible at low Reynolds
 numbers.
 """
-__all__ = ["beta", "quantum_theta", "Reynolds_number", "Mag_Reynolds"]
+__all__ = [
+    "beta",
+    "Mag_Reynolds",
+    "quantum_theta",
+    "Re_",
+    "Reynolds_number",
+    "Rm_",
+]
 
 from astropy import constants
 from astropy import units as u
@@ -109,6 +116,8 @@ def Reynolds_number(
 
         Re = \frac{\rho U L }{\mu}
 
+    **Aliases:** `Re_`
+
     Parameters
     ----------
     rho : `~astropy.units.Quantity`
@@ -163,6 +172,10 @@ def Reynolds_number(
     return Re
 
 
+Re_ = Reynolds_number
+""" Alias to :func:`Reynolds_number`. """
+
+
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     r"""
@@ -176,6 +189,8 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     where :math:`\eta = \frac{1}{\mu_0 \sigma}`
     and :math:`\mu_0` is the permeability of free space.
+
+    **Aliases:** `Rm_`
 
     Parameters
     ----------
@@ -225,3 +240,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     eta = 1 / (mu0 * sigma)
     Rm = abs(U * L / eta)
     return Rm
+
+
+Rm_ = Mag_Reynolds
+""" Alias to :func:`Mag_Reynolds`. """

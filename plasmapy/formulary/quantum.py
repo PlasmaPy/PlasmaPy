@@ -4,12 +4,15 @@ gases and warm dense matter.
 
 """
 __all__ = [
-    "deBroglie_wavelength",
-    "thermal_deBroglie_wavelength",
-    "Fermi_energy",
-    "Thomas_Fermi_length",
-    "Wigner_Seitz_radius",
     "chemical_potential",
+    "deBroglie_wavelength",
+    "Ef_",
+    "Fermi_energy",
+    "lambdaDB_",
+    "lambdaDB_th_",
+    "Thomas_Fermi_length",
+    "thermal_deBroglie_wavelength",
+    "Wigner_Seitz_radius",
 ]
 
 import numpy as np
@@ -30,6 +33,8 @@ from plasmapy.utils.decorators import validate_quantities
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
+
+    **Aliases:** `lambdaDB_`
 
     Parameters
     ----------
@@ -128,6 +133,10 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     return lambda_dBr
 
 
+lambdaDB_ = deBroglie_wavelength
+""" Alias to :func:`deBroglie_wavelength`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     validations_on_return={"can_be_negative": False},
@@ -135,6 +144,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal deBroglie wavelength for electrons.
+
+    **Aliases:** `lambdaDB_th_`
 
     Parameters
     ----------
@@ -181,12 +192,18 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     return lambda_dbTh
 
 
+lambdaDB_th_ = thermal_deBroglie_wavelength
+""" Alias to :func:`thermal_deBroglie_wavelength`. """
+
+
 @validate_quantities(
     n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
+
+    **Aliases:** `Ef_`
 
     Parameters
     ----------
@@ -240,6 +257,10 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     coeff = (np.pi * hbar) ** 2 / (2 * m_e)
     energy_F = coeff * (3 * n_e / np.pi) ** (2 / 3)
     return energy_F
+
+
+Ef_ = Fermi_energy
+""" Alias to :func:`Fermi_energy`. """
 
 
 @validate_quantities(

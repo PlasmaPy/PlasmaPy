@@ -3,24 +3,44 @@ This module gathers basic and general plasma parameters such as the
 plasma frequency or Debye length.
 """
 __all__ = [
-    "mass_density",
     "Alfven_speed",
-    "ion_sound_speed",
-    "thermal_speed",
-    "thermal_pressure",
-    "kappa_thermal_speed",
-    "Hall_parameter",
-    "gyrofrequency",
-    "gyroradius",
-    "plasma_frequency",
+    "Bohm_diffusion",
+    "betaH_",
+    "cs_",
+    "cwp_",
+    "DB_",
     "Debye_length",
     "Debye_number",
+    "gyrofrequency",
+    "gyroradius",
+    "Hall_parameter",
     "inertial_length",
-    "magnetic_pressure",
-    "magnetic_energy_density",
-    "upper_hybrid_frequency",
+    "ion_sound_speed",
+    "kappa_thermal_speed",
+    "lambdaD_",
     "lower_hybrid_frequency",
-    "Bohm_diffusion",
+    "magnetic_energy_density",
+    "magnetic_pressure",
+    "mass_density",
+    "nD_",
+    "oc_",
+    "plasma_frequency",
+    "pmag_",
+    "pth_",
+    "rc_",
+    "rho_",
+    "rhoc_",
+    "thermal_pressure",
+    "thermal_speed",
+    "ub_",
+    "upper_hybrid_frequency",
+    "va_",
+    "vth_",
+    "vth_kappa_",
+    "wc_",
+    "wp_",
+    "wlh_",
+    "wuh_",
 ]
 
 import numbers
@@ -80,6 +100,8 @@ def mass_density(
 ) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
 
+    **Aliases:** `rho_`
+
     Parameters
     ----------
     density : ~astropy.units.Quantity
@@ -132,6 +154,10 @@ def mass_density(
     return rho
 
 
+rho_ = mass_density
+""" Alias to :func:`mass_density`. """
+
+
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
@@ -139,6 +165,8 @@ def Alfven_speed(
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
+
+    **Aliases:** `va_`
 
     Parameters
     ----------
@@ -229,6 +257,10 @@ def Alfven_speed(
     return V_A
 
 
+va_ = Alfven_speed
+""" Alias to :func:`Alfven_speed`. """
+
+
 @check_relativistic
 @validate_quantities(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -248,6 +280,8 @@ def ion_sound_speed(
 ) -> u.m / u.s:
     r"""
     Return the ion sound speed for an electron-ion plasma.
+
+    **Aliases:** `cs_`
 
     Parameters
     ----------
@@ -412,6 +446,10 @@ def ion_sound_speed(
     return V_S
 
 
+cs_ = ion_sound_speed
+""" Alias to :func:`ion_sound_speed`. """
+
+
 # This dictionary defines coefficients for thermal speeds
 # calculated for different methods and values of ndim.
 # Created here to avoid re-instantiating on each call
@@ -438,6 +476,8 @@ def thermal_speed(
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
+
+    **Aliases:** `vth_`
 
     Parameters
     ----------
@@ -560,6 +600,10 @@ def thermal_speed(
     return np.sqrt(coef * k_B * T / m)
 
 
+vth_ = thermal_speed
+""" Alias to :func:`thermal_speed`. """
+
+
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
@@ -567,6 +611,8 @@ def thermal_speed(
 def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
+
+    **Aliases:** `pth_`
 
     Parameters
     ----------
@@ -609,6 +655,10 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     return n * k_B * T
 
 
+pth_ = thermal_pressure
+""" Alias to :func:`thermal_pressure`. """
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
@@ -618,6 +668,8 @@ def kappa_thermal_speed(
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
+
+    **Aliases:** `vth_kappa_`
 
     Parameters
     ----------
@@ -716,6 +768,10 @@ def kappa_thermal_speed(
     return vTh * coeff
 
 
+vth_kappa_ = kappa_thermal_speed
+""" Alias to :func:`kappa_thermal_speed`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -734,6 +790,8 @@ def Hall_parameter(
     particle-ion particle collision rate.
 
     All parameters apply to `particle`.
+
+    **Aliases:** `betaH_`
 
     Parameters
     ----------
@@ -789,6 +847,10 @@ def Hall_parameter(
     return gyro_frequency / coll_rate
 
 
+betaH_ = Hall_parameter
+""" Alias to :func:`Hall_parameter`. """
+
+
 @validate_quantities(
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
@@ -798,6 +860,8 @@ def Hall_parameter(
 @angular_freq_to_hz
 def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
+
+    **Aliases:** `oc_`, `wc_`
 
     Parameters
     ----------
@@ -897,6 +961,13 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     return omega_ci
 
 
+oc_ = gyrofrequency
+""" Alias to :func:`gyrofrequency`. """
+
+wc_ = gyrofrequency
+""" Alias to :func:`gyrofrequency`. """
+
+
 @validate_quantities(
     Vperp={"can_be_nan": True},
     T_i={"can_be_nan": True, "equivalencies": u.temperature_energy()},
@@ -910,6 +981,8 @@ def gyroradius(
     T_i: u.K = np.nan * u.K,
 ) -> u.m:
     r"""Return the particle gyroradius.
+
+    **Aliases:** `rc_`, `rhoc_`
 
     Parameters
     ----------
@@ -1051,6 +1124,13 @@ def gyroradius(
     return r_Li
 
 
+rc_ = gyroradius
+""" Alias to :func:`gyroradius`. """
+
+rhoc_ = gyroradius
+""" Alias to :func:`gyroradius`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={
@@ -1061,6 +1141,8 @@ def gyroradius(
 @angular_freq_to_hz
 def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
+
+    **Aliases:** `wp_`
 
     Parameters
     ----------
@@ -1155,6 +1237,10 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     return omega_p.si
 
 
+wp_ = plasma_frequency
+""" Alias to :func:`plasma_frequency`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
@@ -1162,6 +1248,8 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
 def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
+
+    **Aliases:** `lambdaD_`
 
     Parameters
     ----------
@@ -1223,6 +1311,10 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     return lambda_D
 
 
+lambdaD_ = Debye_length
+""" Alias to :func:`Debye_length`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
@@ -1230,6 +1322,8 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
+
+    **Aliases:** `nD_`
 
     Parameters
     ----------
@@ -1290,6 +1384,10 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     return N_D
 
 
+nD_ = Debye_number
+""" Alias to :func:`Debye_number`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
@@ -1298,6 +1396,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
+
+    **Aliases:** `cwp_`
 
     Parameters
     ----------
@@ -1356,10 +1456,20 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     return c / omega_p
 
 
+cwp_ = inertial_length
+"""
+Alias to :func:`inertial_length`.
+
+* Name is shorthand for :math:`c / \\omega_p`.
+"""
+
+
 @validate_quantities
 def magnetic_pressure(B: u.T) -> u.Pa:
     r"""
     Calculate the magnetic pressure.
+
+    **Aliases:** `pmag_`
 
     Parameters
     ----------
@@ -1415,10 +1525,16 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     return (B ** 2) / (2 * mu0)
 
 
+pmag_ = magnetic_pressure
+""" Alias to :func:`magnetic_pressure`. """
+
+
 @validate_quantities
 def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     r"""
     Calculate the magnetic energy density.
+
+    **Aliases:** `ub_`
 
     Parameters
     ----------
@@ -1474,6 +1590,10 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     return magnetic_pressure(B)
 
 
+ub_ = magnetic_energy_density
+""" Alias to :func:`magnetic_energy_density`. """
+
+
 @validate_quantities(
     n_e={"can_be_negative": False},
     validations_on_return={
@@ -1485,6 +1605,8 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
+
+    **Aliases:** `wuh_`
 
     Parameters
     ----------
@@ -1542,6 +1664,10 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     return omega_uh
 
 
+wuh_ = upper_hybrid_frequency
+""" Alias to :func:`upper_hybrid_frequency`. """
+
+
 @validate_quantities(
     n_i={"can_be_negative": False},
     validations_on_return={
@@ -1553,6 +1679,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
+
+    **Aliases:** `wlh_`
 
     Parameters
     ----------
@@ -1631,6 +1759,10 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     return omega_lh
 
 
+wlh_ = lower_hybrid_frequency
+""" Alias to :func:`lower_hybrid_frequency`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     B={"can_be_negative": False},
@@ -1650,6 +1782,8 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     where :math:`k_B` is the Boltzmann constant
     and :math:`e` is the fundamental charge.
+
+    **Aliases:** `DB_`
 
     Parameters
     ----------
@@ -1692,3 +1826,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     """
     D_B = k_B * T_e / (16 * e * B)
     return D_B
+
+
+DB_ = Bohm_diffusion
+""" Alias to :func:`Bohm_diffusion`. """
