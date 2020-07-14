@@ -37,8 +37,11 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.particle_class import ParticleJSONDecoder
 from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.particle_json_utils import (
+    json_load_particle,
+    json_loads_particle,
+)
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
     atomic_symbol,
@@ -57,30 +60,3 @@ positron = Particle("e+")
 deuteron = Particle("D 1+")
 triton = Particle("T 1+")
 alpha = Particle("He-4 2+")
-
-
-def json_load_particle(json_file_object):
-    """
-    Returns the appropriate object from input JSON file object
-
-    Parameters
-    ----------
-    json_file_object: file object
-        file object of the JSON file that contains the JSON string describing
-        the particle
-    """
-    json_string = None
-    json_string = json_file_object.read()
-    return json_loads_particle(json_string)
-
-
-def json_loads_particle(json_string):
-    """
-    Returns the appropriate object from input JSON string representation
-
-    Parameters
-    ----------
-    json_string: string
-        JSON string that represents a particle
-    """
-    return json.loads(json_string, cls=ParticleJSONDecoder)
