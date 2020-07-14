@@ -26,7 +26,7 @@ def entropy_across_shock_polytropic(
     p_2: u.Pa,
     rho_1: u.kg / u.m ** 3,
     rho_2: u.kg / u.m ** 3,
-    gamma=5/3,
+    gamma=5 / 3,
 ) -> u.J / u.K:
     r"""
     Entropy is not conserved across a shock, since a shock is
