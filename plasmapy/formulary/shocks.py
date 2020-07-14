@@ -85,7 +85,8 @@ def entropy_across_shock_polytropic(
 
     if ds < 0:
         warnings.warn(
-            "Entropy change cannot be negative, perhaps regions 1 and 2 are switched", PhysicsWarning
+            "Entropy change cannot be negative, perhaps regions 1 and 2 are switched",
+            PhysicsWarning,
         )
         return u.Quantity(nan, unit=c_v.unit)
 
