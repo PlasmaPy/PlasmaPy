@@ -87,13 +87,13 @@ def entropy_across_shock_polytropic(
         warnings.warn(
             "Entropy change cannot be negative, perhaps regions 1 and 2 are switched", PhysicsWarning
         )
-        return nan
+        return u.Quantity(nan, unit=c_v.unit)
 
     elif isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
         warnings.warn(
             "Irreversible process, entropy change cannot be 0", PhysicsWarning
         )
-        return nan
+        return u.Quantity(nan, unit=c_v.unit)
 
     else:
         return ds
