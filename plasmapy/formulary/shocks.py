@@ -100,7 +100,3 @@ def entropy_across_shock_polytropic(
 
     else:
         return ds
-
-
-ds_ = entropy_across_shock_polytropic
-"""alias for :func:`entropy_across_shock_polytropic`"""
