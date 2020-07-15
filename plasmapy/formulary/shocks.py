@@ -90,9 +90,11 @@ def entropy_across_shock_polytropic(
         )
         return u.Quantity(nan, unit=c_v.unit)
 
-    elif isclose(ds, 0, rtol=1e-4, atol=1e-8) is True:
+    elif isclose(ds, 0, rtol=1e-4, atol=1e-8):
         warnings.warn(
-            "Irreversible process, entropy change cannot be 0", PhysicsWarning
+            """Entropy change cannot be 0, as this would imply that
+            this is a reversible process. Shocks are 
+            irreversible, so the entropy change must be nonzero.""", PhysicsWarning
         )
         return u.Quantity(nan, unit=c_v.unit)
 
