@@ -3,7 +3,7 @@
 __all__ = ["entropy_across_shock_polytropic", "ds_"]
 
 
-from _pytest import warnings
+import warnings
 from astropy import units as u
 from plasmapy.utils.exceptions import PhysicsWarning
 from plasmapy.utils.decorators import (
