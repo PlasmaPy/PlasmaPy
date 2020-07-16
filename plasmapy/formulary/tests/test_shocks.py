@@ -21,12 +21,12 @@ def test_entropy_across_shock_polytropic():
     assert np.isclose(val.value, 0.26058001)
 
     with warnings.warn(
-        "Entropy change cannot be negative, perhaps regions 1 and 2 are switched",
+        "Entropy change cannot be negative, perhaps regions 1 and 2 are switched"
     ):
         entropy_across_shock_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
 
     with warnings.warn(
-            """Entropy change cannot be 0, as this would imply that
+        """Entropy change cannot be 0, as this would imply that
                         this is a reversible process. Shocks are
                         irreversible, so the entropy change must be nonzero."""
     ):
