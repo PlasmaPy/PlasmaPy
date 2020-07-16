@@ -1,6 +1,6 @@
 """ This module gathers functions relating to shocks and the properties thereof.
 """
-__all__ = ["entropy_across_shock_polytropic", "ds_"]
+__all__ = ["entropy_across_shock_polytropic"]
 
 
 import warnings
