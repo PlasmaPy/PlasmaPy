@@ -22,4 +22,3 @@ def test_entropy_across_shock_polytropic():
 
     with warnings.warn(PhysicsWarning):
         entropy_across_shock_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
-
