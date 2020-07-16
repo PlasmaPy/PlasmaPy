@@ -30,4 +30,4 @@ def test_entropy_across_shock_polytropic():
                         this is a reversible process. Shocks are
                         irreversible, so the entropy change must be nonzero."""
     ):
-        entropy_across_shock_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
+        entropy_across_shock_polytropic(c_v, p_1, p_1, rho_1, rho_1, gamma)
