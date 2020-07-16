@@ -83,18 +83,19 @@ def entropy_across_shock_polytropic(
 
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
 
-    if ds < 0:
+    if isclose(abs(ds), 0.0, rtol=1e-4, atol=1e-8):
         warnings.warn(
-            "Entropy change cannot be negative, perhaps regions 1 and 2 are switched",
+            """Entropy change cannot be 0, as this would imply that
+            this is a reversible process. Shocks are 
+            irreversible, so the entropy change must be nonzero.""",
             PhysicsWarning,
         )
         return u.Quantity(nan, unit=c_v.unit)
 
-    elif isclose(ds, 0, rtol=1e-4, atol=1e-8):
+    elif ds < 0:
         warnings.warn(
-            """Entropy change cannot be 0, as this would imply that
-            this is a reversible process. Shocks are 
-            irreversible, so the entropy change must be nonzero.""", PhysicsWarning
+            "Entropy change cannot be negative, perhaps regions 1 and 2 are switched",
+            PhysicsWarning,
         )
         return u.Quantity(nan, unit=c_v.unit)
 
