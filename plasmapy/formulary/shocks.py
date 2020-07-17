@@ -16,10 +16,11 @@ from numpy import pi, exp, sqrt, log, nan, isclose
 
 
 @validate_quantities(
-    rho_1={"can_be_negative": False},
-    rho_2={"can_be_negative": False},
+    rho_1={"can_be_negative": False, "pass_equivalent_units": True},
+    rho_2={"can_be_negative": False, "pass_equivalent_units": True},
+    p_1={"can_be_negative": True, "pass_equivalent_units": True},
+    p_2={"can_be_negative": True, "pass_equivalent_units": True},
     c_v={"can_be_negative": False},
-    pass_equivalent_units=True,
 )
 def entropy_across_shock_polytropic(
     c_v: u.J / u.K,
