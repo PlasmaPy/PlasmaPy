@@ -11,21 +11,55 @@ physical quantities helpful for plasma physics.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
-   mathematics
-   dielectric
-   dimensionless
-   dispersionfunction
-   distribution
-   drifts
-   magnetostatics
-   parameters
-   quantum
-   relativity
-   braginskii
-   collisions
-   ionization
-   shocks
+   Classical Transport <braginskii>
+   Collisions <collisions>
+   Dielectrics <dielectric>
+   Dimensionless <dimensionless>
+   Dispersion Relations <dispersionfunction>
+   Distribution Functions <distribution>
+   Drifts <drifts>
+   Ionization <ionization>
+   Magnetostatics <magnetostatics>
+   Mathematics <mathematics>
+   Plasma Parameters <parameters>
+   Quantum Relations <quantum>
+   Relativistic Relations <relativity>
+   Shocks <shocks>
+   
+.. table::
+   :widths: 5 16
+
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Classical Transport <./braginskii>`          | `plasmapy.formulary.braginskii`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Collisions <./collisions>`                   | `plasmapy.formulary.collisions`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Dielectrics <./dielectric>`                  | `plasmapy.formulary.dielectric`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Dimensionless <./dimensionless>`             | `plasmapy.formulary.dimensionless`      |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Dispersion Relations <./dispersionfunction>` | `plasmapy.formulary.dispersionfunction` |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Distribution Functions <./distribution>`     | `plasmapy.formulary.distribution`       |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Drifts <./drifts>`                           | `plasmapy.formulary.drifts`             |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Ionization <./ionization>`                   | `plasmapy.formulary.ionization`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Magnetostatics <./magnetostatics>`           | `plasmapy.formulary.magnetostatics`     |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Mathematics <./mathematics>`                 | `plasmapy.formulary.mathematics`        |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Plasma Parameters <./parameters>`            | `plasmapy.formulary.parameters`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Quantum Relations <./quantum>`               | `plasmapy.formulary.quantum`            |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Relativistic Relations <./relativity>`       | `plasmapy.formulary.relativity`         |
+   +----------------------------------------------------+-----------------------------------------+
+   | :doc:`Shocks <./shocks>`                           | `plasmapy.formulary.shocks`             |
+   +----------------------------------------------------+-----------------------------------------+
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
@@ -44,13 +78,16 @@ For a general overview of how unit-based input works, take a look at the
 following example:
 
 
+Examples
+========
+
 .. nbgallery::
-    :caption: Examples
 
     /notebooks/physics
 
 Notes for developers
 ====================
+
 Values should be returned as an Astropy Quantity in SI units.
 
 If a quantity has several names, then the function name should be the
