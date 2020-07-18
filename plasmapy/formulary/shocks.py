@@ -1,6 +1,6 @@
 """ This module gathers functions relating to shocks and the properties thereof.
 """
-__all__ = ["entropy_across_shock_polytropic"]
+__all__ = ["entropy_jump_polytropic"]
 
 
 import warnings
@@ -22,7 +22,7 @@ from numpy import pi, exp, sqrt, log, nan, isclose
     p_2={"can_be_negative": True, "pass_equivalent_units": True},
     c_v={"can_be_negative": False},
 )
-def entropy_across_shock_polytropic(
+def entropy_jump_polytropic(
     c_v: u.J / u.K,
     p_1: u.Pa,
     p_2: u.Pa,
@@ -78,7 +78,7 @@ def entropy_across_shock_polytropic(
     >>> p_2 = 2 * p_1
     >>> rho_1 = 2 * u.kg / u.m ** 3
     >>> rho_2 = 3 * u.kg / u.m ** 3
-    >>> entropy_across_shock_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
+    >>> entropy_jump_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
     <Quantity 0.2605... J / K>
 
      Notes
