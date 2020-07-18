@@ -20,14 +20,10 @@ def test_entropy_jump_polytropic():
     assert val.unit == u.J / u.K
     assert np.isclose(val.value, 0.26058001)
 
-    with pytest.warn(
-        "Entropy change cannot be negative, perhaps regions 1 and 2 are switched"
-    ):
+    with pytest.warns(PhysicsWarning
+                      ):
         entropy_jump_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
 
-    with pytest.warn(
-        """Entropy change cannot be 0, as this would imply that
-                        this is a reversible process. Shocks are
-                        irreversible, so the entropy change must be nonzero."""
-    ):
+    with pytest.warns(PhysicsWarning
+                      ):
         entropy_jump_polytropic(c_v, p_1, p_1, rho_1, rho_1, gamma)
