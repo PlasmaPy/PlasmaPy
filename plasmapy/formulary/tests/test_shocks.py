@@ -1,8 +1,6 @@
-import warnings
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.constants import c
 
 from plasmapy.formulary import entropy_jump_polytropic
 from plasmapy.utils import PhysicsWarning
