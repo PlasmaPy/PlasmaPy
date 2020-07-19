@@ -19,7 +19,9 @@ def test_entropy_jump_polytropic():
     assert np.isclose(val.value, 0.26058001)
 
     with pytest.warns(PhysicsWarning):
-        entropy_jump_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
+        # entropy jump can not be negative
+        val = entropy_jump_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
+        assert np.isnan(val)
 
     with pytest.warns(PhysicsWarning):
         # entropy jump can not be zero (shocks are irreversible)
