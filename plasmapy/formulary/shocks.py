@@ -3,16 +3,17 @@
 __all__ = ["entropy_jump_polytropic"]
 
 
-import warnings
 from astropy import units as u
+from astropy.constants import c, a0, k_B
+from numpy import pi, exp, sqrt, log, nan, isclose
+from warnings import warn
+
 from plasmapy.utils.exceptions import PhysicsWarning
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
 )
-from astropy.constants import c, a0, k_B
-from numpy import pi, exp, sqrt, log, nan, isclose
 
 
 @validate_quantities(
