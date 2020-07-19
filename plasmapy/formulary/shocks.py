@@ -82,7 +82,7 @@ def entropy_jump_polytropic(
     >>> entropy_jump_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
     <Quantity 0.2605... J / K>
 
-     Notes
+    Notes
     -----
     For reference to this function and for more information regarding shocks and rarefactions,
     see chapter 4 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
