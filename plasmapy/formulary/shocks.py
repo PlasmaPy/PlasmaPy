@@ -107,7 +107,7 @@ def entropy_jump_polytropic(
         return u.Quantity(nan, unit=c_v.unit)
 
     elif ds < 0:
-        warnings.warn(
+        warn(
             "Entropy change cannot be negative, perhaps regions 1 and 2 are switched",
             PhysicsWarning,
         )
