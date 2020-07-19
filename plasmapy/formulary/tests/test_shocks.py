@@ -1,5 +1,5 @@
 import astropy.units as u
-import numpy as np
+from numpy import isclose, isnan
 import pytest
 
 from plasmapy.formulary import entropy_jump_polytropic
@@ -16,14 +16,14 @@ def test_entropy_jump_polytropic():
     val = entropy_jump_polytropic(c_v, p_1, p_2, rho_1, rho_2, gamma)
 
     assert val.unit == u.J / u.K
-    assert np.isclose(val.value, 0.26058001)
+    assert isclose(val.value, 0.26058001)
 
     with pytest.warns(PhysicsWarning):
         # entropy jump can not be negative
         val = entropy_jump_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
-        assert np.isnan(val)
+        assert isnan(val)
 
     with pytest.warns(PhysicsWarning):
         # entropy jump can not be zero (shocks are irreversible)
         val = entropy_jump_polytropic(c_v, p_1, p_1, rho_1, rho_1, gamma)
-        assert np.isnan(val)
+        assert isnan(val)
