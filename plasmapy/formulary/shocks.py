@@ -97,7 +97,7 @@ def entropy_jump_polytropic(
     ds = c_v * log(pressure_ratio * density_ratio ** gamma)
 
     if isclose(abs(ds), 0.0, rtol=1e-4, atol=1e-8):
-        warnings.warn(
+        warn(
             """Entropy change cannot be 0, as this would imply that
             a shock is a reversible process. Shocks are
             irreversible, so the entropy change must be nonzero.""",
