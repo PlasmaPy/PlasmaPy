@@ -70,7 +70,7 @@ def entropy_jump_polytropic(
     ds: `~astropy.units.Quantity`
         The change of entropy due to the shock on the gas.
 
-     Examples
+    Examples
     --------
     >>> import astropy.units as u
     >>> c_v = 15 * u.J / u.K
