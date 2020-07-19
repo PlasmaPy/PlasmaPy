@@ -37,10 +37,14 @@ def entropy_jump_polytropic(
     of a polytropic gas before and after the shock has passed. The shock
     is an isolated steady, perpendicular shock, flowing through a non magnetized fluid.
 
-     .. math::
+    .. math::
 
-        s_2 - s_1 =
-        c_v ln\left[ \frac{p_2}{p_1} \left( \frac{\rho_1}{\rho_2} \right)^{\gamma} \right]
+         s_2 - s_1 = c_v
+                     \ln{\left[
+                         \frac{p_2}{p_1}
+                         \left( \frac{\rho_1}{\rho_2} \right)^{\gamma}
+                     \right]}
+
     Here variables indexed by 1 and 2 are upstream (pre shock)
     and downstream (post shock) respectively.
     This function is equivalent to Eq. 4.24 in `Drake`_.
