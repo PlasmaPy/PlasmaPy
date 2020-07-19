@@ -1,1 +1,1 @@
-Create plasmapy/formulary/shocks.py Create :func:`~plasmapy.formulary.shocks.entropy_across_shock_polytropic` function.
+Create module `plasmapy/formulary/shocks.py` and the :func:`~plasmapy.formulary.shocks.entropy_jump_polytropic` function.
