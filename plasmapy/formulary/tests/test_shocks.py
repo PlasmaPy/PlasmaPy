@@ -24,4 +24,6 @@ def test_entropy_jump_polytropic():
         entropy_jump_polytropic(c_v, p_1, 0.5 * p_1, rho_1, rho_2, gamma)
 
     with pytest.warns(PhysicsWarning):
-        entropy_jump_polytropic(c_v, p_1, p_1, rho_1, rho_1, gamma)
+        # entropy jump can not be zero (shocks are irreversible)
+        val = entropy_jump_polytropic(c_v, p_1, p_1, rho_1, rho_1, gamma)
+        assert np.isnan(val)
