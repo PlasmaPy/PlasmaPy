@@ -9,21 +9,42 @@ from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     Bohm_diffusion,
+    betaH_,
+    cs_,
+    cwp_,
+    DB_,
     Debye_length,
     Debye_number,
     gyrofrequency,
     gyroradius,
+    Hall_parameter,
     inertial_length,
     ion_sound_speed,
     kappa_thermal_speed,
+    lambdaD_,
     lower_hybrid_frequency,
     magnetic_energy_density,
     magnetic_pressure,
     mass_density,
+    nD_,
+    oc_,
     plasma_frequency,
+    pmag_,
+    pth_,
+    rc_,
+    rho_,
+    rhoc_,
     thermal_pressure,
     thermal_speed,
+    ub_,
     upper_hybrid_frequency,
+    va_,
+    vth_,
+    vth_kappa_,
+    wc_,
+    wp_,
+    wlh_,
+    wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import (
@@ -1102,3 +1123,28 @@ def test_Bohm_diffusion():
 
     with pytest.raises(u.UnitTypeError):
         Bohm_diffusion(2.2 * u.kg, B)
+
+
+def test_parameters_aliases():
+    r"""Test all aliases defined in parameters.py"""
+
+    assert rho_ is mass_density
+    assert va_ is Alfven_speed
+    assert cs_ is ion_sound_speed
+    assert vth_ is thermal_speed
+    assert pth_ is thermal_pressure
+    assert vth_kappa_ is kappa_thermal_speed
+    assert betaH_ is Hall_parameter
+    assert oc_ is gyrofrequency
+    assert wc_ is gyrofrequency
+    assert rc_ is gyroradius
+    assert rhoc_ is gyroradius
+    assert wp_ is plasma_frequency
+    assert lambdaD_ is Debye_length
+    assert nD_ is Debye_number
+    assert cwp_ is inertial_length
+    assert pmag_ is magnetic_pressure
+    assert ub_ is magnetic_energy_density
+    assert wuh_ is upper_hybrid_frequency
+    assert wlh_ is lower_hybrid_frequency
+    assert DB_ is Bohm_diffusion

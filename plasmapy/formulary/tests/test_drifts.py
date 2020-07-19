@@ -38,6 +38,9 @@ class Test_ExB_drift:
             result, (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s)
         )
 
+    def test_alias(self):
+        assert drifts.veb_ is drifts.ExB_drift
+
 
 class Test_force_drift:
     def test_force_x_B_1d_arrays(self):
@@ -75,3 +78,6 @@ class Test_force_drift:
 
         with pytest.raises(u.UnitTypeError):
             drifts.force_drift(F, B, q)
+
+    def test_alias(self):
+        assert drifts.vfd_ is drifts.force_drift

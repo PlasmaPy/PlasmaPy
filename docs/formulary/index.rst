@@ -26,8 +26,7 @@ physical quantities helpful for plasma physics.
    Plasma Parameters <parameters>
    Quantum Relations <quantum>
    Relativistic Relations <relativity>
-   Shocks <shocks>
-   
+
 .. table::
    :widths: 5 16
 
@@ -57,8 +56,6 @@ physical quantities helpful for plasma physics.
    | :doc:`Quantum Relations <./quantum>`               | `plasmapy.formulary.quantum`            |
    +----------------------------------------------------+-----------------------------------------+
    | :doc:`Relativistic Relations <./relativity>`       | `plasmapy.formulary.relativity`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Shocks <./shocks>`                           | `plasmapy.formulary.shocks`             |
    +----------------------------------------------------+-----------------------------------------+
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling

@@ -13,6 +13,9 @@ from ..quantum import (
     chemical_potential,
     deBroglie_wavelength,
     thermal_deBroglie_wavelength,
+    Ef_,
+    lambdaDB_,
+    lambdaDB_th_,
 )
 
 
@@ -226,3 +229,11 @@ class Test__chemical_potential_interp:
             f"and should not be equal to {fail1}."
         )
         assert testTrue, errStr
+
+
+def test_quantum_aliases():
+    r"""Test all aliases defined in quantum.py"""
+
+    assert Ef_ is Fermi_energy
+    assert lambdaDB_ is deBroglie_wavelength
+    assert lambdaDB_th_ is thermal_deBroglie_wavelength
