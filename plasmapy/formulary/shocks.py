@@ -99,7 +99,7 @@ def entropy_jump_polytropic(
     if isclose(abs(ds), 0.0, rtol=1e-4, atol=1e-8):
         warnings.warn(
             """Entropy change cannot be 0, as this would imply that
-            this is a reversible process. Shocks are
+            a shock is a reversible process. Shocks are
             irreversible, so the entropy change must be nonzero.""",
             PhysicsWarning,
         )
