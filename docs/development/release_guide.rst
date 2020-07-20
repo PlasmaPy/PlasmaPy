@@ -44,13 +44,6 @@ and `0.3.1` denotes the last released version.
   "windo diffthis"`` for ``.mailmap``. Make sure the old addresses are
   preserved in the new version, the overwrite `.mailmap`.
 
-* Use ``astropy-tools/author_lists.py .`` from `astropy-procedures` for ``credits.rst``
-
-.. note:
-
-  I would think about limiting this to the credits in new release entries in
-  `docs/whatsnew` due to maintenance burden. ~Dominik
-
 * Commit your changes up until now
 
 * Make sure that tests pass and that documentation builds without issue (``tox``)
