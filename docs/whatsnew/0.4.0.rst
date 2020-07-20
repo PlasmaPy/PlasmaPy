@@ -1,6 +1,22 @@
 Plasmapy v0.4.0 (2020-07-20)
 ============================
 
+This release of PlasmaPy contains 50 commits in 46 merged pull requests closing 25 issues from 9 people, 5 of which are first-time contributors to PlasmaPy.
+
+The people who have contributed to the code for this release are:
+
+    Ankur Chattopadhyay  *
+    Anthony Vo  *
+    Diego Diaz
+    Dominik Stańczak
+    Jakub Polak  *
+    KhalilBryant  *
+    Nick Murphy
+    Peter Heuer  *
+    rocco8773
+
+Where a * indicates their first contribution to PlasmaPy.
+
 Backwards Incompatible Changes
 ------------------------------
 
