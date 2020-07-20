@@ -46,7 +46,7 @@ and `0.3.1` denotes the last released version.
 
 * Commit your changes up until now
 
-* Make sure that tests pass and that documentation builds without issue (``tox``)
+* Make sure that tests pass and that documentation builds without issue (``tox -e build_docs``). You might also want to open the changes up until now as a PR.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
