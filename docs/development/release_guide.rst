@@ -16,34 +16,40 @@ guidance.
 Release
 -------
 
-* Create a new branch for the release that is separate from the master
-  branch, e.g. `v0.3.x`
+Throughout this guide, `0.4.0` denotes the version you're releasing,
+and `0.3.1` denotes the last released version.
 
-* Check that the Continuous Integration is passing for the correct
+* `git checkout -b v0.4.x` - create a new branch for the release that is separate from the master
+  branch, with the bugfix version replaced by `x`, for example, `v0.4.x`.
+
+* `hub ci-status master -v` - Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
   <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use `hub
   ci-status master` with the `hub` CLI tool.
 
 * Turn changelog entries into a `CHANGELOG.rst` file via `towncrier --version
-  v0.3.0` or equivalent. When asked about removing changelog entries, do so. Ensure
+  v0.4.0`. When asked about removing changelog entries, do so. Ensure
   the entries are in proper categories.
 
-* Move the generated `CHANGELOG.rst` file into
+* Copy the relevant part of the generated `CHANGELOG.rst` file into
   `docs/whatsnew/{version_number}.rst`. Add the corresponding entry in the
   table of contents in `docs/whatsnew/index.rst`.
 
-* Add the note on include new contributors. To do this efficiently, borrow the
-  SunPy Xonsh script `generate_releaserst.xsh 0.2.0 --auth
-  --project-name=plasmapy --pretty-project-name=PlasmaPy`.
+* Add the note on new contributors to `docs/whatsnew/{version_number}.rst`. To
+  do this efficiently, borrow the SunPy Xonsh script
+  `tools/generate_releaserst.xsh 0.2.0 --auth --project-name=plasmapy
+  --pretty-project-name=PlasmaPy`.
 
-* Use ``git shortlog -nse | cut -f 2 | vim`` for ``.mailmap``
+* Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
+  "windo diffthis"`` for ``.mailmap``. Make sure the old addresses are
+  preserved in the new version, the overwrite `.mailmap`.
 
-* Use ``astropy-tools/author_lists.py`` for ``credits.rst``
+* Use ``astropy-tools/author_lists.py .`` from `astropy-procedures` for ``credits.rst``
 
 .. note:
 
-I would think about limiting this to the credits in new release entries in
-`docs/whatsnew` due to maintenance burden. ~Dominik
+  I would think about limiting this to the credits in new release entries in
+  `docs/whatsnew` due to maintenance burden. ~Dominik
 
 * Commit your changes up until now
 
