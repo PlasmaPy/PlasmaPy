@@ -18,15 +18,16 @@ class ParticleJSONDecoder(json.JSONDecoder):
     """
     A custom `~json.JSONDecoder` class to deserialize JSON objects into
     PlasmaPy particle objects.
+
     Parameters
     ----------
-    object_hook:
+    object_hook :
         If specified, will be called with the result of every JSON object
         decoded and its return value will be used in place of the given `dict`.
         This can be used to provide custom deserializations (e.g. to support
-        JSON-RPC class hinting)  (If ot specified, then defaults
-        `particle_hook`.)
-    **kwargs:
+        JSON-RPC class hinting)
+        (If not specified, then defaults to `particle_hook`.).
+    **kwargs :
         Any keyword accepted by `~json.JSONDecoder`.
     """
 
@@ -67,15 +68,16 @@ class ParticleJSONDecoder(json.JSONDecoder):
 def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
     """
     A convenient form of `json.load` to deserialize a JSON document into a
-    PlasmaPy particle object.  (Mirrors `json.load` with `cls` defaulting to
-    `ParticleJSONDecoder`.)
+    PlasmaPy particle object. (Mirrors `json.load` with `cls` defaulting to
+    `ParticleJSONDecoder`.).
+
     Parameters
     ----------
-    fp: `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
-        A file object containing a JSON document
-    cls:
-        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`)
-    **kwargs:
+    fp : `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
+        A file object containing a JSON document.
+    cls : `json.JSONDecoder` class
+        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`).
+    **kwargs :
         Any keyword accepted by `json.load`.
     """
     return json.load(fp, cls=cls, **kwargs)
@@ -84,15 +86,16 @@ def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
 def json_loads_particle(s, *, cls=ParticleJSONDecoder, **kwargs):
     """
     A convenient form of `json.loads` to deserialize a JSON string into a
-    PlasmaPy particle object.  (Mirrors `json.loads` with `cls` defaulting to
-    `ParticleJSONDecoder`.)
+    PlasmaPy particle object. (Mirrors `json.loads` with `cls` defaulting to
+    `ParticleJSONDecoder`.).
+
     Parameters
     ----------
-    s: string
-        A JSON string
-    cls:
-        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`)
-    **kwargs:
+    s : str
+        A JSON string.
+    cls : `json.JSONDecoder` class
+        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`).
+    **kwargs :
         Any keyword accepted by `json.loads`.
     """
     return json.loads(s, cls=cls, **kwargs)
