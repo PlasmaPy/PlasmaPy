@@ -5,7 +5,6 @@ __all__ = [
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
-    "ParticleJSONDecoder",
 ]
 
 import astropy.constants as const
