@@ -1,2 +1,0 @@
-Removes some lint from setup.py and setup.cfg. Use pkg_resources for version
-checking in code. Remove version.py file in favor of pkg_resources.

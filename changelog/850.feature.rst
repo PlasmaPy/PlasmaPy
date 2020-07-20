@@ -1,1 +1,0 @@
-Revised parameters.thermal_speed to support 1D and 2D distributions as well as 3D, and added an example notebook for this function.
