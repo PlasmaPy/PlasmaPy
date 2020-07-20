@@ -9,6 +9,7 @@ __all__ = [
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
+    "ParticleJSONDecoder",
 ]
 
 import json
@@ -41,6 +42,7 @@ from plasmapy.particles.particle_input import particle_input
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
+    ParticleJSONDecoder,
 )
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (

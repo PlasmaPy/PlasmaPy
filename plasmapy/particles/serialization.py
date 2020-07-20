@@ -1,97 +1,98 @@
+__all__ = [
+    "json_load_particle",
+    "json_loads_particle",
+    "ParticleJSONDecoder",
+]
+
 import json
-from plasmapy.particles.particle_class import ParticleJSONDecoder
+from plasmapy.particles.exceptions import InvalidElementError
+from plasmapy.particles.particle_class import (
+    AbstractParticle,
+    CustomParticle,
+    DimensionlessParticle,
+    Particle,
+)
 
 
-def json_load_particle(
-    fp,
-    *,
-    cls=ParticleJSONDecoder,
-    object_hook=None,
-    parse_float=None,
-    parse_int=None,
-    parse_constant=None,
-    object_pairs_hook=None,
-    **kw
-):
+class ParticleJSONDecoder(json.JSONDecoder):
     """
-    Returns the appropriate object from input JSON file object
-    For more information, refer to documentation:
-    https://docs.python.org/3/library/json.html#json.load
-
+    A custom `~json.JSONDecoder` class to deserialize JSON objects into
+    PlasmaPy particle objects.
     Parameters
     ----------
-    fp: file object
-        file object of the JSON file that contains the JSON string describing
-        the particle
     object_hook:
-        function called with result of decoded literal.
-        Refer to link above for more information.
-    parse_float:
-        function applied when decoding floats.
-        Refer to link above for more information.
-    parse_int:
-        function applied when decoding integers.
-        Refer to link above for more information.
-    parse_constant:
-        function applied when decoding constants.
-        Refer to link above for more information.
-    object_pairs_hook:
-        function called with result of decode with ordered list of pairs
-        Refer to link above for more information.
+        If specified, will be called with the result of every JSON object
+        decoded and its return value will be used in place of the given `dict`.
+        This can be used to provide custom deserializations (e.g. to support
+        JSON-RPC class hinting)  (If ot specified, then defaults
+        `particle_hook`.)
+    **kwargs:
+        Any keyword accepted by `~json.JSONDecoder`.
     """
-    return json.load(
-        fp,
-        cls=cls,
-        object_hook=object_hook,
-        parse_float=parse_float,
-        parse_int=parse_int,
-        parse_constant=parse_constant,
-        object_pairs_hook=object_pairs_hook,
-    )
+
+    def __init__(self, *, object_hook=None, **kwargs):
+        if object_hook is None:
+            object_hook = self.particle_hook
+        json.JSONDecoder.__init__(self, object_hook=object_hook, **kwargs)
+
+    @staticmethod
+    def particle_hook(json_dict):
+        """
+        An `object_hook` utilized by the `json` deserialization processes to decode
+        json strings into a `plasmapy` particle class (`AbstractParticle`,
+        `CustomParticle`, `DimensionlessParticle`, `Particle`).
+        """
+        particle_types = {
+            "AbstractParticle": AbstractParticle,
+            "CustomParticle": CustomParticle,
+            "DimensionlessParticle": DimensionlessParticle,
+            "Particle": Particle,
+        }
+        if "plasmapy_particle" in json_dict:
+            try:
+                pardict = json_dict["plasmapy_particle"]
+                partype = pardict["type"]
+                args = pardict["__init__"]["args"]
+                kwargs = pardict["__init__"]["kwargs"]
+                particle = particle_types[partype](*args, **kwargs)
+                return particle
+            except KeyError:
+                raise InvalidElementError(
+                    f"json file does not define a valid plasmapy particle"
+                )
+        else:
+            return json_dict
 
 
-def json_loads_particle(
-    s,
-    *,
-    cls=ParticleJSONDecoder,
-    object_hook=None,
-    parse_float=None,
-    parse_int=None,
-    parse_constant=None,
-    object_pairs_hook=None,
-    **kw
-):
+def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
     """
-    Returns the appropriate object from input JSON string representation
-    For more information refer to documentation:
-    https://docs.python.org/3/library/json.html#json.loads
+    A convenient form of `json.load` to deserialize a JSON document into a
+    PlasmaPy particle object.  (Mirrors `json.load` with `cls` defaulting to
+    `ParticleJSONDecoder`.)
+    Parameters
+    ----------
+    fp: `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
+        A file object containing a JSON document
+    cls:
+        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`)
+    **kwargs:
+        Any keyword accepted by `json.load`.
+    """
+    return json.load(fp, cls=cls, **kwargs)
 
+
+def json_loads_particle(s, *, cls=ParticleJSONDecoder, **kwargs):
+    """
+    A convenient form of `json.loads` to deserialize a JSON string into a
+    PlasmaPy particle object.  (Mirrors `json.loads` with `cls` defaulting to
+    `ParticleJSONDecoder`.)
     Parameters
     ----------
     s: string
-        JSON string literal to be deserialized into a particle
-    object_hook:
-        function called with result of decoded literal.
-        Refer to link above for more information.
-    parse_float:
-        function applied when decoding floats.
-        Refer to link above for more information.
-    parse_int:
-        function applied when decoding integers.
-        Refer to link above for more information.
-    parse_constant:
-        function applied when decoding constants.
-        Refer to link above for more information.
-    object_pairs_hook:
-        function called with result of decode with ordered list of pairs
-        Refer to link above for more information.
+        A JSON string
+    cls:
+        A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`)
+    **kwargs:
+        Any keyword accepted by `json.loads`.
     """
-    return json.loads(
-        s,
-        cls=cls,
-        object_hook=object_hook,
-        parse_float=parse_float,
-        parse_int=parse_int,
-        parse_constant=parse_constant,
-        object_pairs_hook=object_pairs_hook,
-    )
+    return json.loads(s, cls=cls, **kwargs)
