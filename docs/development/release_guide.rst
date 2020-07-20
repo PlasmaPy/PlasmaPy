@@ -32,27 +32,30 @@ and `0.3.1` denotes the last released version.
   the entries are in proper categories.
 
 * Copy the relevant part of the generated `CHANGELOG.rst` file into
-  `docs/whatsnew/{version_number}.rst`. Add the corresponding entry in the
+  `docs/whatsnew/0.4.0.rst`. Add the corresponding entry in the
   table of contents in `docs/whatsnew/index.rst`.
 
 * Add the note on new contributors to `docs/whatsnew/{version_number}.rst`. To
   do this efficiently, borrow the SunPy Xonsh script
-  `tools/generate_releaserst.xsh 0.2.0 --auth --project-name=plasmapy
+  `tools/generate_releaserst.xsh 0.3.1 --auth --project-name=plasmapy
   --pretty-project-name=PlasmaPy`.
 
 * Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
   "windo diffthis"`` for ``.mailmap``. Make sure the old addresses are
   preserved in the new version, the overwrite `.mailmap`.
 
-* Commit your changes up until now
+* Commit your changes up until now.
 
-* Make sure that tests pass and that documentation builds without issue (``tox -e build_docs``). You might also want to open the changes up until now as a PR.
+* Make sure that tests pass and that documentation builds without issue (``tox
+  -e build_docs``). You might also want to open the changes up until now as a
+  PR.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
   * Note that ``-s`` signs the commit with a GPG key
 
-* Push the tagged commit to the version's branch on GitHub: `git push --force --follow-tags upstream v0.3.x`
+* Push the tagged commit to the version's branch on GitHub: `git push --force
+  --follow-tags upstream v0.4.x`
 
 At this point, `the OpenAstronomy Azure Pipelines
 <https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`
