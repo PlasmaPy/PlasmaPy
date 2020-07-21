@@ -2,6 +2,15 @@
 The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
+__all__ = [
+    "json_load_particle",
+    "json_loads_particle",
+    "AbstractParticle",
+    "CustomParticle",
+    "DimensionlessParticle",
+    "Particle",
+    "ParticleJSONDecoder",
+]
 
 from plasmapy.particles.atomic import (
     atomic_number,
@@ -28,6 +37,11 @@ from plasmapy.particles.particle_class import (
     Particle,
 )
 from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.serialization import (
+    json_load_particle,
+    json_loads_particle,
+    ParticleJSONDecoder,
+)
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
     atomic_symbol,
