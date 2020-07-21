@@ -75,7 +75,16 @@ Features
       * `plasmapy.formulary.quantum.deBroglie_wavelength` -> `~plasmapy.formulary.quantum.lambdaDB_`
       * `plasmapy.formulary.quantum.thermal_deBroglie_wavelength` -> `~plasmapy.formulary.quantum.lambdaDB_th_`
       * `plasmapy.formulary.quantum.Fermi_energy` -> `~plasmapy.formulary.quantum.Ef_` (`#865 <https://github.com/plasmapy/plasmapy/pull/865>`__)
-
+- Add `json_dumps` method to `~plasmapy.particles.particle_class.AbstractParticle` to
+  convert a particle object into a JSON string. Add `json_dump` method to
+  `~plasmapy.particles.particle_class.AbstractParticle` to serialize a particle
+  object and writes it to a file.  Add JSON decoder
+  `~plasmapy.particles.serialization.ParticleJSONDecoder` to deserialize JSON objects
+  into particle objects.  Add `plasmapy.particles.serialization.json_loads_particle`
+  function to convert JSON strings to particle objects (using
+  `~plasmapy.particles.serialization.ParticleJSONDecoder`). Add
+  `plasmapy.particles.json_load_particle` function to deserialize a JSON file into a
+  particle object (using `~plasmapy.particles.serialization.ParticleJSONDecoder`). (`#836 <https://github.com/plasmapy/plasmapy/pull/836>`__)
 
 Bug Fixes
 ---------
