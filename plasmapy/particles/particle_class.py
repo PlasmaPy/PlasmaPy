@@ -169,7 +169,7 @@ class AbstractParticle(ABC):
         """
         raise AtomicError("The truth value of a particle is not defined.")
 
-        def json_dump(self, fp, **kwargs):
+    def json_dump(self, fp, **kwargs):
         """
         Writes the particle's `json_dict` to the `fp` file object using `json.dump`.
 
@@ -183,7 +183,7 @@ class AbstractParticle(ABC):
         """
         return json.dump(self.json_dict, fp, **kwargs)
 
-        def json_dumps(self, **kwargs) -> str:
+    def json_dumps(self, **kwargs) -> str:
         """
         Serialize the particle's `json_dict` into a JSON formatted `str` using
         `json.dumps`.
