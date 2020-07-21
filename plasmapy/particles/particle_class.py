@@ -1,18 +1,24 @@
 """The Particle class."""
 
-__all__ = ["AbstractParticle", "Particle", "DimensionlessParticle", "CustomParticle"]
-
-import warnings
-from abc import ABC, abstractmethod
-from collections import defaultdict, namedtuple
-from numbers import Complex, Integral, Real
-from typing import List, Optional, Set, Tuple, Union
+__all__ = [
+    "AbstractParticle",
+    "CustomParticle",
+    "DimensionlessParticle",
+    "Particle",
+]
 
 import astropy.constants as const
 import astropy.units as u
+import json
 import numpy as np
+import warnings
 
-import plasmapy.utils.roman as roman
+from abc import ABC, abstractmethod
+from collections import defaultdict, namedtuple
+from datetime import datetime
+from numbers import Complex, Integral, Real
+from typing import List, Optional, Set, Tuple, Union
+
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     AtomicError,
@@ -37,6 +43,7 @@ from plasmapy.particles.special_particles import (
     _Particles,
     _special_ion_masses,
 )
+from plasmapy.utils import roman
 
 _classification_categories = {
     "lepton",
@@ -111,12 +118,87 @@ class AbstractParticle(ABC):
     def charge(self) -> Union[u.Quantity, Real]:
         raise NotImplementedError
 
+    @property
+    def json_dict(self) -> dict:
+        """
+        A dictionary representation of the particle object that is JSON friendly
+        (i.e. convertible to a JSON object).
+
+        The dictionary should maintain the following format so
+        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded the resulting
+        JSON object.
+
+        .. code-block:: python
+
+            {"plasmapy_particle": {
+                # string representation of the particle class
+                "type": "Particle",
+
+                # string representation of the module contains the particle class
+                "module": "plasmapy.particles.particle_class",
+
+                # date stamp of when the object was creaed
+                "date_created": "2020-07-20 17:46:13 UTC",
+
+                # parameters used to initialized the particle class
+                "__init__": {
+                    # tuple of positional arguments
+                    "args": (),
+
+                    # dictionary of keyword arguments
+                    "kwargs": {},
+                },
+            }}
+
+        Only the `"__init__"` entry should be modified by the subclass.
+        """
+        json_dictionary = {
+            "plasmapy_particle": {
+                "type": type(self).__name__,
+                "module": self.__module__,
+                "date_created": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                "__init__": {"args": (), "kwargs": {}},
+            }
+        }
+        return json_dictionary
+
     def __bool__(self):
         """
         Raise an `~plasmapy.utils.AtomicError` because particles
         do not have a truth value.
         """
         raise AtomicError("The truth value of a particle is not defined.")
+
+    def json_dump(self, fp, **kwargs):
+        """
+        Writes the particle's `json_dict` to the `fp` file object using `json.dump`.
+
+        Parameters
+        ----------
+        fp: `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
+            Destination file object to write the JSON serialized `json_dict`.
+
+        **kwargs:
+            Any keyword accepted by `json.dump`.
+        """
+        return json.dump(self.json_dict, fp, **kwargs)
+
+    def json_dumps(self, **kwargs) -> str:
+        """
+        Serialize the particle's `json_dict` into a JSON formatted `str` using
+        `json.dumps`.
+
+        Parameters
+        ----------
+        **kwargs:
+            Any keyword accepted by `json.dumps`.
+
+        Returns
+        -------
+        str
+            JSON formatted `str`.
+        """
+        return json.dumps(self.json_dict, **kwargs)
 
 
 class Particle(AbstractParticle):
@@ -575,6 +657,32 @@ class Particle(AbstractParticle):
         elementary particle.
         """
         return self.antiparticle
+
+    @property
+    def json_dict(self) -> dict:
+        """
+        A `json` friendly dictionary representation of the particle. (see
+        `AbstractParticle.json_dict` for more details)
+
+        Examples
+        --------
+        >>> lead = Particle('lead')
+        >>> lead.json_dict
+        {'plasmapy_particle': {'type': 'Particle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': ('Pb',), 'kwargs': {}}}}
+        >>> electron = Particle('e-')
+        >>> electron.json_dict
+        {'plasmapy_particle': {'type': 'Particle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': ('e-',), 'kwargs': {}}}}
+
+        """
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["__init__"]["args"] = (self.particle,)
+        return particle_dictionary
 
     @property
     def particle(self) -> Optional[str]:
@@ -1714,6 +1822,35 @@ class DimensionlessParticle(AbstractParticle):
         return new_obj
 
     @property
+    def json_dict(self) -> dict:
+        """
+        A `json` friendly dictionary representation of the particle. (see
+        `AbstractParticle.json_dict` for more details)
+
+        Examples
+        --------
+        >>> from plasmapy.particles import DimensionlessParticle
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
+        >>> dimensionless_particle.json_dict
+        {'plasmapy_particle': {'type': 'DimensionlessParticle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0}}}}
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
+        >>> dimensionless_particle.json_dict
+        {'plasmapy_particle': {'type': 'DimensionlessParticle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan}}}}
+        """
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
+            "mass": self.mass,
+            "charge": self.charge,
+        }
+        return particle_dictionary
+
+    @property
     def mass(self) -> np.float64:
         """Return the dimensionless mass of the particle."""
         return self._mass
@@ -1818,6 +1955,34 @@ class CustomParticle(AbstractParticle):
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
         """
         return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+
+    @property
+    def json_dict(self) -> dict:
+        """
+        A `json` friendly dictionary representation of the particle. (see
+        `AbstractParticle.json_dict` for more details)
+
+        Examples
+        --------
+        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C)
+        >>> custom_particle.json_dict
+        {'plasmapy_particle': {'type': 'CustomParticle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C'}}}}
+        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
+        >>> custom_particle.json_dict
+        {'plasmapy_particle': {'type': 'CustomParticle',
+            'module': 'plasmapy.particles.particle_class',
+            'date_created': '...',
+            '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}}
+        """
+        particle_dictionary = super().json_dict
+        particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
+            "mass": str(self.mass),
+            "charge": str(self.charge),
+        }
+        return particle_dictionary
 
     @property
     def mass(self) -> u.kg:
