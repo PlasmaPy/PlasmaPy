@@ -12,8 +12,6 @@ __all__ = [
     "ParticleJSONDecoder",
 ]
 
-import json
-
 from plasmapy.particles.atomic import (
     atomic_number,
     common_isotopes,

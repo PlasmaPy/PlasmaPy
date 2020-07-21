@@ -121,19 +121,36 @@ class AbstractParticle(ABC):
     @property
     def json_dict(self) -> dict:
         """
-        Provides the standard format for JSON representation of particles which
-        inherit from AbstractParticle.
+        A dictionary representation of the particle object that is JSON friendly
+        (i.e. convertible to a JSON object).
 
-        Notes
-        -----
-        JSON keys
-        plasmapy_particle : Specifies that this JSON is for some particle
-        type : The type of the particle (e.g Particle or CustomParticle)
-        module : Specifies the module where the class was declared
-        date_created : Presents the UTC date and time of serialization
-        __init__ : contains a dictionary of the arguments used to create the particle
-        args : non keyword arguments used to create a particle
-        kwargs : keyword arguments used to create a particle
+        The dictionary should maintain the following format so
+        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded the resulting
+        JSON object.
+
+        .. code-block:: python
+
+            {"plasmapy_particle": {
+                # string representation of the particle class
+                "type": "Particle",
+
+                # string representation of the module contains the particle class
+                "module": "plasmapy.particles.particle_class",
+
+                # date stamp of when the object was creaed
+                "date_created": "2020-07-20 17:46:13 UTC",
+
+                # parameters used to initialized the particle class
+                "__init__": {
+                    # tuple of positional arguments
+                    "args": (),
+
+                    # dictionary of keyword arguments
+                    "kwargs": {},
+                },
+            }}
+
+        Only the `"__init__"` entry should be modified by the subclass.
         """
         json_dictionary = {
             "plasmapy_particle": {
@@ -152,23 +169,36 @@ class AbstractParticle(ABC):
         """
         raise AtomicError("The truth value of a particle is not defined.")
 
-    def json_dump(self, dest_file_object):
+        def json_dump(self, fp, **kwargs):
         """
-        Writes a particle's JSON representation to the given file object
+        Writes the particle's `json_dict` to the `fp` file object using `json.dump`.
 
         Parameters
         ----------
-        dest_file_object: file object
-            destination file object to which the particle's JSON representation
-            will be written
-        """
-        return json.dump(self.json_dict, dest_file_object)
+        fp: `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
+            Destination file object to write the JSON serialized `json_dict`.
 
-    def json_dumps(self) -> str:
+        **kwargs:
+            Any keyword accepted by `json.dump`.
         """
-        Return a JSON string representation of the minimum description of a particle.
+        return json.dump(self.json_dict, fp, **kwargs)
+
+        def json_dumps(self, **kwargs) -> str:
         """
-        return json.dumps(self.json_dict)
+        Serialize the particle's `json_dict` into a JSON formatted `str` using
+        `json.dumps`.
+
+        Parameters
+        ----------
+        **kwargs:
+            Any keyword accepted by `json.dumps`.
+
+        Returns
+        -------
+        str
+            JSON formatted `str`.
+        """
+        return json.dumps(self.json_dict, **kwargs)
 
 
 class Particle(AbstractParticle):
