@@ -84,11 +84,14 @@ and `wheels_universal` finish, check `PyPI
 Post-release
 ------------
 
+* Merge the pull request from the version branch to master.
+
 * If necessary (for MINOR+ and not for BUGFIX versions) activate the new
   branch's version `on RTD
   <https://readthedocs.org/projects/plasmapy/versions/>`_.
 
-* Update the `stable` branch on GitHub.
+* Update the `stable` branch on GitHub: ``git checkout v0.4.x; git pull; git
+  checkout stable; git merge v0.4.x; git push``.
 
 * Make the release on conda-forge. The helpful conda-forge bots should
   automatically open up a PR on `conda-forge/plasmapy-feedstock
@@ -115,7 +118,9 @@ Post-release
 
 * Send release announcement to mailing list
 
-* Update the release guide to reflect any changes
+* Send release announcement to Twitter
+
+* Update this very release guide to reflect any changes
 
 Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
