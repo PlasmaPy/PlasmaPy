@@ -35,7 +35,8 @@ def entropy_jump_polytropic(
     Entropy is not conserved across a shock, since a shock is
     an irreversible, non-adiabatic process. This equation is based on the specific entropy
     of a polytropic gas before and after the shock has passed. The shock
-    is an isolated steady, perpendicular shock, flowing through a non magnetized fluid.
+    is an isolated steady, perpendicular shock, flowing through a
+    non magnetized, polytropic gas.
 
     .. math::
 
