@@ -31,8 +31,8 @@ and `0.3.1` denotes the last released version.
 
 * ``git push -u upstream`` to create the branch on the main repository.
 
-* Turn changelog entries into a `CHANGELOG.rst` file via `towncrier --version
-  v0.4.0`. When asked about removing changelog entries, do so. Ensure
+* Turn changelog entries into a `CHANGELOG.rst` file via ``towncrier --version
+  v0.4.0``. When asked about removing changelog entries, do so. Ensure
   the entries are in proper categories.
 
 * Copy the relevant part of the generated `CHANGELOG.rst` file into
