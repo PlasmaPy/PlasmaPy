@@ -103,7 +103,7 @@ Post-release
 
 * Reserve a digital object identifier on Zenodo
 
-* Update code metadata in ``codemeta.json``
+* Update code metadata in `codemeta.json`
 
   * The `Codemeta standard <https://codemeta.github.io/>`_ is
     relatively new, so check the standard for terms that have changed
