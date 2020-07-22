@@ -45,6 +45,7 @@ and `0.3.1` denotes the last released version.
   <https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh>`
   `generate_releaserst.xsh 0.3.1 --auth --project-name=plasmapy
   --pretty-project-name=PlasmaPy`.
+
     * Note that you'll need `a GitHub personal access token
       <https://github.com/settings/tokens>` for that.
 
@@ -52,10 +53,10 @@ and `0.3.1` denotes the last released version.
   "windo diffthis"`` for ``.mailmap``. Make sure the old addresses are
   preserved in the new version, the overwrite `.mailmap`.
 
-.. note::
+  .. note::
 
-   This part may not be all that relevant anymore, except if we're using `git
-   shortlog`.
+     This part may not be all that relevant anymore, except if we're using `git
+     shortlog`.
 
 * Commit and push your changes up until now.
 
@@ -89,7 +90,13 @@ Post-release
 
 * Update the `stable` branch on GitHub.
 
-* Make the release on conda-forge
+* Make the release on conda-forge. The helpful conda-forge bots should
+  automatically open up a PR on `conda-forge/plasmapy-feedstock
+  <https://github.com/conda-forge/plasmapy-feedstock/pulls>`. If nothing
+  breaks, it'll even get automerged.
+
+    * If tests fail, look at the `recipe.yaml` file - usually it's either
+      changed dependencies or the simple import tests they've got there.
 
 * Reserve a digital object identifier on Zenodo
 
