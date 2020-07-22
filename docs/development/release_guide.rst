@@ -19,13 +19,18 @@ Release
 Throughout this guide, `0.4.0` denotes the version you're releasing,
 and `0.3.1` denotes the last released version.
 
-* `git checkout -b v0.4.x` - create a new branch for the release that is separate from the master
-  branch, with the bugfix version replaced by `x`, for example, `v0.4.x`.
-
 * `hub ci-status master -v` - Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
   <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use `hub
   ci-status master` with the `hub` CLI tool.
+
+* `git checkout -b v0.4.x` - create a new branch for the release that is
+  separate from the master branch, with the bugfix version replaced by `x`, for
+  example, `v0.4.x`. This is the branch for the entire series of releases - if
+  you're releasing, say, 0.4.1, the main repository should already have a
+  branch for that.
+
+* `git push -u upstream` to create the branch on the main repository.
 
 * Turn changelog entries into a `CHANGELOG.rst` file via `towncrier --version
   v0.4.0`. When asked about removing changelog entries, do so. Ensure
@@ -36,31 +41,44 @@ and `0.3.1` denotes the last released version.
   table of contents in `docs/whatsnew/index.rst`.
 
 * Add the note on new contributors to `docs/whatsnew/{version_number}.rst`. To
-  do this efficiently, borrow the SunPy Xonsh script
-  `tools/generate_releaserst.xsh 0.3.1 --auth --project-name=plasmapy
+  do this efficiently, borrow the `SunPy Xonsh script
+  <https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh>`
+  `generate_releaserst.xsh 0.3.1 --auth --project-name=plasmapy
   --pretty-project-name=PlasmaPy`.
+    * Note that you'll need `a GitHub personal access token
+      <https://github.com/settings/tokens>` for that.
 
 * Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
   "windo diffthis"`` for ``.mailmap``. Make sure the old addresses are
   preserved in the new version, the overwrite `.mailmap`.
 
-* Commit your changes up until now.
+.. note::
 
-* Make sure that tests pass and that documentation builds without issue (``tox
-  -e build_docs``). You might also want to open the changes up until now as a
-  PR.
+   This part may not be all that relevant anymore, except if we're using `git
+   shortlog`.
+
+* Commit and push your changes up until now.
+
+* Open them up as a Pull Request from the 0.4.x branch to the master branch.
+
+* Make sure that tests pass and that documentation builds without issue.
+
+* No, really, check twice.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
-  * Note that ``-s`` signs the commit with a GPG key
+  * Note that ``-s`` signs the commit with your GPG key.
 
 * Push the tagged commit to the version's branch on GitHub: `git push --force
-  --follow-tags upstream v0.4.x`
+  --follow-tags upstream v0.4.x`. Note that `--force` is necessary to trigger
+  a rebuild with the tagged version. This kicked us in the posterior for 0.4.0.
 
 At this point, `the OpenAstronomy Azure Pipelines
 <https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`
 infrastructure should do most of the work for you! `Ensure that the pipeline
-goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`
+goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`. When `sdist`
+and `wheels_universal` finish, check `PyPI
+<https://pypi.org/project/plasmapy/>` for the new version!
 
 Post-release
 ------------
