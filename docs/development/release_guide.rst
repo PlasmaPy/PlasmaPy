@@ -68,7 +68,7 @@ and `0.3.1` denotes the last released version.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
-  * Note that ``-s`` signs the commit with your GPG key.
+  * Note that `-s` signs the commit with your GPG key.
 
 * Push the tagged commit to the version's branch on GitHub: ``git push --force
   --follow-tags upstream v0.4.x``. Note that `--force` is necessary to trigger
