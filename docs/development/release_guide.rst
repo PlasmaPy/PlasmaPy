@@ -66,6 +66,9 @@ and `0.3.1` denotes the last released version.
 
 * No, really, check twice.
 
+  * If you want to do any rebase to clean up the commit history on your 0.4.x
+    branch, now is the time to do that. Ensure that no tests broke.
+
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
 
   * Note that `-s` signs the commit with your GPG key.
