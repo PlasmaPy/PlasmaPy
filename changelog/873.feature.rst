@@ -1,0 +1,1 @@
+Implement `__eq__` for `~plasmapy.particles.AbstractParticle` class.
