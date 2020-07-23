@@ -1318,3 +1318,135 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
         f"expected_repr = {expected_repr['__init__']}.\n\n"
         f"json_repr: {test_dict['__init__']}"
     )
+
+
+data_equivalence_custom_dimensionless = [
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        True,
+        None,
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.3 * u.C},
+        False,
+        None,
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        True,
+        None,
+    ),
+    (
+        DimensionlessParticle,
+        {"mass": 5.2, "charge": 6.3},
+        DimensionlessParticle,
+        {"mass": 5.1, "charge": 6.3},
+        False,
+        None,
+    ),
+    (
+        CustomParticle,
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        DimensionlessParticle,
+        {"mass": 5.12, "charge": 6.2},
+        False,
+        TypeError,
+    ),
+    # (
+    #     DimensionlessParticle,
+    #     {"mass": 5.2, "charge": 6.3},
+    #     DimensionlessParticle,
+    #     '{"plasmapy_particle": {"type": "DimensionlessParticle", \
+    #     "module": "plasmapy.particles.particle_class", \
+    #     "date_created": "...", "fake__init__": { \
+    #         "args": [], \
+    #         "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+    #     False,
+    #     InvalidElementError,
+    # ),
+    # (
+    #     CustomParticle,
+    #     {"mass": 5.12 * u.kg},
+    #     CustomParticle,
+    #     '{"plasmapy_particle": {"type": "CustomParticle", \
+    #     "module": "plasmapy.particles.particle_class", \
+    #     "date_created": "...", "fake__init__": { \
+    #         "args": [], \
+    #         "kwargs": {"mass": "5.12 kg", "charge": "nan C"}}}}',
+    #     False,
+    #     InvalidElementError,
+    # ),
+    # (
+    #     DimensionlessParticle,
+    #     {"mass": 5.2},
+    #     DimensionlessParticle,
+    #     '{"plasmapy_particle": {"type": "DimensionlessParticle", \
+    #     "module": "plasmapy.particles.particle_class", \
+    #     "date_created": "...", "__init__": { \
+    #         "args": [], \
+    #         "kwargs": {"mass": 5.2, "charge": NaN}}}}',
+    #     True,
+    #     None,
+    # ),
+    # (
+    #     CustomParticle,
+    #     {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+    #     CustomParticle,
+    #     '{"plasmapy_particle": {"type": "CustomParticle", \
+    #     "module": "plasmapy.particles.particle_class", \
+    #     "date_created": "...", "__init__": { \
+    #         "args": [], \
+    #         "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+    #     True,
+    #     None,
+    # ),
+]
+
+
+@pytest.mark.parametrize(
+    "cls, kwargs, other_cls, other_kwargs, result, expected_exception",
+    data_equivalence_custom_dimensionless,
+)
+def test_equivalence_custom_dimensionless(
+    cls, kwargs, other_cls, other_kwargs, result, expected_exception
+):
+    """Test ``__eq__`` and ``__ne__`` in the AbstractParticle class for CustomParticle
+    and DimensionlessParticle."""
+    if expected_exception is None:
+        particle1 = cls(**kwargs)
+        # if isinstance(other_kwargs, str):
+        #     #Second argument is a string, use directly
+        #     comp_output = particle1 == other_kwargs
+        # else:
+        # Second argument is a particle, change to object before use
+        particle2 = other_cls(**other_kwargs)
+        comp_output = particle1 == particle2
+
+        assert comp_output == result, pytest.fail(
+            f"Given {cls} {kwargs} and {other_cls} {other_kwargs} "
+            f"expected {result}\n"
+            f"Got {comp_output}"
+        )
+    else:
+        with pytest.raises(expected_exception):
+            particle1 = cls(**kwargs)
+            # if isinstance(other_kwargs, str):
+            #     #Second argument is a string, use directly
+            #     comp_output = particle1 == other_kwargs
+            # else:
+            particle2 = other_cls(**other_kwargs)
+            comp_output = particle1 == particle2
+
+            pytest.fail(
+                f"Given {cls} {kwargs} and {other_cls} {other_kwargs} "
+                f"Did not raise {expected_exception}"
+            )
