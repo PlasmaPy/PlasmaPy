@@ -1,5 +1,11 @@
 {%- extends "!footer.html" %}
 
+{% if page_source_suffix %}
+{% set suffix = page_source_suffix %}
+{% else %}
+{% set suffix = source_suffix %}
+{% endif %}
+
 {% if meta is defined and meta is not none %}
 {% set check_meta = True %}
 {% else %}
