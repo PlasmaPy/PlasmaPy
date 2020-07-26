@@ -146,6 +146,10 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+# A list of prefixes that are ignored for sorting the Python module
+# index (e.g., if this is set to ['foo.'], then foo.bar is shown under
+# B, not F).
+modindex_common_prefix = ["plasmapy."]
 
 # -- Options for HTMLHelp output ------------------------------------------
 
