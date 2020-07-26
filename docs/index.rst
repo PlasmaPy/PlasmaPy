@@ -70,12 +70,4 @@ package for plasma physics currently under development.
    be helpful to have more readily accessible from the main doc index
    page.
 
-*****
-Index
-*****
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 .. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org
