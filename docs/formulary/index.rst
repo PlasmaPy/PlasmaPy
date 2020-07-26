@@ -9,54 +9,49 @@ Formulary (`plasmapy.formulary`)
 `plasmapy.formulary` provides theoretical formulas for calculation of
 physical quantities helpful for plasma physics.
 
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   Classical Transport <braginskii>
-   Collisions <collisions>
-   Dielectrics <dielectric>
-   Dimensionless <dimensionless>
-   Dispersion Relations <dispersionfunction>
-   Distribution Functions <distribution>
-   Drifts <drifts>
-   Ionization <ionization>
-   Magnetostatics <magnetostatics>
-   Mathematics <mathematics>
-   Plasma Parameters <parameters>
-   Quantum Relations <quantum>
-   Relativistic Relations <relativity>
-
 .. table::
    :widths: 5 16
 
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Classical Transport <./braginskii>`          | `plasmapy.formulary.braginskii`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Collisions <./collisions>`                   | `plasmapy.formulary.collisions`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Dielectrics <./dielectric>`                  | `plasmapy.formulary.dielectric`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Dimensionless <./dimensionless>`             | `plasmapy.formulary.dimensionless`      |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Dispersion Relations <./dispersionfunction>` | `plasmapy.formulary.dispersionfunction` |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Distribution Functions <./distribution>`     | `plasmapy.formulary.distribution`       |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Drifts <./drifts>`                           | `plasmapy.formulary.drifts`             |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Ionization <./ionization>`                   | `plasmapy.formulary.ionization`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Magnetostatics <./magnetostatics>`           | `plasmapy.formulary.magnetostatics`     |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Mathematics <./mathematics>`                 | `plasmapy.formulary.mathematics`        |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Plasma Parameters <./parameters>`            | `plasmapy.formulary.parameters`         |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Quantum Relations <./quantum>`               | `plasmapy.formulary.quantum`            |
-   +----------------------------------------------------+-----------------------------------------+
-   | :doc:`Relativistic Relations <./relativity>`       | `plasmapy.formulary.relativity`         |
-   +----------------------------------------------------+-----------------------------------------+
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Classical Transport <braginskii>          | `plasmapy.formulary.braginskii`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Collisions <collisions>                   | `plasmapy.formulary.collisions`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Dielectrics <dielectric>                  | `plasmapy.formulary.dielectric`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Dimensionless <dimensionless>             | `plasmapy.formulary.dimensionless`      |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Dispersion Relations <dispersionfunction> | `plasmapy.formulary.dispersionfunction` |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Distribution Functions <distribution>     | `plasmapy.formulary.distribution`       |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Drifts <drifts>                           | `plasmapy.formulary.drifts`             |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Magnetostatics <magnetostatics>           | `plasmapy.formulary.magnetostatics`     |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Mathematics <mathematics>                 | `plasmapy.formulary.mathematics`        |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Plasma Parameters <parameters>            | `plasmapy.formulary.parameters`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Quantum Relations <quantum>               | `plasmapy.formulary.quantum`            |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Relativistic Relations <relativity>       | `plasmapy.formulary.relativity`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
