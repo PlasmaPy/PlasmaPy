@@ -135,6 +135,10 @@ html_theme = "sphinx_rtd_theme"
 html_logo = "./_static/with-text-light-190px.png"
 html_theme_options = {
     "logo_only": True,
+
+    # TOC options
+    #   https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
+    "includehidden": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
