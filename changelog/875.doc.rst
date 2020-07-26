@@ -1,0 +1,9 @@
+Add various improvements to the documentation.
+    * Replace home link with the plasmapy logo.
+    * Add module and index navigation links to sidebar header.
+    * Replace raw html on the main page that simulates a `nbgallery` with a real
+      `nbgallery` directive.
+    * Move link to view page source code from the header to footer.
+    * Add link to footer the jumps the user back to the top of the page.
+    * Create and add custom CSS stylesheet.
+    * Create `_templates` directory and templates to customize page elements.
