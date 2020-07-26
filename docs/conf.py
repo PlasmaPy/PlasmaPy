@@ -245,3 +245,4 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
+    app.add_stylesheet("rtd_theme_overrides.css")
