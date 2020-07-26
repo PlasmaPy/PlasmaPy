@@ -69,16 +69,9 @@ package for plasma physics currently under development.
    CODE_OF_CONDUCT
    about/citation
 
-* `PlasmaPy's GitHub repository
-  <https://github.com/PlasmaPy/plasmapy>`_
-* `PlasmaPy website
-  <http://www.plasmapy.org/>`_
-* `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
-
 .. toctree::
    :maxdepth: 1
    :caption: Package features
-   :hidden:
 
    Diagnostics <diagnostics/index>
    Formulary <formulary/index>
@@ -88,9 +81,8 @@ package for plasma physics currently under development.
    Package Utilities <utils/index>
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Guide for Contributors
-   :hidden:
 
    Overview <development/index>
    development/code_guide
@@ -99,15 +91,13 @@ package for plasma physics currently under development.
    development/release_guide
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: All the Rest
-   :hidden:
 
    about/credits
    whatsnew/index
    about/stability
    PlasmaPy.org <https://www.plasmapy.org>
-
 
 .. The about PlasmaPy section has some important information that would
    be helpful to have more readily accessible from the main doc index
