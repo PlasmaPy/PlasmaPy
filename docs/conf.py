@@ -21,6 +21,7 @@
 import os
 import sys
 
+from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
@@ -72,8 +73,8 @@ master_doc = "index"
 
 # General information about the project.
 project = "PlasmaPy"
-copyright = "2015-2020, PlasmaPy Community"
 author = "PlasmaPy Community"
+copyright = f"2015-{datetime.utcnow().year}, {author}"
 
 
 # The version info for the project you're documenting, acts as replacement for
@@ -131,13 +132,24 @@ html_theme = "sphinx_rtd_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_logo = "./_static/with-text-light-190px.png"
+html_theme_options = {
+    "logo_only": True,
+    #
+    # TOC options
+    #   https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html#theme-options
+    "includehidden": False,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
+html_static_path = ["_static"]
 
+# A list of prefixes that are ignored for sorting the Python module
+# index (e.g., if this is set to ['foo.'], then foo.bar is shown under
+# B, not F).
+modindex_common_prefix = ["plasmapy."]
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -237,3 +249,4 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
+    app.add_stylesheet("rtd_theme_overrides.css")
