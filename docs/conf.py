@@ -21,6 +21,7 @@
 import os
 import sys
 
+from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
@@ -72,8 +73,8 @@ master_doc = "index"
 
 # General information about the project.
 project = "PlasmaPy"
-copyright = "2015-2020, PlasmaPy Community"
 author = "PlasmaPy Community"
+copyright = f"2015-{datetime.utcnow().year}, {author}"
 
 
 # The version info for the project you're documenting, acts as replacement for
