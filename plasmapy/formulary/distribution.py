@@ -711,7 +711,7 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     .. math::
 
-       f = 4 \pi \left v^{2} (\pi v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
+       f = 4 \pi v^{2} (\pi v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
