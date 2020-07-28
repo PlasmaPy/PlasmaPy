@@ -1,0 +1,1 @@
+Improved the release guide after the release of 0.4.0.

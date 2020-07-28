@@ -55,7 +55,6 @@ package for plasma physics currently under development.
    development/code_guide
    development/doc_guide
    development/testing_guide
-   development/release_guide
 
 .. toctree::
    :maxdepth: 1
