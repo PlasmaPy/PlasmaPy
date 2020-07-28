@@ -105,6 +105,9 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     `TypeError`
         If the inputs are not of the correct types.
 
+    Examples
+    --------
+
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
 
