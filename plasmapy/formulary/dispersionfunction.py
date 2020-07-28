@@ -1,9 +1,11 @@
-import numbers
-from typing import Union
+__all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
+import astropy.units as u
+import numbers
 import numpy as np
-from astropy import units as u
+
 from scipy.special import wofz as Faddeeva_function
+from typing import Union
 
 
 def plasma_dispersion_func(
