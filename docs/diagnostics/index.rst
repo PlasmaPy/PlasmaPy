@@ -5,7 +5,7 @@ Plasma diagnostics (`plasmapy.diagnostics`)
 *******************************************
 
 .. automodapi:: plasmapy.diagnostics
-    :no-heading:
+   :no-heading:
 
 .. toctree::
    :maxdepth: 1
