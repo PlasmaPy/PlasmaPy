@@ -48,10 +48,10 @@ def nuclear_binding_energy(
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_reaction_energy` : Return the change in
+    nuclear_reaction_energy : Return the change in
         binding energy during nuclear fusion or fission reactions.
 
-    `~plasmapy.particles.mass_energy` : Return the mass energy of a
+    mass_energy : Return the mass energy of a
         nucleon or particle.
 
     Examples
@@ -155,7 +155,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_binding_energy` : finds the binding energy
+    nuclear_binding_energy : finds the binding energy
         of an isotope
 
     Notes
