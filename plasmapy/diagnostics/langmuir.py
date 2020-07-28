@@ -18,11 +18,11 @@ __all__ = [
     "get_EEDF",
 ]
 
+import astropy.units as u
 import copy
-
-import astropy.constants.si as const
 import numpy as np
-from astropy import units as u
+
+from astropy.constants import si as const
 from astropy.visualization import quantity_support
 from scipy.optimize import curve_fit
 
