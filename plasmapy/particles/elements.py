@@ -1,7 +1,11 @@
 """
-Dictionaries containing basic atomic data.
+Module for loading elemental data from :file:`plasmapy/particles/data/elements.json`.
 
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
+
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, then examine the code itself.
 """
 __all__ = []
 

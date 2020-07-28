@@ -1,6 +1,9 @@
 """
-Create a dictionary containing basic information for isotopes and
-neutrons.
+Module for loading isotope data from :file:`plasmapy/particles/data/isotopes.json`.
+
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, then examine the code itself.
 """
 __all__ = []
 
