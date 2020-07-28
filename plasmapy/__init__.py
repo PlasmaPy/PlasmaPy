@@ -16,7 +16,16 @@ __all__ = [
     "__citation__",
 ]
 
+# Enforce Python version check during package import.
+# This is the same check as the one at the top of setup.py
 import sys
+
+if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
+    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
+
+# Packages may add whatever they like to this file, but
+# should keep this content at the top.
+# ----------------------------------------------------------------------------
 import pkg_resources
 
 from . import (
@@ -27,15 +36,6 @@ from . import (
     simulation,
     utils,
 )
-
-# Enforce Python version check during package import.
-# This is the same check as the one at the top of setup.py
-if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
-    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
-
-# Packages may add whatever they like to this file, but
-# should keep this content at the top.
-# ----------------------------------------------------------------------------
 
 # define version
 try:
