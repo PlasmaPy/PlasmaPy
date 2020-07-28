@@ -53,10 +53,23 @@ from plasmapy.particles.symbols import (
 
 # Create instances of the most commonly used particles
 
+#: PlasmaPy particle object for a proton
 proton = Particle("p+")
+
+#: PlasmaPy particle object for an electron
 electron = Particle("e-")
+
+#: PlasmaPy particle object for a neutron
 neutron = Particle("n")
+
+#: PlasmaPy particle object for a positron
 positron = Particle("e+")
+
+#: PlasmaPy particle object for a deuteron
 deuteron = Particle("D 1+")
+
+#: PlasmaPy particle object for a triton
 triton = Particle("T 1+")
+
+#: PlasmaPy particle object for an alpha particle
 alpha = Particle("He-4 2+")

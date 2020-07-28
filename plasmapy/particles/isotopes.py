@@ -26,11 +26,13 @@ import pkgutil
 
 
 def _isotope_obj_hook(obj):
+    """An `object_hook` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
 
 
+#: Dictionary of isotope data.
 _Isotopes = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
     object_hook=_isotope_obj_hook,

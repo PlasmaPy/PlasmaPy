@@ -124,6 +124,7 @@ class _ParticleZooClass:
         return self._taxonomy_dict["matter"] | self._taxonomy_dict["antimatter"]
 
 
+#: Instance of `_ParticleZooClass`.
 ParticleZoo = _ParticleZooClass()
 
 

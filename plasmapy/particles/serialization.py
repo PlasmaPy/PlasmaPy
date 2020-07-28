@@ -1,3 +1,6 @@
+"""
+Functionality for JSON deserialization of PlasmaPy particles.
+"""
 __all__ = [
     "json_load_particle",
     "json_loads_particle",
