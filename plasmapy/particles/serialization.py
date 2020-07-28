@@ -8,6 +8,7 @@ __all__ = [
 ]
 
 import json
+
 from plasmapy.particles.exceptions import InvalidElementError
 from plasmapy.particles.particle_class import (
     AbstractParticle,

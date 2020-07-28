@@ -6,15 +6,15 @@ from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
 )
-
-from ..parsing import (  # duplicate with utils.pytest_helpers.error_messages.call_string?
+from plasmapy.particles.parsing import (
+    # duplicate with utils.pytest_helpers.error_messages.call_string?
     _case_insensitive_aliases,
     _case_sensitive_aliases,
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
-    call_string,
 )
-from ..special_particles import ParticleZoo
+from plasmapy.particles.special_particles import ParticleZoo
+from plasmapy.utils import call_string
 
 
 def _particle_call_string(arg, kwargs=None) -> str:
