@@ -1,4 +1,5 @@
-""" This module gathers functions relating to ionization states and the properties thereof.
+"""
+This module gathers functions relating to ionization states and the properties thereof.
 """
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 
@@ -7,10 +8,7 @@ import astropy.units as u
 from astropy.constants import a0, k_B
 from numpy import pi, exp, sqrt, log
 
-from plasmapy.utils.decorators import (
-    check_relativistic,
-    validate_quantities,
-)
+from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
