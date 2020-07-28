@@ -2,11 +2,11 @@
 Create a dictionary containing basic information for isotopes and
 neutrons.
 """
-
-import json
-import pkgutil
+__all__ = []
 
 import astropy.units as u
+import json
+import pkgutil
 
 # this code was used to create the JSON file as per vn-ki on Riot:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/

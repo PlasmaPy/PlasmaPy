@@ -2,6 +2,12 @@
 Functions that deal with string representations of atomic symbols
 and numbers.
 """
+__all__ = [
+    "atomic_symbol",
+    "element_name",
+    "isotope_symbol",
+    "ionic_symbol",
+]
 
 from numbers import Integral
 from typing import Optional
@@ -17,14 +23,6 @@ from .decorators import particle_input
 # respectively.  The Particle class constructor will raise an
 # InvalidParticleError if the input does not correspond to a valid
 # particle.
-
-__all__ = [
-    "atomic_symbol",
-    "isotope_symbol",
-    "ionic_symbol",
-    "particle_input",
-    "element_name",
-]
 
 
 @particle_input

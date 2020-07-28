@@ -43,13 +43,13 @@ __all__ = [
     "wuh_",
 ]
 
+import astropy.units as u
 import numbers
-import warnings
-from typing import Optional
-
 import numpy as np
-from astropy import units as u
+import warnings
+
 from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+from typing import Optional
 
 from plasmapy import particles
 from plasmapy.utils import PhysicsError

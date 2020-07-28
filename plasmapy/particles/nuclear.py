@@ -1,10 +1,10 @@
 """Functions that are related to nuclear reactions."""
 __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
+import astropy.units as u
 import re
-from typing import List, Optional, Union
 
-from astropy import units as u
+from typing import List, Optional, Union
 
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 from plasmapy.particles.particle_class import Particle

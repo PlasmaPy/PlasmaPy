@@ -1,11 +1,11 @@
 """Functionality to parse representations of particles into standard form."""
 
 import re
-import warnings
-from numbers import Integral
-from typing import Dict, Optional, Union
-
 import numpy as np
+import warnings
+
+from numbers import Integral
+from typing import Dict, Union
 
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
