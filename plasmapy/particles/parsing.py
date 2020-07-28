@@ -1,4 +1,11 @@
-"""Functionality to parse representations of particles into standard form."""
+"""
+Functionality to parse representations of particles into standard form.
+
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, then examine the code itself.
+"""
+__all__ = []
 
 import re
 import numpy as np
