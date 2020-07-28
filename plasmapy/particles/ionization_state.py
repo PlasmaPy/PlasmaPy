@@ -24,6 +24,7 @@ _number_density_errmsg = (
 # TODO: Change `State` into a class with validations for all of the
 # TODO: attributes.
 
+#: Named tuple class for representing an ionization state (`collections.namedtuple`).
 State = collections.namedtuple(
     "State", ["integer_charge", "ionic_fraction", "ionic_symbol", "number_density"]
 )
