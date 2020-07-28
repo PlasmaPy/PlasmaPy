@@ -5,7 +5,7 @@ The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 
 .. attention::
     This module only contains non-public functionality.  To learn more about the
-    package functionality, then examine the code itself.
+    package functionality, examine the code itself.
 """
 __all__ = []
 
