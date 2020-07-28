@@ -1,7 +1,7 @@
 """
 Module used to define the framework needed for the `particle_input` decorator.
-The decorator to takes string and/or integer representations of particles
-as arguments and pass through the corresponding instance of the
+The decorator takes string and/or integer representations of particles
+as arguments and passes through the corresponding instance of the
 `~plasmapy.particles.Particle` class.
 """
 __all__ = ["particle_input"]
