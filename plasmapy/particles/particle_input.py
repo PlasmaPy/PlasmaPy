@@ -1,12 +1,15 @@
 """
-A decorator to take string and/or integer representations of particles
+Module used to define the framework needed for the `particle_input` decorator.
+The decorator to takes string and/or integer representations of particles
 as arguments and pass through the corresponding instance of the
 `~plasmapy.particles.Particle` class.
 """
+__all__ = ["particle_input"]
 
 import functools
 import inspect
 import numbers
+
 from typing import Any, Callable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.exceptions import (
@@ -17,10 +20,7 @@ from plasmapy.particles.exceptions import (
     InvalidIsotopeError,
     InvalidParticleError,
 )
-
-from .particle_class import Particle
-
-__all__ = ["particle_input"]
+from plasmapy.particles.particle_class import Particle
 
 
 def _particle_errmsg(
