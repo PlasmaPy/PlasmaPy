@@ -1,24 +1,4 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
-
-from numbers import Integral, Real
-from typing import Any, List, Optional, Union
-
-import astropy.constants as const
-import astropy.units as u
-import numpy as np
-
-from plasmapy.particles.elements import _Elements
-from plasmapy.particles.exceptions import (
-    InvalidElementError,
-    InvalidIsotopeError,
-    InvalidParticleError,
-    MissingAtomicDataError,
-)
-from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_input import particle_input
-from plasmapy.particles.symbols import atomic_symbol
-
 __all__ = [
     "atomic_number",
     "mass_number",
@@ -38,6 +18,27 @@ __all__ = [
     "periodic_table_block",
     "periodic_table_category",
 ]
+
+import astropy.constants as const
+import astropy.units as u
+
+from numbers import Integral, Real
+from typing import Any, List, Optional, Union
+
+from plasmapy.particles.elements import _Elements
+from plasmapy.particles.exceptions import (
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingAtomicDataError,
+)
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.symbols import atomic_symbol
+
+
+__all__.sort()
 
 
 @particle_input

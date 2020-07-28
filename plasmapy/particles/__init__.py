@@ -36,7 +36,7 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,

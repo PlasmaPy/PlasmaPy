@@ -7,7 +7,7 @@ from numbers import Integral
 from typing import Optional
 
 from .particle_class import Particle
-from .particle_input import particle_input
+from .decorators import particle_input
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle

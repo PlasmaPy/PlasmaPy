@@ -1,4 +1,5 @@
 """Functions that are related to nuclear reactions."""
+__all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
 import re
 from typing import List, Optional, Union
@@ -7,9 +8,7 @@ from astropy import units as u
 
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_input import particle_input
-
-__all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
+from plasmapy.particles.decorators import particle_input
 
 
 @particle_input(any_of={"isotope", "baryon"})

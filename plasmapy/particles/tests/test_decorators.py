@@ -12,7 +12,7 @@ from plasmapy.particles.exceptions import (
 )
 
 from ..particle_class import Particle
-from ..particle_input import particle_input
+from ..decorators import particle_input
 
 
 @particle_input
