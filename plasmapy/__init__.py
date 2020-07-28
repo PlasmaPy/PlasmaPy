@@ -47,6 +47,8 @@ try:
     #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
     #       but then __version__ will not be updated with each commit, it is
     #       frozen to the version at time of install.
+    #
+    #: PlasmaPy version string
     __version__ = pkg_resources.get_distribution("plasmapy").version
 except pkg_resources.DistributionNotFound:
     # package is not installed
@@ -79,8 +81,7 @@ except pkg_resources.DistributionNotFound:
     del fallback_version, warn_add
 
 # ----------------------------------------------------------------------------
-
-
+#: PlasmaPy citation instructions
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
     "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
