@@ -19,7 +19,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import ParticleZoo, _Particles
-from plasmapy.utils import call_string, roman
+from plasmapy.utils import roman
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
