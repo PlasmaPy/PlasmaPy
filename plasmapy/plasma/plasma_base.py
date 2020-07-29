@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod, abstractproperty
 
 __all__ = ["BasePlasma", "GenericPlasma"]
 
+from abc import ABC, abstractmethod
+
 
 class BasePlasma(ABC):
     """
@@ -31,23 +33,28 @@ class BasePlasma(ABC):
     # For reference, see
     # https://github.com/sunpy/ndcube/blob/master/ndcube/ndcube.py#L26
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def electron_temperature(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def ion_temperature(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def electron_density(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def ion_density(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def average_ionization(self):
         raise NotImplementedError
 
