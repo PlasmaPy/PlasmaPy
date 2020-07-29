@@ -1,8 +1,10 @@
-import os
-from distutils.version import StrictVersion
+__all__ = ["HDF5Reader"]
 
 import astropy.units as u
 import numpy as np
+import os
+
+from distutils.version import StrictVersion
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
