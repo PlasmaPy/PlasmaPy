@@ -1,3 +1,8 @@
+"""
+Module for defining the frame work around the plasma factory.
+"""
+__all__ = ["PlasmaFactory", "Plasma"]
+
 from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils.datatype_factory_base import (
     BasicRegistrationFactory,
