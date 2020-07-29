@@ -188,6 +188,5 @@ class Plasma3D(GenericPlasma):
                 # get coordinate
                 p = self.grid[(slice(None),) + point_index]  # function as [:, *index]
                 # calculate magnetic field at this point and add back
-                self.magnetic_field[
-                    (slice(None),) + point_index
-                ] += mstat.magnetic_field(p)
+                self.magnetic_field[(slice(None),) + point_index] += \
+                    mstat.magnetic_field(p)
