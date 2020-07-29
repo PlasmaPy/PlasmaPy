@@ -67,7 +67,7 @@ class GenericPlasma(BasePlasma):
     """
 
     def __init__(self, **kwargs):
-        pass
+        super().__init__(**kwargs)
 
     # The definitions for the abstract methods declared in `BasePlasma`
     # goes here.
