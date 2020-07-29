@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod, abstractproperty
-
+"""
+Module for defining the base framework of the plasma classes.
+"""
 __all__ = ["BasePlasma", "GenericPlasma"]
 
 from abc import ABC, abstractmethod
