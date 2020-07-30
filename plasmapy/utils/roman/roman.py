@@ -11,13 +11,6 @@ it under the terms of the Python 2.1.1 license, available at
 https://www.python.org/download/releases/2.1.1/license/
 
 """
-
-import re
-from numbers import Integral
-from typing import Union
-
-import numpy as np
-
 __all__ = [
     "RomanError",
     "OutOfRangeError",
@@ -26,6 +19,12 @@ __all__ = [
     "from_roman",
     "is_roman_numeral",
 ]
+
+import numpy as np
+import re
+
+from numbers import Integral
+from typing import Union
 
 
 class RomanError(Exception):
