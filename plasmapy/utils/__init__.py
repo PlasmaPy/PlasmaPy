@@ -14,7 +14,6 @@ __all__ = [
 
 from plasmapy.utils import (
     decorators,
-    pytest_helpers,
     datatype_factory_base,
     error_messages,
     exceptions,
@@ -30,3 +29,10 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
+
+try:
+    from plasmapy.utils import pytest_helpers
+except ModuleNotFoundError:
+    # pytest is not a hard dependency, so only import pytest_helpers is pytest
+    # is installed
+    pass
