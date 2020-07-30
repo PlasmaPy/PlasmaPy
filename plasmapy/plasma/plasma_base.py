@@ -11,7 +11,7 @@ class BasePlasma(ABC):
     Registration class for `~plasmapy.plasma.GenericPlasma` and declares
     some abstract methods for data common in different kinds of plasmas.
 
-    This class checks for the existance of a method named ``is_datasource_for``
+    This class checks for the existence of a method named ``is_datasource_for``
     when a subclass of `GenericPlasma` is defined. If it exists it will add that
     class to the registry.
     """
@@ -67,7 +67,7 @@ class GenericPlasma(BasePlasma):
     """
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        pass
 
     # The definitions for the abstract methods declared in `BasePlasma`
     # goes here.
