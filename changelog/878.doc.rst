@@ -1,0 +1,3 @@
+Add static stub files to `docs/api_static` so all modules of `plasmapy` are indexed.
+This is necessary to expose all of `plasmapy` since not all modules are indexed in
+the narrative documentation.
