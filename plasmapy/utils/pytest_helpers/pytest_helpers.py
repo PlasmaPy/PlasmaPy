@@ -1,16 +1,22 @@
 """Test helper utilities."""
-import collections
-import functools
-import inspect
-import warnings
-from typing import Any, Callable, Dict
+__all__ = [
+    "assert_can_handle_nparray",
+    "run_test",
+    "run_test_equivalent_calls",
+]
 
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
+import collections
 import colorama
+import functools
+import inspect
 import numpy as np
 import pytest
+import warnings
+
+from typing import Any, Callable, Dict
 
 from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
@@ -37,8 +43,6 @@ _type_color = f"{_magenta}{_bold}"
 _func_color = f"{_cyan}{_bold}"
 _result_color = f"{_blue}{_bold}"
 _message_color = f"{_red}{_bold}"
-
-__all__ = ["run_test", "run_test_equivalent_calls", "assert_can_handle_nparray"]
 
 
 def _process_input(wrapped_function: Callable):
