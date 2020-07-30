@@ -49,11 +49,16 @@ class HDF5Reader(GenericPlasma):
 
     Parameters
     ----------
-        hdf5 : `str`
-            Path to HDF5 file.
+    hdf5 : `str`
+        Path to HDF5 file.
+
+    **kwargs
+        Any keyword accepted by `GenericPlasma`.
+
     """
     def __init__(self, hdf5, **kwargs):
         super().__init__(**kwargs)
+
         if not os.path.isfile(hdf5):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
         try:
