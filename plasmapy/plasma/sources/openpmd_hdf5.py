@@ -56,6 +56,7 @@ class HDF5Reader(GenericPlasma):
         Any keyword accepted by `GenericPlasma`.
 
     """
+
     def __init__(self, hdf5, **kwargs):
         super().__init__(**kwargs)
 
