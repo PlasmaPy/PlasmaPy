@@ -12,9 +12,6 @@ https://www.python.org/download/releases/2.1.1/license/
 
 """
 __all__ = [
-    "RomanError",
-    "OutOfRangeError",
-    "InvalidRomanNumeralError",
     "to_roman",
     "from_roman",
     "is_roman_numeral",
@@ -26,30 +23,10 @@ import re
 from numbers import Integral
 from typing import Union
 
-
-class RomanError(Exception):
-    """A base exception for errors from `~plasmapy.utils.roman`."""
-
-    pass
-
-
-class OutOfRangeError(RomanError):
-    """
-    An exception to be raised for integers that outside of the range
-    that can be converted to Roman numerals.
-    """
-
-    pass
-
-
-class InvalidRomanNumeralError(RomanError):
-    """
-    An exception to be raised when the input is not a valid Roman
-    numeral.
-    """
-
-    pass
-
+from plasmapy.utils.exceptions import (
+    OutOfRangeError,
+    InvalidRomanNumeralError,
+)
 
 # Define digit mapping
 _romanNumeralMap = (
