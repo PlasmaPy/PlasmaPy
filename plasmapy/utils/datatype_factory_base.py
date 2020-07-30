@@ -29,14 +29,19 @@
 # Project     : https://github.com/sunpy/sunpy
 # File        : sunpy/util/datatype_factory_base.py
 # Commit hash : f6330eea602ea796b5b004dee283b8877b24da23
-
+__all__ = [
+    "BasicRegistrationFactory",
+    "MultipleMatchError",
+    "NoMatchError",
+    "ValidationFunctionError",
+]
 
 import inspect
 
 
 class BasicRegistrationFactory:
     """
-    Generalized registerable factory type.
+    Generalized registrable factory type.
 
     Widgets (classes) can be registered with an instance of this class.
     Arguments to the factory's `__call__` method are then passed to a function
