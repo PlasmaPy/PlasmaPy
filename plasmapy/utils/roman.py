@@ -82,7 +82,7 @@ def to_roman(n: Union[Integral, np.integer]) -> str:
     TypeError
         If the input is not an integer.
 
-    ~plasmapy.utils.roman.OutOfRangeError
+    OutOfRangeError
         If the number is not between 1 and 4999, inclusive.
 
     See Also
@@ -129,7 +129,7 @@ def from_roman(s: str) -> Integral:
     TypeError
         The argument is not a `str`.
 
-    ~plasmapy.utils.roman.InvalidRomanNumeralError
+    InvalidRomanNumeralError
         The argument is not a valid Roman numeral.
 
     See Also
