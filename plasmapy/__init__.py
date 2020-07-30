@@ -28,7 +28,7 @@ if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from . import (
+from plasmapy import (
     diagnostics,
     formulary,
     particles,
