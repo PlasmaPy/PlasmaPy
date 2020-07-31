@@ -44,6 +44,7 @@ class RomanError(PlasmaPyError):
 
     pass
 
+
 # ^^^^^^^^^^^^ Base Exceptions should be defined above this comment ^^^^^^^^^^^^
 
 
@@ -72,6 +73,7 @@ class InvalidRomanNumeralError(RomanError):
 
     pass
 
+
 # ------------------------------------------------------------------------------
 #   Warnings
 # ------------------------------------------------------------------------------
@@ -96,6 +98,7 @@ class PhysicsWarning(PlasmaPyWarning):
     """The base warning for warnings related to non-physical situations."""
 
     pass
+
 
 # ^^^^^^^^^^^^^ Base Warnings should be defined above this comment ^^^^^^^^^^^^^
 
