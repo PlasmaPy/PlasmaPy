@@ -1,14 +1,20 @@
 """
-Dictionaries containing basic atomic data.
+Module for loading atomic data for elements from
+:file:`plasmapy/particles/data/elements.json`.
 
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
-"""
 
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, examine the code itself.
+"""
+__all__ = []
+
+import astropy.units as u
 import collections
 import json
 import pkgutil
 
-import astropy.units as u
 
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ["group", "category", "block", "period"]

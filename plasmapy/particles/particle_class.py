@@ -16,7 +16,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
-from numbers import Complex, Integral, Real
+from numbers import Integral, Real
 from typing import List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable

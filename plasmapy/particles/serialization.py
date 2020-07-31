@@ -1,3 +1,6 @@
+"""
+Functionality for JSON deserialization of PlasmaPy particles.
+"""
 __all__ = [
     "json_load_particle",
     "json_loads_particle",
@@ -5,6 +8,7 @@ __all__ = [
 ]
 
 import json
+
 from plasmapy.particles.exceptions import InvalidElementError
 from plasmapy.particles.particle_class import (
     AbstractParticle,

@@ -1,12 +1,10 @@
-from plasmapy.plasma.plasma_base import GenericPlasma
-from plasmapy.utils.datatype_factory_base import (
-    BasicRegistrationFactory,
-    MultipleMatchError,
-    NoMatchError,
-    ValidationFunctionError,
-)
-
+"""
+Module for defining the framework around the plasma factory.
+"""
 __all__ = ["PlasmaFactory", "Plasma"]
+
+from plasmapy.plasma.plasma_base import GenericPlasma
+from plasmapy.utils.datatype_factory_base import BasicRegistrationFactory
 
 
 class PlasmaFactory(BasicRegistrationFactory):

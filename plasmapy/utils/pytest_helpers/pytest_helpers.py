@@ -1,16 +1,22 @@
 """Test helper utilities."""
-import collections
-import functools
-import inspect
-import warnings
-from typing import Any, Callable, Dict
+__all__ = [
+    "assert_can_handle_nparray",
+    "run_test",
+    "run_test_equivalent_calls",
+]
 
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
+import collections
 import colorama
+import functools
+import inspect
 import numpy as np
 import pytest
+import warnings
+
+from typing import Any, Callable, Dict
 
 from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
@@ -37,8 +43,6 @@ _type_color = f"{_magenta}{_bold}"
 _func_color = f"{_cyan}{_bold}"
 _result_color = f"{_blue}{_bold}"
 _message_color = f"{_red}{_bold}"
-
-__all__ = ["run_test", "run_test_equivalent_calls", "assert_can_handle_nparray"]
 
 
 def _process_input(wrapped_function: Callable):
@@ -126,22 +130,22 @@ def run_test(
 
     Raises
     ------
-    UnexpectedResultError
+    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
         If the test returns a result that is different from the expected
         result.
 
-    InconsistentTypeError
+    ~plasmapy.utils.pytest_helpers.InconsistentTypeError
         If the actual result is of a different type than the expected
         result.
 
-    UnexpectedExceptionError
+    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
         If an exception occurs when no exception or a different
         exception is expected.
 
-    MissingExceptionError
+    ~plasmapy.utils.pytest_helpers.MissingExceptionError
         If no exception is raised when an exception is expected.
 
-    MissingWarningError
+    ~plasmapy.utils.pytest_helpers.MissingWarningError
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -441,16 +445,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.utils.UnexpectedResultError
+    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
         If not all of the results are equivalent, or not all of the
         results are of the same type and `require_same_type` evaluates
         to `True`.
 
-    ~plasmapy.utils.UnexpectedExceptionError
+    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.utils.InvalidTestError
+    ~plasmapy.utils.pytest_helpers.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -665,7 +669,7 @@ def assert_can_handle_nparray(
 
     Raises
     ------
-    ~ValueError
+    ValueError
         If this function cannot interpret a parameter of function_to_test,
 
     Examples

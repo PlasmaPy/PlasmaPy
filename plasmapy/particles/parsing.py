@@ -1,11 +1,18 @@
-"""Functionality to parse representations of particles into standard form."""
+"""
+Functionality to parse representations of particles into standard form.
+
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, examine the code itself.
+"""
+__all__ = []
 
 import re
-import warnings
-from numbers import Integral
-from typing import Dict, Optional, Union
-
 import numpy as np
+import warnings
+
+from numbers import Integral
+from typing import Dict, Union
 
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
@@ -19,7 +26,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import ParticleZoo, _Particles
-from plasmapy.utils import call_string, roman
+from plasmapy.utils import roman
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):

@@ -1,15 +1,15 @@
 """
 Class representing a group of particles.
 """
+__all__ = ["ParticleTracker"]
 
+import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
+
 from astropy import constants
-from astropy import units as u
 
 from plasmapy.particles import atomic
-
-__all__ = ["ParticleTracker"]
 
 
 class ParticleTracker:

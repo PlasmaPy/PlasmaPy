@@ -1,3 +1,9 @@
+"""
+Collection of `Exceptions` and `Warnings` for functionality defined in
+`plasmapy.plasma`.
+"""
+__all__ = ["DataStandardError"]
+
 from plasmapy.utils import PlasmaPyError
 
 

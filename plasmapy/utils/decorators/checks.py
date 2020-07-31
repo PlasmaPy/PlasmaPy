@@ -1280,12 +1280,12 @@ def check_relativistic(func=None, betafrac=0.05):
     ValueError
         If `V` contains any `~numpy.nan` values.
 
-    ~plasmapy.utils.RelativityError
+    ~plasmapy.utils.exceptions.RelativityError
         If `V` is greater than or equal to the speed of light.
 
     Warns
     -----
-    ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If `V` is greater than or equal to `betafrac` times the speed of light,
         but less than the speed of light.
 

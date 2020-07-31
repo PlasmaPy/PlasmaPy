@@ -1,51 +1,43 @@
 """
-PlasmaPy: A plasma physics Python package
-================================================
-
-Documentation is available in the docstrings,
-online at https://docs.plasmapy.org (accessible also using
-the ``plasmapy.online_help`` function).
-
-Contents
---------
-PlasmaPy provides the following functionality:
-
-Subpackages
------------
-Each of these subpackages (except for `formulary` and `particles` requires an
-explicit import, for example, via ``import plasmapy.diagnostics``.
-
-::
-
- particles                         --- Database for atoms, isotopes, ions...
- plasma                            --- (WIP) `Plasma` class
- data                              --- Data used for testing and examples
- diagnostics                       --- Experimental research data analysis
- formulary                         --- Plasma theory analysis formulae
- utils                             --- Various utilities
-
-Utility tools
--------------
-::
-
- online_help       --- Search the online documentation
- __version__       --- PlasmaPy version string
- __citation__      --- PlasmaPy citation instructions
-
+Welcome to the `plasmapy` package, an open source community-developed Python
+package for the plasma community.  Documentation is available in the docstrings
+and online at https://docs.plasmapy.org (accessible also using the
+:func:`~plasmapy.online_help` function).
 """
-# Licensed under a 3-clause BSD style license - see LICENSE.rst
+__all__ = [
+    "online_help",
+    "diagnostics",
+    "formulary",
+    "particles",
+    "plasma",
+    "simulation",
+    "utils",
+    "__version__",
+    "__citation__",
+]
 
 # Enforce Python version check during package import.
 # This is the same check as the one at the top of setup.py
 import sys
+
+if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
+    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from . import formulary, particles
+from plasmapy import (
+    diagnostics,
+    formulary,
+    particles,
+    plasma,
+    simulation,
+    utils,
+)
 
+# define version
 try:
     # this places a runtime dependency on setuptools
     #
@@ -55,6 +47,8 @@ try:
     #       as editable (e.g. `pip install -e {plasmapy_directory_root}`),
     #       but then __version__ will not be updated with each commit, it is
     #       frozen to the version at time of install.
+    #
+    #: PlasmaPy version string
     __version__ = pkg_resources.get_distribution("plasmapy").version
 except pkg_resources.DistributionNotFound:
     # package is not installed
@@ -86,17 +80,12 @@ except pkg_resources.DistributionNotFound:
         del warn
     del fallback_version, warn_add
 
-
 # ----------------------------------------------------------------------------
-
-
+#: PlasmaPy citation instructions
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
     "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
 )
-
-if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
-    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
 
 
 def online_help(query):

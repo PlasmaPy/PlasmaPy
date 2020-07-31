@@ -2,12 +2,13 @@
 Classes, sets, and dictionaries to store data and taxonomy
 information for special particles.
 """
+__all__ = ["ParticleZoo", "_ParticleZooClass"]
+
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
 
 from typing import Dict, Set
-
-import numpy as np
-from astropy import constants as const
-from astropy import units as u
 
 from plasmapy.particles.elements import _PeriodicTable
 
@@ -123,6 +124,7 @@ class _ParticleZooClass:
         return self._taxonomy_dict["matter"] | self._taxonomy_dict["antimatter"]
 
 
+#: Instance of `_ParticleZooClass`.
 ParticleZoo = _ParticleZooClass()
 
 

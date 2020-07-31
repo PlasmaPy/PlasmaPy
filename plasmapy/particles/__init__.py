@@ -2,15 +2,8 @@
 The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
-__all__ = [
-    "json_load_particle",
-    "json_loads_particle",
-    "AbstractParticle",
-    "CustomParticle",
-    "DimensionlessParticle",
-    "Particle",
-    "ParticleJSONDecoder",
-]
+# __all__ will be auto populated below
+__all__ = []
 
 from plasmapy.particles.atomic import (
     atomic_number,
@@ -36,7 +29,7 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.particle_input import particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
@@ -53,10 +46,29 @@ from plasmapy.particles.symbols import (
 
 # Create instances of the most commonly used particles
 
+#: PlasmaPy particle object for a proton
 proton = Particle("p+")
+
+#: PlasmaPy particle object for an electron
 electron = Particle("e-")
+
+#: PlasmaPy particle object for a neutron
 neutron = Particle("n")
+
+#: PlasmaPy particle object for a positron
 positron = Particle("e+")
+
+#: PlasmaPy particle object for a deuteron
 deuteron = Particle("D 1+")
+
+#: PlasmaPy particle object for a triton
 triton = Particle("T 1+")
+
+#: PlasmaPy particle object for an alpha particle
 alpha = Particle("He-4 2+")
+
+# auto populate __all__
+for obj_name in list(globals()):
+    if not (obj_name.startswith("__") or obj_name.endswith("__")):
+        __all__.append(obj_name)
+__all__.sort()

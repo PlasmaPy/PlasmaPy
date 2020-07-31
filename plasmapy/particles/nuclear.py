@@ -1,15 +1,14 @@
 """Functions that are related to nuclear reactions."""
+__all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
+import astropy.units as u
 import re
-from typing import List, Optional, Union
 
-from astropy import units as u
+from typing import List, Optional, Union
 
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_input import particle_input
-
-__all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
+from plasmapy.particles.decorators import particle_input
 
 
 @particle_input(any_of={"isotope", "baryon"})
@@ -48,10 +47,10 @@ def nuclear_binding_energy(
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_reaction_energy` : Return the change in
+    nuclear_reaction_energy : Return the change in
         binding energy during nuclear fusion or fission reactions.
 
-    `~plasmapy.particles.mass_energy` : Return the mass energy of a
+    mass_energy : Return the mass energy of a
         nucleon or particle.
 
     Examples
@@ -106,6 +105,9 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     `TypeError`
         If the inputs are not of the correct types.
 
+    Examples
+    --------
+
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
 
@@ -155,7 +157,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_binding_energy` : finds the binding energy
+    nuclear_binding_energy : finds the binding energy
         of an isotope
 
     Notes

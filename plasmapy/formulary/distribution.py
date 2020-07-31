@@ -3,13 +3,6 @@ Common distribution functions for plasmas, such as the Maxwelian or
 Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
-import astropy as astropy
-import numpy as np
-from astropy import units as u
-from scipy.special import gamma
-
-from plasmapy.formulary import parameters
-
 __all__ = [
     "Maxwellian_1D",
     "Maxwellian_velocity_2D",
@@ -20,6 +13,14 @@ __all__ = [
     "kappa_velocity_1D",
     "kappa_velocity_3D",
 ]
+
+import astropy as astropy
+import numpy as np
+
+from astropy import units as u
+from scipy.special import gamma
+
+from plasmapy.formulary import parameters
 
 
 def _v_drift_units(v_drift):

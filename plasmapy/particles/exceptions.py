@@ -1,3 +1,19 @@
+"""
+Collection of `Exceptions` and `Warnings` for PlasmaPy particles.
+"""
+__all__ = [
+    "AtomicError",
+    "AtomicWarning",
+    "ChargeError",
+    "InvalidElementError",
+    "InvalidIonError",
+    "InvalidIsotopeError",
+    "InvalidParticleError",
+    "MissingAtomicDataError",
+    "MissingAtomicDataWarning",
+    "UnexpectedParticleError",
+]
+
 from plasmapy.utils import PlasmaPyError, PlasmaPyWarning
 
 

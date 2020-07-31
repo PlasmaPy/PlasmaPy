@@ -1,24 +1,4 @@
 """Functions that retrieve or are related to elemental or isotopic data."""
-
-from numbers import Integral, Real
-from typing import Any, List, Optional, Union
-
-import astropy.constants as const
-import astropy.units as u
-import numpy as np
-
-from plasmapy.particles.elements import _Elements
-from plasmapy.particles.exceptions import (
-    InvalidElementError,
-    InvalidIsotopeError,
-    InvalidParticleError,
-    MissingAtomicDataError,
-)
-from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_input import particle_input
-from plasmapy.particles.symbols import atomic_symbol
-
 __all__ = [
     "atomic_number",
     "mass_number",
@@ -38,6 +18,27 @@ __all__ = [
     "periodic_table_block",
     "periodic_table_category",
 ]
+
+import astropy.constants as const
+import astropy.units as u
+
+from numbers import Integral, Real
+from typing import Any, List, Optional, Union
+
+from plasmapy.particles.elements import _Elements
+from plasmapy.particles.exceptions import (
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingAtomicDataError,
+)
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.symbols import atomic_symbol
+
+
+__all__.sort()
 
 
 @particle_input
@@ -69,7 +70,7 @@ def atomic_number(element: Particle) -> Integral:
 
     See Also
     --------
-    `~plasmapy.particles.mass_number` : returns the mass number (the total
+    mass_number : returns the mass number (the total
         number of protons and neutrons) of an isotope.
 
     Examples
@@ -117,7 +118,7 @@ def mass_number(isotope: Particle) -> Integral:
 
     See Also
     --------
-    `~plasmapy.particles.atomic_number` : returns the number of protons in
+    atomic_number : returns the number of protons in
         an isotope or element
 
     Examples
@@ -560,10 +561,10 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     See Also
     --------
-    `~plasmapy.particles.common_isotopes` : returns isotopes with non-zero
+    ~plasmapy.particles.common_isotopes : returns isotopes with non-zero
         isotopic abundances.
 
-    `~plasmapy.particles.stable_isotopes` : returns isotopes that are
+    ~plasmapy.particles.stable_isotopes : returns isotopes that are
         stable against radioactive decay.
 
     Examples
@@ -663,13 +664,13 @@ def common_isotopes(
 
     See Also
     --------
-    `~plasmapy.utils.known_isotopes` : returns a list of isotopes that
+    ~plasmapy.utils.known_isotopes : returns a list of isotopes that
         have been discovered.
 
-    `~plasmapy.utils.stable_isotopes` : returns isotopes that are stable
+    ~plasmapy.utils.stable_isotopes : returns isotopes that are stable
         against radioactive decay.
 
-    `~plasmapy.utils.isotopic_abundance` : returns the relative isotopic
+    ~plasmapy.utils.isotopic_abundance : returns the relative isotopic
          abundance.
 
     Examples
@@ -784,10 +785,10 @@ def stable_isotopes(
 
     See Also
     --------
-    `~plasmapy.particles.known_isotopes` : returns a list of isotopes that
+    ~plasmapy.particles.known_isotopes : returns a list of isotopes that
         have been discovered
 
-    `~plasmapy.particles.common_isotopes` : returns isotopes with non-zero
+    ~plasmapy.particles.common_isotopes : returns isotopes with non-zero
         isotopic abundances
 
     Examples
@@ -941,10 +942,10 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    `~plasmapy.particles.periodic_table_group` : returns periodic table
+    ~plasmapy.particles.periodic_table_group : returns periodic table
         group of element.
 
-    `~plasmapy.particles.periodic_table_block` : returns periodic table
+    ~plasmapy.particles.periodic_table_block : returns periodic table
         block of element.
 
     Examples
@@ -994,13 +995,13 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    `~plasmapy.particles.periodic_table_period` : returns periodic table
+    ~plasmapy.particles.periodic_table_period : returns periodic table
         period of element.
 
-    `~plasmapy.particles.periodic_table_block` : returns periodic table
+    ~plasmapy.particles.periodic_table_block : returns periodic table
         block of element.
 
-    `~plasmapy.particles.periodic_table_category` : returns periodic table
+    ~plasmapy.particles.periodic_table_category : returns periodic table
         category of element.
 
     Examples
@@ -1052,13 +1053,13 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    `~plasmapy.particles.periodic_table_period` : returns periodic table
+    ~plasmapy.particles.periodic_table_period : returns periodic table
         period of element.
 
-    `~plasmapy.particles.periodic_table_group` : returns periodic table
+    ~plasmapy.particles.periodic_table_group : returns periodic table
         group of element.
 
-    `~plasmapy.particles.periodic_table_category` : returns periodic table
+    ~plasmapy.particles.periodic_table_category : returns periodic table
         category of element.
 
     Examples
@@ -1110,13 +1111,13 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    `~plasmapy.particles.periodic_table_period` : returns periodic table
+    ~plasmapy.particles.periodic_table_period : returns periodic table
         period of element.
 
-    `~plasmapy.particles.periodic_table_group` : returns periodic table
+    ~plasmapy.particles.periodic_table_group : returns periodic table
         group of element.
 
-    `~plasmapy.particles.periodic_table_block` : returns periodic table
+    ~plasmapy.particles.periodic_table_block : returns periodic table
         block of element.
 
     Examples

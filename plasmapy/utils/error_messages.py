@@ -1,9 +1,10 @@
+__all__ = ["call_string"]
+
+import astropy.units as u
+import colorama
+
 from typing import Any, Callable, Dict
 
-import colorama
-from astropy import units as u
-
-__all__ = ["call_string"]
 
 _bold = colorama.Style.BRIGHT
 _magenta = colorama.Fore.MAGENTA

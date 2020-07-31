@@ -1,6 +1,9 @@
-from abc import ABC, abstractmethod, abstractproperty
-
+"""
+Module for defining the base framework of the plasma classes.
+"""
 __all__ = ["BasePlasma", "GenericPlasma"]
+
+from abc import ABC, abstractmethod
 
 
 class BasePlasma(ABC):
@@ -8,7 +11,7 @@ class BasePlasma(ABC):
     Registration class for `~plasmapy.plasma.GenericPlasma` and declares
     some abstract methods for data common in different kinds of plasmas.
 
-    This class checks for the existance of a method named ``is_datasource_for``
+    This class checks for the existence of a method named ``is_datasource_for``
     when a subclass of `GenericPlasma` is defined. If it exists it will add that
     class to the registry.
     """
@@ -31,23 +34,28 @@ class BasePlasma(ABC):
     # For reference, see
     # https://github.com/sunpy/ndcube/blob/master/ndcube/ndcube.py#L26
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def electron_temperature(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def ion_temperature(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def electron_density(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def ion_density(self):
         raise NotImplementedError
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def average_ionization(self):
         raise NotImplementedError
 
@@ -55,7 +63,7 @@ class BasePlasma(ABC):
 class GenericPlasma(BasePlasma):
     """
     A Generic Plasma class. This class contains definitions for abstract
-    methods declared in the `~plasmapy.plasma.plasma_base.BaseClass`.
+    methods declared in the `BasePlasma`.
     """
 
     def __init__(self, **kwargs):

@@ -1,8 +1,10 @@
-import os
-from distutils.version import StrictVersion
+__all__ = ["HDF5Reader"]
 
 import astropy.units as u
 import numpy as np
+import os
+
+from distutils.version import StrictVersion
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -39,27 +41,24 @@ def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VER
 
 
 class HDF5Reader(GenericPlasma):
+    """
+    .. _OpenPMD: http://openpmd.org/
+
+    Core class for accessing various attributes on HDF5 files that
+    are based on OpenPMD_ standards.
+
+    Parameters
+    ----------
+    hdf5 : `str`
+        Path to HDF5 file.
+
+    **kwargs
+        Any keyword accepted by `GenericPlasma`.
+
+    """
+
     def __init__(self, hdf5, **kwargs):
-        """
-        Core class for accessing various attributes on HDF5 files that
-        are based on OpenPMD standards.
-
-        Attributes
-        ----------
-        electric_field : `astropy.units.Quantity`
-            An (x, y, z) array containing electric field data.
-        charge_density : `astropy.units.Quantity`
-            An array containing charge density data.
-
-        Parameters
-        ----------
-        hdf5 : `str`
-            Path to HDF5 file.
-
-        References
-        ----------
-        .. [1] http://openpmd.org/
-        """
+        super().__init__(**kwargs)
 
         if not os.path.isfile(hdf5):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
@@ -107,6 +106,10 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def electric_field(self):
+        """
+        An (x, y, z) array containing electric field data.  (Returned as an astropy
+        `~astropy.units.Quantity`.)
+        """
         path = f"data/{self.subname}/fields/E"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
@@ -117,6 +120,10 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def charge_density(self):
+        """
+        An array containing charge density data.  (Returned as an astropy
+        `~astropy.units.Quantity`.)
+        """
         path = f"data/{self.subname}/fields/rho"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
