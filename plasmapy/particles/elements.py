@@ -1,5 +1,6 @@
 """
-Module for loading elemental data from :file:`plasmapy/particles/data/elements.json`.
+Module for loading atomic data for elements from
+:file:`plasmapy/particles/data/elements.json`.
 
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 
