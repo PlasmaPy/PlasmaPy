@@ -1,5 +1,5 @@
 """
-Module for defining the frame work around the plasma factory.
+Module for defining the framework around the plasma factory.
 """
 __all__ = ["PlasmaFactory", "Plasma"]
 
