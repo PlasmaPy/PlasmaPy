@@ -10,6 +10,10 @@ __all__ = [
     "PlasmaPyWarning",
     "RelativityError",
     "RelativityWarning",
+    "call_string",
+    "decorators",
+    "exceptions",
+    "roman",
 ]
 
 from plasmapy.utils import (
