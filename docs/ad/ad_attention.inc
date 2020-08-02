@@ -1,4 +1,4 @@
-.. attention::
+.. important::
    The Analysis and Diagnostic framework is in active development at the moment.
    For the foreseeable future, the api will be in continuous flux as functionality
    is added and modified.  To follow the package development please visit our
