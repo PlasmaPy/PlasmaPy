@@ -15,7 +15,6 @@ import collections
 import json
 import pkgutil
 
-
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ["group", "category", "block", "period"]
 )

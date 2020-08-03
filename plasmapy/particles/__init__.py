@@ -20,6 +20,7 @@ from plasmapy.particles.atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.ionization_state import IonizationState, State
 from plasmapy.particles.ionization_states import IonizationStates
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
@@ -29,7 +30,6 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,

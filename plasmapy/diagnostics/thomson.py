@@ -11,12 +11,12 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
-from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-from plasmapy.particles import Particle
-from plasmapy.utils.decorators import validate_quantities
 from typing import List, Tuple, Union
 
+from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
+from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
+from plasmapy.particles import Particle
+from plasmapy.utils.decorators import validate_quantities
 
 # TODO: interface for inputting a multi-species configuration could be
 # simplified using the plasmapy.classes.plasma_base class if that class

@@ -12,12 +12,12 @@ from .dimensionless import *
 from .dispersionfunction import *
 from .distribution import *
 from .drifts import *
+from .ionization import *
 from .magnetostatics import *
 from .mathematics import *
 from .parameters import *
 from .quantum import *
 from .relativity import *
-from .ionization import *
 
 # auto populate __all__
 for obj_name in list(globals()):

@@ -832,8 +832,8 @@ def Hall_parameter(
 
     """
     from plasmapy.formulary.collisions import (
-        fundamental_ion_collision_freq,
         fundamental_electron_collision_freq,
+        fundamental_ion_collision_freq,
     )
 
     gyro_frequency = gyrofrequency(B, particle)

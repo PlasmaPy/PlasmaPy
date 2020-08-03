@@ -1,14 +1,13 @@
-import collections
-
 import astropy.units as u
+import collections
 import numpy as np
 import pytest
 
 from plasmapy.particles import (
-    Particle,
     atomic_number,
     atomic_symbol,
     isotope_symbol,
+    Particle,
     particle_symbol,
 )
 from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
