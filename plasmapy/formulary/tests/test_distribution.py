@@ -17,6 +17,7 @@ from ..distribution import (
     kappa_velocity_3D,
 )
 from ..parameters import kappa_thermal_speed, thermal_speed
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 # test class for Maxwellian_1D (velocity) function:
 
@@ -208,7 +209,10 @@ class Test_Maxwellian_speed_1D(object):
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = thermal_speed(
+                self.T, particle=self.particle, method="most_probable"
+            )
         self.v = 1e5 * u.m / u.s
         self.v_drift = 0 * u.m / u.s
         self.v_drift2 = 1e5 * u.m / u.s
@@ -338,7 +342,10 @@ class Test_Maxwellian_velocity_2D(object):
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = thermal_speed(
+                self.T, particle=self.particle, method="most_probable"
+            )
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vx_drift = 0 * u.m / u.s
@@ -498,7 +505,10 @@ class Test_Maxwellian_speed_2D(object):
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = thermal_speed(
+                self.T, particle=self.particle, method="most_probable"
+            )
         self.v = 1e5 * u.m / u.s
         self.v_drift = 0 * u.m / u.s
         self.v_drift2 = 1e5 * u.m / u.s
@@ -632,7 +642,10 @@ class Test_Maxwellian_velocity_3D(object):
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = thermal_speed(
+                self.T, particle=self.particle, method="most_probable"
+            )
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s
@@ -809,7 +822,10 @@ class Test_Maxwellian_speed_3D(object):
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = thermal_speed(self.T, particle=self.particle, method="most_probable")
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = thermal_speed(
+                self.T, particle=self.particle, method="most_probable"
+            )
         self.v = 1e5 * u.m / u.s
         self.v_drift = 0 * u.m / u.s
         self.v_drift2 = 1e5 * u.m / u.s
@@ -1176,7 +1192,10 @@ class Test_kappa_velocity_3D(object):
         self.kappaInvalid = 3 / 2
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
-        self.vTh = kappa_thermal_speed(self.T, kappa=self.kappa, particle=self.particle)
+        with pytest.warns(ImplicitUnitConversionWarning):
+            self.vTh = kappa_thermal_speed(
+                self.T, kappa=self.kappa, particle=self.particle
+            )
         self.vx = 1e5 * u.m / u.s
         self.vy = 1e5 * u.m / u.s
         self.vz = 1e5 * u.m / u.s

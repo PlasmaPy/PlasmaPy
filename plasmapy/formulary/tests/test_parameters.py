@@ -483,7 +483,7 @@ class Test_kappa_thermal_speed(object):
     @classmethod
     def setup_class(self):
         """initializing parameters for tests """
-        self.T_e = 5 * u.eV
+        self.T_e = (5 * u.eV).to(u.K, equivalencies=u.temperature_energy())
         self.kappaInvalid = 3 / 2
         self.kappa = 4
         self.particle = "p"

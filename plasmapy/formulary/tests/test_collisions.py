@@ -19,7 +19,7 @@ from plasmapy.formulary.collisions import (
     mobility,
 )
 from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
+from plasmapy.utils.exceptions import CouplingWarning, ImplicitUnitConversionWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 
@@ -33,7 +33,7 @@ class Test_Coulomb_logarithm:
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.temperature2 = 1 * 11604 * u.K
         self.density2 = 1e23 * u.cm ** -3
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.particles = ("e", "p")
         self.gms1 = 3.4014290066940966
         self.gms1_negative = -3.4310536971592493
@@ -56,11 +56,11 @@ class Test_Coulomb_logarithm:
         [
             {"method": "classical"},
             {"method": "GMS-1"},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "GMS-3"},
             {"method": "GMS-4"},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -71,13 +71,14 @@ class Test_Coulomb_logarithm:
 
     def test_unknown_method(self):
         """Test that function will raise ValueError on non-existent method"""
-        with pytest.raises(ValueError):
-            Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                method="welcome our new microsoft overlords",
-            )
+        with pytest.warns(ImplicitUnitConversionWarning):
+            with pytest.raises(ValueError):
+                Coulomb_logarithm(
+                    self.T_arr[0],
+                    self.n_arr[0],
+                    self.particles,
+                    method="welcome our new microsoft overlords",
+                )
 
     def test_handle_invalid_V(self):
         """Test that V default, V = None, and V = np.nan all give the same result"""
@@ -107,18 +108,19 @@ class Test_Coulomb_logarithm:
 
     def test_handle_zero_V(self):
         """Test that V == 0 returns a PhysicsError"""
-        with pytest.raises(exceptions.PhysicsError):
-            Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=0 * u.m / u.s,
-            )
+        with pytest.warns(ImplicitUnitConversionWarning):
+            with pytest.raises(exceptions.PhysicsError):
+                Coulomb_logarithm(
+                    self.T_arr[0],
+                    self.n_arr[0],
+                    self.particles,
+                    z_mean=1 * u.dimensionless_unscaled,
+                    V=0 * u.m / u.s,
+                )
 
     def test_handle_V_arraysizes(self):
         """Test that different sized V input array gets handled by _boilerplate"""
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(ImplicitUnitConversionWarning):
             methodVal_0 = Coulomb_logarithm(
                 self.T_arr[0],
                 self.n_arr[0],
@@ -653,10 +655,11 @@ class Test_impact_parameter_perp:
             impact_parameter_perp, insert_some_nans, insert_all_nans, {}
         )
 
-    assert np.isclose(
-        Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ("e", "e")),
-        Coulomb_logarithm(11604.5220 * u.K, 5 * u.m ** -3, ("e", "e")),
-    )
+    with pytest.warns(ImplicitUnitConversionWarning):
+        assert np.isclose(
+            Coulomb_logarithm(1 * u.eV, 5 * u.m ** -3, ("e", "e")),
+            Coulomb_logarithm(11604.5220 * u.K, 5 * u.m ** -3, ("e", "e")),
+        )
 
 
 class Test_impact_parameter:
@@ -668,7 +671,7 @@ class Test_impact_parameter:
         self.n_e = 1e17 * u.cm ** -3
         self.n_e_arr = np.array([1e17, 2e17]) * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
@@ -737,11 +740,11 @@ class Test_impact_parameter:
         [
             {"method": "classical"},
             {"method": "GMS-1"},
-            {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "GMS-2", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "GMS-3"},
             {"method": "GMS-4"},
-            {"method": "GMS-5", "z_mean": 1.0},
-            {"method": "GMS-6", "z_mean": 1.0},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
+            {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
@@ -755,7 +758,8 @@ class Test_impact_parameter:
         Test to verify that if T is scalar and n is vector, bmin will be extended
         to the same length as bmax
         """
-        (bmin, bmax) = impact_parameter(1 * u.eV, self.n_e_arr, self.particles)
+        with pytest.warns(ImplicitUnitConversionWarning):
+            (bmin, bmax) = impact_parameter(1 * u.eV, self.n_e_arr, self.particles)
         assert len(bmin) == len(bmax)
 
 
@@ -768,7 +772,7 @@ class Test_collision_frequency:
         self.particles = ("e", "p")
         self.electrons = ("e", "e")
         self.protons = ("p", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.3468281539854646e12
         self.True_electrons = 1904702641552.1638
@@ -945,7 +949,7 @@ class Test_mean_free_path:
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 4.4047571877932046e-07
 
@@ -1008,7 +1012,7 @@ class Test_Spitzer_resistivity:
         self.T = 11604 * u.K
         self.n = 1e12 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 1.2665402649805445e-3
         self.True_zmean = 0.00020264644239688712
@@ -1088,7 +1092,7 @@ class Test_mobility:
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 0.13066090887074902
         self.True_zmean = 0.32665227217687254
@@ -1169,7 +1173,7 @@ class Test_Knudsen_number:
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 440.4757187793204
 
@@ -1236,7 +1240,7 @@ class Test_coupling_parameter:
         self.T = 11604 * u.K
         self.n_e = 1e21 * u.cm ** -3
         self.particles = ("e", "p")
-        self.z_mean = 2.5
+        self.z_mean = 2.5 * u.dimensionless_unscaled
         self.V = 1e4 * u.km / u.s
         self.True1 = 2.3213156755481195
         self.True_zmean = 10.689750083758698
