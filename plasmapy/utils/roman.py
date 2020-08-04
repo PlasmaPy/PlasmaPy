@@ -23,10 +23,7 @@ import re
 from numbers import Integral
 from typing import Union
 
-from plasmapy.utils.exceptions import (
-    OutOfRangeError,
-    InvalidRomanNumeralError,
-)
+from plasmapy.utils.exceptions import InvalidRomanNumeralError, OutOfRangeError
 
 # Define digit mapping
 _romanNumeralMap = (

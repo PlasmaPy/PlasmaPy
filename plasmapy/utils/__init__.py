@@ -17,8 +17,8 @@ __all__ = [
 ]
 
 from plasmapy.utils import (
-    decorators,
     datatype_factory_base,
+    decorators,
     error_messages,
     exceptions,
     roman,
