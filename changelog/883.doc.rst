@@ -1,0 +1,3 @@
+Decompose sub-package `plasmapy/utils/roman/` into the `plasmapy/utils/roman.py`
+file.  Move definition of `roman` specific `Exceptions` into
+`plasmapy.utils.exceptions`.
