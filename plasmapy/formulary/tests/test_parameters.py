@@ -52,6 +52,7 @@ from plasmapy.utils.exceptions import (
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
+    ImplicitUnitConversionWarning,
 )
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
@@ -844,7 +845,10 @@ def test_Debye_length():
 
     assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
 
-    assert np.isclose(Debye_length(1 * u.eV, 1 * u.cm ** -3).value, 7.43, atol=0.005)
+    with pytest.warns(ImplicitUnitConversionWarning):
+        assert np.isclose(
+            Debye_length(1 * u.eV, 1 * u.cm ** -3).value, 7.43, atol=0.005
+        )
 
     with pytest.warns(u.UnitsWarning):
         Debye_length(5, 5 * u.m ** -3)
@@ -852,7 +856,7 @@ def test_Debye_length():
     with pytest.raises(u.UnitTypeError):
         Debye_length(56 * u.kg, 5 * u.m ** -3)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError), pytest.warns(ImplicitUnitConversionWarning):
         Debye_length(5 * u.eV, -5 * u.m ** -3)
 
     with pytest.raises(ValueError):
@@ -878,9 +882,13 @@ def test_Debye_number():
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
     T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-    assert np.isclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value)
+    with pytest.warns(ImplicitUnitConversionWarning):
+        assert np.isclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value)
 
-    assert np.isclose(Debye_number(1 * u.eV, 1 * u.cm ** -3).value, 1720862385.43342)
+    with pytest.warns(ImplicitUnitConversionWarning):
+        assert np.isclose(
+            Debye_number(1 * u.eV, 1 * u.cm ** -3).value, 1720862385.43342
+        )
 
     with pytest.warns(u.UnitsWarning):
         Debye_number(T_e, 4)
