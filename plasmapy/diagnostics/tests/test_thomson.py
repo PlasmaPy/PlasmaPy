@@ -8,6 +8,7 @@ import pytest
 
 from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 
 def width_at_value(x, y, val):
@@ -18,7 +19,8 @@ def width_at_value(x, y, val):
     return np.abs(np.nanmax(above) - np.nanmin(above))
 
 
-def gen_collective_spectrum():
+@pytest.fixture
+def collective_spectrum():
     """
     Generates an example Thomson scattering spectrum in the collective regime
     """
@@ -32,22 +34,24 @@ def gen_collective_spectrum():
     Ti = np.array([10]) * u.eV
     ion_species = ["C-12 5+"]
 
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        ne,
-        Te,
-        Ti,
-        fract=fract,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
+    with pytest.warns(ImplicitUnitConversionWarning):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            Ti,
+            fract=fract,
+            ion_species=ion_species,
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
 
     return alpha, wavelengths, Skw
 
 
-def gen_multiple_ion_species_spectrum():
+@pytest.fixture
+def multiple_ion_species_spectrum():
     """
     Generates an example Thomson scattering spectrum for multiple ion species
     that also have drift velocities. Parameters are set to be in the
@@ -67,24 +71,26 @@ def gen_multiple_ion_species_spectrum():
     # Use this to also test passing in ion species as Particle objects
     ion_species = [Particle("p+"), Particle("C-12 5+")]
 
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        ne,
-        Te,
-        Ti,
-        fract=fract,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-        fluid_vel=fluid_vel,
-        ion_vel=ion_vel,
-    )
+    with pytest.warns(ImplicitUnitConversionWarning):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            Ti,
+            fract=fract,
+            ion_species=ion_species,
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+            fluid_vel=fluid_vel,
+            ion_vel=ion_vel,
+        )
 
     return alpha, wavelengths, Skw
 
 
-def gen_non_collective_spectrum():
+@pytest.fixture()
+def non_collective_spectrum():
     """
     Generates an example Thomson scattering spectrum in the non-collective
     regime
@@ -99,17 +105,18 @@ def gen_non_collective_spectrum():
     Ti = np.array([10]) * u.eV
     ion_species = ["H+"]
 
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        ne,
-        Te,
-        Ti,
-        fract=fract,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
+    with pytest.warns(ImplicitUnitConversionWarning):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            ne,
+            Te,
+            Ti,
+            fract=fract,
+            ion_species=ion_species,
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
 
     return alpha, wavelengths, Skw
 
@@ -129,52 +136,55 @@ def test_different_input_types():
 
     # Raise a ValueError with inconsistent ion array lengths
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            ne,
-            Te,
-            Ti,
-            fract=np.array([0.5, 0.5]),
-            ion_species=ion_species,
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
+        with pytest.warns(ImplicitUnitConversionWarning):
+            alpha, Skw = thomson.spectral_density(
+                wavelengths,
+                probe_wavelength,
+                ne,
+                Te,
+                Ti,
+                fract=np.array([0.5, 0.5]),
+                ion_species=ion_species,
+                probe_vec=probe_vec,
+                scatter_vec=scatter_vec,
+            )
 
     # Raise a ValueError with inconsistent ion temperature array
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            ne,
-            Te,
-            np.array([5, 5]) * u.eV,
-            fract=fract,
-            ion_species=ion_species,
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
+        with pytest.warns(ImplicitUnitConversionWarning):
+            alpha, Skw = thomson.spectral_density(
+                wavelengths,
+                probe_wavelength,
+                ne,
+                Te,
+                np.array([5, 5]) * u.eV,
+                fract=fract,
+                ion_species=ion_species,
+                probe_vec=probe_vec,
+                scatter_vec=scatter_vec,
+            )
 
     # Raise a ValueError with empty ion_species
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            ne,
-            Te,
-            Ti,
-            fract=fract,
-            ion_species=[],
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
+        with pytest.warns(ImplicitUnitConversionWarning):
+            alpha, Skw = thomson.spectral_density(
+                wavelengths,
+                probe_wavelength,
+                ne,
+                Te,
+                Ti,
+                fract=fract,
+                ion_species=[],
+                probe_vec=probe_vec,
+                scatter_vec=scatter_vec,
+            )
 
 
-def test_collective_spectrum():
+def test_collective_spectrum(collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
     """
-    alpha, wavelength, Skw = gen_collective_spectrum()
+    alpha, wavelength, Skw = collective_spectrum
 
     # Check that alpha is correct
     assert np.isclose(alpha.value, 1.801, atol=0.01), (
@@ -198,11 +208,11 @@ def test_collective_spectrum():
     )
 
 
-def test_non_collective_spectrum():
+def test_non_collective_spectrum(non_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
     """
-    alpha, wavelength, Skw = gen_non_collective_spectrum()
+    alpha, wavelength, Skw = non_collective_spectrum
 
     # Check that alpha is correct
     assert np.isclose(alpha.value, 0.05707, atol=0.01), (
@@ -219,12 +229,12 @@ def test_non_collective_spectrum():
     )
 
 
-def test_multiple_ion_species_spectrum():
+def test_multiple_ion_species_spectrum(multiple_ion_species_spectrum):
     """
     Compares the generated spectrum to previously determined values
     """
 
-    alpha, wavelength, Skw = gen_multiple_ion_species_spectrum()
+    alpha, wavelength, Skw = multiple_ion_species_spectrum
 
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
