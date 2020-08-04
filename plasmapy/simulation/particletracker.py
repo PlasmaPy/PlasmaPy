@@ -206,8 +206,9 @@ class ParticleTracker:
 
     def plot_trajectories(self):  # coverage: ignore
         r"""Draws trajectory history."""
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
@@ -233,8 +234,9 @@ class ParticleTracker:
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()

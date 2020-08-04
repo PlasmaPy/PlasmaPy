@@ -2,14 +2,15 @@
 dielectry.py"""
 
 import numpy as np
+
 from astropy import units as u
 
 from ..dielectric import (
-    RotatingTensorElements,
-    StixTensorElements,
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
+    RotatingTensorElements,
+    StixTensorElements,
 )
 from ..parameters import gyrofrequency, plasma_frequency, thermal_speed
 

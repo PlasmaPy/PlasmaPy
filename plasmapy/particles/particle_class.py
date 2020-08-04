@@ -38,10 +38,10 @@ from plasmapy.particles.parsing import (
     _parse_and_check_atomic_input,
 )
 from plasmapy.particles.special_particles import (
-    ParticleZoo,
     _antiparticles,
     _Particles,
     _special_ion_masses,
+    ParticleZoo,
 )
 from plasmapy.utils import roman
 

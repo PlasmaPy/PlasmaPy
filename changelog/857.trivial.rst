@@ -1,0 +1,1 @@
+Apply isort to entire codebase, bringing it back to the pre-commit hook suite.

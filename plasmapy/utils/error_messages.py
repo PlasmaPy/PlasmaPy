@@ -5,7 +5,6 @@ import colorama
 
 from typing import Any, Callable, Dict
 
-
 _bold = colorama.Style.BRIGHT
 _magenta = colorama.Fore.MAGENTA
 _blue = colorama.Fore.BLUE

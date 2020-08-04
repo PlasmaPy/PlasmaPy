@@ -29,7 +29,6 @@ sys.path.insert(0, os.path.abspath(".."))
 
 from plasmapy import __version__ as release
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

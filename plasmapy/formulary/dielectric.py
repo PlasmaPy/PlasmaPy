@@ -5,10 +5,10 @@ __all__ = [
     "permittivity_1D_Maxwellian",
 ]
 
-from collections import namedtuple
-
 import numpy as np
+
 from astropy import units as u
+from collections import namedtuple
 from numpy import pi
 
 from plasmapy.formulary import parameters

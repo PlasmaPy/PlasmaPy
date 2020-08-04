@@ -2,14 +2,15 @@
 
 import numpy as np
 import pytest
+
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_p, mu0
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.parameters import (
     Alfven_speed,
-    Bohm_diffusion,
     betaH_,
+    Bohm_diffusion,
     cs_,
     cwp_,
     DB_,
@@ -42,8 +43,8 @@ from plasmapy.formulary.parameters import (
     vth_,
     vth_kappa_,
     wc_,
-    wp_,
     wlh_,
+    wp_,
     wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
