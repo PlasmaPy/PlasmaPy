@@ -811,7 +811,7 @@ def test_plasma_frequency():
 
     assert np.isnan(plasma_frequency(np.nan * u.m ** -3))
 
-    with pytest.warns(u.UnitsWarning):
+    with pytest.warns(u.UnitsWarning), pytest.warns(ImplicitUnitConversionWarning):
         assert plasma_frequency(1e19) == plasma_frequency(1e19 * u.m ** -3)
 
         assert plasma_frequency(n_i, particle="p").unit.is_equivalent(u.rad / u.s)
