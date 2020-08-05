@@ -10,6 +10,7 @@ from astropy import units as u
 from typing import Any, Dict, List
 from unittest import mock
 
+from plasmapy.formulary.parameters import Debye_number
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
 from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
@@ -554,3 +555,9 @@ class TestValidateQuantities:
                 # reset
                 mock_vq_class.reset_mock()
                 mock_foo.reset_mock()
+
+
+def test_no_ImplicitUnitConversionWarning_on_eV_input():
+    with pytest.warns(None) as record:
+        Debye_number(1 * u.eV, 1e20 * u.m ** -3)
+    assert not record, f"Warnings raised: {[warning.message for warning in record]}"
