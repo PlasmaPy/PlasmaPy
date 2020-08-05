@@ -247,19 +247,6 @@ class TestValidateQuantities:
                 },
                 "raises": TypeError,
             },
-            # argument has a non-standard unit conversion
-            {
-                "input": {
-                    "args": (5.0 * u.K, "arg"),
-                    "validations": {
-                        **default_validations,
-                        "units": [u.eV],
-                        "equivalencies": u.temperature_energy(),
-                    },
-                },
-                "output": (5.0 * u.K).to(u.eV, equivalencies=u.temperature_energy()),
-                "warns": ImplicitUnitConversionWarning,
-            },
             # argument has a standard unit conversion
             {
                 "input": {
