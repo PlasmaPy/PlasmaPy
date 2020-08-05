@@ -366,7 +366,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             and not arg_validations["pass_equivalent_units"]
         ):
 
-            if not arg.unit.is_equivalent(unit, equivalencies=None):
+            if not arg.unit.is_equivalent(unit, equivalencies=equiv):
                 # non-standard conversion
                 warnings.warn(
                     ImplicitUnitConversionWarning(
