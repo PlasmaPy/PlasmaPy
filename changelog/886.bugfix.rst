@@ -1,1 +1,1 @@
-Allowed eV inputs for temperatures without conversion warnings.
+Allowed implicit conversions of AstroPy units in inputs and outputs of validated functions to happen without warnings. Most notably, this removes warnings on eV inputs to temperature fields.
