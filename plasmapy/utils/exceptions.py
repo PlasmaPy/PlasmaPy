@@ -8,7 +8,6 @@ __all__ = [
     "RomanError",
     "PlasmaPyWarning",
     "CouplingWarning",
-    "ImplicitUnitConversionWarning",
     "PhysicsWarning",
     "RelativityWarning",
 ]
@@ -115,14 +114,6 @@ class RelativityWarning(PhysicsWarning):
 class CouplingWarning(PhysicsWarning):
     """
     A warning for functions that rely on a particular coupling regime to be valid.
-    """
-
-    pass
-
-
-class ImplicitUnitConversionWarning(PlasmaPyWarning, UnitsWarning):
-    """
-    A warning for an implicit conversion between equivalent :mod:`astropy` units.
     """
 
     pass
