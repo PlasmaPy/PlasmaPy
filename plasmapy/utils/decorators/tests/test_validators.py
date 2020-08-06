@@ -10,9 +10,9 @@ from astropy import units as u
 from typing import Any, Dict, List
 from unittest import mock
 
+from plasmapy.formulary.parameters import Debye_number
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 
 # ----------------------------------------------------------------------------------------
@@ -246,19 +246,6 @@ class TestValidateQuantities:
                 },
                 "raises": TypeError,
             },
-            # argument has a non-standard unit conversion
-            {
-                "input": {
-                    "args": (5.0 * u.K, "arg"),
-                    "validations": {
-                        **default_validations,
-                        "units": [u.eV],
-                        "equivalencies": u.temperature_energy(),
-                    },
-                },
-                "output": (5.0 * u.K).to(u.eV, equivalencies=u.temperature_energy()),
-                "warns": ImplicitUnitConversionWarning,
-            },
             # argument has a standard unit conversion
             {
                 "input": {
@@ -304,9 +291,6 @@ class TestValidateQuantities:
 
             if "warns" in case:
                 with pytest.warns(case["warns"]):
-                    warnings.simplefilter(
-                        "always", category=ImplicitUnitConversionWarning
-                    )
                     _result = vq._validate_quantity(arg, arg_name, validations)
             elif "raises" in case:
                 with pytest.raises(case["raises"]):
