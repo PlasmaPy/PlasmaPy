@@ -12,7 +12,6 @@ from typing import Any, Dict
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 
 class ValidateQuantities(CheckUnits, CheckValues):
