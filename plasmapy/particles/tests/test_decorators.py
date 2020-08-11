@@ -1,6 +1,6 @@
-from typing import List, Optional, Tuple, Union
-
 import pytest
+
+from typing import List, Optional, Tuple, Union
 
 from plasmapy.particles.exceptions import (
     AtomicError,
@@ -11,8 +11,8 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
 )
 
-from ..particle_class import Particle
 from ..decorators import particle_input
+from ..particle_class import Particle
 
 
 @particle_input

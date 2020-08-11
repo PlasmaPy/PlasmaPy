@@ -3,18 +3,19 @@
 import numpy as np
 import pytest
 import scipy.integrate as spint
+
 from astropy import units as u
 from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
 
 from ..distribution import (
+    kappa_velocity_1D,
+    kappa_velocity_3D,
     Maxwellian_1D,
     Maxwellian_speed_1D,
     Maxwellian_speed_2D,
     Maxwellian_speed_3D,
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
-    kappa_velocity_1D,
-    kappa_velocity_3D,
 )
 from ..parameters import kappa_thermal_speed, thermal_speed
 

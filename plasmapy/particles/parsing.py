@@ -7,8 +7,8 @@ Functionality to parse representations of particles into standard form.
 """
 __all__ = []
 
-import re
 import numpy as np
+import re
 import warnings
 
 from numbers import Integral
@@ -25,7 +25,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
 )
 from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.special_particles import ParticleZoo, _Particles
+from plasmapy.particles.special_particles import _Particles, ParticleZoo
 from plasmapy.utils import roman
 
 
