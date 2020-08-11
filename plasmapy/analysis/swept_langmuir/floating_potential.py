@@ -25,7 +25,7 @@ def find_floating_potential(
        the ``threshold`` keyword.
     #. If multiple crossing-islands are found, then an warning issued and
        `~numpy.nan` is returned.
-    #. To calculated the floating potential, a `~scipy.stats.linregress` is applied
+    #. To calculate the floating potential, a `~scipy.stats.linregress` is applied
        to points making up the cross-island.  If the number of points that make
        up the crossing-island are less than ``min_points``, then each side of the
        crossing-island is padded with the nearest neighbors until `min_points` is
