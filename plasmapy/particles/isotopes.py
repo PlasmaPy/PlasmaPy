@@ -11,7 +11,7 @@ import astropy.units as u
 import json
 import pkgutil
 
-# this code was used to create the JSON file as per vn-ki on Riot:
+# this code was used to create the JSON file as per vn-ki on Matrix:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/
 #    $1554667515670438wIKlP:matrix.org?via=matrix.org&via=cadair.com
 #
