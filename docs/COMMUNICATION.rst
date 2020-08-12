@@ -4,7 +4,7 @@ Feedback and Communication
 ==========================
 
 `Matrix chat <https://app.element.io/#/room/#plasmapy:matrix.org>`__
------------------------------------------------------------------
+--------------------------------------------------------------------
 
 The primary communication channel for PlasmaPy is our `Matrix room
 <https://app.element.io/#/room/#plasmapy:openastronomy.org>`__ (which
@@ -37,7 +37,7 @@ for consideration. These will be reposted on the mailing list or
 directly in GitHub issues, as appropriate, for further discussion.
 
 `Weekly <https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ>`__ `community meetings <https://meet.jit.si/plasmapy>`__
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 We have approximately weekly community meetings in the
 `PlasmaPy room on Jitsi <https://meet.jit.si/plasmapy>`__.
 The schedule of our community meetings is on our `calendar
