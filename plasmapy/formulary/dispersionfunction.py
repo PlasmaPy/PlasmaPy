@@ -1,9 +1,11 @@
-import numbers
-from typing import Union
+__all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
+import astropy.units as u
+import numbers
 import numpy as np
-from astropy import units as u
+
 from scipy.special import wofz as Faddeeva_function
+from typing import Union
 
 
 def plasma_dispersion_func(
@@ -46,7 +48,7 @@ def plasma_dispersion_func(
         Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{x-\zeta} dx
 
-    where the argument is a complex number [fried.conte-1961]_.
+    where the argument is a complex number [#]_.
 
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
@@ -55,9 +57,9 @@ def plasma_dispersion_func(
 
     References
     ----------
-    .. [fried.conte-1961] Fried, Burton D. and Samuel D. Conte. 1961.
+    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
        The Plasma Dispersion Function: The Hilbert Transformation of the
-       Gaussian. Academic Press (New York and London).
+       Gaussian. Academic Press (New York and London). ISBN 9781483261737
 
     Examples
     --------
@@ -135,7 +137,13 @@ def plasma_dispersion_func_deriv(
         Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{(x-\zeta)^2} dx
 
-    where the argument is a complex number [fried.conte-1961]_.
+    where the argument is a complex number [#]_.
+
+    References
+    ----------
+    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
+       The Plasma Dispersion Function: The Hilbert Transformation of the
+       Gaussian. Academic Press (New York and London). ISBN 9781483261737
 
     Examples
     --------

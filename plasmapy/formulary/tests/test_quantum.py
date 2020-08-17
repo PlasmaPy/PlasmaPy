@@ -1,18 +1,22 @@
 import astropy.units as u
 import numpy as np
 import pytest
+
 from astropy.constants import c, h
 
 from plasmapy.utils.exceptions import RelativityError
 
 from ..quantum import (
-    Fermi_energy,
-    Thomas_Fermi_length,
-    Wigner_Seitz_radius,
     _chemical_potential_interp,
     chemical_potential,
     deBroglie_wavelength,
+    Ef_,
+    Fermi_energy,
+    lambdaDB_,
+    lambdaDB_th_,
     thermal_deBroglie_wavelength,
+    Thomas_Fermi_length,
+    Wigner_Seitz_radius,
 )
 
 
@@ -226,3 +230,11 @@ class Test__chemical_potential_interp:
             f"and should not be equal to {fail1}."
         )
         assert testTrue, errStr
+
+
+def test_quantum_aliases():
+    r"""Test all aliases defined in quantum.py"""
+
+    assert Ef_ is Fermi_energy
+    assert lambdaDB_ is deBroglie_wavelength
+    assert lambdaDB_th_ is thermal_deBroglie_wavelength

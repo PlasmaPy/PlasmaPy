@@ -1,13 +1,16 @@
 import astropy.units as u
 import numpy as np
 import pytest
+
 from astropy.constants import c
 
 from plasmapy.formulary.dimensionless import (
-    Mag_Reynolds,
-    Reynolds_number,
     beta,
+    Mag_Reynolds,
     quantum_theta,
+    Re_,
+    Reynolds_number,
+    Rm_,
 )
 from plasmapy.utils import RelativityError
 
@@ -70,3 +73,10 @@ def test_Mag_Reynolds():
 
     with pytest.raises(u.UnitTypeError):
         Mag_Reynolds(2.2 * u.kg, L, sigma)
+
+
+def test_dimensionless_aliases():
+    r"""Test all aliases defined in dimensionless.py"""
+
+    assert Re_ is Reynolds_number
+    assert Rm_ is Mag_Reynolds

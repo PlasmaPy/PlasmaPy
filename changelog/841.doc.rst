@@ -1,1 +1,0 @@
-Add notes on the PlasmaPy benchmarks repository to documentation.

@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.particles.special_particles import ParticleZoo, _Particles
+from plasmapy.particles.special_particles import _Particles, ParticleZoo
 
 particle_antiparticle_pairs = [
     ("e-", "e+"),

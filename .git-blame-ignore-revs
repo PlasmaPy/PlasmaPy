@@ -1,0 +1,11 @@
+# This file allows reasonable git blame's without looking at
+# black formatting changes.
+# For details see
+# https://github.com/psf/black/blob/d3cc63316b10c3ddc0e6a97a71130f30598ba5ef/README.md#migrating-your-code-style-without-ruining-git-blame
+
+# Apply black to entire codebase
+8abf3d089c3046383651d0fd9eef4dc96e9f97b7
+39931da8cf1ab6a8f94e1b9490b7de096e409a72
+# Apply isort to entire codebase
+86ce0fabe32f475688c6a389b632733f089a14f0
+9602b5b780c71c3beb955c060d2ad4e5b24cf2cd

@@ -1,1 +1,0 @@
-Renamed the `plasmapy.classes` subpackage to `plasmapy.plasma`.

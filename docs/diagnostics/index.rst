@@ -4,14 +4,12 @@
 Plasma diagnostics (`plasmapy.diagnostics`)
 *******************************************
 
-.. currentmodule:: plasmapy.diagnostics.langmuir
-
-.. automodapi:: plasmapy.diagnostics.langmuir
+.. automodapi:: plasmapy.diagnostics
    :no-heading:
 
-|
+.. toctree::
+   :maxdepth: 1
+   :caption: Sub-Packages and Modules
 
-.. nbgallery::
-    :caption: Examples
-
-    /notebooks/langmuir_analysis
+   langmuir
+   thomson

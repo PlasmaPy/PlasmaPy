@@ -1,9 +1,10 @@
-import os
-
 import astropy.units as u
 import numpy as np
-import plasmapy.plasma
+import os
 import pytest
+
+import plasmapy.plasma
+
 from plasmapy.particles.data.test import data_dir
 
 

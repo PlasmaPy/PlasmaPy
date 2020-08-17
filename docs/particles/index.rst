@@ -38,3 +38,5 @@ Reference/API
 .. automodapi:: plasmapy.particles
    :no-heading:
    :no-main-docstr:
+   :inherited-members:
+   :include-all-objects:
