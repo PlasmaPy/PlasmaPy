@@ -21,13 +21,13 @@ from typing import List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
+    ParticleWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataWarning,
+    MissingParticleDataWarning,
     MissingParticleDataError,
     ParticleError,
 )
@@ -437,7 +437,7 @@ class Particle(AbstractParticle):
             if mass_numb is not None or Z is not None:
                 if particle == "p+" and (mass_numb == 1 or Z == 1):
                     warnings.warn(
-                        "Redundant mass number or charge information.", AtomicWarning
+                        "Redundant mass number or charge information.", ParticleWarning
                     )
                 else:
                     raise InvalidParticleError(
@@ -1295,7 +1295,7 @@ class Particle(AbstractParticle):
             warnings.warn(
                 f"No isotopes of {self.element} have an isotopic abundance. "
                 f"The isotopic abundance of {self.isotope} is being returned as 0.0",
-                AtomicWarning,
+                ParticleWarning,
             )
 
         return abundance
@@ -1378,7 +1378,7 @@ class Particle(AbstractParticle):
             warnings.warn(
                 f"The half-life for {self.particle} is not known precisely; "
                 "returning string with estimated value.",
-                MissingAtomicDataWarning,
+                MissingParticleDataWarning,
             )
 
         if self._attributes["half-life"] is None:
@@ -1871,7 +1871,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
         if self._mass is np.nan:
             warnings.warn(
-                "DimensionlessParticle mass set to NaN", MissingAtomicDataWarning
+                "DimensionlessParticle mass set to NaN", MissingParticleDataWarning
             )
 
     @charge.setter
@@ -1885,7 +1885,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
         if self._charge is np.nan:
             warnings.warn(
-                "DimensionlessParticle charge set to NaN", MissingAtomicDataWarning
+                "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
 
@@ -1998,7 +1998,7 @@ class CustomParticle(AbstractParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn("CustomParticle mass set to NaN kg", MissingAtomicDataWarning)
+            warnings.warn("CustomParticle mass set to NaN kg", MissingParticleDataWarning)
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
@@ -2028,7 +2028,7 @@ class CustomParticle(AbstractParticle):
         if q is None:
             q = np.nan * u.C
             warnings.warn(
-                "CustomParticle charge set to NaN C", MissingAtomicDataWarning
+                "CustomParticle charge set to NaN C", MissingParticleDataWarning
             )
         elif isinstance(q, str):
             q = u.Quantity(q)

@@ -2,7 +2,7 @@ import pytest
 
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
+    ParticleWarning,
     InvalidElementError,
     InvalidParticleError,
 )
@@ -364,7 +364,7 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
     under the required conditions.  """
 
-    with pytest.warns(AtomicWarning) as record:
+    with pytest.warns(ParticleWarning) as record:
         _parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(

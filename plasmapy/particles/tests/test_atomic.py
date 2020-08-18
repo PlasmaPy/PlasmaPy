@@ -5,7 +5,7 @@ from astropy import constants as const
 from astropy import units as u
 
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
+    ParticleWarning,
     ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
@@ -154,13 +154,13 @@ isotope_symbol_table = [
     ["h-3", {}, InvalidParticleError],
     ["h", {}, InvalidParticleError],
     ["d+", {}, InvalidParticleError],
-    ["H-1", {"mass_numb": 1}, AtomicWarning],
-    ["H-2", {"mass_numb": 2}, AtomicWarning],
-    ["T", {"mass_numb": 3}, AtomicWarning],
-    ["Li-6", {"mass_numb": 6}, AtomicWarning],
-    ["lithium-6", {"mass_numb": 6}, AtomicWarning],
-    ["alpha", {"mass_numb": 4}, AtomicWarning],
-    ["p", {"mass_numb": 1}, AtomicWarning],
+    ["H-1", {"mass_numb": 1}, ParticleWarning],
+    ["H-2", {"mass_numb": 2}, ParticleWarning],
+    ["T", {"mass_numb": 3}, ParticleWarning],
+    ["Li-6", {"mass_numb": 6}, ParticleWarning],
+    ["lithium-6", {"mass_numb": 6}, ParticleWarning],
+    ["alpha", {"mass_numb": 4}, ParticleWarning],
+    ["p", {"mass_numb": 1}, ParticleWarning],
 ]
 
 atomic_number_table = [
@@ -296,7 +296,7 @@ particle_mass_table = [
     ["Og", {"mass_numb": 696, "Z": 1}, InvalidParticleError],
     ["He 1+", {"mass_numb": 99}, InvalidParticleError],
     ["fe-56 1+", {}, InvalidParticleError],
-    ["H-1", {"mass_numb": 1, "Z": 1}, AtomicWarning],
+    ["H-1", {"mass_numb": 1, "Z": 1}, ParticleWarning],
     ["H", standard_atomic_weight("H")],
 ]
 
@@ -363,9 +363,9 @@ integer_charge_table = [
     ["d+", InvalidParticleError],
     ["Fe 29+", InvalidParticleError],
     ["H-1", ChargeError],
-    ["H---", AtomicWarning],
-    ["Fe -26", AtomicWarning],
-    ["Og 10-", AtomicWarning],
+    ["H---", ParticleWarning],
+    ["Fe -26", ParticleWarning],
+    ["Og 10-", ParticleWarning],
 ]
 
 electric_charge_table = [
@@ -377,8 +377,8 @@ electric_charge_table = [
     ["badinput", InvalidParticleError],
     ["h+", InvalidParticleError],
     ["Au 81+", InvalidParticleError],
-    ["Au 81-", AtomicWarning],
-    ["H---", AtomicWarning],
+    ["Au 81-", ParticleWarning],
+    ["H---", ParticleWarning],
 ]
 
 half_life_table = [["H-1", u.s], ["tritium", u.s], ["H-1", np.inf * u.s]]
@@ -715,7 +715,7 @@ def test_isotopic_abundance():
     assert isotopic_abundance("Be-8") == 0.0, "Be-8"
     assert isotopic_abundance("Li-8") == 0.0, "Li-8"
 
-    with pytest.warns(AtomicWarning):
+    with pytest.warns(ParticleWarning):
         isotopic_abundance("Og", 294)
 
     with pytest.raises(InvalidIsotopeError):

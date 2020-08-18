@@ -3,14 +3,14 @@ Collection of `Exceptions` and `Warnings` for PlasmaPy particles.
 """
 __all__ = [
     "ParticleError",
-    "AtomicWarning",
+    "ParticleWarning",
     "ChargeError",
     "InvalidElementError",
     "InvalidIonError",
     "InvalidIsotopeError",
     "InvalidParticleError",
     "MissingAtomicDataError",
-    "MissingAtomicDataWarning",
+    "MissingParticleDataWarning",
     "UnexpectedParticleError",
 ]
 
@@ -74,13 +74,13 @@ class InvalidParticleError(ParticleError):
     pass
 
 
-class AtomicWarning(PlasmaPyWarning):
+class ParticleWarning(PlasmaPyWarning):
     """The base warning for the `~plasmapy.particles` subpackage."""
 
     pass
 
 
-class MissingAtomicDataWarning(AtomicWarning):
+class MissingParticleDataWarning(ParticleWarning):
     """Warning for use when atomic or particle data is missing."""
 
     pass

@@ -20,7 +20,7 @@ from plasmapy.particles.elements import (
     _Elements,
 )
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
+    ParticleWarning,
     InvalidElementError,
     InvalidParticleError,
 )
@@ -409,7 +409,7 @@ def _parse_and_check_atomic_input(
             warnings.warn(
                 "Redundant mass number information for particle "
                 f"'{argument}' with mass_numb = {mass_numb}.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     if mass_numb_from_arg is not None:
@@ -425,7 +425,7 @@ def _parse_and_check_atomic_input(
             warnings.warn(
                 "Redundant charge information for particle "
                 f"'{argument}' with Z = {Z}.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     if Z_from_arg is not None:
@@ -442,7 +442,7 @@ def _parse_and_check_atomic_input(
                 f"Particle '{argument}' has an integer charge "
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     isotope = _reconstruct_isotope_symbol(element, mass_numb)

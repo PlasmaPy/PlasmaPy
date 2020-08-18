@@ -12,13 +12,13 @@ from astropy.constants import c, e, m_e, m_n, m_p
 from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
+    ParticleWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataWarning,
+    MissingParticleDataWarning,
     MissingParticleDataError,
     ParticleError,
 )
@@ -599,9 +599,9 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
 
 # arg, kwargs, attribute, exception
 test_Particle_warning_table = [
-    ("H----", {}, "", AtomicWarning),
-    ("alpha", {"mass_numb": 4}, "", AtomicWarning),
-    ("alpha", {"Z": 2}, "", AtomicWarning),
+    ("H----", {}, "", ParticleWarning),
+    ("alpha", {"mass_numb": 4}, "", ParticleWarning),
+    ("alpha", {"Z": 2}, "", ParticleWarning),
 ]
 
 
@@ -713,7 +713,7 @@ def test_particle_half_life_string():
         if isinstance(half_life, str):
             break
 
-    with pytest.warns(MissingAtomicDataWarning):
+    with pytest.warns(MissingParticleDataWarning):
         assert isinstance(Particle(isotope).half_life, str)
 
 
