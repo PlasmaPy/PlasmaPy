@@ -7,9 +7,29 @@ from astropy import constants as const
 from astropy import units as u
 from plasmapy import formulary
 from plasmapy.particles import Particle, particle_input
+from plasmapy.utils.decorators import validate_quantities
+
+# Behavior to implement in the future: if we have a classes called, say,
+# UniformPlasma and DimensionlessPlasma, then we should be able to do
+# operations like:
+#
+#   uniform_plasma / normalizations -> dimensionless_plasma
+#
+#   dimensionless_plasma * normalizations = uniform_plasma
+#
+# More generally:
+#
+#   dimensional_plasma / normalizations -> dimensionless_plasma
+#
+#   dimensionless_plasma * normalizations -> dimensional_plasma
 
 
 class AbstractNormalizations(abc.ABC):
+    """
+    An abstract interface for classes that represent the normalizations
+    of equations describing plasmas.
+    """
+
     @abc.abstractmethod
     def magnetic_field(self) -> u.T:
         raise NotImplementedError
@@ -42,11 +62,54 @@ class AbstractNormalizations(abc.ABC):
 class IdealMHDNormalizations(AbstractNormalizations):
     """
     Class to represent normalizations of the equations of ideal
-    magnetohydrodynamics (MHD)
+    magnetohydrodynamics (MHD).
+
+    Parameters
+    ----------
+    magnetic_field
+        The normalization for the magnetic field.
+
+    length
+        The normalization for length.
+
+    number_density
+        The normalization for number density.
+
+    ion : particle-like representation of an ion
+        The ion species in the plasma.
+
+    Raises
+    ------
+
+    Examples
+    --------
+
+    >>> import astropy.units as u
+    >>> normalizations = IdealMHDNormalizations(
+    ...    magnetic_field = 0.0250 * u.T,
+    ...    length = 0.2 * u.m,
+    ...    number_density = 1e19 * u.m ** -3,
+    ...    ion = 'He-4 1+',
+    ... )
+    >>> normalizations.magnetic_field
+    <Quantity 0.025 T>
+    >>> normalizations.length
+    <Quantity 0.2 m>
+    >>> normalizations.number_density
+    <Quantity 1.e+19 1 / m3>
+    >>> normalizations.velocity
+    <Quantity 86510.5392384 m / s>
+
+    Notes
+    -----
+    <include a description of the math behind the normalizations here>
+
     """
 
     @particle_input
-    def __init__(self, magnetic_field, length, number_density, ion: Particle = None):
+    @validate_quantities
+    def __init__(self, magnetic_field: u.T, length: u.m, number_density: u.m ** -3, ion: Particle):
+
         self._data = {}
         self.magnetic_field = magnetic_field
         self.length = length
@@ -55,8 +118,13 @@ class IdealMHDNormalizations(AbstractNormalizations):
 
     @property
     def ion(self) -> Optional[Particle]:
-        """The ion being used"""
+        """The ion species of the plasma."""
         return self._data["ion"]
+
+    @ion.setter
+    @particle_input
+    def ion(self, ion: Particle = None):
+        self._data["ion"] = ion
 
     @property
     def magnetic_field(self) -> u.T:
@@ -83,7 +151,7 @@ class IdealMHDNormalizations(AbstractNormalizations):
 
     @number_density.setter
     def number_density(self, n):
-        self._data["n"] = u.m ** -3
+        self._data["n"] = n.to(u.m ** -3)
 
     @property
     def mass_density(self) -> u.kg * u.m ** -3:
@@ -100,7 +168,7 @@ class IdealMHDNormalizations(AbstractNormalizations):
         """
         The normalization for velocity.
 
-        This normalization is equal to the Alfven velocity calculated
+        This normalization is equal to the Alfvén velocity calculated
         using the normalizations for the magnetic field and mass density.
         """
         return formulary.Alfven_speed(B=self.magnetic_field, density=self.mass_density)
