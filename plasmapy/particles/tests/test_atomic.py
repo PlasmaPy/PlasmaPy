@@ -2,9 +2,11 @@
 
 import numpy as np
 import pytest
-from astropy import constants as const, units as u
 
-from plasmapy.particles.atomic import (
+from astropy import constants as const
+from astropy import units as u
+
+from ..atomic import (
     _is_electron,
     atomic_number,
     common_isotopes,
@@ -24,6 +26,7 @@ from plasmapy.particles.atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
+
 from plasmapy.particles.exceptions import (
     AtomicError,
     AtomicWarning,
@@ -734,17 +737,7 @@ def test_atomic_functions(test_case):
     Test that providing the principal functions in `~plasmapy.particles.atomic`
     result in the expected outcome.
     """
-
     test_runner(test_case)
-
-
-# @pytest.mark.parametrize("function, args, kwargs, expected", test_cases)
-# def test_particle_functions(function, args, kwargs, expected):
-#    """
-
-#    """
-
-#    function_test_runner(function=function, args=args, kwargs=kwargs, expected=expected)
 
 
 def test_standard_atomic_weight_value_between():
@@ -899,6 +892,35 @@ def test_known_common_stable_isotopes_len():
     )
 
 
+@pytest.mark.parametrize("func", [common_isotopes, stable_isotopes, known_isotopes])
+def test_known_common_stable_isotopes_error(func):
+    """Test that `known_isotopes`, `common_isotopes`, and
+    `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
+    neutrons."""
+    with pytest.raises(InvalidElementError):
+        func("n")
+        pytest.fail(f"{func} is not raising a ElementError for neutrons.")
+
+
+def test_isotopic_abundance():
+    """Test that `isotopic_abundance` returns the appropriate values or
+    raises appropriate errors for various isotopes."""
+    assert isotopic_abundance("H", 1) == isotopic_abundance("protium")
+    assert np.isclose(isotopic_abundance("D"), 0.000115)
+    assert isotopic_abundance("Be-8") == 0.0, "Be-8"
+    assert isotopic_abundance("Li-8") == 0.0, "Li-8"
+
+    with pytest.warns(AtomicWarning):
+        isotopic_abundance("Og", 294)
+
+    with pytest.raises(InvalidIsotopeError):
+        isotopic_abundance("neutron")
+        pytest.fail("No exception raised for neutrons.")
+
+    with pytest.raises(InvalidParticleError):
+        isotopic_abundance("Og-2")
+
+
 isotopic_abundance_elements = (
     atomic_number(atomic_numb) for atomic_numb in range(1, 119)
 )
@@ -924,3 +946,13 @@ def test_isotopic_abundances_sum(element, isotopes):
     assert np.isclose(
         sum_of_iso_abund, 1, atol=1e-6
     ), f"The sum of the isotopic abundances for {element} does not equal 1."
+
+
+class TestReducedMassInput:
+    def test_incorrect_units(self):
+        with pytest.raises(u.UnitConversionError):
+            reduced_mass("N", 6e-26 * u.l)
+
+    def test_missing_atomic_data(self):
+        with pytest.raises(MissingAtomicDataError):
+            reduced_mass("Og", "H")

@@ -1,7 +1,12 @@
 """
 Formulas for calculating particle drifts.
 """
-__all__ = ["ExB_drift", "force_drift"]
+__all__ = [
+    "ExB_drift",
+    "force_drift",
+    "veb_",
+    "vfd_",
+]
 
 import astropy.units as u
 import numpy as np
@@ -13,6 +18,8 @@ from plasmapy.utils.decorators import validate_quantities
 def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
     r"""
     Calculate the "electric cross magnetic" particle drift.
+
+    **Aliases:** `veb_`
 
     Parameters
     ----------
@@ -61,10 +68,16 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
     return cross / (B * B).sum(-1)
 
 
+veb_ = ExB_drift
+""" Alias to :func:`ExB_drift`. """
+
+
 @validate_quantities
 def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
     r"""
     Calculate the general force drift for a particle in a magnetic field.
+
+    **Aliases:** `vfd_`
 
     Parameters
     ----------
@@ -110,3 +123,7 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
     return cross / (q * (B * B).sum(-1))
+
+
+vfd_ = force_drift
+""" Alias to :func:`force_drift`. """

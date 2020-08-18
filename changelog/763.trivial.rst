@@ -1,3 +1,0 @@
-Handle `ModuleNotFoundError` when trying to import `__version__` but `setuptools_scm` has not
-generated the `version.py` file.  This commonly happens during development when `plasmapy` is
-not installed in the python environment.

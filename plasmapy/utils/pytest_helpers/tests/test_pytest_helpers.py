@@ -1,25 +1,28 @@
+import astropy.units as u
 import pytest
 import warnings
+
 from typing import Any
-import astropy.units as u
 
 from plasmapy.utils.formatting import call_string
+
+from plasmapy.particles import Particle
+
 from plasmapy.utils.pytest_helpers import (
     run_test,
     run_test_equivalent_calls,
 )
 
+from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
+
 from plasmapy.tests.helpers.exceptions import (
     UnexpectedResultError,
     InconsistentTypeError,
     UnexpectedExceptionError,
+    UnexpectedResultError,
     MissingWarningError,
     MissingExceptionError,
 )
-
-from plasmapy.utils.exceptions import PlasmaPyWarning, PlasmaPyError
-
-from plasmapy.particles import Particle
 
 
 def generic_function(*args, **kwargs):

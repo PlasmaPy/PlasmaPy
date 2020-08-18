@@ -19,13 +19,14 @@ import warnings
 from astropy import units as u
 from astropy.constants import c
 from functools import reduce
-from plasmapy.utils.decorators import preserve_signature
+from typing import Any, Dict, List, Tuple, Union
+
+from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
     PlasmaPyWarning,
-    RelativityWarning,
     RelativityError,
+    RelativityWarning,
 )
-from typing import Any, Dict, List, Tuple, Union
 
 try:
     from astropy.units.equivalencies import Equivalency
@@ -1279,12 +1280,12 @@ def check_relativistic(func=None, betafrac=0.05):
     ValueError
         If `V` contains any `~numpy.nan` values.
 
-    ~plasmapy.utils.RelativityError
+    ~plasmapy.utils.exceptions.RelativityError
         If `V` is greater than or equal to the speed of light.
 
     Warns
     -----
-    ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If `V` is greater than or equal to `betafrac` times the speed of light,
         but less than the speed of light.
 

@@ -1,24 +1,34 @@
 """Test helpers utilities."""
-import collections
-import functools
-import inspect
-import warnings
-from typing import Any, Callable, Dict
+
+__all__ = [
+    "assert_can_handle_nparray",
+    "run_test",
+    "run_test_equivalent_calls",
+]
 
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
-import numpy as np
-import pytest
+
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
     UnexpectedResultError,
     UnexpectedExceptionError,
+    MissingWarningError,
     InconsistentTypeError,
     MissingExceptionError,
-    MissingWarningError,
 )
+
+import collections
+import functools
+import inspect
+import numpy as np
+import pytest
+import warnings
+
+from typing import Any, Callable, Dict
+
 from plasmapy.utils.exceptions import PlasmaPyWarning
 from plasmapy.utils.formatting.formatting import (
     call_string,
@@ -26,7 +36,6 @@ from plasmapy.utils.formatting.formatting import (
     _name_with_article,
 )
 
-__all__ = ["run_test", "run_test_equivalent_calls", "assert_can_handle_nparray"]
 
 
 def _process_input(wrapped_function: Callable):
@@ -114,22 +123,22 @@ def run_test(
 
     Raises
     ------
-    UnexpectedResultError
+    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
         If the test returns a result that is different from the expected
         result.
 
-    InconsistentTypeError
+    ~plasmapy.utils.pytest_helpers.InconsistentTypeError
         If the actual result is of a different type than the expected
         result.
 
-    UnexpectedExceptionError
+    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
         If an exception occurs when no exception or a different
         exception is expected.
 
-    MissingExceptionError
+    ~plasmapy.utils.pytest_helpers.MissingExceptionError
         If no exception is raised when an exception is expected.
 
-    MissingWarningError
+    ~plasmapy.utils.pytest_helpers.MissingWarningError
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -435,16 +444,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.utils.UnexpectedResultError
+    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
         If not all of the results are equivalent, or not all of the
         results are of the same type and `require_same_type` evaluates
         to `True`.
 
-    ~plasmapy.utils.UnexpectedExceptionError
+    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.utils.InvalidTestError
+    ~plasmapy.utils.pytest_helpers.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -659,7 +668,7 @@ def assert_can_handle_nparray(
 
     Raises
     ------
-    ~ValueError
+    ValueError
         If this function cannot interpret a parameter of function_to_test,
 
     Examples
@@ -694,7 +703,7 @@ def assert_can_handle_nparray(
             if not (param_default is inspect._empty or param_default is None):
                 return (param_default,) * 4
             else:
-                return ("p", ) * 4
+                return ("p",) * 4
         elif param_name == "particles" or param_name == "species":
             if not (param_default is inspect._empty):
                 return (param_default,) * 4

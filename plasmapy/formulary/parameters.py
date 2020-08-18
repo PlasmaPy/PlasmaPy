@@ -3,31 +3,54 @@ This module gathers basic and general plasma parameters such as the
 plasma frequency or Debye length.
 """
 __all__ = [
-    "mass_density",
     "Alfven_speed",
-    "ion_sound_speed",
-    "thermal_speed",
-    "thermal_pressure",
-    "kappa_thermal_speed",
-    "Hall_parameter",
-    "gyrofrequency",
-    "gyroradius",
-    "plasma_frequency",
+    "Bohm_diffusion",
+    "betaH_",
+    "cs_",
+    "cwp_",
+    "DB_",
     "Debye_length",
     "Debye_number",
+    "gyrofrequency",
+    "gyroradius",
+    "Hall_parameter",
     "inertial_length",
-    "magnetic_pressure",
-    "magnetic_energy_density",
-    "upper_hybrid_frequency",
+    "ion_sound_speed",
+    "kappa_thermal_speed",
+    "lambdaD_",
     "lower_hybrid_frequency",
+    "magnetic_energy_density",
+    "magnetic_pressure",
+    "mass_density",
+    "nD_",
+    "oc_",
+    "plasma_frequency",
+    "pmag_",
+    "pth_",
+    "rc_",
+    "rho_",
+    "rhoc_",
+    "thermal_pressure",
+    "thermal_speed",
+    "ub_",
+    "upper_hybrid_frequency",
+    "va_",
+    "vth_",
+    "vth_kappa_",
+    "wc_",
+    "wp_",
+    "wlh_",
+    "wuh_",
 ]
 
+import astropy.units as u
 import numbers
 import numpy as np
 import warnings
 
-from astropy import units as u
-from astropy.constants.si import m_p, m_e, c, mu0, k_B, e, eps0
+from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
+from typing import Optional
+
 from plasmapy import particles
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
@@ -36,7 +59,6 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
-from typing import Optional
 
 
 def _grab_charge(ion, z_mean=None):
@@ -77,6 +99,8 @@ def mass_density(
     z_mean: Optional[numbers.Real] = None,
 ) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
+
+    **Aliases:** `rho_`
 
     Parameters
     ----------
@@ -130,6 +154,10 @@ def mass_density(
     return rho
 
 
+rho_ = mass_density
+""" Alias to :func:`mass_density`. """
+
+
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
@@ -137,6 +165,8 @@ def Alfven_speed(
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
+
+    **Aliases:** `va_`
 
     Parameters
     ----------
@@ -218,13 +248,17 @@ def Alfven_speed(
     >>> Alfven_speed(B, rho, ion)
     <Quantity 43173.870... m / s>
     >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
-    <Quantity 4.31738... cm / us>
+    <Quantity 4.317387 cm / us>
 
     """
     rho = mass_density(density, ion, z_mean)
 
     V_A = np.abs(B) / np.sqrt(mu0 * rho)
     return V_A
+
+
+va_ = Alfven_speed
+""" Alias to :func:`Alfven_speed`. """
 
 
 @check_relativistic
@@ -246,6 +280,8 @@ def ion_sound_speed(
 ) -> u.m / u.s:
     r"""
     Return the ion sound speed for an electron-ion plasma.
+
+    **Aliases:** `cs_`
 
     Parameters
     ----------
@@ -410,6 +446,20 @@ def ion_sound_speed(
     return V_S
 
 
+cs_ = ion_sound_speed
+""" Alias to :func:`ion_sound_speed`. """
+
+
+# This dictionary defines coefficients for thermal speeds
+# calculated for different methods and values of ndim.
+# Created here to avoid re-instantiating on each call
+_coefficients = {
+    1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
+    2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
+    3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
+}
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -421,10 +471,13 @@ def thermal_speed(
     particle: particles.Particle = "e-",
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
+    ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
+
+    **Aliases:** `vth_`
 
     Parameters
     ----------
@@ -445,6 +498,10 @@ def thermal_speed(
         The particle's mass override. Defaults to NaN and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
+
+    ndim : int
+        Dimensionality of space in which to calculate thermal velocity. Valid
+        values are 1,2,3.
 
     Returns
     -------
@@ -477,10 +534,34 @@ def thermal_speed(
     The particle thermal speed is given by:
 
     .. math::
-        V_{th,i} = \sqrt{\frac{2 k_B T_i}{m_i}}
+        V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
 
-    This function yields the most probable speed within a distribution
-    function.  However, the definition of thermal velocity varies by
+    where the value of N depends on the dimensionality and the definition of
+    :math:`v_{th}`: most probable, root-mean-square (RMS), or mean magnitude.
+    The value of N in each case is
+
+    .. list-table:: Values of constant N
+       :widths: 50, 25, 25, 25
+       :header-rows: 1
+
+       * - Dim.
+         - Most-Probable
+         - RMS
+         - Mean-Magnitude
+       * - 1D
+         - 0
+         - 1
+         - :math:`2/\pi`
+       * - 2D
+         - 1
+         - 2
+         - :math:`\pi/2`
+       * - 3D
+         - 2
+         - 3
+         - :math:`8/\pi`
+
+    The definition of thermal velocity varies by
     the square root of two depending on whether or not this velocity
     absorbs that factor in the expression for a Maxwellian
     distribution.  In particular, the expression given in the NRL
@@ -507,16 +588,20 @@ def thermal_speed(
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    if method == "most_probable":
-        V = np.sqrt(2 * k_B * T / m)
-    elif method == "rms":
-        V = np.sqrt(3 * k_B * T / m)
-    elif method == "mean_magnitude":
-        V = np.sqrt(8 * k_B * T / (m * np.pi))
-    else:
+    try:
+        coef = _coefficients[ndim]
+    except KeyError:
+        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
+    try:
+        coef = coef[method]
+    except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return V
+    return np.sqrt(coef * k_B * T / m)
+
+
+vth_ = thermal_speed
+""" Alias to :func:`thermal_speed`. """
 
 
 @validate_quantities(
@@ -526,6 +611,8 @@ def thermal_speed(
 def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     r"""
     Return the thermal pressure for a Maxwellian distribution.
+
+    **Aliases:** `pth_`
 
     Parameters
     ----------
@@ -568,6 +655,10 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     return n * k_B * T
 
 
+pth_ = thermal_pressure
+""" Alias to :func:`thermal_pressure`. """
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
@@ -577,6 +668,8 @@ def kappa_thermal_speed(
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
+
+    **Aliases:** `vth_kappa_`
 
     Parameters
     ----------
@@ -675,6 +768,10 @@ def kappa_thermal_speed(
     return vTh * coeff
 
 
+vth_kappa_ = kappa_thermal_speed
+""" Alias to :func:`kappa_thermal_speed`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -693,6 +790,8 @@ def Hall_parameter(
     particle-ion particle collision rate.
 
     All parameters apply to `particle`.
+
+    **Aliases:** `betaH_`
 
     Parameters
     ----------
@@ -733,8 +832,8 @@ def Hall_parameter(
 
     """
     from plasmapy.formulary.collisions import (
-        fundamental_ion_collision_freq,
         fundamental_electron_collision_freq,
+        fundamental_ion_collision_freq,
     )
 
     gyro_frequency = gyrofrequency(B, particle)
@@ -748,6 +847,10 @@ def Hall_parameter(
     return gyro_frequency / coll_rate
 
 
+betaH_ = Hall_parameter
+""" Alias to :func:`Hall_parameter`. """
+
+
 @validate_quantities(
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
@@ -757,6 +860,8 @@ def Hall_parameter(
 @angular_freq_to_hz
 def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
+
+    **Aliases:** `oc_`, `wc_`
 
     Parameters
     ----------
@@ -856,6 +961,13 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     return omega_ci
 
 
+oc_ = gyrofrequency
+""" Alias to :func:`gyrofrequency`. """
+
+wc_ = gyrofrequency
+""" Alias to :func:`gyrofrequency`. """
+
+
 @validate_quantities(
     Vperp={"can_be_nan": True},
     T_i={"can_be_nan": True, "equivalencies": u.temperature_energy()},
@@ -869,6 +981,8 @@ def gyroradius(
     T_i: u.K = np.nan * u.K,
 ) -> u.m:
     r"""Return the particle gyroradius.
+
+    **Aliases:** `rc_`, `rhoc_`
 
     Parameters
     ----------
@@ -1010,6 +1124,13 @@ def gyroradius(
     return r_Li
 
 
+rc_ = gyroradius
+""" Alias to :func:`gyroradius`. """
+
+rhoc_ = gyroradius
+""" Alias to :func:`gyroradius`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={
@@ -1020,6 +1141,8 @@ def gyroradius(
 @angular_freq_to_hz
 def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
+
+    **Aliases:** `wp_`
 
     Parameters
     ----------
@@ -1114,6 +1237,10 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     return omega_p.si
 
 
+wp_ = plasma_frequency
+""" Alias to :func:`plasma_frequency`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
@@ -1121,6 +1248,8 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
 def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     r"""Calculate the characteristic decay length for electric fields,
      due to charge screening.
+
+    **Aliases:** `lambdaD_`
 
     Parameters
     ----------
@@ -1182,6 +1311,10 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     return lambda_D
 
 
+lambdaD_ = Debye_length
+""" Alias to :func:`Debye_length`. """
+
+
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
@@ -1189,6 +1322,8 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
+
+    **Aliases:** `nD_`
 
     Parameters
     ----------
@@ -1249,6 +1384,10 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     return N_D
 
 
+nD_ = Debye_number
+""" Alias to :func:`Debye_number`. """
+
+
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
@@ -1257,6 +1396,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
+
+    **Aliases:** `cwp_`
 
     Parameters
     ----------
@@ -1315,10 +1456,20 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     return c / omega_p
 
 
+cwp_ = inertial_length
+"""
+Alias to :func:`inertial_length`.
+
+* Name is shorthand for :math:`c / \\omega_p`.
+"""
+
+
 @validate_quantities
 def magnetic_pressure(B: u.T) -> u.Pa:
     r"""
     Calculate the magnetic pressure.
+
+    **Aliases:** `pmag_`
 
     Parameters
     ----------
@@ -1374,10 +1525,16 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     return (B ** 2) / (2 * mu0)
 
 
+pmag_ = magnetic_pressure
+""" Alias to :func:`magnetic_pressure`. """
+
+
 @validate_quantities
 def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     r"""
     Calculate the magnetic energy density.
+
+    **Aliases:** `ub_`
 
     Parameters
     ----------
@@ -1433,6 +1590,10 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     return magnetic_pressure(B)
 
 
+ub_ = magnetic_energy_density
+""" Alias to :func:`magnetic_energy_density`. """
+
+
 @validate_quantities(
     n_e={"can_be_negative": False},
     validations_on_return={
@@ -1444,6 +1605,8 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     r"""
     Return the upper hybrid frequency.
+
+    **Aliases:** `wuh_`
 
     Parameters
     ----------
@@ -1501,6 +1664,10 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     return omega_uh
 
 
+wuh_ = upper_hybrid_frequency
+""" Alias to :func:`upper_hybrid_frequency`. """
+
+
 @validate_quantities(
     n_i={"can_be_negative": False},
     validations_on_return={
@@ -1512,6 +1679,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
+
+    **Aliases:** `wlh_`
 
     Parameters
     ----------
@@ -1588,3 +1757,76 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     omega_lh = omega_lh
 
     return omega_lh
+
+
+wlh_ = lower_hybrid_frequency
+""" Alias to :func:`lower_hybrid_frequency`. """
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    B={"can_be_negative": False},
+)
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+
+    r"""
+    The Bohm diffusion coefficient was conjectured to follow Bohm model of
+    the diffusion of plasma across a magnetic field and describe
+    the diffusion of early fusion energy machines.
+    The rate predicted by Bohm diffusion is much higher than classical diffusion
+    and if there were no exceptions, magnetically confined fusion would be impractical.
+
+    .. math::
+
+        D_B = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
+
+    **Aliases:** `DB_`
+
+    Parameters
+    ----------
+    T_e: `~astropy.units.Quantity`
+        The electron temperature.
+    B: `~astropy.units.Quantity`
+        The magnitude of the magnetic field in the plasma.
+
+    Warns
+    -----
+    ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    TypeError
+        The `T_e` is not a `~astropy.units.Quantity` and cannot be
+        converted into a ~astropy.units.Quantity.
+
+    ~astropy.units.UnitConversionError
+        If the `T_e` is not in appropriate units.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.00269292 m2 / s>
+    >>> T_e = 50 * u.eV
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.3125 m2 / s>
+
+    Returns
+    -------
+    D_B: `~astropy.units.Quantity`
+    The Bohm diffusion coefficient in meters squared per second.
+
+    """
+    D_B = k_B * T_e / (16 * e * B)
+    return D_B
+
+
+DB_ = Bohm_diffusion
+""" Alias to :func:`Bohm_diffusion`. """
