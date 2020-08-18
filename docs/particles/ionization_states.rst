@@ -126,10 +126,10 @@ corresponding element's abundance, and the ionic fraction.
 >>> states.number_densities["H"]
 <Quantity [5.00e+17, 4.95e+19] 1 / m3>
 
-The ``info`` method may also be used to get a summary of the ionization
+The ``summarize`` method may also be used to get a summary of the ionization
 states.
 
->>> states.info()
+>>> states.summarize()
 ----------------------------------------------------------------
 H  1+: 0.990    n_i = 4.95e+19 m**-3
 ----------------------------------------------------------------
