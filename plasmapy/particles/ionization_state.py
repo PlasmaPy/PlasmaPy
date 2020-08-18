@@ -3,11 +3,8 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
-
 __all__ = ["IonizationState", "IonicFraction"]
 
-
-import collections
 import numpy as np
 import warnings
 
@@ -15,7 +12,6 @@ from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
 
-from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,

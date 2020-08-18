@@ -2,7 +2,7 @@
 Collection of `Exceptions` and `Warnings` for PlasmaPy particles.
 """
 __all__ = [
-    "AtomicError",
+    "ParticleError",
     "AtomicWarning",
     "ChargeError",
     "InvalidElementError",

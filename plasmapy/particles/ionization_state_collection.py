@@ -8,17 +8,9 @@ import astropy.units as u
 import collections
 import numpy as np
 
-from astropy import units as u
 from numbers import Integral, Real
 from typing import Dict, List, Optional, Tuple, Union
 
-from plasmapy.particles import (
-    atomic_number,
-    IonicFraction,
-    IonizationState,
-    Particle,
-    particle_symbol,
-)
 from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
     ChargeError,
