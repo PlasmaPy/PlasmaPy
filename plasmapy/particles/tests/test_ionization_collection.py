@@ -1,10 +1,3 @@
-from plasmapy.particles import (
-    IonicFraction,
-    IonizationState,
-    IonizationStateCollection,
-)
-from plasmapy.particles.exceptions import ParticleError
-
 import astropy.units as u
 import collections
 import itertools
@@ -16,15 +9,14 @@ from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
+    IonicFraction,
     IonizationState,
     IonizationStateCollection,
     mass_number,
     Particle,
     particle_symbol,
-    IonicFraction,
 )
-from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
-
+from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.utils.pytest_helpers import run_test
 
 

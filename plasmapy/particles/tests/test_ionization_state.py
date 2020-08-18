@@ -1,15 +1,13 @@
-
 import astropy.units as u
 import collections
-
 import numpy as np
 import pytest
 
 from plasmapy.particles import (
-    Particle,
     atomic_number,
     atomic_symbol,
     isotope_symbol,
+    Particle,
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
@@ -65,7 +63,6 @@ def test_ionic_fraction_invalid_particles(invalid_particle):
         IonicFraction(invalid_particle, ionic_fraction=0)
 
 
-
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
 def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     """
@@ -93,6 +90,7 @@ def test_ionization_state_ion_input_error():
 
     with pytest.raises(ParticleError):
         IonizationState(ion, ionic_fractions=unnecessary_ionic_fractions)
+
 
 test_cases = {
     "Li": {

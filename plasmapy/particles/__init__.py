@@ -20,8 +20,9 @@ from plasmapy.particles.atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-
 from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state_collection import IonizationStateCollection
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     AbstractParticle,
@@ -42,10 +43,6 @@ from plasmapy.particles.symbols import (
     isotope_symbol,
     particle_symbol,
 )
-
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
-
-from plasmapy.particles.ionization_state_collection import IonizationStateCollection
 
 # Create instances of the most commonly used particles
 

@@ -12,15 +12,15 @@ from astropy.constants import c, e, m_e, m_n, m_p
 from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
-    ParticleError,
-    MissingParticleDataError,
+    AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingAtomicDataWarning,
-    AtomicWarning,
+    MissingParticleDataError,
+    ParticleError,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.particle_class import (

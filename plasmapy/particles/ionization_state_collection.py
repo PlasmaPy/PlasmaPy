@@ -6,34 +6,28 @@ __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
 import collections
+import numpy as np
+
+from astropy import units as u
 from numbers import Integral, Real
 from typing import Dict, List, Optional, Tuple, Union
 
-import numpy as np
-from astropy import units as u
-
 from plasmapy.particles import (
+    atomic_number,
     IonicFraction,
     IonizationState,
     Particle,
-    atomic_number,
     particle_symbol,
 )
+from plasmapy.particles.atomic import atomic_number
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidParticleError,
     ParticleError,
 )
-
-from numbers import Integral, Real
-from typing import Dict, List, Optional, Tuple, Union
-
-from plasmapy.particles.atomic import atomic_number
-from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
-from plasmapy.particles.ionization_state import IonizationState, IonicFraction
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import particle_symbol
-
 from plasmapy.utils.decorators import validate_quantities
 
 

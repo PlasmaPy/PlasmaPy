@@ -21,15 +21,15 @@ from typing import List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
-    ParticleError,
     AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataError,
     MissingAtomicDataWarning,
+    MissingParticleDataError,
+    ParticleError,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.parsing import (

@@ -9,35 +9,25 @@ __all__ = ["IonizationState", "IonicFraction"]
 
 import collections
 import numpy as np
-
 import warnings
+
+from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
 
-
-import numpy as np
-from astropy import units as u
-
 from plasmapy.particles import Particle, particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidParticleError,
     ParticleError,
 )
-
-from numbers import Integral, Real
-from typing import List, Optional, Union
-
-from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import Particle
-
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse " "volume."
 )
-
 
 
 class IonicFraction:
@@ -317,8 +307,7 @@ class IonizationState:
 
         except Exception as exc:
             raise ParticleError(
-                f"Unable to create IonizationState object for "
-                f"{particle.particle}."
+                f"Unable to create IonizationState object for " f"{particle.particle}."
             ) from exc
 
     def __str__(self) -> str:

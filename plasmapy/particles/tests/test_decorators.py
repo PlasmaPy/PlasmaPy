@@ -3,12 +3,12 @@ import pytest
 from typing import List, Optional, Tuple, Union
 
 from plasmapy.particles.exceptions import (
-    ParticleError,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
+    ParticleError,
 )
 
 from ..decorators import particle_input

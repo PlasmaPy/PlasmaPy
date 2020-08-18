@@ -13,12 +13,12 @@ import numbers
 from typing import Any, Callable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.exceptions import (
-    ParticleError,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
+    ParticleError,
 )
 from plasmapy.particles.particle_class import Particle
 
