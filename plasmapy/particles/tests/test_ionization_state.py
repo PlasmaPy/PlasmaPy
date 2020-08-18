@@ -1,6 +1,7 @@
-import collections
 
 import astropy.units as u
+import collections
+
 import numpy as np
 import pytest
 
@@ -92,7 +93,6 @@ def test_ionization_state_ion_input_error():
 
     with pytest.raises(ParticleError):
         IonizationState(ion, ionic_fractions=unnecessary_ionic_fractions)
-
 
 test_cases = {
     "Li": {

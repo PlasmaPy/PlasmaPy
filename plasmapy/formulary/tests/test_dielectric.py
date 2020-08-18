@@ -2,6 +2,7 @@
 dielectry.py"""
 
 import numpy as np
+
 from astropy import units as u
 
 from ..dielectric import (
@@ -11,8 +12,7 @@ from ..dielectric import (
     RotatingTensorElements,
     StixTensorElements,
 )
-
-from ..parameters import plasma_frequency, gyrofrequency, thermal_speed
+from ..parameters import gyrofrequency, plasma_frequency, thermal_speed
 
 B = 1.0 * u.T
 n = [1e18 / u.m ** 3]

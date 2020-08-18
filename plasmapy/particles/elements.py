@@ -1,13 +1,19 @@
 """
-Dictionaries containing basic atomic data.
+Module for loading atomic data for elements from
+:file:`plasmapy/particles/data/elements.json`.
 
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
-"""
 
+.. attention::
+    This module only contains non-public functionality.  To learn more about the
+    package functionality, examine the code itself.
+"""
+__all__ = []
+
+import astropy.units as u
+import collections
 import json
 import pkgutil
-import collections
-import astropy.units as u
 
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ["group", "category", "block", "period"]
@@ -20,7 +26,7 @@ def _element_obj_hook(obj):
     return obj
 
 
-# this code was used to create the JSON file as per vn-ki on Riot:
+# this code was used to create the JSON file as per vn-ki on Matrix:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/
 #    $1554667515670438wIKlP:matrix.org?via=matrix.org&via=cadair.com
 #
@@ -36,7 +42,8 @@ def _element_obj_hook(obj):
 
 
 _Elements = json.loads(
-    pkgutil.get_data("plasmapy", "data/elements.json"), object_hook=_element_obj_hook
+    pkgutil.get_data("plasmapy", "particles/data/elements.json"),
+    object_hook=_element_obj_hook,
 )
 
 

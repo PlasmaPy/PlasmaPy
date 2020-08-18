@@ -19,7 +19,7 @@ To build docs locally, either:
 * use `Tox <https://tox.readthedocs.io/en/latest/>`_ with ``tox -e build_docs`` from within the main PlasmaPy repository directory, or
 * enter the ``docs`` directory and run ``make html``.
 
-Afterwards, open ``docs/_build/index.html`` with your browser of choice.
+Afterwards, open ``docs/_build/html/index.html`` with your browser of choice.
 
 Do try to solve warnings in documentation when writing your code. To enforce this,
 The ``build_docs`` environment is set to fail on encountering any warnings via

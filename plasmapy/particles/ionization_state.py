@@ -3,11 +3,17 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
+
 __all__ = ["IonizationState", "IonicFraction"]
+
+
+import collections
+import numpy as np
 
 import warnings
 from numbers import Integral, Real
 from typing import List, Optional, Union
+
 
 import numpy as np
 from astropy import units as u
@@ -18,11 +24,20 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
+
+from numbers import Integral, Real
+from typing import List, Optional, Union
+
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
+from plasmapy.particles.particle_class import Particle
+
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse " "volume."
 )
+
 
 
 class IonicFraction:

@@ -103,7 +103,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.classes
+                plasmapy.plasma
             </td>
             <td align='center'>
                 <span class="dev"></span>

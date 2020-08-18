@@ -1,10 +1,11 @@
 r"""Functionality for calculating relativistic quantities (:math:`v \to c`)."""
 __all__ = ["Lorentz_factor", "relativistic_energy"]
 
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from astropy.constants import c
+
 from plasmapy import utils
 from plasmapy.utils.decorators import validate_quantities
 
@@ -16,6 +17,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     Parameters
     ----------
+
     V : ~astropy.units.Quantity
         The velocity in units convertible to meters per second.
 
@@ -87,17 +89,18 @@ def Lorentz_factor(V: u.m / u.s):
     return gamma
 
 
-@validate_quantities(m={"can_be_negative": False}, 
-                     validations_on_return={"can_be_negative": False})
+@validate_quantities(
+    m={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+)
 def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     """
-    Calculate the relativistic energy (in Joules) of an object of mass 
+    Calculate the relativistic energy (in Joules) of an object of mass
     `m` and velocity `v`.
-    
+
     .. math::
 
         E = \\gamma m c^{2}
-    
+
     where :math:`\\gamma` is the `Lorentz_factor`.
 
     Parameters

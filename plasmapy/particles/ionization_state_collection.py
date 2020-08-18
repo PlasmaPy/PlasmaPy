@@ -4,6 +4,7 @@ isotopes.
 """
 __all__ = ["IonizationStateCollection"]
 
+import astropy.units as u
 import collections
 from numbers import Integral, Real
 from typing import Dict, List, Optional, Tuple, Union
@@ -23,6 +24,16 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
+
+from numbers import Integral, Real
+from typing import Dict, List, Optional, Tuple, Union
+
+from plasmapy.particles.atomic import atomic_number
+from plasmapy.particles.exceptions import ParticleError, ChargeError, InvalidParticleError
+from plasmapy.particles.ionization_state import IonizationState, IonicFraction
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.symbols import particle_symbol
+
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -54,7 +65,7 @@ class IonizationStateCollection:
 
     T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
-        energy per base_particle.
+        energy per particle.
 
     kappa: float, optional, keyword-only
         The value of kappa for a kappa distribution function.
@@ -210,11 +221,11 @@ class IonizationStateCollection:
             else:
                 if not isinstance(int_charge, Integral):
                     raise TypeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 elif not 0 <= int_charge <= atomic_number(particle):
                     raise ChargeError(
-                        f"{int_charge} is not a valid charge for {base_particle}."
+                        f"{int_charge} is not a valid charge for {particle}."
                     )
                 return IonicFraction(
                     ion=particle_symbol(particle, Z=int_charge),

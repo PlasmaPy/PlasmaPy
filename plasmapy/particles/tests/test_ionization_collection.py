@@ -1,22 +1,30 @@
-import collections
-import itertools
-from numbers import Real
-from typing import Dict
-
-import astropy.units as u
-import numpy as np
-import pytest
-
 from plasmapy.particles import (
     IonicFraction,
     IonizationState,
     IonizationStateCollection,
-    Particle,
-    atomic_number,
-    mass_number,
-    particle_symbol,
 )
-from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
+from plasmapy.particles.exceptions import ParticleError
+
+import astropy.units as u
+import collections
+import itertools
+import numpy as np
+import pytest
+
+from numbers import Real
+from typing import Dict
+
+from plasmapy.particles import (
+    atomic_number,
+    IonizationState,
+    IonizationStateCollection,
+    mass_number,
+    Particle,
+    particle_symbol,
+    IonicFraction,
+)
+from plasmapy.particles.exceptions import ParticleError, InvalidIsotopeError
+
 from plasmapy.utils.pytest_helpers import run_test
 
 
