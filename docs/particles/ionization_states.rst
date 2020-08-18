@@ -45,22 +45,10 @@ a tie.
 >>> ionization_state.Z_most_abundant
 [1]
 
-The ``info`` method prints out the ionic fraction for the ions with
+The ``summarize`` method prints out the ionic fraction for the ions with
 an abundance of at least 1%.
 
->>> ionization_state.summarize()
-an abundance of at least 1%.
-
->>> ionization_state.summarize()
-an abundance of at least 1%.
-
->>> ionization_state.summarize()
-an abundance of at least 1%.
-
->>> ionization_state.summarize()
-an abundance of at least 1%.
-
->>> ionization_state.info()
+ >>> ionization_state.summarize()
 IonizationState instance for He with Z_mean = 0.96
 ----------------------------------------------------------------
 He  0+: 0.050
