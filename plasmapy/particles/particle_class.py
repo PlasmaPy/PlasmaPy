@@ -21,15 +21,15 @@ from typing import List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
-    ParticleWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingParticleDataWarning,
     MissingParticleDataError,
+    MissingParticleDataWarning,
     ParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.parsing import (
@@ -1998,7 +1998,9 @@ class CustomParticle(AbstractParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn("CustomParticle mass set to NaN kg", MissingParticleDataWarning)
+            warnings.warn(
+                "CustomParticle mass set to NaN kg", MissingParticleDataWarning
+            )
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):

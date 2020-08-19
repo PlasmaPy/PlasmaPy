@@ -5,13 +5,13 @@ from astropy import constants as const
 from astropy import units as u
 
 from plasmapy.particles.exceptions import (
-    ParticleWarning,
     ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingParticleDataError,
     ParticleError,
+    ParticleWarning,
 )
 from plasmapy.utils.pytest_helpers import run_test
 

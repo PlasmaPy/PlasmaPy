@@ -2,9 +2,9 @@ import pytest
 
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
-    ParticleWarning,
     InvalidElementError,
     InvalidParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.error_messages.call_string?
     _case_insensitive_aliases,

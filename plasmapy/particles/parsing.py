@@ -20,9 +20,9 @@ from plasmapy.particles.elements import (
     _Elements,
 )
 from plasmapy.particles.exceptions import (
-    ParticleWarning,
     InvalidElementError,
     InvalidParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
