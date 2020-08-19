@@ -1,4 +1,0 @@
-Rename ``plasmapy.atomic`` to `~plasmapy.particles`.  In
-`~plasmapy.formulary.collisions` and `~plasmapy.formulary.braginskii`,
-change arguments named particles to ``species`` and arguments named
-``ion_particle`` to ``ion`` for multiple functions.

@@ -1,8 +1,9 @@
+import astropy.units as u
 import pytest
 
-from plasmapy.formulary import drifts
-import astropy.units as u
 from astropy.tests.helper import assert_quantity_allclose
+
+from plasmapy.formulary import drifts
 
 
 class Test_ExB_drift:
@@ -37,6 +38,9 @@ class Test_ExB_drift:
         assert_quantity_allclose(
             result, (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s)
         )
+
+    def test_alias(self):
+        assert drifts.veb_ is drifts.ExB_drift
 
 
 class Test_force_drift:
@@ -75,3 +79,6 @@ class Test_force_drift:
 
         with pytest.raises(u.UnitTypeError):
             drifts.force_drift(F, B, q)
+
+    def test_alias(self):
+        assert drifts.vfd_ is drifts.force_drift

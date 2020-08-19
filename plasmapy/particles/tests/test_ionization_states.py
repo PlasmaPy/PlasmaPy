@@ -1,23 +1,23 @@
-import pytest
-import collections
-from typing import Dict
-from numbers import Real
-import itertools
-
-import numpy as np
 import astropy.units as u
+import collections
+import itertools
+import numpy as np
+import pytest
 
-from plasmapy.utils.pytest_helpers import run_test
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from numbers import Real
+from typing import Dict
+
 from plasmapy.particles import (
-    State,
+    atomic_number,
     IonizationState,
     IonizationStates,
-    atomic_number,
     mass_number,
-    particle_symbol,
     Particle,
+    particle_symbol,
+    State,
 )
+from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
+from plasmapy.utils.pytest_helpers import run_test
 
 
 def check_abundances_consistency(

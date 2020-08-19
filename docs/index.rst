@@ -6,47 +6,12 @@
 PlasmaPy Documentation
 ######################
 
-.. raw:: html
+.. nbgallery::
+   :hidden:
 
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s try to look at ITER plasma conditions using the physics subpackage. ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_physics_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_physics.py`
-
-.. raw:: html
-
-    </div>
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s import some basics (and PlasmaPy!) ">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_dispersion_function_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_dispersion_function.py`
-
-.. raw:: html
-
-    </div>
-
-.. raw:: html
-
-    <div style="width: 30%;" class="sphx-glr-thumbcontainer" tooltip="Let&#x27;s analyze a few Langmuir probe characteristics using the diagnostics.langmuir subpackage. F...">
-
-.. only:: html
-
-    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_langmuir_analysis_thumb.png
-
-        :ref:`sphx_glr_auto_examples_plot_langmuir_analysis.py`
-
-.. raw:: html
-
-    </div>
+   notebooks/physics
+   notebooks/dispersion_function
+   notebooks/thomson
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
@@ -65,22 +30,15 @@ package for plasma physics currently under development.
 
    Vision Statement <about/vision_statement>
    Installing <install>
-   auto_examples/index
+   examples
    COMMUNICATION
    CONTRIBUTING
    CODE_OF_CONDUCT
    about/citation
 
-* `PlasmaPy's GitHub repository
-  <https://github.com/PlasmaPy/plasmapy>`_
-* `PlasmaPy website
-  <http://www.plasmapy.org/>`_
-* `Using astropy.units <http://docs.astropy.org/en/stable/units/>`_
-
 .. toctree::
    :maxdepth: 1
    :caption: Package features
-   :hidden:
 
    Diagnostics <diagnostics/index>
    Formulary <formulary/index>
@@ -90,37 +48,25 @@ package for plasma physics currently under development.
    Package Utilities <utils/index>
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Guide for Contributors
-   :hidden:
 
    Overview <development/index>
    development/code_guide
    development/doc_guide
    development/testing_guide
-   development/release_guide
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: All the Rest
-   :hidden:
 
    about/credits
    whatsnew/index
    about/stability
    PlasmaPy.org <https://www.plasmapy.org>
 
-
 .. The about PlasmaPy section has some important information that would
    be helpful to have more readily accessible from the main doc index
    page.
-
-*****
-Index
-*****
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 .. TODO: Add feedback link: .. _feedback@plasmapy.org: mailto:feedback@plasmapy.org

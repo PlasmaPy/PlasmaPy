@@ -18,4 +18,3 @@ Bug Fixes
 - Optimize `check_relativistic`.
 - Correct a failing import statement.
 - Fix a number of issues with the Maxwellian distribution in `physics.distribution`.
-

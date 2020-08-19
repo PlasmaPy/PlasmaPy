@@ -4,17 +4,18 @@ a single ionization level.
 """
 __all__ = ["IonizationState", "State"]
 
+import astropy.units as u
 import collections
 import numpy as np
 import warnings
 
-from astropy import units as u
 from numbers import Integral, Real
-from plasmapy.particles import Particle, particle_input
-from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
-from plasmapy.utils.decorators import validate_quantities
-from typing import Union, List, Optional
+from typing import List, Optional, Union
 
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.exceptions import AtomicError, ChargeError, InvalidParticleError
+from plasmapy.particles.particle_class import Particle
+from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse " "volume."
@@ -23,6 +24,7 @@ _number_density_errmsg = (
 # TODO: Change `State` into a class with validations for all of the
 # TODO: attributes.
 
+#: Named tuple class for representing an ionization state (`collections.namedtuple`).
 State = collections.namedtuple(
     "State", ["integer_charge", "ionic_fraction", "ionic_symbol", "number_density"]
 )

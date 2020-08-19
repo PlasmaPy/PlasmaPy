@@ -15,7 +15,7 @@ apt-run: &apt-install
   name: Install apt packages
   command: |
     apt update
-    apt install -y graphviz build-essential 
+    apt install -y graphviz build-essential pandoc
 
 apt-latex: &apt-latex
   name: Install apt packages
@@ -32,15 +32,6 @@ tox-conda-install: &tox-conda-install
   name: Install Tox-Conda
   command: |
     pip install tox-conda
-
-image-run: &image-tests
-  name: Run image tests
-  environment:
-    MPLBACKEND: Agg
-  command: |
-    tox -e figure
-    pip install codecov
-    codecov
 
 version: 2
 jobs:
