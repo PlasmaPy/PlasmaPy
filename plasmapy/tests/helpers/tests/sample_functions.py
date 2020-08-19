@@ -1,10 +1,10 @@
 """Sample functions and classes to be used in tests."""
 
-import warnings
-from typing import NoReturn
-
 import astropy.units as u
 import numpy as np
+import warnings
+
+from typing import NoReturn
 
 
 class SampleException(Exception):

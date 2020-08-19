@@ -1,19 +1,19 @@
 """Test the classes that represent the actual result of a test."""
 
-from typing import Callable
-
 import pytest
+
+from typing import Callable
 
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import FunctionTestInputs
 from plasmapy.tests.helpers.tests.sample_functions import (
-    SampleException,
-    SampleWarning,
     issue_warning,
     issue_warning_return_42,
     raise_exception,
     return_42,
+    SampleException,
+    SampleWarning,
 )
 
 func_attr_expected = [

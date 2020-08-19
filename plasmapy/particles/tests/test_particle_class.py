@@ -5,9 +5,9 @@ import json
 import numpy as np
 import pytest
 
-from astropy import units as u, constants as const
-
-from astropy.constants import m_p, m_e, m_n, e, c
+from astropy import constants as const
+from astropy import units as u
+from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes

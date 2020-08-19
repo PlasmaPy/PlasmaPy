@@ -11,8 +11,6 @@ import numpy as np
 import re
 import warnings
 
-from typing import (Union, Dict)
-
 from numbers import Integral
 from typing import Dict, Union
 
@@ -29,7 +27,6 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
 from plasmapy.utils import roman
-from plasmapy.particles.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):

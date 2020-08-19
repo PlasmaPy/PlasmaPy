@@ -1,8 +1,11 @@
 import pytest
+
 from astropy import units as u
 
 from plasmapy.utils.formatting import (
-    call_string, method_call_string, attribute_call_string,
+    attribute_call_string,
+    call_string,
+    method_call_string,
 )
 
 

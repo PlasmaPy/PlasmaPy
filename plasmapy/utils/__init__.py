@@ -16,13 +16,7 @@ __all__ = [
     "roman",
 ]
 
-from plasmapy.utils import (
-    datatype_factory_base,
-    decorators,
-    exceptions,
-    roman,
-)
-from plasmapy.utils.formatting import call_string
+from plasmapy.utils import datatype_factory_base, decorators, exceptions, roman
 from plasmapy.utils.exceptions import (
     CouplingWarning,
     PhysicsError,
@@ -32,6 +26,7 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
+from plasmapy.utils.formatting import call_string
 
 from . import formatting
 

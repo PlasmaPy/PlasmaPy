@@ -1,16 +1,12 @@
 """Test the helper functions and classes used to run tests."""
 
-from typing import Optional
-
 import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.tests.helpers.cases import (
-    AttrTestCase,
-    FunctionTestCase,
-    MethodTestCase,
-)
+from typing import Optional
+
+from plasmapy.tests.helpers.cases import AttrTestCase, FunctionTestCase, MethodTestCase
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,
     Failed,
@@ -25,16 +21,16 @@ from plasmapy.tests.helpers.exceptions import (
 )
 from plasmapy.tests.helpers.runner import test_runner
 from plasmapy.tests.helpers.tests.sample_functions import (
+    issue_warning_return_42,
+    raise_exception,
+    return_42,
+    return_42_meters,
     SampleClass1,
     SampleClass2,
     SampleException,
     SampleExceptionSubclass,
     SampleWarning,
     SampleWarningSubclass,
-    issue_warning_return_42,
-    raise_exception,
-    return_42,
-    return_42_meters,
 )
 from plasmapy.utils.formatting.formatting import (
     _object_name,

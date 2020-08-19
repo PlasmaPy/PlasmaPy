@@ -2,10 +2,10 @@
 
 __all__ = ["ActualTestOutcome"]
 
-import warnings
-from typing import Any, List, Union
-
 import pytest
+import warnings
+
+from typing import Any, List, Union
 
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import (

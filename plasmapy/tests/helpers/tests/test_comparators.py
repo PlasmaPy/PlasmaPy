@@ -1,17 +1,17 @@
 """Test the classes that compare the actual and expected outcomes."""
 
 import collections
-
 import numpy as np
 import pytest
+
 from astropy import units as u
 
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.comparators import (
-    CompareActualExpected,
-    CompareValues,
     _get_unit,
     _units_are_compatible,
+    CompareActualExpected,
+    CompareValues,
 )
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,
@@ -28,16 +28,16 @@ from plasmapy.tests.helpers.exceptions import (
 from plasmapy.tests.helpers.expected import ExpectedTestOutcome
 from plasmapy.tests.helpers.inputs import FunctionTestInputs
 from plasmapy.tests.helpers.tests.sample_functions import (
-    SampleException,
-    SampleExceptionSubclass,
-    SampleWarning,
-    SampleWarningSubclass,
     issue_warning_return_42,
     raise_exception,
     return_42,
     return_42_meters,
     return_none,
     return_np_array,
+    SampleException,
+    SampleExceptionSubclass,
+    SampleWarning,
+    SampleWarningSubclass,
     sum_of_args_and_kwargs,
 )
 from plasmapy.utils.formatting.formatting import _name_with_article

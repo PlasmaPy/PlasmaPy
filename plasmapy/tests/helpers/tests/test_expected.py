@@ -1,14 +1,13 @@
 """Test the class responsible for checking and analyzing the expected result of a test."""
 
 import collections
-
 import pytest
 
 from plasmapy.tests.helpers.expected import (
-    ExpectedTestOutcome,
     _is_exception,
     _is_warning,
     _is_warning_and_value,
+    ExpectedTestOutcome,
 )
 
 is_warning_test_inputs = [

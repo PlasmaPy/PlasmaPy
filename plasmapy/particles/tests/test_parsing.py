@@ -12,8 +12,10 @@ from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.
     _dealias_particle_aliases,
     _parse_and_check_atomic_input,
 )
+from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import call_string
+from plasmapy.utils.formatting import call_string
 
 
 def _particle_call_string(arg, kwargs=None) -> str:
@@ -26,10 +28,6 @@ def _particle_call_string(arg, kwargs=None) -> str:
 
     return call_string(Particle, arg, kwargs)
 
-
-from plasmapy.particles.particle_class import Particle
-
-from plasmapy.utils.formatting import call_string
 
 aliases_and_symbols = [
     ("electron", "e-"),
@@ -336,8 +334,8 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         _parse_and_check_atomic_input(arg, **kwargs)
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
-            f"{call_string(Particle, arg, kwargs)}, but no exception was raised.")
-
+            f"{call_string(Particle, arg, kwargs)}, but no exception was raised."
+        )
 
 
 @pytest.mark.parametrize("arg", ParticleZoo.everything - {"p+"})
@@ -349,7 +347,8 @@ def test_parse_InvalidElementErrors(arg):
         _parse_and_check_atomic_input(arg)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{call_string(Particle, args=arg)}, but no exception was raised.")
+            f"{call_string(Particle, args=arg)}, but no exception was raised."
+        )
 
 
 # (arg, kwargs, num_warnings)
@@ -373,7 +372,8 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
             pytest.fail(
                 f"No AtomicWarning was issued by "
                 f"{call_string(Particle,arg, kwargs)} but the expected number "
-                f"of warnings was {num_warnings}")
+                f"of warnings was {num_warnings}"
+            )
 
     assert len(record) == num_warnings, (
         f"The number of AtomicWarnings issued by {call_string(Particle, arg, kwargs)} "

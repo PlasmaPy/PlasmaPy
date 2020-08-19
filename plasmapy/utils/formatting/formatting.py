@@ -1,7 +1,7 @@
 import inspect
-from typing import Callable, Any, Dict, Optional, Union, Tuple
 
 from astropy import units as u
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
@@ -147,10 +147,10 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
 
 
 def attribute_call_string(
-        cls,
-        attr: str,
-        cls_args: Optional[Union[Tuple, Any]] = None,
-        cls_kwargs: Optional[Dict[str, Any]] = None,
+    cls,
+    attr: str,
+    cls_args: Optional[Union[Tuple, Any]] = None,
+    cls_kwargs: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Return a string to represent accessing a class attribute.
@@ -192,12 +192,12 @@ def attribute_call_string(
 
 
 def method_call_string(
-        cls,
-        method: str,
-        cls_args: Any = tuple(),
-        cls_kwargs: Dict = {},
-        method_args: Any = tuple(),
-        method_kwargs: Dict = {},
+    cls,
+    method: str,
+    cls_args: Any = tuple(),
+    cls_kwargs: Dict = {},
+    method_args: Any = tuple(),
+    method_kwargs: Dict = {},
 ) -> str:
     """
     Return a string to represent calling a class method.

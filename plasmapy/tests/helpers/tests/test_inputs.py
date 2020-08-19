@@ -4,11 +4,11 @@ import pytest
 
 from plasmapy.tests.helpers.exceptions import InvalidTestError
 from plasmapy.tests.helpers.inputs import (
+    _validate_args,
+    _validate_kwargs,
     ClassAttributeTestInputs,
     ClassMethodTestInputs,
     FunctionTestInputs,
-    _validate_args,
-    _validate_kwargs,
 )
 
 sample_args = (2, 3)

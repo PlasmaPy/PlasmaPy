@@ -2,16 +2,12 @@
 
 __all__ = ["test_runner"]
 
-from typing import NoReturn, Union
-
 import pytest
 
+from typing import NoReturn, Union
+
 from plasmapy.tests.helpers.actual import ActualTestOutcome
-from plasmapy.tests.helpers.cases import (
-    AttrTestCase,
-    FunctionTestCase,
-    MethodTestCase,
-)
+from plasmapy.tests.helpers.cases import AttrTestCase, FunctionTestCase, MethodTestCase
 from plasmapy.tests.helpers.comparators import CompareActualExpected
 from plasmapy.tests.helpers.exceptions import (
     ExceptionMismatchError,

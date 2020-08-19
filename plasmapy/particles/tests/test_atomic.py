@@ -6,6 +6,19 @@ import pytest
 from astropy import constants as const
 from astropy import units as u
 
+from plasmapy.particles.exceptions import (
+    AtomicError,
+    AtomicWarning,
+    ChargeError,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingAtomicDataError,
+)
+from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.tests.helpers import FunctionTestCase, test_runner
+
 from ..atomic import (
     _is_electron,
     atomic_number,
@@ -26,19 +39,6 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-
-from plasmapy.particles.exceptions import (
-    AtomicError,
-    AtomicWarning,
-    ChargeError,
-    InvalidElementError,
-    InvalidIsotopeError,
-    InvalidParticleError,
-    MissingAtomicDataError,
-)
-from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.tests.helpers import FunctionTestCase, test_runner
 
 test_cases = [
     FunctionTestCase(function=atomic_symbol, args=1, expected="H"),

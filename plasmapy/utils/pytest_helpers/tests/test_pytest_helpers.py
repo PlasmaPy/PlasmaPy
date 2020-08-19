@@ -4,25 +4,17 @@ import warnings
 
 from typing import Any
 
-from plasmapy.utils.formatting import call_string
-
 from plasmapy.particles import Particle
-
-from plasmapy.utils.pytest_helpers import (
-    run_test,
-    run_test_equivalent_calls,
-)
-
-from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
-
 from plasmapy.tests.helpers.exceptions import (
-    UnexpectedResultError,
     InconsistentTypeError,
+    MissingExceptionError,
+    MissingWarningError,
     UnexpectedExceptionError,
     UnexpectedResultError,
-    MissingWarningError,
-    MissingExceptionError,
 )
+from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
+from plasmapy.utils.formatting import call_string
+from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
 
 def generic_function(*args, **kwargs):
@@ -83,7 +75,13 @@ f_args_kwargs_expected_whaterror = [
     [return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultError],
     [return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError],
     [return_quantity, (23), {"should_warn": True}, (5 * u.m / u.s, UserWarning), None],
-    [return_quantity, (24), {"should_warn": False}, (5 * u.m, UserWarning), MissingWarningError],
+    [
+        return_quantity,
+        (24),
+        {"should_warn": False},
+        (5 * u.m, UserWarning),
+        MissingWarningError,
+    ],
     [return_arg, u.kg / u.K, {}, u.kg / u.K, None],
     [return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError],
     [return_arg, u.kg, {}, u.g, u.UnitsError],

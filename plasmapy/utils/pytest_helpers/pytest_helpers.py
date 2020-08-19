@@ -9,17 +9,6 @@ __all__ = [
 import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
-
-
-from plasmapy.tests.helpers.exceptions import (
-    InvalidTestError,
-    UnexpectedResultError,
-    UnexpectedExceptionError,
-    MissingWarningError,
-    InconsistentTypeError,
-    MissingExceptionError,
-)
-
 import collections
 import functools
 import inspect
@@ -29,13 +18,20 @@ import warnings
 
 from typing import Any, Callable, Dict
 
+from plasmapy.tests.helpers.exceptions import (
+    InconsistentTypeError,
+    InvalidTestError,
+    MissingExceptionError,
+    MissingWarningError,
+    UnexpectedExceptionError,
+    UnexpectedResultError,
+)
 from plasmapy.utils.exceptions import PlasmaPyWarning
 from plasmapy.utils.formatting.formatting import (
-    call_string,
-    _object_name,
     _name_with_article,
+    _object_name,
+    call_string,
 )
-
 
 
 def _process_input(wrapped_function: Callable):
