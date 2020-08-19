@@ -1,10 +1,11 @@
 """Classes that describes normalizations for different systems of equations."""
 
 import abc
-from typing import Optional
 
 from astropy import constants as const
 from astropy import units as u
+from typing import Optional
+
 from plasmapy import formulary
 from plasmapy.particles import Particle, particle_input
 from plasmapy.utils.decorators import validate_quantities
@@ -108,7 +109,9 @@ class IdealMHDNormalizations(AbstractNormalizations):
 
     @particle_input
     @validate_quantities
-    def __init__(self, magnetic_field: u.T, length: u.m, number_density: u.m ** -3, ion: Particle):
+    def __init__(
+        self, magnetic_field: u.T, length: u.m, number_density: u.m ** -3, ion: Particle
+    ):
 
         self._data = {}
         self.magnetic_field = magnetic_field

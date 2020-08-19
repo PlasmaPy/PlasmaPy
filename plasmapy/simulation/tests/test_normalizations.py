@@ -1,5 +1,5 @@
-import pytest
 import astropy.units as u
+import pytest
 
 from plasmapy.particles import proton
 from plasmapy.simulation.normalizations import IdealMHDNormalizations, MHDNormalizations
