@@ -24,4 +24,6 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(session, config, items):
-    items[:] = [item for item in items if item.name != 'test_runner']  # test_runner is not a test
+    items[:] = [
+        item for item in items if item.name != "test_runner"
+    ]  # test_runner is not a test
