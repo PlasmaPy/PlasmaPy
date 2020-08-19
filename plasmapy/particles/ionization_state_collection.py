@@ -773,9 +773,9 @@ class IonizationStateCollection:
         else:
             old_keys = abundances_dict.keys()
             try:
-                new_keys_dict = {
-                    particle_symbol(old_key): old_key for old_key in old_keys
-                }
+                new_keys_dict = {}
+                for old_key in old_keys:
+                    new_keys_dict[particle_symbol(old_key)] = old_key
             except Exception:
                 raise ParticleError(
                     f"The key {repr(old_key)} in the abundances "
