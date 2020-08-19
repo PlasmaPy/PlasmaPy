@@ -912,7 +912,7 @@ class Particle(AbstractParticle):
 
         If the element does not have a defined standard atomic weight,
         this attribute will raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.utils.MissingParticleDataError`.
 
         Examples
         --------
@@ -937,7 +937,7 @@ class Particle(AbstractParticle):
         This attribute will raise a
         `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
         isotope or neutron, or a
-        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        `~plasmapy.utils.MissingParticleDataError` if the isotope mass is
         not available.
 
         Examples
@@ -995,7 +995,7 @@ class Particle(AbstractParticle):
 
         If the mass is unavailable (e.g., for neutrinos or elements with
         no standard atomic weight), then this attribute will raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.utils.MissingParticleDataError`.
 
         Examples
         --------
@@ -1049,7 +1049,7 @@ class Particle(AbstractParticle):
         This attribute will raise a
         `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
         isotope or neutron, or a
-        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        `~plasmapy.utils.MissingParticleDataError` if the isotope mass is
         not available.
 
         Examples
@@ -1094,7 +1094,7 @@ class Particle(AbstractParticle):
         of the nucleus only.
 
         If the mass of the particle is not known, then raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.utils.MissingParticleDataError`.
 
         Examples
         --------
@@ -1273,7 +1273,7 @@ class Particle(AbstractParticle):
         Return the isotopic abundance of an isotope.
 
         If the isotopic abundance is not available, this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.  If the
+        raise a `~plasmapy.utils.MissingParticleDataError`.  If the
         particle is not an isotope or is an ion of an isotope, then this
         attribute will raise an `~plasmapy.utils.InvalidIsotopeError`.
 
@@ -1310,7 +1310,7 @@ class Particle(AbstractParticle):
         number is equivalent to the mass number for isotopes.
 
         If the baryon number is unavailable, then this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.
+        raise a `~plasmapy.utils.MissingParticleDataError`.
 
         Examples
         --------
@@ -1335,7 +1335,7 @@ class Particle(AbstractParticle):
         antileptons, excluding bound electrons in an atom or ion.
 
         If the lepton number is unavailable, then this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.
+        raise a `~plasmapy.utils.MissingParticleDataError`.
 
         Examples
         --------
@@ -1362,7 +1362,7 @@ class Particle(AbstractParticle):
         Particles that do not have sufficiently well-constrained
         half-lives will return a `str` containing the information
         that is available about the half-life and issue a
-        `~plasmapy.utils.MissingAtomicDataWarning`.
+        `~plasmapy.utils.MissingParticleDataWarning`.
 
         Examples
         --------
@@ -1393,7 +1393,7 @@ class Particle(AbstractParticle):
         Return the spin of the particle.
 
         If the spin is unavailable, then a
-        `~plasmapy.utils.MissingAtomicDataError` will be raised.
+        `~plasmapy.utils.MissingParticleDataError` will be raised.
 
         Examples
         --------

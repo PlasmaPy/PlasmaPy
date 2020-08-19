@@ -487,7 +487,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
-            # neutrino's mass should raise a MissingAtomicDataError since
+            # neutrino's mass should raise a MissingParticleDataError since
             # only upper limits of neutrino masses are presently available.
             # If expected_dict[key] is an exception, then check to make
             # sure that this exception is raised.
@@ -704,7 +704,7 @@ def test_particle_half_life_string():
     """
     Find the first isotope where the half-life is stored as a string
     (because the uncertainties are too great), and tests that requesting
-    the half-life of that isotope causes a `MissingAtomicDataWarning`
+    the half-life of that isotope causes a `MissingParticleDataWarning`
     whilst returning a string.
     """
 

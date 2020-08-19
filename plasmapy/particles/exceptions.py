@@ -9,7 +9,7 @@ __all__ = [
     "InvalidIonError",
     "InvalidIsotopeError",
     "InvalidParticleError",
-    "MissingAtomicDataError",
+    "MissingParticleDataError",
     "MissingParticleDataWarning",
     "UnexpectedParticleError",
 ]

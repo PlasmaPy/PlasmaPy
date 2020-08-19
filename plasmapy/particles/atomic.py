@@ -230,7 +230,7 @@ def particle_mass(
     `~plasmapy.utils.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `~plasmapy.utils.MissingAtomicDataError`
+    `~plasmapy.utils.MissingParticleDataError`
         If the standard atomic weight, the isotope mass, or the particle
         mass is not available.
 
@@ -446,7 +446,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     `TypeError`
         If the argument is not a `str` or `int`.
 
-    `~plasmapy.utils.MissingAtomicDataError`
+    `~plasmapy.utils.MissingParticleDataError`
         If stability information is not available.
 
     Examples
@@ -495,7 +495,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
-    `~plasmapy.utils.MissingAtomicDataError`
+    `~plasmapy.utils.MissingParticleDataError`
         If no half-life data is available for the isotope.
 
     `TypeError`
@@ -507,9 +507,9 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     Accurate half-life data is not known for all isotopes. Some isotopes
     may have upper or lower limits on the half-life, in which case this
     function will return a string with that information and issue a
-    `~plasmapy.utils.MissingAtomicDataWarning`.  When no isotope
+    `~plasmapy.utils.MissingParticleDataWarning`.  When no isotope
     information is available, then this function raises a
-    `~plasmapy.utils.MissingAtomicDataError`.
+    `~plasmapy.utils.MissingParticleDataError`.
 
     Examples
     --------
@@ -871,7 +871,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         If an argument is a `~astropy.units.Quantity` or
         `~astropy.units.Constant` but does not have units of mass.
 
-    `~plasmapy.utils.MissingAtomicDataError`
+    `~plasmapy.utils.MissingParticleDataError`
         If the mass of either particle is not known.
 
     `TypeError`
