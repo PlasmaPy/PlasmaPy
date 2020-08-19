@@ -1,0 +1,2 @@
+Created classes to store the normalizations commonly used when
+normalizing a set of equations describing a plasma.
