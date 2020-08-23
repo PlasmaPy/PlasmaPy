@@ -34,7 +34,7 @@ from plasmapy.utils.decorators import validate_quantities
 def spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
-    ne: u.m ** -3,
+    n: u.m ** -3,
     Te: u.K,
     Ti: u.K,
     efract: np.ndarray = np.ones(1),
@@ -275,17 +275,21 @@ def spectral_density(
         )
 
     # Calculate the longitudinal dielectric function
-    epsilon = 1 + chiE + np.sum(chiI, axis=0)
+    epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
 
-    # Calculate the contributions to the spectral density function
-    econtr = (
-        2
-        * np.sqrt(np.pi)
-        / k
-        / vTe
-        * np.power(np.abs(1 - chiE / epsilon), 2)
-        * np.exp(-(xe ** 2))
-    )
+    print(chiE.shape)
+
+    econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
+    for m in range(efract.size):
+        econtr[m, :] = (
+            2
+            * np.sqrt(np.pi)
+            / k
+            / vTe[m]
+            * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
+            * np.exp(-xe[m, :] ** 2)
+        )
+
 
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(fract.size):
@@ -295,11 +299,11 @@ def spectral_density(
             * ion_z[m]
             / k
             / vTi[m]
-            * np.power(np.abs(chiE / epsilon), 2)
+            * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
             * np.exp(-xi[m, :] ** 2)
         )
 
     # Recast as real: imaginary part is already zero
-    Skw = np.real(econtr + np.sum(icontr, axis=0))
+    Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
 
     return np.mean(alpha), Skw
