@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 24 15:01:23 2020
-
-@author: Peter
-"""
 
 import matplotlib.pyplot as plt
 
@@ -16,6 +10,7 @@ from typing import List, Tuple, Union
 from plasmapy.formulary.parameters import plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import PhysicsError
 
 from scipy.special import exp1
 
@@ -35,7 +30,29 @@ def maxwellian_bremsstrahlung(
 ) -> np.ndarray:
     r"""
     Calculate the Bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit hbar*w << k_B*Te
+    in the Rayleigh-Jeans limit :math:`\hbar*\omega \ll k_B*T_e`
+
+    .. math::
+       \frac{dP}{d\omega} = \frac{8 \sqrt{2}}{3\sqrt{\pi}}
+       \bigg ( \frac{e^2}{4 \pi \epsilon_0} \bigg )^3
+       \bigg ( m_e c^2 )^{-\frac{3}{2}}
+       \bigg ( 1 - \frac{\omega_{pe}^2}{\omega^2} \bigg )^\frac{1}{2}
+       \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
+       E_1(y)
+
+    where E_1 is the exponential integral
+
+    .. math::
+        E_1 (y) = - \int_{-y}^\infty \frac{e^{-t}}{t}dt
+
+    and y is the dimensionless argument
+
+    .. math::
+        y = \frac{1}{2} \frac{\omega^2 m_e}{k_{max}^2 k_B T_e}
+
+    where   :math:`k_{max}` is a minimum wavenumber approximated here as
+    :math:`k_{max} = 1/\lambda_D` where  :math:`\lambda_D` is the electron
+    de Broglie wavelength.
 
     Parameters
     ----------
@@ -65,20 +82,16 @@ def maxwellian_bremsstrahlung(
     Returns
     -------
 
-
     spectrum : `~astropy.units.Quantity`
         Computed bremsstrahlung spectrum over the frequencies provided.
 
     Notes
     -----
 
-
+    ADD REFERENCES
 
     """
 
-    # TODO: Error check that all frequencies are GREATER than wpe
-
-    # TODO: Error check that hw << kTe (Rayleigh-Jeans limit)
 
     # Condition ion_species
     if isinstance(ion_species, str):
@@ -91,17 +104,32 @@ def maxwellian_bremsstrahlung(
     # Convert frequencies to angular frequencies
     w = (frequencies*2*np.pi*u.rad).to(u.rad / u.s)
 
+    # Calculate the electron plasma frequency
     wpe = plasma_frequency(n=ne, particle="e-")
 
+
+    # Check that all w < wpe (this formula is only valid in this limit)
+    if np.min(w) < wpe:
+        raise PhysicsError("Lowest frequency must be larger than the electron"+
+                           "plasma frequency {:.1e}".format(wpe) +
+                           ", but min(w) = {:.1e}".format(np.min(w)))
+
+    # Check that the parameters given fall within the Rayleigh-Jeans limit
+    #hw << kTe
+    rj_const = (np.max(w)*const.hbar.si/(2*np.pi*u.rad*const.k_B.si*Te)).to(u.dimensionless_unscaled)
+    if rj_const.value > 0.1:
+
+        raise PhysicsError("Rayleigh-Jeans limit not satisfied:" +
+                           "hbar*w/kTe = {:.2e} > 0.1".format(rj_const.value) +
+                           ". Try lower w or higher Te.")
+
+    # Calculate the bremsstralung power spectral density in several steps
     c1 = (8/3)*np.sqrt(2/np.pi) \
          *(const.e.si**2/(4*np.pi*const.eps0.si))**3 \
          *1/(const.m_e.si*const.c.si**2)**1.5
 
     Zi = ion_species.integer_charge
     c2 = np.sqrt(1 - wpe**2/w**2)*Zi**2*ni*ne/np.sqrt(const.k_B.si*Te)
-
-    print(c1.unit)
-    print(c2.unit)
 
     # Dimensionless argument for exponential integral
     arg = 0.5*w**2*const.m_e.si/(kmax**2*const.k_B.si*Te)/u.rad**2
@@ -112,7 +140,7 @@ def maxwellian_bremsstrahlung(
 
 
 
-frequencies = np.arange(14, 17, .05)
+frequencies = np.arange(15, 16, .01)
 frequencies = (10**frequencies)/u.s
 
 
@@ -123,7 +151,7 @@ energy = (frequencies*const.h.si).to(u.eV)
 
 ne = 1e22*u.cm**-3
 ni=ne
-Te = 100*u.eV
+Te = 1e2*u.eV
 
 spectrum = maxwellian_bremsstrahlung(frequencies, ne, ni, Te)
 
