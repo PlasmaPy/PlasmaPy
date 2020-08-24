@@ -221,6 +221,7 @@ def spectral_density(
     zbar = np.sum(ifract * ion_z)
     ne = efract * n
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
+	# wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency(n=n, particle="e-")
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
@@ -277,7 +278,6 @@ def spectral_density(
     # Calculate the longitudinal dielectric function
     epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
 
-    print(chiE.shape)
 
     econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(efract.size):
@@ -286,10 +286,13 @@ def spectral_density(
             * np.sqrt(np.pi)
             / k
             / vTe[m]
-            * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
+            * np.power(np.abs(1 - np.sum(chiE, axis=0)  / epsilon), 2)
             * np.exp(-xe[m, :] ** 2)
         )
 
+    # This correction seems to be necessary so that
+    #efract[0.5,0.5] = efract[1.0]. Haven't carefully derived it yet.
+    econtr *= 1/np.size(efract)
 
     icontr = np.zeros([fract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(fract.size):
