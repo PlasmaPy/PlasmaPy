@@ -27,7 +27,7 @@ from plasmapy.utils.decorators import validate_quantities
 @validate_quantities(
     wavelengths={"can_be_negative": False},
     probe_wavelength={"can_be_negative": False},
-    ne={"can_be_negative": False},
+    n={"can_be_negative": False},
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
