@@ -17,22 +17,22 @@ from scipy.special import exp1
     ni={"can_be_negative": False},
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def maxwellian_bremsstrahlung(
+def thermal_bremsstrahlung(
     frequencies: u.Hz,
     ne: u.m ** -3,
-    ni: u.m ** -3,
     Te: u.K,
+    ni: u.m ** -3 = None,
     ion_species: Union[str, Particle] = "H+",
     kmax : u.m = None,
 ) -> np.ndarray:
     r"""
     Calculate the Bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`\hbar*\omega \ll k_B*T_e`
+    in the Rayleigh-Jeans limit :math:`\hbar\omega \ll k_B*T_e`
 
     .. math::
        \frac{dP}{d\omega} = \frac{8 \sqrt{2}}{3\sqrt{\pi}}
        \bigg ( \frac{e^2}{4 \pi \epsilon_0} \bigg )^3
-       \bigg ( m_e c^2 )^{-\frac{3}{2}}
+       \bigg ( m_e c^2 \bigg )^{-\frac{3}{2}}
        \bigg ( 1 - \frac{\omega_{pe}^2}{\omega^2} \bigg )^\frac{1}{2}
        \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
        E_1(y)
@@ -47,8 +47,8 @@ def maxwellian_bremsstrahlung(
     .. math::
         y = \frac{1}{2} \frac{\omega^2 m_e}{k_{max}^2 k_B T_e}
 
-    where   :math:`k_{max}` is a minimum wavenumber approximated here as
-    :math:`k_{max} = 1/\lambda_D` where  :math:`\lambda_D` is the electron
+    where   :math:`k_{max}` is a maximum wavenumber approximated here as
+    :math:`k_{max} = 1/\lambda_B` where  :math:`\lambda_B` is the electron
     de Broglie wavelength.
 
     Parameters
@@ -61,11 +61,12 @@ def maxwellian_bremsstrahlung(
     ne : `~astropy.units.Quantity`
         Electron number density in the plasma (convertable to m^-3)
 
-    ni : `~astropy.units.Quantity`
-        Ion number density in the plasma (convertable to m^-3)
-
     Te : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV)
+
+    ni : `~astropy.units.Quantity` (optional)
+        Ion number density in the plasma (convertable to m^-3). Defaults
+        to the quasi-neutral conditon ni=ne/Z.
 
     ion_species : str or `~plasmapy.particles.Particle`, optional
         An instance of `~plasmapy.particles.Particle`, or a string
@@ -93,6 +94,10 @@ def maxwellian_bremsstrahlung(
     # Condition ion_species
     if isinstance(ion_species, str):
         ion_species = Particle(ion_species)
+
+    # Default ni is ne/Z:
+    if ni is None:
+        ni = ne/ion_species.integer_charge
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -134,26 +139,3 @@ def maxwellian_bremsstrahlung(
     arg = (arg.to(u.dimensionless_unscaled)).value
 
     return c1*c2*exp1(arg)
-
-
-
-frequencies = np.arange(15, 16, .01)
-frequencies = (10**frequencies)/u.s
-
-
-
-energy = (frequencies*const.h.si).to(u.eV)
-
-
-
-ne = 1e22*u.cm**-3
-ni=ne
-Te = 1e2*u.eV
-
-spectrum = maxwellian_bremsstrahlung(frequencies, ne, ni, Te)
-
-
-
-plt.plot(energy, spectrum)
-plt.xlabel('Energy (eV)')
-plt.show()
