@@ -1,7 +1,7 @@
 .. _radiation:
 
 ************************************************************************
-Electromagnetic Radiation functions (`plasmapy.formulary.radiation`)
+Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 ************************************************************************
 
 .. currentmodule:: plasmapy.formulary.radiation
