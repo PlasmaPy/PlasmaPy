@@ -1,3 +1,11 @@
+"""
+Defines the Radiation module as part of the Plasma Formulary
+"""
+
+__all__ = [
+    "thermal_bremsstrahlung",
+]
+
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
