@@ -1,5 +1,5 @@
 """
-Defines the Radiation module as part of the Plasma Formulary
+Defin_es the Radiation module as part of the Plasma Formulary
 """
 
 __all__ = [
@@ -14,23 +14,24 @@ from scipy.special import exp1
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.parameters import plasma_frequency
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, particle_input
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
 
 @validate_quantities(
     frequencies={"can_be_negative": False},
-    ne={"can_be_negative": False},
-    ni={"can_be_negative": False},
-    Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+    n_i={"can_be_negative": False},
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
+@particle_input
 def thermal_bremsstrahlung(
     frequencies: u.Hz,
-    ne: u.m ** -3,
-    Te: u.K,
-    ni: u.m ** -3 = None,
-    ion_species: Union[str, Particle] = "H+",
+    n_e: u.m ** -3,
+    T_e: u.K,
+    n_i: u.m ** -3 = None,
+    ion_species: Particle = 'H+',
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""
@@ -66,20 +67,19 @@ def thermal_bremsstrahlung(
         Array of frequencies over which the bremsstrahlung spectrum will be
         calculated (convertable to Hz).
 
-    ne : `~astropy.units.Quantity`
+    n_e : `~astropy.units.Quantity`
         Electron number density in the plasma (convertable to m^-3)
 
-    Te : `~astropy.units.Quantity`
+    T_e : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV)
 
-    ni : `~astropy.units.Quantity` (optional)
+    n_i : `~astropy.units.Quantity` (optional)
         Ion number density in the plasma (convertable to m^-3). Defaults
-        to the quasi-neutral conditon ni=ne/Z.
+        to the quasi-neutral conditon n_i=n_e/Z.
 
-    ion_species : str or `~plasmapy.particles.Particle`, optional
+    ion : str or `~plasmapy.particles.Particle`, optional
         An instance of `~plasmapy.particles.Particle`, or a string
-        convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
-        corresponding to hydrogen ions.
+        convertible to `~plasmapy.particles.Particle`.
 
     kmax :  `~astropy.units.Quantity`
         Cutoff wavenumber (convertable to u.rad/u.m). Defaults to the inverse
@@ -100,43 +100,39 @@ def thermal_bremsstrahlung(
     .. _`ISBN 978\\-0471063506`: https://ui.adsabs.harvard.edu/abs/1966rpp..book.....B/abstract
     """
 
-    # Condition ion_species
-    if isinstance(ion_species, str):
-        ion_species = Particle(ion_species)
-
-    # Default ni is ne/Z:
-    if ni is None:
-        ni = ne / ion_species.integer_charge
+    # Default n_i is n_e/Z:
+    if n_i is None:
+        n_i = n_e / ion_species.integer_charge
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
-        kmax = (np.sqrt(const.m_e.si * const.k_B.si * Te) / const.hbar.si).to(1 / u.m)
+        kmax = (np.sqrt(const.m_e.si * const.k_B.si * T_e) / const.hbar.si).to(1 / u.m)
 
     # Convert frequencies to angular frequencies
-    w = (frequencies * 2 * np.pi * u.rad).to(u.rad / u.s)
+    ω = (frequencies * 2 * np.pi * u.rad).to(u.rad / u.s)
 
     # Calculate the electron plasma frequency
-    wpe = plasma_frequency(n=ne, particle="e-")
+    ω_pe = plasma_frequency(n=n_e, particle="e-")
 
-    # Check that all w < wpe (this formula is only valid in this limit)
-    if np.min(w) < wpe:
+    # Check that all ω < wpe (this formula is only valid in this limit)
+    if np.min(ω) < ω_pe:
         raise PhysicsError(
             "Lowest frequency must be larger than the electron"
-            + "plasma frequency {:.1e}".format(wpe)
-            + ", but min(w) = {:.1e}".format(np.min(w))
+            + "plasma frequency {:.1e}".format(ω_pe)
+            + ", but min(ω) = {:.1e}".format(np.min(ω))
         )
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
-    # hw << kTe
-    rj_const = (np.max(w) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * Te)).to(
+    # hω << kT_e
+    rj_const = (np.max(ω) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * T_e)).to(
         u.dimensionless_unscaled
     )
     if rj_const.value > 0.1:
 
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied:"
-            + "hbar*w/kTe = {:.2e} > 0.1".format(rj_const.value)
-            + ". Try lower w or higher Te."
+            + "hbar*ω/kT_e = {:.2e} > 0.1".format(rj_const.value)
+            + ". Try lower ω or higher T_e."
         )
 
     # Calculate the bremsstralung power spectral density in several steps
@@ -149,10 +145,10 @@ def thermal_bremsstrahlung(
     )
 
     Zi = ion_species.integer_charge
-    c2 = np.sqrt(1 - wpe ** 2 / w ** 2) * Zi ** 2 * ni * ne / np.sqrt(const.k_B.si * Te)
+    c2 = np.sqrt(1 - ω_pe ** 2 / ω ** 2) * Zi ** 2 * n_i * n_e / np.sqrt(const.k_B.si * T_e)
 
     # Dimensionless argument for exponential integral
-    arg = 0.5 * w ** 2 * const.m_e.si / (kmax ** 2 * const.k_B.si * Te) / u.rad ** 2
+    arg = 0.5 * ω ** 2 * const.m_e.si / (kmax ** 2 * const.k_B.si * T_e) / u.rad ** 2
     # Remove units, get ndarray of values
     arg = (arg.to(u.dimensionless_unscaled)).value
 
