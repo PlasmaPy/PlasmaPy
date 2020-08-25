@@ -8,8 +8,8 @@ Electromagnetic Radiation functions (`plasmapy.formulary.radiation`)
 
 .. automodapi:: plasmapy.formulary.radiation
    :no-heading:
-   
-   
+
+
 .. nbgallery::
     :caption: Examples
 

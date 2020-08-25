@@ -2,6 +2,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
+from scipy.special import exp1
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.parameters import plasma_frequency
@@ -9,7 +10,6 @@ from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
-from scipy.special import exp1
 
 @validate_quantities(
     frequencies={"can_be_negative": False},
@@ -23,7 +23,7 @@ def thermal_bremsstrahlung(
     Te: u.K,
     ni: u.m ** -3 = None,
     ion_species: Union[str, Particle] = "H+",
-    kmax : u.m = None,
+    kmax: u.m = None,
 ) -> np.ndarray:
     r"""
     Calculate the Bremsstrahlung emission spectrum for a Maxwellian plasma
@@ -90,52 +90,60 @@ def thermal_bremsstrahlung(
 
     """
 
-
     # Condition ion_species
     if isinstance(ion_species, str):
         ion_species = Particle(ion_species)
 
     # Default ni is ne/Z:
     if ni is None:
-        ni = ne/ion_species.integer_charge
+        ni = ne / ion_species.integer_charge
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
-        kmax = (np.sqrt(const.m_e.si*const.k_B.si*Te)/const.hbar.si).to(1/u.m)
+        kmax = (np.sqrt(const.m_e.si * const.k_B.si * Te) / const.hbar.si).to(1 / u.m)
 
     # Convert frequencies to angular frequencies
-    w = (frequencies*2*np.pi*u.rad).to(u.rad / u.s)
+    w = (frequencies * 2 * np.pi * u.rad).to(u.rad / u.s)
 
     # Calculate the electron plasma frequency
     wpe = plasma_frequency(n=ne, particle="e-")
 
-
     # Check that all w < wpe (this formula is only valid in this limit)
     if np.min(w) < wpe:
-        raise PhysicsError("Lowest frequency must be larger than the electron"+
-                           "plasma frequency {:.1e}".format(wpe) +
-                           ", but min(w) = {:.1e}".format(np.min(w)))
+        raise PhysicsError(
+            "Lowest frequency must be larger than the electron"
+            + "plasma frequency {:.1e}".format(wpe)
+            + ", but min(w) = {:.1e}".format(np.min(w))
+        )
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
-    #hw << kTe
-    rj_const = (np.max(w)*const.hbar.si/(2*np.pi*u.rad*const.k_B.si*Te)).to(u.dimensionless_unscaled)
+    # hw << kTe
+    rj_const = (np.max(w) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * Te)).to(
+        u.dimensionless_unscaled
+    )
     if rj_const.value > 0.1:
 
-        raise PhysicsError("Rayleigh-Jeans limit not satisfied:" +
-                           "hbar*w/kTe = {:.2e} > 0.1".format(rj_const.value) +
-                           ". Try lower w or higher Te.")
+        raise PhysicsError(
+            "Rayleigh-Jeans limit not satisfied:"
+            + "hbar*w/kTe = {:.2e} > 0.1".format(rj_const.value)
+            + ". Try lower w or higher Te."
+        )
 
     # Calculate the bremsstralung power spectral density in several steps
-    c1 = (8/3)*np.sqrt(2/np.pi) \
-         *(const.e.si**2/(4*np.pi*const.eps0.si))**3 \
-         *1/(const.m_e.si*const.c.si**2)**1.5
+    c1 = (
+        (8 / 3)
+        * np.sqrt(2 / np.pi)
+        * (const.e.si ** 2 / (4 * np.pi * const.eps0.si)) ** 3
+        * 1
+        / (const.m_e.si * const.c.si ** 2) ** 1.5
+    )
 
     Zi = ion_species.integer_charge
-    c2 = np.sqrt(1 - wpe**2/w**2)*Zi**2*ni*ne/np.sqrt(const.k_B.si*Te)
+    c2 = np.sqrt(1 - wpe ** 2 / w ** 2) * Zi ** 2 * ni * ne / np.sqrt(const.k_B.si * Te)
 
     # Dimensionless argument for exponential integral
-    arg = 0.5*w**2*const.m_e.si/(kmax**2*const.k_B.si*Te)/u.rad**2
+    arg = 0.5 * w ** 2 * const.m_e.si / (kmax ** 2 * const.k_B.si * Te) / u.rad ** 2
     # Remove units, get ndarray of values
     arg = (arg.to(u.dimensionless_unscaled)).value
 
-    return c1*c2*exp1(arg)
+    return c1 * c2 * exp1(arg)
