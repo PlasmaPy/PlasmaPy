@@ -49,6 +49,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Quantum Relations <quantum>               | `plasmapy.formulary.quantum`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Radiation <radiation>                     | `plasmapy.formulary.radiation`          |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Relativistic Relations <relativity>       | `plasmapy.formulary.relativity`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
