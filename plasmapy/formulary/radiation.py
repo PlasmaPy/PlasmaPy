@@ -31,7 +31,7 @@ def thermal_bremsstrahlung(
     n_e: u.m ** -3,
     T_e: u.K,
     n_i: u.m ** -3 = None,
-    ion_species: Particle = 'H+',
+    ion_species: Particle = "H+",
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""
@@ -124,9 +124,9 @@ def thermal_bremsstrahlung(
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
     # hω << kT_e
-    rj_const = (np.max(ω) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * T_e)).to(
-        u.dimensionless_unscaled
-    )
+    rj_const = (
+        np.max(ω) * const.hbar.si / (2 * np.pi * u.rad * const.k_B.si * T_e)
+    ).to(u.dimensionless_unscaled)
     if rj_const.value > 0.1:
 
         raise PhysicsError(
@@ -145,7 +145,13 @@ def thermal_bremsstrahlung(
     )
 
     Zi = ion_species.integer_charge
-    c2 = np.sqrt(1 - ω_pe ** 2 / ω ** 2) * Zi ** 2 * n_i * n_e / np.sqrt(const.k_B.si * T_e)
+    c2 = (
+        np.sqrt(1 - ω_pe ** 2 / ω ** 2)
+        * Zi ** 2
+        * n_i
+        * n_e
+        / np.sqrt(const.k_B.si * T_e)
+    )
 
     # Dimensionless argument for exponential integral
     arg = 0.5 * ω ** 2 * const.m_e.si / (kmax ** 2 * const.k_B.si * T_e) / u.rad ** 2
