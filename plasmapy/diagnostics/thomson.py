@@ -104,7 +104,7 @@ def spectral_density(
         of the ion component number density to the total ion number density.
         Must sum to 1.0. Default is a single ion species.
 
-    ion_species : str or `~plasmapy.particles.Particle`, shape (N, ), optional
+    ion_species : str or `~plasmapy.particles.Particle`, shape (Ni, ), optional
         A list or single instance of `~plasmapy.particles.Particle`, or strings
         convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
         corresponding to a single species of hydrogen ions.
@@ -131,7 +131,8 @@ def spectral_density(
     -------
     alpha : float
         Mean scattering parameter, where `alpha` > 1 corresponds to collective
-        scattering and `alpha` < 1 indicates non-collective scattering.
+        scattering and `alpha` < 1 indicates non-collective scattering. The
+        scattering parameter is calculated based on the total plasma density n.
 
     Skw : `~astropy.units.Quantity`
         Computed spectral density function over the input `wavelengths` array
@@ -255,7 +256,6 @@ def spectral_density(
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
     alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
 
-
     # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
     xe = (np.outer(1 / vTe, 1 / k) * w_e).to(u.dimensionless_unscaled)
     xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
@@ -278,12 +278,8 @@ def spectral_density(
     # Calculate the longitudinal dielectric function
     epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
 
-
     econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(efract.size):
-        # The multiple of efract[m] is necessary to make sure that that splitting
-        # one population into efrac[1.0]=[0.5, 0.5]=[0.1, 0.9] all yield the
-        # same results.
         econtr[m, :] = efract[m]*(
             2
             * np.sqrt(np.pi)
@@ -295,7 +291,7 @@ def spectral_density(
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(ifract.size):
-        icontr[m, :] = (
+        icontr[m, :] = ifract[m]*(
             2
             * np.sqrt(np.pi)
             * ion_z[m]
