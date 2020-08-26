@@ -119,7 +119,7 @@ def test_different_input_types():
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
     ifract = np.array([1.0])
-    Te = 10 * u.eV
+    Te = np.array([10]) * u.eV
     Ti = np.array([10]) * u.eV
     ion_species = "C-12 5+"
 
@@ -161,6 +161,35 @@ def test_different_input_types():
             Ti,
             ifract=ifract,
             ion_species=[],
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+
+    # Raise a Value Error with inconsistent electron array lengths
+    # Te.size != efract.size
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            np.array([1, 10]) * u.eV,
+            Ti,
+            efract=np.array([0.5, 0.2, 0.3]),
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Electorn vel shape not compatible with efract.size
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            Te,
+            Ti,
+            efract=np.array([0.5, 0.5]),
+            electron_vel = np.array([[100, 0,0]])*u.km/u.s,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
         )
