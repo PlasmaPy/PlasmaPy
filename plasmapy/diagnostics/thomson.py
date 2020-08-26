@@ -223,7 +223,7 @@ def spectral_density(
     zbar = np.sum(ifract * ion_z)
     ne = efract * n
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
-	# wpe is calculated for the entire plasma (all electron populations combined)
+    # wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency(n=n, particle="e-")
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
@@ -261,11 +261,10 @@ def spectral_density(
     xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
 
     # Calculate the susceptibilities
-    #chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, "e-")
+    # chiE = permittivity_1D_Maxwellian(w_e, k, Te, ne, "e-")
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
-        chiE[i, :] = permittivity_1D_Maxwellian(
-            w_e[i, :], k, Te[i], ne[i], 'e-')
+        chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
@@ -280,18 +279,18 @@ def spectral_density(
 
     econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(efract.size):
-        econtr[m, :] = efract[m]*(
+        econtr[m, :] = efract[m] * (
             2
             * np.sqrt(np.pi)
             / k
             / vTe[m]
-            * np.power(np.abs(1 - np.sum(chiE, axis=0)  / epsilon), 2)
+            * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
             * np.exp(-xe[m, :] ** 2)
         )
 
     icontr = np.zeros([ifract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(ifract.size):
-        icontr[m, :] = ifract[m]*(
+        icontr[m, :] = ifract[m] * (
             2
             * np.sqrt(np.pi)
             * ion_z[m]
