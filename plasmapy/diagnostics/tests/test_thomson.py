@@ -165,7 +165,6 @@ def test_different_input_types():
             scatter_vec=scatter_vec,
         )
 
-
     # Raise a Value Error with inconsistent electron array lengths
     # Te.size != efract.size
     with pytest.raises(ValueError):
@@ -189,7 +188,7 @@ def test_different_input_types():
             Te,
             Ti,
             efract=np.array([0.5, 0.5]),
-            electron_vel = np.array([[100, 0,0]])*u.km/u.s,
+            electron_vel=np.array([[100, 0, 0]]) * u.km / u.s,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
         )
