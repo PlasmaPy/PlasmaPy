@@ -282,8 +282,8 @@ def test_split_populations():
     # Split e and i populations into two parts
     # this should not change the results since the parts are identical
     Te = np.array([10, 10]) * u.eV
-    Ti = np.array([10,10]) * u.eV
-    ion_species = ["H+","H+"]
+    Ti = np.array([10, 10]) * u.eV
+    ion_species = ["H+", "H+"]
     ifract = np.array([0.2, 0.8])
     efract = np.array([0.8, 0.2])
 
@@ -302,8 +302,6 @@ def test_split_populations():
 
     # Calculate the deviation between the two spectra
     # (any differences should be in the noise)
-    deviation = (Skw0 - Skw1)/Skw0*100
+    deviation = (Skw0 - Skw1) / Skw0 * 100
 
-
-    assert all(deviation < 1e-6), (
-        "Failed split populations teset")
+    assert all(deviation < 1e-6), "Failed split populations teset"

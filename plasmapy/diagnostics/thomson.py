@@ -208,15 +208,11 @@ def spectral_density(
         )
 
     # Make sure the sizes of efract, electron_vel, and Te all match
-    if (
-        (electron_vel.shape[0] != efract.size)
-        or (Te.size != efract.size)
-    ):
+    if (electron_vel.shape[0] != efract.size) or (Te.size != efract.size):
         raise ValueError(
             f"Inconsistent number of electron populations in efract ({efract.size}), "
             f"Te ({Te.size}), or electron velocity ({electron_vel.shape[0]})."
         )
-
 
     # Ensure unit vectors are normalized
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
