@@ -51,22 +51,23 @@ def spectral_density(
 
     This function calculates the spectral density function for Thomson
     scattering of a probe laser beam by a plasma consisting of one or more ion
-    species and a neutralizing electron fluid:
+    species and a one or more thermal electron populations (the entire plasma
+    is assumed to be quasi-neutral)
 
     .. math::
-        S(k,\omega) = 1 - \frac{2\pi}{k}
+        S(k,\omega) = \sum_e \frac{2\pi}{k}
         \bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
-        f_{e0} \bigg (\frac{\omega}{k} \bigg ) +
+        f_{e0,e} \bigg (\frac{\omega}{k} \bigg ) +
         \sum_i \frac{2\pi Z_i}{k}
         \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{i0,i}
         \bigg ( \frac{\omega}{k} \bigg )
 
     where :math:`\chi_e` is the electron component susceptibility of the
-    plasma and :math:`\epsilon = 1 + \chi_e + \sum_i \chi_i` is the total
+    plasma and :math:`\epsilon = 1 + \sum_e \chi_e + \sum_i \chi_i` is the total
     plasma dielectric  function (with :math:`\chi_i` being the ion component
     of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
     is the scattering wavenumber, :math:`\omega` is the scattering frequency,
-    and :math:`f_{e0}` and :math:`f_{i0,i}` are the electron and ion velocity
+    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
     distribution functions respectively. In this function the electron and ion
     velocity distribution functions are assumed to be Maxwellian, making this
     function equivalent to Eq. 3.4.6 in `Sheffield`_.
@@ -176,7 +177,7 @@ def spectral_density(
     # Condition Te
     if Te.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
-        # If Te.size != len(e_fract), assume same temp. for all species
+        # If Te.size != len(efract), assume same temp. for all species
         Te = [Te.value] * len(efract) * Te.unit
     elif Te.size != len(efract):
         raise ValueError(
@@ -266,7 +267,6 @@ def spectral_density(
         chiE[i, :] = permittivity_1D_Maxwellian(
             w_e[i, :], k, Te[i], ne[i], 'e-')
 
-
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
@@ -281,7 +281,10 @@ def spectral_density(
 
     econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
     for m in range(efract.size):
-        econtr[m, :] = (
+        # The multiple of efract[m] is necessary to make sure that that splitting
+        # one population into efrac[1.0]=[0.5, 0.5]=[0.1, 0.9] all yield the
+        # same results.
+        econtr[m, :] = efract[m]*(
             2
             * np.sqrt(np.pi)
             / k
@@ -290,12 +293,8 @@ def spectral_density(
             * np.exp(-xe[m, :] ** 2)
         )
 
-    # This correction seems to be necessary so that
-    #efract[0.5,0.5] = efract[1.0]. Haven't carefully derived it yet.
-    econtr *= 1/np.size(efract)
-
-    icontr = np.zeros([fract.size, w.size], dtype=np.complex128) * u.s / u.rad
-    for m in range(fract.size):
+    icontr = np.zeros([ifract.size, w.size], dtype=np.complex128) * u.s / u.rad
+    for m in range(ifract.size):
         icontr[m, :] = (
             2
             * np.sqrt(np.pi)
