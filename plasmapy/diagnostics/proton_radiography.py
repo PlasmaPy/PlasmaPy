@@ -428,7 +428,7 @@ class SimPrad():
                 np.sum(self.on_grid)/self.nparticles < 0.01)
 
 
-    def calc_ke(self, total=False):
+    def calc_ke(self, total=True):
         """
         Calculate the total kinetic energy of some or all particles. This calculation
         is currently done on velocity time steps (half-integer time steps)
