@@ -336,10 +336,6 @@ class SimPrad():
 
 
 
-
-
-
-
     def _generate_null(self):
         """
         Calculate the distribution of particles on the detector in the absence
@@ -439,12 +435,10 @@ class SimPrad():
 
         # Initialize variables and create the particle distribution
         self._generate_particles(max_theta = max_theta)
-        print(f"{self.r[0,:]}")
 
         # Advance the particles to the near the start of the simulation
         # volume
         self._advance_to_grid()
-        print(f"{self.r[0,:]}")
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
@@ -452,13 +446,11 @@ class SimPrad():
             if self.verbose:
                 fract = 100*np.sum(self.on_grid)/self.nparticles
                 self._log(f"{fract:.1f}% on grid")
-                print(f"{self.r[0,:].si.value*100}")
+                #print(f"{self.r[0,:].si.value*100}")
             self._push()
 
-        print(f"{self.r[0,:]}")
         # Advance the particles to the image plane
         self._advance_to_detector()
-        print(f"{self.r[0,:]}")
 
         self._log("Run completed")
 
@@ -496,17 +488,17 @@ class SimPrad():
         # Define detector x axis as being perpendicular to both the detector
         # vector and either the grid x or z axis
         nx = np.cross(np.array([0,0,1]), self.det_n)
-        if np.linalg.norm(nx) == 0:
-            nx = np.cross(np.array([1,0,0]), self.det_n)
+        #if np.linalg.norm(nx) == 0:
+        #    nx = np.cross(np.array([1,0,0]), self.det_n)
         nx = nx/np.linalg.norm(nx)
 
-        ny = np.abs(np.cross(nx, self.det_n))
+        ny = np.cross(nx, self.det_n)
         ny = ny/np.linalg.norm(ny)
 
         # Determine locations of points in the detector plane using unit
         # vectors
-        xloc = np.dot(self.r, nx)
-        yloc = np.dot(self.r, ny)
+        xloc = np.dot(self.r - self.detector, nx)
+        yloc = np.dot(self.r - self.detector, ny)
 
         if size is None:
             # If a detector size is not given, choose lengths based on the
@@ -519,7 +511,7 @@ class SimPrad():
 
         # If #bins is not set, make a guess
         if bins is None:
-            bins = [100, 100]
+            bins = [200, 200]
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(xloc.si.value, yloc.si.value,
