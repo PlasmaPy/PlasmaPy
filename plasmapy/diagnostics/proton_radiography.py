@@ -320,9 +320,9 @@ class SimPrad():
 
         # If v_towards_det < 0, the particles will never reach the detector.
         #Put them far out of frame in the plane and forget about them
-        ind = np.nonzero(np.where(v_towards_det < 0, 1, 0))
-        self.r[ind, :] = np.cross(np.array([1e3,0,0]), self.det_n)*u.m
-        self.v[ind, :] = np.zeros(3)
+        #ind = np.nonzero(np.where(v_towards_det < 0, 1, 0))
+        #self.r[ind, :] = np.cross(np.array([1e3,0,0]), self.det_n)*u.m
+        #self.v[ind, :] = np.zeros(3)
 
         # Time remaining for each particle to reach detector plane
         t = dist_remaining/v_towards_det
@@ -331,8 +331,8 @@ class SimPrad():
 
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
-        assert np.allclose(plane_eq, np.zeros(self.nparticles), atol=1e-6)
+        #plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        #assert np.allclose(plane_eq, np.zeros(self.nparticles), atol=1e-6)
 
 
 
