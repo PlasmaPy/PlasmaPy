@@ -28,9 +28,10 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
     # Create or load a grid
     if grid is None:
         L = 2.5*u.mm
-        xaxis = np.linspace(-L, L, num=250)
-        yaxis = np.linspace(-L, L, num=250)
-        zaxis = np.linspace(-L, L, num=250)
+        num = 250
+        xaxis = np.linspace(-L, L, num=num)
+        yaxis = np.linspace(-L, L, num=num)
+        zaxis = np.linspace(-L, L, num=num)
         xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing='ij')
         grid = np.zeros([xaxis.size, yaxis.size, zaxis.size, 3])*u.cm
         grid[...,0] = xarr
@@ -48,6 +49,10 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
 
         L = np.max(xaxis) - np.min(xaxis)
 
+    radius = np.sqrt(xarr**2 + yarr**2 + zarr**2)
+    pradius =  np.sqrt(xarr**2 + yarr**2)
+
+
     # Create arrays for fields
     E = np.zeros(grid.shape)*u.V/u.m
     B = np.zeros(grid.shape)*u.T
@@ -56,22 +61,36 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
     if mode == 'no fields':
         pass
 
-    # Electrostatic cylinder creates a radial electric field with the axis
-    # pointing along the z axis
     elif mode == 'electrostatic gaussian sphere':
         print("Generating Electrostatic Gaussian Sphere")
 
-        alen = L/4
-        blen = L/2
-        potential = -np.exp(-(xarr**2 + yarr**2)/alen**2 -
-                               zarr**2/blen**2)
+        a = L/4
+        potential = -np.exp(-(xarr**2 + yarr**2 + zarr**2)/a**2)*u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
-        E[...,0], E[...,1], E[...,2] = Ex, Ey, Ez
+        Ex = np.where(radius < 0.5*L, Ex, 0)
+        Ey = np.where(radius < 0.5*L, Ey, 0)
+        Ez = np.where(radius < 0.5*L, Ez, 0)
+
+
+        E[:,:,:,0], E[:,:,:,1], E[:,:,:,2] = Ex, Ey, Ez
+
 
         # Normalize to a desired maximum field
-        E = E/np.max(E)
-        E = E*1e10*u.V/u.m
+        E = (E/np.max(E)).to(u.dimensionless_unscaled)
+        E = E*(5e9*u.V/u.m)
+
+    elif mode == 'axial magnetic field':
+        print("Generating Axial Magnetic Field")
+
+        a = L/4
+        B[:,:,:,2] = np.where(pradius < a, 100*u.T, 0*u.T)
+
+
+
+
+
+
 
     return grid, E, B
 
@@ -80,14 +99,14 @@ def _rot_a_to_b(a,b):
     """
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
     with vector b.
-
-    Algorithm based on this discussion:
-    https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
     """
     a = a / np.linalg.norm(a)
     b = b / np.linalg.norm(b)
 
-    # TODO: manually handle the case where b = -zhat: that breaks this fcn
+    # Manually handle the case where a and b point in opposite directions
+    if np.dot(a,b) == -1:
+        return -np.identity(3)
+
     axb = np.cross(a,b)
     c = np.dot(a,b)
     vskew = np.array([[0, -axb[2], axb[1]],
@@ -142,44 +161,58 @@ class SimPrad():
         self.dy = np.mean(np.gradient(self.yaxis))
         self.dz = np.mean(np.gradient(self.zaxis))
 
-        # Compute maximum separation between gridpoints
+        # Compute minimum separation between gridpoints
         # this is used for calculating the timestep
-        self.ds = np.sqrt(3/2)*max(self.dx, self.dy, self.dz)
+        self.ds = np.sqrt(3/2)*min(self.dx, self.dy, self.dz)
 
         # Convert geometrical inputs between coordinates systems
         if geometry == 'cartesian':
-            self.source = source
-            self.detector = detector
+            x,y,z = source
+            self.source = np.zeros(3)*u.m
+            self.source[0] = x.to(u.m)
+            self.source[1] = y.to(u.m)
+            self.source[2] = z.to(u.m)
+
+            x,y,z = detector
+            self.detector = np.zeros(3)*u.m
+            self.detector[0] = x.to(u.m)
+            self.detector[1] = y.to(u.m)
+            self.detector[2] = z.to(u.m)
 
         elif geometry == 'spherical':
             r, t, p = source
-            t = np.deg2rad(t)
-            p = np.deg2rad(p)
-            self.source = np.zeros(3)*r.unit
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            p = p.to(u.rad).value
+            self.source = np.zeros(3)*u.m
             self.source[0] = r*np.sin(t)*np.cos(p)
             self.source[1] = r*np.sin(t)*np.sin(p)
             self.source[2] = r*np.cos(t)
 
             r, t, p = detector
-            t = np.deg2rad(t)
-            p = np.deg2rad(p)
-            self.detector = np.zeros(3)*r.unit
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            p = p.to(u.rad).value
+            self.detector = np.zeros(3)*u.m
             self.detector[0] = r*np.sin(t)*np.cos(p)
             self.detector[1] = r*np.sin(t)*np.sin(p)
             self.detector[2] = r*np.cos(t)
 
+        print("Source: " + str(self.source.to(u.mm)))
+        print("Detector: " + str(self.detector.to(u.mm)))
+
         # TODO: Implement cylindrical coordinates for completeness
 
         # Calculate some parameters involving the source and detector locations
-        # Detector plane normal vector
-        self.det_n = self.detector/np.linalg.norm(self.detector)
+        self.det_n = -self.detector.si.value/np.linalg.norm(self.detector.si.value) #Plane normal vec
 
         # Vector directly from source to detector
         self.source_to_detector = self.detector - self.source
 
         # Compute the magnification
-        self.mag = 1 + (np.linalg.norm(self.detector)
-                        /np.linalg.norm(self.source))
+        self.mag = 1 + (np.linalg.norm(self.detector.si.value)/
+                        np.linalg.norm(self.source.si.value))
+
 
     def _log(self, msg):
         if self.verbose:
@@ -209,21 +242,17 @@ class SimPrad():
         self.zaxis_compare = np.outer(self.zaxis, np.ones(self.nparticles))
 
 
-    def _generate_particles(self):
+    def _generate_particles(self, max_theta=np.pi/2*u.rad):
         """
         Generates the angular distributions about the Z-axis, then
         shifts those distributions to align with the source-to-origin axis
         """
 
         self._log("Creating Particles")
-        # Calculate angle range for particles to possibly hit the sim volume
-        # there's no point including particles at larger angles, which will
-        # never interact with the simulated fields.
-        max_angle = 2.5(*np.arctan(np.max(self.grid)
-                                   /np.linalg.norm(self.source)).value)
 
+        max_theta = max_theta.to(u.rad).value
         # Create a probability vector
-        arg = np.linspace(0, max_angle, num=int(1e4))
+        arg = np.linspace(0, max_theta, num=int(1e4))
         prob = np.sin(arg)
         prob *= 1/np.sum(prob)
 
@@ -248,6 +277,9 @@ class SimPrad():
         # Apply rotation matrix to calculated velocity distribution
         self.v = np.matmul(self.v, rot)
 
+        x = np.mean(self.v, axis=0)
+        print("Mean Velocity:" + str(x/np.linalg.norm(x)))
+
         # Place particles at the source
         self.r = np.outer(np.ones(self.nparticles), self.source)
 
@@ -270,11 +302,8 @@ class SimPrad():
         # Distance from the source to the nearest gridpoint
         dist = np.min(np.linalg.norm(self.grid - self.source, axis=3))
 
-        # Source-to-origin center unit vector
-        uvec = -self.source/ np.linalg.norm(self.source)
-
         # Time for fastest possible particle to reach the grid.
-        t = (dist*uvec/self.v0).to(u.s)
+        t = (dist/self.v0).to(u.s)
 
         self.r = self.r + self.v*t
 
@@ -283,25 +312,33 @@ class SimPrad():
         Once all particles have cleared the grid, advance them to the detector
         plane.
         """
-        # Calculate the remaining distance each particle needs to travel to
-        # reach the plane
-        # see https://mathworld.wolfram.com/Point-PlaneDistance.html
-        remaining = np.dot(self.r - self.detector, self.det_n)
+        dist_remaining = (np.dot(self.r, self.det_n) +
+                          np.linalg.norm(self.detector))
 
-        # Component of the particle velocity in the direction of the detector
-        # plane
-        v_in_dir = np.dot(self.v, self.det_n)
+        v_towards_det = np.dot(self.v,-self.det_n)
 
-        # Calculate the time remaining to reach that plane and push
-        # t can be negative if particle has already passed the detector plane
-        t = (remaining/v_in_dir).to(u.s)
 
-        # TODO: Negative times should only really be allowed here if particles
-        # have passed the detector plane (otherwise they correspond) to
-        # particles going the wrong way. Maybe solve by checking that
-        # v dot uvec is positive?
+        # If v_towards_det < 0, the particles will never reach the detector.
+        #Put them far out of frame in the plane and forget about them
+        ind = np.nonzero(np.where(v_towards_det < 0, 1, 0))
+        self.r[ind, :] = np.cross(np.array([1e3,0,0]), self.det_n)*u.m
+        self.v[ind, :] = np.zeros(3)
 
-        self.r = self.r + self.v*np.outer(t,np.ones(3))
+        # Time remaining for each particle to reach detector plane
+        t = dist_remaining/v_towards_det
+
+        self.r += self.v*np.outer(t,np.ones(3))
+
+        # Check that all points are now in the detector plane
+        # (Eq. of a plane is nhat*x + d = 0)
+        plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        assert np.allclose(plane_eq, np.zeros(self.nparticles), atol=1e-6)
+
+
+
+
+
+
 
     def _generate_null(self):
         """
@@ -341,7 +378,7 @@ class SimPrad():
         self.zi = i[:,2].astype(np.int32)
 
         # Update the list of particles on and off the grid
-        dist = np.linalg.norm(self.r - grid[self.xi,self.yi,self.zi, :], axis=1)
+        dist = np.linalg.norm(self.r - self.grid[self.xi,self.yi,self.zi, :], axis=1)
         self.on_grid = np.where(dist < self.ds, 1, 0)
         self.entered_grid += self.on_grid
 
@@ -389,7 +426,7 @@ class SimPrad():
         self.r += self.dr
 
 
-    def run(self, nparticles=1e5, dt_mult=1):
+    def run(self, nparticles=1e5, dt_mult=1, max_theta=np.pi/2*u.rad):
         """
         Setup and run a particle-tracing simulated radiograph
         """
@@ -401,11 +438,13 @@ class SimPrad():
         self._init_particle_sim()
 
         # Initialize variables and create the particle distribution
-        self._generate_particles()
+        self._generate_particles(max_theta = max_theta)
+        print(f"{self.r[0,:]}")
 
         # Advance the particles to the near the start of the simulation
         # volume
         self._advance_to_grid()
+        print(f"{self.r[0,:]}")
 
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
@@ -413,10 +452,15 @@ class SimPrad():
             if self.verbose:
                 fract = 100*np.sum(self.on_grid)/self.nparticles
                 self._log(f"{fract:.1f}% on grid")
+                print(f"{self.r[0,:].si.value*100}")
             self._push()
 
+        print(f"{self.r[0,:]}")
         # Advance the particles to the image plane
         self._advance_to_detector()
+        print(f"{self.r[0,:]}")
+
+        self._log("Run completed")
 
 
     def _stop_condition(self):
@@ -424,8 +468,8 @@ class SimPrad():
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
         """
-        return (np.sum(self.entered_grid)/self.nparticles > .5 and
-                np.sum(self.on_grid)/self.nparticles < 0.01)
+        return (np.sum(self.entered_grid)/self.nparticles > .1 and
+                np.sum(self.on_grid)/self.nparticles < 0.05)
 
 
     def calc_ke(self, total=True):
@@ -450,9 +494,14 @@ class SimPrad():
         # into the image plane.
 
         # Define detector x axis as being perpendicular to both the detector
-        # vector and the grid z-axis
+        # vector and either the grid x or z axis
         nx = np.cross(np.array([0,0,1]), self.det_n)
-        ny = np.cross(nx, self.det_n)
+        if np.linalg.norm(nx) == 0:
+            nx = np.cross(np.array([1,0,0]), self.det_n)
+        nx = nx/np.linalg.norm(nx)
+
+        ny = np.abs(np.cross(nx, self.det_n))
+        ny = ny/np.linalg.norm(ny)
 
         # Determine locations of points in the detector plane using unit
         # vectors
