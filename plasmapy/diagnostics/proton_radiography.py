@@ -119,8 +119,6 @@ class SimPrad():
                  source: u.m,
                  detector: u.m,
                  proton_energy = 14*u.MeV,
-                 Eoff = False,
-                 Boff = False,
                  geometry = 'cartesian',
                  solid = None,
                  verbose = True):
@@ -129,8 +127,6 @@ class SimPrad():
         self.grid = grid
         self.E = E
         self.B = B
-        self.Eoff = Eoff
-        self.Boff = Boff
         self.proton_energy = proton_energy
 
         self.charge = const.e.si
@@ -373,13 +369,6 @@ class SimPrad():
 
         E = self.E[self.xi, self.yi, self.zi, :]*np.outer(self.on_grid, np.ones(3))
         B = self.B[self.xi, self.yi, self.zi, :]*np.outer(self.on_grid, np.ones(3))
-
-        # If one of the field-ignore flags is True, set the corresponding field
-        # to zero.
-        if self.Eoff:
-            E *= 0.0
-        if self.Boff:
-            B *= 0.0
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
