@@ -116,6 +116,14 @@ def _rot_a_to_b(a,b):
     return np.identity(3) + vskew + np.dot(vskew, vskew)/(1 + c)
 
 
+# TODO: error checking
+# ERRORS
+# - Validate that no input vaules contain nans or anything like that
+
+# WARNINGS
+# - Throw a warning if source-detector vector does not pass through grid volume
+# - Throw a warning if highly non-linear deflections (path crossings) are expected
+
 
 class SimPrad():
     """
@@ -234,12 +242,6 @@ class SimPrad():
                                    self.yaxis.size,
                                    self.zaxis.size])
         self.ind_grid = np.moveaxis(self.ind_grid, 0, -1)
-
-        # These comparison axes will be used for finding the best index matches
-        # when placing particles on the field grid
-        self.xaxis_compare = np.outer(self.xaxis, np.ones(self.nparticles))
-        self.yaxis_compare = np.outer(self.yaxis, np.ones(self.nparticles))
-        self.zaxis_compare = np.outer(self.zaxis, np.ones(self.nparticles))
 
 
     def _generate_particles(self, max_theta=np.pi/2*u.rad):
@@ -384,12 +386,19 @@ class SimPrad():
         Calculate the appropraite dt based on a number of considerations
         """
         # Compute the cyclotron gyroperiod
-        gyroperiod = (2*np.pi*const.m_p.si/(const.e.si*np.max(np.abs(B)))).to(u.s)
+
+        Bmag = np.linalg.norm(B, axis=1) # B is [nparticles,3] here
+        gyroperiod = (2*np.pi*const.m_p.si/(const.e.si*np.max(Bmag))).to(u.s)
 
         # Compute the time required for a proton to cross one grid cell
         gridstep = (min(self.dx, self.dy, self.dz)/self.v0).to(u.s)
 
-        return min(gyroperiod, gridstep)*self.dt_mult
+        dt = min(gyroperiod, gridstep)*self.dt_mult
+
+        # Double-check dt is valid
+        assert(dt > 0)
+
+        return dt
 
 
     def _push(self):
@@ -407,6 +416,7 @@ class SimPrad():
         # by the particles
         dt = self._adaptive_dt(B)
         dt2 = dt*self.charge/self.mass/2
+
 
         # Execute the Boris push algorithm
         vminus = self.v + E*dt2
@@ -460,8 +470,8 @@ class SimPrad():
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
         """
-        return (np.sum(self.entered_grid)/self.nparticles > .1 and
-                np.sum(self.on_grid)/self.nparticles < 0.05)
+        return (np.sum(self.entered_grid)/self.nparticles > .5 and
+                np.sum(self.on_grid)/np.sum(self.entered_grid) < 0.01)
 
 
     def calc_ke(self, total=True):
