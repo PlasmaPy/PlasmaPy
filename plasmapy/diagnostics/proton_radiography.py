@@ -27,7 +27,7 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
 
     # Create or load a grid
     if grid is None:
-        L = 2.5*u.mm
+        L = .5*u.mm
         num = 250
         xaxis = np.linspace(-L, L, num=num)
         yaxis = np.linspace(-L, L, num=num)
@@ -147,7 +147,6 @@ class SimPrad():
                  detector: u.m,
                  proton_energy = 14*u.MeV,
                  geometry = 'cartesian',
-                 solid = None,
                  verbose = True):
 
         self.verbose = verbose
@@ -160,18 +159,6 @@ class SimPrad():
         self.mass = const.m_p.si
         # Calculate the velocity corresponding to the proton energy
         self.v0 = np.sqrt(2*self.proton_energy/const.m_p.si).to(u.m/u.s)
-
-        # Extract axes from the given grid
-        self.xaxis = self.grid[:,0,0,0]
-        self.yaxis = self.grid[0,:,0,1]
-        self.zaxis = self.grid[0,0,:,2]
-        self.dx = np.mean(np.gradient(self.xaxis))
-        self.dy = np.mean(np.gradient(self.yaxis))
-        self.dz = np.mean(np.gradient(self.zaxis))
-
-        # Compute minimum separation between gridpoints
-        # this is used for calculating the timestep
-        self.ds = np.sqrt(3/2)*min(self.dx, self.dy, self.dz)
 
         # Convert geometrical inputs between coordinates systems
         if geometry == 'cartesian':
@@ -216,11 +203,13 @@ class SimPrad():
 
         # Vector directly from source to detector
         self.source_to_detector = self.detector - self.source
+        # Experiment axis is the unit vector from the source to the detector
+        self.exp_ax = (self.source_to_detector.si.value
+                       /np.linalg.norm(self.source_to_detector.si.value))
 
         # Compute the magnification
         self.mag = 1 + (np.linalg.norm(self.detector.si.value)/
                         np.linalg.norm(self.source.si.value))
-
 
     def _log(self, msg):
         if self.verbose:
@@ -234,14 +223,26 @@ class SimPrad():
         """"
         Initialize variables necessary for running the particle prad sim
         """
-
         # This grid of indices is used when interpolating particles onto the
-        # fields. Generated here to avoid the cost of re-generating it with
-        # each push
-        self.ind_grid = np.indices([self.xaxis.size,
-                                   self.yaxis.size,
-                                   self.zaxis.size])
-        self.ind_grid = np.moveaxis(self.ind_grid, 0, -1)
+        # field grid. Generated here to avoid the cost of re-generating it
+        # with each push
+        nx, ny, nz, x = self.grid.shape
+        self.indgrid = np.indices([nx,ny,nz])
+        self.indgrid = np.moveaxis(self.indgrid, 0, -1)
+
+
+        # Create axes under the regular grid assumption
+        self.xaxis = self.grid[:,0,0,0]
+        self.yaxis = self.grid[0,:,0,1]
+        self.zaxis = self.grid[0,0,:,2]
+        dx = np.mean(np.gradient(self.xaxis))
+        dy = np.mean(np.gradient(self.yaxis))
+        dz = np.mean(np.gradient(self.zaxis))
+        dvec = np.array([dx.value, dy.value, dz.value])*dx.unit
+
+        # Estimate the grid-point spacing along the source_to_detector vector
+        self.ds = np.linalg.norm( np.dot(dvec, self.exp_ax))
+
 
 
     def _generate_particles(self, max_theta=np.pi/2*u.rad):
@@ -319,7 +320,7 @@ class SimPrad():
 
         v_towards_det = np.dot(self.v,-self.det_n)
 
-
+        # TODO
         # If v_towards_det < 0, the particles will never reach the detector.
         #Put them far out of frame in the plane and forget about them
         #ind = np.nonzero(np.where(v_towards_det < 0, 1, 0))
@@ -331,6 +332,7 @@ class SimPrad():
 
         self.r += self.v*np.outer(t,np.ones(3))
 
+        # TODO
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
         #plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
@@ -358,14 +360,15 @@ class SimPrad():
         self.r0 = self.source + self.v*np.outer(t,np.ones(3))
 
 
-    def _grid_particles(self):
+    def _place_particles(self):
         """
-        For each particle, find the indicies of the nearest field grid point
+        For each particle, find the indicies of the nearest field assuming that
+        the fields are placed on a regular grid
         """
         # Interpolate the grid indices that best match each particle position
         pts = (self.xaxis.si.value, self.yaxis.si.value, self.zaxis.si.value)
         ind_interp = interp.RegularGridInterpolator(pts,
-                                           self.ind_grid, method='nearest',
+                                           self.indgrid, method='nearest',
                                            bounds_error = False,
                                            fill_value = -1)
         i = ind_interp(self.r.si.value)
@@ -374,11 +377,6 @@ class SimPrad():
         self.xi = i[:,0].astype(np.int32)
         self.yi = i[:,1].astype(np.int32)
         self.zi = i[:,2].astype(np.int32)
-
-        # Update the list of particles on and off the grid
-        dist = np.linalg.norm(self.r - self.grid[self.xi,self.yi,self.zi, :], axis=1)
-        self.on_grid = np.where(dist < self.ds, 1, 0)
-        self.entered_grid += self.on_grid
 
 
     def _adaptive_dt(self, B):
@@ -391,7 +389,7 @@ class SimPrad():
         gyroperiod = (2*np.pi*const.m_p.si/(const.e.si*np.max(Bmag))).to(u.s)
 
         # Compute the time required for a proton to cross one grid cell
-        gridstep = (min(self.dx, self.dy, self.dz)/self.v0).to(u.s)
+        gridstep = (self.ds/self.v0).to(u.s)
 
         dt = min(gyroperiod, gridstep)*self.dt_mult
 
@@ -407,8 +405,14 @@ class SimPrad():
         Boris algorithm
         """
         # Calculate the indices of the field grid points nearest to each particle
-        self._grid_particles()
+        self._place_particles()
 
+        # Update the list of particles on and off the grid
+        dist = np.linalg.norm(self.r - self.grid[self.xi,self.yi,self.zi, :], axis=1)
+        self.on_grid = np.where(dist < self.ds, 1, 0)
+        self.entered_grid += self.on_grid
+
+        # Retreive the fields
         E = self.E[self.xi, self.yi, self.zi, :]*np.outer(self.on_grid, np.ones(3))
         B = self.B[self.xi, self.yi, self.zi, :]*np.outer(self.on_grid, np.ones(3))
 
