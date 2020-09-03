@@ -27,8 +27,8 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
 
     # Create or load a grid
     if grid is None:
-        L = .5*u.mm
-        num = 250
+        L = 1*u.mm
+        num = 60
         xaxis = np.linspace(-L, L, num=num)
         yaxis = np.linspace(-L, L, num=num)
         zaxis = np.linspace(-L, L, num=num)
@@ -86,13 +86,25 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
         a = L/4
         B[:,:,:,2] = np.where(pradius < a, 100*u.T, 0*u.T)
 
-
-
-
-
-
-
     return grid, E, B
+
+
+class ExecTimer:
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.t0 = time.process_time()
+
+    def lap(self, msg=''):
+        t = time.process_time()
+        dt = (t - self.t0)*1e3
+        print(msg + f": {dt:.1f} ms")
+        self.t0 = t
+
+
+
+
 
 
 def _rot_a_to_b(a,b):
@@ -115,6 +127,36 @@ def _rot_a_to_b(a,b):
 
     return np.identity(3) + vskew + np.dot(vskew, vskew)/(1 + c)
 
+def _nearest_neighbor(array):
+    """
+    Given a 3D array of cartesian postions of shape [nx,ny,nz,3],
+    return a Quantity array of the distance to the nearest neighbor from each point
+    of shape [nx,ny,nz]
+    """
+    nx, ny, nz, x = array.shape
+
+    dist = np.zeros([nx,ny,nz,26])*array.unit
+
+    ind = 0
+    for x in [-1, 0, 1]:
+        for y in [-1, 0, 1]:
+            for z in [-1, 0, 1]:
+
+                # Skip the zero shift case.
+                if x==0 and y==0 and z==0:
+                    continue
+
+                # Shift the array
+                shifted_arr = np.roll(array, shift=(x,y,z), axis=(0,1,2))
+                # Compute the distance between the shifted array points and the
+                # previous array points
+                dist[...,ind] = np.linalg.norm(array - shifted_arr, axis=3)
+                # Increment counter
+                ind += 1
+
+    # Return the minimum distance between all 27 points
+    return np.min(dist, axis=3)
+
 
 # TODO: error checking
 # ERRORS
@@ -123,6 +165,11 @@ def _rot_a_to_b(a,b):
 # WARNINGS
 # - Throw a warning if source-detector vector does not pass through grid volume
 # - Throw a warning if highly non-linear deflections (path crossings) are expected
+# - Throw a warning if <10% of the particles ended up on the grid by the end of the run
+# - Throw a warning if <50% of the particles ended up on the histogram
+
+# TODO: Figure out which particles will NOT intersect with the simulated field
+# volume and ignore those particles through the push phase?
 
 
 class SimPrad():
@@ -223,25 +270,62 @@ class SimPrad():
         """"
         Initialize variables necessary for running the particle prad sim
         """
-        # This grid of indices is used when interpolating particles onto the
-        # field grid. Generated here to avoid the cost of re-generating it
-        # with each push
+
         nx, ny, nz, x = self.grid.shape
-        self.indgrid = np.indices([nx,ny,nz])
-        self.indgrid = np.moveaxis(self.indgrid, 0, -1)
+        indgrid = np.indices([nx,ny,nz])
+        indgrid = np.moveaxis(indgrid, 0, -1)
+
+        self.regular_grid = False
 
 
-        # Create axes under the regular grid assumption
-        self.xaxis = self.grid[:,0,0,0]
-        self.yaxis = self.grid[0,:,0,1]
-        self.zaxis = self.grid[0,0,:,2]
-        dx = np.mean(np.gradient(self.xaxis))
-        dy = np.mean(np.gradient(self.yaxis))
-        dz = np.mean(np.gradient(self.zaxis))
-        dvec = np.array([dx.value, dy.value, dz.value])*dx.unit
+        if self.regular_grid:
+            # Create axes under the regular grid assumption
+            xaxis = self.grid[:,0,0,0]
+            yaxis = self.grid[0,:,0,1]
+            zaxis = self.grid[0,0,:,2]
+            dx = np.mean(np.gradient(xaxis))
+            dy = np.mean(np.gradient(yaxis))
+            dz = np.mean(np.gradient(zaxis))
+            dvec = np.array([dx.value, dy.value, dz.value])*dx.unit
 
-        # Estimate the grid-point spacing along the source_to_detector vector
-        self.ds = np.linalg.norm( np.dot(dvec, self.exp_ax))
+            # Estimate the grid-point spacing along the source_to_detector vector
+            self.ds = np.linalg.norm( np.dot(dvec, self.exp_ax))
+
+            # Initialize the interpolator
+            pts = (xaxis.si.value, yaxis.si.value, zaxis.si.value)
+            self._log("Creating regular grid interpolator")
+            self.interpolator = interp.RegularGridInterpolator(pts,
+                                               indgrid, method='nearest',
+                                               bounds_error = False,
+                                               fill_value = -1)
+
+        else:
+            # Flat arrays of points for irregular grid interpolation fcn
+            pts = np.zeros([nx*ny*nz,3])
+            pts[:,0] = self.grid[:,:,:,0].flatten().si.value
+            pts[:,1] = self.grid[:,:,:,1].flatten().si.value
+            pts[:,2] = self.grid[:,:,:,2].flatten().si.value
+
+            indgrid2 = np.zeros([nx*ny*nz,3])
+            indgrid2[:,0] = indgrid[:,:,:,0].flatten()
+            indgrid2[:,1] = indgrid[:,:,:,1].flatten()
+            indgrid2[:,2] = indgrid[:,:,:,2].flatten()
+
+            self._log("Creating irregular grid interpolator")
+            self.interpolator = interp.NearestNDInterpolator(pts, indgrid2)
+
+            # If dt is not explicitly set, create an array of the
+            # distance to the nearest neighbor of each grid
+            if self.dt is None:
+                self._log("Creating nearest-neighbor grid")
+                self.nearest_neighbor = _nearest_neighbor(self.grid)
+
+            self.ds = np.max(self.nearest_neighbor)
+            print(f"ds: {self.ds}")
+
+
+
+
 
 
 
@@ -366,12 +450,7 @@ class SimPrad():
         the fields are placed on a regular grid
         """
         # Interpolate the grid indices that best match each particle position
-        pts = (self.xaxis.si.value, self.yaxis.si.value, self.zaxis.si.value)
-        ind_interp = interp.RegularGridInterpolator(pts,
-                                           self.indgrid, method='nearest',
-                                           bounds_error = False,
-                                           fill_value = -1)
-        i = ind_interp(self.r.si.value)
+        i = self.interpolator(self.r.si.value)
 
         # Store the grid positions
         self.xi = i[:,0].astype(np.int32)
@@ -383,20 +462,38 @@ class SimPrad():
         """
         Calculate the appropraite dt based on a number of considerations
         """
-        # Compute the cyclotron gyroperiod
+        if self.dt is not None:
+            return self.dt
 
+        # Compute the timestep indicated by the grid spacing
+        if not self.regular_grid:
+            dstep = np.min(self.nearest_neighbor[self.xi, self.yi, self.zi])
+        else:
+            dstep = self.ds
+        #print(f"Dstep: {dstep.to(u.um)}, median is {self.ds.to(u.um)}")
+        gridstep = (dstep/self.v0).to(u.s)
+
+        # If not, compute a number of possible timesteps
+        # Compute the cyclotron gyroperiod
         Bmag = np.linalg.norm(B, axis=1) # B is [nparticles,3] here
         gyroperiod = (2*np.pi*const.m_p.si/(const.e.si*np.max(Bmag))).to(u.s)
 
-        # Compute the time required for a proton to cross one grid cell
-        gridstep = (self.ds/self.v0).to(u.s)
+        # Create an array of all the possible time steps we computed
+        candidates = np.array([gyroperiod.value, gridstep.value])*u.s
 
-        dt = min(gyroperiod, gridstep)*self.dt_mult
+        if all(candidates > self.dt_range[1]):
+            return self.dt_range[1]
 
-        # Double-check dt is valid
-        assert(dt > 0)
+        # Unless it interferes with the range, always choose the smallest
+        # time step
+        dt = np.min(candidates)
 
-        return dt
+        if dt > self.dt_range[0]:
+            return dt
+        else:
+            return self.dt_range[0]
+
+
 
 
     def _push(self):
@@ -405,6 +502,7 @@ class SimPrad():
         Boris algorithm
         """
         # Calculate the indices of the field grid points nearest to each particle
+        # Note that this is the most time-intensive part of each push
         self._place_particles()
 
         # Update the list of particles on and off the grid
@@ -436,13 +534,15 @@ class SimPrad():
         self.r += self.dr
 
 
-    def run(self, nparticles=1e5, dt_mult=1, max_theta=np.pi/2*u.rad):
+    def run(self, nparticles=1e5, max_theta=np.pi/2*u.rad,
+            dt=None, dt_range=np.array([0, np.infty])*u.s):
         """
         Setup and run a particle-tracing simulated radiograph
         """
         # Load inputs
         self.nparticles = int(nparticles)
-        self.dt_mult = dt_mult
+        self.dt = dt
+        self.dt_range = dt_range
 
         # Initialize some particle-sim-specific variables
         self._init_particle_sim()
@@ -459,7 +559,7 @@ class SimPrad():
         while not self._stop_condition():
             if self.verbose:
                 fract = 100*np.sum(self.on_grid)/self.nparticles
-                self._log(f"{fract:.1f}% on grid")
+                self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
                 #print(f"{self.r[0,:].si.value*100}")
             self._push()
 
@@ -474,7 +574,7 @@ class SimPrad():
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
         """
-        return (np.sum(self.entered_grid)/self.nparticles > .5 and
+        return (np.sum(self.entered_grid)/self.nparticles > .01 and
                 np.sum(self.on_grid)/np.sum(self.entered_grid) < 0.01)
 
 
