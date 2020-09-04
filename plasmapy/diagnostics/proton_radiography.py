@@ -22,32 +22,46 @@ import time
 
 import scipy.interpolate as interp
 
+def test_fields(grid=None, mode='electrostatic gaussian sphere',
+                regular_grid=True):
 
-def test_fields(grid=None, mode='electrostatic gaussian sphere'):
-
-    # Create or load a grid
+    # If no grid is specified, create a grid
     if grid is None:
-        L = 1*u.mm
-        num = 60
-        xaxis = np.linspace(-L, L, num=num)
-        yaxis = np.linspace(-L, L, num=num)
-        zaxis = np.linspace(-L, L, num=num)
-        xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing='ij')
-        grid = np.zeros([xaxis.size, yaxis.size, zaxis.size, 3])*u.cm
-        grid[...,0] = xarr
-        grid[...,1] = yarr
-        grid[...,2] = zarr
+        num = 60 # Number of points on each axis
+        L = 1*u.mm # Length of each axis is 2L from -L to L
+        grid = np.zeros([num, num, num, 3])*u.cm
 
-    else:
-        xaxis = grid[:,0,0,0]
-        yaxis = grid[0,:,0,1]
-        zaxis = grid[0,0,:,2]
+        # If regulr_grid keyword is False, create a non-uniform grid with
+        # random point spacing in all directions
+        if not regular_grid:
+            for d in [0,1,2]:
+                ax = np.random.uniform(low=-L.value, high=L.value, size=(num,num,num))
+                ax = np.sort(ax, axis=d)
+                grid[...,d] = ax*L.unit
 
-        xarr = grid[...,0]
-        yarr = grid[...,1]
-        zarr = grid[...,2]
 
-        L = np.max(xaxis) - np.min(xaxis)
+        # If regular_grid keyword is set, create a uniformly spaced grid
+        else:
+            xaxis = np.linspace(-L, L, num=num)
+            yaxis = np.linspace(-L, L, num=num)
+            zaxis = np.linspace(-L, L, num=num)
+            xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing='ij')
+            grid[...,0] = xarr
+            grid[...,1] = yarr
+            grid[...,2] = zarr
+
+
+
+    # Reclaim axes from the grid
+    xaxis = grid[:,0,0,0]
+    yaxis = grid[0,:,0,1]
+    zaxis = grid[0,0,:,2]
+
+    xarr = grid[...,0]
+    yarr = grid[...,1]
+    zarr = grid[...,2]
+
+    L = np.max(xaxis) - np.min(xaxis)
 
     radius = np.sqrt(xarr**2 + yarr**2 + zarr**2)
     pradius =  np.sqrt(xarr**2 + yarr**2)
@@ -64,17 +78,24 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
     elif mode == 'electrostatic gaussian sphere':
         print("Generating Electrostatic Gaussian Sphere")
 
-        a = L/4
+        a = L/3
         potential = -np.exp(-(xarr**2 + yarr**2 + zarr**2)/a**2)*u.V
 
-        Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
+        Ex, Ey, Ez = np.gradient(potential)
+        #Ex *= 1/np.gradient(xarr, axis=0)
+        #Ey *= 1/np.gradient(yarr, axis=1)
+        #Ez *= 1/np.gradient(zarr, axis=2)
+
+        Ex *= 1/u.cm
+        Ey *= 1/u.cm
+        Ez *= 1/u.cm
+
+
         Ex = np.where(radius < 0.5*L, Ex, 0)
         Ey = np.where(radius < 0.5*L, Ey, 0)
         Ez = np.where(radius < 0.5*L, Ez, 0)
 
-
         E[:,:,:,0], E[:,:,:,1], E[:,:,:,2] = Ex, Ey, Ez
-
 
         # Normalize to a desired maximum field
         E = (E/np.max(E)).to(u.dimensionless_unscaled)
@@ -84,7 +105,7 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere'):
         print("Generating Axial Magnetic Field")
 
         a = L/4
-        B[:,:,:,2] = np.where(pradius < a, 100*u.T, 0*u.T)
+        B[:,:,:,2] = np.where(pradius < a, 400*u.T, 0*u.T)
 
     return grid, E, B
 
@@ -158,6 +179,8 @@ def _nearest_neighbor(array):
     return np.min(dist, axis=3)
 
 
+
+
 # TODO: error checking
 # ERRORS
 # - Validate that no input vaules contain nans or anything like that
@@ -170,6 +193,10 @@ def _nearest_neighbor(array):
 
 # TODO: Figure out which particles will NOT intersect with the simulated field
 # volume and ignore those particles through the push phase?
+# Do this by determing the angle from the source to each of the corners of the
+# sim volume, then simply taking the largest angle! Sure may miss a few...
+# Then could potentialy include the full pi/2 and get rid of the max_theta arg
+# since these particles will be "free"
 
 
 class SimPrad():
@@ -270,12 +297,27 @@ class SimPrad():
         """"
         Initialize variables necessary for running the particle prad sim
         """
-
+        # Create a grid of indices for use in interpolation
         nx, ny, nz, x = self.grid.shape
         indgrid = np.indices([nx,ny,nz])
         indgrid = np.moveaxis(indgrid, 0, -1)
 
-        self.regular_grid = False
+
+        # Auto-detect grid regularity
+        variance = np.zeros([3])
+        dx = np.gradient(self.grid[...,0], axis=0)
+        variance[0] = np.std(dx)/np.mean(dx)
+        dy = np.gradient(self.grid[...,1], axis=1)
+        variance[1] = np.std(dy)/np.mean(dy)
+        dz = np.gradient(self.grid[...,2], axis=2)
+        variance[2] = np.std(dz)/np.mean(dz)
+
+        if np.allclose(variance, 0.0, atol=1e-6):
+            self._log("Auto-detected a regularly spaced grid.")
+            self.regular_grid = True
+        else:
+            self._log("Auto-detected an irregularly spaced grid.")
+            self.regular_grid = False
 
 
         if self.regular_grid:
@@ -320,16 +362,41 @@ class SimPrad():
                 self._log("Creating nearest-neighbor grid")
                 self.nearest_neighbor = _nearest_neighbor(self.grid)
 
-            self.ds = np.max(self.nearest_neighbor)
-            print(f"ds: {self.ds}")
+            # TODO
+            # self.ds is used for determining when particles are on-grid
+            # Somewhat ambiguous how to chose a single value for this for an
+            # irregular grid: this may not be the best solution.
+            self.ds = np.median(self.nearest_neighbor)
 
 
 
 
+    def _max_theta(self):
+        """
+        Using the grid and the source position, compute the maximum particle
+        theta that will impact the grid.
+        """
+        ind = 0
+        theta = np.zeros([8])
+        for x in [0, -1]:
+            for y in [0, -1]:
+                for z in [0,-1]:
+                    # Souce to grid corner vector
+                    vec = self.grid[x,y,z,:] - self.source
+
+                    # Calculate angle between vec and the source-to-detector
+                    # axis, which is the central axis of the proton beam
+                    theta[ind] = np.arccos(np.dot(vec.value, self.source_to_detector.value)/
+                                       np.linalg.norm(vec.value)/
+                                       np.linalg.norm(self.source_to_detector.value))
+
+                    ind += 1
+        return np.max(theta)
 
 
 
-    def _generate_particles(self, max_theta=np.pi/2*u.rad):
+
+    def _generate_particles(self):
         """
         Generates the angular distributions about the Z-axis, then
         shifts those distributions to align with the source-to-origin axis
@@ -337,9 +404,8 @@ class SimPrad():
 
         self._log("Creating Particles")
 
-        max_theta = max_theta.to(u.rad).value
         # Create a probability vector
-        arg = np.linspace(0, max_theta, num=int(1e4))
+        arg = np.linspace(0, 0.9*np.pi/2, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1/np.sum(prob)
 
@@ -349,6 +415,14 @@ class SimPrad():
 
         # Uniform Phi distribution
         phi = np.random.uniform(size=self.nparticles)*2*np.pi
+
+
+        # Determine which particles will and will not hit the grid
+        max_theta = self._max_theta()
+
+        # This array holds the indices of all particles that WILL hit the grid
+        self.gi = np.where(theta < max_theta)[0]
+        self.nparticles_grid = len(self.gi)
 
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3]) * u.m/u.s
@@ -376,9 +450,9 @@ class SimPrad():
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
-        self.on_grid = np.zeros([self.nparticles])
+        self.on_grid = np.zeros([self.nparticles_grid])
         # Entered grid -> non-zero if particle EVER entered the grid
-        self.entered_grid = np.zeros([self.nparticles])
+        self.entered_grid = np.zeros([self.nparticles_grid])
 
 
     def _advance_to_grid(self):
@@ -398,6 +472,9 @@ class SimPrad():
         """
         Once all particles have cleared the grid, advance them to the detector
         plane.
+
+        This step applies to all particles, not just those that will hit the
+        grid.
         """
         dist_remaining = (np.dot(self.r, self.det_n) +
                           np.linalg.norm(self.detector))
@@ -450,7 +527,7 @@ class SimPrad():
         the fields are placed on a regular grid
         """
         # Interpolate the grid indices that best match each particle position
-        i = self.interpolator(self.r.si.value)
+        i = self.interpolator(self.r[self.gi, :].si.value)
 
         # Store the grid positions
         self.xi = i[:,0].astype(np.int32)
@@ -506,7 +583,7 @@ class SimPrad():
         self._place_particles()
 
         # Update the list of particles on and off the grid
-        dist = np.linalg.norm(self.r - self.grid[self.xi,self.yi,self.zi, :], axis=1)
+        dist = np.linalg.norm(self.r[self.gi, :] - self.grid[self.xi,self.yi,self.zi, :], axis=1)
         self.on_grid = np.where(dist < self.ds, 1, 0)
         self.entered_grid += self.on_grid
 
@@ -519,22 +596,25 @@ class SimPrad():
         dt = self._adaptive_dt(B)
         dt2 = dt*self.charge/self.mass/2
 
+        # Push only particles on a grid trajectory
+        v = self.v[self.gi, :]
 
         # Execute the Boris push algorithm
-        vminus = self.v + E*dt2
+        vminus = v + E*dt2
         t = -B*dt2
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
         vprime = vminus + np.cross(vminus.si.value, t) * u.m/u.s
         vplus = vminus + np.cross(vprime.si.value, s) * u.m/u.s
         vnew = vplus + E*dt2
-        self.v = vnew
+
+        self.v[self.gi, :] = vnew
 
         self.dr = dt*self.v
 
-        self.r += self.dr
+        self.r[self.gi, :] += self.v[self.gi, :]*dt
 
 
-    def run(self, nparticles=1e5, max_theta=np.pi/2*u.rad,
+    def run(self, nparticles=1e5,
             dt=None, dt_range=np.array([0, np.infty])*u.s):
         """
         Setup and run a particle-tracing simulated radiograph
@@ -548,7 +628,7 @@ class SimPrad():
         self._init_particle_sim()
 
         # Initialize variables and create the particle distribution
-        self._generate_particles(max_theta = max_theta)
+        self._generate_particles()
 
         # Advance the particles to the near the start of the simulation
         # volume
@@ -558,7 +638,7 @@ class SimPrad():
         # (no more particles on the simulation grid)
         while not self._stop_condition():
             if self.verbose:
-                fract = 100*np.sum(self.on_grid)/self.nparticles
+                fract = 100*np.sum(self.on_grid)/self.nparticles_grid
                 self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
                 #print(f"{self.r[0,:].si.value*100}")
             self._push()
@@ -574,8 +654,27 @@ class SimPrad():
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
         """
-        return (np.sum(self.entered_grid)/self.nparticles > .01 and
-                np.sum(self.on_grid)/np.sum(self.entered_grid) < 0.01)
+        # Count the number of particles who have entered, which is the
+        # number of non-zero entries in entered_grid
+        n_entered = np.nonzero(self.entered_grid)[0].size
+
+        # How many of the particles have entered the grid
+        entered = np.sum(n_entered)/self.nparticles_grid
+
+        # Of the particles that have entered the grid, how many are currently
+        # on the grid?
+        # if/else avoids dividing by zero
+        if np.sum(n_entered) > 0:
+            still_on = np.sum(self.on_grid)/np.sum(n_entered)
+        else:
+            still_on = 0.0
+
+        if entered > 0.1 and still_on < 0.01:
+            self._log(f"Stop condition reached: {entered*100:.0f}% entered, "
+                  f"{still_on*100:.0f}% are still on the grid")
+            return True
+        else:
+            return False
 
 
     def calc_ke(self, total=True):
