@@ -137,22 +137,34 @@ def find_floating_potential(
     istop = cp_candidates[-1]
     iadd = (istop - istart + 1) - min_points
     if iadd < 0:
-        # need to pad
-        iadd_2_start, iadd_2_stop = int(np.ceil(-iadd / 2.0))
-        if istart - iadd_2_start < 0:
-            iadd_2_stop += iadd_2_start - istart
-            iadd_2_start = 0
+        # pad front
+        ipad_2_start = ipad_2_stop = int(np.ceil(-iadd / 2.0))
+        if istart - ipad_2_start < 0:
+            ipad_2_stop += ipad_2_start - istart
+            ipad_2_start = 0
             istart = 0
-        if ((current.size - 1) - (istop + iadd_2_stop)) < 0:
-            iadd_2_start += iadd_2_stop - (current.size - 1 - istop)
-            # iadd_2_stop = 0
-            istop = current.size - 1
+        else:
+            istart -= ipad_2_start
+            ipad_2_start = 0
 
-            istart = 0 if (istart - iadd_2_start < 0) else (istart - iadd_2_start)
-            # iadd_2_start = 0
+        # pad rear
+        if ((current.size - 1) - (istop + ipad_2_stop)) < 0:
+            ipad_2_start += ipad_2_stop - (current.size - 1 - istop)
+            istop = current.size - 1
+        else:
+            istop += ipad_2_stop
+
+        # re-pad front if possible
+        if ipad_2_start > 0:
+            if istart - ipad_2_start < 0:
+                istart = 0
+            else:
+                istart -= ipad_2_start
+
     if (istop - istart + 1) < min_points:
-        warn(f"The number of elements in the current array ({current.size}) is less"
-             f" than 'min_points' ({min_points}).")
+        warn(f"The number of elements in the current array "
+             f"({istop - istart + 1}) is less than 'min_points' "
+             f"({min_points}).")
 
     # Perform Linear Regression Fit
     volt_sub = voltage[istart:istop + 1]
