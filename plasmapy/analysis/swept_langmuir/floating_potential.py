@@ -11,6 +11,8 @@ def find_floating_potential(
         current: np.ndarray,
         threshold: int = 1,
         min_points: int = 5,
+        retfit: bool = False,
+        retislands: bool = False,
 ):
     """
     Determines the floating potential (Vf) for a given Current-Voltage (IV) curve
