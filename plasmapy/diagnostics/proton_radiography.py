@@ -24,9 +24,45 @@ import scipy.interpolate as interp
 
 def test_fields(grid=None, mode='electrostatic gaussian sphere',
                 regular_grid=True, num=100, L=1*u.mm):
+    """
+    This function generates test fields based on analytical models for
+    testing or demonstrating the proton radiography module.
 
-    # num is the number of points in each dimension (arrays are always square)
-    # L is the length scale: each axis is 2L long from -L to L
+    Parameters
+    ----------
+    grid : array of quantities shape [nx,ny,nz,3], optional
+        A grid of positions on which to calculate fields. If no grid is
+        specified, one will be created.
+    mode : str, optional
+        The field model to load. The default represents the electrostatic
+        E-field created by a spherical Gaussian potential.
+    regular_grid : bool, optional
+        If a grid is being generated, setting this keyword to False will
+        generate a grid with random spacing between points. If True
+        (the default) the grid spacing will be uniform.
+    num : int or tuple of 3 ints, optional
+        If a grid is being constructed, this variable sets the number of
+        elements in each dimension. If set to a single integer, all three
+        dimensions are taken to have the same length. The default is 100.
+    L : Quantity length, optional
+        A length scale that defines the field structure to be created. Each axis
+        will be 2L long, from -L to L. The default is 1*u.mm.
+
+    Returns
+    -------
+    grid : Quantity array, shape [nx,ny,nz,3]
+        The grid of positions corresponding to the field grids.
+    E : Quantity array, shape [nx,ny,nz,3]
+        Electric field array in units of V/m
+    B : Quantity array, shape [nx,ny,nz,3]
+        Magnetic field array in units of Tesla
+
+    """
+    # TODO: Fancy up the options here a bit: allow tuples of num (nx,ny,nz)
+    # and also different lengths for each axis (different L)
+
+    # TODO: Not all fields are compatible with non-uniform grids: notably the
+    # electric gaussian sphere relies on a gradient...
 
     # If no grid is specified, create a grid
     if grid is None:
@@ -40,7 +76,6 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere',
                 ax = np.sort(ax, axis=d)
                 grid[...,d] = ax*L.unit
 
-
         # If regular_grid keyword is set, create a uniformly spaced grid
         else:
             xaxis = np.linspace(-L, L, num=num)
@@ -51,27 +86,23 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere',
             grid[...,1] = yarr
             grid[...,2] = zarr
 
-
-
-    # Reclaim axes from the grid
+    # Create axes and arrays of each coordinate from the grid
     xaxis = grid[:,0,0,0]
     yaxis = grid[0,:,0,1]
     zaxis = grid[0,0,:,2]
-
     xarr = grid[...,0]
     yarr = grid[...,1]
     zarr = grid[...,2]
-
     L = np.max(xaxis) - np.min(xaxis)
 
+    # Calculate radius arrays in spherical and cylindrical coordinates
+    # for use in generating different field structures
     radius = np.sqrt(xarr**2 + yarr**2 + zarr**2)
     pradius =  np.sqrt(xarr**2 + yarr**2)
 
-
-    # Create arrays for fields
+    # Create blank arrays for fields
     E = np.zeros(grid.shape)*u.V/u.m
     B = np.zeros(grid.shape)*u.T
-
 
     if mode == 'no fields':
         pass
@@ -82,15 +113,7 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere',
         a = L/3
         potential = -np.exp(-(xarr**2 + yarr**2 + zarr**2)/a**2)*u.V
 
-        Ex, Ey, Ez = np.gradient(potential)
-        #Ex *= 1/np.gradient(xarr, axis=0)
-        #Ey *= 1/np.gradient(yarr, axis=1)
-        #Ez *= 1/np.gradient(zarr, axis=2)
-
-        Ex *= 1/u.cm
-        Ey *= 1/u.cm
-        Ez *= 1/u.cm
-
+        Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
         Ex = np.where(radius < 0.5*L, Ex, 0)
         Ey = np.where(radius < 0.5*L, Ey, 0)
@@ -125,15 +148,12 @@ class ExecTimer:
         self.t0 = t
 
 
-
-
-
-
 def _rot_a_to_b(a,b):
     """
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
     with vector b.
     """
+    # Normalize both vectors
     a = a / np.linalg.norm(a)
     b = b / np.linalg.norm(b)
 
@@ -181,7 +201,6 @@ def _nearest_neighbor(array):
 
 
 
-
 # TODO: error checking
 # ERRORS
 # - Validate that no input vaules contain nans or anything like that
@@ -191,13 +210,14 @@ def _nearest_neighbor(array):
 # - Throw a warning if highly non-linear deflections (path crossings) are expected
 # - Throw a warning if <10% of the particles ended up on the grid by the end of the run
 # - Throw a warning if <50% of the particles ended up on the histogram
-
-# TODO: Figure out which particles will NOT intersect with the simulated field
-# volume and ignore those particles through the push phase?
-# Do this by determing the angle from the source to each of the corners of the
-# sim volume, then simply taking the largest angle! Sure may miss a few...
-# Then could potentialy include the full pi/2 and get rid of the max_theta arg
-# since these particles will be "free"
+#
+# BUGS THAT NEED FIXING
+# - Synthetic proton radiograph doesn't work if the source-detector axis is parallel
+# to the z axis. Need to choose axes differently somehow.
+#
+# - Particles moving away from the detector at the end of the simulation will
+# be advanced backwards in time back to the detector. Need to get rid of these
+# somehow in the advance_to_detector routine.
 
 
 class SimPrad():
@@ -376,7 +396,7 @@ class SimPrad():
 
 
 
-    def _max_theta(self):
+    def _max_theta_grid(self):
         """
         Using the grid and the source position, compute the maximum particle
         theta that will impact the grid.
@@ -401,7 +421,7 @@ class SimPrad():
 
 
 
-    def _generate_particles(self, max_theta=0.9*np.pi/2):
+    def _generate_particles(self, max_theta=0.9*np.pi/2*u.rad):
         """
         Generates the angular distributions about the Z-axis, then
         shifts those distributions to align with the source-to-origin axis
@@ -412,6 +432,8 @@ class SimPrad():
         """
 
         self._log("Creating Particles")
+
+        max_theta = max_theta.to(u.rad).value
 
         # Create a probability vector
         arg = np.linspace(0, max_theta, num=int(1e5))
@@ -427,7 +449,7 @@ class SimPrad():
 
 
         # Determine which particles will and will not hit the grid
-        max_theta_grid = self._max_theta()
+        max_theta_grid = self._max_theta_grid()
 
         # This array holds the indices of all particles that WILL hit the grid
         self.gi = np.where(theta < max_theta_grid)[0]
@@ -590,7 +612,7 @@ class SimPrad():
         if self.regular_grid:
             # If self.ds is a scalar (as setup by the init function)
             # extend it to be the length of npartiles_grid
-            if len(self.ds) == 1:
+            if self.ds.size == 1:
                 self.ds = self.ds*np.ones(self.nparticles_grid)
             else:
                 pass
@@ -639,14 +661,13 @@ class SimPrad():
         vplus = vminus + np.cross(vprime.si.value, s) * u.m/u.s
         vnew = vplus + E*dt2
 
+        # Update the velocities of the particles that are being pushed
         self.v[self.gi, :] = vnew
-
-        self.dr = dt*self.v
-
+        # Update the positions
         self.r[self.gi, :] += self.v[self.gi, :]*dt
 
 
-    def run(self, nparticles=1e5, max_theta = 0.9*np.pi/2,
+    def run(self, nparticles=1e5, max_theta = 0.9*np.pi/2*u.rad,
             dt=None, dt_range=np.array([0, np.infty])*u.s):
         """
         Setup and run a particle-tracing simulated radiograph
