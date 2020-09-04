@@ -23,12 +23,13 @@ import time
 import scipy.interpolate as interp
 
 def test_fields(grid=None, mode='electrostatic gaussian sphere',
-                regular_grid=True):
+                regular_grid=True, num=100, L=1*u.mm):
+
+    # num is the number of points in each dimension (arrays are always square)
+    # L is the length scale: each axis is 2L long from -L to L
 
     # If no grid is specified, create a grid
     if grid is None:
-        num = 60 # Number of points on each axis
-        L = 1*u.mm # Length of each axis is 2L from -L to L
         grid = np.zeros([num, num, num, 3])*u.cm
 
         # If regulr_grid keyword is False, create a non-uniform grid with
@@ -331,6 +332,8 @@ class SimPrad():
             dvec = np.array([dx.value, dy.value, dz.value])*dx.unit
 
             # Estimate the grid-point spacing along the source_to_detector vector
+            # Will be expanded to a constant array of length nparticles_grid
+            # when _adaptive_ds() is called.
             self.ds = np.linalg.norm( np.dot(dvec, self.exp_ax))
 
             # Initialize the interpolator
@@ -348,11 +351,13 @@ class SimPrad():
             pts[:,1] = self.grid[:,:,:,1].flatten().si.value
             pts[:,2] = self.grid[:,:,:,2].flatten().si.value
 
+            # Flatten the index grid for irregular grid interpolation fcn
             indgrid2 = np.zeros([nx*ny*nz,3])
             indgrid2[:,0] = indgrid[:,:,:,0].flatten()
             indgrid2[:,1] = indgrid[:,:,:,1].flatten()
             indgrid2[:,2] = indgrid[:,:,:,2].flatten()
 
+            # Initialize the interpolator
             self._log("Creating irregular grid interpolator")
             self.interpolator = interp.NearestNDInterpolator(pts, indgrid2)
 
@@ -396,16 +401,20 @@ class SimPrad():
 
 
 
-    def _generate_particles(self):
+    def _generate_particles(self, max_theta=0.9*np.pi/2):
         """
         Generates the angular distributions about the Z-axis, then
         shifts those distributions to align with the source-to-origin axis
+
+        max_theta controls the maximum angle at which particles will be
+        generated.
+
         """
 
         self._log("Creating Particles")
 
         # Create a probability vector
-        arg = np.linspace(0, 0.9*np.pi/2, num=int(1e5))
+        arg = np.linspace(0, max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1/np.sum(prob)
 
@@ -418,10 +427,10 @@ class SimPrad():
 
 
         # Determine which particles will and will not hit the grid
-        max_theta = self._max_theta()
+        max_theta_grid = self._max_theta()
 
         # This array holds the indices of all particles that WILL hit the grid
-        self.gi = np.where(theta < max_theta)[0]
+        self.gi = np.where(theta < max_theta_grid)[0]
         self.nparticles_grid = len(self.gi)
 
         # Construct the velocity distribution around the z-axis
@@ -539,16 +548,14 @@ class SimPrad():
         """
         Calculate the appropraite dt based on a number of considerations
         """
+        # If dt was explicitly set, ignore this fcn
         if self.dt is not None:
             return self.dt
 
-        # Compute the timestep indicated by the grid spacing
-        if not self.regular_grid:
-            dstep = np.min(self.nearest_neighbor[self.xi, self.yi, self.zi])
-        else:
-            dstep = self.ds
-        #print(f"Dstep: {dstep.to(u.um)}, median is {self.ds.to(u.um)}")
-        gridstep = (dstep/self.v0).to(u.s)
+        # Compute the timestep indicated by the grid resolution
+        # min is taken for irregular grids, in which different particles
+        # have different local grid resolutions
+        gridstep = (np.min(self.ds)/self.v0).to(u.s)
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
@@ -572,6 +579,28 @@ class SimPrad():
 
 
 
+    def _adaptive_ds(self):
+        """
+        Compute the local grid resolution for each particle (for determining
+        if the particle should be influenced by the grid or not). For regular
+        grids this is a constant array, but for irregular grids it changes
+        as the particles move
+        """
+
+        if self.regular_grid:
+            # If self.ds is a scalar (as setup by the init function)
+            # extend it to be the length of npartiles_grid
+            if len(self.ds) == 1:
+                self.ds = self.ds*np.ones(self.nparticles_grid)
+            else:
+                pass
+        else:
+            # Calculate ds for each particle as the nearest-neighbor
+            # distance of its assigned gridpoint
+            self.ds = self.nearest_neighbor[self.xi, self.yi, self.zi]
+
+
+
 
     def _push(self):
         """
@@ -581,6 +610,9 @@ class SimPrad():
         # Calculate the indices of the field grid points nearest to each particle
         # Note that this is the most time-intensive part of each push
         self._place_particles()
+
+        # Calculate the local grid resolution for each particle
+        self._adaptive_ds()
 
         # Update the list of particles on and off the grid
         dist = np.linalg.norm(self.r[self.gi, :] - self.grid[self.xi,self.yi,self.zi, :], axis=1)
@@ -614,7 +646,7 @@ class SimPrad():
         self.r[self.gi, :] += self.v[self.gi, :]*dt
 
 
-    def run(self, nparticles=1e5,
+    def run(self, nparticles=1e5, max_theta = 0.9*np.pi/2,
             dt=None, dt_range=np.array([0, np.infty])*u.s):
         """
         Setup and run a particle-tracing simulated radiograph
@@ -628,7 +660,7 @@ class SimPrad():
         self._init_particle_sim()
 
         # Initialize variables and create the particle distribution
-        self._generate_particles()
+        self._generate_particles(max_theta=max_theta)
 
         # Advance the particles to the near the start of the simulation
         # volume
@@ -640,7 +672,7 @@ class SimPrad():
             if self.verbose:
                 fract = 100*np.sum(self.on_grid)/self.nparticles_grid
                 self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
-                #print(f"{self.r[0,:].si.value*100}")
+                #print(f"{self.r[self.gi[0],:].si.value*100}")
             self._push()
 
         # Advance the particles to the image plane
@@ -669,9 +701,10 @@ class SimPrad():
         else:
             still_on = 0.0
 
-        if entered > 0.1 and still_on < 0.01:
-            self._log(f"Stop condition reached: {entered*100:.0f}% entered, "
-                  f"{still_on*100:.0f}% are still on the grid")
+        if entered > 0.1 and still_on < 0.001:
+            self._log(f"Stop condition reached: {entered*100:.0f}% entered "
+                      f"({n_entered})"
+                      f", {still_on*100:.0f}% are still on the grid")
             return True
         else:
             return False
