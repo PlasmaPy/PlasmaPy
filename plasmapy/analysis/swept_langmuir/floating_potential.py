@@ -21,11 +21,11 @@ def find_floating_potential(
     ------------
     #. The current array ``current` is searched for all points equal to zero and
        point pairs that straddle  ``current = 0`` to form a set of crossing-points.
-    #. Crossing-points are then grouped into crossing-islands in accordence to
+    #. Crossing-points are then grouped into crossing-islands in accordance to
        the ``threshold`` keyword.
     #. If multiple crossing-islands are found, then an warning issued and
        `~numpy.nan` is returned.
-    #. To calculate the floating potential, a `~scipy.stats.linregress` is applied
+    #. To calculated the floating potential, a `~scipy.stats.linregress` is applied
        to points making up the cross-island.  If the number of points that make
        up the crossing-island are less than ``min_points``, then each side of the
        crossing-island is padded with the nearest neighbors until `min_points` is
