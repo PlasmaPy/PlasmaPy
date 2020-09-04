@@ -70,6 +70,8 @@ def find_floating_potential(
         potential can not be determined.
 
     """
+    meta_dict = {}
+
     if current.min() > 0.0 or current.max() < 0:
         warn("The Langmuir sweep has no floating potential.")
         return np.nan, np.nan, {}
@@ -107,11 +109,28 @@ def find_floating_potential(
 
     # How many crossing-islands?
     cp_intervals = np.diff(cp_candidates)
-    if np.count_nonzero(np.where(cp_intervals > threshold, True, False)) != 0:
+    threshold_indices = np.where(cp_intervals > threshold)[0]
+    n_islands = threshold_indices.size + 1
+    if retislands:
+        if n_islands == 1:
+            meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
+        else:
+            isl_start = np.concatenate((
+                [cp_candidates[0]],
+                cp_candidates[threshold_indices+1],
+            ))
+            isl_stop = np.concatenate((
+                cp_candidates[threshold_indices]+1,
+                [cp_candidates[-1]+1],
+            ))
+            meta_dict['islands'] = []
+            for start, stop in zip(isl_start, isl_stop):
+                meta_dict['islands'].append(slice(start, stop))
+    if n_islands != 1:
         # There are multiple crossing points
-        warn("Unable to determine floating potential, Langmuir sweep has multiple "
-             "crossing-islands.  Try adjusting 'threshold'.")
-        return np.nan, np.nan, {}
+        warn(f"Unable to determine floating potential, Langmuir sweep has "
+             f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold'"
+             f"and/or smooth the current.")
 
     # Construct crossing-island (pad if needed)
     istart = cp_candidates[0]
