@@ -74,7 +74,23 @@ def find_floating_potential(
 
     if current.min() > 0.0 or current.max() < 0:
         warn("The Langmuir sweep has no floating potential.")
-        return np.nan, np.nan, {}
+
+        ret = (np.nan, np.nan)
+        if retislands or retfit:
+            ret += (meta_dict,)
+
+        return ret
+
+    # check voltage is monotonically increasing/decreasing
+    voltage_diff = np.diff(voltage)
+    if not (np.all(voltage_diff >= 0) or np.all(voltage_diff <= 0)):
+        warn("The voltage array is not monotonically increasing or decreasing.")
+
+        ret = (np.nan, np.nan)
+        if retislands or retfit:
+            ret += (meta_dict,)
+
+        return ret
 
     # condition kwarg threshold
     if isinstance(threshold, (int, float)):
@@ -132,6 +148,12 @@ def find_floating_potential(
              f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold'"
              f"and/or smooth the current.")
 
+        ret = (np.nan, np.nan)
+        if retislands or retfit:
+            ret += (meta_dict,)
+
+        return ret
+
     # Construct crossing-island (pad if needed)
     istart = cp_candidates[0]
     istop = cp_candidates[-1]
@@ -179,13 +201,24 @@ def find_floating_potential(
     intercept_err = slope_err * np.sqrt(1.0 / intercept_err)
 
     vf = -intercept / slope
-    vf_err = np.abs(vf * np.sqrt(((slope_err / slope) ** 2)
-                                 + ((intercept_err / intercept) ** 2)))
+    vf_err = (
+        np.abs(vf)
+        * np.sqrt(((slope_err / slope) ** 2)
+                  + ((intercept_err / intercept) ** 2))
+    )
 
-    fit = {'slope': slope,
-           'slope_err': slope_err,
-           'intercept': intercept,
-           'intercept_err': intercept_err,
-           'indices': slice(istart, istop + 1)}
+    if retfit:
+        meta_dict.update({
+            'slope': slope,
+            'slope_err': slope_err,
+            'intercept': intercept,
+            'intercept_err': intercept_err,
+            'rsq': fit[2],
+            'indices': slice(istart, istop + 1),
+        })
 
-    return vf, vf_err, fit
+    ret = (vf, vf_err)
+    if retislands or retfit:
+        ret += (meta_dict,)
+
+    return ret
