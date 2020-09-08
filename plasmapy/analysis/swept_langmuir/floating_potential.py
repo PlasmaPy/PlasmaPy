@@ -12,16 +12,17 @@ from plasmapy.analysis.swept_langmuir.fit_functions import (
     LinearFitFunction,
 )
 
-FloatingPotentialResults = namedtuple("FloatingPotentialResults",
-                                      ("vf", "vf_err", "info"))
+FloatingPotentialResults = namedtuple(
+    "FloatingPotentialResults", ("vf", "vf_err", "info")
+)
 
 
 def find_floating_potential(
-        voltage: np.ndarray,
-        current: np.ndarray,
-        threshold: int = 1,
-        min_points: Union[int, float] = None,
-        fit_type: str = "exponential",
+    voltage: np.ndarray,
+    current: np.ndarray,
+    threshold: int = 1,
+    min_points: Union[int, float] = None,
+    fit_type: str = "exponential",
 ):
     """
     Determines the floating potential (Vf) for a given Current-Voltage (IV) curve
@@ -96,7 +97,8 @@ def find_floating_potential(
     except KeyError:
         raise KeyError(
             f"Requested fit function '{fit_type}' is  not a valid option.  "
-            f"Examine kwarg 'fit_curve' for valid options.")
+            f"Examine kwarg 'fit_curve' for valid options."
+        )
 
     if current.min() > 0.0 or current.max() < 0:
         warn("The Langmuir sweep has no floating potential.")
@@ -143,7 +145,7 @@ def find_floating_potential(
 
     # adjust for array wrapping cause by np.roll
     cp_low2high = cp_low2high[np.where(cp_low2high != 0, True, False)]
-    cp_high2low = cp_high2low[np.where(cp_high2low != current.size-1, True, False)]
+    cp_high2low = cp_high2low[np.where(cp_high2low != current.size - 1, True, False)]
 
     # collect all candidates
     cp_candidates = np.concatenate((
@@ -161,9 +163,9 @@ def find_floating_potential(
     n_islands = threshold_indices.size + 1
 
     if min_points == 0:
-        meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
+        meta_dict["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     elif n_islands == 1:
-        meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
+        meta_dict["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
         isl_start = np.concatenate((
@@ -174,9 +176,9 @@ def find_floating_potential(
             cp_candidates[threshold_indices]+1,
             [cp_candidates[-1]+1],
         ))
-        meta_dict['islands'] = []
+        meta_dict["islands"] = []
         for start, stop in zip(isl_start, isl_stop):
-            meta_dict['islands'].append(slice(start, stop))
+            meta_dict["islands"].append(slice(start, stop))
 
         # do islands fall within min_points window
         isl_window = np.abs(np.r_[meta_dict["islands"][-1]][-1]
