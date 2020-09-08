@@ -8,9 +8,6 @@ original fields (under some set of assumptions).
 __all__ = [
     "test_fields",
     "SimPrad",
-    "calc_ke",
-    "run",
-    "synthetic_radiograph",
 ]
 
 import astropy.constants as const
