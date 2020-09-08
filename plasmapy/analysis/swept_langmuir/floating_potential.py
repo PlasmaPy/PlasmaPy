@@ -1,18 +1,26 @@
+"""Functionality for determining the floating potential of a Langmuir sweep."""
 __all__ = ["find_floating_potential"]
 
 import numpy as np
 
-from scipy.stats import linregress
+from collections import namedtuple
 from warnings import warn
+from typing import Union
 
+from plasmapy.analysis.swept_langmuir.fit_functions import (
+    ExponentialOffsetFitFunction,
+    LinearFitFunction,
+)
+
+FloatingPotentialResults = namedtuple("FloatingPotentialResults",
+                                      ("vf", "vf_err", "info"))
 
 def find_floating_potential(
         voltage: np.ndarray,
         current: np.ndarray,
         threshold: int = 1,
-        min_points: int = 5,
-        retfit: bool = False,
-        retislands: bool = False,
+        min_points: Union[int, float] = None,
+        fit_type: str = "exponential",
 ):
     """
     Determines the floating potential (Vf) for a given Current-Voltage (IV) curve
@@ -70,27 +78,36 @@ def find_floating_potential(
         potential can not be determined.
 
     """
-    meta_dict = {}
+    fit_funcs = {
+        "linear": {
+            "func": LinearFitFunction(),
+            "min_point_factor": 0.1,
+        },
+        "exponential": {
+            "func": ExponentialOffsetFitFunction(),
+            "min_point_factor": 0.2,
+        },
+    }
+    try:
+        fit_func = fit_funcs[fit_type]["func"]
+        min_point_factor = fit_funcs[fit_type]["min_point_factor"]
+        meta_dict = {"func": fit_func}
+    except KeyError:
+        raise KeyError(
+            f"Requested fit function '{fit_type}' is  not a valid option.  "
+            f"Examine kwarg 'fit_curve' for valid options.")
 
     if current.min() > 0.0 or current.max() < 0:
         warn("The Langmuir sweep has no floating potential.")
 
-        ret = (np.nan, np.nan)
-        if retislands or retfit:
-            ret += (meta_dict,)
-
-        return ret
+        return FloatingPotentialResults(np.nan, np.nan, meta_dict)
 
     # check voltage is monotonically increasing/decreasing
     voltage_diff = np.diff(voltage)
     if not (np.all(voltage_diff >= 0) or np.all(voltage_diff <= 0)):
         warn("The voltage array is not monotonically increasing or decreasing.")
 
-        ret = (np.nan, np.nan)
-        if retislands or retfit:
-            ret += (meta_dict,)
-
-        return ret
+        return FloatingPotentialResults(np.nan, np.nan, meta_dict)
 
     # condition kwarg threshold
     if isinstance(threshold, (int, float)):
@@ -101,6 +118,20 @@ def find_floating_potential(
             threshold = 1
     else:
         warn(f"threshold is NOT a integer >= 1, using a value of 1")
+
+    # condition min_points
+    if min_points is None:
+        min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
+    elif min_points == 0:
+        # this signals to use all points
+        pass
+    elif 0 < min_points < 1:
+        min_points = int(np.round(min_points * voltage.size))
+    elif min_points >= 1:
+        min_points = int(np.round(min_points))
+    else:
+        raise ValueError(f"Got {min_points}, but 'min_points' must be an int or float "
+                         f"greater than or equal to 0.")
 
     # find possible crossing points (cp)
     lower_vals = np.where(current <= 0, True, False)
@@ -127,98 +158,83 @@ def find_floating_potential(
     cp_intervals = np.diff(cp_candidates)
     threshold_indices = np.where(cp_intervals > threshold)[0]
     n_islands = threshold_indices.size + 1
-    if retislands:
-        if n_islands == 1:
-            meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
-        else:
-            isl_start = np.concatenate((
-                [cp_candidates[0]],
-                cp_candidates[threshold_indices+1],
-            ))
-            isl_stop = np.concatenate((
-                cp_candidates[threshold_indices]+1,
-                [cp_candidates[-1]+1],
-            ))
-            meta_dict['islands'] = []
-            for start, stop in zip(isl_start, isl_stop):
-                meta_dict['islands'].append(slice(start, stop))
-    if n_islands != 1:
+
+    if min_points == 0:
+        meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
+    elif n_islands == 1:
+        meta_dict['islands'] = [slice(cp_candidates[0], cp_candidates[-1]+1)]
+    else:
         # There are multiple crossing points
-        warn(f"Unable to determine floating potential, Langmuir sweep has "
-             f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold'"
-             f"and/or smooth the current.")
+        isl_start = np.concatenate((
+            [cp_candidates[0]],
+            cp_candidates[threshold_indices+1],
+        ))
+        isl_stop = np.concatenate((
+            cp_candidates[threshold_indices]+1,
+            [cp_candidates[-1]+1],
+        ))
+        meta_dict['islands'] = []
+        for start, stop in zip(isl_start, isl_stop):
+            meta_dict['islands'].append(slice(start, stop))
 
-        ret = (np.nan, np.nan)
-        if retislands or retfit:
-            ret += (meta_dict,)
+        # do islands fall within min_points window
+        isl_window = np.abs(np.r_[meta_dict["islands"][-1]][-1]
+                            - np.r_[meta_dict["islands"][0]][0]) + 1
+        if isl_window > min_points:
+            warn(f"Unable to determine floating potential, Langmuir sweep has "
+                 f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
+                 f"and/or smooth the current.")
 
-        return ret
+            return FloatingPotentialResults(np.nan, np.nan, meta_dict)
 
     # Construct crossing-island (pad if needed)
-    istart = cp_candidates[0]
-    istop = cp_candidates[-1]
-    iadd = (istop - istart + 1) - min_points
-    if iadd < 0:
-        # pad front
-        ipad_2_start = ipad_2_stop = int(np.ceil(-iadd / 2.0))
-        if istart - ipad_2_start < 0:
-            ipad_2_stop += ipad_2_start - istart
-            ipad_2_start = 0
-            istart = 0
-        else:
-            istart -= ipad_2_start
-            ipad_2_start = 0
-
-        # pad rear
-        if ((current.size - 1) - (istop + ipad_2_stop)) < 0:
-            ipad_2_start += ipad_2_stop - (current.size - 1 - istop)
-            istop = current.size - 1
-        else:
-            istop += ipad_2_stop
-
-        # re-pad front if possible
-        if ipad_2_start > 0:
+    if min_points == 0:
+        # us all points
+        istart = 0
+        istop = voltage.size
+    else:
+        istart = cp_candidates[0]
+        istop = cp_candidates[-1]
+        iadd = (istop - istart + 1) - min_points
+        if iadd < 0:
+            # pad front
+            ipad_2_start = ipad_2_stop = int(np.ceil(-iadd / 2.0))
             if istart - ipad_2_start < 0:
+                ipad_2_stop += ipad_2_start - istart
+                ipad_2_start = 0
                 istart = 0
             else:
                 istart -= ipad_2_start
+                ipad_2_start = 0
 
-    if (istop - istart + 1) < min_points:
-        warn(f"The number of elements in the current array "
-             f"({istop - istart + 1}) is less than 'min_points' "
-             f"({min_points}).")
+            # pad rear
+            if ((current.size - 1) - (istop + ipad_2_stop)) < 0:
+                ipad_2_start += ipad_2_stop - (current.size - 1 - istop)
+                istop = current.size - 1
+            else:
+                istop += ipad_2_stop
+
+            # re-pad front if possible
+            if ipad_2_start > 0:
+                if istart - ipad_2_start < 0:
+                    istart = 0
+                else:
+                    istart -= ipad_2_start
+
+        if (istop - istart + 1) < min_points:
+            warn(f"The number of elements in the current array "
+                 f"({istop - istart + 1}) is less than 'min_points' "
+                 f"({min_points}).")
 
     # Perform Linear Regression Fit
     volt_sub = voltage[istart:istop + 1]
     curr_sub = current[istart:istop + 1]
-    fit = linregress(volt_sub, curr_sub)
+    fit_func.curve_fit(volt_sub, curr_sub)
 
-    slope = fit[0]
-    slope_err = fit[4]
+    vf, vf_err = fit_func.root_solve()
+    meta_dict.update({
+        "rsq": fit_func.rsq,
+        "indices": slice(istart, istop+1)
+    })
 
-    intercept = fit[1]
-    intercept_err = np.sum(volt_sub ** 2) - ((np.sum(volt_sub) ** 2) / volt_sub.size)
-    intercept_err = slope_err * np.sqrt(1.0 / intercept_err)
-
-    vf = -intercept / slope
-    vf_err = (
-        np.abs(vf)
-        * np.sqrt(((slope_err / slope) ** 2)
-                  + ((intercept_err / intercept) ** 2))
-    )
-
-    if retfit:
-        meta_dict.update({
-            'slope': slope,
-            'slope_err': slope_err,
-            'intercept': intercept,
-            'intercept_err': intercept_err,
-            'rsq': fit[2],
-            'indices': slice(istart, istop + 1),
-        })
-
-    ret = (vf, vf_err)
-    if retislands or retfit:
-        ret += (meta_dict,)
-
-    return ret
+    return FloatingPotentialResults(vf, vf_err, meta_dict)
