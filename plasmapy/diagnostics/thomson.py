@@ -37,8 +37,8 @@ def spectral_density(
     n: u.m ** -3,
     Te: u.K,
     Ti: u.K,
-    efract: np.ndarray = np.ones(1),
-    ifract: np.ndarray = np.ones(1),
+    efract: np.ndarray = None,
+    ifract: np.ndarray = None,
     ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
     electron_vel: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
@@ -152,8 +152,15 @@ def spectral_density(
     .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
     .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
     """
-    efract = np.asarray(efract, dtype=np.float64)
-    ifract = np.asarray(ifract, dtype=np.float64)
+    if efract is None:
+        efract = np.ones(1)
+    else:
+        efract = np.asarray(efract, dtype=np.float64)
+
+    if ifract is None:
+        ifract = np.ones(1)
+    else:
+        ifract = np.asarray(ifract, dtype=np.float64)
 
     # If electon velocity is not specified, create an array corresponding
     # to zero drift
