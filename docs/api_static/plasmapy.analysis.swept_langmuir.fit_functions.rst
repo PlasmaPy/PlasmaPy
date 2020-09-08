@@ -7,4 +7,5 @@
 
 .. automodapi:: plasmapy.analysis.swept_langmuir.fit_functions
    :include-all-objects:
+   :inherited-members:
    :no-heading:
