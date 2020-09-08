@@ -14,7 +14,7 @@ Example Notebooks
    :glob:
    :reversed:
 
-   /notebooks/analysis.swept_langmuir/*
+   /notebooks/analysis/swept_langmuir/*
 
 API
 ---
