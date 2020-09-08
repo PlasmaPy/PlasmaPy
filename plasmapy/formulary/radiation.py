@@ -134,7 +134,7 @@ def thermal_bremsstrahlung(
             "Try lower ω or higher T_e."
         )
 
-    # Calculate the bremsstralung power spectral density in several steps
+    # Calculate the bremsstrahlung power spectral density in several steps
     c1 = (
         (8 / 3)
         * np.sqrt(2 / np.pi)
