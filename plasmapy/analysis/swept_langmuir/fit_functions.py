@@ -7,6 +7,7 @@ __all__ = [
     "ExponentialOffsetFitFunction",
     "LinearFitFunction",
 ]
+
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -21,6 +22,7 @@ class AbstractFitFunction(ABC):
     function to a set of data.  These were originally designed for assisting in
     fitting curves to swept langmuir data.
     """
+
     _parameters = None  # type: Tuple
     _parameters_err = None  # type: Tuple
     _covariance_matrix = None
