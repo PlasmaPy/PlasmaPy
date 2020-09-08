@@ -15,6 +15,7 @@ from plasmapy.analysis.swept_langmuir.fit_functions import (
 FloatingPotentialResults = namedtuple("FloatingPotentialResults",
                                       ("vf", "vf_err", "info"))
 
+
 def find_floating_potential(
         voltage: np.ndarray,
         current: np.ndarray,
