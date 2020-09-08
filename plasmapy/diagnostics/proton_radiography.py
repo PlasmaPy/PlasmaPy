@@ -133,21 +133,6 @@ def test_fields(grid=None, mode='electrostatic gaussian sphere',
 
     return grid, E, B
 
-
-class ExecTimer:
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.t0 = time.process_time()
-
-    def lap(self, msg=''):
-        t = time.process_time()
-        dt = (t - self.t0)*1e3
-        print(msg + f": {dt:.1f} ms")
-        self.t0 = t
-
-
 def _rot_a_to_b(a,b):
     """
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
@@ -172,8 +157,9 @@ def _rot_a_to_b(a,b):
 def _nearest_neighbor(array):
     """
     Given a 3D array of cartesian postions of shape [nx,ny,nz,3],
-    return a Quantity array of the distance to the nearest neighbor from each point
-    of shape [nx,ny,nz]
+    return a Quantity array of the distance to the nearest neighbor from each
+    point of shape [nx,ny,nz]. This output is used to define the local
+    scalar grid resolution on an irregular grid.
     """
     nx, ny, nz, x = array.shape
 
@@ -221,18 +207,59 @@ def _nearest_neighbor(array):
 
 
 class SimPrad():
-    """
+    r"""
+    Represents a simulated proton radiography experiment with simulated or
+    calculated E and B fields given at positions defined by a grid of spatial
+    coordinates. The proton source and detector plane are defined by vectors
+    from the origin of the field grid, and the energy of the protons
+    can be set.
 
-    source -> 3-element ndarray vector from the origin to the source
-    of the protons.
+    Parameters
+        ----------
+        grid : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
+            An array giving the positions of each grid point. Units must be
+            convertable to meters.
 
-    detector -> 3-element ndarray specifying center of the collection plane
-    (the point an undeflected proton would take straight from the source).
+        E : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
+            The vector electric field at each gridpoint. Units must be
+            convertable to V/m.
 
-    geometry -> Choose cartesian, spherical, or cylindrical coordinates for the
-    source and detector locations (grid is ALWAYS in cartesian and the
-    detector plane is also always flat).
+        B : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
+            The vector magnetic field at each grid point. Units must be
+            convertable to Tesla.
 
+        source : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the field grid to the location
+            of the proton point source. This vector will be interpreted as
+            being in either cartesian, cylindrical, or spherical coordinates
+            based on the geometry keyword. The units of the vector must be
+            compatible with the geometry chosen:
+                cartesian (x,y,z) : (meters, meters, meters)
+                cylindrical (r, theta, z) : (meters, radians, meters)
+                spherical (r, theta, phi) : (meters, radians, radians)
+            In spherical coordinates theta is the polar angle.
+
+        detector : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the field grid to the center
+            of the detector plane. The vector from the source point to this
+            point defines the normal vector of the detector plane. This vector
+            can also be specified in cartesian, cylindrical, or spherical
+            coordinates by setting the geometry keyword and using the
+            appropriate units.
+
+        proton_energy : `~astropy.units.Quantity`, optional
+            The energy of the protons, convertable to eV. The default is
+            14 MeV.
+
+        geometry : string, optional
+            A keyword that allows the source and detector vectors to be
+            specified in different coordinate systems. Valid values are
+            'cartesian', 'cylindrical', and 'spherical'. The default
+            value is 'cartesian'.
+
+        verbose : bool, optional
+            If true, updates on the status of the program will be printed
+            into the command line while running.
     """
 
     def __init__(self, grid: u.m,
@@ -243,12 +270,16 @@ class SimPrad():
                  proton_energy = 14*u.MeV,
                  geometry = 'cartesian',
                  verbose = True):
+        """
+        Initalize the simPrad object, carry out coordinate transformations,
+        and compute several quantities that will be used elsewhere.
+        """
 
-        self.verbose = verbose
         self.grid = grid
         self.E = E
         self.B = B
         self.proton_energy = proton_energy
+        self.verbose = verbose
 
         self.charge = const.e.si
         self.mass = const.m_p.si
@@ -269,6 +300,26 @@ class SimPrad():
             self.detector[1] = y.to(u.m)
             self.detector[2] = z.to(u.m)
 
+        elif geometry == 'cylindrical':
+            r, t, z = source
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            z = z.to(u.m)
+            self.source = np.zeros(3)*u.m
+            self.source[0] = r*np.cos(t)
+            self.source[1] = r*np.sin(t)
+            self.source[2] = z
+
+            r, t, z = detector
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            z = z.to(u.m)
+            self.detector = np.zeros(3)*u.m
+            self.detector[0] = r*np.cos(t)
+            self.detector[1] = r*np.sin(t)
+            self.detector[2] = z
+
+
         elif geometry == 'spherical':
             r, t, p = source
             r = r.to(u.m)
@@ -288,10 +339,8 @@ class SimPrad():
             self.detector[1] = r*np.sin(t)*np.sin(p)
             self.detector[2] = r*np.cos(t)
 
-        print("Source: " + str(self.source.to(u.mm)))
-        print("Detector: " + str(self.detector.to(u.mm)))
-
-        # TODO: Implement cylindrical coordinates for completeness
+        self.log_("Source: " + str(self.source.to(u.mm)))
+        self.log_("Detector: " + str(self.detector.to(u.mm)))
 
         # Calculate some parameters involving the source and detector locations
         self.det_n = -self.detector.si.value/np.linalg.norm(self.detector.si.value) #Plane normal vec
@@ -316,7 +365,9 @@ class SimPrad():
 
     def _init_particle_sim(self):
         """"
-        Initialize variables necessary for running the particle prad sim
+        Auto-detects whether the given grid is uniform or irregular and
+        creates an appropriate interpolator. Also calculates the grid
+        resolution for use in choosing an appropriate timestep.
         """
         # Create a grid of indices for use in interpolation
         nx, ny, nz, x = self.grid.shape
@@ -399,7 +450,8 @@ class SimPrad():
     def _max_theta_grid(self):
         """
         Using the grid and the source position, compute the maximum particle
-        theta that will impact the grid.
+        theta that will impact the grid. This value can be used to determine
+        which particles are worth tracking.
         """
         ind = 0
         theta = np.zeros([8])
@@ -414,7 +466,6 @@ class SimPrad():
                     theta[ind] = np.arccos(np.dot(vec.value, self.source_to_detector.value)/
                                        np.linalg.norm(vec.value)/
                                        np.linalg.norm(self.source_to_detector.value))
-
                     ind += 1
         return np.max(theta)
 
@@ -424,18 +475,22 @@ class SimPrad():
     def _generate_particles(self, max_theta=0.9*np.pi/2*u.rad):
         """
         Generates the angular distributions about the Z-axis, then
-        shifts those distributions to align with the source-to-origin axis
+        rotates those distributions to align with the source-to-detector axis.
 
-        max_theta controls the maximum angle at which particles will be
-        generated.
+        By default, protons are generated over almost the entire pi/2. However,
+        if the detector is far from the source, many of these particles will
+        never be observed. The max_theta keyword allows these extraneous
+        particles to be neglected to focus computational resources on the
+        particles who will actually hit the detector.
 
         """
 
         self._log("Creating Particles")
-
         max_theta = max_theta.to(u.rad).value
 
-        # Create a probability vector
+        # Create a probability vector for the theta distribution
+        # Theta must follow a sine distribution in order for the proton
+        # flux per solid angle to be uniform.
         arg = np.linspace(0, max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1/np.sum(prob)
@@ -444,11 +499,13 @@ class SimPrad():
         theta = np.random.choice(arg, size=self.nparticles,
                                  replace=True, p=prob)
 
-        # Uniform Phi distribution
+        # Also generate a uniform phi distribution
         phi = np.random.uniform(size=self.nparticles)*2*np.pi
 
-
-        # Determine which particles will and will not hit the grid
+        # Determine the angle aboe which particles will not hit the grid
+        # these particles can be ignored until the end of the simulation,
+        # then immediately advanced to the detector grid with their original
+        # velocities
         max_theta_grid = self._max_theta_grid()
 
         # This array holds the indices of all particles that WILL hit the grid
@@ -468,9 +525,6 @@ class SimPrad():
 
         # Apply rotation matrix to calculated velocity distribution
         self.v = np.matmul(self.v, rot)
-
-        x = np.mean(self.v, axis=0)
-        print("Mean Velocity:" + str(x/np.linalg.norm(x)))
 
         # Place particles at the source
         self.r = np.outer(np.ones(self.nparticles), self.source)
