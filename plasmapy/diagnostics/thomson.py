@@ -179,7 +179,7 @@ def spectral_density(
     if Te.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Te.size != len(efract), assume same temp. for all species
-        Te = [Te.value] * len(efract) * Te.unit
+        Te = np.repeat(Te, len(efract))
     elif Te.size != len(efract):
         raise ValueError(
             f"Got {Te.size} electron temperatures and expected " f"{len(efract)}."
