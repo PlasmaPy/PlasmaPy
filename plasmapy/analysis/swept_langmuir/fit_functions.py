@@ -198,29 +198,91 @@ class AbstractFitFunction(ABC):
 
 
 class ExponentialOffsetFitFunction(AbstractFitFunction):
+    """
+    A sub-class of `AbstractFitFunction` to represent an exponential with an
+    offset.
+
+    .. math::
+
+        f(x) = A \\, \\exp(B \\, x) + C
+
+    where :math:`A`, :math:`B`, and :math:`C` are positive real constants
+    and :math:`x` is the independent variable.
+
+    """
     def __str__(self):
         return f"f(x) = A exp(B x) + C"
 
     def _func(self, x, a, b, c):
+        """
+        The fit function, an exponential with an offset.
+
+        .. math::
+
+            f(x) = A \\, \\exp(B \\, x) + C
+
+        where :math:`A`, :math:`B`, and :math:`C` are positive real constants
+        and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for constant :math:`A`
+
+        b: float
+            value for constant :math:`B`
+
+        c: float
+            value for constant :math:`C`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
         return a * np.exp(b * x) + c
 
     @property
     def latex_str(self) -> str:
         return fr"A \, \exp(B \, x) + C"
 
-    def root_solve(self, *args, reterr=True, **kwargs):
+    def root_solve(self, *args, **kwargs):
+        """
+        The root :math:`f(x) = 0` for the fit function.
+
+        Parameters
+        ----------
+        *args
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        *kwargs
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        Returns
+        -------
+        root: float
+            The root value for the given fit :attr:`parameters`.
+
+        err: float
+            The error in the calculated root for the given fit
+            :attr:`parameters` and :attr:`parameters_err`.
+        """
         a, b, c = self.parameters
         root = np.log(-c / a) / b
 
-        if reterr:
-            a_err, b_err, c_err = self.parameters_err
-            a_term = a_err / (a * b)
-            b_term = b_err * root / b
-            c_term = c_err / (b * c)
-            err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
+        a_err, b_err, c_err = self.parameters_err
+        a_term = a_err / (a * b)
+        b_term = b_err * root / b
+        c_term = c_err / (b * c)
+        err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
 
-            return root, err
-        return root
+        return root, err
 
 
 class LinearFitFunction(AbstractFitFunction):
