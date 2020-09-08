@@ -7,8 +7,8 @@ Analyses & Diagnostics
 ======================
 
 Analyses and diagnostics go hand-in-hand, but have subtle differences.  Thus,
-PlasmaPy gives them their own sub-packages, `plasmapy.analysis` and
-`plasmapy.diagnostics`.
+PlasmaPy gives each their own sub-packages, `plasmapy.analysis` and
+`plasmapy.diagnostics` respectively.
 
 Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 (functionality) you need to analyze your data.  Functionality is built around
@@ -18,10 +18,11 @@ discrete Fourier Transform.  Similarly,
 :func:`plasmapy.analysis.swept_langmuir.find_floating_potential` only finds the
 floating potential for a given langmuir trace.  It does not have smoothing.
 It does not do any filtering.  It does not do any signal conditioning.  It has a
-singular task.
+singular task to find the floating potential of a single langmuir trace.
 
-Diagnostics on the other-hand have a much broader scope, which leverages the tools
-defined in `plasmapy.analysis`.
+Diagnostics on the other-hand have a much broader scope and leverage the tools
+defined in `plasmapy.analysis` to give a more integrated user experience when
+analyzing data.
 
 ----
 
