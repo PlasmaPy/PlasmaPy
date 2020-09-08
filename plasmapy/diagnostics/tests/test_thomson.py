@@ -179,7 +179,7 @@ def test_different_input_types():
             scatter_vec=scatter_vec,
         )
 
-    # Electorn vel shape not compatible with efract.size
+    # Electron vel shape not compatible with efract.size
     with pytest.raises(ValueError):
         alpha, Skw = thomson.spectral_density(
             wavelengths,
