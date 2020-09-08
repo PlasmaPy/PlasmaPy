@@ -269,7 +269,7 @@ def spectral_density(
     xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
 
     # Calculate the susceptibilities
-    
+
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
         chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
