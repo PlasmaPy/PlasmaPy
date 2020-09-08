@@ -78,16 +78,18 @@ def test_fields(
         num = (num, num, num)
 
     L = np.zeros([2, 3]) * length.unit
-    if isinstance(L, u.Quantity):
+    if length.size == 1:
         L[:, 0] = np.array([-length.value, length.value]) * length.unit
         L[:, 1] = np.array([-length.value, length.value]) * length.unit
         L[:, 2] = np.array([-length.value, length.value]) * length.unit
-    elif L.shape == (3):
+    elif length.size == 3:
         L[:, 0] = np.array([-length[0].value, length[0].value]) * length.unit
         L[:, 1] = np.array([-length[1].value, length[1].value]) * length.unit
         L[:, 2] = np.array([-length[2].value, length[2].value]) * length.unit
     else:
-        L = length
+        raise ValueError("Dimensions of length in test_fields are"
+                         " not valid.")
+
 
     # If no grid is specified, create a grid
     if grid is None:

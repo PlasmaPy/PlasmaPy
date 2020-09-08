@@ -52,7 +52,8 @@ def test_regular_grid():
     grid, E, B = prad.test_fields(
         mode="electrostatic gaussian sphere",
         regular_grid=True,
-        L=np.array([1, 1, 1]) * u.mm,
+        length=np.array([1, 1, 1]) * u.mm,
+        num = (100,100,100)
     )
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
