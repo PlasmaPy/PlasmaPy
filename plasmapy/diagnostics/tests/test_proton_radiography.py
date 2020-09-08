@@ -50,14 +50,14 @@ def test_regular_grid():
     Run a simulation with a regular grid
     """
     grid, E, B = prad.test_fields(
-        mode="electrostatic gaussian sphere", regular_grid=True
+        mode="electrostatic gaussian sphere",
+        regular_grid=True,
+        L=np.array([1, 1, 1]) * u.mm,
     )
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
-    sim = prad.SimPrad(
-        grid, E, B, source, detector, geometry="spherical", verbose=False
-    )
+    sim = prad.SimPrad(grid, E, B, source, detector, geometry="spherical", verbose=True)
 
     sim.run(1e3, max_theta=np.pi / 6 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
