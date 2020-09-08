@@ -25,59 +25,91 @@ def find_floating_potential(
     fit_type: str = "exponential",
 ):
     """
-    Determines the floating potential (Vf) for a given Current-Voltage (IV) curve
-    generate by a swept Langmuir probe.  The floating potential is the probe
-    bias where the collected current goes to zero.
+    Determines the floating potential (:math:`V_f`) for a given Current-Voltage
+    (IV) curve obtained from a swept Langmuir probe.  The floating potential is
+    the probe bias where the collected current equals to zero :math:`I = 0`.
 
-    How it works
-    ------------
-    #. The current array ``current` is searched for all points equal to zero and
-       point pairs that straddle  ``current = 0`` to form a set of crossing-points.
-    #. Crossing-points are then grouped into crossing-islands in accordance to
+    **How it works**
+
+    #. The current array ``current`` is scanned for all points equal to zero and
+       point pairs that straddle :math:`I = 0`.  This forms an array of
+       "crossing-points."
+    #. The crossing-points are then grouped into "crossing-islands" in based on
        the ``threshold`` keyword.
-    #. If multiple crossing-islands are found, then an warning issued and
-       `~numpy.nan` is returned.
-    #. To calculated the floating potential, a `~scipy.stats.linregress` is applied
-       to points making up the cross-island.  If the number of points that make
-       up the crossing-island are less than ``min_points``, then each side of the
-       crossing-island is padded with the nearest neighbors until `min_points` is
-       satisfied.
+
+       - A new island is formed when a successive crossing-point is more (index)
+         steps away from the previous crossing-point than allowed by
+         ``threshold``.
+       - If multiple crossing-islands are identified, then the total span of all
+         crossing-islands is compared to ``min_points``.  If the span is greater
+         than ``min_points`` then the function is incapable of identifying
+         :math:`V_f` and will return `numpy.nan` values; otherwise, the span
+         will form one larger crossing-island.
+
+    #. To calculate the floating potential...
+
+       - If the crossing-island contains less points than ``min_points``, then
+         each side of the crossing-island is equally padded with the nearest
+         neighbor points until ``min_points`` is satisfied.
+       - A fit is then performed using `scipy.stats.linregress` for
+         ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
+         ``fit_type="exponential"``.
 
     Parameters
     ----------
 
-    voltage: np.ndarray
-        1-D numpy array of ascending probe biases (in Volts)
+    voltage: ~numpy.ndarray
+        1-D numpy array of monotonically ascending/descending probe biases
+        (in Volts)
 
-    current: np.ndarray
-        1-D numpy array of probe current (in A) corresponding to the :data:`voltage`
-        array
+    current: ~numpy.ndarray
+        1-D numpy array of probe current (in A) corresponding to the
+        :data:`voltage` array
 
-    threshold: positive, non-zero int
-        Max index distance between found crossing-points to group crossing-points
-        into crossing-islands.  That is, if `threshold=5` then consecutive
-        crossing-points are considered to be in the same crossing-island if they are
-        within 5 indices of each other. (Default: 1)
+    threshold: positive, non-zero `int`
+        Max allowed index distance between crossing-points before a new
+        crossing-island is formed.  That is, if `threshold=5` then consecutive
+        crossing-points are considered to be in the same crossing-island if
+        they are within 5 index steps of each other. (Default: 1)
 
-    min_points: positive, non-zero int
-        The minimum number of points required for the linear regression. (Default: 5)
+    min_points: positive `int` or `float`
+        Specifies the minimum number of points required for the fit to be
+        applied to.
+
+        - ``min_points = None`` (Default) The larger of 5 and
+          ``factor * array_size`` is taken, where ``array_size`` is the size of
+          ``voltage`` and ``factor = 0.1`` for ``fit_type = "linear"`` and
+          ``0.2`` for ``"exponential"``.
+        - ``min_points = 0`` The entire passed array is fitted.
+        - ``min_points >= 1`` Exact minimum number of points.
+        - ``0 < min_points < 0`` The minimum number of points is taken as
+          ``min_points * array_size``.
+
+    fit_type: str
+        The type of curve to be fitted to (``voltage``, ``current``).  There
+        are two types of curves ``"linear"`` and ``"exponential"`` (Default).
 
     Returns
     -------
-    vf: `numpy.float64` or `numpy.nan`
+    vf: `float` or `numpy.nan`
         The calculated floating potential (in Volts).  Returns `numpy.nan` if the
         floating potential can not be determined.
 
-    vf_err: `numpy.float64` or `numpy.nan`
+    vf_err: `float` or `numpy.nan`
         The error associated with the floating potential calculation (in Volts).
         Returns `numpy.nan` if the floating potential can not be determined.
 
-    fit: Dict[str, Any]
-        A dictionary containing the linear regression fit results and parameters.
-        Keys are `'slope'`, `'slope_err'`, `'intercept'`, `'intercept_err'`, and
-        `'indices'`, where `'indices'` is a `slice` object corresponding to the
-        data points used in the fit.  Returns an empty dict if the floating
-        potential can not be determined.
+    info: Dict[str, Any]
+        A dictionary containing meta-info about the fit with keys...
+
+        - ``"func"``: The fitted function which is either an instance of
+          `LinearFitFunction` or `ExponentialOffsetFitFunciton`.
+        - ``"indices"``: A `slice` object representing the indices of
+          ``voltage`` and ``current`` used for the fit.
+        - ``"islands"``: List of `slice` objects reprsenting the indices of the
+          identified crossing-islands.
+        - ``"rsq"``: The coefficient of determination (r-squared) vlaue of the
+          fit.
 
     """
     fit_funcs = {
