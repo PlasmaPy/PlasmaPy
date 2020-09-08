@@ -112,7 +112,6 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "notebooks/langmuir_samples",
-    "*/.ipynb_checkpoints",
 ]
 
 # The name of the Pygments (syntax highlighting) style to use.
