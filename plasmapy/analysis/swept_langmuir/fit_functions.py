@@ -18,9 +18,9 @@ from typing import Tuple
 
 class AbstractFitFunction(ABC):
     """
-    Abstract class for defining fit functions and the tools for fitting the
-    function to a set of data.  These were originally designed for assisting in
-    fitting curves to swept langmuir data.
+    Abstract class for defining fit functions :math:`f(x)` and the tools for
+    fitting the function to a set of data.  These were originally designed for
+    assisting in fitting curves to swept langmuir data.
     """
 
     _parameters = None  # type: Tuple
@@ -30,7 +30,7 @@ class AbstractFitFunction(ABC):
 
     def __call__(self, x):
         """
-        The fit function.
+        Direct call of the fit function :math:`f(x)``.
 
         Parameters
         ----------
@@ -40,7 +40,8 @@ class AbstractFitFunction(ABC):
         Returns
         -------
         array_like
-            Corresponding independent variables of dependent variables `x`.
+            Corresponding independent variables of dependent variables
+            :math:`x`.
         """
         return self._func(x, *self.parameters)
 
