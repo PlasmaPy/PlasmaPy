@@ -27,6 +27,7 @@ class AbstractFitFunction(ABC):
     _parameters_err = None  # type: Tuple
     _covariance_matrix = None
     _rsq = None
+    _curve_fit_results = None
 
     def __call__(self, x):
         """
@@ -69,6 +70,15 @@ class AbstractFitFunction(ABC):
             The calculated dependent variables of the independent variables `x`.
         """
         raise NotImplementedError
+
+    @property
+    def curve_fit_results(self):
+        """
+        The results returned by the curve fitting routine used by
+        :attr:`curve_fit`.  This is typically from `scipy.stats.linregress` or
+        `scipy.optimize.curve_fit`.
+        """
+        return self._curve_fit_results
 
     @property
     def parameters(self) -> Tuple:
@@ -136,10 +146,15 @@ class AbstractFitFunction(ABC):
         """Coefficient of determination (r-squared) value of the fit."""
         return self._rsq
 
-    def curve_fit(self, xdata, ydata, **kwargs):
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
-        Use non-linear least squares to fit the fit function to (`xdata`, `ydata`).
-        This uses `scipy.optimize.curve_fit`.
+        Use a non-linear least squares method to fit the fit function to
+        (`xdata`, `ydata`), using `scipy.optimize.curve_fit`.  This will set
+        the attributes :attr:`parameters`, :attr:`parameters_err`, and
+        :attr:`rsq`.
+
+        The results of `scipy.optimize.curve_fit` can be obtained via
+        :attr:`curve_fit_results`.
 
         Parameters
         ----------
@@ -152,23 +167,6 @@ class AbstractFitFunction(ABC):
 
         **kwargs
             Any keywords accepted by `scipy.optimize.curve_fit`.
-
-        Returns
-        -------
-        popt : array
-            Optimal values for the parameters so that the sum of the squared
-            residuals of ``f(xdata, *popt) - ydata`` is minimized.
-
-        pcov : 2-D array
-            The estimated covariance of popt. The diagonals provide the variance
-            of the parameter estimate. To compute one standard deviation errors
-            on the parameters use ``perr = np.sqrt(np.diag(pcov))``.
-            How the `sigma` parameter affects the estimated covariance
-            depends on `absolute_sigma` argument, as described above.
-            If the Jacobian matrix at the solution doesn't have a full rank, then
-            'lm' method returns a matrix filled with ``np.inf``, on the other hand
-            'trf'  and 'dogbox' methods use Moore-Penrose pseudoinverse to compute
-            the covariance matrix.
 
         Raises
         ------
@@ -184,6 +182,7 @@ class AbstractFitFunction(ABC):
 
         """
         popt, pcov = curve_fit(self._func, xdata, ydata, **kwargs)
+        self._curve_fit_results = (popt, pcov)
         self._parameters = tuple(popt.tolist())
         self._parameters_err = tuple(np.sqrt(np.diag(pcov)).tolist())
 
@@ -193,8 +192,6 @@ class AbstractFitFunction(ABC):
         ss_res = np.sum(residuals ** 2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
-
-        return popt, pcov
 
 
 class ExponentialOffsetFitFunction(AbstractFitFunction):
@@ -309,6 +306,7 @@ class LinearFitFunction(AbstractFitFunction):
 
     def curve_fit(self, xdata, ydata, **kwargs):
         results = linregress(xdata, ydata)
+        self._curve_fit_results = results
 
         m = results[0]
         b = results[1]
@@ -320,4 +318,3 @@ class LinearFitFunction(AbstractFitFunction):
         self._parameters_err = (m_err, b_err)
 
         self._rsq = results[2] ** 2
-        return results
