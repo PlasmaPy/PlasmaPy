@@ -231,7 +231,7 @@ def _nearest_neighbor(array):
 
 class SimPrad:
     r"""
-    Represents a simulated proton radiography experiment with simulated or
+    Represents a proton radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
     coordinates. The proton source and detector plane are defined by vectors
     from the origin of the field grid, and the energy of the protons
@@ -739,7 +739,14 @@ class SimPrad:
         dt_range=np.array([0, np.infty]) * u.s,
     ):
         """
-        Run the SimPrad simulation.
+        Runs a particle-tracing simulation using the geometry defined in the
+        SimPrad object. Timesteps are adaptively calculated based on the
+        local grid resolution of the particles and the electric and magnetic
+        fields they are experiencing. Both regular (uniform) and irregular
+        grids are supported, although the former is faster. After all particles
+        have left the simulated field volume, they are advanced to the
+        detector plane where they can be used to construct a synthetic
+        proton radiograph.
 
         Parameters
         ----------
