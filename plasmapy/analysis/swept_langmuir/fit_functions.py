@@ -91,7 +91,7 @@ class AbstractFitFunction(ABC):
 
         Parameters
         ----------
-        x0: `~np.ndarray`
+        x0: `~numpy.ndarray`
             The starting estimate for the roots of `f(x) = 0`.
 
         **kwargs
@@ -99,10 +99,10 @@ class AbstractFitFunction(ABC):
 
         Returns
         -------
-        x : ndarray
+        x : `~numpy.ndarray`
             The solution (or the result of the last iteration for an
             unsuccessful call).
-        infodict : dict
+        infodict : `dict`
             A dictionary of optional outputs with the keys:
 
             ``nfev``
@@ -121,10 +121,10 @@ class AbstractFitFunction(ABC):
             ``qtf``
                 the vector ``(transpose(q) * fvec)``
 
-        ier : int
+        ier : `int`
             An integer flag.  Set to 1 if a solution was found, otherwise refer
             to `mesg` for more information.
-        mesg : str
+        mesg : `str`
             If no solution is found, `mesg` details the cause of failure.
         """
         kwargs["args"] = self.parameters
