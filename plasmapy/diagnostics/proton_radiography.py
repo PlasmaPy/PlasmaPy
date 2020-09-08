@@ -25,7 +25,7 @@ def test_fields(
     mode="electrostatic gaussian sphere",
     regular_grid=True,
     num=(100, 100, 100),
-    length=1*u.mm,
+    length=1 * u.mm,
 ):
     """
     This function generates test fields based on analytical models for
@@ -80,15 +80,15 @@ def test_fields(
     if isinstance(num, int):
         num = (num, num, num)
 
-    L = np.zeros([2,3])*length.unit
+    L = np.zeros([2, 3]) * length.unit
     if isinstance(L, u.Quantity):
-        L[:,0] = np.array([-length.value, length.value])*length.unit
-        L[:,1] = np.array([-length.value, length.value])*length.unit
-        L[:,2] = np.array([-length.value, length.value])*length.unit
+        L[:, 0] = np.array([-length.value, length.value]) * length.unit
+        L[:, 1] = np.array([-length.value, length.value]) * length.unit
+        L[:, 2] = np.array([-length.value, length.value]) * length.unit
     elif L.shape == (3):
-        L[:,0] = np.array([-length[0].value, length[0].value])*length.unit
-        L[:,1] = np.array([-length[1].value, length[1].value])*length.unit
-        L[:,2] = np.array([-length[2].value, length[2].value])*length.unit
+        L[:, 0] = np.array([-length[0].value, length[0].value]) * length.unit
+        L[:, 1] = np.array([-length[1].value, length[1].value]) * length.unit
+        L[:, 2] = np.array([-length[2].value, length[2].value]) * length.unit
     else:
         L = length
 
@@ -100,8 +100,7 @@ def test_fields(
         # random point spacing in all directions
         if not regular_grid:
             for d in [0, 1, 2]:
-                ax = np.random.uniform(low=L[0,d].value,
-                                       high=L[1,d].value, size=num)
+                ax = np.random.uniform(low=L[0, d].value, high=L[1, d].value, size=num)
                 ax = np.sort(ax, axis=d)
                 grid[..., d] = ax * L.unit
 
@@ -124,7 +123,7 @@ def test_fields(
     zarr = grid[..., 2]
 
     # Calculate length of each axis, for use in scaling field features
-    length = np.abs(L[0,:] - L[1,:])
+    length = np.abs(L[0, :] - L[1, :])
 
     # Calculate radius arrays in spherical and cylindrical coordinates
     # for use in generating different field structures
@@ -903,9 +902,9 @@ class SimPrad:
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid[...,0].si.value)),
-                    np.max(np.abs(self.grid[...,1].si.value)),
-                    np.max(np.abs(self.grid[...,2].si.value)),
+                    np.max(np.abs(self.grid[..., 0].si.value)),
+                    np.max(np.abs(self.grid[..., 1].si.value)),
+                    np.max(np.abs(self.grid[..., 2].si.value)),
                 ]
             )
 
