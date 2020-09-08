@@ -283,28 +283,108 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
 
 
 class LinearFitFunction(AbstractFitFunction):
+    """
+    A sub-class of `AbstractFitFunction` to represent a linear function.
+
+    .. math::
+
+        f(x) = m \\, x + b
+
+    where :math:`m` and :math:`b` are positive real constants representing the
+    slope and intercept, respectively, and :math:`x` is the independent
+    variable.
+
+    """
     def __str__(self):
         return f"f(x) = m x + b"
 
     def _func(self, x, m, b):
+        """
+        The fit function, a linear function.
+
+        .. math::
+
+            f(x) = m \\, x + b
+
+        where :math:`m` and :math:`b` are positive real constants representing the
+        slope and intercept, respectively, and :math:`x` is the independent
+        variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+        m: float
+            value for slope :math:`m`
+
+        b: float
+            value for intercept :math:`b`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
         return m * x + b
 
     @property
     def latex_str(self) -> str:
         return fr"m \, x + b"
 
-    def root_solve(self, *args, reterr=True, **kwargs):
+    def root_solve(self, *args, **kwargs):
+        """
+        The root :math:`f(x) = 0` for the fit function.
+
+        Parameters
+        ----------
+        *args
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        *kwargs
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        Returns
+        -------
+        root: float
+            The root value for the given fit :attr:`parameters`.
+
+        err: float
+            The error in the calculated root for the given fit
+            :attr:`parameters` and :attr:`parameters_err`.
+        """
         m, b = self.parameters
         root = -b / m
 
-        if reterr:
-            m_err, b_err = self.parameters_err
-            err = np.abs(root) * np.sqrt((m_err / m) ** 2 + (b_err / b) ** 2)
+        m_err, b_err = self.parameters_err
+        err = np.abs(root) * np.sqrt((m_err / m) ** 2 + (b_err / b) ** 2)
 
-            return root, err
-        return root
+        return root, err
 
-    def curve_fit(self, xdata, ydata, **kwargs):
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:
+        """
+        Calculate a linear least-squares regression of (`xdata`, `ydata`) using
+        `scipy.stats.linregress`.  This will set the attributes
+        :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
+
+        The results of `scipy.stats.linregress` can be obtained via
+        :attr:`curve_fit_results`.
+
+        Parameters
+        ----------
+        xdata: array_like
+            The independent variable where data is measured.  Should be 1D of
+            length M.
+
+        ydata: array_like
+            The dependent data associated with `xdata`.
+
+        **kwargs
+            Any keywords accepted by `scipy.stats.linregress.curve_fit`.
+
+        """
         results = linregress(xdata, ydata)
         self._curve_fit_results = results
 
