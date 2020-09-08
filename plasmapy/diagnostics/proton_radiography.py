@@ -292,7 +292,7 @@ class SimPrad:
         proton_energy=14 * u.MeV,
         geometry="cartesian",
         verbose=True,
-        ):
+    ):
         r"""
         Initalize the simPrad object, carry out coordinate transformations,
         and compute several quantities that will be used elsewhere.
@@ -734,7 +734,7 @@ class SimPrad:
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         dt_range=np.array([0, np.infty]) * u.s,
-        ):
+    ):
         r"""
         Runs a particle-tracing simulation using the geometry defined in the
         SimPrad object. Timesteps are adaptively calculated based on the
