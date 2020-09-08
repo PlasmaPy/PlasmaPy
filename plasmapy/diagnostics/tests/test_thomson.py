@@ -332,4 +332,4 @@ def test_split_populations():
     # (any differences should be in the noise)
     deviation = (Skw0 - Skw1) / Skw0 * 100
 
-    assert all(deviation < 1e-6), "Failed split populations teset"
+    assert np.all(deviation < 1e-6), "Failed split populations test"
