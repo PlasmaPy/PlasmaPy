@@ -63,7 +63,7 @@ def find_floating_potential(
         (in Volts)
 
     current: ~numpy.ndarray
-        1-D numpy array of probe current (in A) corresponding to the
+        1-D numpy array of probe current (in amperes) corresponding to the
         :data:`voltage` array
 
     threshold: positive, non-zero `int`
@@ -92,11 +92,11 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (in Volts).  Returns `numpy.nan` if the
+        The calculated floating potential (in volts).  Returns `numpy.nan` if the
         floating potential can not be determined.
 
     vf_err: `float` or `numpy.nan`
-        The error associated with the floating potential calculation (in Volts).
+        The error associated with the floating potential calculation (in volts).
         Returns `numpy.nan` if the floating potential can not be determined.
 
     info: Dict[str, Any]
