@@ -4,7 +4,7 @@ __all__ = ["Lorentz_factor", "relativistic_energy"]
 import numpy as np
 
 from astropy import units as u
-from astropy.constants import c
+from astropy.constants import c, e, m_e
 from plasmapy import utils
 from plasmapy.utils.decorators import validate_quantities
 
@@ -157,3 +157,33 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 
 def quiver_velocity(E: u.V / u.m, w: 1 / u.s):
+    """
+
+    .. math::
+
+        a = /frac{e E_0}{m_e \\omega c}}
+
+    :math: `E_0` is Electric field intensity
+    :math: `m_e` is mass of electron
+    :math: `\\omega` is the angular frequency of the radiation
+    :math: `e` is the fundamental charge
+    :math: `c` is the speed of light
+
+    Parameters
+    ----------
+    E : `~astropy.units.Quantity`
+        Electric field intensity.
+
+    w : `~astropy.units.Quantity`
+        The angular frequency of the radiation.
+
+    Returns
+    -------
+    a : `~astropy.Quantity`
+        The dimensionless electron quiver velocity.
+
+    """
+
+    a = E * e / (m_e * w * c)
+
+    return a
