@@ -21,7 +21,7 @@ class AbstractFitFunction(ABC):
     """
     Abstract class for defining fit functions :math:`f(x)` and the tools for
     fitting the function to a set of data.  These were originally designed for
-    assisting in fitting curves to swept langmuir data.
+    assisting in fitting curves to swept Langmuir data.
     """
 
     _parameter_names = ()  # type: Tuple[str, ...]

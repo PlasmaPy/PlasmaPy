@@ -17,9 +17,9 @@ Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 :func:`numpy.fft.fft` does one specific task, compute the one-dimensional
 discrete Fourier Transform.  Similarly,
 :func:`plasmapy.analysis.swept_langmuir.find_floating_potential` only finds the
-floating potential for a given langmuir trace.  It does not have smoothing.
+floating potential for a given Langmuir trace.  It does not have smoothing.
 It does not do any filtering.  It does not do any signal conditioning.  It has a
-singular task to find the floating potential of a single langmuir trace.
+singular task to find the floating potential of a single Langmuir trace.
 
 Diagnostics on the other-hand have a much broader scope and leverage the tools
 defined in `plasmapy.analysis` to give a more integrated user experience when
