@@ -154,7 +154,22 @@ class AbstractFitFunction(ABC):
 
     @property
     def rsq(self):
-        """Coefficient of determination (r-squared) value of the fit."""
+        """
+        Coefficient of determination (r-squared) value of the fit.
+
+        .. math::
+
+            r^2 &= 1 - \\frac{SS_{res}}{SS_{tot}}
+
+            SS_{res} &= \\sum\\limits_{i} (y_i - f(x_i))^2
+
+            SS_{tot} &= \\sum\\limits_{i} (y_i - \\bar{y})^2
+
+        where :math:`(x_i, y_i)` are the sample data pairs, :math:`f(x_i)` is
+        the fitted dependent variable corresponding to :math:`x_i`, and
+        :math:`\\bar{y}` is the average of the :math:`y_i` values.
+
+        """
         return self._rsq
 
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
@@ -357,6 +372,14 @@ class LinearFitFunction(AbstractFitFunction):
     @property
     def latex_str(self) -> str:
         return fr"m \, x + b"
+
+    @property
+    def rsq(self):
+        """
+        Coefficient of determination (r-squared) value of the fit.  Calculated
+        by `scipy.stats.linregress` from the fit.
+        """
+        return self._rsq
 
     def root_solve(self, *args, **kwargs):
         """
