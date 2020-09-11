@@ -48,7 +48,7 @@ a tie.
 The ``summarize`` method prints out the ionic fraction for the ions with
 an abundance of at least 1%.
 
- >>> ionization_state.summarize()
+>>> ionization_state.summarize()
 IonizationState instance for He with Z_mean = 0.96
 ----------------------------------------------------------------
 He  0+: 0.050
