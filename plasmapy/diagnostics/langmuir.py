@@ -77,10 +77,11 @@ class Characteristic:
         Array of applied probe currents in units convertible to A.
 
     """
-    _langmuir_futurewarning()
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
     def __init__(self, bias: u.V, current: u.A):
+        _langmuir_futurewarning()
+
         self.bias = bias
         self.current = current
         self.get_unique_bias(True)
