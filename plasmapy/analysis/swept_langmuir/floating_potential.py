@@ -13,7 +13,8 @@ from plasmapy.analysis.swept_langmuir.fit_functions import (
 )
 
 FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults", ("vf", "vf_err", "info")
+    "FloatingPotentialResults",
+    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
 
 
@@ -112,6 +113,15 @@ def find_floating_potential(
           fit.
 
     """
+    rtn = FloatingPotentialResults(
+        vf=np.nan,
+        vf_err=np.nan,
+        rsq=None,
+        func=None,
+        islands=None,
+        indices=None
+    )._asdict()
+
     fit_funcs = {
         "linear": {
             "func": LinearFitFunction(),
@@ -123,9 +133,9 @@ def find_floating_potential(
         },
     }
     try:
-        fit_func = fit_funcs[fit_type]["func"]
         min_point_factor = fit_funcs[fit_type]["min_point_factor"]
-        meta_dict = {"func": fit_func}
+        fit_func = fit_funcs[fit_type]["func"]
+        rtn["func"] = fit_func
     except KeyError:
         raise KeyError(
             f"Requested fit function '{fit_type}' is  not a valid option.  "
@@ -135,14 +145,14 @@ def find_floating_potential(
     if current.min() > 0.0 or current.max() < 0:
         warn("The Langmuir sweep has no floating potential.")
 
-        return FloatingPotentialResults(np.nan, np.nan, meta_dict)
+        return FloatingPotentialResults(**rtn)
 
     # check voltage is monotonically increasing/decreasing
     voltage_diff = np.diff(voltage)
     if not (np.all(voltage_diff >= 0) or np.all(voltage_diff <= 0)):
         warn("The voltage array is not monotonically increasing or decreasing.")
 
-        return FloatingPotentialResults(np.nan, np.nan, meta_dict)
+        return FloatingPotentialResults(**rtn)
 
     # condition kwarg threshold
     if isinstance(threshold, (int, float)):
@@ -195,9 +205,9 @@ def find_floating_potential(
     n_islands = threshold_indices.size + 1
 
     if min_points == 0:
-        meta_dict["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
+        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     elif n_islands == 1:
-        meta_dict["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
+        rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
         isl_start = np.concatenate((
@@ -208,19 +218,19 @@ def find_floating_potential(
             cp_candidates[threshold_indices]+1,
             [cp_candidates[-1]+1],
         ))
-        meta_dict["islands"] = []
+        rtn["islands"] = []
         for start, stop in zip(isl_start, isl_stop):
-            meta_dict["islands"].append(slice(start, stop))
+            rtn["islands"].append(slice(start, stop))
 
         # do islands fall within min_points window
-        isl_window = np.abs(np.r_[meta_dict["islands"][-1]][-1]
-                            - np.r_[meta_dict["islands"][0]][0]) + 1
+        isl_window = np.abs(np.r_[rtn["islands"][-1]][-1]
+                            - np.r_[rtn["islands"][0]][0]) + 1
         if isl_window > min_points:
             warn(f"Unable to determine floating potential, Langmuir sweep has "
                  f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
                  f"and/or smooth the current.")
 
-            return FloatingPotentialResults(np.nan, np.nan, meta_dict)
+            return FloatingPotentialResults(**rtn)
 
     # Construct crossing-island (pad if needed)
     if min_points == 0:
@@ -266,10 +276,10 @@ def find_floating_potential(
     curr_sub = current[istart:istop + 1]
     fit_func.curve_fit(volt_sub, curr_sub)
 
-    vf, vf_err = fit_func.root_solve()
-    meta_dict.update({
+    rtn["vf"], rtn["vf_err"] = fit_func.root_solve()
+    rtn.update({
         "rsq": fit_func.rsq,
-        "indices": slice(istart, istop+1)
+        "indices": slice(istart, istop + 1)
     })
 
-    return FloatingPotentialResults(vf, vf_err, meta_dict)
+    return FloatingPotentialResults(**rtn)
