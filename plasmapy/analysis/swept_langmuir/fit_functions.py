@@ -109,12 +109,12 @@ class AbstractFitFunction(ABC):
 
     def root_solve(self, x0, **kwargs):
         """
-        Solve for the root of the fit function (i.e. `f(x) = 0`).
+        Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).
 
         Parameters
         ----------
         x0: `~numpy.ndarray`
-            The starting estimate for the roots of `f(x) = 0`.
+            The starting estimate for the roots of :math:`f(x_r) = 0`.
 
         **kwargs
             Any keyword accepted by `scipy.optimize.fsolve`, except for `args`.
@@ -262,7 +262,17 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
 
     def root_solve(self, *args, **kwargs):
         """
-        The root :math:`f(x) = 0` for the fit function.
+        The root :math:`f(x_r) = 0` for the fit function.
+
+        .. math::
+
+            x_r &= \\frac{1}{B} \\ln \\left( \\frac{-C}{A} \\right)
+
+            \\delta x_r &= \\sqrt{
+                \\left( \\frac{\\delta A}{A B} \\right)^2
+                + \\left( x_r \\frac{\\delta B}{B} \\right)^2
+                + \\left( \\frac{\\delta C}{B C} \\right)^2
+            }
 
         Parameters
         ----------
@@ -350,7 +360,16 @@ class LinearFitFunction(AbstractFitFunction):
 
     def root_solve(self, *args, **kwargs):
         """
-        The root :math:`f(x) = 0` for the fit function.
+        The root :math:`f(x_r) = 0` for the fit function.
+
+        .. math::
+
+            x_r &= \\frac{-b}{m}
+
+            \\delta x_r &= |x_r| \\sqrt{
+                \\left( \\frac{\\delta m}{m} \\right)^2
+                + \\left( \\frac{\\delta b}{b} \\right)^2
+            }
 
         Parameters
         ----------
