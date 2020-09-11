@@ -61,7 +61,7 @@ def find_floating_potential(
 
     voltage: ~numpy.ndarray
         1-D numpy array of monotonically ascending/descending probe biases
-        (in Volts)
+        (in volts)
 
     current: ~numpy.ndarray
         1-D numpy array of probe current (in A) corresponding to the
@@ -87,30 +87,51 @@ def find_floating_potential(
           ``min_points * array_size``.
 
     fit_type: str
-        The type of curve to be fitted to (``voltage``, ``current``).  There
-        are two types of curves ``"linear"`` and ``"exponential"`` (Default).
+        The type of curve to be fitted to the Langmuir trace.  There are two
+        types of curves ``"linear"`` and ``"exponential"`` (Default).  These
+        specified which `FitFunction` class should be applied to the trace.
+
+        +-------------+--------------------------------------------------------------------------------+
+        | linear      | `~plasmapy.analysis.swept_langmuir.fit_functions.LinearFitFunction`            |
+        +-------------+--------------------------------------------------------------------------------+
+        | exponential | `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction` |
+        +-------------+--------------------------------------------------------------------------------+
 
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (in Volts).  Returns `numpy.nan` if the
-        floating potential can not be determined.
+        The calculated floating potential (in volts).  Returns `numpy.nan` if the
+        floating potential can not be determined.  How :math:`V_f` is calculated
+        depends on the fit function.  This is described in the `root_solve()`
+        method of the relevant fit function (e.g. the
+        :meth:`~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction.root_solve`
+        method of
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction`).
 
     vf_err: `float` or `numpy.nan`
-        The error associated with the floating potential calculation (in Volts).
+        The error associated with the floating potential calculation (in volts).
         Returns `numpy.nan` if the floating potential can not be determined.
+        Like :math:`V_f`:, the calculation depends on the applied fit function.
+        The `rood_solve()` method also describes how this is calculated.
 
-    info: Dict[str, Any]
-        A dictionary containing meta-info about the fit with keys...
+    rsq: `float`
+        The coefficient of determination (r-squared) value of the fit.  See the
+        documentation of the `rsq` property on the associated fit function
+        (e.g. the
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction.rsq`
+        property of
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction`).
 
-        - ``"func"``: The fitted function which is either an instance of
-          `LinearFitFunction` or `ExponentialOffsetFitFunciton`.
-        - ``"indices"``: A `slice` object representing the indices of
-          ``voltage`` and ``current`` used for the fit.
-        - ``"islands"``: List of `slice` objects reprsenting the indices of the
-          identified crossing-islands.
-        - ``"rsq"``: The coefficient of determination (r-squared) vlaue of the
-          fit.
+    func: sub-class of `~plasmapy.analysis.swept_langmuir.fit_functions.AbstractFitFunction`
+        The callable function :math:`f(x)` repressing the fit and its results.
+
+    islands: `List[slice]`
+        List of `slice` objects representing the indices of the identified
+        crossing-islands.
+
+    indices: `slice`
+        A `slice` object representing the indices of ``voltage`` and ``current``
+        arrays used for the fit.
 
     """
     rtn = FloatingPotentialResults(
