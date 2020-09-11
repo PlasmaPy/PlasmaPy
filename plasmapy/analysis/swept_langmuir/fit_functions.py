@@ -11,9 +11,10 @@ __all__ = [
 import numpy as np
 
 from abc import ABC, abstractmethod
+from collections import namedtuple
 from scipy.stats import linregress
 from scipy.optimize import curve_fit, fsolve
-from typing import Tuple
+from typing import Any, NamedTuple, Tuple, Union
 
 
 class AbstractFitFunction(ABC):
@@ -23,11 +24,15 @@ class AbstractFitFunction(ABC):
     assisting in fitting curves to swept langmuir data.
     """
 
-    _parameters = None  # type: Tuple
-    _parameters_err = None  # type: Tuple
+    _parameter_names = ()  # type: Tuple[str, ...]
+    _parameters = None  # type: Union[None, Tuple[Any, ...]]
+    _parameters_err = None  # type: Union[None, Tuple[Any, ...]]
     _covariance_matrix = None
     _rsq = None
     _curve_fit_results = None
+
+    def __init__(self):
+        self._ParamTuple = namedtuple("_ParamTuple", self._parameter_names)
 
     def __call__(self, x):
         """
@@ -81,14 +86,20 @@ class AbstractFitFunction(ABC):
         return self._curve_fit_results
 
     @property
-    def parameters(self) -> Tuple:
+    def parameters(self) -> Union[None, NamedTuple]:
         """The fitted parameters for the fit function."""
-        return self._parameters
+        if self._parameters is None:
+            return self._parameters
+        else:
+            return self._ParamTuple(*self._parameters)
 
     @property
-    def parameters_err(self) -> Tuple:
+    def parameters_err(self) -> Union[None, NamedTuple]:
         """The associated errors of the fit `parameters`."""
-        return self._parameters_err
+        if self._parameters_err is None:
+            return self._parameters_err
+        else:
+            return self._ParamTuple(*self._parameters_err)
 
     @property
     @abstractmethod
@@ -207,6 +218,8 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
     and :math:`x` is the independent variable.
 
     """
+    _parameter_names = ("a", "b", "c")
+
     def __str__(self):
         return f"f(x) = A exp(B x) + C"
 
@@ -295,6 +308,9 @@ class LinearFitFunction(AbstractFitFunction):
     variable.
 
     """
+
+    _parameter_names = ("m", "b")
+
     def __str__(self):
         return f"f(x) = m x + b"
 
