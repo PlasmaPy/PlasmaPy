@@ -64,7 +64,7 @@ def find_floating_potential(
         (in volts)
 
     current: ~numpy.ndarray
-        1-D numpy array of probe current (in A) corresponding to the
+        1-D numpy array of probe current (in amperes) corresponding to the
         :data:`voltage` array
 
     threshold: positive, non-zero `int`
