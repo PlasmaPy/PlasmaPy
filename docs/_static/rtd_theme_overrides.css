@@ -16,7 +16,7 @@ td .toctree-wrapper ul li {
 }
 
 /* Unordered list nested in ordered list */
-ol li ul {
+.section li ul {
     margin-bottom: 12px !important;
 }
 
