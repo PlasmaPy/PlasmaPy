@@ -14,6 +14,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
+from scipy.special import erf as erf
 import time
 
 
@@ -23,20 +24,31 @@ def test_fields(
     regular_grid=True,
     num=(100, 100, 100),
     length=1 * u.mm,
-):
+    ):
     r"""
     This function generates test fields based on analytical models for
     testing or demonstrating the proton radiography module.
 
     Parameters
     ----------
-    grid : `~astropy.units.Quantity` array shape [nx,ny,nz,3], optional
+    grid : `~astropy.units.Quantity` array shape (nx,ny,nz,3), optional
         A grid of positions on which to calculate fields. If no grid is
         specified, one will be created.
 
     mode : str, optional
         The field model to load. The default represents the electrostatic
-        E-field created by a spherical Gaussian potential.
+        E-field created by a spherical Gaussian potential. The full list of
+        options is:
+
+        * "no fields": A grid with empty field arrays (E=B=0)
+
+        * "electrostatic gaussian sphere": A radial, spherically symmetric
+            electric field sphere produced by a sphere of potential with a
+            Gaussian distribution. Since a gradient is used in the calculation,
+            this option is not compatible with a non-uniform grid.
+
+        * "axial magnetic field": A cylinder of magnetic field oriented along
+            the z-axis, with E=0.
 
     regular_grid : bool, optional
         If a grid is being generated, setting this keyword to False will
@@ -50,28 +62,32 @@ def test_fields(
 
     length : `~astropy.units.Quantity`, optional
         The length of each dimension, which can be given in several ways:
-            - If a single value is given, then the length of each dimension
+            * If a single value is given, then the length of each dimension
             will be set to (-length, length)
-            - If an array of shape (3) is given, each dimension is set to be
+            * If an array of shape (3) is given, each dimension is set to be
             symmetric using each value, eg. xdim = [-length[0], length[0]]...
-            - If an array of shape (2,3) is given, then L[:,i] is the min
+            * If an array of shape (2,3) is given, then L[:,i] is the min
             and max of the ith dimension.
 
     Returns
     -------
-    grid : `~astropy.units.Quantity` array, shape [nx,ny,nz,3]
+    grid : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
         The grid of positions corresponding to the field grids.
 
-    E : `~astropy.units.Quantity` array, shape [nx,ny,nz,3]
+    E : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
         Electric field array in units of V/m
 
-    B : `~astropy.units.Quantity` array, shape [nx,ny,nz,3]
+    B : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
         Magnetic field array in units of Tesla
 
     """
 
-    # TODO: Not all fields are compatible with non-uniform grids: notably the
-    # electric gaussian sphere relies on a gradient...
+    # Catch an error that can occur if a mode requires a gradient but a
+    # non-uniform grid is supplied, since this is not supported currently.
+    uses_grad = ['electrostatic gaussian sphere', 'electrostatic spherical shock']
+    if regular_grid is False and mode in uses_grad:
+        raise ValueError(f"The mode {mode} is not compatible with a ",
+                         "non-uniform grid: please chose a different mode.")
 
     # Process different options for inputs
     if isinstance(num, int):
@@ -137,8 +153,8 @@ def test_fields(
     elif mode == "electrostatic gaussian sphere":
         print("Generating Electrostatic Gaussian Sphere")
 
-        a = length[0] / 3
-        potential = -np.exp(-(xarr ** 2 + yarr ** 2 + zarr ** 2) / a ** 2) * u.V
+        a = L[1,0] / 3
+        potential = -np.exp(-(radius**2) / a ** 2) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
@@ -151,6 +167,22 @@ def test_fields(
         # Normalize to a desired maximum field
         E = (E / np.max(E)).to(u.dimensionless_unscaled)
         E = E * (5e9 * u.V / u.m)
+
+    elif mode == "electrostatic planar shock":
+        print("Generating Electrostatic Planar Shock")
+
+        a = np.max(pradius)/4
+        delta = L[1,2]/120
+
+        potential = (1 - erf(zarr/delta))*np.exp(-(pradius)**2/a**2)*u.V
+
+        Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
+
+        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = Ex, Ey, Ez
+
+        # Normalize to a desired maximum field
+        E = (E / np.max(E)).to(u.dimensionless_unscaled)
+        E = E * (6e9 * u.V / u.m)
 
     elif mode == "axial magnetic field":
         print("Generating Axial Magnetic Field")
@@ -221,7 +253,6 @@ def _nearest_neighbor(array):
 
 # WARNINGS
 # - Throw a warning if source-detector vector does not pass through grid volume
-# - Throw a warning if highly non-linear deflections (path crossings) are expected
 # - Throw a warning if <10% of the particles ended up on the grid by the end of the run
 # - Throw a warning if <50% of the particles ended up on the histogram
 
@@ -254,9 +285,9 @@ class SimPrad:
         being in either cartesian, cylindrical, or spherical coordinates
         based on the geometry keyword. The units of the vector must be
         compatible with the geometry chosen:
-            cartesian (x,y,z) : (meters, meters, meters)
-            cylindrical (r, theta, z) : (meters, radians, meters)
-            spherical (r, theta, phi) : (meters, radians, radians)
+        * Cartesian (x,y,z) : (meters, meters, meters)
+        * cylindrical (r, theta, z) : (meters, radians, meters)
+        * spherical (r, theta, phi) : (meters, radians, radians)
         In spherical coordinates theta is the polar angle.
 
     detector : `~astropy.units.Quantity`, shape (3)
@@ -292,7 +323,7 @@ class SimPrad:
         proton_energy=14 * u.MeV,
         geometry="cartesian",
         verbose=True,
-    ):
+        ):
         r"""
         Initalize the simPrad object, carry out coordinate transformations,
         and compute several quantities that will be used elsewhere.
@@ -544,10 +575,6 @@ class SimPrad:
         # Place particles at the source
         self.r = np.outer(np.ones(self.nparticles), self.source)
 
-        # Calculate where particles would hit the detector in the absence
-        # of simulated  fields
-        self._generate_null()
-
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         self.on_grid = np.zeros([self.nparticles_grid])
@@ -579,6 +606,9 @@ class SimPrad:
 
         v_towards_det = np.dot(self.v, -self.det_n)
 
+        # Time remaining for each particle to reach detector plane
+        t = dist_remaining / v_towards_det
+
         # If particles have not yet reached the detector plane and are moving
         # away from it, they will never reach the detector.
         condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
@@ -586,9 +616,9 @@ class SimPrad:
         self.r = self.r[ind, :]
         self.v = self.v[ind, :]
         self.nparticles_grid = self.r.shape[0]
+        t = t[ind]
 
-        # Time remaining for each particle to reach detector plane
-        t = dist_remaining / v_towards_det
+
 
         self.r += self.v * np.outer(t, np.ones(3))
 
@@ -597,24 +627,6 @@ class SimPrad:
         plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
-    def _generate_null(self):
-        r"""
-        Calculate the distribution of particles on the detector in the absence
-        of any simulated fields.
-        """
-        # Calculate the unit vector from the source to the detector
-        dist = np.linalg.norm(self.source_to_detector)
-        uvec = self.source_to_detector.to(u.m).value / dist.to(u.m).value
-
-        # Calculate the remaining distance each particle needs to travel
-        # along that unit vector
-        remaining = np.dot(self.source, uvec)
-
-        # Calculate the time remaining to reach that plane and push
-        t = ((dist - remaining) / np.dot(self.v, uvec)).to(u.s)
-
-        # Calculate the particle positions for that case
-        self.r0 = self.source + self.v * np.outer(t, np.ones(3))
 
     def _place_particles(self):
         r"""
