@@ -14,8 +14,9 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
-from scipy.special import erf as erf
 import time
+
+from scipy.special import erf as erf
 
 
 def test_fields(
@@ -24,7 +25,7 @@ def test_fields(
     regular_grid=True,
     num=(100, 100, 100),
     length=1 * u.mm,
-    ):
+):
     r"""
     This function generates test fields based on analytical models for
     testing or demonstrating the proton radiography module.
@@ -84,10 +85,12 @@ def test_fields(
 
     # Catch an error that can occur if a mode requires a gradient but a
     # non-uniform grid is supplied, since this is not supported currently.
-    uses_grad = ['electrostatic gaussian sphere', 'electrostatic spherical shock']
+    uses_grad = ["electrostatic gaussian sphere", "electrostatic spherical shock"]
     if regular_grid is False and mode in uses_grad:
-        raise ValueError(f"The mode {mode} is not compatible with a ",
-                         "non-uniform grid: please chose a different mode.")
+        raise ValueError(
+            f"The mode {mode} is not compatible with a ",
+            "non-uniform grid: please chose a different mode.",
+        )
 
     # Process different options for inputs
     if isinstance(num, int):
@@ -153,8 +156,8 @@ def test_fields(
     elif mode == "electrostatic gaussian sphere":
         print("Generating Electrostatic Gaussian Sphere")
 
-        a = L[1,0] / 3
-        potential = -np.exp(-(radius**2) / a ** 2) * u.V
+        a = L[1, 0] / 3
+        potential = -np.exp(-(radius ** 2) / a ** 2) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
@@ -171,10 +174,10 @@ def test_fields(
     elif mode == "electrostatic planar shock":
         print("Generating Electrostatic Planar Shock")
 
-        a = np.max(pradius)/4
-        delta = L[1,2]/120
+        a = np.max(pradius) / 4
+        delta = L[1, 2] / 120
 
-        potential = (1 - erf(zarr/delta))*np.exp(-(pradius)**2/a**2)*u.V
+        potential = (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
@@ -323,7 +326,7 @@ class SimPrad:
         proton_energy=14 * u.MeV,
         geometry="cartesian",
         verbose=True,
-        ):
+    ):
         r"""
         Initalize the simPrad object, carry out coordinate transformations,
         and compute several quantities that will be used elsewhere.
@@ -618,15 +621,12 @@ class SimPrad:
         self.nparticles_grid = self.r.shape[0]
         t = t[ind]
 
-
-
         self.r += self.v * np.outer(t, np.ones(3))
 
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
-
 
     def _place_particles(self):
         r"""
