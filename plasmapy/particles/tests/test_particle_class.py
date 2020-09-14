@@ -9,6 +9,7 @@ from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
+from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     AtomicError,
@@ -30,8 +31,6 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import call_string, roman
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
-
-from plasmapy.particles import json_load_particle, json_loads_particle
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [

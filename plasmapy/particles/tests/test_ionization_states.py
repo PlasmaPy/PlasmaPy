@@ -1,20 +1,20 @@
+import astropy.units as u
 import collections
 import itertools
-from numbers import Real
-from typing import Dict
-
-import astropy.units as u
 import numpy as np
 import pytest
 
+from numbers import Real
+from typing import Dict
+
 from plasmapy.particles import (
+    atomic_number,
     IonizationState,
     IonizationStates,
-    Particle,
-    State,
-    atomic_number,
     mass_number,
+    Particle,
     particle_symbol,
+    State,
 )
 from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
 from plasmapy.utils.pytest_helpers import run_test

@@ -5,12 +5,19 @@
 Swept Langmuir Analysis Module
 ==============================
 
-this is the swept langmuir module
+.. automodule:: plasmapy.analysis.swept_langmuir
+
+Example Notebooks
+-----------------
+
+.. nbgallery::
+   :glob:
+   :reversed:
+
+   /notebooks/analysis/swept_langmuir/*
 
 API
 ---
-
-.. automodule:: plasmapy.analysis.swept_langmuir
 
 Sub-Packages & Modules
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -18,6 +25,7 @@ Sub-Packages & Modules
 .. autosummary::
 
    floating_potential
+   fit_functions
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
    :no-main-docstr:

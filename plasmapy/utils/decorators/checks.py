@@ -13,13 +13,13 @@ __all__ = [
 import collections
 import functools
 import inspect
-import warnings
-from functools import reduce
-from typing import Any, Dict, List, Tuple, Union
-
 import numpy as np
+import warnings
+
 from astropy import units as u
 from astropy.constants import c
+from functools import reduce
+from typing import Any, Dict, List, Tuple, Union
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (

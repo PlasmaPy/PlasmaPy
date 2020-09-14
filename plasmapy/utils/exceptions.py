@@ -2,19 +2,21 @@
 __all__ = [
     "PlasmaPyError",
     "PhysicsError",
+    "InvalidRomanNumeralError",
+    "OutOfRangeError",
     "RelativityError",
+    "RomanError",
     "PlasmaPyWarning",
     "CouplingWarning",
-    "ImplicitUnitConversionWarning",
     "PhysicsWarning",
     "RelativityWarning",
 ]
 
 from astropy.units import UnitsWarning
 
-# ----------
-# Exceptions
-# ----------
+# ------------------------------------------------------------------------------
+#   Exceptions
+# ------------------------------------------------------------------------------
 
 
 class PlasmaPyError(Exception):
@@ -36,6 +38,15 @@ class PhysicsError(PlasmaPyError, ValueError):
     pass
 
 
+class RomanError(PlasmaPyError):
+    """A base exception for errors from `~plasmapy.utils.roman`."""
+
+    pass
+
+
+# ^^^^^^^^^^^^ Base Exceptions should be defined above this comment ^^^^^^^^^^^^
+
+
 class RelativityError(PhysicsError):
     """
     An exception for speeds greater than the speed of light.
@@ -44,9 +55,27 @@ class RelativityError(PhysicsError):
     pass
 
 
-# ----------
-# Warnings:
-# ----------
+class OutOfRangeError(RomanError):
+    """
+    An exception to be raised for integers that outside of the range
+    that can be converted to Roman numerals.
+    """
+
+    pass
+
+
+class InvalidRomanNumeralError(RomanError):
+    """
+    An exception to be raised when the input is not a valid Roman
+    numeral.
+    """
+
+    pass
+
+
+# ------------------------------------------------------------------------------
+#   Warnings
+# ------------------------------------------------------------------------------
 
 
 class PlasmaPyWarning(Warning):
@@ -70,6 +99,9 @@ class PhysicsWarning(PlasmaPyWarning):
     pass
 
 
+# ^^^^^^^^^^^^^ Base Warnings should be defined above this comment ^^^^^^^^^^^^^
+
+
 class RelativityWarning(PhysicsWarning):
     """
     A warning for when relativistic velocities are being used in or are
@@ -82,12 +114,6 @@ class RelativityWarning(PhysicsWarning):
 class CouplingWarning(PhysicsWarning):
     """
     A warning for functions that rely on a particular coupling regime to be valid.
-    """
-
-
-class ImplicitUnitConversionWarning(PlasmaPyWarning, UnitsWarning):
-    """
-    A warning for an implicit conversion between equivalent :mod:`astropy` units.
     """
 
     pass

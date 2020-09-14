@@ -15,7 +15,6 @@ import collections
 import json
 import pkgutil
 
-
 _PeriodicTable = collections.namedtuple(
     "periodic_table", ["group", "category", "block", "period"]
 )
@@ -27,7 +26,7 @@ def _element_obj_hook(obj):
     return obj
 
 
-# this code was used to create the JSON file as per vn-ki on Riot:
+# this code was used to create the JSON file as per vn-ki on Matrix:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/
 #    $1554667515670438wIKlP:matrix.org?via=matrix.org&via=cadair.com
 #

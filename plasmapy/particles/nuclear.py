@@ -6,9 +6,9 @@ import re
 
 from typing import List, Optional, Union
 
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.decorators import particle_input
 
 
 @particle_input(any_of={"isotope", "baryon"})

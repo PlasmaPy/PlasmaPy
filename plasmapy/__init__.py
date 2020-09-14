@@ -28,14 +28,7 @@ if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from plasmapy import (
-    diagnostics,
-    formulary,
-    particles,
-    plasma,
-    simulation,
-    utils,
-)
+from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
 
 # define version
 try:
@@ -100,8 +93,9 @@ def online_help(query):
     query : str
         The search query.
     """
-    from urllib.parse import urlencode
     import webbrowser
+
+    from urllib.parse import urlencode
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"
