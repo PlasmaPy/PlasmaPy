@@ -23,6 +23,6 @@ def find_plasma_potential_didv(i_probe: np.ndarray, v_probe: np.ndarray):
         # Check that vp happens at a peak with max prominence
     peaks = find_peaks(dI_s, prominence=[.0001])
     if peak_prominences(dI_s, [vp_index])[0] < np.max(peaks[1]['prominences']):
-        print("Best estimate of Vp is not the most prominenet peak in dI/dV")
+        print("Best estimate of Vp is not the most prominent peak in dI/dV")
         vp = np.nan
     return vp
