@@ -84,3 +84,12 @@ def test_irregular_grid():
 
     sim.run(1e3, max_theta=np.pi / 6 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
+
+
+def test_other_test_fields():
+    """
+    Creates all test fields that aren't run in other tests'
+    """
+
+    grid, E, B = prad.test_fields(mode="electrostatic planar shock",
+                                  num=(100,100,200))
