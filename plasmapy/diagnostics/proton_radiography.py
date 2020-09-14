@@ -25,8 +25,8 @@ def test_fields(
     regular_grid=True,
     num=(100, 100, 100),
     length=1 * u.mm,
-    Emax = 1e9*u.V/u.m,
-    Bmax = 100*u.T,
+    Emax=1e9 * u.V / u.m,
+    Bmax=100 * u.T,
 ):
     r"""
     This function generates test fields based on analytical models for
@@ -185,22 +185,19 @@ def test_fields(
         a = np.max(pradius) / 2
         delta = L[1, 2] / 120
 
-        potential = (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * 1e4*u.V
+        potential = (
+            (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * 1e4 * u.V
+        )
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
         E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = -Ex, -Ey, -Ez
-
-
-
 
     elif mode == "axial magnetic field":
         print("Generating Axial Magnetic Field")
 
         a = length[0] / 4
         B[:, :, :, 2] = np.where(pradius < a, 400 * u.T, 0 * u.T)
-
-
 
     # Normalize fields to desired values
     if np.max(E) != 0:
@@ -210,8 +207,6 @@ def test_fields(
     if np.max(B) != 0:
         B = (B / np.max(B)).to(u.dimensionless_unscaled)
         B = B * Bmax
-
-
 
     return grid, E, B
 
