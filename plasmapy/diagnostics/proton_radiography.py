@@ -25,6 +25,8 @@ def test_fields(
     regular_grid=True,
     num=(100, 100, 100),
     length=1 * u.mm,
+    Emax = 1e9*u.V/u.m,
+    Bmax = 100*u.T,
 ):
     r"""
     This function generates test fields based on analytical models for
@@ -69,6 +71,12 @@ def test_fields(
             symmetric using each value, eg. xdim = [-length[0], length[0]]...
             * If an array of shape (2,3) is given, then L[:,i] is the min
             and max of the ith dimension.
+
+    Emax: `~astropy.units.Quantity`, optional
+        Scale E-field to this maximum value. Default is 1e9 V/m
+
+    Bmax: `~astropy.units.Quantity`, optional
+        Scale B-field to this maximum value. Default is 100 T
 
     Returns
     -------
@@ -157,7 +165,7 @@ def test_fields(
         print("Generating Electrostatic Gaussian Sphere")
 
         a = L[1, 0] / 3
-        potential = -np.exp(-(radius ** 2) / a ** 2) * u.V
+        potential = np.exp(-(radius ** 2) / a ** 2) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
@@ -165,33 +173,45 @@ def test_fields(
         Ey = np.where(radius < 0.5 * length[0], Ey, 0)
         Ez = np.where(radius < 0.5 * length[0], Ez, 0)
 
-        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = Ex, Ey, Ez
+        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = -Ex, -Ey, -Ez
 
         # Normalize to a desired maximum field
         E = (E / np.max(E)).to(u.dimensionless_unscaled)
-        E = E * (5e9 * u.V / u.m)
+        E = E * Emax
 
     elif mode == "electrostatic planar shock":
         print("Generating Electrostatic Planar Shock")
 
-        a = np.max(pradius) / 4
+        a = np.max(pradius) / 2
         delta = L[1, 2] / 120
 
-        potential = (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * u.V
+        potential = (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * 1e4*u.V
 
         Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
 
-        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = Ex, Ey, Ez
+        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = -Ex, -Ey, -Ez
 
-        # Normalize to a desired maximum field
-        E = (E / np.max(E)).to(u.dimensionless_unscaled)
-        E = E * (6e9 * u.V / u.m)
+
+
 
     elif mode == "axial magnetic field":
         print("Generating Axial Magnetic Field")
 
         a = length[0] / 4
         B[:, :, :, 2] = np.where(pradius < a, 400 * u.T, 0 * u.T)
+
+
+
+    # Normalize fields to desired values
+    if np.max(E) != 0:
+        E = (E / np.max(E)).to(u.dimensionless_unscaled)
+        E = E * Emax
+
+    if np.max(B) != 0:
+        B = (B / np.max(B)).to(u.dimensionless_unscaled)
+        B = B * Bmax
+
+
 
     return grid, E, B
 
@@ -863,10 +883,9 @@ class SimPrad:
         image plane). The horizontal axis in the detector plane is defined to
         be perpendicular to both the source-to-detector vector and the z-axis
         (unless the source-to-detector axis is parallel to the z axis, in which
-         case the horizontal axis is the x-axis). The vertical axis is defined
+        case the horizontal axis is the x-axis). The vertical axis is defined
         to be orthgonal to both the source-to-detector vector and the
         horizontal axis.
-
 
         Parameters
         ----------
@@ -877,18 +896,19 @@ class SimPrad:
             [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
 
         bins : array of integers, shape (2)
-            The number of bins in each direction in the format
-            [hbins, vbins]. The default is [250,250].
+            The number of bins in each direction in the format [hbins, vbins].
+            The default is [250,250].
 
         Returns
         -------
         hax : `~astropy.units.Quantity` array shape (hbins,)
             The horizontal axis of the synthetic radiograph in meters.
+
         vax : `~astropy.units.Quantity` array shape (vbins, )
             The vertical axis of the synthetic radiograph in meters.
+
         intensity : ndarray, shape (hbins, vbins)
             The number of protons counted in each bin of the histogram.
-
         """
         # Note that, at the end of the simulation, all particles were moved
         # into the image plane.
