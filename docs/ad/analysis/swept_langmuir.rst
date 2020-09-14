@@ -26,6 +26,7 @@ Sub-Packages & Modules
 
    floating_potential
    fit_functions
+   plasma_potential
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
    :no-main-docstr:
