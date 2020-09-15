@@ -265,16 +265,6 @@ def _nearest_neighbor(array):
     return np.min(dist, axis=3)
 
 
-# TODO: error checking
-# ERRORS
-# - Validate that no input vaules contain nans or anything like that
-
-# WARNINGS
-# - Throw a warning if source-detector vector does not pass through grid volume
-# - Throw a warning if <10% of the particles ended up on the grid by the end of the run
-# - Throw a warning if <50% of the particles ended up on the histogram
-
-
 class SimPrad:
     r"""
     Represents a proton radiography experiment with simulated or
@@ -599,6 +589,25 @@ class SimPrad:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
+    def _generate_null(self):
+        r"""
+        Calculate the distribution of particles on the detector in the absence
+        of any simulated fields.
+        """
+        # Calculate the unit vector from the source to the detector
+        dist = np.linalg.norm(self.source_to_detector)
+        uvec = self.source_to_detector.to(u.m).value / dist.to(u.m).value
+
+        # Calculate the remaining distance each particle needs to travel
+        # along that unit vector
+        remaining = np.dot(self.source, uvec)
+
+        # Calculate the time remaining to reach that plane and push
+        t = ((dist - remaining) / np.dot(self.v, uvec)).to(u.s)
+
+        # Calculate the particle positions for that case
+        self.r0 = self.source + self.v * np.outer(t, np.ones(3))
+
     def _advance_to_grid(self):
         r"""
         Advances all particles to the timestep when the first particle should
@@ -810,6 +819,10 @@ class SimPrad:
         # Initialize variables and create the particle distribution
         self._generate_particles(max_theta=max_theta)
 
+        # Generate a null distribution (where the particles would go without
+        # simulated fields)
+        self._generate_null()
+
         # Advance the particles to the near the start of the simulation
         # volume
         self._advance_to_grid()
@@ -872,7 +885,9 @@ class SimPrad:
         else:
             return ke.to(u.J)
 
-    def synthetic_radiograph(self, size=None, bins=None):
+    def synthetic_radiograph(
+        self, size=None, bins=None, null=False, optical_density=False
+    ):
         r"""
         Calculate a "synthetic radiograph" (particle count histogram in the
         image plane). The horizontal axis in the detector plane is defined to
@@ -894,6 +909,20 @@ class SimPrad:
             The number of bins in each direction in the format [hbins, vbins].
             The default is [250,250].
 
+        null: bool
+            If True, returns the intensity in the image plane in the absence
+            of simulated fields.
+
+
+        optical_density: bool
+            If True, return the optical density rather than the intensity
+
+            .. math::
+                OD = -log_{10}(Intensity/I_0)
+
+            where I_O is the intensity on the detector plane in the absence of
+            simulated fields. Default is False.
+
         Returns
         -------
         hax : `~astropy.units.Quantity` array shape (hbins,)
@@ -905,6 +934,7 @@ class SimPrad:
         intensity : ndarray, shape (hbins, vbins)
             The number of protons counted in each bin of the histogram.
         """
+
         # Note that, at the end of the simulation, all particles were moved
         # into the image plane.
 
@@ -923,25 +953,30 @@ class SimPrad:
         ny = np.cross(nx, self.det_n)
         ny = ny / np.linalg.norm(ny)
 
+        # If null is True, use the predicted positions in the absence of
+        # simulated fields
+        if null:
+            r = self.r0
+        else:
+            r = self.r
+
         # Determine locations of points in the detector plane using unit
         # vectors
-        xloc = np.dot(self.r - self.detector, nx)
-        yloc = np.dot(self.r - self.detector, ny)
+        xloc = np.dot(r - self.detector, nx)
+        yloc = np.dot(r - self.detector, ny)
 
         if size is None:
             # If a detector size is not given, choose lengths based on the
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid[..., 0].si.value)),
-                    np.max(np.abs(self.grid[..., 1].si.value)),
-                    np.max(np.abs(self.grid[..., 2].si.value)),
+                    np.max(np.abs(self.grid[..., 0])),
+                    np.max(np.abs(self.grid[..., 1])),
+                    np.max(np.abs(self.grid[..., 2])),
                 ]
             )
 
-            size = np.array([[-w, w], [-w, w]])
-        else:
-            size = size.si.value
+            size = np.array([[-w, w], [-w, w]]) * self.grid.unit
 
         # If #bins is not set, make a guess
         if bins is None:
@@ -949,7 +984,17 @@ class SimPrad:
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(
-            xloc.si.value, yloc.si.value, range=size, bins=bins
+            xloc.si.value, yloc.si.value, range=size.si.value, bins=bins
         )
+
+        if optical_density:
+            # Generate the null radiograph
+            x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, null=True)
+
+            # Set any zeros in I0 to the median value to avoid div by zero
+            I0[I0 == 0] = np.mean(I0)
+
+            # Calculate the optical_density
+            intensity = -np.log10(intensity / I0)
 
         return h * u.m, v * u.m, intensity
