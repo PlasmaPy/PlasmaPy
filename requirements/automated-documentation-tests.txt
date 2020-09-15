@@ -5,6 +5,7 @@ nbsphinx
 
 numpydoc
 pillow
+pygments >= 2.4.1
 pytest
 setuptools-scm
 sphinx <= 2.4.4
