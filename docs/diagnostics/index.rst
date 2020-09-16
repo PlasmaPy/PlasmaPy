@@ -12,4 +12,5 @@ Plasma diagnostics (`plasmapy.diagnostics`)
    :caption: Sub-Packages and Modules
 
    langmuir
+   proton_radiography
    thomson

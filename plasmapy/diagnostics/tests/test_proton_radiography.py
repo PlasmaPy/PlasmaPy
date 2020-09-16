@@ -21,21 +21,21 @@ def test_coordinate_systems():
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
     detector = (70.07 * u.mm, 70.07 * u.mm, 0 * u.mm)
-    sim1 = prad.SimPrad(
+    sim1 = prad.SyntheticProtonRadiograph(
         grid, E, B, source, detector, geometry="cartesian", verbose=False
     )
 
     # Cylindrical
     source = (-1 * u.cm, 45 * u.deg, 0 * u.mm)
     detector = (10 * u.cm, 45 * u.deg, 0 * u.mm)
-    sim2 = prad.SimPrad(
+    sim2 = prad.SyntheticProtonRadiograph(
         grid, E, B, source, detector, geometry="cylindrical", verbose=False
     )
 
     # In spherical
     source = (-0.01 * u.m, 90 * u.deg, 45 * u.deg)
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
-    sim3 = prad.SimPrad(
+    sim3 = prad.SyntheticProtonRadiograph(
         grid, E, B, source, detector, geometry="spherical", verbose=False
     )
 
@@ -58,7 +58,7 @@ def test_regular_grid():
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
-    sim = prad.SimPrad(grid, E, B, source, detector, geometry="spherical", verbose=True)
+    sim = prad.SyntheticProtonRadiograph(grid, E, B, source, detector, geometry="spherical", verbose=True)
 
     sim.run(1e3, max_theta=np.pi / 6 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
@@ -78,7 +78,7 @@ def test_irregular_grid():
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
-    sim = prad.SimPrad(
+    sim = prad.SyntheticProtonRadiograph(
         grid, E, B, source, detector, geometry="spherical", verbose=False
     )
 

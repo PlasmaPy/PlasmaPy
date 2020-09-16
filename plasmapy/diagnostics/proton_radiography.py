@@ -26,8 +26,7 @@ def test_fields(
     num=(100, 100, 100),
     length=1 * u.mm,
     Emax=1e9 * u.V / u.m,
-    Bmax=100 * u.T,
-):
+    Bmax=100 * u.T):
     r"""
     This function generates test fields based on analytical models for
     testing or demonstrating the proton radiography module.
@@ -66,11 +65,13 @@ def test_fields(
     length : `~astropy.units.Quantity`, optional
         The length of each dimension, which can be given in several ways:
             * If a single value is given, then the length of each dimension
-            will be set to (-length, length)
+                will be set to (-length, length)
+
             * If an array of shape (3) is given, each dimension is set to be
-            symmetric using each value, eg. xdim = [-length[0], length[0]]...
+                symmetric using each value, eg. xdim = [-length[0], length[0]]...
+
             * If an array of shape (2,3) is given, then L[:,i] is the min
-            and max of the ith dimension.
+                and max of the ith dimension.
 
     Emax: `~astropy.units.Quantity`, optional
         Scale E-field to this maximum value. Default is 1e9 V/m
@@ -265,7 +266,7 @@ def _nearest_neighbor(array):
     return np.min(dist, axis=3)
 
 
-class SimPrad:
+class SyntheticProtonRadiograph:
     r"""
     Represents a proton radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
