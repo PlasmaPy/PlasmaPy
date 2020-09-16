@@ -1,0 +1,1 @@
+Add dependency `pygments >= 2.4.1`.
