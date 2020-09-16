@@ -26,7 +26,8 @@ def test_fields(
     num=(100, 100, 100),
     length=1 * u.mm,
     Emax=1e9 * u.V / u.m,
-    Bmax=100 * u.T):
+    Bmax=100 * u.T,
+):
     r"""
     This function generates test fields based on analytical models for
     testing or demonstrating the proton radiography module.
