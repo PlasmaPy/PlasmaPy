@@ -733,8 +733,13 @@ class SyntheticProtonRadiograph:
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
-        Bmag = np.linalg.norm(B, axis=1)  # B is [nparticles,3] here
-        gyroperiod = (2 * np.pi * const.m_p.si / (const.e.si * np.max(Bmag))).to(u.s)
+        Bmag = np.max(np.linalg.norm(B, axis=1))  # B is [nparticles,3] here
+        if Bmag == 0:
+            gyroperiod = np.inf * u.s
+        else:
+            gyroperiod = (2 * np.pi * const.m_p.si / (const.e.si * np.max(Bmag))).to(
+                u.s
+            )
 
         # Create an array of all the possible time steps we computed
         candidates = np.array([gyroperiod.value, gridstep.value]) * u.s
