@@ -6,6 +6,10 @@ original fields (under some set of assumptions).
 """
 
 __all__ = [
+    "TestField",
+    "ElectrostaticGaussianSphere",
+    "AxiallyMagnetizedCylinder",
+    "ElectrostaticPlanarShock",
     "test_fields",
     "SyntheticProtonRadiograph",
 ]
@@ -20,14 +24,156 @@ import warnings
 from scipy.special import erf as erf
 
 
+class TestField:
+    """
+    Base class for example fields for testing SyntheticProtonRadiograph
+    functions.
+    """
+
+    def __init__(self, grid, emax=0 * u.V / u.m, bmax=0 * u.T, regular_grid=None):
+        self.grid = grid
+        self.emax = emax
+        self.bmax = bmax
+
+        self.E = np.zeros(self.grid.shape) * u.V / u.m
+        self.B = np.zeros(self.grid.shape) * u.T
+
+        # If the regular grid flag is not set, auto detect whether the grid
+        # is uniform
+        if regular_grid is None:
+            self.regular_grid = _detect_regular_grid(grid)
+        else:
+            self.regular_grid = regular_grid
+
+        self.L = np.abs(np.max(grid) - np.min(grid))
+        self.xarr = grid[..., 0]
+        self.yarr = grid[..., 1]
+        self.zarr = grid[..., 2]
+
+        if self.regular_grid:
+            self.xaxis = self.xarr[:, 0, 0]
+            self.yaxis = self.yarr[0, :, 0]
+            self.zaxis = self.zarr[0, 0, :]
+
+        # Calculate radius arrays in spherical and cylindrical coordinates
+        # for use in generating different field structures
+        self.radius = np.sqrt(self.xarr ** 2 + self.yarr ** 2 + self.zarr ** 2)
+        self.pradius = np.sqrt(self.xarr ** 2 + self.yarr ** 2)
+
+        # Check that the model selected can be used (eg. no gradients on a
+        # non-uniform grid)
+        self.validate()
+
+        # Generate the fields.
+        self.gen_fields()
+
+        # Normalize the fields to the emax and bmax values set
+        self.norm()
+
+    def validate(self):
+        pass
+
+    def gen_fields(self):
+        pass
+
+    def norm(self):
+        max_E = np.max(self.E)
+        max_B = np.max(self.B)
+
+        if max_E != 0:
+            self.E = self.emax * (self.E / max_E).to(u.dimensionless_unscaled)
+
+        if max_B != 0:
+            self.B = self.bmax * (self.B / max_B).to(u.dimensionless_unscaled)
+
+
+class ElectrostaticGaussianSphere(TestField):
+    """
+    A radial, spherically symmetric
+    electric field sphere produced by a sphere of potential with a
+    Gaussian distribution. Since a gradient is used in the calculation,
+    this option is not compatible with a non-uniform grid.
+    """
+
+    def __init__(self, grid, **kwargs):
+        TestField.__init__(self, grid, **kwargs)
+
+    def gen_fields(self):
+        a = self.L / 3
+        potential = np.exp(-(self.radius ** 2) / a ** 2) * u.V
+
+        Ex, Ey, Ez = np.gradient(potential, self.xaxis, self.yaxis, self.zaxis)
+
+        self.E[:, :, :, 0] = -1 * np.where(self.radius < 0.5 * self.L, Ex, 0)
+        self.E[:, :, :, 1] = -1 * np.where(self.radius < 0.5 * self.L, Ey, 0)
+        self.E[:, :, :, 2] = -1 * np.where(self.radius < 0.5 * self.L, Ez, 0)
+
+    def validate(self):
+        if not self.regular_grid:
+            raise ValueError(
+                "ElectrostaticGaussianSphere can only be created "
+                "on a regularly spaced grid."
+            )
+
+
+class AxiallyMagnetizedCylinder(TestField):
+    """
+    A cylinder of magnetic field oriented along
+    the z-axis, with E=0.
+    """
+
+    def __init__(self, grid, **kwargs):
+        TestField.__init__(self, grid, **kwargs)
+        self.gen_fields()
+        self.norm()
+
+    def gen_fields(self):
+        a = self.L / 4
+        self.B[:, :, :, 2] = np.where(self.pradius < a, 400 * u.T, 0 * u.T)
+
+
+class ElectrostaticPlanarShock(TestField):
+    """
+    An electrostatic planar shock
+    """
+
+    def __init__(self, grid, **kwargs):
+        TestField.__init__(self, grid, **kwargs)
+        self.gen_fields()
+        self.norm()
+
+    def gen_fields(self):
+        a = np.max(self.pradius) / 2
+        delta = a / 120
+
+        potential = (
+            (1 - erf(self.zarr / delta))
+            * np.exp(-((self.pradius) ** 2) / a ** 2)
+            * 1e4
+            * u.V
+        )
+
+        Ex, Ey, Ez = np.gradient(potential, self.xaxis, self.yaxis, self.zaxis)
+        self.E[..., 0] = -Ex
+        self.E[..., 1] = -Ey
+        self.E[..., 2] = -Ez
+
+    def validate(self):
+        if not self.regular_grid:
+            raise ValueError(
+                "ElectrostaticPlanarShock can only be created "
+                "on a regularly spaced grid."
+            )
+
+
 def test_fields(
     grid=None,
-    mode="electrostatic gaussian sphere",
+    model="electrostatic gaussian sphere",
     regular_grid=True,
     num=(100, 100, 100),
     length=1 * u.mm,
-    Emax=1e9 * u.V / u.m,
-    Bmax=100 * u.T,
+    emax=1e9 * u.V / u.m,
+    bmax=100 * u.T,
 ):
     r"""
     This function generates test fields based on analytical models for
@@ -39,7 +185,7 @@ def test_fields(
         A grid of positions on which to calculate fields. If no grid is
         specified, one will be created.
 
-    mode : str, optional
+    model : str, optional
         The field model to load. The default represents the electrostatic
         E-field created by a spherical Gaussian potential. The full list of
         options is:
@@ -75,10 +221,10 @@ def test_fields(
             * If an array of shape (2,3) is given, then L[:,i] is the min
                 and max of the ith dimension.
 
-    Emax: `~astropy.units.Quantity`, optional
+    emax: `~astropy.units.Quantity`, optional
         Scale E-field to this maximum value. Default is 1e9 V/m
 
-    Bmax: `~astropy.units.Quantity`, optional
+    bmax: `~astropy.units.Quantity`, optional
         Scale B-field to this maximum value. Default is 100 T
 
     Returns
@@ -94,14 +240,54 @@ def test_fields(
 
     """
 
-    # Catch an error that can occur if a mode requires a gradient but a
-    # non-uniform grid is supplied, since this is not supported currently.
-    uses_grad = ["electrostatic gaussian sphere", "electrostatic spherical shock"]
-    if regular_grid is False and mode in uses_grad:
-        raise ValueError(
-            f"The mode {mode} is not compatible with a ",
-            "non-uniform grid: please chose a different mode.",
-        )
+    # If no grid is specified, create a grid
+    if grid is None:
+        grid = _make_grid(num, length, regular_grid=regular_grid)
+
+    # Load the model class for the test example chosen
+    models = {
+        "no fields": TestField,
+        "electrostatic gaussian sphere": ElectrostaticGaussianSphere,
+        "electrostatic planar shock": ElectrostaticPlanarShock,
+        "axial magnetic field": AxiallyMagnetizedCylinder,
+    }
+
+    # Generate the fields by instantiating the test field object
+    fields = models[model](grid, emax=emax, bmax=bmax, regular_grid=regular_grid)
+
+    return fields.grid, fields.E, fields.B
+
+
+def _make_grid(num, length, regular_grid=True):
+    r"""
+    Creates a grid given a number of options
+
+    Parameters
+    ----------
+
+    num : int or tuple of 3 ints, optional
+        The number of points along each axis
+
+    length : ndarray of quantities
+        The length of each dimension, which can be given in several ways:
+
+            * If a single value is given, then the length of each dimension
+            will be set to (-length, length)
+
+            * If an array of shape (3) is given, each dimension is set to be
+                symmetric using each value, eg. xdim = [-length[0], length[0]]...
+
+            * If an array of shape (2,3) is given, then L[:,i] is the min
+                and max of the ith dimension.
+
+    regular_grid : bool
+        If True, generate a regularly spaced grid. If False, generate a grid
+        with irregular spacing. Default is True.
+
+    Returns
+    -------
+    grid : ndarray (nx,ny,nz,3)
+    """
 
     # Process different options for inputs
     if isinstance(num, int):
@@ -117,101 +303,30 @@ def test_fields(
         L[:, 1] = np.array([-length[1].value, length[1].value]) * length.unit
         L[:, 2] = np.array([-length[2].value, length[2].value]) * length.unit
     else:
-        raise ValueError("Dimensions of length in test_fields are" " not valid.")
+        raise ValueError("Dimensions of length in _create_grid are not valid.")
 
-    # If no grid is specified, create a grid
-    if grid is None:
-        grid = np.zeros([num[0], num[1], num[2], 3]) * u.cm
+    # Create a blank grid
+    grid = np.zeros([num[0], num[1], num[2], 3]) * u.cm
 
-        # If regulr_grid keyword is False, create a non-uniform grid with
-        # random point spacing in all directions
-        if not regular_grid:
-            for d in [0, 1, 2]:
-                ax = np.random.uniform(low=L[0, d].value, high=L[1, d].value, size=num)
-                ax = np.sort(ax, axis=d)
-                grid[..., d] = ax * L.unit
+    # If regulr_grid keyword is False, create a non-uniform grid with
+    # random point spacing in all directions
+    if not regular_grid:
+        for d in [0, 1, 2]:
+            ax = np.random.uniform(low=L[0, d].value, high=L[1, d].value, size=num)
+            ax = np.sort(ax, axis=d)
+            grid[..., d] = ax * L.unit
 
-        # If regular_grid keyword is set, create a uniformly spaced grid
-        else:
-            xaxis = np.linspace(L[0, 0], L[1, 0], num=num[0])
-            yaxis = np.linspace(L[0, 1], L[1, 1], num=num[1])
-            zaxis = np.linspace(L[0, 2], L[1, 2], num=num[2])
-            xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing="ij")
-            grid[..., 0] = xarr
-            grid[..., 1] = yarr
-            grid[..., 2] = zarr
+    # If regular_grid keyword is set, create a uniformly spaced grid
+    else:
+        xaxis = np.linspace(L[0, 0], L[1, 0], num=num[0])
+        yaxis = np.linspace(L[0, 1], L[1, 1], num=num[1])
+        zaxis = np.linspace(L[0, 2], L[1, 2], num=num[2])
+        xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing="ij")
+        grid[..., 0] = xarr
+        grid[..., 1] = yarr
+        grid[..., 2] = zarr
 
-    # Create axes and arrays of each coordinate from the grid
-    xaxis = grid[:, 0, 0, 0]
-    yaxis = grid[0, :, 0, 1]
-    zaxis = grid[0, 0, :, 2]
-    xarr = grid[..., 0]
-    yarr = grid[..., 1]
-    zarr = grid[..., 2]
-
-    # Calculate length of each axis, for use in scaling field features
-    length = np.abs(L[0, :] - L[1, :])
-
-    # Calculate radius arrays in spherical and cylindrical coordinates
-    # for use in generating different field structures
-    radius = np.sqrt(xarr ** 2 + yarr ** 2 + zarr ** 2)
-    pradius = np.sqrt(xarr ** 2 + yarr ** 2)
-
-    # Create blank arrays for fields
-    E = np.zeros(grid.shape) * u.V / u.m
-    B = np.zeros(grid.shape) * u.T
-
-    if mode == "no fields":
-        pass
-
-    elif mode == "electrostatic gaussian sphere":
-        print("Generating Electrostatic Gaussian Sphere")
-
-        a = L[1, 0] / 3
-        potential = np.exp(-(radius ** 2) / a ** 2) * u.V
-
-        Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
-
-        Ex = np.where(radius < 0.5 * length[0], Ex, 0)
-        Ey = np.where(radius < 0.5 * length[0], Ey, 0)
-        Ez = np.where(radius < 0.5 * length[0], Ez, 0)
-
-        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = -Ex, -Ey, -Ez
-
-        # Normalize to a desired maximum field
-        E = (E / np.max(E)).to(u.dimensionless_unscaled)
-        E = E * Emax
-
-    elif mode == "electrostatic planar shock":
-        print("Generating Electrostatic Planar Shock")
-
-        a = np.max(pradius) / 2
-        delta = L[1, 2] / 120
-
-        potential = (
-            (1 - erf(zarr / delta)) * np.exp(-((pradius) ** 2) / a ** 2) * 1e4 * u.V
-        )
-
-        Ex, Ey, Ez = np.gradient(potential, xaxis, yaxis, zaxis)
-
-        E[:, :, :, 0], E[:, :, :, 1], E[:, :, :, 2] = -Ex, -Ey, -Ez
-
-    elif mode == "axial magnetic field":
-        print("Generating Axial Magnetic Field")
-
-        a = length[0] / 4
-        B[:, :, :, 2] = np.where(pradius < a, 400 * u.T, 0 * u.T)
-
-    # Normalize fields to desired values
-    if np.max(E) != 0:
-        E = (E / np.max(E)).to(u.dimensionless_unscaled)
-        E = E * Emax
-
-    if np.max(B) != 0:
-        B = (B / np.max(B)).to(u.dimensionless_unscaled)
-        B = B * Bmax
-
-    return grid, E, B
+    return grid
 
 
 def _rot_a_to_b(a, b):
@@ -296,6 +411,22 @@ def _vector_intersects_grid(p1, p2, grid):
     Tmax = np.min(Tmax)
 
     return Tmin < Tmax
+
+
+def _detect_regular_grid(grid, tol=1e-6):
+    """
+    Determine whether a grid is regular (uniformly spaced) by computing the
+    variance of the grid gradients.
+    """
+    variance = np.zeros([3])
+    dx = np.gradient(grid[..., 0], axis=0)
+    variance[0] = np.std(dx) / np.mean(dx)
+    dy = np.gradient(grid[..., 1], axis=1)
+    variance[1] = np.std(dy) / np.mean(dy)
+    dz = np.gradient(grid[..., 2], axis=2)
+    variance[2] = np.std(dz) / np.mean(dz)
+
+    return np.allclose(variance, 0.0, atol=tol)
 
 
 class SyntheticProtonRadiograph:
@@ -487,21 +618,11 @@ class SyntheticProtonRadiograph:
         indgrid = np.indices([nx, ny, nz])
         indgrid = np.moveaxis(indgrid, 0, -1)
 
-        # Auto-detect grid regularity
-        variance = np.zeros([3])
-        dx = np.gradient(self.grid[..., 0], axis=0)
-        variance[0] = np.std(dx) / np.mean(dx)
-        dy = np.gradient(self.grid[..., 1], axis=1)
-        variance[1] = np.std(dy) / np.mean(dy)
-        dz = np.gradient(self.grid[..., 2], axis=2)
-        variance[2] = np.std(dz) / np.mean(dz)
-
-        if np.allclose(variance, 0.0, atol=1e-6):
+        self.regular_grid = _detect_regular_grid(self.grid)
+        if self.regular_grid:
             self._log("Auto-detected a regularly spaced grid.")
-            self.regular_grid = True
         else:
             self._log("Auto-detected an irregularly spaced grid.")
-            self.regular_grid = False
 
         if self.regular_grid:
             # Create axes under the regular grid assumption

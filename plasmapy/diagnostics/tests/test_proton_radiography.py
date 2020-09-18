@@ -17,7 +17,7 @@ def test_coordinate_systems():
 
     """
 
-    grid, E, B = prad.test_fields(mode="no fields")
+    grid, E, B = prad.test_fields(model="no fields")
 
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
@@ -51,7 +51,7 @@ def test_regular_grid():
     Run a simulation with a regular grid
     """
     grid, E, B = prad.test_fields(
-        mode="electrostatic gaussian sphere",
+        model="electrostatic gaussian sphere",
         regular_grid=True,
         length=np.array([1, 1, 1]) * u.mm,
         num=(100, 100, 100),
@@ -77,7 +77,7 @@ def test_irregular_grid():
     """
     Run a simulation with an irregular grid
     """
-    grid, E, B = prad.test_fields(mode="axial magnetic field", regular_grid=False)
+    grid, E, B = prad.test_fields(model="axial magnetic field", regular_grid=False)
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
@@ -95,7 +95,7 @@ def test_other_test_fields():
     """
 
     grid, E, B = prad.test_fields(
-        mode="electrostatic planar shock", num=(100, 100, 200)
+        model="electrostatic planar shock", num=(100, 100, 200)
     )
 
 
@@ -107,7 +107,7 @@ def test_SyntheticProtonRadiograph_error_handling():
     # INIT ERRORS
 
     grid, E, B = prad.test_fields(
-        mode="electrostatic gaussian sphere", num=(100, 100, 100)
+        model="electrostatic gaussian sphere", num=(100, 100, 100)
     )
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
