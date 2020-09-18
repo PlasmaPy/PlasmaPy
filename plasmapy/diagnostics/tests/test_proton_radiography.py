@@ -5,6 +5,7 @@ Tests for proton radiography functions
 import astropy.units as u
 import numpy as np
 import pytest
+import warnings
 
 from plasmapy.diagnostics import proton_radiography as prad
 
@@ -96,3 +97,58 @@ def test_other_test_fields():
     grid, E, B = prad.test_fields(
         mode="electrostatic planar shock", num=(100, 100, 200)
     )
+
+
+def test_SyntheticProtonRadiograph_error_handling():
+    """
+    Intentionally raise a number of errors.
+    """
+
+    # INIT ERRORS
+
+    grid, E, B = prad.test_fields(
+        mode="electrostatic gaussian sphere", num=(100, 100, 100)
+    )
+    source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
+    detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
+
+    # Check that an error is raised when an input grid has a nan or infty value
+    E[0, 0, 0] = np.nan
+    with pytest.raises(ValueError):
+        sim = prad.SyntheticProtonRadiograph(
+            grid, E, B, source, detector, geometry="spherical", verbose=False
+        )
+    E[0, 0, 0] = np.infty
+    with pytest.raises(ValueError):
+        sim = prad.SyntheticProtonRadiograph(
+            grid, E, B, source, detector, geometry="spherical", verbose=False
+        )
+    E[0, 0, 0] = 0 * u.V / u.m  # Reset element for the rest of the tests
+
+    # Raise error when source-to-detector vector doesn't pass through the
+    # field grid
+    source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError):
+        sim = prad.SyntheticProtonRadiograph(
+            grid, E, B, source_bad, detector_bad, geometry="cartesian", verbose=False
+        )
+
+    # RUNTIME ERRORS
+    sim = prad.SyntheticProtonRadiograph(
+        grid, E, B, source, detector, geometry="spherical", verbose=False
+    )
+
+    # Chose too large of a max_theta so that many particles miss the grid
+    with pytest.warns(RuntimeWarning):
+        sim.run(1e4, max_theta=0.99 * np.pi / 2 * u.rad)
+
+    # SYNTHETIC RADIOGRAPH ERRORS
+    sim.run(1e4, max_theta=np.pi / 10 * u.rad)
+
+    # Choose a very small synthetic radiograph size that misses most of the
+    # particles
+    with pytest.warns(RuntimeWarning):
+        size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
+
+        hax, vax, values = sim.synthetic_radiograph(size=size)

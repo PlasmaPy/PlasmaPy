@@ -15,6 +15,7 @@ import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
 import time
+import warnings
 
 from scipy.special import erf as erf
 
@@ -267,6 +268,36 @@ def _nearest_neighbor(array):
     return np.min(dist, axis=3)
 
 
+def _vector_intersects_grid(p1, p2, grid):
+    r"""
+    Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
+    returns false. Assumes the grid is at least approximately axis-aligned.
+    This is a standard ray-box intersection algorithm.
+    """
+    p1, p2, grid = p1.si.value, p2.si.value, grid.si.value
+    # Caclulate the minimum and maximum of each
+    Ax, Bx = np.min(grid[..., 0]), np.max(grid[..., 0])
+    Ay, By = np.min(grid[..., 1]), np.max(grid[..., 1])
+    Az, Bz = np.min(grid[..., 2]), np.max(grid[..., 2])
+    A = np.array([Ax, Ay, Az])
+    B = np.array([Bx, By, Bz])
+
+    # Calculate the equation of the line from p1 to p2 such that
+    # r = p1 + t*D
+    D = p2 - p1
+
+    # Calculate the intersection points. These operations are just vectorized
+    # for convenience. Ignore div-by-zero: outputting infty's here is fine.
+    with np.errstate(divide="ignore"):
+        Tmin = (A - p1) / D
+        Tmax = (B - p1) / D
+
+    Tmin = np.max(Tmin)
+    Tmax = np.min(Tmax)
+
+    return Tmin < Tmax
+
+
 class SyntheticProtonRadiograph:
     r"""
     Represents a proton radiography experiment with simulated or
@@ -339,6 +370,15 @@ class SyntheticProtonRadiograph:
         and compute several quantities that will be used elsewhere.
         """
 
+        # Validate input arrays
+        arr = {"grid": grid, "E": E, "B": B}
+        for x in arr.keys():
+            if not np.isfinite(arr[x]).all():
+                raise ValueError(
+                    f"Input arrays must be finite: {x} contains "
+                    "either NaN or infinite values."
+                )
+
         self.grid = grid
         self.E = E
         self.B = B
@@ -405,6 +445,15 @@ class SyntheticProtonRadiograph:
         self._log("Source: " + str(self.source.to(u.mm)))
         self._log("Detector: " + str(self.detector.to(u.mm)))
 
+        # Check that source-detector vector actually passes through the grid
+        if not _vector_intersects_grid(self.source, self.detector, self.grid):
+            raise ValueError(
+                "The vector from the source to the detector "
+                "does not pass through the grid! "
+                f"Source: {self.source}, "
+                f"Detector: {self.detector}"
+            )
+
         # Calculate some parameters involving the source and detector locations
         self.det_n = -self.detector.si.value / np.linalg.norm(
             self.detector.si.value
@@ -427,7 +476,7 @@ class SyntheticProtonRadiograph:
         if self.verbose:
             print(msg)
 
-    def _init_particle_sim(self):
+    def _init_interpolator(self):
         r""""
         Auto-detects whether the given grid is uniform or irregular and
         creates an appropriate interpolator. Also calculates the grid
@@ -816,7 +865,7 @@ class SyntheticProtonRadiograph:
         self.dt_range = dt_range
 
         # Initialize the interpolators and grid resolution matrices
-        self._init_particle_sim()
+        self._init_interpolator()
 
         # Initialize variables and create the particle distribution
         self._generate_particles(max_theta=max_theta)
@@ -870,6 +919,17 @@ class SyntheticProtonRadiograph:
                 f"({n_entered})"
                 f", {still_on*100:.0f}% are still on the grid"
             )
+
+            # Warn user if < 10% of the particles ended up on the grid
+            if n_entered < 0.1 * self.nparticles:
+                warnings.warn(
+                    f"Only {100*n_entered/self.nparticles:.2f}% of "
+                    "particles entered the field grid: consider "
+                    "decreasing the max_theta to increase this "
+                    "number.",
+                    RuntimeWarning,
+                )
+
             return True
         else:
             return False
@@ -988,6 +1048,17 @@ class SyntheticProtonRadiograph:
         intensity, h, v = np.histogram2d(
             xloc.si.value, yloc.si.value, range=size.si.value, bins=bins
         )
+
+        # Throw a warning if < 50% of the particles are included on the
+        # histogram
+        percentage = 100 * np.sum(intensity) / self.nparticles
+        if percentage < 50:
+            warnings.warn(
+                f"Only {percentage:.2f}% of the particles are shown "
+                " on this synthetic radiograph. Consider increasing "
+                " the size to include more.",
+                RuntimeWarning,
+            )
 
         if optical_density:
             # Generate the null radiograph
