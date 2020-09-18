@@ -1,8 +1,8 @@
 .. _proton_radiography:
 
-*****************
+***************************
 Proton radiography analysis
-*****************
+***************************
 
 .. currentmodule:: plasmapy.diagnostics.proton_radiography
 
