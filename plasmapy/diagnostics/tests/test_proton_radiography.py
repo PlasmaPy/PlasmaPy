@@ -63,12 +63,16 @@ def test_regular_grid():
         grid, E, B, source, detector, geometry="spherical", verbose=True
     )
 
-    sim.run(1e3, max_theta=np.pi / 12 * u.rad)
+    sim.run(1e4, max_theta=np.pi / 12 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5e-2 * u.m
     bins = [200, 200]
     hax, vax, values = sim.synthetic_radiograph(bins=bins, size=size)
+
+    hax, vax, values = sim.synthetic_radiograph(
+        bins=bins, size=size, optical_density=True
+    )
 
     sim.calc_ke()
 
@@ -152,3 +156,6 @@ def test_SyntheticProtonRadiograph_error_handling():
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
 
         hax, vax, values = sim.synthetic_radiograph(size=size)
+
+
+test_regular_grid()

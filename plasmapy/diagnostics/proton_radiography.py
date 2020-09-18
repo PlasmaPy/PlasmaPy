@@ -1190,8 +1190,12 @@ class SyntheticProtonRadiograph:
             # Generate the null radiograph
             x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, null=True)
 
-            # Set any zeros in I0 to the median value to avoid div by zero
-            I0[I0 == 0] = np.mean(I0)
+            # Calcualte I0 as the mean of the non-zero values in the null
+            # histogram. Zeros are just outside of the illuminate area.
+            I0 = np.mean(I0[I0 != 0])
+
+            # Overwrite any zeros in intensity to avoid log10(0)
+            intensity[intensity == 0] = 1
 
             # Calculate the optical_density
             intensity = -np.log10(intensity / I0)
