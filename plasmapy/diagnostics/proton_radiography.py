@@ -1037,9 +1037,9 @@ class SyntheticProtonRadiograph:
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid[..., 0])),
-                    np.max(np.abs(self.grid[..., 1])),
-                    np.max(np.abs(self.grid[..., 2])),
+                    np.max(np.abs(self.grid[..., 0].value)),
+                    np.max(np.abs(self.grid[..., 1].value)),
+                    np.max(np.abs(self.grid[..., 2].value)),
                 ]
             )
 
