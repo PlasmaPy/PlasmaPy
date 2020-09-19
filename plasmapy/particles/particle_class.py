@@ -169,6 +169,45 @@ class AbstractParticle(ABC):
         """
         raise AtomicError("The truth value of a particle is not defined.")
 
+    def __eq__(self, other) -> bool:
+        """
+        Determine if two objects correspond to the same particle.
+
+        This method will return `True` if ``other`` is an identical
+        `~plasmapy.particles.Particle`, `~plasmapy.particles.CustomParticle`
+        , `~plasmapy.particles.DimensionlessParticle` instance, and return
+        `False` if ``other`` is a different particle.
+
+        If ``other`` is not an instance amongst `~plasmapy.particles.Particle`,
+        `~plasmapy.particles.CustomParticle`, or
+        `~plasmapy.particles.DimensionlessParticle`,
+        then this method will raise a `TypeError`.
+
+        """
+        # other_particle = None
+        # if isinstance(other, str):
+        #     try:
+        #         other_particle = serialization.json_loads_particle(other)
+        #     except InvalidElementError as exc:
+        #         raise InvalidParticleError(
+        #             f"{other} is not a particle and cannot be compared to {self}."
+        #         )
+        # else:
+        #     other_particle = other
+
+        if not isinstance(other, self.__class__):
+            raise TypeError(
+                f"The equality of a {type(self)} object with a {type(other)} is undefined."
+            )
+
+        # Check properties mass and charge for equivalence
+        if u.isclose(self.mass, other.mass, equal_nan=True, rtol=1e-14) and u.isclose(
+            self.charge, other.charge, equal_nan=True, rtol=1e-14
+        ):
+            return True
+        else:
+            return False
+
     def json_dump(self, fp, **kwargs):
         """
         Writes the particle's `json_dict` to the `fp` file object using `json.dump`.
