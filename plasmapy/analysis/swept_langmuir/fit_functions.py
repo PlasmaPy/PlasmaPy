@@ -76,6 +76,24 @@ class AbstractFitFunction(ABC):
         """
         raise NotImplementedError
 
+    def _func_err(self, x):
+        """
+        Calculate dependent variable errors :math:`\\delta y` for dependent
+        variables :math:`y=f(x)`.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        Returns
+        -------
+        `numpy.ndarray`:
+            The calculated errors of the dependent variables of the independent
+            variables `x`.
+        """
+        raise NotImplementedError
+
     @property
     def curve_fit_results(self):
         """
@@ -271,6 +289,35 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
         """
         return a * np.exp(b * x) + c
 
+    def _func_err(self, x):
+        """
+        Calculate dependent variable errors :math:`\\delta y` for dependent
+        variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 = (e^{B \\,x} \\delta A)^2
+                             + (A \\, B \\, e^{B \\, x} \\delta B)^2
+                             + (\\delta C)^2
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        Returns
+        -------
+        `numpy.ndarray`:
+            The calculated errors of the dependent variables of the independent
+            variables `x`.
+        """
+        a, b, c = self.parameters
+        a_err, b_err, c_err = self.parameters_err
+        a_term = (np.exp(b * x) * a_err) ** 2
+        b_term = (a * b * np.exp(b * x) * b_err) ** 2
+        c_term = c_err ** 2
+        return np.sqrt(a_term + b_term + c_term)
+
     @property
     def latex_str(self) -> str:
         return fr"A \, \exp(B \, x) + C"
@@ -368,6 +415,30 @@ class LinearFitFunction(AbstractFitFunction):
 
         """
         return m * x + b
+
+    def _func_err(self, x):
+        """
+        Calculate dependent variable errors :math:`\\delta y` for dependent
+        variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 &= (x \\, \\delta m)^2 + (\\delta b)^2
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        Returns
+        -------
+        `numpy.ndarray`:
+            The calculated errors of the dependent variables of the independent
+            variables `x`.
+        """
+        m_term = (self.parameters_err[0] * x) ** 2
+        b_term = self.parameters_err[1] ** 2
+        return np.sqrt(m_term + b_term)
 
     @property
     def latex_str(self) -> str:
