@@ -34,7 +34,7 @@ class AbstractFitFunction(ABC):
     def __init__(self):
         self._ParamTuple = namedtuple("_ParamTuple", self._parameter_names)
 
-    def __call__(self, x):
+    def __call__(self, x, reterr=False):
         """
         Direct call of the fit function :math:`f(x)``.
 
@@ -43,13 +43,32 @@ class AbstractFitFunction(ABC):
         x: array_like
             Dependent variables.
 
+        reterr: bool
+            (Default: `False`) If `True`, return an array of errors associated
+            with the calculated independent variables
+
         Returns
         -------
-        array_like
-            Corresponding independent variables of dependent variables
-            :math:`x`.
+        y: `numpy.ndarray`
+            Corresponding dependent variables :math:`y=f(x)` of the independent
+            variables :math:`x`.
+
+        y_err: `numpy.ndarray`
+            Errors associated with the calculated dependent variables
+            :math:`\\delta y`
         """
-        return self._func(x, *self.parameters)
+        if not isinstance(x, np.ndarray):
+            x = np.array(x)
+        y = self._func(x, *self.parameters)
+        if reterr:
+            try:
+                y_err = self._func_err(x)
+            except NotImplementedError:
+                y_err = np.tile(np.nan, x.shape)
+
+            return y, y_err
+
+        return y
 
     def __repr__(self):
         return f"{self.__str__()} {self.__class__}"
