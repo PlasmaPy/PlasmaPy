@@ -245,7 +245,12 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
 
     .. math::
 
-        f(x) = A \\, \\exp(B \\, x) + C
+        y &= f(x) = A \\, \\exp(B \\, x) + C
+
+        (\\delta y)^2 &= (e^{B \\,x} \\delta A)^2
+                         + (A \\, B \\, e^{B \\, x} \\delta B)^2
+                         + (\\delta C)^2
+
 
     where :math:`A`, :math:`B`, and :math:`C` are positive real constants
     and :math:`x` is the independent variable.
@@ -373,7 +378,9 @@ class LinearFitFunction(AbstractFitFunction):
 
     .. math::
 
-        f(x) = m \\, x + b
+        y &= f(x) = m \\, x + b
+
+        (\\delta y)^2 &= (x \\, \\delta m)^2 + (\\delta b)^2
 
     where :math:`m` and :math:`b` are positive real constants representing the
     slope and intercept, respectively, and :math:`x` is the independent
