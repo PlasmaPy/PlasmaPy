@@ -90,7 +90,7 @@ class AbstractFitFunction(ABC):
 
         Returns
         -------
-        array:
+        `numpy.ndarray`:
             The calculated dependent variables of the independent variables `x`.
         """
         raise NotImplementedError
