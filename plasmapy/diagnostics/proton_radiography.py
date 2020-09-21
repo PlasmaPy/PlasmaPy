@@ -58,8 +58,8 @@ class AbstractField(ABC):
 
         """
         self.grid = grid
-        self.emax = emax
-        self.bmax = bmax
+        self._emax = emax
+        self._bmax = bmax
 
         self.E = np.zeros(self.grid.shape) * u.V / u.m
         self.B = np.zeros(self.grid.shape) * u.T
@@ -119,10 +119,30 @@ class AbstractField(ABC):
         max_B = np.max(self.B)
 
         if max_E != 0:
-            self.E = self.emax * (self.E / max_E).to(u.dimensionless_unscaled)
+            self.E = self._emax * (self.E / max_E).to(u.dimensionless_unscaled)
 
         if max_B != 0:
-            self.B = self.bmax * (self.B / max_B).to(u.dimensionless_unscaled)
+            self.B = self._bmax * (self.B / max_B).to(u.dimensionless_unscaled)
+
+    @property
+    def bmax(self):
+        return self._bmax
+
+    @bmax.setter
+    def bmax(self, val):
+        self._bmax = val
+        # Normalize the fields to the new value
+        self.norm()
+
+    @property
+    def emax(self):
+        return self._emax
+
+    @emax.setter
+    def emax(self, val):
+        self._emax = val
+        # Normalize the fields to the new values
+        self.norm()
 
 
 class ElectrostaticGaussianSphere(AbstractField):
