@@ -18,7 +18,6 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
-import time
 import warnings
 
 from abc import ABC, abstractmethod
