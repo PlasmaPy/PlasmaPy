@@ -97,8 +97,6 @@ class ElectrostaticGaussianSphere(AbstractField):
     this option is not compatible with a non-uniform grid.
     """
 
-    def __init__(self, grid, **kwargs):
-        TestField.__init__(self, grid, **kwargs)
 
     def gen_fields(self):
         a = self.L / 3
