@@ -63,13 +63,15 @@ def test_regular_grid():
         grid, E, B, source, detector, geometry="spherical", verbose=True
     )
 
-    sim.run(1e3, max_theta=np.pi / 12 * u.rad)
+    sim.run(1e3, max_theta=np.pi / 12 * u.rad, field_weighting="volume averaged")
     hax, vax, values = sim.synthetic_radiograph()
 
+    # Make a radiograph
     size = np.array([[-1, 1], [-1, 1]]) * 5e-2 * u.m
     bins = [200, 200]
     hax, vax, values = sim.synthetic_radiograph(bins=bins, size=size)
 
+    # Make an OD radiograph
     hax, vax, values = sim.synthetic_radiograph(
         bins=bins, size=size, optical_density=True
     )
@@ -91,6 +93,11 @@ def test_irregular_grid():
 
     sim.run(1e3, max_theta=np.pi / 12 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
+
+    # Check that trying to run this simulation with volume-averaged fields
+    # raises an exception
+    with pytest.raises(ValueError):
+        sim.run(1e3, max_theta=np.pi / 12 * u.rad, field_weighting="volume averaged")
 
 
 def test_other_example_fields():

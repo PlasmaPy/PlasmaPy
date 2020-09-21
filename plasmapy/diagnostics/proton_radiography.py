@@ -178,9 +178,9 @@ class ElectrostaticGaussianSphere(AbstractField):
     .. math::
         \phi = e^{-(r/a)^2}
     .. math::
-        E = -\nabla \phi  (r < L/2)
+        E = -\nabla \phi \text{, for }  (r < L/2)
     .. math::
-        E = 0 (r < L/2)
+        E = 0 \text{, for } (r < L/2)
     .. math::
         B = 0
 
@@ -216,9 +216,9 @@ class AxiallyMagnetizedCylinder(AbstractField):
     .. math::
         E = 0
     .. math::
-        B = 1 (\rho < a)
+        B = 1  \text{, for } (\rho < a)
     .. math::
-        B = 0 (\rho > a)
+        B = 0 \text{, for } (\rho > a)
 
     Where :math:`\rho` is the cylinder radius, :math:`L` is the field grid
     length scale, and :math:`a=L/4`.
@@ -952,40 +952,57 @@ class SyntheticProtonRadiograph:
         """
         Return the field experienced by each particle.
 
-        If the vol_weighted_fields flag is set, the fields returned are an
-        average of the fields at the gridpoints surrounding the
-        interpolated particle grid point, weighted by the distance of each grid
-        point from the particle position.
-
-        If no flags are set, the E and B fields are returned at the
-        interpolated grid point.
-
-        At the end, particles that are off the grid (as determined by the
-        on_grid array) have their fields set to zero.
+        If field_weighting = 'volume averaged', use a volume-averaged field
+        weighting scheme. If not, use a neareset-neighbor scheme.
         """
 
-        if self.vol_weighted_fields:
-            # Initialize arrays
-            l = len(self.xi)
-            dist = np.zeros([27, l])
-            E_est = np.zeros([27, l, 3]) * self.E.unit
-            B_est = np.zeros([27, l, 3]) * self.B.unit
-            E = np.zeros([l, 3]) * self.E.unit
-            B = np.zeros([l, 3]) * self.B.unit
+        if self.field_weighting == "nearest neighbor":
+            E = self.E[self.xi, self.yi, self.zi, :]
+            B = self.B[self.xi, self.yi, self.zi, :]
+
+            # Set fields for off-grid particles
+            E = E * np.outer(self.on_grid, np.ones(3))
+            B = B * np.outer(self.on_grid, np.ones(3))
+
+        elif self.field_weighting == "volume averaged":
+            if not self.regular_grid:
+                raise ValueError(
+                    "Volume weighting fields is currently "
+                    " only supported on regular grids."
+                )
+
+            # Load the positions of each particle, and of the grid point
+            # interpolated for it
+            rpos = self.r[self.gi, :]
+            gpos = self.grid[self.xi, self.yi, self.zi, :]
+
             nx, ny, nz, nax = self.grid.shape
 
-            # Loop through all of the points surrounding (and including) the
-            # interpolated gridpoint
-            ind = 0
-            for dx in np.array([-1, 0, 1]).astype(np.int32):
-                for dy in np.array([-1, 0, 1]).astype(np.int32):
-                    for dz in np.array([-1, 0, 1]).astype(np.int32):
+            # Determine the points bounding the grid cell containing the
+            # particle
+            x0 = np.where(rpos[:, 0] > gpos[:, 0], self.xi, self.xi - 1)
+            x1 = x0 + 1
+            y0 = np.where(rpos[:, 1] > gpos[:, 1], self.yi, self.yi - 1)
+            y1 = y0 + 1
+            z0 = np.where(rpos[:, 2] > gpos[:, 2], self.zi, self.zi - 1)
+            z1 = z0 + 1
 
-                        x = self.xi + dx
-                        y = self.yi + dy
-                        z = self.zi + dz
+            # Calculate the cell volume
+            # TODO: if this could be done for an arbitrary mesh of 8 points,
+            # this algorithm could be used on irregualr grids. Make it so?
+            dx = np.mean(np.gradient(self.grid[:, 0, 0, 0]))
+            dy = np.mean(np.gradient(self.grid[0, :, 0, 1]))
+            dz = np.mean(np.gradient(self.grid[0, 0, :, 2]))
+            cell_vol = dx * dy * dz
 
-                        # Figure out if any indices are out-of-bounds
+            E = np.zeros([len(self.xi), 3]) * self.E.unit
+            B = np.zeros([len(self.xi), 3]) * self.B.unit
+
+            for x in [x0, x1]:
+                for y in [y0, y1]:
+                    for z in [z0, z1]:
+
+                        # Determine if gridpoint is within bounds
                         valid = (
                             (x >= 0)
                             & (x < nx)
@@ -996,46 +1013,17 @@ class SyntheticProtonRadiograph:
                         )
                         out = np.where(valid == False)
 
-                        # Set out-of-bound indices to something inbounds to
-                        # prevent errors.
-                        x[out], y[out], z[out] = 0, 0, 0
+                        # Distance from grid vertex to particle position
+                        d = np.abs(self.grid[x, y, z, :] - rpos)
 
-                        dist[ind, :] = np.linalg.norm(
-                            self.grid[x, y, z, :] - self.r[self.gi, :], axis=1
-                        )
+                        # Fraction of cell volume that is closest to the
+                        # current point
+                        weight = d[:, 0] * d[:, 1] * d[:, 2] / cell_vol
+                        weight[out] = 0
+                        weight = np.outer(weight, np.ones(3))
 
-                        # Set out-of-bound distances to infinity, since
-                        # no fields are to be found there.
-                        dist[ind, out] = np.infty
-
-                        # Record the field at each point
-                        E_est[ind, :, :] = self.E[x, y, z, :]
-                        B_est[ind, :, :] = self.B[x, y, z, :]
-
-                        # Increment the index counter
-                        ind += 1
-
-            # Weight by distance
-            weights = 1 / dist
-
-            # Average the fields according to the weights.
-            # TODO: Find a more elegant way to write this? Problem is that
-            # dimensions of weights is not the same as E,B
-            E[:, 0] = np.average(E_est[:, :, 0], weights=weights, axis=0)
-            E[:, 1] = np.average(E_est[:, :, 1], weights=weights, axis=0)
-            E[:, 2] = np.average(E_est[:, :, 2], weights=weights, axis=0)
-
-            B[:, 0] = np.average(B_est[:, :, 0], weights=weights, axis=0)
-            B[:, 1] = np.average(B_est[:, :, 1], weights=weights, axis=0)
-            B[:, 2] = np.average(B_est[:, :, 2], weights=weights, axis=0)
-
-        else:
-            E = self.E[self.xi, self.yi, self.zi, :]
-            B = self.B[self.xi, self.yi, self.zi, :]
-
-        # Set fields for off-grid particles
-        E = E * np.outer(self.on_grid, np.ones(3))
-        B = B * np.outer(self.on_grid, np.ones(3))
+                        E += weight * self.E[x, y, z, :]
+                        B += weight * self.B[x, y, z, :]
 
         return E, B
 
@@ -1148,7 +1136,7 @@ class SyntheticProtonRadiograph:
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         dt_range=np.array([0, np.infty]) * u.s,
-        vol_weighted_fields=False,
+        field_weighting="nearest neighbor",
     ):
         r"""
         Runs a particle-tracing simulation using the geometry defined in the
@@ -1182,6 +1170,15 @@ class SyntheticProtonRadiograph:
             A range into which the adaptive dt will be coerced.
             The default is np.array([0, np.infty])*u.s.
 
+        field_weighting: str
+            String that selects the field weighting algorithm used to determine
+            what fields are felt by the particles. Options are:
+                * 'nearest neighbor': Particles are assigned the fields on
+                    the grid vertex closest to them.
+
+                * 'volume averaged' : The fields experienced by a field are a
+                    volume-average of the eight grid points surrounding them.
+
         Returns
         -------
         None.
@@ -1191,7 +1188,7 @@ class SyntheticProtonRadiograph:
         self.nparticles = int(nparticles)
         self.dt = dt
         self.dt_range = dt_range
-        self.vol_weighted_fields = vol_weighted_fields
+        self.field_weighting = field_weighting
 
         # Initialize the interpolators and grid resolution matrices
         self._init_interpolator()
