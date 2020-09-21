@@ -63,7 +63,7 @@ def test_regular_grid():
         grid, E, B, source, detector, geometry="spherical", verbose=True
     )
 
-    sim.run(1e4, max_theta=np.pi / 12 * u.rad)
+    sim.run(1e3, max_theta=np.pi / 12 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5e-2 * u.m

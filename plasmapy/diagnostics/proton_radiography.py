@@ -7,6 +7,7 @@ original fields (under some set of assumptions).
 
 __all__ = [
     "AbstractField",
+    "NoFields",
     "ElectrostaticGaussianSphere",
     "AxiallyMagnetizedCylinder",
     "ElectrostaticPlanarShock",
@@ -155,6 +156,19 @@ class AbstractField(ABC):
         self._emax = val
         # Normalize the fields to the new values
         self.norm()
+
+
+class NoFields(AbstractField):
+    r"""
+    Empty E and B arrays.
+    """
+
+    def _gen_fields(self):
+        pass
+
+    def _validate(self):
+        pass
+
 
 
 class ElectrostaticGaussianSphere(AbstractField):
@@ -344,7 +358,7 @@ def example_fields(
 
     # Load the model class for the test example chosen
     models = {
-        "no fields": AbstractField,
+        "no fields": NoFields,
         "electrostatic gaussian sphere": ElectrostaticGaussianSphere,
         "electrostatic planar shock": ElectrostaticPlanarShock,
         "axial magnetic field": AxiallyMagnetizedCylinder,
