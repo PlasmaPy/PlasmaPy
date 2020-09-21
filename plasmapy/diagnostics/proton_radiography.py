@@ -139,7 +139,7 @@ class AbstractField(ABC):
         """
         self._bmax = val
         # Normalize the fields to the new value
-        self.norm()
+        self._norm()
 
     @property
     def emax(self):
@@ -155,7 +155,7 @@ class AbstractField(ABC):
         """
         self._emax = val
         # Normalize the fields to the new values
-        self.norm()
+        self._norm()
 
 
 class NoFields(AbstractField):
@@ -382,14 +382,14 @@ def _make_grid(num, length, regular_grid=True):
     length : ndarray of quantities
         The length of each dimension, which can be given in several ways:
 
-            * If a single value is given, then the length of each dimension
+        * If a single value is given, then the length of each dimension
             will be set to (-length, length)
 
-            * If an array of shape (3) is given, each dimension is set to be
-                symmetric using each value, eg. xdim = [-length[0], length[0]]...
+        * If an array of shape (3) is given, each dimension is set to be
+            symmetric using each value, eg. xdim = [-length[0], length[0]]...
 
-            * If an array of shape (2,3) is given, then L[:,i] is the min
-                and max of the ith dimension.
+        * If an array of shape (2,3) is given, then L[:,i] is the min
+            and max of the ith dimension.
 
     regular_grid : bool
         If True, generate a regularly spaced grid. If False, generate a grid
@@ -1170,14 +1170,15 @@ class SyntheticProtonRadiograph:
             A range into which the adaptive dt will be coerced.
             The default is np.array([0, np.infty])*u.s.
 
-        field_weighting: str
+        field_weighting : str
             String that selects the field weighting algorithm used to determine
             what fields are felt by the particles. Options are:
-                * 'nearest neighbor': Particles are assigned the fields on
-                    the grid vertex closest to them.
 
-                * 'volume averaged' : The fields experienced by a field are a
-                    volume-average of the eight grid points surrounding them.
+            * 'nearest neighbor': Particles are assigned the fields on
+                the grid vertex closest to them.
+
+            * 'volume averaged' : The fields experienced by a field are a
+                volume-average of the eight grid points surrounding them.
 
         Returns
         -------

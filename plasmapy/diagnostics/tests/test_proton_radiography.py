@@ -10,6 +10,20 @@ import warnings
 from plasmapy.diagnostics import proton_radiography as prad
 
 
+def test_example_fields():
+    grid, E, B = prad.example_fields(model="no fields")
+
+    model = prad.ElectrostaticGaussianSphere(
+        grid, emax=1e9 * u.V / u.m, regular_grid=True
+    )
+
+    # Test setting and getting emax and bmax
+    model.emax = 2e9 * u.V / u.m
+    model.bmax = 1 * u.T
+    a = model.emax
+    a = model.bmax
+
+
 def test_coordinate_systems():
     """
     Check that specifying the same point in different coordinate systems
@@ -163,3 +177,6 @@ def test_SyntheticProtonRadiograph_error_handling():
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
 
         hax, vax, values = sim.synthetic_radiograph(size=size)
+
+
+test_example_fields()
