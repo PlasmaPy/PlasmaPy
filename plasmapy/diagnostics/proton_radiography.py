@@ -6,11 +6,11 @@ original fields (under some set of assumptions).
 """
 
 __all__ = [
-    "TestField",
+    "AbstractField",
     "ElectrostaticGaussianSphere",
     "AxiallyMagnetizedCylinder",
     "ElectrostaticPlanarShock",
-    "test_fields",
+    "example_fields",
     "SyntheticProtonRadiograph",
 ]
 
@@ -31,6 +31,32 @@ class AbstractField(ABC):
     """
 
     def __init__(self, grid, emax=0 * u.V / u.m, bmax=0 * u.T, regular_grid=None):
+        """
+        Initialize a field object
+
+        Parameters
+        ----------
+        grid : `~astropy.units.Quantity` ndarray, (nx,ny,nz,3)
+            Positions of grid points in space
+
+        emax : `~astropy.units.Quantity`
+            Maximum electric field to normalize example field to. The default
+            is 0 * u.V / u.m.
+
+        bmax : `~astropy.units.Quantity`
+            Maximum magnetic field to normalize the example field to. The
+            default is 0 * u.T.
+
+        regular_grid : bool
+            If None, the grid will be tested to determine whether or not it
+            is regularly spaced. If True or False, the grid will be assumed
+            to be regularly or irregularly spaced respectively without testing.
+
+        Returns
+        -------
+        None.
+
+        """
         self.grid = grid
         self.emax = emax
         self.bmax = bmax
@@ -62,23 +88,33 @@ class AbstractField(ABC):
 
         # Check that the model selected can be used (eg. no gradients on a
         # non-uniform grid)
-        self.validate()
+        self._validate()
 
         # Generate the fields.
-        self.gen_fields()
+        self._gen_fields()
 
         # Normalize the fields to the emax and bmax values set
-        self.norm()
+        self._norm()
 
     @abstractmethod
-    def validate(self):
+    def _validate(self):
+        """
+        Raise errors when the specified parameteters are not compatible with
+        the field subclass that is being instantiated.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def gen_fields(self):
+    def _gen_fields(self):
+        """
+        Fill the empty E and B arrays with the example fields.
+        """
         raise NotImplementedError
 
-    def norm(self):
+    def _norm(self):
+        """
+        Normalize the fields to the emax and bmax values provided.
+        """
         max_E = np.max(self.E)
         max_B = np.max(self.B)
 
@@ -91,14 +127,23 @@ class AbstractField(ABC):
 
 class ElectrostaticGaussianSphere(AbstractField):
     """
-    A radial, spherically symmetric
-    electric field sphere produced by a sphere of potential with a
-    Gaussian distribution. Since a gradient is used in the calculation,
+    A radial, spherically symmetric electric field produced by a spherical
+    blob of potential with a Gaussian radial distribution:
+
+    .. math::
+        \phi = e^{-(r/a)^2}
+        E = - \nabla \phi  (r < L/2)
+        E = 0 (r < L/2)
+        B = 0
+
+    Where :math:`r` is the radius, :math:`L` is the field grid length scale,
+    and :math:`a=L/3`.
+
+    Since a gradient is used in the calculation,
     this option is not compatible with a non-uniform grid.
     """
 
-
-    def gen_fields(self):
+    def _gen_fields(self):
         a = self.L / 3
         potential = np.exp(-(self.radius ** 2) / a ** 2) * u.V
 
@@ -108,7 +153,7 @@ class ElectrostaticGaussianSphere(AbstractField):
         self.E[:, :, :, 1] = -1 * np.where(self.radius < 0.5 * self.L, Ey, 0)
         self.E[:, :, :, 2] = -1 * np.where(self.radius < 0.5 * self.L, Ez, 0)
 
-    def validate(self):
+    def _validate(self):
         if not self.regular_grid:
             raise ValueError(
                 "ElectrostaticGaussianSphere can only be created "
@@ -118,34 +163,49 @@ class ElectrostaticGaussianSphere(AbstractField):
 
 class AxiallyMagnetizedCylinder(AbstractField):
     """
-    A cylinder of magnetic field oriented along
-    the z-axis, with E=0.
+    A cylinder of constant magnetic field aligned with the z-axis:
+
+    .. math::
+        E = 0
+        B = 1 (\rho < a)
+        B = 0 (\rho > a)
+
+    Where :math:`\rho` is the cylinder radius, :math:`L` is the field grid
+    length scale, and :math:`a=L/4`.
     """
 
-
-    def gen_fields(self):
+    def _gen_fields(self):
         a = self.L / 4
         self.B[:, :, :, 2] = np.where(self.pradius < a, 400 * u.T, 0 * u.T)
-        
-    def validate(self):
+
+    def _validate(self):
         pass
 
 
 class ElectrostaticPlanarShock(AbstractField):
     """
-    An electrostatic planar shock
+    A model of an electrostatic planar shock. The discontinuity is located
+    at z=0 and has a Gaussian distribution in the xy plane:
+
+    .. math::
+        \phi = (1 - \Gamma(z/\delta))e^(-(\rho/a)^2)
+        E = - \nabla \phi
+        B = 0
+
+    Where :math:`\rho` is the cylindrical radius, :math:`a=Max(\rho)`,
+    :math:`\delta=a/120 is the shock width`,
+    and :math:`\Gamma()` is the Gauss error function.
+
+    Since a gradient is used in the calculation,
+    this option is not compatible with a non-uniform grid.
     """
 
-
-    def gen_fields(self):
+    def _gen_fields(self):
         a = np.max(self.pradius) / 2
         delta = a / 120
 
         potential = (
-            (1 - erf(self.zarr / delta))
-            * np.exp(-(self.pradius / a) ** 2)
-            * 1e4
-            * u.V
+            (1 - erf(self.zarr / delta)) * np.exp(-((self.pradius / a) ** 2)) * u.V
         )
 
         Ex, Ey, Ez = np.gradient(potential, self.xaxis, self.yaxis, self.zaxis)
@@ -153,7 +213,7 @@ class ElectrostaticPlanarShock(AbstractField):
         self.E[..., 1] = -Ey
         self.E[..., 2] = -Ez
 
-    def validate(self):
+    def _validate(self):
         if not self.regular_grid:
             raise ValueError(
                 "ElectrostaticPlanarShock can only be created "
@@ -161,7 +221,7 @@ class ElectrostaticPlanarShock(AbstractField):
             )
 
 
-def test_fields(
+def example_fields(
     grid=None,
     model="electrostatic gaussian sphere",
     regular_grid=True,
@@ -171,7 +231,7 @@ def test_fields(
     bmax=100 * u.T,
 ):
     r"""
-    This function generates test fields based on analytical models for
+    This function generates example fields based on analytical models for
     testing or demonstrating the proton radiography module.
 
     Parameters
