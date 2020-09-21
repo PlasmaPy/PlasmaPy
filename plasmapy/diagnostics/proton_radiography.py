@@ -244,7 +244,7 @@ def test_fields(
 
     # Load the model class for the test example chosen
     models = {
-        "no fields": TestField,
+        "no fields": AbstractField,
         "electrostatic gaussian sphere": ElectrostaticGaussianSphere,
         "electrostatic planar shock": ElectrostaticPlanarShock,
         "axial magnetic field": AxiallyMagnetizedCylinder,
