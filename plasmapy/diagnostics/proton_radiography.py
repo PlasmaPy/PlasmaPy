@@ -89,7 +89,7 @@ class AbstractField(ABC):
             self.B = self.bmax * (self.B / max_B).to(u.dimensionless_unscaled)
 
 
-class ElectrostaticGaussianSphere(TestField):
+class ElectrostaticGaussianSphere(AbstractField):
     """
     A radial, spherically symmetric
     electric field sphere produced by a sphere of potential with a
