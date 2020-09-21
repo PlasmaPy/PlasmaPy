@@ -935,6 +935,94 @@ class SyntheticProtonRadiograph:
         self.yi = i[:, 1].astype(np.int32)
         self.zi = i[:, 2].astype(np.int32)
 
+    def _estimate_fields(self):
+        """
+        Return the field experienced by each particle.
+
+        If the vol_weighted_fields flag is set, the fields returned are an
+        average of the fields at the gridpoints surrounding the
+        interpolated particle grid point, weighted by the distance of each grid
+        point from the particle position.
+
+        If no flags are set, the E and B fields are returned at the
+        interpolated grid point.
+
+        At the end, particles that are off the grid (as determined by the
+        on_grid array) have their fields set to zero.
+        """
+
+        if self.vol_weighted_fields:
+            # Initialize arrays
+            l = len(self.xi)
+            dist = np.zeros([27,l])
+            E_est = np.zeros([27, l,3])*self.E.unit
+            B_est = np.zeros([27, l,3])*self.B.unit
+            E = np.zeros([l,3])*self.E.unit
+            B = np.zeros([l,3])*self.B.unit
+            nx,ny,nz,nax = self.grid.shape
+
+            # Loop through all of the points surrounding (and including) the
+            # interpolated gridpoint
+            ind = 0
+            for dx in np.array([-1, 0, 1]).astype(np.int32):
+                for dy in np.array([-1, 0, 1]).astype(np.int32):
+                    for dz in np.array([-1, 0, 1]).astype(np.int32):
+
+                        x = self.xi + dx
+                        y = self.yi + dy
+                        z = self.zi + dz
+
+                        # Figure out if any indices are out-of-bounds
+                        valid = ((x>=0) & (x<nx)
+                                 & (y>=0) & (y<ny)
+                                 & (z>=0) & (z<nz))
+                        out = np.where(valid == False)
+
+                        # Set out-of-bound indices to something inbounds to
+                        # prevent errors.
+                        x[out], y[out], z[out] = 0,0,0
+
+                        dist [ind,:] = np.linalg.norm(self.grid[x,y,z,:] -
+                                                      self.r[self.gi, :],
+                                                      axis=1)
+
+                        # Set out-of-bound distances to infinity, since
+                        # no fields are to be found there.
+                        dist[ind, out] = np.infty
+
+                        # Record the field at each point
+                        E_est[ind,:,:] = self.E[x, y, z, :]
+                        B_est[ind,:,:] = self.B[x, y, z, :]
+
+                        # Increment the index counter
+                        ind += 1
+
+            # Weight by distance
+            weights = 1/dist
+
+            # Average the fields according to the weights.
+            # TODO: Find a more elegant way to write this? Problem is that
+            # dimensions of weights is not the same as E,B
+            E[:,0] = np.average(E_est[:,:,0], weights=weights, axis=0)
+            E[:,1] = np.average(E_est[:,:,1], weights=weights, axis=0)
+            E[:,2] = np.average(E_est[:,:,2], weights=weights, axis=0)
+
+            B[:,0] = np.average(B_est[:,:,0], weights=weights, axis=0)
+            B[:,1] = np.average(B_est[:,:,1], weights=weights, axis=0)
+            B[:,2] = np.average(B_est[:,:,2], weights=weights, axis=0)
+
+        else:
+            E = self.E[self.xi, self.yi, self.zi, :]
+            B = self.B[self.xi, self.yi, self.zi, :]
+
+
+        # Set fields for off-grid particles
+        E = E * np.outer(self.on_grid, np.ones(3))
+        B = B * np.outer(self.on_grid, np.ones(3))
+
+        return E, B
+
+
     def _adaptive_dt(self, B):
         r"""
         Calculate the appropraite dt based on a number of considerations
@@ -1014,9 +1102,8 @@ class SyntheticProtonRadiograph:
         self.on_grid = np.where(dist < self.ds, 1, 0)
         self.entered_grid += self.on_grid
 
-        # Retreive the fields
-        E = self.E[self.xi, self.yi, self.zi, :] * np.outer(self.on_grid, np.ones(3))
-        B = self.B[self.xi, self.yi, self.zi, :] * np.outer(self.on_grid, np.ones(3))
+        # Estimate the E and B fields for each particle
+        E, B = self._estimate_fields()
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
@@ -1045,6 +1132,7 @@ class SyntheticProtonRadiograph:
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         dt_range=np.array([0, np.infty]) * u.s,
+        vol_weighted_fields = False,
     ):
         r"""
         Runs a particle-tracing simulation using the geometry defined in the
@@ -1087,6 +1175,7 @@ class SyntheticProtonRadiograph:
         self.nparticles = int(nparticles)
         self.dt = dt
         self.dt_range = dt_range
+        self.vol_weighted_fields = vol_weighted_fields
 
         # Initialize the interpolators and grid resolution matrices
         self._init_interpolator()
