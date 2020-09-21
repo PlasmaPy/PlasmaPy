@@ -74,8 +74,9 @@ class AbstractField(ABC):
     def validate(self):
         raise NotImplementedError
 
+    @abstractmethod
     def gen_fields(self):
-        pass
+        raise NotImplementedError
 
     def norm(self):
         max_E = np.max(self.E)
