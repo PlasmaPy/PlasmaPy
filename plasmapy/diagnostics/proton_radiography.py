@@ -146,7 +146,7 @@ class ElectrostaticPlanarShock(TestField):
 
         potential = (
             (1 - erf(self.zarr / delta))
-            * np.exp(-((self.pradius) ** 2) / a ** 2)
+            * np.exp(-(self.pradius / a) ** 2)
             * 1e4
             * u.V
         )
