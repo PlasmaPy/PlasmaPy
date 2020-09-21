@@ -139,10 +139,6 @@ class ElectrostaticPlanarShock(TestField):
     An electrostatic planar shock
     """
 
-    def __init__(self, grid, **kwargs):
-        TestField.__init__(self, grid, **kwargs)
-        self.gen_fields()
-        self.norm()
 
     def gen_fields(self):
         a = np.max(self.pradius) / 2
