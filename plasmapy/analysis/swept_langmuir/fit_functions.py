@@ -4,6 +4,7 @@ traces.
 """
 __all__ = [
     "AbstractFitFunction",
+    "ExponentialLinearFitFunction",
     "ExponentialOffsetFitFunction",
     "LinearFitFunction",
 ]
@@ -255,6 +256,29 @@ class AbstractFitFunction(ABC):
         ss_res = np.sum(residuals ** 2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
+
+
+class ExponentialLinearFitFunction(AbstractFitFunction):
+    _parameter_names = ("a", "alpha", "m", "b")
+
+    def __str__(self):
+        return f"f(x) = A exp(alpha x) + m x + b"
+
+    def _func(self, x, a, alpha, m, b):
+        return a * np.exp(alpha * x) + m * x + b
+
+    def _func_err(self, x):
+        a, alpha, m, b = self.parameters
+        a_err, alpha_err, m_err, b_err = self.parameters_err
+        a_term = (np.exp(alpha * x) * a_err) ** 2
+        alpha_term = (a * alpha * np.exp(b * x) * alpha_err) ** 2
+        m_term = (x * m_err) ** 2
+        b_term = b_err ** 2
+        return np.sqrt(a_term + alpha_term + m_term + b_term)
+
+    @property
+    def latex_str(self) -> str:
+        return fr"A \, \exp(\alpah \, x) + m \, x + b"
 
 
 class ExponentialOffsetFitFunction(AbstractFitFunction):
