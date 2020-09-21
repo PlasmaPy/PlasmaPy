@@ -126,6 +126,9 @@ class AxiallyMagnetizedCylinder(AbstractField):
     def gen_fields(self):
         a = self.L / 4
         self.B[:, :, :, 2] = np.where(self.pradius < a, 400 * u.T, 0 * u.T)
+        
+    def validate(self):
+        pass
 
 
 class ElectrostaticPlanarShock(TestField):
