@@ -70,8 +70,9 @@ class AbstractField(ABC):
         # Normalize the fields to the emax and bmax values set
         self.norm()
 
+    @abstractmethod
     def validate(self):
-        pass
+        raise NotImplementedError
 
     def gen_fields(self):
         pass
