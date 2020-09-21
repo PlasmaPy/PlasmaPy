@@ -124,10 +124,6 @@ class AxiallyMagnetizedCylinder(AbstractField):
     the z-axis, with E=0.
     """
 
-    def __init__(self, grid, **kwargs):
-        TestField.__init__(self, grid, **kwargs)
-        self.gen_fields()
-        self.norm()
 
     def gen_fields(self):
         a = self.L / 4
