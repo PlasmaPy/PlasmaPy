@@ -24,7 +24,7 @@ import warnings
 from scipy.special import erf as erf
 
 
-class TestField:
+class AbstractField(ABC):
     """
     Base class for example fields for testing SyntheticProtonRadiograph
     functions.
