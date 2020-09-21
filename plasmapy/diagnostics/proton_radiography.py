@@ -21,6 +21,7 @@ import scipy.interpolate as interp
 import time
 import warnings
 
+from abc import ABC, abstractmethod
 from scipy.special import erf as erf
 
 
