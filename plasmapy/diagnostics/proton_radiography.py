@@ -118,7 +118,7 @@ class ElectrostaticGaussianSphere(AbstractField):
             )
 
 
-class AxiallyMagnetizedCylinder(TestField):
+class AxiallyMagnetizedCylinder(AbstractField):
     """
     A cylinder of magnetic field oriented along
     the z-axis, with E=0.
