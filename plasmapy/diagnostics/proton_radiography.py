@@ -31,7 +31,7 @@ class AbstractField(ABC):
     """
 
     def __init__(self, grid, emax=0 * u.V / u.m, bmax=0 * u.T, regular_grid=None):
-        """
+        r"""
         Initialize a field object
 
         Parameters
@@ -126,34 +126,49 @@ class AbstractField(ABC):
 
     @property
     def bmax(self):
+        """
+        Get bmax
+        """
         return self._bmax
 
     @bmax.setter
     def bmax(self, val):
+        """
+        Set bmax and re-normalize fields to the new value.
+        """
         self._bmax = val
         # Normalize the fields to the new value
         self.norm()
 
     @property
     def emax(self):
+        """
+        Get emax
+        """
         return self._emax
 
     @emax.setter
     def emax(self, val):
+        """
+        Set emax and re-normalize fields to the new value.
+        """
         self._emax = val
         # Normalize the fields to the new values
         self.norm()
 
 
 class ElectrostaticGaussianSphere(AbstractField):
-    """
+    r"""
     A radial, spherically symmetric electric field produced by a spherical
     blob of potential with a Gaussian radial distribution:
 
     .. math::
         \phi = e^{-(r/a)^2}
-        E = - \nabla \phi  (r < L/2)
+    .. math::
+        E = -\nabla \phi  (r < L/2)
+    .. math::
         E = 0 (r < L/2)
+    .. math::
         B = 0
 
     Where :math:`r` is the radius, :math:`L` is the field grid length scale,
@@ -182,12 +197,14 @@ class ElectrostaticGaussianSphere(AbstractField):
 
 
 class AxiallyMagnetizedCylinder(AbstractField):
-    """
+    r"""
     A cylinder of constant magnetic field aligned with the z-axis:
 
     .. math::
         E = 0
+    .. math::
         B = 1 (\rho < a)
+    .. math::
         B = 0 (\rho > a)
 
     Where :math:`\rho` is the cylinder radius, :math:`L` is the field grid
@@ -203,13 +220,15 @@ class AxiallyMagnetizedCylinder(AbstractField):
 
 
 class ElectrostaticPlanarShock(AbstractField):
-    """
+    r"""
     A model of an electrostatic planar shock. The discontinuity is located
     at z=0 and has a Gaussian distribution in the xy plane:
 
     .. math::
         \phi = (1 - \Gamma(z/\delta))e^(-(\rho/a)^2)
+    .. math::
         E = - \nabla \phi
+    .. math::
         B = 0
 
     Where :math:`\rho` is the cylindrical radius, :math:`a=Max(\rho)`,
@@ -274,6 +293,10 @@ def example_fields(
 
         * "axial magnetic field": A cylinder of magnetic field oriented along
             the z-axis, with E=0.
+
+        * "electrostatic planar shock": A model of an electrostatic planar
+            shock. The discontinuity is located at z=0 and has a Gaussian
+            distribution in the xy plane.
 
     regular_grid : bool, optional
         If a grid is being generated, setting this keyword to False will
