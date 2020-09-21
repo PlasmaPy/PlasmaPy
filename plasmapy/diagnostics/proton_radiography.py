@@ -131,7 +131,7 @@ class AxiallyMagnetizedCylinder(AbstractField):
         pass
 
 
-class ElectrostaticPlanarShock(TestField):
+class ElectrostaticPlanarShock(AbstractField):
     """
     An electrostatic planar shock
     """
