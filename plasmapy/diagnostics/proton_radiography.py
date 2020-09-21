@@ -170,7 +170,6 @@ class NoFields(AbstractField):
         pass
 
 
-
 class ElectrostaticGaussianSphere(AbstractField):
     r"""
     A radial, spherically symmetric electric field produced by a spherical
@@ -968,12 +967,12 @@ class SyntheticProtonRadiograph:
         if self.vol_weighted_fields:
             # Initialize arrays
             l = len(self.xi)
-            dist = np.zeros([27,l])
-            E_est = np.zeros([27, l,3])*self.E.unit
-            B_est = np.zeros([27, l,3])*self.B.unit
-            E = np.zeros([l,3])*self.E.unit
-            B = np.zeros([l,3])*self.B.unit
-            nx,ny,nz,nax = self.grid.shape
+            dist = np.zeros([27, l])
+            E_est = np.zeros([27, l, 3]) * self.E.unit
+            B_est = np.zeros([27, l, 3]) * self.B.unit
+            E = np.zeros([l, 3]) * self.E.unit
+            B = np.zeros([l, 3]) * self.B.unit
+            nx, ny, nz, nax = self.grid.shape
 
             # Loop through all of the points surrounding (and including) the
             # interpolated gridpoint
@@ -987,55 +986,58 @@ class SyntheticProtonRadiograph:
                         z = self.zi + dz
 
                         # Figure out if any indices are out-of-bounds
-                        valid = ((x>=0) & (x<nx)
-                                 & (y>=0) & (y<ny)
-                                 & (z>=0) & (z<nz))
+                        valid = (
+                            (x >= 0)
+                            & (x < nx)
+                            & (y >= 0)
+                            & (y < ny)
+                            & (z >= 0)
+                            & (z < nz)
+                        )
                         out = np.where(valid == False)
 
                         # Set out-of-bound indices to something inbounds to
                         # prevent errors.
-                        x[out], y[out], z[out] = 0,0,0
+                        x[out], y[out], z[out] = 0, 0, 0
 
-                        dist [ind,:] = np.linalg.norm(self.grid[x,y,z,:] -
-                                                      self.r[self.gi, :],
-                                                      axis=1)
+                        dist[ind, :] = np.linalg.norm(
+                            self.grid[x, y, z, :] - self.r[self.gi, :], axis=1
+                        )
 
                         # Set out-of-bound distances to infinity, since
                         # no fields are to be found there.
                         dist[ind, out] = np.infty
 
                         # Record the field at each point
-                        E_est[ind,:,:] = self.E[x, y, z, :]
-                        B_est[ind,:,:] = self.B[x, y, z, :]
+                        E_est[ind, :, :] = self.E[x, y, z, :]
+                        B_est[ind, :, :] = self.B[x, y, z, :]
 
                         # Increment the index counter
                         ind += 1
 
             # Weight by distance
-            weights = 1/dist
+            weights = 1 / dist
 
             # Average the fields according to the weights.
             # TODO: Find a more elegant way to write this? Problem is that
             # dimensions of weights is not the same as E,B
-            E[:,0] = np.average(E_est[:,:,0], weights=weights, axis=0)
-            E[:,1] = np.average(E_est[:,:,1], weights=weights, axis=0)
-            E[:,2] = np.average(E_est[:,:,2], weights=weights, axis=0)
+            E[:, 0] = np.average(E_est[:, :, 0], weights=weights, axis=0)
+            E[:, 1] = np.average(E_est[:, :, 1], weights=weights, axis=0)
+            E[:, 2] = np.average(E_est[:, :, 2], weights=weights, axis=0)
 
-            B[:,0] = np.average(B_est[:,:,0], weights=weights, axis=0)
-            B[:,1] = np.average(B_est[:,:,1], weights=weights, axis=0)
-            B[:,2] = np.average(B_est[:,:,2], weights=weights, axis=0)
+            B[:, 0] = np.average(B_est[:, :, 0], weights=weights, axis=0)
+            B[:, 1] = np.average(B_est[:, :, 1], weights=weights, axis=0)
+            B[:, 2] = np.average(B_est[:, :, 2], weights=weights, axis=0)
 
         else:
             E = self.E[self.xi, self.yi, self.zi, :]
             B = self.B[self.xi, self.yi, self.zi, :]
-
 
         # Set fields for off-grid particles
         E = E * np.outer(self.on_grid, np.ones(3))
         B = B * np.outer(self.on_grid, np.ones(3))
 
         return E, B
-
 
     def _adaptive_dt(self, B):
         r"""
@@ -1146,7 +1148,7 @@ class SyntheticProtonRadiograph:
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         dt_range=np.array([0, np.infty]) * u.s,
-        vol_weighted_fields = False,
+        vol_weighted_fields=False,
     ):
         r"""
         Runs a particle-tracing simulation using the geometry defined in the
