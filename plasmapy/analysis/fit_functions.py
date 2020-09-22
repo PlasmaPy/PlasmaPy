@@ -549,7 +549,7 @@ class Linear(AbstractFitFunction):
 class ExponentialPlusLinear(Exponential, Linear):
     """
     A sub-class of `AbstractFitFunction` to represent an exponential with an
-    offset.
+    linear offset.
 
     .. math::
 
@@ -564,10 +564,11 @@ class ExponentialPlusLinear(Exponential, Linear):
                 (\\delta x)^2\\\\
             & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
 
-    where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
-    :math:`x` is the independent variable.  :math:`\\delta A`,
-    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective errors for
-    :math:`A`, :math:`\\alpha`, and :math:`x`.
+    where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+    constants to be fitted and :math:`x` is the independent variable.
+    :math:`\\delta A`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
+    and :math:`\\delta x` are the respective errors for :math:`A`, :math:`\\alpha`,
+    :math:`m`, and :math:`b`, and :math:`x`.
     """
     _parameter_names = ("a", "alpha", "m", "b")
 
