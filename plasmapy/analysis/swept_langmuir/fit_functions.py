@@ -32,7 +32,12 @@ class AbstractFitFunction(ABC):
     _curve_fit_results = None
 
     def __init__(self):
-        self._ParamTuple = namedtuple("_ParamTuple", self._parameter_names)
+        self.FitParamTuple = namedtuple("FitParamTuple", self._parameter_names)
+        """
+        A named tuple class used for attributes :attr:`parameters` and 
+        :attr:`parameters_err`.  The attribute :attr:`parameter_names` defines
+        the tuple field names.
+        """
 
     def __call__(self, x, reterr=False):
         """
@@ -123,20 +128,45 @@ class AbstractFitFunction(ABC):
         return self._curve_fit_results
 
     @property
-    def parameters(self) -> Union[None, NamedTuple]:
+    def parameters(self) -> Union[None, tuple]:
         """The fitted parameters for the fit function."""
         if self._parameters is None:
             return self._parameters
         else:
-            return self._ParamTuple(*self._parameters)
+            return self.FitParamTuple(*self._parameters)
+
+    @parameters.setter
+    def parameters(self, val) -> None:
+        if isinstance(val, self.FitParamTuple):
+            self._parameters = tuple(val)
+        elif isinstance(val, (tuple, list)) and len(val) == len(self.parameter_names):
+            self._parameters = tuple(val)
+        else:
+            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
+                             f"length {len(self.parameter_names)}.")
 
     @property
-    def parameters_err(self) -> Union[None, NamedTuple]:
+    def parameters_err(self) -> Union[None, tuple]:
         """The associated errors of the fit `parameters`."""
         if self._parameters_err is None:
             return self._parameters_err
         else:
-            return self._ParamTuple(*self._parameters_err)
+            return self.FitParamTuple(*self._parameters_err)
+
+    @parameters_err.setter
+    def parameters_err(self, val) -> None:
+        if isinstance(val, self.FitParamTuple):
+            self._parameters_err = tuple(val)
+        elif isinstance(val, (tuple, list)) and len(val) == len(self.parameter_names):
+            self._parameters_err = tuple(val)
+        else:
+            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
+                             f"length {len(self.parameter_names)}.")
+
+    @property
+    def parameter_names(self) -> Tuple[str, ...]:
+        """Names of the fitted parameters."""
+        return self._parameter_names
 
     @property
     @abstractmethod
