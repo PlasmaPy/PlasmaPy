@@ -629,15 +629,21 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     .. math::
 
-        y &= f(x) = A \\, \\exp(\\alpha \\, x) + b
+        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        (\\delta y)^2 =&
+            \\left( A e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta A}{A} \\right)^2
+                + (x \\, \\delta \\alpha)^2
+                + (\\alpha \\, \\delta x)^2
+            \\right]
+            + (\\delta b)^2
 
-        (\\delta y)^2 &= (e^{B \\,x} \\delta A)^2
-                         + (A \\, B \\, e^{B \\, x} \\delta B)^2
-                         + (\\delta C)^2
 
-
-    where :math:`A`, :math:`B`, and :math:`C` are positive real constants
-    and :math:`x` is the independent variable.
+    where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants to
+    be fitted and :math:`x` is the independent variable.  :math:`\\delta A`,
+    :math:`\\delta \\alpha`, :math:`\\delta b`, and :math:`\\delta x` are the
+    respective errors for :math:`A`, :math:`\\alpha`, and :math:`b`, and
+    :math:`x`.
 
     """
     _parameter_names = ("a", "alpha", "b")
@@ -686,12 +692,12 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         .. math::
 
-            x_r &= \\frac{1}{B} \\ln \\left( \\frac{-C}{A} \\right)
+            x_r &= \\frac{1}{\\alpha} \\ln \\left( \\frac{-b}{A} \\right)
 
             \\delta x_r &= \\sqrt{
-                \\left( \\frac{\\delta A}{A B} \\right)^2
-                + \\left( x_r \\frac{\\delta B}{B} \\right)^2
-                + \\left( \\frac{\\delta C}{B C} \\right)^2
+                \\left( \\frac{1}{\\alpha} \\frac{\\delta A}{A} \\right)^2
+                + \\left( x_r \\frac{\\delta \\alpha}{\\alpha} \\right)^2
+                + \\left( \\frac{1}{\\alpha} \\frac{\\delta b}{b} \\right)^2
             }
 
         Parameters
@@ -713,13 +719,14 @@ class ExponentialPlusOffset(AbstractFitFunction):
             The error in the calculated root for the given fit
             :attr:`parameters` and :attr:`parameters_err`.
         """
-        a, b, c = self.parameters
-        root = np.log(-c / a) / b
-
+        a, alpha, b = self.parameters
         a_err, b_err, c_err = self.parameters_err
-        a_term = a_err / (a * b)
-        b_term = b_err * root / b
-        c_term = c_err / (b * c)
+
+        root = np.log(-b / a) / alpha
+
+        a_term = a_err / (a * alpha)
+        b_term = b_err * root / alpha
+        c_term = c_err / (alpha * b)
         err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
 
         return root, err
