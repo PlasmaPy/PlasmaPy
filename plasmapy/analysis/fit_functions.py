@@ -621,6 +621,9 @@ class ExponentialPlusLinear(Exponential, Linear):
 
         return err
 
+    curve_fit = AbstractFitFunction.curve_fit
+    root_solve = AbstractFitFunction.root_solve
+
 
 class ExponentialPlusOffset(AbstractFitFunction):
     """
