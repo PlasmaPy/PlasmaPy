@@ -39,7 +39,7 @@ class AbstractFitFunction(ABC):
         the tuple field names.
         """
 
-    def __call__(self, x, reterr=False):
+    def __call__(self, x, x_err=None, reterr=False):
         """
         Direct call of the fit function :math:`f(x)``.
 
@@ -48,7 +48,11 @@ class AbstractFitFunction(ABC):
         x: array_like
             Dependent variables.
 
-        reterr: bool
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
+
+        reterr: bool, optional
             (Default: `False`) If `True`, return an array of errors associated
             with the calculated independent variables
 
@@ -64,10 +68,12 @@ class AbstractFitFunction(ABC):
         """
         if not isinstance(x, np.ndarray):
             x = np.array(x)
+
         y = self._func(x, *self.parameters)
+
         if reterr:
             try:
-                y_err = self._func_err(x)
+                y_err = self._func_err(x, y, x_err=x_err)
             except NotImplementedError:
                 y_err = np.tile(np.nan, x.shape)
 
