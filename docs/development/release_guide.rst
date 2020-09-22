@@ -18,6 +18,9 @@ and ``0.4.0`` denotes the last released version.
 Release
 -------
 
+* Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
+  for version ``0.5.0``.  Update ``docs/citation.rst`` with the new DOI.
+
 * ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
   <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
@@ -34,11 +37,11 @@ Release
   v0.5.0``. When asked about removing changelog entries, do so. Ensure
   the entries are in proper categories.
 
-* Copy the relevant part of the generated `CHANGELOG.rst` file into
-  `docs/whatsnew/0.5.0.rst`. Add the corresponding entry in the
-  table of contents in `docs/whatsnew/index.rst`.
+* Copy the relevant part of the generated ``CHANGELOG.rst`` file into
+  ``docs/whatsnew/0.5.0.rst``. Add the corresponding entry in the
+  table of contents in ``docs/whatsnew/index.rst``.
 
-* Add the note on new contributors to `docs/whatsnew/{version_number}.rst`. To
+* Add the note on new contributors to ``docs/whatsnew/{version_number}.rst``. To
   do this efficiently, borrow the `SunPy Xonsh script
   <https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh>`_
   ``generate_releaserst.xsh 0.4.0 --auth --project-name=plasmapy
@@ -65,7 +68,7 @@ Release
 
 * No, really, check twice.
 
-  * If you want to do any rebase to clean up the commit history on your 0.5.x
+  * If you want to do any rebase to clean up the commit history on your ``0.5.x``
     branch, now is the time to do that. Ensure that no tests broke.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
@@ -102,8 +105,6 @@ Post-release
 
     * If tests fail, look at the ``recipe.yaml`` file - usually it's either
       changed dependencies or the simple import tests they've got there.
-
-* Reserve a digital object identifier on Zenodo
 
 * Update code metadata in ``codemeta.json``
 
