@@ -98,8 +98,10 @@ the top-level directory.
 
 # Citing PlasmaPy
 
-Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
-how to cite PlasmaPy.
+If you use PlasmaPy in a research publication, we ask that you cite the
+Zenodo record for the specific version of PlasmaPy that you used.
+Please see the [``docs/citation.rst``](./docs/citation.rst) file for
+more detailed instructions on how to cite PlasmaPy.
 
 # Acknowledgements
 
