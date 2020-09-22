@@ -613,16 +613,13 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
         lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)
-        err = exp_err + lin_err
+        err = exp_err ** 2 + lin_err ** 2
 
         if x_err is not None:
             blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** x)
             err += blend_err
 
-        return err
-
-    curve_fit = AbstractFitFunction.curve_fit
-    root_solve = AbstractFitFunction.root_solve
+        return np.sqrt(err)
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
