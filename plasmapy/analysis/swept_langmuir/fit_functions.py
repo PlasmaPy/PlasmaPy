@@ -515,12 +515,12 @@ class Linear(AbstractFitFunction):
 
         y &= f(x) = m \\, x + b
 
-        (\\delta y)^2 &= (x \\, \\delta m)^2 + (\\delta b)^2
+        (\\delta y)^2 &= (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
-    where :math:`m` and :math:`b` are positive real constants representing the
-    slope and intercept, respectively, and :math:`x` is the independent
-    variable.
-
+    where :math:`m` and :math:`b` are real constants to be fitted and :math:`x` is
+    the independent variable.  :math:`\\delta m`, :math:`\\delta b`, and
+    :math:`\\delta x` are the respective errors for :math:`m`, :math:`b`,
+    and :math:`x`.
     """
 
     _parameter_names = ("m", "b")
@@ -565,7 +565,7 @@ class Linear(AbstractFitFunction):
 
         .. math::
 
-            (\\delta y)^2 &= (x \\, \\delta m)^2 + (\\delta b)^2
+            (\\delta y)^2 &= (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
         Parameters
         ----------
@@ -578,9 +578,18 @@ class Linear(AbstractFitFunction):
             The calculated errors of the dependent variables of the independent
             variables `x`.
         """
-        m_term = (self.parameters_err[0] * x) ** 2
-        b_term = self.parameters_err[1] ** 2
-        return np.sqrt(m_term + b_term)
+        m, b = self.parameters
+        m_err, b_err = self.parameters_err
+
+        m_term = (m_err * x) ** 2
+        b_term = b_err ** 2
+        err = m_term + b_term
+
+        if x_err is not None:
+            x_term = (m * x_err) ** 2
+            err += x_term
+
+        return np.sqrt(err)
 
     @property
     def latex_str(self) -> str:
