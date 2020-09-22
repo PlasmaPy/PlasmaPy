@@ -546,7 +546,7 @@ class Linear(AbstractFitFunction):
         self._rsq = results[2] ** 2
 
 
-class ExponentialPlusLinear(Exponential, Linear):
+class ExponentialPlusLinear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent an exponential with an
     linear offset.
