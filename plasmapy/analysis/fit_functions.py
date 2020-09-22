@@ -218,7 +218,34 @@ class AbstractFitFunction(ABC):
         -----
         If the full output of `scipy.optimize.fsolve` is desired then one can do
 
-            >>> func = FitFunction()  # FitFunciton is a subclass of AbstractFitFunction
+            >>> import numpy as np
+            >>> import scipy
+
+            >>> class SomeFunc(AbstractFitFunction):
+            ...     _parameter_names = ("m", "b")
+            ...
+            ...     @property
+            ...     def latex_str(self) -> str:
+            ...         return return fr"m \, x + b"
+            ...
+            ...     def _func(self, x, m, b):
+            ...         return m * x + b
+            ...
+            ...     def _func_err(self, x, y, x_err=None):
+            ...         m, b = self.parameters
+            ...         m_err, b_err = self.parameters_err
+            ...
+            ...         m_term = x * m_err
+            ...         b_term = b_err
+            ...         err = m_term ** 2 + b_term ** 2
+            ...
+            ...         if x_err is not None:
+            ...             x_term = m * x_err
+            ...             err == x_term ** 2
+            ...
+            ...         return np.sqrt(err)
+            ...
+            >>> func = SomeFunc()
             >>> roots = scipy.optimize.fsolve(func, 0.)
 
         """
