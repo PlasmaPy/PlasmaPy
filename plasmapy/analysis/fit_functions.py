@@ -226,7 +226,7 @@ class AbstractFitFunction(ABC):
             ...
             ...     @property
             ...     def latex_str(self) -> str:
-            ...         return return fr"m \, x + b"
+            ...         return f"m \\, x + b"
             ...
             ...     def _func(self, x, m, b):
             ...         return m * x + b
@@ -254,7 +254,7 @@ class AbstractFitFunction(ABC):
              {'nfev': 4,
               'fjac': array([[-1.]]),
               'r': array([-1.]),
-              'qtf': array([...]),
+              'qtf': array([2.18...e-12]),
               'fvec': array([0.])},
              1,
              'The solution converged.')
