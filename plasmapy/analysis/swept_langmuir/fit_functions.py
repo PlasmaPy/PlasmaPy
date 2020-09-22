@@ -100,7 +100,8 @@ class AbstractFitFunction(ABC):
         """
         raise NotImplementedError
 
-    def _func_err(self, x):
+    @abstractmethod
+    def _func_err(self, x, y, x_err=None):
         """
         Calculate dependent variable errors :math:`\\delta y` for dependent
         variables :math:`y=f(x)`.
@@ -109,6 +110,13 @@ class AbstractFitFunction(ABC):
         ----------
         x: array_like
             Independent variables to be passed to the fit function.
+
+        y: array_like
+            Dependent variables associated with :math:`x`, :math:`f(x)`.
+
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
 
         Returns
         -------
@@ -343,7 +351,7 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
         """
         return a * np.exp(b * x) + c
 
-    def _func_err(self, x):
+    def _func_err(self, x, y, x_err=None):
         """
         Calculate dependent variable errors :math:`\\delta y` for dependent
         variables :math:`y=f(x)`.
@@ -472,7 +480,7 @@ class LinearFitFunction(AbstractFitFunction):
         """
         return m * x + b
 
-    def _func_err(self, x):
+    def _func_err(self, x, y, x_err=None):
         """
         Calculate dependent variable errors :math:`\\delta y` for dependent
         variables :math:`y=f(x)`.
