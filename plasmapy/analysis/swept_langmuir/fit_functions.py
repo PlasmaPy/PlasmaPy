@@ -5,6 +5,7 @@ traces.
 __all__ = [
     "AbstractFitFunction",
     "Exponential",
+    "ExponentialPlusLinear",
     "ExponentialPlusOffset",
     "Linear",
 ]
@@ -314,7 +315,6 @@ class Exponential(AbstractFitFunction):
     :math:`x` is the independent variable.  :math:`\\delta A`,
     :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective errors for
     :math:`A`, :math:`\\alpha`, and :math:`x`.
-
     """
     _parameter_names = ("a", "alpha")
 
@@ -371,140 +371,6 @@ class Exponential(AbstractFitFunction):
         """
 
         return np.nan, np.nan
-
-
-class ExponentialPlusOffset(AbstractFitFunction):
-    """
-    A sub-class of `AbstractFitFunction` to represent an exponential with an
-    offset.
-
-    .. math::
-
-        y &= f(x) = A \\, \\exp(B \\, x) + C
-
-        (\\delta y)^2 &= (e^{B \\,x} \\delta A)^2
-                         + (A \\, B \\, e^{B \\, x} \\delta B)^2
-                         + (\\delta C)^2
-
-
-    where :math:`A`, :math:`B`, and :math:`C` are positive real constants
-    and :math:`x` is the independent variable.
-
-    """
-    _parameter_names = ("a", "b", "c")
-
-    def __str__(self):
-        return f"f(x) = A exp(B x) + C"
-
-    def _func(self, x, a, b, c):
-        """
-        The fit function, an exponential with an offset.
-
-        .. math::
-
-            f(x) = A \\, \\exp(B \\, x) + C
-
-        where :math:`A`, :math:`B`, and :math:`C` are positive real constants
-        and :math:`x` is the independent variable.
-
-        Parameters
-        ----------
-        x: array_like
-            Independent variable.
-
-        a: float
-            value for constant :math:`A`
-
-        b: float
-            value for constant :math:`B`
-
-        c: float
-            value for constant :math:`C`
-
-        Returns
-        -------
-        y: array_like
-            dependent variables corresponding to :math:`x`
-
-        """
-        return a * np.exp(b * x) + c
-
-    def _func_err(self, x, y, x_err=None):
-        """
-        Calculate dependent variable errors :math:`\\delta y` for dependent
-        variables :math:`y=f(x)`.
-
-        .. math::
-
-            (\\delta y)^2 = (e^{B \\,x} \\delta A)^2
-                             + (A \\, B \\, e^{B \\, x} \\delta B)^2
-                             + (\\delta C)^2
-
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        Returns
-        -------
-        `numpy.ndarray`:
-            The calculated errors of the dependent variables of the independent
-            variables `x`.
-        """
-        a, b, c = self.parameters
-        a_err, b_err, c_err = self.parameters_err
-        a_term = (np.exp(b * x) * a_err) ** 2
-        b_term = (a * b * np.exp(b * x) * b_err) ** 2
-        c_term = c_err ** 2
-        return np.sqrt(a_term + b_term + c_term)
-
-    @property
-    def latex_str(self) -> str:
-        return fr"A \, \exp(B \, x) + C"
-
-    def root_solve(self, *args, **kwargs):
-        """
-        The root :math:`f(x_r) = 0` for the fit function.
-
-        .. math::
-
-            x_r &= \\frac{1}{B} \\ln \\left( \\frac{-C}{A} \\right)
-
-            \\delta x_r &= \\sqrt{
-                \\left( \\frac{\\delta A}{A B} \\right)^2
-                + \\left( x_r \\frac{\\delta B}{B} \\right)^2
-                + \\left( \\frac{\\delta C}{B C} \\right)^2
-            }
-
-        Parameters
-        ----------
-        *args
-            Not needed.  This is to ensure signature comparability with
-            `AbstractFitFunction`.
-
-        *kwargs
-            Not needed.  This is to ensure signature comparability with
-            `AbstractFitFunction`.
-
-        Returns
-        -------
-        root: float
-            The root value for the given fit :attr:`parameters`.
-
-        err: float
-            The error in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
-        """
-        a, b, c = self.parameters
-        root = np.log(-c / a) / b
-
-        a_err, b_err, c_err = self.parameters_err
-        a_term = a_err / (a * b)
-        b_term = b_err * root / b
-        c_term = c_err / (b * c)
-        err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
-
-        return root, err
 
 
 class Linear(AbstractFitFunction):
@@ -678,3 +544,212 @@ class Linear(AbstractFitFunction):
         self.parameters_err = (m_err, b_err)
 
         self._rsq = results[2] ** 2
+
+
+class ExponentialPlusLinear(Exponential, Linear):
+    """
+    A sub-class of `AbstractFitFunction` to represent an exponential with an
+    offset.
+
+    .. math::
+
+        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        (\\delta y)^2 =&
+            \\left( A e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta A}{A} \\right)^2
+                + (x \\, \\delta \\alpha)^2
+                + (\\alpha \\, \\delta x)^2
+            \\right]\\\\
+            & + \\left(2 \\, A \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+                (\\delta x)^2\\\\
+            & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
+
+    where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
+    :math:`x` is the independent variable.  :math:`\\delta A`,
+    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective errors for
+    :math:`A`, :math:`\\alpha`, and :math:`x`.
+    """
+    _parameter_names = ("a", "alpha", "m", "b")
+
+    def __init__(self):
+        super().__init__()
+        self._exponential = Exponential()
+        self._linear = Linear()
+
+    def __str__(self):
+        exp_str = self._exponential.__str__().lstrip("f(x) = ")
+        lin_str = self._linear.__str__().lstrip("f(x) = ")
+        return f"f(x) = {exp_str} + {lin_str}"
+
+    @property
+    def latex_str(self) -> str:
+        exp_str = self._exponential.latex_str
+        lin_str = self._linear.latex_str
+        return fr"{exp_str} + {lin_str}"
+
+    @AbstractFitFunction.parameters.setter
+    def parameters(self, val) -> None:
+        AbstractFitFunction.parameters.fset(self, val)
+        self._exponential.parameters = (self.parameters.a, self.parameters.alpha)
+        self._linear.parameters = (self.parameters.m, self.parameters.b)
+
+    @AbstractFitFunction.parameters_err.setter
+    def parameters_err(self, val) -> None:
+        AbstractFitFunction.parameters_err.fset(self, val)
+        self._exponential.parameters_err = (
+            self.parameters_err.a,
+            self.parameters_err.alpha,
+        )
+        self._linear.parameters_err = (self.parameters_err.m, self.parameters_err.b)
+
+    def _func(self, x, a, alpha, m , b):
+        exp_term = self._exponential._func(x, a, alpha)
+        lin_term = self._linear._func(x, m, b)
+        return exp_term + lin_term
+
+    def _func_err(self, x, y, x_err=None):
+        a, alpha, m, b = self.parameters
+
+        exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
+        lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)
+        err = exp_err + lin_err
+
+        if x_err is not None:
+            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** x)
+            err += blend_err
+
+        return err
+
+
+class ExponentialPlusOffset(AbstractFitFunction):
+    """
+    A sub-class of `AbstractFitFunction` to represent an exponential with an
+    offset.
+
+    .. math::
+
+        y &= f(x) = A \\, \\exp(B \\, x) + C
+
+        (\\delta y)^2 &= (e^{B \\,x} \\delta A)^2
+                         + (A \\, B \\, e^{B \\, x} \\delta B)^2
+                         + (\\delta C)^2
+
+
+    where :math:`A`, :math:`B`, and :math:`C` are positive real constants
+    and :math:`x` is the independent variable.
+
+    """
+    _parameter_names = ("a", "b", "c")
+
+    def __str__(self):
+        return f"f(x) = A exp(B x) + C"
+
+    def _func(self, x, a, b, c):
+        """
+        The fit function, an exponential with an offset.
+
+        .. math::
+
+            f(x) = A \\, \\exp(B \\, x) + C
+
+        where :math:`A`, :math:`B`, and :math:`C` are positive real constants
+        and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for constant :math:`A`
+
+        b: float
+            value for constant :math:`B`
+
+        c: float
+            value for constant :math:`C`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
+        return a * np.exp(b * x) + c
+
+    def _func_err(self, x, y, x_err=None):
+        """
+        Calculate dependent variable errors :math:`\\delta y` for dependent
+        variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 = (e^{B \\,x} \\delta A)^2
+                             + (A \\, B \\, e^{B \\, x} \\delta B)^2
+                             + (\\delta C)^2
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        Returns
+        -------
+        `numpy.ndarray`:
+            The calculated errors of the dependent variables of the independent
+            variables `x`.
+        """
+        a, b, c = self.parameters
+        a_err, b_err, c_err = self.parameters_err
+        a_term = (np.exp(b * x) * a_err) ** 2
+        b_term = (a * b * np.exp(b * x) * b_err) ** 2
+        c_term = c_err ** 2
+        return np.sqrt(a_term + b_term + c_term)
+
+    @property
+    def latex_str(self) -> str:
+        return fr"A \, \exp(B \, x) + C"
+
+    def root_solve(self, *args, **kwargs):
+        """
+        The root :math:`f(x_r) = 0` for the fit function.
+
+        .. math::
+
+            x_r &= \\frac{1}{B} \\ln \\left( \\frac{-C}{A} \\right)
+
+            \\delta x_r &= \\sqrt{
+                \\left( \\frac{\\delta A}{A B} \\right)^2
+                + \\left( x_r \\frac{\\delta B}{B} \\right)^2
+                + \\left( \\frac{\\delta C}{B C} \\right)^2
+            }
+
+        Parameters
+        ----------
+        *args
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        *kwargs
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        Returns
+        -------
+        root: float
+            The root value for the given fit :attr:`parameters`.
+
+        err: float
+            The error in the calculated root for the given fit
+            :attr:`parameters` and :attr:`parameters_err`.
+        """
+        a, b, c = self.parameters
+        root = np.log(-c / a) / b
+
+        a_err, b_err, c_err = self.parameters_err
+        a_term = a_err / (a * b)
+        b_term = b_err * root / b
+        c_term = c_err / (b * c)
+        err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
+
+        return root, err
