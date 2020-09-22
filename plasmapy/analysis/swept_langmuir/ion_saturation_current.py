@@ -7,10 +7,7 @@ import numpy as np
 
 from collections import namedtuple
 
-from plasmapy.analysis.swept_langmuir.fit_functions import (
-    ExponentialLinearFitFunction,
-    LinearFitFunction,
-)
+from plasmapy.analysis import fit_functions as ffuncs
 
 
 IonSaturationCurrentResults = namedtuple(
@@ -33,8 +30,9 @@ def find_ion_saturation_current(
     )._asdict()
 
     fit_funcs = {
-        "linear": LinearFitFunction(),
-        "explinear": ExponentialLinearFitFunction()
+        "linear": ffuncs.Linear(),
+        "explinear": ffuncs.ExponentialPlusLinear(),
+        "expffset": ffuncs.ExponentialPlusOffset(),
     }
     try:
         fit_func = fit_funcs[fit_type]
@@ -58,9 +56,19 @@ def find_ion_saturation_current(
 
     rtn["rsq"] = fit_func.rsq
 
-    isat = LinearFitFunction()
-    isat._parameters = [fit_func.parameters.m, fit_func.parameters.b]
-    isat._parameters_err = [fit_func.parameters_err.m, fit_func.parameters_err.b]
+    isat = ffuncs.Linear()
+    try:
+        m = fit_func.parameters.m
+        m_err = fit_func.parameters_err.m
+    except AttributeError:
+        m = m_err = 0.0
+    try:
+        b = fit_func.parameters.b
+        b_err = fit_func.parameters_err.b
+    except AttributeError:
+        b = b_err = 0.0
+    isat.parameters = [m, b]
+    isat.parameters_err = [m_err, b_err]
     rtn["isat_func"] = isat
 
     return IonSaturationCurrentResults(**rtn)
