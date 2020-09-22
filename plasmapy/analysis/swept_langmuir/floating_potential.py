@@ -7,10 +7,7 @@ from collections import namedtuple
 from warnings import warn
 from typing import Union
 
-from plasmapy.analysis.swept_langmuir.fit_functions import (
-    ExponentialOffsetFitFunction,
-    LinearFitFunction,
-)
+from plasmapy.analysis.swept_langmuir import fit_functions as ffuncs
 
 FloatingPotentialResults = namedtuple(
     "FloatingPotentialResults",
@@ -92,7 +89,7 @@ def find_floating_potential(
         specified which `FitFunction` class should be applied to the trace.
 
         +-------------+--------------------------------------------------------------------------------+
-        | linear      | `~plasmapy.analysis.swept_langmuir.fit_functions.LinearFitFunction`            |
+        | linear      | `~plasmapy.analysis.swept_langmuir.fit_functions.Linear`                       |
         +-------------+--------------------------------------------------------------------------------+
         | exponential | `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction` |
         +-------------+--------------------------------------------------------------------------------+
@@ -145,11 +142,11 @@ def find_floating_potential(
 
     fit_funcs = {
         "linear": {
-            "func": LinearFitFunction(),
+            "func": ffuncs.Linear(),
             "min_point_factor": 0.1,
         },
         "exponential": {
-            "func": ExponentialOffsetFitFunction(),
+            "func": ffuncs.ExponentialOffsetFitFunction(),
             "min_point_factor": 0.2,
         },
     }

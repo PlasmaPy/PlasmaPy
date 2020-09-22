@@ -5,7 +5,7 @@ traces.
 __all__ = [
     "AbstractFitFunction",
     "ExponentialOffsetFitFunction",
-    "LinearFitFunction",
+    "Linear",
 ]
 
 import numpy as np
@@ -429,7 +429,7 @@ class ExponentialOffsetFitFunction(AbstractFitFunction):
         return root, err
 
 
-class LinearFitFunction(AbstractFitFunction):
+class Linear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent a linear function.
 
