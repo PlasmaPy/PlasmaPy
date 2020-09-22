@@ -246,7 +246,18 @@ class AbstractFitFunction(ABC):
             ...         return np.sqrt(err)
             ...
             >>> func = SomeFunc()
-            >>> roots = scipy.optimize.fsolve(func, 0.)
+            >>> func.parameters = (1., 5.)
+            >>> func.parameters_err = (0.0, 0.0)
+            >>> roots = scipy.optimize.fsolve(func, -4., full_output=True)
+            >>> roots
+            (array([-5.]),
+             {'nfev': 4,
+              'fjac': array([[-1.]]),
+              'r': array([-1.]),
+              'qtf': array([...]),
+              'fvec': array([0.])},
+             1,
+             'The solution converged.')
 
         """
         kwargs["args"] = self.parameters
