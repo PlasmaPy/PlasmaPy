@@ -4,6 +4,7 @@ traces.
 """
 __all__ = [
     "AbstractFitFunction",
+    "Exponential",
     "ExponentialOffsetFitFunction",
     "Linear",
 ]
@@ -293,6 +294,83 @@ class AbstractFitFunction(ABC):
         ss_res = np.sum(residuals ** 2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
+
+
+class Exponential(AbstractFitFunction):
+    """
+    A sub-class of `AbstractFitFunction` to represent an exponential with an
+    offset.
+
+    .. math::
+
+        y &= f(x) = A \\, e^{\\alpha \\, x}
+
+        \\left( \\frac{\\delta y}{|y|} \\right)^2 &=
+            \\left( \\frac{\\delta A}{A} \\right)^2
+            + (x \\, \\delta \\alpha)^2
+            + (\\alpha \\, \\delta x)^2
+
+    where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
+    :math:`x` is the independent variable.  :math:`\\delta A`,
+    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective errors for
+    :math:`A`, :math:`\\alpha`, and :math:`x`.
+
+    """
+    _parameter_names = ("a", "alpha")
+
+    def __str__(self):
+        return f"f(x) = A exp(alpha x)"
+
+    def _func(self, x, a, alpha):
+        return a * np.exp(alpha * x)
+
+    def _func_err(self, x, y, x_err=None):
+        a, alpha = self.parameters
+        a_err, alpha_err = self.parameters_err
+
+        a_term = (a_err / a) ** 2
+        alpha_term = (x * alpha_err) ** 2
+
+        err = a_term + alpha_term
+
+        if x_err is not None:
+            x_term = (alpha * x_err) ** 2
+            err += x_term
+
+        err = np.abs(y) * np.sqrt(err)
+
+        return err
+
+    @property
+    def latex_str(self) -> str:
+        return fr"A \, \exp(\alpha \, x)"
+
+    def root_solve(self, *args, **kwargs):
+        """
+        The root :math:`f(x_r) = 0` for the fit function. **An exponential has no
+        real roots.**
+
+        Parameters
+        ----------
+        *args
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        *kwargs
+            Not needed.  This is to ensure signature comparability with
+            `AbstractFitFunction`.
+
+        Returns
+        -------
+        root: float
+            The root value for the given fit :attr:`parameters`.
+
+        err: float
+            The error in the calculated root for the given fit
+            :attr:`parameters` and :attr:`parameters_err`.
+        """
+
+        return np.nan, np.nan
 
 
 class ExponentialOffsetFitFunction(AbstractFitFunction):
