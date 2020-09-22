@@ -285,8 +285,8 @@ class AbstractFitFunction(ABC):
         """
         popt, pcov = curve_fit(self._func, xdata, ydata, **kwargs)
         self._curve_fit_results = (popt, pcov)
-        self._parameters = tuple(popt.tolist())
-        self._parameters_err = tuple(np.sqrt(np.diag(pcov)).tolist())
+        self.parameters = tuple(popt.tolist())
+        self.parameters_err = tuple(np.sqrt(np.diag(pcov)).tolist())
 
         # calc rsq
         # rsq = 1 - (ss_res / ss_tot)
@@ -670,11 +670,11 @@ class Linear(AbstractFitFunction):
 
         m = results[0]
         b = results[1]
-        self._parameters = (m, b)
+        self.parameters = (m, b)
 
         m_err = results[4]
         b_err = np.sum(xdata ** 2) - ((np.sum(xdata) ** 2) / xdata.size)
         b_err = m_err * np.sqrt(1.0 / b_err)
-        self._parameters_err = (m_err, b_err)
+        self.parameters_err = (m_err, b_err)
 
         self._rsq = results[2] ** 2
