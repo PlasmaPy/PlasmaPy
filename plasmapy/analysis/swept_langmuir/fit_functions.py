@@ -190,7 +190,8 @@ class AbstractFitFunction(ABC):
 
     def root_solve(self, x0, **kwargs):
         """
-        Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).
+        Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
+        mehtod used `scipy.optimize.fsolve` to find the function roots.
 
         Parameters
         ----------
@@ -205,33 +206,26 @@ class AbstractFitFunction(ABC):
         x : `~numpy.ndarray`
             The solution (or the result of the last iteration for an
             unsuccessful call).
-        infodict : `dict`
-            A dictionary of optional outputs with the keys:
 
-            ``nfev``
-                number of function calls
-            ``njev``
-                number of Jacobian calls
-            ``fvec``
-                function evaluated at the output
-            ``fjac``
-                the orthogonal matrix, q, produced by the QR
-                factorization of the final approximate Jacobian
-                matrix, stored column wise
-            ``r``
-                upper triangular matrix produced by QR factorization
-                of the same matrix
-            ``qtf``
-                the vector ``(transpose(q) * fvec)``
+        x_err: `~numpy.ndarray`
+            The error associated with the root calculation.  **Currently this
+            returns an array of** `numpy.nan` **values equal in shape to**
+            `x` **, since there is no determined way to calculate the errors.**
 
-        ier : `int`
-            An integer flag.  Set to 1 if a solution was found, otherwise refer
-            to `mesg` for more information.
-        mesg : `str`
-            If no solution is found, `mesg` details the cause of failure.
+        Notes
+        -----
+        If the full output of `scipy.optimize.fsolve` is desired then one can do
+
+            >>> func = FitFunction()  # FitFunciton is a subclass of AbstractFitFunction
+            >>> roots = scipy.optimize.fsolve(func, 0.)
+
         """
         kwargs["args"] = self.parameters
-        return fsolve(self._func, x0, **kwargs)
+        results = fsolve(self._func, x0, **kwargs)
+        if isinstance(results, tuple):
+            results = results[0]
+
+        return results, np.tile(np.nan, results.shape)
 
     @property
     def rsq(self):
