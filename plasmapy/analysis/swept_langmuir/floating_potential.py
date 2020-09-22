@@ -88,11 +88,11 @@ def find_floating_potential(
         types of curves ``"linear"`` and ``"exponential"`` (Default).  These
         specified which `FitFunction` class should be applied to the trace.
 
-        +-------------+--------------------------------------------------------------------------------+
-        | linear      | `~plasmapy.analysis.swept_langmuir.fit_functions.Linear`                       |
-        +-------------+--------------------------------------------------------------------------------+
-        | exponential | `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction` |
-        +-------------+--------------------------------------------------------------------------------+
+        +-------------+-------------------------------------------------------------------------+
+        | linear      | `~plasmapy.analysis.swept_langmuir.fit_functions.Linear`                |
+        +-------------+-------------------------------------------------------------------------+
+        | exponential | `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialPlusOffset` |
+        +-------------+-------------------------------------------------------------------------+
 
     Returns
     -------
@@ -101,9 +101,9 @@ def find_floating_potential(
         floating potential can not be determined.  How :math:`V_f` is calculated
         depends on the fit function.  This is described in the `root_solve()`
         method of the relevant fit function (e.g. the
-        :meth:`~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction.root_solve`
+        :meth:`~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialPlusOffset.root_solve`
         method of
-        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction`).
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialPlusOffset`).
 
     vf_err: `float` or `numpy.nan`
         The error associated with the floating potential calculation (in volts).
@@ -115,9 +115,9 @@ def find_floating_potential(
         The coefficient of determination (r-squared) value of the fit.  See the
         documentation of the `rsq` property on the associated fit function
         (e.g. the
-        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction.rsq`
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialPlusOffset.rsq`
         property of
-        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialOffsetFitFunction`).
+        `~plasmapy.analysis.swept_langmuir.fit_functions.ExponentialPlusOffset`).
 
     func: sub-class of `~plasmapy.analysis.swept_langmuir.fit_functions.AbstractFitFunction`
         The callable function :math:`f(x)` repressing the fit and its results.
@@ -146,7 +146,7 @@ def find_floating_potential(
             "min_point_factor": 0.1,
         },
         "exponential": {
-            "func": ffuncs.ExponentialOffsetFitFunction(),
+            "func": ffuncs.ExponentialPlusOffset(),
             "min_point_factor": 0.2,
         },
     }

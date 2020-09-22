@@ -5,7 +5,7 @@ traces.
 __all__ = [
     "AbstractFitFunction",
     "Exponential",
-    "ExponentialOffsetFitFunction",
+    "ExponentialPlusOffset",
     "Linear",
 ]
 
@@ -373,7 +373,7 @@ class Exponential(AbstractFitFunction):
         return np.nan, np.nan
 
 
-class ExponentialOffsetFitFunction(AbstractFitFunction):
+class ExponentialPlusOffset(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent an exponential with an
     offset.
