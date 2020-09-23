@@ -189,7 +189,6 @@
             "@type": "Person",
             "givenName": "Manas Satish",
             "familyName": "Bedmutha"
-            }
         },
         {
             "@type": "Person",
@@ -213,7 +212,7 @@
         {
             "@type": "Person",
             "givenName": "Sean",
-            "familyName": "Carroll",
+            "familyName": "Carroll"
         },
         {
             "@type": "Person",
@@ -229,7 +228,7 @@
             "@type": "Person",
             "@id": "",
             "givenName": "Apoorv",
-            "familyName": "Choubey",
+            "familyName": "Choubey"
         },
         {
             "@type": "Person",
@@ -245,6 +244,7 @@
             "@type": "Person",
             "givenName": "Roberto",
             "familyName": "Díaz Pérez"
+        },
         {
             "@type": "Person",
             "givenName": "Leah",
