@@ -19,7 +19,14 @@ Release
 -------
 
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
-  for version ``0.5.0``.  Update ``docs/citation.rst`` with the new DOI.
+  for version ``0.5.0``.
+
+% Update ``docs/citation.rst`` with the DOI for version ``0.5.0``.
+
+* Update metadata in ``codemeta.json``.  In particular, update the
+  ``"identifier"`` tag with the DOI for version ``0.5.0`` and update
+  the author list (with affiliations and ORCIDs, when possible) to be
+  consistent with the Zenodo record.  Update any other tags if necessary.
 
 * ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
@@ -105,12 +112,6 @@ Post-release
 
     * If tests fail, look at the ``recipe.yaml`` file - usually it's either
       changed dependencies or the simple import tests they've got there.
-
-* Update code metadata in ``codemeta.json``
-
-  * The `Codemeta standard <https://codemeta.github.io/>`_ is
-    relatively new, so check the standard for terms that have changed
-    and new terms that may apply
 
 * Upload the release to the Zenodo record corresponding to the reserved
   DOI
