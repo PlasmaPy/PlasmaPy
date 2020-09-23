@@ -393,6 +393,7 @@
         },
         {
             "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-4914-6612",
             "givenName": "Vishwas",
             "familyName": "Rajashekar"
         },
@@ -463,7 +464,8 @@
             "familyName": "Vo"
         },
         {
-            "@type": "Person"
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0001-7959-8495",
             "givenName": "Sixue",
             "familyName": "Xu"
         },
