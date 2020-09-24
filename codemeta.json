@@ -3,7 +3,7 @@
     "@type": "SoftwareSourceCode",
     "license": "https://spdx.org/licenses/BSD-2-Clause-Patent",
     "codeRepository": "https://github.com/PlasmaPy/plasmapy",
-    "contIntegration": "https://dev.azure.com/plasmapy/PlasmaPy/_build/results?buildId=1733&view=results",
+    "contIntegration": "https://dev.azure.com/plasmapy/PlasmaPy",
     "issueTracker": "https://github.com/PlasmaPy/PlasmaPy/issues",
     "name": "PlasmaPy",
     "version": "0.4.0",
@@ -184,7 +184,6 @@
                 "name": "ASML"
             }
         },
-
         {
             "@type": "Person",
             "givenName": "Manas Satish",
