@@ -200,15 +200,15 @@ def find_floating_potential(
                          f"greater than or equal to 0.")
 
     # find possible crossing points (cp)
-    lower_vals = np.where(current <= 0, True, False)
-    upper_vals = np.where(0 <= current, True, False)
+    lower_vals = current <= 0
+    upper_vals = 0 <= current
     cp_exact = np.logical_and(lower_vals, upper_vals).nonzero()[0]
     cp_low2high = np.logical_and(np.roll(lower_vals, 1), upper_vals).nonzero()[0]
     cp_high2low = np.logical_and(np.roll(lower_vals, -1), upper_vals).nonzero()[0]
 
     # adjust for array wrapping cause by np.roll
-    cp_low2high = cp_low2high[np.where(cp_low2high != 0, True, False)]
-    cp_high2low = cp_high2low[np.where(cp_high2low != current.size - 1, True, False)]
+    cp_low2high = cp_low2high[cp_low2high != 0]
+    cp_high2low = cp_high2low[cp_high2low != current.size - 1]
 
     # collect all candidates
     cp_candidates = np.concatenate((
