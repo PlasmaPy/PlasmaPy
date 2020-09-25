@@ -61,19 +61,21 @@ class PosGrid:
         # If grid has been provided, initialize object with the provided
         # grid
         if "grid" in kwargs.keys():
-            self.grid = kwargs["grid"]
+            grid = kwargs["grid"]
 
-            if not isinstance(self.grid, u.Quantity):
+            if not isinstance(grid, u.Quantity):
                 raise ValueError(
                     "Grid must be an astropy.units.Quantity, but "
-                    f"type given was {type(self.grid)}"
+                    f"type given was {type(grid)}"
                 )
 
-            if not len(self.grid.shape) == 4 or self.grid.shape[3] != 3:
+            if not len(grid.shape) == 4 or grid.shape[3] != 3:
                 raise ValueError(
                     "Grid must have shape [nx,ny,nz,3], but "
                     f"grid given has shape {self.grid.shape}"
                 )
+
+            self.grid = grid
 
         # Otherwise create a grid
         else:

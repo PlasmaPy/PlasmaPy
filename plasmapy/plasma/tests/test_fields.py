@@ -24,7 +24,7 @@ def test_posgrid():
     unit = grid.unit
 
     # Init a new grid object using the old grid and test for regularity etc.
-    grid2 = fields.PosGrid(grid=grid)
+    grid2 = fields.PosGrid(grid=grid.grid)
     regular_grid = grid2.regular_grid
     nearest_neighbor = grid2.nearest_neighbor
 
