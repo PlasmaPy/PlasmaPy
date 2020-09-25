@@ -8,20 +8,7 @@ import pytest
 import warnings
 
 from plasmapy.diagnostics import proton_radiography as prad
-
-
-def test_example_fields():
-    grid, E, B = prad.example_fields(model="no fields")
-
-    model = prad.ElectrostaticGaussianSphere(
-        grid, emax=1e9 * u.V / u.m, regular_grid=True
-    )
-
-    # Test setting and getting emax and bmax
-    model.emax = 2e9 * u.V / u.m
-    model.bmax = 1 * u.T
-    a = model.emax
-    a = model.bmax
+from plasmapy.plasma import fields as fields
 
 
 def test_coordinate_systems():
@@ -31,7 +18,7 @@ def test_coordinate_systems():
 
     """
 
-    grid, E, B = prad.example_fields(model="no fields")
+    grid, E, B = fields.example_fields(model="no fields")
 
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
@@ -64,7 +51,7 @@ def test_regular_grid():
     """
     Run a simulation with a regular grid
     """
-    grid, E, B = prad.example_fields(
+    grid, E, B = fields.example_fields(
         model="electrostatic gaussian sphere",
         regular_grid=True,
         length=np.array([1, 1, 1]) * u.mm,
@@ -97,7 +84,9 @@ def test_irregular_grid():
     """
     Run a simulation with an irregular grid
     """
-    grid, E, B = prad.example_fields(model="axial magnetic field", regular_grid=False)
+    grid, E, B = fields.example_fields(
+        model="axial magnetic field", num=50, regular_grid=False
+    )
 
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
@@ -105,23 +94,13 @@ def test_irregular_grid():
         grid, E, B, source, detector, geometry="spherical", verbose=False
     )
 
-    sim.run(1e3, max_theta=np.pi / 12 * u.rad)
+    sim.run(1e2, max_theta=np.pi / 12 * u.rad)
     hax, vax, values = sim.synthetic_radiograph()
 
     # Check that trying to run this simulation with volume-averaged fields
     # raises an exception
     with pytest.raises(ValueError):
-        sim.run(1e3, max_theta=np.pi / 12 * u.rad, field_weighting="volume averaged")
-
-
-def test_other_example_fields():
-    """
-    Creates all test fields that aren't run in other tests'
-    """
-
-    grid, E, B = prad.example_fields(
-        model="electrostatic planar shock", num=(100, 100, 200)
-    )
+        sim.run(1e1, max_theta=np.pi / 12 * u.rad, field_weighting="volume averaged")
 
 
 def test_SyntheticProtonRadiograph_error_handling():
@@ -131,7 +110,7 @@ def test_SyntheticProtonRadiograph_error_handling():
 
     # INIT ERRORS
 
-    grid, E, B = prad.example_fields(
+    grid, E, B = fields.example_fields(
         model="electrostatic gaussian sphere", num=(100, 100, 100)
     )
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
@@ -177,6 +156,3 @@ def test_SyntheticProtonRadiograph_error_handling():
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
 
         hax, vax, values = sim.synthetic_radiograph(size=size)
-
-
-test_example_fields()

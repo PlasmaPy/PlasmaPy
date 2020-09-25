@@ -24,420 +24,7 @@ import warnings
 from abc import ABC, abstractmethod
 from scipy.special import erf as erf
 
-
-class AbstractField(ABC):
-    """
-    Base class for example fields for testing SyntheticProtonRadiograph
-    functions.
-    """
-
-    def __init__(self, grid, emax=0 * u.V / u.m, bmax=0 * u.T, regular_grid=None):
-        r"""
-        Initialize a field object
-
-        Parameters
-        ----------
-        grid : `~astropy.units.Quantity` ndarray, (nx,ny,nz,3)
-            Positions of grid points in space
-
-        emax : `~astropy.units.Quantity`
-            Maximum electric field to normalize example field to. The default
-            is 0 * u.V / u.m.
-
-        bmax : `~astropy.units.Quantity`
-            Maximum magnetic field to normalize the example field to. The
-            default is 0 * u.T.
-
-        regular_grid : bool
-            If None, the grid will be tested to determine whether or not it
-            is regularly spaced. If True or False, the grid will be assumed
-            to be regularly or irregularly spaced respectively without testing.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.grid = grid
-        self._emax = emax
-        self._bmax = bmax
-
-        self.E = np.zeros(self.grid.shape) * u.V / u.m
-        self.B = np.zeros(self.grid.shape) * u.T
-
-        # If the regular grid flag is not set, auto detect whether the grid
-        # is uniform
-        if regular_grid is None:
-            self.regular_grid = _detect_regular_grid(grid)
-        else:
-            self.regular_grid = regular_grid
-
-        self.L = np.abs(np.max(grid) - np.min(grid))
-        self.xarr = grid[..., 0]
-        self.yarr = grid[..., 1]
-        self.zarr = grid[..., 2]
-
-        if self.regular_grid:
-            self.xaxis = self.xarr[:, 0, 0]
-            self.yaxis = self.yarr[0, :, 0]
-            self.zaxis = self.zarr[0, 0, :]
-
-        # Calculate radius arrays in spherical and cylindrical coordinates
-        # for use in generating different field structures
-        self.radius = np.sqrt(self.xarr ** 2 + self.yarr ** 2 + self.zarr ** 2)
-        self.pradius = np.sqrt(self.xarr ** 2 + self.yarr ** 2)
-
-        # Check that the model selected can be used (eg. no gradients on a
-        # non-uniform grid)
-        self._validate()
-
-        # Generate the fields.
-        self._gen_fields()
-
-        # Normalize the fields to the emax and bmax values set
-        self._norm()
-
-    @abstractmethod
-    def _validate(self):
-        """
-        Raise errors when the specified parameteters are not compatible with
-        the field subclass that is being instantiated.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def _gen_fields(self):
-        """
-        Fill the empty E and B arrays with the example fields.
-        """
-        raise NotImplementedError
-
-    def _norm(self):
-        """
-        Normalize the fields to the emax and bmax values provided.
-        """
-        max_E = np.max(self.E)
-        max_B = np.max(self.B)
-
-        if max_E != 0:
-            self.E = self._emax * (self.E / max_E).to(u.dimensionless_unscaled)
-
-        if max_B != 0:
-            self.B = self._bmax * (self.B / max_B).to(u.dimensionless_unscaled)
-
-    @property
-    def bmax(self):
-        """
-        Get bmax
-        """
-        return self._bmax
-
-    @bmax.setter
-    def bmax(self, val):
-        """
-        Set bmax and re-normalize fields to the new value.
-        """
-        self._bmax = val
-        # Normalize the fields to the new value
-        self._norm()
-
-    @property
-    def emax(self):
-        """
-        Get emax
-        """
-        return self._emax
-
-    @emax.setter
-    def emax(self, val):
-        """
-        Set emax and re-normalize fields to the new value.
-        """
-        self._emax = val
-        # Normalize the fields to the new values
-        self._norm()
-
-
-class NoFields(AbstractField):
-    r"""
-    Empty E and B arrays.
-    """
-
-    def _gen_fields(self):
-        pass
-
-    def _validate(self):
-        pass
-
-
-class ElectrostaticGaussianSphere(AbstractField):
-    r"""
-    A radial, spherically symmetric electric field produced by a spherical
-    blob of potential with a Gaussian radial distribution:
-
-    .. math::
-        \phi = e^{-(r/a)^2}
-    .. math::
-        E = -\nabla \phi \text{, for }  (r < L/2)
-    .. math::
-        E = 0 \text{, for } (r < L/2)
-    .. math::
-        B = 0
-
-    Where :math:`r` is the radius, :math:`L` is the field grid length scale,
-    and :math:`a=L/3`.
-
-    Since a gradient is used in the calculation,
-    this option is not compatible with a non-uniform grid.
-    """
-
-    def _gen_fields(self):
-        a = self.L / 3
-        potential = np.exp(-(self.radius ** 2) / a ** 2) * u.V
-
-        Ex, Ey, Ez = np.gradient(potential, self.xaxis, self.yaxis, self.zaxis)
-
-        self.E[:, :, :, 0] = -1 * np.where(self.radius < 0.5 * self.L, Ex, 0)
-        self.E[:, :, :, 1] = -1 * np.where(self.radius < 0.5 * self.L, Ey, 0)
-        self.E[:, :, :, 2] = -1 * np.where(self.radius < 0.5 * self.L, Ez, 0)
-
-    def _validate(self):
-        if not self.regular_grid:
-            raise ValueError(
-                "ElectrostaticGaussianSphere can only be created "
-                "on a regularly spaced grid."
-            )
-
-
-class AxiallyMagnetizedCylinder(AbstractField):
-    r"""
-    A cylinder of constant magnetic field aligned with the z-axis:
-
-    .. math::
-        E = 0
-    .. math::
-        B = 1  \text{, for } (\rho < a)
-    .. math::
-        B = 0 \text{, for } (\rho > a)
-
-    Where :math:`\rho` is the cylinder radius, :math:`L` is the field grid
-    length scale, and :math:`a=L/4`.
-    """
-
-    def _gen_fields(self):
-        a = self.L / 4
-        self.B[:, :, :, 2] = np.where(self.pradius < a, 400 * u.T, 0 * u.T)
-
-    def _validate(self):
-        pass
-
-
-class ElectrostaticPlanarShock(AbstractField):
-    r"""
-    A model of an electrostatic planar shock. The discontinuity is located
-    at z=0 and has a Gaussian distribution in the xy plane:
-
-    .. math::
-        \phi = (1 - \Gamma(z/\delta))e^(-(\rho/a)^2)
-    .. math::
-        E = - \nabla \phi
-    .. math::
-        B = 0
-
-    Where :math:`\rho` is the cylindrical radius, :math:`a=Max(\rho)`,
-    :math:`\delta=a/120 is the shock width`,
-    and :math:`\Gamma()` is the Gauss error function.
-
-    Since a gradient is used in the calculation,
-    this option is not compatible with a non-uniform grid.
-    """
-
-    def _gen_fields(self):
-        a = np.max(self.pradius) / 2
-        delta = a / 120
-
-        potential = (
-            (1 - erf(self.zarr / delta)) * np.exp(-((self.pradius / a) ** 2)) * u.V
-        )
-
-        Ex, Ey, Ez = np.gradient(potential, self.xaxis, self.yaxis, self.zaxis)
-        self.E[..., 0] = -Ex
-        self.E[..., 1] = -Ey
-        self.E[..., 2] = -Ez
-
-    def _validate(self):
-        if not self.regular_grid:
-            raise ValueError(
-                "ElectrostaticPlanarShock can only be created "
-                "on a regularly spaced grid."
-            )
-
-
-def example_fields(
-    grid=None,
-    model="electrostatic gaussian sphere",
-    regular_grid=True,
-    num=(100, 100, 100),
-    length=1 * u.mm,
-    emax=1e9 * u.V / u.m,
-    bmax=100 * u.T,
-):
-    r"""
-    This function generates example fields based on analytical models for
-    testing or demonstrating the proton radiography module.
-
-    Parameters
-    ----------
-    grid : `~astropy.units.Quantity` array shape (nx,ny,nz,3), optional
-        A grid of positions on which to calculate fields. If no grid is
-        specified, one will be created.
-
-    model : str, optional
-        The field model to load. The default represents the electrostatic
-        E-field created by a spherical Gaussian potential. The full list of
-        options is:
-
-        * "no fields": A grid with empty field arrays (E=B=0)
-
-        * "electrostatic gaussian sphere": A radial, spherically symmetric
-            electric field sphere produced by a sphere of potential with a
-            Gaussian distribution. Since a gradient is used in the calculation,
-            this option is not compatible with a non-uniform grid.
-
-        * "axial magnetic field": A cylinder of magnetic field oriented along
-            the z-axis, with E=0.
-
-        * "electrostatic planar shock": A model of an electrostatic planar
-            shock. The discontinuity is located at z=0 and has a Gaussian
-            distribution in the xy plane.
-
-    regular_grid : bool, optional
-        If a grid is being generated, setting this keyword to False will
-        generate a grid with random spacing between points. If True
-        (the default) the grid spacing will be uniform.
-
-    num : int or tuple of 3 ints, optional
-        If a grid is being constructed, this variable sets the number of
-        elements in each dimension. If set to a single integer, all three
-        dimensions are taken to have the same length. The default is 100.
-
-    length : `~astropy.units.Quantity`, optional
-        The length of each dimension, which can be given in several ways:
-            * If a single value is given, then the length of each dimension
-                will be set to (-length, length)
-
-            * If an array of shape (3) is given, each dimension is set to be
-                symmetric using each value, eg. xdim = [-length[0], length[0]]...
-
-            * If an array of shape (2,3) is given, then L[:,i] is the min
-                and max of the ith dimension.
-
-    emax: `~astropy.units.Quantity`, optional
-        Scale E-field to this maximum value. Default is 1e9 V/m
-
-    bmax: `~astropy.units.Quantity`, optional
-        Scale B-field to this maximum value. Default is 100 T
-
-    Returns
-    -------
-    grid : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
-        The grid of positions corresponding to the field grids.
-
-    E : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
-        Electric field array in units of V/m
-
-    B : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
-        Magnetic field array in units of Tesla
-
-    """
-
-    # If no grid is specified, create a grid
-    if grid is None:
-        grid = _make_grid(num, length, regular_grid=regular_grid)
-
-    # Load the model class for the test example chosen
-    models = {
-        "no fields": NoFields,
-        "electrostatic gaussian sphere": ElectrostaticGaussianSphere,
-        "electrostatic planar shock": ElectrostaticPlanarShock,
-        "axial magnetic field": AxiallyMagnetizedCylinder,
-    }
-
-    # Generate the fields by instantiating the test field object
-    fields = models[model](grid, emax=emax, bmax=bmax, regular_grid=regular_grid)
-
-    return fields.grid, fields.E, fields.B
-
-
-def _make_grid(num, length, regular_grid=True):
-    r"""
-    Creates a grid given a number of options
-
-    Parameters
-    ----------
-
-    num : int or tuple of 3 ints, optional
-        The number of points along each axis
-
-    length : ndarray of quantities
-        The length of each dimension, which can be given in several ways:
-
-        * If a single value is given, then the length of each dimension
-            will be set to (-length, length)
-
-        * If an array of shape (3) is given, each dimension is set to be
-            symmetric using each value, eg. xdim = [-length[0], length[0]]...
-
-        * If an array of shape (2,3) is given, then L[:,i] is the min
-            and max of the ith dimension.
-
-    regular_grid : bool
-        If True, generate a regularly spaced grid. If False, generate a grid
-        with irregular spacing. Default is True.
-
-    Returns
-    -------
-    grid : ndarray (nx,ny,nz,3)
-    """
-
-    # Process different options for inputs
-    if isinstance(num, int):
-        num = (num, num, num)
-
-    L = np.zeros([2, 3]) * length.unit
-    if length.size == 1:
-        L[:, 0] = np.array([-length.value, length.value]) * length.unit
-        L[:, 1] = np.array([-length.value, length.value]) * length.unit
-        L[:, 2] = np.array([-length.value, length.value]) * length.unit
-    elif length.size == 3:
-        L[:, 0] = np.array([-length[0].value, length[0].value]) * length.unit
-        L[:, 1] = np.array([-length[1].value, length[1].value]) * length.unit
-        L[:, 2] = np.array([-length[2].value, length[2].value]) * length.unit
-    else:
-        raise ValueError("Dimensions of length in _create_grid are not valid.")
-
-    # Create a blank grid
-    grid = np.zeros([num[0], num[1], num[2], 3]) * u.cm
-
-    # If regulr_grid keyword is False, create a non-uniform grid with
-    # random point spacing in all directions
-    if not regular_grid:
-        for d in [0, 1, 2]:
-            ax = np.random.uniform(low=L[0, d].value, high=L[1, d].value, size=num)
-            ax = np.sort(ax, axis=d)
-            grid[..., d] = ax * L.unit
-
-    # If regular_grid keyword is set, create a uniformly spaced grid
-    else:
-        xaxis = np.linspace(L[0, 0], L[1, 0], num=num[0])
-        yaxis = np.linspace(L[0, 1], L[1, 1], num=num[1])
-        zaxis = np.linspace(L[0, 2], L[1, 2], num=num[2])
-        xarr, yarr, zarr = np.meshgrid(xaxis, yaxis, zaxis, indexing="ij")
-        grid[..., 0] = xarr
-        grid[..., 1] = yarr
-        grid[..., 2] = zarr
-
-    return grid
+from plasmapy.plasma import fields as fields
 
 
 def _rot_a_to_b(a, b):
@@ -460,84 +47,6 @@ def _rot_a_to_b(a, b):
     ).T  # Transpose to get right orientation
 
     return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
-
-
-def _nearest_neighbor(array):
-    r"""
-    Given a 3D array of cartesian postions of shape [nx,ny,nz,3],
-    return a Quantity array of the distance to the nearest neighbor from each
-    point of shape [nx,ny,nz]. This output is used to define the local
-    scalar grid resolution on an irregular grid.
-    """
-    nx, ny, nz, x = array.shape
-
-    dist = np.zeros([nx, ny, nz, 26]) * array.unit
-
-    ind = 0
-    for x in [-1, 0, 1]:
-        for y in [-1, 0, 1]:
-            for z in [-1, 0, 1]:
-
-                # Skip the zero shift case.
-                if x == 0 and y == 0 and z == 0:
-                    continue
-
-                # Shift the array
-                shifted_arr = np.roll(array, shift=(x, y, z), axis=(0, 1, 2))
-                # Compute the distance between the shifted array points and the
-                # previous array points
-                dist[..., ind] = np.linalg.norm(array - shifted_arr, axis=3)
-                # Increment counter
-                ind += 1
-
-    # Return the minimum distance between all 27 points
-    return np.min(dist, axis=3)
-
-
-def _vector_intersects_grid(p1, p2, grid):
-    r"""
-    Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
-    returns false. Assumes the grid is at least approximately axis-aligned.
-    This is a standard ray-box intersection algorithm.
-    """
-    p1, p2, grid = p1.si.value, p2.si.value, grid.si.value
-    # Caclulate the minimum and maximum of each
-    Ax, Bx = np.min(grid[..., 0]), np.max(grid[..., 0])
-    Ay, By = np.min(grid[..., 1]), np.max(grid[..., 1])
-    Az, Bz = np.min(grid[..., 2]), np.max(grid[..., 2])
-    A = np.array([Ax, Ay, Az])
-    B = np.array([Bx, By, Bz])
-
-    # Calculate the equation of the line from p1 to p2 such that
-    # r = p1 + t*D
-    D = p2 - p1
-
-    # Calculate the intersection points. These operations are just vectorized
-    # for convenience. Ignore div-by-zero: outputting infty's here is fine.
-    with np.errstate(divide="ignore"):
-        Tmin = (A - p1) / D
-        Tmax = (B - p1) / D
-
-    Tmin = np.max(Tmin)
-    Tmax = np.min(Tmax)
-
-    return Tmin < Tmax
-
-
-def _detect_regular_grid(grid, tol=1e-6):
-    """
-    Determine whether a grid is regular (uniformly spaced) by computing the
-    variance of the grid gradients.
-    """
-    variance = np.zeros([3])
-    dx = np.gradient(grid[..., 0], axis=0)
-    variance[0] = np.std(dx) / np.mean(dx)
-    dy = np.gradient(grid[..., 1], axis=1)
-    variance[1] = np.std(dy) / np.mean(dy)
-    dz = np.gradient(grid[..., 2], axis=2)
-    variance[2] = np.std(dz) / np.mean(dz)
-
-    return np.allclose(variance, 0.0, atol=tol)
 
 
 class SyntheticProtonRadiograph:
@@ -612,20 +121,25 @@ class SyntheticProtonRadiograph:
         and compute several quantities that will be used elsewhere.
         """
 
+        # Convert grid to PosGrid object
+        if isinstance(grid, fields.PosGrid):
+            self.grid = grid
+        else:
+            self.grid = fields.PosGrid(grid=grid)
+
+        self.E = E
+        self.B = B
+        self.proton_energy = proton_energy
+        self.verbose = verbose
+
         # Validate input arrays
-        arr = {"grid": grid, "E": E, "B": B}
+        arr = {"grid": self.grid.grid, "E": E, "B": B}
         for x in arr.keys():
             if not np.isfinite(arr[x]).all():
                 raise ValueError(
                     f"Input arrays must be finite: {x} contains "
                     "either NaN or infinite values."
                 )
-
-        self.grid = grid
-        self.E = E
-        self.B = B
-        self.proton_energy = proton_energy
-        self.verbose = verbose
 
         self.charge = const.e.si
         self.mass = const.m_p.si
@@ -688,7 +202,7 @@ class SyntheticProtonRadiograph:
         self._log("Detector: " + str(self.detector.to(u.mm)))
 
         # Check that source-detector vector actually passes through the grid
-        if not _vector_intersects_grid(self.source, self.detector, self.grid):
+        if not self.grid.vector_intersects(self.source, self.detector):
             raise ValueError(
                 "The vector from the source to the detector "
                 "does not pass through the grid! "
@@ -729,21 +243,17 @@ class SyntheticProtonRadiograph:
         indgrid = np.indices([nx, ny, nz])
         indgrid = np.moveaxis(indgrid, 0, -1)
 
-        self.regular_grid = _detect_regular_grid(self.grid)
-        if self.regular_grid:
+        if self.grid.regular_grid:
             self._log("Auto-detected a regularly spaced grid.")
         else:
             self._log("Auto-detected an irregularly spaced grid.")
 
-        if self.regular_grid:
+        if self.grid.regular_grid:
             # Create axes under the regular grid assumption
-            xaxis = self.grid[:, 0, 0, 0]
-            yaxis = self.grid[0, :, 0, 1]
-            zaxis = self.grid[0, 0, :, 2]
-            dx = np.mean(np.gradient(xaxis))
-            dy = np.mean(np.gradient(yaxis))
-            dz = np.mean(np.gradient(zaxis))
-            dvec = np.array([dx.value, dy.value, dz.value]) * dx.unit
+            dvec = (
+                np.array([self.grid.dx.value, self.grid.dy.value, self.grid.dz.value])
+                * self.grid.dx.unit
+            )
 
             # Estimate the grid-point spacing along the source_to_detector vector
             # Will be expanded to a constant array of length nparticles_grid
@@ -751,7 +261,11 @@ class SyntheticProtonRadiograph:
             self.ds = np.linalg.norm(np.dot(dvec, self.exp_ax))
 
             # Initialize the interpolator
-            pts = (xaxis.si.value, yaxis.si.value, zaxis.si.value)
+            pts = (
+                self.grid.xaxis.si.value,
+                self.grid.yaxis.si.value,
+                self.grid.zaxis.si.value,
+            )
             self._log("Creating regular grid interpolator")
             self.interpolator = interp.RegularGridInterpolator(
                 pts, indgrid, method="nearest", bounds_error=False, fill_value=-1
@@ -760,9 +274,9 @@ class SyntheticProtonRadiograph:
         else:
             # Flat arrays of points for irregular grid interpolation fcn
             pts = np.zeros([nx * ny * nz, 3])
-            pts[:, 0] = self.grid[:, :, :, 0].flatten().si.value
-            pts[:, 1] = self.grid[:, :, :, 1].flatten().si.value
-            pts[:, 2] = self.grid[:, :, :, 2].flatten().si.value
+            pts[:, 0] = self.grid.xarr.flatten().si.value
+            pts[:, 1] = self.grid.yarr.flatten().si.value
+            pts[:, 2] = self.grid.xarr.flatten().si.value
 
             # Flatten the index grid for irregular grid interpolation fcn
             indgrid2 = np.zeros([nx * ny * nz, 3])
@@ -777,14 +291,11 @@ class SyntheticProtonRadiograph:
             # If dt is not explicitly set, create an array of the
             # distance to the nearest neighbor of each grid
             if self.dt is None:
-                self._log("Creating nearest-neighbor grid")
-                self.nearest_neighbor = _nearest_neighbor(self.grid)
-
-            # TODO
-            # self.ds is used for determining when particles are on-grid
-            # Somewhat ambiguous how to chose a single value for this for an
-            # irregular grid: this may not be the best solution.
-            self.ds = np.median(self.nearest_neighbor)
+                # TODO
+                # self.ds is used for determining when particles are on-grid
+                # Somewhat ambiguous how to chose a single value for this for an
+                # irregular grid: this may not be the best solution.
+                self.ds = np.median(self.grid.nearest_neighbor)
 
     def _max_theta_grid(self):
         r"""
@@ -798,7 +309,7 @@ class SyntheticProtonRadiograph:
             for y in [0, -1]:
                 for z in [0, -1]:
                     # Souce to grid corner vector
-                    vec = self.grid[x, y, z, :] - self.source
+                    vec = self.grid.grid[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
                     # axis, which is the central axis of the proton beam
@@ -897,7 +408,7 @@ class SyntheticProtonRadiograph:
         be entering the grid (to save time)
         """
         # Distance from the source to the nearest gridpoint
-        dist = np.min(np.linalg.norm(self.grid - self.source, axis=3))
+        dist = np.min(np.linalg.norm(self.grid.grid - self.source, axis=3))
 
         # Time for fastest possible particle to reach the grid.
         t = (dist / self.v0).to(u.s)
@@ -965,7 +476,7 @@ class SyntheticProtonRadiograph:
             B = B * np.outer(self.on_grid, np.ones(3))
 
         elif self.field_weighting == "volume averaged":
-            if not self.regular_grid:
+            if not self.grid.regular_grid:
                 raise ValueError(
                     "Volume weighting fields is currently "
                     " only supported on regular grids."
@@ -974,7 +485,7 @@ class SyntheticProtonRadiograph:
             # Load the positions of each particle, and of the grid point
             # interpolated for it
             rpos = self.r[self.gi, :]
-            gpos = self.grid[self.xi, self.yi, self.zi, :]
+            gpos = self.grid.grid[self.xi, self.yi, self.zi, :]
 
             nx, ny, nz, nax = self.grid.shape
 
@@ -990,10 +501,7 @@ class SyntheticProtonRadiograph:
             # Calculate the cell volume
             # TODO: if this could be done for an arbitrary mesh of 8 points,
             # this algorithm could be used on irregualr grids. Make it so?
-            dx = np.mean(np.gradient(self.grid[:, 0, 0, 0]))
-            dy = np.mean(np.gradient(self.grid[0, :, 0, 1]))
-            dz = np.mean(np.gradient(self.grid[0, 0, :, 2]))
-            cell_vol = dx * dy * dz
+            cell_vol = self.grid.dx * self.grid.dy * self.grid.dz
 
             E = np.zeros([len(self.xi), 3]) * self.E.unit
             B = np.zeros([len(self.xi), 3]) * self.B.unit
@@ -1014,7 +522,7 @@ class SyntheticProtonRadiograph:
                         out = np.where(valid == False)
 
                         # Distance from grid vertex to particle position
-                        d = np.abs(self.grid[x, y, z, :] - rpos)
+                        d = np.abs(self.grid.grid[x, y, z, :] - rpos)
 
                         # Fraction of cell volume that is closest to the
                         # current point
@@ -1075,7 +583,7 @@ class SyntheticProtonRadiograph:
         as the particles move
         """
 
-        if self.regular_grid:
+        if self.grid.regular_grid:
             # If self.ds is a scalar (as setup by the init function)
             # extend it to be the length of npartiles_grid
             if self.ds.size == 1:
@@ -1085,7 +593,7 @@ class SyntheticProtonRadiograph:
         else:
             # Calculate ds for each particle as the nearest-neighbor
             # distance of its assigned gridpoint
-            self.ds = self.nearest_neighbor[self.xi, self.yi, self.zi]
+            self.ds = self.grid.nearest_neighbor[self.xi, self.yi, self.zi]
 
     def _push(self):
         r"""
@@ -1101,7 +609,7 @@ class SyntheticProtonRadiograph:
 
         # Update the list of particles on and off the grid
         dist = np.linalg.norm(
-            self.r[self.gi, :] - self.grid[self.xi, self.yi, self.zi, :], axis=1
+            self.r[self.gi, :] - self.grid.grid[self.xi, self.yi, self.zi, :], axis=1
         )
         self.on_grid = np.where(dist < self.ds, 1, 0)
         self.entered_grid += self.on_grid
@@ -1359,9 +867,9 @@ class SyntheticProtonRadiograph:
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid[..., 0].value)),
-                    np.max(np.abs(self.grid[..., 1].value)),
-                    np.max(np.abs(self.grid[..., 2].value)),
+                    np.max(np.abs(self.grid.xarr.value)),
+                    np.max(np.abs(self.grid.yarr.value)),
+                    np.max(np.abs(self.grid.zarr.value)),
                 ]
             )
 
