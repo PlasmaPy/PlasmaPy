@@ -4,8 +4,7 @@ representing different field configurations
 """
 
 __all__ = [
-    "PosGrid"
-    "AbstractField",
+    "PosGrid" "AbstractField",
     "NoFields",
     "ElectrostaticGaussianSphere",
     "AxiallyMagnetizedCylinder",
@@ -21,7 +20,7 @@ from abc import ABC, abstractmethod
 from scipy.special import erf as erf
 
 
-class PosGrid():
+class PosGrid:
     """
     Represents a 3D position grid. If a grid is passed in through the grid
     keyword, the object is directily initialized from this grid and other
@@ -58,10 +57,22 @@ class PosGrid():
 
     def __init__(self, **kwargs):
 
+        # If grid has been provided, initialize object with the provided
+        # grid
+        if "grid" in kwargs.keys():
+            self.grid = kwargs["grid"]
 
-        # If one argument is set, assume a grid has been provided
-        if 'grid' in kwargs.keys() and isinstance(kwargs['grid'], u.Quantity):
-            self.grid = kwargs['grid']
+            if not isinstance(self.grid, u.Quantity):
+                raise ValueError(
+                    "Grid must be an astropy.units.Quantity, but "
+                    f"type given was {type(self.grid)}"
+                )
+
+            if not len(self.grid.shape) == 4 or self.grid.shape[3] != 3:
+                raise ValueError(
+                    "Grid must have shape [nx,ny,nz,3], but "
+                    f"grid given has shape {self.grid.shape}"
+                )
 
         # Otherwise create a grid
         else:
@@ -70,14 +81,13 @@ class PosGrid():
         # If regular grid is set, use that value
         # otherwise set to None and grid regularity will be auto-detected
         # if needed.
-        if 'regular_grid' in kwargs.keys():
-            self._regular_grid = kwargs['regular_grid']
+        if "regular_grid" in kwargs.keys():
+            self._regular_grid = kwargs["regular_grid"]
         else:
             self._regular_grid = None
 
         # Properties to be calculated as needed
         self._nearest_neighbor = None
-
 
     @property
     def regular_grid(self):
@@ -104,22 +114,21 @@ class PosGrid():
         """
         Returns the 3D array of x values
         """
-        return self.grid[...,0]
+        return self.grid[..., 0]
 
     @property
     def yarr(self):
         """
         Returns the 3D array of y values
         """
-        return self.grid[...,1]
+        return self.grid[..., 1]
 
     @property
     def zarr(self):
         """
         Returns the 3D array of z values
         """
-        return self.grid[...,2]
-
+        return self.grid[..., 2]
 
     @property
     def xaxis(self):
@@ -127,10 +136,11 @@ class PosGrid():
         Get x-axis (only valid for a uniform grid)
         """
         if self._regular_grid is True:
-            return self.grid[:,0,0,0]
+            return self.grid[:, 0, 0, 0]
         else:
-            raise ValueError("xaxis property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "xaxis property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def yaxis(self):
@@ -138,10 +148,11 @@ class PosGrid():
         Get y-axis (only valid for a uniform grid)
         """
         if self._regular_grid is True:
-            return self.grid[0,:,0,1]
+            return self.grid[0, :, 0, 1]
         else:
-            raise ValueError("yaxis property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "yaxis property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def zaxis(self):
@@ -149,10 +160,11 @@ class PosGrid():
         Get z-axis (only valid for a uniform grid)
         """
         if self._regular_grid is True:
-            return self.grid[0,0,:,2]
+            return self.grid[0, 0, :, 2]
         else:
-            raise ValueError("zaxis property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "zaxis property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def dx(self):
@@ -162,8 +174,9 @@ class PosGrid():
         if self._regular_grid is True:
             return np.mean(np.gradient(self.xaxis))
         else:
-            raise ValueError("dx property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "dx property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def dy(self):
@@ -173,8 +186,9 @@ class PosGrid():
         if self._regular_grid is True:
             return np.mean(np.gradient(self.yaxis))
         else:
-            raise ValueError("dy property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "dy property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def dz(self):
@@ -184,8 +198,9 @@ class PosGrid():
         if self._regular_grid is True:
             return np.mean(np.gradient(self.zaxis))
         else:
-            raise ValueError("dz property is only well-defined for "
-                             "uniformly-spaced grids.")
+            raise ValueError(
+                "dz property is only well-defined for " "uniformly-spaced grids."
+            )
 
     @property
     def shape(self):
@@ -201,25 +216,23 @@ class PosGrid():
         """
         return self.grid.unit
 
-
-
     def _make_grid(self, **kwargs):
         """
         Create a grid based on keywords set
         """
 
-        if 'num' in kwargs.keys():
-            num = kwargs['num']
+        if "num" in kwargs.keys():
+            num = kwargs["num"]
         else:
             num = 100
 
-        if 'length' in kwargs.keys():
-            length = kwargs['length']
+        if "length" in kwargs.keys():
+            length = kwargs["length"]
         else:
-            length = 1*u.cm
+            length = 1 * u.cm
 
-        if 'regular_grid' in kwargs.keys():
-            regular_grid = kwargs['regular_grid']
+        if "regular_grid" in kwargs.keys():
+            regular_grid = kwargs["regular_grid"]
         else:
             regular_grid = True
 
@@ -263,7 +276,6 @@ class PosGrid():
         self._regular_grid = regular_grid
         self.grid = grid
 
-
     def _detect_regular_grid(self, tol=1e-6):
         """
         Determine whether a grid is regular (uniformly spaced) by computing the
@@ -278,7 +290,6 @@ class PosGrid():
         variance[2] = np.std(dz) / np.mean(dz)
 
         self._regular_grid = np.allclose(variance, 0.0, atol=tol)
-
 
     def _calculate_nearest_neighbor(self):
         r"""
@@ -310,7 +321,6 @@ class PosGrid():
         # Return the minimum distance between all 27 points
         self._nearest_neighbor = np.min(dist, axis=3)
 
-
     def vector_intersects(self, p1, p2):
         r"""
         Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
@@ -339,7 +349,6 @@ class PosGrid():
         Tmax = np.min(Tmax)
 
         return Tmin < Tmax
-
 
 
 class AbstractField(ABC):
@@ -372,7 +381,7 @@ class AbstractField(ABC):
 
         # If grid is not already a PosGrid object, try making it one
         if not isinstance(grid, PosGrid):
-            self.grid = PosGrid(grid = grid)
+            self.grid = PosGrid(grid=grid)
         else:
             self.grid = grid
 
@@ -388,10 +397,10 @@ class AbstractField(ABC):
 
         # Calculate radius arrays in spherical and cylindrical coordinates
         # for use in generating different field structures
-        self.radius = np.sqrt(self.grid.xarr ** 2 + self.grid.yarr ** 2 +
-                              self.grid.zarr ** 2)
+        self.radius = np.sqrt(
+            self.grid.xarr ** 2 + self.grid.yarr ** 2 + self.grid.zarr ** 2
+        )
         self.pradius = np.sqrt(self.grid.xarr ** 2 + self.grid.yarr ** 2)
-
 
         # Check that the model selected can be used (eg. no gradients on a
         # non-uniform grid)
@@ -501,8 +510,9 @@ class ElectrostaticGaussianSphere(AbstractField):
         a = self.L / 3
         potential = np.exp(-(self.radius ** 2) / a ** 2) * u.V
 
-        Ex, Ey, Ez = np.gradient(potential, self.grid.xaxis, self.grid.yaxis,
-                                 self.grid.zaxis)
+        Ex, Ey, Ez = np.gradient(
+            potential, self.grid.xaxis, self.grid.yaxis, self.grid.zaxis
+        )
 
         self.E[:, :, :, 0] = -1 * np.where(self.radius < 0.5 * self.L, Ex, 0)
         self.E[:, :, :, 1] = -1 * np.where(self.radius < 0.5 * self.L, Ey, 0)
@@ -567,8 +577,9 @@ class ElectrostaticPlanarShock(AbstractField):
             (1 - erf(self.grid.zarr / delta)) * np.exp(-((self.pradius / a) ** 2)) * u.V
         )
 
-        Ex, Ey, Ez = np.gradient(potential, self.grid.xaxis, self.grid.yaxis,
-                                 self.grid.zaxis)
+        Ex, Ey, Ez = np.gradient(
+            potential, self.grid.xaxis, self.grid.yaxis, self.grid.zaxis
+        )
         self.E[..., 0] = -Ex
         self.E[..., 1] = -Ey
         self.E[..., 2] = -Ez
