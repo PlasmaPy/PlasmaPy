@@ -4,7 +4,8 @@ representing different field configurations
 """
 
 __all__ = [
-    "PosGrid" "AbstractField",
+    "PosGrid",
+    "AbstractField",
     "NoFields",
     "ElectrostaticGaussianSphere",
     "AxiallyMagnetizedCylinder",
