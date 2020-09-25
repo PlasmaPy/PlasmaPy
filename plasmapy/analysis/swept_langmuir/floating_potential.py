@@ -176,13 +176,14 @@ def find_floating_potential(
         return FloatingPotentialResults(**rtn)
 
     # condition kwarg threshold
-    if isinstance(threshold, (int, float)):
-        threshold = int(np.round(threshold))
+    if isinstance(threshold, (int, np.integer)):
         if threshold < 1:
+            threshold = 1
             warn(f"threshold ({threshold}) is less than 1 and needs to be"
                  f" an int >= 1, using a value of 1")
-            threshold = 1
+
     else:
+        threshold = 1
         warn(f"threshold is NOT a integer >= 1, using a value of 1")
 
     # condition min_points
