@@ -77,7 +77,7 @@ except pkg_resources.DistributionNotFound:
 #: PlasmaPy citation instructions
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
-    "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
+    "online documentation at: http://docs.plasmapy.org/en/stable/about/citation.html"
 )
 
 
