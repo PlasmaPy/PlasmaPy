@@ -55,8 +55,8 @@ class AbstractFitFunction(ABC):
             size one or equal to the size of `x`.
 
         reterr: bool, optional
-            (Default: `False`) If `True`, return an array of errors associated
-            with the calculated independent variables
+            (Default: `False`) If `True`, return an array of uncertainties
+            associated with the calculated independent variables
 
         Returns
         -------
@@ -65,7 +65,7 @@ class AbstractFitFunction(ABC):
             variables :math:`x`.
 
         y_err: `numpy.ndarray`
-            Errors associated with the calculated dependent variables
+            Uncertainties associated with the calculated dependent variables
             :math:`\\delta y`
         """
         if not isinstance(x, np.ndarray):
@@ -111,8 +111,8 @@ class AbstractFitFunction(ABC):
     @abstractmethod
     def _func_err(self, x, y, x_err=None):
         """
-        Calculate dependent variable errors :math:`\\delta y` for dependent
-        variables :math:`y=f(x)`.
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
 
         Parameters
         ----------
@@ -129,8 +129,8 @@ class AbstractFitFunction(ABC):
         Returns
         -------
         `numpy.ndarray`:
-            The calculated errors of the dependent variables of the independent
-            variables `x`.
+            The calculated uncertainties of the dependent variables of the
+            independent variables `x`.
         """
         raise NotImplementedError
 
@@ -210,9 +210,10 @@ class AbstractFitFunction(ABC):
             unsuccessful call).
 
         x_err: `~numpy.ndarray`
-            The error associated with the root calculation.  **Currently this
-            returns an array of** `numpy.nan` **values equal in shape to**
-            `x` **, since there is no determined way to calculate the errors.**
+            The uncertainty associated with the root calculation.  **Currently
+            this returns an array of** `numpy.nan` **values equal in shape to**
+            `x` **, since there is no determined way to calculate the
+            uncertaintyes.**
 
         Notes
         -----
@@ -351,8 +352,8 @@ class Exponential(AbstractFitFunction):
 
     where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
     :math:`x` is the independent variable.  :math:`\\delta A`,
-    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective errors for
-    :math:`A`, :math:`\\alpha`, and :math:`x`.
+    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
+    uncertainties for :math:`A`, :math:`\\alpha`, and :math:`x`.
     """
     _parameter_names = ("a", "alpha")
 
@@ -404,7 +405,7 @@ class Exponential(AbstractFitFunction):
             The root value for the given fit :attr:`parameters`.
 
         err: float
-            The error in the calculated root for the given fit
+            The uncertainty in the calculated root for the given fit
             :attr:`parameters` and :attr:`parameters_err`.
         """
 
@@ -423,7 +424,7 @@ class Linear(AbstractFitFunction):
 
     where :math:`m` and :math:`b` are real constants to be fitted and :math:`x` is
     the independent variable.  :math:`\\delta m`, :math:`\\delta b`, and
-    :math:`\\delta x` are the respective errors for :math:`m`, :math:`b`,
+    :math:`\\delta x` are the respective uncertainties for :math:`m`, :math:`b`,
     and :math:`x`.
     """
 
@@ -464,8 +465,8 @@ class Linear(AbstractFitFunction):
 
     def _func_err(self, x, y, x_err=None):
         """
-        Calculate dependent variable errors :math:`\\delta y` for dependent
-        variables :math:`y=f(x)`.
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
 
         .. math::
 
@@ -479,8 +480,8 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         `numpy.ndarray`:
-            The calculated errors of the dependent variables of the independent
-            variables `x`.
+            The calculated uncertainty of the dependent variables of the
+            independent variables `x`.
         """
         m, b = self.parameters
         m_err, b_err = self.parameters_err
@@ -536,7 +537,7 @@ class Linear(AbstractFitFunction):
             The root value for the given fit :attr:`parameters`.
 
         err: float
-            The error in the calculated root for the given fit
+            The uncertainty in the calculated root for the given fit
             :attr:`parameters` and :attr:`parameters_err`.
         """
         m, b = self.parameters
@@ -605,8 +606,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
     where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
     constants to be fitted and :math:`x` is the independent variable.
     :math:`\\delta A`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
-    and :math:`\\delta x` are the respective errors for :math:`A`, :math:`\\alpha`,
-    :math:`m`, and :math:`b`, and :math:`x`.
+    and :math:`\\delta x` are the respective uncertainties for :math:`A`,
+    :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
     """
     _parameter_names = ("a", "alpha", "m", "b")
 
@@ -680,7 +681,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
     where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants to
     be fitted and :math:`x` is the independent variable.  :math:`\\delta A`,
     :math:`\\delta \\alpha`, :math:`\\delta b`, and :math:`\\delta x` are the
-    respective errors for :math:`A`, :math:`\\alpha`, and :math:`b`, and
+    respective uncertainties for :math:`A`, :math:`\\alpha`, and :math:`b`, and
     :math:`x`.
 
     """
@@ -754,7 +755,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             The root value for the given fit :attr:`parameters`.
 
         err: float
-            The error in the calculated root for the given fit
+            The uncertainty in the calculated root for the given fit
             :attr:`parameters` and :attr:`parameters_err`.
         """
         a, alpha, b = self.parameters
