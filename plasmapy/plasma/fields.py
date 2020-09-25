@@ -134,6 +134,14 @@ class PosGrid:
         return self.grid[..., 2]
 
     @property
+    def radius(self):
+        """
+        Returns the 3D array of the radial position of each point from the
+        origin
+        """
+        return np.sqrt(self.xarr ** 2 + self.yarr ** 2 + self.zarr ** 2)
+
+    @property
     def xaxis(self):
         """
         Get x-axis (only valid for a uniform grid)

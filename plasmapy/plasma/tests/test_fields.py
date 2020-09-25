@@ -17,6 +17,7 @@ def test_posgrid():
     regular_grid = grid.regular_grid
 
     xarr, yarr, zarr = grid.xarr, grid.yarr, grid.zarr
+    radius = grid.radius
     xaxis, yaxis, zaxis = grid.xaxis, grid.yaxis, grid.zaxis
     dx, dy, dz = grid.dx, grid.dy, grid.dz
 
