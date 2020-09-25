@@ -117,13 +117,23 @@ def test_SyntheticProtonRadiograph_error_handling():
     detector = (100 * u.mm, 90 * u.deg, 45 * u.deg)
 
     # Check that an error is raised when an input grid has a nan or infty value
-    E[0, 0, 0] = np.nan
+    E[0, 0, 0, :] = np.nan
     with pytest.raises(ValueError):
         sim = prad.SyntheticProtonRadiograph(
             grid, E, B, source, detector, geometry="spherical", verbose=False
         )
-    E[0, 0, 0] = np.infty
+    E[0, 0, 0] = 0 * u.V / u.m  # Reset element for the rest of the tests
+
+    E[0, 0, 0, :] = np.infty
     with pytest.raises(ValueError):
+        sim = prad.SyntheticProtonRadiograph(
+            grid, E, B, source, detector, geometry="spherical", verbose=False
+        )
+    E[0, 0, 0] = 0 * u.V / u.m  # Reset element for the rest of the tests
+
+    # Set an edge field value to a large value
+    E[0, 0, 0, :] = 0.2 * np.max(E)
+    with pytest.warns(RuntimeWarning):
         sim = prad.SyntheticProtonRadiograph(
             grid, E, B, source, detector, geometry="spherical", verbose=False
         )

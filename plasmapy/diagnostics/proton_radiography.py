@@ -127,12 +127,41 @@ class SyntheticProtonRadiograph:
         self.verbose = verbose
 
         # Validate input arrays
-        arr = {"grid": self.grid.grid, "E": E, "B": B}
-        for x in arr.keys():
-            if not np.isfinite(arr[x]).all():
+        # Check that all finite
+        arrays = {"grid": self.grid.grid, "E": E, "B": B}
+        for x in arrays.keys():
+            if not np.isfinite(arrays[x]).all():
                 raise ValueError(
                     f"Input arrays must be finite: {x} contains "
                     "either NaN or infinite values."
+                )
+
+        # Check that the edges of the fields go close to zero at the edges
+        arrays = {"E": E, "B": B}
+        for k in arrays.keys():
+            arr = arrays[k]
+            arr = np.linalg.norm(arr, axis=3).value
+            edge_max = np.array(
+                [
+                    np.max(arr[0, :, :]),
+                    np.max(arr[-1, :, :]),
+                    np.max(arr[:, 0, :]),
+                    np.max(arr[:, -1, :]),
+                    np.max(arr[:, :, 0]),
+                    np.max(arr[:, :, -1]),
+                ]
+            )
+            edge_max = np.max(edge_max)
+
+            if edge_max > 0.01 * np.median(arr):
+                warnings.warn(
+                    "Fields should go to zero at edges of grid to avoid "
+                    f"non-physical effects, but a value of {edge_max:.2E} "
+                    f" {arrays[k].unit} was "
+                    f"found on the edge of the {k} array. Consider applying a "
+                    "envelope function to force the fields at the edge to go to "
+                    "zero.",
+                    RuntimeWarning,
                 )
 
         self.charge = const.e.si
