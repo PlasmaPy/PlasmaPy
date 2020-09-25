@@ -164,7 +164,8 @@ def find_floating_potential(
         )
 
     if current.min() > 0.0 or current.max() < 0:
-        warn("The Langmuir sweep has no floating potential.")
+        warn("The swept Langmuir trace never crosses 'current = 0', floating "
+             "potential does not exist.")
 
         return FloatingPotentialResults(**rtn)
 
