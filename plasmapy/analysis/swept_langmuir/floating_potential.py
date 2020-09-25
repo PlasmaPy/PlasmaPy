@@ -29,22 +29,23 @@ def find_floating_potential(
 
     **How it works**
 
-    #. The current array ``current`` is scanned for all points equal to zero and
+    1. The current array ``current`` is scanned for all points equal to zero and
        point pairs that straddle :math:`I = 0`.  This forms an array of
        "crossing-points."
-    #. The crossing-points are then grouped into "crossing-islands" in based on
+    2. The crossing-points are then grouped into "crossing-islands" in based on
        the ``threshold`` keyword.
 
        - A new island is formed when a successive crossing-point is more (index)
          steps away from the previous crossing-point than allowed by
          ``threshold``.
-       - If multiple crossing-islands are identified, then the total span of all
-         crossing-islands is compared to ``min_points``.  If the span is greater
-         than ``min_points`` then the function is incapable of identifying
-         :math:`V_f` and will return `numpy.nan` values; otherwise, the span
-         will form one larger crossing-island.
+       - If multiple crossing-islands are identified, then the span from the
+         first point in the first island to the last point in the last island is
+         compared to ``min_points``.  If the span is less than or equal to
+         ``min_points``, then that span is taken as one larger crossing-island
+         for the fit; otherwise, the function is incapable of identifying
+         :math:`V_f` and will return `numpy.nan` values.
 
-    #. To calculate the floating potential...
+    3. To calculate the floating potential...
 
        - If the crossing-island contains less points than ``min_points``, then
          each side of the crossing-island is equally padded with the nearest
@@ -58,11 +59,11 @@ def find_floating_potential(
 
     voltage: ~numpy.ndarray
         1-D numpy array of monotonically ascending/descending probe biases
-        (in volts)
+        (should be in volts)
 
     current: ~numpy.ndarray
-        1-D numpy array of probe current (in amperes) corresponding to the
-        :data:`voltage` array
+        1-D numpy array of probe current (should be in amperes) corresponding
+        to the :data:`voltage` array
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
@@ -71,8 +72,9 @@ def find_floating_potential(
         they are within 5 index steps of each other. (Default: 1)
 
     min_points: positive `int` or `float`
-        Specifies the minimum number of points required for the fit to be
-        applied to.
+        Minimum number of data points required for the fitting to be applied to.
+        See **How it works** above for additional details.  The following list
+        specifies the optional values:
 
         - ``min_points = None`` (Default) The larger of 5 and
           ``factor * array_size`` is taken, where ``array_size`` is the size of
@@ -84,9 +86,9 @@ def find_floating_potential(
           ``min_points * array_size``.
 
     fit_type: str
-        The type of curve to be fitted to the Langmuir trace.  There are two
-        types of curves ``"linear"`` and ``"exponential"`` (Default).  These
-        specified which `FitFunction` class should be applied to the trace.
+        The type of curve to be fitted to the Langmuir trace,  ``"linear"`` or
+        ``"exponential"`` (Default).  This selects which `FitFunction` class
+        should be applied to the trace.
 
         +-------------+----------------------------------------------------------+
         | linear      | `~plasmapy.analysis.fit_functions.Linear`                |
@@ -97,19 +99,20 @@ def find_floating_potential(
     Returns
     -------
     vf: `float` or `numpy.nan`
-        The calculated floating potential (in volts).  Returns `numpy.nan` if the
-        floating potential can not be determined.  How :math:`V_f` is calculated
-        depends on the fit function.  This is described in the `root_solve()`
-        method of the relevant fit function (e.g. the
+        The calculated floating potential (same units as the `voltage` array).
+        Returns `numpy.nan` if the floating potential can not be determined.
+        How :math:`V_f` is calculated depends on the fit function.  This is
+        described in the `root_solve()` method of the relevant fit function
+        (e.g. the
         :meth:`~plasmapy.analysis.fit_functions.ExponentialPlusOffset.root_solve`
-        method of
-        `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
+        method of `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
 
     vf_err: `float` or `numpy.nan`
-        The error associated with the floating potential calculation (in volts).
-        Returns `numpy.nan` if the floating potential can not be determined.
-        Like :math:`V_f`:, the calculation depends on the applied fit function.
-        The `rood_solve()` method also describes how this is calculated.
+        The uncertainty associated with the floating potential calculation
+        (units same as `vf`).  Returns `numpy.nan` if the floating potential
+        can not be determined.  Like :math:`V_f`:, the calculation depends on
+        the applied fit function.  The `root_solve()` method also describes
+        how this is calculated.
 
     rsq: `float`
         The coefficient of determination (r-squared) value of the fit.  See the
@@ -120,7 +123,7 @@ def find_floating_potential(
         `~plasmapy.analysis.fit_functions.ExponentialPlusOffset`).
 
     func: sub-class of `~plasmapy.analysis.fit_functions.AbstractFitFunction`
-        The callable function :math:`f(x)` repressing the fit and its results.
+        The callable function :math:`f(x)` representing the fit and its results.
 
     islands: `List[slice]`
         List of `slice` objects representing the indices of the identified
