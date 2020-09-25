@@ -143,19 +143,19 @@ def find_floating_potential(
         indices=None
     )._asdict()
 
-    fit_funcs = {
+    _settings = {
         "linear": {
-            "func": ffuncs.Linear(),
+            "func": ffuncs.Linear,
             "min_point_factor": 0.1,
         },
         "exponential": {
-            "func": ffuncs.ExponentialPlusOffset(),
+            "func": ffuncs.ExponentialPlusOffset,
             "min_point_factor": 0.2,
         },
     }
     try:
-        min_point_factor = fit_funcs[fit_type]["min_point_factor"]
-        fit_func = fit_funcs[fit_type]["func"]
+        min_point_factor = _settings[fit_type]["min_point_factor"]
+        fit_func = _settings[fit_type]["func"]()
         rtn["func"] = fit_func
     except KeyError:
         raise KeyError(
