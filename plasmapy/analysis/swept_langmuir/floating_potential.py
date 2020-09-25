@@ -8,6 +8,7 @@ from warnings import warn
 from typing import Union
 
 from plasmapy.analysis import fit_functions as ffuncs
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
     "FloatingPotentialResults",
@@ -165,14 +166,15 @@ def find_floating_potential(
 
     if current.min() > 0.0 or current.max() < 0:
         warn("The swept Langmuir trace never crosses 'current = 0', floating "
-             "potential does not exist.")
+             "potential does not exist.", PlasmaPyWarning)
 
         return FloatingPotentialResults(**rtn)
 
     # check voltage is monotonically increasing/decreasing
     voltage_diff = np.diff(voltage)
     if not (np.all(voltage_diff >= 0) or np.all(voltage_diff <= 0)):
-        warn("The voltage array is not monotonically increasing or decreasing.")
+        warn("The voltage array is not monotonically increasing or decreasing.",
+             PlasmaPyWarning)
 
         return FloatingPotentialResults(**rtn)
 
@@ -181,11 +183,11 @@ def find_floating_potential(
         if threshold < 1:
             threshold = 1
             warn(f"threshold ({threshold}) is less than 1 and needs to be"
-                 f" an int >= 1, using a value of 1")
+                 f" an int >= 1, using a value of 1", PlasmaPyWarning)
 
     else:
         threshold = 1
-        warn(f"threshold is NOT a integer >= 1, using a value of 1")
+        warn(f"threshold is NOT a integer >= 1, using a value of 1", PlasmaPyWarning)
 
     # condition min_points
     if min_points is None:
@@ -251,7 +253,7 @@ def find_floating_potential(
         if isl_window > min_points:
             warn(f"Unable to determine floating potential, Langmuir sweep has "
                  f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
-                 f"and/or smooth the current.")
+                 f"and/or smooth the current.", PlasmaPyWarning)
 
             return FloatingPotentialResults(**rtn)
 
@@ -292,7 +294,7 @@ def find_floating_potential(
         if (istop - istart + 1) < min_points:
             warn(f"The number of elements in the current array "
                  f"({istop - istart + 1}) is less than 'min_points' "
-                 f"({min_points}).")
+                 f"({min_points}).", PlasmaPyWarning)
 
     # Perform Linear Regression Fit
     volt_sub = voltage[istart:istop + 1]
