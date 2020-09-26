@@ -145,3 +145,24 @@ method.
     import plasmapy.plasma
 
     plasmapy.plasma.Plasma.register(FuturePlasma, FuturePlasma.some_matching_method)
+
+
+API
+---
+
+Sub-Packages & Modules
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+
+   ~plasmapy.plasma.exceptions
+   ~plasmapy.plasma.fields
+   ~plasmapy.plasma.plasma_base
+   ~plasmapy.plasma.plasma_factory
+   ~plasmapy.plasma.sources
+
+.. automodapi:: plasmapy.plasma
+   :no-main-docstr:
+   :no-heading:
+   :include-all-objects:
+   :headings: "^-"
