@@ -13,7 +13,6 @@ __all__ = [
     "example_fields",
 ]
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
@@ -24,7 +23,7 @@ from scipy.special import erf as erf
 class PosGrid:
     """
     Represents a 3D position grid. If a grid is passed in through the grid
-    keyword, the object is directily initialized from this grid and other
+    keyword, the object is directly initialized from this grid and other
     keywords are ignored. Otherwise, a grid is constructed based on the
     keywords described below.
 
@@ -32,7 +31,7 @@ class PosGrid:
     ----------
     grid : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
         An array giving the positions of each grid point. Units must be
-        convertable to meters. If this keyword is set, this grid is used
+        convertible to meters. If this keyword is set, this grid is used
         to initialize the object and all other keywords are ignored.
 
     num : int or tuple of 3 ints, optional
