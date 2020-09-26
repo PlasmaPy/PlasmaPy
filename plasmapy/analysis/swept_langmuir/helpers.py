@@ -4,7 +4,7 @@ __all__ = ["check_sweep"]
 import numpy as np
 
 
-def check_sweep(voltage, current) -> None:
+def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
     """
     Function for checking that the voltage and current arrays are properly formated
     for analysis by `plasmapy.analysis.swept_langmuir`.
