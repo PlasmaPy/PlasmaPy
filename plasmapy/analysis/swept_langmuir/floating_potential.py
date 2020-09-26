@@ -168,8 +168,9 @@ def find_floating_potential(
     # check voltage and current arrays
     try:
         check_sweep(voltage, current)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as err:
         # did not pass checks
+        warn(err.args[0], PlasmaPyWarning)
         return FloatingPotentialResults(**rtn)
 
     # condition kwarg threshold
