@@ -40,7 +40,7 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
     # examine voltage array
     if not isinstance(voltage, np.ndarray):
         raise TypeError(
-            f"Expected 1D numpy array for voltage, but got {type(voltage)}",
+            f"Expected 1D numpy array for voltage, but got {type(voltage)}.",
         )
     elif voltage.ndim != 1:
         raise ValueError(
@@ -53,7 +53,7 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
     # examine current array
     if not isinstance(current, np.ndarray):
         raise TypeError(
-            f"Expected 1D numpy array for current, but got {type(current)}",
+            f"Expected 1D numpy array for current, but got {type(current)}.",
         )
     elif current.ndim != 1:
         raise ValueError(
