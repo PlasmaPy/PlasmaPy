@@ -8,6 +8,7 @@ from warnings import warn
 from typing import Union
 
 from plasmapy.analysis import fit_functions as ffuncs
+from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
@@ -58,11 +59,11 @@ def find_floating_potential(
     Parameters
     ----------
 
-    voltage: ~numpy.ndarray
+    voltage: `numpy.ndarray`
         1-D numpy array of monotonically ascending/descending probe biases
         (should be in volts)
 
-    current: ~numpy.ndarray
+    current: `numpy.ndarray`
         1-D numpy array of probe current (should be in amperes) corresponding
         to the :data:`voltage` array
 
@@ -164,18 +165,11 @@ def find_floating_potential(
             f"Examine kwarg 'fit_curve' for valid options."
         )
 
-    if current.min() > 0.0 or current.max() < 0:
-        warn("The swept Langmuir trace never crosses 'current = 0', floating "
-             "potential does not exist.", PlasmaPyWarning)
-
-        return FloatingPotentialResults(**rtn)
-
-    # check voltage is monotonically increasing/decreasing
-    voltage_diff = np.diff(voltage)
-    if not (np.all(voltage_diff >= 0) or np.all(voltage_diff <= 0)):
-        warn("The voltage array is not monotonically increasing or decreasing.",
-             PlasmaPyWarning)
-
+    # check voltage and current arrays
+    try:
+        check_sweep(voltage, current)
+    except (TypeError, ValueError):
+        # did not pass checks
         return FloatingPotentialResults(**rtn)
 
     # condition kwarg threshold
