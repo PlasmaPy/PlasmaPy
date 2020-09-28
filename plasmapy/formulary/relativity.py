@@ -4,7 +4,7 @@ __all__ = ["Lorentz_factor", "relativistic_energy"]
 import numpy as np
 
 from astropy import units as u
-from astropy.constants import c
+from astropy.constants import c, m_e, e
 from plasmapy import utils
 from plasmapy.utils.decorators import validate_quantities
 
@@ -197,6 +197,16 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
     This quantity can be greater than one, in which case it is more appropriate to refer to this quantity
     as "normalized momentum" since the real velocity of the particle can not be greater than the speed
     of light.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> E1 = 30 * u.V / u.m
+    >>> m1 = m_e
+    >>> q1 = e
+    >>> w1 = 3e11 * u.Hz
+    >>> quiver_velocity(E1, w1, q1, m1)
+    <Quantity 5.866... e-08>
 
     """
 
