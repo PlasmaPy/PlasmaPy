@@ -156,18 +156,19 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     return E
 
 
-def quiver_velocity(E: u.V / u.m, w: 1 / u.s):
+def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
     """
 
     .. math::
 
-        a = /frac{e E_0}{m_e \\omega c}}
+        a = /frac{q E_0}{m \\omega c}}
 
     :math: `E_0` is Electric field intensity
-    :math: `m_e` is mass of electron
+    :math: `m` is mass of the particle
     :math: `\\omega` is the angular frequency of the radiation
-    :math: `e` is the fundamental charge
+    :math: `q` is the charge of the particle
     :math: `c` is the speed of light
+    This is true when the electric field :math: `E` is modeled as :math: `E = E_0 sin(\\omega t)`
 
     Parameters
     ----------
@@ -177,6 +178,11 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s):
     w : `~astropy.units.Quantity`
         The angular frequency of the radiation.
 
+    q : `~astropy.units.Quantity`
+        The charge of the particle
+
+    m : `~astropy.units.Quantity`
+        The mass of the particle
     Returns
     -------
     a : `~astropy.Quantity`
@@ -184,6 +190,6 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s):
 
     """
 
-    a = E * e / (m_e * w * c)
+    a = E * q / (m * w * c)
 
     return a
