@@ -4,7 +4,7 @@ __all__ = ["Lorentz_factor", "relativistic_energy"]
 import numpy as np
 
 from astropy import units as u
-from astropy.constants import c, e, m_e
+from astropy.constants import c
 from plasmapy import utils
 from plasmapy.utils.decorators import validate_quantities
 
@@ -158,6 +158,9 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
 def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
     """
+    Quiver velocity or normalized momentum is the term given to the amplitude of the oscillation of
+    a charged particle due to electromagnetic radiation. It is usually expressed as a dimensionless
+    quantity by dividing the amplitude by c.
 
     .. math::
 
@@ -183,10 +186,17 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
 
     m : `~astropy.units.Quantity`
         The mass of the particle
+
     Returns
     -------
     a : `~astropy.Quantity`
         The dimensionless electron quiver velocity.
+
+    NOTE
+    ----
+    This quantity can be greater than one, in which case it is more appropriate to refer to this quantity
+    as "normalized momentum" since the real velocity of the particle can not be greater than the speed
+    of light.
 
     """
 
