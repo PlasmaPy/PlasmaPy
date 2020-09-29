@@ -82,7 +82,7 @@ Ionization states for multiple elements
 The `~plasmapy.particles.IonizationStateCollection` class may be used to
 represent the ionization state for multiple elements.
 
->>> from plasmapy.atomic import IonizationStateCollection
+>>> from plasmapy.particles import IonizationStateCollection 
 
 The minimal input to `~plasmapy.particles.IonizationStateCollection` is a `list`
 of the elements or isotopes to represent.  Integers in the `list` will
