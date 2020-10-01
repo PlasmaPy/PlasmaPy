@@ -699,7 +699,7 @@ class IonizationStates:
         raise NotImplementedError
 
     @property
-    @u.quantity_input
+    @validate_quantities
     def n_e(self) -> u.m ** -3:
         """
         Return the electron number density under the assumption of
@@ -715,13 +715,13 @@ class IonizationStates:
         return n_e
 
     @property
-    @u.quantity_input
+    @validate_quantities
     def n(self) -> u.m ** -3:
         """Return the number density scaling factor."""
         return self._pars["n"]
 
     @n.setter
-    @u.quantity_input
+    @validate_quantities
     def n(self, n: u.m ** -3):
         """Set the number density scaling factor."""
         try:
@@ -834,13 +834,13 @@ class IonizationStates:
                 raise AtomicError("Invalid log_abundances.") from None
 
     @property
-    @u.quantity_input(equivalencies=u.temperature_energy())
+    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
-    @u.quantity_input(equivalencies=u.temperature_energy())
+    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:

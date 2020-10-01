@@ -11,6 +11,7 @@ from astropy import constants
 
 from plasmapy.particles import atomic
 
+from plasmapy.utils.decorators import validate_quantities
 
 class ParticleTracker:
     """
@@ -57,7 +58,7 @@ class ParticleTracker:
     .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
 
-    @u.quantity_input(dt=u.s)
+    @validate_quantities(dt=u.s)
     def __init__(
         self,
         plasma,
