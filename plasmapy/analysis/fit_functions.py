@@ -25,12 +25,26 @@ class AbstractFitFunction(ABC):
     fitting the function to a set of data.  These were originally designed for
     assisting in fitting curves to swept Langmuir data.
     """
+
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
+    def __init__(
+            self,
+            params: Tuple[float, ...] = None,
+            param_errors: Tuple[float, ...] = None,
+    ):
+        """
+        Parameters
+        ----------
+        params: Tuple[float, ...], optional
+            Tuple of values for the function parameters. Equal in size to
+            :attr:`param_names`.
 
-    _parameter_names = NotImplemented  # type: Tuple[str, ...]
+        param_errors: Tuple[float, ...], optional
+            Tuple of values for the errors associated with the function
+            parameters.  Equal in size to :attr:`param_names`.
 
-
+        """
 
         self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
         """
@@ -39,8 +53,16 @@ class AbstractFitFunction(ABC):
         the tuple field names.
         """
 
-        self._params = None  # type: Union[None, Tuple[Any, ...]]
-        self._param_errors = None  # type: Union[None, Tuple[Any, ...]]
+        if params is None:
+            self._params = None
+        else:
+            self.params = params
+
+        if param_errors is None:
+            self._param_errors = None
+        else:
+            self.param_errors = param_errors
+
         self._covariance_matrix = None
         self._rsq = None
         self._curve_fit_results = None
