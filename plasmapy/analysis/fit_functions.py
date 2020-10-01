@@ -91,15 +91,24 @@ class AbstractFitFunction(ABC):
     def __str__(self):
         return f"Unspecified f(x)"
 
+    @staticmethod
     @abstractmethod
-    def _func(self, x, *args):
+    def func(x, *args):
         """
-        The fit function.
+        The fit function.  This signature of the function must first take the
+        independent variable followed by the parameters to be fitted as
+        separate arguments.
+
+        When sub-classing the definition should look something like::
+
+            def func(x, a, b, c):
+                return a * x ** 2 + b * x + c
 
         Parameters
         ----------
         x: array_like
             Independent variables to be passed to the fit function.
+
         *args
             The parameters that will be adjusted to make the fit.
 
@@ -231,7 +240,8 @@ class AbstractFitFunction(ABC):
             ...     def latex_str(self) -> str:
             ...         return f"m \\, x + b"
             ...
-            ...     def _func(self, x, m, b):
+            ...     @staticmethod
+            ...     def func(x, m, b):
             ...         return m * x + b
             ...
             ...     def _func_err(self, x, y, x_err=None):
@@ -264,7 +274,7 @@ class AbstractFitFunction(ABC):
 
         """
         kwargs["args"] = self.parameters
-        results = fsolve(self._func, x0, **kwargs)
+        results = fsolve(self.func, x0, **kwargs)
         if isinstance(results, tuple):
             results = results[0]
 
@@ -325,14 +335,14 @@ class AbstractFitFunction(ABC):
             if covariance of the parameters can not be estimated.
 
         """
-        popt, pcov = curve_fit(self._func, xdata, ydata, **kwargs)
+        popt, pcov = curve_fit(self.func, xdata, ydata, **kwargs)
         self._curve_fit_results = (popt, pcov)
         self.parameters = tuple(popt.tolist())
         self.parameters_err = tuple(np.sqrt(np.diag(pcov)).tolist())
 
         # calc rsq
         # rsq = 1 - (ss_res / ss_tot)
-        residuals = ydata - self._func(xdata, *self.parameters)
+        residuals = ydata - self.func(xdata, *self.params)
         ss_res = np.sum(residuals ** 2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
@@ -362,7 +372,8 @@ class Exponential(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = A exp(alpha x)"
 
-    def _func(self, x, a, alpha):
+    @staticmethod
+    def func(x, a, alpha):
         return a * np.exp(alpha * x)
 
     def _func_err(self, x, y, x_err=None):
@@ -435,7 +446,8 @@ class Linear(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = m x + b"
 
-    def _func(self, x, m, b):
+    @staticmethod
+    def func(x, m, b):
         """
         The fit function, a linear function.
 
@@ -644,9 +656,9 @@ class ExponentialPlusLinear(AbstractFitFunction):
         )
         self._linear.parameters_err = (self.parameters_err.m, self.parameters_err.b)
 
-    def _func(self, x, a, alpha, m , b):
-        exp_term = self._exponential._func(x, a, alpha)
-        lin_term = self._linear._func(x, m, b)
+    def func(self, x, a, alpha, m, b):
+        exp_term = self._exponential.func(x, a, alpha)
+        lin_term = self._linear.func(x, m, b)
         return exp_term + lin_term
 
     def _func_err(self, x, y, x_err=None):
@@ -720,8 +732,9 @@ class ExponentialPlusOffset(AbstractFitFunction):
             self.parameters_err.b,
         )
 
-    def _func(self, x, a, alpha, b):
-        return self._explin._func(x, a, alpha, 0.0, b)
+    def func(self, x, a, alpha, b):
+        return self._explin.func(x, a, alpha, 0.0, b)
+
 
     def _func_err(self, x, y, x_err=None):
         _, err = self._explin(x, x_err=x_err, reterr=True)
