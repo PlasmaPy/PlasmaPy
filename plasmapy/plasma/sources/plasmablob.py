@@ -14,6 +14,7 @@ from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils import call_string, CouplingWarning
 from plasmapy.utils.decorators import validate_quantities
 
+
 class PlasmaBlob(GenericPlasma):
     """
     Class for describing and calculating plasma parameters without

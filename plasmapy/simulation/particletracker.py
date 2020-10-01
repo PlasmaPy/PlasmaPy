@@ -12,6 +12,7 @@ from astropy import constants
 from plasmapy.particles import atomic
 from plasmapy.utils.decorators import validate_quantities
 
+
 class ParticleTracker:
     """
     Object representing a species of particles: ions, electrons, or simply

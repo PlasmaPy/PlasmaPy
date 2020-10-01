@@ -13,6 +13,7 @@ from plasmapy.formulary.magnetostatics import MagnetoStatics
 from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils.decorators import validate_quantities
 
+
 class Plasma3D(GenericPlasma):
     """
     Core class for describing and calculating plasma parameters with
