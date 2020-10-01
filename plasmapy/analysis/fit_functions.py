@@ -91,8 +91,9 @@ class AbstractFitFunction(ABC):
     def __repr__(self):
         return f"{self.__str__()} {self.__class__}"
 
+    @abstractmethod
     def __str__(self):
-        return f"Unspecified f(x)"
+        raise NotImplementedError
 
     @staticmethod
     @abstractmethod
