@@ -10,7 +10,6 @@ import scipy.interpolate as interp
 from astropy import constants
 
 from plasmapy.particles import atomic
-
 from plasmapy.utils.decorators import validate_quantities
 
 class ParticleTracker:
