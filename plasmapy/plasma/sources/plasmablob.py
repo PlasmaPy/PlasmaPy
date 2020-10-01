@@ -12,7 +12,6 @@ from plasmapy.formulary.parameters import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils import call_string, CouplingWarning
-
 from plasmapy.utils.decorators import validate_quantities
 
 class PlasmaBlob(GenericPlasma):
