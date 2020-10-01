@@ -25,12 +25,14 @@ class AbstractFitFunction(ABC):
     fitting the function to a set of data.  These were originally designed for
     assisting in fitting curves to swept Langmuir data.
     """
+    _param_names = NotImplemented  # type: Tuple[str, ...]
+
 
     _parameter_names = NotImplemented  # type: Tuple[str, ...]
 
 
-    def __init__(self):
-        self.FitParamTuple = namedtuple("FitParamTuple", self._parameter_names)
+
+        self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
         """
         A named tuple class used for attributes :attr:`params` and 
         :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
@@ -173,11 +175,11 @@ class AbstractFitFunction(ABC):
     def params(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._params = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.parameter_names):
+        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
             self._params = tuple(val)
         else:
             raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.parameter_names)}.")
+                             f"length {len(self.param_names)}.")
 
     @property
     def param_errors(self) -> Union[None, tuple]:
@@ -191,16 +193,16 @@ class AbstractFitFunction(ABC):
     def param_errors(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._param_errors = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.parameter_names):
+        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
             self._param_errors = tuple(val)
         else:
             raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.parameter_names)}.")
+                             f"length {len(self.param_names)}.")
 
     @property
-    def parameter_names(self) -> Tuple[str, ...]:
+    def param_names(self) -> Tuple[str, ...]:
         """Names of the fitted parameters."""
-        return self._parameter_names
+        return self._param_names
 
     @property
     @abstractmethod
@@ -241,7 +243,7 @@ class AbstractFitFunction(ABC):
             >>> import scipy
 
             >>> class SomeFunc(AbstractFitFunction):
-            ...     _parameter_names = ("m", "b")
+            ...     _param_names = ("m", "b")
             ...
             ...     @property
             ...     def latex_str(self) -> str:
@@ -379,7 +381,7 @@ class Exponential(AbstractFitFunction):
     :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
     uncertainties for :math:`A`, :math:`\\alpha`, and :math:`x`.
     """
-    _parameter_names = ("a", "alpha")
+    _param_names = ("a", "alpha")
 
     def __str__(self):
         return f"f(x) = A exp(alpha x)"
@@ -457,7 +459,7 @@ class Linear(AbstractFitFunction):
     and :math:`x`.
     """
 
-    _parameter_names = ("m", "b")
+    _param_names = ("m", "b")
 
     def __str__(self):
         return f"f(x) = m x + b"
@@ -644,7 +646,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
     and :math:`\\delta x` are the respective uncertainties for :math:`A`,
     :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
     """
-    _parameter_names = ("a", "alpha", "m", "b")
+    _param_names = ("a", "alpha", "m", "b")
 
     def __init__(self):
         super().__init__()
@@ -724,7 +726,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
     :math:`x`.
 
     """
-    _parameter_names = ("a", "alpha", "b")
+    _param_names = ("a", "alpha", "b")
 
     def __init__(self):
         super().__init__()
