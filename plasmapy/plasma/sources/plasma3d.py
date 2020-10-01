@@ -11,7 +11,6 @@ from astropy.constants import mu0
 
 from plasmapy.formulary.magnetostatics import MagnetoStatics
 from plasmapy.plasma.plasma_base import GenericPlasma
-
 from plasmapy.utils.decorators import validate_quantities
 
 class Plasma3D(GenericPlasma):
