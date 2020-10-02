@@ -11,6 +11,7 @@ from astropy.constants import mu0
 
 from plasmapy.formulary.magnetostatics import MagnetoStatics
 from plasmapy.plasma.plasma_base import GenericPlasma
+from plasmapy.utils.decorators import validate_quantities
 
 
 class Plasma3D(GenericPlasma):
@@ -33,7 +34,7 @@ class Plasma3D(GenericPlasma):
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`
     """
 
-    @u.quantity_input(domain_x=u.m, domain_y=u.m, domain_z=u.m)
+    @validate_quantities(domain_x=u.m, domain_y=u.m, domain_z=u.m)
     def __init__(self, domain_x, domain_y, domain_z, **kwargs):
         super().__init__(**kwargs)
 
