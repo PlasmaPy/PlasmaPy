@@ -160,6 +160,7 @@ Sub-Packages & Modules
 
    ~plasmapy.plasma.exceptions
    ~plasmapy.plasma.fields
+   ~plasmapy.plasma.grids
    ~plasmapy.plasma.plasma_base
    ~plasmapy.plasma.plasma_factory
    ~plasmapy.plasma.sources
