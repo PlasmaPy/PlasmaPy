@@ -268,6 +268,9 @@ class AbstractFitFunction(ABC):
             >>> class SomeFunc(AbstractFitFunction):
             ...     _param_names = ("m", "b")
             ...
+            ...     def __str__(self):
+            ...         return "f(x) = m x + b"
+            ...
             ...     @property
             ...     def latex_str(self) -> str:
             ...         return f"m \\, x + b"
