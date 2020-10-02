@@ -7,13 +7,10 @@ __all__ = [
     "CartesianGrid",
 ]
 
-
-from abc import ABC, abstractmethod
+from abc import ABC
 import astropy.units as u
 import numpy as np
-import pytest
-import warnings
-from typing import Union
+
 
 class AbstractGrid(ABC):
     """
