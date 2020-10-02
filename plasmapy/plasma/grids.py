@@ -35,7 +35,7 @@ class AbstractGrid(ABC):
         else:
             self._load_grid(grid=grid, units=units)
 
-        # Setup method contains uther initialization stuff
+        # Setup method contains other initialization stuff
         self._setup()
 
 
