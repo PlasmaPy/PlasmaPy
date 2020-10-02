@@ -20,14 +20,9 @@ class AbstractGrid(ABC):
     """
 
     # TODO: add appropriate typing here on start, stop, num
-    # start/stop can be -> number(int,float), ndarray, u.quantity, list of numbers or u.quantities
-    # units can be astropy.units.core.Unit or list of same
-    def __init__(self,
-                 start = 0,
-                 stop = 1,
-                 num  = 100,
-                 grid=None,
-                 units = None):
+    # start/stop can be -> number(int,float), ndarray, u.quantity, list of numbers
+    # or u.quantities units can be astropy.units.core.Unit or list of same
+    def __init__(self, start=0, stop=1, num=100, grid=None, units=None):
 
         # Load or create the grid
         if grid is None:
@@ -37,7 +32,6 @@ class AbstractGrid(ABC):
 
         # Setup method contains other initialization stuff
         self._setup()
-
 
     def _setup(self):
         # Properties
@@ -59,15 +53,13 @@ class AbstractGrid(ABC):
             self._detect_regular_grid()
         return self._regular_grid
 
-
     @property
     def shape(self):
         return self._grid.shape
 
     @property
     def unit(self):
-        if (self._units[0] == self._units[1] and
-            self._units[0] == self._units[2]):
+        if self._units[0] == self._units[1] and self._units[0] == self._units[2]:
             return self._units[0]
         else:
             raise ValueError("Array dimensions do not all have the same "
@@ -91,15 +83,15 @@ class AbstractGrid(ABC):
 
     @property
     def ax0(self):
-        return self._grid[:,0,0,0]
+        return self._grid[:, 0, 0, 0]
 
     @property
     def ax1(self):
-        return self._grid[0,:,0,1]
+        return self._grid[0, :, 0, 1]
 
     @property
     def ax2(self):
-        return self._grid[0,0,:,2]
+        return self._grid[0, 0, :, 2]
 
     @property
     def dax0(self):
@@ -115,16 +107,15 @@ class AbstractGrid(ABC):
 
     @property
     def arr0(self):
-        return self._grid[...,0]
+        return self._grid[..., 0]
 
     @property
     def arr1(self):
-        return self._grid[...,1]
+        return self._grid[..., 1]
 
     @property
     def arr2(self):
-        return self._grid[...,2]
-
+        return self._grid[..., 2]
 
     def _validate(self):
         """
@@ -133,7 +124,6 @@ class AbstractGrid(ABC):
 
         """
         return True
-
 
     def _load_grid(self, grid=None, units=None):
 
@@ -155,8 +145,7 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-
-    def _make_grid(self, start=0, stop=1, num = 100):
+    def _make_grid(self, start=0, stop=1, num=100):
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
@@ -165,7 +154,6 @@ class AbstractGrid(ABC):
             start = [start] * 3
         if isinstance(num, (int, float, u.Quantity)):
             num = [num] * 3
-
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
@@ -207,14 +195,12 @@ class AbstractGrid(ABC):
         ax1 = np.linspace(start[1], stop[1], num=num[1])
         ax2 = np.linspace(start[2], stop[2], num=num[2])
 
-
         # Construct the coordinate arrays and grid
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing='ij')
         grid = np.zeros([ax0.size, ax1.size, ax2.size, 3])
-        grid[...,0] = arr0
-        grid[...,1] = arr1
-        grid[...,2] = arr2
-
+        grid[..., 0] = arr0
+        grid[..., 1] = arr1
+        grid[..., 2] = arr2
 
         self._units = units
         self._grid = grid
@@ -239,12 +225,7 @@ class AbstractGrid(ABC):
         self._regular_grid = np.allclose(variance, 0.0, atol=tol)
 
 
-
-
-
-
 class CartesianGrid(AbstractGrid):
-
 
     def _validate(self):
         # Check that all units are lengths
@@ -327,15 +308,12 @@ class CartesianGrid(AbstractGrid):
         return np.sqrt(self.xaxis ** 2 + self.yaxis ** 2 + self.zaxis ** 2)
 
 
-
-
 class IrregularCartesianGrid(CartesianGrid):
     """
     A Cartesian grid in which the _make_grid method produces an irregularly
     spaced grid (rather than a uniform one)
     """
     pass
-
 
 
 class CylindricalGrid(AbstractGrid):
