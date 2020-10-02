@@ -55,7 +55,8 @@ class PosGrid:
 
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, grid: "PosGrid" = None, num=100, length=1 * u.cm,
+                 regular_grid: bool = True, **kwargs):
 
         # If grid has been provided, initialize object with the provided
         # grid
