@@ -74,6 +74,11 @@ class PosGrid:
                             f"got {type(grid)}")
 
     @property
+    def grid(self):
+        """Grid of positional values."""
+        return self._grid
+
+    @property
     def regular_grid(self):
         """
         Get value of regular_grid
