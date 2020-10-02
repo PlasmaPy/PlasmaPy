@@ -4,7 +4,6 @@ representing different field configurations
 """
 
 __all__ = [
-    "PosGrid",
     "AbstractField",
     "NoFields",
     "ElectrostaticGaussianSphere",
@@ -18,7 +17,6 @@ import numpy as np
 
 from abc import ABC, abstractmethod
 from scipy.special import erf as erf
-
 
 
 class AbstractField(ABC):
