@@ -58,39 +58,17 @@ class PosGrid:
     def __init__(self, grid: "PosGrid" = None, num=100, length=1 * u.cm,
                  regular_grid: bool = True, **kwargs):
 
-        # If grid has been provided, initialize object with the provided
-        # grid
-        if "grid" in kwargs.keys():
-            grid = kwargs["grid"]
-
-            if not isinstance(grid, u.Quantity):
-                raise ValueError(
-                    "Grid must be an astropy.units.Quantity, but "
-                    f"type given was {type(grid)}"
-                )
-
-            if not len(grid.shape) == 4 or grid.shape[3] != 3:
-                raise ValueError(
-                    "Grid must have shape [nx,ny,nz,3], but "
-                    f"grid given has shape {self.grid.shape}"
-                )
-
-            self.grid = grid
-
-        # Otherwise create a grid
-        else:
-            self._make_grid(**kwargs)
-
-        # If regular grid is set, use that value
-        # otherwise set to None and grid regularity will be auto-detected
-        # if needed.
-        if "regular_grid" in kwargs.keys():
-            self._regular_grid = kwargs["regular_grid"]
-        else:
-            self._regular_grid = None
-
-        # Properties to be calculated as needed
+        # set defaults that are not set by self._make_grid()
         self._nearest_neighbor = None
+
+        if grid is None:
+            self._make_grid(num=num, length=length, regular_grid=regular_grid, **kwargs)
+        elif isinstance(grid, type(self)):
+            self._regular_grid = grid.regular_grid
+            self._grid = grid
+        else:
+            raise TypeError(f"For kwarg 'grid' expected type {type(self)} and "
+                            f"got {type(grid)}")
 
     @property
     def regular_grid(self):
