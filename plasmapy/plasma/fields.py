@@ -234,13 +234,13 @@ class PosGrid:
 
         L = np.zeros([2, 3]) * length.unit
         if length.size == 1:
-            L[:, 0] = np.array([-length.value, length.value]) * length.unit
-            L[:, 1] = np.array([-length.value, length.value]) * length.unit
-            L[:, 2] = np.array([-length.value, length.value]) * length.unit
+            L[:, 0] = [-1.0, 1.0] * length
+            L[:, 1] = [-1.0, 1.0] * length
+            L[:, 2] = [-1.0, 1.0] * length
         elif length.size == 3:
-            L[:, 0] = np.array([-length[0].value, length[0].value]) * length.unit
-            L[:, 1] = np.array([-length[1].value, length[1].value]) * length.unit
-            L[:, 2] = np.array([-length[2].value, length[2].value]) * length.unit
+            L[:, 0] = [-1.0, 1.0] * length[0]
+            L[:, 1] = [-1.0, 1.0] * length[1]
+            L[:, 2] = [-1.0, 1.0] * length[2]
         else:
             raise ValueError("Dimensions of length in _create_grid are not valid.")
 
