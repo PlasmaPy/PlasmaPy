@@ -14,8 +14,8 @@ import numpy as np
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from scipy.stats import linregress
 from scipy.optimize import curve_fit, fsolve
+from scipy.stats import linregress
 from typing import Tuple, Union
 
 
@@ -29,9 +29,7 @@ class AbstractFitFunction(ABC):
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
     def __init__(
-            self,
-            params: Tuple[float, ...] = None,
-            param_errors: Tuple[float, ...] = None,
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
     ):
         """
         Parameters
@@ -48,7 +46,7 @@ class AbstractFitFunction(ABC):
 
         self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
         """
-        A named tuple class used for attributes :attr:`params` and 
+        A named tuple class used for attributes :attr:`params` and
         :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
         the tuple field names.
         """
@@ -201,8 +199,10 @@ class AbstractFitFunction(ABC):
         elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
             self._params = tuple(val)
         else:
-            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.param_names)}.")
+            raise ValueError(
+                f"Got type {type(val)} for 'val', expecting tuple of length "
+                f"{len(self.param_names)}."
+            )
 
     @property
     def param_errors(self) -> Union[None, tuple]:
@@ -219,8 +219,10 @@ class AbstractFitFunction(ABC):
         elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
             self._param_errors = tuple(val)
         else:
-            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.param_names)}.")
+            raise ValueError(
+                f"Got type {type(val)} for 'val', expecting tuple of length "
+                f"{len(self.param_names)}."
+            )
 
     @property
     def param_names(self) -> Tuple[str, ...]:
@@ -407,6 +409,7 @@ class Exponential(AbstractFitFunction):
     :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
     uncertainties for :math:`A`, :math:`\\alpha`, and :math:`x`.
     """
+
     _param_names = ("a", "alpha")
 
     def __str__(self):
@@ -672,6 +675,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
     and :math:`\\delta x` are the respective uncertainties for :math:`A`,
     :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
     """
+
     _param_names = ("a", "alpha", "m", "b")
 
     def __init__(self):
@@ -752,6 +756,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
     :math:`x`.
 
     """
+
     _param_names = ("a", "alpha", "b")
 
     def __init__(self):
