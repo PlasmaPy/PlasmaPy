@@ -199,9 +199,9 @@ def find_floating_potential(
                          f"greater than or equal to 0.")
 
     # find possible crossing points (cp)
-    lower_vals = current <= 0
-    upper_vals = 0 <= current
-    cp_exact = np.logical_and(lower_vals, upper_vals).nonzero()[0]
+    lower_vals = current < 0
+    upper_vals = 0 < current
+    cp_exact = (current == 0.).nonzero()[0]
     cp_low2high = np.logical_and(np.roll(lower_vals, 1), upper_vals).nonzero()[0]
     cp_high2low = np.logical_and(np.roll(lower_vals, -1), upper_vals).nonzero()[0]
 
