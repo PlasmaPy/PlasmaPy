@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from scipy.stats import linregress
 from scipy.optimize import curve_fit, fsolve
-from typing import Any, Tuple, Union
+from typing import Tuple, Union
 
 
 class AbstractFitFunction(ABC):
