@@ -2,9 +2,9 @@
 
 .. _ad:
 
-======================
-Analyses & Diagnostics
-======================
+==============================
+Analysis & Diagnostic Toolkits
+==============================
 
 Analyses and diagnostics go hand-in-hand, but have subtle differences.  Thus,
 PlasmaPy gives each their own sub-packages, `plasmapy.analysis` and
@@ -38,5 +38,5 @@ on some of following key areas...
 .. toctree::
    :maxdepth: 2
 
-   Analyses <analysis/index>
+   Analysis <analysis/index>
    Diagnostics <diagnostics/index>

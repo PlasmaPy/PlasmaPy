@@ -4,9 +4,9 @@
 
 .. _analysis:
 
-==============================
-Analyses (`plasmapy.analysis`)
-==============================
+===================
+`plasmapy.analysis`
+===================
 
 .. toctree::
    :maxdepth: 1
