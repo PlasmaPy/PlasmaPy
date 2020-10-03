@@ -13,5 +13,5 @@
    :maxdepth: 1
    :caption: Sub-Packages and Modules
 
-   Swept Langmuir Analysis (will be deprecated) <langmuir>
+   Swept Langmuir Analysis <langmuir>
    thomson
