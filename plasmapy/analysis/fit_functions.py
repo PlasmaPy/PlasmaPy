@@ -275,7 +275,7 @@ class AbstractFitFunction(ABC):
 
         return x
 
-    def root_solve(self, x0, **kwargs):
+    def root_solve(self, x0):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
         mehtod used `scipy.optimize.fsolve` to find the function roots.
@@ -284,9 +284,6 @@ class AbstractFitFunction(ABC):
         ----------
         x0: `~numpy.ndarray`
             The starting estimate for the roots of :math:`f(x_r) = 0`.
-
-        **kwargs
-            Any keyword accepted by `scipy.optimize.fsolve`, except for `args`.
 
         Returns
         -------
@@ -302,10 +299,7 @@ class AbstractFitFunction(ABC):
 
         Notes
         -----
-        If the full output of `scipy.optimize.fsolve` is desired then one can do
-
-            >>> import numpy as np
-            >>> import scipy
+        If the full output of `scipy.optimize.fsolve` is desired then one can do:
 
             >>> class SomeFunc(AbstractFitFunction):
             ...     _param_names = ("m", "b")
@@ -343,7 +337,7 @@ class AbstractFitFunction(ABC):
             >>> func = SomeFunc()
             >>> func.params = (1., 5.)
             >>> func.param_errors = (0.0, 0.0)
-            >>> roots = scipy.optimize.fsolve(func, -4., full_output=True)
+            >>> roots = fsolve(func, -4., args=func.params, full_output=True)
             >>> roots
             (array([-5.]),
              {'nfev': 4,
@@ -355,12 +349,9 @@ class AbstractFitFunction(ABC):
              'The solution converged.')
 
         """
-        kwargs["args"] = self.params
-        results = fsolve(self.func, x0, **kwargs)
-        if isinstance(results, tuple):
-            results = results[0]
+        results = fsolve(self.func, x0, args=self.params)
 
-        return results, np.tile(np.nan, results.shape)
+        return results[0], np.tile(np.nan, results[0].shape)
 
     @property
     def rsq(self):
