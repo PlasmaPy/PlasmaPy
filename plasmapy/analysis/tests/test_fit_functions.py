@@ -186,6 +186,10 @@ class BaseFFTests(ABC):
         with pytest.raises(ValueError):
             foo.func_err(5, x_err="goodbye")
 
+    @abstractmethod
+    def test_root_solve(self):
+        raise NotImplementedError
+
 # class TestAbstractFitFunction(BaseFFTests):
 #     @staticmethod
 #     def func(x, a, b, c):
@@ -262,3 +266,13 @@ class TestFFLinear(BaseFFTests):
         assert foo.param_names == ("m", "b")
         assert foo.latex_str == fr"m \, x + b"
         assert foo.__str__() == f"f(x) = m x + b"
+
+    def test_root_solve(self):
+        foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
+        assert foo.root_solve() == (-1, 0)
+
+        foo.params = (5., 1.3)
+        foo.param_errors = (0.1, 0.1)
+        root, err = foo.root_solve()
+        assert root == -1.3 / 5.
+        assert err == np.abs(root) * np.sqrt((0.1 / 5.) ** 2 + (0.1 / 1.3) ** 2)
