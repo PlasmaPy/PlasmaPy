@@ -9,3 +9,5 @@ exclude_lines =
     coverage: ignore
     ImportError
     ModuleNotFoundError
+    pragma: no cover
+    raise NotImplementedError
