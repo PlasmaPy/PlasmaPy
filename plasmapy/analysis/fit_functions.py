@@ -559,20 +559,32 @@ class Linear(AbstractFitFunction):
 
         .. math::
 
-            (\\delta y)^2 &= (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
+            (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
         Parameters
         ----------
         x: array_like
             Independent variables to be passed to the fit function.
 
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
+
+        rety: bool
+            Set `True` to also return the associated dependent variables
+            :math:`y = f(x)`.
+
         Returns
         -------
-        `numpy.ndarray`:
-            The calculated uncertainty of the dependent variables of the
-            independent variables `x`.
+        err: `numpy.ndarray`
+            The calculated uncertainties :math:`\\delta y` of the dependent
+            variables (:math:`y = f(x)`) of the independent variables `x`.
+
+        y: `numpy.ndarray`, optional
+            (if `rety = True`) The associated dependent variables
+            :math:`y = f(x)`.
         """
-        self._check_x(x)
+        x = self._check_x(x)
 
         m, b = self.params
         m_err, b_err = self.param_errors
