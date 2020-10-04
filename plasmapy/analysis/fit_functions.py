@@ -481,6 +481,52 @@ class Exponential(AbstractFitFunction):
         return a * np.exp(alpha * x)
 
     def func_err(self, x, x_err=None, rety=False):
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
+
+        .. math::
+
+            \\left( \\frac{\\delta y}{|y|} \\right)^2 =
+                \\left( \\frac{\\delta A}{A} \\right)^2
+                + (x \\, \\delta \\alpha)^2
+                + (\\alpha \\, \\delta x)^2
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
+
+        rety: bool
+            Set `True` to also return the associated dependent variables
+            :math:`y = f(x)`.
+
+        Returns
+        -------
+        err: `numpy.ndarray`
+            The calculated uncertainties :math:`\\delta y` of the dependent
+            variables (:math:`y = f(x)`) of the independent variables `x`.
+
+        y: `numpy.ndarray`, optional
+            (if `rety = True`) The associated dependent variables
+            :math:`y = f(x)`.
+        """
+        x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
+
         a, alpha = self.params
         a_err, alpha_err = self.param_errors
         y = self.func(x, a, alpha)
@@ -491,6 +537,8 @@ class Exponential(AbstractFitFunction):
         err = a_term + alpha_term
 
         if x_err is not None:
+            x_err = self._check_x(x_err)
+
             x_term = (alpha * x_err) ** 2
             err += x_term
 
