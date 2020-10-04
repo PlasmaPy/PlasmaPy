@@ -991,9 +991,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     _param_names = ("a", "alpha", "b")
 
-    def __init__(self):
-        super().__init__()
+    def __init__(
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+    ):
         self._explin = ExponentialPlusLinear()
+        super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
         return f"f(x) = A exp(alpha x) + b"
