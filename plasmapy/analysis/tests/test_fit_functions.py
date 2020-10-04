@@ -93,6 +93,9 @@ class BaseFFTests(ABC):
             assert hasattr(self.ff_class, name)
             assert isinstance(getattr(self.ff_class, name), property)
 
+        foo = self.ff_class()
+        assert foo.__repr__() == f"{foo.__str__()} {foo.__class__}"
+
     def test_instantiation(self):
         # default
         foo = self.ff_class()
