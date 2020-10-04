@@ -233,6 +233,42 @@ class BaseFFTests(ABC):
         with pytest.raises(ValueError):
             foo.func_err(5, x_err=[0.1, 0.1])
 
+    def test_call(self):
+        foo = self.ff_class()
+        foo.params = self._test_params
+        foo.param_errors = self._test_param_errors
+
+        for x in (0, 1.0, np.linspace(10, 30, num=20)):
+            assert np.allclose(
+                foo(x), self.func(x, *self._test_params)
+            )
+
+            y, y_err = foo(x, reterr=True)
+            assert np.allclose(y, self.func(x, *self._test_params))
+            assert np.allclose(
+                y_err, self.func_err(x, self._test_params, self._test_param_errors)
+            )
+
+        x = [4, 5, 6]
+        x_err = 0.05
+        assert np.allclose(
+            foo(x), self.func(np.array(x), *self._test_params)
+        )
+        y, y_err = foo(x, x_err=x_err, reterr=True)
+        assert np.allclose(y, self.func(np.array(x), *self._test_params))
+        assert np.allclose(
+            y_err,
+            self.func_err(
+                np.array(x), self._test_params, self._test_param_errors, x_err=x_err
+            ),
+        )
+
+        with pytest.raises(ValueError):
+            foo("hello")
+
+        with pytest.raises(ValueError):
+            foo(5, x_err=[1, 2], reterr=True)
+
     @abstractmethod
     def test_root_solve(self):
         raise NotImplementedError
