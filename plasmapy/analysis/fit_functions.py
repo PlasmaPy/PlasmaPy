@@ -248,10 +248,11 @@ class AbstractFitFunction(ABC):
     @staticmethod
     def _check_x(x):
         if isinstance(x, (int, float, np.integer, np.floating)):
-            pass
+            x = np.array(x)
         else:
             if not isinstance(x, np.ndarray):
                 x = np.array(x)
+                x = x.squeeze()
 
             if not (np.issubdtype(x.dtype, np.integer)
                     or np.issubdtype(x.dtype, np.floating)):
@@ -259,6 +260,7 @@ class AbstractFitFunction(ABC):
                     f"Argument x needs to be an array_like object of integers "
                     f"or floats."
                 )
+
         return x
 
     def root_solve(self, x0, **kwargs):
