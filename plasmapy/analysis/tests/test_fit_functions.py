@@ -141,7 +141,7 @@ class BaseFFTests(ABC):
 
         for x in (0, 1., np.linspace(10, 30, num=20)):
             assert np.allclose(foo.func(x, *self._test_params),
-                              self.func(x, *self._test_params))
+                               self.func(x, *self._test_params))
 
         x = [4, 5, 6]
         assert np.allclose(foo.func(x, *self._test_params),
