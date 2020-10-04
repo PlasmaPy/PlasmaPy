@@ -191,10 +191,11 @@ class AbstractFitFunction(ABC):
     def params(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._params = tuple(val)
-        elif isinstance(val, (tuple, list)) \
-                and len(val) == len(self.param_names)\
-                and all(isinstance(vv, (int, np.integer,
-                                        float, np.floating)) for vv in val):
+        elif (
+            isinstance(val, (tuple, list))
+            and len(val) == len(self.param_names)
+            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+        ):
             self._params = tuple(val)
         else:
             raise ValueError(
@@ -214,10 +215,11 @@ class AbstractFitFunction(ABC):
     def param_errors(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._param_errors = tuple(val)
-        elif isinstance(val, (tuple, list)) \
-                and len(val) == len(self.param_names)\
-                and all(isinstance(vv, (int, np.integer,
-                                        float, np.floating)) for vv in val):
+        elif (
+            isinstance(val, (tuple, list))
+            and len(val) == len(self.param_names)
+            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+        ):
             self._param_errors = tuple(val)
         else:
             raise ValueError(
@@ -261,8 +263,10 @@ class AbstractFitFunction(ABC):
             if not isinstance(x, np.ndarray):
                 x = np.array(x)
 
-            if not (np.issubdtype(x.dtype, np.integer)
-                    or np.issubdtype(x.dtype, np.floating)):
+            if not (
+                np.issubdtype(x.dtype, np.integer)
+                or np.issubdtype(x.dtype, np.floating)
+            ):
                 raise ValueError(
                     f"Argument x needs to be an array_like object of integers "
                     f"or floats."

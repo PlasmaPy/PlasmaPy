@@ -10,6 +10,39 @@ from abc import ABC, abstractmethod
 import plasmapy.analysis.fit_functions as ffuncs
 
 
+class TestAbstractFitFunction:
+    """
+    Tests for fit function class `plasmapy.analysis.fit_functions.AbstractFitFunction`.
+    """
+
+    ff_class = ffuncs.AbstractFitFunction
+
+    def test_is_abs(self):
+        assert issubclass(self.ff_class, ABC)
+
+    def test_methods(self):
+        # required attributes/methods
+        for name in ("curve_fit", "func", "func_err", "root_solve", "__call__"):
+            assert hasattr(self.ff_class, name)
+
+        # required properties
+        for name in (
+            "curve_fit_results",
+            "latex_str",
+            "params",
+            "param_errors",
+            "param_names",
+            "rsq",
+        ):
+            assert hasattr(self.ff_class, name)
+            assert isinstance(getattr(self.ff_class, name), property)
+
+    def test_abstractmethods(self):
+        # abstract methods
+        for name in ("__str__", "func", "func_err", "latex_str"):
+            assert name in self.ff_class.__abstractmethods__
+
+
 class BaseFFTests(ABC):
     abc = ffuncs.AbstractFitFunction
     _test_params = NotImplemented  # type: tuple
@@ -49,8 +82,14 @@ class BaseFFTests(ABC):
             assert hasattr(self.ff_class, name)
 
         # required properties
-        for name in ("curve_fit_results", "latex_str", "params", "param_errors",
-                     "param_names", "rsq"):
+        for name in (
+            "curve_fit_results",
+            "latex_str",
+            "params",
+            "param_errors",
+            "param_names",
+            "rsq",
+        ):
             assert hasattr(self.ff_class, name)
             assert isinstance(getattr(self.ff_class, name), property)
 
@@ -143,13 +182,15 @@ class BaseFFTests(ABC):
     def test_func(self):
         foo = self.ff_class()
 
-        for x in (0, 1., np.linspace(10, 30, num=20)):
-            assert np.allclose(foo.func(x, *self._test_params),
-                               self.func(x, *self._test_params))
+        for x in (0, 1.0, np.linspace(10, 30, num=20)):
+            assert np.allclose(
+                foo.func(x, *self._test_params), self.func(x, *self._test_params)
+            )
 
         x = [4, 5, 6]
-        assert np.allclose(foo.func(x, *self._test_params),
-                           self.func(np.array(x), *self._test_params))
+        assert np.allclose(
+            foo.func(x, *self._test_params), self.func(np.array(x), *self._test_params)
+        )
 
         with pytest.raises(ValueError):
             foo.func("hello", *self._test_params)
@@ -160,23 +201,23 @@ class BaseFFTests(ABC):
             foo.func(5, *params)
 
     def test_func_err(self):
-        foo = self.ff_class(params=self._test_params,
-                            param_errors=self._test_param_errors)
+        foo = self.ff_class(
+            params=self._test_params, param_errors=self._test_param_errors
+        )
 
-        for x in (0, 1., np.linspace(10, 30, num=20)):
+        for x in (0, 1.0, np.linspace(10, 30, num=20)):
             assert np.allclose(
                 foo.func_err(x),
-                self.func_err(x, self._test_params, self._test_param_errors)
+                self.func_err(x, self._test_params, self._test_param_errors),
             )
 
         x = [4, 5, 6]
         results = foo.func_err(x, x_err=0.1, rety=True)
         assert np.allclose(
             results[0],
-            self.func_err(np.array(x),
-                          self._test_params,
-                          self._test_param_errors,
-                          x_err=0.1),
+            self.func_err(
+                np.array(x), self._test_params, self._test_param_errors, x_err=0.1
+            ),
         )
         assert np.allclose(results[1], self.func(np.array(x), *self._test_params))
 
@@ -209,44 +250,20 @@ class BaseFFTests(ABC):
         assert foo.curve_fit_results is not None
         assert np.isclose(foo.rsq, 1.0)
         assert np.allclose(
-            foo.param_errors,
-            tuple([0] * len(foo.param_names)),
-            atol=1.5e-8,
+            foo.param_errors, tuple([0] * len(foo.param_names)), atol=1.5e-8,
         )
         assert np.allclose(foo.params, self._test_params)
 
     # TODO: test for __call__
 
 
-class TestAbstractFitFunction:
-    ff_class = ffuncs.AbstractFitFunction
-
-    def test_is_abs(self):
-        assert issubclass(self.ff_class, ABC)
-
-    def test_methods(self):
-        # required attributes/methods
-        for name in ("curve_fit", "func", "func_err", "root_solve", "__call__"):
-            assert hasattr(self.ff_class, name)
-
-        # required properties
-        for name in ("curve_fit_results", "latex_str", "params", "param_errors",
-                     "param_names", "rsq"):
-            assert hasattr(self.ff_class, name)
-            assert isinstance(getattr(self.ff_class, name), property)
-
-    def test_abstractmethods(self):
-        # abstract methods
-        for name in ("__str__", "func", "func_err", "latex_str"):
-            assert name in self.ff_class.__abstractmethods__
-
-
 class TestFFExponential(BaseFFTests):
     """
     Tests for fit function class `plasmapy.analysis.fit_functions.Exponential`.
     """
+
     ff_class = ffuncs.Exponential
-    _test_params = (5., 1.)
+    _test_params = (5.0, 1.0)
     _test_param_errors = (0.1, 0.1)
 
     @staticmethod
@@ -292,8 +309,9 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     Tests for fit function class
     `plasmapy.analysis.fit_functions.ExponentialPlusLinear`.
     """
+
     ff_class = ffuncs.ExponentialPlusLinear
-    _test_params = (2., 1., 5., -10.)
+    _test_params = (2.0, 1.0, 5.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1, 0.1)
 
     @staticmethod
@@ -334,7 +352,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         assert foo.__str__() == f"f(x) = A exp(alpha x) + m x + b"
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(5., 0.5, 1., 5.), param_errors=(0, 0, 0, 0))
+        foo = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
         root, err = foo.root_solve(-5)
         assert np.isclose(root, -5.345338)
         assert np.isnan(err)
@@ -345,8 +363,9 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     Tests for fit function class
     `plasmapy.analysis.fit_functions.ExponentialPlusOffset`.
     """
+
     ff_class = ffuncs.ExponentialPlusOffset
-    _test_params = (2., 1., -10.)
+    _test_params = (2.0, 1.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1)
 
     @staticmethod
@@ -383,12 +402,12 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         assert foo.__str__() == f"f(x) = A exp(alpha x) + b"
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(3., 0.5, -5.), param_errors=(0, 0, 0))
+        foo = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
         root, err = foo.root_solve()
-        assert root == np.log(5. / 3.) / 0.5
+        assert root == np.log(5.0 / 3.0) / 0.5
         assert err == 0
 
-        foo.params = (3., 0.5, 5.)
+        foo.params = (3.0, 0.5, 5.0)
         root, err = foo.root_solve()
         assert np.isnan(root)
         assert np.isnan(err)
@@ -398,8 +417,9 @@ class TestFFLinear(BaseFFTests):
     """
     Tests for fit function class `plasmapy.analysis.fit_functions.Linear`.
     """
+
     ff_class = ffuncs.Linear
-    _test_params = (5., 4.)
+    _test_params = (5.0, 4.0)
     _test_param_errors = (0.1, 0.1)
 
     @staticmethod
@@ -434,8 +454,8 @@ class TestFFLinear(BaseFFTests):
         foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
         assert foo.root_solve() == (-1, 0)
 
-        foo.params = (5., 1.3)
+        foo.params = (5.0, 1.3)
         foo.param_errors = (0.1, 0.1)
         root, err = foo.root_solve()
-        assert root == -1.3 / 5.
-        assert err == np.abs(root) * np.sqrt((0.1 / 5.) ** 2 + (0.1 / 1.3) ** 2)
+        assert root == -1.3 / 5.0
+        assert err == np.abs(root) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2)
