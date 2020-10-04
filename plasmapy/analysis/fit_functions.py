@@ -822,10 +822,12 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     _param_names = ("a", "alpha", "m", "b")
 
-    def __init__(self):
-        super().__init__()
+    def __init__(
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+    ):
         self._exponential = Exponential()
         self._linear = Linear()
+        super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
         exp_str = self._exponential.__str__().lstrip("f(x) = ")
