@@ -91,9 +91,6 @@ class AbstractFitFunction(ABC):
             Uncertainties associated with the calculated dependent variables
             :math:`\\delta y`
         """
-        if not isinstance(x, np.ndarray):
-            x = np.array(x)
-
         if reterr:
             try:
                 y_err, y = self.func_err(x, x_err=x_err, rety=True)
@@ -575,6 +572,8 @@ class Linear(AbstractFitFunction):
             The calculated uncertainty of the dependent variables of the
             independent variables `x`.
         """
+        self._check_x(x)
+
         m, b = self.params
         m_err, b_err = self.param_errors
 
