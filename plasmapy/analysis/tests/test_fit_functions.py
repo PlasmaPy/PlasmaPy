@@ -357,6 +357,60 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         assert np.isnan(err)
 
 
+class TestFFExponentialPlusOffset(BaseFFTests):
+    """
+    Tests for fit function class
+    `plasmapy.analysis.fit_functions.ExponentialPlusOffset`.
+    """
+    ff_class = ffuncs.ExponentialPlusOffset
+    _test_params = (2., 1., -10.)
+    _test_param_errors = (0.1, 0.1, 0.1)
+
+    @staticmethod
+    def func(x, a, alpha, b):
+        return a * np.exp(alpha * x) + b
+
+    def func_err(self, x, params, param_errors, x_err=None):
+        a, alpha, b = params
+        a_err, alpha_err, b_err = param_errors
+
+        exp_y = a * np.exp(alpha * x)
+
+        a_term = (exp_y * a_err / a) ** 2
+        alpha_term = (exp_y * x * alpha_err) ** 2
+        b_term = b_err ** 2
+
+        err = a_term + alpha_term + b_term
+
+        if x_err is not None:
+            x_term = (exp_y * alpha * x_err) ** 2
+            err += x_term
+
+        err = np.sqrt(err)
+
+        return err
+
+    def test_basics(self):
+        super().test_basics()
+
+        foo = self.ff_class()
+
+        assert foo.param_names == ("a", "alpha", "b")
+        assert foo.latex_str == fr"A \, \exp(\alpha \, x) + b"
+        assert foo.__str__() == f"f(x) = A exp(alpha x) + b"
+
+    def test_root_solve(self):
+        foo = self.ff_class(params=(3., 0.5, -5.), param_errors=(0, 0, 0))
+        root, err = foo.root_solve()
+        assert root == np.log(5. / 3.) / 0.5
+        assert err == 0
+
+        foo.params = (3., 0.5, 5.)
+        root, err = foo.root_solve()
+        assert np.isnan(root)
+        assert np.isnan(err)
+
+
 class TestFFLinear(BaseFFTests):
     """
     Tests for fit function class `plasmapy.analysis.fit_functions.Linear`.
