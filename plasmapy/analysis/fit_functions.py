@@ -598,9 +598,11 @@ class Linear(AbstractFitFunction):
 
         if x_err is not None:
             x_err = self._check_x(x_err)
+
             if x_err.shape != x.shape:
                 raise ValueError(
-                    f"x_err shape {x_err} must be equal the shape of x {x.shape}."
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
                 )
 
             x_term = (m * x_err) ** 2
