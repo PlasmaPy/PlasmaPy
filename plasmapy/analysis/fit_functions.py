@@ -872,10 +872,10 @@ class ExponentialPlusLinear(AbstractFitFunction):
             Independent variable.
 
         a: float
-            value for slope :math:`A`
+            value for constant :math:`A`
 
         alpha: float
-            value for intercept :math:`\\alpha`
+            value for constant :math:`\\alpha`
 
         m: float
             value for slope :math:`m`
