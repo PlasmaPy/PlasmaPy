@@ -856,6 +856,39 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
     def func(self, x, a, alpha, m, b):
+        """
+        The fit function, an exponential with a linear offset.
+
+        .. math::
+
+            f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+
+        where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+        constants and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for slope :math:`A`
+
+        alpha: float
+            value for intercept :math:`\\alpha`
+
+        m: float
+            value for slope :math:`m`
+
+        b: float
+            value for intercept :math:`b`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
         exp_term = self._exponential.func(x, a, alpha)
         lin_term = self._linear.func(x, m, b)
         return exp_term + lin_term
