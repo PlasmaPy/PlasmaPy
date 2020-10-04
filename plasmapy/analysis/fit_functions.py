@@ -238,6 +238,31 @@ class AbstractFitFunction(ABC):
         """Latex friendly representation of the fit function."""
         raise NotImplementedError
 
+    @staticmethod
+    def _check_params(*args) -> None:
+        for arg in args:
+            if not isinstance(arg, (int, np.integer, float, np.floating)):
+                raise ValueError(
+                    f"Expected int or float for parameter argument, got "
+                    f"{type(arg)}."
+                )
+
+    @staticmethod
+    def _check_x(x):
+        if isinstance(x, (int, float, np.integer, np.floating)):
+            pass
+        else:
+            if not isinstance(x, np.ndarray):
+                x = np.array(x)
+
+            if not (np.issubdtype(x.dtype, np.integer)
+                    or np.issubdtype(x.dtype, np.floating)):
+                raise ValueError(
+                    f"Argument x needs to be an array_like object of integers "
+                    f"or floats."
+                )
+        return x
+
     def root_solve(self, x0, **kwargs):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
