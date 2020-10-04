@@ -521,8 +521,7 @@ class Linear(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = m x + b"
 
-    @staticmethod
-    def func(x, m, b):
+    def func(self, x, m, b):
         """
         The fit function, a linear function.
 
@@ -550,6 +549,9 @@ class Linear(AbstractFitFunction):
             dependent variables corresponding to :math:`x`
 
         """
+        x = self._check_x(x)
+        self._check_params(m, b)
+
         return m * x + b
 
     def func_err(self, x, x_err=None, rety=False):
