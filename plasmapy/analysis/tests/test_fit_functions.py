@@ -217,46 +217,29 @@ class BaseFFTests(ABC):
 
     # TODO: test for __call__
 
-# class TestAbstractFitFunction(BaseFFTests):
-#     @staticmethod
-#     def func(x, a, b, c):
-#         return a * x ** 2 + b * x + c
-#
-#     class FooFitFunc(ffuncs.AbstractFitFunction):
-#         _param_names = ("a", "b", "c")
-#
-#         @property
-#         def latex_str(self) -> str:
-#             return fr"a \, x^2 + b \, x + c"
-#
-#         @staticmethod
-#         def func(x, a, b, c):
-#             return a * x ** 2 + b * x + c
-#
-#         def func_err(self, x, x_err=None, rety=False):
-#             a, b, c = self.parameters
-#             a_err, b_err, c_err = self.parameters_err
-#
-#             a_term = ((x ** 2) * a_err) ** 2
-#             b_term = (x * b_err) ** 2
-#             c_term = c_err ** 2
-#             err = a_term + b_term + c_term
-#
-#             if x_err is not None:
-#                 x_term = ((2 * a * x + b) * x_err) ** 2
-#                 err += x_term
-#             err = np.sqrt(err)
-#
-#             if rety:
-#                 y = self.func(x, a, b, c)
-#                 return err, y
-#
-#             return err
-#
-#     ff_class = FooFitFunc
-#
-#     def test_basics(self):
-#         pass
+
+class TestAbstractFitFunction:
+    ff_class = ffuncs.AbstractFitFunction
+
+    def test_is_abs(self):
+        assert issubclass(self.ff_class, ABC)
+
+    def test_methods(self):
+        # required attributes/methods
+        for name in ("curve_fit", "func", "func_err", "root_solve", "__call__"):
+            assert hasattr(self.ff_class, name)
+
+        # required properties
+        for name in ("curve_fit_results", "latex_str", "params", "param_errors",
+                     "param_names", "rsq"):
+            assert hasattr(self.ff_class, name)
+            assert isinstance(getattr(self.ff_class, name), property)
+
+    def test_abstractmethods(self):
+        # abstract methods
+        for name in ("__str__", "func", "func_err", "latex_str"):
+            assert name in self.ff_class.__abstractmethods__
+
 
 class TestFFExponential(BaseFFTests):
     """
