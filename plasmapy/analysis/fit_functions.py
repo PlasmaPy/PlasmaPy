@@ -115,9 +115,8 @@ class AbstractFitFunction(ABC):
     def __str__(self):
         raise NotImplementedError
 
-    @staticmethod
     @abstractmethod
-    def func(x, *args):
+    def func(self, x, *args):
         """
         The fit function.  This signature of the function must first take the
         independent variable followed by the parameters to be fitted as
@@ -133,7 +132,7 @@ class AbstractFitFunction(ABC):
         x: array_like
             Independent variables to be passed to the fit function.
 
-        *args
+        *args: Tuple[Union[float, int],...]
             The parameters that will be adjusted to make the fit.
 
         Returns
