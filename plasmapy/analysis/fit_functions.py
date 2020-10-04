@@ -535,6 +535,7 @@ class Linear(AbstractFitFunction):
         ----------
         x: array_like
             Independent variable.
+
         m: float
             value for slope :math:`m`
 
