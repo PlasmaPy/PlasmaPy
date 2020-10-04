@@ -1000,7 +1000,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(B \, x) + C"
+        return fr"A \, \exp(\alpha \, x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
