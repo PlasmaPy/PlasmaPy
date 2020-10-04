@@ -252,7 +252,6 @@ class AbstractFitFunction(ABC):
         else:
             if not isinstance(x, np.ndarray):
                 x = np.array(x)
-                x = x.squeeze()
 
             if not (np.issubdtype(x.dtype, np.integer)
                     or np.issubdtype(x.dtype, np.floating)):
@@ -260,6 +259,11 @@ class AbstractFitFunction(ABC):
                     f"Argument x needs to be an array_like object of integers "
                     f"or floats."
                 )
+
+            x = x.squeeze()
+            if x.shape == ():
+                # force x to be a scalar
+                x = x[()]
 
         return x
 
