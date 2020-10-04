@@ -211,6 +211,8 @@ class BaseFFTests(ABC):
         assert np.allclose(foo.param_errors, (0.0, 0.0), atol=1.5e-8)
         assert np.allclose(foo.params, self._test_params)
 
+    # TODO: test for __call__
+
 # class TestAbstractFitFunction(BaseFFTests):
 #     @staticmethod
 #     def func(x, a, b, c):
@@ -251,6 +253,52 @@ class BaseFFTests(ABC):
 #
 #     def test_basics(self):
 #         pass
+
+class TestFFExponential(BaseFFTests):
+    """
+    Tests for fit function class `plasmapy.analysis.fit_functions.Exponential`.
+    """
+    ff_class = ffuncs.Exponential
+    _test_params = (5., 1.)
+    _test_param_errors = (0.1, 0.1)
+
+    @staticmethod
+    def func(x, a, alpha):
+        return a * np.exp(alpha * x)
+
+    def func_err(self, x, params, param_errors, x_err=None):
+        a, alpha = params
+        a_err, alpha_err = param_errors
+        y = self.func(x, *params)
+
+        a_term = (a_err / a) ** 2
+        alpha_term = (x * alpha_err) ** 2
+
+        err = a_term + alpha_term
+
+        if x_err is not None:
+            x_term = (alpha * x_err) ** 2
+            err += x_term
+
+        err = np.abs(y) * np.sqrt(err)
+
+        return err
+
+    def test_basics(self):
+        super().test_basics()
+
+        foo = self.ff_class()
+
+        assert foo.param_names == ("a", "alpha")
+        assert foo.latex_str == fr"A \, \exp(\alpha \, x)"
+        assert foo.__str__() == f"f(x) = A exp(alpha x)"
+
+    def test_root_solve(self):
+        foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
+        root, err = foo.root_solve()
+        assert np.isnan(root)
+        assert np.isnan(err)
+
 
 class TestFFLinear(BaseFFTests):
     """
