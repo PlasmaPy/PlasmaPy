@@ -250,9 +250,7 @@ class BaseFFTests(ABC):
 
         x = [4, 5, 6]
         x_err = 0.05
-        assert np.allclose(
-            foo(x), self.func(np.array(x), *self._test_params)
-        )
+        assert np.allclose(foo(x), self.func(np.array(x), *self._test_params))
         y, y_err = foo(x, x_err=x_err, reterr=True)
         assert np.allclose(y, self.func(np.array(x), *self._test_params))
         assert np.allclose(
