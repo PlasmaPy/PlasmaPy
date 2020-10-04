@@ -1023,9 +1023,76 @@ class ExponentialPlusOffset(AbstractFitFunction):
         )
 
     def func(self, x, a, alpha, b):
+        """
+        The fit function, an exponential with a DC offset.
+
+        .. math::
+
+            f(x) = A \\, e^{\\alpha \\, x} + b\\\\
+
+        where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants
+        and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for constant :math:`A`
+
+        alpha: float
+            value for constant :math:`\\alpha`
+
+        b: float
+            value for DC offset :math:`b`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
         return self._explin.func(x, a, alpha, 0.0, b)
 
     def func_err(self, x, x_err=None, rety=False):
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 =&
+                \\left( A e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta A}{A} \\right)^2
+                    + (x \\, \\delta \\alpha)^2
+                    + (\\alpha \\, \\delta x)^2
+                \\right]
+                + (\\delta b)^2
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
+
+        rety: bool
+            Set `True` to also return the associated dependent variables
+            :math:`y = f(x)`.
+
+        Returns
+        -------
+        err: `numpy.ndarray`
+            The calculated uncertainties :math:`\\delta y` of the dependent
+            variables (:math:`y = f(x)`) of the independent variables `x`.
+
+        y: `numpy.ndarray`, optional
+            (if `rety = True`) The associated dependent variables
+            :math:`y = f(x)`.
+        """
         y, err = self._explin(x, x_err=x_err, reterr=True)
 
         if rety:
