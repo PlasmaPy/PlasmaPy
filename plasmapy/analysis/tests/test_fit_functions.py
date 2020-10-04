@@ -186,6 +186,9 @@ class BaseFFTests(ABC):
         with pytest.raises(ValueError):
             foo.func_err(5, x_err="goodbye")
 
+        with pytest.raises(ValueError):
+            foo.func_err(5, x_err=[0.1, 0.1])
+
     @abstractmethod
     def test_root_solve(self):
         raise NotImplementedError
