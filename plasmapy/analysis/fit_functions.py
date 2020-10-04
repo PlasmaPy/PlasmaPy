@@ -527,7 +527,7 @@ class Linear(AbstractFitFunction):
 
             f(x) = m \\, x + b
 
-        where :math:`m` and :math:`b` are positive real constants representing the
+        where :math:`m` and :math:`b` are real constants representing the
         slope and intercept, respectively, and :math:`x` is the independent
         variable.
 
@@ -596,6 +596,10 @@ class Linear(AbstractFitFunction):
 
         if x_err is not None:
             x_err = self._check_x(x_err)
+            if x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err} must be equal the shape of x {x.shape}."
+                )
 
             x_term = (m * x_err) ** 2
             err += x_term
