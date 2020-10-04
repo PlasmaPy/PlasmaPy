@@ -311,8 +311,10 @@ class AbstractFitFunction(ABC):
             ...     def latex_str(self) -> str:
             ...         return f"m \\, x + b"
             ...
-            ...     @staticmethod
-            ...     def func(x, m, b):
+            ...     def func(self, x, m, b):
+            ...         x = self._check_x(x)
+            ...         self._check_params(m, b)
+            ...
             ...         return m * x + b
             ...
             ...     def func_err(self, x, x_err=None, rety=False):
@@ -335,16 +337,16 @@ class AbstractFitFunction(ABC):
             ...         return err
             ...
             >>> func = SomeFunc()
-            >>> func.params = (1., 5.)
+            >>> func.params = (1.0, 5.0)
             >>> func.param_errors = (0.0, 0.0)
-            >>> roots = fsolve(func, -4., args=func.params, full_output=True)
+            >>> roots = fsolve(func, -4.0, full_output=True)
             >>> roots
             (array([-5.]),
              {'nfev': 4,
               'fjac': array([[-1.]]),
               'r': array([-1.]),
               'qtf': array([2.18...e-12]),
-              'fvec': array([0.])},
+              'fvec': 0.0},
              1,
              'The solution converged.')
 
