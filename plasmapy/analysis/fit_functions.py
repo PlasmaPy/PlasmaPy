@@ -447,8 +447,37 @@ class Exponential(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = A exp(alpha x)"
 
-    @staticmethod
-    def func(x, a, alpha):
+    def func(self, x, a, alpha):
+        """
+        The fit function, a exponential function.
+
+        .. math::
+
+            f(x) = A \\, e^{\\alpha \\, x}
+
+        where :math:`A` and :math:`\\alpha` are real constants and :math:`x`
+        is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for the exponential "normalization" constant, :math:`A`
+
+        alpha: float
+            value for the growth constant, :math:`\\alpha`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to :math:`x`
+
+        """
+        x = self._check_x(x)
+        self._check_params(a, alpha)
+
         return a * np.exp(alpha * x)
 
     def func_err(self, x, x_err=None, rety=False):
