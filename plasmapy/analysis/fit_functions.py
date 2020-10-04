@@ -595,7 +595,7 @@ class Linear(AbstractFitFunction):
         err = m_term + b_term
 
         if x_err is not None:
-            self._check_params(x_err)
+            x_err = self._check_x(x_err)
 
             x_term = (m * x_err) ** 2
             err += x_term
