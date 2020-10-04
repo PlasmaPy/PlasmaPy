@@ -97,15 +97,44 @@ class BaseFFTests(ABC):
 
     def test_param_assignment(self):
         foo = self.ff_class()
+
+        # setting params property
         params = [2] * len(foo.param_names)
+        for val in (params, foo.FitParamTuple(*params)):
+            foo.params = val
+            assert foo.params == foo.FitParamTuple(*params)
 
-        # for attr in ("params", "param_errors"):
-        #     params = [1] * len(foo.param_names)
-        #     setattr(foo, attr, params)
-        #     assert getattr(foo, attr) == foo.FitParamTuple(*params)
-        #     assert all(hasattr(getattr(foo, attr), name)
-        #                for name in foo.param_names)
+        with pytest.raises(ValueError):
+            foo.params = 5
 
+        params = [2] * len(foo.param_names)
+        params[0] = "let me in"
+        with pytest.raises(ValueError):
+            foo.params = params
+
+        params = [2] * len(foo.param_names)
+        params += [5]
+        with pytest.raises(ValueError):
+            foo.params = params
+
+        # setting param_errors property
+        params = [2] * len(foo.param_names)
+        for val in (params, foo.FitParamTuple(*params)):
+            foo.param_errors = val
+            assert foo.param_errors == foo.FitParamTuple(*params)
+
+        with pytest.raises(ValueError):
+            foo.param_errors = 5
+
+        params = [2] * len(foo.param_names)
+        params[0] = "let me in"
+        with pytest.raises(ValueError):
+            foo.param_errors = params
+
+        params = [2] * len(foo.param_names)
+        params += [5]
+        with pytest.raises(ValueError):
+            foo.param_errors = params
 
     def test_func(self):
         foo = self.ff_class()
