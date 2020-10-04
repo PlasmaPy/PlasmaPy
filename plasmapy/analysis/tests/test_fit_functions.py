@@ -239,14 +239,13 @@ class BaseFFTests(ABC):
         foo.param_errors = self._test_param_errors
 
         for x in (0, 1.0, np.linspace(10, 30, num=20)):
-            assert np.allclose(
-                foo(x), self.func(x, *self._test_params)
-            )
+            assert np.allclose(foo(x), self.func(x, *self._test_params))
 
+            # also return error
             y, y_err = foo(x, reterr=True)
             assert np.allclose(y, self.func(x, *self._test_params))
             assert np.allclose(
-                y_err, self.func_err(x, self._test_params, self._test_param_errors)
+                y_err, self.func_err(x, self._test_params, self._test_param_errors),
             )
 
         x = [4, 5, 6]
