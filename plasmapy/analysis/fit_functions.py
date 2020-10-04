@@ -238,6 +238,10 @@ class AbstractFitFunction(ABC):
 
     @staticmethod
     def _check_params(*args) -> None:
+        """
+        Check fitting parameters so that they are an expected type for the
+        class functionality.
+        """
         for arg in args:
             if not isinstance(arg, (int, np.integer, float, np.floating)):
                 raise ValueError(
@@ -247,6 +251,10 @@ class AbstractFitFunction(ABC):
 
     @staticmethod
     def _check_x(x):
+        """
+        Check the independent variable :math:`x` so that it is an expected
+        type for the class functionality.
+        """
         if isinstance(x, (int, float, np.integer, np.floating)):
             x = np.array(x)
         else:
