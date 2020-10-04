@@ -208,7 +208,11 @@ class BaseFFTests(ABC):
 
         assert foo.curve_fit_results is not None
         assert np.isclose(foo.rsq, 1.0)
-        assert np.allclose(foo.param_errors, (0.0, 0.0), atol=1.5e-8)
+        assert np.allclose(
+            foo.param_errors,
+            tuple([0] * len(foo.param_names)),
+            atol=1.5e-8,
+        )
         assert np.allclose(foo.params, self._test_params)
 
     # TODO: test for __call__
