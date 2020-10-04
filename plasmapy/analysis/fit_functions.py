@@ -61,9 +61,8 @@ class AbstractFitFunction(ABC):
         else:
             self.param_errors = param_errors
 
-        self._covariance_matrix = None
-        self._rsq = None
         self._curve_fit_results = None
+        self._rsq = None
 
     def __call__(self, x, x_err=None, reterr=False):
         """
