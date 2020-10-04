@@ -12,8 +12,8 @@ import plasmapy.analysis.fit_functions as ffuncs
 
 class BaseFFTests(ABC):
     abc = ffuncs.AbstractFitFunction
-    _test_params = NotImplemented
-    _test_param_errors = NotImplemented
+    _test_params = NotImplemented  # type: tuple
+    _test_param_errors = NotImplemented  # type: tuple
 
     @property
     @abstractmethod
@@ -23,6 +23,10 @@ class BaseFFTests(ABC):
     @staticmethod
     @abstractmethod
     def func(x, *args):
+        raise NotImplementedError
+
+    @abstractmethod
+    def func_err(self, x, params, param_errors, x_err=None):
         raise NotImplementedError
 
     def test_inheritance(self):
@@ -155,6 +159,32 @@ class BaseFFTests(ABC):
             params[0] = "hello"
             foo.func(5, *params)
 
+    def test_func_err(self):
+        foo = self.ff_class(params=self._test_params,
+                            param_errors=self._test_param_errors)
+
+        for x in (0, 1., np.linspace(10, 30, num=20)):
+            assert np.allclose(
+                foo.func_err(x),
+                self.func_err(x, self._test_params, self._test_param_errors)
+            )
+
+        x = [4, 5, 6]
+        results = foo.func_err(x, x_err=0.1, rety=True)
+        assert np.allclose(
+            results[0],
+            self.func_err(np.array(x),
+                          self._test_params,
+                          self._test_param_errors,
+                          x_err=0.1),
+        )
+        assert np.allclose(results[1], self.func(np.array(x), *self._test_params))
+
+        with pytest.raises(ValueError):
+            foo.func_err("hello")
+
+        with pytest.raises(ValueError):
+            foo.func_err(5, x_err="goodbye")
 
 # class TestAbstractFitFunction(BaseFFTests):
 #     @staticmethod
@@ -203,10 +233,26 @@ class TestFFLinear(BaseFFTests):
     """
     ff_class = ffuncs.Linear
     _test_params = (5., 4.)
+    _test_param_errors = (0.1, 0.1)
 
     @staticmethod
     def func(x, m, b):
         return m * x + b
+
+    def func_err(self, x, params, param_errors, x_err=None):
+        m, b = params
+        m_err, b_err = param_errors
+
+        m_term = (m_err * x) ** 2
+        b_term = b_err ** 2
+        err = m_term + b_term
+
+        if x_err is not None:
+            x_term = (m * x_err) ** 2
+            err += x_term
+        err = np.sqrt(err)
+
+        return err
 
     def test_basics(self):
         super().test_basics()
