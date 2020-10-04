@@ -190,6 +190,24 @@ class BaseFFTests(ABC):
     def test_root_solve(self):
         raise NotImplementedError
 
+    def test_curve_fit(self):
+        foo = self.ff_class()
+
+        xdata = np.linspace(-10, 10)
+        ydata = self.func(xdata, *self._test_params)
+
+        assert foo.params is None
+        assert foo.param_errors is None
+        assert foo.rsq is None
+        assert foo.curve_fit_results is None
+
+        foo.curve_fit(xdata, ydata)
+
+        assert foo.curve_fit_results is not None
+        assert np.isclose(foo.rsq, 1.0)
+        assert np.allclose(foo.param_errors, (0.0, 0.0), atol=1.5e-8)
+        assert np.allclose(foo.params, self._test_params)
+
 # class TestAbstractFitFunction(BaseFFTests):
 #     @staticmethod
 #     def func(x, a, b, c):
