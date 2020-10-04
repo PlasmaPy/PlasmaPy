@@ -195,17 +195,19 @@ class AbstractFitFunction(ABC):
     def params(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._params = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
+        elif isinstance(val, (tuple, list)) \
+                and len(val) == len(self.param_names)\
+                and all(isinstance(vv, (int, float)) for vv in val):
             self._params = tuple(val)
         else:
             raise ValueError(
-                f"Got type {type(val)} for 'val', expecting tuple of length "
-                f"{len(self.param_names)}."
+                f"Got {val} for 'val', expecting tuple of ints and "
+                f"floats of length {len(self.param_names)}."
             )
 
     @property
     def param_errors(self) -> Union[None, tuple]:
-        """The associated errors of the fit `parameters`."""
+        """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
         else:
@@ -215,12 +217,14 @@ class AbstractFitFunction(ABC):
     def param_errors(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._param_errors = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
+        elif isinstance(val, (tuple, list)) \
+                and len(val) == len(self.param_names)\
+                and all(isinstance(vv, (int, float)) for vv in val):
             self._param_errors = tuple(val)
         else:
             raise ValueError(
-                f"Got type {type(val)} for 'val', expecting tuple of length "
-                f"{len(self.param_names)}."
+                f"Got {val} for 'val', expecting tuple of ints and "
+                f"floats of length {len(self.param_names)}."
             )
 
     @property
