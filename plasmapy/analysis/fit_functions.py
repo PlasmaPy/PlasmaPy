@@ -894,6 +894,59 @@ class ExponentialPlusLinear(AbstractFitFunction):
         return exp_term + lin_term
 
     def func_err(self, x, x_err=None, rety=False):
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 =
+                \\left( A e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta A}{A} \\right)^2
+                    + (x \\, \\delta \\alpha)^2
+                    + (\\alpha \\, \\delta x)^2
+                \\right]\\\\
+                & + \\left(2 \\, A \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+                    (\\delta x)^2\\\\
+                & + \\left[(
+                        x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
+                    \\right]
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        x_err: array_like, optional
+            Errors associated with the independent variables `x`.  Must be of
+            size one or equal to the size of `x`.
+
+        rety: bool
+            Set `True` to also return the associated dependent variables
+            :math:`y = f(x)`.
+
+        Returns
+        -------
+        err: `numpy.ndarray`
+            The calculated uncertainties :math:`\\delta y` of the dependent
+            variables (:math:`y = f(x)`) of the independent variables `x`.
+
+        y: `numpy.ndarray`, optional
+            (if `rety = True`) The associated dependent variables
+            :math:`y = f(x)`.
+        """
+        x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
+
         a, alpha, m, b = self.params
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
