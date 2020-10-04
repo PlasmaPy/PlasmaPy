@@ -197,7 +197,8 @@ class AbstractFitFunction(ABC):
             self._params = tuple(val)
         elif isinstance(val, (tuple, list)) \
                 and len(val) == len(self.param_names)\
-                and all(isinstance(vv, (int, float)) for vv in val):
+                and all(isinstance(vv, (int, np.integer,
+                                        float, np.floating)) for vv in val):
             self._params = tuple(val)
         else:
             raise ValueError(
@@ -219,7 +220,8 @@ class AbstractFitFunction(ABC):
             self._param_errors = tuple(val)
         elif isinstance(val, (tuple, list)) \
                 and len(val) == len(self.param_names)\
-                and all(isinstance(vv, (int, float)) for vv in val):
+                and all(isinstance(vv, (int, np.integer,
+                                        float, np.floating)) for vv in val):
             self._param_errors = tuple(val)
         else:
             raise ValueError(
