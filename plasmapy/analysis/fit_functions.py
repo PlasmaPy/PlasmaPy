@@ -588,6 +588,16 @@ class Linear(AbstractFitFunction):
             :math:`y = f(x)`.
         """
         x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
 
         m, b = self.params
         m_err, b_err = self.param_errors
@@ -597,14 +607,6 @@ class Linear(AbstractFitFunction):
         err = m_term + b_term
 
         if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
-
             x_term = (m * x_err) ** 2
             err += x_term
         err = np.sqrt(err)
