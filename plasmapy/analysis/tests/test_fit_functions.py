@@ -12,6 +12,8 @@ import plasmapy.analysis.fit_functions as ffuncs
 
 class BaseFFTests(ABC):
     abc = ffuncs.AbstractFitFunction
+    _test_params = NotImplemented
+    _test_param_errors = NotImplemented
 
     @property
     @abstractmethod
@@ -110,12 +112,12 @@ class BaseFFTests(ABC):
 #     def test_basics(self):
 #         pass
 
-
 class TestFFLinear(BaseFFTests):
     """
     Tests for fit function class `plasmapy.analysis.fit_functions.Linear`.
     """
     ff_class = ffuncs.Linear
+    _test_params = (5., 4.)
 
     @staticmethod
     def func(x, m, b):
