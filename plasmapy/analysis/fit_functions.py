@@ -92,11 +92,7 @@ class AbstractFitFunction(ABC):
             :math:`\\delta y`
         """
         if reterr:
-            try:
-                y_err, y = self.func_err(x, x_err=x_err, rety=True)
-            except NotImplementedError:
-                y = self.func(x, *self.params)
-                y_err = np.tile(np.nan, x.shape)
+            y_err, y = self.func_err(x, x_err=x_err, rety=True)
 
             return y, y_err
 
