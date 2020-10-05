@@ -161,7 +161,7 @@ rho_ = mass_density
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T, density: [u.m ** -3, u.kg / u.m ** 3], ion="p+", z_mean=None
+    B: u.T, density: [u.m ** -3, u.kg / u.m ** 3], ion=None, z_mean=None
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
