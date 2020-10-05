@@ -265,8 +265,6 @@ class AbstractGrid(ABC):
 
         """
 
-        # TODO: enforce type of start and stop
-
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
             stop = [stop] * 3
@@ -276,6 +274,17 @@ class AbstractGrid(ABC):
             num = [num] * 3
         if isinstance(units, u.core.Unit):
             units = [units] * 3
+
+        # Check to make sure all lists now contain three values
+        # (throws exception if user supplies a list of two, say)
+        var = {"stop": stop, "start": start, "num": num, "units": units}
+        for k in var.keys():
+            if len(var[k]) != 3:
+                raise ValueError(
+                    f"{k} must be either a single value or a "
+                    "list of three values, but "
+                    f"({len(var[k])} values were given)."
+                )
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
