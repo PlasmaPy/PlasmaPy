@@ -116,7 +116,10 @@ class AbstractFitFunction(ABC):
 
         When sub-classing the definition should look something like::
 
-            def func(x, a, b, c):
+            def func(self, x, a, b, c):
+                x = self._check_x(x)
+                self._check_params(a, b, c)
+
                 return a * x ** 2 + b * x + c
 
         Parameters
