@@ -143,6 +143,34 @@ class AbstractFitFunction(ABC):
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
 
+        When sub-classing the definition should look something like::
+
+            def func_err(self, x, x_err=None, rety=False):
+                x = self._check_x(x)
+                if x_err is not None:
+                    x_err = self._check_x(x_err)
+
+                    if x_err.shape == ():
+                        pass
+                    elif x_err.shape != x.shape:
+                        raise ValueError(
+                            f"x_err shape {x_err.shape} must be equal the shape of "
+                            f"x {x.shape}."
+                        )
+
+                a, b, c = self.params
+                a_err, b_err, c_err = self.param_errors
+
+                # calculate error
+
+                # add x_err
+
+                if rety:
+                    y = self.func(x, a, b, c)
+                    return err, y
+
+                return err
+
         Parameters
         ----------
         x: array_like
