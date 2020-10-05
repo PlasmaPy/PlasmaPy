@@ -353,7 +353,15 @@ class AbstractFitFunction(ABC):
         """
         results = fsolve(self.func, x0, args=self.params)
 
-        return results[0], np.tile(np.nan, results[0].shape)
+        root = np.squeeze(results[0])
+        if root.shape == ():
+            # force x to be a scalar
+            root = root[()]
+            err = np.nan
+        else:
+            err = np.tile(np.nan, root.shape)
+
+        return root, err
 
     @property
     def rsq(self):
