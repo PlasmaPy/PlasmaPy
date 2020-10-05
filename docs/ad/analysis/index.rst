@@ -13,6 +13,15 @@
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
 
+Notebooks
+---------
+
+.. nbgallery::
+   :glob:
+   :reversed:
+
+   /notebooks/analysis/*
+
 API
 ---
 
