@@ -14,6 +14,7 @@ def test_CartesianGrid():
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm)
 
+    array = grid.grid
     xarr, yarr, zarr = grid.xarr, grid.yarr, grid.zarr
     radius = grid.distance_from_origin
     xaxis, yaxis, zaxis = grid.xaxis, grid.yaxis, grid.zaxis
@@ -22,7 +23,12 @@ def test_CartesianGrid():
     shape = grid.shape
     unit = grid.units
 
-    grid2 = grids.CartesianGrid(grid.grid, units=grid.units)
+    # Test initializing with a provided grid
+    grid2 = grids.CartesianGrid(grid.grid)
+
+    # Test initializing using the unit keyword
+    grid = grids.CartesianGrid(1, 1, units=u.cm)
+    grid2 = grids.CartesianGrid(grid.grid.value, units=grid.units)
 
 
 def test_CartesianGrid_exceptions():
@@ -30,19 +36,16 @@ def test_CartesianGrid_exceptions():
     # ****************************************
     # _load_grid
 
-    # Wrong input
-    with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(1)
-
     # ****************************************
     # _make_grid
 
-    # Wrong input
     # Incompatable units
     with pytest.raises(ValueError):
         grid = grids.CartesianGrid(1 * u.cm, 1 * u.eV)
 
     # ****************************************
     # CartesianGrid-specific
+
+    # Units not all consistent
     with pytest.raises(ValueError):
         grid = grids.CartesianGrid(1, 1, units=(u.m, u.rad))

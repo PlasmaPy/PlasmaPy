@@ -14,6 +14,7 @@ import astropy.units as u
 import numpy as np
 
 from abc import ABC
+from typing import Union
 
 
 class AbstractGrid(ABC):
@@ -181,7 +182,7 @@ class AbstractGrid(ABC):
         """
         return True
 
-    def _load_grid(self, grid, units=None):
+    def _load_grid(self, grid: Union[np.ndarray, u.Quantity], units=None):
         """
         Initialize the grid object from a user-supplied grid
 
@@ -201,12 +202,6 @@ class AbstractGrid(ABC):
         None.
 
         """
-
-        if not isinstance(grid, (np.ndarray, u.Quantity)):
-            raise ValueError(
-                f"Expected instance of u.Quantity or np.ndarray "
-                f"but got {grid.__class__}."
-            )
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(units, u.core.Unit):
@@ -235,7 +230,12 @@ class AbstractGrid(ABC):
         self._validate()
 
     def _make_grid(
-        self, start, stop, num=100, units=[u.dimensionless_unscaled] * 3, **kwargs
+        self,
+        start: Union[int, float, u.Quantity],
+        stop: Union[int, float, u.Quantity],
+        num=100,
+        units=[u.dimensionless_unscaled] * 3,
+        **kwargs,
     ):
         """
         Creates a grid based on start, stop, and num values in a manner
@@ -264,6 +264,8 @@ class AbstractGrid(ABC):
         None.
 
         """
+
+        # TODO: enforce type of start and stop
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
@@ -300,10 +302,7 @@ class AbstractGrid(ABC):
 
             try:
                 stop[i] = stop[i].to(units[i])
-            except u.UnitConversionError:
-                raise ValueError(
-                    f"Units of {stop[i]} and " f" {units[i]} are not compatible"
-                )
+            # Note that UnitConversionError is impossible for stop
             except AttributeError:
                 # Assume exception was raised because value is not a u.Quantity
                 stop[i] *= units[i]
