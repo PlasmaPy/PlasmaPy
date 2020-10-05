@@ -370,7 +370,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         if x_err is not None:
             x_term = (exp_y * alpha * x_err) ** 2
             x_term += (m * x_err) ** 2
-            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** x)
+            x_term += 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
 
             err += x_term
 
