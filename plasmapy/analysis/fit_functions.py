@@ -744,8 +744,6 @@ class Exponential(AbstractFitFunction):
         err = a_term + alpha_term
 
         if x_err is not None:
-            x_err = self._check_x(x_err)
-
             x_term = (alpha * x_err) ** 2
             err += x_term
 
@@ -947,7 +945,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         err = exp_err ** 2 + lin_err ** 2
 
         if x_err is not None:
-            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** x)
+            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
             err += blend_err
         err = np.sqrt(err)
 
