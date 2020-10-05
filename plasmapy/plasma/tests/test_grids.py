@@ -68,4 +68,7 @@ def test_CartesianGrid_exceptions():
 
     # Units not all consistent
     with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(-1, 1, units=(u.m, u.rad, u.rad))
+        grid = grids.CartesianGrid(-1, 1, units=[u.m, u.rad, u.rad])
+
+
+test_CartesianGrid_exceptions()

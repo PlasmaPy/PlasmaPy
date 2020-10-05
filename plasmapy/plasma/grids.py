@@ -34,7 +34,7 @@ class AbstractGrid(ABC):
             self._load_grid(seeds[0], units=units)
 
         elif len(seeds) == 2:
-            self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
+            self._make_grid(seeds[0], seeds[1], num=num, units=units, **kwargs)
 
         else:
             raise TypeError(
@@ -255,6 +255,10 @@ class AbstractGrid(ABC):
             The number of points in each dimension. If a single integer is
             given, the same number of points will be used in each dimension.
             The default is 100.
+
+        units: u.core.Unit object or array of three of the same
+            Units for each array dimension. Overridden by units on stop
+            and start, if present.
 
         **kwargs: Additional arguments
             Any additional arguments will be passed directly to np.linspace()
