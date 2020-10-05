@@ -122,6 +122,7 @@ untitled*
 .DS_Store
 */cython_version.py
 .mypy_cache
+upload.sh
 
 # Documentation files
 auto_examples
