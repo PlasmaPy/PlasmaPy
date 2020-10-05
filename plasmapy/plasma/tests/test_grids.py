@@ -32,18 +32,12 @@ def test_CartesianGrid_exceptions():
 
     # Wrong input
     with pytest.raises(ValueError):
-        grid = grids.CartesianGrid("str")
-
-    with pytest.raises(ValueError):
         grid = grids.CartesianGrid(1)
 
     # ****************************************
     # _make_grid
 
     # Wrong input
-    with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(1, "str")
-
     # Incompatable units
     with pytest.raises(ValueError):
         grid = grids.CartesianGrid(1 * u.cm, 1 * u.eV)
