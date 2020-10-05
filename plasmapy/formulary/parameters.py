@@ -275,7 +275,7 @@ def ion_sound_speed(
     k: u.m ** -1 = None,
     gamma_e=1,
     gamma_i=3,
-    ion="p+",
+    ion=None,
     z_mean=None,
 ) -> u.m / u.s:
     r"""
@@ -664,7 +664,7 @@ pth_ = thermal_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle="e-", method="most_probable"
+    T: u.K, kappa, particle=None, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -781,7 +781,7 @@ def Hall_parameter(
     T: u.K,
     B: u.T,
     ion,
-    particle="e-",
+    particle=None,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -858,7 +858,7 @@ betaH_ = Hall_parameter
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle=None, signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
@@ -975,7 +975,7 @@ wc_ = gyrofrequency
 )
 def gyroradius(
     B: u.T,
-    particle="e-",
+    particle=None,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
@@ -1139,7 +1139,7 @@ rhoc_ = gyroradius
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m ** -3, particle=None, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -1676,7 +1676,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion=None) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
