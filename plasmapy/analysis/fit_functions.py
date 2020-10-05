@@ -332,42 +332,7 @@ class AbstractFitFunction(ABC):
         -----
         If the full output of `scipy.optimize.fsolve` is desired then one can do:
 
-            >>> class SomeFunc(AbstractFitFunction):
-            ...     _param_names = ("m", "b")
-            ...
-            ...     def __str__(self):
-            ...         return "f(x) = m x + b"
-            ...
-            ...     @property
-            ...     def latex_str(self) -> str:
-            ...         return f"m \\, x + b"
-            ...
-            ...     def func(self, x, m, b):
-            ...         x = self._check_x(x)
-            ...         self._check_params(m, b)
-            ...
-            ...         return m * x + b
-            ...
-            ...     def func_err(self, x, x_err=None, rety=False):
-            ...         m, b = self.params
-            ...         m_err, b_err = self.param_errors
-            ...
-            ...         m_term = x * m_err
-            ...         b_term = b_err
-            ...         err = m_term ** 2 + b_term ** 2
-            ...
-            ...         if x_err is not None:
-            ...             x_term = m * x_err
-            ...             err += x_term ** 2
-            ...         err = np.sqrt(err)
-            ...
-            ...         if rety:
-            ...             y = self.func(x, m, b)
-            ...             return err, y
-            ...
-            ...         return err
-            ...
-            >>> func = SomeFunc()
+            >>> func = Linear()
             >>> func.params = (1.0, 5.0)
             >>> func.param_errors = (0.0, 0.0)
             >>> roots = fsolve(func, -4.0, full_output=True)
@@ -930,7 +895,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         .. math::
 
-            (\\delta y)^2 =
+            (\\delta y)^2 =&
                 \\left( A e^{\\alpha x}\\right)^2 \\left[
                     \\left( \\frac{\\delta A}{A} \\right)^2
                     + (x \\, \\delta \\alpha)^2
@@ -1094,7 +1059,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         .. math::
 
-            (\\delta y)^2 =&
+            (\\delta y)^2 =
                 \\left( A e^{\\alpha x}\\right)^2 \\left[
                     \\left( \\frac{\\delta A}{A} \\right)^2
                     + (x \\, \\delta \\alpha)^2
