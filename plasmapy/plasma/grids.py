@@ -5,11 +5,15 @@ Defines the AbstractGrid class and child classes
 __all__ = [
     "AbstractGrid",
     "CartesianGrid",
+    "IrregularCartesianGrid",
+    "CylindricalGrid",
+    "SphericalGrid",
 ]
 
-from abc import ABC
 import astropy.units as u
 import numpy as np
+
+from abc import ABC
 
 
 class AbstractGrid(ABC):
@@ -22,13 +26,20 @@ class AbstractGrid(ABC):
     # TODO: add appropriate typing here on start, stop, num
     # start/stop can be -> number(int,float), ndarray, u.quantity, list of numbers
     # or u.quantities units can be astropy.units.core.Unit or list of same
-    def __init__(self, start=0, stop=1, num=100, grid=None, units=None):
+    def __init__(self, *seeds, num=100, units=None, **kwargs):
 
-        # Load or create the grid
-        if grid is None:
-            self._make_grid(start=start, stop=stop, num=num)
+        if len(seeds) == 1:
+            # If one input is given, assume it is a grid
+            self._load_grid(seeds[0], units=units)
+
+        elif len(seeds) == 2:
+            self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
+
         else:
-            self._load_grid(grid=grid, units=units)
+            raise TypeError(
+                f"{self.__class__.__name__} takes 1 or 2 "
+                f"positional arguments but {len(seeds)} were given"
+            )
 
         # Setup method contains other initialization stuff
         self._setup()
@@ -59,63 +70,108 @@ class AbstractGrid(ABC):
 
     @property
     def unit(self):
+        """
+        The unit for the entire grid. Only valid if all dimensions of the
+        grid have the same units: otherwise, an exception is raised.
+        """
         if self._units[0] == self._units[1] and self._units[0] == self._units[2]:
             return self._units[0]
         else:
-            raise ValueError("Array dimensions do not all have the same "
-                             f"units: {self._units}")
+            raise ValueError(
+                "Array dimensions do not all have the same " f"units: {self._units}"
+            )
 
     @property
     def units(self):
+        """The list of units corresponding to the dimensions"""
         return self._units
 
     @property
     def unit0(self):
+        """Unit of dimension 1"""
         return self._units[0]
 
     @property
     def unit1(self):
+        """Unit of dimension 2"""
         return self._units[1]
 
     @property
     def unit2(self):
+        """Unit of dimension 3"""
         return self._units[2]
 
     @property
     def ax0(self):
-        return self._grid[:, 0, 0, 0]
+        """Axis 1"""
+        return self._grid[:, 0, 0, 0] * self.unit0
 
     @property
     def ax1(self):
-        return self._grid[0, :, 0, 1]
+        """Axis 2"""
+        return self._grid[0, :, 0, 1] * self.unit1
 
     @property
     def ax2(self):
-        return self._grid[0, 0, :, 2]
+        """Axis 3"""
+        return self._grid[0, 0, :, 2] * self.unit2
 
     @property
     def dax0(self):
-        return np.mean(np.gradient(self.ax0))
+        """
+        Grid step size along axis 1
+        Only valid if grid is regular: otherwise an exception is raised
+        """
+        if self.regular_grid:
+            return np.mean(np.gradient(self.ax0)) * self.unit0
+        else:
+            raise ValueError(
+                "The grid step size properties are only valid on "
+                "regularly spaced grids."
+            )
 
     @property
     def dax1(self):
-        return np.mean(np.gradient(self.ax1))
+        """
+        Grid step size along axis 2
+        Only valid if grid is regular: otherwise an exception is raised
+        """
+        if self.regular_grid:
+            return np.mean(np.gradient(self.ax1)) * self.unit1
+        else:
+            raise ValueError(
+                "The grid step size properties are only valid on "
+                "regularly spaced grids."
+            )
 
     @property
     def dax2(self):
-        return np.mean(np.gradient(self.ax2))
+        """
+        Grid step size along axis 3
+        Only valid if grid is regular: otherwise an exception is raised
+        """
+        if self.regular_grid:
+            return np.mean(np.gradient(self.ax2)) * self.unit2
+        else:
+            raise ValueError(
+                "The grid step size properties are only valid on "
+                "regularly spaced grids."
+            )
 
     @property
     def arr0(self):
-        return self._grid[..., 0]
+        """Array of positions in dimension 1"""
+        return self._grid[..., 0] * self.unit0
 
     @property
     def arr1(self):
-        return self._grid[..., 1]
+        """Array of positions in dimension 2"""
+        return self._grid[..., 1] * self.unit1
 
     @property
     def arr2(self):
-        return self._grid[..., 2]
+        """Array of positions in dimension 3"""
+        return self._grid[..., 2] * self.unit2
 
     def _validate(self):
         """
@@ -125,27 +181,89 @@ class AbstractGrid(ABC):
         """
         return True
 
-    def _load_grid(self, grid=None, units=None):
+    def _load_grid(self, grid, units=None):
+        """
+        Initialize the grid object from a user-supplied grid
+
+        Parameters
+        ----------
+        grid : np.ndarray or u.Quantity array, shape (n0, n1, n2, 3)
+            A grid of positions in 3D space. If an np.ndarray is provided,
+            the units keyword must be set to provide units for each dimension.
+            If a u.Quantity array is provided, its units will be used.
+
+        units : A u.core.Unit object or a list of three of the same
+            Units to be applied to each dimension. If only one unit is given,
+            the same unit will be applied to all dimensions.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if not isinstance(grid, (np.ndarray, u.Quantity)):
+            raise ValueError(
+                f"Expected instance of u.Quantity or np.ndarray "
+                f"but got {grid.__class__}."
+            )
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(units, u.core.Unit):
             units = [units] * 3
 
         # Determine units from grid or units keyword (in that order)
-        if hasattr(grid, 'unit'):
+        if hasattr(grid, "unit"):
             self._units = [grid.unit] * 3
         elif units is not None:
             self._units = units
         else:
-            self._units = [u.dimensionless_unscaled] * 3
+            raise ValueError(
+                "Input grid must be either a u.Quantity array "
+                "or an np.ndarray with units provided in the "
+                " units keyword."
+            )
 
-        self._grid = grid
+        # If quantity array was given, strip units
+        if hasattr(grid, "value"):
+            self._grid = grid.value
+        else:
+            self._grid = grid
 
         # Check to make sure that the object created satisfies any
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def _make_grid(self, start=0, stop=1, num=100):
+    def _make_grid(
+        self, start, stop, num=100, units=[u.dimensionless_unscaled] * 3, **kwargs
+    ):
+        """
+        Creates a grid based on start, stop, and num values in a manner
+        that mirrors the interface of the np.linspace function.
+
+        Parameters
+        ----------
+        start : number (int,float,u.Quantity) or a list of three of the same
+            Starting values for each dimension. If one value is given,
+            the same value will be used for all three dimensions.
+
+        stop : number (int,float,u.Quantity) or a list of three of the same
+            End values for each dimension. If one value is given,
+            the same value will be used for all three dimensions.
+
+        num : int or list of three ints, optional
+            The number of points in each dimension. If a single integer is
+            given, the same number of points will be used in each dimension.
+            The default is 100.
+
+        **kwargs: Additional arguments
+            Any additional arguments will be passed directly to np.linspace()
+
+        Returns
+        -------
+        None.
+
+        """
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
@@ -154,49 +272,46 @@ class AbstractGrid(ABC):
             start = [start] * 3
         if isinstance(num, (int, float, u.Quantity)):
             num = [num] * 3
+        if isinstance(units, u.core.Unit):
+            units = [units] * 3
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
-        units = [u.dimensionless_unscaled] * 3
         for i in range(3):
-            # Determine unit of stop entry
-            if hasattr(stop[i], 'unit'):
-                stop_unit = stop[i].unit
+            # Determine unit for dimension
+            if hasattr(stop[i], "unit"):
+                units[i] = stop[i].unit
+            elif hasattr(start[i], "unit"):
+                units[i] = start[i].unit
             else:
-                stop_unit = u.dimensionless_unscaled
+                # Use units provided by units keyword
+                pass
 
-            # Determine unit of start entry
-            if hasattr(start[i], 'unit'):
-                start_unit = start[i].unit
-            else:
-                start_unit = u.dimensionless_unscaled
+            # Attempt to convert start and stop to unit chosen
+            try:
+                start[i] = start[i].to(units[i])
+            except u.UnitConversionError:
+                raise ValueError(
+                    f"Units of {start[i]} and " f" {units[i]} are not compatible"
+                )
+            try:
+                stop[i] = stop[i].to(units[i])
+            except u.UnitConversionError:
+                raise ValueError(
+                    f"Units of {stop[i]} and " f" {units[i]} are not compatible"
+                )
 
-            # If stop and start units are the same, use the same units for
-            # both.
-            if stop_unit == start_unit:
-                units[i] = stop_unit
-
-            # If stop and start units are compatible, convert them to be the
-            # same
-            else:
-                try:
-                    start[i] = start[i].to(stop_unit)
-                    units[i] = stop_unit
-                except u.UnitConversionError:
-                    raise ValueError(f"Units of stop ({stop_unit}) and "
-                                     f"start ({start_unit}) are not "
-                                     "compatible.")
-            # Remove units
+            # strip units
             stop[i] = stop[i].value
             start[i] = start[i].value
 
         # Construct the axis arrays
-        ax0 = np.linspace(start[0], stop[0], num=num[0])
-        ax1 = np.linspace(start[1], stop[1], num=num[1])
-        ax2 = np.linspace(start[2], stop[2], num=num[2])
+        ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
+        ax1 = np.linspace(start[1], stop[1], num=num[1], **kwargs)
+        ax2 = np.linspace(start[2], stop[2], num=num[2], **kwargs)
 
         # Construct the coordinate arrays and grid
-        arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing='ij')
+        arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
         grid = np.zeros([ax0.size, ax1.size, ax2.size, 3])
         grid[..., 0] = arr0
         grid[..., 1] = arr1
@@ -226,6 +341,9 @@ class AbstractGrid(ABC):
 
 
 class CartesianGrid(AbstractGrid):
+    """
+    A regularly spaced Cartesian grid.
+    """
 
     def _validate(self):
         # Check that all units are lengths
@@ -233,8 +351,17 @@ class CartesianGrid(AbstractGrid):
             try:
                 (self.units[i].to(u.m))
             except u.UnitConversionError:
-                raise ValueError("Units of grid are not valid for a Cartesian "
-                                 f"grid: {self.units}.")
+                raise ValueError(
+                    "Units of grid are not valid for a Cartesian "
+                    f"grid: {self.units}."
+                )
+
+    @property
+    def grid(self):
+        """Grid of positional values. CartesianGrid has the unique property
+        that the grid returned is dimensional, since all axes have the same
+        units."""
+        return self._grid * self.unit
 
     @property
     def xarr(self):
@@ -283,21 +410,21 @@ class CartesianGrid(AbstractGrid):
         """
         Calculated dx (only valid for a uniform grid)
         """
-        return np.mean(np.gradient(self.xaxis))
+        return self.dax0
 
     @property
     def dy(self):
         """
         Calculated dy (only valid for a uniform grid)
         """
-        return np.mean(np.gradient(self.yaxis))
+        return self.dax1
 
     @property
     def dz(self):
         """
         Calculated dz (only valid for a uniform grid)
         """
-        return np.mean(np.gradient(self.zaxis))
+        return self.dax2
 
     @property
     def distance_from_origin(self):
@@ -313,6 +440,7 @@ class IrregularCartesianGrid(CartesianGrid):
     A Cartesian grid in which the _make_grid method produces an irregularly
     spaced grid (rather than a uniform one)
     """
+
     pass
 
 
@@ -320,6 +448,7 @@ class CylindricalGrid(AbstractGrid):
     """
     A grid with dimensions (r, theta, z) and units (length, angle, length)
     """
+
     pass
 
 
@@ -327,4 +456,5 @@ class SphericalGrid(AbstractGrid):
     """
     A grid with dimensions (r, theta, phi) and units (length, angle, angle)
     """
+
     pass

@@ -18,19 +18,21 @@ import numpy as np
 from abc import ABC, abstractmethod
 from scipy.special import erf as erf
 
+from plasmapy.plasma import grids as grids
+
 
 class AbstractField(ABC):
     """
     Base class for field grids.
     """
 
-    def __init__(self, grid, emax=0 * u.V / u.m, bmax=0 * u.T):
+    def __init__(self, grid: grids.AbstractGrid, emax=0 * u.V / u.m, bmax=0 * u.T):
         r"""
         Initialize a field object
 
         Parameters
         ----------
-        grid : `~astropy.units.Quantity` ndarray, (nx,ny,nz,3)
+        grid : `plasmapy.plasma.grids.AbstractGrid' or child class thereof
             Positions of grid points in space
 
         emax : `~astropy.units.Quantity`
@@ -47,11 +49,7 @@ class AbstractField(ABC):
 
         """
 
-        # If grid is not already a PosGrid object, try making it one
-        if not isinstance(grid, PosGrid):
-            self.grid = PosGrid(grid=grid)
-        else:
-            self.grid = grid
+        self.grid = grid
 
         self._emax = emax
         self._bmax = bmax
@@ -261,11 +259,8 @@ class ElectrostaticPlanarShock(AbstractField):
 
 
 def example_fields(
-    grid=None,
+    grid: grids.AbstractGrid,
     model="electrostatic gaussian sphere",
-    regular_grid=True,
-    num=(100, 100, 100),
-    length=1 * u.mm,
     emax=1e9 * u.V / u.m,
     bmax=100 * u.T,
 ):
@@ -275,7 +270,7 @@ def example_fields(
 
     Parameters
     ----------
-    grid : `~astropy.units.Quantity` array shape (nx,ny,nz,3), optional
+    grid : `plasmapy.plasma.grids.AbstractGrid' or child class thereof
         A grid of positions on which to calculate fields. If no grid is
         specified, one will be created.
 
@@ -298,27 +293,6 @@ def example_fields(
             shock. The discontinuity is located at z=0 and has a Gaussian
             distribution in the xy plane.
 
-    regular_grid : bool, optional
-        If a grid is being generated, setting this keyword to False will
-        generate a grid with random spacing between points. If True
-        (the default) the grid spacing will be uniform.
-
-    num : int or tuple of 3 ints, optional
-        If a grid is being constructed, this variable sets the number of
-        elements in each dimension. If set to a single integer, all three
-        dimensions are taken to have the same length. The default is 100.
-
-    length : `~astropy.units.Quantity`, optional
-        The length of each dimension, which can be given in several ways:
-            * If a single value is given, then the length of each dimension
-                will be set to (-length, length)
-
-            * If an array of shape (3) is given, each dimension is set to be
-                symmetric using each value, eg. xdim = [-length[0], length[0]]...
-
-            * If an array of shape (2,3) is given, then L[:,i] is the min
-                and max of the ith dimension.
-
     emax: `~astropy.units.Quantity`, optional
         Scale E-field to this maximum value. Default is 1e9 V/m
 
@@ -327,8 +301,6 @@ def example_fields(
 
     Returns
     -------
-    grid : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
-        The grid of positions corresponding to the field grids.
 
     E : `~astropy.units.Quantity` array, shape (nx,ny,nz,3)
         Electric field array in units of V/m
@@ -337,12 +309,6 @@ def example_fields(
         Magnetic field array in units of Tesla
 
     """
-
-    # If no grid is specified, create a grid
-    if grid is None:
-        grid = PosGrid(num=num, length=length, regular_grid=regular_grid)
-    elif not isinstance(grid, PosGrid):
-        grid = PosGrid(grid)
 
     # Load the model class for the test example chosen
     models = {
@@ -355,4 +321,4 @@ def example_fields(
     # Generate the fields by instantiating the test field object
     fields = models[model](grid, emax=emax, bmax=bmax)
 
-    return fields.grid, fields.E, fields.B
+    return fields.E, fields.B

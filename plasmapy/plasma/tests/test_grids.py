@@ -9,9 +9,10 @@ import warnings
 
 from plasmapy.plasma import grids as grids
 
+
 def test_CartesianGrid():
 
-    grid = grids.CartesianGrid(start=-1*u.cm, stop=1*u.cm)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm)
 
     xarr, yarr, zarr = grid.xarr, grid.yarr, grid.zarr
     radius = grid.distance_from_origin
@@ -21,7 +22,4 @@ def test_CartesianGrid():
     shape = grid.shape
     unit = grid.units
 
-    grid2 = grids.CartesianGrid(grid=grid, units=grid.units)
-
-
-test_CartesianGrid()
+    grid2 = grids.CartesianGrid(grid.grid, units=grid.units)
