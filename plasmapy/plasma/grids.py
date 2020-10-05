@@ -294,12 +294,19 @@ class AbstractGrid(ABC):
                 raise ValueError(
                     f"Units of {start[i]} and " f" {units[i]} are not compatible"
                 )
+            except AttributeError:
+                # Assume exception was raised because value is not a u.Quantity
+                start[i] *= units[i]
+
             try:
                 stop[i] = stop[i].to(units[i])
             except u.UnitConversionError:
                 raise ValueError(
                     f"Units of {stop[i]} and " f" {units[i]} are not compatible"
                 )
+            except AttributeError:
+                # Assume exception was raised because value is not a u.Quantity
+                stop[i] *= units[i]
 
             # strip units
             stop[i] = stop[i].value
