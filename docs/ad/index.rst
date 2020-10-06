@@ -15,7 +15,7 @@ Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 (functionality) you need to analyze your data.  Functionality is built around
 `numpy` arrays and each function has a well-defined, focused task.
 
-Diagnostics on the other-hand have a much broader scope and leverage the tools
+Diagnostics have a much broader scope and leverage the tools
 defined in `plasmapy.analysis` to give a more integrated user experience when
 analyzing data.  Diagnostics try to enhance the analysis workflow by focusing
 on some of following key areas...
@@ -30,8 +30,8 @@ on some of following key areas...
 
 #. Quick viewing of analyzed data with default plotting routines.
 #. Fully defining the physical parameters of a diagnostic with purposely
-   designed Probe classes that are integrated into the analysis workflow.
-#. Adding GUI's to the analysis workflow via notebook widgets.
+   designed `Probe` classes that are integrated into the analysis workflow.
+#. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook widgets.
 
 ----
 

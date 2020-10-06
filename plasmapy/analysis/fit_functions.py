@@ -22,8 +22,7 @@ from typing import Tuple, Union
 class AbstractFitFunction(ABC):
     """
     Abstract class for defining fit functions :math:`f(x)` and the tools for
-    fitting the function to a set of data.  These were originally designed for
-    assisting in fitting curves to swept Langmuir data.
+    fitting the function to a set of data.
     """
 
     _param_names = NotImplemented  # type: Tuple[str, ...]
@@ -191,7 +190,7 @@ class AbstractFitFunction(ABC):
             variables (:math:`y = f(x)`) of the independent variables `x`.
 
         y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
+            (if ``rety == True``) The associated dependent variables
             :math:`y = f(x)`.
 
         """
@@ -262,7 +261,7 @@ class AbstractFitFunction(ABC):
     @property
     @abstractmethod
     def latex_str(self) -> str:
-        """Latex friendly representation of the fit function."""
+        """LaTeX friendly representation of the fit function."""
         ...
 
     @staticmethod
@@ -326,7 +325,7 @@ class AbstractFitFunction(ABC):
             The uncertainty associated with the root calculation.  **Currently
             this returns an array of** `numpy.nan` **values equal in shape to**
             `x` **, since there is no determined way to calculate the
-            uncertaintyes.**
+            uncertainties.**
 
         Notes
         -----
@@ -510,7 +509,7 @@ class Linear(AbstractFitFunction):
             variables (:math:`y = f(x)`) of the independent variables `x`.
 
         y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
+            (if ``rety == True``) The associated dependent variables
             :math:`y = f(x)`.
         """
         x = self._check_x(x)
