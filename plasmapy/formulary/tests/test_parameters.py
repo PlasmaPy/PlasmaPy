@@ -746,8 +746,8 @@ class Test_gyroradius:
     # some custom numpy array tests here, because of the T_i / Vperp situation
     def test_handle_numpy_array(self):
         # Tests to verify that can handle Quantities with numpy array as the value:
-        assert gyroradius(B_arr, Vperp=V_arr)[0] == gyroradius(B_arr[0], Vperp=V_arr[0])
-        assert gyroradius(B_arr, T_i=T_arr)[0] == gyroradius(B_arr[0], T_i=T_arr[0])
+        assert gyroradius(B_arr, 'e-', Vperp=V_arr)[0] == gyroradius(B_arr[0], 'e-', Vperp=V_arr[0])
+        assert gyroradius(B_arr, 'e-', T_i=T_arr)[0] == gyroradius(B_arr[0], 'e-', T_i=T_arr[0])
 
     def test_handle_mixed_Qarrays(self):
         # If both Vperp or Ti are input as Qarrays, but only one of the two is valid

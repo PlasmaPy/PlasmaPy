@@ -49,9 +49,10 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
-from typing import Optional
+from typing import Optional, Union
 
 from plasmapy import particles
+from plasmapy.particles import Particle
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -110,9 +111,10 @@ def mass_density(
 
     particle : str, optional
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        charge state information is provided, then the particles are assumed
+        to be singly charged. A particle is required if using a number
+        density (1/m^3) for the density parameter.
 
     z_mean : float
         An optional float describing the average ionization of a particle
@@ -161,7 +163,10 @@ rho_ = mass_density
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T, density: [u.m ** -3, u.kg / u.m ** 3], ion=None, z_mean=None
+    B: u.T,
+    density: [u.m ** -3, u.kg / u.m ** 3],
+    ion: Union[str, Particle],
+    z_mean=None
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
@@ -275,7 +280,8 @@ def ion_sound_speed(
     k: u.m ** -1 = None,
     gamma_e=1,
     gamma_i=3,
-    ion=None,
+    *,
+    ion: Union[str, Particle],
     z_mean=None,
 ) -> u.m / u.s:
     r"""
@@ -663,7 +669,7 @@ pth_ = thermal_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle=None, method="most_probable"
+    T: u.K, kappa, particle: Union[str, Particle], method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -779,8 +785,8 @@ def Hall_parameter(
     n: u.m ** -3,
     T: u.K,
     B: u.T,
-    ion,
-    particle=None,
+    ion: Union[str, Particle],
+    particle: Union[str, Particle],
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -857,7 +863,7 @@ betaH_ = Hall_parameter
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle=None, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle: Union[str, Particle], signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
@@ -974,8 +980,7 @@ wc_ = gyrofrequency
 )
 def gyroradius(
     B: u.T,
-    particle=None,
-    *,
+    particle: Union[str, Particle],
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
 ) -> u.m:
@@ -1138,7 +1143,10 @@ rhoc_ = gyroradius
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle=None, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(
+    n: u.m ** -3, 
+    particle: Union[str, Particle], 
+    z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -1675,7 +1683,10 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion=None) -> u.rad / u.s:
+def lower_hybrid_frequency(
+    B: u.T,
+    n_i: u.m ** -3,
+    ion: Union[str, Particle]) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
