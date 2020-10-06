@@ -105,7 +105,7 @@ class AbstractFitFunction(ABC):
 
     @abstractmethod
     def __str__(self):
-        raise NotImplementedError
+        ...
 
     @abstractmethod
     def func(self, x, *args):
@@ -135,7 +135,7 @@ class AbstractFitFunction(ABC):
         `numpy.ndarray`:
             The calculated dependent variables of the independent variables `x`.
         """
-        raise NotImplementedError
+        ...
 
     @abstractmethod
     def func_err(self, x, x_err=None, rety=False):
@@ -195,7 +195,7 @@ class AbstractFitFunction(ABC):
             :math:`y = f(x)`.
 
         """
-        raise NotImplementedError
+        ...
 
     @property
     def curve_fit_results(self):
@@ -263,7 +263,7 @@ class AbstractFitFunction(ABC):
     @abstractmethod
     def latex_str(self) -> str:
         """Latex friendly representation of the fit function."""
-        raise NotImplementedError
+        ...
 
     @staticmethod
     def _check_params(*args) -> None:
