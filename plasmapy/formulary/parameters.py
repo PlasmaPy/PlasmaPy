@@ -182,12 +182,11 @@ def Alfven_speed(
         Either the ion number density in units convertible to 1 / m**3,
         or the mass density in units convertible to kg / m**3.
 
-    ion : str, optional
+    ion : str
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
-        helium-4), which defaults to protons.  If no charge state
-        information is provided, then the ions are assumed to be
-        singly charged.
+        helium-4). If no charge state information is provided, then the
+        ions are assumed to be singly charged.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -981,6 +980,7 @@ wc_ = gyrofrequency
 def gyroradius(
     B: u.T,
     particle: Union[str, Particle],
+    *, 
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
 ) -> u.m:

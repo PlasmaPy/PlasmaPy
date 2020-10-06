@@ -116,23 +116,23 @@ def test_Alfven_speed():
     # TODO: break this test up until multiple tests
 
     assert np.isclose(
-        Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3).value,
+        Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3, 'p').value,
         8920620.580763856,
         rtol=1e-6,
     )
 
-    V_A = Alfven_speed(B, n_i)
+    V_A = Alfven_speed(B, n_i, 'p')
     assert np.isclose(V_A.value, (B / np.sqrt(mu0 * n_i * (m_p + m_e))).si.value)
 
-    assert Alfven_speed(B, rho) == Alfven_speed(B, n_i)
+    assert Alfven_speed(B, rho, 'p') == Alfven_speed(B, n_i, 'p')
 
-    assert Alfven_speed(B, rho).unit.is_equivalent(u.m / u.s)
+    assert Alfven_speed(B, rho, 'p').unit.is_equivalent(u.m / u.s)
 
-    assert Alfven_speed(B, rho) == Alfven_speed(-B, rho)
+    assert Alfven_speed(B, rho, 'p') == Alfven_speed(-B, rho, 'p')
 
-    assert Alfven_speed(B, 4 * rho) == 0.5 * Alfven_speed(B, rho)
+    assert Alfven_speed(B, 4 * rho, 'p') == 0.5 * Alfven_speed(B, rho, 'p')
 
-    assert Alfven_speed(2 * B, rho) == 2 * Alfven_speed(B, rho)
+    assert Alfven_speed(2 * B, rho, 'p') == 2 * Alfven_speed(B, rho, 'p')
 
     # Case when Z=1 is assumed
     with pytest.warns(RelativityWarning):
@@ -144,26 +144,27 @@ def test_Alfven_speed():
         )
 
     # Case where magnetic field and density are Quantity arrays
-    V_A_arr = Alfven_speed(B_arr, rho_arr)
-    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0])
-    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1])
+    V_A_arr = Alfven_speed(B_arr, rho_arr, 'p')
+    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0], 'p')
+    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1], 'p')
     assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
     assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
     # Case where magnetic field is an array but density is a scalar Quantity
-    V_A_arr = Alfven_speed(B_arr, rho)
-    V_A_arr0 = Alfven_speed(B_arr[0], rho)
-    V_A_arr1 = Alfven_speed(B_arr[1], rho)
+    V_A_arr = Alfven_speed(B_arr, rho, 'p')
+    V_A_arr0 = Alfven_speed(B_arr[0], rho, 'p')
+    V_A_arr1 = Alfven_speed(B_arr[1], rho, 'p')
     assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
     assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
     with pytest.raises(ValueError):
-        Alfven_speed(np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m ** -3)
+        Alfven_speed(np.array([5, 6, 7]) * u.T,
+                     np.array([5, 6]) * u.m ** -3, 'p')
 
-    assert np.isnan(Alfven_speed(B_nanarr, rho_arr)[1])
+    assert np.isnan(Alfven_speed(B_nanarr, rho_arr, 'p')[1])
 
     with pytest.raises(ValueError):
-        Alfven_speed(B_arr, rho_negarr)
+        Alfven_speed(B_arr, rho_negarr, 'p')
 
     with pytest.raises(u.UnitTypeError):
         Alfven_speed(5 * u.A, n_i, ion="p")
@@ -197,7 +198,7 @@ def test_Alfven_speed():
         assert Alfven_speed(-np.inf * u.T, 1 * u.m ** -3, ion="p") == np.inf * u.m / u.s
 
     with pytest.warns(u.UnitsWarning):
-        assert Alfven_speed(1.0, n_i) == Alfven_speed(1.0 * u.T, n_i)
+        assert Alfven_speed(1.0, n_i, 'p') == Alfven_speed(1.0 * u.T, n_i, 'p')
 
     Alfven_speed(1 * u.T, 5e19 * u.m ** -3, ion="p")
     # testing for user input z_mean
@@ -267,13 +268,13 @@ def test_ion_sound_speed():
     ).unit.is_equivalent(u.m / u.s)
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, k=k_1, gamma_i=np.inf)
+        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, k=k_1, ion="p", gamma_i=np.inf)
 
     with pytest.warns(PhysicsWarning):
-        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e)
+        ion_sound_speed(T_i=T_i, T_e=T_e, n_e=n_e, ion="p")
 
     with pytest.warns(PhysicsWarning):
-        ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1)
+        ion_sound_speed(T_i=T_i, T_e=T_e, k=k_1, ion="p")
 
     with pytest.raises(u.UnitTypeError):
         ion_sound_speed(
@@ -281,71 +282,72 @@ def test_ion_sound_speed():
             T_e=np.array([3, 4]) * u.K,
             n_e=np.array([5, 6, 5]) * u.m ** -3,
             k=np.array([3, 4]) * u.m ** -3,
+            ion="p"
         )
 
     with pytest.raises(TypeError):  # Is this test right??????
-        ion_sound_speed(5 * u.T)
+        ion_sound_speed(5 * u.T, ion="p")
 
     with pytest.raises(TypeError):
-        ion_sound_speed("p")
+        ion_sound_speed(ion="p")
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i=0.9999, ion="p")
 
     with pytest.raises(PhysicsError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e=0.9999)
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e=0.9999, ion="p")
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e="sdjklsf")
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_e="sdjklsf", ion="p")
 
     with pytest.raises(TypeError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i="fsdfas")
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, gamma_i="fsdfas", ion="p")
 
     with pytest.raises(InvalidParticleError):
         ion_sound_speed(T_i=T_i, T_e=0 * u.K, ion="cupcakes")
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=-np.abs(T_i), T_e=0 * u.K)
+        ion_sound_speed(T_i=-np.abs(T_i), T_e=0 * u.K, ion="p")
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=-np.abs(n_e), k=k_1)
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=-np.abs(n_e), k=k_1, ion="p")
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=-np.abs(k_1))
+        ion_sound_speed(T_i=T_i, T_e=0 * u.K, n_e=n_e, k=-np.abs(k_1), ion="p")
 
     with pytest.warns(RelativityWarning):
-        ion_sound_speed(T_i=5e11 * u.K, T_e=0 * u.K)
+        ion_sound_speed(T_i=5e11 * u.K, T_e=0 * u.K, ion="p")
 
     with pytest.raises(RelativityError):
-        ion_sound_speed(T_i=5e19 * u.K, T_e=0 * u.K)
+        ion_sound_speed(T_i=5e19 * u.K, T_e=0 * u.K, ion="p")
 
     with pytest.raises(u.UnitTypeError):
-        ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K, n_e=n_e, k=k_1)
+        ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")
 
-    assert np.isnan(ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K, n_e=n_e, k=k_1)[1])
+    assert np.isnan(ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")[1])
 
-    assert np.isnan(ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K, n_e=n_e, k=k_1)[1])
-
-    with pytest.raises(ValueError):
-        ion_sound_speed(T_i=T_negarr, T_e=0 * u.K, n_e=n_e, k=k_1)
+    assert np.isnan(ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")[1])
 
     with pytest.raises(ValueError):
-        ion_sound_speed(T_e=T_negarr, T_i=0 * u.K, n_e=n_e, k=k_1)
+        ion_sound_speed(T_i=T_negarr, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")
+
+    with pytest.raises(ValueError):
+        ion_sound_speed(T_e=T_negarr, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")
 
     with pytest.warns(u.UnitsWarning):
         assert ion_sound_speed(
-            T_e=1.2e6, T_i=0 * u.K, n_e=n_e, k=k_1
-        ) == ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=k_1)
+            T_e=1.2e6, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p"
+        ) == ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")
 
     with pytest.warns(u.UnitsWarning):
         assert ion_sound_speed(
-            T_i=1.3e6, T_e=0 * u.K, n_e=n_e, k=k_1
-        ) == ion_sound_speed(T_i=1.3e6 * u.K, T_e=0 * u.K, n_e=n_e, k=k_1)
+            T_i=1.3e6, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p"
+        ) == ion_sound_speed(T_i=1.3e6 * u.K, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")
 
-    ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=k_1)
+    ion_sound_speed(T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")
     # testing for user input z_mean
     testMeth1 = ion_sound_speed(
-        T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=0 * u.m ** -1, z_mean=0.8
+        T_e=1.2e6 * u.K, T_i=0 * u.K, n_e=n_e, k=0 * u.m ** -1, z_mean=0.8, ion="p"
     ).si.value
     testTrue1 = 89018.09
     errStr = f"ion_sound_speed() gave {testMeth1}, should be {testTrue1}."
@@ -564,37 +566,37 @@ class Test_kappa_thermal_speed(object):
 def test_gyrofrequency():
     r"""Test the gyrofrequency function in parameters.py."""
 
-    assert gyrofrequency(B).unit.is_equivalent(u.rad / u.s)
+    assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
 
-    assert gyrofrequency(B, to_hz=True).unit.is_equivalent(u.Hz)
+    assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
 
-    assert np.isclose(gyrofrequency(1 * u.T).value, 175882008784.72018)
+    assert np.isclose(gyrofrequency(1 * u.T, "e-").value, 175882008784.72018)
 
-    assert np.isclose(gyrofrequency(2.4 * u.T).value, 422116821083.3284)
+    assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
 
-    assert np.isclose(gyrofrequency(1 * u.T, to_hz=True).value, 27992490076.528206)
+    assert np.isclose(gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206)
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, signed=True).value, -422116821083.3284)
+    assert np.isclose(gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284)
 
-    assert np.isclose(gyrofrequency(1 * u.G).cgs.value, 1.76e7, rtol=1e-3)
+    assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
 
     with pytest.raises(TypeError):
-        gyrofrequency(u.m)
+        gyrofrequency(u.m, "e-")
 
     with pytest.raises(u.UnitTypeError):
-        gyrofrequency(u.m * 1)
+        gyrofrequency(u.m * 1, "e-")
 
-    assert np.isnan(gyrofrequency(B_nanarr)[-1])
+    assert np.isnan(gyrofrequency(B_nanarr, "e-")[-1])
 
     # The following is a test to check that equivalencies from astropy
     # are working.
-    omega_ce = gyrofrequency(2.2 * u.T)
+    omega_ce = gyrofrequency(2.2 * u.T, "e-")
     f_ce = (omega_ce / (2 * np.pi)) / u.rad
     f_ce_use_equiv = omega_ce.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
     assert np.isclose(f_ce.value, f_ce_use_equiv.value)
 
     with pytest.warns(u.UnitsWarning):
-        assert gyrofrequency(5.0) == gyrofrequency(5.0 * u.T)
+        assert gyrofrequency(5.0, "e-") == gyrofrequency(5.0 * u.T, "e-")
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
@@ -609,7 +611,7 @@ def test_gyrofrequency():
     # Case when Z=1 is assumed
     # assert gyrofrequency(B, particle='p+') == gyrofrequency(B, particle='H-1')
 
-    assert gyrofrequency(B, particle="e+") == gyrofrequency(B)
+    assert gyrofrequency(B, particle="e+") == gyrofrequency(B, "e-")
 
     with pytest.warns(u.UnitsWarning):
         gyrofrequency(8, "p")
@@ -639,48 +641,48 @@ def test_gyrofrequency():
 def test_gyroradius():
     r"""Test the gyroradius function in parameters.py."""
 
-    assert gyroradius(B, T_i=T_e).unit.is_equivalent(u.m)
+    assert gyroradius(B, "e-", T_i=T_e).unit.is_equivalent(u.m)
 
-    assert gyroradius(B, Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
+    assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
-    omega_ce = gyrofrequency(Bmag)
+    omega_ce = gyrofrequency(Bmag, "e-")
     analytical_result = (Vperp / omega_ce).to(
         u.m, equivalencies=u.dimensionless_angles()
     )
-    assert gyroradius(Bmag, Vperp=Vperp) == analytical_result
+    assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
 
     with pytest.raises(TypeError):
-        gyroradius(u.T)
+        gyroradius(u.T, "e-")
 
     with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.A, Vperp=8 * u.m / u.s)
+        gyroradius(5 * u.A, "e-", Vperp=8 * u.m / u.s)
 
     with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.T, Vperp=8 * u.m)
+        gyroradius(5 * u.T, "e-", Vperp=8 * u.m)
 
     with pytest.raises(ValueError):
-        gyroradius(np.array([5, 6]) * u.T, Vperp=np.array([5, 6, 7]) * u.m / u.s)
+        gyroradius(np.array([5, 6]) * u.T, "e-", Vperp=np.array([5, 6, 7]) * u.m / u.s)
 
-    assert np.isnan(gyroradius(np.nan * u.T, Vperp=1 * u.m / u.s))
+    assert np.isnan(gyroradius(np.nan * u.T, "e-", Vperp=1 * u.m / u.s))
 
     with pytest.raises(ValueError):
-        gyroradius(3.14159 * u.T, T_i=-1 * u.K)
+        gyroradius(3.14159 * u.T, "e-", T_i=-1 * u.K)
 
     with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.0, Vperp=1.0) == gyroradius(
-            1.0 * u.T, Vperp=1.0 * u.m / u.s
+        assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
+            1.0 * u.T, "e-", Vperp=1.0 * u.m / u.s
         )
 
     with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, T_i=1.2) == gyroradius(1.1 * u.T, T_i=1.2 * u.K)
+        assert gyroradius(1.1, "e-", T_i=1.2) == gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
 
     with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
+        gyroradius(1.1 * u.T, "e-", Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
 
     with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, Vperp=1.1 * u.m, T_i=1.2 * u.K)
+        gyroradius(1.1 * u.T, "e-", Vperp=1.1 * u.m, T_i=1.2 * u.K)
 
     assert gyroradius(B, particle="p", T_i=T_i).unit.is_equivalent(u.m)
 
@@ -713,7 +715,7 @@ def test_gyroradius():
     assert gyro_by_vperp == gyroradius(B2, particle="alpha", T_i=T2)
 
     explicit_positron_gyro = gyroradius(1 * u.T, particle="positron", T_i=1 * u.MK)
-    assert explicit_positron_gyro == gyroradius(1 * u.T, T_i=1 * u.MK)
+    assert explicit_positron_gyro == gyroradius(1 * u.T, "e-", T_i=1 * u.MK)
 
     with pytest.raises(TypeError):
         gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
@@ -752,47 +754,47 @@ class Test_gyroradius:
     def test_handle_mixed_Qarrays(self):
         # If both Vperp or Ti are input as Qarrays, but only one of the two is valid
         # at each element, then that's fine, the function should work:
-        assert gyroradius(B_arr, Vperp=V_nanarr, T_i=T_nanarr2)[0] == gyroradius(
-            B_arr[0], Vperp=V_nanarr[0], T_i=T_nanarr2[0]
+        assert gyroradius(B_arr, "e-", Vperp=V_nanarr, T_i=T_nanarr2)[0] == gyroradius(
+            B_arr[0], "e-", Vperp=V_nanarr[0], T_i=T_nanarr2[0]
         )
 
     def test_raise_two_valid_inputs(self):
         # If both Vperp or Ti are nan-less, Qarrays or not, should raise ValueError:
         with pytest.raises(ValueError):
-            gyroradius(B_arr, Vperp=V, T_i=T_arr)
+            gyroradius(B_arr, "e-", Vperp=V, T_i=T_arr)
         with pytest.raises(ValueError):
-            gyroradius(B_arr, Vperp=V_arr, T_i=T_i)
+            gyroradius(B_arr, "e-", Vperp=V_arr, T_i=T_i)
 
     def test_all_valid_and_one_valid(self):
         # If one of (Vperp, Ti) is a valid and one is Qarray with at least one valid, ValueError:
         with pytest.raises(ValueError):
-            gyroradius(B_arr, Vperp=V, T_i=T_nanarr)
+            gyroradius(B_arr, "e-", Vperp=V, T_i=T_nanarr)
         with pytest.raises(ValueError):
-            gyroradius(B_arr, Vperp=V_nanarr, T_i=T_i)
+            gyroradius(B_arr, "e-", Vperp=V_nanarr, T_i=T_i)
 
     def test_scalar_and_nan_qarray(self):
         # If either Vperp or Ti is a valid scalar and the other is a Qarray of all nans,
         # should do something valid and not raise a ValueError
-        assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V, T_i=T_allnanarr)))
-        assert np.all(np.isfinite(gyroradius(B_arr, Vperp=V_allnanarr, T_i=T_i)))
+        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V, T_i=T_allnanarr)))
+        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V_allnanarr, T_i=T_i)))
 
     def test_keeps_arguments_unchanged(self):
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
         Vperp2 = u.Quantity([np.nan, 1], unit=u.m / u.s)  # an exact copy
         T_i = u.Quantity([1, np.nan], unit=u.K)
 
-        gyroradius(B_arr, Vperp=Vperp1, T_i=T_i)
+        gyroradius(B_arr, "e-", Vperp=Vperp1, T_i=T_i)
         assert_quantity_allclose(Vperp1, Vperp2)
 
 
 def test_plasma_frequency():
     r"""Test the plasma_frequency function in parameters.py."""
 
-    assert plasma_frequency(n_e).unit.is_equivalent(u.rad / u.s)
+    assert plasma_frequency(n_e, "e-").unit.is_equivalent(u.rad / u.s)
 
-    assert plasma_frequency(n_e, to_hz=True).unit.is_equivalent(u.Hz)
+    assert plasma_frequency(n_e, "e-", to_hz=True).unit.is_equivalent(u.Hz)
 
-    assert np.isclose(plasma_frequency(1 * u.cm ** -3).value, 5.64e4, rtol=1e-2)
+    assert np.isclose(plasma_frequency(1 * u.cm ** -3, "e-").value, 5.64e4, rtol=1e-2)
 
     assert np.isclose(
         plasma_frequency(1 * u.cm ** -3, particle="N").value, 3.53e2, rtol=1e-1
@@ -804,15 +806,15 @@ def test_plasma_frequency():
     )
 
     with pytest.raises(TypeError):
-        plasma_frequency(u.m ** -3)
+        plasma_frequency(u.m ** -3, "e-")
 
     with pytest.raises(u.UnitTypeError):
-        plasma_frequency(5 * u.m ** -2)
+        plasma_frequency(5 * u.m ** -2, "e-")
 
-    assert np.isnan(plasma_frequency(np.nan * u.m ** -3))
+    assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
 
     with pytest.warns(u.UnitsWarning):
-        assert plasma_frequency(1e19) == plasma_frequency(1e19 * u.m ** -3)
+        assert plasma_frequency(1e19, "e-") == plasma_frequency(1e19 * u.m ** -3, "e-")
 
         assert plasma_frequency(n_i, particle="p").unit.is_equivalent(u.rad / u.s)
 
@@ -1046,8 +1048,8 @@ def test_upper_hybrid_frequency():
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
-    omega_ce = gyrofrequency(B)
-    omega_pe = plasma_frequency(n=n_e)
+    omega_ce = gyrofrequency(B, "e-")
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
     assert omega_ce.unit.is_equivalent(u.rad / u.s)
     assert omega_pe.unit.is_equivalent(u.rad / u.s)
     assert omega_uh.unit.is_equivalent(u.rad / u.s)
@@ -1080,7 +1082,7 @@ def test_lower_hybrid_frequency():
     ion = "He-4 1+"
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n=n_i, particle=ion)
-    omega_ce = gyrofrequency(B)
+    omega_ce = gyrofrequency(B, "e-")
     omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
     omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz=True)
     assert omega_ci.unit.is_equivalent(u.rad / u.s)
@@ -1105,8 +1107,8 @@ def test_lower_hybrid_frequency():
         lower_hybrid_frequency(np.nan * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
-        assert lower_hybrid_frequency(1.3, 1e19) == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m ** -3
+        assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
+            1.3 * u.T, 1e19 * u.m ** -3, "p+"
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
 
