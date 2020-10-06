@@ -1,12 +1,12 @@
 .. _dispersion:
 
 **************************************************************
-Dispersion relations (`plasmapy.formulary.dispersionfunction`)
+Dispersion relations (`plasmapy.dispersion.dispersionfunction`)
 **************************************************************
 
-.. currentmodule:: plasmapy.formulary.dispersionfunction
+.. currentmodule:: plasmapy.dispersion.dispersionfunction
 
-.. automodapi:: plasmapy.formulary.dispersionfunction
+.. automodapi:: plasmapy.dispersion.dispersionfunction
    :no-heading:
 
 .. nbgallery::
