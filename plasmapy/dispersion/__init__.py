@@ -5,7 +5,10 @@ dispersion solver and other relevant quantities
 # __all__ will be auto populated below
 __all__ = []
 
-from .dispersionfunction import plasma_dispersion_func, plasma_dispersion_func_deriv
+from plasmapy.dispersion.dispersionfunction import (
+    plasma_dispersion_func,
+    plasma_dispersion_func_deriv,
+)
 
 # auto populate __all__
 for obj_name in list(globals()):
