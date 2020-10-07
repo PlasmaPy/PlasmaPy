@@ -11,8 +11,8 @@ from astropy import units as u
 from collections import namedtuple
 from numpy import pi
 
-from plasmapy.formulary import parameters
 from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
+from plasmapy.formulary import parameters
 from plasmapy.utils.decorators import validate_quantities
 
 r"""
