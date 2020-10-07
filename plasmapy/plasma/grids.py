@@ -382,6 +382,13 @@ class CartesianGrid(AbstractGrid):
                 )
 
     @property
+    def grid(self):
+        """Grid of positional values. CartesianGrid's have the unique
+        property that the grid returned has units, since all dimensions are
+        of the same unit."""
+        return self._grid * self.unit
+
+    @property
     def x_arr(self):
         """
         The 3D array of x values

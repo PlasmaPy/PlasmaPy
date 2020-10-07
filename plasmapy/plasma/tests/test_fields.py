@@ -34,3 +34,6 @@ def test_example_fields():
     a = model.bmax
 
     E, B = fields.example_fields(gridobj, model="electrostatic planar shock")
+
+
+test_example_fields()

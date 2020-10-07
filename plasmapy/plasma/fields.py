@@ -64,9 +64,9 @@ class AbstractField(ABC):
         # Calculate radius arrays in spherical and cylindrical coordinates
         # for use in generating different field structures
         self.radius = np.sqrt(
-            self.grid.xarr ** 2 + self.grid.yarr ** 2 + self.grid.zarr ** 2
+            self.grid.x_arr ** 2 + self.grid.y_arr ** 2 + self.grid.z_arr ** 2
         )
-        self.pradius = np.sqrt(self.grid.xarr ** 2 + self.grid.yarr ** 2)
+        self.pradius = np.sqrt(self.grid.x_arr ** 2 + self.grid.y_arr ** 2)
 
         # Check that the model selected can be used (eg. no gradients on a
         # non-uniform grid)
@@ -177,7 +177,7 @@ class ElectrostaticGaussianSphere(AbstractField):
         potential = np.exp(-(self.radius ** 2) / a ** 2) * u.V
 
         Ex, Ey, Ez = np.gradient(
-            potential, self.grid.xaxis, self.grid.yaxis, self.grid.zaxis
+            potential, self.grid.x_axis, self.grid.y_axis, self.grid.z_axis
         )
 
         self.E[:, :, :, 0] = -1 * np.where(self.radius < 0.5 * self.L, Ex, 0)
@@ -240,11 +240,13 @@ class ElectrostaticPlanarShock(AbstractField):
         delta = a / 120
 
         potential = (
-            (1 - erf(self.grid.zarr / delta)) * np.exp(-((self.pradius / a) ** 2)) * u.V
+            (1 - erf(self.grid.z_arr / delta))
+            * np.exp(-((self.pradius / a) ** 2))
+            * u.V
         )
 
         Ex, Ey, Ez = np.gradient(
-            potential, self.grid.xaxis, self.grid.yaxis, self.grid.zaxis
+            potential, self.grid.x_axis, self.grid.y_axis, self.grid.z_axis
         )
         self.E[..., 0] = -Ex
         self.E[..., 1] = -Ey

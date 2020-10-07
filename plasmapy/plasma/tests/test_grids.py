@@ -57,11 +57,11 @@ def test_CartesianGrid():
     unit = grid.units
 
     # Test initializing with a provided grid
-    grid2 = grids.CartesianGrid(grid.grid * grid.unit)
+    grid2 = grids.CartesianGrid(grid.grid)
 
     # Test initializing using the unit keyword
     grid = grids.CartesianGrid(1, 1, units=u.cm)
-    grid2 = grids.CartesianGrid(grid.grid, units=grid.units)
+    grid2 = grids.CartesianGrid(grid.grid.value, units=grid.units)
 
     # Units not all consistent
     with pytest.raises(ValueError):
@@ -72,7 +72,7 @@ def test_CartesianGrid():
 
 
 def test_IrregularCartesianGrid():
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm)
+    grid = grids.IrregularCartesianGrid(-1 * u.cm, 1 * u.cm)
 
     # Grid should be irregular
     assert grid.regular_grid == False
