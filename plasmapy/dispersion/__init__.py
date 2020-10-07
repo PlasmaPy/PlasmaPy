@@ -5,9 +5,9 @@ dispersion solver and other relevant quantities
 # __all__ will be auto populated below
 __all__ = []
 
-from .dispersion.dispersionfunction import (
+from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func,
-    plasma_dispersion_func_deriv
+    plasma_dispersion_func_deriv,
 )
 
 # auto populate __all__
