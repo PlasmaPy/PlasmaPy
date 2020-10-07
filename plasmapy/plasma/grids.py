@@ -42,12 +42,7 @@ class AbstractGrid(ABC):
                 f"positional arguments but {len(seeds)} were given"
             )
 
-        # Setup method contains other initialization stuff
-        self._setup()
-
-    def _setup(self):
-        # Properties
-        self._coordinate_system = None
+        # Initialize some variables
         self._regular_grid = None
 
     @property
@@ -203,10 +198,6 @@ class AbstractGrid(ABC):
 
         """
 
-        # If single values are given, expand to a list of appropriate length
-        if isinstance(units, u.core.Unit):
-            units = [units] * 3
-
         # Determine units from grid or units keyword (in that order)
         if hasattr(grid, "unit"):
             self._units = [grid.unit] * 3
@@ -216,7 +207,8 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "Input grid must be either a u.Quantity array "
                 "or an np.ndarray with units provided in the "
-                " units keyword."
+                " units keyword. Type of grid provided was "
+                f"{type(grid)}."
             )
 
         # If quantity array was given, strip units
@@ -234,7 +226,7 @@ class AbstractGrid(ABC):
         start: Union[int, float, u.Quantity],
         stop: Union[int, float, u.Quantity],
         num=100,
-        units=[u.dimensionless_unscaled] * 3,
+        units=None,
         **kwargs,
     ):
         """
@@ -268,6 +260,8 @@ class AbstractGrid(ABC):
         None.
 
         """
+        if units is None:
+            units = [u.dimensionless_unscaled] * 3
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
@@ -324,14 +318,11 @@ class AbstractGrid(ABC):
             stop[i] = stop[i].value
             start[i] = start[i].value
 
-        # Construct the axis arrays
-        ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
-        ax1 = np.linspace(start[1], stop[1], num=num[1], **kwargs)
-        ax2 = np.linspace(start[2], stop[2], num=num[2], **kwargs)
+        # Create coordinate mesh
+        arr0, arr1, arr2 = self._make_mesh(start, stop, num, **kwargs)
+        n0, n1, n2 = arr0.shape
 
-        # Construct the coordinate arrays and grid
-        arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
-        grid = np.zeros([ax0.size, ax1.size, ax2.size, 3])
+        grid = np.zeros([n0, n1, n2, 3])
         grid[..., 0] = arr0
         grid[..., 1] = arr1
         grid[..., 2] = arr2
@@ -342,6 +333,21 @@ class AbstractGrid(ABC):
         # Check to make sure that the object created satisfies any
         # requirements: eg. units correspond to the coordinate system
         self._validate()
+
+    def _make_mesh(self, start, stop, num, **kwargs):
+        """
+        Creates mesh as part of _make_grid(). Separated into its own function
+        so it can be re-implemented to make irregular grids.
+        """
+        # Construct the axis arrays
+        ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
+        ax1 = np.linspace(start[1], stop[1], num=num[1], **kwargs)
+        ax2 = np.linspace(start[2], stop[2], num=num[2], **kwargs)
+
+        # Construct the coordinate arrays
+        arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
+
+        return arr0, arr1, arr2
 
     def _detect_regular_grid(self, tol=1e-6):
         """
@@ -368,7 +374,7 @@ class CartesianGrid(AbstractGrid):
         # Check that all units are lengths
         for i in range(3):
             try:
-                (self.units[i].to(u.m))
+                self.units[i].to(u.m)
             except u.UnitConversionError:
                 raise ValueError(
                     "Units of grid are not valid for a Cartesian "
@@ -376,70 +382,63 @@ class CartesianGrid(AbstractGrid):
                 )
 
     @property
-    def grid(self):
-        """Grid of positional values. CartesianGrid has the unique property
-        that the grid returned is dimensional, since all axes have the same
-        units."""
-        return self._grid * self.unit
-
-    @property
-    def xarr(self):
+    def x_arr(self):
         """
         The 3D array of x values
         """
         return self.arr0
 
     @property
-    def yarr(self):
+    def y_arr(self):
         """
         The 3D array of y values
         """
         return self.arr1
 
     @property
-    def zarr(self):
+    def z_arr(self):
         """
         The 3D array of z values
         """
         return self.arr2
 
     @property
-    def xaxis(self):
+    def x_axis(self):
         """
         The x-axis
         """
         return self.ax0
 
     @property
-    def yaxis(self):
+    def y_axis(self):
         """
         The y-axis (only valid for a uniform grid)
         """
         return self.ax1
 
     @property
-    def zaxis(self):
+    def z_axis(self):
         """
         The z-axis (only valid for a uniform grid)
         """
         return self.ax2
 
     @property
-    def dx(self):
+    def d_x(self):
         """
         Calculated dx (only valid for a uniform grid)
         """
         return self.dax0
 
     @property
-    def dy(self):
+    def d_y(self):
         """
         Calculated dy (only valid for a uniform grid)
         """
         return self.dax1
 
     @property
-    def dz(self):
+    def d_z(self):
         """
         Calculated dz (only valid for a uniform grid)
         """
@@ -451,24 +450,121 @@ class CartesianGrid(AbstractGrid):
         The 3D array of the radial position of each point from the
         origin
         """
-        return np.sqrt(self.xaxis ** 2 + self.yaxis ** 2 + self.zaxis ** 2)
+        return np.sqrt(self.x_axis ** 2 + self.y_axis ** 2 + self.z_axis ** 2)
 
 
 class IrregularCartesianGrid(CartesianGrid):
     """
-    A Cartesian grid in which the _make_grid method produces an irregularly
+    A Cartesian grid in which the _make_mesh method produces an irregularly
     spaced grid (rather than a uniform one)
     """
 
-    pass
+    def _make_mesh(self, start, stop, num, **kwargs):
+        """
+        Creates mesh as part of _make_grid(). Separated into its own function
+        so it can be re-implemented to make irregular grids.
+        """
+        # Construct the axis arrays
+        ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
+
+        ax1 = np.sort(np.random.uniform(low=start[1], high=stop[1], size=num[1]))
+
+        ax2 = np.sort(np.random.uniform(low=start[2], high=stop[2], size=num[2]))
+
+        # Construct the coordinate arrays
+        arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
+
+        return arr0, arr1, arr2
 
 
 class CylindricalGrid(AbstractGrid):
     """
-    A grid with dimensions (r, theta, z) and units (length, angle, length)
+    A grid with dimensions (rho, theta, z) and units (length, angle, length)
     """
 
-    pass
+    def _validate(self):
+        # Check that units are consistent with cylindrical coordinates
+        units = [u.m, u.rad, u.m]
+        for i, unit in enumerate(units):
+            try:
+                self.units[i].to(unit)
+            except u.UnitConversionError:
+                raise ValueError(
+                    "Units of grid are not valid for a Cylindrical grid: "
+                    "dimensions must be (length, angle, length) but given "
+                    f"dimensions are {self.units}."
+                )
+
+        # Check that angular dimensions have no values the maximum angle for
+        # that dimension
+        if np.max(self.theta_arr.to(u.rad).value) > np.pi * 2:
+            raise ValueError(
+                "Theta dimension of cylindrical grid can contain no values "
+                "greater than 2pi radians."
+            )
+
+    @property
+    def rho_arr(self):
+        """
+        The 3D array of rho values
+        """
+        return self.arr0
+
+    @property
+    def theta_arr(self):
+        """
+        The 3D array of theta values
+        """
+        return self.arr1
+
+    @property
+    def z_arr(self):
+        """
+        The 3D array of z values
+        """
+        return self.arr2
+
+    @property
+    def rho_axis(self):
+        """
+        The rho-axis  (only valid for a uniform grid)
+        """
+        return self.ax0
+
+    @property
+    def theta_axis(self):
+        """
+        The theta-axis  (only valid for a uniform grid)
+        """
+        return self.ax1
+
+    @property
+    def z_axis(self):
+        """
+        The z-axis  (only valid for a uniform grid)
+        """
+        return self.ax2
+
+    @property
+    def d_rho(self):
+        """
+        Calculated drho  (only valid for a uniform grid)
+        """
+        return self.dax0
+
+    @property
+    def d_theta(self):
+        """
+        Calculated dtheta (only valid for a uniform grid)
+        """
+        return self.dax1
+
+    @property
+    def d_z(self):
+        """
+        Calculated dz (only valid for a uniform grid)
+        """
+        return self.dax2
 
 
 class SphericalGrid(AbstractGrid):
@@ -476,4 +572,92 @@ class SphericalGrid(AbstractGrid):
     A grid with dimensions (r, theta, phi) and units (length, angle, angle)
     """
 
-    pass
+    def _validate(self):
+        # Check that units are consistent with cylindrical coordinates
+        units = [u.m, u.rad, u.rad]
+        for i, unit in enumerate(units):
+            try:
+                self.units[i].to(unit)
+            except u.UnitConversionError:
+                raise ValueError(
+                    "Units of grid are not valid for a Cylindrical grid: "
+                    "dimensions must be (length, angle, length) but given "
+                    f"dimensions are {self.units}."
+                )
+
+        # Check that angular dimensions have no values the maximum angle for
+        # that dimension
+        if np.max(self.theta_arr.to(u.rad).value) > np.pi:
+            raise ValueError(
+                "Theta dimension of spherical grid can contain no values "
+                "greater than pi radians."
+            )
+
+        if np.max(self.phi_arr.to(u.rad).value) > np.pi * 2:
+            raise ValueError(
+                "Phi dimension of spherical grid can contain no values "
+                "greater than 2pi radians."
+            )
+
+    @property
+    def r_arr(self):
+        """
+        The 3D array of r values
+        """
+        return self.arr0
+
+    @property
+    def theta_arr(self):
+        """
+        The 3D array of theta values
+        """
+        return self.arr1
+
+    @property
+    def phi_arr(self):
+        """
+        The 3D array of phi values
+        """
+        return self.arr2
+
+    @property
+    def r_axis(self):
+        """
+        The r-axis  (only valid for a uniform grid)
+        """
+        return self.ax0
+
+    @property
+    def theta_axis(self):
+        """
+        The theta-axis  (only valid for a uniform grid)
+        """
+        return self.ax1
+
+    @property
+    def phi_axis(self):
+        """
+        The phi-axis  (only valid for a uniform grid)
+        """
+        return self.ax2
+
+    @property
+    def d_r(self):
+        """
+        Calculated dr  (only valid for a uniform grid)
+        """
+        return self.dax0
+
+    @property
+    def d_theta(self):
+        """
+        Calculated dtheta (only valid for a uniform grid)
+        """
+        return self.dax1
+
+    @property
+    def d_phi(self):
+        """
+        Calculated dphi (only valid for a uniform grid)
+        """
+        return self.dax2
