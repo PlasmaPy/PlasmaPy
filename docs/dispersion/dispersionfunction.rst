@@ -1,4 +1,4 @@
-.. _dispersion:
+.. _dispersionfunction:
 
 ***************************************************************
 Dispersion relations (`plasmapy.dispersion.dispersionfunction`)
