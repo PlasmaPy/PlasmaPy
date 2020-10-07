@@ -7,7 +7,7 @@ __all__ = []
 
 from .dispersion.dispersionfunction import (
     plasma_dispersion_func,
-    plasma_dispersion_func_deriv,
+    plasma_dispersion_func_deriv
 )
 
 # auto populate __all__
