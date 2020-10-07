@@ -6,7 +6,7 @@ Dispersion (`plasmapy.dispersion`)
 
 .. currentmodule:: plasmapy.dispersion
 
-`plasmapy.dispersion` provides dispersion functionality including calculation 
+`plasmapy.dispersion` provides dispersion functionality including calculation
 of dispersion function and phase speed of the plasma.
 
 .. table::

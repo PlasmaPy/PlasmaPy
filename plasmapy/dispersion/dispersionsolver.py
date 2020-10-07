@@ -26,7 +26,7 @@ def dispersion_solver(self, n, B, beta, k):
     zeta_sol = np.full((3), np.nan)
 
     for i in range(3):
-        zeta_sol = 2 * np.sqrt(-p/3) * np.cos(1/3 * np.arccos(3 * q/p * np.sqrt(-3/ p)) - 2 * np.pi/3 * i) + A/3
+        zeta_sol[i] = 2 * np.sqrt(-p/3) * np.cos(1/3 * np.arccos(3 * q/p * np.sqrt(-3/ p)) - 2 * np.pi/3 * i) + A/3
 
     return zeta_sol
 
