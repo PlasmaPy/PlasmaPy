@@ -1688,7 +1688,7 @@ wuh_ = upper_hybrid_frequency
 def lower_hybrid_frequency(
     B: u.T,
     n_i: u.m ** -3,
-    ion: Particle -> u.rad / u.s:
+    ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
