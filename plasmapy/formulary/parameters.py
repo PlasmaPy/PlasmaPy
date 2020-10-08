@@ -668,7 +668,7 @@ pth_ = thermal_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: Union[str, Particle], method="most_probable"
+    T: u.K, kappa, particle: Particle, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
