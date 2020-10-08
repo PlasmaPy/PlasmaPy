@@ -165,7 +165,7 @@ rho_ = mass_density
 def Alfven_speed(
     B: u.T,
     density: [u.m ** -3, u.kg / u.m ** 3],
-    ion: Particle,
+    ion: Optional[Particle] = None,
     z_mean=None
 ) -> u.m / u.s:
     r"""
@@ -182,11 +182,13 @@ def Alfven_speed(
         Either the ion number density in units convertible to 1 / m**3,
         or the mass density in units convertible to kg / m**3.
 
-    ion : str
+    ion : str, optional
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
         helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged.
+        ions are assumed to be singly charged. If the density is an ion
+        number density, then this paramter is required in order to convert
+        to mass density.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -874,7 +876,7 @@ def gyrofrequency(B: u.T, particle: Union[str, Particle], signed=False, Z=None) 
 
     particle : str
         Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no 
+        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
@@ -980,7 +982,7 @@ wc_ = gyrofrequency
 def gyroradius(
     B: u.T,
     particle: Particle,
-    *, 
+    *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
 ) -> u.m:
@@ -1144,8 +1146,8 @@ rhoc_ = gyroradius
 )
 @angular_freq_to_hz
 def plasma_frequency(
-    n: u.m ** -3, 
-    particle: Particle, 
+    n: u.m ** -3,
+    particle: Particle,
     z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
