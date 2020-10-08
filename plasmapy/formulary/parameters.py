@@ -1145,7 +1145,7 @@ rhoc_ = gyroradius
 @angular_freq_to_hz
 def plasma_frequency(
     n: u.m ** -3, 
-    particle: Union[str, Particle], 
+    particle: Particle, 
     z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
