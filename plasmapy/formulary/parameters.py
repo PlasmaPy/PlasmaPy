@@ -280,7 +280,7 @@ def ion_sound_speed(
     gamma_e=1,
     gamma_i=3,
     *,
-    ion: Union[str, Particle],
+    ion: Particle,
     z_mean=None,
 ) -> u.m / u.s:
     r"""
