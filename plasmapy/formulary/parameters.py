@@ -49,7 +49,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
-from typing import Optional, Union
+from typing import Optional
 
 from plasmapy import particles
 from plasmapy.particles import Particle
@@ -864,7 +864,7 @@ betaH_ = Hall_parameter
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: Union[str, Particle], signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
