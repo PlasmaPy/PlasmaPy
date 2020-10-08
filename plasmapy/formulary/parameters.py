@@ -979,7 +979,7 @@ wc_ = gyrofrequency
 )
 def gyroradius(
     B: u.T,
-    particle: Union[str, Particle],
+    particle: Particle,
     *, 
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
