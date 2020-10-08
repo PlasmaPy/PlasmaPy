@@ -165,7 +165,7 @@ rho_ = mass_density
 def Alfven_speed(
     B: u.T,
     density: [u.m ** -3, u.kg / u.m ** 3],
-    ion: Union[str, Particle],
+    ion: Particle,
     z_mean=None
 ) -> u.m / u.s:
     r"""
