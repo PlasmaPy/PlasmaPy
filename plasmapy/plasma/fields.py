@@ -32,8 +32,8 @@ class AbstractField(ABC):
 
         Parameters
         ----------
-        grid : `plasmapy.plasma.grids.AbstractGrid' or child class thereof
-            Positions of grid points in space
+        grid : `plasmapy.plasma.grids.AbstractGrid` or child class thereof
+            Positions of grid points in space.
 
         emax : `~astropy.units.Quantity`
             Maximum electric field to normalize example field to. The default
