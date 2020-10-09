@@ -400,7 +400,9 @@ def test_thermal_speed():
 
     # Explicitly check all three modes and dimensionalities
     # ndim = 1
-    assert np.isclose(thermal_speed(T_e, "e-", method="most_probable", ndim=1).si.value, 0.0)
+    assert np.isclose(
+        thermal_speed(T_e, "e-", method="most_probable", ndim=1).si.value, 0.0
+    )
 
     # Regression tests start here!
     assert np.isclose(
@@ -408,12 +410,14 @@ def test_thermal_speed():
     )
 
     assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=1).si.value, 3106255.714310189
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=1).si.value,
+        3106255.714310189,
     )
 
     # ndim = 2
     assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=2).si.value, 3893114.2008620175
+        thermal_speed(T_e, "e-", method="most_probable", ndim=2).si.value,
+        3893114.2008620175,
     )
 
     assert np.isclose(
@@ -421,12 +425,14 @@ def test_thermal_speed():
     )
 
     assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=2).si.value, 4879295.066124102
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=2).si.value,
+        4879295.066124102,
     )
 
     # ndim = 3
     assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=3).si.value, 5505694.902726359
+        thermal_speed(T_e, "e-", method="most_probable", ndim=3).si.value,
+        5505694.902726359,
     )
 
     assert np.isclose(
@@ -434,7 +440,8 @@ def test_thermal_speed():
     )
 
     assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=3).si.value, 6212511.428620378
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=3).si.value,
+        6212511.428620378,
     )
 
     # Case when Z=1 is assumed
@@ -463,7 +470,8 @@ def test_thermal_speed():
         )
 
     assert np.isclose(
-        thermal_speed(1e6 * u.K, "e-", method="mean_magnitude").si.value, 6212510.3969422
+        thermal_speed(1e6 * u.K, "e-", method="mean_magnitude").si.value,
+        6212510.3969422,
     )
 
     assert np.isclose(
