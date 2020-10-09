@@ -221,8 +221,7 @@ def test_ion_sound_speed():
 
     # Test that function call without keyword argument works correctly
     assert np.isclose(
-        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value,
-        218816.06086407552,
+        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value, 218816.06086407552,
     )
 
     assert np.isclose(
