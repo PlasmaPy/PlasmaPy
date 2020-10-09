@@ -219,6 +219,12 @@ def test_ion_sound_speed():
         218816.06086407552,
     )
 
+    # Test that function call without keyword argument works correctly
+    assert np.isclose(
+        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value,
+        218816.06086407552,
+    )
+
     assert np.isclose(
         ion_sound_speed(
             T_i=1.3232 * u.MK,
@@ -361,28 +367,28 @@ def test_ion_sound_speed():
 
 def test_thermal_speed():
     r"""Test the thermal_speed function in parameters.py"""
-    assert thermal_speed(T_e).unit.is_equivalent(u.m / u.s)
+    assert thermal_speed(T_e, "e-").unit.is_equivalent(u.m / u.s)
 
-    assert thermal_speed(T_e) > thermal_speed(T_e, "p")
+    assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
 
     # The NRL Plasma Formulary uses a definition of the electron
     # thermal speed that differs by a factor of sqrt(2).
-    assert np.isclose(thermal_speed(1 * u.MK).value, 5505694.743141063)
+    assert np.isclose(thermal_speed(1 * u.MK, "e-").value, 5505694.743141063)
 
     with pytest.raises(u.UnitTypeError):
-        thermal_speed(5 * u.m)
+        thermal_speed(5 * u.m, "e-")
 
     with pytest.raises(ValueError):
-        thermal_speed(-T_e)
+        thermal_speed(-T_e, "e-")
 
     with pytest.warns(RelativityWarning):
-        thermal_speed(1e9 * u.K)
+        thermal_speed(1e9 * u.K, "e-")
 
     with pytest.raises(RelativityError):
-        thermal_speed(5e19 * u.K)
+        thermal_speed(5e19 * u.K, "e-")
 
     with pytest.warns(u.UnitsWarning):
-        assert thermal_speed(1e5) == thermal_speed(1e5 * u.K)
+        assert thermal_speed(1e5, "e-") == thermal_speed(1e5 * u.K, "e-")
 
     assert thermal_speed(T_i, particle="p").unit.is_equivalent(u.m / u.s)
 
@@ -394,47 +400,47 @@ def test_thermal_speed():
 
     # Explicitly check all three modes and dimensionalities
     # ndim = 1
-    assert np.isclose(thermal_speed(T_e, method="most_probable", ndim=1).si.value, 0.0)
+    assert np.isclose(thermal_speed(T_e, "e-", method="most_probable", ndim=1).si.value, 0.0)
 
     # Regression tests start here!
     assert np.isclose(
-        thermal_speed(T_e, method="rms", ndim=1).si.value, 3893114.2008620175
+        thermal_speed(T_e, "e-", method="rms", ndim=1).si.value, 3893114.2008620175
     )
 
     assert np.isclose(
-        thermal_speed(T_e, method="mean_magnitude", ndim=1).si.value, 3106255.714310189
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=1).si.value, 3106255.714310189
     )
 
     # ndim = 2
     assert np.isclose(
-        thermal_speed(T_e, method="most_probable", ndim=2).si.value, 3893114.2008620175
+        thermal_speed(T_e, "e-", method="most_probable", ndim=2).si.value, 3893114.2008620175
     )
 
     assert np.isclose(
-        thermal_speed(T_e, method="rms", ndim=2).si.value, 5505694.902726359
+        thermal_speed(T_e, "e-", method="rms", ndim=2).si.value, 5505694.902726359
     )
 
     assert np.isclose(
-        thermal_speed(T_e, method="mean_magnitude", ndim=2).si.value, 4879295.066124102
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=2).si.value, 4879295.066124102
     )
 
     # ndim = 3
     assert np.isclose(
-        thermal_speed(T_e, method="most_probable", ndim=3).si.value, 5505694.902726359
+        thermal_speed(T_e, "e-", method="most_probable", ndim=3).si.value, 5505694.902726359
     )
 
     assert np.isclose(
-        thermal_speed(T_e, method="rms", ndim=3).si.value, 6743071.595560921
+        thermal_speed(T_e, "e-", method="rms", ndim=3).si.value, 6743071.595560921
     )
 
     assert np.isclose(
-        thermal_speed(T_e, method="mean_magnitude", ndim=3).si.value, 6212511.428620378
+        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=3).si.value, 6212511.428620378
     )
 
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
-    assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK)
+    assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK, "e-")
 
     with pytest.raises(u.UnitTypeError):
         thermal_speed(5 * u.m, particle="p")
@@ -457,20 +463,20 @@ def test_thermal_speed():
         )
 
     assert np.isclose(
-        thermal_speed(1e6 * u.K, method="mean_magnitude").si.value, 6212510.3969422
+        thermal_speed(1e6 * u.K, "e-", method="mean_magnitude").si.value, 6212510.3969422
     )
 
     assert np.isclose(
-        thermal_speed(1e6 * u.K, method="rms").si.value, 6743070.475775486
+        thermal_speed(1e6 * u.K, "e-", method="rms").si.value, 6743070.475775486
     )
 
     # Test invalid method
     with pytest.raises(ValueError):
-        thermal_speed(T_i, method="sadks")
+        thermal_speed(T_i, "e-", method="sadks")
 
     # Test invalid ndim
     with pytest.raises(ValueError):
-        thermal_speed(T_i, ndim=4)
+        thermal_speed(T_i, "e-", ndim=4)
 
     assert_can_handle_nparray(thermal_speed)
 

@@ -277,12 +277,11 @@ va_ = Alfven_speed
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
+    ion: Particle,
     n_e: u.m ** -3 = None,
     k: u.m ** -1 = None,
     gamma_e=1,
     gamma_i=3,
-    *,
-    ion: Particle,
     z_mean=None,
 ) -> u.m / u.s:
     r"""
@@ -301,6 +300,12 @@ def ion_sound_speed(
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
+
+    ion : ~plasmapy.particles.Particle
+        Representation of the ion species (e.g., `'p'` for protons,
+        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
+        helium-4). If no charge state information is provided, then the
+        ions are assumed to be singly charged.
 
     n_e : ~astropy.units.Quantity
         Electron number density. If this is not given, then ion_sound_speed
@@ -324,12 +329,6 @@ def ion_sound_speed(
         The adiabatic index for ions, which defaults to 3.  This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-
-    ion : ~plasmapy.particles.Particle
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -474,7 +473,7 @@ _coefficients = {
 @particles.particle_input
 def thermal_speed(
     T: u.K,
-    particle: Particle = "e-",
+    particle: Particle,
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
     ndim=3,
@@ -490,11 +489,11 @@ def thermal_speed(
     T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
-    particle : ~plasmapy.particles.Particle, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4). If no
+        charge state information is provided, then the particles are
+        assumed to be singly charged.
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
@@ -585,9 +584,9 @@ def thermal_speed(
     <Quantity 132620... m / s>
     >>> thermal_speed(1e6*u.K, particle='e-')
     <Quantity 550569... m / s>
-    >>> thermal_speed(1e6*u.K, method="rms")
+    >>> thermal_speed(1e6*u.K, "e-", method="rms")
     <Quantity 674307... m / s>
-    >>> thermal_speed(1e6*u.K, method="mean_magnitude")
+    >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
     """
@@ -597,7 +596,7 @@ def thermal_speed(
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
+        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
     try:
         coef = coef[method]
     except KeyError:
