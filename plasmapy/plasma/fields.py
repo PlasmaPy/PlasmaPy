@@ -272,7 +272,7 @@ def example_fields(
 
     Parameters
     ----------
-    grid : `plasmapy.plasma.grids.AbstractGrid' or child class thereof
+    grid : `plasmapy.plasma.grids.AbstractGrid` or child class thereof
         A grid of positions on which to calculate fields. If no grid is
         specified, one will be created.
 
