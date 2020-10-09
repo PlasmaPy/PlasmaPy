@@ -1,0 +1,5 @@
+Removed default Particle types for functions in `formulary/parameters.py`. Any
+code which had previously used the default value for these arguments will need
+to be updated by passing the appropriate particle type as a parameter.
+
+Documentation and tests for these functions have been updated as needed.

@@ -67,7 +67,7 @@ def _grab_charge(ion: Particle, z_mean=None):
 
     Parameters
     ----------
-    ion : `plasmapy.particles.Particle`
+    ion : ~plasmapy.particles.Particle
         a string representing a charged particle, or a Particle object.
 
     z_mean : float
@@ -109,7 +109,7 @@ def mass_density(
         Either a particle density (number of particles per unit volume, in units
         of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
 
-    particle : `plasmapy.particles.Particle`, optional
+    particle : ~plasmapy.particles.Particle, optional
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
@@ -182,7 +182,7 @@ def Alfven_speed(
         Either the ion number density in units convertible to 1 / m**3,
         or the mass density in units convertible to kg / m**3.
 
-    ion : `plasmapy.particles.Particle`, optional
+    ion : ~plasmapy.particles.Particle, optional
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -325,7 +325,7 @@ def ion_sound_speed(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    ion : `plasmapy.particles.Particle`
+    ion : ~plasmapy.particles.Particle
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or 'He-4 +1' for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -490,7 +490,7 @@ def thermal_speed(
     T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
-    particle : `plasmapy.particles.Particle`, optional
+    particle : ~plasmapy.particles.Particle, optional
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4),
         which defaults to electrons.  If no charge state information is
@@ -688,7 +688,7 @@ def kappa_thermal_speed(
         of the Kappa velocity distribution function. Kappa must be greater
         than 3/2.
 
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
@@ -807,9 +807,9 @@ def Hall_parameter(
         The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
-    ion : `plasmapy.particles.Particle`
+    ion : ~plasmapy.particles.Particle
         The type of ions participating in the collisions.
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         The type of particle.
     coulomb_log : float, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
@@ -874,7 +874,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -995,7 +995,7 @@ def gyroradius(
     B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
@@ -1158,7 +1158,7 @@ def plasma_frequency(
     n : ~astropy.units.Quantity
         Particle number density in units convertible to per cubic meter
 
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -1413,7 +1413,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     n : ~astropy.units.Quantity
         Particle number density in units convertible to m ** -3.
 
-    particle : `plasmapy.particles.Particle`
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
@@ -1702,7 +1702,7 @@ def lower_hybrid_frequency(
     n_i : ~astropy.units.Quantity
         Ion number density.
 
-    ion : `plasmapy.particles.Particle`
+    ion : ~plasmapy.particles.Particle
         Representation of the ion species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
