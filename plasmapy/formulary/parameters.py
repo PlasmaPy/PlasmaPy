@@ -166,7 +166,7 @@ def Alfven_speed(
     B: u.T,
     density: [u.m ** -3, u.kg / u.m ** 3],
     ion: Optional[Particle] = None,
-    z_mean=None
+    z_mean=None,
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
@@ -1145,10 +1145,7 @@ rhoc_ = gyroradius
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(
-    n: u.m ** -3,
-    particle: Particle,
-    z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -1666,8 +1663,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     <Quantity 6.37350...e+10 Hz>
 
     """
-    omega_pe = plasma_frequency(n=n_e, particle='e-')
-    omega_ce = gyrofrequency(B, 'e-')
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
+    omega_ce = gyrofrequency(B, "e-")
     omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
 
     return omega_uh
@@ -1685,10 +1682,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(
-    B: u.T,
-    n_i: u.m ** -3,
-    ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -1763,7 +1757,7 @@ def lower_hybrid_frequency(
 
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
-    omega_ce = gyrofrequency(B, particle='e-')
+    omega_ce = gyrofrequency(B, particle="e-")
     omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
     # TODO possibly optimize the above line via np.sqrt
     omega_lh = omega_lh

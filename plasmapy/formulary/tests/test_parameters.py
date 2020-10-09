@@ -116,23 +116,23 @@ def test_Alfven_speed():
     # TODO: break this test up until multiple tests
 
     assert np.isclose(
-        Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3, 'p').value,
+        Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3, "p").value,
         8920620.580763856,
         rtol=1e-6,
     )
 
-    V_A = Alfven_speed(B, n_i, 'p')
+    V_A = Alfven_speed(B, n_i, "p")
     assert np.isclose(V_A.value, (B / np.sqrt(mu0 * n_i * (m_p + m_e))).si.value)
 
-    assert Alfven_speed(B, rho, 'p') == Alfven_speed(B, n_i, 'p')
+    assert Alfven_speed(B, rho, "p") == Alfven_speed(B, n_i, "p")
 
-    assert Alfven_speed(B, rho, 'p').unit.is_equivalent(u.m / u.s)
+    assert Alfven_speed(B, rho, "p").unit.is_equivalent(u.m / u.s)
 
-    assert Alfven_speed(B, rho, 'p') == Alfven_speed(-B, rho, 'p')
+    assert Alfven_speed(B, rho, "p") == Alfven_speed(-B, rho, "p")
 
-    assert Alfven_speed(B, 4 * rho, 'p') == 0.5 * Alfven_speed(B, rho, 'p')
+    assert Alfven_speed(B, 4 * rho, "p") == 0.5 * Alfven_speed(B, rho, "p")
 
-    assert Alfven_speed(2 * B, rho, 'p') == 2 * Alfven_speed(B, rho, 'p')
+    assert Alfven_speed(2 * B, rho, "p") == 2 * Alfven_speed(B, rho, "p")
 
     # Case when Z=1 is assumed
     with pytest.warns(RelativityWarning):
@@ -144,27 +144,26 @@ def test_Alfven_speed():
         )
 
     # Case where magnetic field and density are Quantity arrays
-    V_A_arr = Alfven_speed(B_arr, rho_arr, 'p')
-    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0], 'p')
-    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1], 'p')
+    V_A_arr = Alfven_speed(B_arr, rho_arr, "p")
+    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0], "p")
+    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1], "p")
     assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
     assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
     # Case where magnetic field is an array but density is a scalar Quantity
-    V_A_arr = Alfven_speed(B_arr, rho, 'p')
-    V_A_arr0 = Alfven_speed(B_arr[0], rho, 'p')
-    V_A_arr1 = Alfven_speed(B_arr[1], rho, 'p')
+    V_A_arr = Alfven_speed(B_arr, rho, "p")
+    V_A_arr0 = Alfven_speed(B_arr[0], rho, "p")
+    V_A_arr1 = Alfven_speed(B_arr[1], rho, "p")
     assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
     assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
 
     with pytest.raises(ValueError):
-        Alfven_speed(np.array([5, 6, 7]) * u.T,
-                     np.array([5, 6]) * u.m ** -3, 'p')
+        Alfven_speed(np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m ** -3, "p")
 
-    assert np.isnan(Alfven_speed(B_nanarr, rho_arr, 'p')[1])
+    assert np.isnan(Alfven_speed(B_nanarr, rho_arr, "p")[1])
 
     with pytest.raises(ValueError):
-        Alfven_speed(B_arr, rho_negarr, 'p')
+        Alfven_speed(B_arr, rho_negarr, "p")
 
     with pytest.raises(u.UnitTypeError):
         Alfven_speed(5 * u.A, n_i, ion="p")
@@ -198,7 +197,7 @@ def test_Alfven_speed():
         assert Alfven_speed(-np.inf * u.T, 1 * u.m ** -3, ion="p") == np.inf * u.m / u.s
 
     with pytest.warns(u.UnitsWarning):
-        assert Alfven_speed(1.0, n_i, 'p') == Alfven_speed(1.0 * u.T, n_i, 'p')
+        assert Alfven_speed(1.0, n_i, "p") == Alfven_speed(1.0 * u.T, n_i, "p")
 
     Alfven_speed(1 * u.T, 5e19 * u.m ** -3, ion="p")
     # testing for user input z_mean
@@ -282,7 +281,7 @@ def test_ion_sound_speed():
             T_e=np.array([3, 4]) * u.K,
             n_e=np.array([5, 6, 5]) * u.m ** -3,
             k=np.array([3, 4]) * u.m ** -3,
-            ion="p"
+            ion="p",
         )
 
     with pytest.raises(TypeError):  # Is this test right??????
@@ -324,9 +323,13 @@ def test_ion_sound_speed():
     with pytest.raises(u.UnitTypeError):
         ion_sound_speed(T_i=5 * u.A, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")
 
-    assert np.isnan(ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")[1])
+    assert np.isnan(
+        ion_sound_speed(T_i=T_nanarr, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")[1]
+    )
 
-    assert np.isnan(ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")[1])
+    assert np.isnan(
+        ion_sound_speed(T_e=T_nanarr, T_i=0 * u.K, n_e=n_e, k=k_1, ion="p")[1]
+    )
 
     with pytest.raises(ValueError):
         ion_sound_speed(T_i=T_negarr, T_e=0 * u.K, n_e=n_e, k=k_1, ion="p")
@@ -574,9 +577,13 @@ def test_gyrofrequency():
 
     assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
 
-    assert np.isclose(gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206)
+    assert np.isclose(
+        gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206
+    )
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284)
+    assert np.isclose(
+        gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284
+    )
 
     assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
 
@@ -676,7 +683,9 @@ def test_gyroradius():
         )
 
     with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, "e-", T_i=1.2) == gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
+        assert gyroradius(1.1, "e-", T_i=1.2) == gyroradius(
+            1.1 * u.T, "e-", T_i=1.2 * u.K
+        )
 
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, "e-", Vperp=1 * u.m / u.s, T_i=1.2 * u.K)
@@ -748,8 +757,12 @@ class Test_gyroradius:
     # some custom numpy array tests here, because of the T_i / Vperp situation
     def test_handle_numpy_array(self):
         # Tests to verify that can handle Quantities with numpy array as the value:
-        assert gyroradius(B_arr, 'e-', Vperp=V_arr)[0] == gyroradius(B_arr[0], 'e-', Vperp=V_arr[0])
-        assert gyroradius(B_arr, 'e-', T_i=T_arr)[0] == gyroradius(B_arr[0], 'e-', T_i=T_arr[0])
+        assert gyroradius(B_arr, "e-", Vperp=V_arr)[0] == gyroradius(
+            B_arr[0], "e-", Vperp=V_arr[0]
+        )
+        assert gyroradius(B_arr, "e-", T_i=T_arr)[0] == gyroradius(
+            B_arr[0], "e-", T_i=T_arr[0]
+        )
 
     def test_handle_mixed_Qarrays(self):
         # If both Vperp or Ti are input as Qarrays, but only one of the two is valid
