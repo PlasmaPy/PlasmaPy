@@ -5,13 +5,14 @@ Defines the AbstractGrid class and child classes
 __all__ = [
     "AbstractGrid",
     "CartesianGrid",
-    "IrregularCartesianGrid",
+    "NonUniformCartesianGrid",
     "CylindricalGrid",
     "SphericalGrid",
 ]
 
 import astropy.units as u
 import numpy as np
+import scipy.interpolate as interp
 
 from abc import ABC
 from typing import Union
@@ -43,7 +44,8 @@ class AbstractGrid(ABC):
             )
 
         # Initialize some variables
-        self._regular_grid = None
+        self._uniform_grid = None
+        self._interpolator = None
 
     @property
     def grid(self):
@@ -51,14 +53,68 @@ class AbstractGrid(ABC):
         return self._grid
 
     @property
-    def regular_grid(self):
+    def uniform_grid(self):
         """
-        Value of regular_grid
+        Value of uniform_grid
         If None, calculate
         """
-        if self._regular_grid is None:
-            self._detect_regular_grid()
-        return self._regular_grid
+        if self._uniform_grid is None:
+            self._detect_uniform_grid()
+        return self._uniform_grid
+
+    @property
+    def interpolator(self):
+        """
+        A nearest-neighbor interpolator that returns the nearest grid index
+        to a position
+        """
+        if self._interpolator is None:
+            self._make_interpolator()
+        return self._interpolator
+
+    def interpolate(self, position):
+        r"""
+        Interpolate the nearest grid indices to a position using a
+        nearest-neighbor interpolator
+
+        Parameters
+        ----------
+        pos : np.ndarray or u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If an np.ndarray
+            is provided, units will be assumed to match those of the grid.
+
+        """
+        # Don't want to strip units etc. of input array in case
+        # that's being used elsewhere
+        # TODO: is there a way to do this using a decorator or something?
+        position = np.copy(position)
+
+        # If a single point was given, add empty dimension
+        if position.ndim == 1:
+            position = np.reshape(position, [1, 3])
+            single_pt = True
+        else:
+            single_pt = False
+
+        # Convert to SI and then strip units
+        if isinstance(position, u.Quantity):
+            position = position.si.value
+
+        else:
+            for i in range(3):
+                position[:, i] = (position[:, i] * self.units[i]).si.value
+
+        # Interpolate values
+        i = self.interpolator(position)
+
+        # Convert any non-NaN values to ints
+        i = i.astype(np.int32)
+
+        if single_pt:
+            return i[0]
+        else:
+            return i
 
     @property
     def shape(self):
@@ -116,42 +172,42 @@ class AbstractGrid(ABC):
     def dax0(self):
         """
         Grid step size along axis 1
-        Only valid if grid is regular: otherwise an exception is raised
+        Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.regular_grid:
+        if self.uniform_grid:
             return np.mean(np.gradient(self.ax0)) * self.unit0
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
-                "regularly spaced grids."
+                "uniformly spaced grids."
             )
 
     @property
     def dax1(self):
         """
         Grid step size along axis 2
-        Only valid if grid is regular: otherwise an exception is raised
+        Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.regular_grid:
+        if self.uniform_grid:
             return np.mean(np.gradient(self.ax1)) * self.unit1
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
-                "regularly spaced grids."
+                "uniformly spaced grids."
             )
 
     @property
     def dax2(self):
         """
         Grid step size along axis 3
-        Only valid if grid is regular: otherwise an exception is raised
+        Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.regular_grid:
+        if self.uniform_grid:
             return np.mean(np.gradient(self.ax2)) * self.unit2
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
-                "regularly spaced grids."
+                "uniformly spaced grids."
             )
 
     @property
@@ -337,7 +393,7 @@ class AbstractGrid(ABC):
     def _make_mesh(self, start, stop, num, **kwargs):
         """
         Creates mesh as part of _make_grid(). Separated into its own function
-        so it can be re-implemented to make irregular grids.
+        so it can be re-implemented to make non-uniformly spaced meshes
         """
         # Construct the axis arrays
         ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
@@ -349,9 +405,9 @@ class AbstractGrid(ABC):
 
         return arr0, arr1, arr2
 
-    def _detect_regular_grid(self, tol=1e-6):
+    def _detect_uniform_grid(self, tol=1e-6):
         """
-        Determine whether a grid is regular (uniformly spaced) by computing the
+        Determine whether a grid is uniform (uniformly spaced) by computing the
         variance of the grid gradients.
         """
         variance = np.zeros([3])
@@ -362,12 +418,37 @@ class AbstractGrid(ABC):
         dz = np.gradient(self.arr2, axis=2)
         variance[2] = np.std(dz) / np.mean(dz)
 
-        self._regular_grid = np.allclose(variance, 0.0, atol=tol)
+        self._uniform_grid = np.allclose(variance, 0.0, atol=tol)
+
+    def _make_interpolator(self):
+        """
+        Initializes a nearest-neighbor interpolator that returns the nearest
+        grid indices for a given position.
+        """
+        # Create a grid of indices for use in interpolation
+        n0, n1, n2, ndim = self.shape
+        indgrid = np.indices([n0, n1, n2])
+        indgrid = np.moveaxis(indgrid, 0, -1)
+
+        # Create an input array of grid positions
+        pts = (
+            self.ax0.si.value,
+            self.ax1.si.value,
+            self.ax2.si.value,
+        )
+
+        # Create the interpolator
+        # Note that this regular grid interpolator requires points be a regular
+        # grid but does not require uniform spacing
+
+        self._interpolator = interp.RegularGridInterpolator(
+            pts, indgrid, method="nearest", bounds_error=False, fill_value=np.nan
+        )
 
 
 class CartesianGrid(AbstractGrid):
     """
-    A regularly spaced Cartesian grid.
+    A uniformly spaced Cartesian grid.
     """
 
     def _validate(self):
@@ -460,16 +541,16 @@ class CartesianGrid(AbstractGrid):
         return np.sqrt(self.x_axis ** 2 + self.y_axis ** 2 + self.z_axis ** 2)
 
 
-class IrregularCartesianGrid(CartesianGrid):
+class NonUniformCartesianGrid(CartesianGrid):
     """
-    A Cartesian grid in which the _make_mesh method produces an irregularly
-    spaced grid (rather than a uniform one)
+    A Cartesian grid in which the _make_mesh method produces a non-uniformly
+    spaced grid.
     """
 
     def _make_mesh(self, start, stop, num, **kwargs):
         """
         Creates mesh as part of _make_grid(). Separated into its own function
-        so it can be re-implemented to make irregular grids.
+        so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
         ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))

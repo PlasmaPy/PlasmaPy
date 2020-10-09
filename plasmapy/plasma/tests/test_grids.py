@@ -52,9 +52,12 @@ def test_CartesianGrid():
     radius = grid.distance_from_origin
     x_axis, y_axis, z_axis = grid.x_axis, grid.y_axis, grid.z_axis
     d_x, d_y, d_z = grid.d_x, grid.d_y, grid.d_z
-    regular_grid = grid.regular_grid
+    uniform_grid = grid.uniform_grid
     shape = grid.shape
     unit = grid.units
+
+    # Grid should be uniform
+    assert grid.uniform_grid == True
 
     # Test initializing with a provided grid
     grid2 = grids.CartesianGrid(grid.grid)
@@ -70,12 +73,40 @@ def test_CartesianGrid():
     with pytest.raises(ValueError):
         grid = grids.CartesianGrid(-1, 1, units=[u.m, u.rad, u.m])
 
+    # Test interpolator
+    pos = np.array([0.1, -0.3, 0]) * u.cm
 
-def test_IrregularCartesianGrid():
-    grid = grids.IrregularCartesianGrid(-1 * u.cm, 1 * u.cm)
+    # Test interpolator
+    # Create grid
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+    # Interpolate pos value
+    i = grid.interpolate(pos)
+    # Get position value corresponding to that index
+    pout = grid.grid[i[0], i[1], i[2], :]
+    # Assert that nearest grid cell was found
+    assert np.allclose(pos, pout, atol=0.03)
 
-    # Grid should be irregular
-    assert grid.regular_grid == False
+    # Test a couple different interpolator input types
+    # Test a u-quantity input
+    i = grid.interpolate(pos.value)
+    # Test a single position input
+    i = grid.interpolate(np.array([[0, 0, 0], [0.5, 0.2, 0]]))
+
+
+def test_NonUniformCartesianGrid():
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm)
+
+    # Grid should be non-uniform
+    assert grid.uniform_grid == False
+
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+    # Test interpolator on non-uniform grid
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+    i = grid.interpolate(pos)
+    # Get position value corresponding to that index
+    pout = grid.grid[i[0], i[1], i[2], :]
+    # Assert that grid is sort-of nearby...
+    assert np.allclose(pos, pout, atol=0.1)
 
 
 def test_CylindricalGrid():
@@ -88,7 +119,7 @@ def test_CylindricalGrid():
     rho_arr, theta_arr, z_arr = grid.rho_arr, grid.theta_arr, grid.z_arr
     rho_axis, theta_axis, z_axis = grid.rho_axis, grid.theta_axis, grid.z_axis
     d_rho, d_theta, d_z = grid.d_rho, grid.d_theta, grid.d_z
-    regular_grid = grid.regular_grid
+    uniform_grid = grid.uniform_grid
     shape = grid.shape
     unit = grid.units
 
@@ -104,6 +135,14 @@ def test_CylindricalGrid():
             [-1, 0, -1], [1, 6 * np.pi, 1], units=[u.cm, u.rad, u.cm]
         )
 
+    # Test interpolaotr
+    pos = np.array([0.1, 0.1, 0])
+    i = grid.interpolate(pos)
+    # Get position value corresponding to that index
+    pout = grid.grid[i[0], i[1], i[2], :]
+    # Assert that grid is sort-of nearby...
+    assert np.allclose(pos, pout, atol=0.05)
+
 
 def test_SphericalGrid():
 
@@ -115,7 +154,7 @@ def test_SphericalGrid():
     r_arr, theta_arr, phi_arr = grid.r_arr, grid.theta_arr, grid.phi_arr
     r_axis, theta_axis, phi_axis = grid.r_axis, grid.theta_axis, grid.phi_axis
     d_r, d_theta, d_phi = grid.d_r, grid.d_theta, grid.d_phi
-    regular_grid = grid.regular_grid
+    uniform_grid = grid.uniform_grid
     shape = grid.shape
     unit = grid.units
 
@@ -135,3 +174,11 @@ def test_SphericalGrid():
         grid = grids.SphericalGrid(
             [-1, 0, 0], [1, np.pi, 6 * np.pi], units=[u.cm, u.rad, u.rad]
         )
+
+    # Test interpolaotr
+    pos = np.array([0.1, 0.1, 0.5])
+    i = grid.interpolate(pos)
+    # Get position value corresponding to that index
+    pout = grid.grid[i[0], i[1], i[2], :]
+    # Assert that grid is sort-of nearby...
+    assert np.allclose(pos, pout, atol=0.05)
