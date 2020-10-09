@@ -1,5 +1,6 @@
 """
-The `~plasmapy.dispersion` subpackage contains functions associated with the of dispersion solver and other relevant quantities
+The `~plasmapy.dispersion` subpackage contains functions associated with the of
+dispersion solver and other relevant quantities
 """
 # __all__ will be auto populated below
 __all__ = []
