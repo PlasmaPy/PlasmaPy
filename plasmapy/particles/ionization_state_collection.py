@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.ionization_state import IonicFraction, IonizationState
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, particle_like
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
@@ -38,16 +38,20 @@ class IonizationStateCollection:
         with elements or isotopes as keys and `~astropy.units.Quantity`
         instances with units of number density.
 
-    abundances: `dict` or `str`, optional, keyword-only
-        The relative abundances of each element in the plasma.
+    abundances: `dict`, optional, keyword-only
+        A `dict` with `particle_like` elements or isotopes as keys and
+        the corresponding relative abundance as values.  The values must
+        be positive real numbers.
 
     log_abundances: `dict`, optional, keyword-only
-        The base 10 logarithm of the relative abundances of each element
-        in the plasma.
+        A `dict` with `particle_like` elements or isotopes as keys and
+        the corresponding base 10 logarithms of their relative
+        abundances as values.  The values must be real numbers.
 
     n: `~astropy.units.Quantity`, optional, keyword-only
-        The number density scaling factor.  The number density of an
-        element will be the product of its abundance and ``n``.
+        The number density normalization factor corresponding to the
+        abundances.  The number density of each element is the product
+        of its abundance and ``n``.
 
     T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
@@ -101,8 +105,8 @@ class IonizationStateCollection:
 
     Notes
     -----
-    No more than one of ``abundances``, ``log_abundances``, and
-    ``number_densities`` may be specified.
+    No more than one of ``abundances`` and ``log_abundances`` may be
+    specified.
 
     If the value provided during item assignment is a
     `~astropy.units.Quantity` with units of number density that retains
@@ -705,12 +709,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> Optional[Dict]:
+    def abundances(self) -> Optional[Dict[particle_like, Real]]:
         """Return the elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: Optional[Dict]):
+    def abundances(self, abundances_dict: Optional[Dict[particle_like, Real]]):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose

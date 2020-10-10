@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, particle_like
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
@@ -32,7 +32,7 @@ class IonicFraction:
 
     Parameters
     ----------
-    ion: particle-like
+    ion: `particle_like`
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional
@@ -169,7 +169,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: `str`, integer, or `~plasmapy.particles.Particle`
+    particle: `particle_like`
         A `str` or `~plasmapy.particles.Particle` instance representing
         an element, isotope, or ion; or an integer representing the
         atomic number of an element.
