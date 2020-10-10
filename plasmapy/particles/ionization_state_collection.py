@@ -66,7 +66,7 @@ class IonizationStateCollection:
 
     Raises
     ------
-    ParticleError
+    `ParticleError`
         If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
 
     Examples
