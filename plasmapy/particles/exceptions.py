@@ -34,7 +34,7 @@ class ParticleTypeError(ParticleError, TypeError):
     pass
 
 
-class ParticleError(ParticleError, ValueError):
+class ParticleValueError(ParticleError, ValueError):
     """
     An exception for errors in the `~plasmapy.particles` subpackage
     caused because an incorrect value was provided.
