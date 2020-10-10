@@ -45,7 +45,7 @@ class IonizationStateCollection:
         The base 10 logarithm of the relative abundances of each element
         in the plasma.
 
-    n: ~astropy.units.Quantity, optional, keyword-only
+    n: `~astropy.units.Quantity`, optional, keyword-only
         The number density scaling factor.  The number density of an
         element will be the product of its abundance and ``n``.
 
@@ -53,10 +53,10 @@ class IonizationStateCollection:
         The electron temperature in units of temperature or thermal
         energy per particle.
 
-    kappa: float, optional, keyword-only
+    kappa: `float`, optional, keyword-only
         The value of kappa for a kappa distribution function.
 
-    tol: float or integer, keyword-only, optional
+    tol: `float` or `integer`, keyword-only, optional
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.  Defaults to ``1e-15``.
 

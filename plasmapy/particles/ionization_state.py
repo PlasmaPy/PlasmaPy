@@ -30,10 +30,6 @@ class IonicFraction:
     """
     Representation of the ionic fraction for a single ion.
 
-    This class is created when indexing
-    `~plasmapy.particles.IonizationState` or
-    `~plasmapy.particles.IonizationStateCollection`.
-
     Parameters
     ----------
     ion: particle-like
