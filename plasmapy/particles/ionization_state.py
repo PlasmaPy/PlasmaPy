@@ -547,7 +547,7 @@ class IonizationState:
         """
         raise NotImplementedError
 
-    @u.quantity_input(equivalencies=u.temperature_energy())
+    @validate_quantities(equivalencies=u.temperature_energy())
     def equilibrate(self, T_e: u.K = np.nan * u.K):
         """
         Set the ionic fractions to collisional ionization equilibrium
@@ -556,7 +556,7 @@ class IonizationState:
         self.ionic_fractions = self.equil_ionic_fractions
 
     @property
-    @u.quantity_input
+    @validate_quantities
     def n_e(self) -> u.m ** -3:
         """
         Return the electron number density assuming a single species
@@ -565,13 +565,13 @@ class IonizationState:
         return np.sum(self._n_elem * self.ionic_fractions * self.integer_charges)
 
     @property
-    @u.quantity_input
+    @validate_quantities
     def n_elem(self) -> u.m ** -3:
         """Return the total number density of neutrals and all ions."""
         return self._n_elem.to(u.m ** -3)
 
     @n_elem.setter
-    @u.quantity_input
+    @validate_quantities
     def n_elem(self, value: u.m ** -3):
         """Set the number density of neutrals and all ions."""
         if value < 0 * u.m ** -3:
@@ -582,7 +582,7 @@ class IonizationState:
             self._n_elem = np.nan * u.m ** -3
 
     @property
-    @u.quantity_input
+    @validate_quantities
     def number_densities(self) -> u.m ** -3:
         """Return the number densities for each state."""
         try:
@@ -591,7 +591,7 @@ class IonizationState:
             return np.full(self.atomic_number + 1, np.nan) * u.m ** -3
 
     @number_densities.setter
-    @u.quantity_input
+    @validate_quantities
     def number_densities(self, value: u.m ** -3):
         """Set the number densities for each state."""
         if np.any(value.value < 0):
@@ -606,7 +606,7 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    @u.quantity_input(equivalencies=u.temperature_energy())
+    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         if self._T_e is None:
@@ -614,7 +614,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @u.quantity_input(equivalencies=u.temperature_energy())
+    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
