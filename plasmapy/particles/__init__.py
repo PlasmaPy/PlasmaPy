@@ -29,6 +29,7 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    particle_like,
 )
 from plasmapy.particles.serialization import (
     json_load_particle,

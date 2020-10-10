@@ -5,6 +5,7 @@ __all__ = [
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
+    "particle_like",
 ]
 
 import astropy.constants as const
@@ -2063,3 +2064,9 @@ class CustomParticle(AbstractParticle):
                 "a real number that represents the ratio of the charge to "
                 "the elementary charge."
             )
+
+
+# TODO: Describe valid particle representations in docstring of particle_like
+
+particle_like = Union[str, Integral, Particle]
+"""A typing construct for valid representations of a particle."""
