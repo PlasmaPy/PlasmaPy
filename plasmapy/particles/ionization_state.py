@@ -231,19 +231,9 @@ class IonizationState:
     'He-4'
     >>> states.ionic_fractions
     array([0., 0., 1.])
-
-    Notes
-    -----
-    Calculation of collisional ionization equilibrium has not yet been
-    implemented.
     """
 
-    # TODO: Allow this class to (optionally?) handle negatively charged
-    # TODO: ions.  There are instances where singly negatively charged
-    # TODO: ions are important in astrophysical plasmas, such as H- in
-    # TODO: the atmospheres of relatively cool stars.  There may be some
-    # TODO: rare situations where doubly negatively charged ions show up
-    # TODO: too, but triply negatively charged ions are very unlikely.
+    # TODO: Allow this class to handle negatively charged
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
