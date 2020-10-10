@@ -458,7 +458,7 @@ class IonizationStateCollection:
 
         Raises
         ------
-        ParticleError
+        `ParticleError`
             If the ionic fractions cannot be set.
 
         TypeError
