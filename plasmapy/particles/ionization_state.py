@@ -48,8 +48,8 @@ class IonicFraction:
 
     See Also
     --------
-    IonizationState
-    IonizationStateCollection
+    ~plasmapy.particles.ionization_state.IonizationState
+    ~plasmapy.particles.ionization_state_collection.IonizationStateCollection
 
     Examples
     --------
