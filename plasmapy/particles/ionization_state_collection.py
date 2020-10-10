@@ -60,10 +60,6 @@ class IonizationStateCollection:
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.  Defaults to ``1e-15``.
 
-    equilibrate: `bool`, optional, keyword-only
-        Set the ionic fractions to the estimated collisional ionization
-        equilibrium.  Not implemented.
-
     Raises
     ------
     `ParticleError`
@@ -118,8 +114,9 @@ class IonizationStateCollection:
     are performed to within a tolerance of ``tol``.
     """
 
-    # TODO: The docstring above needs to be expanded and revised to
-    # TODO: better describe what the magic methods do.
+    # TODO: Improve explanation of dunder methods in docstring
+
+    # TODO: Add functionality to equilibrate initial ionization states
 
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
     def __init__(
@@ -127,7 +124,6 @@ class IonizationStateCollection:
         inputs: Union[Dict[str, np.ndarray], List, Tuple],
         *,
         T_e: u.K = np.nan * u.K,
-        equilibrate: Optional[bool] = None,
         abundances: Optional[Dict[str, Real]] = None,
         log_abundances: Optional[Dict[str, Real]] = None,
         n: u.m ** -3 = np.nan * u.m ** -3,
@@ -171,9 +167,6 @@ class IonizationStateCollection:
             raise ParticleError(
                 "Unable to create IonizationStateCollection object."
             ) from exc
-
-        if equilibrate:
-            self.equilibrate()  # for now, this raises a NotImplementedError
 
     def __str__(self) -> str:
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
@@ -674,34 +667,6 @@ class IonizationStateCollection:
         for particle in self.base_particles:
             tot = np.sum(self.ionic_fractions[particle])
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
-
-    def equilibrate(
-        self, T_e: u.K = np.nan * u.K, particles: str = "all", kappa: Real = np.inf
-    ):
-        """
-        Set the ionic fractions to collisional ionization equilibrium.
-        Not implemented.
-
-        The electron temperature used to calculate the new equilibrium
-        ionic fractions will be the argument ``T_e`` to this method if
-        given, and otherwise the attribute ``T_e`` if no electon
-        temperature is provided to this method.
-
-        Parameters
-        ----------
-        T_e: ~astropy.units.Quantity, optional
-            The electron temperature.
-
-        particles: `list`, `tuple`, or `str`, optional
-            The elements and isotopes to be equilibrated.  If
-            ``particles`` is ``'all'`` (default), then all
-            elements and isotopes will be equilibrated.
-
-        kappa: Real
-            The value of kappa for a kappa distribution for electrons.
-
-        """
-        raise NotImplementedError
 
     @property
     @validate_quantities

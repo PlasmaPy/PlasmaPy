@@ -529,23 +529,6 @@ class IonizationState:
         self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
-    def equil_ionic_fractions(self, T_e: u.K = None):
-        """
-        Return the equilibrium ionic fractions for temperature ``T_e``
-        or the temperature set in the `IonizationState` instance.  Not
-        implemented.
-        """
-        raise NotImplementedError
-
-    @validate_quantities(equivalencies=u.temperature_energy())
-    def equilibrate(self, T_e: u.K = np.nan * u.K):
-        """
-        Set the ionic fractions to collisional ionization equilibrium
-        for temperature ``T_e``.  Not implemented.
-        """
-        self.ionic_fractions = self.equil_ionic_fractions
-
-    @property
     @validate_quantities
     def n_e(self) -> u.m ** -3:
         """
