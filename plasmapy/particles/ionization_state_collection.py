@@ -329,17 +329,6 @@ class IonizationStateCollection:
         self._element_index = 0
         return self
 
-    @property
-    def __ITER__(self):  # coverage: ignore
-        """
-        Recall that our code development guide states that there should
-        be at most one pun per 1284 lines of code.
-        """
-        raise NotImplementedError(
-            "The International Thermonuclear Experimental Reactor "
-            "is still under construction."
-        )
-
     def __next__(self):
         if self._element_index < len(self.base_particles):
             particle = self.base_particles[self._element_index]
