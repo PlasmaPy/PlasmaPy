@@ -5,8 +5,9 @@ and numbers.
 __all__ = [
     "atomic_symbol",
     "element_name",
-    "isotope_symbol",
     "ionic_symbol",
+    "isotope_symbol",
+    "particle_symbol",
 ]
 
 from numbers import Integral
