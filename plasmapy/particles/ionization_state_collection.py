@@ -316,7 +316,7 @@ class IonizationStateCollection:
         normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
         if not normalized and not all_nans:
             raise ValueError(
-                f"{errmsg} because the ionic fractions are not " f"normalized to one."
+                f"{errmsg} because the ionic fractions are not normalized to one."
             )
 
         self._ionic_fractions[particle][:] = new_fractions[:]

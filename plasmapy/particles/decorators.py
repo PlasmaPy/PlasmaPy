@@ -66,7 +66,7 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
     for condition, phrase in errmsg_table:
         if condition:
             category_errmsg += (
-                f"The particle {phrase} of the following categories: " f"{condition}. "
+                f"The particle {phrase} of the following categories: {condition}. "
             )
 
     return category_errmsg

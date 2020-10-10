@@ -289,7 +289,7 @@ class IonizationState:
 
         except Exception as exc:
             raise ParticleError(
-                f"Unable to create IonizationState object for " f"{particle.particle}."
+                f"Unable to create IonizationState object for {particle.particle}."
             ) from exc
 
     def __str__(self) -> str:
@@ -315,7 +315,7 @@ class IonizationState:
                     value = Particle(value)
                 except InvalidParticleError as exc:
                     raise InvalidParticleError(
-                        f"{value} is not a valid integer charge or " f"particle."
+                        f"{value} is not a valid integer charge or particle."
                     ) from exc
 
             same_element = value.element == self.element
@@ -498,7 +498,7 @@ class IonizationState:
 
         except Exception as exc:
             raise ParticleError(
-                f"Unable to set ionic fractions of {self.element} " f"to {fractions}."
+                f"Unable to set ionic fractions of {self.element} to {fractions}."
             ) from exc
 
     def _is_normalized(self, tol: Optional[Real] = None) -> bool:
@@ -567,7 +567,7 @@ class IonizationState:
             raise ParticleError("Number densities cannot be negative.")
         if len(value) != self.atomic_number + 1:
             raise ParticleError(
-                f"Incorrect number of charge states for " f"{self.base_particle}"
+                f"Incorrect number of charge states for {self.base_particle}"
             )
         value = value.to(u.m ** -3)
 
