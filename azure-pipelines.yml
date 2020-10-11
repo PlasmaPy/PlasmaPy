@@ -58,8 +58,8 @@ jobs:
       - linux: py37-numpydev
         name: py37_numpydev
 
-      - linux: py36-minimal-conda
-        name: py36_minimal_conda
+      - linux: py36-minimal
+        name: py36_minimal
         libraries: {}
 
       - linux: py36-minimal-pypi-import
