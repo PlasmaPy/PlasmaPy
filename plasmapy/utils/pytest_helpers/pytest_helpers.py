@@ -18,9 +18,7 @@ import warnings
 
 from typing import Any, Callable, Dict
 
-from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
-from plasmapy.utils.exceptions import PlasmaPyWarning
-from plasmapy.utils.pytest_helpers.exceptions import (
+from plasmapy.tests.helpers.exceptions import (
     InconsistentTypeError,
     InvalidTestError,
     MissingExceptionError,
@@ -28,6 +26,8 @@ from plasmapy.utils.pytest_helpers.exceptions import (
     UnexpectedExceptionError,
     UnexpectedResultError,
 )
+from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
