@@ -118,9 +118,9 @@ def test_NonUniformCartesianGrid():
     pos = np.array([0.1, -0.3, 0]) * u.cm
     # Test interpolator on non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    i = grid.interpolate(pos)
+    i = grid.interpolate_indices(pos)
     # Get position value corresponding to that index
-    pout = grid.grid[i[0], i[1], i[2], :]
+    pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
     # Assert that grid is sort-of nearby...
     assert np.allclose(pos, pout, atol=0.1)
 
@@ -198,6 +198,3 @@ def test_SphericalGrid():
     pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
     # Assert that grid is sort-of nearby...
     assert np.allclose(pos, pout, atol=0.05)
-
-
-test_interpolators()
