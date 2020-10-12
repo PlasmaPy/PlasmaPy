@@ -130,22 +130,22 @@ def run_test(
 
     Raises
     ------
-    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultError
         If the test returns a result that is different from the expected
         result.
 
-    ~plasmapy.utils.pytest_helpers.InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.InconsistentTypeError
         If the actual result is of a different type than the expected
         result.
 
-    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionError
         If an exception occurs when no exception or a different
         exception is expected.
 
-    ~plasmapy.utils.pytest_helpers.MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionError
         If no exception is raised when an exception is expected.
 
-    ~plasmapy.utils.pytest_helpers.MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningError
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -445,16 +445,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultError
         If not all of the results are equivalent, or not all of the
         results are of the same type and `require_same_type` evaluates
         to `True`.
 
-    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionError
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.utils.pytest_helpers.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -655,22 +655,22 @@ def assert_can_handle_nparray(
         `["coulomb_log"]`
         `["characteristic_length"]`
 
-    insert_some_nans: list
+    insert_some_nans: `list`
         List of argument names in which to insert some np.nan values.
         These must be arguments that will be tested as vectors as listed
         above.
 
-    insert_all_nans: list
+    insert_all_nans: `list`
         List of argument names to fill entirely with np.nan values.
 
-    kwargs: dict
+    kwargs: `dict`
         Arguments to pass directly to the function in under test, in the
         normal kwargs python dictionary format.
 
     Raises
     ------
     ValueError
-        If this function cannot interpret a parameter of function_to_test,
+        If this function cannot interpret a parameter of function_to_test.
 
     Examples
     --------
