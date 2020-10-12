@@ -1,0 +1,2 @@
+Added classes in ``plasmapy.tests.helpers`` that represent the inputs
+for tests to be supplied to the test runner functionality.
