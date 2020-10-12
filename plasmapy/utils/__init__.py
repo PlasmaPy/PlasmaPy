@@ -18,8 +18,8 @@ __all__ = [
 from plasmapy.utils import (
     datatype_factory_base,
     decorators,
-    formatting,
     exceptions,
+    formatting,
     roman,
 )
 from plasmapy.utils.exceptions import (

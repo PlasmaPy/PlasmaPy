@@ -18,6 +18,12 @@ import warnings
 
 from typing import Any, Callable, Dict
 
+from plasmapy.utils.exceptions import PlasmaPyWarning
+from plasmapy.utils.formatting.formatting import (
+    _name_with_article,
+    _object_name,
+    call_string,
+)
 from plasmapy.utils.pytest_helpers.exceptions import (
     InconsistentTypeError,
     InvalidTestError,
@@ -25,12 +31,6 @@ from plasmapy.utils.pytest_helpers.exceptions import (
     MissingWarningError,
     UnexpectedExceptionError,
     UnexpectedResultError,
-)
-from plasmapy.utils.exceptions import PlasmaPyWarning
-from plasmapy.utils.formatting.formatting import (
-    _name_with_article,
-    _object_name,
-    call_string,
 )
 
 
@@ -632,7 +632,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
 
 def assert_can_handle_nparray(
-    function_to_test, insert_some_nans=None, insert_all_nans=None, kwargs=None,
+    function_to_test,
+    insert_some_nans=None,
+    insert_all_nans=None,
+    kwargs=None,
 ):
     """
     Test for ability to handle numpy array quantities.
