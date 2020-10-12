@@ -73,24 +73,40 @@ def test_CartesianGrid():
     with pytest.raises(ValueError):
         grid = grids.CartesianGrid(-1, 1, units=[u.m, u.rad, u.m])
 
+
+def test_interpolators():
     # Test interpolator
-    pos = np.array([0.1, -0.3, 0]) * u.cm
 
     # Test interpolator
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    # Interpolate pos value
-    i = grid.interpolate(pos)
-    # Get position value corresponding to that index
-    pout = grid.grid[i[0], i[1], i[2], :]
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+
+    # Interpolate indices
+    i = grid.interpolate_indices(pos)
+    pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
     # Assert that nearest grid cell was found
     assert np.allclose(pos, pout, atol=0.03)
 
-    # Test a couple different interpolator input types
+    # Interpolate grid values using nearest-neighbor interpolator
+    pout = grid.nearest_neighbor_interpolator(pos, grid.grid)
+    assert np.allclose(pos, pout, atol=0.03)
+
+    # Interpolate grid values using volume-weighted interpolator
+    pout = grid.volume_averaged_interpolator(pos, grid.grid)
+    assert np.allclose(pos, pout, atol=0.03)
+
+    # Test using multiple arguments
+    pout, pout2 = grid.nearest_neighbor_interpolator(pos, grid.grid, grid.grid * 2)
+
     # Test a u-quantity input
-    i = grid.interpolate(pos.value)
-    # Test a single position input
-    i = grid.interpolate(np.array([[0, 0, 0], [0.5, 0.2, 0]]))
+    i = grid.interpolate_indices(pos.value)
+    pout = grid.nearest_neighbor_interpolator(pos.value, grid.grid)
+    # Test multiple grid points
+    pos = np.array([[0, 0, 0], [0.5, 0.2, 0]]) * u.cm
+    i = grid.interpolate_indices(pos)
+    pout = grid.nearest_neighbor_interpolator(pos.value, grid.grid)
+    pout = grid.volume_averaged_interpolator(pos, grid.grid)
 
 
 def test_NonUniformCartesianGrid():
@@ -137,9 +153,9 @@ def test_CylindricalGrid():
 
     # Test interpolaotr
     pos = np.array([0.1, 0.1, 0])
-    i = grid.interpolate(pos)
+    i = grid.interpolate_indices(pos)
     # Get position value corresponding to that index
-    pout = grid.grid[i[0], i[1], i[2], :]
+    pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
     # Assert that grid is sort-of nearby...
     assert np.allclose(pos, pout, atol=0.05)
 
@@ -177,8 +193,11 @@ def test_SphericalGrid():
 
     # Test interpolaotr
     pos = np.array([0.1, 0.1, 0.5])
-    i = grid.interpolate(pos)
+    i = grid.interpolate_indices(pos)
     # Get position value corresponding to that index
-    pout = grid.grid[i[0], i[1], i[2], :]
+    pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
     # Assert that grid is sort-of nearby...
     assert np.allclose(pos, pout, atol=0.05)
+
+
+test_interpolators()

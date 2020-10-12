@@ -72,7 +72,32 @@ class AbstractGrid(ABC):
             self._make_interpolator()
         return self._interpolator
 
-    def interpolate(self, position):
+    def _make_interpolator(self):
+        """
+        Initializes a nearest-neighbor interpolator that returns the nearest
+        grid indices for a given position.
+        """
+        # Create a grid of indices for use in interpolation
+        n0, n1, n2, ndim = self.shape
+        indgrid = np.indices([n0, n1, n2])
+        indgrid = np.moveaxis(indgrid, 0, -1)
+
+        # Create an input array of grid positions
+        pts = (
+            self.ax0.si.value,
+            self.ax1.si.value,
+            self.ax2.si.value,
+        )
+
+        # Create the interpolator
+        # Note that this regular grid interpolator requires points be a regular
+        # grid but does not require uniform spacing
+
+        self._interpolator = interp.RegularGridInterpolator(
+            pts, indgrid, method="nearest", bounds_error=False, fill_value=np.nan
+        )
+
+    def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity], *args):
         r"""
         Interpolate the nearest grid indices to a position using a
         nearest-neighbor interpolator
@@ -85,40 +110,102 @@ class AbstractGrid(ABC):
             is provided, units will be assumed to match those of the grid.
 
         """
-        # Don't want to strip units etc. of input array in case
-        # that's being used elsewhere
-        # TODO: is there a way to do this using a decorator or something?
-        position = np.copy(position)
-
+        # Condition pos
         # If a single point was given, add empty dimension
-        if position.ndim == 1:
-            position = np.reshape(position, [1, 3])
-            single_pt = True
-        else:
-            single_pt = False
-
-        # Convert to SI and then strip units
-        if isinstance(position, u.Quantity):
-            position = position.si.value
-
+        if pos.ndim == 1:
+            pos = np.reshape(pos, [1, 3])
+        pos2 = np.zeros(pos.shape)
+        # Convert position to SI and then strip units
+        if hasattr(pos, "unit"):
+            pos2 = pos.si.value
         else:
             for i in range(3):
-                position[:, i] = (position[:, i] * self.units[i]).si.value
+                pos2[:, i] = (pos[:, i] * self.units[i]).si.value
 
-        # Interpolate values
-        i = self.interpolator(position)
-
+        # Interpolate indices
+        i = self.interpolator(pos2)
         # Convert any non-NaN values to ints
         i = i.astype(np.int32)
 
-        if single_pt:
-            return i[0]
-        else:
-            return i
+        return i
+
+    def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+        r"""
+        Interpolate values on the grid using a nearest-neighbor scheme with
+        no higher-order weighting.
+
+        Parameters
+        ----------
+        pos : np.ndarray or u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If an np.ndarray
+            is provided, units will be assumed to match those of the grid.
+
+        args : np.ndarray or u.Quantity objects of shape (n0,n1,2) or (n0,n1,n2,3)
+            Arrays of values at each grid vertex to be interpolated onto the
+            positions given.
+
+        """
+        # pos is validated in interpolate_indices
+
+        # Validate args
+        # must be np.ndarray or u.Quantity arrays of same shape as grid
+        for arg in args:
+            if (
+                isinstance(arg, (u.Quantity, np.ndarray))
+                and arg.shape[0:-1] == self.grid_shape
+            ):
+                pass
+            else:
+                raise ValueError(
+                    "Argument must be a u.Quantity or np.ndarray "
+                    "with the same shape as the grid, but argument "
+                    f"given had shape {arg.shape} and type "
+                    f"{type(arg)}"
+                )
+
+        i = self.interpolate_indices(pos)
+
+        output = []
+        for arg in args:
+            values = arg[i[:, 0], i[:, 1], i[:, 2], ...]
+            output.append(values)
+
+        return tuple(output)
+
+    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+        r"""
+        Interpolate values on the grid using a volume-averaged scheme with
+        no higher-order weighting.
+
+        Parameters
+        ----------
+        pos : np.ndarray or u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If an np.ndarray
+            is provided, units will be assumed to match those of the grid.
+
+        args : np.ndarray or u.Quantity objects of shape (n0,n1,2) or (n0,n1,n2,3)
+            Arrays of values at each grid vertex to be interpolated onto the
+            positions given.
+
+        """
+
+        raise NotImplemented(
+            "Volume-averaged interpolator is not yet " "implemented for this grid type."
+        )
 
     @property
     def shape(self):
         return self._grid.shape
+
+    @property
+    def grid_shape(self):
+        """
+        The shape of the grid without the number of dimensions,
+        eg. (n0, n1, n2)
+        """
+        return self._grid.shape[0:-1]
 
     @property
     def unit(self):
@@ -175,7 +262,7 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.uniform_grid:
-            return np.mean(np.gradient(self.ax0)) * self.unit0
+            return np.mean(np.gradient(self.ax0))
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
@@ -189,7 +276,7 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.uniform_grid:
-            return np.mean(np.gradient(self.ax1)) * self.unit1
+            return np.mean(np.gradient(self.ax1))
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
@@ -203,7 +290,7 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.uniform_grid:
-            return np.mean(np.gradient(self.ax2)) * self.unit2
+            return np.mean(np.gradient(self.ax2))
         else:
             raise ValueError(
                 "The grid step size properties are only valid on "
@@ -420,31 +507,6 @@ class AbstractGrid(ABC):
 
         self._uniform_grid = np.allclose(variance, 0.0, atol=tol)
 
-    def _make_interpolator(self):
-        """
-        Initializes a nearest-neighbor interpolator that returns the nearest
-        grid indices for a given position.
-        """
-        # Create a grid of indices for use in interpolation
-        n0, n1, n2, ndim = self.shape
-        indgrid = np.indices([n0, n1, n2])
-        indgrid = np.moveaxis(indgrid, 0, -1)
-
-        # Create an input array of grid positions
-        pts = (
-            self.ax0.si.value,
-            self.ax1.si.value,
-            self.ax2.si.value,
-        )
-
-        # Create the interpolator
-        # Note that this regular grid interpolator requires points be a regular
-        # grid but does not require uniform spacing
-
-        self._interpolator = interp.RegularGridInterpolator(
-            pts, indgrid, method="nearest", bounds_error=False, fill_value=np.nan
-        )
-
 
 class CartesianGrid(AbstractGrid):
     """
@@ -539,6 +601,89 @@ class CartesianGrid(AbstractGrid):
         origin
         """
         return np.sqrt(self.x_axis ** 2 + self.y_axis ** 2 + self.z_axis ** 2)
+
+    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+        r"""
+        Interpolate values on the grid using a nearest-neighbor scheme with
+        no higher-order weighting.
+
+        Parameters
+        ----------
+        pos :  u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If an np.ndarray
+            is provided, units will be assumed to match those of the grid.
+
+        args : np.ndarray or u.Quantity objects of shape (n0,n1,2) or (n0,n1,n2,3)
+            Arrays of values at each grid vertex to be interpolated onto the
+            positions given.
+
+        """
+
+        # Condition pos
+        # If a single point was given, add empty dimension
+        if pos.ndim == 1:
+            pos = np.reshape(pos, [1, 3])
+
+        # Convert position to u.Quantiy
+        if not hasattr(pos, "unit"):
+            pos *= self.unit
+
+        # Interpolate the indices
+        i = self.interpolate_indices(pos)
+        nparticles = i.shape[0]
+
+        # Calculate the grid positions for each particle as interpolated
+        # by the nearest neighbor interpolator
+        gpos = self.grid[i[:, 0], i[:, 1], i[:, 2], :]
+
+        # Determine the points bounding the grid cell containing the
+        # particle
+        x0 = np.where(pos[:, 0] > gpos[:, 0], i[:, 0], i[:, 0] - 1)
+        x1 = x0 + 1
+        y0 = np.where(pos[:, 1] > gpos[:, 1], i[:, 1], i[:, 1] - 1)
+        y1 = y0 + 1
+        z0 = np.where(pos[:, 2] > gpos[:, 2], i[:, 2], i[:, 2] - 1)
+        z1 = z0 + 1
+
+        # Calculate the cell volume
+        cell_vol = self.d_x * self.d_y * self.d_z
+        n0, n1, n2 = self.grid_shape
+
+        # Create a list of empty arrays to hold final results
+        output = []
+        for i, arg in enumerate(args):
+            ndim = arg.shape[-1]
+            output.append(np.zeros([nparticles, ndim]) * arg.unit)
+
+        # Go through all of the vertices around the position and volume-
+        # weight the values
+        for x in [x0, x1]:
+            for y in [y0, y1]:
+                for z in [z0, z1]:
+
+                    # Determine if gridpoint is within bounds
+                    valid = (
+                        (x >= 0) & (x < n0) & (y >= 0) & (y < n1) & (z >= 0) & (z < n2)
+                    )
+                    out = np.where(valid == False)
+
+                    # Distance from grid vertex to particle position
+                    d = np.abs(self.grid[x, y, z, :] - pos)
+
+                    # Fraction of cell volume that is closest to the
+                    # current point
+                    weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
+                    weight = weight.to(u.dimensionless_unscaled)
+                    weight[out] = 0
+                    weight = np.outer(weight, np.ones(3))
+
+                    # For each argument, include the contributed by this
+                    # grid vertex
+                    for i, arg in enumerate(args):
+                        output[i] += weight * arg[x, y, z, ...]
+
+        return tuple(output)
 
 
 class NonUniformCartesianGrid(CartesianGrid):
