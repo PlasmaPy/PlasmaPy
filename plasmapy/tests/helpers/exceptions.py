@@ -1,16 +1,15 @@
 """Exceptions that describe different types of test failures."""
 
 __all__ = [
-    "Failed",
-    "UnexpectedResultError",
-    "InconsistentTypeError",
-    "MissingExceptionError",
-    "UnexpectedExceptionError",
-    "MissingExceptionError",
-    "UnexpectedWarningError",
-    "MissingWarningError",
-    "InvalidTestError",
     "ExceptionMismatchError",
+    "Failed",
+    "InconsistentTypeError",
+    "InvalidTestError",
+    "MissingExceptionError",
+    "MissingWarningError",
+    "UnexpectedExceptionError",
+    "UnexpectedResultError",
+    "UnexpectedWarningError",
     "WarningMismatchError",
 ]
 
