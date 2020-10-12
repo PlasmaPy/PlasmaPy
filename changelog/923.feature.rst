@@ -1,0 +1,2 @@
+Added ``plasmapy.tests.helpers.ExpectedTestOutcome`` as a class to represent
+the expected outcome of tests.
