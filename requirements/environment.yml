@@ -13,7 +13,6 @@ dependencies:
   - matplotlib
   - mpmath
   - pillow
-  - colorama
   - pip
   - pip:
     - numpydoc
