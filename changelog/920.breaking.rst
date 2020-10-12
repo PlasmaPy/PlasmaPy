@@ -1,0 +1,2 @@
+Moved and refactored error message formatting functionality from
+``plasmapy.utils.error_messages`` to ``plasmapy.utils.formatting``.
