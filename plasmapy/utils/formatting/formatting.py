@@ -115,7 +115,8 @@ def _string_together_warnings_for_printing(warning_types, warning_messages):
 
 def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     """
-    Return a string with the equivalent call of a function or class.
+    Return a string with the equivalent call of a callable object such
+    as a function or class.
 
     Parameters
     ----------
@@ -153,7 +154,8 @@ def attribute_call_string(
     cls_kwargs: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
-    Return a string to represent accessing a class attribute.
+    Return a string to represent accessing an attribute of an object,
+    such as an attribute of an instance in a class.
 
     Parameters
     ----------
