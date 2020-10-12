@@ -5,7 +5,7 @@ import warnings
 from typing import Any
 
 from plasmapy.particles import Particle
-from plasmapy.utils import call_string
+from plasmapy.utils.formatting import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
 from plasmapy.utils.pytest_helpers import (
     InconsistentTypeError,
