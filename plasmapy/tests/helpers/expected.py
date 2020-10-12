@@ -1,4 +1,4 @@
-"""..."""
+"""Contains a class to represent the expected outcome of a test."""
 
 __all__ = ["ExpectedTestOutcome"]
 
