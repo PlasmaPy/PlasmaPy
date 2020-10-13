@@ -1,0 +1,2 @@
+Created a new function, `test_runner`, as a unified interface for performing
+tests that fall under the result test pattern.
