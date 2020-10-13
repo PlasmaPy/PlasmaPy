@@ -321,6 +321,7 @@ class CompareActualExpected:
         `~astropy.units.Quantity`, then it must have the same units as
         ``this`` and ``that``.  Defaults to zero in the appropriate units.
     """
+
     def __init__(
         self,
         actual: ActualTestOutcome,
@@ -626,7 +627,8 @@ class CompareActualExpected:
             return
 
         warnings_for_printing = _string_together_warnings_for_printing(
-            actual_warnings, warning_messages,
+            actual_warnings,
+            warning_messages,
         )
 
         warning_mismatch_errmsg = (
