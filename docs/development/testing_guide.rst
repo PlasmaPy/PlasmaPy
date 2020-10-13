@@ -353,8 +353,8 @@ functions or pass in tuples containing inputs and expected values.
 
 .. _testing-guidelines-writing-tests-helpers:
 
-Pytest helpers
---------------
+Test helpers
+------------
 
 A robust testing framework should test not just that functions and
 methods return the expected results, but also that they issue the
@@ -362,93 +362,154 @@ expected warnings and raise the expected exceptions. In PlasmaPy, tests
 often need to compare a `float` against a `float`, an `~numpy.array`
 against an `~numpy.array`, and `~astropy.units.Quantity` objects against
 other `~astropy.units.Quantity` objects to within a certain tolerance.
-Occasionally tests will be needed to make sure that a function will
-return the same value for different arguments (e.g., due to symmetry
-properties). PlasmaPy's `~plasmapy.utils` subpackage contains the
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` helper functions that can
-generically perform many of these comparisons and checks.
+At other times, we will want to check that the returned value has a
+specific unit.
 
-The `~plasmapy.utils.pytest_helpers.run_test` function can be used to
-check that a callable object returns the expected result, raises the
-expected exception, or issues the expected warning for different
-positional and keyword arguments. This function is particularly useful
-when unit testing straightforward functions when you have a bunch of
-inputs and know the expected result.
+The `~plasmapy.tests.helpers.test_runner` function may be used to
+simplify tests that fall under the result test pattern.  This function
+thoroughly checks that the actual test outcome matches the expected
+test outcome.  The expected test outcome may be a value, a warning,
+an exception, or a unit.  When the actual and expected test outcomes
+differ, then this functionality raises appropriate exceptions with
+error messages designed to pinpoint the problem.
 
-Suppose that we want to test the trigonometric property that
+Testing a function with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. math::
-
-  \sin(\theta) = \cos(\theta + \frac{\pi}{2}).
-
-We may use `~plasmapy.utils.pytest_helpers.run_test` as in the following example to
-check the case of :math:`\theta \equiv 0`.
+Suppose we want to test a function that doubles its argument.
 
 .. code-block:: python
 
-  from numpy import sin, cos, pi
-  from plasmapy.utils.pytest_helpers import run_test
+   def double(x):
+       return 2 * x
 
-  def test_trigonometric_properties():
-      run_test(func=sin, args=0, expected_outcome=cos(pi/2), atol=1e-16)
-
-We may use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test` to check multiple cases.  If
-`~plasmapy.utils.pytest_helpers.run_test` only receives one positional
-argument that is a `list` or `tuple`, then it will assume that `list`
-or `tuple` contains the `callable`, the positional arguments, the
-keyword arguments (which may be omitted), and the expected outcome
-(which may be the returned `object`, a warning, or an exception).
+To test ``double``, we may use `~plasmapy.tests.helpers.test_runner`.
+To do this, we first set up a test case using
+`~plasmapy.tests.helpers.FunctionTestCase`.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(pi/2)), (sin, '.', TypeError)])
-  def test_trigonometry(input_tuple):
-      run_test(input_tuple, atol=1e-16)
+   from plasmapy.tests.helpers import test_runner, FunctionTestCase
 
-This parametrized function will check that ``sin(0)`` is within
-``1e-16`` of ``cos(pi/2)`` and that  ``sin('.')`` raises a `TypeError`.
+   def test_double():
+       # Set up the test case
+       test_case_for_double = FunctionTestCase(function=double, args=2, expected=4)
+       # Run the actual test
+       test_runner(test_case_for_double)
 
-We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
-properties such as
+No exception is raised and this test passes because ``double(2)`` returns
+the expected value of ``4``.  If we instead had ``expected=5``, then
+`~plasmapy.tests.helpers.test_runner` would have raised an exception
+and this test would have failed.
 
-.. math::
-
-  \cos(\theta) = \cos(-\theta).
-
-This property can be checked for :math:`\theta = 1` with the following
-code.
-
-.. code-block:: python
-
-  def test_cosine_symmetry():
-      """Test that cos(1) equals cos(-1)."""
-      plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
-
-We may also use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to
-sequentially test multiple symmetry properties.
+We may similarly use `~plasmapy.tests.helpers.FunctionTestCase` and
+`~plasmapy.tests.helpers.test_runner` to test a function that adds
+two positional and two keyword arguments.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, pi/2], [sin, 0])])
-  def test_symmetry_properties(input_tuple):
-      plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
+   def add(a, b, *, c=0, d=0):
+       return a + b + c + d
 
-This parametrized function will check that ``cos(1)`` is within
-``1e-16`` of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of
-``sin(0)``.
+   def test_add():
+       args = (1, 2)
+       kwargs = {"c": 3, "d": 4}
+       test_case = FunctionTestCase(function=add, args=args, kwargs=kwargs, expected=10)
+       test_runner(test_case)
 
-Please refer to the documentation for
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to learn
-about the full capabilities of these pytest helper functions (including
-for testing functions that return `~astropy.units.Quantity` objects).
+In this example, we are testing that ``add(*args, **kwargs)`` [or
+equivalently, ``add(1, 2, c=3, d=4)``] returns ``expected`` which is
+``10``.  If ``args`` is a `tuple` or `list`, then it contains each of
+the positional arguments provided to the function when it is being
+tested.  If ``args`` is any other `object`, then ``args`` will be
+treated as the sole positional argument.  The keyword arguments are
+supplied in ``kwargs``.
+
+Parametrizing with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `~plasmapy.tests.helpers.test_runner` function is particularly useful with
+`~pytest.mark.parametrize`.
+
+.. code-block:: python
+
+   import astropy.units as u
+   import pytest
+   import warnings
+
+   def return_quantity():
+       return 6 * u.kg
+
+   def issue_warning():
+       warnings.warn("warning message", Warning)
+       return 42
+
+   def raise_exception():
+       raise Exception
+
+   test_cases = [
+       FunctionTestCase(function=return_quantity, expected = 6 * u.kg, rtol=1e-9, atol=1e-8),
+       FunctionTestCase(function=return_quantity, expected=u.kg),
+       FunctionTestCase(function=issue_warning, expected=(Warning),
+       FunctionTestCase(function=issue_warning, expected=(42, Warning)),  # tuple with value and warning
+       FunctionTestCase(function=raise_exception, expected=Exception),
+   ]
+
+   @pytest.mark.parametrize("test_case", test_cases)
+   def test_functions(test_case):
+       test_runner(test_case)
+
+Here, ``rtol`` and ``atol`` keywords specify the relative and absolute
+tolerances for the comparison.
+
+Testing methods and attributes with ``test_runner``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We may similarly test methods and attributes of class instances using
+`~plasmapy.tests.helpers.test_runner` with
+`~plasmapy.tests.helpers.MethodTestCase` and
+`~plasmapy.tests.helpers.AttrTestCase`, respectively.
+
+.. code-block:: python
+
+   from plasmapy.tests.helpers import test_runner, MethodTestCase, AttrTestCase
+
+   class SampleClass:
+       def __init__(self, cls_arg, *, cls_kwarg=0):
+           self.cls_arg = cls_arg
+           self.cls_kwarg = cls_kwarg
+       def sample_method(self, method_arg1, method_arg2, *, method_kwarg=0):
+           return self.cls_arg + self.cls_kwarg + method_arg1 + method_arg2 + method_kwarg
+       @property
+       def sample_attribute(self):
+           return self.cls_arg + self.cls_kwarg
+
+   def test_method():
+       method_test_case = MethodTestCase(
+           cls=SampleClass,
+           method="sample_method",
+           cls_args=1,
+           cls_kwargs={"cls_kwarg": 2},
+           method_args=(3, 4),
+           method_kwargs={"method_kwarg": 5},
+           expected=15,
+       )
+       test_runner(method_test_case)
+
+   def test_attribute():
+       attr_test_case = AttrTestCase(
+           cls=SampleClass,
+           attribute="sample_attribute",
+           cls_args=1,
+           cls_kwargs={"cls_kwarg": 2},
+           expected=3,
+       )
+       test_runner(attr_test_case)
 
 .. warning::
-    The API within `~plasmapy.utils.pytest_helpers` is not yet stable
-    and may change in the near future.
+
+    The API for helper functions within `~plasmapy.tests.helpers`
+    may change in the near future.
 
 .. _testing-guidelines-writing-tests-fixtures:
 
