@@ -1,0 +1,2 @@
+Created classes responsible for storing the inputs of tests that fall into
+the result test pattern.  These classes serve as inputs for ``test_runner``.
