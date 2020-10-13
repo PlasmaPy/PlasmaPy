@@ -1,0 +1,1 @@
+Updated narrative documentation in testing guide to discuss usages of ``test_runner``.
