@@ -1,0 +1,3 @@
+Added classes that perform comparisons between actual and expected outcomes
+of tests, select appropriate exceptions, and generate appropriate error
+messages when necessary.
