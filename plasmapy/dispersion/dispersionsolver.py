@@ -19,7 +19,7 @@ from plasmapy.utils.decorators import validate_quantities
     m_i={"can_be_negative":False},
     m_e={"can_be_negative":False}
 )
-def two_fluid_dispersion_solution(n: u.m ** -3, B: u.T, T_i: u.K, T_e: u.K, k: u.m ** -1, theta: u.deg = 45 * u.deg, z=1, gamma_e=1, gamma_i=3) :
+def two_fluid_dispersion_solution(n: u.m ** -3, B: u.T, T_i: u.K, T_e: u.K, k: u.m ** -1, theta: u.deg = 45 * u.deg, z=1, ion='p+', gamma_e=1, gamma_i=3):
 
     r"""
     Computes the wave frequency in the low frequency regime, corresponding to the plasma dispersion relation.
@@ -90,12 +90,12 @@ def two_fluid_dispersion_solution(n: u.m ** -3, B: u.T, T_i: u.K, T_e: u.K, k: u
 
     # Required derived parameters
     c_s = pfp.ion_sound_speed(T_e=T_e, T_i=T_i, n_e=z * n, gamma_e =
-    gamma_e, gamma_i = gamma_i, ion='p+')
-    v_A = pfp.Alfven_speed( B, n, ion)
+    gamma_e, gamma_i = gamma_i, ion=ion)
+    v_A = pfp.Alfven_speed( B, n, ion=ion)
     omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
     omega_pe = pfp.plasma_frequency(n=n, particle='e-', z_mean=z)
 
-    alpha = (np.cos(theta)**2).value
+    alpha = (np.cos(theta.to('rad'))**2).value
     beta = (c_s**2/v_A**2).value
     Lambda = (k**2 * v_A**2/omega_ci**2).value
 
@@ -110,8 +110,7 @@ def two_fluid_dispersion_solution(n: u.m ** -3, B: u.T, T_i: u.K, T_e: u.K, k: u
 
 
     keys = ['fast_mode', 'alfven_mode', 'acoustic_mode']
-    omega    = dict.fromkeys(keys)
-
+    omega = dict.fromkeys(keys)
 
     for (j,key) in zip(range(3), keys):
 
