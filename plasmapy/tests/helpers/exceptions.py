@@ -1,25 +1,25 @@
 """Exceptions that describe different types of test failures."""
 
 __all__ = [
-    "ExceptionMismatchError",
-    "Failed",
-    "InconsistentTypeError",
-    "InvalidTestError",
-    "MissingExceptionError",
-    "MissingWarningError",
-    "UnexpectedExceptionError",
-    "UnexpectedResultError",
-    "UnexpectedWarningError",
-    "WarningMismatchError",
+    "ExceptionMismatch",
+    "TestFailure",
+    "InconsistentType",
+    "InvalidTest",
+    "MissingException",
+    "MissingWarning",
+    "UnexpectedException",
+    "UnexpectedResult",
+    "UnexpectedWarning",
+    "WarningMismatch",
 ]
 
 import pytest
 
-# TODO: get the error message while raising this to be simply "Failed"
-#       rather than plasmapy.tests.helpers.exceptions.Failed
+# TODO: get the error message while raising this to be simply "TestFailure"
+#       rather than plasmapy.tests.helpers.exceptions.TestFailure
 
 
-class Failed(pytest.fail.Exception):
+class TestFailure(pytest.fail.Exception):
     """
     Base exception for test failures.
 
@@ -32,7 +32,7 @@ class Failed(pytest.fail.Exception):
     pass
 
 
-class InconsistentTypeError(Failed):
+class TypeMismatch(TestFailure):
     """
     Exception for when the type of the actual result differs from the
     type of the expected result.
@@ -41,7 +41,7 @@ class InconsistentTypeError(Failed):
     pass
 
 
-class MissingExceptionError(Failed):
+class MissingException(TestFailure):
     """
     Exception for when the expected exception is not raised.
     """
@@ -49,7 +49,7 @@ class MissingExceptionError(Failed):
     pass
 
 
-class UnexpectedExceptionError(Failed):
+class UnexpectedException(TestFailure):
     """
     Exception for when an exception is raised unexpectedly.
     """
@@ -57,7 +57,7 @@ class UnexpectedExceptionError(Failed):
     pass
 
 
-class ExceptionMismatchError(UnexpectedExceptionError, MissingExceptionError):
+class ExceptionMismatch(UnexpectedException, MissingException):
     """
     Exception for when an exception is expected, but a different
     exception is raised.
@@ -66,7 +66,7 @@ class ExceptionMismatchError(UnexpectedExceptionError, MissingExceptionError):
     pass
 
 
-class UnexpectedWarningError(Failed):
+class UnexpectedWarning(TestFailure):
     """
     Exception for when a warning is issued unexpectedly.
     """
@@ -74,7 +74,7 @@ class UnexpectedWarningError(Failed):
     pass
 
 
-class MissingWarningError(Failed):
+class MissingWarning(TestFailure):
     """
     Exception for when an expected warning is not issued.
     """
@@ -82,7 +82,7 @@ class MissingWarningError(Failed):
     pass
 
 
-class WarningMismatchError(UnexpectedWarningError, MissingWarningError):
+class WarningMismatch(UnexpectedWarning, MissingWarning):
     """
     Exception for when a warning is expected, but one or more
     different warnings were issued instead.
@@ -91,7 +91,7 @@ class WarningMismatchError(UnexpectedWarningError, MissingWarningError):
     pass
 
 
-class UnexpectedResultError(Failed):
+class UnexpectedResult(TestFailure):
     """
     Exception for when the actual result differs from the expected
     result by more than the allowed tolerance.
