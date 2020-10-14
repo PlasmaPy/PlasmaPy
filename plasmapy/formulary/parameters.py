@@ -807,9 +807,9 @@ def Hall_parameter(
     B : ~astropy.units.quantity.Quantity
         The magnetic field
     ion : ~plasmapy.particles.Particle
-        The type of ions participating in the collisions.
+        The type of ion ``particle`` is colliding with.
     particle : ~plasmapy.particles.Particle
-        The type of particle.
+        The particle of interest.
     coulomb_log : float, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
     V : ~astropy.units.quantity.Quantity
