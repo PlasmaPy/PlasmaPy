@@ -20,7 +20,7 @@ from typing import Any, Callable, Dict
 
 from plasmapy.tests.helpers.exceptions import (
     TypeMismatch,
-    InvalidTestError,
+    InvalidTest,
     MissingException,
     MissingWarning,
     UnexpectedException,
@@ -234,7 +234,7 @@ def run_test(
         args = (args,)
 
     if not callable(func):
-        raise InvalidTestError(
+        raise InvalidTest(
             f"The argument func = {func} to run_test must be callable."
         )
 
@@ -269,7 +269,7 @@ def run_test(
             True if is_not_class else not issubclass(expected_outcome[1], Warning)
         )
         if length_not_two or is_not_warning:
-            raise InvalidTestError("Invalid expected outcome in run_test.")
+            raise InvalidTest("Invalid expected outcome in run_test.")
         expected["result"] = expected_outcome[0]
         expected["warning"] = expected_outcome[1]
 
@@ -454,7 +454,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.tests.helpers.exceptions.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTest
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -513,7 +513,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         test_inputs = test_inputs[0]
 
     if not isinstance(test_inputs, (tuple, list)):
-        raise InvalidTestError(
+        raise InvalidTest(
             f"The argument to run_test_equivalent_calls must be a tuple "
             f"or list.  The provided inputs are: {test_inputs}"
         )
@@ -565,7 +565,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         test_cases.append(test_case)
 
     if len(test_cases) < 2:
-        raise InvalidTestError(
+        raise InvalidTest(
             "At least two tests are needed for run_test_equivalent_calls"
         )
 
@@ -584,7 +584,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
             bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "
 
     if bad_inputs_errmsg:
-        raise InvalidTestError(bad_inputs_errmsg)
+        raise InvalidTest(bad_inputs_errmsg)
 
     # Now we can get the results for each test case.
 

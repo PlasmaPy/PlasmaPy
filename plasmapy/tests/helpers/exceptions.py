@@ -100,7 +100,7 @@ class UnexpectedResult(TestFailure):
     pass
 
 
-class InvalidTestError(Exception):
+class InvalidTest(Exception):
     """
     Exception for when the inputs to a test are not valid.
     """
