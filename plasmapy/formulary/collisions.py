@@ -333,13 +333,11 @@ def _replaceNanVwithThermalV(V, T, m):
     if V is None:
         V = parameters.thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
-        if np.isscalar(V.value) and np.isscalar(T.value):
-            V = parameters.thermal_speed(T, "e-", mass=m)
-        elif np.isscalar(V.value):
-            V = parameters.thermal_speed(T, "e-", mass=m)
-        elif np.isscalar(T.value):
-            V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T, "e-", mass=m)
+        if np.isscalar(V.value) or np.isscalar(T.value):
+            if np.isscalar(V.value):
+                V = parameters.thermal_speed(T, "e-", mass=m)
+            if np.isscalar(T.value):
+                V[np.isnan(V)] = parameters.thermal_speed(T, "e-", mass=m)
         else:
             V = V.copy()
             V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
