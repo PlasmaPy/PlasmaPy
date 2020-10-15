@@ -20,11 +20,7 @@ def test_AbstractGrid():
     arr0, arr1, arr2 = grid.arr0, grid.arr1, grid.arr2
 
 
-def test_AbstractGrid_exceptions():
-    # ****************************************
-    # __init__
-
-    # Too many positional arguments
+def test_AbstractGrid_too_many_positionals():
     with pytest.raises(TypeError):
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, 1)
 
