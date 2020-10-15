@@ -1,5 +1,0 @@
-Added a new diagnostics module `thomson` containing a function
-`spectral_density` that calculates Thomson scattering spectra for
-Maxwellian plasmas in both the collective and non-collective regimes. As
-a followup to PR #835, set the minimal required Numpy version to 1.18.1 to
-finally fix unit dropping bugs.

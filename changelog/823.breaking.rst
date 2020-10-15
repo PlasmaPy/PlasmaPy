@@ -1,1 +1,0 @@
-Move :mod:`plasmapy.data` to :mod:`plasmapy.particle.data`.

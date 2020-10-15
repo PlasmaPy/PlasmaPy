@@ -43,15 +43,16 @@ __all__ = [
     "wuh_",
 ]
 
+import astropy.units as u
 import numbers
+import numpy as np
 import warnings
+
+from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
 from typing import Optional
 
-import numpy as np
-from astropy import units as u
-from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
-
 from plasmapy import particles
+from plasmapy.particles import Particle
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -61,12 +62,12 @@ from plasmapy.utils.decorators import (
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
-def _grab_charge(ion, z_mean=None):
+def _grab_charge(ion: Particle, z_mean=None):
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
     ----------
-    ion : str or `plasmapy.particles.Particle`
+    ion : ~plasmapy.particles.Particle
         a string representing a charged particle, or a Particle object.
 
     z_mean : float
@@ -95,7 +96,7 @@ def _grab_charge(ion, z_mean=None):
 )
 def mass_density(
     density: [u.m ** -3, u.kg / (u.m ** 3)],
-    particle: Optional[str] = None,
+    particle: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.kg / u.m ** 3:
     """Utility function to merge two possible inputs for particle charge.
@@ -108,11 +109,12 @@ def mass_density(
         Either a particle density (number of particles per unit volume, in units
         of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle, optional
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        charge state information is provided, then the particles are assumed
+        to be singly charged. A particle is required if using a number
+        density (1/m^3) for the density parameter.
 
     z_mean : float
         An optional float describing the average ionization of a particle
@@ -161,7 +163,10 @@ rho_ = mass_density
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T, density: [u.m ** -3, u.kg / u.m ** 3], ion="p+", z_mean=None
+    B: u.T,
+    density: [u.m ** -3, u.kg / u.m ** 3],
+    ion: Optional[Particle] = None,
+    z_mean=None,
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
@@ -177,12 +182,13 @@ def Alfven_speed(
         Either the ion number density in units convertible to 1 / m**3,
         or the mass density in units convertible to kg / m**3.
 
-    ion : str, optional
+    ion : ~plasmapy.particles.Particle, optional
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
-        helium-4), which defaults to protons.  If no charge state
-        information is provided, then the ions are assumed to be
-        singly charged.
+        helium-4). If no charge state information is provided, then the
+        ions are assumed to be singly charged. If the density is an ion
+        number density, then this paramter is required in order to convert
+        to mass density.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -271,11 +277,11 @@ va_ = Alfven_speed
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
+    ion: Particle,
     n_e: u.m ** -3 = None,
     k: u.m ** -1 = None,
     gamma_e=1,
     gamma_i=3,
-    ion="p+",
     z_mean=None,
 ) -> u.m / u.s:
     r"""
@@ -294,6 +300,12 @@ def ion_sound_speed(
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
+
+    ion : ~plasmapy.particles.Particle
+        Representation of the ion species (e.g., `'p'` for protons,
+        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
+        helium-4). If no charge state information is provided, then the
+        ions are assumed to be singly charged.
 
     n_e : ~astropy.units.Quantity
         Electron number density. If this is not given, then ion_sound_speed
@@ -317,13 +329,6 @@ def ion_sound_speed(
         The adiabatic index for ions, which defaults to 3.  This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-
-    ion : str, optional
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
-        helium-4), which defaults to protons.  If no charge state
-        information is provided, then the ions are assumed to be
-        singly charged.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -401,7 +406,7 @@ def ion_sound_speed(
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
     <Quantity 310.31... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1)
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
     <Quantity 229585... m / s>
@@ -468,7 +473,7 @@ _coefficients = {
 @particles.particle_input
 def thermal_speed(
     T: u.K,
-    particle: particles.Particle = "e-",
+    particle: Particle,
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
     ndim=3,
@@ -484,11 +489,11 @@ def thermal_speed(
     T : ~astropy.units.Quantity
         The particle temperature in either kelvin or energy per particle
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4). If no
+        charge state information is provided, then the particles are
+        assumed to be singly charged.
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
@@ -579,9 +584,9 @@ def thermal_speed(
     <Quantity 132620... m / s>
     >>> thermal_speed(1e6*u.K, particle='e-')
     <Quantity 550569... m / s>
-    >>> thermal_speed(1e6*u.K, method="rms")
+    >>> thermal_speed(1e6*u.K, "e-", method="rms")
     <Quantity 674307... m / s>
-    >>> thermal_speed(1e6*u.K, method="mean_magnitude")
+    >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
     """
@@ -591,7 +596,7 @@ def thermal_speed(
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in " "thermal_speed")
+        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
     try:
         coef = coef[method]
     except KeyError:
@@ -664,7 +669,7 @@ pth_ = thermal_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle="e-", method="most_probable"
+    T: u.K, kappa, particle: Particle, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -682,11 +687,11 @@ def kappa_thermal_speed(
         of the Kappa velocity distribution function. Kappa must be greater
         than 3/2.
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
+        charge state information is provided, then the particles are
+        assumed to be singly charged.
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
@@ -780,8 +785,8 @@ def Hall_parameter(
     n: u.m ** -3,
     T: u.K,
     B: u.T,
-    ion,
-    particle="e-",
+    ion: Particle,
+    particle: Particle,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -801,10 +806,10 @@ def Hall_parameter(
         The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
-    ion : str
-        String signifying the type of ion.
-    particle : str, optional
-        String signifying the type of particles. Defaults to electrons.
+    ion : ~plasmapy.particles.Particle
+        The type of ion ``particle`` is colliding with.
+    particle : ~plasmapy.particles.Particle
+        The particle of interest.
     coulomb_log : float, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
     V : ~astropy.units.quantity.Quantity
@@ -825,15 +830,15 @@ def Hall_parameter(
     Examples
     --------
     >>> from astropy import units as u
-    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 7.26446...e+16>
-    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1')
+    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
 
     """
     from plasmapy.formulary.collisions import (
-        fundamental_ion_collision_freq,
         fundamental_electron_collision_freq,
+        fundamental_ion_collision_freq,
     )
 
     gyro_frequency = gyrofrequency(B, particle)
@@ -858,7 +863,7 @@ betaH_ = Hall_parameter
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
@@ -868,11 +873,11 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
+        charge state information is provided, then the particles are assumed
+        to be singly charged.
 
     signed : bool, optional
         The gyrofrequency can be defined as signed (negative for electron,
@@ -929,11 +934,11 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyrofrequency(0.1*u.T)
+    >>> gyrofrequency(0.1*u.T, 'e-')
     <Quantity 1.7588...e+10 rad / s>
-    >>> gyrofrequency(0.1*u.T, to_hz=True)
+    >>> gyrofrequency(0.1*u.T, 'e-', to_hz=True)
     <Quantity 2.79924...e+09 Hz>
-    >>> gyrofrequency(0.1*u.T, signed=True)
+    >>> gyrofrequency(0.1*u.T, 'e-', signed=True)
     <Quantity -1.75882...e+10 rad / s>
     >>> gyrofrequency(0.01*u.T, 'p')
     <Quantity 957883.32... rad / s>
@@ -943,7 +948,7 @@ def gyrofrequency(B: u.T, particle="e-", signed=False, Z=None) -> u.rad / u.s:
     <Quantity 319964.5... rad / s>
     >>> gyrofrequency(0.01*u.T, particle='T+', to_hz=True)
     <Quantity 50923.9... Hz>
-    >>> omega_ce = gyrofrequency(0.1*u.T)
+    >>> omega_ce = gyrofrequency(0.1*u.T, 'e-')
     >>> print(omega_ce)
     1758820... rad / s
     >>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])
@@ -975,7 +980,7 @@ wc_ = gyrofrequency
 )
 def gyroradius(
     B: u.T,
-    particle="e-",
+    particle: Particle,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
@@ -989,11 +994,11 @@ def gyroradius(
     B : ~astropy.units.Quantity
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        charge state information is provided, then the particles are assumed
+        to be singly charged.
 
     Vperp : ~astropy.units.Quantity, optional
         The component of particle velocity that is perpendicular to the
@@ -1052,23 +1057,23 @@ def gyroradius(
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(0.2*u.T,particle='p+',T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(5*u.uG,particle='alpha',T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, particle='alpha', T_i=1*u.eV)
     <Quantity 288002.38... m>
-    >>> gyroradius(400*u.G,particle='Fe+++',Vperp=1e7*u.m/u.s)
+    >>> gyroradius(400*u.G, particle='Fe+++', Vperp=1e7*u.m/u.s)
     <Quantity 48.23129... m>
-    >>> gyroradius(B=0.01*u.T,T_i=1e6*u.K)
+    >>> gyroradius(B=0.01*u.T, particle='e-', T_i=1e6*u.K)
     <Quantity 0.003130... m>
-    >>> gyroradius(B=0.01*u.T,Vperp=1e6*u.m/u.s)
+    >>> gyroradius(0.01*u.T, 'e-', Vperp=1e6*u.m/u.s)
     <Quantity 0.000568... m>
-    >>> gyroradius(0.2*u.T,T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, 'e-', T_i=1e5*u.K)
     <Quantity 4.94949...e-05 m>
-    >>> gyroradius(5*u.uG,T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, 'e-', T_i=1*u.eV)
     <Quantity 6744.25... m>
-    >>> gyroradius(400*u.G,Vperp=1e7*u.m/u.s)
+    >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001421... m>
 
     """
@@ -1139,7 +1144,7 @@ rhoc_ = gyroradius
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -1149,11 +1154,11 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     n : ~astropy.units.Quantity
         Particle number density in units convertible to per cubic meter
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to electrons.  If no charge state information is
-        provided, then the particles are assumed to be singly charged.
+        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
+        charge state information is provided, then the particles are assumed
+        to be singly charged.
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
@@ -1208,9 +1213,9 @@ def plasma_frequency(n: u.m ** -3, particle="e-", z_mean=None) -> u.rad / u.s:
     <Quantity 6.62608...e+08 Hz>
     >>> plasma_frequency(1e19*u.m**-3, particle='D+')
     <Quantity 2.94462...e+09 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3)
+    >>> plasma_frequency(1e19*u.m**-3, 'e-')
     <Quantity 1.78398...e+11 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, to_hz=True)
+    >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
     """
@@ -1393,7 +1398,7 @@ nD_ = Debye_number
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particles.particle_input(require="charged")
-def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
+def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -1404,7 +1409,7 @@ def inertial_length(n: u.m ** -3, particle: particles.Particle) -> u.m:
     n : ~astropy.units.Quantity
         Particle number density in units convertible to m ** -3.
 
-    particle : str, optional
+    particle : ~plasmapy.particles.Particle
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
@@ -1657,8 +1662,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     <Quantity 6.37350...e+10 Hz>
 
     """
-    omega_pe = plasma_frequency(n=n_e)
-    omega_ce = gyrofrequency(B)
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
+    omega_ce = gyrofrequency(B, "e-")
     omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
 
     return omega_uh
@@ -1676,7 +1681,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
@@ -1690,11 +1695,11 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
     n_i : ~astropy.units.Quantity
         Ion number density.
 
-    ion : str, optional
+    ion : ~plasmapy.particles.Particle
         Representation of the ion species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4),
-        which defaults to protons.  If no charge state information is
-        provided, then the ions are assumed to be singly charged.
+        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
+        charge state information is provided, then the ions are assumed to
+        be singly charged.
 
     Returns
     -------
@@ -1751,7 +1756,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion="p+") -> u.rad / u.s:
 
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n_i, particle=ion)
-    omega_ce = gyrofrequency(B)
+    omega_ce = gyrofrequency(B, particle="e-")
     omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
     # TODO possibly optimize the above line via np.sqrt
     omega_lh = omega_lh

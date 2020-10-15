@@ -7,9 +7,9 @@ to be abstracted from the main function interface.
 __all__ = ["Fermi_integral"]
 
 import numbers
-from typing import Union
-
 import numpy as np
+
+from typing import Union
 
 
 def Fermi_integral(

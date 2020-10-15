@@ -3,18 +3,19 @@
 import numpy as np
 import pytest
 import scipy.integrate as spint
+
 from astropy import units as u
 from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
 
 from ..distribution import (
+    kappa_velocity_1D,
+    kappa_velocity_3D,
     Maxwellian_1D,
     Maxwellian_speed_1D,
     Maxwellian_speed_2D,
     Maxwellian_speed_3D,
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
-    kappa_velocity_1D,
-    kappa_velocity_3D,
 )
 from ..parameters import kappa_thermal_speed, thermal_speed
 
@@ -80,9 +81,7 @@ class Test_Maxwellian_1D(object):
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = (
-            "Integral of distribution function should be 1 " f"and not {integVal}."
-        )
+        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self):
@@ -196,7 +195,7 @@ class Test_Maxwellian_1D(object):
             v_drift=self.v_drift3,
             units="units",
         )
-        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
@@ -324,7 +323,7 @@ class Test_Maxwellian_speed_1D(object):
             v_drift=self.v_drift2,
             units="units",
         )
-        errStr = f"Distribution function should be 0.0 " f"and not {distFunc}."
+        errStr = f"Distribution function should be 0.0 and not {distFunc}."
         assert np.isclose(
             distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
         ), errStr
@@ -369,9 +368,7 @@ class Test_Maxwellian_velocity_2D(object):
         # value returned from dblquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = (
-            "Integral of distribution function should be 1 " f"and not {integVal}."
-        )
+        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
@@ -486,7 +483,7 @@ class Test_Maxwellian_velocity_2D(object):
             vy_drift=self.vy_drift2,
             units="units",
         )
-        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
@@ -668,9 +665,7 @@ class Test_Maxwellian_velocity_3D(object):
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = (
-            "Integral of distribution function should be 1 " f"and not {integVal}."
-        )
+        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
@@ -797,7 +792,7 @@ class Test_Maxwellian_velocity_3D(object):
             vz_drift=self.vz_drift2,
             units="units",
         )
-        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
@@ -1028,9 +1023,7 @@ class Test_kappa_velocity_1D(object):
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = (
-            "Integral of distribution function should be 1 " f"and not {integVal}."
-        )
+        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self):
@@ -1162,7 +1155,7 @@ class Test_kappa_velocity_1D(object):
             v_drift=self.v_drift3,
             units="units",
         )
-        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
@@ -1263,9 +1256,7 @@ class Test_kappa_velocity_3D(object):
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = (
-            "Integral of distribution function should be 1 " f"and not {integVal}."
-        )
+        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
@@ -1398,5 +1389,5 @@ class Test_kappa_velocity_3D(object):
             vz_drift=self.vz_drift2,
             units="units",
         )
-        errStr = f"Distribution function should be {testVal} " f"and not {distFunc}."
+        errStr = f"Distribution function should be {testVal} and not {distFunc}."
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr

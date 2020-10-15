@@ -2,14 +2,23 @@
 Define MagneticStatics class to calculate common static magnetic fields
 as first raised in issue #100.
 """
+__all__ = [
+    "CircularWire",
+    "FiniteStraightWire",
+    "GeneralWire",
+    "InfiniteStraightWire",
+    "MagneticDipole",
+    "MagnetoStatics",
+    "Wire",
+]
 
 import abc
+import astropy.units as u
 import numbers
-
 import numpy as np
 import scipy.special
+
 from astropy import constants
-from astropy import units as u
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -219,15 +228,14 @@ class FiniteStraightWire(Wire):
         self._current_u = current.unit
 
     def __repr__(self):
-        return "{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})".format(
-            name=self.__class__.__name__,
-            p1=self.p1,
-            p2=self.p2,
-            current=self.current,
-            p1_u=self._p1_u,
-            p2_u=self._p2_u,
-            current_u=self._current_u,
-        )
+        name = self.__class__.__name__
+        p1 = self.p1
+        p2 = self.p2
+        current = self.current
+        p1_u = self._p1_u
+        p2_u = self._p2_u
+        current_u = self._current_u
+        return f"{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})"
 
     def magnetic_field(self, p) -> u.T:
         r"""

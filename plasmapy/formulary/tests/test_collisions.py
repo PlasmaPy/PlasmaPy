@@ -1,22 +1,24 @@
 import numpy as np
 import pytest
+
 from astropy import units as u
 from astropy.constants import c
 from astropy.tests.helper import assert_quantity_allclose
 
 import plasmapy.particles.exceptions
+
 from plasmapy.formulary.braginskii import Coulomb_logarithm
 from plasmapy.formulary.collisions import (
-    Knudsen_number,
-    Spitzer_resistivity,
     collision_frequency,
     coupling_parameter,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
     impact_parameter,
     impact_parameter_perp,
+    Knudsen_number,
     mean_free_path,
     mobility,
+    Spitzer_resistivity,
 )
 from plasmapy.utils import exceptions
 from plasmapy.utils.exceptions import CouplingWarning
@@ -692,7 +694,7 @@ class Test_impact_parameter:
         bmin, bmax = methodVal
         methodVal = bmin.si.value, bmax.si.value
         testTrue = np.allclose(self.True1, methodVal, rtol=1e-1, atol=0.0)
-        errStr = f"Impact parameters should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Impact parameters should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -795,7 +797,7 @@ class Test_collision_frequency:
                 method="classical",
             )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = f"Collision frequency should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Collision frequency should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -894,9 +896,7 @@ class Test_collision_frequency:
                 method="classical",
             )
         testTrue = np.isclose(self.True_zmean, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = (
-            f"Collision frequency should be {self.True_zmean} and " f"not {methodVal}."
-        )
+        errStr = f"Collision frequency should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
 
@@ -969,7 +969,7 @@ class Test_mean_free_path:
                 method="classical",
             )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = f"Mean free path should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Mean free path should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -1031,7 +1031,7 @@ class Test_Spitzer_resistivity:
             method="classical",
         )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = f"Spitzer resistivity should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Spitzer resistivity should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -1066,9 +1066,7 @@ class Test_Spitzer_resistivity:
             method="classical",
         )
         testTrue = np.isclose(self.True_zmean, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = (
-            f"Spitzer resistivity should be {self.True_zmean} and " f"not {methodVal}."
-        )
+        errStr = f"Spitzer resistivity should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
     # TODO vector z_mean
@@ -1113,7 +1111,7 @@ class Test_mobility:
                 method="classical",
             )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = f"Mobility should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Mobility should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -1150,7 +1148,7 @@ class Test_mobility:
                 method="classical",
             )
         testTrue = np.isclose(self.True_zmean, methodVal.si.value, rtol=1e-1, atol=0.0)
-        errStr = f"Mobility should be {self.True_zmean} and " f"not {methodVal}."
+        errStr = f"Mobility should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
     # TODO vector z_mean
@@ -1196,7 +1194,7 @@ class Test_Knudsen_number:
                 method="classical",
             )
         testTrue = np.isclose(self.True1, methodVal, rtol=1e-1, atol=0.0)
-        errStr = f"Knudsen number should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Knudsen number should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -1260,7 +1258,7 @@ class Test_coupling_parameter:
             method="classical",
         )
         testTrue = np.isclose(self.True1, methodVal, rtol=1e-1, atol=0.0)
-        errStr = f"Coupling parameter should be {self.True1} and " f"not {methodVal}."
+        errStr = f"Coupling parameter should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
@@ -1297,9 +1295,7 @@ class Test_coupling_parameter:
             method="classical",
         )
         testTrue = np.isclose(self.True_zmean, methodVal, rtol=1e-1, atol=0.0)
-        errStr = (
-            f"Coupling parameter should be {self.True_zmean} and " f"not {methodVal}."
-        )
+        errStr = f"Coupling parameter should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
     # TODO vector z_mean
@@ -1325,7 +1321,7 @@ class Test_coupling_parameter:
         )
         testTrue = np.isclose(self.True_quantum, methodVal, rtol=1e-1, atol=0.0)
         errStr = (
-            f"Coupling parameter should be {self.True_quantum} and " f"not {methodVal}."
+            f"Coupling parameter should be {self.True_quantum} and not {methodVal}."
         )
         assert testTrue, errStr
 

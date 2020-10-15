@@ -1,6 +1,8 @@
-"""Data used for testing PlasmaPy, example datasets, etc.
+"""
+A collection of atomic data used in constructing PlasmaPy `~plasmapy.particles`.
 
-- test/data*.h5 files come from
-  https://github.com/openPMD/openPMD-example-datasets/tree/b4f87b817629b99a048026a2724a5b265810d8be
-
+There are currently two datasets, :file:`elements.json` and :file:`isotopes.json`.
+:file:`elements.json` contains element/atomic data that is loaded by the functionality
+contained in `plasmapy.particles.elements`.  :file:`isotopes.json` contains isotope
+data that is loaded by the functionality contained in `plasmapy.particles.isotopes`.
 """

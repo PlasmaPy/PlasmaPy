@@ -3,16 +3,15 @@ Various decorators to validate input/output arguments to functions.
 """
 __all__ = ["validate_quantities", "ValidateQuantities"]
 
+import astropy.units as u
 import functools
 import inspect
 import warnings
-from typing import Any, Dict
 
-from astropy import units as u
+from typing import Any, Dict
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.helpers import preserve_signature
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 
 class ValidateQuantities(CheckUnits, CheckValues):
@@ -365,15 +364,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
             and unit is not None
             and not arg_validations["pass_equivalent_units"]
         ):
-
-            if not arg.unit.is_equivalent(unit, equivalencies=None):
-                # non-standard conversion
-                warnings.warn(
-                    ImplicitUnitConversionWarning(
-                        f"{err_msg} has a non-standard unit conversion..."
-                        f"converting {arg.unit} to {unit}"
-                    )
-                )
 
             arg = arg.to(unit, equivalencies=equiv)
         elif err is not None:

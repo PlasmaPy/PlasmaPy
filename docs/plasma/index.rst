@@ -38,6 +38,7 @@ data, e.g. `~plasmapy.plasma.sources.PlasmaBlob` or
 a list of all of them).
 
 .. autoclass:: plasmapy.plasma.plasma_factory.PlasmaFactory
+   :noindex:
 
 Using Plasma Objects
 --------------------

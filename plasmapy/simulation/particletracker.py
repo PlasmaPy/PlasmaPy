@@ -1,15 +1,16 @@
 """
 Class representing a group of particles.
 """
+__all__ = ["ParticleTracker"]
 
+import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
+
 from astropy import constants
-from astropy import units as u
 
 from plasmapy.particles import atomic
-
-__all__ = ["ParticleTracker"]
+from plasmapy.utils.decorators import validate_quantities
 
 
 class ParticleTracker:
@@ -57,7 +58,7 @@ class ParticleTracker:
     .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
 
-    @u.quantity_input(dt=u.s)
+    @validate_quantities(dt=u.s)
     def __init__(
         self,
         plasma,
@@ -206,8 +207,9 @@ class ParticleTracker:
 
     def plot_trajectories(self):  # coverage: ignore
         r"""Draws trajectory history."""
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
@@ -233,8 +235,9 @@ class ParticleTracker:
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()

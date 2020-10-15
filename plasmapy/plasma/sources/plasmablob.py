@@ -1,17 +1,18 @@
 """
 Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
-import warnings
+__all__ = ["PlasmaBlob"]
 
 import astropy.units as u
+import warnings
+
 from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.parameters import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
-from plasmapy.utils import CouplingWarning, call_string
-
-__all__ = ["PlasmaBlob"]
+from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils.decorators import validate_quantities
 
 
 class PlasmaBlob(GenericPlasma):
@@ -20,7 +21,7 @@ class PlasmaBlob(GenericPlasma):
     spatial/temporal description.
     """
 
-    @u.quantity_input(T_e=u.K, n_e=u.m ** -3)
+    @validate_quantities(T_e=u.K, n_e=u.m ** -3)
     def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
         Initialize plasma paramters.
@@ -110,17 +111,17 @@ class PlasmaBlob(GenericPlasma):
         if quantum_theta <= 0.01:
             # Fermi energy dominant
             quantum_theta_str = (
-                f"Fermi quantum energy dominant: Theta = " f"{quantum_theta}"
+                f"Fermi quantum energy dominant: Theta = {quantum_theta}"
             )
         elif quantum_theta >= 100:
             # thermal kinetic energy dominant
             quantum_theta_str = (
-                f"Thermal kinetic energy dominant: Theta = " f"{quantum_theta}"
+                f"Thermal kinetic energy dominant: Theta = {quantum_theta}"
             )
         else:
             # intermediate regime
             quantum_theta_str = (
-                f"Both Fermi and thermal energy important: " f"Theta = {quantum_theta}"
+                f"Both Fermi and thermal energy important: Theta = {quantum_theta}"
             )
 
         # summarizing and printing/returning regimes

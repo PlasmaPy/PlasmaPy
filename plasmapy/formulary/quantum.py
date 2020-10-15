@@ -15,8 +15,9 @@ __all__ = [
     "Wigner_Seitz_radius",
 ]
 
+import astropy.units as u
 import numpy as np
-from astropy import units as u
+
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
 
 from plasmapy import particles

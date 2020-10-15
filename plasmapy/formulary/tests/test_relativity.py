@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from astropy import units as u
 from astropy.constants import c
 
