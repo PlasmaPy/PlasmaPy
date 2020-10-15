@@ -13,6 +13,7 @@ Sub-Packages & Modules
 .. autosummary::
 
    dispersionfunction
+   two_fluid_dispersion_solver
 
 .. automodapi:: plasmapy.dispersion
    :no-main-docstr:

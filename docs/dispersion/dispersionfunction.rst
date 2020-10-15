@@ -12,4 +12,4 @@ Dispersion relations (`plasmapy.dispersion.dispersionfunction`)
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/dispersion_function
+    /notebooks/dispersion/dispersion_function

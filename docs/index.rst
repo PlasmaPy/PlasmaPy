@@ -10,7 +10,8 @@ PlasmaPy Documentation
    :hidden:
 
    notebooks/physics
-   notebooks/dispersion_function
+   notebooks/dispersion/dispersion_function
+   notebooks/dispersion/two_fluid_dispersion_solver
    notebooks/thomson
 
 .. image:: _static/graphic-circular.png
@@ -40,8 +41,8 @@ package for plasma physics currently under development.
    :maxdepth: 1
    :caption: Package features
 
-   Dispersion <dispersion/index>
    Diagnostics <diagnostics/index>
+   Dispersion <dispersion/index>
    Formulary <formulary/index>
    Particles <particles/index>
    Particle Tracker <simulation/particletracker>
