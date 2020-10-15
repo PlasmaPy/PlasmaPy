@@ -185,7 +185,7 @@ class ElectrostaticGaussianSphere(AbstractField):
         self.E[:, :, :, 2] = -1 * np.where(self.radius < 0.5 * self.L, Ez, 0)
 
     def _validate(self):
-        if not self.grid.uniform_grid:
+        if not self.grid.is_uniform_grid:
             raise ValueError(
                 "ElectrostaticGaussianSphere can only be created "
                 "on a uniformly spaced grid."
@@ -253,7 +253,7 @@ class ElectrostaticPlanarShock(AbstractField):
         self.E[..., 2] = -Ez
 
     def _validate(self):
-        if not self.grid.uniform_grid:
+        if not self.grid.is_uniform_grid:
             raise ValueError(
                 "ElectrostaticPlanarShock can only be created "
                 "on a uniformly spaced grid."

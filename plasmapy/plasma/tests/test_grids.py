@@ -52,12 +52,12 @@ def test_CartesianGrid():
     radius = grid.distance_from_origin
     x_axis, y_axis, z_axis = grid.x_axis, grid.y_axis, grid.z_axis
     d_x, d_y, d_z = grid.d_x, grid.d_y, grid.d_z
-    uniform_grid = grid.uniform_grid
+    is_uniform_grid = grid.is_uniform_grid
     shape = grid.shape
     unit = grid.units
 
     # Grid should be uniform
-    assert grid.uniform_grid == True
+    assert grid.is_uniform_grid == True
 
     # Test initializing with a provided grid
     grid2 = grids.CartesianGrid(grid.grid)
@@ -113,7 +113,7 @@ def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm)
 
     # Grid should be non-uniform
-    assert grid.uniform_grid == False
+    assert grid.is_uniform_grid == False
 
     pos = np.array([0.1, -0.3, 0]) * u.cm
     # Test interpolator on non-uniform grid
@@ -135,7 +135,7 @@ def test_CylindricalGrid():
     rho_arr, theta_arr, z_arr = grid.rho_arr, grid.theta_arr, grid.z_arr
     rho_axis, theta_axis, z_axis = grid.rho_axis, grid.theta_axis, grid.z_axis
     d_rho, d_theta, d_z = grid.d_rho, grid.d_theta, grid.d_z
-    uniform_grid = grid.uniform_grid
+    is_uniform_grid = grid.is_uniform_grid
     shape = grid.shape
     unit = grid.units
 
@@ -170,7 +170,7 @@ def test_SphericalGrid():
     r_arr, theta_arr, phi_arr = grid.r_arr, grid.theta_arr, grid.phi_arr
     r_axis, theta_axis, phi_axis = grid.r_axis, grid.theta_axis, grid.phi_axis
     d_r, d_theta, d_phi = grid.d_r, grid.d_theta, grid.d_phi
-    uniform_grid = grid.uniform_grid
+    is_uniform_grid = grid.is_uniform_grid
     shape = grid.shape
     unit = grid.units
 

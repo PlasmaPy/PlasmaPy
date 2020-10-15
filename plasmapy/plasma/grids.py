@@ -41,7 +41,7 @@ class AbstractGrid(ABC):
             )
 
         # Initialize some variables
-        self._uniform_grid = None
+        self._is_uniform_grid = None
         self._interpolator = None
 
     @property
@@ -50,14 +50,14 @@ class AbstractGrid(ABC):
         return self._grid
 
     @property
-    def uniform_grid(self):
+    def is_uniform_grid(self):
         """
-        Value of uniform_grid
+        Value of is_uniform_grid
         If None, calculate
         """
-        if self._uniform_grid is None:
-            self._detect_uniform_grid()
-        return self._uniform_grid
+        if self._is_uniform_grid is None:
+            self._detect_is_uniform_grid()
+        return self._is_uniform_grid
 
     @property
     def interpolator(self):
@@ -258,7 +258,7 @@ class AbstractGrid(ABC):
         Grid step size along axis 1
         Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.uniform_grid:
+        if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax0))
         else:
             raise ValueError(
@@ -272,7 +272,7 @@ class AbstractGrid(ABC):
         Grid step size along axis 2
         Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.uniform_grid:
+        if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax1))
         else:
             raise ValueError(
@@ -286,7 +286,7 @@ class AbstractGrid(ABC):
         Grid step size along axis 3
         Only valid if grid is uniform: otherwise an exception is raised
         """
-        if self.uniform_grid:
+        if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax2))
         else:
             raise ValueError(
@@ -489,7 +489,7 @@ class AbstractGrid(ABC):
 
         return arr0, arr1, arr2
 
-    def _detect_uniform_grid(self, tol=1e-6):
+    def _detect_is_uniform_grid(self, tol=1e-6):
         """
         Determine whether a grid is uniform (uniformly spaced) by computing the
         variance of the grid gradients.
@@ -502,7 +502,7 @@ class AbstractGrid(ABC):
         dz = np.gradient(self.arr2, axis=2)
         variance[2] = np.std(dz) / np.mean(dz)
 
-        self._uniform_grid = np.allclose(variance, 0.0, atol=tol)
+        self._is_uniform_grid = np.allclose(variance, 0.0, atol=tol)
 
 
 class CartesianGrid(AbstractGrid):
