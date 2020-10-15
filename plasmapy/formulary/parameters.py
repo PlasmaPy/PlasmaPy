@@ -786,7 +786,7 @@ def Hall_parameter(
     T: u.K,
     B: u.T,
     ion: Particle,
-    charged_particle: Particle,
+    particle: Particle,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -808,7 +808,7 @@ def Hall_parameter(
         The magnetic field
     ion : ~plasmapy.particles.Particle
         The type of ion ``particle`` is colliding with in the ionized gas.
-    charged_particle : ~plasmapy.particles.Particle
+    particle : ~plasmapy.particles.Particle
         The charged particle species of interest in plasma.Representation of the
         particle species (e.g., 'p' for protons, 'D+'for deuterium, or 'He-4 +1'
         for singly ionized helium-4). If no charge state information is provided,
