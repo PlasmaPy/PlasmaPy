@@ -15,9 +15,6 @@ __all__ = [
 
 import pytest
 
-# TODO: get the error message while raising this to be simply "TestFailure"
-#       rather than plasmapy.tests.helpers.exceptions.TestFailure
-
 
 class TestFailure(pytest.fail.Exception):
     """

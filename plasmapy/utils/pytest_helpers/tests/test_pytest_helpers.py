@@ -6,7 +6,7 @@ from typing import Any
 
 from plasmapy.particles import Particle
 from plasmapy.tests.helpers import (
-    InconsistentTypes,
+    TypeMismatch,
     MissingException,
     MissingWarning,
     UnexpectedException,
@@ -114,7 +114,7 @@ f_args_kwargs_expected_whaterror = [
     [adams_number, 1, {"x": 1}, u.pc, u.UnitsError],
     [return_arg, Particle("p+"), {}, Particle("proton"), None],
     [return_arg, Particle("e+"), {}, Particle("e-"), UnexpectedResult],
-    [return_arg, Particle("mu+"), {}, type, InconsistentTypes],
+    [return_arg, Particle("mu+"), {}, type, TypeMismatch],
     [return_arg, (2,), {}, IOError, MissingException],
 ]
 
