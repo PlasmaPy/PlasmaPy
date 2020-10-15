@@ -19,10 +19,10 @@ import warnings
 from typing import Any, Callable, Dict
 
 from plasmapy.tests.helpers.exceptions import (
-    TypeMismatch,
     InvalidTest,
     MissingException,
     MissingWarning,
+    TypeMismatch,
     UnexpectedException,
     UnexpectedResult,
 )
@@ -234,9 +234,7 @@ def run_test(
         args = (args,)
 
     if not callable(func):
-        raise InvalidTest(
-            f"The argument func = {func} to run_test must be callable."
-        )
+        raise InvalidTest(f"The argument func = {func} to run_test must be callable.")
 
     # By including the function call that is run during a test in error
     # messages, we can make it easier to reproduce the error in an
@@ -565,9 +563,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         test_cases.append(test_case)
 
     if len(test_cases) < 2:
-        raise InvalidTest(
-            "At least two tests are needed for run_test_equivalent_calls"
-        )
+        raise InvalidTest("At least two tests are needed for run_test_equivalent_calls")
 
     # Check to make sure that each function is callable, each set of
     # args is a list or tuple, and each set of kwargs is a dict.  Make
@@ -598,9 +594,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
             test_case["result"] = f(*args, **kwargs)
             test_case["type"] = type(test_case["result"])
         except Exception as exc:
-            raise UnexpectedException(
-                f"Unable to evaluate {test_case['call string']}."
-            )
+            raise UnexpectedException(f"Unable to evaluate {test_case['call string']}.")
 
     # Make sure that all of the results evaluate as equal to the first
     # result.

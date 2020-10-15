@@ -6,9 +6,9 @@ from typing import Any
 
 from plasmapy.particles import Particle
 from plasmapy.tests.helpers import (
-    TypeMismatch,
     MissingException,
     MissingWarning,
+    TypeMismatch,
     UnexpectedException,
     UnexpectedResult,
 )
