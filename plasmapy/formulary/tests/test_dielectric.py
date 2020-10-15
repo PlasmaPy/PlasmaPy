@@ -1,5 +1,5 @@
 """Tests for functions that calculate plasma dielectric parameters in
-dielectry.py"""
+dielectric.py"""
 
 import numpy as np
 
@@ -134,7 +134,7 @@ class Test_permittivity_1D_Maxwellian:
             self.omega, self.kWave, self.T, self.n, self.particle, self.z_mean
         )
         testTrue = np.isclose(methodVal, self.True1, rtol=1e-6, atol=0.0)
-        errStr = f"Permittivity value should be {self.True1} and not " f"{methodVal}."
+        errStr = f"Permittivity value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
