@@ -30,7 +30,7 @@ def test_AbstractGrid_too_many_positionals():
     # ****************************************
     # _make_grid
 
-    # Incompatable units
+def test_AbstractGrid_incompatible_units():
     with pytest.raises(ValueError):
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV)
 
