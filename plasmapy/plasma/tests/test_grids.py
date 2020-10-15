@@ -34,7 +34,7 @@ def test_AbstractGrid_incompatible_units():
     with pytest.raises(ValueError):
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV)
 
-    # Invalid length of start, stop, num, or units
+def test_AbstractGrid_invalid_lengths_of_arguments():
     with pytest.raises(ValueError):
         grid = grids.AbstractGrid(-1, [2, 3], units=[u.m, u.m])
 
