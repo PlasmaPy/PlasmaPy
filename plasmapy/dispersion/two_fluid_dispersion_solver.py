@@ -31,7 +31,7 @@ def two_fluid_dispersion_solution(
     m_e: u.kg = m_e,
     m_i: u.kg = m_p,
     theta: u.deg = 45 * u.deg,
-    z=1
+    z=1,
 ):
     r"""
     Return a dictionary dictionary of frequencies corresponding to the
@@ -104,7 +104,6 @@ def two_fluid_dispersion_solution(
     .. [Stringer1963JNE] TE Stringer, Low-frequency waves in an unbounded
     plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
 
-
     Examples
     --------
     >>> from astropy import units as u
@@ -134,7 +133,8 @@ def two_fluid_dispersion_solution(
     >>> omega = two_fluid_dispersion_solution(n=n, B=B, T_e=T_e, T_i=T_i,
         theta=theta, z=z, k=k)
     >>> omega['fast_mode'][:,40]
-    [0.016117629, 0.17733531, 0.33868854, … , 1520.3016, 1520.4535, 1520.6055] rad/s
+        [0.016117629, 0.17733531, 0.33868854, … , 1520.3016, 1520.4535,
+        1520.6055] rad/s
 
     """
 
