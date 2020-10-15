@@ -36,4 +36,5 @@ def test_example_fields():
     E, B = fields.example_fields(gridobj, model="electrostatic planar shock")
 
 
-test_example_fields()
+if __name__ == "__main__":
+    test_example_fields()
