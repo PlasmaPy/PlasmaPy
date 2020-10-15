@@ -10,13 +10,16 @@
 # from plasmapy.tests.helpers.cases import AttrTestCase, FunctionTestCase, MethodTestCase
 
 from plasmapy.tests.helpers.exceptions import (
-    Failed,
-    InconsistentTypeError,
-    InvalidTestError,
-    MissingExceptionError,
-    MissingWarningError,
-    UnexpectedExceptionError,
-    UnexpectedResultError,
+    ExceptionMismatch,
+    InvalidTest,
+    MissingException,
+    MissingWarning,
+    TestFailure,
+    TypeMismatch,
+    UnexpectedException,
+    UnexpectedResult,
+    UnexpectedWarning,
+    WarningMismatch,
 )
 
 # from plasmapy.tests.helpers.expected import ExpectedTestOutcome

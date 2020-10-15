@@ -2,11 +2,11 @@
 
 __all__ = [
     "ExceptionMismatch",
-    "TestFailure",
-    "InconsistentType",
     "InvalidTest",
     "MissingException",
     "MissingWarning",
+    "TestFailure",
+    "TypeMismatch",
     "UnexpectedException",
     "UnexpectedResult",
     "UnexpectedWarning",
