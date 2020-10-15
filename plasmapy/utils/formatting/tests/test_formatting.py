@@ -36,8 +36,10 @@ call_string_table = [
 
 @pytest.mark.parametrize("function,args,kwargs,expected", call_string_table)
 def test_call_string(function, args, kwargs, expected):
-    """Tests that call_string returns a string that is
-    equivalent to the function call."""
+    """
+    Tests that call_string returns a string that is equivalent to the
+    function call.
+    """
     assert expected == call_string(function, args, kwargs)
 
 
