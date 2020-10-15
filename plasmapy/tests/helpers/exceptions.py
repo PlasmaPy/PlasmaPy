@@ -1,16 +1,16 @@
 """Exceptions that describe different types of test failures."""
 
 __all__ = [
-    "ExceptionMismatch",
-    "InvalidTest",
-    "MissingException",
-    "MissingWarning",
+    "ExceptionMismatchFail",
+    "InvalidTestError",
+    "MissingExceptionFail",
+    "MissingWarningFail",
     "TestFailure",
-    "TypeMismatch",
-    "UnexpectedException",
-    "UnexpectedResult",
-    "UnexpectedWarning",
-    "WarningMismatch",
+    "TypeMismatchFail",
+    "UnexpectedExceptionFail",
+    "UnexpectedResultFail",
+    "UnexpectedWarningFail",
+    "WarningMismatchFail",
 ]
 
 import pytest
@@ -29,7 +29,7 @@ class TestFailure(pytest.fail.Exception):
     pass
 
 
-class TypeMismatch(TestFailure):
+class TypeMismatchFail(TestFailure):
     """
     Exception for when the type of the actual result differs from the
     type of the expected result.
@@ -38,7 +38,7 @@ class TypeMismatch(TestFailure):
     pass
 
 
-class MissingException(TestFailure):
+class MissingExceptionFail(TestFailure):
     """
     Exception for when the expected exception is not raised.
     """
@@ -46,7 +46,7 @@ class MissingException(TestFailure):
     pass
 
 
-class UnexpectedException(TestFailure):
+class UnexpectedExceptionFail(TestFailure):
     """
     Exception for when an exception is raised unexpectedly.
     """
@@ -54,7 +54,7 @@ class UnexpectedException(TestFailure):
     pass
 
 
-class ExceptionMismatch(UnexpectedException, MissingException):
+class ExceptionMismatchFail(UnexpectedExceptionFail, MissingExceptionFail):
     """
     Exception for when an exception is expected, but a different
     exception is raised.
@@ -63,7 +63,7 @@ class ExceptionMismatch(UnexpectedException, MissingException):
     pass
 
 
-class UnexpectedWarning(TestFailure):
+class UnexpectedWarningFail(TestFailure):
     """
     Exception for when a warning is issued unexpectedly.
     """
@@ -71,7 +71,7 @@ class UnexpectedWarning(TestFailure):
     pass
 
 
-class MissingWarning(TestFailure):
+class MissingWarningFail(TestFailure):
     """
     Exception for when an expected warning is not issued.
     """
@@ -79,7 +79,7 @@ class MissingWarning(TestFailure):
     pass
 
 
-class WarningMismatch(UnexpectedWarning, MissingWarning):
+class WarningMismatchFail(UnexpectedWarningFail, MissingWarningFail):
     """
     Exception for when a warning is expected, but one or more
     different warnings were issued instead.
@@ -88,7 +88,7 @@ class WarningMismatch(UnexpectedWarning, MissingWarning):
     pass
 
 
-class UnexpectedResult(TestFailure):
+class UnexpectedResultFail(TestFailure):
     """
     Exception for when the actual result differs from the expected
     result by more than the allowed tolerance.
@@ -97,7 +97,7 @@ class UnexpectedResult(TestFailure):
     pass
 
 
-class InvalidTest(Exception):
+class InvalidTestError(Exception):
     """
     Exception for when the inputs to a test are not valid.
     """

@@ -6,11 +6,11 @@ from typing import Any
 
 from plasmapy.particles import Particle
 from plasmapy.tests.helpers import (
-    MissingException,
-    MissingWarning,
-    TypeMismatch,
-    UnexpectedException,
-    UnexpectedResult,
+    MissingExceptionFail,
+    MissingWarningFail,
+    TypeMismatchFail,
+    UnexpectedExceptionFail,
+    UnexpectedResultFail,
 )
 from plasmapy.utils import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
@@ -79,25 +79,25 @@ f_args_kwargs_expected_whaterror = [
     [adams_number, 0, {"y": 1}, 42, None],
     [adams_number, (1,), {"y": 1}, 42, None],
     [adams_number, (2, 1), {}, 42, None],
-    [adams_number, 3, {"y": 1}, 6 * 9, UnexpectedResult],
-    [adams_number, (4,), {"y": 1}, 6 * 9, UnexpectedResult],
-    [adams_number, (5, 1), {}, 6 * 9, UnexpectedResult],
+    [adams_number, 3, {"y": 1}, 6 * 9, UnexpectedResultFail],
+    [adams_number, (4,), {"y": 1}, 6 * 9, UnexpectedResultFail],
+    [adams_number, (5, 1), {}, 6 * 9, UnexpectedResultFail],
     [raise_exception, 6, {"y": 1}, PlasmaPyError, None],
     [raise_exception, (7,), {"y": 1}, PlasmaPyError, None],
     [raise_exception, (8, 1), {}, PlasmaPyError, None],
-    [raise_exception, 9, {"y": 1}, TypeError, UnexpectedException],
-    [raise_exception, (10,), {"y": 1}, TypeError, UnexpectedException],
-    [raise_exception, (11, 1), {}, Exception, UnexpectedException],
+    [raise_exception, 9, {"y": 1}, TypeError, UnexpectedExceptionFail],
+    [raise_exception, (10,), {"y": 1}, TypeError, UnexpectedExceptionFail],
+    [raise_exception, (11, 1), {}, Exception, UnexpectedExceptionFail],
     [issue_warning, 12, {"y": 1}, PlasmaPyWarning, None],
     [issue_warning, (13,), {"y": 1}, PlasmaPyWarning, None],
     [issue_warning, (14, 1), {}, PlasmaPyWarning, None],
-    [issue_warning, 15, {"y": 1}, (42, UserWarning), MissingWarning],
-    [issue_warning, (16,), {"y": 1}, (42, UserWarning), MissingWarning],
-    [issue_warning, (17, 1), {}, (42, UserWarning), MissingWarning],
+    [issue_warning, 15, {"y": 1}, (42, UserWarning), MissingWarningFail],
+    [issue_warning, (16,), {"y": 1}, (42, UserWarning), MissingWarningFail],
+    [issue_warning, (17, 1), {}, (42, UserWarning), MissingWarningFail],
     [return_quantity, (18), {}, 5 * u.m / u.s, None],
     [return_quantity, (19), {}, u.m / u.s, None],
     [return_quantity, (20), {}, u.barn * u.Mpc, u.UnitsError],
-    [return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResult],
+    [return_quantity, (21), {}, 4 * u.m / u.s, UnexpectedResultFail],
     [return_quantity, (22), {}, 5 * u.kg / u.s, u.UnitsError],
     [return_quantity, (23), {"should_warn": True}, (5 * u.m / u.s, UserWarning), None],
     [
@@ -105,7 +105,7 @@ f_args_kwargs_expected_whaterror = [
         (24),
         {"should_warn": False},
         (5 * u.m / u.s, UserWarning),
-        MissingWarning,
+        MissingWarningFail,
     ],
     [return_arg, u.kg / u.K, {}, u.kg / u.K, None],
     [return_arg, u.kg / u.K, {}, u.kg / u.N, u.UnitsError],
@@ -113,9 +113,9 @@ f_args_kwargs_expected_whaterror = [
     [return_arg, u.C, {"should_warn": True}, (u.C, UserWarning), None],
     [adams_number, 1, {"x": 1}, u.pc, u.UnitsError],
     [return_arg, Particle("p+"), {}, Particle("proton"), None],
-    [return_arg, Particle("e+"), {}, Particle("e-"), UnexpectedResult],
-    [return_arg, Particle("mu+"), {}, type, TypeMismatch],
-    [return_arg, (2,), {}, IOError, MissingException],
+    [return_arg, Particle("e+"), {}, Particle("e-"), UnexpectedResultFail],
+    [return_arg, Particle("mu+"), {}, type, TypeMismatchFail],
+    [return_arg, (2,), {}, IOError, MissingExceptionFail],
 ]
 
 
@@ -185,7 +185,7 @@ def test_run_test_rtol():
 
 
 def test_run_test_rtol_failure():
-    with pytest.raises(UnexpectedResult):
+    with pytest.raises(UnexpectedResultFail):
         run_test(return_arg, 1.0, {}, 0.999999, rtol=1e-7)
         pytest.fail("No exception raised for rtol test.")
 
@@ -195,7 +195,7 @@ def test_run_test_atol():
 
 
 def test_run_test_atol_failure():
-    with pytest.raises(UnexpectedResult):
+    with pytest.raises(UnexpectedResultFail):
         run_test(return_arg, (1.0,), {}, 0.999999, atol=1e-7)
         pytest.fail("No exception raised for atol test.")
 
@@ -228,7 +228,7 @@ def test_func(inputs):
 run_test_equivalent_calls_table = [
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
     [(return_arg, [(1,), {}], [(1,), {}]), None],
-    [(return_arg, [(1,), {}], [(86,), {}]), UnexpectedResult],
+    [(return_arg, [(1,), {}], [(86,), {}]), UnexpectedResultFail],
     [(return_arg, [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}], [(1,), {}]), None],
     # cases like inputs = [(func, args, kwargs), (func, args, kwargs))
     (((return_arg, (1,), {}), (return_arg, (1,), {})), None),
@@ -248,20 +248,20 @@ run_test_equivalent_calls_table = [
             (return_arg, (3,), {}),
             (return_arg, (4,)),
         ),
-        UnexpectedResult,
+        UnexpectedResultFail,
     ),
     # cases where there are no kwargs
     ((return_arg, [1], [1]), None),
-    ((return_arg, ["this"], ["that"]), UnexpectedResult),
+    ((return_arg, ["this"], ["that"]), UnexpectedResultFail),
     ([(return_arg, [1], [1])], None),
     # cases where there are no kwargs and the args are not in tuples or lists
     ((return_arg, 1, 1, 1, 1), None),
-    ((return_arg, 1, 1, 1, 8794), UnexpectedResult),
+    ((return_arg, 1, 1, 1, 8794), UnexpectedResultFail),
     (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
     (((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 1), {})), None),
     (
         ((lambda x, y: x + y, (1, 0), {}), (lambda x, y: x * y, (1, 59), {})),
-        UnexpectedResult,
+        UnexpectedResultFail,
     ),
 ]
 
@@ -283,5 +283,5 @@ def test_run_test_equivalent_calls(inputs, error):
 
 def test_run_test_equivalent_calls_types():
     run_test_equivalent_calls(return_arg, 1, 1.0, require_same_type=False)
-    with pytest.raises(UnexpectedResult):
+    with pytest.raises(UnexpectedResultFail):
         run_test_equivalent_calls(return_arg, 1, 1.0)
