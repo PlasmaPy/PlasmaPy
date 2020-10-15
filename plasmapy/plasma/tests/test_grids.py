@@ -79,8 +79,8 @@ def test_interpolators():
     pos = np.array([0.1, -0.3, 0]) * u.cm
 
     # Interpolate indices
-    i = grid.interpolate_indices(pos)
-    pout = grid.grid[i[0][0], i[0][1], i[0][2], :]
+    i = grid.interpolate_indices(pos)[0]
+    pout = grid.grid[i[0], i[1], i[2], :]
     # Assert that nearest grid cell was found
     assert np.allclose(pos, pout, atol=0.03)
 
