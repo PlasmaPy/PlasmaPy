@@ -137,7 +137,6 @@ def two_fluid_dispersion_solution(
         1520.6055] rad/s
 
     """
-
     # Required derived parameters
     # Compute the ion sound speed using the function from
     # plasmapy.formulary.parameters
