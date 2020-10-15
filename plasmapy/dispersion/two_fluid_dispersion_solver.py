@@ -21,15 +21,15 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def two_fluid_dispersion_solution(
     B: u.T,
-    gamma_e=1,
-    gamma_i=3,
-    ion="p+",
     k: u.m ** -1,
-    m_e: u.kg = m_e,
-    m_i: u.kg = m_p,
     n: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
+    gamma_e=1,
+    gamma_i=3,
+    ion="p+",
+    m_e: u.kg = m_e,
+    m_i: u.kg = m_p,
     theta: u.deg = 45 * u.deg,
     z=1
 ):
