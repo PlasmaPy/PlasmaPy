@@ -233,7 +233,7 @@ class FiniteStraightWire(Wire):
         p2 = self.p2
         current = self.current
         p1_u = self._p1_u
-        p2_2 = self._p2_u
+        p2_u = self._p2_u
         current_u = self._current_u
         return f"{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})"
 
