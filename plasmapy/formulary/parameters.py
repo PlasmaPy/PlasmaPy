@@ -786,7 +786,7 @@ def Hall_parameter(
     T: u.K,
     B: u.T,
     ion: Particle,
-    particle: Particle,
+    charged_particle: Particle,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -801,15 +801,18 @@ def Hall_parameter(
     Parameters
     ----------
     n : ~astropy.units.quantity.Quantity
-        The density of particle s
+        The density of charged particle species s
     T : ~astropy.units.quantity.Quantity
         The temperature of particles
     B : ~astropy.units.quantity.Quantity
         The magnetic field
     ion : ~plasmapy.particles.Particle
-        The type of ion ``particle`` is colliding with.
-    particle : ~plasmapy.particles.Particle
-        The particle of interest.
+        The type of ion ``particle`` is colliding with in the ionized gas.
+    charged_particle : ~plasmapy.particles.Particle
+        The charged particle species of interest in plasma.Representation of the
+        particle species (e.g., 'p' for protons, 'D+'for deuterium, or 'He-4 +1'
+        for singly ionized helium-4). If no charge state information is provided,
+        then the particles are assumed to be singly charged.
     coulomb_log : float, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
     V : ~astropy.units.quantity.Quantity
@@ -826,6 +829,14 @@ def Hall_parameter(
     Returns
     -------
     astropy.units.quantity.Quantity
+
+    Notes
+    -----
+    The Hall Parameter is the ratio between the gyrofrequency and the ion-particle
+    collision rate(also known as collision frequency)
+
+    .. math::
+        \beta = \frac{\omega_c}{\nu}
 
     Examples
     --------
