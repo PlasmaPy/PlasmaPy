@@ -188,7 +188,7 @@ class AbstractGrid(ABC):
 
         """
 
-        raise NotImplemented(
+        raise NotImplementedError(
             "Volume-averaged interpolator is not yet " "implemented for this grid type."
         )
 
