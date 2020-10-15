@@ -202,7 +202,7 @@ def test_collective_spectrum():
 
     # Check that alpha is correct
     assert np.isclose(alpha.value, 1.801, atol=0.01), (
-        "Collective case alpha " f"returns {alpha} instead of " "expected 1.801"
+        "Collective case alpha returns {alpha} instead of " "expected 1.801"
     )
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
@@ -230,7 +230,7 @@ def test_non_collective_spectrum():
 
     # Check that alpha is correct
     assert np.isclose(alpha.value, 0.05707, atol=0.01), (
-        "Non-collective case alpha " f"returns {alpha} instead of " "expected 0.05707"
+        "Non-collective case alpha returns {alpha} instead of " "expected 0.05707"
     )
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)

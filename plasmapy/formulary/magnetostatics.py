@@ -228,14 +228,16 @@ class FiniteStraightWire(Wire):
         self._current_u = current.unit
 
     def __repr__(self):
-        return "{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})".format(
-            name=self.__class__.__name__,
-            p1=self.p1,
-            p2=self.p2,
-            current=self.current,
-            p1_u=self._p1_u,
-            p2_u=self._p2_u,
-            current_u=self._current_u,
+        return (
+            "{name}(p1={p1}{p1_u}, p2={p2}{p2_u}, current={current}{current_u})".format(
+                name=self.__class__.__name__,
+                p1=self.p1,
+                p2=self.p2,
+                current=self.current,
+                p1_u=self._p1_u,
+                p2_u=self._p2_u,
+                current_u=self._current_u,
+            )
         )
 
     def magnetic_field(self, p) -> u.T:
