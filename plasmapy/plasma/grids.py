@@ -25,9 +25,6 @@ class AbstractGrid(ABC):
     separately.
     """
 
-    # TODO: add appropriate typing here on start, stop, num
-    # start/stop can be -> number(int,float), ndarray, u.quantity, list of numbers
-    # or u.quantities units can be astropy.units.core.Unit or list of same
     def __init__(self, *seeds, num=100, units=None, **kwargs):
 
         if len(seeds) == 1:
