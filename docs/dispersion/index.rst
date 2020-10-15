@@ -12,13 +12,13 @@ of dispersion function and phase speed of the plasma.
 .. table::
    :widths: 5 16
 
-   +--------------------------------------------------------------+---------------------------------------------------+
-   | .. toctree:: Dispersion Relations <dispersionfunction>       | `plasmapy.dispersion.dispersionfunction`          |
-   |    :maxdepth: 1                                              |                                                   |
-   +--------------------------------------------------------------+---------------------------------------------------+
-   | .. toctree:: Dispersion Solver <two_fluid_dispersion_solver> | `plasmapy.dispersion.two_fluid_dispersion_solver` |
-   |    :maxdepth: 1                                              |                                                   |
-   +--------------------------------------------------------------+---------------------------------------------------+
+   +-----------------------------------------------------------+---------------------------------------------------+
+   | .. toctree:: Dispersion Relations <dispersionfunction>    | `plasmapy.dispersion.dispersionfunction`          |
+   |    :maxdepth: 1                                           |                                                   |
+   +-----------------------------------------------------------+---------------------------------------------------+
+   | .. toctree:: Dispersion Solver <twofluiddispersionsolver> | `plasmapy.dispersion.two_fluid_dispersion_solver` |
+   |    :maxdepth: 1                                           |                                                   |
+   +-----------------------------------------------------------+---------------------------------------------------+
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
