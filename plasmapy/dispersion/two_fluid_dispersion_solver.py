@@ -120,6 +120,22 @@ def two_fluid_dispersion_solution(
     'alfven_mode': <Quantity [[1260.01546096]] rad / s>,
     'acoustic_mode': <Quantity [[0.68815159]] rad / s>}
 
+    >>> k = np.linspace(10**-7, 10**-2, 1E4) * u.m ** -1
+    >>> theta = np.linspace(5, 85, 100) * u.deg
+    >>> n = 5 * u.cm ** -3
+    >>> B = 8.3E-9 * u.T
+    >>> T_e = 1.6e6 * u.K
+    >>> T_i = 4.e5 * u.K
+    >>> z = 1
+    >>> c = 3.e8 * u.m/u.s
+    >>> c_s = pfp.ion_sound_speed(T_e=T_e, T_i=T_i, n_e=z * n)
+    >>> v_A = pfp.Alfven_speed( B, n, ion='p+')
+    >>> omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
+    >>> omega = two_fluid_dispersion_solution(n=n, B=B, T_e=T_e, T_i=T_i,
+        theta=theta, z=z, k=k)
+    >>> omega['fast_mode'][:,40]
+    [0.016117629, 0.17733531, 0.33868854, … , 1520.3016, 1520.4535, 1520.6055] rad/s
+
     """
 
     # Required derived parameters
