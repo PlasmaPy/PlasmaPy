@@ -13,6 +13,7 @@ Sub-Packages & Modules
 .. autosummary::
 
    diagnostics
+   dispersion
    formulary
    particles
    plasma
