@@ -104,6 +104,8 @@ def two_fluid_dispersion_solution(
     .. [Stringer1963JNE] TE Stringer, Low-frequency waves in an unbounded
     plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
 
+    TODO: Roger referecne
+
     Examples
     --------
     >>> from astropy import units as u

@@ -10,9 +10,9 @@ from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func_deriv,
 )
 
-from plasmapy.dispersion.two_fluid_dispersion_solver import
-two_fluid_dispersion_solution
-
+from plasmapy.dispersion.two_fluid_dispersion_solver import (
+    two_fluid_dispersion_solution,
+)
 
 # auto populate __all__
 for obj_name in list(globals()):
