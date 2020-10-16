@@ -5,7 +5,7 @@ __all__ = [
     "InvalidTestError",
     "MissingExceptionFail",
     "MissingWarningFail",
-    "TestFailure",
+    "TestFailed",
     "TypeMismatchFail",
     "UnexpectedExceptionFail",
     "UnexpectedResultFail",
@@ -16,7 +16,7 @@ __all__ = [
 import pytest
 
 
-class TestFailure(pytest.fail.Exception):
+class TestFailed(pytest.fail.Exception):
     """
     Base exception for test failures.
 
@@ -29,7 +29,7 @@ class TestFailure(pytest.fail.Exception):
     pass
 
 
-class TypeMismatchFail(TestFailure):
+class TypeMismatchFail(TestFailed):
     """
     Exception for when the type of the actual result differs from the
     type of the expected result.
@@ -38,7 +38,7 @@ class TypeMismatchFail(TestFailure):
     pass
 
 
-class MissingExceptionFail(TestFailure):
+class MissingExceptionFail(TestFailed):
     """
     Exception for when the expected exception is not raised.
     """
@@ -46,7 +46,7 @@ class MissingExceptionFail(TestFailure):
     pass
 
 
-class UnexpectedExceptionFail(TestFailure):
+class UnexpectedExceptionFail(TestFailed):
     """
     Exception for when an exception is raised unexpectedly.
     """
@@ -63,7 +63,7 @@ class ExceptionMismatchFail(UnexpectedExceptionFail, MissingExceptionFail):
     pass
 
 
-class UnexpectedWarningFail(TestFailure):
+class UnexpectedWarningFail(TestFailed):
     """
     Exception for when a warning is issued unexpectedly.
     """
@@ -71,7 +71,7 @@ class UnexpectedWarningFail(TestFailure):
     pass
 
 
-class MissingWarningFail(TestFailure):
+class MissingWarningFail(TestFailed):
     """
     Exception for when an expected warning is not issued.
     """
@@ -88,7 +88,7 @@ class WarningMismatchFail(UnexpectedWarningFail, MissingWarningFail):
     pass
 
 
-class UnexpectedResultFail(TestFailure):
+class UnexpectedResultFail(TestFailed):
     """
     Exception for when the actual result differs from the expected
     result by more than the allowed tolerance.
