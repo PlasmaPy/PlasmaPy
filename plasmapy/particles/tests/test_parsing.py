@@ -362,7 +362,7 @@ atomic_warnings_table = [
 @pytest.mark.parametrize("arg, kwargs, num_warnings", atomic_warnings_table)
 def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
-    under the required conditions.  """
+    under the required conditions."""
 
     with pytest.warns(AtomicWarning) as record:
         _parse_and_check_atomic_input(arg, **kwargs)
