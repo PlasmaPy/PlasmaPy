@@ -90,8 +90,8 @@ class WarningMismatchFail(UnexpectedWarningFail, MissingWarningFail):
 
 class UnexpectedResultFail(TestFailed):
     """
-    Exception for when the actual result differs from the expected
-    result by more than the allowed tolerance.
+    Exception for when the returned value does not match the value that
+    was expected.
     """
 
     pass
