@@ -13,10 +13,10 @@ __all__ = [
     "WarningMismatchFail",
 ]
 
-import pytest
+from _pytest.outcomes import Failed
 
 
-class TestFailed(pytest.fail.Exception):
+class TestFailed(Failed):
     """
     Base exception for test failures.
 
