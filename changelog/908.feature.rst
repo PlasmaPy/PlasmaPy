@@ -2,5 +2,5 @@ Create the `plasmapy.analysis` package as per
 `PLEP-7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_ and
 initialize the package with the `~plasmapy.analysis.fit_functions` module.  Fit
 functions are designed to wrap together an analytical function, a curve fitter,
-uncertainty propagation, and a root solver to make curve fitting a little more less
+uncertainty propagation, and a root solver to make curve fitting a little less
 painful.

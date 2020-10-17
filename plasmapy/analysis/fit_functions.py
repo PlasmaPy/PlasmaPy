@@ -768,11 +768,11 @@ class Exponential(AbstractFitFunction):
         Parameters
         ----------
         *args
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         *kwargs
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns
@@ -925,7 +925,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
             variables (:math:`y = f(x)`) of the independent variables `x`.
 
         y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
+            (if `rety == True`) The associated dependent variables
             :math:`y = f(x)`.
         """
         x = self._check_x(x)
@@ -1112,11 +1112,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
         Parameters
         ----------
         *args
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         *kwargs
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compability with
             `AbstractFitFunction`.
 
         Returns
