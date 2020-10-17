@@ -25,9 +25,6 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Dimensionless <dimensionless>             | `plasmapy.formulary.dimensionless`      |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
-   | .. toctree:: Dispersion Relations <dispersionfunction> | `plasmapy.formulary.dispersionfunction` |
-   |    :maxdepth: 1                                        |                                         |
-   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Distribution Functions <distribution>     | `plasmapy.formulary.distribution`       |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+

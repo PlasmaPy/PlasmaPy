@@ -41,6 +41,7 @@ package for plasma physics currently under development.
    :caption: Package features
 
    ad/index
+   Dispersion <dispersion/index>
    Formulary <formulary/index>
    Particles <particles/index>
    Particle Tracker <simulation/particletracker>
