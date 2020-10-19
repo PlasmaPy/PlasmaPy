@@ -290,8 +290,6 @@ class BaseFFTests(ABC):
         )
         assert np.allclose(foo.params, self._test_params)
 
-    # TODO: test for __call__
-
 
 class TestFFExponential(BaseFFTests):
     """
