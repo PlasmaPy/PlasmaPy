@@ -405,8 +405,8 @@ class AbstractFitFunction(ABC):
         Raises
         ------
         ValueError
-            if either ``ydata`` or ``xdata`` contain NaNs, or if incompatible
-            options are used.
+            if either ``ydata`` or ``xdata`` contain `numpy.nan`'s, or if
+            incompatible options are used.
 
         RuntimeError
             if the least-squares minimization fails.
