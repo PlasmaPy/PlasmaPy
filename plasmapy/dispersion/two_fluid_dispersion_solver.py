@@ -84,7 +84,7 @@ def two_fluid_dispersion_solution(
     Notes
     -----
     Computes the solution for wave dispersion relation based on equation 38 of
-    Bellan2012 (doi:10.1029/2012JA017856)
+    Bellan2012JGR (doi:10.1029/2012JA017856)
 
     .. math::
 
@@ -97,14 +97,35 @@ def two_fluid_dispersion_solution(
         j = 1 ==> Alfven mode
         j = 2 ==> Acoustic mode
 
+    The above equation is derived from the general wave equation in the low
+    frequency regime, where both electrons and ions play significant role (in
+    the high frequency regime ions do not play any significant role and the
+    process is dominated by electron dynamics).
+
+    The complete dispersion equation is thus written as (from equation (1) of
+    Bellan2012JGR):
+
+    .. math::
+        \left( cos^2\theta - Q\frac{\omega^2}{k^2 {v_A}^2} \right) \left[
+        \left( cos^2\theta - \frac{\omega^2}{k^2 {c_s}^2 \right) -
+        Q\frac{\omega^2}{k^2 {v_A}^2 \left( 1 - \frac{\omega^2}{k^2 {c_s}^2
+        \right) \right] = \left(1 - \frac{\omega^2}{k^2 {c_s}^2 \right)
+        \frac{\omega^2}{{\omega_{ci}}^2}cos^2\theta
+
+    Here,
+    .. math::
+        Q = 1 + k^2 c^2/{\omega_{pe}}^2
+    \omega_{ci} is the proton gyrofrequency
+
     References
     ----------
     .. [Bellan2012JGR] PM bellan, Improved basis set for low frequency plasma
     waves, 2012, JGR, 117, A12219, doi:10.1029/2012JA017856
     .. [Stringer1963JNE] TE Stringer, Low-frequency waves in an unbounded
     plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
-
-    TODO: Roger referecne
+    .. [Rogers2001PRL] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A.
+    Role of Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
+    87, 195004
 
     Examples
     --------
