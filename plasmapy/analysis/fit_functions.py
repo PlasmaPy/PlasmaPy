@@ -18,6 +18,9 @@ from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
 from typing import Tuple, Union
 
+#: Named tuple for :meth:`AbstractFitFunction.root_solve`.
+_RootResults = namedtuple("RootResults", ("root", "err"))
+
 
 class AbstractFitFunction(ABC):
     """
@@ -355,7 +358,7 @@ class AbstractFitFunction(ABC):
             root = root[()]
             err = np.nan
 
-        return root, err
+        return _RootResults(root, err)
 
     @property
     def rsq(self):
@@ -592,7 +595,7 @@ class Linear(AbstractFitFunction):
         m_err, b_err = self.param_errors
         err = np.abs(root) * np.sqrt((m_err / m) ** 2 + (b_err / b) ** 2)
 
-        return root, err
+        return _RootResults(root, err)
 
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
@@ -785,7 +788,7 @@ class Exponential(AbstractFitFunction):
             :attr:`parameters` and :attr:`parameters_err`.
         """
 
-        return np.nan, np.nan
+        return _RootResults(np.nan, np.nan)
 
 
 class ExponentialPlusLinear(AbstractFitFunction):
@@ -1138,4 +1141,4 @@ class ExponentialPlusOffset(AbstractFitFunction):
         c_term = c_err / (alpha * b)
         err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
 
-        return root, err
+        return _RootResults(root, err)
