@@ -1,0 +1,1 @@
+Added a function to solve for the analytical solution of the dispersion relation in low frequency regime.
