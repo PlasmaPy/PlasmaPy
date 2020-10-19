@@ -79,15 +79,14 @@ def two_fluid_dispersion_solution(
     -------
     omega : ~astropy.units.Quantity
         A dictionary of Wave frequencies corresponding to three modes namely
-        a) Ion-acoustic mode, b) Alfven mode and c) Fast mode, in 1/s units
+        a) Ion-acoustic mode, b) Alfven mode and c) Fast mode, in 1/s units.
 
     Notes
     -----
     Computes the solution for wave dispersion relation based on equation 38 of
-    Bellan2012JGR (doi:10.1029/2012JA017856)
+    [1]
 
     .. math::
-
         \frac{\omega}{\omega_{ci}} = \sqrt(2\Lambda \sqrt(-\frac{p}{3}) cos
         \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt(-\frac{3}{p}
         \right) - \frac{2\pi}{3}j \right) + \frac{A\Lambda}{3})
@@ -103,7 +102,7 @@ def two_fluid_dispersion_solution(
     process is dominated by electron dynamics).
 
     The complete dispersion equation is thus written as (from equation (1) of
-    Bellan2012JGR):
+    [1]):
 
     .. math::
         \left( cos^2\theta - Q\frac{\omega^2}{k^2 {v_A}^2} \right) \left[
@@ -119,11 +118,11 @@ def two_fluid_dispersion_solution(
 
     References
     ----------
-    .. [Bellan2012JGR] PM bellan, Improved basis set for low frequency plasma
+    .. [1] PM bellan, Improved basis set for low frequency plasma
     waves, 2012, JGR, 117, A12219, doi:10.1029/2012JA017856
-    .. [Stringer1963JNE] TE Stringer, Low-frequency waves in an unbounded
+    .. [2] TE Stringer, Low-frequency waves in an unbounded
     plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
-    .. [Rogers2001PRL] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A.
+    .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A.
     Role of Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
     87, 195004
 
