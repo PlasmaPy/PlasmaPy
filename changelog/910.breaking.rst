@@ -1,1 +1,4 @@
-Moved dispersionfunction.py to a separate folder which now acts as the primary point for all the dispersion related functionalities.
+Created `plasmapy.dispersion` in accordance with PlasmaPy Enhancement Proposal 7
+(`PLEP 7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_)
+and migrated the dispersion functionality (`dispersionfunction.py`) from
+`plasmapy.formulary` to `plasmapy.dispersion`.
