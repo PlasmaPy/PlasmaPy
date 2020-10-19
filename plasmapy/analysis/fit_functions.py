@@ -962,8 +962,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
 class ExponentialPlusOffset(AbstractFitFunction):
     """
-    A sub-class of `AbstractFitFunction` to represent an exponential with a DC
-    offset.
+    A sub-class of `AbstractFitFunction` to represent an exponential with a
+    constant offset.
 
     .. math::
 
@@ -1022,7 +1022,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     def func(self, x, a, alpha, b):
         """
-        The fit function, an exponential with a DC offset.
+        The fit function, an exponential with a constant offset.
 
         .. math::
 
