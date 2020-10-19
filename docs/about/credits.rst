@@ -85,6 +85,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
 * `Cody Skinner <https://github.com/wskinner74>`__
+* `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`___)
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
