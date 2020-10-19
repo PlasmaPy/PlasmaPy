@@ -73,8 +73,8 @@ class AbstractFitFunction(ABC):
             Dependent variables.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         reterr: bool, optional
             (Default: `False`) If `True`, return an array of uncertainties
@@ -84,7 +84,7 @@ class AbstractFitFunction(ABC):
         -------
         y: `numpy.ndarray`
             Corresponding dependent variables :math:`y=f(x)` of the independent
-            variables :math:`x`.
+            variables ``x``.
 
         y_err: `numpy.ndarray`
             Uncertainties associated with the calculated dependent variables
@@ -132,7 +132,7 @@ class AbstractFitFunction(ABC):
         Returns
         -------
         `numpy.ndarray`:
-            The calculated dependent variables of the independent variables `x`.
+            The calculated dependent variables of the independent variables ``x``.
         """
         ...
 
@@ -176,8 +176,8 @@ class AbstractFitFunction(ABC):
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -187,7 +187,7 @@ class AbstractFitFunction(ABC):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
             (if ``rety == True``) The associated dependent variables
@@ -280,7 +280,7 @@ class AbstractFitFunction(ABC):
     @staticmethod
     def _check_x(x):
         """
-        Check the independent variable :math:`x` so that it is an expected
+        Check the independent variable ``x`` so that it is an expected
         type for the class functionality.
         """
         if isinstance(x, (int, float, np.integer, np.floating)):
@@ -324,7 +324,7 @@ class AbstractFitFunction(ABC):
         x_err: `~numpy.ndarray`
             The uncertainty associated with the root calculation.  **Currently
             this returns an array of** `numpy.nan` **values equal in shape to**
-            `x` **, since there is no determined way to calculate the
+            ``x`` **, since there is no determined way to calculate the
             uncertainties.**
 
         Notes
@@ -472,7 +472,7 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to :math:`x`
+            dependent variables corresponding to `:math:``x``
 
         """
         x = self._check_x(x)
@@ -495,8 +495,8 @@ class Linear(AbstractFitFunction):
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -506,7 +506,7 @@ class Linear(AbstractFitFunction):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
             (if ``rety == True``) The associated dependent variables
@@ -681,7 +681,7 @@ class Exponential(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to :math:`x`
+            dependent variables corresponding to ``x``
 
         """
         x = self._check_x(x)
@@ -707,8 +707,8 @@ class Exponential(AbstractFitFunction):
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -718,7 +718,7 @@ class Exponential(AbstractFitFunction):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
             (if `rety = True`) The associated dependent variables
@@ -879,7 +879,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to :math:`x`
+            dependent variables corresponding to ``x``
 
         """
         exp_term = self._exponential.func(x, a, alpha)
@@ -911,8 +911,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -922,7 +922,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
             (if `rety == True`) The associated dependent variables
@@ -1045,7 +1045,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to :math:`x`
+            dependent variables corresponding to ``x``
 
         """
         return self._explin.func(x, a, alpha, 0.0, b)
@@ -1071,8 +1071,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -1082,7 +1082,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
             (if `rety = True`) The associated dependent variables
