@@ -383,7 +383,7 @@ class AbstractFitFunction(ABC):
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
         Use a non-linear least squares method to fit the fit function to
-        (`xdata`, `ydata`), using `scipy.optimize.curve_fit`.  This will set
+        (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
         the attributes :attr:`parameters`, :attr:`parameters_err`, and
         :attr:`rsq`.
 
@@ -397,7 +397,7 @@ class AbstractFitFunction(ABC):
             length M.
 
         ydata: array_like
-            The dependent data associated with `xdata`.
+            The dependent data associated with ``xdata``.
 
         **kwargs
             Any keywords accepted by `scipy.optimize.curve_fit`.
@@ -405,8 +405,8 @@ class AbstractFitFunction(ABC):
         Raises
         ------
         ValueError
-            if either `ydata` or `xdata` contain NaNs, or if incompatible options
-            are used.
+            if either ``ydata`` or ``xdata`` contain NaNs, or if incompatible
+            options are used.
 
         RuntimeError
             if the least-squares minimization fails.
@@ -599,8 +599,8 @@ class Linear(AbstractFitFunction):
 
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
-        Calculate a linear least-squares regression of (`xdata`, `ydata`) using
-        `scipy.stats.linregress`.  This will set the attributes
+        Calculate a linear least-squares regression of (``xdata``, ``ydata``)
+        using `scipy.stats.linregress`.  This will set the attributes
         :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
@@ -613,7 +613,7 @@ class Linear(AbstractFitFunction):
             length M.
 
         ydata: array_like
-            The dependent data associated with `xdata`.
+            The dependent data associated with ``xdata``.
 
         **kwargs
             Any keywords accepted by `scipy.stats.linregress.curve_fit`.
