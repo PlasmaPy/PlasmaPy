@@ -547,7 +547,7 @@ class Linear(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"m \, x + b"
+        return fr"m x + b"
 
     @property
     def rsq(self):
@@ -761,7 +761,7 @@ class Exponential(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha \, x)"
+        return fr"A \, \exp(\alpha x)"
 
     def root_solve(self, *args, **kwargs):
         """
@@ -998,7 +998,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha \, x) + b"
+        return fr"A \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
