@@ -13,7 +13,8 @@ PlasmaPy gives each their own sub-packages, `plasmapy.analysis` and
 
 Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 (functionality) you need to analyze your data.  Functionality is built around
-`numpy` arrays and each function has a well-defined, focused task.
+`numpy arrays <https://numpy.org/doc/stable/reference/arrays.html>`_ and each
+function has a well-defined, focused task.
 
 Diagnostics have a much broader scope and leverage the tools
 defined in `plasmapy.analysis` to give a more integrated user experience when
