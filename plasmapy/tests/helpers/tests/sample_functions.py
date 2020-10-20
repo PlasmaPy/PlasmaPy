@@ -18,8 +18,7 @@ class SampleException(Exception):
 
 class SampleExceptionSubclass(SampleException):
     """
-    The subclass of the sample exception to used for testing purposes.
-
+    The subclass of the `SampleException` to used for testing purposes.
     """
 
     pass
