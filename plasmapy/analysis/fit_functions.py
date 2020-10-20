@@ -436,6 +436,29 @@ class AbstractFitFunction(ABC):
         self._rsq = 1 - (ss_res / ss_tot)
 
 
+# ------------------------------------------------------------------------------
+# extract the "Parameters" section and below from AbstractFitFunction.func_err
+# docstring
+#
+# This allows the programmer to write a simple docstring docstring for a sub-class
+# and then append it with the parameter info.
+#
+slines = AbstractFitFunction.func_err.__doc__.splitlines()
+index = None
+ii = 0
+for ii in range(len(slines)-1):
+    if "Parameters" in slines[ii] and "-"*10 in slines[ii+1]:
+        index = ii
+        break
+
+_func_err_doc_core = ""
+if index is not None:
+    _func_err_doc_core = "\n" + "\n".join(slines[ii:])
+
+del slines, ii, index
+# ------------------------------------------------------------------------------
+
+
 class Linear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent a linear function.
