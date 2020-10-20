@@ -18,8 +18,10 @@ from plasmapy.utils.decorators import validate_quantities
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     theta={"can_be_negative": True},
+    z={"can be negative": False}
 )
-def two_fluid_dispersion_solution(
+    #TODO : Find out about 'z' not having a dimension and solve the issue
+def two_fluid_dispersion_solution(*,
     B: u.T,
     k: u.m ** -1,
     n: u.m ** -3,
@@ -81,6 +83,19 @@ def two_fluid_dispersion_solution(
         A dictionary of Wave frequencies corresponding to three modes namely
         a) Ion-acoustic mode, b) Alfven mode and c) Fast mode, in 1/s units.
 
+    Raises
+    ------
+    TypeError
+        The magnetic field and density arguments are not instances of
+        `~astropy.units.Quantity` and cannot be converted into those.
+
+    ~astropy.units.UnitConversionError
+        If the magnetic field or density is not in appropriate units.
+
+    ValueError
+        If the magnetic field, density or wavenumber is negative, or the ion 
+        mass or charge state cannot be found.
+
     Notes
     -----
     Computes the solution for wave dispersion relation based on equation 38 of
@@ -136,7 +151,7 @@ def two_fluid_dispersion_solution(
     >>> T_e = 1.6e6 * u.K
     >>> T_i = 4.e5 * u.K
     >>> z = 1
-    >>> omega = tfds(B, k, n, T_e, T_i, theta, z)
+    >>> omega = tfds(B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z)
     {'fast_mode': <Quantity [[1520.57692532]] rad / s>,
     'alfven_mode': <Quantity [[1260.01546096]] rad / s>,
     'acoustic_mode': <Quantity [[0.68815159]] rad / s>}
