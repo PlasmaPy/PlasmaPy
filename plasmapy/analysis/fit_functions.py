@@ -446,7 +446,7 @@ class AbstractFitFunction(ABC):
 slines = AbstractFitFunction.func_err.__doc__.splitlines()
 index = None
 ii = 0
-for ii in range(len(slines)-1):
+for ii in range(len(slines) - 1):
     if "Parameters" in slines[ii] and "-" * 10 in slines[ii + 1]:
         index = ii
         break
