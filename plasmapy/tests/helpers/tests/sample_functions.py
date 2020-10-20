@@ -141,9 +141,7 @@ class SampleClass2:
         self.cls_kwarg1 = cls_kwarg1
         self.cls_kwarg2 = cls_kwarg2
 
-    def method(
-        self, method_arg1, method_arg2, *, method_kwarg1, method_kwarg2
-    ):
+    def method(self, method_arg1, method_arg2, *, method_kwarg1, method_kwarg2):
         """
         Return the sum of the positional and keyword arguments supplied
         to the class upon instantiation plus the sum of the positional
