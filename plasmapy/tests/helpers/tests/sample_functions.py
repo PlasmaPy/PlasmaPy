@@ -134,7 +134,7 @@ class SampleClass1:
 class SampleClass2:
     """A sample class to be used for testing purposes."""
 
-    def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1=None, cls_kwarg2=None):
+    def __init__(self, cls_arg1, cls_arg2, *, cls_kwarg1, cls_kwarg2):
 
         self.cls_arg1 = cls_arg1
         self.cls_arg2 = cls_arg2
