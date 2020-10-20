@@ -51,21 +51,32 @@ class BaseFFTests(ABC):
     @property
     @abstractmethod
     def ff_class(self):
+        """Fit function class to be tested."""
         ...
 
     @staticmethod
     @abstractmethod
     def func(x, *args):
+        """
+        Formula/Function that the fit function class is suppose to be modeling.
+        This is used to test the fit function `func` method.
+        """
         ...
 
     @abstractmethod
     def func_err(self, x, params, param_errors, x_err=None):
+        """
+        Function representing the propagation of error associated with fit function
+        model. This is used to test the fit function `func_err` method.
+        """
         ...
 
     def test_inheritance(self):
+        """Test inheritance from `AbstractFitFunction`."""
         assert issubclass(self.ff_class, self.abc)
 
     def test_iscallable(self):
+        """Test instantiated fit function is callable."""
         assert callable(self.ff_class())
 
     def test_repr(self):
@@ -74,6 +85,7 @@ class BaseFFTests(ABC):
         assert foo.__repr__() == f"{foo.__str__()} {foo.__class__}"
 
     def test_basics(self):
+        """Test attribute/method/property existance."""
         assert hasattr(self.ff_class, "_param_names")
         if self.ff_class._param_names == NotImplemented:
             pytest.fail(
@@ -99,6 +111,7 @@ class BaseFFTests(ABC):
             assert isinstance(getattr(self.ff_class, name), property)
 
     def test_instantiation(self):
+        """Test behavior of fit function class instantiation."""
         # default
         foo = self.ff_class()
 
@@ -144,6 +157,9 @@ class BaseFFTests(ABC):
             self.ff_class(param_errors=params)
 
     def test_param_assignment(self):
+        """
+        Test the property setter behavior for methods `params` and `param_errors`.
+        """
         foo = self.ff_class()
 
         # setting params property
@@ -185,6 +201,7 @@ class BaseFFTests(ABC):
             foo.param_errors = params
 
     def test_func(self):
+        """Test the `func` method."""
         foo = self.ff_class()
 
         for x in (0, 1.0, np.linspace(10, 30, num=20)):
@@ -206,6 +223,7 @@ class BaseFFTests(ABC):
             foo.func(5, *params)
 
     def test_func_err(self):
+        """Test the `func_err` method."""
         foo = self.ff_class(
             params=self._test_params, param_errors=self._test_param_errors
         )
@@ -236,6 +254,7 @@ class BaseFFTests(ABC):
             foo.func_err(5, x_err=[0.1, 0.1])
 
     def test_call(self):
+        """Test __call__ behavior."""
         foo = self.ff_class()
         foo.params = self._test_params
         foo.param_errors = self._test_param_errors
@@ -273,6 +292,7 @@ class BaseFFTests(ABC):
         ...
 
     def test_curve_fit(self):
+        """Test the `curve_fit` method."""
         foo = self.ff_class()
 
         xdata = np.linspace(-10, 10)
