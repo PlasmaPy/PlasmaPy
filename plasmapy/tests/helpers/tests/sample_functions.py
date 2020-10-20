@@ -81,7 +81,7 @@ def raise_exception():
     raise SampleException("exception message")
 
 
-def sum_of_args_and_kwargs(arg1, arg2, *, kw1=None, kw2=None):
+def sum_of_args_and_kwargs(arg1, arg2, *, kw1, kw2):
     """
     A sample function for testing purposes that returns the sum of
     two positional arguments and two keyword arguments.
