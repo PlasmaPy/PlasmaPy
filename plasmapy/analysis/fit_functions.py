@@ -48,7 +48,7 @@ class AbstractFitFunction(ABC):
 
         self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
         """
-        A named tuple class used for attributes :attr:`params` and
+        A `~collections.namedtuple` used for attributes :attr:`params` and
         :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
         the tuple field names.
         """
