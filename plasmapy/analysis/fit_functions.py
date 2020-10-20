@@ -145,7 +145,38 @@ class AbstractFitFunction(ABC):
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
 
-        When sub-classing the definition should look something like::
+        Parameters
+        ----------
+        x: array_like
+            Independent variables to be passed to the fit function.
+
+        x_err: array_like, optional
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
+
+        rety: bool
+            Set `True` to also return the associated dependent variables
+            :math:`y = f(x)`.
+
+        Returns
+        -------
+        err: `numpy.ndarray`
+            The calculated uncertainties :math:`\\delta y` of the dependent
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
+
+        y: `numpy.ndarray`, optional
+            (if ``rety == True``) The associated dependent variables
+            :math:`y = f(x)`.
+
+        Notes
+        -----
+        * A good reference for formulating propagation of uncertainty expressions is:
+
+            J. R. Taylor.  *An Introduction to Error Analysis: The Study of
+            Uncertainties in Physical Measurements.* University Science Books,
+            second edition, August 1996 (ISBN: 093570275X)
+
+        * When sub-classing the definition should look something like::
 
             def func_err(self, x, x_err=None, rety=False):
                 x = self._check_x(x)
@@ -172,29 +203,6 @@ class AbstractFitFunction(ABC):
                     return err, y
 
                 return err
-
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        x_err: array_like, optional
-            Errors associated with the independent variables ``x``.  Must be of
-            size one or equal to the size of ``x``.
-
-        rety: bool
-            Set `True` to also return the associated dependent variables
-            :math:`y = f(x)`.
-
-        Returns
-        -------
-        err: `numpy.ndarray`
-            The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables ``x``.
-
-        y: `numpy.ndarray`, optional
-            (if ``rety == True``) The associated dependent variables
-            :math:`y = f(x)`.
 
         """
         ...
