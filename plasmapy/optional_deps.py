@@ -82,5 +82,5 @@ lmfit_import_error = _optional_import_error_template(
 tofu_import_error = _optional_import_error_template(
     "tofu",
     "https://tofuproject.github.io/tofu/installation.html",
-    conda_channel='conda-forge',
+    conda_channel="conda-forge",
 )
