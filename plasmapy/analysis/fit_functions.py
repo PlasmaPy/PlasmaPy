@@ -457,6 +457,10 @@ class Linear(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = m x + b"
 
+    @property
+    def latex_str(self) -> str:
+        return fr"m x + b"
+
     def func(self, x, m, b):
         """
         The fit function, a linear function.
@@ -552,10 +556,6 @@ class Linear(AbstractFitFunction):
             return err, y
 
         return err
-
-    @property
-    def latex_str(self) -> str:
-        return fr"m x + b"
 
     @property
     def rsq(self):
@@ -667,6 +667,10 @@ class Exponential(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = A exp(alpha x)"
 
+    @property
+    def latex_str(self) -> str:
+        return fr"A \, \exp(\alpha x)"
+
     def func(self, x, a, alpha):
         """
         The fit function, a exponential function.
@@ -766,10 +770,6 @@ class Exponential(AbstractFitFunction):
             return err, y
 
         return err
-
-    @property
-    def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha x)"
 
     def root_solve(self, *args, **kwargs):
         """
