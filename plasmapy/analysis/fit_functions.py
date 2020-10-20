@@ -385,6 +385,12 @@ class AbstractFitFunction(ABC):
         the fitted dependent variable corresponding to :math:`x_i`, and
         :math:`\\bar{y}` is the average of the :math:`y_i` values.
 
+        The :math:`r^2` value is an indicator of how close the points
+        :math:`(x_i, y_i)` lie to the model :math:`f(x)`.  :math:`r^2` values
+        range between 0 and 1.  Values close to 0 indicate that the points
+        are uncorrelated and have little tendency to lie close to the model,
+        whereas, values close to 1 indicate a high correlation to the model.
+
         """
         return self._rsq
 
