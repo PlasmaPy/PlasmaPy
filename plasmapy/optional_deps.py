@@ -6,6 +6,7 @@ __all__ = [
     "lmfit_import_error",
     "mpl_import_error",
     "mpmath_import_error",
+    "tofu_import_error",
 ]
 
 from typing import Optional
@@ -75,4 +76,11 @@ mpmath_import_error = _optional_import_error_template(
 #: Import error message for `lmfit`.
 lmfit_import_error = _optional_import_error_template(
     "lmfit", "https://lmfit.github.io/lmfit-py/installation.html"
+)
+
+#: Import error message for `tofu`.
+tofu_import_error = _optional_import_error_template(
+    "tofu",
+    "https://tofuproject.github.io/tofu/installation.html",
+    conda_channel='conda-forge',
 )
