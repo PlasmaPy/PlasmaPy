@@ -33,7 +33,7 @@ class SampleWarning(Warning):
 
 class SampleWarningSubclass(SampleWarning):
     """
-    The subclass of the sample warning to be used for testing purposes.
+    The subclass of the `SampleWarning` to be used for testing purposes.
 
     If the `~pytest.warns` context manager expects a certain warning to
     be issued, then the test will pass if a subclass of that warning is
