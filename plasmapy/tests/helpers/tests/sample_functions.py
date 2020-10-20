@@ -53,7 +53,7 @@ def return_42_meters() -> u.Quantity:
     return 42.0 * u.m
 
 
-def return_np_array(*args) -> np.array:
+def return_np_array(args) -> np.array:
     """A function to be used when testing `~numpy.array` instances."""
 
     return np.array(args)
