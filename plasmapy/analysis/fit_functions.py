@@ -527,28 +527,6 @@ class Linear(AbstractFitFunction):
 
             (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        x_err: array_like, optional
-            Errors associated with the independent variables ``x``.  Must be of
-            size one or equal to the size of ``x``.
-
-        rety: bool
-            Set `True` to also return the associated dependent variables
-            :math:`y = f(x)`.
-
-        Returns
-        -------
-        err: `numpy.ndarray`
-            The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables ``x``.
-
-        y: `numpy.ndarray`, optional
-            (if ``rety == True``) The associated dependent variables
-            :math:`y = f(x)`.
         """
         x = self._check_x(x)
         if x_err is not None:
@@ -579,6 +557,8 @@ class Linear(AbstractFitFunction):
             return err, y
 
         return err
+
+    func_err.__doc__ += _func_err_doc_core
 
     @property
     def rsq(self):
@@ -739,28 +719,6 @@ class Exponential(AbstractFitFunction):
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
 
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        x_err: array_like, optional
-            Errors associated with the independent variables ``x``.  Must be of
-            size one or equal to the size of ``x``.
-
-        rety: bool
-            Set `True` to also return the associated dependent variables
-            :math:`y = f(x)`.
-
-        Returns
-        -------
-        err: `numpy.ndarray`
-            The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables ``x``.
-
-        y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
-            :math:`y = f(x)`.
         """
         x = self._check_x(x)
         if x_err is not None:
@@ -793,6 +751,8 @@ class Exponential(AbstractFitFunction):
             return err, y
 
         return err
+
+    func_err.__doc__ += _func_err_doc_core
 
     def root_solve(self, *args, **kwargs):
         """
@@ -939,28 +899,6 @@ class ExponentialPlusLinear(AbstractFitFunction):
                         x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
                     \\right]
 
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        x_err: array_like, optional
-            Errors associated with the independent variables ``x``.  Must be of
-            size one or equal to the size of ``x``.
-
-        rety: bool
-            Set `True` to also return the associated dependent variables
-            :math:`y = f(x)`.
-
-        Returns
-        -------
-        err: `numpy.ndarray`
-            The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables ``x``.
-
-        y: `numpy.ndarray`, optional
-            (if `rety == True`) The associated dependent variables
-            :math:`y = f(x)`.
         """
         x = self._check_x(x)
         if x_err is not None:
@@ -989,6 +927,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
             return err, exp_y + lin_y
 
         return err
+
+    func_err.__doc__ += _func_err_doc_core
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
@@ -1099,28 +1039,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
                 \\right]
                 + (\\delta b)^2
 
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        x_err: array_like, optional
-            Errors associated with the independent variables ``x``.  Must be of
-            size one or equal to the size of ``x``.
-
-        rety: bool
-            Set `True` to also return the associated dependent variables
-            :math:`y = f(x)`.
-
-        Returns
-        -------
-        err: `numpy.ndarray`
-            The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables ``x``.
-
-        y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
-            :math:`y = f(x)`.
         """
         y, err = self._explin(x, x_err=x_err, reterr=True)
 
@@ -1128,6 +1046,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
             return err, y
 
         return err
+
+    func_err.__doc__ += _func_err_doc_core
 
     def root_solve(self, *args, **kwargs):
         """
