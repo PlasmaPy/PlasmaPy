@@ -51,16 +51,16 @@ class BaseFFTests(ABC):
     @property
     @abstractmethod
     def ff_class(self):
-        raise NotImplementedError
+        ...
 
     @staticmethod
     @abstractmethod
     def func(x, *args):
-        raise NotImplementedError
+        ...
 
     @abstractmethod
     def func_err(self, x, params, param_errors, x_err=None):
-        raise NotImplementedError
+        ...
 
     def test_inheritance(self):
         assert issubclass(self.ff_class, self.abc)
@@ -268,7 +268,7 @@ class BaseFFTests(ABC):
 
     @abstractmethod
     def test_root_solve(self):
-        raise NotImplementedError
+        ...
 
     def test_curve_fit(self):
         foo = self.ff_class()
