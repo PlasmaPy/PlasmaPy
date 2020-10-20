@@ -20,10 +20,6 @@ class SampleExceptionSubclass(SampleException):
     """
     The subclass of the sample exception to used for testing purposes.
 
-    If the `~pytest.raises` context manager expects a certain exception
-    to be raised, then the test will pass if a subclass of that exception
-    is raised.  This subclass is used to test that PlasmaPy's test
-    helpers functionality catches situations like that.
     """
 
     pass
