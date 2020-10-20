@@ -18,7 +18,7 @@ class SampleException(Exception):
 
 class SampleExceptionSubclass(SampleException):
     """
-    The subclass of the `SampleException` to used for testing purposes.
+    The subclass of `SampleException` to used for testing purposes.
     """
 
     pass
@@ -32,7 +32,7 @@ class SampleWarning(Warning):
 
 class SampleWarningSubclass(SampleWarning):
     """
-    The subclass of the `SampleWarning` to be used for testing purposes.
+    The subclass of `SampleWarning` to be used for testing purposes.
     """
 
     pass
@@ -114,9 +114,7 @@ class SampleClass1:
 
     @property
     def forty(self) -> int:
-        """
-        A sample attribute that returns ``40``.
-        """
+        """A sample attribute that returns ``40``."""
 
         return 40
 
