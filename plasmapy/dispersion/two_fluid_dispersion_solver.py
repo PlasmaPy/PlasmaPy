@@ -18,7 +18,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     theta={"can_be_negative": True},
-    z={"can be negative": False}
+    #z={"can be negative": False},
 )
     #TODO : Find out about 'z' not having a dimension and solve the issue
 def two_fluid_dispersion_solution(*,

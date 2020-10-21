@@ -101,31 +101,31 @@ sol_theta_arr1 = two_fluid_dispersion_solution(B=B, k=k, n=n, T_e=T_e, T_i=T_i,
 theta=theta_arr[-1], z=z)
 
 assert np.isclose(sol_k_arr['fast_mode'].value[0,0],
-sol_k_arr0['fast_mode'].value)
+sol_k_arr0['fast_mode'].value[0,0])
 assert np.isclose(sol_theta_arr['fast_mode'].value[0,0],
-sol_theta_arr0['fast_mode'].value)
+sol_theta_arr0['fast_mode'].value[0,0])
 
 assert np.isclose(sol_k_arr['alfven_mode'].value[0,0],
-sol_k_arr0['alfven_mode'].value)
+sol_k_arr0['alfven_mode'].value[0,0])
 assert np.isclose(sol_theta_arr['alfven_mode'].value[0,0],
-sol_theta_arr0['alfven_mode'].value)
+sol_theta_arr0['alfven_mode'].value[0,0])
 
 assert np.isclose(sol_k_arr['acoustic_mode'].value[0,0],
-sol_k_arr0['acoustic_mode'].value)
+sol_k_arr0['acoustic_mode'].value[0,0])
 assert np.isclose(sol_theta_arr['acoustic_mode'].value[0,0],
-sol_theta_arr0['acoustic_mode'].value)
+sol_theta_arr0['acoustic_mode'].value[0,0])
 
 assert np.isclose(sol_k_arr['fast_mode'].value[-1,0],
-sol_k_arr1['fast_mode'].value)
-assert np.isclose(sol_theta_arr['fast_mode'].value[-1,0],
-sol_theta_arr1['fast_mode'].value)
+sol_k_arr1['fast_mode'].value[0,0])
+assert np.isclose(sol_theta_arr['fast_mode'].value[0,-1],
+sol_theta_arr1['fast_mode'].value[0,0])
 
 assert np.isclose(sol_k_arr['alfven_mode'].value[-1,0],
-sol_k_arr1['alfven_mode'].value)
-assert np.isclose(sol_theta_arr['alfven_mode'].value[-1,0],
-sol_theta_arr1['alfven_mode'].value)
+sol_k_arr1['alfven_mode'].value[0,0])
+assert np.isclose(sol_theta_arr['alfven_mode'].value[0,-1],
+sol_theta_arr1['alfven_mode'].value[0,0])
 
 assert np.isclose(sol_k_arr['acoustic_mode'].value[-1,0],
-sol_k_arr1['acoustic_mode'].value)
-assert np.isclose(sol_theta_arr['acoustic_mode'].value[-1,0],
-sol_theta_arr1['acoustic_mode'].value)
+sol_k_arr1['acoustic_mode'].value[0,0])
+assert np.isclose(sol_theta_arr['acoustic_mode'].value[0,-1],
+sol_theta_arr1['acoustic_mode'].value[0,0])
