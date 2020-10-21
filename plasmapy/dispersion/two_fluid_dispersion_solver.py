@@ -178,7 +178,8 @@ def two_fluid_dispersion_solution(*,
     # Compute the ion sound speed using the function from
     # plasmapy.formulary.parameters
     c_s = pfp.ion_sound_speed(
-        T_e=T_e, T_i=T_i, n_e=z * n, gamma_e=gamma_e, gamma_i=gamma_i, ion=ion
+        T_e=T_e, T_i=T_i, n_e=z * n, gamma_e=gamma_e, gamma_i=gamma_i, 
+        ion=ion
     )
 
     # Compute the ion Alfven speed using the function from
