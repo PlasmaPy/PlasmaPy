@@ -13,7 +13,6 @@ __all__ = [
     "WarningMismatchFail",
 ]
 
-
 # This file contains several commented out import statements.  These
 # statements will be uncommented out over the course of several pull
 # requests that were each originally part of #728.  The blank lines
