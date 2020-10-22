@@ -16,7 +16,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
     Parameters
     ----------
     func: callable
-        The method/function to be decorated
+        The method/function to be decorated.
 
     prepend: `str`
         The string to be prepended to the ``func``'s docstring.
