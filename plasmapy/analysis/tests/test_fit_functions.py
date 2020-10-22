@@ -214,10 +214,10 @@ class BaseFFTests(ABC):
             foo.func(x, *self._test_params), self.func(np.array(x), *self._test_params)
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             foo.func("hello", *self._test_params)
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             params = list(self._test_params)
             params[0] = "hello"
             foo.func(5, *params)
@@ -244,10 +244,10 @@ class BaseFFTests(ABC):
         )
         assert np.allclose(results[1], self.func(np.array(x), *self._test_params))
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             foo.func_err("hello")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             foo.func_err(5, x_err="goodbye")
 
         with pytest.raises(ValueError):
@@ -281,7 +281,7 @@ class BaseFFTests(ABC):
             ),
         )
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             foo("hello")
 
         with pytest.raises(ValueError):

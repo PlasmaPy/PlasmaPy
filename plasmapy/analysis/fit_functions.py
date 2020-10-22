@@ -334,7 +334,7 @@ class AbstractFitFunction(ABC):
         """
         for arg in args:
             if not isinstance(arg, (int, np.integer, float, np.floating)):
-                raise ValueError(
+                raise TypeError(
                     f"Expected int or float for parameter argument, got "
                     f"{type(arg)}."
                 )
@@ -355,7 +355,7 @@ class AbstractFitFunction(ABC):
                 np.issubdtype(x.dtype, np.integer)
                 or np.issubdtype(x.dtype, np.floating)
             ):
-                raise ValueError(
+                raise TypeError(
                     f"Argument x needs to be an array_like object of integers "
                     f"or floats."
                 )
