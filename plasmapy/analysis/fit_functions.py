@@ -27,7 +27,6 @@ _RootResults = namedtuple("RootResults", ("root", "err"))
 
 
 def modify_docstring(func=None, prepend=None, append=None):
-
     def decorator(f):
         sig = inspect.signature(f)
 
@@ -183,7 +182,6 @@ class AbstractFitFunction(ABC):
         prepend="""
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
-        
         """,
         append="""
         * When sub-classing the definition should look something like::
