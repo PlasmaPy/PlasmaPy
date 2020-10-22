@@ -7,7 +7,7 @@ import functools
 import inspect
 
 
-def modify_docstring(func=None, prepend=None, append=None):
+def modify_docstring(func=None, prepend: str = None, append: str = None):
     """
     A decorator which programmatically prepends and/or appends the docstring
     of the decorated method/function.  The unmodified/original docstring is
