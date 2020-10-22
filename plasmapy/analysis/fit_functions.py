@@ -10,6 +10,8 @@ __all__ = [
     "Linear",
 ]
 
+import functools
+import inspect
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -18,8 +20,45 @@ from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
 from typing import Tuple, Union
 
+from plasmapy.utils.decorators import preserve_signature
+
 #: Named tuple for :meth:`AbstractFitFunction.root_solve`.
 _RootResults = namedtuple("RootResults", ("root", "err"))
+
+
+def modify_docstring(func=None, prepend=None, append=None):
+
+    def decorator(f):
+        sig = inspect.signature(f)
+
+        @preserve_signature
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            # combine args and kwargs into dictionary
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
+            return f(*bound_args.args, **bound_args.kwargs)
+
+        # save the original docstring
+        setattr(wrapper, "__original_doc__", wrapper.__doc__)
+
+        # prepend docstring
+        if isinstance(prepend, str):
+            wrapper.__doc__ = prepend + wrapper.__doc__
+
+        # append docstring
+        if isinstance(append, str):
+            wrapper.__doc__ += append
+
+        return wrapper
+
+    if func is not None:
+        # `modify_docstring` called as a function
+        return decorator(func)
+    else:
+        # `modify_docstring` called as a decorator "sugar-syntax"
+        return decorator
 
 
 class AbstractFitFunction(ABC):
@@ -140,11 +179,40 @@ class AbstractFitFunction(ABC):
         ...
 
     @abstractmethod
-    def func_err(self, x, x_err=None, rety=False):
-        """
+    @modify_docstring(
+        prepend="""
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
+        
+        """,
+        append="""
+        * When sub-classing the definition should look something like::
 
+            @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
+            def func_err(self, x, x_err=None, rety=False):
+                '''
+                A simple docstring giving the equation for error propagation, but
+                excluding the parameter descriptions.  The @modify_docstring
+                decorator will append the docstring from the parent class.
+                '''
+                x, x_err = self._check_func_err_params(x, x_err)
+
+                a, b, c = self.params
+                a_err, b_err, c_err = self.param_errors
+
+                # calculate error
+
+                # add x_err
+
+                if rety:
+                    y = self.func(x, a, b, c)
+                    return err, y
+
+                return err
+        """,
+    )
+    def func_err(self, x, x_err=None, rety=False):
+        """
         Parameters
         ----------
         x: array_like
@@ -175,34 +243,6 @@ class AbstractFitFunction(ABC):
             J. R. Taylor.  *An Introduction to Error Analysis: The Study of
             Uncertainties in Physical Measurements.* University Science Books,
             second edition, August 1996 (ISBN: 093570275X)
-
-        * When sub-classing the definition should look something like::
-
-            def func_err(self, x, x_err=None, rety=False):
-                x = self._check_x(x)
-                if x_err is not None:
-                    x_err = self._check_x(x_err)
-
-                    if x_err.shape == ():
-                        pass
-                    elif x_err.shape != x.shape:
-                        raise ValueError(
-                            f"x_err shape {x_err.shape} must be equal the shape of "
-                            f"x {x.shape}."
-                        )
-
-                a, b, c = self.params
-                a_err, b_err, c_err = self.param_errors
-
-                # calculate error
-
-                # add x_err
-
-                if rety:
-                    y = self.func(x, a, b, c)
-                    return err, y
-
-                return err
 
         """
         ...
@@ -274,6 +314,21 @@ class AbstractFitFunction(ABC):
     def latex_str(self) -> str:
         """LaTeX friendly representation of the fit function."""
         ...
+
+    def _check_func_err_params(self, x, x_err):
+        """Check the ``x`` and ``x_err`` parameters for :meth:`func_err`."""
+        x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
+        return x, x_err
 
     @staticmethod
     def _check_params(*args) -> None:
@@ -442,29 +497,6 @@ class AbstractFitFunction(ABC):
         self._rsq = 1 - (ss_res / ss_tot)
 
 
-# ------------------------------------------------------------------------------
-# extract the "Parameters" section and below from AbstractFitFunction.func_err
-# docstring
-#
-# This allows the programmer to write a simple docstring docstring for a sub-class
-# and then append it with the parameter info.
-#
-slines = AbstractFitFunction.func_err.__doc__.splitlines()
-index = None
-ii = 0
-for ii in range(len(slines) - 1):
-    if "Parameters" in slines[ii] and "-" * 10 in slines[ii + 1]:
-        index = ii
-        break
-
-_func_err_doc_core = ""
-if index is not None:
-    _func_err_doc_core = "\n" + "\n".join(slines[ii:])
-
-del slines, ii, index
-# ------------------------------------------------------------------------------
-
-
 class Linear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent a linear function.
@@ -524,6 +556,7 @@ class Linear(AbstractFitFunction):
 
         return m * x + b
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -534,17 +567,7 @@ class Linear(AbstractFitFunction):
             (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         m, b = self.params
         m_err, b_err = self.param_errors
@@ -563,8 +586,6 @@ class Linear(AbstractFitFunction):
             return err, y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
     @property
     def rsq(self):
@@ -713,6 +734,7 @@ class Exponential(AbstractFitFunction):
 
         return a * np.exp(alpha * x)
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -726,17 +748,7 @@ class Exponential(AbstractFitFunction):
                 + (\\alpha \\, \\delta x)^2
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         a, alpha = self.params
         a_err, alpha_err = self.param_errors
@@ -757,8 +769,6 @@ class Exponential(AbstractFitFunction):
             return err, y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
     def root_solve(self, *args, **kwargs):
         """
@@ -886,6 +896,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         lin_term = self._linear.func(x, m, b)
         return exp_term + lin_term
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -906,17 +917,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
                     \\right]
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         a, alpha, m, b = self.params
 
@@ -933,8 +934,6 @@ class ExponentialPlusLinear(AbstractFitFunction):
             return err, exp_y + lin_y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
@@ -1030,6 +1029,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         """
         return self._explin.func(x, a, alpha, 0.0, b)
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -1046,14 +1046,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
                 + (\\delta b)^2
 
         """
-        y, err = self._explin(x, x_err=x_err, reterr=True)
-
-        if rety:
-            return err, y
-
-        return err
-
-    func_err.__doc__ += _func_err_doc_core
+        return self._explin.func_err(x, x_err=x_err, rety=rety)
 
     def root_solve(self, *args, **kwargs):
         """
