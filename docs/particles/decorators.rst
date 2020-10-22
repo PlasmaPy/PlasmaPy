@@ -18,7 +18,7 @@ class.  The arguments must be annotated with `~plasmapy.particles.Particle`
 so that the decorator knows to create the `~plasmapy.particles.Particle`
 instance.  The function can then access particle properties by using
 `~plasmapy.particles.Particle` attributes.  This decorator will raise an
-`~plasmapy.utils.InvalidParticleError` if the input does not correspond
+`~plasmapy.particles.exceptions.InvalidParticleError` if the input does not correspond
 to a valid particle.
 
 .. code-block:: python
@@ -57,9 +57,9 @@ decorator enables several ways to allow this.
 
 If an annotated keyword is named ``element``, ``isotope``, or ``ion``;
 then `~plasmapy.particles.particle_input` will raise an
-`~plasmapy.utils.InvalidElementError`,
-`~plasmapy.utils.InvalidIsotopeError`, or
-`~plasmapy.utils.InvalidIonError` if the particle is not associated with
+`~plasmapy.particles.exceptions.InvalidElementError`,
+`~plasmapy.particles.exceptions.InvalidIsotopeError`, or
+`~plasmapy.particles.exceptions.InvalidIonError` if the particle is not associated with
 an element, isotope, or ion; respectively.
 
 .. code-block:: python
