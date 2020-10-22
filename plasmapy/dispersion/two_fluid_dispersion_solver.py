@@ -8,7 +8,7 @@ from astropy.constants.si import c, e, k_B, m_e, m_p, mu0
 import plasmapy.formulary.parameters as pfp
 
 from plasmapy.utils.decorators import validate_quantities
-
+import warnings
 
 @validate_quantities(
     B={"can_be_negative": False},
@@ -36,7 +36,7 @@ def two_fluid_dispersion_solution(*,
     z=1,
 ):
     r"""
-    Return a dictionary dictionary of frequencies corresponding to the
+    Return a dictionary of frequencies corresponding to the
     solutions of dispersion relation in low frequency regime.
 
     **Aliases:** `tfds_`
@@ -148,32 +148,32 @@ def two_fluid_dispersion_solution(*,
     >>> k = 0.01 * u.m ** -1
     >>> theta = 30 * u.deg
     >>> B = 8.3E-9 * u.T
+    >>> n = 5.e6 * u.m ** -3
     >>> T_e = 1.6e6 * u.K
     >>> T_i = 4.e5 * u.K
     >>> z = 1
     >>> omega = tfds(B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z)
-    {'fast_mode': <Quantity [[1520.57692532]] rad / s>,
-    'alfven_mode': <Quantity [[1260.01546096]] rad / s>,
-    'acoustic_mode': <Quantity [[0.68815159]] rad / s>}
+    >>> omega
+    {'fast_mode': <Quantity [[1520.5794506]] rad / s>, 'alfven_mode': <Quantity [[1261.75471561]] rad / s>, 'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
 
-    >>> k = np.linspace(10**-7, 10**-2, 1E4) * u.m ** -1
+    >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.m ** -1
     >>> theta = np.linspace(5, 85, 100) * u.deg
-    >>> n = 5 * u.cm ** -3
+    >>> n = 5.e6 * u.m ** -3
     >>> B = 8.3E-9 * u.T
     >>> T_e = 1.6e6 * u.K
     >>> T_i = 4.e5 * u.K
     >>> z = 1
     >>> c = 3.e8 * u.m/u.s
-    >>> c_s = pfp.ion_sound_speed(T_e=T_e, T_i=T_i, n_e=z * n)
+    >>> c_s = pfp.ion_sound_speed(T_e=T_e, T_i=T_i, n_e=z * n, ion='p+')
     >>> v_A = pfp.Alfven_speed( B, n, ion='p+')
     >>> omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
-    >>> omega = two_fluid_dispersion_solution(n=n, B=B, T_e=T_e, T_i=T_i,
-        theta=theta, z=z, k=k)
+    >>> omega = tfds(n=n, B=B, T_e=T_e, T_i=T_i, theta=theta, z=z, k=k_arr)
     >>> omega['fast_mode'][:,40]
-        [0.016117629, 0.17733531, 0.33868854, … , 1520.3016, 1520.4535,
-        1520.6055] rad/s
+     <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
+	                1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
 
     """
+
     # Required derived parameters
     # Compute the ion sound speed using the function from
     # plasmapy.formulary.parameters
