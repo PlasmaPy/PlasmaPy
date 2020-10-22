@@ -10,6 +10,8 @@ __all__ = [
     "Linear",
 ]
 
+import functools
+import inspect
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -18,8 +20,45 @@ from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
 from typing import Tuple, Union
 
+from plasmapy.utils.decorators import preserve_signature
+
 #: Named tuple for :meth:`AbstractFitFunction.root_solve`.
 _RootResults = namedtuple("RootResults", ("root", "err"))
+
+
+def modify_docstring(func=None, prepend=None, append=None):
+
+    def decorator(f):
+        sig = inspect.signature(f)
+
+        @preserve_signature
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            # combine args and kwargs into dictionary
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
+            return f(*bound_args.args, **bound_args.kwargs)
+
+        # save the original docstring
+        setattr(wrapper, "__original_doc__", wrapper.__doc__)
+
+        # prepend docstring
+        if isinstance(prepend, str):
+            wrapper.__doc__ = prepend + wrapper.__doc__
+
+        # append docstring
+        if isinstance(append, str):
+            wrapper.__doc__ += append
+
+        return wrapper
+
+    if func is not None:
+        # `modify_docstring` called as a function
+        return decorator(func)
+    else:
+        # `modify_docstring` called as a decorator "sugar-syntax"
+        return decorator
 
 
 class AbstractFitFunction(ABC):
