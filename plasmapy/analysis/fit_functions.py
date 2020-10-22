@@ -179,11 +179,40 @@ class AbstractFitFunction(ABC):
         ...
 
     @abstractmethod
-    def func_err(self, x, x_err=None, rety=False):
-        """
+    @modify_docstring(
+        prepend="""
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
+        
+        """,
+        append="""
+        * When sub-classing the definition should look something like::
 
+            @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
+            def func_err(self, x, x_err=None, rety=False):
+                '''
+                A simple docstring giving the equation for error propagation, but
+                excluding the parameter descriptions.  The @modify_docstring
+                decorator will append the docstring from the parent class.
+                '''
+                x, x_err = self._check_func_err_params(x, x_err)
+
+                a, b, c = self.params
+                a_err, b_err, c_err = self.param_errors
+
+                # calculate error
+
+                # add x_err
+
+                if rety:
+                    y = self.func(x, a, b, c)
+                    return err, y
+
+                return err
+        """,
+    )
+    def func_err(self, x, x_err=None, rety=False):
+        """
         Parameters
         ----------
         x: array_like
@@ -214,34 +243,6 @@ class AbstractFitFunction(ABC):
             J. R. Taylor.  *An Introduction to Error Analysis: The Study of
             Uncertainties in Physical Measurements.* University Science Books,
             second edition, August 1996 (ISBN: 093570275X)
-
-        * When sub-classing the definition should look something like::
-
-            def func_err(self, x, x_err=None, rety=False):
-                x = self._check_x(x)
-                if x_err is not None:
-                    x_err = self._check_x(x_err)
-
-                    if x_err.shape == ():
-                        pass
-                    elif x_err.shape != x.shape:
-                        raise ValueError(
-                            f"x_err shape {x_err.shape} must be equal the shape of "
-                            f"x {x.shape}."
-                        )
-
-                a, b, c = self.params
-                a_err, b_err, c_err = self.param_errors
-
-                # calculate error
-
-                # add x_err
-
-                if rety:
-                    y = self.func(x, a, b, c)
-                    return err, y
-
-                return err
 
         """
         ...
