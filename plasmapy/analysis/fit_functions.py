@@ -482,29 +482,6 @@ class AbstractFitFunction(ABC):
         self._rsq = 1 - (ss_res / ss_tot)
 
 
-# ------------------------------------------------------------------------------
-# extract the "Parameters" section and below from AbstractFitFunction.func_err
-# docstring
-#
-# This allows the programmer to write a simple docstring docstring for a sub-class
-# and then append it with the parameter info.
-#
-slines = AbstractFitFunction.func_err.__doc__.splitlines()
-index = None
-ii = 0
-for ii in range(len(slines) - 1):
-    if "Parameters" in slines[ii] and "-" * 10 in slines[ii + 1]:
-        index = ii
-        break
-
-_func_err_doc_core = ""
-if index is not None:
-    _func_err_doc_core = "\n" + "\n".join(slines[ii:])
-
-del slines, ii, index
-# ------------------------------------------------------------------------------
-
-
 class Linear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent a linear function.
@@ -564,6 +541,7 @@ class Linear(AbstractFitFunction):
 
         return m * x + b
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -603,8 +581,6 @@ class Linear(AbstractFitFunction):
             return err, y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
     @property
     def rsq(self):
@@ -753,6 +729,7 @@ class Exponential(AbstractFitFunction):
 
         return a * np.exp(alpha * x)
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -797,8 +774,6 @@ class Exponential(AbstractFitFunction):
             return err, y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
     def root_solve(self, *args, **kwargs):
         """
@@ -926,6 +901,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         lin_term = self._linear.func(x, m, b)
         return exp_term + lin_term
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -973,8 +949,6 @@ class ExponentialPlusLinear(AbstractFitFunction):
             return err, exp_y + lin_y
 
         return err
-
-    func_err.__doc__ += _func_err_doc_core
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
@@ -1070,6 +1044,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         """
         return self._explin.func(x, a, alpha, 0.0, b)
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -1086,14 +1061,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
                 + (\\delta b)^2
 
         """
-        y, err = self._explin(x, x_err=x_err, reterr=True)
-
-        if rety:
-            return err, y
-
-        return err
-
-    func_err.__doc__ += _func_err_doc_core
+        return self._explin.func_err(x, x_err=x_err, rety=rety)
 
     def root_solve(self, *args, **kwargs):
         """
