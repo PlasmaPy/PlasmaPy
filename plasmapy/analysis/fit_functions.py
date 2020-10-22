@@ -315,6 +315,21 @@ class AbstractFitFunction(ABC):
         """LaTeX friendly representation of the fit function."""
         ...
 
+    def _check_func_err_params(self, x, x_err):
+        """Check the ``x`` and ``x_err`` parameters for :meth:`func_err`."""
+        x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
+        return x, x_err
+
     @staticmethod
     def _check_params(*args) -> None:
         """
@@ -552,17 +567,7 @@ class Linear(AbstractFitFunction):
             (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         m, b = self.params
         m_err, b_err = self.param_errors
@@ -743,17 +748,7 @@ class Exponential(AbstractFitFunction):
                 + (\\alpha \\, \\delta x)^2
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         a, alpha = self.params
         a_err, alpha_err = self.param_errors
@@ -922,17 +917,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
                     \\right]
 
         """
-        x = self._check_x(x)
-        if x_err is not None:
-            x_err = self._check_x(x_err)
-
-            if x_err.shape == ():
-                pass
-            elif x_err.shape != x.shape:
-                raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
-                )
+        x, x_err = self._check_func_err_params(x, x_err)
 
         a, alpha, m, b = self.params
 
