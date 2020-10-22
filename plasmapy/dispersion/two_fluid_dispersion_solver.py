@@ -18,10 +18,10 @@ import warnings
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     theta={"can_be_negative": True},
-    #z={"can be negative": False},
 )
-    #TODO : Find out about 'z' not having a dimension and solve the issue
-def two_fluid_dispersion_solution(*,
+
+def two_fluid_dispersion_solution(
+    *,
     B: u.T,
     k: u.m ** -1,
     n: u.m ** -3,
@@ -93,7 +93,7 @@ def two_fluid_dispersion_solution(*,
         If the magnetic field or density is not in appropriate units.
 
     ValueError
-        If the magnetic field, density or wavenumber is negative, or the ion 
+        If the magnetic field, density or wavenumber is negative, or the ion
         mass or charge state cannot be found.
 
     Notes
@@ -178,8 +178,7 @@ def two_fluid_dispersion_solution(*,
     # Compute the ion sound speed using the function from
     # plasmapy.formulary.parameters
     c_s = pfp.ion_sound_speed(
-        T_e=T_e, T_i=T_i, n_e=z * n, gamma_e=gamma_e, gamma_i=gamma_i, 
-        ion=ion
+        T_e=T_e, T_i=T_i, n_e=z * n, gamma_e=gamma_e, gamma_i=gamma_i, ion=ion
     )
 
     # Compute the ion Alfven speed using the function from
