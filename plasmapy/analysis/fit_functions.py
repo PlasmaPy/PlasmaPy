@@ -200,8 +200,6 @@ class AbstractFitFunction(ABC):
 
                 # calculate error
 
-                # add x_err
-
                 if rety:
                     y = self.func(x, a, b, c)
                     return err, y
