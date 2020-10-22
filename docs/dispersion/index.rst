@@ -9,8 +9,7 @@ Example Notebooks
 
 .. nbgallery::
 
-   /notebooks/dispersion/dispersion_function
-   /notebooks/dispersion/two_fluid_dispersion_solver
+   /notebooks/dispersion_function
 
 Sub-Packages & Modules
 ----------------------
@@ -18,7 +17,6 @@ Sub-Packages & Modules
 .. autosummary::
 
    dispersionfunction
-   two_fluid_dispersion_solver
 
 .. automodapi:: plasmapy.dispersion
    :no-main-docstr:
