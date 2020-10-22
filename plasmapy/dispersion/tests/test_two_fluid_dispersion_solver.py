@@ -17,7 +17,11 @@ T_i = 4.e5 * u.K
 z = 1
 
 B_neg = -1 * u.T
+<<<<<<< HEAD
 n_neg = -5.e6 * u.m ** -3
+=======
+n_neg = -5 * u.cm ** -3
+>>>>>>> c2ac3eba64eac69afa2988963b4c5750c6a1b850
 T_e_neg = -1.6e6 * u.K
 T_i_neg = -4.e5 * u.K
 z_neg = -1
