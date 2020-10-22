@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from astropy import units as u
+
 from plasmapy.dispersion.two_fluid_dispersion_solver import (
     two_fluid_dispersion_solution,
 )
