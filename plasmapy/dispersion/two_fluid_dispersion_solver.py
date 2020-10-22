@@ -8,7 +8,7 @@ from astropy.constants.si import c, e, k_B, m_e, m_p, mu0
 import plasmapy.formulary.parameters as pfp
 
 from plasmapy.utils.decorators import validate_quantities
-import warnings
+
 
 @validate_quantities(
     B={"can_be_negative": False},
@@ -19,7 +19,6 @@ import warnings
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     theta={"can_be_negative": True},
 )
-
 def two_fluid_dispersion_solution(
     *,
     B: u.T,
