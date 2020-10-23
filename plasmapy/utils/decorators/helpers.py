@@ -87,6 +87,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
                 f"Expected type str for argument 'append', got {type(append)}."
             )
 
+        # define new docstring
         wrapper.__doc__ = "\n".join(prependlines + doclines + appendlines)
 
         return wrapper
