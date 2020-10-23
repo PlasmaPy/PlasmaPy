@@ -8,16 +8,6 @@ import warnings
 
 
 
-def _calculate_plane_points(point, size, bins):
-        """
-        Given a position vector, create an array of points in the plane that
-        contains the point and is normal to its position vector. The number
-        of points is determine by bins, while the size in space is determined
-        by the size argument.
-        """
-
-
-
 
 class LineIntegratedDiagnostic:
 
@@ -125,7 +115,7 @@ class LineIntegratedDiagnostic:
     # ************************************************************************
 
 
-    def evaluate(self, size=None, bins=None, collimated=True,
+    def evaluate_integral(self, size=None, bins=None, collimated=True,
                   num=10):
         """
         Analagous to run
@@ -211,18 +201,6 @@ class LineIntegratedDiagnostic:
         return xax, yax, integral
 
 
-
-
-
-    def _create_points(self, point, size, bins):
-        """
-        Create an array of points
-        """
-
-
-        return points
-
-
     def _integrand(self, pts):
         """
         Returns the integrand at a particular position.
@@ -238,6 +216,44 @@ class LineIntegratedDiagnostic:
     # ************************************************************************
     # Particle Tracing Method (for non-linear problems)
     # ************************************************************************
+
+
+    def _generate_particles(self):
+        """
+        Generate particles
+
+        """
+
+
+    def _advance_to_grid(self):
+        """
+        Advance particles to close to the start of the grid
+        """
+
+    def run(self):
+        """
+        Run the particle tracer
+        """
+
+
+        # Create an instance of plasmapy's ParticleTracker using the
+        # particles previously generated
+
+
+        # Run the particle tracker
+
+
+    def _advance_to_detector(self):
+        """
+        Advance particles to the detector plane and discard any particles that
+        will never reach the detector plane (eg. moving away)
+        """
+
+
+    def create_image(self):
+        """
+        Create a histogram image of particle locations in the image plane
+        """
 
 
 
@@ -257,7 +273,7 @@ if __name__ == '__main__':
 
     obj = LineIntegratedDiagnostic(grid, parameters, source, detector)
 
-    obj.evaluate(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[3,3])
+    obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[3,3])
 
 
 
