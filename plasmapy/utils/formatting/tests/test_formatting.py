@@ -1,8 +1,10 @@
+import numpy as np
 import pytest
 
 from astropy import units as u
 
 from plasmapy.utils.formatting.formatting import (
+    _format_quantity,
     _string_together_warnings_for_printing,
     attribute_call_string,
     call_string,
@@ -99,6 +101,31 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
     """Test that `attribute_call_string` returns the expected results."""
     actual = attribute_call_string(SampleClass, "attr", c_args, c_kwargs)
     assert expected == actual
+
+
+@pytest.mark.parametrize(
+    "quantity, expected",
+    [
+        (5.3 * u.m, "5.3*u.m"),
+        (5.4 / u.m, "5.4/u.m"),
+        (5.5 * u.m ** -2, "5.5*u.m**-2"),
+        (5.0 * u.dimensionless_unscaled, "5.0*u.dimensionless_unscaled"),
+        (np.array([3.5, 4.2]) * u.m ** -2.5, "np.array([3.5, 4.2])*u.m**-2.5"),
+    ],
+)
+def test_format_quantity(quantity, expected):
+    """
+    Test that `~astropy.units.Quantity` objects get converted into a
+    string as expected.
+    """
+    assert _format_quantity(quantity) == expected
+
+
+@pytest.mark.parametrize("not_a_quantity", [3.5, "1.2"])
+def test_format_quantity_typeerror(not_a_quantity):
+    """"""
+    with pytest.raises(TypeError):
+        _format_quantity(not_a_quantity)
 
 
 def test_stringing_together_warning():

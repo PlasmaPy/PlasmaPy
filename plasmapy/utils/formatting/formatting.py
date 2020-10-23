@@ -1,25 +1,36 @@
 import inspect
+import numpy as np
 
 from astropy import units as u
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 
-def _format_quantity(arg) -> str:
+def _format_quantity(arg: u.Quantity) -> str:
     """
     Transform a `~astropy.units.Quantity` into a format as would appear
     in a function call.
     """
+    if not isinstance(arg, u.Quantity):
+        raise TypeError("Expecting a Quantity.")
 
-    formatted = f"{arg.value}"
-    for base, power in zip(arg.unit.bases, arg.unit.powers):
-        if power == -1:
-            formatted += f"/u.{base}"
-        elif power == 1:
-            formatted += f"*u.{base}"
-        else:
-            formatted += f"*u.{base}**{power}"
+    formatted = f"{repr(arg.value)}"
+
+    if isinstance(arg.value, np.ndarray):
+        formatted = "np." + formatted
+
+    if arg.unit == u.dimensionless_unscaled:
+        formatted += "*u.dimensionless_unscaled"
+    else:
+        for base, power in zip(arg.unit.bases, arg.unit.powers):
+            if power == -1:
+                formatted += f"/u.{base}"
+            elif power == 1:
+                formatted += f"*u.{base}"
+            else:
+                formatted += f"*u.{base}**{power}"
+
     return formatted
 
 
@@ -42,7 +53,7 @@ def _format_kw(keyword) -> str:
     elif hasattr(keyword, "__name__"):
         return keyword.__name__
     else:
-        return repr(keyword)
+        return repr(keyword)  # ADD TEST
 
 
 def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
@@ -89,14 +100,16 @@ def _object_name(obj: Any, showmodule=False) -> str:
     obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
 
     if hasattr(obj, "__name__") and showmodule is True:
-        module_name = inspect.getmodule(obj).__name__
+        module_name = inspect.getmodule(obj).__name__  # ADD TEST
         if module_name != "builtins":
-            obj_name = f"{module_name}.{obj_name}"
+            obj_name = f"{module_name}.{obj_name}"  # ADD TEST
 
     return obj_name
 
 
-def _string_together_warnings_for_printing(warning_types, warning_messages):
+def _string_together_warnings_for_printing(
+    warning_types: List[Warning], warning_messages: List[str]
+):
     """
     Take a list of warning types with a list of corresponding warning
     messages, and create a string that prints out each warning type
