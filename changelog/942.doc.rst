@@ -1,1 +1,1 @@
-Updated narrative documentation for the ``particles`` subpackage.
+Updated documentation for the ``particles`` and ``utils`` subpackages.
