@@ -16,6 +16,7 @@ import numpy as np
 import pytest
 import warnings
 
+from astropy.utils.decorators import deprecated
 from typing import Any, Callable, Dict
 
 from plasmapy.tests.helpers.exceptions import (
@@ -26,7 +27,7 @@ from plasmapy.tests.helpers.exceptions import (
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
-from plasmapy.utils.exceptions import PlasmaPyWarning
+from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning, PlasmaPyWarning
 from plasmapy.utils.formatting.formatting import (
     _name_with_article,
     _object_name,
@@ -34,7 +35,7 @@ from plasmapy.utils.formatting.formatting import (
 )
 
 
-def _process_input(wrapped_function: Callable):
+def _process_input(wrapped_function: Callable):  # coverage: ignore
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -71,6 +72,7 @@ def _process_input(wrapped_function: Callable):
     return decorator(wrapped_function)
 
 
+@deprecated(warning=PlasmaPyDeprecationWarning)
 @_process_input
 def run_test(
     func,
@@ -79,7 +81,7 @@ def run_test(
     expected_outcome: Any = None,
     rtol: float = 0.0,
     atol: float = 0.0,
-):
+):  # coverage: ignore
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the

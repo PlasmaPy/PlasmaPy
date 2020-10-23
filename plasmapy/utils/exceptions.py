@@ -6,6 +6,7 @@ __all__ = [
     "OutOfRangeError",
     "RelativityError",
     "RomanError",
+    "PlasmaPyDeprecationWarning",
     "PlasmaPyWarning",
     "CouplingWarning",
     "PhysicsWarning",
@@ -88,6 +89,15 @@ class PlasmaPyWarning(Warning):
     Warnings should be issued using `~warnings.warn`, which will not break
     execution if unhandled.
 
+    """
+
+    pass
+
+
+class PlasmaPyDeprecationWarning(Warning, PlasmaPyWarning):  # coverage: ignore
+    """
+    A warning for features to be used in PlasmaPy that have been
+    deprecated.
     """
 
     pass
