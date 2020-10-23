@@ -1,14 +1,116 @@
 """Tests for module :mod:`plasmapy.utils.decorators`."""
 import inspect
+import pytest
 
 from unittest import mock
 
-from ..helpers import preserve_signature
+from ..helpers import modify_docstring, preserve_signature
 
 
-# ----------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
+# Test Decorator `modify_docstring`
+# --------------------------------------------------------------------------------------
+class TestModifyDocstring:
+    # create function to test on
+    @staticmethod
+    def foo_simple(x: float, y: float) -> float:
+        """A simple docstring."""
+        return x + y
+
+    @staticmethod
+    def foo_complex(x: float, y: float) -> float:
+        """
+        A simple docstring.
+
+        Parameters
+        ----------
+        x: float
+            first argument
+
+        y: float
+            second argument
+
+        Returns
+        -------
+        float
+            addition or arguments
+        """
+        return x + y
+
+    def test_no_arg_exception(self):
+        """Raise exception if decorator is used without modifying docstring."""
+        with pytest.raises(TypeError):
+            modify_docstring(self.foo_simple)
+
+    def test_save_original_doc(self):
+        original_doc = self.foo_simple.__doc__
+        wfoo = modify_docstring(prepend="Hello")(self.foo_simple)
+        assert hasattr(wfoo, "__original_doc__")
+        assert wfoo.__original_doc__ == original_doc
+
+    @pytest.mark.parametrize(
+        "prepend, append, expected",
+        [
+            (5, None, TypeError),
+            (None, 5, TypeError),
+        ],
+    )
+    def test_raises(self, prepend, append, expected):
+        with pytest.raises(expected):
+            modify_docstring(prepend=prepend, append=append, func=self.foo_simple)
+
+    def test_preserve_signature(self):
+        wfoo = modify_docstring(prepend="Hello")(self.foo_simple)
+        assert hasattr(wfoo, "__signature__")
+        assert wfoo.__signature__ == inspect.signature(self.foo_simple)
+
+    @pytest.mark.parametrize(
+        "prepend, append, func_name, additions",
+        [
+            ("Hello", "Goodbye", "foo_simple", (["Hello", ""], ["", "Goodbye"])),
+            ("Hello", "Goodbye", "foo_complex", (["Hello", ""], ["", "Goodbye"])),
+            ("Hello", None, "foo_simple", (["Hello", ""], [])),
+            (None, "Goodbye", "foo_simple", ([], ["", "Goodbye"])),
+            (
+                "\n".join(["    Hello",
+                           "    ",
+                           "        * item 1",
+                           "            * item 2"]),
+                None,
+                "foo_simple",
+                (["Hello", "", "* item 1", "    * item 2", ""], [])
+            ),
+            (
+                None,
+                "\n".join(["    Notes",
+                           "    -----",
+                           "    ",
+                           "        * item 1",
+                           "            * item 2"]),
+
+                "foo_simple",
+                ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"])
+            ),
+        ],
+    )
+    def test_modification(self, prepend, append, func_name, additions):
+        func = getattr(self, func_name)
+
+        expected = "\n".join(additions[0]
+                             + inspect.cleandoc(func.__doc__).splitlines()
+                             + additions[1])
+
+        wfunc = modify_docstring(prepend=prepend, append=append)(func)
+        assert wfunc.__doc__ == expected
+
+    def test_arguments_passed(self):
+        wfunc = modify_docstring(prepend="Hello")(self.foo_simple)
+        assert wfunc(5, 4) == 9
+
+
+# --------------------------------------------------------------------------------------
 # Test Decorator `preserve_signature`
-# ----------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 def test_preserve_signature():
     # create function to mock
     def foo(x: float, y: float) -> float:
