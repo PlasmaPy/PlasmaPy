@@ -16,7 +16,6 @@ Sub-Packages & Modules
    collisions
    dielectric
    dimensionless
-   dispersionfunction
    distribution
    drifts
    ionization

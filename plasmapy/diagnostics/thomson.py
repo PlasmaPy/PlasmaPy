@@ -189,7 +189,7 @@ def spectral_density(
         Te = np.repeat(Te, len(efract))
     elif Te.size != len(efract):
         raise ValueError(
-            f"Got {Te.size} electron temperatures and expected " f"{len(efract)}."
+            f"Got {Te.size} electron temperatures and expected {len(efract)}."
         )
 
     # Condition Ti
@@ -199,7 +199,7 @@ def spectral_density(
         Ti = [Ti.value] * len(ion_species) * Ti.unit
     elif Ti.size != len(ion_species):
         raise ValueError(
-            f"Got {Ti.size} ion temperatures and expected " f"{len(ion_species)}."
+            f"Got {Ti.size} ion temperatures and expected {len(ion_species)}."
         )
 
     # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match

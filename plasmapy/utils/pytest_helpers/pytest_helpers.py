@@ -18,16 +18,16 @@ import warnings
 
 from typing import Any, Callable, Dict
 
+from plasmapy.tests.helpers.exceptions import (
+    InvalidTestError,
+    MissingExceptionFail,
+    MissingWarningFail,
+    TypeMismatchFail,
+    UnexpectedExceptionFail,
+    UnexpectedResultFail,
+)
 from plasmapy.utils.error_messages import _exc_str, _represent_result, call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
-from plasmapy.utils.pytest_helpers.exceptions import (
-    InconsistentTypeError,
-    InvalidTestError,
-    MissingExceptionError,
-    MissingWarningError,
-    UnexpectedExceptionError,
-    UnexpectedResultError,
-)
 
 # These colors/styles are used to highlight certain parts of the error
 # messages in consistent ways.
@@ -130,22 +130,22 @@ def run_test(
 
     Raises
     ------
-    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
         If the test returns a result that is different from the expected
         result.
 
-    ~plasmapy.utils.pytest_helpers.InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.TypeMismatchFail
         If the actual result is of a different type than the expected
         result.
 
-    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
         If an exception occurs when no exception or a different
         exception is expected.
 
-    ~plasmapy.utils.pytest_helpers.MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionFail
         If no exception is raised when an exception is expected.
 
-    ~plasmapy.utils.pytest_helpers.MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningFail
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -295,7 +295,7 @@ def run_test(
             if resulting_exception.__name__ == expected_exception.__name__:
                 return None
             else:
-                raise UnexpectedExceptionError(
+                raise UnexpectedExceptionFail(
                     f"The command {call_str} did not specifically raise "
                     f"{_exc_str(expected_exception)} as expected, but "
                     f"instead raised {_exc_str(resulting_exception)} "
@@ -303,13 +303,13 @@ def run_test(
                 )
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
-            raise UnexpectedExceptionError(
+            raise UnexpectedExceptionFail(
                 f"The command {call_str} did not raise "
                 f"{_exc_str(expected_exception)} as expected, "
                 f"but instead raised {_exc_str(unexpected_exception)}."
             ) from exc_unexpected_exception
         else:
-            raise MissingExceptionError(
+            raise MissingExceptionFail(
                 f"The command {call_str} did not raise "
                 f"{_exc_str(expected_exception)} as expected, but instead "
                 f"returned {_represent_result(result)}."
@@ -319,13 +319,13 @@ def run_test(
         with pytest.warns(expected["warning"]):
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
-        raise MissingWarningError(
+        raise MissingWarningFail(
             f"The command {call_str} should issue "
             f"{_exc_str(expected['warning'])}, but instead returned "
             f"{_represent_result(result)}."
         ) from missing_warning
     except Exception as exception_no_warning:
-        raise UnexpectedExceptionError(
+        raise UnexpectedExceptionFail(
             f"The command {call_str} unexpectedly raised "
             f"{_exc_str(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of "
@@ -377,7 +377,7 @@ def run_test(
         return None
 
     if type(result) != type(expected["result"]):
-        raise InconsistentTypeError(
+        raise TypeMismatchFail(
             f"The command {call_str} returned "
             f"{_represent_result(result)} which has type "
             f"{_represent_result(type(result), color=_type_color)}, "
@@ -424,7 +424,7 @@ def run_test(
             errmsg += f"rtol = {rtol}"
     errmsg += "."
 
-    raise UnexpectedResultError(errmsg)
+    raise UnexpectedResultFail(errmsg)
 
 
 def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
@@ -445,16 +445,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.utils.pytest_helpers.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
         If not all of the results are equivalent, or not all of the
         results are of the same type and `require_same_type` evaluates
         to `True`.
 
-    ~plasmapy.utils.pytest_helpers.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.utils.pytest_helpers.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -598,7 +598,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
             test_case["result"] = f(*args, **kwargs)
             test_case["type"] = type(test_case["result"])
         except Exception as exc:
-            raise UnexpectedExceptionError(
+            raise UnexpectedExceptionFail(
                 f"Unable to evaluate {test_case['call string']}."
             )
 
@@ -611,7 +611,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     try:
         equals_first_result = [result == results[0] for result in results]
     except Exception as exc:  # coverage: ignore
-        raise UnexpectedExceptionError(
+        raise UnexpectedExceptionFail(
             f"Unable to determine equality properties of results."
         ) from exc
 
@@ -633,7 +633,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
                 f"of type {test_case['type']}"
             )
 
-        raise UnexpectedResultError(errmsg)
+        raise UnexpectedResultFail(errmsg)
 
 
 def assert_can_handle_nparray(
@@ -655,22 +655,22 @@ def assert_can_handle_nparray(
         `["coulomb_log"]`
         `["characteristic_length"]`
 
-    insert_some_nans: list
+    insert_some_nans: `list`
         List of argument names in which to insert some np.nan values.
         These must be arguments that will be tested as vectors as listed
         above.
 
-    insert_all_nans: list
+    insert_all_nans: `list`
         List of argument names to fill entirely with np.nan values.
 
-    kwargs: dict
+    kwargs: `dict`
         Arguments to pass directly to the function in under test, in the
         normal kwargs python dictionary format.
 
     Raises
     ------
     ValueError
-        If this function cannot interpret a parameter of function_to_test,
+        If this function cannot interpret a parameter of function_to_test.
 
     Examples
     --------
