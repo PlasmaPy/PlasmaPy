@@ -8,7 +8,7 @@ In addition to the `~plasmapy.particles.Particle` class, the
 
 .. _particles-func-symbols:
 
-Symbols and Names
+Symbols and names
 =================
 
 Several functions in `~plasmapy.particles` return string representations
@@ -36,7 +36,7 @@ The full symbol of the particle can be found using
 
 .. _particles-func-properties:
 
-Particle Properties
+Particle properties
 ===================
 
 The `~plasmapy.particles.atomic_number` and `~plasmapy.particles.mass_number`
@@ -127,7 +127,7 @@ half-life as a `~astropy.units.Quantity` in units of seconds, if known.
 <Quantity 881.5 s>
 
 For stable particles (or particles that have not been discovered to be
-unstable), `~plasmapy.particles.half_life` returns infinity seconds.
+unstable), `~plasmapy.particles.half_life` returns `~numpy.inf` seconds.
 
 >>> half_life('p+')
 <Quantity inf s>
@@ -136,8 +136,8 @@ If the particle's half-life is not known to sufficient precision, then
 `~plasmapy.particles.half_life` returns a `str` with the estimated value
 while issuing a `~plasmapy.particles.exceptions.MissingAtomicDataWarning`.
 
-Additional Properties
-=====================
+Reduced mass
+============
 
 The `~plasmapy.particles.reduced_mass` function is useful in cases of
 two-body collisions.
