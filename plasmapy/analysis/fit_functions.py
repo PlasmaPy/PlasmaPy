@@ -641,27 +641,27 @@ class Exponential(AbstractFitFunction):
 
     .. math::
 
-        y &= f(x) = A \\, e^{\\alpha \\, x}
+        y &= f(x) = a \\, e^{\\alpha \\, x}
 
         \\left( \\frac{\\delta y}{|y|} \\right)^2 &=
-            \\left( \\frac{\\delta A}{A} \\right)^2
+            \\left( \\frac{\\delta a}{a} \\right)^2
             + (x \\, \\delta \\alpha)^2
             + (\\alpha \\, \\delta x)^2
 
-    where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
-    :math:`x` is the independent variable.  :math:`\\delta A`,
+    where :math:`a` and :math:`\\alpha` are the real constants to be fitted and
+    :math:`x` is the independent variable.  :math:`\\delta a`,
     :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
-    uncertainties for :math:`A`, :math:`\\alpha`, and :math:`x`.
+    uncertainties for :math:`a`, :math:`\\alpha`, and :math:`x`.
     """
 
     _param_names = ("a", "alpha")
 
     def __str__(self):
-        return f"f(x) = A exp(alpha x)"
+        return f"f(x) = a exp(alpha x)"
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha x)"
+        return fr"a \, \exp(\alpha x)"
 
     def func(self, x, a, alpha):
         """
@@ -669,9 +669,9 @@ class Exponential(AbstractFitFunction):
 
         .. math::
 
-            f(x) = A \\, e^{\\alpha \\, x}
+            f(x) = a \\, e^{\\alpha \\, x}
 
-        where :math:`A` and :math:`\\alpha` are real constants and :math:`x`
+        where :math:`a` and :math:`\\alpha` are real constants and :math:`x`
         is the independent variable.
 
         Parameters
@@ -680,7 +680,7 @@ class Exponential(AbstractFitFunction):
             Independent variable.
 
         a: float
-            value for the exponential "normalization" constant, :math:`A`
+            value for the exponential "normalization" constant, :math:`a`
 
         alpha: float
             value for the growth constant, :math:`\\alpha`
@@ -705,7 +705,7 @@ class Exponential(AbstractFitFunction):
         .. math::
 
             \\left( \\frac{\\delta y}{|y|} \\right)^2 =
-                \\left( \\frac{\\delta A}{A} \\right)^2
+                \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
 
@@ -767,21 +767,21 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     .. math::
 
-        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        y =& f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
         (\\delta y)^2 =&
-            \\left( A e^{\\alpha x}\\right)^2 \\left[
-                \\left( \\frac{\\delta A}{A} \\right)^2
+            \\left( a e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
             \\right]\\\\
-            & + \\left(2 \\, A \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+            & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
                 (\\delta x)^2\\\\
             & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
 
-    where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
     constants to be fitted and :math:`x` is the independent variable.
-    :math:`\\delta A`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
-    and :math:`\\delta x` are the respective uncertainties for :math:`A`,
+    :math:`\\delta a`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
+    and :math:`\\delta x` are the respective uncertainties for :math:`a`,
     :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
     """
 
@@ -826,9 +826,9 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
         .. math::
 
-            f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+            f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
 
-        where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+        where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
         constants and :math:`x` is the independent variable.
 
         Parameters
@@ -837,7 +837,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
             Independent variable.
 
         a: float
-            value for constant :math:`A`
+            value for constant :math:`a`
 
         alpha: float
             value for constant :math:`\\alpha`
@@ -867,12 +867,12 @@ class ExponentialPlusLinear(AbstractFitFunction):
         .. math::
 
             (\\delta y)^2 =&
-                \\left( A e^{\\alpha x}\\right)^2 \\left[
-                    \\left( \\frac{\\delta A}{A} \\right)^2
+                \\left( a e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta a}{a} \\right)^2
                     + (x \\, \\delta \\alpha)^2
                     + (\\alpha \\, \\delta x)^2
                 \\right]\\\\
-                & + \\left(2 \\, A \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+                & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
                     (\\delta x)^2\\\\
                 & + \\left[(
                         x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
@@ -905,20 +905,20 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     .. math::
 
-        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        y =& f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
         (\\delta y)^2 =&
-            \\left( A e^{\\alpha x}\\right)^2 \\left[
-                \\left( \\frac{\\delta A}{A} \\right)^2
+            \\left( a e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
             \\right]
             + (\\delta b)^2
 
 
-    where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants to
-    be fitted and :math:`x` is the independent variable.  :math:`\\delta A`,
+    where :math:`a`, :math:`\\alpha`, and :math:`b` are the real constants to
+    be fitted and :math:`x` is the independent variable.  :math:`\\delta a`,
     :math:`\\delta \\alpha`, :math:`\\delta b`, and :math:`\\delta x` are the
-    respective uncertainties for :math:`A`, :math:`\\alpha`, and :math:`b`, and
+    respective uncertainties for :math:`a`, :math:`\\alpha`, and :math:`b`, and
     :math:`x`.
 
     """
@@ -932,11 +932,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
         super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        return f"f(x) = A exp(alpha x) + b"
+        return f"f(x) = a exp(alpha x) + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha x) + b"
+        return fr"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
@@ -964,9 +964,9 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         .. math::
 
-            f(x) = A \\, e^{\\alpha \\, x} + b\\\\
+            f(x) = a \\, e^{\\alpha \\, x} + b\\\\
 
-        where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants
+        where :math:`a`, :math:`\\alpha`, and :math:`b` are the real constants
         and :math:`x` is the independent variable.
 
         Parameters
@@ -975,7 +975,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Independent variable.
 
         a: float
-            value for constant :math:`A`
+            value for constant :math:`a`
 
         alpha: float
             value for constant :math:`\\alpha`
@@ -1000,8 +1000,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
         .. math::
 
             (\\delta y)^2 =
-                \\left( A e^{\\alpha x}\\right)^2 \\left[
-                    \\left( \\frac{\\delta A}{A} \\right)^2
+                \\left( a e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta a}{a} \\right)^2
                     + (x \\, \\delta \\alpha)^2
                     + (\\alpha \\, \\delta x)^2
                 \\right]
@@ -1016,10 +1016,10 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         .. math::
 
-            x_r &= \\frac{1}{\\alpha} \\ln \\left( \\frac{-b}{A} \\right)
+            x_r &= \\frac{1}{\\alpha} \\ln \\left( \\frac{-b}{a} \\right)
 
             \\delta x_r &= \\sqrt{
-                \\left( \\frac{1}{\\alpha} \\frac{\\delta A}{A} \\right)^2
+                \\left( \\frac{1}{\\alpha} \\frac{\\delta a}{a} \\right)^2
                 + \\left( x_r \\frac{\\delta \\alpha}{\\alpha} \\right)^2
                 + \\left( \\frac{1}{\\alpha} \\frac{\\delta b}{b} \\right)^2
             }
