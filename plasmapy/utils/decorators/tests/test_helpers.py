@@ -18,7 +18,7 @@ class TestModifyDocstring:
         return x + y
 
     @staticmethod
-    def foo_complex(x: float, y: float) -> float:
+    def func_complex_docstring(x: float, y: float) -> float:
         """
         A simple docstring.
 
@@ -64,7 +64,7 @@ class TestModifyDocstring:
         "prepend, append, func_name, additions",
         [
             ("Hello", "Goodbye", "func_simple_docstring", (["Hello", ""], ["", "Goodbye"])),
-            ("Hello", "Goodbye", "foo_complex", (["Hello", ""], ["", "Goodbye"])),
+            ("Hello", "Goodbye", "func_complex_docstring", (["Hello", ""], ["", "Goodbye"])),
             ("Hello", None, "func_simple_docstring", (["Hello", ""], [])),
             (None, "Goodbye", "func_simple_docstring", ([], ["", "Goodbye"])),
             (
@@ -86,7 +86,7 @@ class TestModifyDocstring:
                         "            * item 2",
                     ]
                 ),
-                "func_simple_docstring",
+                "func_complex_docstring",
                 ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"]),
             ),
         ],
