@@ -118,14 +118,6 @@ class AbstractFitFunction(ABC):
         independent variable followed by the parameters to be fitted as
         separate arguments.
 
-        When sub-classing the definition should look something like::
-
-            def func(self, x, a, b, c):
-                x = self._check_x(x)
-                self._check_params(a, b, c)
-
-                return a * x ** 2 + b * x + c
-
         Parameters
         ----------
         x: array_like
@@ -138,6 +130,16 @@ class AbstractFitFunction(ABC):
         -------
         `numpy.ndarray`:
             The calculated dependent variables of the independent variables ``x``.
+
+        Notes
+        -----
+        * When sub-classing the definition should look something like::
+
+            def func(self, x, a, b, c):
+                x = self._check_x(x)
+                self._check_params(a, b, c)
+
+                return a * x ** 2 + b * x + c
         """
         ...
 
