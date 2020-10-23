@@ -37,9 +37,9 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         ...     '''Beautiful'''
         ...     pass
         >>> foo.__original_doc__
-        "Beautiful"
+        'Beautiful'
         >>> foo.__doc__
-        "Hello\\n\\nBeautiful\\n\\nWorld"
+        'Hello\\n\\nBeautiful\\n\\nWorld'
 
     """
 
