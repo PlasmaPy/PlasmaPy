@@ -11,9 +11,8 @@ interface to access and represent particle information.
 Creating a `~plasmapy.particles.Particle` object
 ================================================
 
-The simplest way to create an instance of the
-`~plasmapy.particles.Particle` class is to pass it a `str` representing a
-particle.
+The simplest way to create a `~plasmapy.particles.Particle` object
+is to pass it a `str` representing a particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
@@ -39,12 +38,12 @@ keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used `~plasmapy.particles.Particle` instances may be
+The most frequently used `~plasmapy.particles.Particle`s may be
 imported directly from the atomic subpackage.
 
 >>> from plasmapy.particles import proton, electron
 
-The `~plasmapy.particles.Particle` instances that may be imported
+The `~plasmapy.particles.Particle` objects that may be imported
 directly are: ``proton``, ``electron``, ``neutron``, ``positron``,
 ``deuteron``, ``triton``, and ``alpha``.
 
@@ -54,7 +53,7 @@ Accessing particle properties
 =============================
 
 The properties of each particle may be accessed using the attributes of
-the `~plasmapy.particles.Particle` instance.
+the corresponding `~plasmapy.particles.Particle` object.
 
 >>> proton.atomic_number
 1
@@ -141,8 +140,8 @@ Conditionals and equality properties
 ====================================
 
 Equality between particles may be tested either between two
-`~plasmapy.particles.Particle` instances, or between a
-`~plasmapy.particles.Particle` instance and a `str`.
+`~plasmapy.particles.Particle` objects, or between a
+`~plasmapy.particles.Particle` object and a `str`.
 
 >>> Particle('H-1') == Particle('protium 1+')
 False
