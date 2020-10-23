@@ -2,7 +2,8 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.utils.formatting import (
+from plasmapy.utils.formatting.formatting import (
+    _string_together_warnings_for_printing,
     attribute_call_string,
     call_string,
     method_call_string,
@@ -98,3 +99,13 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
     """Test that `attribute_call_string` returns the expected results."""
     actual = attribute_call_string(SampleClass, "attr", c_args, c_kwargs)
     assert expected == actual
+
+
+def test_stringing_together_warning():
+    """Test that warning names and messages get strung together correctly."""
+    warnings = [UserWarning, DeprecationWarning]
+    warning_messages = ["msg1", "msg2"]
+    expected = "UserWarning: msg1\n\nDeprecationWarning: msg2"
+    assert (
+        _string_together_warnings_for_printing(warnings, warning_messages) == expected
+    )
