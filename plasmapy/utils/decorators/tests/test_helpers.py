@@ -49,11 +49,7 @@ class TestModifyDocstring:
         assert wfoo.__original_doc__ == original_doc
 
     @pytest.mark.parametrize(
-        "prepend, append, expected",
-        [
-            (5, None, TypeError),
-            (None, 5, TypeError),
-        ],
+        "prepend, append, expected", [(5, None, TypeError), (None, 5, TypeError)],
     )
     def test_raises(self, prepend, append, expected):
         with pytest.raises(expected):
@@ -72,33 +68,35 @@ class TestModifyDocstring:
             ("Hello", None, "foo_simple", (["Hello", ""], [])),
             (None, "Goodbye", "foo_simple", ([], ["", "Goodbye"])),
             (
-                "\n".join(["    Hello",
-                           "    ",
-                           "        * item 1",
-                           "            * item 2"]),
+                "\n".join(
+                    ["    Hello", "    ", "        * item 1", "            * item 2"]
+                ),
                 None,
                 "foo_simple",
-                (["Hello", "", "* item 1", "    * item 2", ""], [])
+                (["Hello", "", "* item 1", "    * item 2", ""], []),
             ),
             (
                 None,
-                "\n".join(["    Notes",
-                           "    -----",
-                           "    ",
-                           "        * item 1",
-                           "            * item 2"]),
-
+                "\n".join(
+                    [
+                        "    Notes",
+                        "    -----",
+                        "    ",
+                        "        * item 1",
+                        "            * item 2",
+                    ]
+                ),
                 "foo_simple",
-                ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"])
+                ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"]),
             ),
         ],
     )
     def test_modification(self, prepend, append, func_name, additions):
         func = getattr(self, func_name)
 
-        expected = "\n".join(additions[0]
-                             + inspect.cleandoc(func.__doc__).splitlines()
-                             + additions[1])
+        expected = "\n".join(
+            additions[0] + inspect.cleandoc(func.__doc__).splitlines() + additions[1]
+        )
 
         wfunc = modify_docstring(prepend=prepend, append=append)(func)
         assert wfunc.__doc__ == expected
