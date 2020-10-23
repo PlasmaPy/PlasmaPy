@@ -13,7 +13,7 @@ from ..helpers import modify_docstring, preserve_signature
 class TestModifyDocstring:
     # create function to test on
     @staticmethod
-    def foo_simple(x: float, y: float) -> float:
+    def func_simple_docstring(x: float, y: float) -> float:
         """A simple docstring."""
         return x + y
 
@@ -40,11 +40,11 @@ class TestModifyDocstring:
     def test_no_arg_exception(self):
         """Raise exception if decorator is used without modifying docstring."""
         with pytest.raises(TypeError):
-            modify_docstring(self.foo_simple)
+            modify_docstring(self.func_simple_docstring)
 
     def test_save_original_doc(self):
-        original_doc = self.foo_simple.__doc__
-        wfoo = modify_docstring(prepend="Hello")(self.foo_simple)
+        original_doc = self.func_simple_docstring.__doc__
+        wfoo = modify_docstring(prepend="Hello")(self.func_simple_docstring)
         assert hasattr(wfoo, "__original_doc__")
         assert wfoo.__original_doc__ == original_doc
 
@@ -53,26 +53,26 @@ class TestModifyDocstring:
     )
     def test_raises(self, prepend, append, expected):
         with pytest.raises(expected):
-            modify_docstring(prepend=prepend, append=append, func=self.foo_simple)
+            modify_docstring(prepend=prepend, append=append, func=self.func_simple_docstring)
 
     def test_preserve_signature(self):
-        wfoo = modify_docstring(prepend="Hello")(self.foo_simple)
+        wfoo = modify_docstring(prepend="Hello")(self.func_simple_docstring)
         assert hasattr(wfoo, "__signature__")
-        assert wfoo.__signature__ == inspect.signature(self.foo_simple)
+        assert wfoo.__signature__ == inspect.signature(self.func_simple_docstring)
 
     @pytest.mark.parametrize(
         "prepend, append, func_name, additions",
         [
-            ("Hello", "Goodbye", "foo_simple", (["Hello", ""], ["", "Goodbye"])),
+            ("Hello", "Goodbye", "func_simple_docstring", (["Hello", ""], ["", "Goodbye"])),
             ("Hello", "Goodbye", "foo_complex", (["Hello", ""], ["", "Goodbye"])),
-            ("Hello", None, "foo_simple", (["Hello", ""], [])),
-            (None, "Goodbye", "foo_simple", ([], ["", "Goodbye"])),
+            ("Hello", None, "func_simple_docstring", (["Hello", ""], [])),
+            (None, "Goodbye", "func_simple_docstring", ([], ["", "Goodbye"])),
             (
                 "\n".join(
                     ["    Hello", "    ", "        * item 1", "            * item 2"]
                 ),
                 None,
-                "foo_simple",
+                "func_simple_docstring",
                 (["Hello", "", "* item 1", "    * item 2", ""], []),
             ),
             (
@@ -86,7 +86,7 @@ class TestModifyDocstring:
                         "            * item 2",
                     ]
                 ),
-                "foo_simple",
+                "func_simple_docstring",
                 ([], ["", "Notes", "-----", "", "    * item 1", "        * item 2"]),
             ),
         ],
@@ -102,7 +102,7 @@ class TestModifyDocstring:
         assert wfunc.__doc__ == expected
 
     def test_arguments_passed(self):
-        wfunc = modify_docstring(prepend="Hello")(self.foo_simple)
+        wfunc = modify_docstring(prepend="Hello")(self.func_simple_docstring)
         assert wfunc(5, 4) == 9
 
 
