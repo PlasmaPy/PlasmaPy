@@ -53,7 +53,9 @@ class TestModifyDocstring:
     )
     def test_raises(self, prepend, append, expected):
         with pytest.raises(expected):
-            modify_docstring(prepend=prepend, append=append, func=self.func_simple_docstring)
+            modify_docstring(
+                prepend=prepend, append=append, func=self.func_simple_docstring
+            )
 
     def test_preserve_signature(self):
         wfoo = modify_docstring(prepend="Hello")(self.func_simple_docstring)
@@ -63,8 +65,18 @@ class TestModifyDocstring:
     @pytest.mark.parametrize(
         "prepend, append, func_name, additions",
         [
-            ("Hello", "Goodbye", "func_simple_docstring", (["Hello", ""], ["", "Goodbye"])),
-            ("Hello", "Goodbye", "func_complex_docstring", (["Hello", ""], ["", "Goodbye"])),
+            (
+                "Hello",
+                "Goodbye",
+                "func_simple_docstring",
+                (["Hello", ""], ["", "Goodbye"]),
+            ),
+            (
+                "Hello",
+                "Goodbye",
+                "func_complex_docstring",
+                (["Hello", ""], ["", "Goodbye"]),
+            ),
             ("Hello", None, "func_simple_docstring", (["Hello", ""], [])),
             (None, "Goodbye", "func_simple_docstring", ([], ["", "Goodbye"])),
             (
