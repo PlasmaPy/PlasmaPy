@@ -350,8 +350,8 @@ class TestFFExponential(BaseFFTests):
         foo = self.ff_class()
 
         assert foo.param_names == ("a", "alpha")
-        assert foo.latex_str == fr"A \, \exp(\alpha x)"
-        assert foo.__str__() == f"f(x) = A exp(alpha x)"
+        assert foo.latex_str == fr"a \, \exp(\alpha x)"
+        assert foo.__str__() == f"f(x) = a exp(alpha x)"
 
     def test_root_solve(self):
         foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
@@ -404,8 +404,8 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         foo = self.ff_class()
 
         assert foo.param_names == ("a", "alpha", "m", "b")
-        assert foo.latex_str == fr"A \, \exp(\alpha x) + m x + b"
-        assert foo.__str__() == f"f(x) = A exp(alpha x) + m x + b"
+        assert foo.latex_str == fr"a \, \exp(\alpha x) + m x + b"
+        assert foo.__str__() == f"f(x) = a exp(alpha x) + m x + b"
 
     def test_root_solve(self):
         foo = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
@@ -454,8 +454,8 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         foo = self.ff_class()
 
         assert foo.param_names == ("a", "alpha", "b")
-        assert foo.latex_str == fr"A \, \exp(\alpha x) + b"
-        assert foo.__str__() == f"f(x) = A exp(alpha x) + b"
+        assert foo.latex_str == fr"a \, \exp(\alpha x) + b"
+        assert foo.__str__() == f"f(x) = a exp(alpha x) + b"
 
     def test_root_solve(self):
         foo = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
