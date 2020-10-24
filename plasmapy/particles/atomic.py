@@ -230,7 +230,7 @@ def particle_mass(
     `~plasmapy.utils.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `~plasmapy.utils.MissingParticleDataError`
+    `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the standard atomic weight, the isotope mass, or the particle
         mass is not available.
 
