@@ -29,7 +29,7 @@ class MissingParticleDataError(ParticleError):
     pass
 
 
-class ParticleChargeError(ParticleError):
+class ChargeError(ParticleError):
     """An exception for incorrect or missing charge information."""
 
     pass
