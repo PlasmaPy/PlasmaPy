@@ -655,13 +655,13 @@ def common_isotopes(
 
     See Also
     --------
-    `~plasmapy.particles.known_isotopes` : returns a list of isotopes
+    ~plasmapy.particles.known_isotopes : returns a list of isotopes
         that have been discovered.
 
-    `~plasmapy.particles.stable_isotopes` : returns isotopes that are
+    ~plasmapy.particles.stable_isotopes : returns isotopes that are
         stable against radioactive decay.
 
-    `~plasmapy.particles.isotopic_abundance` : returns the relative
+    ~plasmapy.particles.isotopic_abundance : returns the relative
          isotopic abundance.
 
     Examples
