@@ -165,7 +165,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     See Also
     --------
-    particle_mass
+    `particle_mass`
 
     Notes
     -----
@@ -233,7 +233,7 @@ def particle_mass(
 
     See Also
     --------
-    ~plasmapy.particles.standard_atomic_weight
+    `~plasmapy.particles.standard_atomic_weight`
 
     Notes
     -----
@@ -354,7 +354,7 @@ def integer_charge(particle: Particle) -> Integral:
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: Particle) -> u.Quantity:
+def electric_charge(particle: Particle) -> u.C:
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -464,7 +464,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
     """
     Return the half-life in seconds for unstable isotopes and particles,
-    and numpy.inf in seconds for stable isotopes and particles.
+    and `~numpy.inf` in seconds for stable isotopes and particles.
 
     Parameters
     ----------
@@ -499,8 +499,8 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     Accurate half-life data is not known for all isotopes. Some isotopes
     may have upper or lower limits on the half-life, in which case this
     function will return a string with that information and issue a
-    `~plasmapy.particles.exceptions.MissingParticleDataError`.  When no isotope
-    information is available, then this function raises a
+    `~plasmapy.particles.exceptions.MissingParticleDataError`.  When no
+    isotope information is available, then this function raises a
     `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
     Examples
@@ -516,8 +516,9 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
 
 def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
-    """Return a list of all known isotopes of an element, or a list
-    of all known isotopes of every element if no input is provided.
+    """
+    Return a list of all known isotopes of an element, or a list of all
+    known isotopes of every element if no input is provided.
 
     Parameters
     ----------
@@ -552,10 +553,10 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     See Also
     --------
-    ~plasmapy.particles.common_isotopes : returns isotopes with non-zero
+    `~plasmapy.particles.common_isotopes` : returns isotopes with non-zero
         isotopic abundances.
 
-    ~plasmapy.particles.stable_isotopes : returns isotopes that are
+    `~plasmapy.particles.stable_isotopes` : returns isotopes that are
         stable against radioactive decay.
 
     Examples
@@ -654,14 +655,14 @@ def common_isotopes(
 
     See Also
     --------
-    ~plasmapy.particles.known_isotopes : returns a list of isotopes that
-        have been discovered.
+    `~plasmapy.particles.known_isotopes` : returns a list of isotopes
+        that have been discovered.
 
-    ~plasmapy.particles.stable_isotopes : returns isotopes that are stable
-        against radioactive decay.
+    `~plasmapy.particles.stable_isotopes` : returns isotopes that are
+        stable against radioactive decay.
 
-    ~plasmapy.particles.isotopic_abundance : returns the relative isotopic
-         abundance.
+    `~plasmapy.particles.isotopic_abundance` : returns the relative
+         isotopic abundance.
 
     Examples
     --------
@@ -774,11 +775,11 @@ def stable_isotopes(
 
     See Also
     --------
-    ~plasmapy.particles.known_isotopes : returns a list of isotopes that
-        have been discovered
+    `~plasmapy.particles.known_isotopes` : returns a list of isotopes
+        that have been discovered
 
-    ~plasmapy.particles.common_isotopes : returns isotopes with non-zero
-        isotopic abundances
+    `~plasmapy.particles.common_isotopes` : returns isotopes with
+        non-zero isotopic abundances
 
     Examples
     --------
@@ -929,10 +930,10 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    ~plasmapy.particles.periodic_table_group : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    ~plasmapy.particles.periodic_table_block : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
     Examples
@@ -981,13 +982,13 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
 
     See Also
     --------
-    ~plasmapy.particles.periodic_table_period : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    ~plasmapy.particles.periodic_table_block : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
-    ~plasmapy.particles.periodic_table_category : returns periodic table
+    `~plasmapy.particles.periodic_table_category` : returns periodic table
         category of element.
 
     Examples
@@ -1038,14 +1039,14 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    ~plasmapy.particles.periodic_table_period : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    ~plasmapy.particles.periodic_table_group : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    ~plasmapy.particles.periodic_table_category : returns periodic table
-        category of element.
+    `~plasmapy.particles.periodic_table_category` : returns periodic
+        table category of element.
 
     Examples
     --------
@@ -1095,13 +1096,13 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
     See Also
     --------
-    ~plasmapy.particles.periodic_table_period : returns periodic table
+    `~plasmapy.particles.periodic_table_period` : returns periodic table
         period of element.
 
-    ~plasmapy.particles.periodic_table_group : returns periodic table
+    `~plasmapy.particles.periodic_table_group` : returns periodic table
         group of element.
 
-    ~plasmapy.particles.periodic_table_block : returns periodic table
+    `~plasmapy.particles.periodic_table_block` : returns periodic table
         block of element.
 
     Examples
