@@ -9,13 +9,11 @@ from typing import Any
 
 def _is_warning(obj) -> bool:
     """Return `True` if the argument is a warning, and `False` otherwise."""
-
     return inspect.isclass(obj) and issubclass(obj, Warning)
 
 
 def _is_exception(obj) -> bool:
     """Return `True` if the argument is an exception, and `False` otherwise."""
-
     if not inspect.isclass(obj):
         return False
     else:
@@ -28,7 +26,6 @@ def _is_warning_and_value(obj) -> bool:
     items: a warning and an `object` that is not a warning; and `False`
     otherwise.
     """
-
     if not isinstance(obj, (list, tuple)) or len(obj) != 2:
         return False
     return _is_warning(obj[0]) ^ _is_warning(obj[1])
@@ -91,7 +88,6 @@ class ExpectedTestOutcome:
     """
 
     def __init__(self, expected):
-
         self.expected_outcome = expected
 
     @property
@@ -101,7 +97,6 @@ class ExpectedTestOutcome:
         a warning, the resulting object, or a tuple that contains
         a warning and the resulting object.
         """
-
         if self.expecting_an_exception:
             return self.expected_exception
         elif self.expecting_a_warning and not self.expecting_a_value:
@@ -113,7 +108,6 @@ class ExpectedTestOutcome:
 
     @expected_outcome.setter
     def expected_outcome(self, expected):
-
         self._info = dict()
         if _is_warning(expected):
             self._info["warning"] = expected
@@ -132,7 +126,6 @@ class ExpectedTestOutcome:
         """
         Return `True` if the test should return a value, and `False` otherwise.
         """
-
         return "value" in self._info.keys()
 
     @property
@@ -141,7 +134,6 @@ class ExpectedTestOutcome:
         If the test is expected to return a value, then return the
         expected value.  Otherwise, raise a `RuntimeError`.
         """
-
         if self.expecting_a_value:
             return self._info["value"]
         else:
@@ -152,7 +144,6 @@ class ExpectedTestOutcome:
         """
         Return `True` if the test should raise an exception, and `False` otherwise.
         """
-
         return "exception" in self._info.keys()
 
     @property
@@ -161,7 +152,6 @@ class ExpectedTestOutcome:
         If an exception is expected to be raised, then return that
         exception. Otherwise, raise a `RuntimeError`.
         """
-
         if self.expecting_an_exception:
             return self._info["exception"]
         else:
@@ -172,7 +162,6 @@ class ExpectedTestOutcome:
         """
         Return `True` if the test should issue a warning, and `False` otherwise.
         """
-
         return "warning" in self._info.keys()
 
     @property
@@ -181,18 +170,15 @@ class ExpectedTestOutcome:
         If the test is expected to issue a warning, then return that warning.
         Otherwise, raise a `RuntimeError`.
         """
-
         if self.expecting_a_warning:
             return self._info["warning"]
         else:
             raise RuntimeError("The test is not expected to issue a warning.")
 
     def __repr__(self):
-
         return f"ExpectedTestOutcome({self.expected_outcome})"
 
     def __str__(self):
-
         return self.__repr__()
 
     def __len__(self):
@@ -201,7 +187,6 @@ class ExpectedTestOutcome:
         outcome.  If ``__len__`` is undefined in the expected value, then
         return ``1``.
         """
-
         if self.expecting_a_value:
             has_a_len = hasattr(self.expected_value, "__len__")
             return len(self.expected_value) if has_a_len else 1
