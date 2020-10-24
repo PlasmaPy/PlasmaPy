@@ -44,8 +44,8 @@ class IonicFraction:
 
     See Also
     --------
-    `~plasmapy.particles.ionization_state.IonizationState`
-    `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+    IonizationState
+    plasmapy.particles.IonizationStateCollection
 
     Examples
     --------
@@ -203,6 +203,11 @@ class IonizationState:
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the particle is invalid.
+
+    See Also
+    --------
+    IonicFraction
+    plasmapy.particles.IonizationStateCollection
 
     Examples
     --------

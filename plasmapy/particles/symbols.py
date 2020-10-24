@@ -55,7 +55,10 @@ def atomic_symbol(element: Particle) -> str:
 
     See Also
     --------
-    element_name, isotope_symbol, ionic_symbol, particle_symbol
+    element_name
+    isotope_symbol
+    ionic_symbol
+    particle_symbol
 
     Notes
     -----
@@ -133,7 +136,9 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     See Also
     --------
-    atomic_symbol, ionic_symbol, particle_symbol
+    atomic_symbol
+    ionic_symbol
+    particle_symbol
 
     Examples
     --------
@@ -198,7 +203,9 @@ def ionic_symbol(
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, particle_symbol
+    atomic_symbol
+    isotope_symbol
+    particle_symbol
 
     Examples
     --------
@@ -262,7 +269,9 @@ def particle_symbol(
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, ionic_symbol
+    atomic_symbol
+    isotope_symbol
+    ionic_symbol
 
     Examples
     --------
@@ -307,7 +316,10 @@ def element_name(element: Particle) -> str:
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, ionic_symbol, particle_symbol
+    atomic_symbol
+    isotope_symbol
+    ionic_symbol
+    particle_symbol
 
     Examples
     --------

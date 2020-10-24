@@ -50,8 +50,7 @@ def nuclear_binding_energy(
     nuclear_reaction_energy : Return the change in
         binding energy during nuclear fusion or fission reactions.
 
-    mass_energy : Return the mass energy of a
-        nucleon or particle.
+    mass_energy : Return the mass energy of a nucleon or particle.
 
     Examples
     --------
@@ -155,8 +154,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See Also
     --------
-    nuclear_binding_energy : finds the binding energy
-        of an isotope
+    nuclear_binding_energy : finds the binding energy of an isotope
 
     Notes
     -----

@@ -69,6 +69,11 @@ class IonizationStateCollection:
     `~plasmapy.particles.exceptions.ParticleError`
         If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
 
+    See Also
+    --------
+    ~plasmapy.particles.ionization_state.IonicFraction
+    ~plasmapy.particles.ionization_state.IonizationState
+
     Examples
     --------
     >>> from astropy import units as u
