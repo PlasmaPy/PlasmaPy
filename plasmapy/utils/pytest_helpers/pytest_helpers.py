@@ -72,7 +72,7 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
     return decorator(wrapped_function)
 
 
-@deprecated(warning=PlasmaPyDeprecationWarning)
+@deprecated(warning_type=PlasmaPyDeprecationWarning)
 @_process_input
 def run_test(
     func,
