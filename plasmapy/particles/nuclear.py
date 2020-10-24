@@ -36,10 +36,10 @@ def nuclear_binding_energy(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the inputs do not correspond to a valid particle.
 
-    `~plasmapy.utils.ParticleError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
     `TypeError`
@@ -67,7 +67,6 @@ def nuclear_binding_energy(
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
     <Quantity 17.589 MeV>
-
     """
     return particle.binding_energy.to(u.J)
 
@@ -96,10 +95,10 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the inputs do not correspond to a valid particle.
 
-    `~plasmapy.utils.ParticleError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
     `TypeError`
@@ -110,7 +109,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
-
     """
     return particle.mass_energy
 
@@ -185,7 +183,6 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343e-13 J>
-
     """
 
     # TODO: Allow for neutrinos, under the assumption that they have no mass.

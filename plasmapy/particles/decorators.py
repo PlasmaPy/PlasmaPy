@@ -32,7 +32,7 @@ def _particle_errmsg(
 ) -> str:
     """
     Return a string with an appropriate error message for an
-    `~plasmapy.utils.InvalidParticleError`.
+    `~plasmapy.particles.exceptions.InvalidParticleError`.
     """
     errmsg = f"In {funcname}, {argname} = {repr(argval)} "
     if mass_numb is not None or Z is not None:
@@ -121,10 +121,11 @@ def particle_input(
     Notes
     -----
     If the annotated argument is named `element`, `isotope`, or `ion`,
-    then the decorator will raise an `~plasmapy.utils.InvalidElementError`,
-    `~plasmapy.utils.InvalidIsotopeError`, or `~plasmapy.utils.InvalidIonError`
-    if the particle does not correspond to an element, isotope, or ion,
-    respectively.
+    then the decorator will raise an
+    `~plasmapy.particles.exceptions.InvalidElementError`,
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
+    `~plasmapy.particles.exceptions.InvalidIonError` if the particle
+    does not correspond to an element, isotope, or ion, respectively.
 
     If exactly one argument is annotated with `~plasmapy.particles.Particle`,
     then the keywords ``Z`` and ``mass_numb`` may be used to specify the
@@ -143,23 +144,23 @@ def particle_input(
         If the number of input elements in a collection do not match the
         number of expected elements.
 
-    `~plasmapy/utils/InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the annotated argument does not correspond to a valid
         particle.
 
-    `~plasmapy/utils/InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If an annotated argument is named ``element``, and the input
         does not correspond to an element, isotope, or ion.
 
-    `~plasmapy/utils/InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If an annotated argument is named ``isotope``, and the input
         does not correspond to an isotope or an ion of an isotope.
 
-    `~plasmapy/utils/InvalidIonError`
+    `~plasmapy.particles.exceptions.InvalidIonError`
         If an annotated argument is named ``ion``, and the input does
         not correspond to an ion.
 
-    `~plasmapy/utils/ChargeError`
+    `~plasmapy.particles.exceptions.ChargeError`
         If ``'charged'`` is in the ``require`` argument and the particle
         is not explicitly charged, or if ``any_of = {'charged',
         'uncharged'}`` and the particle does not have charge information
@@ -231,7 +232,6 @@ def particle_input(
         )
         def selective_function(particle: Particle):
             return particle
-
     """
 
     if exclude is None:
@@ -420,9 +420,10 @@ def particle_input(
 
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
-
-        # Convert the argument to a Particle object if it is not
-        # already one.
+        """
+        Convert the argument to a `~plasmapy.particles.Particle` object
+        if it is not already one.
+        """
 
         if not already_particle:
 

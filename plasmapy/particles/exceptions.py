@@ -1,5 +1,5 @@
 """
-Collection of `Exceptions` and `Warnings` for PlasmaPy particles.
+Collection of exceptions and warnings for `plasmapy.particles`.
 """
 __all__ = [
     "ParticleError",

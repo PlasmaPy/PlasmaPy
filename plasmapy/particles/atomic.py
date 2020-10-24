@@ -59,10 +59,10 @@ def atomic_number(element: Particle) -> Integral:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -83,7 +83,6 @@ def atomic_number(element: Particle) -> Integral:
     2
     >>> atomic_number("oganesson")
     118
-
     """
     return element.atomic_number
 
@@ -106,10 +105,10 @@ def mass_number(isotope: Particle) -> Integral:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `~plasmapy.utils.InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If the argument does not correspond to a valid isotope.
 
     `TypeError`
@@ -131,7 +130,6 @@ def mass_number(isotope: Particle) -> Integral:
     3
     >>> mass_number("alpha")
     4
-
     """
     return isotope.mass_number
 
@@ -156,10 +154,10 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -191,7 +189,6 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     <Quantity 1.6738233e-27 kg>
     >>> standard_atomic_weight("lead")
     <Quantity 3.440636e-25 kg>
-
     """
     # TODO: Put in ReST links into above docstring
     return element.standard_atomic_weight
@@ -227,10 +224,10 @@ def particle_mass(
     `TypeError`
         The argument is not a string, integer, or Quantity.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
-    `~plasmapy.utils.MissingParticleDataError`
+    `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the standard atomic weight, the isotope mass, or the particle
         mass is not available.
 
@@ -247,7 +244,6 @@ def particle_mass(
 
     The masses of neutrinos are not available because primarily upper
     limits are presently known.
-
     """
     return particle.mass
 
@@ -274,10 +270,10 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Raises
     ------
-    `~plasmapy.utils.InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If the argument is a valid particle but not a valid isotope.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
@@ -299,7 +295,6 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
     0.524
     >>> isotopic_abundance('hydrogen', 1)
     0.999885
-
     """
     return isotope.isotopic_abundance
 
@@ -354,7 +349,6 @@ def integer_charge(particle: Particle) -> Integral:
     1
     >>> integer_charge('N-14++')
     2
-
     """
     return particle.integer_charge
 
@@ -377,14 +371,14 @@ def electric_charge(particle: Particle) -> u.Quantity:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
-    `~plasmapy.utils.ChargeError`
+    `~plasmapy.particles.exceptions.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.utils.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If the input represents an ion with an integer charge that is
         below ``-3``.
 
@@ -409,7 +403,6 @@ def electric_charge(particle: Particle) -> u.Quantity:
     <<class 'astropy.constants.codata...'> name='Electron charge' ...>
     >>> electric_charge('H-')
     <Quantity -1.60217662e-19 C>
-
     """
     return particle.charge
 
@@ -436,11 +429,11 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If the arguments correspond to a valid element but not a
         valid isotope.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the arguments do not correspond to a valid particle.
 
     `TypeError`
@@ -459,7 +452,6 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     True
     >>> is_stable("tau+")
     False
-
     """
     if particle.element and not particle.isotope:
         raise InvalidIsotopeError(
@@ -491,7 +483,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
@@ -519,7 +511,6 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     <Quantity 881.5 s>
     >>> half_life('H-1')
     <Quantity inf s>
-
     """
     return particle.half_life
 
@@ -546,10 +537,10 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -577,7 +568,6 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
     >>> len(known_isotopes())  # the number of known isotopes
     3352
-
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -648,10 +638,10 @@ def common_isotopes(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -664,13 +654,13 @@ def common_isotopes(
 
     See Also
     --------
-    ~plasmapy.utils.known_isotopes : returns a list of isotopes that
+    ~plasmapy.particles.known_isotopes : returns a list of isotopes that
         have been discovered.
 
-    ~plasmapy.utils.stable_isotopes : returns isotopes that are stable
+    ~plasmapy.particles.stable_isotopes : returns isotopes that are stable
         against radioactive decay.
 
-    ~plasmapy.utils.isotopic_abundance : returns the relative isotopic
+    ~plasmapy.particles.isotopic_abundance : returns the relative isotopic
          abundance.
 
     Examples
@@ -687,7 +677,6 @@ def common_isotopes(
     ['Fe-56']
     >>> common_isotopes()[0:7]
     ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
-
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -765,10 +754,10 @@ def stable_isotopes(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -808,7 +797,6 @@ def stable_isotopes(
 
     >>> stable_isotopes('U', unstable=True)[:5]  # only first five
     ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
-
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -864,7 +852,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If either particle is invalid.
 
     `~astropy.units.UnitConversionError`
@@ -886,7 +874,6 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     <Quantity 9.104425e-31 kg>
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714286e-27 kg>
-
     """
 
     # TODO: Add discussion on reduced mass and its importance to docstring
@@ -958,7 +945,6 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     6
     >>> periodic_table_period("nitrogen")
     2
-
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, Integral)):
@@ -1016,7 +1002,6 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     18
     >>> periodic_table_group("barium")
     2
-
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, Integral)):
@@ -1074,7 +1059,6 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     'p'
     >>> periodic_table_block("francium")
     's'
-
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, Integral)):
@@ -1130,7 +1114,6 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
     'alkaline earth metal'
     >>> periodic_table_category("rhodium")
     'transition metal'
-
     """
     # TODO: Implement @particle_input
     if not isinstance(argument, (str, Integral)):
