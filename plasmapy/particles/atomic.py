@@ -661,7 +661,7 @@ def common_isotopes(
     ~plasmapy.particles.stable_isotopes : returns isotopes that are
         stable against radioactive decay.
 
-    `~plasmapy.particles.isotopic_abundance` : returns the relative
+    ~plasmapy.particles.isotopic_abundance : returns the relative
          isotopic abundance.
 
     Examples
