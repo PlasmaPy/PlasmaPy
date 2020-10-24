@@ -3,8 +3,6 @@ Collection of exceptions and warnings for `plasmapy.particles`.
 """
 __all__ = [
     "ParticleError",
-    "ParticleTypeError",
-    "ParticleValueError",
     "ParticleWarning",
     "ChargeError",
     "InvalidElementError",
@@ -21,24 +19,6 @@ from plasmapy.utils import PlasmaPyError, PlasmaPyWarning
 
 class ParticleError(PlasmaPyError):
     """Base exception for errors in the `~plasmapy.particles` subpackage."""
-
-    pass
-
-
-class ParticleTypeError(ParticleError, TypeError):
-    """
-    An exception for errors in the `~plasmapy.particles` subpackage
-    caused because an incorrect type was provided.
-    """
-
-    pass
-
-
-class ParticleValueError(ParticleError, ValueError):
-    """
-    An exception for errors in the `~plasmapy.particles` subpackage
-    caused because an incorrect value was provided.
-    """
 
     pass
 
