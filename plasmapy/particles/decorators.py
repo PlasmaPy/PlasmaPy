@@ -103,7 +103,7 @@ def particle_input(
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then an `~plasmapy.utils.ParticleError`
+        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
         will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
