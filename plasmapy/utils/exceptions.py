@@ -94,10 +94,9 @@ class PlasmaPyWarning(Warning):
     pass
 
 
-class PlasmaPyDeprecationWarning(Warning, PlasmaPyWarning):  # coverage: ignore
+class PlasmaPyDeprecationWarning(DeprecationWarning, PlasmaPyWarning):
     """
-    A warning for features to be used in PlasmaPy that have been
-    deprecated.
+    A warning for features in PlasmaPy that have been deprecated.
     """
 
     pass
