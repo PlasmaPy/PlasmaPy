@@ -98,7 +98,7 @@ def particle_input(
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then an `~plasmapy.utils.ParticleError`
+        all of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
         will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
