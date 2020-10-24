@@ -507,7 +507,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     Accurate half-life data is not known for all isotopes. Some isotopes
     may have upper or lower limits on the half-life, in which case this
     function will return a string with that information and issue a
-    `~plasmapy.utils.MissingParticleDataWarning`.  When no isotope
+    `~plasmapy.particles.exceptions.MissingParticleDataError`.  When no isotope
     information is available, then this function raises a
     `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
