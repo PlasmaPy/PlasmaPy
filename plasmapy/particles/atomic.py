@@ -255,7 +255,7 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
     Parameters
     ----------
-    argument: `str` or `int`
+    isotope: `str` or `int`
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
