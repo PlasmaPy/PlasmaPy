@@ -509,7 +509,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
     function will return a string with that information and issue a
     `~plasmapy.utils.MissingParticleDataWarning`.  When no isotope
     information is available, then this function raises a
-    `~plasmapy.utils.MissingParticleDataError`.
+    `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
     Examples
     --------
