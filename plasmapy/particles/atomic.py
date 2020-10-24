@@ -446,7 +446,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     `TypeError`
         If the argument is not a `str` or `int`.
 
-    `~plasmapy.utils.MissingParticleDataError`
+    `~plasmapy.particles.exceptions.MissingParticleDataError`
         If stability information is not available.
 
     Examples
