@@ -11,6 +11,9 @@ Building documentation
 Documentation is built from the master branch on every commit pushed
 to it.
 
+Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST) as its markup language. A primer on reST is available at this `webpage
+<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
+of Sphinx's website.
 
 Using sphinx within the project
 -------------------------------
@@ -35,9 +38,9 @@ Docstrings
 
 * All public classes, methods, and functions should have docstrings.
 
-* PlasmaPy uses the `numpydoc
-  <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
-  standard for docstrings.
+* PlasmaPy uses the `numpydoc standard for docstrings
+  <https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard>`_\
+  .
 
 * Docstrings must be raw string `literals
   <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_

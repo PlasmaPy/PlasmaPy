@@ -99,7 +99,7 @@ class BasicRegistrationFactory:
         ] + additional_validation_functions
 
     def __call__(self, *args, **kwargs):
-        """ Method for running the factory.
+        """Method for running the factory.
 
         Arguments args and kwargs are passed through to the validation
         function and to the constructor for the final type.
@@ -142,7 +142,7 @@ class BasicRegistrationFactory:
         return WidgetType(*args, **kwargs)
 
     def register(self, WidgetType, validation_function=None, is_default=False):
-        """ Register a widget with the factory.
+        """Register a widget with the factory.
 
         If `validation_function` is not specified, tests `WidgetType` for
         existence of any function in in the list `self.validation_functions`,
