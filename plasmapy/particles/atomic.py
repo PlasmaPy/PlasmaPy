@@ -495,7 +495,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
-    `~plasmapy.utils.MissingParticleDataError`
+    `~plasmapy.particles.exceptions.MissingParticleDataError`
         If no half-life data is available for the isotope.
 
     `TypeError`
