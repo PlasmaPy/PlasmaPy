@@ -166,7 +166,7 @@ def particle_input(
         'uncharged'}`` and the particle does not have charge information
         associated with it.
 
-    `~plasmapy.particles.excpetions.ParticleError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If an annotated argument does not meet the criteria set by the
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or

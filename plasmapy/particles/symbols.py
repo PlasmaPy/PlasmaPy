@@ -264,7 +264,7 @@ def particle_symbol(
 
     Warns
     -----
-    `~plasmapy.particles.exceptions.ParticlesWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If redundant mass number or charge information is provided.
 
     See Also

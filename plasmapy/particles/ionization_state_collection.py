@@ -60,7 +60,7 @@ class IonizationStateCollection:
     kappa: `float`, optional, keyword-only
         The value of kappa for a kappa distribution function.
 
-    tol: `float` or `integer`, keyword-only, optional
+    tol: `float` or `integer`, optional, keyword-only
         The absolute tolerance used by `~numpy.isclose` when testing
         normalizations and making comparisons.  Defaults to ``1e-15``.
 
@@ -439,8 +439,8 @@ class IonizationStateCollection:
         Notes
         -----
         The ionic fractions are initialized during instantiation of
-        `~plasmapy.particles.IonizationStateCollection`.  After this, the only way
-        to reset the ionic fractions via the ``ionic_fractions``
+        `~plasmapy.particles.IonizationStateCollection`.  After this, the
+        only way to reset the ionic fractions via the ``ionic_fractions``
         attribute is via a `dict` with elements or isotopes that are a
         superset of the previous elements or isotopes.  However, you may
         use item assignment of the `~plasmapy.particles.IonizationState`
@@ -882,7 +882,7 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        minimum_ionic_fraction: Real
+        minimum_ionic_fraction: `Real`
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
             printed.  Defaults to 0.01.

@@ -314,14 +314,14 @@ def integer_charge(particle: Particle) -> Integral:
 
     Raises
     ------
-    `~plasmapy.particles.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
-    `~plasmapy.particles.ChargeError`
+    `~plasmapy.particles.exceptions.ChargeError`
         If charge information for the particle is not available.
 
-    `~plasmapy.particles.AtomicWarning`
+    `~plasmapy.particles.exceptions.AtomicWarning`
         If the input represents an ion with an integer charge that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
@@ -838,7 +838,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         object, or a `~astropy.units.Quantity` or
         `~astropy.constants.Constant` with units of mass.
 
-    Return
+    Returns
     -------
     reduced_mass : `~astropy.units.Quantity`
         The reduced mass between the test particle and target particle.
