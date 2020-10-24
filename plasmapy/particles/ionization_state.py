@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle, particle_like
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
@@ -32,7 +32,7 @@ class IonicFraction:
 
     Parameters
     ----------
-    ion: `particle_like`
+    ion: `~plasmapy.particles.particle_class.particle_like`
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional
@@ -196,12 +196,12 @@ class IonizationState:
 
     Raises
     ------
-    `~plasmapy.utils.ParticleError`
+    `~plasmapy.particles.exceptions..ParticleError`
         If the ionic fractions are not normalized or contain invalid
         values, or if number density information is provided through
         both ``ionic_fractions`` and ``n_elem``.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the particle is invalid.
 
     Examples

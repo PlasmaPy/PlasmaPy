@@ -66,7 +66,7 @@ class IonizationStateCollection:
 
     Raises
     ------
-    `ParticleError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If `~plasmapy.particles.IonizationStateCollection` cannot be instantiated.
 
     Examples
@@ -444,10 +444,10 @@ class IonizationStateCollection:
 
         Raises
         ------
-        `ParticleError`
+        `~plasmapy.particles.exceptions.ParticleError`
             If the ionic fractions cannot be set.
 
-        TypeError
+        `TypeError`
             If ``inputs`` is not a `list`, `tuple`, or `dict` during
             instantiation, or if ``inputs`` is not a `dict` when it is
             being set.
