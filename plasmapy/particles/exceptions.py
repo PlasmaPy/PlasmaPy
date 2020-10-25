@@ -24,7 +24,10 @@ class ParticleError(PlasmaPyError):
 
 
 class MissingParticleDataError(ParticleError):
-    """An exception for missing atomic or particle data."""
+    """
+    An exception for missing atomic or particle data in the
+    `~plasmapy.particles` subpackage.
+    """
 
     pass
 
