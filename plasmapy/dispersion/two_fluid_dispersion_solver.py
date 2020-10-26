@@ -230,12 +230,12 @@ def two_fluid_dispersion_solution(
     # and direction of propagation
     for (j, key) in zip(range(3), keys):
         # The solution corresponding to equation 38
-        omega[key] = omega_ci * np.sqrt(
+        omega[key] = omega_ci * np.lib.scimath.sqrt(
             2
             * Lambda
             * np.sqrt(-p / 3)
             * np.cos(
-                1 / 3 * np.arccos(3 * q / (2 * p) * np.sqrt(-3 / p)) - 2 * np.pi / 3 * j
+                1 / 3 * np.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2 * np.pi / 3 * j
             )
             + Lambda * A / 3
         )
