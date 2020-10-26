@@ -1,7 +1,6 @@
 __all__ = ["two_fluid_dispersion_solution"]
 
 import astropy.units as u
-import cmath
 import numpy as np
 
 
@@ -235,7 +234,8 @@ def two_fluid_dispersion_solution(
             * Lambda
             * np.sqrt(-p / 3)
             * np.cos(
-                1 / 3 * np.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2 * np.pi / 3 * j
+            1 / 3 * np.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2
+            * np.pi / 3 * j
             )
             + Lambda * A / 3
         )
