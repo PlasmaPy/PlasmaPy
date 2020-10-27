@@ -234,7 +234,7 @@ def two_fluid_dispersion_solution(
     for (ind, key) in zip(range(3), keys):
         # The solution corresponding to equation 38
         omega[key] = omega_ci * np.lib.scimath.sqrt(
-            R * np.cos(1 / 3 * np.lib.scimath.arccos(S) - 2 * np.pi / 3 * ind ) + T
+            R * np.cos(1 / 3 * np.lib.scimath.arccos(S) - 2 * np.pi / 3 * ind) + T
         )
 
     return omega
