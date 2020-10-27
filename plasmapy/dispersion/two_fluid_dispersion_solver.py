@@ -218,6 +218,10 @@ def two_fluid_dispersion_solution(
     p = (3 * B - A ** 2) / 3
     q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
+    R = 2 * Lambda * np.lib.scimath.sqrt(-p / 3)
+    S = 3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)
+    T = Lambda * A / 3
+
     # List out the three wave modes for which this function gives the
     # frequencies
     keys = ["fast_mode", "alfven_mode", "acoustic_mode"]
@@ -227,17 +231,10 @@ def two_fluid_dispersion_solution(
 
     # Compute the value of  omega for each key and for each value of wavenumber
     # and direction of propagation
-    for (j, key) in zip(range(3), keys):
+    for (ind, key) in zip(range(3), keys):
         # The solution corresponding to equation 38
         omega[key] = omega_ci * np.lib.scimath.sqrt(
-            2
-            * Lambda
-            * np.sqrt(-p / 3)
-            * np.cos(
-            1 / 3 * np.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2
-            * np.pi / 3 * j
-            )
-            + Lambda * A / 3
+            R * np.cos(1 / 3 * np.lib.scimath.arccos(S) - 2 * np.pi / 3 * ind ) + T
         )
 
     return omega
