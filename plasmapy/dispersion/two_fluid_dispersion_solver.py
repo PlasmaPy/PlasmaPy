@@ -234,7 +234,7 @@ def two_fluid_dispersion_solution(
             * Lambda
             * np.sqrt(-p / 3)
             * np.cos(
-            1 / 3 * np.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2
+            1 / 3 * np.lib.scimath.arccos(3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)) - 2
             * np.pi / 3 * j
             )
             + Lambda * A / 3
