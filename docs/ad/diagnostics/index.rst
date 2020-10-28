@@ -2,9 +2,9 @@
 
 .. _diagnostics:
 
-*******************************************
-Plasma diagnostics (`plasmapy.diagnostics`)
-*******************************************
+======================
+`plasmapy.diagnostics`
+======================
 
 .. automodapi:: plasmapy.diagnostics
    :no-heading:

@@ -14,24 +14,26 @@ import numpy as np
 
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from scipy.stats import linregress
 from scipy.optimize import curve_fit, fsolve
+from scipy.stats import linregress
 from typing import Tuple, Union
+
+from plasmapy.utils.decorators import modify_docstring
+
+#: Named tuple for :meth:`AbstractFitFunction.root_solve`.
+_RootResults = namedtuple("RootResults", ("root", "err"))
 
 
 class AbstractFitFunction(ABC):
     """
     Abstract class for defining fit functions :math:`f(x)` and the tools for
-    fitting the function to a set of data.  These were originally designed for
-    assisting in fitting curves to swept Langmuir data.
+    fitting the function to a set of data.
     """
 
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
     def __init__(
-            self,
-            params: Tuple[float, ...] = None,
-            param_errors: Tuple[float, ...] = None,
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
     ):
         """
         Parameters
@@ -48,7 +50,7 @@ class AbstractFitFunction(ABC):
 
         self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
         """
-        A named tuple class used for attributes :attr:`params` and 
+        A `~collections.namedtuple` used for attributes :attr:`params` and
         :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
         the tuple field names.
         """
@@ -63,9 +65,8 @@ class AbstractFitFunction(ABC):
         else:
             self.param_errors = param_errors
 
-        self._covariance_matrix = None
-        self._rsq = None
         self._curve_fit_results = None
+        self._rsq = None
 
     def __call__(self, x, x_err=None, reterr=False):
         """
@@ -77,8 +78,8 @@ class AbstractFitFunction(ABC):
             Dependent variables.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         reterr: bool, optional
             (Default: `False`) If `True`, return an array of uncertainties
@@ -88,21 +89,14 @@ class AbstractFitFunction(ABC):
         -------
         y: `numpy.ndarray`
             Corresponding dependent variables :math:`y=f(x)` of the independent
-            variables :math:`x`.
+            variables ``x``.
 
         y_err: `numpy.ndarray`
             Uncertainties associated with the calculated dependent variables
             :math:`\\delta y`
         """
-        if not isinstance(x, np.ndarray):
-            x = np.array(x)
-
         if reterr:
-            try:
-                y_err, y = self.func_err(x, x_err=x_err, rety=True)
-            except NotImplementedError:
-                y = self.func(x, *self.params)
-                y_err = np.tile(np.nan, x.shape)
+            y_err, y = self.func_err(x, x_err=x_err, rety=True)
 
             return y, y_err
 
@@ -115,50 +109,80 @@ class AbstractFitFunction(ABC):
 
     @abstractmethod
     def __str__(self):
-        raise NotImplementedError
+        ...
 
-    @staticmethod
     @abstractmethod
-    def func(x, *args):
+    def func(self, x, *args):
         """
         The fit function.  This signature of the function must first take the
         independent variable followed by the parameters to be fitted as
         separate arguments.
-
-        When sub-classing the definition should look something like::
-
-            def func(x, a, b, c):
-                return a * x ** 2 + b * x + c
 
         Parameters
         ----------
         x: array_like
             Independent variables to be passed to the fit function.
 
-        *args
+        *args: Tuple[Union[float, int],...]
             The parameters that will be adjusted to make the fit.
 
         Returns
         -------
         `numpy.ndarray`:
-            The calculated dependent variables of the independent variables `x`.
+            The calculated dependent variables of the independent variables ``x``.
+
+        Notes
+        -----
+        * When sub-classing the definition should look something like::
+
+            def func(self, x, a, b, c):
+                x = self._check_x(x)
+                self._check_params(a, b, c)
+
+                return a * x ** 2 + b * x + c
         """
-        raise NotImplementedError
+        ...
 
     @abstractmethod
-    def func_err(self, x, x_err=None, rety=False):
-        """
+    @modify_docstring(
+        prepend="""
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
+        """,
+        append="""
+        * When sub-classing the definition should look something like::
 
+            @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
+            def func_err(self, x, x_err=None, rety=False):
+                '''
+                A simple docstring giving the equation for error propagation, but
+                excluding the parameter descriptions.  The @modify_docstring
+                decorator will append the docstring from the parent class.
+                '''
+                x, x_err = self._check_func_err_params(x, x_err)
+
+                a, b, c = self.params
+                a_err, b_err, c_err = self.param_errors
+
+                # calculate error
+
+                if rety:
+                    y = self.func(x, a, b, c)
+                    return err, y
+
+                return err
+        """,
+    )
+    def func_err(self, x, x_err=None, rety=False):
+        """
         Parameters
         ----------
         x: array_like
             Independent variables to be passed to the fit function.
 
         x_err: array_like, optional
-            Errors associated with the independent variables `x`.  Must be of
-            size one or equal to the size of `x`.
+            Errors associated with the independent variables ``x``.  Must be of
+            size one or equal to the size of ``x``.
 
         rety: bool
             Set `True` to also return the associated dependent variables
@@ -168,14 +192,22 @@ class AbstractFitFunction(ABC):
         -------
         err: `numpy.ndarray`
             The calculated uncertainties :math:`\\delta y` of the dependent
-            variables (:math:`y = f(x)`) of the independent variables `x`.
+            variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y: `numpy.ndarray`, optional
-            (if `rety = True`) The associated dependent variables
+            (if ``rety == True``) The associated dependent variables
             :math:`y = f(x)`.
 
+        Notes
+        -----
+        * A good reference for formulating propagation of uncertainty expressions is:
+
+            J. R. Taylor.  *An Introduction to Error Analysis: The Study of
+            Uncertainties in Physical Measurements.* University Science Books,
+            second edition, August 1996 (ISBN: 093570275X)
+
         """
-        raise NotImplementedError
+        ...
 
     @property
     def curve_fit_results(self):
@@ -198,15 +230,21 @@ class AbstractFitFunction(ABC):
     def params(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._params = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
+        elif (
+            isinstance(val, (tuple, list))
+            and len(val) == len(self.param_names)
+            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+        ):
             self._params = tuple(val)
         else:
-            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.param_names)}.")
+            raise ValueError(
+                f"Got {val} for 'val', expecting tuple of ints and "
+                f"floats of length {len(self.param_names)}."
+            )
 
     @property
     def param_errors(self) -> Union[None, tuple]:
-        """The associated errors of the fit `parameters`."""
+        """The associated errors of the fitted :attr:`params`."""
         if self._param_errors is None:
             return self._param_errors
         else:
@@ -216,11 +254,17 @@ class AbstractFitFunction(ABC):
     def param_errors(self, val) -> None:
         if isinstance(val, self.FitParamTuple):
             self._param_errors = tuple(val)
-        elif isinstance(val, (tuple, list)) and len(val) == len(self.param_names):
+        elif (
+            isinstance(val, (tuple, list))
+            and len(val) == len(self.param_names)
+            and all(isinstance(vv, (int, np.integer, float, np.floating)) for vv in val)
+        ):
             self._param_errors = tuple(val)
         else:
-            raise ValueError(f"Got type {type(val)} for 'val', expecting tuple of "
-                             f"length {len(self.param_names)}.")
+            raise ValueError(
+                f"Got {val} for 'val', expecting tuple of ints and "
+                f"floats of length {len(self.param_names)}."
+            )
 
     @property
     def param_names(self) -> Tuple[str, ...]:
@@ -230,10 +274,66 @@ class AbstractFitFunction(ABC):
     @property
     @abstractmethod
     def latex_str(self) -> str:
-        """Latex friendly representation of the fit function."""
-        raise NotImplementedError
+        """LaTeX friendly representation of the fit function."""
+        ...
 
-    def root_solve(self, x0, **kwargs):
+    def _check_func_err_params(self, x, x_err):
+        """Check the ``x`` and ``x_err`` parameters for :meth:`func_err`."""
+        x = self._check_x(x)
+        if x_err is not None:
+            x_err = self._check_x(x_err)
+
+            if x_err.shape == ():
+                pass
+            elif x_err.shape != x.shape:
+                raise ValueError(
+                    f"x_err shape {x_err.shape} must be equal the shape of "
+                    f"x {x.shape}."
+                )
+        return x, x_err
+
+    @staticmethod
+    def _check_params(*args) -> None:
+        """
+        Check fitting parameters so that they are an expected type for the
+        class functionality.
+        """
+        for arg in args:
+            if not isinstance(arg, (int, np.integer, float, np.floating)):
+                raise TypeError(
+                    f"Expected int or float for parameter argument, got "
+                    f"{type(arg)}."
+                )
+
+    @staticmethod
+    def _check_x(x):
+        """
+        Check the independent variable ``x`` so that it is an expected
+        type for the class functionality.
+        """
+        if isinstance(x, (int, float, np.integer, np.floating)):
+            x = np.array(x)
+        else:
+            if not isinstance(x, np.ndarray):
+                x = np.array(x)
+
+            if not (
+                np.issubdtype(x.dtype, np.integer)
+                or np.issubdtype(x.dtype, np.floating)
+            ):
+                raise TypeError(
+                    f"Argument x needs to be an array_like object of integers "
+                    f"or floats."
+                )
+
+            x = x.squeeze()
+            if x.shape == ():
+                # force x to be a scalar
+                x = x[()]
+
+        return x
+
+    def root_solve(self, x0):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
         mehtod used `scipy.optimize.fsolve` to find the function roots.
@@ -242,9 +342,6 @@ class AbstractFitFunction(ABC):
         ----------
         x0: `~numpy.ndarray`
             The starting estimate for the roots of :math:`f(x_r) = 0`.
-
-        **kwargs
-            Any keyword accepted by `scipy.optimize.fsolve`, except for `args`.
 
         Returns
         -------
@@ -255,67 +352,38 @@ class AbstractFitFunction(ABC):
         x_err: `~numpy.ndarray`
             The uncertainty associated with the root calculation.  **Currently
             this returns an array of** `numpy.nan` **values equal in shape to**
-            `x` **, since there is no determined way to calculate the
-            uncertaintyes.**
+            ``x`` **, since there is no determined way to calculate the
+            uncertainties.**
 
         Notes
         -----
-        If the full output of `scipy.optimize.fsolve` is desired then one can do
+        If the full output of `scipy.optimize.fsolve` is desired then one can do:
 
-            >>> import numpy as np
-            >>> import scipy
-
-            >>> class SomeFunc(AbstractFitFunction):
-            ...     _param_names = ("m", "b")
-            ...
-            ...     @property
-            ...     def latex_str(self) -> str:
-            ...         return f"m \\, x + b"
-            ...
-            ...     @staticmethod
-            ...     def func(x, m, b):
-            ...         return m * x + b
-            ...
-            ...     def func_err(self, x, x_err=None, rety=False):
-            ...         m, b = self.params
-            ...         m_err, b_err = self.param_errors
-            ...
-            ...         m_term = x * m_err
-            ...         b_term = b_err
-            ...         err = m_term ** 2 + b_term ** 2
-            ...
-            ...         if x_err is not None:
-            ...             x_term = m * x_err
-            ...             err += x_term ** 2
-            ...         err = np.sqrt(err)
-            ...
-            ...         if rety:
-            ...             y = self.func(x, m, b)
-            ...             return err, y
-            ...
-            ...         return err
-            ...
-            >>> func = SomeFunc()
-            >>> func.params = (1., 5.)
+            >>> func = Linear()
+            >>> func.params = (1.0, 5.0)
             >>> func.param_errors = (0.0, 0.0)
-            >>> roots = scipy.optimize.fsolve(func, -4., full_output=True)
+            >>> roots = fsolve(func, -4.0, full_output=True)
             >>> roots
             (array([-5.]),
              {'nfev': 4,
               'fjac': array([[-1.]]),
               'r': array([-1.]),
               'qtf': array([2.18...e-12]),
-              'fvec': array([0.])},
+              'fvec': 0.0},
              1,
              'The solution converged.')
 
         """
-        kwargs["args"] = self.params
-        results = fsolve(self.func, x0, **kwargs)
-        if isinstance(results, tuple):
-            results = results[0]
+        results = fsolve(self.func, x0, args=self.params)
 
-        return results, np.tile(np.nan, results.shape)
+        root = np.squeeze(results[0])
+        err = np.tile(np.nan, root.shape)
+        if root.shape == ():
+            # force x to be a scalar
+            root = root[()]
+            err = np.nan
+
+        return _RootResults(root, err)
 
     @property
     def rsq(self):
@@ -334,13 +402,19 @@ class AbstractFitFunction(ABC):
         the fitted dependent variable corresponding to :math:`x_i`, and
         :math:`\\bar{y}` is the average of the :math:`y_i` values.
 
+        The :math:`r^2` value is an indicator of how close the points
+        :math:`(x_i, y_i)` lie to the model :math:`f(x)`.  :math:`r^2` values
+        range between 0 and 1.  Values close to 0 indicate that the points
+        are uncorrelated and have little tendency to lie close to the model,
+        whereas, values close to 1 indicate a high correlation to the model.
+
         """
         return self._rsq
 
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
         Use a non-linear least squares method to fit the fit function to
-        (`xdata`, `ydata`), using `scipy.optimize.curve_fit`.  This will set
+        (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
         the attributes :attr:`parameters`, :attr:`parameters_err`, and
         :attr:`rsq`.
 
@@ -354,7 +428,7 @@ class AbstractFitFunction(ABC):
             length M.
 
         ydata: array_like
-            The dependent data associated with `xdata`.
+            The dependent data associated with ``xdata``.
 
         **kwargs
             Any keywords accepted by `scipy.optimize.curve_fit`.
@@ -362,8 +436,8 @@ class AbstractFitFunction(ABC):
         Raises
         ------
         ValueError
-            if either `ydata` or `xdata` contain NaNs, or if incompatible options
-            are used.
+            if either ``ydata`` or ``xdata`` contain `numpy.nan`'s, or if
+            incompatible options are used.
 
         RuntimeError
             if the least-squares minimization fails.
@@ -383,87 +457,6 @@ class AbstractFitFunction(ABC):
         ss_res = np.sum(residuals ** 2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
-
-
-class Exponential(AbstractFitFunction):
-    """
-    A sub-class of `AbstractFitFunction` to represent an exponential with an
-    offset.
-
-    .. math::
-
-        y &= f(x) = A \\, e^{\\alpha \\, x}
-
-        \\left( \\frac{\\delta y}{|y|} \\right)^2 &=
-            \\left( \\frac{\\delta A}{A} \\right)^2
-            + (x \\, \\delta \\alpha)^2
-            + (\\alpha \\, \\delta x)^2
-
-    where :math:`A` and :math:`\\alpha` are the real constants to be fitted and
-    :math:`x` is the independent variable.  :math:`\\delta A`,
-    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
-    uncertainties for :math:`A`, :math:`\\alpha`, and :math:`x`.
-    """
-    _param_names = ("a", "alpha")
-
-    def __str__(self):
-        return f"f(x) = A exp(alpha x)"
-
-    @staticmethod
-    def func(x, a, alpha):
-        return a * np.exp(alpha * x)
-
-    def func_err(self, x, x_err=None, rety=False):
-        a, alpha = self.params
-        a_err, alpha_err = self.param_errors
-        y = self.func(x, a, alpha)
-
-        a_term = (a_err / a) ** 2
-        alpha_term = (x * alpha_err) ** 2
-
-        err = a_term + alpha_term
-
-        if x_err is not None:
-            x_term = (alpha * x_err) ** 2
-            err += x_term
-
-        err = np.abs(y) * np.sqrt(err)
-
-        if rety:
-            return err, y
-
-        return err
-
-    @property
-    def latex_str(self) -> str:
-        return fr"A \, \exp(\alpha \, x)"
-
-    def root_solve(self, *args, **kwargs):
-        """
-        The root :math:`f(x_r) = 0` for the fit function. **An exponential has no
-        real roots.**
-
-        Parameters
-        ----------
-        *args
-            Not needed.  This is to ensure signature comparability with
-            `AbstractFitFunction`.
-
-        *kwargs
-            Not needed.  This is to ensure signature comparability with
-            `AbstractFitFunction`.
-
-        Returns
-        -------
-        root: float
-            The root value for the given fit :attr:`parameters`.
-
-        err: float
-            The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
-        """
-
-        return np.nan, np.nan
 
 
 class Linear(AbstractFitFunction):
@@ -487,8 +480,11 @@ class Linear(AbstractFitFunction):
     def __str__(self):
         return f"f(x) = m x + b"
 
-    @staticmethod
-    def func(x, m, b):
+    @property
+    def latex_str(self) -> str:
+        return fr"m x + b"
+
+    def func(self, x, m, b):
         """
         The fit function, a linear function.
 
@@ -496,7 +492,7 @@ class Linear(AbstractFitFunction):
 
             f(x) = m \\, x + b
 
-        where :math:`m` and :math:`b` are positive real constants representing the
+        where :math:`m` and :math:`b` are real constants representing the
         slope and intercept, respectively, and :math:`x` is the independent
         variable.
 
@@ -504,6 +500,7 @@ class Linear(AbstractFitFunction):
         ----------
         x: array_like
             Independent variable.
+
         m: float
             value for slope :math:`m`
 
@@ -513,11 +510,15 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to :math:`x`
+            dependent variables corresponding to `:math:``x``
 
         """
+        x = self._check_x(x)
+        self._check_params(m, b)
+
         return m * x + b
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
@@ -525,19 +526,11 @@ class Linear(AbstractFitFunction):
 
         .. math::
 
-            (\\delta y)^2 &= (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
+            (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
 
-        Parameters
-        ----------
-        x: array_like
-            Independent variables to be passed to the fit function.
-
-        Returns
-        -------
-        `numpy.ndarray`:
-            The calculated uncertainty of the dependent variables of the
-            independent variables `x`.
         """
+        x, x_err = self._check_func_err_params(x, x_err)
+
         m, b = self.params
         m_err, b_err = self.param_errors
 
@@ -555,10 +548,6 @@ class Linear(AbstractFitFunction):
             return err, y
 
         return err
-
-    @property
-    def latex_str(self) -> str:
-        return fr"m \, x + b"
 
     @property
     def rsq(self):
@@ -606,12 +595,12 @@ class Linear(AbstractFitFunction):
         m_err, b_err = self.param_errors
         err = np.abs(root) * np.sqrt((m_err / m) ** 2 + (b_err / b) ** 2)
 
-        return root, err
+        return _RootResults(root, err)
 
     def curve_fit(self, xdata, ydata, **kwargs) -> None:
         """
-        Calculate a linear least-squares regression of (`xdata`, `ydata`) using
-        `scipy.stats.linregress`.  This will set the attributes
+        Calculate a linear least-squares regression of (``xdata``, ``ydata``)
+        using `scipy.stats.linregress`.  This will set the attributes
         :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
@@ -624,7 +613,7 @@ class Linear(AbstractFitFunction):
             length M.
 
         ydata: array_like
-            The dependent data associated with `xdata`.
+            The dependent data associated with ``xdata``.
 
         **kwargs
             Any keywords accepted by `scipy.stats.linregress.curve_fit`.
@@ -645,6 +634,132 @@ class Linear(AbstractFitFunction):
         self._rsq = results[2] ** 2
 
 
+class Exponential(AbstractFitFunction):
+    """
+    A sub-class of `AbstractFitFunction` to represent an exponential with an
+    offset.
+
+    .. math::
+
+        y &= f(x) = a \\, e^{\\alpha \\, x}
+
+        \\left( \\frac{\\delta y}{|y|} \\right)^2 &=
+            \\left( \\frac{\\delta a}{a} \\right)^2
+            + (x \\, \\delta \\alpha)^2
+            + (\\alpha \\, \\delta x)^2
+
+    where :math:`a` and :math:`\\alpha` are the real constants to be fitted and
+    :math:`x` is the independent variable.  :math:`\\delta a`,
+    :math:`\\delta \\alpha`, and :math:`\\delta x` are the respective
+    uncertainties for :math:`a`, :math:`\\alpha`, and :math:`x`.
+    """
+
+    _param_names = ("a", "alpha")
+
+    def __str__(self):
+        return f"f(x) = a exp(alpha x)"
+
+    @property
+    def latex_str(self) -> str:
+        return fr"a \, \exp(\alpha x)"
+
+    def func(self, x, a, alpha):
+        """
+        The fit function, a exponential function.
+
+        .. math::
+
+            f(x) = a \\, e^{\\alpha \\, x}
+
+        where :math:`a` and :math:`\\alpha` are real constants and :math:`x`
+        is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for the exponential "normalization" constant, :math:`a`
+
+        alpha: float
+            value for the growth constant, :math:`\\alpha`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to ``x``
+
+        """
+        x = self._check_x(x)
+        self._check_params(a, alpha)
+
+        return a * np.exp(alpha * x)
+
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
+    def func_err(self, x, x_err=None, rety=False):
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
+
+        .. math::
+
+            \\left( \\frac{\\delta y}{|y|} \\right)^2 =
+                \\left( \\frac{\\delta a}{a} \\right)^2
+                + (x \\, \\delta \\alpha)^2
+                + (\\alpha \\, \\delta x)^2
+
+        """
+        x, x_err = self._check_func_err_params(x, x_err)
+
+        a, alpha = self.params
+        a_err, alpha_err = self.param_errors
+        y = self.func(x, a, alpha)
+
+        a_term = (a_err / a) ** 2
+        alpha_term = (x * alpha_err) ** 2
+
+        err = a_term + alpha_term
+
+        if x_err is not None:
+            x_term = (alpha * x_err) ** 2
+            err += x_term
+
+        err = np.abs(y) * np.sqrt(err)
+
+        if rety:
+            return err, y
+
+        return err
+
+    def root_solve(self, *args, **kwargs):
+        """
+        The root :math:`f(x_r) = 0` for the fit function. **An exponential has no
+        real roots.**
+
+        Parameters
+        ----------
+        *args
+            Not needed.  This is to ensure signature compatibility with
+            `AbstractFitFunction`.
+
+        *kwargs
+            Not needed.  This is to ensure signature compatibility with
+            `AbstractFitFunction`.
+
+        Returns
+        -------
+        root: float
+            The root value for the given fit :attr:`parameters`.
+
+        err: float
+            The uncertainty in the calculated root for the given fit
+            :attr:`parameters` and :attr:`parameters_err`.
+        """
+
+        return _RootResults(np.nan, np.nan)
+
+
 class ExponentialPlusLinear(AbstractFitFunction):
     """
     A sub-class of `AbstractFitFunction` to represent an exponential with an
@@ -652,29 +767,32 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
     .. math::
 
-        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        y =& f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
         (\\delta y)^2 =&
-            \\left( A e^{\\alpha x}\\right)^2 \\left[
-                \\left( \\frac{\\delta A}{A} \\right)^2
+            \\left( a e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
             \\right]\\\\
-            & + \\left(2 \\, A \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+            & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
                 (\\delta x)^2\\\\
             & + \\left[(x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2\\right]
 
-    where :math:`A`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+    where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
     constants to be fitted and :math:`x` is the independent variable.
-    :math:`\\delta A`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
-    and :math:`\\delta x` are the respective uncertainties for :math:`A`,
+    :math:`\\delta a`, :math:`\\delta \\alpha`, :math:`\\delta m`, :math:`\\delta b`,
+    and :math:`\\delta x` are the respective uncertainties for :math:`a`,
     :math:`\\alpha`, :math:`m`, and :math:`b`, and :math:`x`.
     """
+
     _param_names = ("a", "alpha", "m", "b")
 
-    def __init__(self):
-        super().__init__()
+    def __init__(
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+    ):
         self._exponential = Exponential()
         self._linear = Linear()
+        super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
         exp_str = self._exponential.__str__().lstrip("f(x) = ")
@@ -703,11 +821,66 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
     def func(self, x, a, alpha, m, b):
+        """
+        The fit function, an exponential with a linear offset.
+
+        .. math::
+
+            f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+
+        where :math:`a`, :math:`\\alpha`, :math:`m`, and :math:`b` are the real
+        constants and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for constant :math:`a`
+
+        alpha: float
+            value for constant :math:`\\alpha`
+
+        m: float
+            value for slope :math:`m`
+
+        b: float
+            value for intercept :math:`b`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to ``x``
+
+        """
         exp_term = self._exponential.func(x, a, alpha)
         lin_term = self._linear.func(x, m, b)
         return exp_term + lin_term
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
+
+        .. math::
+
+            (\\delta y)^2 =&
+                \\left( a e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta a}{a} \\right)^2
+                    + (x \\, \\delta \\alpha)^2
+                    + (\\alpha \\, \\delta x)^2
+                \\right]\\\\
+                & + \\left(2 \\, a \\, \\alpha \\, m \\, e^{\\alpha x}\\right)
+                    (\\delta x)^2\\\\
+                & + \\left[(
+                        x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
+                    \\right]
+
+        """
+        x, x_err = self._check_func_err_params(x, x_err)
+
         a, alpha, m, b = self.params
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
@@ -715,7 +888,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         err = exp_err ** 2 + lin_err ** 2
 
         if x_err is not None:
-            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** x)
+            blend_err = 2 * a * alpha * m * np.exp(alpha * x) * (x_err ** 2)
             err += blend_err
         err = np.sqrt(err)
 
@@ -727,40 +900,43 @@ class ExponentialPlusLinear(AbstractFitFunction):
 
 class ExponentialPlusOffset(AbstractFitFunction):
     """
-    A sub-class of `AbstractFitFunction` to represent an exponential with a DC
-    offset.
+    A sub-class of `AbstractFitFunction` to represent an exponential with a
+    constant offset.
 
     .. math::
 
-        y =& f(x) = A \\, e^{\\alpha \\, x} + m \\, x + b\\\\
+        y =& f(x) = a \\, e^{\\alpha \\, x} + m \\, x + b\\\\
         (\\delta y)^2 =&
-            \\left( A e^{\\alpha x}\\right)^2 \\left[
-                \\left( \\frac{\\delta A}{A} \\right)^2
+            \\left( a e^{\\alpha x}\\right)^2 \\left[
+                \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
             \\right]
             + (\\delta b)^2
 
 
-    where :math:`A`, :math:`\\alpha`, and :math:`b` are the real constants to
-    be fitted and :math:`x` is the independent variable.  :math:`\\delta A`,
+    where :math:`a`, :math:`\\alpha`, and :math:`b` are the real constants to
+    be fitted and :math:`x` is the independent variable.  :math:`\\delta a`,
     :math:`\\delta \\alpha`, :math:`\\delta b`, and :math:`\\delta x` are the
-    respective uncertainties for :math:`A`, :math:`\\alpha`, and :math:`b`, and
+    respective uncertainties for :math:`a`, :math:`\\alpha`, and :math:`b`, and
     :math:`x`.
 
     """
+
     _param_names = ("a", "alpha", "b")
 
-    def __init__(self):
-        super().__init__()
+    def __init__(
+        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+    ):
         self._explin = ExponentialPlusLinear()
+        super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        return f"f(x) = A exp(alpha x) + b"
+        return f"f(x) = a exp(alpha x) + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"A \, \exp(B \, x) + C"
+        return fr"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:
@@ -783,15 +959,56 @@ class ExponentialPlusOffset(AbstractFitFunction):
         )
 
     def func(self, x, a, alpha, b):
+        """
+        The fit function, an exponential with a constant offset.
+
+        .. math::
+
+            f(x) = a \\, e^{\\alpha \\, x} + b\\\\
+
+        where :math:`a`, :math:`\\alpha`, and :math:`b` are the real constants
+        and :math:`x` is the independent variable.
+
+        Parameters
+        ----------
+        x: array_like
+            Independent variable.
+
+        a: float
+            value for constant :math:`a`
+
+        alpha: float
+            value for constant :math:`\\alpha`
+
+        b: float
+            value for DC offset :math:`b`
+
+        Returns
+        -------
+        y: array_like
+            dependent variables corresponding to ``x``
+
+        """
         return self._explin.func(x, a, alpha, 0.0, b)
 
+    @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
     def func_err(self, x, x_err=None, rety=False):
-        y, err = self._explin(x, x_err=x_err, reterr=True)
+        """
+        Calculate dependent variable uncertainties :math:`\\delta y` for
+        dependent variables :math:`y=f(x)`.
 
-        if rety:
-            return err, y
+        .. math::
 
-        return err
+            (\\delta y)^2 =
+                \\left( a e^{\\alpha x}\\right)^2 \\left[
+                    \\left( \\frac{\\delta a}{a} \\right)^2
+                    + (x \\, \\delta \\alpha)^2
+                    + (\\alpha \\, \\delta x)^2
+                \\right]
+                + (\\delta b)^2
+
+        """
+        return self._explin.func_err(x, x_err=x_err, rety=rety)
 
     def root_solve(self, *args, **kwargs):
         """
@@ -799,10 +1016,10 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         .. math::
 
-            x_r &= \\frac{1}{\\alpha} \\ln \\left( \\frac{-b}{A} \\right)
+            x_r &= \\frac{1}{\\alpha} \\ln \\left( \\frac{-b}{a} \\right)
 
             \\delta x_r &= \\sqrt{
-                \\left( \\frac{1}{\\alpha} \\frac{\\delta A}{A} \\right)^2
+                \\left( \\frac{1}{\\alpha} \\frac{\\delta a}{a} \\right)^2
                 + \\left( x_r \\frac{\\delta \\alpha}{\\alpha} \\right)^2
                 + \\left( \\frac{1}{\\alpha} \\frac{\\delta b}{b} \\right)^2
             }
@@ -810,11 +1027,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
         Parameters
         ----------
         *args
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         *kwargs
-            Not needed.  This is to ensure signature comparability with
+            Not needed.  This is to ensure signature compability with
             `AbstractFitFunction`.
 
         Returns
@@ -836,4 +1053,4 @@ class ExponentialPlusOffset(AbstractFitFunction):
         c_term = c_err / (alpha * b)
         err = np.sqrt(a_term ** 2 + b_term ** 2 + c_term ** 2)
 
-        return root, err
+        return _RootResults(root, err)

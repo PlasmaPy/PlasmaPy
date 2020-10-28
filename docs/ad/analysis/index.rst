@@ -4,15 +4,24 @@
 
 .. _analysis:
 
-==============================
-Analyses (`plasmapy.analysis`)
-==============================
+===================
+`plasmapy.analysis`
+===================
 
 .. toctree::
    :maxdepth: 1
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
    Swept Langmuir <swept_langmuir>
+
+Notebooks
+---------
+
+.. nbgallery::
+   :glob:
+   :reversed:
+
+   /notebooks/analysis/*
 
 API
 ---

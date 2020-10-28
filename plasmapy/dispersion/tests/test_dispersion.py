@@ -9,7 +9,7 @@ from astropy import units as u
 from numpy import pi as π
 from scipy.special import gamma as Γ
 
-from plasmapy.formulary.dispersionfunction import (
+from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func,
     plasma_dispersion_func_deriv,
 )
