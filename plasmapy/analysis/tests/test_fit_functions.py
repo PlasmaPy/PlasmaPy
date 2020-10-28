@@ -144,6 +144,7 @@ class BaseFFTests(ABC):
         ],
     )
     def test_abstractmethod_values(self, name, value_ref_name):
+        """Test value of all abstract methods, except `func` and `func_err`."""
         ff_obj = self.ff_class()
 
         value = getattr(ff_obj, name)
