@@ -26,7 +26,7 @@ class TestAbstractFitFunction:
 
     ff_class = ffuncs.AbstractFitFunction
 
-    def test_is_abs(self):
+    def test_is_abc(self):
         """Test `AbstractFitFunction` is an abstract base class."""
         assert issubclass(self.ff_class, ABC)
 
