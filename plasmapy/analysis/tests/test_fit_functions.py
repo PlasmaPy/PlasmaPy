@@ -20,21 +20,26 @@ class TestAbstractFitFunction:
     def test_is_abs(self):
         assert issubclass(self.ff_class, ABC)
 
-    def test_methods(self):
-        # required attributes/methods
-        for name in ("curve_fit", "func", "func_err", "root_solve", "__call__"):
-            assert hasattr(self.ff_class, name)
+    @pytest.mark.parametrize(
+        "name, isproperty",
+        [
+            ("__call__", False),
+            ("curve_fit", False),
+            ("curve_fit_results", True),
+            ("func", False),
+            ("func_err", False),
+            ("latex_str", True),
+            ("param_errors", True),
+            ("param_names", True),
+            ("params", True),
+            ("rsq", True),
+            ("root_solve", False),
+        ],
+    )
+    def test_methods(self, name, isproperty):
+        assert hasattr(self.ff_class, name)
 
-        # required properties
-        for name in (
-            "curve_fit_results",
-            "latex_str",
-            "params",
-            "param_errors",
-            "param_names",
-            "rsq",
-        ):
-            assert hasattr(self.ff_class, name)
+        if isproperty:
             assert isinstance(getattr(self.ff_class, name), property)
 
     def test_abstractmethods(self):
