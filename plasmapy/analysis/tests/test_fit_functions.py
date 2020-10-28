@@ -42,10 +42,12 @@ class TestAbstractFitFunction:
         if isproperty:
             assert isinstance(getattr(self.ff_class, name), property)
 
-    def test_abstractmethods(self):
-        # abstract methods
-        for name in ("__str__", "func", "func_err", "latex_str"):
-            assert name in self.ff_class.__abstractmethods__
+    @pytest.mark.parametrize(
+        "name", ["__str__", "func", "func_err", "latex_str"],
+    )
+    def test_abstractmethods(self, name):
+        """Test for required abstract methods."""
+        assert name in self.ff_class.__abstractmethods__
 
 
 class BaseFFTests(ABC):
