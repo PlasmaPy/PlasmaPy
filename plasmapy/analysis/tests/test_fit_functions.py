@@ -13,11 +13,19 @@ import plasmapy.analysis.fit_functions as ffuncs
 class TestAbstractFitFunction:
     """
     Tests for fit function class `plasmapy.analysis.fit_functions.AbstractFitFunction`.
+
+    Notes
+    -----
+    Since `AbstractFitFunction` can not be instantiated, its complete
+    functionality can not be directly tested.  To resolve this, `BaseFFTests`,
+    which is the base test class for the fit function classes, will test all
+    the functionality within `AbstractFitFunction`.
     """
 
     ff_class = ffuncs.AbstractFitFunction
 
     def test_is_abs(self):
+        """Test `AbstractFitFunction` is an abstract base class."""
         assert issubclass(self.ff_class, ABC)
 
     @pytest.mark.parametrize(
@@ -37,6 +45,7 @@ class TestAbstractFitFunction:
         ],
     )
     def test_methods(self, name, isproperty):
+        """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
         if isproperty:
