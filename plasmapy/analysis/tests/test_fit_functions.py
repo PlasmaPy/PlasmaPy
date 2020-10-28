@@ -318,39 +318,51 @@ class BaseFFTests(ABC):
             if y is not None:
                 assert np.allclose(y, self.func(x, *params))
 
-    def test_call(self):
+    @pytest.mark.parametrize(
+        "x, kwargs, with_condition",
+        [
+            (0, {}, does_not_raise()),
+            (0, {"reterr": True}, does_not_raise()),
+            (1.0, {}, does_not_raise()),
+            (1.0, {"reterr": True}, does_not_raise()),
+            (np.linspace(10, 30, num=20), {}, does_not_raise()),
+            (np.linspace(10, 30, num=20), {"reterr": True}, does_not_raise()),
+            ([4, 5, 6], {}, does_not_raise()),
+            ([4, 5, 6], {"x_err": 0.05, "reterr": True}, does_not_raise()),
+            ("hello", {}, pytest.raises(TypeError)),
+            (5, {"x_err": [1, 2], "reterr": True}, pytest.raises(ValueError)),
+        ],
+    )
+    def test_call(self, x, kwargs, with_condition):
         """Test __call__ behavior."""
-        ff_obj = self.ff_class()
-        ff_obj.params = self._test_params
-        ff_obj.param_errors = self._test_param_errors
+        params = self._test_params
+        param_errors = self._test_param_errors
+        ff_obj = self.ff_class(params=params, param_errors=param_errors)
 
-        for x in (0, 1.0, np.linspace(10, 30, num=20)):
-            assert np.allclose(ff_obj(x), self.func(x, *self._test_params))
+        reterr = False
+        if "reterr" in kwargs:
+            reterr = kwargs["reterr"]
+        x_err = None
+        if "x_err" in kwargs:
+            x_err = kwargs["x_err"]
 
-            # also return error
-            y, y_err = ff_obj(x, reterr=True)
-            assert np.allclose(y, self.func(x, *self._test_params))
-            assert np.allclose(
-                y_err, self.func_err(x, self._test_params, self._test_param_errors),
-            )
+        with with_condition:
+            results = ff_obj(x, **kwargs)
+            if reterr:
+                y = results[0]
+                y_err = results[1]
+            else:
+                y = results
 
-        x = [4, 5, 6]
-        x_err = 0.05
-        assert np.allclose(ff_obj(x), self.func(np.array(x), *self._test_params))
-        y, y_err = ff_obj(x, x_err=x_err, reterr=True)
-        assert np.allclose(y, self.func(np.array(x), *self._test_params))
-        assert np.allclose(
-            y_err,
-            self.func_err(
-                np.array(x), self._test_params, self._test_param_errors, x_err=x_err
-            ),
-        )
+            if isinstance(x, list):
+                x = np.array(x)
+            y_expected = self.func(x, *params)
 
-        with pytest.raises(TypeError):
-            ff_obj("hello")
+            assert np.allclose(y, y_expected)
 
-        with pytest.raises(ValueError):
-            ff_obj(5, x_err=[1, 2], reterr=True)
+            if reterr:
+                y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
+                assert np.allclose(y_err, y_err_expected)
 
     @abstractmethod
     def test_root_solve(self):
