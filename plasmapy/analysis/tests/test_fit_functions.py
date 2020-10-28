@@ -101,8 +101,8 @@ class BaseFFTests(ABC):
 
     def test_repr(self):
         """Test __repr__."""
-        foo = self.ff_class()
-        assert foo.__repr__() == f"{foo.__str__()} {foo.__class__}"
+        ff_obj = self.ff_class()
+        assert ff_obj.__repr__() == f"{ff_obj.__str__()} {ff_obj.__class__}"
 
     @pytest.mark.parametrize(
         "name, isproperty",
@@ -164,43 +164,43 @@ class BaseFFTests(ABC):
     def test_instantiation(self):
         """Test behavior of fit function class instantiation."""
         # default
-        foo = self.ff_class()
+        ff_obj = self.ff_class()
 
-        assert isinstance(foo.param_names, tuple)
-        assert len(foo.param_names) != 0
-        assert all(isinstance(val, str) for val in foo.param_names)
+        assert isinstance(ff_obj.param_names, tuple)
+        assert len(ff_obj.param_names) != 0
+        assert all(isinstance(val, str) for val in ff_obj.param_names)
 
-        assert hasattr(foo, "FitParamTuple")
-        assert issubclass(foo.FitParamTuple, tuple)
-        for name in foo.param_names:
-            assert hasattr(foo.FitParamTuple, name)
+        assert hasattr(ff_obj, "FitParamTuple")
+        assert issubclass(ff_obj.FitParamTuple, tuple)
+        for name in ff_obj.param_names:
+            assert hasattr(ff_obj.FitParamTuple, name)
 
-        assert foo.curve_fit_results is None
-        assert foo.params is None
-        assert foo.param_errors is None
-        assert foo.rsq is None
+        assert ff_obj.curve_fit_results is None
+        assert ff_obj.params is None
+        assert ff_obj.param_errors is None
+        assert ff_obj.rsq is None
 
-        assert isinstance(foo.latex_str, str)
+        assert isinstance(ff_obj.latex_str, str)
 
         # assign at instantiation
-        params = [1] * len(foo.param_names)
-        foo = self.ff_class(params=params, param_errors=params)
-        assert foo.params == foo.FitParamTuple(*params)
-        assert foo.param_errors == foo.FitParamTuple(*params)
+        params = [1] * len(ff_obj.param_names)
+        ff_obj = self.ff_class(params=params, param_errors=params)
+        assert ff_obj.params == ff_obj.FitParamTuple(*params)
+        assert ff_obj.param_errors == ff_obj.FitParamTuple(*params)
 
         with pytest.raises(ValueError):
             self.ff_class(params=5)
         with pytest.raises(ValueError):
             self.ff_class(param_errors=5)
 
-        params = [2] * len(foo.param_names)
+        params = [2] * len(ff_obj.param_names)
         params[0] = "let me in"
         with pytest.raises(ValueError):
             self.ff_class(params=params)
         with pytest.raises(ValueError):
             self.ff_class(param_errors=params)
 
-        params = [2] * len(foo.param_names)
+        params = [2] * len(ff_obj.param_names)
         params += [5]
         with pytest.raises(ValueError):
             self.ff_class(params=params)
@@ -425,8 +425,8 @@ class TestFFExponential(BaseFFTests):
         return err
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
-        root, err = foo.root_solve()
+        ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
+        root, err = ff_obj.root_solve()
         assert np.isnan(root)
         assert np.isnan(err)
 
@@ -473,8 +473,8 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         return err
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
-        root, err = foo.root_solve(-5)
+        ff_obj = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
+        root, err = ff_obj.root_solve(-5)
         assert np.isclose(root, -5.345338)
         assert np.isnan(err)
 
@@ -517,13 +517,13 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         return err
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
-        root, err = foo.root_solve()
+        ff_obj = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
+        root, err = ff_obj.root_solve()
         assert root == np.log(5.0 / 3.0) / 0.5
         assert err == 0
 
-        foo.params = (3.0, 0.5, 5.0)
-        root, err = foo.root_solve()
+        ff_obj.params = (3.0, 0.5, 5.0)
+        root, err = ff_obj.root_solve()
         assert np.isnan(root)
         assert np.isnan(err)
 
@@ -560,11 +560,11 @@ class TestFFLinear(BaseFFTests):
         return err
 
     def test_root_solve(self):
-        foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
-        assert foo.root_solve() == (-1, 0)
+        ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
+        assert ff_obj.root_solve() == (-1, 0)
 
-        foo.params = (5.0, 1.3)
-        foo.param_errors = (0.1, 0.1)
-        root, err = foo.root_solve()
+        ff_obj.params = (5.0, 1.3)
+        ff_obj.param_errors = (0.1, 0.1)
+        root, err = ff_obj.root_solve()
         assert root == -1.3 / 5.0
         assert err == np.abs(root) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2)
