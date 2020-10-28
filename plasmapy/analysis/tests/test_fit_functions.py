@@ -5,8 +5,9 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-from contextlib import ExitStack as does_not_raise
+
 # ExitStack can be replaced with nullcontext when we require >= python 3.7
+from contextlib import ExitStack as does_not_raise
 
 import plasmapy.analysis.fit_functions as ffuncs
 
@@ -230,7 +231,7 @@ class BaseFFTests(ABC):
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
             (["wrong"], None, pytest.raises(ValueError)),
-            ([3], 10, pytest.raises(ValueError))
+            ([3], 10, pytest.raises(ValueError)),
         ],
     )
     def test_params_setting(self, params, extra, with_condition):
@@ -252,7 +253,7 @@ class BaseFFTests(ABC):
             ([2], None, does_not_raise()),
             (5, None, pytest.raises(ValueError)),
             (["wrong"], None, pytest.raises(ValueError)),
-            ([3], 10, pytest.raises(ValueError))
+            ([3], 10, pytest.raises(ValueError)),
         ],
     )
     def test_param_errors_setting(self, param_errors, extra, with_condition):
