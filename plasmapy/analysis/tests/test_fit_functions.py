@@ -320,15 +320,15 @@ class BaseFFTests(ABC):
 
     def test_call(self):
         """Test __call__ behavior."""
-        foo = self.ff_class()
-        foo.params = self._test_params
-        foo.param_errors = self._test_param_errors
+        ff_obj = self.ff_class()
+        ff_obj.params = self._test_params
+        ff_obj.param_errors = self._test_param_errors
 
         for x in (0, 1.0, np.linspace(10, 30, num=20)):
-            assert np.allclose(foo(x), self.func(x, *self._test_params))
+            assert np.allclose(ff_obj(x), self.func(x, *self._test_params))
 
             # also return error
-            y, y_err = foo(x, reterr=True)
+            y, y_err = ff_obj(x, reterr=True)
             assert np.allclose(y, self.func(x, *self._test_params))
             assert np.allclose(
                 y_err, self.func_err(x, self._test_params, self._test_param_errors),
@@ -336,8 +336,8 @@ class BaseFFTests(ABC):
 
         x = [4, 5, 6]
         x_err = 0.05
-        assert np.allclose(foo(x), self.func(np.array(x), *self._test_params))
-        y, y_err = foo(x, x_err=x_err, reterr=True)
+        assert np.allclose(ff_obj(x), self.func(np.array(x), *self._test_params))
+        y, y_err = ff_obj(x, x_err=x_err, reterr=True)
         assert np.allclose(y, self.func(np.array(x), *self._test_params))
         assert np.allclose(
             y_err,
@@ -347,10 +347,10 @@ class BaseFFTests(ABC):
         )
 
         with pytest.raises(TypeError):
-            foo("hello")
+            ff_obj("hello")
 
         with pytest.raises(ValueError):
-            foo(5, x_err=[1, 2], reterr=True)
+            ff_obj(5, x_err=[1, 2], reterr=True)
 
     @abstractmethod
     def test_root_solve(self):
@@ -358,24 +358,24 @@ class BaseFFTests(ABC):
 
     def test_curve_fit(self):
         """Test the `curve_fit` method."""
-        foo = self.ff_class()
+        ff_obj = self.ff_class()
 
         xdata = np.linspace(-10, 10)
         ydata = self.func(xdata, *self._test_params)
 
-        assert foo.params is None
-        assert foo.param_errors is None
-        assert foo.rsq is None
-        assert foo.curve_fit_results is None
+        assert ff_obj.params is None
+        assert ff_obj.param_errors is None
+        assert ff_obj.rsq is None
+        assert ff_obj.curve_fit_results is None
 
-        foo.curve_fit(xdata, ydata)
+        ff_obj.curve_fit(xdata, ydata)
 
-        assert foo.curve_fit_results is not None
-        assert np.isclose(foo.rsq, 1.0)
+        assert ff_obj.curve_fit_results is not None
+        assert np.isclose(ff_obj.rsq, 1.0)
         assert np.allclose(
-            foo.param_errors, tuple([0] * len(foo.param_names)), atol=1.5e-8,
+            ff_obj.param_errors, tuple([0] * len(ff_obj.param_names)), atol=1.5e-8,
         )
-        assert np.allclose(foo.params, self._test_params)
+        assert np.allclose(ff_obj.params, self._test_params)
 
 
 class TestFFExponential(BaseFFTests):
