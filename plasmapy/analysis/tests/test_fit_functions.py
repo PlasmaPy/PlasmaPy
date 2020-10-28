@@ -63,6 +63,9 @@ class BaseFFTests(ABC):
     abc = ffuncs.AbstractFitFunction
     _test_params = NotImplemented  # type: tuple
     _test_param_errors = NotImplemented  # type: tuple
+    _test_param_names = NotImplemented  # type: tuple
+    _test_latex_str = NotImplemented  # type: str
+    _test__str__ = NotImplemented  # type: str
 
     @property
     @abstractmethod
@@ -132,31 +135,29 @@ class BaseFFTests(ABC):
                     f"the fit parameters."
                 )
 
-    def test_basics(self):
-        """Test attribute/method/property existence."""
-        assert hasattr(self.ff_class, "_param_names")
-        if self.ff_class._param_names == NotImplemented:
+    @pytest.mark.parametrize(
+        "name, value_ref_name",
+        [
+            ("param_names", "_test_param_names"),
+            ("latex_str", "_test_latex_str"),
+            ("__str__", "_test__str__"),
+        ],
+    )
+    def test_abstractmethod_values(self, name, value_ref_name):
+        ff_obj = self.ff_class()
+
+        value = getattr(ff_obj, name)
+        if callable(value):
+            value = value()
+
+        exp_value = getattr(self, value_ref_name)
+        if exp_value == NotImplemented:
             pytest.fail(
-                f"{self.ff_class} class attribute '_param_names' needs to "
-                f" be defined as a tuple of strings representing the names of "
-                f"the fit parameters."
+                f"The expected value for abstract method {name} is not "
+                f"implemented/defined in the test class attribute {value_ref_name}."
             )
 
-        # required attributes/methods
-        for name in ("curve_fit", "func", "func_err", "root_solve"):
-            assert hasattr(self.ff_class, name)
-
-        # required properties
-        for name in (
-            "curve_fit_results",
-            "latex_str",
-            "params",
-            "param_errors",
-            "param_names",
-            "rsq",
-        ):
-            assert hasattr(self.ff_class, name)
-            assert isinstance(getattr(self.ff_class, name), property)
+        assert value == exp_value
 
     def test_instantiation(self):
         """Test behavior of fit function class instantiation."""
@@ -369,6 +370,9 @@ class TestFFExponential(BaseFFTests):
     ff_class = ffuncs.Exponential
     _test_params = (5.0, 1.0)
     _test_param_errors = (0.1, 0.1)
+    _test_param_names = ("a", "alpha")
+    _test_latex_str = fr"a \, \exp(\alpha x)"
+    _test__str__ = f"f(x) = a exp(alpha x)"
 
     @staticmethod
     def func(x, a, alpha):
@@ -392,15 +396,6 @@ class TestFFExponential(BaseFFTests):
 
         return err
 
-    def test_basics(self):
-        super().test_basics()
-
-        foo = self.ff_class()
-
-        assert foo.param_names == ("a", "alpha")
-        assert foo.latex_str == fr"a \, \exp(\alpha x)"
-        assert foo.__str__() == f"f(x) = a exp(alpha x)"
-
     def test_root_solve(self):
         foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
         root, err = foo.root_solve()
@@ -417,6 +412,9 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     ff_class = ffuncs.ExponentialPlusLinear
     _test_params = (2.0, 1.0, 5.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1, 0.1)
+    _test_param_names = ("a", "alpha", "m", "b")
+    _test_latex_str = fr"a \, \exp(\alpha x) + m x + b"
+    _test__str__ = f"f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
     def func(x, a, alpha, m, b):
@@ -446,15 +444,6 @@ class TestFFExponentialPlusLinear(BaseFFTests):
 
         return err
 
-    def test_basics(self):
-        super().test_basics()
-
-        foo = self.ff_class()
-
-        assert foo.param_names == ("a", "alpha", "m", "b")
-        assert foo.latex_str == fr"a \, \exp(\alpha x) + m x + b"
-        assert foo.__str__() == f"f(x) = a exp(alpha x) + m x + b"
-
     def test_root_solve(self):
         foo = self.ff_class(params=(5.0, 0.5, 1.0, 5.0), param_errors=(0, 0, 0, 0))
         root, err = foo.root_solve(-5)
@@ -471,6 +460,9 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     ff_class = ffuncs.ExponentialPlusOffset
     _test_params = (2.0, 1.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1)
+    _test_param_names = ("a", "alpha", "b")
+    _test_latex_str = fr"a \, \exp(\alpha x) + b"
+    _test__str__ = f"f(x) = a exp(alpha x) + b"
 
     @staticmethod
     def func(x, a, alpha, b):
@@ -496,15 +488,6 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
         return err
 
-    def test_basics(self):
-        super().test_basics()
-
-        foo = self.ff_class()
-
-        assert foo.param_names == ("a", "alpha", "b")
-        assert foo.latex_str == fr"a \, \exp(\alpha x) + b"
-        assert foo.__str__() == f"f(x) = a exp(alpha x) + b"
-
     def test_root_solve(self):
         foo = self.ff_class(params=(3.0, 0.5, -5.0), param_errors=(0, 0, 0))
         root, err = foo.root_solve()
@@ -525,6 +508,9 @@ class TestFFLinear(BaseFFTests):
     ff_class = ffuncs.Linear
     _test_params = (5.0, 4.0)
     _test_param_errors = (0.1, 0.1)
+    _test_param_names = ("m", "b")
+    _test_latex_str = fr"m x + b"
+    _test__str__ = f"f(x) = m x + b"
 
     @staticmethod
     def func(x, m, b):
@@ -544,15 +530,6 @@ class TestFFLinear(BaseFFTests):
         err = np.sqrt(err)
 
         return err
-
-    def test_basics(self):
-        super().test_basics()
-
-        foo = self.ff_class()
-
-        assert foo.param_names == ("m", "b")
-        assert foo.latex_str == fr"m x + b"
-        assert foo.__str__() == f"f(x) = m x + b"
 
     def test_root_solve(self):
         foo = self.ff_class(params=(1, 1), param_errors=(0, 0))
