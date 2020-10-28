@@ -1,11 +1,12 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
-import inspect
 import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
+from contextlib import ExitStack as does_not_raise
+# ExitStack can be replaced with nullcontext when we require >= python 3.7
 
 import plasmapy.analysis.fit_functions as ffuncs
 
@@ -206,49 +207,49 @@ class BaseFFTests(ABC):
         with pytest.raises(ValueError):
             self.ff_class(param_errors=params)
 
-    def test_param_assignment(self):
-        """
-        Test the property setter behavior for methods `params` and `param_errors`.
-        """
-        foo = self.ff_class()
+    @pytest.mark.parametrize(
+        "params, extra, with_condition",
+        [
+            ([2], None, does_not_raise()),
+            (5, None, pytest.raises(ValueError)),
+            (["wrong"], None, pytest.raises(ValueError)),
+            ([3], 10, pytest.raises(ValueError))
+        ],
+    )
+    def test_params_setting(self, params, extra, with_condition):
+        """Tests for property setting of attribute `params`."""
+        ff_obj = self.ff_class()
 
-        # setting params property
-        params = [2] * len(foo.param_names)
-        for val in (params, foo.FitParamTuple(*params)):
-            foo.params = val
-            assert foo.params == foo.FitParamTuple(*params)
+        if isinstance(params, list) and len(params) == 1:
+            params = params * len(ff_obj.param_names)
+        if extra is not None:
+            params.append(extra)
 
-        with pytest.raises(ValueError):
-            foo.params = 5
+        with with_condition:
+            ff_obj.params = params
+            assert ff_obj.params == ff_obj.FitParamTuple(*params)
 
-        params = [2] * len(foo.param_names)
-        params[0] = "let me in"
-        with pytest.raises(ValueError):
-            foo.params = params
+    @pytest.mark.parametrize(
+        "param_errors, extra, with_condition",
+        [
+            ([2], None, does_not_raise()),
+            (5, None, pytest.raises(ValueError)),
+            (["wrong"], None, pytest.raises(ValueError)),
+            ([3], 10, pytest.raises(ValueError))
+        ],
+    )
+    def test_param_errors_setting(self, param_errors, extra, with_condition):
+        """Tests for property setting of attribute `param_errors`."""
+        ff_obj = self.ff_class()
 
-        params = [2] * len(foo.param_names)
-        params += [5]
-        with pytest.raises(ValueError):
-            foo.params = params
+        if isinstance(param_errors, list) and len(param_errors) == 1:
+            param_errors = param_errors * len(ff_obj.param_names)
+        if extra is not None:
+            param_errors.append(extra)
 
-        # setting param_errors property
-        params = [2] * len(foo.param_names)
-        for val in (params, foo.FitParamTuple(*params)):
-            foo.param_errors = val
-            assert foo.param_errors == foo.FitParamTuple(*params)
-
-        with pytest.raises(ValueError):
-            foo.param_errors = 5
-
-        params = [2] * len(foo.param_names)
-        params[0] = "let me in"
-        with pytest.raises(ValueError):
-            foo.param_errors = params
-
-        params = [2] * len(foo.param_names)
-        params += [5]
-        with pytest.raises(ValueError):
-            foo.param_errors = params
+        with with_condition:
+            ff_obj.param_errors = param_errors
+            assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
     def test_func(self):
         """Test the `func` method."""
