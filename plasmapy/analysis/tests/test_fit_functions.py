@@ -161,51 +161,68 @@ class BaseFFTests(ABC):
 
         assert value == exp_value
 
-    def test_instantiation(self):
+    @pytest.mark.parametrize(
+        "params, param_errors, with_condition",
+        [
+            (None, None, does_not_raise()),
+            ("default", "default", does_not_raise()),
+            (5, None, pytest.raises(ValueError)),
+            (None, 5, pytest.raises(ValueError)),
+            (["wrong"], None, pytest.raises(ValueError)),
+            (None, ["wrong"], pytest.raises(ValueError)),
+            ("default+", None, pytest.raises(ValueError)),
+            (None, "default+", pytest.raises(ValueError)),
+        ],
+    )
+    def test_instantiation(self, params, param_errors, with_condition):
         """Test behavior of fit function class instantiation."""
-        # default
+        if params == "default":
+            params = self._test_params
+        elif params == "default+":
+            params = self._test_params
+            params = list(params)
+            params.append(5)
+
+        if param_errors == "default":
+            param_errors = self._test_param_errors
+        elif param_errors == "default+":
+            param_errors = self._test_param_errors
+            param_errors = list(param_errors)
+            param_errors.append(5)
+
+        with with_condition:
+            ff_obj = self.ff_class(params=params, param_errors=param_errors)
+
+            assert ff_obj.curve_fit_results is None
+            assert ff_obj.rsq is None
+
+            if params is None:
+                assert ff_obj.params is None
+            else:
+                assert ff_obj.params == ff_obj.FitParamTuple(*params)
+
+            if param_errors is None:
+                assert ff_obj.param_errors is None
+            else:
+                assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
+
+    def test_param_namedtuple(self):
+        """
+        Test that the namedtuple used for `params` and `param_errors` is
+        constructed correctly.
+        """
         ff_obj = self.ff_class()
-
-        assert isinstance(ff_obj.param_names, tuple)
-        assert len(ff_obj.param_names) != 0
-        assert all(isinstance(val, str) for val in ff_obj.param_names)
-
         assert hasattr(ff_obj, "FitParamTuple")
         assert issubclass(ff_obj.FitParamTuple, tuple)
         for name in ff_obj.param_names:
             assert hasattr(ff_obj.FitParamTuple, name)
 
-        assert ff_obj.curve_fit_results is None
-        assert ff_obj.params is None
-        assert ff_obj.param_errors is None
-        assert ff_obj.rsq is None
-
-        assert isinstance(ff_obj.latex_str, str)
-
-        # assign at instantiation
-        params = [1] * len(ff_obj.param_names)
-        ff_obj = self.ff_class(params=params, param_errors=params)
-        assert ff_obj.params == ff_obj.FitParamTuple(*params)
-        assert ff_obj.param_errors == ff_obj.FitParamTuple(*params)
-
-        with pytest.raises(ValueError):
-            self.ff_class(params=5)
-        with pytest.raises(ValueError):
-            self.ff_class(param_errors=5)
-
-        params = [2] * len(ff_obj.param_names)
-        params[0] = "let me in"
-        with pytest.raises(ValueError):
-            self.ff_class(params=params)
-        with pytest.raises(ValueError):
-            self.ff_class(param_errors=params)
-
-        params = [2] * len(ff_obj.param_names)
-        params += [5]
-        with pytest.raises(ValueError):
-            self.ff_class(params=params)
-        with pytest.raises(ValueError):
-            self.ff_class(param_errors=params)
+    def test_param_names(self):
+        """Test attribute `param_names` is defined correctly."""
+        ff_obj = self.ff_class()
+        assert isinstance(ff_obj.param_names, tuple)
+        assert len(ff_obj.param_names) != 0
+        assert all(isinstance(val, str) for val in ff_obj.param_names)
 
     @pytest.mark.parametrize(
         "params, extra, with_condition",
