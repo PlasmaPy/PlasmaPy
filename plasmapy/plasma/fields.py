@@ -52,7 +52,7 @@ class PosGrid:
     regular_grid : bool
         If True, generate a regularly spaced grid. If False, generate a grid
         with irregular spacing. Default is True.
-        
+
     **kwargs
         Any keyword accepted by `numpy.linspace`.
 
@@ -271,7 +271,7 @@ class PosGrid:
             grid[..., 2] = zarr
 
         self._regular_grid = regular_grid
-        self.grid = grid
+        self._grid = grid
 
     def _detect_regular_grid(self, tol=1e-6):
         """
