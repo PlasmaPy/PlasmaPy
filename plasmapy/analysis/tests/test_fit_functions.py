@@ -5,7 +5,6 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-
 # ExitStack can be replaced with nullcontext when we require >= python 3.7
 from contextlib import ExitStack as does_not_raise
 
