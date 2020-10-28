@@ -100,6 +100,38 @@ class BaseFFTests(ABC):
         foo = self.ff_class()
         assert foo.__repr__() == f"{foo.__str__()} {foo.__class__}"
 
+    @pytest.mark.parametrize(
+        "name, isproperty",
+        [
+            ("__call__", False),
+            ("_param_names", False),
+            ("curve_fit", False),
+            ("curve_fit_results", True),
+            ("func", False),
+            ("func_err", False),
+            ("latex_str", True),
+            ("param_errors", True),
+            ("param_names", True),
+            ("params", True),
+            ("rsq", True),
+            ("root_solve", False),
+        ],
+    )
+    def test_methods(self, name, isproperty):
+        """Test attribute/method/property existence."""
+        assert hasattr(self.ff_class, name)
+
+        if isproperty:
+            assert isinstance(getattr(self.ff_class, name), property)
+
+        if name == "_param_names":
+            if self.ff_class._param_names == NotImplemented:
+                pytest.fail(
+                    f"{self.ff_class} class attribute '_param_names' needs to "
+                    f" be defined as a tuple of strings representing the names of "
+                    f"the fit parameters."
+                )
+
     def test_basics(self):
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, "_param_names")
