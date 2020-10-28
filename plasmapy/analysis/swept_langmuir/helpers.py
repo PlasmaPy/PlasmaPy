@@ -6,8 +6,8 @@ import numpy as np
 
 def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
     """
-    Function for checking that the voltage and current arrays are properly formated
-    for analysis by `plasmapy.analysis.swept_langmuir`.
+    Function for checking that the voltage and current arrays are properly
+    formatted for analysis by `plasmapy.analysis.swept_langmuir`.
 
     Parameters
     ----------
@@ -23,18 +23,19 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
     Raises
     ------
     `TypeError`
-        If either the `voltage` or `current` arrays are not instances of a `numpy`
-        array.
+        If either the ``voltage`` or ``current`` arrays are not instances of a
+        `numpy.ndarray`.
 
     `ValueError`
-        If either the `voltage` or `current` arrays are not 1D.
+        If either the ``voltage`` or ``current`` arrays are not 1D.
 
-        If the `voltage` array is not monotonically increasing.
+        If the ``voltage`` array is not monotonically increasing.
 
-        If the `current` array never cross zero (i.e. has not floating potential).
+        If the ``current`` array never cross zero (i.e. has not floating
+        potential).
 
-        If the `current` array does not start form a negative ion-saturation current
-        and increases to a positive electron-saturation current.
+        If the ``current`` array does not start form a negative ion-saturation
+        current and increases to a positive electron-saturation current.
 
     """
     # examine voltage array
