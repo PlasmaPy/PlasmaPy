@@ -251,27 +251,34 @@ class BaseFFTests(ABC):
             ff_obj.param_errors = param_errors
             assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
-    def test_func(self):
+    @pytest.mark.parametrize(
+        "x, replace_a_param, with_condition",
+        [
+            (0, None, does_not_raise()),
+            (1.0, None, does_not_raise()),
+            (np.linspace(10, 30, num=20), None, does_not_raise()),
+            ([4, 5, 6], None, does_not_raise()),
+            ("hello", None, pytest.raises(TypeError)),
+            (5, "hello", pytest.raises(TypeError)),
+        ],
+    )
+    def test_func(self, x, replace_a_param, with_condition):
         """Test the `func` method."""
-        foo = self.ff_class()
+        ff_obj = self.ff_class()
 
-        for x in (0, 1.0, np.linspace(10, 30, num=20)):
-            assert np.allclose(
-                foo.func(x, *self._test_params), self.func(x, *self._test_params)
-            )
+        params = self._test_params
+        if replace_a_param is not None:
+            params = list(params)
+            params[0] = replace_a_param
 
-        x = [4, 5, 6]
-        assert np.allclose(
-            foo.func(x, *self._test_params), self.func(np.array(x), *self._test_params)
-        )
+        with with_condition:
+            y = ff_obj.func(x, *params)
 
-        with pytest.raises(TypeError):
-            foo.func("hello", *self._test_params)
+            if isinstance(x, list):
+                x = np.array(x)
+            y_expected = self.func(x, *params)
 
-        with pytest.raises(TypeError):
-            params = list(self._test_params)
-            params[0] = "hello"
-            foo.func(5, *params)
+            assert np.allclose(y, y_expected)
 
     def test_func_err(self):
         """Test the `func_err` method."""
