@@ -85,7 +85,7 @@ class BaseFFTests(ABC):
         assert foo.__repr__() == f"{foo.__str__()} {foo.__class__}"
 
     def test_basics(self):
-        """Test attribute/method/property existance."""
+        """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, "_param_names")
         if self.ff_class._param_names == NotImplemented:
             pytest.fail(
