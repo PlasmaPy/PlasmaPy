@@ -66,8 +66,8 @@ class PosGrid:
 
         if grid is None:
             self._make_grid(num=num, length=length, regular_grid=regular_grid, **kwargs)
-        elif isinstance(grid, type(self)):
-            self._regular_grid = grid.regular_grid
+        elif isinstance(grid, u.Quantity):
+            self._regular_grid = True
             self._grid = grid
         else:
             raise TypeError(f"For kwarg 'grid' expected type {type(self)} and "
