@@ -280,36 +280,43 @@ class BaseFFTests(ABC):
 
             assert np.allclose(y, y_expected)
 
-    def test_func_err(self):
+    @pytest.mark.parametrize(
+        "x, kwargs, with_condition",
+        [
+            (0, {}, does_not_raise()),
+            (1.0, {}, does_not_raise()),
+            (np.linspace(10, 30, num=20), {}, does_not_raise()),
+            ([4, 5, 6], {"x_err": 0.1, "rety": True}, does_not_raise()),
+            ("hello", {}, pytest.raises(TypeError)),
+            (5, {"x_err": "goodbye"}, pytest.raises(TypeError)),
+            (5, {"x_err": [0.1, 0.1]}, pytest.raises(ValueError)),
+        ],
+    )
+    def test_func_err(self, x, kwargs, with_condition):
         """Test the `func_err` method."""
-        foo = self.ff_class(
-            params=self._test_params, param_errors=self._test_param_errors
-        )
+        params = self._test_params
+        param_errors = self._test_param_errors
+        ff_obj = self.ff_class(params=params, param_errors=param_errors)
 
-        for x in (0, 1.0, np.linspace(10, 30, num=20)):
-            assert np.allclose(
-                foo.func_err(x),
-                self.func_err(x, self._test_params, self._test_param_errors),
-            )
+        with with_condition:
+            results = ff_obj.func_err(x, **kwargs)
+            if "rety" in kwargs and kwargs["rety"]:
+                y_err, y = results
+            else:
+                y_err = results
+                y = None
 
-        x = [4, 5, 6]
-        results = foo.func_err(x, x_err=0.1, rety=True)
-        assert np.allclose(
-            results[0],
-            self.func_err(
-                np.array(x), self._test_params, self._test_param_errors, x_err=0.1
-            ),
-        )
-        assert np.allclose(results[1], self.func(np.array(x), *self._test_params))
+            x_err = None
+            if "x_err" in kwargs:
+                x_err = kwargs["x_err"]
+            if isinstance(x, list):
+                x = np.array(x)
+            y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
 
-        with pytest.raises(TypeError):
-            foo.func_err("hello")
+            assert np.allclose(y_err, y_err_expected)
 
-        with pytest.raises(TypeError):
-            foo.func_err(5, x_err="goodbye")
-
-        with pytest.raises(ValueError):
-            foo.func_err(5, x_err=[0.1, 0.1])
+            if y is not None:
+                assert np.allclose(y, self.func(x, *params))
 
     def test_call(self):
         """Test __call__ behavior."""
