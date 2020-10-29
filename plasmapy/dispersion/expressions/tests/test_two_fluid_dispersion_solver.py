@@ -55,7 +55,9 @@ def test_two_fluid_dispersion_solution():
     assert np.isclose(sol["alfven_mode"].value[0, 0], 15.13224397, rtol=1e-6)
     assert np.isclose(sol["acoustic_mode"].value[0, 0], 0.55619464, rtol=1e-6)
     assert np.isclose(sol_theta_0["alfven_mode"].value[0, 0], 15.20273385, rtol=1e-6)
-    assert np.isnan(sol_theta_90["acoustic_mode"].value[0, 0])
+    assert np.isclose(
+        np.real(sol_theta_90["acoustic_mode"].value[0, 0]), 0.0007709854, rtol=1e-6
+        )
 
     assert np.isnan(sol_B_0["fast_mode"].value[0, 0])
     assert np.isnan(sol_B_0["alfven_mode"].value[0, 0])
