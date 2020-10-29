@@ -3,7 +3,6 @@ __all__ = ["two_fluid_dispersion_solution"]
 import astropy.units as u
 import numpy as np
 
-
 from astropy.constants.si import c, e, k_B, m_e, m_p, mu0
 
 import plasmapy.formulary.parameters as pfp
