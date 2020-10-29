@@ -71,3 +71,5 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
             "The current array needs to start from a negative ion-saturation current"
             " to a positive electron-saturation current."
         )
+
+    # TODO: voltage and current must have the same size
