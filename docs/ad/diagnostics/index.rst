@@ -1,8 +1,10 @@
+.. include:: /ad/ad_attention.inc
+
 .. _diagnostics:
 
-*******************************************
-Plasma diagnostics (`plasmapy.diagnostics`)
-*******************************************
+======================
+`plasmapy.diagnostics`
+======================
 
 .. automodapi:: plasmapy.diagnostics
    :no-heading:
@@ -11,5 +13,5 @@ Plasma diagnostics (`plasmapy.diagnostics`)
    :maxdepth: 1
    :caption: Sub-Packages and Modules
 
-   langmuir
+   Swept Langmuir Analysis <langmuir>
    thomson

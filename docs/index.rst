@@ -40,7 +40,7 @@ package for plasma physics currently under development.
    :maxdepth: 1
    :caption: Package features
 
-   Diagnostics <diagnostics/index>
+   ad/index
    Dispersion <dispersion/index>
    Formulary <formulary/index>
    Particles <particles/index>
