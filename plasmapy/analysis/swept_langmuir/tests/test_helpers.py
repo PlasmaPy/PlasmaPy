@@ -3,6 +3,7 @@
 import numpy as np
 import pytest
 
+# ExitStack can be replaced with nullcontext when we require >= python 3.7
 from contextlib import ExitStack as does_not_raise
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -11,18 +12,54 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 @pytest.mark.parametrize(
     "voltage, current, with_context",
     [
+        # the one that works
         (np.linspace(-40., 40., 100), np.linspace(-10., 30, 100), does_not_raise()),
+        # -- voltage cases --
+        # not the right type
         ("not a numpy array", np.linspace(-10., 30, 100), pytest.raises(TypeError)),
-        # voltage not 1D
+        # not 1D
         (
             np.empty((2, 2), dtype=np.float64),
             np.linspace(-10., 30, 100),
             pytest.raises(ValueError),
         ),
-        # voltage not linearly increasing
+        # not linearly increasing
         (
             np.linspace(40., -40., 100),
             np.linspace(-10., 30, 100),
+            pytest.raises(ValueError),
+        ),
+        # -- current cases --
+        # not the right type
+        (np.linspace(-40., 40., 100), "not a numpy array", pytest.raises(TypeError)),
+        # not 1D
+        (
+            np.linspace(-40., 40., 100),
+            np.empty((2, 2), dtype=np.float64),
+            pytest.raises(ValueError),
+        ),
+        # no floating potential (i.e. current never crosses zero)
+        (
+            np.linspace(-40., 40., 100),
+            np.linspace(10., 30, 100),
+            pytest.raises(ValueError),
+        ),
+        (
+            np.linspace(-40., 40., 100),
+            np.linspace(-30., -5., 100),
+            pytest.raises(ValueError),
+        ),
+        # current needs to start from negative and go positive
+        (
+            np.linspace(-40., 40., 100),
+            np.linspace(30., -5., 100),
+            pytest.raises(ValueError),
+        ),
+        # -- mixed cases --
+        # voltage and current must have the same size
+        (
+            np.linspace(-40., 40., 100),
+            np.linspace(-5., 30., 150),
             pytest.raises(ValueError),
         ),
     ],
