@@ -178,9 +178,8 @@ def two_fluid_dispersion_solution(
     >>> omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
     >>> omega = tfds(n=n, B=B, T_e=T_e, T_i=T_i, theta=theta, z=z, k=k_arr)
     >>> omega['fast_mode'][:,40]
-     <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
-	                1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
-
+    <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
+               1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
     """
 
     # Required derived parameters
