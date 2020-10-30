@@ -105,10 +105,8 @@ def two_fluid_dispersion_solution(
         \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt(-\frac{3}{p}
         \right) - \frac{2\pi}{3}j \right) + \frac{A\Lambda}{3})
 
-    Where,
-        j = 0 ==> fast mode
-        j = 1 ==> Alfven mode
-        j = 2 ==> Acoustic mode
+    where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
+    Alfven mode, and :math:`j = 2` represents the Acoustic mode.
 
     The above equation is derived from the general wave equation in the low
     frequency regime, where both electrons and ions play significant role (in
