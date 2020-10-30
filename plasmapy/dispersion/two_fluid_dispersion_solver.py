@@ -163,7 +163,9 @@ def two_fluid_dispersion_solution(
     >>> z = 1
     >>> omega = tfds(B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z)
     >>> omega
-    {'fast_mode': <Quantity [[1520.5794506]] rad / s>, 'alfven_mode': <Quantity [[1261.75471561]] rad / s>, 'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
+    {'fast_mode': <Quantity [[1520.5794506]] rad / s>,
+     'alfven_mode': <Quantity [[1261.75471561]] rad / s>,
+     'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
 
     >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.m ** -1
     >>> theta = np.linspace(5, 85, 100) * u.deg
