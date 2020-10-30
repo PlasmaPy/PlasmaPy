@@ -117,7 +117,6 @@ def two_fluid_dispersion_solution(
     [1]_):
 
     .. math::
- 
         \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
         \left[
             \left( \cos^2 \theta - \frac{\omega^2}{k^2 {c_s}^2} \right)
