@@ -3,10 +3,11 @@
 import numpy as np
 import pytest
 
-# ExitStack can be replaced with nullcontext when we require >= python 3.7
 from contextlib import ExitStack as does_not_raise
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
+
+# TODO: replace ExitStack with nullcontext when we require >= python 3.7
 
 
 @pytest.mark.parametrize(
