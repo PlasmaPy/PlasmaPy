@@ -5,9 +5,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.two_fluid_dispersion import (
-    two_fluid_dispersion_solution,
-)
+from plasmapy.dispersion.two_fluid_dispersion import two_fluid_dispersion_solution
 
 k = 0.0001 * u.m ** -1
 B = 8.3e-9 * u.T
