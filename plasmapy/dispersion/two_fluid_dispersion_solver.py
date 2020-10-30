@@ -129,9 +129,11 @@ def two_fluid_dispersion_solution(
               \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
 
     Here,
+
     .. math::
         Q = 1 + k^2 c^2/{\omega_{pe}}^2
-    \omega_{ci} is the proton gyrofrequency
+
+    :math:`\omega_{ci}` is the proton gyrofrequency.
 
     References
     ----------
