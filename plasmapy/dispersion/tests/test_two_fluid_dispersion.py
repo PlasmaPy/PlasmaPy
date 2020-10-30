@@ -1,11 +1,11 @@
-"""Tests for the two fluid dispersion solver"""
+"""Tests for the two fluid dispersion"""
 
 import numpy as np
 import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.two_fluid_dispersion_solver import (
+from plasmapy.dispersion.two_fluid_dispersion import (
     two_fluid_dispersion_solution,
 )
 
@@ -28,7 +28,7 @@ theta_arr = np.linspace(5, 85, 100) * u.deg
 c = 3.0e8 * u.m / u.s
 
 
-def test_two_fluid_dispersion_solution():
+def test_two_fluid_dispersion():
     r"""Test the two fluid analytical dispersion solution"""
 
     sol = two_fluid_dispersion_solution(

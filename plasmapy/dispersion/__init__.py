@@ -12,6 +12,6 @@ from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func,
     plasma_dispersion_func_deriv,
 )
-from plasmapy.dispersion.two_fluid_dispersion_solver import (
+from plasmapy.dispersion.two_fluid_dispersion import (
     two_fluid_dispersion_solution,
 )
