@@ -35,8 +35,8 @@ def two_fluid_dispersion_solution(
     z=1,
 ):
     r"""
-    Return a dictionary of frequencies corresponding to the
-    solutions of dispersion relation in low frequency regime.
+    Return a dictionary of frequencies corresponding to the solutions of
+    dispersion relation in low frequency regime.
 
     **Aliases:** `tfds_`
 
