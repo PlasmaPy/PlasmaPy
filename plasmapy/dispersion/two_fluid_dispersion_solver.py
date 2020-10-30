@@ -137,13 +137,18 @@ def two_fluid_dispersion_solution(
 
     References
     ----------
-    .. [1] PM bellan, Improved basis set for low frequency plasma
-    waves, 2012, JGR, 117, A12219, doi:10.1029/2012JA017856
-    .. [2] TE Stringer, Low-frequency waves in an unbounded
-    plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
-    .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A.
-    Role of Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
-    87, 195004
+    .. [1] PM bellan, Improved basis set for low frequency plasma waves, 2012,
+           JGR, 117, A12219, doi: `10.1029/2012JA017856
+           <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+
+    .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
+           Part C, doi: `10.1088/0368-3281/5/2/304
+           <https://doi.org/10.1088/0368-3281/5/2/304>`_
+
+    .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A. Role of
+           Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
+           87, 195004, doi: `10.1103/PhysRevLett.87.195004
+           <https://doi.org/10.1103/PhysRevLett.87.195004>`_
 
     Examples
     --------
