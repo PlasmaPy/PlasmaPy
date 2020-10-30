@@ -114,7 +114,7 @@ def two_fluid_dispersion_solution(
     process is dominated by electron dynamics).
 
     The complete dispersion equation is thus written as (from equation (1) of
-    [1]):
+    [1]_):
 
     .. math::
  
