@@ -78,9 +78,9 @@ def two_fluid_dispersion_solution(
 
     Returns
     -------
-    omega : ~astropy.units.Quantity
-        A dictionary of Wave frequencies corresponding to three modes namely
-        a) Ion-acoustic mode, b) Alfven mode and c) Fast mode, in 1/s units.
+    omega : `~astropy.units.Quantity`
+        A dictionary of Wave frequencies corresponding to three modes:
+        (1) Ion-acoustic mode, (2) Alfven mode, and (3) Fast mode, in 1/s units.
 
     Raises
     ------
