@@ -87,10 +87,10 @@ def test_two_fluid_dispersion():
             B=B, k=k, n=n, T_e=T_e, T_i=T_i_neg, theta=theta, z=z
         )
 
-    #with pytest.raises(ValueError):
-    #    two_fluid_dispersion_solution(
-    #        B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z_neg
-    #    )
+    with pytest.raises(ValueError):
+        two_fluid_dispersion_solution(
+            B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z_neg
+        )
 
     # Cases where one or more of the inputs is an array
     sol_k_arr = two_fluid_dispersion_solution(
