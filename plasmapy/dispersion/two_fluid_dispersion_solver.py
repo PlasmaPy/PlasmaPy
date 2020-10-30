@@ -117,11 +117,16 @@ def two_fluid_dispersion_solution(
     [1]):
 
     .. math::
-        \left( cos^2\theta - Q\frac{\omega^2}{k^2 {v_A}^2} \right) \left[
-        \left( cos^2\theta - \frac{\omega^2}{k^2 {c_s}^2 \right) -
-        Q\frac{\omega^2}{k^2 {v_A}^2 \left( 1 - \frac{\omega^2}{k^2 {c_s}^2
-        \right) \right] = \left(1 - \frac{\omega^2}{k^2 {c_s}^2 \right)
-        \frac{\omega^2}{{\omega_{ci}}^2}cos^2\theta
+ 
+        \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
+        \left[
+            \left( \cos^2 \theta - \frac{\omega^2}{k^2 {c_s}^2} \right)
+            - Q \frac{\omega^2}{k^2 {v_A}^2} \left(
+                1 - \frac{\omega^2}{k^2 {c_s}^2}
+            \right)
+        \right] \\
+            &= \left(1 - \frac{\omega^2}{k^2 {c_s}^2} \right)
+              \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
 
     Here,
     .. math::
