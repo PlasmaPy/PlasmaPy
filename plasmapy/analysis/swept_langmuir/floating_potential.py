@@ -12,8 +12,7 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults",
-    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
+    "FloatingPotentialResults", ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
 
 
@@ -137,23 +136,12 @@ def find_floating_potential(
 
     """
     rtn = FloatingPotentialResults(
-        vf=np.nan,
-        vf_err=np.nan,
-        rsq=None,
-        func=None,
-        islands=None,
-        indices=None
+        vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
     )._asdict()
 
     _settings = {
-        "linear": {
-            "func": ffuncs.Linear,
-            "min_point_factor": 0.1,
-        },
-        "exponential": {
-            "func": ffuncs.ExponentialPlusOffset,
-            "min_point_factor": 0.2,
-        },
+        "linear": {"func": ffuncs.Linear, "min_point_factor": 0.1},
+        "exponential": {"func": ffuncs.ExponentialPlusOffset, "min_point_factor": 0.2},
     }
     try:
         min_point_factor = _settings[fit_type]["min_point_factor"]
@@ -177,8 +165,11 @@ def find_floating_potential(
     if isinstance(threshold, (int, np.integer)):
         if threshold < 1:
             threshold = 1
-            warn(f"threshold ({threshold}) is less than 1 and needs to be"
-                 f" an int >= 1, using a value of 1", PlasmaPyWarning)
+            warn(
+                f"threshold ({threshold}) is less than 1 and needs to be"
+                f" an int >= 1, using a value of 1",
+                PlasmaPyWarning,
+            )
 
     else:
         threshold = 1
@@ -195,13 +186,15 @@ def find_floating_potential(
     elif min_points >= 1:
         min_points = int(np.round(min_points))
     else:
-        raise ValueError(f"Got {min_points}, but 'min_points' must be an int or float "
-                         f"greater than or equal to 0.")
+        raise ValueError(
+            f"Got {min_points}, but 'min_points' must be an int or float "
+            f"greater than or equal to 0."
+        )
 
     # find possible crossing points (cp)
     lower_vals = current < 0
     upper_vals = 0 < current
-    cp_exact = (current == 0.).nonzero()[0]
+    cp_exact = (current == 0.0).nonzero()[0]
     cp_low2high = np.logical_and(np.roll(lower_vals, 1), upper_vals).nonzero()[0]
     cp_high2low = np.logical_and(np.roll(lower_vals, -1), upper_vals).nonzero()[0]
 
@@ -210,13 +203,9 @@ def find_floating_potential(
     cp_high2low = cp_high2low[cp_high2low != current.size - 1]
 
     # collect all candidates
-    cp_candidates = np.concatenate((
-        cp_exact,
-        cp_low2high,
-        cp_low2high - 1,
-        cp_high2low,
-        cp_high2low + 1,
-    ))
+    cp_candidates = np.concatenate(
+        (cp_exact, cp_low2high, cp_low2high - 1, cp_high2low, cp_high2low + 1)
+    )
     cp_candidates = np.unique(cp_candidates)  # sorted and unique
 
     # How many crossing-islands?
@@ -230,25 +219,27 @@ def find_floating_potential(
         rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     else:
         # There are multiple crossing points
-        isl_start = np.concatenate((
-            [cp_candidates[0]],
-            cp_candidates[threshold_indices+1],
-        ))
-        isl_stop = np.concatenate((
-            cp_candidates[threshold_indices]+1,
-            [cp_candidates[-1]+1],
-        ))
+        isl_start = np.concatenate(
+            ([cp_candidates[0]], cp_candidates[threshold_indices + 1])
+        )
+        isl_stop = np.concatenate(
+            (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
+        )
         rtn["islands"] = []
         for start, stop in zip(isl_start, isl_stop):
             rtn["islands"].append(slice(start, stop))
 
         # do islands fall within min_points window
-        isl_window = np.abs(np.r_[rtn["islands"][-1]][-1]
-                            - np.r_[rtn["islands"][0]][0]) + 1
+        isl_window = (
+            np.abs(np.r_[rtn["islands"][-1]][-1] - np.r_[rtn["islands"][0]][0]) + 1
+        )
         if isl_window > min_points:
-            warn(f"Unable to determine floating potential, Langmuir sweep has "
-                 f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
-                 f"and/or smooth the current.", PlasmaPyWarning)
+            warn(
+                f"Unable to determine floating potential, Langmuir sweep has "
+                f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
+                f"and/or smooth the current.",
+                PlasmaPyWarning,
+            )
 
             return FloatingPotentialResults(**rtn)
 
@@ -287,19 +278,18 @@ def find_floating_potential(
                     istart -= ipad_2_start
 
         if (istop - istart + 1) < min_points:
-            warn(f"The number of elements in the current array "
-                 f"({istop - istart + 1}) is less than 'min_points' "
-                 f"({min_points}).", PlasmaPyWarning)
+            warn(
+                f"The number of elements in the current array ({istop - istart + 1}) "
+                f"is less than 'min_points' ({min_points}).",
+                PlasmaPyWarning,
+            )
 
     # Perform Linear Regression Fit
-    volt_sub = voltage[istart:istop + 1]
-    curr_sub = current[istart:istop + 1]
+    volt_sub = voltage[istart : istop + 1]
+    curr_sub = current[istart : istop + 1]
     fit_func.curve_fit(volt_sub, curr_sub)
 
     rtn["vf"], rtn["vf_err"] = fit_func.root_solve()
-    rtn.update({
-        "rsq": fit_func.rsq,
-        "indices": slice(istart, istop + 1)
-    })
+    rtn.update({"rsq": fit_func.rsq, "indices": slice(istart, istop + 1)})
 
     return FloatingPotentialResults(**rtn)
