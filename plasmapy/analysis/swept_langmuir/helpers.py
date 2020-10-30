@@ -72,4 +72,8 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
             " to a positive electron-saturation current."
         )
 
-    # TODO: voltage and current must have the same size
+    if voltage.size != current.size:
+        raise ValueError(
+            f"Incompatible arrays, 'voltage' size {voltage.size} must be the same"
+            f" as the 'current' size {current.size}."
+        )
