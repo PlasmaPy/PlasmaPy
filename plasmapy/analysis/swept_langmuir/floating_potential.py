@@ -4,8 +4,8 @@ __all__ = ["find_floating_potential"]
 import numpy as np
 
 from collections import namedtuple
-from warnings import warn
 from typing import Union
+from warnings import warn
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep

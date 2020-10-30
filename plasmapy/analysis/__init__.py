@@ -1,4 +1,4 @@
 """The analysis sub-package for PlasmaPy."""
 __all__ = []
 
-from plasmapy.analysis import swept_langmuir, fit_functions
+from plasmapy.analysis import fit_functions, swept_langmuir
