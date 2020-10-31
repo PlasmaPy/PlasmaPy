@@ -101,9 +101,9 @@ def two_fluid_dispersion_solution(
     [1]
 
     .. math::
-        \frac{\omega}{\omega_{ci}} = \sqrt(2\Lambda \sqrt(-\frac{p}{3}) cos
-        \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt(-\frac{3}{p}
-        \right) - \frac{2\pi}{3}j \right) + \frac{A\Lambda}{3})
+        \frac{\omega}{\omega_{ci}} = \sqrt{2\Lambda \sqrt{-\frac{p}{3}} cos
+        \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt{-\frac{3}{p}
+        \right)} - \frac{2\pi}{3}j + \frac{\Lambda A}{3}}
 
     where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
     Alfven mode, and :math:`j = 2` represents the Acoustic mode.
