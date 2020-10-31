@@ -11,7 +11,7 @@ PlasmaPy Documentation
 
    notebooks/physics
    notebooks/dispersion/dispersion_function
-   notebooks/dispersion/two_fluid_dispersion_solver
+   notebooks/dispersion/two_fluid_dispersion
    notebooks/thomson
 
 .. image:: _static/graphic-circular.png
