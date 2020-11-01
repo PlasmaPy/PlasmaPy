@@ -220,7 +220,10 @@ html_favicon = "./_static/icon.ico"
 
 # -- NBSphinx options
 
-nbsphinx_thumbnails = {"notebooks/*": "_images/graphic-circular.png"}
+nbsphinx_thumbnails = {
+    "notebooks/*": "_images/graphic-circular.png",
+    "notebooks/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
+}
 
 # adapted from https://github.com/spatialaudio/nbsphinx/blob/58b8034dd9d7349c1b4ac3e7a7d6baa87ab2a6a9/doc/conf.py
 
