@@ -113,6 +113,17 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "lemmatum",
+      "name": "Pawel Kozlowski",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/28945309?v=4",
+      "profile": "https://github.com/lemmatum",
+      "contributions": [
+        "question",
+        "code",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7
