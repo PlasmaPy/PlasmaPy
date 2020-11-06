@@ -395,6 +395,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "GrahamGoudeau",
+      "name": "Graham Goudeau",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8539625?v=4",
+      "profile": "https://github.com/GrahamGoudeau",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
