@@ -477,6 +477,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "goodab",
+      "name": "goodab",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/19417188?v=4",
+      "profile": "https://github.com/goodab",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
