@@ -120,6 +120,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://stanczakdominik.github.io/"><img src="https://avatars0.githubusercontent.com/u/11289391?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dominik Stańczak</b></sub></a><br /><a href="#question-StanczakDominik" title="Answering Questions">💬</a> <a href="#blog-StanczakDominik" title="Blogposts">📝</a> <a href="https://github.com/PlasmaPy/PlasmaPy/issues?q=author%3AStanczakDominik" title="Bug reports">🐛</a> <a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=StanczakDominik" title="Code">💻</a> <a href="#design-StanczakDominik" title="Design">🎨</a> <a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=StanczakDominik" title="Documentation">📖</a> <a href="#example-StanczakDominik" title="Examples">💡</a> <a href="#ideas-StanczakDominik" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-StanczakDominik" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-StanczakDominik" title="Maintenance">🚧</a> <a href="#platform-StanczakDominik" title="Packaging/porting to new platform">📦</a> <a href="#research-StanczakDominik" title="Research">🔬</a> <a href="https://github.com/PlasmaPy/PlasmaPy/pulls?q=is%3Apr+reviewed-by%3AStanczakDominik" title="Reviewed Pull Requests">👀</a> <a href="#talk-StanczakDominik" title="Talks">📢</a> <a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=StanczakDominik" title="Tests">⚠️</a> <a href="#tool-StanczakDominik" title="Tools">🔧</a> <a href="#tutorial-StanczakDominik" title="Tutorials">✅</a></td>
+  </tr>
+</table>
+
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 

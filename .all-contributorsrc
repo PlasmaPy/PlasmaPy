@@ -9,6 +9,32 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "none",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "StanczakDominik",
+      "name": "Dominik Stańczak",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/11289391?v=4",
+      "profile": "https://stanczakdominik.github.io/",
+      "contributions": [
+        "question",
+        "blog",
+        "bug",
+        "code",
+        "design",
+        "doc",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "research",
+        "review",
+        "talk",
+        "test",
+        "tool",
+        "tutorial"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }
