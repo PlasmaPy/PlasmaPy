@@ -34,6 +34,35 @@
         "tool",
         "tutorial"
       ]
+    },
+    {
+      "login": "namurphy",
+      "name": "Nick Murphy",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8931994?v=4",
+      "profile": "https://www.plasmapy.org/",
+      "contributions": [
+        "a11y",
+        "question",
+        "bug",
+        "code",
+        "content",
+        "data",
+        "design",
+        "doc",
+        "eventOrganizing",
+        "example",
+        "fundingFinding",
+        "ideas",
+        "maintenance",
+        "mentoring",
+        "projectManagement",
+        "research",
+        "review",
+        "talk",
+        "test",
+        "tutorial",
+        "video"
+      ]
     }
   ],
   "contributorsPerLine": 7
