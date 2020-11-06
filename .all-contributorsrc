@@ -311,6 +311,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "seanwilliamcarroll",
+      "name": "Sean Carroll",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8582697?v=4",
+      "profile": "https://github.com/seanwilliamcarroll",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
