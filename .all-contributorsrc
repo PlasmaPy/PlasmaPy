@@ -422,6 +422,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Nismirno",
+      "name": "Nikita Smirnov",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6154468?v=4",
+      "profile": "https://github.com/Nismirno",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
