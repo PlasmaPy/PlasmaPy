@@ -321,6 +321,16 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "tvarnish",
+      "name": "Thomas Varnish",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5612615?v=4",
+      "profile": "https://github.com/tvarnish",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
