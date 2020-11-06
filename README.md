@@ -178,6 +178,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/nrb1324"><img src="https://avatars1.githubusercontent.com/u/15239039?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nrb1324</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=nrb1324" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/samurai688"><img src="https://avatars1.githubusercontent.com/u/12175315?v=4?s=100" width="100px;" alt=""/><br /><sub><b>samurai688</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=samurai688" title="Code">💻</a> <a href="#design-samurai688" title="Design">🎨</a> <a href="#research-samurai688" title="Research">🔬</a> <a href="https://github.com/PlasmaPy/PlasmaPy/pulls?q=is%3Apr+reviewed-by%3Asamurai688" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/savcheva"><img src="https://avatars2.githubusercontent.com/u/43857770?v=4?s=100" width="100px;" alt=""/><br /><sub><b>savcheva</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=savcheva" title="Code">💻</a></td>
   </tr>
 </table>
 
