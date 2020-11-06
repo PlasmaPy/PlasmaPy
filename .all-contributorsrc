@@ -63,6 +63,27 @@
         "tutorial",
         "video"
       ]
+    },
+    {
+      "login": "rocco8773",
+      "name": "Erik Everson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/29869348?v=4",
+      "profile": "https://github.com/rocco8773",
+      "contributions": [
+        "question",
+        "code",
+        "design",
+        "doc",
+        "example",
+        "ideas",
+        "maintenance",
+        "mentoring",
+        "projectManagement",
+        "research",
+        "review",
+        "tutorial",
+        "video"
+      ]
     }
   ],
   "contributorsPerLine": 7
