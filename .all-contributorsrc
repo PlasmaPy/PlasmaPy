@@ -164,6 +164,18 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dstansby",
+      "name": "David Stansby",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6197628?v=4",
+      "profile": "https://www.davidstansby.com/",
+      "contributions": [
+        "code",
+        "doc",
+        "infra",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
