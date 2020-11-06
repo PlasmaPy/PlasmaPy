@@ -194,6 +194,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "thomasjpfan",
+      "name": "Thomas J. Fan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5402633?v=4",
+      "profile": "https://github.com/thomasjpfan",
+      "contributions": [
+        "code",
+        "platform"
+      ]
     }
   ],
   "contributorsPerLine": 7,
