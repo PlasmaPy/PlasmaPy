@@ -223,6 +223,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "kuszaj",
+      "name": "Piotr Kuszaj",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/20188251?v=4",
+      "profile": "https://github.com/kuszaj",
+      "contributions": [
+        "code",
+        "platform"
+      ]
     }
   ],
   "contributorsPerLine": 7,
