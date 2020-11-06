@@ -340,6 +340,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "misupova",
+      "name": "Maria Isupova",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/36161780?v=4",
+      "profile": "https://github.com/misupova",
+      "contributions": [
+        "code",
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
