@@ -377,6 +377,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "BH4",
+      "name": "BH4",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4676044?v=4",
+      "profile": "https://github.com/BH4",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
