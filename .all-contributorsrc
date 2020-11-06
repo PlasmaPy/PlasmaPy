@@ -176,6 +176,15 @@
         "infra",
         "test"
       ]
+    },
+    {
+      "login": "schambers",
+      "name": "Sean Chambers",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31563?v=4",
+      "profile": "http://lostechies.com/seanchambers/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
