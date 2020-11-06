@@ -359,6 +359,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "thecasuist",
+      "name": "Afzal Rao",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/50012451?v=4",
+      "profile": "https://github.com/thecasuist",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
