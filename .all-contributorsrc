@@ -505,6 +505,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "ministrike3",
+      "name": "Neil Patel",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10123303?v=4",
+      "profile": "https://github.com/ministrike3",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
