@@ -271,6 +271,19 @@
         "doc",
         "infra"
       ]
+    },
+    {
+      "login": "Cadair",
+      "name": "Stuart Mumford",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1391051?v=4",
+      "profile": "http://www.stuartmumford.uk/",
+      "contributions": [
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
