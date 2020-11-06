@@ -413,6 +413,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Ishinomori",
+      "name": "Jakub Polak",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/44603152?v=4",
+      "profile": "https://www.codewars.com/users/jpolak95",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
