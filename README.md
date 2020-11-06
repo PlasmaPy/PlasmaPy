@@ -18,6 +18,9 @@
 [![Gitter (bridged to Matrix)](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 PlasmaPy is an open source community developed Python 3.6+ package for
 plasma physics in the early stages of development.  PlasmaPy intends to
@@ -111,3 +114,17 @@ Code.  Ongoing PlasmaPy development is being supported through a
 collaborative award from the U.S. National Science Foundation's
 Cyberinfrastructure for Sustained Scientific Innovation program and a
 NASA HDEE grant.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
