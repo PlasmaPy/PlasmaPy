@@ -145,6 +145,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ritiek",
+      "name": "Ritiek Malhotra",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20314742?v=4",
+      "profile": "https://ritiek.github.io/",
+      "contributions": [
+        "question",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
