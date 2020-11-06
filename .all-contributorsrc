@@ -155,6 +155,15 @@
         "question",
         "code"
       ]
+    },
+    {
+      "login": "jasperbeckers",
+      "name": "jasperbeckers",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/28015654?v=4",
+      "profile": "https://github.com/jasperbeckers",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
