@@ -101,6 +101,18 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "pheuer",
+      "name": "Peter Heuer",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/32618747?v=4",
+      "profile": "http://www.physics.ucla.edu/~pheuer/",
+      "contributions": [
+        "code",
+        "design",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
