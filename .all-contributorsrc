@@ -204,6 +204,16 @@
         "code",
         "platform"
       ]
+    },
+    {
+      "login": "colbych",
+      "name": "Colby Haggerty",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3066366?v=4",
+      "profile": "https://github.com/colbych",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
