@@ -84,6 +84,23 @@
         "tutorial",
         "video"
       ]
+    },
+    {
+      "login": "SolarDrew",
+      "name": "Drew Leonard",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1914702?v=4",
+      "profile": "https://github.com/SolarDrew",
+      "contributions": [
+        "question",
+        "code",
+        "design",
+        "ideas",
+        "infra",
+        "maintenance",
+        "mentoring",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
