@@ -284,6 +284,15 @@
         "platform",
         "test"
       ]
+    },
+    {
+      "login": "lgoenner",
+      "name": "lgoenner",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/14999635?v=4",
+      "profile": "https://github.com/lgoenner",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

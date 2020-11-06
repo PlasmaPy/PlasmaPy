@@ -149,6 +149,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/jasperbeckers"><img src="https://avatars0.githubusercontent.com/u/28015654?v=4?s=100" width="100px;" alt=""/><br /><sub><b>jasperbeckers</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=jasperbeckers" title="Code">💻</a></td>
   </tr>
   <tr>
+    <td align="center"><a href="https://github.com/lgoenner"><img src="https://avatars3.githubusercontent.com/u/14999635?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lgoenner</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=lgoenner" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/samurai688"><img src="https://avatars1.githubusercontent.com/u/12175315?v=4?s=100" width="100px;" alt=""/><br /><sub><b>samurai688</b></sub></a><br /><a href="https://github.com/PlasmaPy/PlasmaPy/commits?author=samurai688" title="Code">💻</a> <a href="#design-samurai688" title="Design">🎨</a> <a href="#research-samurai688" title="Research">🔬</a> <a href="https://github.com/PlasmaPy/PlasmaPy/pulls?q=is%3Apr+reviewed-by%3Asamurai688" title="Reviewed Pull Requests">👀</a></td>
   </tr>
 </table>
