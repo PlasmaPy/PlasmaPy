@@ -36,6 +36,19 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     Calculates the de Broglie wavelength.
 
     **Aliases:** `lambdaDB_`
+    
+    Formula
+    -------
+    The de Broglie wavelength is given by
+
+    .. math::
+
+        \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
+
+    where :math:`h` is the Planck constant, :math:`p` is the
+    relativistic momentum of the particle, :math:`gamma` is the
+    Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
+    particle's velocity.
 
     Parameters
     ----------
