@@ -35,10 +35,6 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
 
-    **Aliases:** `lambdaDB_`
-    
-    Formula
-    -------
     The de Broglie wavelength is given by
 
     .. math::
@@ -50,6 +46,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
     particle's velocity.
 
+    **Aliases:** `lambdaDB_`
+
     Parameters
     ----------
     V : ~astropy.units.Quantity
@@ -57,7 +55,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     particle : str or ~astropy.units.Quantity
         Representation of the particle species (e.g., `'e'`, `'p'`, `'D+'`,
-        or `'He-4 1+'`, or the particle mass in units convertible to
+        or `'He-4 1+'`) or the particle mass in units convertible to
         kilograms.
 
     Returns
@@ -76,7 +74,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     ~plasmapy.utils.RelativityError
         If the magnitude of `V` is faster than the speed of light.
-
+    
     Warns
     -----
     ~astropy.units.UnitsWarning
@@ -157,19 +155,19 @@ lambdaDB_ = deBroglie_wavelength
 )
 def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
-    Calculate the thermal deBroglie wavelength for electrons.
+    Calculate the thermal de Broglie wavelength for electrons.
 
     **Aliases:** `lambdaDB_th_`
 
     Parameters
     ----------
-    T_e: ~astropy.units.Quantity
+    T_e : ~astropy.units.Quantity
         Electron temperature.
 
     Returns
     -------
-    lambda_dbTh: ~astropy.units.Quantity
-        The thermal deBroglie wavelength for electrons in meters.
+    lambda_dbTh : ~astropy.units.Quantity
+        The thermal de Broglie wavelength for electrons in meters.
 
     Raises
     ------
@@ -189,7 +187,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Notes
     -----
-    The thermal deBroglie wavelength is approximately the average deBroglie
+    The thermal de Broglie wavelength is approximately the average deBroglie
     wavelength for electrons in an ideal gas and is given by
 
     .. math::
@@ -287,12 +285,12 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    n_e: ~astropy.units.Quantity
+    n_e : ~astropy.units.Quantity
         Electron number density.
 
     Returns
     -------
-    lambda_TF: ~astropy.units.Quantity
+    lambda_TF : ~astropy.units.Quantity
         The Thomas-Fermi screening length in meters.
 
     Raises
@@ -363,12 +361,12 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    n: ~astropy.units.Quantity
+    n : ~astropy.units.Quantity
         Particle number density.
 
     Returns
     -------
-    radius: ~astropy.units.Quantity
+    radius : ~astropy.units.Quantity
         The Wigner-Seitz radius in meters.
 
     Raises
@@ -424,7 +422,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    n_e: ~astropy.units.Quantity
+    n_e : ~astropy.units.Quantity
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -432,7 +430,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    beta_mu: ~astropy.units.Quantity
+    beta_mu : ~astropy.units.Quantity
         The dimensionless ideal chemical potential. That is the ratio of
         the ideal chemical potential to the thermal energy.
 
@@ -543,7 +541,7 @@ def _chemical_potential_interp(n_e, T):
 
     Parameters
     ----------
-    n_e: ~astropy.units.Quantity
+    n_e : ~astropy.units.Quantity
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -551,7 +549,7 @@ def _chemical_potential_interp(n_e, T):
 
     Returns
     -------
-    beta_mu: ~astropy.units.Quantity
+    beta_mu : ~astropy.units.Quantity
         The dimensionless chemical potential, which is a ratio of
         chemical potential energy to thermal kinetic energy.
 
