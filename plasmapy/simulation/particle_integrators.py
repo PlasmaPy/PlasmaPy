@@ -5,7 +5,7 @@ import numpy as np
 from astropy import constants
 
 
-@numba.njit(parallel=True)
+@numba.njit(parallel=False)
 def boris_push(x, v, b, e, q, m, dt):
     r"""
     Implement the explicit Boris pusher for moving and accelerating particles.
@@ -79,7 +79,7 @@ def _Lorentz_factor(u):
     return np.sqrt(1 + ((np.linalg.norm(u) / c) ** 2))
 
 
-@numba.njit(parallel=True)
+@numba.njit(parallel=False)
 def _zenitani(x, v, b, e, q, m, dt, B_numerical_threshold=1e-20):
     r"""
     Implement the Zenitani-Umeda pusher.
