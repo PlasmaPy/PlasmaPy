@@ -2,9 +2,7 @@ name: Testing
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
   schedule:
     # runs these tests every Sunday, at 12 UTC
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#onschedule
