@@ -1,0 +1,32 @@
+name: Testing
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # runs these tests every Sunday, at 12 UTC
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#onschedule
+    - cron:  '0 12 * * 0'
+
+jobs:
+  test_nightly:
+
+    if: "github.repository == 'plasmapy/plasmapy' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip github]')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tox-env: [py36, py37, py38, py37-numpydev, py37-astropydev]
+        # TODO py39
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        pip install tox
+
+    - name: Run package tests through tox
+      run: |
+        tox -e ${{ matrix.toxenv }}
