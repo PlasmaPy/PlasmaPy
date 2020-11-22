@@ -48,12 +48,11 @@ import numbers
 import numpy as np
 import warnings
 
-from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
-from typing import Optional
+from astropy.constants.si import c, e, eps0, k_B, mu0
+from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
