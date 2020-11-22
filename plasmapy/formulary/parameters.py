@@ -164,6 +164,8 @@ def mass_density(
     <Quantity 1.32929...e-08 kg / m3>
     >>> mass_density(2.e12 * u.cm ** -3, 'He', z_ratio=0.5)
     <Quantity 6.64647...e-09 kg / m3>
+    >>> mass_density(1.0 * u.g * u.cm ** -3, "")
+    <Quantity 0.001 kg / m3>
     """
     if density.unit.is_equivalent(u.kg / u.m ** 3):
         return density
