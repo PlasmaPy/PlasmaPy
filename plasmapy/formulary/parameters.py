@@ -96,7 +96,7 @@ def _grab_charge(ion: Particle, z_mean=None):
 )
 def mass_density(
     density: [u.m ** -3, u.kg / (u.m ** 3)],
-    particle: Particle,
+    particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
     """
