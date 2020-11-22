@@ -47,6 +47,7 @@ from plasmapy.formulary.parameters import (
     wp_,
     wuh_,
 )
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import (
     PhysicsError,
@@ -93,13 +94,47 @@ mu = m_p.to(u.u).value
 class Test_mass_density:
     r"""Test the mass_density function in parameters.py."""
 
-    def test_particleless(self):
-        with pytest.raises(ValueError):
-            mass_density(1 * u.m ** -3)
+    @pytest.mark.parametrize(
+        "args, kwargs, conditional",
+        [
+            ((1 * u.m ** -3, ), {}, pytest.raises(TypeError)),
+            ((1 * u.J, "He"), {}, pytest.raises(u.UnitTypeError)),
+            ((1 * u.m ** -3, None), {}, pytest.raises(TypeError)),
+            (
+                (1 * u.m ** -3, "He"),
+                {"z_ratio": "not a ratio"},
+                pytest.raises(TypeError),
+            ),
+        ],
+    )
+    def test_raises(self, args, kwargs, conditional):
+        with conditional:
+            mass_density(*args, **kwargs)
 
-    def test_wrong_units(self):
-        with pytest.raises(u.UnitTypeError):
-            mass_density(1 * u.J)
+    @pytest.mark.parametrize(
+        "args, kwargs, expected",
+        [
+            ((1.0 * u.g * u.m ** -3, ""), {}, 1.e-3 * u.kg * u.m ** -3),
+            ((5.0e12 * u.cm ** -3, "He"), {}, 3.32323849e-8 * u.kg * u.m ** -3),
+            (
+                (5.0e12 * u.cm ** -3, Particle("He")),
+                {},
+                3.32323849e-8 * u.kg * u.m ** -3,
+            ),
+            (
+                (5.0e12 * u.cm ** -3, "He"),
+                {"z_ratio": 0.5},
+                1.66161925e-08 * u.kg * u.m ** -3,
+            ),
+            (
+                (5.0e12 * u.cm ** -3, "He"),
+                {"z_ratio": -0.5},
+                1.66161925e-08 * u.kg * u.m ** -3,
+            ),
+        ],
+    )
+    def test_values(self, args, kwargs, expected):
+        assert np.isclose(mass_density(*args, **kwargs), expected)
 
     def test_handle_nparrays(self):
         """Test for ability to handle numpy array quantities"""
