@@ -1,4 +1,4 @@
-name: Testing
+name: Fortnightly testing
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Test with tox
-      run: tox -e py36 py37 py38 py39
+      run: tox -e py36-minimal py37-astropydev py38-numpydev
     - uses: codecov/codecov-action@v1
       with:
         verbose: true # optional (default = false)
