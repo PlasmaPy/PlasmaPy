@@ -13,12 +13,10 @@ __all__ = [
 import astropy.units as u
 import numpy as np
 import scipy.interpolate as interp
+import xarray as xr
 
 from abc import ABC
 from typing import Union
-
-import xarray as xr
-
 
 
 class AbstractGrid(ABC):
@@ -32,7 +30,7 @@ class AbstractGrid(ABC):
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
-            self._load_grid(seeds[0], units=units)
+            self._load_grid(seeds[0], seeds[1], seeds[2])
 
         # If two inputs are given, assume they are start and stop arrays
         # to create a new grid
@@ -41,7 +39,7 @@ class AbstractGrid(ABC):
 
         else:
             raise TypeError(
-                f"{self.__class__.__name__} takes 1 or 2 "
+                f"{self.__class__.__name__} takes 2 or 3 "
                 f"positional arguments but {len(seeds)} were given"
             )
 
@@ -49,8 +47,6 @@ class AbstractGrid(ABC):
         self._is_uniform_grid = None
         self._interpolator = None
         self._grid = None
-
-
 
     def _validate(self):
         """
@@ -60,40 +56,42 @@ class AbstractGrid(ABC):
         """
         return True
 
-
-    #*************************************************************************
+    # *************************************************************************
     # Fundamental properties of the grid
-    #*************************************************************************
+    # *************************************************************************
+
+    @property
+    def shape(self):
+        return self.ds["pts0"].shape
+
     @property
     def grid(self):
         """Create a grid of positional values."""
         if self._grid is None:
-            shape = self.shape.append(3)
-            self._grid = np.zeros(shape)
-            self._grid[...,0] = self.pts0
-            self._grid[...,1] = self.pts1
-            self._grid[...,2] = self.pts2
-        return self._grid
+            nx, ny, nz = self.shape
+            self._grid = np.zeros([nx, ny, nz, 3])
 
-    @property
-    def shape(self):
-        return self.dataset['pts0'].shape
+            self._grid[..., 0] = self.pts0
+            self._grid[..., 1] = self.pts1
+            self._grid[..., 2] = self.pts2
+        return self._grid
 
     @property
     def unit0(self):
         """Unit of dimension 1"""
-        return self.dataset['pts0'].attrs['unit']
+        return self.ds["pts0"].attrs["unit"]
 
     @property
     def unit1(self):
         """Unit of dimension 2"""
-        return self.dataset['pts1'].attrs['unit']
+        return self.ds["pts1"].attrs["unit"]
 
     @property
     def unit2(self):
         """Unit of dimension 3"""
-        return self.dataset['pts2'].attrs['unit']
+        return self.ds["pts2"].attrs["unit"]
 
+    @property
     def units(self):
         """Returns a list of the units of each dimension"""
         return [self.unit0, self.unit1, self.unit2]
@@ -104,33 +102,31 @@ class AbstractGrid(ABC):
         The unit for the entire grid. Only valid if all dimensions of the
         grid have the same units: otherwise, an exception is raised.
         """
-        if self._units[0] == self._units[1] and self._units[0] == self._units[2]:
-            return self._units[0]
+        if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
+            return self.units[0]
         else:
             raise ValueError(
-                "Array dimensions do not all have the same " f"units: {self._units}"
+                "Array dimensions do not all have the same " f"units: {self.units}"
             )
 
     @property
     def pts0(self):
         """Array of positions in dimension 1"""
-        return self.dataset['pts0'] * self.unit0
+        return self.ds["pts0"].values * self.unit0
 
     @property
     def pts1(self):
         """Array of positions in dimension 2"""
-        return self.dataset['pts1'] * self.dataset['pts1'].attrs['unit']
+        return self.ds["pts1"].values * self.unit1
 
     @property
     def pts2(self):
         """Array of positions in dimension 3"""
-        return self.dataset['pts2'] * self.dataset['pts2'].attrs['unit']
+        return self.ds["pts2"].values * self.unit2
 
-
-    #*************************************************************************
+    # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
-    #*************************************************************************
-
+    # *************************************************************************
 
     @property
     def ax0(self):
@@ -138,12 +134,12 @@ class AbstractGrid(ABC):
         Axis 1
         Only valid if grid is uniform: otherwise an exception is raised
         """
+
         if self.is_uniform_grid:
-            return self.pts0[:,0,0] * self.unit0
+            return self.pts0[:, 0, 0]
         else:
             raise ValueError(
-                "The axis properties are only valid on "
-                "uniformly spaced grids."
+                "The axis properties are only valid on " "uniformly spaced grids."
             )
 
     @property
@@ -154,11 +150,10 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.is_uniform_grid:
-            return self.pts1[0,:,0] * self.unit1
+            return self.pts1[0, :, 0]
         else:
             raise ValueError(
-                "The axis properties are only valid on "
-                "uniformly spaced grids."
+                "The axis properties are only valid on " "uniformly spaced grids."
             )
 
     @property
@@ -168,11 +163,10 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.is_uniform_grid:
-            return self.pts2[0,0,:] * self.unit2
+            return self.pts2[0, 0, :]
         else:
             raise ValueError(
-                "The axis properties are only valid on "
-                "uniformly spaced grids."
+                "The axis properties are only valid on " "uniformly spaced grids."
             )
 
     @property
@@ -217,18 +211,13 @@ class AbstractGrid(ABC):
                 "uniformly spaced grids."
             )
 
-
-    #*************************************************************************
+    # *************************************************************************
     # Loading and creating grids
-    #*************************************************************************
+    # *************************************************************************
 
-
-    def _load_grid(self,
-                   pts0: u.Quantity,
-                   pts1: u.Quantity,
-                   pts2: u.Quantity,
-                   **kwargs,
-                  ):
+    def _load_grid(
+        self, pts0: u.Quantity, pts1: u.Quantity, pts2: u.Quantity, **kwargs,
+    ):
         """
         Initialize the grid object from a user-supplied grid
 
@@ -245,44 +234,43 @@ class AbstractGrid(ABC):
         None.
 
         """
-        pts0 = xr.DataArray(pts0.value, dims=["ax0", "ax1", "ax2"], attrs={'unit':pts0.unit})
-        pts1 = xr.DataArray(pts1.value, dims=["ax0", "ax1", "ax2"], attrs={'unit':pts1.unit})
-        pts2 = xr.DataArray(pts2.value, dims=["ax0", "ax1", "ax2"], attrs={'unit':pts2.unit})
+        pts0 = xr.DataArray(
+            pts0.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts0.unit}
+        )
+        pts1 = xr.DataArray(
+            pts1.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts1.unit}
+        )
+        pts2 = xr.DataArray(
+            pts2.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts2.unit}
+        )
 
         # Create dataset
-        self.dataset = xr.Dataset(
-                {
-                    'pts0' : pts0,
-                    'pts1' : pts1,
-                    'pts2' : pts2,
-                }
-                )
+        self.ds = xr.Dataset({"pts0": pts0, "pts1": pts1, "pts2": pts2,})
 
-        # TODO: if grid is uniform, add 1D coordinate axes as coordinates here
+        # TODO: if grid is uniform, add 1D coordinate axes as coordinates  to
+        # the dataset here
 
         # Add quantities
         for qk in kwargs.keys():
             q = kwargs[qk]
+
             self.add_quantity(qk, q)
 
         # Check to make sure that the object created satisfies any
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-
-    def add_quantity(self, key : str, quantity: u.Quantity):
+    def add_quantity(self, key: str, quantity: u.Quantity):
         """
         Adds a quantity to the dataset as a new DataArray
         """
 
-        #TODO: Validate quantity shape and units here
+        # TODO: Validate quantity shape and units here
 
-        data = xr.Dataset(quantity,
-                          dims=["ax0", "ax1", "ax2"],
-                          attrs={'unit':quantity.unit})
-        self.dataset[key] = data
-
-
+        data = xr.DataArray(
+            quantity, dims=["ax0", "ax1", "ax2"], attrs={"unit": quantity.unit}
+        )
+        self.ds[key] = data
 
     def _make_grid(
         self,
@@ -298,11 +286,11 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        start : number (int,float,u.Quantity) or a list of three of the same
+        start : number (u.Quantity) or a list of three of the same
             Starting values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        stop : number (int,float,u.Quantity) or a list of three of the same
+        stop : number (u.Quantity) or a list of three of the same
             End values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
@@ -311,9 +299,6 @@ class AbstractGrid(ABC):
             given, the same number of points will be used in each dimension.
             The default is 100.
 
-        units: u.core.Unit object or array of three of the same
-            Units for each array dimension. Overridden by units on stop
-            and start, if present.
 
         **kwargs: Additional arguments
             Any additional arguments will be passed directly to np.linspace()
@@ -323,8 +308,6 @@ class AbstractGrid(ABC):
         None.
 
         """
-        if units is None:
-            units = [u.dimensionless_unscaled] * 3
 
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
@@ -333,12 +316,10 @@ class AbstractGrid(ABC):
             start = [start] * 3
         if isinstance(num, (int, float, u.Quantity)):
             num = [num] * 3
-        if isinstance(units, u.core.Unit):
-            units = [units] * 3
 
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
-        var = {"stop": stop, "start": start, "num": num, "units": units}
+        var = {"stop": stop, "start": start, "num": num}
         for k in var.keys():
             if len(var[k]) != 3:
                 raise ValueError(
@@ -347,35 +328,27 @@ class AbstractGrid(ABC):
                     f"({len(var[k])} values were given)."
                 )
 
+        units = []
+
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
         for i in range(3):
             # Determine unit for dimension
-            if hasattr(stop[i], "unit"):
-                units[i] = stop[i].unit
-            elif hasattr(start[i], "unit"):
-                units[i] = start[i].unit
-            else:
-                # Use units provided by units keyword
-                pass
+            unit = start[i].unit
+            units.append(unit)
 
-            # Attempt to convert start and stop to unit chosen
+            # Attempt to convert stop unit to start unit
             try:
-                start[i] = start[i].to(units[i])
+                stop[i] = stop[i].to(unit)
+
             except u.UnitConversionError:
                 raise ValueError(
-                    f"Units of {start[i]} and " f" {units[i]} are not compatible"
+                    f"Units of {stop[i]} and " f" {unit} are not compatible"
                 )
             except AttributeError:
-                # Assume exception was raised because value is not a u.Quantity
-                start[i] *= units[i]
-
-            try:
-                stop[i] = stop[i].to(units[i])
-            # Note that UnitConversionError is impossible for stop
-            except AttributeError:
-                # Assume exception was raised because value is not a u.Quantity
-                stop[i] *= units[i]
+                raise AttributeError(
+                    "Start and stop values must be u.Quantity instances."
+                )
 
             # strip units
             stop[i] = stop[i].value
@@ -385,10 +358,9 @@ class AbstractGrid(ABC):
         pts0, pts1, pts2 = self._make_mesh(start, stop, num, **kwargs)
 
         # Load into the dataset using the _load_grid function
-        self._load_grid(pts0*units[0],
-                        pts1*units[1],
-                        pts2*units[2],
-                        )
+        self._load_grid(
+            pts0 * units[0], pts1 * units[1], pts2 * units[2],
+        )
 
     def _make_mesh(self, start, stop, num, **kwargs):
         """
@@ -405,10 +377,9 @@ class AbstractGrid(ABC):
 
         return pts0, pts1, pts2
 
-    #*************************************************************************
+    # *************************************************************************
     # Grid uniformity
-    #*************************************************************************
-
+    # *************************************************************************
 
     @property
     def is_uniform_grid(self):
@@ -417,7 +388,7 @@ class AbstractGrid(ABC):
         If None, calculate
         """
         if self._is_uniform_grid is None:
-            self._detect_is_uniform_grid()
+            self._is_uniform_grid = self._detect_is_uniform_grid()
         return self._is_uniform_grid
 
     def _detect_is_uniform_grid(self, tol=1e-6):
@@ -426,19 +397,18 @@ class AbstractGrid(ABC):
         variance of the grid gradients.
         """
         variance = np.zeros([3])
-        dx = np.gradient(self.arr0, axis=0)
+        dx = np.gradient(self.pts0, axis=0)
         variance[0] = np.std(dx) / np.mean(dx)
-        dy = np.gradient(self.arr1, axis=1)
+        dy = np.gradient(self.pts1, axis=1)
         variance[1] = np.std(dy) / np.mean(dy)
-        dz = np.gradient(self.arr2, axis=2)
+        dz = np.gradient(self.pts2, axis=2)
         variance[2] = np.std(dz) / np.mean(dz)
 
         return np.allclose(variance, 0.0, atol=tol)
 
-    #*************************************************************************
+    # *************************************************************************
     # Interpolators
-    #*************************************************************************
-
+    # *************************************************************************
 
     @property
     def interpolator(self):
@@ -447,13 +417,13 @@ class AbstractGrid(ABC):
         to a position
         """
         if self._interpolator is None:
-            if self.is_uniform_grid():
+            if self.is_uniform_grid:
                 self._make_regular_grid_interpolator()
             else:
                 # TODO: Implement non-uniform grid interpolator here someday?
-                raise NotImplemented("Interpolation on non-uniform grids "
-                                     "is not currently supported")
-
+                raise NotImplemented(
+                    "Interpolation on non-uniform grids " "is not currently supported"
+                )
 
         return self._interpolator
 
@@ -530,25 +500,33 @@ class AbstractGrid(ABC):
 
         # Validate args
         # must be np.ndarray or u.Quantity arrays of same shape as grid
-        key_list = list(self.keys)
+        key_list = list(self.ds.data_vars)
         for arg in args:
 
-            if not arg in key_list
-                raise KeyError("Quantity arguments must correspond to "
-                               "DataArrays in the DataSet. "
-                               f"{arg} was not found. "
-                               f"Existing keys are: {key_list}")
+            if not arg in key_list:
+                raise KeyError(
+                    "Quantity arguments must correspond to "
+                    "DataArrays in the DataSet. "
+                    f"{arg} was not found. "
+                    f"Existing keys are: {key_list}"
+                )
 
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
+        idict = {"ax0": i[:, 0], "ax1": i[:, 1], "ax2": i[:, 2]}
 
         # Fetch the values at those indices from each quantity
         output = []
         for arg in args:
-            values = self.dataset[arg][i[:, 0], i[:, 1], i[:, 2], ...]
+            values = self.ds[arg].isel(idict).values
+            values = np.squeeze(values)
+            values *= self.ds[arg].attrs["unit"]
             output.append(values)
 
-        return tuple(output)
+        if len(output) == 1:
+            return output[0]
+        else:
+            return tuple(output)
 
     def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
         r"""
@@ -573,10 +551,6 @@ class AbstractGrid(ABC):
         )
 
 
-
-
-
-
 class CartesianGrid(AbstractGrid):
     """
     A uniformly spaced Cartesian grid.
@@ -592,84 +566,6 @@ class CartesianGrid(AbstractGrid):
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
                 )
-
-    @property
-    def grid(self):
-        """Grid of positional values. CartesianGrid's have the unique
-        property that the grid returned has units, since all dimensions are
-        of the same unit."""
-        return self._grid * self.unit
-
-    @property
-    def x_arr(self):
-        """
-        The 3D array of x values
-        """
-        return self.arr0
-
-    @property
-    def y_arr(self):
-        """
-        The 3D array of y values
-        """
-        return self.arr1
-
-    @property
-    def z_arr(self):
-        """
-        The 3D array of z values
-        """
-        return self.arr2
-
-    @property
-    def x_axis(self):
-        """
-        The x-axis
-        """
-        return self.ax0
-
-    @property
-    def y_axis(self):
-        """
-        The y-axis (only valid for a uniform grid)
-        """
-        return self.ax1
-
-    @property
-    def z_axis(self):
-        """
-        The z-axis (only valid for a uniform grid)
-        """
-        return self.ax2
-
-    @property
-    def d_x(self):
-        """
-        Calculated dx (only valid for a uniform grid)
-        """
-        return self.dax0
-
-    @property
-    def d_y(self):
-        """
-        Calculated dy (only valid for a uniform grid)
-        """
-        return self.dax1
-
-    @property
-    def d_z(self):
-        """
-        Calculated dz (only valid for a uniform grid)
-        """
-        return self.dax2
-
-    @property
-    def distance_from_origin(self):
-        """
-        The 3D array of the radial position of each point from the
-        origin
-        """
-        return np.sqrt(self.x_axis ** 2 + self.y_axis ** 2 + self.z_axis ** 2)
 
     def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
         r"""
@@ -718,15 +614,13 @@ class CartesianGrid(AbstractGrid):
         z1 = z0 + 1
 
         # Calculate the cell volume
-        cell_vol = self.d_x * self.d_y * self.d_z
+        cell_vol = self.dax0 * self.dax1 * self.dax2
         n0, n1, n2 = self.shape
 
         # Create a list of empty arrays to hold final results
         output = []
         for i, arg in enumerate(args):
-            ndim = arg.shape[-1]
-            output.append(np.zeros([nparticles, ndim]) *  \
-                          self.dataset[arg].attrs['unit'])
+            output.append(np.zeros([nparticles]) * self.ds[arg].attrs["unit"])
 
         # Go through all of the vertices around the position and volume-
         # weight the values
@@ -741,7 +635,11 @@ class CartesianGrid(AbstractGrid):
                     out = np.where(valid == False)
 
                     # Distance from grid vertex to particle position
-                    grid_pos = np.array([self.ax0[x], self.ax1[y], self.ax2[z]])
+                    grid_pos = (
+                        np.array([self.ax0[x], self.ax1[y], self.ax2[z]]) * self.unit
+                    )
+                    grid_pos = np.moveaxis(grid_pos, 0, -1)
+
                     d = np.abs(grid_pos - pos)
 
                     # Fraction of cell volume that is closest to the
@@ -749,14 +647,18 @@ class CartesianGrid(AbstractGrid):
                     weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
                     weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
-                    weight = np.outer(weight, np.ones(3))
 
                     # For each argument, include the contributed by this
                     # grid vertex
                     for i, arg in enumerate(args):
-                        output[i] += weight * self.dataset[arg][x, y, z, ...]
+                        values = self.ds[arg].values[x, y, z]
+                        values *= self.ds[arg].attrs["unit"]
+                        output[i] += weight * values
 
-        return tuple(output)
+        if len(output) == 1:
+            return output[0]
+        else:
+            return tuple(output)
 
 
 class NonUniformCartesianGrid(CartesianGrid):
@@ -781,189 +683,3 @@ class NonUniformCartesianGrid(CartesianGrid):
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
 
         return arr0, arr1, arr2
-
-
-class CylindricalGrid(AbstractGrid):
-    """
-    A grid with dimensions (rho, theta, z) and units (length, angle, length)
-    """
-
-    def _validate(self):
-        # Check that units are consistent with cylindrical coordinates
-        units = [u.m, u.rad, u.m]
-        for i, unit in enumerate(units):
-            try:
-                self.units[i].to(unit)
-            except u.UnitConversionError:
-                raise ValueError(
-                    "Units of grid are not valid for a Cylindrical grid: "
-                    "dimensions must be (length, angle, length) but given "
-                    f"dimensions are {self.units}."
-                )
-
-        # Check that angular dimensions have no values the maximum angle for
-        # that dimension
-        if np.max(self.theta_arr.to(u.rad).value) > np.pi * 2:
-            raise ValueError(
-                "Theta dimension of cylindrical grid can contain no values "
-                "greater than 2pi radians."
-            )
-
-    @property
-    def rho_arr(self):
-        """
-        The 3D array of rho values
-        """
-        return self.arr0
-
-    @property
-    def theta_arr(self):
-        """
-        The 3D array of theta values
-        """
-        return self.arr1
-
-    @property
-    def z_arr(self):
-        """
-        The 3D array of z values
-        """
-        return self.arr2
-
-    @property
-    def rho_axis(self):
-        """
-        The rho-axis  (only valid for a uniform grid)
-        """
-        return self.ax0
-
-    @property
-    def theta_axis(self):
-        """
-        The theta-axis  (only valid for a uniform grid)
-        """
-        return self.ax1
-
-    @property
-    def z_axis(self):
-        """
-        The z-axis  (only valid for a uniform grid)
-        """
-        return self.ax2
-
-    @property
-    def d_rho(self):
-        """
-        Calculated drho  (only valid for a uniform grid)
-        """
-        return self.dax0
-
-    @property
-    def d_theta(self):
-        """
-        Calculated dtheta (only valid for a uniform grid)
-        """
-        return self.dax1
-
-    @property
-    def d_z(self):
-        """
-        Calculated dz (only valid for a uniform grid)
-        """
-        return self.dax2
-
-
-class SphericalGrid(AbstractGrid):
-    """
-    A grid with dimensions (r, theta, phi) and units (length, angle, angle)
-    """
-
-    def _validate(self):
-        # Check that units are consistent with cylindrical coordinates
-        units = [u.m, u.rad, u.rad]
-        for i, unit in enumerate(units):
-            try:
-                self.units[i].to(unit)
-            except u.UnitConversionError:
-                raise ValueError(
-                    "Units of grid are not valid for a Cylindrical grid: "
-                    "dimensions must be (length, angle, length) but given "
-                    f"dimensions are {self.units}."
-                )
-
-        # Check that angular dimensions have no values the maximum angle for
-        # that dimension
-        if np.max(self.theta_arr.to(u.rad).value) > np.pi:
-            raise ValueError(
-                "Theta dimension of spherical grid can contain no values "
-                "greater than pi radians."
-            )
-
-        if np.max(self.phi_arr.to(u.rad).value) > np.pi * 2:
-            raise ValueError(
-                "Phi dimension of spherical grid can contain no values "
-                "greater than 2pi radians."
-            )
-
-    @property
-    def r_arr(self):
-        """
-        The 3D array of r values
-        """
-        return self.arr0
-
-    @property
-    def theta_arr(self):
-        """
-        The 3D array of theta values
-        """
-        return self.arr1
-
-    @property
-    def phi_arr(self):
-        """
-        The 3D array of phi values
-        """
-        return self.arr2
-
-    @property
-    def r_axis(self):
-        """
-        The r-axis  (only valid for a uniform grid)
-        """
-        return self.ax0
-
-    @property
-    def theta_axis(self):
-        """
-        The theta-axis  (only valid for a uniform grid)
-        """
-        return self.ax1
-
-    @property
-    def phi_axis(self):
-        """
-        The phi-axis  (only valid for a uniform grid)
-        """
-        return self.ax2
-
-    @property
-    def d_r(self):
-        """
-        Calculated dr  (only valid for a uniform grid)
-        """
-        return self.dax0
-
-    @property
-    def d_theta(self):
-        """
-        Calculated dtheta (only valid for a uniform grid)
-        """
-        return self.dax1
-
-    @property
-    def d_phi(self):
-        """
-        Calculated dphi (only valid for a uniform grid)
-        """
-        return self.dax2
