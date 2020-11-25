@@ -119,5 +119,17 @@ def test_interpolators():
 def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 
+    pts0, pts1, pts2 = grid.grids
+    shape = grid.shape
+    units = grid.units
+
     # Grid should be non-uniform
     assert grid.is_uniform_grid == False
+
+    # Test assigning a quantity
+    q1 = np.random.randn(10, 10, 10) * u.kg
+    grid.add_quantity("test_quantity", q1)
+
+
+# test_CartesianGrid()
+test_NonUniformCartesianGrid()

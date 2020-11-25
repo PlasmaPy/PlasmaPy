@@ -10,11 +10,28 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+import pandas as pd
 import scipy.interpolate as interp
 import xarray as xr
 
 from abc import ABC
 from typing import Union
+
+
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
+    """
+        Determine whether a grid is uniform (uniformly spaced) by computing the
+        variance of the grid gradients.
+        """
+    variance = np.zeros([3])
+    dx = np.gradient(pts0, axis=0)
+    variance[0] = np.std(dx) / np.mean(dx)
+    dy = np.gradient(pts1, axis=1)
+    variance[1] = np.std(dy) / np.mean(dy)
+    dz = np.gradient(pts2, axis=2)
+    variance[2] = np.std(dz) / np.mean(dz)
+
+    return np.allclose(variance, 0.0, atol=tol)
 
 
 class AbstractGrid(ABC):
@@ -29,7 +46,7 @@ class AbstractGrid(ABC):
         # Initialize some variables
         self._is_uniform_grid = None
         self._interpolator = None
-        self._grid = None
+        self._grids = None  # [nx,ny,nz] x 3
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
@@ -60,39 +77,64 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        return self.ds["pts0"].shape
+        if self.is_uniform_grid:
+            return (self.ax0.size, self.ax1.size, self.ax2.size)
+        else:
+            return self.ds.coords["ax0"].shape
 
     @property
-    def grid(self):
-        """Create a grid of positional values."""
-        if self._grid is None:
-            nx, ny, nz = self.shape
-            self._grid = np.zeros([nx, ny, nz, 3])
+    def grids(self):
+        """Grids of vertex positions"""
+        if self._grids is None:
 
-            self._grid[..., 0] = self.pts0
-            self._grid[..., 1] = self.pts1
-            self._grid[..., 2] = self.pts2
-        return self._grid
+            if self.is_uniform_grid:
+                pts0, pts1, pts2 = np.meshgrid(
+                    self.ax0, self.ax1, self.ax2, indexing="ij"
+                )
+                self._grids = (pts0, pts1, pts2)
+            else:
+                self._grids = (
+                    self.ds["ax0"] * self.unit0,
+                    self.ds["ax1"] * self.unit1,
+                    self.ds["ax2"] * self.unit2,
+                )
 
-    @property
-    def unit0(self):
-        """Unit of dimension 1"""
-        return self.ds["pts0"].attrs["unit"]
-
-    @property
-    def unit1(self):
-        """Unit of dimension 2"""
-        return self.ds["pts1"].attrs["unit"]
+        return self._grids
 
     @property
-    def unit2(self):
-        """Unit of dimension 3"""
-        return self.ds["pts2"].attrs["unit"]
+    def pts0(self):
+        """Array of positions in dimension 1"""
+        return self.grids[0] * self.unit0
+
+    @property
+    def pts1(self):
+        """Array of positions in dimension 2"""
+        return self.grids[1] * self.unit1
+
+    @property
+    def pts2(self):
+        """Array of positions in dimension 3"""
+        return self.grids[2] * self.unit2
 
     @property
     def units(self):
         """Returns a list of the units of each dimension"""
-        return [self.unit0, self.unit1, self.unit2]
+        return self.ds.attrs["axis_units"]
+
+    @property
+    def unit0(self):
+        """Unit of dimension 1"""
+        return self.units[0]
+
+    @property
+    def unit1(self):
+        """Unit of dimension 2"""
+        return self.units[1]
+
+    @property
+    def unit2(self):
+        """Unit of dimension 3"""
+        return self.units[2]
 
     @property
     def unit(self):
@@ -106,21 +148,6 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "Array dimensions do not all have the same " f"units: {self.units}"
             )
-
-    @property
-    def pts0(self):
-        """Array of positions in dimension 1"""
-        return self.ds["pts0"].values * self.unit0
-
-    @property
-    def pts1(self):
-        """Array of positions in dimension 2"""
-        return self.ds["pts1"].values * self.unit1
-
-    @property
-    def pts2(self):
-        """Array of positions in dimension 3"""
-        return self.ds["pts2"].values * self.unit2
 
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
@@ -242,25 +269,23 @@ class AbstractGrid(ABC):
                 f"pts2 = {pts2.shape}."
             )
 
-        pts0 = xr.DataArray(
-            pts0.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts0.unit}
-        )
-        pts1 = xr.DataArray(
-            pts1.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts1.unit}
-        )
-        pts2 = xr.DataArray(
-            pts2.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts2.unit}
-        )
+        self.is_uniform_grid = _detect_is_uniform_grid(pts0, pts1, pts2)
 
         # Create dataset
-        self.ds = xr.Dataset({"pts0": pts0, "pts1": pts1, "pts2": pts2,})
+        self.ds = xr.Dataset()
 
-        # If grid is uniform, add 1D coordinate axes as coordinates  to
-        # the dataset here
+        self.ds.attrs["axis_units"] = [pts0.unit, pts1.unit, pts2.unit]
         if self.is_uniform_grid:
             self.ds.coords["ax0"] = pts0[:, 0, 0]
             self.ds.coords["ax1"] = pts1[0, :, 0]
             self.ds.coords["ax2"] = pts2[0, 0, :]
+
+        else:
+            mdx = pd.MultiIndex.from_arrays(
+                [pts0.flatten(), pts1.flatten(), pts2.flatten()],
+                names=["ax0", "ax1", "ax2"],
+            )
+            self.ds.coords["ax"] = mdx
 
         # Add quantities
         for qk in kwargs.keys():
@@ -277,15 +302,20 @@ class AbstractGrid(ABC):
         Adds a quantity to the dataset as a new DataArray
         """
 
+        if self.is_uniform_grid:
+            axes = ["ax0", "ax1", "ax2"]
+        # If grid is non-uniform, flatten quantity
+        else:
+            quantity = quantity.flatten()
+            axes = ["ax"]
+
         if quantity.shape != self.shape:
             raise ValueError(
                 f"Shape of quantity '{key}' {quantity.shape} "
                 f"does not match the grid shape {self.shape}."
             )
 
-        data = xr.DataArray(
-            quantity, dims=["ax0", "ax1", "ax2"], attrs={"unit": quantity.unit}
-        )
+        data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
         self.ds[key] = data
 
     def _make_grid(
@@ -395,35 +425,6 @@ class AbstractGrid(ABC):
         return pts0, pts1, pts2
 
     # *************************************************************************
-    # Grid uniformity
-    # *************************************************************************
-
-    @property
-    def is_uniform_grid(self):
-        """
-        Value of is_uniform_grid
-        If None, calculate
-        """
-        if self._is_uniform_grid is None:
-            self._is_uniform_grid = self._detect_is_uniform_grid()
-        return self._is_uniform_grid
-
-    def _detect_is_uniform_grid(self, tol=1e-6):
-        """
-        Determine whether a grid is uniform (uniformly spaced) by computing the
-        variance of the grid gradients.
-        """
-        variance = np.zeros([3])
-        dx = np.gradient(self.pts0, axis=0)
-        variance[0] = np.std(dx) / np.mean(dx)
-        dy = np.gradient(self.pts1, axis=1)
-        variance[1] = np.std(dy) / np.mean(dy)
-        dz = np.gradient(self.pts2, axis=2)
-        variance[2] = np.std(dz) / np.mean(dz)
-
-        return np.allclose(variance, 0.0, atol=tol)
-
-    # *************************************************************************
     # Interpolators
     # *************************************************************************
 
@@ -435,7 +436,7 @@ class AbstractGrid(ABC):
         """
         if self._interpolator is None:
             if self.is_uniform_grid:
-                self._make_regular_grid_interpolator()
+                self._make_uniform_grid_interpolator()
             else:
                 # TODO: Implement non-uniform grid interpolator here someday?
                 raise NotImplementedError(
@@ -444,10 +445,12 @@ class AbstractGrid(ABC):
 
         return self._interpolator
 
-    def _make_regular_grid_interpolator(self):
+    def _make_uniform_grid_interpolator(self):
         """
         Initializes a nearest-neighbor interpolator that returns the nearest
-        grid indices for a given position.
+        grid indices for a given position (given in SI units).
+
+        This function works on a uniformly spaced grid
         """
         # Create a grid of indices for use in interpolation
         n0, n1, n2 = self.shape
@@ -463,6 +466,22 @@ class AbstractGrid(ABC):
 
         self._interpolator = interp.RegularGridInterpolator(
             pts, indgrid, method="nearest", bounds_error=False, fill_value=np.nan
+        )
+
+    def _make_nonuniform_grid_interpolator(self):
+        """
+        Initializes a nearest-neighbor interpolator that returns the nearest
+        grid indices for a given position (given in SI units).
+
+        This function works on unstructured (non-uniform) data
+        """
+
+        pts0, pts1, pts2 = self.grids
+        pts0, pts1, pts2 = pts0.si.values, pts1.si.values, pts2.si.values
+        indices = np.arange(pts0.shape)
+
+        self._interpolator = interp.griddata(
+            (pts0, pts1, pts2), indices, method="nearest"
         )
 
     def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity]):
