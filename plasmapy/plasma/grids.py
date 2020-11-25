@@ -557,9 +557,8 @@ class AbstractGrid(ABC):
             corresponds to the three dimensions of the grid. If an np.ndarray
             is provided, units will be assumed to match those of the grid.
 
-        args : np.ndarray or u.Quantity objects of shape (n0,n1,2) or (n0,n1,n2,3)
-            Arrays of values at each grid vertex to be interpolated onto the
-            positions given.
+        *args : str
+            Strings that correspond to DataArrays in the dataset
 
         """
 
@@ -596,9 +595,8 @@ class CartesianGrid(AbstractGrid):
             corresponds to the three dimensions of the grid. If an np.ndarray
             is provided, units will be assumed to match those of the grid.
 
-        args : np.ndarray or u.Quantity objects of shape (n0,n1,2) or (n0,n1,n2,3)
-            Arrays of values at each grid vertex to be interpolated onto the
-            positions given.
+        *args : str
+            Strings that correspond to DataArrays in the dataset
 
         """
 
