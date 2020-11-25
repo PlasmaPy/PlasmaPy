@@ -11,27 +11,42 @@ from plasmapy.plasma import grids as grids
 
 
 def test_AbstractGrid():
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm)
+    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=(10, 20, 5))
 
     array = grid.grid
     units = grid.units
 
     pts0, pts1, pts2 = grid.pts0, grid.pts1, grid.pts2
 
-
-def test_AbstractGrid_number_of_positionals():
+    # Test wrong number of positional arguments: 1 or more than 3
     with pytest.raises(TypeError):
-        grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, 1)
+        grid = grids.AbstractGrid(1 * u.cm)
+    with pytest.raises(TypeError):
+        grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, 1 * u.cm, 1 * u.cm)
 
+    # Test unequal lengths of arguments raises error
+    with pytest.raises(ValueError):
+        grid = grids.AbstractGrid(-1 * u.m, [2 * u.m, 3 * u.m])
 
-def test_AbstractGrid_incompatible_units():
+    with pytest.raises(ValueError):
+        grid = grids.AbstractGrid(
+            np.random.randn(2, 5, 3) * u.m,
+            np.random.randn(2, 5, 3) * u.m,
+            np.random.randn(2, 5, 4) * u.m,
+        )
+
+    # Test incompatible units
     with pytest.raises(ValueError):
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV)
 
+    # Test adding a quantity
+    q1 = np.random.randn(10, 20, 5) * u.kg
+    grid.add_quantity("test quantity", q1)
 
-def test_AbstractGrid_invalid_lengths_of_arguments():
+    # Test adding a quantity of incompatible size
+    q2 = np.random.randn(5, 20, 5) * u.kg
     with pytest.raises(ValueError):
-        grid = grids.AbstractGrid(-1, [2, 3], units=[u.m, u.m])
+        grid.add_quantity("test quantity2", q2)
 
 
 def test_CartesianGrid():
@@ -39,10 +54,9 @@ def test_CartesianGrid():
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm)
 
     array = grid.grid
-    x_arr, y_arr, z_arr = grid.x_arr, grid.y_arr, grid.z_arr
-    radius = grid.distance_from_origin
-    x_axis, y_axis, z_axis = grid.x_axis, grid.y_axis, grid.z_axis
-    d_x, d_y, d_z = grid.d_x, grid.d_y, grid.d_z
+    x_arr, y_arr, z_arr = grid.pts0, grid.pts1, grid.pts2
+    x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
+    d_x, d_y, d_z = grid.dax0, grid.dax1, grid.dax2
     is_uniform_grid = grid.is_uniform_grid
     shape = grid.shape
     unit = grid.units
@@ -59,10 +73,9 @@ def test_CartesianGrid():
 
     # Units not all consistent
     with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(-1, 1, units=[u.m, u.rad, u.rad])
-
-    with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(-1, 1, units=[u.m, u.rad, u.m])
+        grid = grids.CartesianGrid(
+            [-1 * u.m, -1 * u.rad, -1 * u.m], [1 * u.m, 1 * u.rad, 1 * u.m]
+        )
 
 
 def test_interpolators():

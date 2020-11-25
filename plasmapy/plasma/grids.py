@@ -6,8 +6,6 @@ __all__ = [
     "AbstractGrid",
     "CartesianGrid",
     "NonUniformCartesianGrid",
-    "CylindricalGrid",
-    "SphericalGrid",
 ]
 
 import astropy.units as u
@@ -28,6 +26,11 @@ class AbstractGrid(ABC):
 
     def __init__(self, *seeds, num=100, units=None, **kwargs):
 
+        # Initialize some variables
+        self._is_uniform_grid = None
+        self._interpolator = None
+        self._grid = None
+
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
             self._load_grid(seeds[0], seeds[1], seeds[2])
@@ -42,11 +45,6 @@ class AbstractGrid(ABC):
                 f"{self.__class__.__name__} takes 2 or 3 "
                 f"positional arguments but {len(seeds)} were given"
             )
-
-        # Initialize some variables
-        self._is_uniform_grid = None
-        self._interpolator = None
-        self._grid = None
 
     def _validate(self):
         """
@@ -136,7 +134,7 @@ class AbstractGrid(ABC):
         """
 
         if self.is_uniform_grid:
-            return self.pts0[:, 0, 0]
+            return self.ds.coords["ax0"].values * self.unit0
         else:
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
@@ -150,7 +148,7 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.is_uniform_grid:
-            return self.pts1[0, :, 0]
+            return self.ds.coords["ax1"].values * self.unit1
         else:
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
@@ -163,7 +161,7 @@ class AbstractGrid(ABC):
         Only valid if grid is uniform: otherwise an exception is raised
         """
         if self.is_uniform_grid:
-            return self.pts2[0, 0, :]
+            return self.ds.coords["ax2"].values * self.unit2
         else:
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
@@ -234,6 +232,16 @@ class AbstractGrid(ABC):
         None.
 
         """
+
+        # Validate input
+        if not (pts0.shape == pts1.shape and pts0.shape == pts2.shape):
+            raise ValueError(
+                "Provided arrays of grid points are of unequal "
+                f"shape: pts0 = {pts0.shape}, "
+                f"pts1 = {pts1.shape}, "
+                f"pts2 = {pts2.shape}."
+            )
+
         pts0 = xr.DataArray(
             pts0.value, dims=["ax0", "ax1", "ax2"], attrs={"unit": pts0.unit}
         )
@@ -247,8 +255,12 @@ class AbstractGrid(ABC):
         # Create dataset
         self.ds = xr.Dataset({"pts0": pts0, "pts1": pts1, "pts2": pts2,})
 
-        # TODO: if grid is uniform, add 1D coordinate axes as coordinates  to
+        # If grid is uniform, add 1D coordinate axes as coordinates  to
         # the dataset here
+        if self.is_uniform_grid:
+            self.ds.coords["ax0"] = pts0[:, 0, 0]
+            self.ds.coords["ax1"] = pts1[0, :, 0]
+            self.ds.coords["ax2"] = pts2[0, 0, :]
 
         # Add quantities
         for qk in kwargs.keys():
@@ -265,7 +277,11 @@ class AbstractGrid(ABC):
         Adds a quantity to the dataset as a new DataArray
         """
 
-        # TODO: Validate quantity shape and units here
+        if quantity.shape != self.shape:
+            raise ValueError(
+                f"Shape of quantity '{key}' {quantity.shape} "
+                f"does not match the grid shape {self.shape}."
+            )
 
         data = xr.DataArray(
             quantity, dims=["ax0", "ax1", "ax2"], attrs={"unit": quantity.unit}
@@ -309,6 +325,8 @@ class AbstractGrid(ABC):
 
         """
 
+        # TODO: require that dimensions are equivalent to either meters or rad?
+
         # If single values are given, expand to a list of appropriate length
         if isinstance(stop, (int, float, u.Quantity)):
             stop = [stop] * 3
@@ -328,10 +346,9 @@ class AbstractGrid(ABC):
                     f"({len(var[k])} values were given)."
                 )
 
-        units = []
-
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
+        units = []
         for i in range(3):
             # Determine unit for dimension
             unit = start[i].unit
@@ -421,7 +438,7 @@ class AbstractGrid(ABC):
                 self._make_regular_grid_interpolator()
             else:
                 # TODO: Implement non-uniform grid interpolator here someday?
-                raise NotImplemented(
+                raise NotImplementedError(
                     "Interpolation on non-uniform grids " "is not currently supported"
                 )
 
