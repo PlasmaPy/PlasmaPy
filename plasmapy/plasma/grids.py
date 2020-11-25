@@ -47,6 +47,7 @@ class AbstractGrid(ABC):
         self._is_uniform_grid = None
         self._interpolator = None
         self._grids = None  # [nx,ny,nz] x 3
+        self._grid = None
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
@@ -100,6 +101,27 @@ class AbstractGrid(ABC):
                 )
 
         return self._grids
+
+    # Note: may remove this function?
+    @property
+    def grid(self):
+        """A single grid of vertex positions"""
+
+        if self._grid is None:
+            pts0, pts1, pts2 = self.grids
+            if self.is_uniform_grid:
+                n0, n1, n2 = pts0.shape
+                grid = np.zeros([n0, n1, n2, 3])
+            else:
+                n = pts0.size
+                grid = np.zeros([n, 3])
+
+            grid[..., 0] = pts0
+            grid[..., 1] = pts1
+            grid[..., 2] = pts2
+            self._grid = grid
+
+        return self._grid
 
     @property
     def pts0(self):

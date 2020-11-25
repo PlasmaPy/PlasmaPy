@@ -53,8 +53,7 @@ def test_CartesianGrid():
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 
-    array = grid.grid
-    x_arr, y_arr, z_arr = grid.pts0, grid.pts1, grid.pts2
+    x_arr, y_arr, z_arr = grid.grids
     x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
     d_x, d_y, d_z = grid.dax0, grid.dax1, grid.dax2
     is_uniform_grid = grid.is_uniform_grid
@@ -65,11 +64,7 @@ def test_CartesianGrid():
     assert grid.is_uniform_grid == True
 
     # Test initializing with a provided grid
-    grid2 = grids.CartesianGrid(
-        grid.grid[..., 0] * grid.unit0,
-        grid.grid[..., 1] * grid.unit1,
-        grid.grid[..., 2] * grid.unit2,
-    )
+    grid2 = grids.CartesianGrid(grid.grids[0], grid.grids[1], grid.grids[2],)
 
     # Units not all consistent
     with pytest.raises(ValueError):
@@ -85,7 +80,8 @@ def test_interpolators():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
     # Add some data to the grid
-    data = grid.add_quantity("positions", grid.grid[..., 0] * grid.unit)
+    data = grid.add_quantity("pts0", grid.grids[0])
+    data = grid.add_quantity("pts1", grid.grids[1])
 
     pos = np.array([0.1, -0.3, 0]) * u.cm
     pos2 = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
@@ -129,7 +125,3 @@ def test_NonUniformCartesianGrid():
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg
     grid.add_quantity("test_quantity", q1)
-
-
-# test_CartesianGrid()
-test_NonUniformCartesianGrid()
