@@ -571,12 +571,11 @@ class AbstractGrid(ABC):
 
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
-        idict = {"ax0": i[:, 0], "ax1": i[:, 1], "ax2": i[:, 2]}
 
         # Fetch the values at those indices from each quantity
         output = []
         for arg in args:
-            values = self.ds[arg].isel(idict).values
+            values = self.ds[arg].values[i[:,0], i[:,1], i[:,2]]
             values = np.squeeze(values)
             values *= self.ds[arg].attrs["unit"]
             output.append(values)
