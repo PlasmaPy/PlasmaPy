@@ -809,8 +809,8 @@ def Hall_parameter(
     ion : ~plasmapy.particles.Particle
         The type of ion ``particle`` is colliding with in the ionized gas.
     particle : ~plasmapy.particles.Particle
-        The charged particle species of interest in plasma.Representation of the
-        particle species (e.g., 'p' for protons, 'D+'for deuterium, or 'He-4 +1'
+        The charged particle species of interest in the plasma. Representation of the
+        particle species (e.g., 'p' for protons, 'D+' for deuterium, or 'He-4 +1'
         for singly ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
     coulomb_log : float, optional
