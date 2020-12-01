@@ -174,7 +174,7 @@ def attribute_call_string(
         The class to be used in the string representation
 
     attr: `str`
-        The name of the class attribute
+        The name of the attribute of class ``cls``
 
     cls_args : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing the positional arguments to be
@@ -221,11 +221,11 @@ def method_call_string(
         The class to be used in the string representation
 
     method: `str`
-        The name of the class method
+        The name of the method in class ``cls``
 
     cls_args : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing the positional arguments to be
-        used during instantiation of `cls`, or any other `object` if
+        used during instantiation of ``cls``, or any other `object` if
         there is only one positional argument
 
     cls_kwargs: `dict`, optional
