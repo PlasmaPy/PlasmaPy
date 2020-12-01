@@ -838,6 +838,12 @@ def Hall_parameter(
     .. math::
         \beta = \frac{\omega_c}{\nu}
 
+    where :math:`\omega_c` is the particle's gyrofrequency and :math:`\nu` is
+    the collision frequency between ``particle`` and ``ion``.
+
+    The collision frequencies are calculated assuming a slowly moving
+    Maxwellian distribution.
+
     Examples
     --------
     >>> from astropy import units as u
