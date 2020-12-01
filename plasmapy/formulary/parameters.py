@@ -833,7 +833,7 @@ def Hall_parameter(
     Notes
     -----
     The Hall Parameter is the ratio between the gyrofrequency and the ion-particle
-    collision rate(also known as collision frequency)
+    collision rate (also known as collision frequency).
 
     .. math::
         \beta = \frac{\omega_c}{\nu}
