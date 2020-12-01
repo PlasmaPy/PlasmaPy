@@ -123,8 +123,6 @@ def _string_together_warnings_for_printing(
 
     return "\n\n".join(warnings_with_messages)
 
-    # TODO: Add tests!
-
 
 def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     """
