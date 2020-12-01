@@ -73,7 +73,7 @@ agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
 As of April 2020, our meetings are on Tuesdays at
-[18:00 UTC](http://time.unitarium.com/utc/6pm).
+[19:00 UTC](http://time.unitarium.com/utc/6pm).
 Come discuss plasma software with us!
 
 # Installation

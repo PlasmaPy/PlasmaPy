@@ -3,7 +3,7 @@ on:
   push:
     branches: [master]
 
-name: Lint
+name: Style linters
 jobs:
   gitHubActionForFlake8:
     name: flake8
