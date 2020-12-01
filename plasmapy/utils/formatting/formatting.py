@@ -53,7 +53,7 @@ def _format_kw(keyword) -> str:
     elif hasattr(keyword, "__name__"):
         return keyword.__name__
     else:
-        return repr(keyword)  # ADD TEST
+        return repr(keyword)
 
 
 def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
@@ -92,7 +92,7 @@ def _name_with_article(ex: Exception) -> str:
 
 def _object_name(obj: Any, showmodule=False) -> str:
     """
-    Return the name of an `object`.  If the `object` has a "__name__"
+    Return the name of an `object`.  If the `object` has a `__name__`
     attribute and ``showmodule`` is `True`, then prepend the module
     name if not in `builtins`.
     """
