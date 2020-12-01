@@ -178,12 +178,12 @@ def attribute_call_string(
 
     cls_args : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing the positional arguments to be
-        used during instantiation of `cls`, or any other `object` if
+        used during instantiation of ``cls``, or any other `object` if
         there is only one positional argument
 
     cls_kwargs: `dict`, optional
         A `dict` containing the keyword arguments to be used during
-        instantiation of `cls`
+        instantiation of ``cls``
 
     Examples
     --------
@@ -230,7 +230,7 @@ def method_call_string(
 
     cls_kwargs: `dict`, optional
         A `dict` containing the keyword arguments to be used during
-        instantiation of `cls`
+        instantiation of ``cls``
 
     method_args : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing the positional arguments to be
