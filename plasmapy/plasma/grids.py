@@ -575,7 +575,7 @@ class AbstractGrid(ABC):
         # Fetch the values at those indices from each quantity
         output = []
         for arg in args:
-            values = self.ds[arg].values[i[:,0], i[:,1], i[:,2]]
+            values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
             values = np.squeeze(values)
             values *= self.ds[arg].attrs["unit"]
             output.append(values)
