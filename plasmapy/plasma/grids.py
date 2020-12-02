@@ -19,10 +19,10 @@ from typing import Union
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
+    r"""
+    Determine whether a grid is uniform (uniformly spaced) by computing the
+    variance of the grid gradients.
     """
-        Determine whether a grid is uniform (uniformly spaced) by computing the
-        variance of the grid gradients.
-        """
     variance = np.zeros([3])
     dx = np.gradient(pts0, axis=0)
     variance[0] = np.std(dx) / np.mean(dx)
@@ -35,7 +35,7 @@ def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
 
 
 class AbstractGrid(ABC):
-    """
+    r"""
     Abstract grid represents a 3D grid of positions. The grid is stored as an
     np.ndarray, while the units associated with each dimension are stored
     separately.
@@ -65,7 +65,7 @@ class AbstractGrid(ABC):
             )
 
     def _validate(self):
-        """
+        r"""
         Checks to make sure that the grid parameters are
         consistent with the coordinate system and units selected
 
@@ -78,6 +78,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
+        r""" Shape of the grid"""
         if self.is_uniform_grid:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
         else:
@@ -85,7 +86,7 @@ class AbstractGrid(ABC):
 
     @property
     def grids(self):
-        """Grids of vertex positions"""
+        r"""Grids of vertex positions"""
         if self._grids is None:
 
             if self.is_uniform_grid:
@@ -105,7 +106,7 @@ class AbstractGrid(ABC):
     # Note: may remove this function?
     @property
     def grid(self):
-        """A single grid of vertex positions"""
+        r"""A single grid of vertex positions"""
 
         if self._grid is None:
             pts0, pts1, pts2 = self.grids
@@ -125,42 +126,42 @@ class AbstractGrid(ABC):
 
     @property
     def pts0(self):
-        """Array of positions in dimension 1"""
+        r"""Array of positions in dimension 1"""
         return self.grids[0] * self.unit0
 
     @property
     def pts1(self):
-        """Array of positions in dimension 2"""
+        r"""Array of positions in dimension 2"""
         return self.grids[1] * self.unit1
 
     @property
     def pts2(self):
-        """Array of positions in dimension 3"""
+        r"""Array of positions in dimension 3"""
         return self.grids[2] * self.unit2
 
     @property
     def units(self):
-        """Returns a list of the units of each dimension"""
+        r"""Returns a list of the units of each dimension"""
         return self.ds.attrs["axis_units"]
 
     @property
     def unit0(self):
-        """Unit of dimension 1"""
+        r"""Unit of dimension 1"""
         return self.units[0]
 
     @property
     def unit1(self):
-        """Unit of dimension 2"""
+        r"""Unit of dimension 2"""
         return self.units[1]
 
     @property
     def unit2(self):
-        """Unit of dimension 3"""
+        r"""Unit of dimension 3"""
         return self.units[2]
 
     @property
     def unit(self):
-        """
+        r"""
         The unit for the entire grid. Only valid if all dimensions of the
         grid have the same units: otherwise, an exception is raised.
         """
@@ -177,9 +178,8 @@ class AbstractGrid(ABC):
 
     @property
     def ax0(self):
-        """
-        Axis 1
-        Only valid if grid is uniform: otherwise an exception is raised
+        r"""
+        Axis 1: Only valid if grid is uniform: otherwise an exception is raised
         """
 
         if self.is_uniform_grid:
@@ -191,11 +191,7 @@ class AbstractGrid(ABC):
 
     @property
     def ax1(self):
-        """Axis 2"""
-        """
-        Axis 2
-        Only valid if grid is uniform: otherwise an exception is raised
-        """
+        r"""Axis 2: Only valid if grid is uniform: otherwise an exception is raised"""
         if self.is_uniform_grid:
             return self.ds.coords["ax1"].values * self.unit1
         else:
@@ -205,7 +201,7 @@ class AbstractGrid(ABC):
 
     @property
     def ax2(self):
-        """
+        r"""
         Axis 3
         Only valid if grid is uniform: otherwise an exception is raised
         """
@@ -218,7 +214,7 @@ class AbstractGrid(ABC):
 
     @property
     def dax0(self):
-        """
+        r"""
         Grid step size along axis 1
         Only valid if grid is uniform: otherwise an exception is raised
         """
@@ -232,7 +228,7 @@ class AbstractGrid(ABC):
 
     @property
     def dax1(self):
-        """
+        r"""
         Grid step size along axis 2
         Only valid if grid is uniform: otherwise an exception is raised
         """
@@ -246,7 +242,7 @@ class AbstractGrid(ABC):
 
     @property
     def dax2(self):
-        """
+        r"""
         Grid step size along axis 3
         Only valid if grid is uniform: otherwise an exception is raised
         """
@@ -263,9 +259,9 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def _load_grid(
-        self, pts0: u.Quantity, pts1: u.Quantity, pts2: u.Quantity, **kwargs,
+        self, pts0: u.Quantity, pts1: u.Quantity, pts2: u.Quantity, **kwargs
     ):
-        """
+        r"""
         Initialize the grid object from a user-supplied grid
 
         Parameters
@@ -320,7 +316,7 @@ class AbstractGrid(ABC):
         self._validate()
 
     def add_quantity(self, key: str, quantity: u.Quantity):
-        """
+        r"""
         Adds a quantity to the dataset as a new DataArray
         """
 
@@ -348,7 +344,7 @@ class AbstractGrid(ABC):
         units=None,
         **kwargs,
     ):
-        """
+        r"""
         Creates a grid based on start, stop, and num values in a manner
         that mirrors the interface of the np.linspace function.
 
@@ -432,7 +428,7 @@ class AbstractGrid(ABC):
         )
 
     def _make_mesh(self, start, stop, num, **kwargs):
-        """
+        r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes
         """
@@ -452,7 +448,7 @@ class AbstractGrid(ABC):
 
     @property
     def interpolator(self):
-        """
+        r"""
         A nearest-neighbor interpolator that returns the nearest grid index
         to a position
         """
@@ -468,7 +464,7 @@ class AbstractGrid(ABC):
         return self._interpolator
 
     def _make_uniform_grid_interpolator(self):
-        """
+        r"""
         Initializes a nearest-neighbor interpolator that returns the nearest
         grid indices for a given position (given in SI units).
 
@@ -491,7 +487,7 @@ class AbstractGrid(ABC):
         )
 
     def _make_nonuniform_grid_interpolator(self):
-        """
+        r"""
         Initializes a nearest-neighbor interpolator that returns the nearest
         grid indices for a given position (given in SI units).
 
@@ -608,7 +604,7 @@ class AbstractGrid(ABC):
 
 
 class CartesianGrid(AbstractGrid):
-    """
+    r"""
     A uniformly spaced Cartesian grid.
     """
 
@@ -717,13 +713,13 @@ class CartesianGrid(AbstractGrid):
 
 
 class NonUniformCartesianGrid(CartesianGrid):
-    """
+    r"""
     A Cartesian grid in which the _make_mesh method produces a non-uniformly
     spaced grid.
     """
 
     def _make_mesh(self, start, stop, num, **kwargs):
-        """
+        r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniform grids.
         """
