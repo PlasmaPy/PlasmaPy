@@ -1,1 +1,1 @@
-Created new objects representing grids of positions and electric and magnetic fields within the plasma package.
+Created new grid objects representing plasma quantities as functions of space.
