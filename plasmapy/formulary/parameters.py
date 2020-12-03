@@ -137,9 +137,12 @@ def mass_density(
 
     Raises
     ------
-    `ValueError`
-        If the `density` has units inconvertible to either a particle density
-        or a mass density.
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number denisty
+        or mass density.
+
+    `TypeError`
+        If ``density`` is not of type `~astropy.units.Quantity`, or convertible.
 
     `TypeError`
         If ``particle`` is not of type or convertible to
@@ -147,6 +150,9 @@ def mass_density(
 
     `TypeError`
         If ``z_ratio`` is not of type `int` or `float`.
+
+    `ValueError`
+        If ``density`` is negative.
 
     Returns
     -------
@@ -164,7 +170,7 @@ def mass_density(
     <Quantity 1.32929...e-08 kg / m3>
     >>> mass_density(2.e12 * u.cm ** -3, 'He', z_ratio=0.5)
     <Quantity 6.64647...e-09 kg / m3>
-    >>> mass_density(1.0 * u.g * u.cm ** -3, "")
+    >>> mass_density(1.0 * u.g * u.m ** -3, "")
     <Quantity 0.001 kg / m3>
     """
     if density.unit.is_equivalent(u.kg / u.m ** 3):
