@@ -97,6 +97,9 @@ class Test_mass_density:
     @pytest.mark.parametrize(
         "args, kwargs, conditional",
         [
+            ((-1 * u.kg * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
+            ((-1 * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
+            (("not a Quantity", "He"), {}, pytest.raises(TypeError)),
             ((1 * u.m ** -3, ), {}, pytest.raises(TypeError)),
             ((1 * u.J, "He"), {}, pytest.raises(u.UnitTypeError)),
             ((1 * u.m ** -3, None), {}, pytest.raises(TypeError)),
