@@ -53,6 +53,7 @@ from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -294,7 +295,25 @@ def Alfven_speed(
     <Quantity 4.317387 cm / us>
 
     """
-    rho = mass_density(density, ion, z_mean)
+    if density.unit.is_equivalent(u.kg / u.m ** 3):
+        rho = density
+    else:
+        if not isinstance(ion, Particle):
+            try:
+                ion = Particle(ion)
+            except TypeError:
+                raise TypeError(
+                    f"If passing a number density, you must pass a plasmapy Particle "
+                    f"(not type {type(ion)}) to calculate the mass density!"
+                )
+        if z_mean is None:
+            try:
+                z_mean = abs(ion.integer_charge)
+            except ChargeError:
+                z_mean = 1
+
+        z_mean = abs(z_mean)
+        rho = mass_density(density, ion) + mass_density(density, "e", z_ratio=z_mean)
 
     V_A = np.abs(B) / np.sqrt(mu0 * rho)
     return V_A
