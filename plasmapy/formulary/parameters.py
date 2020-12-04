@@ -207,74 +207,87 @@ def Alfven_speed(
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
     r"""
-    Return the Alfvén speed.
+    Calculate the Alfvén speed.
 
-    **Aliases:** `va_`
-
-    Parameters
-    ----------
-    B : ~astropy.units.Quantity
-        The magnetic field magnitude in units convertible to tesla.
-
-    density : ~astropy.units.Quantity
-        Either the ion number density in units convertible to 1 / m**3,
-        or the mass density in units convertible to kg / m**3.
-
-    ion : ~plasmapy.particles.Particle, optional
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged. If the density is an ion
-        number density, then this paramter is required in order to convert
-        to mass density.
-
-    z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
-        is used. This is effectively an average Alfven speed for the
-        plasma where multiple charge states are present.
-
-    Returns
-    -------
-    V_A : ~astropy.units.Quantity with units of speed
-        The Alfvén speed of the plasma in units of meters per second.
-
-    Raises
-    ------
-    TypeError
-        The magnetic field and density arguments are not instances of
-        `~astropy.units.Quantity` and cannot be converted into those.
-
-    ~astropy.units.UnitConversionError
-        If the magnetic field or density is not in appropriate units.
-
-    ~plasmapy.utils.RelativityError
-        If the Alfven velocity is greater than or equal to the speed of light
-
-    ValueError
-        If the density is negative, or the ion mass or charge state
-        cannot be found.
-
-    Warns
-    -----
-    ~plasmapy.utils.RelativityWarning
-        If the Alfven velocity exceeds 5% of the speed of light
-
-    ~astropy.units.UnitsWarning
-        if units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The Alfven speed :math:`V_A` is the typical propagation speed
-    of magnetic disturbances in a plasma, and is given by:
+    The Alfven speed :math:`V_A` is the typical propagation speed of magnetic
+    disturbances in a plasma, and is given by:
 
     .. math::
 
         V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
-    where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
+    where :math:`B` is the magnetic field and :math:`\rho = n_i m_i + n_e m_e`
+    is the total mass density (:math:`n_i` is the ion number denisty,
+    :math:`n_e` is the electron number denisty, :math:`m_i` is the ion mass,
+    and :math:`m_e` is the electron mass).
 
+    **Aliases:** `va_`
+
+    Parameters
+    ----------
+    B : ~~astropy.units.Quantity~`
+        The magnetic field magnitude in units convertible to :math:`Tesla`.
+
+    density : ~~astropy.units.Quantity`
+        Either the ion number density :math:`n_i` in units convertible to
+        :math:`m^{-3}` or the total mass density :math:`\rho` in units
+        convertible to :math:`kg / m^3`.
+
+    ion : `~plasmapy.particles.Particle`, optional
+        Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
+        deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
+        state information is provided, then the ions are assumed to be singly
+        ionionized. If the density is an ion number density, then this paramter
+        is required in order to convert to mass density.
+
+    z_mean : `~numbers.Real`, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  This is used in calculating the mass density
+        :math:`\rho = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
+        ``density`` is passed as a mass density.
+
+    Returns
+    -------
+    V_A : `~astropy.units.Quantity`
+        The Alfvén speed in units :math:`m/s`.
+
+    Raises
+    ------
+    `~plasmapy.utils.exceptions.RelativityError`
+        If the Alfven velocity is greater than or equal to the speed of light.
+
+    `TypeError`
+        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
+        or convertible.
+
+    `TypeError`
+        If ``ion`` is not of type or convertible to `~plamsapy.particles.Particle`.
+
+    `TypeError`
+        If ``z_mean`` is not of type `int` or `float`.
+
+    `~astropy.units.UnitTypeError`
+        If the magnetic field ``B`` does not have units equivalent to
+        :math:`Tesla`.
+
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number denisty
+        or mass density.
+
+    `ValueError`
+        If ``density`` is negative.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the Alfven velocity exceeds 5% of the speed of light
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided magnetic field ``B``, units of :math:`Tesla`
+        are assumed.
+
+    Notes
+    -----
     This expression does not account for relativistic effects, and
     loses validity when the resulting speed is a significant fraction
     of the speed of light.
@@ -287,12 +300,18 @@ def Alfven_speed(
     >>> n = 5e19*u.m**-3
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
-    >>> Alfven_speed(B, n, ion)
+    >>> Alfven_speed(B, n, ion=ion)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho, ion)
+    >>> Alfven_speed(B, rho)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
+    >>> Alfven_speed(B, rho).to(u.cm/u.us)
     <Quantity 4.317387 cm / us>
+    >>> Alfven_speed(B, n, ion="He +2")
+    <Quantity 21664.18... m / s>
+    >>> Alfven_speed(B, n, ion="He++")
+    <Quantity 21664.18... m / s>
+    >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
+    <Quantity 21661.51... m / s>
 
     """
     if density.unit.is_equivalent(u.kg / u.m ** 3):
