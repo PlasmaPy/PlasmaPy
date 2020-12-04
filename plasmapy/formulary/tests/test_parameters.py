@@ -148,103 +148,192 @@ class Test_mass_density:
 # are generally from the NRL Plasma Formulary.
 
 
-def test_Alfven_speed():
-    r"""Test the Alfven_speed function in parameters.py."""
+class TestAlfvenSpeed:
+    """Test `~plasmapy.formulary.parameters.Alfven_speed`."""
 
-    # TODO: break this test up until multiple tests
+    @pytest.mark.parametrize("alias", [va_, ])
+    def test_aliases(self, alias):
+        assert alias is Alfven_speed
 
-    assert np.isclose(
-        Alfven_speed(1 * u.T, 1e-8 * u.kg * u.m ** -3, "p").value,
-        8920620.580763856,
-        rtol=1e-6,
+    @pytest.mark.parametrize(
+        "args, kwargs, _error",
+        [
+            # scenarios that raise RelativityError
+            ((10 * u.T, 1.e-10 * u.kg * u.m ** -3), {}, RelativityError),
+            ((np.inf * u.T, 1 * u.m ** -3), {"ion": "p"}, RelativityError),
+            ((-np.inf * u.T, 1 * u.m ** -3), {"ion": "p"}, RelativityError),
+
+            # scenarios that raise InvalidParticleError
+            ((1 * u.T, 5e19 * u.m ** -3), {"ion": "spacecats"}, InvalidParticleError),
+
+            # scenarios that raise TypeError
+            (("not a Bfield", 1.e-10 * u.kg * u.m ** -3), {}, TypeError),
+            ((10 * u.T, "not a density"), {}, TypeError),
+            ((10 * u.T, 5), {"ion": "p"}, TypeError),
+            ((1 * u.T, 1.e18 * u.m ** -3), {"ion": ["He"]}, TypeError),
+            ((1 * u.T, 1.e18 * u.m ** -3), {"ion": "He", "z_mean": "nope"}, TypeError),
+
+            # scenarios that raise UnitTypeError
+            ((1 * u.T, 1.e18 * u.cm), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.T, 5 * u.m ** -2), {"ion": "p"}, u.UnitTypeError),
+            ((1 * u.cm, 1.e18 * u.m ** -3), {"ion": "He"}, u.UnitTypeError),
+            ((5 * u.A, 5e19 * u.m ** -3), {"ion": "p"}, u.UnitTypeError),
+
+            # scenarios that raise ValueError
+            ((1 * u.T, -1.e18 * u.m ** -3), {"ion": "He"}, ValueError),
+            (
+                (np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m ** -3),
+                {"ion": "p"},
+                ValueError,
+            ),
+            (
+                (np.array([0.001, 0.002]) * u.T, np.array([-5e19, 6e19]) * u.m ** -3),
+                {"ion": "p"},
+                ValueError,
+            ),
+        ],
     )
+    def test_raises(self, args, kwargs, _error):
+        """Test scenarios that raise exceptions or warnings."""
+        with pytest.raises(_error):
+            Alfven_speed(*args, **kwargs)
 
-    V_A = Alfven_speed(B, n_i, "p")
-    assert np.isclose(V_A.value, (B / np.sqrt(mu0 * n_i * (m_p + m_e))).si.value)
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, isclose_kw, _warning",
+        [
+            # scenarios that issue RelativityWarning
+            (
+                (5 * u.T, 5e19 * u.m ** -3),
+                {"ion": "H"},
+                15413707.39,
+                {},
+                RelativityWarning),
+            (
+                (5 * u.T, 5e19 * u.m ** -3),
+                {"ion": "H+"},
+                15413707.39,
+                {"rtol": 3.e-4},
+                RelativityWarning,
+            ),
+            (
+                (5 * u.T, 5e19 * u.m ** -3),
+                {"ion": "p"},
+                15413707.39,
+                {"rtol": 4.e-4},
+                RelativityWarning,
+            ),
 
-    assert Alfven_speed(B, rho, "p") == Alfven_speed(B, n_i, "p")
+            # scenarios that issue UnitsWarning
+            ((0.5, 1.e18 * u.m ** -3), {"ion": "He"}, 5470657.93, {}, u.UnitsWarning),
+        ],
+    )
+    def test_warns(self, args, kwargs, expected, isclose_kw, _warning):
+        """Test scenarios that issue warnings"""
+        with pytest.warns(_warning):
+            val = Alfven_speed(*args, **kwargs)
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.m / u.s
+            assert np.isclose(val.value, expected, **isclose_kw)
 
-    assert Alfven_speed(B, rho, "p").unit.is_equivalent(u.m / u.s)
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, isclose_kw",
+        [
+            (
+                (1 * u.T, 1e-8 * u.kg * u.m ** -3),
+                {"ion": "p"},
+                8920620.58 * u.m / u.s,
+                {"rtol": 1e-6},
+            ),
+            (
+                (1 * u.T, 1e-8 * u.kg * u.m ** -3),
+                {},
+                8920620.58 * u.m / u.s,
+                {"rtol": 1e-6},
+            ),
+            (
+                (0.05 * u.T, 1e18 * u.m ** -3),
+                {"ion": "He"},
+                Alfven_speed(0.05 * u.T, 6.64738793e-09 * u.kg * u.m ** -3),
+                {},
+            ),
+            (
+                (0.05 * u.T, 1e18 * u.m ** -3),
+                {"ion": "He+"},
+                Alfven_speed(0.05 * u.T, 1e18 * u.m ** -3, ion="He"),
+                {"rtol": 7e-5},
+            ),
+            (
+                (0.05 * u.T, 1e18 * u.m ** -3),
+                {"ion": "He", "z_mean": 2},
+                Alfven_speed(0.05 * u.T, 1e18 * u.m ** -3, ion="He +2"),
+                {"rtol": 1.4e-4},
+            ),
+            (
+                (0.05 * u.T, 1e18 * u.m ** -3),
+                {"ion": Particle("He+")},
+                Alfven_speed(0.05 * u.T, 1e18 * u.m ** -3, ion="He+"),
+                {},
+            ),
+            (
+                ([0.001, 0.002] * u.T, 5e-10 * u.kg * u.m ** -3),
+                {},
+                [va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
+                 va_(0.002 * u.T, 5e-10 * u.kg * u.m ** -3).value] * u.m / u.s,
+                {},
+            ),
+            (
+                ([0.001, 0.002] * u.T, [5e-10, 2e-10] * u.kg * u.m ** -3),
+                {},
+                [va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
+                 va_(0.002 * u.T, 2e-10 * u.kg * u.m ** -3).value] * u.m / u.s,
+                {},
+            ),
+            (
+                (0.001 * u.T, [1.e18, 2e18] * u.m ** -3),
+                {"ion": "p"},
+                [va_(0.001 * u.T, 1e18 * u.m ** -3, ion="p").value,
+                 va_(0.001 * u.T, 2e18 * u.m ** -3, ion="p").value] * u.m / u.s,
+                {},
+            ),
 
-    assert Alfven_speed(B, rho, "p") == Alfven_speed(-B, rho, "p")
+        ],
+    )
+    def test_values(self, args, kwargs, expected, isclose_kw):
+        """Test expected values."""
+        assert np.allclose(Alfven_speed(*args, **kwargs), expected, **isclose_kw)
 
-    assert Alfven_speed(B, 4 * rho, "p") == 0.5 * Alfven_speed(B, rho, "p")
+    @pytest.mark.parametrize(
+        "args, kwargs, nan_mask",
+        [
+            ((np.nan * u.T, 1 * u.kg * u.m ** -3), {}, []),
+            ((0.001 * u.T, np.nan * u.kg * u.m ** -3), {}, []),
+            (([np.nan, 0.001] * u.T, 1 * u.kg * u.m ** -3), {}, [True, False]),
+            (
+                (0.001 * u.T, [np.nan, 1., np.nan] * u.kg * u.m ** -3),
+                {},
+                [True, False, True],
+            ),
+            (([np.nan, 0.001] * u.T, [1, np.nan] * u.kg * u.m ** -3), {}, [True, True]),
+            (
+                (0.001 * u.T, [np.nan, 1e18, np.nan] * u.m ** -3),
+                {"ion": "Ar+"},
+                [True, False, True],
+            ),
+        ],
+    )
+    def test_nan_values(self, args, kwargs, nan_mask):
+        """Input scenarios that leat to `numpy.nan` values being returned."""
+        val = Alfven_speed(*args, **kwargs)
+        if np.isscalar(val.value):
+            assert np.isnan(val)
+        else:
+            nan_arr = np.isnan(val)
+            assert np.all(nan_arr[nan_mask])
+            assert np.all(not nan_arr[np.logical_not(nan_mask)])
 
-    assert Alfven_speed(2 * B, rho, "p") == 2 * Alfven_speed(B, rho, "p")
-
-    # Case when Z=1 is assumed
-    with pytest.warns(RelativityWarning):
-        assert np.isclose(
-            Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion="H+"),
-            Alfven_speed(5 * u.T, 5e19 * u.m ** -3, ion="p"),
-            atol=0 * u.m / u.s,
-            rtol=1e-3,
-        )
-
-    # Case where magnetic field and density are Quantity arrays
-    V_A_arr = Alfven_speed(B_arr, rho_arr, "p")
-    V_A_arr0 = Alfven_speed(B_arr[0], rho_arr[0], "p")
-    V_A_arr1 = Alfven_speed(B_arr[1], rho_arr[1], "p")
-    assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
-    assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
-
-    # Case where magnetic field is an array but density is a scalar Quantity
-    V_A_arr = Alfven_speed(B_arr, rho, "p")
-    V_A_arr0 = Alfven_speed(B_arr[0], rho, "p")
-    V_A_arr1 = Alfven_speed(B_arr[1], rho, "p")
-    assert np.isclose(V_A_arr0.value, V_A_arr[0].value)
-    assert np.isclose(V_A_arr1.value, V_A_arr[1].value)
-
-    with pytest.raises(ValueError):
-        Alfven_speed(np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m ** -3, "p")
-
-    assert np.isnan(Alfven_speed(B_nanarr, rho_arr, "p")[1])
-
-    with pytest.raises(ValueError):
-        Alfven_speed(B_arr, rho_negarr, "p")
-
-    with pytest.raises(u.UnitTypeError):
-        Alfven_speed(5 * u.A, n_i, ion="p")
-
-    with pytest.raises(TypeError):
-        Alfven_speed(B, 5, ion="p")
-
-    with pytest.raises(u.UnitsError):
-        Alfven_speed(B, 5 * u.m ** -2, ion="p")
-
-    with pytest.raises(InvalidParticleError):
-        Alfven_speed(B, n_i, ion="spacecats")
-
-    with pytest.warns(RelativityWarning):  # relativistic
-        Alfven_speed(5e1 * u.T, 5e19 * u.m ** -3, ion="p")
-
-    with pytest.raises(RelativityError):  # super-relativistic
-        Alfven_speed(5e8 * u.T, 5e19 * u.m ** -3, ion="p")
-
-    with pytest.raises(ValueError):
-        Alfven_speed(0.001 * u.T, -5e19 * u.m ** -3, ion="p")
-
-    assert np.isnan(Alfven_speed(np.nan * u.T, 1 * u.m ** -3, ion="p"))
-
-    assert np.isnan(Alfven_speed(1 * u.T, np.nan * u.m ** -3, ion="p"))
-
-    with pytest.raises(RelativityError):
-        assert Alfven_speed(np.inf * u.T, 1 * u.m ** -3, ion="p") == np.inf * u.m / u.s
-
-    with pytest.raises(RelativityError):
-        assert Alfven_speed(-np.inf * u.T, 1 * u.m ** -3, ion="p") == np.inf * u.m / u.s
-
-    with pytest.warns(u.UnitsWarning):
-        assert Alfven_speed(1.0, n_i, "p") == Alfven_speed(1.0 * u.T, n_i, "p")
-
-    Alfven_speed(1 * u.T, 5e19 * u.m ** -3, ion="p")
-    # testing for user input z_mean
-    testMeth1 = Alfven_speed(1 * u.T, 5e19 * u.m ** -3, ion="p", z_mean=0.8).si.value
-    testTrue1 = 3084015.75214846
-    errStr = f"Alfven_speed() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-6), errStr
-
-    assert_can_handle_nparray(Alfven_speed)
+    def test_handle_nparrays(self):
+        """Test for ability to handle numpy array quantities"""
+        assert_can_handle_nparray(Alfven_speed)
 
 
 def test_ion_sound_speed():
