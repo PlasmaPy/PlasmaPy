@@ -158,7 +158,7 @@ def mass_density(
     Returns
     -------
     `~astropy.units.Quantity`
-        The mass density for the plasma specie represented by ``particle``.
+        The mass density for the plasma species represented by ``particle``.
 
     Examples
     -------
@@ -225,10 +225,10 @@ def Alfven_speed(
 
     Parameters
     ----------
-    B : ~~astropy.units.Quantity~`
+    B : `~astropy.units.Quantity~`
         The magnetic field magnitude in units convertible to :math:`Tesla`.
 
-    density : ~~astropy.units.Quantity`
+    density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible to
         :math:`m^{-3}` or the total mass density :math:`\rho` in units
         convertible to :math:`kg / m^3`.
