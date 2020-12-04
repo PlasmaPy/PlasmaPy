@@ -225,7 +225,7 @@ def Alfven_speed(
 
     Parameters
     ----------
-    B : `~astropy.units.Quantity~`
+    B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to :math:`Tesla`.
 
     density : `~astropy.units.Quantity`
