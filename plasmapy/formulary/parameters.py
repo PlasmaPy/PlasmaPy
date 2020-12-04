@@ -203,7 +203,7 @@ def Alfven_speed(
     B: u.T,
     density: [u.m ** -3, u.kg / u.m ** 3],
     ion: Optional[Particle] = None,
-    z_mean=None,
+    z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
     r"""
     Return the Alfvén speed.
