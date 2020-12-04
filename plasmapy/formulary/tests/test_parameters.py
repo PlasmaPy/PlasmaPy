@@ -100,7 +100,7 @@ class Test_mass_density:
             ((-1 * u.kg * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
             ((-1 * u.m ** -3, "He"), {}, pytest.raises(ValueError)),
             (("not a Quantity", "He"), {}, pytest.raises(TypeError)),
-            ((1 * u.m ** -3, ), {}, pytest.raises(TypeError)),
+            ((1 * u.m ** -3,), {}, pytest.raises(TypeError)),
             ((1 * u.J, "He"), {}, pytest.raises(u.UnitTypeError)),
             ((1 * u.m ** -3, None), {}, pytest.raises(TypeError)),
             (
@@ -117,7 +117,7 @@ class Test_mass_density:
     @pytest.mark.parametrize(
         "args, kwargs, expected",
         [
-            ((1.0 * u.g * u.m ** -3, ""), {}, 1.e-3 * u.kg * u.m ** -3),
+            ((1.0 * u.g * u.m ** -3, ""), {}, 1.0e-3 * u.kg * u.m ** -3),
             ((5.0e12 * u.cm ** -3, "He"), {}, 3.32323849e-8 * u.kg * u.m ** -3),
             (
                 (5.0e12 * u.cm ** -3, Particle("He")),
@@ -151,7 +151,7 @@ class Test_mass_density:
 class TestAlfvenSpeed:
     """Test `~plasmapy.formulary.parameters.Alfven_speed`."""
 
-    @pytest.mark.parametrize("alias", [va_, ])
+    @pytest.mark.parametrize("alias", [va_])
     def test_aliases(self, alias):
         assert alias is Alfven_speed
 
@@ -159,28 +159,28 @@ class TestAlfvenSpeed:
         "args, kwargs, _error",
         [
             # scenarios that raise RelativityError
-            ((10 * u.T, 1.e-10 * u.kg * u.m ** -3), {}, RelativityError),
+            ((10 * u.T, 1.0e-10 * u.kg * u.m ** -3), {}, RelativityError),
             ((np.inf * u.T, 1 * u.m ** -3), {"ion": "p"}, RelativityError),
             ((-np.inf * u.T, 1 * u.m ** -3), {"ion": "p"}, RelativityError),
-
+            #
             # scenarios that raise InvalidParticleError
             ((1 * u.T, 5e19 * u.m ** -3), {"ion": "spacecats"}, InvalidParticleError),
-
+            #
             # scenarios that raise TypeError
-            (("not a Bfield", 1.e-10 * u.kg * u.m ** -3), {}, TypeError),
+            (("not a Bfield", 1.0e-10 * u.kg * u.m ** -3), {}, TypeError),
             ((10 * u.T, "not a density"), {}, TypeError),
             ((10 * u.T, 5), {"ion": "p"}, TypeError),
-            ((1 * u.T, 1.e18 * u.m ** -3), {"ion": ["He"]}, TypeError),
-            ((1 * u.T, 1.e18 * u.m ** -3), {"ion": "He", "z_mean": "nope"}, TypeError),
-
+            ((1 * u.T, 1.0e18 * u.m ** -3), {"ion": ["He"]}, TypeError),
+            ((1 * u.T, 1.0e18 * u.m ** -3), {"ion": "He", "z_mean": "nope"}, TypeError),
+            #
             # scenarios that raise UnitTypeError
-            ((1 * u.T, 1.e18 * u.cm), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.T, 1.0e18 * u.cm), {"ion": "He"}, u.UnitTypeError),
             ((1 * u.T, 5 * u.m ** -2), {"ion": "p"}, u.UnitTypeError),
-            ((1 * u.cm, 1.e18 * u.m ** -3), {"ion": "He"}, u.UnitTypeError),
+            ((1 * u.cm, 1.0e18 * u.m ** -3), {"ion": "He"}, u.UnitTypeError),
             ((5 * u.A, 5e19 * u.m ** -3), {"ion": "p"}, u.UnitTypeError),
-
+            #
             # scenarios that raise ValueError
-            ((1 * u.T, -1.e18 * u.m ** -3), {"ion": "He"}, ValueError),
+            ((1 * u.T, -1.0e18 * u.m ** -3), {"ion": "He"}, ValueError),
             (
                 (np.array([5, 6, 7]) * u.T, np.array([5, 6]) * u.m ** -3),
                 {"ion": "p"},
@@ -207,24 +207,25 @@ class TestAlfvenSpeed:
                 {"ion": "H"},
                 15413707.39,
                 {},
-                RelativityWarning),
+                RelativityWarning,
+            ),
             (
                 (5 * u.T, 5e19 * u.m ** -3),
                 {"ion": "H+"},
                 15413707.39,
-                {"rtol": 3.e-4},
+                {"rtol": 3.0e-4},
                 RelativityWarning,
             ),
             (
                 (5 * u.T, 5e19 * u.m ** -3),
                 {"ion": "p"},
                 15413707.39,
-                {"rtol": 4.e-4},
+                {"rtol": 4.0e-4},
                 RelativityWarning,
             ),
-
+            #
             # scenarios that issue UnitsWarning
-            ((0.5, 1.e18 * u.m ** -3), {"ion": "He"}, 5470657.93, {}, u.UnitsWarning),
+            ((0.5, 1.0e18 * u.m ** -3), {"ion": "He"}, 5470657.93, {}, u.UnitsWarning),
         ],
     )
     def test_warns(self, args, kwargs, expected, isclose_kw, _warning):
@@ -277,25 +278,33 @@ class TestAlfvenSpeed:
             (
                 ([0.001, 0.002] * u.T, 5e-10 * u.kg * u.m ** -3),
                 {},
-                [va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
-                 va_(0.002 * u.T, 5e-10 * u.kg * u.m ** -3).value] * u.m / u.s,
+                [
+                    va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
+                    va_(0.002 * u.T, 5e-10 * u.kg * u.m ** -3).value,
+                ]
+                * (u.m / u.s),
                 {},
             ),
             (
                 ([0.001, 0.002] * u.T, [5e-10, 2e-10] * u.kg * u.m ** -3),
                 {},
-                [va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
-                 va_(0.002 * u.T, 2e-10 * u.kg * u.m ** -3).value] * u.m / u.s,
+                [
+                    va_(0.001 * u.T, 5e-10 * u.kg * u.m ** -3).value,
+                    va_(0.002 * u.T, 2e-10 * u.kg * u.m ** -3).value,
+                ]
+                * (u.m / u.s),
                 {},
             ),
             (
-                (0.001 * u.T, [1.e18, 2e18] * u.m ** -3),
+                (0.001 * u.T, [1.0e18, 2e18] * u.m ** -3),
                 {"ion": "p"},
-                [va_(0.001 * u.T, 1e18 * u.m ** -3, ion="p").value,
-                 va_(0.001 * u.T, 2e18 * u.m ** -3, ion="p").value] * u.m / u.s,
+                [
+                    va_(0.001 * u.T, 1e18 * u.m ** -3, ion="p").value,
+                    va_(0.001 * u.T, 2e18 * u.m ** -3, ion="p").value,
+                ]
+                * (u.m / u.s),
                 {},
             ),
-
         ],
     )
     def test_values(self, args, kwargs, expected, isclose_kw):
@@ -309,7 +318,7 @@ class TestAlfvenSpeed:
             ((0.001 * u.T, np.nan * u.kg * u.m ** -3), {}, []),
             (([np.nan, 0.001] * u.T, 1 * u.kg * u.m ** -3), {}, [True, False]),
             (
-                (0.001 * u.T, [np.nan, 1., np.nan] * u.kg * u.m ** -3),
+                (0.001 * u.T, [np.nan, 1.0, np.nan] * u.kg * u.m ** -3),
                 {},
                 [True, False, True],
             ),
@@ -348,7 +357,8 @@ def test_ion_sound_speed():
 
     # Test that function call without keyword argument works correctly
     assert np.isclose(
-        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value, 218816.06086407552,
+        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value,
+        218816.06086407552,
     )
 
     assert np.isclose(
