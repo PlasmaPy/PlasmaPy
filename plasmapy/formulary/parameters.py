@@ -106,7 +106,7 @@ def mass_density(
     .. math::
 
         \\rho = \\left| \\frac{Z_{s}}{Z_{particle}} \\right| n_{s} m_{particle}
-              = | Z_{raito} | n_{s} m_{particle}
+              = | Z_{ratio} | n_{s} m_{particle}
 
     where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
     denisty for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
@@ -126,15 +126,15 @@ def mass_density(
 
     particle : `~plasmapy.particles.Particle`
         The particle for which the mass density is being calculated for.  Must
-        be a plasmapy `~plasmapy.particles.Particle` or a value convertible to
-        a plasmapy `~plasmapy.particles.Particle` (e.g., ``'p'`` for protons,
+        be a `~plasmapy.particles.Particle` or a value convertible to
+        a `~plasmapy.particles.Particle` (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
         The ratio of the integer charges coresponding to the plasma species
         represted by ``density`` and the ``particle``.  For example, if the
         given ``density`` is and electron density and ``particle`` is doubly
-        ionized ``He``, then ``z_ratio = -0.5``.  Defalut is ``1``.
+        ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
 
     Raises
     ------
@@ -237,7 +237,7 @@ def Alfven_speed(
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
         deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
-        ionionized. If the density is an ion number density, then this paramter
+        ionized. If the density is an ion number density, then this paramter
         is required in order to convert to mass density.
 
     z_mean : `~numbers.Real`, optional
