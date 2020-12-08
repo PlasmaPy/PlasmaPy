@@ -1,0 +1,3 @@
+Update :func:`plasmapy.formulary.parameters.mass_density` so it calculates the mass
+density for a specific particle from a given number density.  Original function
+calculated the total mass density (ion + electron).
