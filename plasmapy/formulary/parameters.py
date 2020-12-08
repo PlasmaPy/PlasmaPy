@@ -109,7 +109,7 @@ def mass_density(
               = | Z_{ratio} | n_{s} m_{particle}
 
     where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
-    denisty for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
+    density for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
     species :math:`s`, and :math:`Z_{particle}` is the integer charge of
     ``particle``.  For example, if the electron density is given for :math:`n_s`
     and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`.
@@ -139,7 +139,7 @@ def mass_density(
     Raises
     ------
     `~astropy.units.UnitTypeError`
-        If the ``density`` does not have units equivalent to a number denisty
+        If the ``density`` does not have units equivalent to a number density
         or mass density.
 
     `TypeError`
@@ -217,8 +217,8 @@ def Alfven_speed(
         V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
     where :math:`B` is the magnetic field and :math:`\rho = n_i m_i + n_e m_e`
-    is the total mass density (:math:`n_i` is the ion number denisty,
-    :math:`n_e` is the electron number denisty, :math:`m_i` is the ion mass,
+    is the total mass density (:math:`n_i` is the ion number density,
+    :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
     and :math:`m_e` is the electron mass).
 
     **Aliases:** `va_`
@@ -271,7 +271,7 @@ def Alfven_speed(
         :math:`Tesla`.
 
     `~astropy.units.UnitTypeError`
-        If the ``density`` does not have units equivalent to a number denisty
+        If the ``density`` does not have units equivalent to a number density
         or mass density.
 
     `ValueError`
