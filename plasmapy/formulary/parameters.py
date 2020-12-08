@@ -147,7 +147,7 @@ def mass_density(
 
     `TypeError`
         If ``particle`` is not of type or convertible to
-        `~plamsapy.particles.Particle`.
+        `~plasmapy.particles.Particle`.
 
     `TypeError`
         If ``z_ratio`` is not of type `int` or `float`.
@@ -261,7 +261,7 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plamsapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
