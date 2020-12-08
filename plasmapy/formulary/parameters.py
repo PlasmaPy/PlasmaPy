@@ -244,7 +244,8 @@ def Alfven_speed(
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  This is used in calculating the mass density
         :math:`\rho = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
-        ``density`` is passed as a mass density.
+        ``density`` is passed as a mass density and overrides any charge state
+        info provided by ``ion``.
 
     Returns
     -------
