@@ -1171,7 +1171,7 @@ def gyroradius(
         if isfinite_Ti:
             # T_i is valid, so use it to determine Vperp
             Vperp = thermal_speed(T_i, particle=particle)
-        # else: Vperp is alread valid, do nothing
+        # else: Vperp is already valid, do nothing
     elif np.isscalar(Vperp.value):  # only T_i is an array
         # this means either Vperp must be nan, or T_i must be array of all nan,
         # or else we couldn't have gotten through check 1
