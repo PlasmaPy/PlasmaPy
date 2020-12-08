@@ -283,8 +283,8 @@ def Alfven_speed(
         If the Alfven velocity exceeds 5% of the speed of light
 
     : `~astropy.units.UnitsWarning`
-        If units are not provided magnetic field ``B``, units of :math:`Tesla`
-        are assumed.
+        If units are not provided for the magnetic field ``B``, units of
+        :math:`Tesla` are assumed.
 
     Notes
     -----
