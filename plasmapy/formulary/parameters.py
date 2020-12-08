@@ -101,7 +101,7 @@ def mass_density(
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
     """
-    Calculated the mass density from a number density.
+    Calculates the mass density from a number density.
 
     .. math::
 
@@ -122,7 +122,7 @@ def mass_density(
         Either a particle number density (in units of :math:`m^{-3}` or
         equivalent) or a mass density (in units of :math:`kg/m^3` or
         equivalent).  If ``density`` is a mass density, then it will be passed
-        through and returned.
+        through and returned without modification.
 
     particle : `~plasmapy.particles.Particle`
         The particle for which the mass density is being calculated for.  Must
@@ -131,8 +131,8 @@ def mass_density(
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
-        The ratio of the integer charges coresponding to the plasma species
-        represted by ``density`` and the ``particle``.  For example, if the
+        The ratio of the integer charges corresponding to the plasma species
+        represented by ``density`` and the ``particle``.  For example, if the
         given ``density`` is and electron density and ``particle`` is doubly
         ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
 
