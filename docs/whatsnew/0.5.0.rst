@@ -5,14 +5,14 @@ This release of PlasmaPy contains 58 commits in 31 merged pull requests closing 
 
 The people who have contributed to the code for this release are:
 
-    Dominik Stańczak
-    Nick Murphy
-    Peter Heuer
-    Ramiz Qudsi  *
-    Steve Richardson  *
-    Tiger D  *
-    W. Cody Skinner  *
-    rocco8773
+* Dominik Stańczak
+* Nick Murphy
+* Peter Heuer
+* Ramiz Qudsi  *
+* Steve Richardson  *
+* Tiger D  *
+* W. Cody Skinner  *
+* rocco8773
 
 Where a * indicates their first contribution to PlasmaPy.
 
