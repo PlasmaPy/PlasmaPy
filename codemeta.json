@@ -109,6 +109,45 @@
         },
         {
             "@type": "Person",
+            "givenName": "Cody",
+            "familyName": "Skinner",
+            "email": "cody@codyskinner.net",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Phoenix Security Labs"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Steve",
+            "familyName": "Richardson",
+            "email": "steve.richardson@nrl.navy.mil",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "US Naval Research Lab"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Ramiz",
+            "familyName": "Qudsi",
+            "email": "ahmadr@udel.edu",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Delaware"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Tiger",
+            "familyName": "Du",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Vanderbilt University"
+            }
+        },
+        {
+            "@type": "Person",
             "@id": "https://orcid.org/0000-0001-6849-3612",
             "givenName": "Pawel",
             "familyName": "Kozlowski",
