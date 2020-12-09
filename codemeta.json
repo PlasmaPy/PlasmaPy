@@ -6,8 +6,8 @@
     "contIntegration": "https://dev.azure.com/plasmapy/PlasmaPy",
     "issueTracker": "https://github.com/PlasmaPy/PlasmaPy/issues",
     "name": "PlasmaPy",
-    "version": "0.4.0",
-    "identifier": "http://doi.org/10.5281/zenodo.4037407",
+    "version": "0.5.0",
+    "identifier": "http://doi.org/10.5281/zenodo.4313063",
     "description": "An open source Python package for plasma research and education",
     "applicationCategory": "Plasma Physics",
     "developmentStatus": "wip",
@@ -104,6 +104,45 @@
             "affiliation": {
                 "@type": "Organization",
                 "name": "Center for Astrophysics | Harvard & Smithsonian"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Cody",
+            "familyName": "Skinner",
+            "email": "cody@codyskinner.net",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Phoenix Security Labs"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Steve",
+            "familyName": "Richardson",
+            "email": "steve.richardson@nrl.navy.mil",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "US Naval Research Lab"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Ramiz",
+            "familyName": "Qudsi",
+            "email": "ahmadr@udel.edu",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "University of Delaware"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Tiger",
+            "familyName": "Du",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Vanderbilt University"
             }
         },
         {
