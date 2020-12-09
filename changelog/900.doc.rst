@@ -1,1 +1,0 @@
-Update the information on how to cite PlasmaPy, including in the release guide.

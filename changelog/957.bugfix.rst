@@ -1,4 +1,0 @@
-Update :func:`plasmapy.formulary.parameters.Alfven_speed` to properly use the updated
-:func:`~plasmapy.formulary.parameters.mass_density` and maintain the same behavior.
-Also add handling of the ``ion`` input keyword, so `~plasmapy.particles.Particle` and
-the `~plasmapy.particles.Particle` convertible representations can be used as inputs.

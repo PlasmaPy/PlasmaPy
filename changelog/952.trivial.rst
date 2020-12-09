@@ -1,2 +1,0 @@
-Switched from Azure Pipelines to GitHub Actions for PR tests to make things
-easier for contributors. Moved away from Travis CI for test cron jobs.
