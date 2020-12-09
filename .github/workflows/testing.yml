@@ -100,7 +100,7 @@ jobs:
         pip install setuptools numpy wheel setuptools_scm
     - name: Build a binary wheel and a source tarball
       run: |
-        python setup.py wheel
+        python setup.py bdist_wheel
         python setup.py sdist
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.ref, 'refs/tags')
