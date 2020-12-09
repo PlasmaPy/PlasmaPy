@@ -41,11 +41,3 @@ jobs:
       targets:
         - wheels_universal
         - sdist
-      dependsOn:
-        - py37_linux
-        - py36_windows
-        - py36_minimal_conda
-        - py36_conda
-        - py38_linux
-        - py36_astropy31
-        - py37_macos
