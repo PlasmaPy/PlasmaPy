@@ -164,10 +164,7 @@ class SyntheticProtonRadiograph:
                     RuntimeWarning,
                 )
 
-        self.charge = const.e.si
-        self.mass = const.m_p.si
-        # Calculate the velocity corresponding to the proton energy
-        self.v0 = np.sqrt(2 * self.proton_energy / const.m_p.si).to(u.m / u.s)
+
 
         # Convert geometrical inputs between coordinates systems
         if geometry == "cartesian":
@@ -250,6 +247,7 @@ class SyntheticProtonRadiograph:
             np.linalg.norm(self.detector.si.value)
             / np.linalg.norm(self.source.si.value)
         )
+        print(self.mag)
 
     def _log(self, msg):
         if self.verbose:
@@ -358,8 +356,18 @@ class SyntheticProtonRadiograph:
         """
 
         self._log("Creating Particles")
-        max_theta = max_theta.to(u.rad).value
 
+
+        self.charge = const.e.si
+        self.mass = const.m_p.si
+
+        # Calculate the velocity corresponding to the proton energy
+        #self.v_nonrel = np.sqrt(2 * self.proton_energy / const.m_p.si).to(u.m / u.s)
+        ER = (self.proton_energy/(self.mass*const.c.si**2)).to(u.dimensionless_unscaled)
+        self.v0 = const.si.c*np.sqrt(1 - 1/(ER+1)**2)
+
+
+        max_theta = max_theta.to(u.rad).value
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the proton
         # flux per solid angle to be uniform.
@@ -455,6 +463,7 @@ class SyntheticProtonRadiograph:
 
         # If particles have not yet reached the detector plane and are moving
         # away from it, they will never reach the detector.
+        # So, we can remove them from the arrays
         condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
         ind = np.nonzero(np.where(condition, 0, 1))[0]
         self.r = self.r[ind, :]
@@ -489,6 +498,8 @@ class SyntheticProtonRadiograph:
         If field_weighting = 'volume averaged', use a volume-averaged field
         weighting scheme. If not, use a neareset-neighbor scheme.
         """
+
+        #print(f"{np.max(self.E[...,0]):.2e}")
 
         if self.field_weighting == "nearest neighbor":
             E = self.E[self.xi, self.yi, self.zi, :]
@@ -640,24 +651,37 @@ class SyntheticProtonRadiograph:
         # Estimate the E and B fields for each particle
         E, B = self._estimate_fields()
 
+        #print(f"{np.max(E[...,0]):.2e}")
+
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
         dt = self._adaptive_dt(B)
-        dt2 = dt * self.charge / self.mass / 2
 
         # Push only particles on a grid trajectory
         v = self.v[self.gi, :]
+        γ = (1/np.sqrt(1 - (v/const.c.si)**2)).to(u.dimensionless_unscaled)
+        uvel  = v*γ
 
-        # Execute the Boris push algorithm
-        vminus = v + E * dt2
-        t = -B * dt2
+        uvel_minus = uvel + self.charge * E * dt/ (2*self.mass)
+
+        γ1 = np.sqrt(1 + (uvel_minus/const.c.si)**2)
+
+        # Birdsall has a factor of c incorrect in the definiton of t?
+        # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
+        t = -(self.charge * B * dt / (2*γ1*self.mass)).to(u.dimensionless_unscaled)
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-        vprime = vminus + np.cross(vminus.si.value, t) * u.m / u.s
-        vplus = vminus + np.cross(vprime.si.value, s) * u.m / u.s
-        vnew = vplus + E * dt2
+
+        uvel_prime = uvel_minus + np.cross(uvel_minus.si.value, t) * u.m / u.s
+        uvel_plus = uvel_minus + np.cross(uvel_prime.si.value, s) * u.m / u.s
+        uvel_new = uvel_plus + + self.charge * E * dt/ (2*self.mass)
+
+        # You can show that this expression is equivalent to calculating
+        # v_new  then calculating γnew using the usual formula
+        γ2 = np.sqrt(1 + (uvel_new/const.c.si)**2)
 
         # Update the velocities of the particles that are being pushed
-        self.v[self.gi, :] = vnew
+        self.v[self.gi, :] = uvel_new/γ2
+
         # Update the positions
         self.r[self.gi, :] += self.v[self.gi, :] * dt
 
@@ -743,6 +767,8 @@ class SyntheticProtonRadiograph:
                 fract = 100 * np.sum(self.on_grid) / self.nparticles_grid
                 self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
             self._push()
+
+            #print(self.calc_ke(total=True))
 
         # Advance the particles to the image plane
         # At this stage, remove any particles that are not going to ever
