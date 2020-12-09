@@ -36,7 +36,6 @@ def _format_quantity(arg: u.Quantity) -> str:
 
 def _format_arg(arg) -> str:
     """Transform an argument into a format as would appear in a function call."""
-
     if hasattr(arg, "__name__"):
         return arg.__name__
     elif isinstance(arg, u.Quantity):
@@ -47,7 +46,6 @@ def _format_arg(arg) -> str:
 
 def _format_kw(keyword) -> str:
     """Transform a keyword into a format as would appear in a function call."""
-
     if isinstance(keyword, str):
         return str(keyword)
     elif hasattr(keyword, "__name__"):
@@ -61,9 +59,7 @@ def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     Take positional and keyword arguments, and format them into a
     string as they would appear in a function call.
     """
-
     args = args if isinstance(args, tuple) else (args,)
-
     args_and_kwargs = ""
 
     for arg in args:
@@ -83,7 +79,6 @@ def _name_with_article(ex: Exception) -> str:
     Return a string with an indefinite article and the name of
     exception ``ex``.
     """
-
     exception_name = ex.__name__
     use_an = exception_name[0] in "aeiouAEIOU" and exception_name[0:4] != "User"
     indefinite_article = "an" if use_an else "a"
@@ -96,7 +91,6 @@ def _object_name(obj: Any, showmodule=False) -> str:
     attribute and ``showmodule`` is `True`, then prepend the module
     name if not in `builtins`.
     """
-
     obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
 
     if hasattr(obj, "__name__") and showmodule is True:
@@ -115,12 +109,10 @@ def _string_together_warnings_for_printing(
     messages, and create a string that prints out each warning type
     followed by the corresponding message, separated by a full line.
     """
-
     warnings_with_messages = [
         _object_name(warning, showmodule=False) + ": " + message
         for warning, message in zip(warning_types, warning_messages)
     ]
-
     return "\n\n".join(warnings_with_messages)
 
 
@@ -153,7 +145,6 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     attribute_call_string
     method_call_string
     """
-
     args_and_kwargs = _format_args_and_kwargs(args, kwargs)
     return f"{f.__name__}({args_and_kwargs})"
 
@@ -198,7 +189,6 @@ def attribute_call_string(
     >>> attribute_call_string(SampleClass, 'attribute', cls_args, cls_kwargs)
     'SampleClass(1, kwarg1=2).attribute'
     """
-
     cls_args = tuple() if cls_args is None else cls_args
     cls_kwargs = dict() if cls_kwargs is None else cls_kwargs
     return f"{call_string(cls, cls_args, cls_kwargs)}.{attr}"
@@ -260,7 +250,6 @@ def method_call_string(
     call_string
     attribute_call_string
     """
-
     class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"
     method_args_and_kwargs = _format_args_and_kwargs(method_args, method_kwargs)
     return f"{class_call_string}.{method}({method_args_and_kwargs})"
