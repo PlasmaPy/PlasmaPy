@@ -1,1 +1,0 @@
-Added support for multiple electron components to diagnostics.thomson.spectral_density. Also fixed a bug for multiple ion populations.
