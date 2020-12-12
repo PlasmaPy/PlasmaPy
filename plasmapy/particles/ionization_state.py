@@ -149,7 +149,6 @@ class IonicFraction:
     @number_density.setter
     @validate_quantities(
         n={
-            "units": u.m ** -3,
             "can_be_negative": False,
             "can_be_inf": False,
             "none_shall_pass": True,
@@ -159,7 +158,7 @@ class IonicFraction:
         if n is None:
             self._number_density = np.nan * u.m ** -3
         else:
-            self._number_density = n.to(u.m ** -3)
+            self._number_density = n
 
 
 class IonizationState:
