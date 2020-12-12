@@ -331,18 +331,16 @@ def _replaceNanVwithThermalV(V, T, m):
         raise utils.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
     if V is None:
-        V = parameters.thermal_speed(T, mass=m)
+        V = parameters.thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
-        if np.isscalar(V.value) and np.isscalar(T.value):
-            V = parameters.thermal_speed(T, mass=m)
-        elif np.isscalar(V.value):
-            V = parameters.thermal_speed(T, mass=m)
-        elif np.isscalar(T.value):
-            V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T, mass=m)
+        if np.isscalar(V.value) or np.isscalar(T.value):
+            if np.isscalar(V.value):
+                V = parameters.thermal_speed(T, "e-", mass=m)
+            if np.isscalar(T.value):
+                V[np.isnan(V)] = parameters.thermal_speed(T, "e-", mass=m)
         else:
             V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], mass=m)
+            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
     return V
 
 

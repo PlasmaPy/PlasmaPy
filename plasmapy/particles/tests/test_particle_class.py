@@ -835,9 +835,9 @@ def test_particleing_a_particle(arg):
     """
     particle = Particle(arg)
 
-    assert particle == Particle(particle), (
-        f"Particle({repr(arg)}) does not equal " f"Particle(Particle({repr(arg)})."
-    )
+    assert particle == Particle(
+        particle
+    ), f"Particle({repr(arg)}) does not equal Particle(Particle({repr(arg)})."
 
     assert particle == Particle(Particle(Particle(particle))), (
         f"Particle({repr(arg)}) does not equal "
@@ -1201,7 +1201,7 @@ def test_particles_from_json_string(cls, kwargs, json_string, expected_exception
         expected_particle = instance.particle
         actual_particle = instance_from_json.particle
         assert expected_particle == actual_particle, pytest.fail(
-            f"Expected {expected_particle}\n" f"Got {actual_particle}"
+            f"Expected {expected_particle}\nGot {actual_particle}"
         )
     else:
         with pytest.raises(expected_exception):
@@ -1225,7 +1225,7 @@ def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
         expected_particle = instance.particle
         actual_particle = instance_from_json.particle
         assert expected_particle == actual_particle, pytest.fail(
-            f"Expected {expected_particle}\n" f"Got {actual_particle}"
+            f"Expected {expected_particle}\nGot {actual_particle}"
         )
     else:
         with pytest.raises(expected_exception):

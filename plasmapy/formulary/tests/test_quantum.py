@@ -105,7 +105,7 @@ def test_Fermi_energy():
     energy_F_true = 1.2586761116196002e-18
     # test a simple case for expected value
     expectStr = (
-        "Fermi energy at 1e23 cm^-3 should be " f"{energy_F_true} and not {energy_F}."
+        "Fermi energy at 1e23 cm^-3 should be {energy_F_true} and not {energy_F}."
     )
     assert np.isclose(energy_F.value, energy_F_true, rtol=1e-5, atol=0.0), expectStr
     # testing returned units
@@ -145,9 +145,7 @@ def test_Wigner_Seitz_radius():
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
     testTrue = u.isclose(radiusMeth, radiusTrue, rtol=1e-5)
-    errStr = (
-        f"Error in Wigner_Seitz_radius(), got {radiusMeth}, " f"should be {radiusTrue}"
-    )
+    errStr = f"Error in Wigner_Seitz_radius(), got {radiusMeth}, should be {radiusTrue}"
     assert testTrue, errStr
 
 
@@ -169,9 +167,7 @@ class Test_chemical_potential:
         """
         methodVal = chemical_potential(self.n_e, self.T)
         testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
-        errStr = (
-            f"Chemical potential value should be {self.True1} and not " f"{methodVal}."
-        )
+        errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     @pytest.mark.xfail(
@@ -209,9 +205,7 @@ class Test__chemical_potential_interp:
         """
         methodVal = _chemical_potential_interp(self.n_e, self.T)
         testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
-        errStr = (
-            f"Chemical potential value should be {self.True1} and not " f"{methodVal}."
-        )
+        errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     @pytest.mark.xfail(
