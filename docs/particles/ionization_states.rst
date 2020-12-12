@@ -80,7 +80,8 @@ Ionization states for multiple elements
 =======================================
 
 The `~plasmapy.particles.IonizationStateCollection` class may be used to
-represent the ionization state for multiple elements.
+represent the ionization state for multiple elements. This can be used,
+for example, to describe the various impurities in a fusion plasma.
 
 >>> from plasmapy.particles import IonizationStateCollection
 
