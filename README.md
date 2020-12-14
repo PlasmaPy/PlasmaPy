@@ -22,7 +22,7 @@
 PlasmaPy is an open source community developed Python 3.6+ package for
 plasma physics in the early stages of development.  PlasmaPy intends to
 be for plasmas what [Astropy](https://github.com/astropy/astropy) is for
-astronomy - a collection of functionality commonly used and shared
+astronomy — a collection of functionality commonly used and shared
 between plasma physicists and researchers globally, running within and
 leveraging the open source scientific Python ecosystem.  The goals of
 this project are more thoroughly described in our [vision
@@ -73,7 +73,7 @@ agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
 As of April 2020, our meetings are on Tuesdays at
-[18:00 UTC](http://time.unitarium.com/utc/6pm).
+[19:00 UTC](http://time.unitarium.com/utc/6pm).
 Come discuss plasma software with us!
 
 # Installation
@@ -93,13 +93,15 @@ Python 2](https://pythonclock.org/).
 # License
 
 PlasmaPy is licensed under a 3-clause BSD license with added protections
-against software patents - see the [``LICENSE.md``](LICENSE.md) file in
+against software patents — see the [``LICENSE.md``](LICENSE.md) file in
 the top-level directory.
 
 # Citing PlasmaPy
 
-Please see the [``CITATION.rst``](CITATION.rst) file for instructions on
-how to cite PlasmaPy.
+If you use PlasmaPy in a research publication, we ask that you cite the
+Zenodo record for the specific version of PlasmaPy that you used.
+Please see the [``docs/about/citation.rst``](./docs/about/citation.rst)
+file for more detailed instructions on how to cite PlasmaPy.
 
 # Acknowledgements
 

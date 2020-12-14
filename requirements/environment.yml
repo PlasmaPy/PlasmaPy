@@ -19,6 +19,7 @@ dependencies:
     - numpydoc
     - pytest
     - lmfit
+    - pygments>=2.4.1
     - sphinx>2
     - sphinx-gallery
     - sphinx-automodapi

@@ -24,10 +24,9 @@ def gen_collective_spectrum():
     """
     wavelengths = np.arange(520, 545, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
-    ne = 5e17 * u.cm ** -3
+    n = 5e17 * u.cm ** -3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
-    fract = np.array([1.0])
     Te = 10 * u.eV
     Ti = np.array([10]) * u.eV
     ion_species = ["C-12 5+"]
@@ -35,10 +34,9 @@ def gen_collective_spectrum():
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
-        ne,
+        n,
         Te,
         Ti,
-        fract=fract,
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
@@ -55,13 +53,13 @@ def gen_multiple_ion_species_spectrum():
     """
     wavelengths = np.arange(520, 545, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
-    ne = 5e17 * u.cm ** -3
+    n = 5e17 * u.cm ** -3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
-    fract = np.array([0.7, 0.3])
+    ifract = np.array([0.7, 0.3])
     Te = 10 * u.eV
     Ti = np.array([5, 5]) * u.eV
-    fluid_vel = np.array([300, 0, 0]) * u.km / u.s
+    electron_vel = np.array([[300, 0, 0]]) * u.km / u.s
     ion_vel = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
 
     # Use this to also test passing in ion species as Particle objects
@@ -70,14 +68,14 @@ def gen_multiple_ion_species_spectrum():
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
-        ne,
+        n,
         Te,
         Ti,
-        fract=fract,
+        ifract=ifract,
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        fluid_vel=fluid_vel,
+        electron_vel=electron_vel,
         ion_vel=ion_vel,
     )
 
@@ -91,10 +89,9 @@ def gen_non_collective_spectrum():
     """
     wavelengths = np.arange(500, 570, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
-    ne = 5e15 * u.cm ** -3
+    n = 5e15 * u.cm ** -3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
-    fract = np.array([1.0])
     Te = 100 * u.eV
     Ti = np.array([10]) * u.eV
     ion_species = ["H+"]
@@ -102,10 +99,9 @@ def gen_non_collective_spectrum():
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
-        ne,
+        n,
         Te,
         Ti,
-        fract=fract,
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
@@ -119,11 +115,11 @@ def test_different_input_types():
     # Define some constants
     wavelengths = np.arange(520, 545, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
-    ne = 5e17 * u.cm ** -3
+    n = 5e17 * u.cm ** -3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
-    fract = np.array([1.0])
-    Te = 10 * u.eV
+    ifract = np.array([1.0])
+    Te = np.array([10]) * u.eV
     Ti = np.array([10]) * u.eV
     ion_species = "C-12 5+"
 
@@ -132,10 +128,10 @@ def test_different_input_types():
         alpha, Skw = thomson.spectral_density(
             wavelengths,
             probe_wavelength,
-            ne,
+            n,
             Te,
             Ti,
-            fract=np.array([0.5, 0.5]),
+            ifract=np.array([0.5, 0.5]),
             ion_species=ion_species,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
@@ -146,10 +142,10 @@ def test_different_input_types():
         alpha, Skw = thomson.spectral_density(
             wavelengths,
             probe_wavelength,
-            ne,
+            n,
             Te,
             np.array([5, 5]) * u.eV,
-            fract=fract,
+            ifract=ifract,
             ion_species=ion_species,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
@@ -160,11 +156,39 @@ def test_different_input_types():
         alpha, Skw = thomson.spectral_density(
             wavelengths,
             probe_wavelength,
-            ne,
+            n,
             Te,
             Ti,
-            fract=fract,
+            ifract=ifract,
             ion_species=[],
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Raise a Value Error with inconsistent electron array lengths
+    # Te.size != efract.size
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            np.array([1, 10]) * u.eV,
+            Ti,
+            efract=np.array([0.5, 0.2, 0.3]),
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Electron vel shape not compatible with efract.size
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            Te,
+            Ti,
+            efract=np.array([0.5, 0.5]),
+            electron_vel=np.array([[100, 0, 0]]) * u.km / u.s,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
         )
@@ -177,9 +201,9 @@ def test_collective_spectrum():
     alpha, wavelength, Skw = gen_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha.value, 1.801, atol=0.01), (
-        "Collective case alpha " f"returns {alpha} instead of " "expected 1.801"
-    )
+    assert np.isclose(
+        alpha.value, 1.801, atol=0.01
+    ), "Collective case alpha returns {alpha} instead of expected 1.801"
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
@@ -205,9 +229,9 @@ def test_non_collective_spectrum():
     alpha, wavelength, Skw = gen_non_collective_spectrum()
 
     # Check that alpha is correct
-    assert np.isclose(alpha.value, 0.05707, atol=0.01), (
-        "Non-collective case alpha " f"returns {alpha} instead of " "expected 0.05707"
-    )
+    assert np.isclose(
+        alpha.value, 0.05707, atol=0.01
+    ), "Non-collective case alpha returns {alpha} instead of expected 0.05707"
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
@@ -233,9 +257,9 @@ def test_multiple_ion_species_spectrum():
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.1599, 1e-3), (
+    assert np.isclose(width, 0.049999, 1e-2), (
         f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.1599"
+        "expected 0.04999"
     )
 
     # Check max value
@@ -245,7 +269,67 @@ def test_multiple_ion_species_spectrum():
     )
 
     # Check max peak location
-    assert np.isclose(max_wavelength, 531.549, 1e-3), (
+    assert np.isclose(max_wavelength, 530.799, 1e-2), (
         "Multiple ion species case spectrum peak wavelength is "
-        f"{max_wavelength} instead of expected 531.549"
+        f"{max_wavelength} instead of expected 530.79"
     )
+
+
+def test_split_populations():
+    """
+    This test makes sure that splitting a single population of ions or electrons
+    into two identical halves returns the same result.
+    """
+
+    wavelengths = np.arange(520, 545, 0.01) * u.nm
+    probe_wavelength = 532 * u.nm
+    n = 5e17 * u.cm ** -3
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
+
+    # Combined
+    Te = np.array([10]) * u.eV
+    Ti = np.array([10]) * u.eV
+    ion_species = ["H+"]
+    ifract = np.array([1.0])
+    efract = np.array([1.0])
+
+    alpha, Skw0 = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ifract=ifract,
+        efract=efract,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+
+    # Split e and i populations into two parts
+    # this should not change the results since the parts are identical
+    Te = np.array([10, 10]) * u.eV
+    Ti = np.array([10, 10]) * u.eV
+    ion_species = ["H+", "H+"]
+    ifract = np.array([0.2, 0.8])
+    efract = np.array([0.8, 0.2])
+
+    alpha, Skw1 = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ifract=ifract,
+        efract=efract,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+
+    # Calculate the deviation between the two spectra
+    # (any differences should be in the noise)
+    deviation = (Skw0 - Skw1) / Skw0 * 100
+
+    assert np.all(deviation < 1e-6), "Failed split populations test"
