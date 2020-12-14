@@ -430,7 +430,7 @@ class TestIonizationStateCollectionDensities:
 
         cls.expected_electron_density = 2.26025 * u.m ** -3
         cls.states = IonizationStateCollection(
-            cls.initial_ionfracs, abundances=cls.abundances, n=cls.n
+            cls.initial_ionfracs, abundances=cls.abundances, n0=cls.n
         )
 
     def test_electron_density(self):

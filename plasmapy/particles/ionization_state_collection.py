@@ -48,7 +48,7 @@ class IonizationStateCollection:
         the corresponding base 10 logarithms of their relative
         abundances as values.  The values must be real numbers.
 
-    n: `~astropy.units.Quantity`, optional, keyword-only
+    n0: `~astropy.units.Quantity`, optional, keyword-only
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n``.
@@ -135,7 +135,7 @@ class IonizationStateCollection:
         T_e: u.K = np.nan * u.K,
         abundances: Optional[Dict[str, Real]] = None,
         log_abundances: Optional[Dict[str, Real]] = None,
-        n: u.m ** -3 = np.nan * u.m ** -3,
+        n0: u.m ** -3 = np.nan * u.m ** -3,
         tol: Real = 1e-15,
         kappa: Real = np.inf,
     ):
@@ -165,7 +165,7 @@ class IonizationStateCollection:
         try:
             self._pars = collections.defaultdict(lambda: None)
             self.T_e = T_e
-            self.n = n
+            self.n = n0
             self.tol = tol
             self.ionic_fractions = inputs
             if set_abundances:
@@ -892,7 +892,7 @@ class IonizationStateCollection:
         >>> states = IonizationStateCollection(
         ...     {'H': [0.1, 0.9], 'He': [0.95, 0.05, 0.0]},
         ...     T_e = 12000 * u.K,
-        ...     n = 3e9 * u.cm ** -3,
+        ...     n0 = 3e9 * u.cm ** -3,
         ...     abundances = {'H': 1.0, 'He': 0.1},
         ...     kappa = 3.4,
         ... )
