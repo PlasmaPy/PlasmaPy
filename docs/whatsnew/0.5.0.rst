@@ -1,0 +1,90 @@
+Plasmapy v0.5.0 (2020-12-09)
+============================
+
+This release of PlasmaPy contains 58 commits in 31 merged pull requests closing 16 issues from 8 people, 4 of which are first-time contributors to PlasmaPy.
+
+The people who have contributed to the code for this release are:
+
+* Dominik Stańczak
+* Nick Murphy
+* Peter Heuer
+* Ramiz Qudsi  *
+* Steve Richardson  *
+* Tiger D  *
+* W. Cody Skinner  *
+* rocco8773
+
+Where a * indicates their first contribution to PlasmaPy.
+
+Backwards Incompatible Changes
+------------------------------
+
+- Created `plasmapy.dispersion` in accordance with PlasmaPy Enhancement Proposal 7
+  (`PLEP 7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_)
+  and migrated the dispersion functionality (`dispersionfunction.py`) from
+  `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
+- Removed default values for the `ion` and `particle` arguments of functions contained in `plasmapy.formulary.parameters`, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
+- Moved test helper exceptions from `plasmapy.utils.pytest_helpers` to `plasmapy.tests.helpers`. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Update :func:`plasmapy.formulary.parameters.mass_density` so it calculates the mass
+  density for a specific particle from a given number density.  Original function
+  calculated the total mass density (ion + electron). (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
+
+
+Features
+--------
+
+- Added a function to calculate the power spectrum of thermal bremsstrahlung emitted by a Maxwellian plasma. (`#892 <https://github.com/plasmapy/plasmapy/pull/892>`__)
+- Added support for multiple electron components to diagnostics.thomson.spectral_density. Also fixed a bug for multiple ion populations. (`#893 <https://github.com/plasmapy/plasmapy/pull/893>`__)
+- Add dependency `pygments >= 2.4.1`. (`#898 <https://github.com/plasmapy/plasmapy/pull/898>`__)
+- Create the `plasmapy.analysis` package as per
+  `PLEP-7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_ and
+  initialize the package with the `~plasmapy.analysis.fit_functions` module.  Fit
+  functions are designed to wrap together an analytical function, a curve fitter,
+  uncertainty propagation, and a root solver to make curve fitting a little less
+  painful. (`#908 <https://github.com/plasmapy/plasmapy/pull/908>`__)
+- Created a new subpackage, `plasmapy.tests.helpers`, to contain test helper functionality. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
+- Create decorator `~plasmapy.utils.decorators.helpers.modify_docstring`, which allows
+  for programmatically prepending and/or appending a docstring. (`#943 <https://github.com/plasmapy/plasmapy/pull/943>`__)
+
+
+Bug Fixes
+---------
+
+- Allowed implicit conversions of AstroPy units in inputs and outputs of validated functions to happen without warnings. Most notably, this removes warnings on eV inputs to temperature fields. (`#886 <https://github.com/plasmapy/plasmapy/pull/886>`__)
+- Update :func:`plasmapy.formulary.parameters.Alfven_speed` to properly use the updated
+  :func:`~plasmapy.formulary.parameters.mass_density` and maintain the same behavior.
+  Also add handling of the ``ion`` input keyword, so `~plasmapy.particles.Particle` and
+  the `~plasmapy.particles.Particle` convertible representations can be used as inputs. (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
+
+
+Improved Documentation
+----------------------
+
+- Improved the release guide after the release of 0.4.0. (`#872 <https://github.com/plasmapy/plasmapy/pull/872>`__)
+- Add various improvements to the documentation.
+      * Replace home link with the plasmapy logo.
+      * Add module and index navigation links to sidebar header.
+      * Replace raw html on the main page that simulates a `nbgallery` with a real
+        `nbgallery` directive.
+      * Move link to view page source code from the header to footer.
+      * Add link to footer the jumps the user back to the top of the page.
+      * Create and add custom CSS stylesheet.
+      * Create `_templates` directory and templates to customize page elements. (`#875 <https://github.com/plasmapy/plasmapy/pull/875>`__)
+- Add static stub files to `docs/api_static` so all modules of `plasmapy` are indexed.
+  This is necessary to expose all of `plasmapy` since not all modules are indexed in
+  the narrative documentation. (`#878 <https://github.com/plasmapy/plasmapy/pull/878>`__)
+- Decompose sub-package `plasmapy/utils/roman/` into the `plasmapy/utils/roman.py`
+  file.  Move definition of `roman` specific `Exceptions` into
+  `plasmapy.utils.exceptions`. (`#883 <https://github.com/plasmapy/plasmapy/pull/883>`__)
+- Replaced references to Riot.im with references to Element.io or Matrix, as appropriate, following their recent rebranding. (`#891 <https://github.com/plasmapy/plasmapy/pull/891>`__)
+- Update the information on how to cite PlasmaPy, including in the release guide. (`#900 <https://github.com/plasmapy/plasmapy/pull/900>`__)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Apply isort to entire codebase, bringing it back to the pre-commit hook suite. (`#857 <https://github.com/plasmapy/plasmapy/pull/857>`__)
+- Expand package metadata contained in ``codemeta.json``, following the CodeMeta standard. (`#902 <https://github.com/plasmapy/plasmapy/pull/902>`__)
+- Changed remaining instances of @u.quantity_input to @validate_quantities in response to issue #880. (`#905 <https://github.com/plasmapy/plasmapy/pull/905>`__)
+- Switched from Azure Pipelines to GitHub Actions for PR tests to make things
+  easier for contributors. Moved away from Travis CI for test cron jobs. (`#952 <https://github.com/plasmapy/plasmapy/pull/952>`__)

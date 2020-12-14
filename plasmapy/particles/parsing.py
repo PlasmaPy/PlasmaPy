@@ -291,7 +291,7 @@ def _parse_and_check_atomic_input(
                 mass_numb = int(mass_numb_str)
             except ValueError:
                 raise InvalidParticleError(
-                    f"Invalid mass number in isotope string " f"'{isotope_info}'."
+                    f"Invalid mass number in isotope string '{isotope_info}'."
                 ) from None
 
         return element_info, mass_numb

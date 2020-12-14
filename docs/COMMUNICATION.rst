@@ -46,5 +46,5 @@ and you may access the `minutes and agendas
 <https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing>`__.
 Any last minute changes will be discussed on `Matrix
 <https://app.element.io/#/room/#plasmapy:openastronomy.org>`__.
-As of April 2020, our meetings are on Tuesdays at
-`18:00 UTC <http://time.unitarium.com/utc/6pm>`__.
+As of November 2020, our meetings are on Tuesdays at
+`19:00 UTC <http://time.unitarium.com/utc/6pm>`__.
