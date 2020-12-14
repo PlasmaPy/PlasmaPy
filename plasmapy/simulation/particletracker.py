@@ -62,7 +62,7 @@ class ParticleTracker:
 
     integrators = {"explicit_boris": particle_integrators.boris_push}
 
-    _wip_integrators = {"zenitani": particle_integrators._zenitani}
+    _wip_integrators = {}
 
     _all_integrators = dict(**integrators, **_wip_integrators)
 
