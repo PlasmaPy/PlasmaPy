@@ -1,3 +1,5 @@
+.. include:: /ad/ad_attention.inc
+
 .. _langmuir:
 
 *****************
