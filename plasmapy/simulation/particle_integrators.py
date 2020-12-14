@@ -28,7 +28,8 @@ def boris_push(x, v, b, e, q, m, dt):
     Notes
     ----------
     The Boris algorithm is the standard energy conserving algorithm for
-    particle movement in plasma physics. See [1]_ for more details.
+    particle movement in plasma physics. See [1]_ for more details, and
+    [2]_ for a nice overview.
 
     Conceptually, the algorithm has three phases:
 
@@ -44,6 +45,8 @@ def boris_push(x, v, b, e, q, m, dt):
     ----------
     .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
            Simulation", 2004, p. 58-63
+    .. [2] L. Brieda, "Particle Push in Magnetic Field (Boris Method)",
+           https://www.particleincell.com/2011/vxb-rotation/
     """
     hqmdt = 0.5 * dt * q / m
     vminus = v + hqdmt * e
