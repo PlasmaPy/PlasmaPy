@@ -9,6 +9,7 @@ PlasmaPy Plasma
 
 Overview
 --------
+
 One of the core classes in PlasmaPy is `~plasmapy.plasma.Plasma`. In order
 to make it easy to work with different plasma data in PlasmaPy, the
 `~plasmapy.plasma.Plasma` object provides a number of methods for
@@ -22,6 +23,7 @@ base object. See :ref:`plasma-sources` to see a list of all of them.
 
 Creating Plasma Objects
 -----------------------
+
 Plasma objects are constructed using the special factory class
 `~plasmapy.plasma.Plasma`: ::
 
@@ -53,6 +55,7 @@ are available on all Plasma objects.
 
 Plasma Classes
 --------------
+
 Defined in `plasmapy.plasma.sources` are a set of
 `~plasmapy.plasma.GenericPlasma` subclasses which convert the keyword
 arguments data to the standard `~plasmapy.plasma.GenericPlasma`
@@ -91,7 +94,7 @@ This feature is currently under development.
    :no-heading:
 
 Writing a new Plasma subclass
---------------------------------
+-----------------------------
 
 Any subclass of `~plasmapy.plasma.GenericPlasma` which defines a method
 named `~plasmapy.plasma.GenericPlasma.is_datasource_for` will
@@ -145,3 +148,24 @@ method.
     import plasmapy.plasma
 
     plasmapy.plasma.Plasma.register(FuturePlasma, FuturePlasma.some_matching_method)
+
+
+API
+---
+
+Sub-Packages & Modules
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+
+   ~plasmapy.plasma.exceptions
+   ~plasmapy.plasma.grids
+   ~plasmapy.plasma.plasma_base
+   ~plasmapy.plasma.plasma_factory
+   ~plasmapy.plasma.sources
+
+.. automodapi:: plasmapy.plasma
+   :no-main-docstr:
+   :no-heading:
+   :include-all-objects:
+   :headings: "^-"

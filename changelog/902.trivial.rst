@@ -1,1 +1,0 @@
-Expand package metadata contained in ``codemeta.json``, following the CodeMeta standard.
