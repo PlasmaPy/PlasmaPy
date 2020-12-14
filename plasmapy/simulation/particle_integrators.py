@@ -49,7 +49,7 @@ def boris_push(x, v, b, e, q, m, dt):
            https://www.particleincell.com/2011/vxb-rotation/
     """
     hqmdt = 0.5 * dt * q / m
-    vminus = v + hqdmt * e
+    vminus = v + hqmdt * e
 
     # rotate to add magnetic field
     t = -b * hqmdt
