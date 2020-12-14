@@ -25,3 +25,7 @@ Reference/API
 .. automodapi:: plasmapy.simulation.particletracker
    :no-heading:
    :no-main-docstr:
+
+.. automodapi:: plasmapy.simulation.particle_integrators
+   :no-heading:
+   :no-main-docstr:
