@@ -1,8 +1,10 @@
-In `plasmapy.particles`, rename the ``IonizationStates`` class to
-`~plasmapy.particles.IonizationStateCollection` and replace the ``State``
-namedtuple with the `~plasmapy.particles.IonicFraction` class.  When the
+In `plasmapy.particles`, the ``IonizationStates`` class was renamed to
+`~plasmapy.particles.IonizationStateCollection`.  The argument ``n`` in
+``IonizationStates`` was changed to ``n0`` in
+`~plasmapy.particles.IonizationStateCollection`.  The ``State`` namedtuple
+was changed to the `~plasmapy.particles.IonicFraction` class.  When the
 `~plasmapy.particles.IonizationState` class is now provided with an ion,
 the ionic fraction for that ion is set to 100% for the corresponding
-element or isotope.  Renamed ``AtomicError`` to
-`~plasmapy.particles.exceptions.ParticleError` and ``MissingAtomicDataError`` to
-`~plasmapy.particles.exceptions.MissingParticleDataError`.
+element or isotope.  ``AtomicError`` was renamed to
+`~plasmapy.particles.exceptions.ParticleError` and ``MissingAtomicDataError``
+was renamed to `~plasmapy.particles.exceptions.MissingParticleDataError`.
