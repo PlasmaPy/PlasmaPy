@@ -78,8 +78,7 @@ def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
     ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
 
-    with pytest.raises(TypeError):
-        ionic_fraction_1 == ionic_fraction_2
+    assert (ionic_fraction_1 == ionic_fraction_2) is False
 
 
 def test_ionization_state_ion_input_error():

@@ -62,10 +62,7 @@ class IonicFraction:
 
         try:
             if self.ionic_symbol != other.ionic_symbol:
-                raise TypeError(
-                    f"Unable to ascertain equality of ionic fractions for "
-                    f"different ions."
-                )
+                return False
 
             ionic_fraction_within_tolerance = np.isclose(
                 self.ionic_fraction,
