@@ -42,7 +42,11 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
 @pytest.mark.parametrize(
     "invalid_fraction, expected_exception",
-    [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError),],
+    [
+        (-1e-9, ParticleError),
+        (1.00000000001, ParticleError),
+        ("...", ParticleError),
+    ],
 )
 def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     """
