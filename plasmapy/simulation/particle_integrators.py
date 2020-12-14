@@ -52,7 +52,7 @@ def boris_push(x, v, b, e, q, m, dt):
     vminus = v + hqmdt * e
 
     # rotate to add magnetic field
-    t = b * hqmdt
+    t = -b * hqmdt
     s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
     vprime = vminus + np.cross(vminus, t)
     vplus = vminus + np.cross(vprime, s)
@@ -60,7 +60,7 @@ def boris_push(x, v, b, e, q, m, dt):
     # add second half of electric impulse
     v[...] = vplus + hqmdt * e
 
-    x += v * dt
+    x -= v * dt
 
 
 c = constants.c.si.value
