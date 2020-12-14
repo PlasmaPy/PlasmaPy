@@ -1,0 +1,2 @@
+Fixed a bug in the Particle Tracker simulation. The integrator had a sign
+error, thus the ExB drift came out in the incorrect direction.
