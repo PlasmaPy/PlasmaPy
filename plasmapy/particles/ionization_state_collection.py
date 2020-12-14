@@ -51,7 +51,7 @@ class IonizationStateCollection:
     n0: `~astropy.units.Quantity`, optional, keyword-only
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
-        of its abundance and ``n``.
+        of its abundance and ``n0``.
 
     T_e: `~astropy.units.Quantity`, optional, keyword-only
         The electron temperature in units of temperature or thermal
@@ -81,14 +81,14 @@ class IonizationStateCollection:
     >>> states = IonizationStateCollection(
     ...     {'H': [0.5, 0.5], 'He': [0.95, 0.05, 0]},
     ...     T_e = 1.2e4 * u.K,
-    ...     n = 1e15 * u.m ** -3,
+    ...     n0 = 1e15 * u.m ** -3,
     ...     abundances = {'H': 1, 'He': 0.08},
     ... )
     >>> states.ionic_fractions
     {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
 
     The number densities are given by the ionic fractions multiplied by
-    the abundance and the number density scaling factor ``n``.
+    the abundance and the number density scaling factor ``n0``.
 
     >>> states.number_densities['H']
     <Quantity [5.e+14, 5.e+14] 1 / m3>
@@ -165,7 +165,7 @@ class IonizationStateCollection:
         try:
             self._pars = collections.defaultdict(lambda: None)
             self.T_e = T_e
-            self.n = n0
+            self.n0 = n0
             self.tol = tol
             self.ionic_fractions = inputs
             if set_abundances:
@@ -275,13 +275,13 @@ class IonizationStateCollection:
             abundance_is_undefined = np.isnan(self.abundances[particle])
             isnan_of_abundance_values = np.isnan(list(self.abundances.values()))
             all_abundances_are_nan = np.all(isnan_of_abundance_values)
-            n_is_defined = not np.isnan(self.n)
+            n_is_defined = not np.isnan(self.n0)
 
             if abundance_is_undefined:
                 if n_is_defined:
-                    self._pars["abundances"][particle] = new_n_elem / self.n
+                    self._pars["abundances"][particle] = new_n_elem / self.n0
                 elif all_abundances_are_nan:
-                    self.n = new_n_elem
+                    self.n0 = new_n_elem
                     self._pars["abundances"][particle] = 1
                 else:
                     raise ParticleError(
@@ -607,15 +607,15 @@ class IonizationStateCollection:
             # instantiation of the class.
 
             if inputs_have_quantities:
-                if np.isnan(self.n):
+                if np.isnan(self.n0):
                     new_n = 0 * u.m ** -3
                     for key in _elements_and_isotopes:
                         new_n += n_elems[key]
-                    self.n = new_n
+                    self.n0 = new_n
 
                 new_abundances = {}
                 for key in _elements_and_isotopes:
-                    new_abundances[key] = np.float(n_elems[key] / self.n)
+                    new_abundances[key] = np.float(n_elems[key] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
@@ -684,13 +684,13 @@ class IonizationStateCollection:
 
     @property
     @validate_quantities
-    def n(self) -> u.m ** -3:
+    def n0(self) -> u.m ** -3:
         """Return the number density scaling factor."""
         return self._pars["n"]
 
-    @n.setter
+    @n0.setter
     @validate_quantities
-    def n(self, n: u.m ** -3):
+    def n0(self, n: u.m ** -3):
         """Set the number density scaling factor."""
         try:
             n = n.to(u.m ** -3)
@@ -709,7 +709,7 @@ class IonizationStateCollection:
         isotope.
         """
         return {
-            elem: self.n * self.abundances[elem] * self.ionic_fractions[elem]
+            elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
             for elem in self.base_particles
         }
 

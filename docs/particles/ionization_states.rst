@@ -81,7 +81,8 @@ Ionization states for multiple elements
 
 The `~plasmapy.particles.IonizationStateCollection` class may be used to
 represent the ionization state for multiple elements. This can be used,
-for example, to describe the various impurities in a fusion plasma.
+for example, to describe the various impurities in a fusion plasma or
+the charge state distributions of different elements in the solar wind.
 
 >>> from plasmapy.particles import IonizationStateCollection
 
@@ -107,7 +108,7 @@ as arguments to the class.
 >>> states = IonizationStateCollection(
 ...     {"H": [0.01, 0.99], "He": [0.04, 0.95, 0.01]},
 ...     abundances={"H": 1, "He": 0.08},
-...     n = 5e19 * u.m ** -3,
+...     n0 = 5e19 * u.m ** -3,
 ... )
 
 The ionic fractions will be stored as a `dict`.
@@ -116,8 +117,28 @@ The ionic fractions will be stored as a `dict`.
 {'H': array([0.01, 0.99]), 'He': array([0.04, 0.95, 0.01])}
 
 The number density for each element is the product of the number
-density scaling factor ``n`` with that element's abundance.
-The number density for each ion is the product of ``n``, the
+density scaling factor ``n0`` with that element's abundance.
+The number density for each ion is the product of ``n0``, the
+corresponding element's abundance, and the ionic fraction.
+
+>>> states.n0
+<Quantity 5.e+19 1 / m3>
+>>> states.abundances
+{'H': 1.0, 'He': 0.08}
+>>> states.number_densities["H"]
+<Quantity [5.00e+17, 4.95e+19] 1 / m3>
+
+The
+corresponding element's abundance, and the ionic fraction.
+
+>>> states.n0
+<Quantity 5.e+19 1 / m3>
+>>> states.abundances
+{'H': 1.0, 'He': 0.08}
+>>> states.number_densities["H"]
+<Quantity [5.00e+17, 4.95e+19] 1 / m3>
+
+The
 corresponding element's abundance, and the ionic fraction.
 
 >>> states.n

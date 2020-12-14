@@ -65,22 +65,22 @@ tests = {
     },
     "just H": {"inputs": {"H": [0.1, 0.9]}},
     "H acceptable error": {"inputs": {"H": [1.0, 1e-6]}, "tol": 1e-5},
-    "n": {
+    "n0": {
         "inputs": {"He": [1, 0, 0], "H": [1, 0]},
         "abundances": {"H": 1, "He": 0.1},
-        "n": 1e9 * u.cm ** -3,
+        "n0": 1e9 * u.cm ** -3,
     },
     "T_e and n": {
         "inputs": {"H": [0.9, 0.1], "helium": [0.5, 0.3, 0.2]},
         "abundances": {"H": 1, "He": 0.1},
         "T_e": 1e4 * u.K,
-        "n": 1e15 * u.m ** -3,
+        "n0": 1e15 * u.m ** -3,
         "kappa": np.inf,
     },
     "log_abundances": {
         "inputs": {"H": [1, 0], "He": [1, 0, 0]},
         "log_abundances": {"H": 1, "He": 0},
-        "n": 1e9 * u.cm ** -3,
+        "n0": 1e9 * u.cm ** -3,
     },
     "elements & isotopes": {
         "inputs": {
@@ -89,7 +89,7 @@ tests = {
             "He-4": [0.29, 0.69, 0.02],
         },
         "abundances": {"H": 1, "He-3": 1e-7, "He-4": 0.1},
-        "n": 1e12 * u.m ** -3,
+        "n0": 1e12 * u.m ** -3,
     },
     "ordered elements -> inputs": {"inputs": ["O", "C", "H", "Fe", "Ar"]},
     "mixed and unordered elements and isotopes": {
@@ -103,7 +103,7 @@ tests = {
     },
     "number densities and n are both inputs": {
         "inputs": {"H": [0.1, 0.3] * u.cm ** -3},
-        "n": 1e-5 * u.mm ** -3,
+        "n0": 1e-5 * u.mm ** -3,
     },
 }
 
@@ -461,7 +461,7 @@ class TestIonizationStateCollectionAttributes:
         cls.instance = IonizationStateCollection(cls.elements)
         cls.new_n = 5.153 * u.cm ** -3
 
-    @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n", "n_e"])
+    @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n0", "n_e"])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
         default_value = eval(command)
@@ -507,8 +507,8 @@ class TestIonizationStateCollectionAttributes:
         [
             ("T_e", "5 * u.m", u.UnitsError),
             ("T_e", "-1 * u.K", ParticleError),
-            ("n", "5 * u.m", u.UnitsError),
-            ("n", "-1 * u.m ** -3", ParticleError),
+            ("n0", "5 * u.m", u.UnitsError),
+            ("n0", "-1 * u.m ** -3", ParticleError),
             (
                 "ionic_fractions",
                 {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]},
@@ -668,12 +668,12 @@ class TestIonizationStateCollectionAttributes:
 
     def test_setting_n(self):
         try:
-            self.instance.n = self.new_n
+            self.instance.n0 = self.new_n
         except Exception:
             pytest.fail("Unable to set number density scaling factor attribute")
-        if not u.quantity.allclose(self.instance.n, self.new_n):
+        if not u.quantity.allclose(self.instance.n0, self.new_n):
             pytest.fail("Number density scaling factor was not set correctly.")
-        if not self.instance.n.unit == u.m ** -3:
+        if not self.instance.n0.unit == u.m ** -3:
             pytest.fail("Incorrect units for new number density.")
 
     def test_resetting_valid_densities(self):
@@ -794,7 +794,7 @@ tests_for_exceptions = {
         ParticleError,
     ),
     "kappa too small": IE({"inputs": ["H"], "kappa": 1.499999}, ParticleError),
-    "negative n": IE({"inputs": ["H"], "n": -1 * u.cm ** -3}, ParticleError),
+    "negative n": IE({"inputs": ["H"], "n0": -1 * u.cm ** -3}, ParticleError),
     "negative T_e": IE({"inputs": ["H-1"], "T_e": -1 * u.K}, ParticleError),
 }
 
@@ -841,12 +841,12 @@ class TestIonizationStateCollectionDensityEqualities:
             "ndens1": {
                 "inputs": cls.ionic_fractions,
                 "abundances": cls.abundances,
-                "n": cls.n,
+                "n0": cls.n,
             },
             "ndens2": {"inputs": cls.number_densities},
             "no_ndens3": {"inputs": cls.ionic_fractions},
             "no_ndens4": {"inputs": cls.ionic_fractions, "abundances": cls.abundances},
-            "no_ndens5": {"inputs": cls.ionic_fractions, "n": cls.n},
+            "no_ndens5": {"inputs": cls.ionic_fractions, "n0": cls.n},
         }
 
         cls.instances = {
