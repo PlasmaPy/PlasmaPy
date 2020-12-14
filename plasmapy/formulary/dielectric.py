@@ -9,10 +9,9 @@ import numpy as np
 
 from astropy import units as u
 from collections import namedtuple
-from numpy import pi
 
+from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.formulary import parameters
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.utils.decorators import validate_quantities
 
 r"""
