@@ -1,0 +1,2 @@
+Bugfix :meth:`plasmapy.analysis.fit_functions.Linear.root_solve` to handle the case
+where the slope is zero and no finite roots exist.
