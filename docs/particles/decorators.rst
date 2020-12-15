@@ -89,9 +89,9 @@ associated with an element, isotope, or ion; respectively.
   def number_of_bound_electrons(ion: Particle):
       return ion.atomic_number - ion.integer_charge
 
-The keywords ``require``, ``any_of``, and ``exclude`` to the decorator
-allow further customization of the particle categories allowed as
-inputs.  These keywords are used as in
+The keywords ``require``, ``any_of``, and ``exclude`` to the
+decorator allow further customization of the particle categories
+allowed as inputs.  These keywords are used as in
 `~plasmapy.particles.Particle.is_category`.
 
 .. code-block:: python
