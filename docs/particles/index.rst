@@ -23,6 +23,7 @@ Submodules
    particle_class
    functional
    nuclear
+   ionization_states
    decorators
 
 See Also
