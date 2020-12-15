@@ -594,7 +594,7 @@ class Linear(AbstractFitFunction):
 
         if m == 0.0:
             warn(
-                f"Slope of Linear fit function is zero so not finite root exists. ",
+                f"Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
             )
             return _RootResults(np.nan, np.nan)
