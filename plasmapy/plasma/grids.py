@@ -16,6 +16,14 @@ import xarray as xr
 
 from abc import ABC
 from typing import Union
+import warnings
+
+
+# These standard keys are used throughout PlasmaPy to refer to certain
+# plasma quantities. This dictionary also provides the expected unit.
+recognized_keys = {'B_x': ('Magnetic field (x component)', u.T),
+                   'B_y': ('Magnetic field (y component)', u.T),
+                   'B_z': ('Magnetic field (z component)', u.T), }
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
@@ -318,7 +326,35 @@ class AbstractGrid(ABC):
     def add_quantity(self, key: str, quantity: u.Quantity):
         r"""
         Adds a quantity to the dataset as a new DataArray
+
+        Parameters
+        ----------
+        key : str
+            Key string that labels the quantity to be added.
+        quantity : u.Quantity
+            A u.Quantity object whose shape must match that of the grid
+
+        Returns
+        -------
+        None.
+
         """
+
+        # Check key against a list of "known" keys with pre-defined
+        # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
+        # key is being used so the user is aware.
+        if key in recognized_keys.keys():
+            try:
+                quantity.to(recognized_keys[key][1])
+            except u.UnitConversionError:
+                raise ValueError(f"Units provided for {key} ({quantity.unit}) "
+                                 "are not compatible with the correct units "
+                                 f"for that recognized key ({recognized_keys[key]}).")
+
+        else:
+            warnings.warn(f"Warning: {key} is not recognized quantity key",
+                          stacklevel=2)
+
 
         if self.is_uniform_grid:
             axes = ["ax0", "ax1", "ax2"]
@@ -335,6 +371,30 @@ class AbstractGrid(ABC):
 
         data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
         self.ds[key] = data
+
+    def add_quantities(self, keys:list, quantities:list):
+        r"""
+        Adds a list of keys and quantities to the grid. See "add_quantity"
+
+        Parameters
+        ----------
+        keys : list
+            A list of str keys for quantities to add
+        quantities : list
+            A list of quantities to add. Each must be an array that matches
+            the size of the grid
+
+        Returns
+        -------
+        None.
+
+        """
+        if len(keys) != len(quantities):
+            raise ValueError("Number of keys must equal number of quantites")
+
+        for key, quantity in zip(keys, quantities):
+            self.add_quantity(key, quantity)
+
 
     def _make_grid(
         self,

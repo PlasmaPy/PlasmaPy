@@ -40,13 +40,30 @@ def test_AbstractGrid():
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, num=10)
 
     # Test adding a quantity
-    q1 = np.random.randn(10, 20, 5) * u.kg
-    grid.add_quantity("test quantity", q1)
+    q = np.random.randn(10, 20, 5) * u.T
+    grid.add_quantity("B_x", q)
+
+    # Test adding a quantity with wrong units
+    q = np.random.randn(10, 20, 5) * u.kg
+    with pytest.raises(ValueError):
+        grid.add_quantity("B_x", q)
+
+    # Testing adding a quantity with an unrecognized key name
+    with pytest.warns(UserWarning):
+        grid.add_quantity("not_a_recognized_key", q)
 
     # Test adding a quantity of incompatible size
-    q2 = np.random.randn(5, 20, 5) * u.kg
+    q = np.random.randn(5, 20, 5) * u.T
     with pytest.raises(ValueError):
-        grid.add_quantity("test quantity2", q2)
+        grid.add_quantity("B_x", q)
+
+    # Test adding multiple quantites at once
+    q = np.random.randn(10, 20, 5) * u.T
+    grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q,q])
+
+    # Test unequal numbers of keys and quantities
+    with pytest.raises(ValueError):
+        grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q])
 
 
 def test_CartesianGrid():
@@ -125,3 +142,5 @@ def test_NonUniformCartesianGrid():
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg
     grid.add_quantity("test_quantity", q1)
+
+test_AbstractGrid()
