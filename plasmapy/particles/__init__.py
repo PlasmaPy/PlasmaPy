@@ -21,14 +21,15 @@ from plasmapy.particles.atomic import (
     standard_atomic_weight,
 )
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.ionization_state import IonizationState, State
-from plasmapy.particles.ionization_states import IonizationStates
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state_collection import IonizationStateCollection
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     AbstractParticle,
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    particle_like,
 )
 from plasmapy.particles.serialization import (
     json_load_particle,

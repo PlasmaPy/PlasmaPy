@@ -134,7 +134,7 @@ unstable), `~plasmapy.particles.half_life` returns `~numpy.inf` seconds.
 
 If the particle's half-life is not known to sufficient precision, then
 `~plasmapy.particles.half_life` returns a `str` with the estimated value
-while issuing a `~plasmapy.particles.exceptions.MissingAtomicDataWarning`.
+while issuing a `~plasmapy.particles.exceptions.MissingParticleDataWarning`.
 
 Reduced mass
 ============

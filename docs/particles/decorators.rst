@@ -72,8 +72,8 @@ If an annotated keyword is named ``element``, ``isotope``, or ``ion``;
 then `~plasmapy.particles.particle_input` will raise an
 `~plasmapy.particles.exceptions.InvalidElementError`,
 `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
-`~plasmapy.particles.exceptions.InvalidIonError` if the particle is not associated with
-an element, isotope, or ion; respectively.
+`~plasmapy.particles.exceptions.InvalidIonError` if the particle is not
+associated with an element, isotope, or ion; respectively.
 
 .. code-block:: python
 
