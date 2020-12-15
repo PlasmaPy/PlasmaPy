@@ -6,15 +6,15 @@ import numpy as np
 import scipy.interpolate as interp
 import warnings
 
-
+from plasmapy.plasma.grids import CartesianGrid
 
 
 class LineIntegratedDiagnostic:
 
 
     def __init__(self, grid : u.m,
-                 source: u.m,
-                 detector: u.m,
+                 source,
+                 detector,
                  geometry = 'cartesian',
                  verbose=True,
                  ):
@@ -113,8 +113,8 @@ class LineIntegratedDiagnostic:
     # ************************************************************************
 
 
-    def evaluate_integral(self, size=None, bins=None, collimated=True,
-                  num=10):
+    def evaluate_integral(self, size=np.array([[-1,1],[-1,1]])*u.cm, bins=[50,50], collimated=True,
+                    num=100):
         """
         Analagous to run
 
@@ -126,6 +126,29 @@ class LineIntegratedDiagnostic:
         3) Evaluate the integrand at each position in the 3D grid
 
         4) Integrate along the line-integrated dimension
+
+        Parameters
+        ----------
+        size : u.quantity array of shape [2,2]
+            The bounds of the detector region. The default is [[-1,1],[-1,1]] cm.
+        bins : integer ndarray array of shape [2,2]
+            Number of bins in each direction of the detector region. The
+            default is [50,50].
+        collimated : Boolean, optional
+            If True, the source will be assumed to be collimated. If False,
+            a point source will be used. The default is True (collimated).
+        num : int, optional
+            Number of integration points along the line (within the grid region).
+            The default is 100.
+
+        Returns
+        -------
+        xax : TYPE
+            DESCRIPTION.
+        yax : TYPE
+            DESCRIPTION.
+        integral : TYPE
+            DESCRIPTION.
 
         """
 
@@ -145,8 +168,8 @@ class LineIntegratedDiagnostic:
         ny = np.cross(nx, self.det_n)
         ny = ny / np.linalg.norm(ny)
 
-        xax = np.linspace(size[0][0], size[0][1], num=bins[0])
-        yax = np.linspace(size[1][0], size[1][1], num=bins[1])
+        xax = np.linspace(size[0][0], size[0][1], num=int(bins[0]))
+        yax = np.linspace(size[1][0], size[1][1], num=int(bins[1]))
         x_offset, y_offset = np.meshgrid(xax, yax, indexing='ij')
 
 
@@ -161,14 +184,25 @@ class LineIntegratedDiagnostic:
         else:
             # If not collimated, assume a point source
             src_pts = np.outer( np.ones([bins[0], bins[1]]), self.source)
+            src_pts = np.reshape(src_pts, (bins[0], bins[1], 3))
 
+
+        # Calculate the unit vector of integration at each point
+        # for use in integrands later
+        lines = det_pts - src_pts
+        lines = np.moveaxis(lines, -1,0)
+        unit_v = lines/np.linalg.norm(lines, axis=0)
+        unit_v = np.outer(unit_v, np.ones(num))
+        unit_v = np.reshape(unit_v, (3, bins[0], bins[1], num))
+        unit_v = np.moveaxis(unit_v, 0, 3)
+        self.unit_v = unit_v
 
         # Determine where the grid begins and ends as fractions of the
         # source-to-detector vector
         source_to_det = np.linalg.norm(self.src_det_vec).to(u.mm)
-        source_to_grid = np.min(np.linalg.norm(self.grid -
+        source_to_grid = np.min(np.linalg.norm(self.grid.grid*self.grid.unit -
                                                self.source, axis=3))
-        grid_to_det = np.min(np.linalg.norm(self.grid -
+        grid_to_det = np.min(np.linalg.norm(self.grid.grid*self.grid.unit -
                                                self.detector, axis=3))
 
         # Paramter for parameteric equation
@@ -184,6 +218,7 @@ class LineIntegratedDiagnostic:
         mi = np.outer(det_pts - src_pts, i)
         mi = np.reshape(mi, [bins[0], bins[1], 3, num] )
 
+
         b = np.outer(src_pts, np.ones(num))
         b = np.reshape(b, [bins[0], bins[1], 3, num])
 
@@ -193,6 +228,7 @@ class LineIntegratedDiagnostic:
 
         # Evaluate the integrand at each position
         self.integration_pts = pts
+
         integrand = self._integrand()
 
         # Integrate
@@ -261,20 +297,24 @@ class LineIntegratedDiagnostic:
 
 if __name__ == '__main__':
 
+
+    class TestIntegrator(LineIntegratedDiagnostic):
+        def _integrand(self):
+            return self.integration_pts[...,0]
+
     # Make a little grid
     ax = np.linspace(-1,1,3)*u.mm
     xarr, yarr, zarr = np.meshgrid(ax,ax,ax, indexing='ij')
-    grid = np.array([xarr, yarr, zarr])*u.mm
-    grid = np.moveaxis(grid, 0, -1)
+    grid = CartesianGrid(xarr, yarr, zarr)
 
-    parameters = {}
     source = (-3*u.mm, 0*u.mm, 0*u.mm)
     detector = (5*u.mm, 0*u.mm, 0*u.mm)
 
 
-    obj = LineIntegratedDiagnostic(grid, parameters, source, detector)
+    obj = TestIntegrator(grid, source, detector)
 
-    obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[3,3])
+    obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[2,2],
+                          collimated=False, num=10)
 
 
 
