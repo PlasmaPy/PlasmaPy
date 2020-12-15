@@ -247,7 +247,6 @@ class SyntheticProtonRadiograph:
             np.linalg.norm(self.detector.si.value)
             / np.linalg.norm(self.source.si.value)
         )
-        print(self.mag)
 
     def _log(self, msg):
         if self.verbose:
@@ -582,7 +581,9 @@ class SyntheticProtonRadiograph:
         # Compute the timestep indicated by the grid resolution
         # min is taken for irregular grids, in which different particles
         # have different local grid resolutions
-        gridstep = (np.min(self.ds) / self.v0).to(u.s)
+        gridstep = 0.5*(np.min(self.ds) / self.v0).to(u.s)
+
+        #print(f"gridstep = {gridstep.to(u.s):.1e}")
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
@@ -651,15 +652,43 @@ class SyntheticProtonRadiograph:
         # Estimate the E and B fields for each particle
         E, B = self._estimate_fields()
 
-        #print(f"{np.max(E[...,0]):.2e}")
-
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
         dt = self._adaptive_dt(B)
 
+
+
         # Push only particles on a grid trajectory
         v = self.v[self.gi, :]
-        γ = (1/np.sqrt(1 - (v/const.c.si)**2)).to(u.dimensionless_unscaled)
+
+
+        vc = np.max(v)/const.c.si
+
+        if vc > 0.1:
+            self._relativistic_boris(v,dt, E, B)
+        else:
+            self._boris(v,dt, E, B)
+
+
+        # Update the positions
+        self.r[self.gi, :] += self.v[self.gi, :] * dt
+
+    def _boris(self,v, dt, E, B):
+        hqmdt = 0.5 *dt* self.charge / self.mass
+        vminus = v + hqmdt * E
+
+        # rotate to add magnetic field
+        t = -B * hqmdt
+        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
+        vprime = vminus + np.cross(vminus, t)
+        vplus = vminus + np.cross(vprime, s)
+
+        # add second half of electric impulse
+        self.v[self.gi, :] = vplus + hqmdt * E
+
+
+    def _relativistic_boris(self, v, dt, E, B):
+        γ = (1/np.sqrt(1 - (v/const.c.si)**2))
         uvel  = v*γ
 
         uvel_minus = uvel + self.charge * E * dt/ (2*self.mass)
@@ -668,7 +697,7 @@ class SyntheticProtonRadiograph:
 
         # Birdsall has a factor of c incorrect in the definiton of t?
         # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
-        t = -(self.charge * B * dt / (2*γ1*self.mass)).to(u.dimensionless_unscaled)
+        t = -(self.charge * B * dt / (2*γ1*self.mass))
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
 
         uvel_prime = uvel_minus + np.cross(uvel_minus.si.value, t) * u.m / u.s
@@ -682,8 +711,7 @@ class SyntheticProtonRadiograph:
         # Update the velocities of the particles that are being pushed
         self.v[self.gi, :] = uvel_new/γ2
 
-        # Update the positions
-        self.r[self.gi, :] += self.v[self.gi, :] * dt
+
 
     def run(
         self,
