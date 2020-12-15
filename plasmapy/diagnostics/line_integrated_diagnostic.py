@@ -13,7 +13,6 @@ class LineIntegratedDiagnostic:
 
 
     def __init__(self, grid : u.m,
-                 parameters : dict,
                  source: u.m,
                  detector: u.m,
                  geometry = 'cartesian',
@@ -21,7 +20,6 @@ class LineIntegratedDiagnostic:
                  ):
 
         self.grid = grid
-        self.param = parameters
         self.verbose = verbose
 
         # TODO: auto-detect geometry based on units of source and/or detector
@@ -192,8 +190,10 @@ class LineIntegratedDiagnostic:
         pts = mi+b
         pts = np.moveaxis(pts, 2, 3)
 
+
         # Evaluate the integrand at each position
-        integrand = self._integrand(pts)
+        self.integration_pts = pts
+        integrand = self._integrand()
 
         # Integrate
         integral = np.trapz(integrand, axis=2)*ds
@@ -201,7 +201,7 @@ class LineIntegratedDiagnostic:
         return xax, yax, integral
 
 
-    def _integrand(self, pts):
+    def _integrand(self):
         """
         Returns the integrand at a particular position.
 
@@ -209,7 +209,8 @@ class LineIntegratedDiagnostic:
         diagnostic physics, and can pull plasma parameter information from
         the parameters dict provided.
         """
-        return pts[:,:,:,1]
+        raise NotImplementedError("The integrand method must be implemented"
+                             " for this diagnostic.")
 
 
 
