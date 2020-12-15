@@ -791,58 +791,69 @@ def Hall_parameter(
     V=None,
     coulomb_log_method="classical",
 ):
-    r"""Calculate the ratio between the particle gyrofrequency and the
-    particle-ion particle collision rate.
+    r"""
+    Calculate the ``particle`` Hall parameter for a plasma.
 
-    All parameters apply to `particle`.
+    The Hall parameter for plasma species :math:`s` (``particle``) is given by:
+
+    .. math::
+
+        \beta_{s} = \frac{\Omega_{c s}}{\nu_{s s^{\prime}}}
+
+    where :math:`\Omega_{c s}` is the gyrofrequncy for plasma species :math:`s`
+    (``particle``) and :math:`\nu_{s s^{\prime}}` is the collison frequency
+    between plasma species :math:`s` (``particle``) and species
+    :math:`s^{\prime}` (``ion``).
 
     **Aliases:** `betaH_`
 
     Parameters
     ----------
-    n : ~astropy.units.quantity.Quantity
-        The density of charged particle species s
-    T : ~astropy.units.quantity.Quantity
-        The temperature of particles
-    B : ~astropy.units.quantity.Quantity
-        The magnetic field
-    ion : ~plasmapy.particles.Particle
-        The type of ion ``particle`` is colliding with in the ionized gas.
-    particle : ~plasmapy.particles.Particle
-        The charged particle species of interest in the plasma. Representation of the
-        particle species (e.g., 'p' for protons, 'D+' for deuterium, or 'He-4 +1'
-        for singly ionized helium-4). If no charge state information is provided,
-        then the particles are assumed to be singly charged.
-    coulomb_log : float, optional
+    n : `~astropy.units.quantity.Quantity`
+        The number density associated with ``particle``.
+    T : `~astropy.units.quantity.Quantity`
+        The temperature of associated with ``particle``.
+    B : `~astropy.units.quantity.Quantity`
+        The magnetic field.
+    ion : `~plasmapy.particles.Particle`
+        The type of ion ``particle`` is colliding.
+    particle : `~plasmapy.particles.Particle`
+        The particle species for which the Hall parameter is calculated for.
+        Representation of the particle species (e.g., 'p' for protons, 'D+' for
+        deuterium, or 'He-4 +1' for singly ionized helium-4). If no charge state
+        information is provided, then the particles are assumed to be singly
+        charged.
+    coulomb_log : `float`, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
-    V : ~astropy.units.quantity.Quantity
-        The relative velocity between `particle` and ion particles.
-    coulomb_log_method : str, optional
-        Method used for Coulomb logarithm calculation. Refer to its documentation.
+    V : `~astropy.units.quantity.Quantity`
+        The relative velocity between ``particle`` and ``ion``.  If not provided,
+        then the ``particle`` thermal velocity is assumed
+        (`~plasmapy.formulary.parameters.thermal_speed`).
+    coulomb_log_method : `str`, optional
+        Method used for Coulomb logarithm calculation. (see
+        `~plasmapy.formulary.collisions.Coulomb_logarithm`)
 
     See Also
     --------
     plasmapy.formulary.parameters.gyrofrequency
-    plasmapy.formulary.parameters.fundamental_electron_collision_freq
+    plasmapy.formulary.collisions.fundamental_electron_collision_freq
+    plasmapy.formulary.collisions.fundamental_ion_collision_freq
     plasmapy.formulary.collisions.Coulomb_logarithm
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
+        Hall parameter for ``particle``.
 
     Notes
     -----
-    The Hall Parameter is the ratio between the gyrofrequency and the ion-particle
-    collision rate (also known as collision frequency).
-
-    .. math::
-        \beta = \frac{\omega_c}{\nu}
-
-    where :math:`\omega_c` is the particle's gyrofrequency and :math:`\nu` is
-    the collision frequency between ``particle`` and ``ion``.
-
-    The collision frequencies are calculated assuming a slowly moving
-    Maxwellian distribution.
+    * For calculating the collision frequency,
+      `~plamsapy.formulary.colisions.fundamental_electron_collision_freq` is used
+      when ``particle`` is an electron and
+      `~plamsapy.formulary.colisions.fundamental_ion_collision_freq` when
+      ``particle`` is an ion.
+    * The collision frequencies are calculated assuming a slowly moving
+      Maxwellian distribution.
 
     Examples
     --------
@@ -851,7 +862,6 @@ def Hall_parameter(
     <Quantity 7.26446...e+16>
     >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
-
     """
     from plasmapy.formulary.collisions import (
         fundamental_electron_collision_freq,
