@@ -38,7 +38,7 @@ keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used `~plasmapy.particles.Particle`s may be
+The most frequently used `~plasmapy.particles.Particle` objects may be
 imported directly from the atomic subpackage.
 
 >>> from plasmapy.particles import proton, electron
