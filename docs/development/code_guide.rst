@@ -17,18 +17,12 @@ Coding Style
   <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
-  * The PEP 8 Speaks integration on GitHub will comment when there are
-    any departures from the PEP 8 style guide.
-
-  * PEP 8 compliance may be checked locally using
-    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
-
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
     PlasmaPy is 99 characters.
 
   * Docstrings and comments should generally be limited to
-    72 characters.
+    about 72 characters.
 
 * Follow the existing coding style within a subpackage.
 
