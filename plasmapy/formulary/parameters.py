@@ -48,11 +48,12 @@ import numbers
 import numpy as np
 import warnings
 
-from astropy.constants.si import c, e, eps0, k_B, m_e, m_p, mu0
-from typing import Optional
+from astropy.constants.si import c, e, eps0, k_B, mu0
+from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -96,64 +97,101 @@ def _grab_charge(ion: Particle, z_mean=None):
 )
 def mass_density(
     density: [u.m ** -3, u.kg / (u.m ** 3)],
-    particle: Optional[Particle] = None,
-    z_mean: Optional[numbers.Real] = None,
+    particle: Union[Particle, str],
+    z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
-    """Utility function to merge two possible inputs for particle charge.
+    """
+    Calculates the mass density from a number density.
+
+    .. math::
+
+        \\rho = \\left| \\frac{Z_{s}}{Z_{particle}} \\right| n_{s} m_{particle}
+              = | Z_{ratio} | n_{s} m_{particle}
+
+    where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
+    density for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
+    species :math:`s`, and :math:`Z_{particle}` is the integer charge of
+    ``particle``.  For example, if the electron density is given for :math:`n_s`
+    and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`.
 
     **Aliases:** `rho_`
 
     Parameters
     ----------
-    density : ~astropy.units.Quantity
-        Either a particle density (number of particles per unit volume, in units
-        of 1/m^3) or a mass density (in units of kg/m^3 or equivalent).
+    density : `~astropy.units.Quantity`
+        Either a particle number density (in units of :math:`m^{-3}` or
+        equivalent) or a mass density (in units of :math:`kg/m^3` or
+        equivalent).  If ``density`` is a mass density, then it will be passed
+        through and returned without modification.
 
-    particle : ~plasmapy.particles.Particle, optional
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
-        charge state information is provided, then the particles are assumed
-        to be singly charged. A particle is required if using a number
-        density (1/m^3) for the density parameter.
+    particle : `~plasmapy.particles.Particle`
+        The particle for which the mass density is being calculated for.  Must
+        be a `~plasmapy.particles.Particle` or a value convertible to
+        a `~plasmapy.particles.Particle` (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
-    z_mean : float
-        An optional float describing the average ionization of a particle
-        species.
+    z_ratio : `int`, `float`, optional
+        The ratio of the integer charges corresponding to the plasma species
+        represented by ``density`` and the ``particle``.  For example, if the
+        given ``density`` is and electron density and ``particle`` is doubly
+        ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
 
     Raises
     ------
-    ValueError
-        If the `density` has units inconvertible to either a particle density
-        or a mass density, or if you pass in a number density without a particle.
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number density
+        or mass density.
+
+    `TypeError`
+        If ``density`` is not of type `~astropy.units.Quantity`, or convertible.
+
+    `TypeError`
+        If ``particle`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
+
+    `TypeError`
+        If ``z_ratio`` is not of type `int` or `float`.
+
+    `ValueError`
+        If ``density`` is negative.
 
     Returns
     -------
-    ~astropy.units.Quantity
-        The mass density calculated from all the provided sources of information.
+    `~astropy.units.Quantity`
+        The mass density for the plasma species represented by ``particle``.
 
     Examples
     -------
-    >>> from astropy import units as u
-    >>> mass_density(1 * u.m ** -3,'p')
-    <Quantity 1.67353...e-27 kg / m3>
-    >>> mass_density(4 * u.m ** -3,'D+')
-    <Quantity 1.33779...e-26 kg / m3>
-
+    >>> import astropy.units as u
+    >>> mass_density(1 * u.m ** -3, 'p')
+    <Quantity 1.67262...e-27 kg / m3>
+    >>> mass_density(4 * u.m ** -3, 'D+')
+    <Quantity 1.33743...e-26 kg / m3>
+    >>> mass_density(2.e12 * u.cm ** -3, 'He')
+    <Quantity 1.32929...e-08 kg / m3>
+    >>> mass_density(2.e12 * u.cm ** -3, 'He', z_ratio=0.5)
+    <Quantity 6.64647...e-09 kg / m3>
+    >>> mass_density(1.0 * u.g * u.m ** -3, "")
+    <Quantity 0.001 kg / m3>
     """
-    # validate_quantities ensures we have units of u.kg/u.m**3 or 1/u.m**3
-    rho = density
-    if not rho.unit.is_equivalent(u.kg / u.m ** 3):
-        if particle:
-            m_i = particles.particle_mass(particle)
-            Z = _grab_charge(particle, z_mean)
-            rho = density * m_i + Z * density * m_e
-        else:
-            raise ValueError(
-                f"If passing a number density, you must pass a "
-                f"particle (not {particle}) to calculate the mass density!"
+    if density.unit.is_equivalent(u.kg / u.m ** 3):
+        return density
+
+    if not isinstance(particle, Particle):
+        try:
+            particle = Particle(particle)
+        except TypeError:
+            raise TypeError(
+                f"If passing a number density, you must pass a plasmapy Particle "
+                f"(not type {type(particle)}) to calculate the mass density!"
             )
 
-    return rho
+    if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
+        raise TypeError(
+            f"Expected type int or float for keyword z_ratio, got type {type(z_ratio)}."
+        )
+
+    return abs(z_ratio) * density * particle.mass
 
 
 rho_ = mass_density
@@ -166,77 +204,91 @@ def Alfven_speed(
     B: u.T,
     density: [u.m ** -3, u.kg / u.m ** 3],
     ion: Optional[Particle] = None,
-    z_mean=None,
+    z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
     r"""
-    Return the Alfvén speed.
+    Calculate the Alfvén speed.
 
-    **Aliases:** `va_`
-
-    Parameters
-    ----------
-    B : ~astropy.units.Quantity
-        The magnetic field magnitude in units convertible to tesla.
-
-    density : ~astropy.units.Quantity
-        Either the ion number density in units convertible to 1 / m**3,
-        or the mass density in units convertible to kg / m**3.
-
-    ion : ~plasmapy.particles.Particle, optional
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or `'He-4 +1'` for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged. If the density is an ion
-        number density, then this paramter is required in order to convert
-        to mass density.
-
-    z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
-        is used. This is effectively an average Alfven speed for the
-        plasma where multiple charge states are present.
-
-    Returns
-    -------
-    V_A : ~astropy.units.Quantity with units of speed
-        The Alfvén speed of the plasma in units of meters per second.
-
-    Raises
-    ------
-    TypeError
-        The magnetic field and density arguments are not instances of
-        `~astropy.units.Quantity` and cannot be converted into those.
-
-    ~astropy.units.UnitConversionError
-        If the magnetic field or density is not in appropriate units.
-
-    ~plasmapy.utils.RelativityError
-        If the Alfven velocity is greater than or equal to the speed of light
-
-    ValueError
-        If the density is negative, or the ion mass or charge state
-        cannot be found.
-
-    Warns
-    -----
-    ~plasmapy.utils.RelativityWarning
-        If the Alfven velocity exceeds 5% of the speed of light
-
-    ~astropy.units.UnitsWarning
-        if units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The Alfven speed :math:`V_A` is the typical propagation speed
-    of magnetic disturbances in a plasma, and is given by:
+    The Alfven speed :math:`V_A` is the typical propagation speed of magnetic
+    disturbances in a plasma, and is given by:
 
     .. math::
 
         V_A = \frac{B}{\sqrt{\mu_0\rho}}
 
-    where the mass density is :math:`\rho = n_i m_i + n_e m_e`.
+    where :math:`B` is the magnetic field and :math:`\rho = n_i m_i + n_e m_e`
+    is the total mass density (:math:`n_i` is the ion number density,
+    :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
+    and :math:`m_e` is the electron mass).
 
+    **Aliases:** `va_`
+
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to :math:`Tesla`.
+
+    density : `~astropy.units.Quantity`
+        Either the ion number density :math:`n_i` in units convertible to
+        :math:`m^{-3}` or the total mass density :math:`\rho` in units
+        convertible to :math:`kg / m^3`.
+
+    ion : `~plasmapy.particles.Particle`, optional
+        Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
+        deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
+        state information is provided, then the ions are assumed to be singly
+        ionized. If the density is an ion number density, then this paramter
+        is required in order to convert to mass density.
+
+    z_mean : `~numbers.Real`, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  This is used in calculating the mass density
+        :math:`\rho = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
+        ``density`` is passed as a mass density and overrides any charge state
+        info provided by ``ion``.
+
+    Returns
+    -------
+    V_A : `~astropy.units.Quantity`
+        The Alfvén speed in units :math:`m/s`.
+
+    Raises
+    ------
+    `~plasmapy.utils.exceptions.RelativityError`
+        If the Alfven velocity is greater than or equal to the speed of light.
+
+    `TypeError`
+        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
+        or convertible.
+
+    `TypeError`
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+
+    `TypeError`
+        If ``z_mean`` is not of type `int` or `float`.
+
+    `~astropy.units.UnitTypeError`
+        If the magnetic field ``B`` does not have units equivalent to
+        :math:`Tesla`.
+
+    `~astropy.units.UnitTypeError`
+        If the ``density`` does not have units equivalent to a number density
+        or mass density.
+
+    `ValueError`
+        If ``density`` is negative.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the Alfven velocity exceeds 5% of the speed of light
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided for the magnetic field ``B``, units of
+        :math:`Tesla` are assumed.
+
+    Notes
+    -----
     This expression does not account for relativistic effects, and
     loses validity when the resulting speed is a significant fraction
     of the speed of light.
@@ -249,15 +301,39 @@ def Alfven_speed(
     >>> n = 5e19*u.m**-3
     >>> rho = n*(m_p+m_e)
     >>> ion = 'p'
-    >>> Alfven_speed(B, n, ion)
+    >>> Alfven_speed(B, n, ion=ion)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho, ion)
+    >>> Alfven_speed(B, rho)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho, ion).to(u.cm/u.us)
+    >>> Alfven_speed(B, rho).to(u.cm/u.us)
     <Quantity 4.317387 cm / us>
+    >>> Alfven_speed(B, n, ion="He +2")
+    <Quantity 21664.18... m / s>
+    >>> Alfven_speed(B, n, ion="He++")
+    <Quantity 21664.18... m / s>
+    >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
+    <Quantity 21661.51... m / s>
 
     """
-    rho = mass_density(density, ion, z_mean)
+    if density.unit.is_equivalent(u.kg / u.m ** 3):
+        rho = density
+    else:
+        if not isinstance(ion, Particle):
+            try:
+                ion = Particle(ion)
+            except TypeError:
+                raise TypeError(
+                    f"If passing a number density, you must pass a plasmapy Particle "
+                    f"(not type {type(ion)}) to calculate the mass density!"
+                )
+        if z_mean is None:
+            try:
+                z_mean = abs(ion.integer_charge)
+            except ChargeError:
+                z_mean = 1
+
+        z_mean = abs(z_mean)
+        rho = mass_density(density, ion) + mass_density(density, "e", z_ratio=z_mean)
 
     V_A = np.abs(B) / np.sqrt(mu0 * rho)
     return V_A
@@ -1096,7 +1172,7 @@ def gyroradius(
         if isfinite_Ti:
             # T_i is valid, so use it to determine Vperp
             Vperp = thermal_speed(T_i, particle=particle)
-        # else: Vperp is alread valid, do nothing
+        # else: Vperp is already valid, do nothing
     elif np.isscalar(Vperp.value):  # only T_i is an array
         # this means either Vperp must be nan, or T_i must be array of all nan,
         # or else we couldn't have gotten through check 1

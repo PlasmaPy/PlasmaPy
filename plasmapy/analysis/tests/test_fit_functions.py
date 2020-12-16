@@ -577,12 +577,33 @@ class TestFFLinear(BaseFFTests):
 
         return err
 
-    def test_root_solve(self):
-        ff_obj = self.ff_class(params=(1, 1), param_errors=(0, 0))
-        assert ff_obj.root_solve() == (-1, 0)
+    @pytest.mark.parametrize(
+        "params, param_errors, root, root_err, conditional",
+        [
+            ((1, 1), (0, 0), -1, 0, does_not_raise()),
+            (
+                (5.0, 1.3),
+                (0.1, 0.1),
+                -1.3 / 5.0,
+                np.abs(-1.3 / 5.0) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2),
+                does_not_raise(),
+            ),
+            ((0.3, 0.0), (0.1, 0.1), 0.0, np.abs(0.1 / 0.3), does_not_raise()),
+            ((0.0, 1.0), (0.1, 0.1), np.nan, np.nan, pytest.warns(RuntimeWarning)),
+        ],
+    )
+    def test_root_solve(self, params, param_errors, root, root_err, conditional):
+        with conditional:
+            ff_obj = self.ff_class(params=params, param_errors=param_errors)
+            results = ff_obj.root_solve()
 
-        ff_obj.params = (5.0, 1.3)
-        ff_obj.param_errors = (0.1, 0.1)
-        root, err = ff_obj.root_solve()
-        assert root == -1.3 / 5.0
-        assert err == np.abs(root) * np.sqrt((0.1 / 5.0) ** 2 + (0.1 / 1.3) ** 2)
+            if np.all(np.isnan([root, root_err])):
+                assert np.all(np.isnan(results))
+            elif np.isnan(root):
+                assert np.isnan(results[0])
+                assert np.isclose(results[1], root_err)
+            elif np.isnan(root_err):
+                assert np.isclose(results[0], root)
+                assert np.isnan(results[1])
+            else:
+                assert np.allclose(results, [root, root_err])
