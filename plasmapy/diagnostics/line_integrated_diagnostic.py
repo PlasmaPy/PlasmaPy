@@ -152,6 +152,7 @@ class LineIntegratedDiagnostic:
 
         """
 
+
         # Create 2D grids of detector points
         # Define plane  horizontal axis as being perpendicular to both the
         # position vector and the z-axis. In the case where the pos vector
@@ -162,11 +163,20 @@ class LineIntegratedDiagnostic:
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
         nx = nx / np.linalg.norm(nx)
+        self.hax_n = nx # Unit vector for hax, detector horizontal axis
+
+        print(self.det_n)
+
 
         # Define the detector vertical axis as being orthogonal to the
         # detector axis and the horizontal axis
         ny = np.cross(nx, self.det_n)
-        ny = ny / np.linalg.norm(ny)
+        ny = -ny / np.linalg.norm(ny)
+        self.vax_n = ny # Unit vector for vax, detector vertical axis
+
+        print(f"Hax_n: {self.hax_n}")
+        print(f"Vax_n: {self.vax_n}")
+
 
         xax = np.linspace(size[0][0], size[0][1], num=int(bins[0]))
         yax = np.linspace(size[1][0], size[1][1], num=int(bins[1]))
@@ -307,8 +317,8 @@ if __name__ == '__main__':
     xarr, yarr, zarr = np.meshgrid(ax,ax,ax, indexing='ij')
     grid = CartesianGrid(xarr, yarr, zarr)
 
-    source = (-3*u.mm, 0*u.mm, 0*u.mm)
-    detector = (5*u.mm, 0*u.mm, 0*u.mm)
+    source = (0*u.mm,  -3*u.mm, 0*u.mm)
+    detector = ( 0*u.mm, 5*u.mm,  0*u.mm)
 
 
     obj = TestIntegrator(grid, source, detector)
