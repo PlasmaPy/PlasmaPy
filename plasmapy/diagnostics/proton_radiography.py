@@ -678,7 +678,7 @@ class SyntheticProtonRadiograph:
         vminus = v + hqmdt * E
 
         # rotate to add magnetic field
-        t = -B * hqmdt
+        t = B * hqmdt
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
         vprime = vminus + np.cross(vminus, t)
         vplus = vminus + np.cross(vprime, s)
@@ -697,7 +697,7 @@ class SyntheticProtonRadiograph:
 
         # Birdsall has a factor of c incorrect in the definiton of t?
         # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
-        t = -(self.charge * B * dt / (2*γ1*self.mass))
+        t = (self.charge * B * dt / (2*γ1*self.mass))
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
 
         uvel_prime = uvel_minus + np.cross(uvel_minus.si.value, t) * u.m / u.s
@@ -925,7 +925,7 @@ class SyntheticProtonRadiograph:
         # Define the detector vertical axis as being orthogonal to the
         # detector axis and the horizontal axis
         ny = np.cross(nx, self.det_n)
-        ny = ny / np.linalg.norm(ny)
+        ny = -ny / np.linalg.norm(ny)
 
         # If null is True, use the predicted positions in the absence of
         # simulated fields
