@@ -25,6 +25,9 @@ recognized_keys = { 'x': ("x spatial position", u.m),
                    'y': ("y spatial position", u.m),
                    'z': ("z spatial position", u.m),
                    'rho' : ("Mass density", u.kg/u.m**3),
+                   'E_x': ('Electric field (x component)', u.V/u.m),
+                   'E_y': ('Electric field (y component)', u.V/u.m),
+                   'E_z': ('Electric field (z component)', u.V/u.m),
                     'B_x': ('Magnetic field (x component)', u.T),
                    'B_y': ('Magnetic field (y component)', u.T),
                    'B_z': ('Magnetic field (z component)', u.T),
@@ -54,7 +57,7 @@ class AbstractGrid(ABC):
     separately.
     """
 
-    def __init__(self, *seeds, num=100, units=None, **kwargs):
+    def __init__(self, *seeds, num=100, **kwargs):
 
         # Initialize some variables
         self._is_uniform_grid = None
@@ -69,7 +72,7 @@ class AbstractGrid(ABC):
         # If two inputs are given, assume they are start and stop arrays
         # to create a new grid
         elif len(seeds) == 2:
-            self._make_grid(seeds[0], seeds[1], num=num, units=units, **kwargs)
+            self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
 
         else:
             raise TypeError(
@@ -88,6 +91,45 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # Fundamental properties of the grid
     # *************************************************************************
+
+    def __repr__(self):
+
+        line_sep = '-----------------------------\n'
+
+        s  = f"*** Grid summary ***:\n{type(self)}\n"
+        s += f"Shape: {self.shape}\nUnits: {self.units}\n"
+
+        if self.is_uniform_grid:
+            s += ("Uniformly Spaced, dx,dy,dz = "
+                  f"({self.dax0:.3f},{self.dax1:.3f},{self.dax2:.3f})\n")
+        else:
+            s += "Non-Uniform Spacing\n"
+
+
+
+        keys = list(self.ds.data_vars)
+        rkeys = [k for k in keys if k in recognized_keys]
+        nrkeys = [k for k in keys if k not in recognized_keys]
+
+        s += line_sep + 'Recognized Quantities:\n'
+        if len(rkeys) == 0:
+            s += '-None-\n'
+        else:
+            for key in rkeys:
+                unit = self.ds[key].attrs['unit']
+                s += f"-> {key} ({unit})\n"
+
+        s += line_sep + 'Non-Recognized Quantities:\n'
+        if len(rkeys) == 0:
+            s += '-None-\n'
+        else:
+            for key in nrkeys:
+                unit = self.ds[key].attrs['unit']
+                s += f"-> {key} ({unit})\n"
+
+
+        return s
+
 
     @property
     def shape(self):
@@ -116,7 +158,8 @@ class AbstractGrid(ABC):
 
         return self._grids
 
-    # Note: may remove this function?
+    # Note: may remove this function? This functionality is complicated
+    # if the grid dimensions don't all have the same units
     @property
     def grid(self):
         r"""A single grid of vertex positions"""
@@ -428,6 +471,10 @@ class AbstractGrid(ABC):
             given, the same number of points will be used in each dimension.
             The default is 100.
 
+        units : u.Quantity unit or list of three of the same
+            Units to be applied to each of the three dimensions. Only
+            used if units are not provided on start and stop arguments.
+
 
         **kwargs: Additional arguments
             Any additional arguments will be passed directly to np.linspace()
@@ -438,15 +485,19 @@ class AbstractGrid(ABC):
 
         """
 
-        # TODO: require that dimensions are equivalent to either meters or rad?
+        # If array of quantities are given instead of a list, convert
+        if isinstance(stop, u.Quantity) and stop.size == 3:
+            stop = list(stop)
+        elif isinstance(stop, u.Quantity) and stop.size == 1:
+            stop = [stop]*3
 
-        # If single values are given, expand to a list of appropriate length
-        if isinstance(stop, (int, float, u.Quantity)):
-            stop = [stop] * 3
-        if isinstance(start, (int, float, u.Quantity)):
-            start = [start] * 3
-        if isinstance(num, (int, float, u.Quantity)):
-            num = [num] * 3
+        if isinstance(start, u.Quantity) and start.size > 1:
+            start = list(start)
+        elif isinstance(start, u.Quantity) and start.size == 1:
+            start = [start]*3
+
+        if isinstance(num, (int, float)):
+            num = [int(num)] * 3
 
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
@@ -458,6 +509,7 @@ class AbstractGrid(ABC):
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
                 )
+
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays

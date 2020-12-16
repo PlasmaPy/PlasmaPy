@@ -11,7 +11,26 @@ from plasmapy.plasma import grids as grids
 
 
 def test_AbstractGrid():
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=(10, 20, 5))
+
+    # Create grid with single u.Quantity args
+    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=10)
+    assert grid.is_uniform_grid
+
+    # Create grid with lists of  u.Quantity args
+    grid = grids.AbstractGrid([-1 * u.cm,-1 * u.cm,-1 * u.cm],
+                              [1 * u.cm,1 * u.cm,1 * u.cm],
+                              num=[10,10,10])
+    assert grid.is_uniform_grid
+
+    # Create grid with arrays of u.quantities
+    grid = grids.AbstractGrid(np.array([-1]*3)*u.cm,
+                              np.array([1]*3)*u.cm,
+                              num=[10,10,10])
+    assert grid.is_uniform_grid
+
+
+    print(grid)
+
 
     array = grid.grid
     units = grid.units
@@ -40,11 +59,12 @@ def test_AbstractGrid():
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, num=10)
 
     # Test adding a quantity
-    q = np.random.randn(10, 20, 5) * u.T
+    q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantity("B_x", q)
 
+
     # Test adding a quantity with wrong units
-    q = np.random.randn(10, 20, 5) * u.kg
+    q = np.random.randn(10, 10, 10) * u.kg
     with pytest.raises(ValueError):
         grid.add_quantity("B_x", q)
 
@@ -58,17 +78,19 @@ def test_AbstractGrid():
         grid.add_quantity("B_x", q)
 
     # Test adding multiple quantites at once
-    q = np.random.randn(10, 20, 5) * u.T
+    q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q,q])
 
     # Test unequal numbers of keys and quantities
     with pytest.raises(ValueError):
         grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q])
 
+    print(grid)
+
 
 def test_CartesianGrid():
 
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
+    grid = grids.CartesianGrid(np.array([-1,-1,-1])*u.cm, np.array([1,1,1])*u.cm, num=(10,10,10))
 
     x_arr, y_arr, z_arr = grid.grids
     x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
@@ -180,9 +202,5 @@ def test_NonUniformCartesianGrid():
     q1 = np.random.randn(10, 10, 10) * u.kg/u.cm**3
     grid.add_quantity("rho", q1)
 
+
 test_AbstractGrid()
-test_CartesianGrid()
-test_interpolate_indices()
-test_nearest_neighbor_interpolator()
-test_volume_averaged_interpolator()
-test_NonUniformCartesianGrid()
