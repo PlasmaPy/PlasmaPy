@@ -123,6 +123,10 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.1)
 
+    # Test quantity key not present in dataset
+    with pytest.raises(KeyError):
+        pout = grid.nearest_neighbor_interpolator(pos, "B_x")
+
     # Two positions, two quantities
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y")
@@ -131,6 +135,9 @@ def test_nearest_neighbor_interpolator():
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pout, 0*u.cm, atol=0.1)
+
+
+
 
 def test_volume_averaged_interpolator():
     # Create grid
@@ -143,6 +150,10 @@ def test_volume_averaged_interpolator():
     pos = np.array([0.1, -0.3, 0]) * u.cm
     pout = grid.volume_averaged_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.1)
+
+    # Test quantity key not present in dataset
+    with pytest.raises(KeyError):
+        pout = grid.volume_averaged_interpolator(pos, "B_x")
 
     # Two positions, two quantities
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm

@@ -733,6 +733,20 @@ class CartesianGrid(AbstractGrid):
         if not hasattr(pos, "unit"):
             pos *= self.unit
 
+        # Validate args
+        # must be np.ndarray or u.Quantity arrays of same shape as grid
+        key_list = list(self.ds.data_vars)
+        for arg in args:
+
+            if not arg in key_list:
+                raise KeyError(
+                    "Quantity arguments must correspond to "
+                    "DataArrays in the DataSet. "
+                    f"{arg} was not found. "
+                    f"Existing keys are: {key_list}"
+                )
+
+
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
