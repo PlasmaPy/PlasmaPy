@@ -12,19 +12,19 @@ and may refer to `Astropy's release procedures
 <http://docs.astropy.org/en/stable/development/releasing.html>`_ for
 guidance.
 
-Throughout this guide, ``0.5.0`` denotes the version you're releasing,
-and ``0.4.0`` denotes the last released version.
+Throughout this guide, ``0.6.0`` denotes the version you're releasing,
+and ``0.5.0`` denotes the last released version.
 
 Release
 -------
 
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
-  for version ``0.5.0``.
+  for version ``0.6.0``.
 
-% Update ``docs/citation.rst`` with the DOI for version ``0.5.0``.
+% Update ``docs/citation.rst`` with the DOI for version ``0.6.0``.
 
 * Update metadata in ``codemeta.json``.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.5.0`` and update
+  ``"identifier"`` tag with the DOI for version ``0.6.0`` and update
   the author list (with affiliations and ORCIDs, when possible) to be
   consistent with the Zenodo record.  Update any other tags if necessary.
 
@@ -32,26 +32,26 @@ Release
   version `(see the latest commit on master)
   <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
 
-* ``git checkout -b v0.5.x`` — create a new branch for the release that is
+* ``git checkout -b v0.6.x`` — create a new branch for the release that is
   separate from the master branch, with the bugfix version replaced by ``x``, for
-  example, ``v0.5.x``. This is the branch for the entire series of releases — if
-  you're releasing, say, ``0.5.1``, the main repository should already have a
+  example, ``v0.6.x``. This is the branch for the entire series of releases — if
+  you're releasing, say, ``0.6.1``, the main repository should already have a
   branch for that.
 
 * ``git push -u upstream`` to create the branch on the main repository.
 
 * Turn changelog entries into a ``CHANGELOG.rst`` file via ``towncrier --version
-  v0.5.0``. When asked about removing changelog entries, do so. Ensure
+  v0.6.0``. When asked about removing changelog entries, do so. Ensure
   the entries are in proper categories.
 
 * Copy the relevant part of the generated ``CHANGELOG.rst`` file into
-  ``docs/whatsnew/0.5.0.rst``. Add the corresponding entry in the
+  ``docs/whatsnew/0.6.0.rst``. Add the corresponding entry in the
   table of contents in ``docs/whatsnew/index.rst``.
 
 * Add the note on new contributors to ``docs/whatsnew/{version_number}.rst``. To
   do this efficiently, borrow the `SunPy Xonsh script
   <https://github.com/sunpy/sunpy/blob/v2.1dev/tools/generate_releaserst.xsh>`_
-  ``generate_releaserst.xsh 0.4.0 --auth --project-name=plasmapy
+  ``generate_releaserst.xsh 0.5.0 --auth --project-name=plasmapy
   --pretty-project-name=PlasmaPy``.
 
     * Note that you'll need `a GitHub personal access token
@@ -69,13 +69,13 @@ Release
 
 * Commit and push your changes up until now.
 
-* Open them up as a Pull Request from the ``0.5.x`` branch to the master branch.
+* Open them up as a Pull Request from the ``0.6.x`` branch to the master branch.
 
 * Make sure that tests pass and that documentation builds without issue.
 
 * No, really, check twice.
 
-  * If you want to do any rebase to clean up the commit history on your ``0.5.x``
+  * If you want to do any rebase to clean up the commit history on your ``0.6.x``
     branch, now is the time to do that. Ensure that no tests broke.
 
 * Tag the new version with ``git tag -s v<version> -m "Version v<version>"``
@@ -83,8 +83,8 @@ Release
   * Note that ``-s`` signs the commit with your GPG key.
 
 * Push the tagged commit to the version's branch on GitHub: ``git push --force
-  --follow-tags upstream v0.5.x``. Note that ``--force`` is necessary to trigger
-  a rebuild with the tagged version. This kicked us in the posterior for ``0.5.0``.
+  --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
+  a rebuild with the tagged version. This kicked us in the posterior for ``0.6.0``.
 
 At this point, `the OpenAstronomy Azure Pipelines
 <https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`_
@@ -102,8 +102,8 @@ Post-release
   branch's version `on Read the Docs
   <https://readthedocs.org/projects/plasmapy/versions/>`_.
 
-* Update the ``stable`` branch on GitHub: ``git checkout v0.5.x; git pull; git
-  checkout stable; git merge v0.5.x; git push``.
+* Update the ``stable`` branch on GitHub: ``git checkout v0.6.x; git pull; git
+  checkout stable; git merge v0.6.x; git push``.
 
 * Make the release on conda-forge. The helpful conda-forge bots should
   automatically open up a PR on `conda-forge/plasmapy-feedstock
