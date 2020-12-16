@@ -132,6 +132,21 @@ def test_interpolate_indices():
     i = grid.interpolate_indices(pos)[0]
     assert np.sum(np.isnan(i)) > 0
 
+    # ***********************************************************************
+
+    # Create a non-uniform grid
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+
+    # One position
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+    i = grid.interpolate_indices(pos)[0]
+
+    # Assert that nearest grid cell was found
+    pout = grid.grid[int(i)]*grid.unit
+    assert np.allclose(pos, pout, atol=0.5)
+
+
+
 
 def test_nearest_neighbor_interpolator():
     # Create grid
@@ -158,6 +173,17 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pout, 0*u.cm, atol=0.1)
 
+
+    # ***********************************************************************
+
+    # Create a non-uniform grid
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+    grid.add_quantity("x", grid.grids[0]*u.cm)
+
+    # One position
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x")
+    assert np.allclose(pos[0], pout, atol=0.5)
 
 
 
@@ -203,4 +229,5 @@ def test_NonUniformCartesianGrid():
     grid.add_quantity("rho", q1)
 
 
-test_AbstractGrid()
+#test_interpolate_indices()
+test_nearest_neighbor_interpolator()

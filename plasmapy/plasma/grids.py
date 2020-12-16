@@ -119,8 +119,8 @@ class AbstractGrid(ABC):
                 unit = self.ds[key].attrs['unit']
                 s += f"-> {key} ({unit})\n"
 
-        s += line_sep + 'Non-Recognized Quantities:\n'
-        if len(rkeys) == 0:
+        s += line_sep + 'Unrecognized Quantities:\n'
+        if len(nrkeys) == 0:
             s += '-None-\n'
         else:
             for key in nrkeys:
@@ -151,9 +151,9 @@ class AbstractGrid(ABC):
                 self._grids = (pts0, pts1, pts2)
             else:
                 self._grids = (
-                    self.ds["ax0"] * self.unit0,
-                    self.ds["ax1"] * self.unit1,
-                    self.ds["ax2"] * self.unit2,
+                    self.ds["ax0"].data,
+                    self.ds["ax1"].data,
+                    self.ds["ax2"].data,
                 )
 
         return self._grids
@@ -573,10 +573,7 @@ class AbstractGrid(ABC):
             if self.is_uniform_grid:
                 self._make_uniform_grid_interpolator()
             else:
-                # TODO: Implement non-uniform grid interpolator here someday?
-                raise NotImplementedError(
-                    "Interpolation on non-uniform grids " "is not currently supported"
-                )
+                self._make_nonuniform_grid_interpolator()
 
         return self._interpolator
 
@@ -611,13 +608,16 @@ class AbstractGrid(ABC):
         This function works on unstructured (non-uniform) data
         """
 
-        pts0, pts1, pts2 = self.grids
-        pts0, pts1, pts2 = pts0.si.values, pts1.si.values, pts2.si.values
-        indices = np.arange(pts0.shape)
+        # Make an array of point positions
+        pts0, pts1, pts2 = self.pts0.si.value, self.pts1.si.value, self.pts2.si.value
+        pts = np.array([pts0, pts1, pts2])
+        pts = np.moveaxis(pts, 0, 1)
 
-        self._interpolator = interp.griddata(
-            (pts0, pts1, pts2), indices, method="nearest"
-        )
+        # Create a flat array of indices corresponding to those positions
+        indgrid = np.arange(self.shape[0])
+
+        self._interpolator = interp.NearestNDInterpolator(pts, indgrid)
+
 
     def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity]):
         r"""
@@ -654,6 +654,11 @@ class AbstractGrid(ABC):
 
         # Interpolate indices
         i = self.interpolator(pos2)
+
+        # TODO: Check interpolated positions and reject any (set to NaN)
+        # that are above a certain tolerance distance?
+        # currently the nonuniform interpolator can't tell when a value
+        # is out of bounds...
 
         # Note: i contains nan values which must be replaced with 0's with
         # appropriate units in the second layer interpolator functions.
@@ -698,7 +703,13 @@ class AbstractGrid(ABC):
 
         # Nan array is shape [n] and is 1 if none of the indices for a
         # position are NaN, and 0 otherwise.
-        nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
+
+        # i has different shape for non-uniform grids
+        if self.is_uniform_grid:
+            nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
+        else:
+            nan_mask = np.where(np.isnan(i), 0, 1)
+
         # Replace all NaNs temporarily with 0
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32) # Cast as integers
@@ -708,7 +719,10 @@ class AbstractGrid(ABC):
         output = []
         for arg in args:
             # Read the values from the dataset
-            values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
+            if self.is_uniform_grid:
+                values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
+            else:
+                values = self.ds[arg].values[i]
             # Apply the NaN mask (set any values that were out of bounds
             # to zero)
             values *= nan_mask
