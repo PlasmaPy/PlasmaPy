@@ -6,13 +6,13 @@ __all__ = [
     "AbstractGrid",
     "CartesianGrid",
     "NonUniformCartesianGrid",
+    "example_grid",
 ]
 
 import astropy.units as u
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
-
 import warnings
 import xarray as xr
 
@@ -60,7 +60,6 @@ class AbstractGrid(ABC):
 
     def __init__(self, *seeds, num=100, **kwargs):
 
-
         # Initialize some variables
         self._is_uniform_grid = None
         self._interpolator = None
@@ -75,7 +74,6 @@ class AbstractGrid(ABC):
         # to create a new grid
         elif len(seeds) == 2:
             self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
-
 
         else:
             raise TypeError(
@@ -420,7 +418,6 @@ class AbstractGrid(ABC):
 
         data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
         self.ds[key] = data
-
 
     def add_quantities(self, keys: list, quantities: list):
         r"""

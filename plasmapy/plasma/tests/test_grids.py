@@ -112,6 +112,7 @@ def test_CartesianGrid():
             [-1 * u.m, -1 * u.rad, -1 * u.m], [1 * u.m, 1 * u.rad, 1 * u.m]
         )
 
+
 def test_interpolate_indices():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
