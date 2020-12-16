@@ -90,43 +90,69 @@ def test_CartesianGrid():
         )
 
 
-def test_interpolators():
-    # Test interpolator
+def test_interpolate_indices():
+    # Create grid
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
 
-    # Test interpolator
+    # One position
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+    i = grid.interpolate_indices(pos)[0]
+    # Assert that nearest grid cell was found
+    pout = grid.grid[int(i[0]), int(i[1]), int(i[2])]*grid.unit
+    assert np.allclose(pos, pout, atol=0.1)
+
+    # Two positions
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    i = grid.interpolate_indices(pos)[0]
+
+    # Contains out-of-bounds values (index array should contain NaNs)
+    pos = np.array([5, -0.3, 0]) * u.cm
+    i = grid.interpolate_indices(pos)[0]
+    assert np.sum(np.isnan(i)) > 0
+
+
+def test_nearest_neighbor_interpolator():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
     # Add some data to the grid
-    data = grid.add_quantity("pts0", grid.grids[0])
-    data = grid.add_quantity("pts1", grid.grids[1])
+    grid.add_quantity("x", grid.grids[0])
+    grid.add_quantity("y", grid.grids[1])
 
+    # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
-    pos2 = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-
-    # Interpolate indices
-    i = grid.interpolate_indices(pos)[0]
-
-    pout = grid.grid[i[0], i[1], i[2], :] * grid.unit
-
-    # Assert that nearest grid cell was found
-    assert np.allclose(pos, pout, atol=0.1)
-
-    # Interpolate grid values using nearest-neighbor interpolator
-    pout = grid.nearest_neighbor_interpolator(pos, "pts0")
+    pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.1)
 
-    # Interpolate grid values using volume-weighted interpolator
-    pout = grid.volume_averaged_interpolator(pos, "pts0")
+    # Two positions, two quantities
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x", "y")
+
+    # Contains out-of-bounds values (must handle NaNs correctly)
+    pos = np.array([5, -0.3, 0]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x")
+    assert np.allclose(pout, 0*u.cm, atol=0.1)
+
+def test_volume_averaged_interpolator():
+    # Create grid
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
+    # Add some data to the grid
+    grid.add_quantity("x", grid.grids[0])
+    grid.add_quantity("y", grid.grids[1])
+
+    # One position
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+    pout = grid.volume_averaged_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.1)
 
-    # Test using multiple arguments
-    pout, pout2 = grid.nearest_neighbor_interpolator(pos, "pts0", "pts1")
+    # Two positions, two quantities
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    pout = grid.volume_averaged_interpolator(pos, "x", "y")
 
-    # Test multiple grid points
-    pos = np.array([[0, 0, 0], [0.5, 0.2, 0]]) * u.cm
-    i = grid.interpolate_indices(pos)
-    pout = grid.nearest_neighbor_interpolator(pos.value, "pts0")
-    pout = grid.volume_averaged_interpolator(pos, "pts0")
+    # Contains out-of-bounds values (must handle NaNs correctly)
+    pos = np.array([5, -0.3, 0]) * u.cm
+    pout = grid.volume_averaged_interpolator(pos, "x")
+    assert np.allclose(pout, 0*u.cm, atol=0.1)
+
 
 
 def test_NonUniformCartesianGrid():
@@ -140,7 +166,12 @@ def test_NonUniformCartesianGrid():
     assert grid.is_uniform_grid == False
 
     # Test assigning a quantity
-    q1 = np.random.randn(10, 10, 10) * u.kg
-    grid.add_quantity("test_quantity", q1)
+    q1 = np.random.randn(10, 10, 10) * u.kg/u.cm**3
+    grid.add_quantity("rho", q1)
 
 test_AbstractGrid()
+test_CartesianGrid()
+test_interpolate_indices()
+test_nearest_neighbor_interpolator()
+test_volume_averaged_interpolator()
+test_NonUniformCartesianGrid()

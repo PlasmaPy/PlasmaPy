@@ -21,9 +21,14 @@ import warnings
 
 # These standard keys are used throughout PlasmaPy to refer to certain
 # plasma quantities. This dictionary also provides the expected unit.
-recognized_keys = {'B_x': ('Magnetic field (x component)', u.T),
+recognized_keys = { 'x': ("x spatial position", u.m),
+                   'y': ("y spatial position", u.m),
+                   'z': ("z spatial position", u.m),
+                   'rho' : ("Mass density", u.kg/u.m**3),
+                    'B_x': ('Magnetic field (x component)', u.T),
                    'B_y': ('Magnetic field (y component)', u.T),
-                   'B_z': ('Magnetic field (z component)', u.T), }
+                   'B_z': ('Magnetic field (z component)', u.T),
+   }
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
@@ -574,6 +579,14 @@ class AbstractGrid(ABC):
             corresponds to the three dimensions of the grid. If an np.ndarray
             is provided, units will be assumed to match those of the grid.
 
+
+        Returns
+        -------
+
+        i : np.ndarray, shape (n,3)
+            An array of indices corresponding to the positions such that
+            i[n,:] = ix,iy,iz such that grid[ix,iy,iz,:] ~ pos[n,:]
+
         """
         # Condition pos
         # If a single point was given, add empty dimension
@@ -589,9 +602,9 @@ class AbstractGrid(ABC):
 
         # Interpolate indices
         i = self.interpolator(pos2)
-        # Convert any non-NaN values to ints
-        i = i.astype(np.int32)
 
+        # Note: i contains nan values which must be replaced with 0's with
+        # appropriate units in the second layer interpolator functions.
         return i
 
     def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
@@ -628,10 +641,25 @@ class AbstractGrid(ABC):
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
 
+        # Get the indices that are equal to nan (fill values), then set
+        # their values to 0. They will be over-written after the interpolation
+
+        # Nan array is shape [n] and is 1 if none of the indices for a
+        # position are NaN, and 0 otherwise.
+        nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
+        # Replace all NaNs temporarily with 0
+        i = np.where(np.isnan(i), 0, i)
+        i = i.astype(np.int32) # Cast as integers
+
+
         # Fetch the values at those indices from each quantity
         output = []
         for arg in args:
+            # Read the values from the dataset
             values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
+            # Apply the NaN mask (set any values that were out of bounds
+            # to zero)
+            values *= nan_mask
             values = np.squeeze(values)
             values *= self.ds[arg].attrs["unit"]
             output.append(values)
@@ -709,6 +737,16 @@ class CartesianGrid(AbstractGrid):
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
 
+        # Get the indices that are equal to nan (fill values), then set
+        # their values to 0. They will be over-written after the interpolation
+
+        # Nan array is shape [n] and is 1 if none of the indices for a
+        # position are NaN, and 0 otherwise.
+        nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
+        # Replace all NaNs temporarily with 0
+        i = np.where(np.isnan(i), 0, i)
+        i = i.astype(np.int32) # Cast as integers
+
         # Calculate the grid positions for each particle as interpolated
         # by the nearest neighbor interpolator
         xpos = self.ax0[i[:, 0]]
@@ -763,6 +801,8 @@ class CartesianGrid(AbstractGrid):
                     # grid vertex
                     for i, arg in enumerate(args):
                         values = self.ds[arg].values[x, y, z]
+                        # Apply nan_mask to set out-of-bounds values to 0
+                        values *= nan_mask
                         values *= self.ds[arg].attrs["unit"]
                         output[i] += weight * values
 
