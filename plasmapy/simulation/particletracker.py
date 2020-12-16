@@ -180,7 +180,7 @@ class ParticleTracker:
         else:
             self.integrator(
                 self.x, self.v, b, e, self.q, self.m, self.dt,
-            )  # we don't want to change position here
+            )
 
     def run(self):
         r"""
