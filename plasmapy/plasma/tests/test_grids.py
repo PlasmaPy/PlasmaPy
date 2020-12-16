@@ -223,3 +223,7 @@ def test_NonUniformCartesianGrid():
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantity("rho", q1)
+
+
+def test_example_grids():
+    grid = grids.example_grid("electrostatic_gaussian_sphere", L=1 * u.cm, num=100)

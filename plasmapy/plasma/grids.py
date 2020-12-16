@@ -909,3 +909,25 @@ class NonUniformCartesianGrid(CartesianGrid):
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
 
         return arr0, arr1, arr2
+
+
+def example_grid(name, L=1 * u.cm, num=100):
+
+    grid = CartesianGrid(-L, L, num=num)
+
+    if name == "electrostatic_gaussian_sphere":
+        a = L / 3
+        b = L / 2
+        radius = np.linalg.norm(grid.grid * grid.unit, axis=3)
+        arg = (radius / a).to(u.dimensionless_unscaled)
+        potential = np.exp(-(arg ** 2)) * u.V
+
+        Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
+
+        Ex = -np.where(radius < b, Ex, 0)
+        Ey = -np.where(radius < b, Ey, 0)
+        Ez = -np.where(radius < b, Ez, 0)
+
+        grid.add_quantities(["E_x", "E_y", "E_z"], [Ex, Ey, Ez])
+
+    return grid
