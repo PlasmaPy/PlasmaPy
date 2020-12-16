@@ -17,6 +17,7 @@ from collections import namedtuple
 from scipy.optimize import curve_fit, fsolve
 from scipy.stats import linregress
 from typing import Tuple, Union
+from warnings import warn
 
 from plasmapy.utils.decorators import modify_docstring
 
@@ -590,10 +591,20 @@ class Linear(AbstractFitFunction):
             :attr:`parameters` and :attr:`parameters_err`.
         """
         m, b = self.params
+
+        if m == 0.0:
+            warn(
+                f"Slope of Linear fit function is zero so no finite root exists. ",
+                RuntimeWarning,
+            )
+            return _RootResults(np.nan, np.nan)
+
         root = -b / m
 
         m_err, b_err = self.param_errors
-        err = np.abs(root) * np.sqrt((m_err / m) ** 2 + (b_err / b) ** 2)
+        m_term = (root * m_err / m) ** 2
+        b_term = (b_err / m) ** 2
+        err = np.sqrt(m_term + b_term)
 
         return _RootResults(root, err)
 

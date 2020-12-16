@@ -12,6 +12,7 @@ import astropy.units as u
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
+
 import warnings
 import xarray as xr
 
@@ -59,6 +60,7 @@ class AbstractGrid(ABC):
 
     def __init__(self, *seeds, num=100, **kwargs):
 
+
         # Initialize some variables
         self._is_uniform_grid = None
         self._interpolator = None
@@ -73,6 +75,7 @@ class AbstractGrid(ABC):
         # to create a new grid
         elif len(seeds) == 2:
             self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
+
 
         else:
             raise TypeError(
@@ -156,8 +159,6 @@ class AbstractGrid(ABC):
 
         return self._grids
 
-    # Note: may remove this function? This functionality is complicated
-    # if the grid dimensions don't all have the same units
     @property
     def grid(self):
         r"""A single grid of vertex positions"""
@@ -420,6 +421,7 @@ class AbstractGrid(ABC):
         data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
         self.ds[key] = data
 
+
     def add_quantities(self, keys: list, quantities: list):
         r"""
         Adds a list of keys and quantities to the grid. See "add_quantity"
@@ -469,11 +471,6 @@ class AbstractGrid(ABC):
             The number of points in each dimension. If a single integer is
             given, the same number of points will be used in each dimension.
             The default is 100.
-
-        units : u.Quantity unit or list of three of the same
-            Units to be applied to each of the three dimensions. Only
-            used if units are not provided on start and stop arguments.
-
 
         **kwargs: Additional arguments
             Any additional arguments will be passed directly to np.linspace()
@@ -628,7 +625,6 @@ class AbstractGrid(ABC):
             corresponds to the three dimensions of the grid. If an np.ndarray
             is provided, units will be assumed to match those of the grid.
 
-
         Returns
         -------
 
@@ -659,6 +655,7 @@ class AbstractGrid(ABC):
 
         # Note: i contains nan values which must be replaced with 0's with
         # appropriate units in the second layer interpolator functions.
+
         return i
 
     def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
@@ -878,6 +875,7 @@ class CartesianGrid(AbstractGrid):
                         values = self.ds[arg].values[x, y, z]
                         # Apply nan_mask to set out-of-bounds values to 0
                         values *= nan_mask
+
                         values *= self.ds[arg].attrs["unit"]
                         output[i] += weight * values
 
