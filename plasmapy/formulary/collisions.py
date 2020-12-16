@@ -86,7 +86,7 @@ def Coulomb_logarithm(
     species: (particles.Particle, particles.Particle),
     z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
     V: u.m / u.s = np.nan * u.m / u.s,
-    method="classical",
+    method="LS",
 ):
     r"""
     Estimates the Coulomb logarithm.
@@ -120,7 +120,7 @@ def Coulomb_logarithm(
 
     method: str, optional
         Selects which theory to use when calculating the Coulomb
-        logarithm. Defaults to classical method.
+        logarithm. Defaults to the classical Landau-Spitzer method.
 
     Returns
     -------
@@ -149,7 +149,7 @@ def Coulomb_logarithm(
     Warns
     -----
     ~astropy.units.UnitsWarning
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
@@ -157,7 +157,7 @@ def Coulomb_logarithm(
 
     Notes
     -----
-    The classical Coulomb logarithm is given by
+    The classical Landau-Spitzer Coulomb logarithm is given by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -179,7 +179,7 @@ def Coulomb_logarithm(
     nature of the collision [2]_, [3]_.
 
     Errors associated with the classical Coulomb logarithm are of order its
-    inverse. If the Coulomb logarithm is of order unity, then the
+    reciprocal. If the Coulomb logarithm is of order unity, then the
     assumptions made in the standard analysis of Coulomb collisions
     are invalid.
 
@@ -200,39 +200,40 @@ def Coulomb_logarithm(
 
     Methods
     ---
-    Classical
-        classical Landau-Spitzer approach. Fails for large coupling
+    LS
+        The classical Landau-Spitzer approach. Fails for large coupling
         parameter where Lambda can become less than zero.
-    GMS-1
-        1st method listed in Table 1 of reference [3]
+    LS_min_I ("GMS-1")
+        1st method listed in Table 1 of reference [4].
         Landau-Spitzer, but with interpolated bmin instead of bmin
         selected between deBroglie wavelength and distance of closest
-        approach. Fails for large coupling
-        parameter where Lambda can become less than zero.
-    GMS-2
-        2nd method listed in Table 1 of reference [3]
+        approach. Fails for large coupling parameter where Lambda can
+        become less than zero.
+    LS_full_I ("GMS-2")
+        2nd method listed in Table 1 of reference [4].
         Another Landau-Spitzer like approach, but now bmax is also
         being interpolated. The interpolation is between the Debye
         length and the ion sphere radius, allowing for descriptions
         of dilute plasmas. Fails for large coupling
         parameter where Lambda can become less than zero.
-        3rd method listed in Table 1 of reference [3]
+    LS_clamp ("GMS-3")
+        3rd method listed in Table 1 of reference [4]
         classical Landau-Spitzer fails for argument of Coulomb logarithm
-        Lambda < 0, therefore a clamp is placed at Lambda_min = 2
-    GMS-4
-        4th method listed in Table 1 of reference [3]
+        Lambda < 0, therefore a clamp is placed at Lambda_min = 2.
+    hyp_LS ("GMS-4")
+        4th method listed in Table 1 of reference [4].
         Spitzer-like extension to Coulomb logarithm by noting that
         Coulomb collisions take hyperbolic trajectories. Removes
         divergence for small bmin issue in classical Landau-Spitzer
         approach, so bmin can be zero. Also doesn't break down as
         Lambda < 0 is now impossible, even when coupling parameter is large.
-    GMS-5
-        5th method listed in Table 1 of reference [3]
+    hyp_LS_max_I ("GMS-5")
+        5th method listed in Table 1 of reference [4].
         Similar to GMS-4, but setting bmin as distance of closest approach
         and bmax interpolated between Debye length and ion sphere radius.
         Lambda < 0 impossible.
-    GMS-6
-        6th method listed in Table 1 of reference [3]
+    hyp_LS_full_I ("GMS-6")
+        6th method listed in Table 1 of reference [4].
         Similar to GMS-4 and GMS-5, but using interpolation methods
         for both bmin and bmax.
 
@@ -266,26 +267,26 @@ def Coulomb_logarithm(
     bmin, bmax = impact_parameter(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    if method in ("classical", "GMS-1", "GMS-2"):
+    if method in ("LS", "LS_min_I", "LS_full_I"):
         ln_Lambda = np.log(bmax / bmin)
-    elif method == "GMS-3":
+    elif method == "LS_clamp":
         ln_Lambda = np.log(bmax / bmin)
         if np.any(ln_Lambda < 2):
             if np.isscalar(ln_Lambda.value):
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in ("GMS-4", "GMS-5", "GMS-6"):
+    elif method in ("hyp_LS", "hyp_LS_max_I", "hyp_LS_full_I"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method! Choose from 'classical' and 'GMS-N', N from 1 to 6."
+            "Unknown method! Choose from 'LS', 'LS_min_I', 'LS_full_I', 'LS_clamp', 'hyp_LS'. 'hyp_LS_max_I', and 'hyp_LS_full_I'."
         )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     # Allow NaNs through the < checks without warning
     with np.errstate(invalid="ignore"):
-        if np.any(ln_Lambda < 2) and method in ["classical", "GMS-1", "GMS-2"]:
+        if np.any(ln_Lambda < 2) and method in ["LS", "LS_min_I", "LS_full_I"]:
             warnings.warn(
                 f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
                 "weak coupling.",
