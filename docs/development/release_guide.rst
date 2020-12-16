@@ -84,7 +84,7 @@ Release
 
 * Push the tagged commit to the version's branch on GitHub: ``git push --force
   --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
-  a rebuild with the tagged version. This kicked us in the posterior for ``0.6.0``.
+  a rebuild with the tagged version. This kicked us in the posterior for ``0.4.0``.
 
 At this point, `the OpenAstronomy Azure Pipelines
 <https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`_
