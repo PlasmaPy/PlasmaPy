@@ -12,26 +12,26 @@ import astropy.units as u
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
+import warnings
 import xarray as xr
 
 from abc import ABC
 from typing import Union
-import warnings
-
 
 # These standard keys are used throughout PlasmaPy to refer to certain
 # plasma quantities. This dictionary also provides the expected unit.
-recognized_keys = { 'x': ("x spatial position", u.m),
-                   'y': ("y spatial position", u.m),
-                   'z': ("z spatial position", u.m),
-                   'rho' : ("Mass density", u.kg/u.m**3),
-                   'E_x': ('Electric field (x component)', u.V/u.m),
-                   'E_y': ('Electric field (y component)', u.V/u.m),
-                   'E_z': ('Electric field (z component)', u.V/u.m),
-                    'B_x': ('Magnetic field (x component)', u.T),
-                   'B_y': ('Magnetic field (y component)', u.T),
-                   'B_z': ('Magnetic field (z component)', u.T),
-   }
+recognized_keys = {
+    "x": ("x spatial position", u.m),
+    "y": ("y spatial position", u.m),
+    "z": ("z spatial position", u.m),
+    "rho": ("Mass density", u.kg / u.m ** 3),
+    "E_x": ("Electric field (x component)", u.V / u.m),
+    "E_y": ("Electric field (y component)", u.V / u.m),
+    "E_z": ("Electric field (z component)", u.V / u.m),
+    "B_x": ("Magnetic field (x component)", u.T),
+    "B_y": ("Magnetic field (y component)", u.T),
+    "B_z": ("Magnetic field (z component)", u.T),
+}
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
@@ -94,42 +94,40 @@ class AbstractGrid(ABC):
 
     def __repr__(self):
 
-        line_sep = '-----------------------------\n'
+        line_sep = "-----------------------------\n"
 
-        s  = f"*** Grid summary ***:\n{type(self)}\n"
+        s = f"*** Grid summary ***\n{type(self)}\n"
         s += f"Shape: {self.shape}\nUnits: {self.units}\n"
 
         if self.is_uniform_grid:
-            s += ("Uniformly Spaced, dx,dy,dz = "
-                  f"({self.dax0:.3f},{self.dax1:.3f},{self.dax2:.3f})\n")
+            s += (
+                "Uniformly Spaced, dx,dy,dz = "
+                f"({self.dax0:.3f},{self.dax1:.3f},{self.dax2:.3f})\n"
+            )
         else:
             s += "Non-Uniform Spacing\n"
-
-
 
         keys = list(self.ds.data_vars)
         rkeys = [k for k in keys if k in recognized_keys]
         nrkeys = [k for k in keys if k not in recognized_keys]
 
-        s += line_sep + 'Recognized Quantities:\n'
+        s += line_sep + "Recognized Quantities:\n"
         if len(rkeys) == 0:
-            s += '-None-\n'
+            s += "-None-\n"
         else:
             for key in rkeys:
-                unit = self.ds[key].attrs['unit']
+                unit = self.ds[key].attrs["unit"]
                 s += f"-> {key} ({unit})\n"
 
-        s += line_sep + 'Unrecognized Quantities:\n'
+        s += line_sep + "Unrecognized Quantities:\n"
         if len(nrkeys) == 0:
-            s += '-None-\n'
+            s += "-None-\n"
         else:
             for key in nrkeys:
-                unit = self.ds[key].attrs['unit']
+                unit = self.ds[key].attrs["unit"]
                 s += f"-> {key} ({unit})\n"
 
-
         return s
-
 
     @property
     def shape(self):
@@ -395,14 +393,16 @@ class AbstractGrid(ABC):
             try:
                 quantity.to(recognized_keys[key][1])
             except u.UnitConversionError:
-                raise ValueError(f"Units provided for {key} ({quantity.unit}) "
-                                 "are not compatible with the correct units "
-                                 f"for that recognized key ({recognized_keys[key]}).")
+                raise ValueError(
+                    f"Units provided for {key} ({quantity.unit}) "
+                    "are not compatible with the correct units "
+                    f"for that recognized key ({recognized_keys[key]})."
+                )
 
         else:
-            warnings.warn(f"Warning: {key} is not recognized quantity key",
-                          stacklevel=2)
-
+            warnings.warn(
+                f"Warning: {key} is not recognized quantity key", stacklevel=2
+            )
 
         if self.is_uniform_grid:
             axes = ["ax0", "ax1", "ax2"]
@@ -420,7 +420,7 @@ class AbstractGrid(ABC):
         data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
         self.ds[key] = data
 
-    def add_quantities(self, keys:list, quantities:list):
+    def add_quantities(self, keys: list, quantities: list):
         r"""
         Adds a list of keys and quantities to the grid. See "add_quantity"
 
@@ -442,7 +442,6 @@ class AbstractGrid(ABC):
 
         for key, quantity in zip(keys, quantities):
             self.add_quantity(key, quantity)
-
 
     def _make_grid(
         self,
@@ -489,12 +488,12 @@ class AbstractGrid(ABC):
         if isinstance(stop, u.Quantity) and stop.size == 3:
             stop = list(stop)
         elif isinstance(stop, u.Quantity) and stop.size == 1:
-            stop = [stop]*3
+            stop = [stop] * 3
 
         if isinstance(start, u.Quantity) and start.size > 1:
             start = list(start)
         elif isinstance(start, u.Quantity) and start.size == 1:
-            start = [start]*3
+            start = [start] * 3
 
         if isinstance(num, (int, float)):
             num = [int(num)] * 3
@@ -509,7 +508,6 @@ class AbstractGrid(ABC):
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
                 )
-
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
@@ -618,7 +616,6 @@ class AbstractGrid(ABC):
 
         self._interpolator = interp.NearestNDInterpolator(pts, indgrid)
 
-
     def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity]):
         r"""
         Interpolate the nearest grid indices to a position using a
@@ -712,8 +709,7 @@ class AbstractGrid(ABC):
 
         # Replace all NaNs temporarily with 0
         i = np.where(np.isnan(i), 0, i)
-        i = i.astype(np.int32) # Cast as integers
-
+        i = i.astype(np.int32)  # Cast as integers
 
         # Fetch the values at those indices from each quantity
         output = []
@@ -812,7 +808,6 @@ class CartesianGrid(AbstractGrid):
                     f"Existing keys are: {key_list}"
                 )
 
-
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
@@ -825,7 +820,7 @@ class CartesianGrid(AbstractGrid):
         nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
         # Replace all NaNs temporarily with 0
         i = np.where(np.isnan(i), 0, i)
-        i = i.astype(np.int32) # Cast as integers
+        i = i.astype(np.int32)  # Cast as integers
 
         # Calculate the grid positions for each particle as interpolated
         # by the nearest neighbor interpolator

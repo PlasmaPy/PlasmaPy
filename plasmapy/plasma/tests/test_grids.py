@@ -17,20 +17,20 @@ def test_AbstractGrid():
     assert grid.is_uniform_grid
 
     # Create grid with lists of  u.Quantity args
-    grid = grids.AbstractGrid([-1 * u.cm,-1 * u.cm,-1 * u.cm],
-                              [1 * u.cm,1 * u.cm,1 * u.cm],
-                              num=[10,10,10])
+    grid = grids.AbstractGrid(
+        [-1 * u.cm, -1 * u.cm, -1 * u.cm],
+        [1 * u.cm, 1 * u.cm, 1 * u.cm],
+        num=[10, 10, 10],
+    )
     assert grid.is_uniform_grid
 
     # Create grid with arrays of u.quantities
-    grid = grids.AbstractGrid(np.array([-1]*3)*u.cm,
-                              np.array([1]*3)*u.cm,
-                              num=[10,10,10])
+    grid = grids.AbstractGrid(
+        np.array([-1] * 3) * u.cm, np.array([1] * 3) * u.cm, num=[10, 10, 10]
+    )
     assert grid.is_uniform_grid
 
-
     print(grid)
-
 
     array = grid.grid
     units = grid.units
@@ -62,7 +62,6 @@ def test_AbstractGrid():
     q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantity("B_x", q)
 
-
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg
     with pytest.raises(ValueError):
@@ -79,18 +78,20 @@ def test_AbstractGrid():
 
     # Test adding multiple quantites at once
     q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q,q])
+    grid.add_quantities(["B_x", "B_y", "B_z"], [q, q, q])
 
     # Test unequal numbers of keys and quantities
     with pytest.raises(ValueError):
-        grid.add_quantities(['B_x', 'B_y', 'B_z'], [q,q])
+        grid.add_quantities(["B_x", "B_y", "B_z"], [q, q])
 
     print(grid)
 
 
 def test_CartesianGrid():
 
-    grid = grids.CartesianGrid(np.array([-1,-1,-1])*u.cm, np.array([1,1,1])*u.cm, num=(10,10,10))
+    grid = grids.CartesianGrid(
+        np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
+    )
 
     x_arr, y_arr, z_arr = grid.grids
     x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
@@ -120,7 +121,7 @@ def test_interpolate_indices():
     pos = np.array([0.1, -0.3, 0]) * u.cm
     i = grid.interpolate_indices(pos)[0]
     # Assert that nearest grid cell was found
-    pout = grid.grid[int(i[0]), int(i[1]), int(i[2])]*grid.unit
+    pout = grid.grid[int(i[0]), int(i[1]), int(i[2])] * grid.unit
     assert np.allclose(pos, pout, atol=0.1)
 
     # Two positions
@@ -142,10 +143,8 @@ def test_interpolate_indices():
     i = grid.interpolate_indices(pos)[0]
 
     # Assert that nearest grid cell was found
-    pout = grid.grid[int(i)]*grid.unit
+    pout = grid.grid[int(i)] * grid.unit
     assert np.allclose(pos, pout, atol=0.5)
-
-
 
 
 def test_nearest_neighbor_interpolator():
@@ -171,20 +170,18 @@ def test_nearest_neighbor_interpolator():
     # Contains out-of-bounds values (must handle NaNs correctly)
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x")
-    assert np.allclose(pout, 0*u.cm, atol=0.1)
-
+    assert np.allclose(pout, 0 * u.cm, atol=0.1)
 
     # ***********************************************************************
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    grid.add_quantity("x", grid.grids[0]*u.cm)
+    grid.add_quantity("x", grid.grids[0] * u.cm)
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.5)
-
 
 
 def test_volume_averaged_interpolator():
@@ -210,8 +207,7 @@ def test_volume_averaged_interpolator():
     # Contains out-of-bounds values (must handle NaNs correctly)
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pout, 0*u.cm, atol=0.1)
-
+    assert np.allclose(pout, 0 * u.cm, atol=0.1)
 
 
 def test_NonUniformCartesianGrid():
@@ -225,9 +221,5 @@ def test_NonUniformCartesianGrid():
     assert grid.is_uniform_grid == False
 
     # Test assigning a quantity
-    q1 = np.random.randn(10, 10, 10) * u.kg/u.cm**3
+    q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantity("rho", q1)
-
-
-#test_interpolate_indices()
-test_nearest_neighbor_interpolator()
