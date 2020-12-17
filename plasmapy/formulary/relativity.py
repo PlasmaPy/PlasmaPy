@@ -210,6 +210,6 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
 
     """
 
-    a = E * q / (m * w * c)
+    a = np.abs(E * q / (m * w * c))
 
     return a
