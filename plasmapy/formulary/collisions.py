@@ -282,7 +282,7 @@ def Coulomb_logarithm(
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method! Choose from 'ls', 'lsmini', 'lsfulli', 'lsclamp', 'hls'. 'hlsmaxi', and 'hlsfulli'."
+            "Unknown method! Choose from 'ls', 'lsmini', 'lsfulli', 'lsclamp', 'hls', 'hlsmaxi', and 'hlsfulli'."
         )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
