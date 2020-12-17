@@ -4,8 +4,8 @@ import pytest
 import numpy as np
 
 from astropy import units as u
-from astropy.constants import c
-from plasmapy.formulary.relativity import Lorentz_factor, relativistic_energy
+from astropy.constants import c, m_e, e
+from plasmapy.formulary.relativity import Lorentz_factor, relativistic_energy, quiver_velocity
 from plasmapy.utils.exceptions import RelativityError
 
 
@@ -75,3 +75,20 @@ def test_relativistic_energy():
         relativistic_energy(-m, v)
 
 def test_quiver_velocity():
+    r"""Test quiver_velocity in relativity.py"""
+
+    v = 123456789 * u.m / u.s
+    m = m_e
+    w = 3e11 * u.Hz
+    q = e
+    E = 30 * u.V / u.m
+    assert (quiver_velocity(E, w, q, m) * u.dimensionless_unscaled).unit == u.dimensionless_unscaled
+
+    with pytest.raises(ValueError):
+        quiver_velocity(E, w, q, -m)
+
+    with pytest.raises(u.UnitTypeError):
+        quiver_velocity(E, w, 4 * u.kg, m)
+
+    with pytest.warns(u.UnitsWarning):
+        quiver_velocity(E, w, 2.2, m)
