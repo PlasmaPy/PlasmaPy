@@ -819,10 +819,10 @@ def Hall_parameter(
         The type of ion ``particle`` is colliding with.
     particle : `~plasmapy.particles.Particle`
         The particle species for which the Hall parameter is calculated for.
-        Representation of the particle species (e.g., 'p' for protons, 'D+' for
-        deuterium, or 'He-4 +1' for singly ionized helium-4). If no charge state
-        information is provided, then the particles are assumed to be singly
-        charged.
+        Representation of the particle species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
+        If no charge state information is provided, then the particles are
+        assumed to be singly charged.
     coulomb_log : `float`, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
     V : `~astropy.units.quantity.Quantity`
