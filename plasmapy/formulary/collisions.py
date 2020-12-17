@@ -86,7 +86,7 @@ def Coulomb_logarithm(
     species: (particles.Particle, particles.Particle),
     z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
     V: u.m / u.s = np.nan * u.m / u.s,
-    method="LS",
+    method="classical",
 ):
     r"""
     Computes the Coulomb logarithm.
@@ -288,7 +288,7 @@ def Coulomb_logarithm(
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     # Allow NaNs through the < checks without warning
     with np.errstate(invalid="ignore"):
-        if np.any(ln_Lambda < 2) and method in ["classical", "LS", "GMS-1", "LS_min_I", "GMS-2", "LS_full_I"]:
+        if np.any(ln_Lambda < 2) and method in ["classical", "ls", "GMS-1", "lsmini", "GMS-2", "lsfulli"]:
             warnings.warn(
                 f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
                 "weak coupling.",
