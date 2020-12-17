@@ -847,7 +847,7 @@ def Hall_parameter(
 
     Notes
     -----
-    * For calculating the collision frequency,
+    * For calculating the collision frequency
       `~plamsapy.formulary.colisions.fundamental_electron_collision_freq` is used
       when ``particle`` is an electron and
       `~plamsapy.formulary.colisions.fundamental_ion_collision_freq` when
