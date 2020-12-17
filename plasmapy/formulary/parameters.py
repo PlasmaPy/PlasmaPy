@@ -816,7 +816,7 @@ def Hall_parameter(
     B : `~astropy.units.quantity.Quantity`
         The magnetic field.
     ion : `~plasmapy.particles.Particle`
-        The type of ion ``particle`` is colliding.
+        The type of ion ``particle`` is colliding with.
     particle : `~plasmapy.particles.Particle`
         The particle species for which the Hall parameter is calculated for.
         Representation of the particle species (e.g., 'p' for protons, 'D+' for
