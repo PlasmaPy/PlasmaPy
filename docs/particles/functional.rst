@@ -1,4 +1,4 @@
-.. _atomic-functions:
+.. _particles-functions:
 
 Functions
 *********
@@ -6,9 +6,9 @@ Functions
 In addition to the `~plasmapy.particles.Particle` class, the
 `~plasmapy.particles` subpackage has a functional interface.
 
-.. _atomic-func-symbols:
+.. _particles-func-symbols:
 
-Symbols and Names
+Symbols and names
 =================
 
 Several functions in `~plasmapy.particles` return string representations
@@ -34,9 +34,9 @@ The full symbol of the particle can be found using
 >>> particle_symbol('electron')
 'e-'
 
-.. _atomic-func-properties:
+.. _particles-func-properties:
 
-Particle Properties
+Particle properties
 ===================
 
 The `~plasmapy.particles.atomic_number` and `~plasmapy.particles.mass_number`
@@ -76,7 +76,7 @@ The mass of a particle may be accessed through the
 >>> particle_mass('deuteron')
 <Quantity 3.34358372e-27 kg>
 
-.. _atomic-func-isotopes:
+.. _particles-isotopes:
 
 Isotopes
 ========
@@ -107,7 +107,7 @@ All stable isotopes of an element may be found with
 >>> stable_isotopes('Pb')
 ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
 
-.. _atomic-func-stability:
+.. _particles-func-stability:
 
 Stability
 =========
@@ -127,7 +127,7 @@ half-life as a `~astropy.units.Quantity` in units of seconds, if known.
 <Quantity 881.5 s>
 
 For stable particles (or particles that have not been discovered to be
-unstable), `~plasmapy.particles.half_life` returns infinity seconds.
+unstable), `~plasmapy.particles.half_life` returns `~numpy.inf` seconds.
 
 >>> half_life('p+')
 <Quantity inf s>
@@ -136,8 +136,8 @@ If the particle's half-life is not known to sufficient precision, then
 `~plasmapy.particles.half_life` returns a `str` with the estimated value
 while issuing a `~plasmapy.particles.exceptions.MissingParticleDataWarning`.
 
-Additional Properties
-=====================
+Reduced mass
+============
 
 The `~plasmapy.particles.reduced_mass` function is useful in cases of
 two-body collisions.
