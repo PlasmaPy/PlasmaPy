@@ -17,6 +17,7 @@ import warnings
 import xarray as xr
 
 from abc import ABC
+from scipy.special import erf as erf  # Used in planar discontinuity example
 from typing import Union
 
 # These standard keys are used throughout PlasmaPy to refer to certain
@@ -886,10 +887,63 @@ class NonUniformCartesianGrid(CartesianGrid):
 
 
 def example_grid(name, L=1 * u.cm, num=100):
+    r"""
+
+    Generates grids representing some common physical scenarios for testing
+    and illustration. Valid example names are:
+
+    * electrostatic_gaussian_sphere : An electric field created by a sphere
+        of potential of radius L/2 with a radial Gaussian distribution.
+
+    * axially_magnetized_cylinder : A cylinder of radius L/4 magnetized in the
+        Z-direction (like a solenoid, but without the fringe fields).
+
+    * electrostatic_discontinuity : A discontinuity in the electric field at z=0
+        with a radial gaussian profile in the xy plane.
+
+
+    Parameters
+    ----------
+    name : TYPE
+        DESCRIPTION.
+    L : TYPE, optional
+        DESCRIPTION. The default is 1 * u.cm.
+    num : TYPE, optional
+        DESCRIPTION. The default is 100.
+
+    Returns
+    -------
+    grid : TYPE
+        DESCRIPTION.
+
+    """
 
     grid = CartesianGrid(-L, L, num=num)
 
-    if name == "electrostatic_gaussian_sphere":
+    if name == "axially_magnetized_cylinder":
+        a = L / 4
+        radius = np.linalg.norm(grid.grid[..., 0:2] * grid.unit, axis=3)
+
+        Bx = np.zeros(grid.shape) * u.T
+        By = np.zeros(grid.shape) * u.T
+        Bz = np.where(radius < a, 100 * u.T, 0 * u.T)
+
+        grid.add_quantities(B_x=Bx, B_y=By, B_z=Bz)
+
+    elif name == "electrostatic_discontinuity":
+        a = L / 2
+        delta = a / 120
+
+        radius = np.linalg.norm(grid.grid[..., 0:2] * grid.unit, axis=3)
+        z = grid.grids[2]
+
+        potential = (1 - erf(z / delta)) * np.exp(-((radius / a) ** 2)) * u.V
+
+        Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
+
+        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez)
+
+    elif name == "electrostatic_gaussian_sphere":
         a = L / 3
         b = L / 2
         radius = np.linalg.norm(grid.grid * grid.unit, axis=3)
@@ -903,5 +957,10 @@ def example_grid(name, L=1 * u.cm, num=100):
         Ez = -np.where(radius < b, Ez, 0)
 
         grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez)
+
+    else:
+        raise ValueError(
+            "No example corresponding to the provided name " f"({name}) exists."
+        )
 
     return grid
