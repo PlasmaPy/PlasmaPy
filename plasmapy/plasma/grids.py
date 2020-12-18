@@ -33,6 +33,7 @@ recognized_keys = {
     "B_x": ("Magnetic field (x component)", u.T),
     "B_y": ("Magnetic field (y component)", u.T),
     "B_z": ("Magnetic field (z component)", u.T),
+    "phi": ("Electric Scalar Potential", u.V),
 }
 
 
@@ -941,7 +942,7 @@ def example_grid(name, L=1 * u.cm, num=100):
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
-        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez)
+        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez, phi=potential)
 
     elif name == "electrostatic_gaussian_sphere":
         a = L / 3
@@ -956,7 +957,7 @@ def example_grid(name, L=1 * u.cm, num=100):
         Ey = -np.where(radius < b, Ey, 0)
         Ez = -np.where(radius < b, Ez, 0)
 
-        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez)
+        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez, phi=potential)
 
     else:
         raise ValueError(
