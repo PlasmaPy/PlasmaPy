@@ -121,8 +121,9 @@ def Coulomb_logarithm(
         The method by which to compute the Coulomb logarithm.
         The default method is the classical Landau-Spitzer method
         (`"classical"`). The other 6 supported methods are `"lsmininterp"`,
-        `"lsfullinterp"`, `"lsclamp"`, `"hyperls"`, "hlsmaxinterp", and "hlsfullinterp". Please refer to
-        the "Notes" section of this docstring for more information, including about abbreviated aliases of these names.
+        `"lsfullinterp"`, `"lsclamp"`, `"hyperls"`, `"hlsmaxinterp"`, and 
+        `"hlsfullinterp"`. Please refer to the "Notes" section of this docstring
+        for more information, including about abbreviated aliases of these names.
 
     Returns
     -------
@@ -132,19 +133,19 @@ def Coulomb_logarithm(
 
     Raises
     ------
-    ValueError
+    `ValueError`
         If the mass or charge of either particle cannot be found, or
         any of the inputs contain incorrect values.
 
-    UnitConversionError
+    `UnitConversionError`
         If the units on any of the inputs are incorrect.
 
         If the n_e, T, or V are not Quantities.
 
-    PhysicsError
+    `~plasmapy.utils.exceptions.PhysicsError`
         If the result is smaller than 1.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -153,7 +154,7 @@ def Coulomb_logarithm(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
