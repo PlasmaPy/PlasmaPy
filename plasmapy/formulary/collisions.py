@@ -127,7 +127,7 @@ def Coulomb_logarithm(
     Returns
     -------
     ln_Lambda : float or numpy.ndarray
-        The Coulomb logarithm, the uncertainty of which is on the order
+        The dimensionless Coulomb logarithm, the uncertainty of which is on the order
         of its reciprocal.
 
     Raises
@@ -150,10 +150,10 @@ def Coulomb_logarithm(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -202,39 +202,39 @@ def Coulomb_logarithm(
 
     Methods
     
-    Option 1: "classical" or "ls" (Landau-Spitzer)
-        The classical Landau-Spitzer approach. Fails for large coupling
+    Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
+        The classical Landau-Spitzer method. Fails for large coupling
         parameter where Lambda can become less than zero.
-    Option 2: "GMS-1" or "lsmini" (Landau-Spitzer with interpolation of :math:`b_{min}`)
+    Option 2: `"lsmininterp"` or `"lsmi"` (Landau-Spitzer with interpolation of :math:`b_{min}`)
         Landau-Spitzer, but with interpolated bmin instead of bmin
         selected between deBroglie wavelength and distance of closest
         approach. Fails for large coupling parameter where Lambda can
         become less than zero.
         The first method in Table 1 of Reference [4].
-    Option 3: "GMS-2" or "lsfulli" (Landau-Spitzer with interpolation of :math:`b_{min}` and :math:`b_{max}`)
+    Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer with interpolation of :math:`b_{min}` and :math:`b_{max}`)
         Another Landau-Spitzer like approach, but now bmax is also
         being interpolated. The interpolation is between the Debye
         length and the ion sphere radius, allowing for descriptions
         of dilute plasmas. Fails for large coupling
         parameter where Lambda can become less than zero.
         The second method in Table 1 of Reference [4].
-    Option 4: "GMS-3" or "lsclamp" (Landau-Spitzer with a clamp)
+    Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
         A clamp is placed at Lambda_min = 2 because the classical
         Landau-Spitzer method fails for a Coulomb logarithm < 0.
         The third method in Table 1 of Reference [4].
-    Option 5: "GMS-4" or "hls" (Hyperbolic Landau-Spitzer)
+    Option 5: `"hls"` (Hyperbolic Landau-Spitzer)
         Spitzer-like extension to Coulomb logarithm by noting that
         Coulomb collisions take hyperbolic trajectories. Removes
         divergence for small bmin issue in classical Landau-Spitzer
         approach, so bmin can be zero. Also doesn't break down as
         Lambda < 0 is now impossible, even when coupling parameter is large.
         The fourth method in Table 1 of Reference [4].
-    Option 6: "GMS-5" or "hlsmaxi" (Hyperbolic Landau-Spitzer with interpolation of :math:`b_{max}`)
+    Option 6: `"hlsmaxinterp"` or `"hlsmi"` (Hyperbolic Landau-Spitzer with interpolation of :math:`b_{max}`)
         Similar to GMS-4, but setting bmin as distance of closest approach
         and bmax interpolated between Debye length and ion sphere radius.
         Lambda < 0 impossible.
         The fifth method in Table 1 of Reference [4].
-    Option 7: "GMS-6" or "hlsfulli" (Hyperbolic Landau-Spitzer with interpolation of :math:`b_{min}` and :math:`b_{max}`)
+    Option 7: `"hlsfullinterp`" or `"hlsfi"` (Hyperbolic Landau-Spitzer with interpolation of :math:`b_{min}` and :math:`b_{max}`)
         Similar to GMS-4 and GMS-5, but using interpolation methods
         for both bmin and bmax.
         The sixth method in Table 1 of Reference [4].
