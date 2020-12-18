@@ -368,16 +368,15 @@ class AbstractGrid(ABC):
         # requirements: eg. units correspond to the coordinate system
         self._validate()
 
-    def add_quantity(self, key: str, quantity: u.Quantity):
+    def add_quantities(self, **kwargs):
         r"""
         Adds a quantity to the dataset as a new DataArray
 
         Parameters
         ----------
-        key : str
-            Key string that labels the quantity to be added.
-        quantity : u.Quantity
-            A u.Quantity object whose shape must match that of the grid
+        key, array pairs as keyword arguments
+            The key will be used as the dataset key, while the array holds the
+            quantity.
 
         Returns
         -------
@@ -385,62 +384,44 @@ class AbstractGrid(ABC):
 
         """
 
-        # Check key against a list of "known" keys with pre-defined
-        # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
-        # key is being used so the user is aware.
-        if key in recognized_keys.keys():
-            try:
-                quantity.to(recognized_keys[key][1])
-            except u.UnitConversionError:
-                raise ValueError(
-                    f"Units provided for {key} ({quantity.unit}) "
-                    "are not compatible with the correct units "
-                    f"for that recognized key ({recognized_keys[key]})."
+        for key in kwargs.keys():
+            quantity = kwargs[key]
+
+            # Check key against a list of "known" keys with pre-defined
+            # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
+            # key is being used so the user is aware.
+            if key in recognized_keys.keys():
+                try:
+                    quantity.to(recognized_keys[key][1])
+                except u.UnitConversionError:
+                    raise ValueError(
+                        f"Units provided for {key} ({quantity.unit}) "
+                        "are not compatible with the correct units "
+                        f"for that recognized key ({recognized_keys[key]})."
+                    )
+
+            else:
+                warnings.warn(
+                    f"Warning: {key} is not recognized quantity key", stacklevel=2
                 )
 
-        else:
-            warnings.warn(
-                f"Warning: {key} is not recognized quantity key", stacklevel=2
-            )
+            if self.is_uniform_grid:
+                axes = ["ax0", "ax1", "ax2"]
+            # If grid is non-uniform, flatten quantity
+            else:
+                quantity = quantity.flatten()
+                axes = ["ax"]
 
-        if self.is_uniform_grid:
-            axes = ["ax0", "ax1", "ax2"]
-        # If grid is non-uniform, flatten quantity
-        else:
-            quantity = quantity.flatten()
-            axes = ["ax"]
+            if quantity.shape != self.shape:
+                raise ValueError(
+                    f"Shape of quantity '{key}' {quantity.shape} "
+                    f"does not match the grid shape {self.shape}."
+                )
 
-        if quantity.shape != self.shape:
-            raise ValueError(
-                f"Shape of quantity '{key}' {quantity.shape} "
-                f"does not match the grid shape {self.shape}."
-            )
+            data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
+            self.ds[key] = data
 
-        data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
-        self.ds[key] = data
 
-    def add_quantities(self, keys: list, quantities: list):
-        r"""
-        Adds a list of keys and quantities to the grid. See "add_quantity"
-
-        Parameters
-        ----------
-        keys : list
-            A list of str keys for quantities to add
-        quantities : list
-            A list of quantities to add. Each must be an array that matches
-            the size of the grid
-
-        Returns
-        -------
-        None.
-
-        """
-        if len(keys) != len(quantities):
-            raise ValueError("Number of keys must equal number of quantites")
-
-        for key, quantity in zip(keys, quantities):
-            self.add_quantity(key, quantity)
 
     def _make_grid(
         self,
@@ -923,6 +904,6 @@ def example_grid(name, L=1 * u.cm, num=100):
         Ey = -np.where(radius < b, Ey, 0)
         Ez = -np.where(radius < b, Ez, 0)
 
-        grid.add_quantities(["E_x", "E_y", "E_z"], [Ex, Ey, Ez])
+        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez)
 
     return grid

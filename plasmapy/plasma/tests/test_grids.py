@@ -60,29 +60,25 @@ def test_AbstractGrid():
 
     # Test adding a quantity
     q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantity("B_x", q)
+    grid.add_quantities(B_x = q)
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg
     with pytest.raises(ValueError):
-        grid.add_quantity("B_x", q)
+        grid.add_quantities(B_x = q)
 
     # Testing adding a quantity with an unrecognized key name
     with pytest.warns(UserWarning):
-        grid.add_quantity("not_a_recognized_key", q)
+        grid.add_quantities(not_a_recognized_key=q)
 
     # Test adding a quantity of incompatible size
     q = np.random.randn(5, 20, 5) * u.T
     with pytest.raises(ValueError):
-        grid.add_quantity("B_x", q)
+        grid.add_quantities(B_x=q)
 
     # Test adding multiple quantites at once
     q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantities(["B_x", "B_y", "B_z"], [q, q, q])
-
-    # Test unequal numbers of keys and quantities
-    with pytest.raises(ValueError):
-        grid.add_quantities(["B_x", "B_y", "B_z"], [q, q])
+    grid.add_quantities(B_x=q, B_y=q, B_z=q)
 
     print(grid)
 
@@ -151,8 +147,8 @@ def test_nearest_neighbor_interpolator():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
     # Add some data to the grid
-    grid.add_quantity("x", grid.grids[0])
-    grid.add_quantity("y", grid.grids[1])
+    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(y=grid.grids[1])
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
@@ -176,7 +172,7 @@ def test_nearest_neighbor_interpolator():
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    grid.add_quantity("x", grid.grids[0] * u.cm)
+    grid.add_quantities(x=grid.grids[0] * u.cm)
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
@@ -188,8 +184,8 @@ def test_volume_averaged_interpolator():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
     # Add some data to the grid
-    grid.add_quantity("x", grid.grids[0])
-    grid.add_quantity("y", grid.grids[1])
+    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(y=grid.grids[1])
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
@@ -222,8 +218,18 @@ def test_NonUniformCartesianGrid():
 
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
-    grid.add_quantity("rho", q1)
+    grid.add_quantities(rho=q1)
 
 
 def test_example_grids():
     grid = grids.example_grid("electrostatic_gaussian_sphere", L=1 * u.cm, num=100)
+
+
+if __name__ == '__main__':
+    test_AbstractGrid()
+    test_CartesianGrid()
+    test_interpolate_indices()
+    test_nearest_neighbor_interpolator()
+    test_volume_averaged_interpolator()
+    test_NonUniformCartesianGrid()
+    test_example_grids()
