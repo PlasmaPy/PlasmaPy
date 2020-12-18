@@ -63,8 +63,8 @@ def test_AbstractGrid():
     grid.add_quantities(B_x=q)
 
     # Test accessing a quantity using __getitem__ or directly
-    Bx = grid.ds['B_x']
-    Bx = grid['B_x']
+    Bx = grid.ds["B_x"]
+    Bx = grid["B_x"]
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg
@@ -238,9 +238,13 @@ def test_example_grids():
     with pytest.raises(ValueError):
         grid = grids.example_grid("not_a_valid_example_name", L=1 * u.cm, num=100)
 
+    # Test different length input types
+    L = np.array([1, 2, 3]) * u.cm
+    grid = grids.example_grid("electrostatic_gaussian_sphere", L=L, num=100)
+
 
 if __name__ == "__main__":
-    test_AbstractGrid()
+    # test_AbstractGrid()
     # test_CartesianGrid()
     # test_interpolate_indices()
     # test_nearest_neighbor_interpolator()

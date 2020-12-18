@@ -440,11 +440,11 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        start : number (u.Quantity) or a list of three of the same
+        start : number (u.Quantity) or array of three of the same
             Starting values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        stop : number (u.Quantity) or a list of three of the same
+        stop : number (u.Quantity) or array of three of the same
             End values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
@@ -896,24 +896,25 @@ def example_grid(name, L=1 * u.cm, num=100):
     Generates grids representing some common physical scenarios for testing
     and illustration. Valid example names are:
 
-    * electrostatic_gaussian_sphere : An electric field created by a sphere
-        of potential of radius L/2 with a radial Gaussian distribution.
-
     * axially_magnetized_cylinder : A cylinder of radius L/4 magnetized in the
         Z-direction (like a solenoid, but without the fringe fields).
 
     * electrostatic_discontinuity : A discontinuity in the electric field at z=0
         with a radial gaussian profile in the xy plane.
 
+    * electrostatic_gaussian_sphere : An electric field created by a sphere
+        of potential of radius L/2 with a radial Gaussian distribution.
 
     Parameters
     ----------
-    name : TYPE
-        DESCRIPTION.
-    L : TYPE, optional
-        DESCRIPTION. The default is 1 * u.cm.
-    num : TYPE, optional
-        DESCRIPTION. The default is 100.
+    name : str
+        Name of example to load (from list above)
+    L : u.Quantity or array of three of the same
+        Length scale (or scales). -L and L are passed to the grid constructor
+        as start and stop respectively. The default is 1 cm.
+    num : int or list of three ints
+        The number of points in each direction (or list of one for each dimension).
+        Passed to the grid cosntructor as the num argument. The default is 100.
 
     Returns
     -------
@@ -923,6 +924,11 @@ def example_grid(name, L=1 * u.cm, num=100):
     """
 
     grid = CartesianGrid(-L, L, num=num)
+
+    # If an array was provided to the constructor, reduce to a single
+    # length scale now.
+    if L.size > 1:
+        L = np.max(L)
 
     if name == "axially_magnetized_cylinder":
         a = L / 4
