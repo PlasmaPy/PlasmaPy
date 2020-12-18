@@ -14,3 +14,4 @@
 
     /notebooks/plasma/grids/grids_cartesian
     /notebooks/plasma/grids/grids_nonuniform
+	/notebooks/plasma/grids/grids_examples
