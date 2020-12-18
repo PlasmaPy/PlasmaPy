@@ -132,6 +132,9 @@ class AbstractGrid(ABC):
 
         return s
 
+    def __getitem__(self, key):
+        return self.ds[key]
+
     @property
     def shape(self):
         r""" Shape of the grid"""
