@@ -892,7 +892,6 @@ class NonUniformCartesianGrid(CartesianGrid):
 
 def example_grid(name, L=1 * u.cm, num=100):
     r"""
-
     Generates grids representing some common physical scenarios for testing
     and illustration. Valid example names are:
 
@@ -909,7 +908,7 @@ def example_grid(name, L=1 * u.cm, num=100):
     ----------
     name : str
         Name of example to load (from list above)
-    L : u.Quantity or array of three of the same
+    L : `~u.Quantity` (or array of three of the same)
         Length scale (or scales). -L and L are passed to the grid constructor
         as start and stop respectively. The default is 1 cm.
     num : int or list of three ints
@@ -918,9 +917,9 @@ def example_grid(name, L=1 * u.cm, num=100):
 
     Returns
     -------
-    grid : TYPE
-        DESCRIPTION.
-
+    grid : CartesianGrid
+        A CartesianGrid object containing quantity arrays representing
+        the chosen example.
     """
 
     grid = CartesianGrid(-L, L, num=num)
