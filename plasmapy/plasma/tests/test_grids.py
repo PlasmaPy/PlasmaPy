@@ -60,12 +60,12 @@ def test_AbstractGrid():
 
     # Test adding a quantity
     q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantities(B_x = q)
+    grid.add_quantities(B_x=q)
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg
     with pytest.raises(ValueError):
-        grid.add_quantities(B_x = q)
+        grid.add_quantities(B_x=q)
 
     # Testing adding a quantity with an unrecognized key name
     with pytest.warns(UserWarning):
@@ -225,7 +225,7 @@ def test_example_grids():
     grid = grids.example_grid("electrostatic_gaussian_sphere", L=1 * u.cm, num=100)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_AbstractGrid()
     test_CartesianGrid()
     test_interpolate_indices()

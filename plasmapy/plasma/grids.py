@@ -421,8 +421,6 @@ class AbstractGrid(ABC):
             data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
             self.ds[key] = data
 
-
-
     def _make_grid(
         self,
         start: Union[int, float, u.Quantity],
