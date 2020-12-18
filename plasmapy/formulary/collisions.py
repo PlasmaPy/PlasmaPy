@@ -157,8 +157,14 @@ def Coulomb_logarithm(
         If the input velocity is greater than 5% of the speed of
         light.
 
+    See Also
+    --------
+    impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
+
     Notes
     -----
+    PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users.
+    
     The classical Landau-Spitzer Coulomb logarithm is given by
 
     .. math::
@@ -209,10 +215,10 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
         
         .. math::
-            b_{min} = \max\left( \Lambda_{deBroglie}, \rho_{\perp} \right)
+            b_{min} \equiv \max\left( \Lambda_{deBroglie}, \rho_{\perp} \right)
         
         .. math::
-            b_{max} = \lambda_D
+            b_{max} \equiv \lambda_D
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
