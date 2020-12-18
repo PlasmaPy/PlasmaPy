@@ -214,11 +214,11 @@ def Coulomb_logarithm(
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
         
-        #.. math::
-            #b_{min} \equiv \max\left( \Lambda_{deBroglie}, \rho_{\perp} \right)
+        .. math::
+            \b_{min} \equiv \Lambda_{de Broglie}
         
         .. math::
-            b_{max} \equiv \lambda_D
+            \b_{max} \equiv \lambda_D
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
