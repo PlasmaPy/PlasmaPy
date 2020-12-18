@@ -120,9 +120,9 @@ def Coulomb_logarithm(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical Landau-Spitzer method
-        ("classical"). The other 6 supported methods are "GMS-1",
-        "GMS-2", "GMS-3", "GMS-4", "GMS-5", and "GMS-6". Please refer to
-        the "Notes" section of this docstring for more information.
+        (`"classical"`). The other 6 supported methods are `"lsmininterp"`,
+        `"lsfullinterp"`, `"lsclamp"`, `"hyperls"`, "hlsmaxinterp", and "hlsfullinterp". Please refer to
+        the "Notes" section of this docstring for more information, including about abbreviated aliases of these names.
 
     Returns
     -------
@@ -222,7 +222,7 @@ def Coulomb_logarithm(
         A clamp is placed at Lambda_min = 2 because the classical
         Landau-Spitzer method fails for a Coulomb logarithm < 0.
         The third method in Table 1 of Reference [4].
-    Option 5: `"hls"` (Hyperbolic Landau-Spitzer)
+    Option 5: `"hyperls"` or `"hls"` (Hyperbolic Landau-Spitzer)
         Spitzer-like extension to Coulomb logarithm by noting that
         Coulomb collisions take hyperbolic trajectories. Removes
         divergence for small bmin issue in classical Landau-Spitzer
