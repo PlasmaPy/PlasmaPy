@@ -287,7 +287,7 @@ def Coulomb_logarithm(
         Note: This is the second method in Table 1 of Reference [4].
         
     Option 4: `"lsclampmininterp"` or `"lscmini"` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
-        A straight-line Landau-Spitzer method in which the value of :math:`\Lambda` is clamped at 
+        A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
