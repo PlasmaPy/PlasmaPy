@@ -177,7 +177,7 @@ def Coulomb_logarithm(
     is modeled as a straight line. The last 3 methods are hyperbolic methods in which
     the trajectory of a Coulomb collision is modeled as a hyperbola.
     
-    For **straight-line** Landau-Spitzer methods, the Coulomb logarithm is defined by
+    For straight-line Landau-Spitzer methods, the Coulomb logarithm is defined by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -185,10 +185,10 @@ def Coulomb_logarithm(
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
     impact parameters for Coulomb collisions [1]_. They are computed by `impact_parameter`.
     
-    For **hyperbolic** Landau-Spitzer methods, the Coulomb logarithm is defined by
+    For hyperbolic Landau-Spitzer methods, the Coulomb logarithm is defined by
     
     .. math::
-        \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+        \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
     The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
     the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
@@ -211,8 +211,8 @@ def Coulomb_logarithm(
             b_{min} \equiv 
             \left\{
                 \begin{array}{ll}
-                           \lambda_{de Broglie} & mbox(if) \lambda_{de Broglie} > \rho_{\perp}
-                           \rho_{\perp}         & mbox(if) \rho_{\perp} > \lambda_{de Broglie}
+                           \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} > \rho_{\perp}
+                           \rho_{\perp}         & \mbox{if } \rho_{\perp} > \lambda_{de Broglie}
             \right.
         
         .. math::
@@ -266,10 +266,10 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
         
         .. math::
-            b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
             
         .. math::
-            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
+            b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the coupling 
         parameter is high (such as for dense, cold plasmas).
@@ -285,7 +285,7 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -302,7 +302,7 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
         .. math::
-            b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
             
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -324,7 +324,7 @@ def Coulomb_logarithm(
             b_{min} \equiv \rho_{\perp}
         
         .. math::
-            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
+            b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
@@ -342,10 +342,10 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
         .. math::
-            b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
             
         .. math::
-            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
+            b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
