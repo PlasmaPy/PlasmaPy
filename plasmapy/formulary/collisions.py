@@ -120,7 +120,7 @@ def Coulomb_logarithm(
         The method by which to compute the Coulomb logarithm.
         The default method is the classical Landau-Spitzer method
         (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
-        `"lsfullinterp"`, `"lsclamp"`, `"hyperls"`, `"hlsmaxinterp"`, and 
+        `"lsfullinterp"`, `"lsclamp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
         `"hlsfullinterp"`. Please refer to the "Notes" section of this docstring
         for more information, including about abbreviated aliases of these names.
 
@@ -163,8 +163,18 @@ def Coulomb_logarithm(
 
     Notes
     -----
-    PlasmaPy supports 7 methods of computing the Coulomb logarithm, 4 methods in which
-    the trajectory of a Coulomb collision is modeled as a straight line and 3 methods in which
+    PlasmaPy supports 7 methods of computing the Coulomb logarithm:
+    
+    1. `"classical"` or `"ls"`
+    2. `"lsmininterp"` or `"lsmini"`
+    3. `"lsfullinterp"` or `"lsfi"`
+    4. `"lsclamp"` or `"lsc"`
+    5. `"hlsmininterp"` or `"hlsmini"`
+    6. `"hlsmaxinterp"` or `"hlsmaxi"`
+    7. `"hlsfullinterp"` or `"hlsfi"`
+    
+    The first 4 methods are straight-line methods in which the trajectory of a Coulomb collision 
+    is modeled as a straight line. The last 3 methods are hyperbolic methods in which
     the trajectory of a Coulomb collision is modeled as a hyperbola.
     
     For **straight-line** Landau-Spitzer methods, the Coulomb logarithm is defined by
@@ -198,7 +208,12 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \lambda_{de Broglie}
+            b_{min} \equiv 
+            \left\{
+                \begin{array}{ll}
+                           \lambda_{de Broglie} & mbox(if) \lambda_{de Broglie} > \rho_{\perp}
+                           \rho_{\perp}         & mbox(if) \rho_{\perp} > \lambda_{de Broglie}
+            \right.
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -223,7 +238,7 @@ def Coulomb_logarithm(
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
-    Option 2: `"lsmininterp"` or `"lsmi"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
+    Option 2: `"lsmininterp"` or `"lsmini"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
@@ -232,7 +247,7 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \sqrt\lambda_{de Broglie}^2 + \rho_{\perp}^2
+            b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -278,7 +293,7 @@ def Coulomb_logarithm(
         This method cannot fail because it is impossible for :math:`\Lambda < 0` in this 
         method, even for a large coupling parameter.
         This is the third method in Table 1 of Reference [4].
-    Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{in}`)
+    Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
