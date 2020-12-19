@@ -163,6 +163,8 @@ def Coulomb_logarithm(
 
     Notes
     -----
+    ** Overview of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm
+    
     PlasmaPy supports 7 methods of computing the Coulomb logarithm:
     
     1. `"classical"` or `"ls"`
@@ -173,36 +175,39 @@ def Coulomb_logarithm(
     6. `"hlsmaxinterp"` or `"hlsmaxi"`
     7. `"hlsfullinterp"` or `"hlsfi"`
     
-    The first 4 methods are straight-line Landau-Spitzer methods in which the trajectory of a Coulomb collision 
-    is modeled as a straight line. The last 3 methods are hyperbolic Landau-Spitzer methods in which
-    the trajectory of a Coulomb collision is modeled as a hyperbola.
-    
-    The Coulomb logarithm is defined for straight-line Landau-Spitzer methods by
+    Method 1 - Method 4 are straight-line Landau-Spitzer ("ls...") methods in which the trajectory of a 
+    Coulomb collision is modeled as a straight line. For the straight-line Landau-Spitzer methods, the Coulomb 
+    logarithm is defined to be:
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
     
-    and for hyperbolic Landau-Spitzer methods by
+    Method 5 - Method 7 are hyperbolic Landau-Spitzer ("hls...") methods in which the trajectory of a 
+    Coulomb collision is modeled as a hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb 
+    logarithm is defined to be:
     
     .. math::
         \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed by `impact_parameter`.
-
-    The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
-    the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
-
-    .. note:: PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users.
-
-    Further information about these methods is in Reference [4]_.
+    For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner impact parameter and the outer
+    impact parameter for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed 
+    by `impact_parameter`.
     
-    **Supported Methods of Computing the Coulomb Logarithm**
+    In "Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm" below, further 
+    information about each method, such as about interpolation and other special features, is documented. 
+    Please refer to in Reference [4]_ for additional information about these methods.
+
+    .. note:: 
+        PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users. The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
+        the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
+    
+    **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
     
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
-        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the higher of 
-        the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
-        (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
+        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
+        higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
+        approach (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length 
+        (:math:`\lambda_{Debye}`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
