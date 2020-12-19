@@ -12,6 +12,6 @@
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/plasma/grids/grids_cartesian
-    /notebooks/plasma/grids/grids_nonuniform
-	/notebooks/plasma/grids/grids_examples
+    /notebooks/plasma/grids_cartesian
+    /notebooks/plasma/grids_nonuniform
+	/notebooks/plasma/grids_examples
