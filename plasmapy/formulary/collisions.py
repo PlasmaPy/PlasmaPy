@@ -185,7 +185,7 @@ def Coulomb_logarithm(
 
     .. note:: PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users.
 
-    Further information about these methods is in Reference [4].
+    Further information about these methods is in Reference [4]_.
     
     **Supported Methods of Computing the Coulomb Logarithm**
     
@@ -195,8 +195,10 @@ def Coulomb_logarithm(
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
+        .. math::
             b_{min} \equiv \lambda_{de Broglie}
-            
+        
+        .. math::
             b_{max} \equiv \lambda_{Debye}
         
         The outer impact parameter is defined to be the Debye length:
@@ -206,9 +208,9 @@ def Coulomb_logarithm(
         screened out due to electrons rearranging themselves.
 
         The choice of inner impact parameter is either the distance of closest
-        approach for a 90 degree Coulomb collision or the thermal deBroglie
+        approach for a 90 degree Coulomb collision or the thermal de Broglie
         wavelength, whichever is larger. This is because Coulomb-style collisions
-        cannot occur for impact parameters shorter than the deBroglie
+        cannot occur for impact parameters shorter than the de Broglie
         wavelength because quantum effects will change the fundamental
         nature of the collision [2]_, [3]_.
 
@@ -221,14 +223,14 @@ def Coulomb_logarithm(
         coupling parameter is high (such as for dense, cold plasmas).
     Option 2: `"lsmininterp"` or `"lsmi"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
         A modified Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
-        deBroglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`) rather than being the larger of the two.
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            b_{min} \equiv \sqrt(\left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right))
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -238,7 +240,7 @@ def Coulomb_logarithm(
         This is the first method in Table 1 of Reference [4].
     Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A modified Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
-        are each interpolated. :math:`b_{min}` is interpolated between the deBroglie wavelength
+        are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
         and the ion sphere radius (:math:`a_i`), allowing for descriptions of dilute plasmas.
@@ -258,7 +260,7 @@ def Coulomb_logarithm(
     Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
         A modified Landau-Spitzer method in which the value of :math:`\lambda` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
-        classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the deBroglie 
+        classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`). :math:`b_{max}` is the Debye length (:math:`\lambda_{Debye}`).
         
@@ -277,7 +279,7 @@ def Coulomb_logarithm(
     Option 5: `"hyperls"` or `"hls"` (Hyperbolic Landau-Spitzer)
         A modified Landau-Spitzer method in which the trajectories of Coulomb collisions are 
         modeled as hyperbolic rather than straight. :math:`b_{min}` is interpolated between the 
-        deBroglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`). :math:`b_{max}` is the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
@@ -315,7 +317,7 @@ def Coulomb_logarithm(
         This is the fifth method in Table 1 of Reference [4].
     Option 7: `"hlsfullinterp"` or `"hlsfi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A modified hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
-        are each interpolated. :math:`b_{min}` is interpolated between the deBroglie wavelength
+        are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
         and the ion sphere radius (:math:`a_i`), allowing for descriptions of dilute plasmas.
@@ -625,13 +627,13 @@ def impact_parameter(
         b_{max} = \left(\lambda_{De}^2 + a_i^2\right)^{1/2}
 
     The minimum impact parameter is typically some combination of the
-    thermal deBroglie wavelength and the distance of closest approach
+    thermal de Broglie wavelength and the distance of closest approach
     for a 90 degree Coulomb collision. A quadratic sum is used for
     all GMS methods, except for GMS-5, where b_min is simply set to
     the distance of closest approach [1]_.
 
     .. math::
-        b_{min} = \left(\Lambda_{deBroglie}^2 + \rho_{\perp}^2\right)^{1/2}
+        b_{min} = \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
 
     Examples
     --------
@@ -661,7 +663,7 @@ def impact_parameter(
             )
     # Debye length
     lambdaDe = parameters.Debye_length(T, n_e)
-    # deBroglie wavelength
+    # de Broglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
     bPerp = impact_parameter_perp(T=T, species=species, V=V)
@@ -672,7 +674,7 @@ def impact_parameter(
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
         # the larger of these two possibilities. That is, between the
-        # deBroglie wavelength and the distance of closest approach.
+        # de Broglie wavelength and the distance of closest approach.
         # ARRAY NOTES
         # T and V should be guaranteed to be same size inputs from _boilerplate
         # therefore, lambdaBroglie and bPerp are either both scalar or both array
@@ -689,7 +691,7 @@ def impact_parameter(
     elif method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
-        # approach, but bmin is interpolated between the deBroglie
+        # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
@@ -1802,10 +1804,10 @@ def coupling_parameter(
     The degeneracy parameter is given by
 
     .. math::
-        \chi = n_e \Lambda_{deBroglie} ^ 3
+        \chi = n_e \Lambda_{de Broglie} ^ 3
 
-    where :math:`n_e` is the electron density and :math:`\Lambda_{deBroglie}`
-    is the thermal deBroglie wavelength.
+    where :math:`n_e` is the electron density and :math:`\Lambda_{de Broglie}`
+    is the thermal de Broglie wavelength.
 
     See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
     chemical potential.
