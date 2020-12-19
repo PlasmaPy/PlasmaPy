@@ -211,7 +211,7 @@ def Coulomb_logarithm(
             b_{min} \equiv 
             \left\{
                 \begin{array}{ll}
-                           \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} > \rho_{\perp}
+                           \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} > \rho_{\perp} \\
                            \rho_{\perp}         & \mbox{if } \rho_{\perp} > \lambda_{de Broglie}
                 \end{array}
             \right.
