@@ -167,15 +167,15 @@ def Coulomb_logarithm(
     the trajectory of a Coulomb collision is modeled as a straight line and 3 methods in which
     the trajectory of a Coulomb collision is modeled as a hyperbola.
     
-    For straight-line Landau-Spitzer methods, the Coulomb logarithm is defined by
+    For **straight-line** Landau-Spitzer methods, the Coulomb logarithm is defined by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions [1]_.
+    impact parameters for Coulomb collisions [1]_. They are computed by `impact_parameter`.
     
-    For hyperbolic Landau-Spitzer methods, the Coulomb logarithm is defined by
+    For **hyperbolic** Landau-Spitzer methods, the Coulomb logarithm is defined by
     
     .. math::
         \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
@@ -232,7 +232,7 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \sqrt(\lambda_{de Broglie}^2 + \rho_{\perp}^2)
+            b_{min} \equiv \sqrt\lambda_{de Broglie}^2 + \rho_{\perp}^2
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -260,7 +260,7 @@ def Coulomb_logarithm(
         parameter is high (such as for dense, cold plasmas).
         This is the second method in Table 1 of Reference [4].
     Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
-        A straight-line Landau-Spitzer method in which the value of :math:`\lambda` is clamped at 
+        A straight-line Landau-Spitzer method in which the value of :math:`\Lambda` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
@@ -303,7 +303,7 @@ def Coulomb_logarithm(
         and :math:`b_{min}` is defined to be the distance of closest approach (:math:`\rho_{\perp}`).
         
         .. math::
-            \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+            \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
         .. math::
             b_{min} \equiv \rho_{\perp}
@@ -324,7 +324,7 @@ def Coulomb_logarithm(
         and the ion sphere radius (:math:`a_i`), allowing for descriptions of dilute plasmas.
         
         .. math::
-            \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+            \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
         .. math::
             b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
@@ -377,11 +377,11 @@ def Coulomb_logarithm(
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in ("GMS-4", "hls", "GMS-5", "hlsmaxi", "GMS-6", "hlsfulli"):
+    elif method in ("GMS-4", "hlsmini", "GMS-5", "hlsmaxi", "GMS-6", "hlsfulli"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method! Choose from \"ls\", \"lsmini\", \"lsfulli\", \"lsclamp\", \"hyperls\", \"hlsmaxi\", \"hlsfulli\", or their aliases. Please refer to the documentation of this function for more information."
+            "Unknown method! Choose from \"classical\", \"lsmini\", \"lsfulli\", \"lsclamp\", \"hlsmini\", \"hlsmaxi\", \"hlsfulli\", or their aliases. Please refer to the documentation of this function for more information."
         )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
