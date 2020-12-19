@@ -163,49 +163,30 @@ def Coulomb_logarithm(
 
     Notes
     -----
-    PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users.
+    PlasmaPy supports 7 methods of computing the Coulomb logarithm, 4 methods in which
+    the trajectory of a Coulomb collision is modeled as a straight line and 3 methods in which
+    the trajectory of a Coulomb collision is modeled as a hyperbola.
     
-    The classical Landau-Spitzer Coulomb logarithm is given by
+    For straight-line Landau-Spitzer methods, the Coulomb logarithm is defined by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
     impact parameters for Coulomb collisions [1]_.
-
-    The outer impact parameter is given by the Debye length:
-    :math:`b_{max} = \lambda_D` which is a function of electron
-    temperature and electron density.  At distances greater than the
-    Debye length, electric fields from other particles will be
-    screened out due to electrons rearranging themselves.
-
-    The choice of inner impact parameter is either the distance of closest
-    approach for a 90 degree Coulomb collision or the thermal deBroglie
-    wavelength, whichever is larger. This is because Coulomb-style collisions
-    cannot occur for impact parameters shorter than the deBroglie
-    wavelength because quantum effects will change the fundamental
-    nature of the collision [2]_, [3]_.
-
-    Errors associated with the classical Coulomb logarithm are of order its
-    reciprocal. If the Coulomb logarithm is of order unity, then the
-    assumptions made in the standard analysis of Coulomb collisions
-    are invalid.
-
-    For dense plasmas where the classical Coulomb logarithm breaks
-    down there are various extended methods. These can be found
-    in D.O. Gericke et al's paper, which has a table summarizing
-    the methods [4]_. The GMS-1 through GMS-6 methods correspond
-    to the methods found it that table.
-
-    It should be noted that GMS-4 thru GMS-6 modify the Coulomb
-    logarithm to the form:
-
+    
+    For hyperbolic Landau-Spitzer methods, the Coulomb logarithm is defined by
+    
     .. math::
         \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
-    This means the Coulomb logarithm will not break down for Lambda < 0,
-    which occurs for dense, cold plasmas.
+    The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
+    the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
 
+    .. note:: PlasmaPy recommends Option 7, `"hlsfulli"` or `hlsfi"`, for most users.
+
+    Further information about these methods is in Reference [4].
+    
     **Supported Methods of Computing the Coulomb Logarithm**
     
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
@@ -218,6 +199,24 @@ def Coulomb_logarithm(
             
             b_{max} \equiv \lambda_{Debye}
         
+        The outer impact parameter is given by the Debye length:
+        :math:`b_{max} = \lambda_D` which is a function of electron
+        temperature and electron density.  At distances greater than the
+        Debye length, electric fields from other particles will be
+        screened out due to electrons rearranging themselves.
+
+        The choice of inner impact parameter is either the distance of closest
+        approach for a 90 degree Coulomb collision or the thermal deBroglie
+        wavelength, whichever is larger. This is because Coulomb-style collisions
+        cannot occur for impact parameters shorter than the deBroglie
+        wavelength because quantum effects will change the fundamental
+        nature of the collision [2]_, [3]_.
+
+        Errors associated with the classical Coulomb logarithm are of order its
+        reciprocal. If the Coulomb logarithm is of order unity, then the
+        assumptions made in the standard analysis of Coulomb collisions
+        are invalid.
+        
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
     Option 2: `"lsmininterp"` or `"lsmi"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
@@ -227,6 +226,12 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            
+        .. math::
+            b_{min} \equiv \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+        
+        .. math::
+            b_{max} \equiv \lambda_{Debye}
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the coupling 
         parameter is high (such as for dense, cold plasmas).
@@ -241,6 +246,12 @@ def Coulomb_logarithm(
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
         
+        .. math::
+            b_{min} \equiv \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            
+        .. math::
+            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
+        
         This method is not valid if :math:`\Lambda < 0`, which may be true if the coupling 
         parameter is high (such as for dense, cold plasmas).
         This is the second method in Table 1 of Reference [4].
@@ -253,6 +264,12 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            
+        .. math::
+            b_{min} \equiv \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+        
+        .. math::
+            b_{max} \equiv \lambda_{Debye}
         
         This method cannot fail because it is impossible for :math:`\Lambda < 0` in this 
         method, even for a large coupling parameter.
@@ -263,6 +280,12 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+        
+        .. math::
+            b_{min} \equiv \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            
+        .. math::
+            b_{max} \equiv \lambda_{Debye}
         
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
@@ -277,6 +300,12 @@ def Coulomb_logarithm(
         .. math::
             \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
+        .. math::
+            b_{min} \equiv \rho_{\perp}
+        
+        .. math::
+            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
+        
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
         unlike the non-hyperbolic Landau-Spitzer methods. This method cannot fail because it is 
@@ -290,6 +319,12 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+        
+        .. math::
+            b_{min} \equiv \left(\Lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
+            
+        .. math::
+            b_{max} \equiv \left(\lambda_{Debye}^2 + a_i^2\right)^{1/2}
         
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
