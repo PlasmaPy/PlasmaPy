@@ -98,7 +98,7 @@ def Coulomb_logarithm(
         the target particle.
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
@@ -120,7 +120,7 @@ def Coulomb_logarithm(
         The method by which to compute the Coulomb logarithm.
         The default method is the classical Landau-Spitzer method
         (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
-        `"lsfullinterp"`, `"lsclamp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
+        `"lsfullinterp"`, `"lsclampmininterp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
         `"hlsfullinterp"`. Please refer to the "Notes" section of this docstring
         for more information, including about abbreviated aliases of these names.
 
@@ -166,7 +166,7 @@ def Coulomb_logarithm(
     1. `"classical"` or `"ls"`
     2. `"lsmininterp"` or `"lsmini"`
     3. `"lsfullinterp"` or `"lsfi"`
-    4. `"lsclamp"` or `"lsc"`
+    4. `"lsclampmininterp"` or `"lscmini"`
     5. `"hlsmininterp"` or `"hlsmini"`
     6. `"hlsmaxinterp"` or `"hlsmaxi"`
     7. `"hlsfullinterp"` or `"hlsfi"`
@@ -241,6 +241,9 @@ def Coulomb_logarithm(
         
         This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
+        
+        Please refer to Reference [1]_ for additional information about this method.
+        
     Option 2: `"lsmininterp"` or `"lsmini"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
@@ -283,7 +286,7 @@ def Coulomb_logarithm(
         
         Note: This is the second method in Table 1 of Reference [4].
         
-    Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
+    Option 4: `"lsclampmininterp"` or `"lscmini"` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which the value of :math:`\Lambda` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
@@ -291,9 +294,6 @@ def Coulomb_logarithm(
         (:math:`\rho_{\perp}`). :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
-            \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-        
-         .. math::
             \ln{\Lambda} \equiv 
             \left\{
                 \begin{array}{ll}
@@ -414,26 +414,26 @@ def Coulomb_logarithm(
     bmin, bmax = impact_parameter(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    if method in ("classical", "ls", "GMS-1", "lsmini", "GMS-2", "lsfulli"):
+    if method in ("classical", "ls", "GMS-1", "lsmininterp", "lsmini", "GMS-2", "lsfullinterp", "lsfulli"):
         ln_Lambda = np.log(bmax / bmin)
-    elif method in ("GMS-3", "lsclamp"):
+    elif method in ("GMS-3", "lsclampmininterp", "lscmini"):
         ln_Lambda = np.log(bmax / bmin)
         if np.any(ln_Lambda < 2):
             if np.isscalar(ln_Lambda.value):
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in ("GMS-4", "hlsmini", "GMS-5", "hlsmaxi", "GMS-6", "hlsfulli"):
+    elif method in ("GMS-4", "hlsminterp", "hlsmini", "GMS-5", "hlsmaxinterp", "hlsmaxi", "GMS-6", "hlsfullinterp", "hlsfulli"):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method! Choose from \"classical\", \"lsmini\", \"lsfulli\", \"lsclamp\", \"hlsmini\", \"hlsmaxi\", \"hlsfulli\", or their aliases. Please refer to the documentation of this function for more information."
+            "Unknown method. Choose from \"classical\", \"lsmininterp\", \"lsfullinterp\", \"lsclampmininterp\", \"hlsmininterp\", \"hlsmaxinterp\", \"hlsfullinterp\", and their aliases. Please refer to the documentation of this function for more information."
         )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
     # Allow NaNs through the < checks without warning
     with np.errstate(invalid="ignore"):
-        if np.any(ln_Lambda < 2) and method in ["classical", "ls", "GMS-1", "lsmini", "GMS-2", "lsfulli"]:
+        if np.any(ln_Lambda < 2) and method in ["classical", "ls", "GMS-1", "lsmininterp", "lsmini", "GMS-2", "lsfullinterp", "lsfulli"]:
             warnings.warn(
                 f"Coulomb logarithm is {ln_Lambda} and {method} relies on "
                 "weak coupling.",
