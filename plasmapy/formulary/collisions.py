@@ -190,7 +190,9 @@ def Coulomb_logarithm(
     **Supported Methods of Computing the Coulomb Logarithm**
     
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
-        The classical Landau-Spitzer method.
+        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the higher of 
+        the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -222,15 +224,15 @@ def Coulomb_logarithm(
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
     Option 2: `"lsmininterp"` or `"lsmi"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
-        A modified Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
+        A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
-        (:math:`\rho_{\perp}`) rather than being the larger of the two.
+        (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
             
         .. math::
-            b_{min} \equiv \sqrt(\left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right))
+            b_{min} \equiv \sqrt(\lambda_{de Broglie}^2 + \rho_{\perp}^2)
         
         .. math::
             b_{max} \equiv \lambda_{Debye}
@@ -239,7 +241,7 @@ def Coulomb_logarithm(
         parameter is high (such as for dense, cold plasmas).
         This is the first method in Table 1 of Reference [4].
     Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
-        A modified Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
+        A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
@@ -258,11 +260,11 @@ def Coulomb_logarithm(
         parameter is high (such as for dense, cold plasmas).
         This is the second method in Table 1 of Reference [4].
     Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
-        A modified Landau-Spitzer method in which the value of :math:`\lambda` is clamped at 
+        A straight-line Landau-Spitzer method in which the value of :math:`\lambda` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
-        (:math:`\rho_{\perp}`). :math:`b_{max}` is the Debye length (:math:`\lambda_{Debye}`).
+        (:math:`\rho_{\perp}`). :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -276,14 +278,13 @@ def Coulomb_logarithm(
         This method cannot fail because it is impossible for :math:`\Lambda < 0` in this 
         method, even for a large coupling parameter.
         This is the third method in Table 1 of Reference [4].
-    Option 5: `"hyperls"` or `"hls"` (Hyperbolic Landau-Spitzer)
-        A modified Landau-Spitzer method in which the trajectories of Coulomb collisions are 
-        modeled as hyperbolic rather than straight. :math:`b_{min}` is interpolated between the 
+    Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{in}`)
+        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
-        (:math:`\rho_{\perp}`). :math:`b_{max}` is the Debye length (:math:`\lambda_{Debye}`).
+        (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
-            \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+            \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
         
         .. math::
             b_{min} \equiv \left(\lambda_{de Broglie}^2 + \rho_{\perp}^2\right)^{1/2}
@@ -296,10 +297,10 @@ def Coulomb_logarithm(
         unlike the non-hyperbolic Landau-Spitzer methods. This method cannot fail because it is 
         impossible for :math:`\Lambda < 0` in this method, even for a high coupling parameter.
         This is the fourth method in Table 1 of Reference [4].
-    Option 6: `"hlsmaxinterp"` or `"hlsmi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
-        A modified hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated 
+    Option 6: `"hlsmaxinterp"` or `"hlsmaxi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
+        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated 
         between the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
-        and :math:`b_{min}` is the distance of closest approach (:math:`\rho_{\perp}`).
+        and :math:`b_{min}` is defined to be the distance of closest approach (:math:`\rho_{\perp}`).
         
         .. math::
             \ln{\Lambda} \equiv 0.5 \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
@@ -316,7 +317,7 @@ def Coulomb_logarithm(
         impossible for :math:`\Lambda < 0` in this method, even for a high coupling parameter.
         This is the fifth method in Table 1 of Reference [4].
     Option 7: `"hlsfullinterp"` or `"hlsfi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
-        A modified hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
+        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
