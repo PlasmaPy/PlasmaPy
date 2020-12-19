@@ -201,8 +201,8 @@ def Coulomb_logarithm(
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
         higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
-        approach (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length 
-        (:math:`\lambda_{Debye}`).
+        approach (:math:`\rho_{\perp}`) and either if they are equal and :math:`b_{max}` is defined to 
+        be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -211,8 +211,8 @@ def Coulomb_logarithm(
             b_{min} \equiv 
             \left\{
                 \begin{array}{ll}
-                           \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} > \rho_{\perp} \\
-                           \rho_{\perp}         & \mbox{if } \rho_{\perp} > \lambda_{de Broglie}
+                           \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} \geq \rho_{\perp} \\
+                           \rho_{\perp}         & \mbox{if } \rho_{\perp} \geq \lambda_{de Broglie}
                 \end{array}
             \right.
         
@@ -297,7 +297,7 @@ def Coulomb_logarithm(
             \ln{\Lambda} \equiv 
             \left\{
                 \begin{array}{ll}
-                           \ln\left( \frac{b_{max}}{b_{min}} \right) & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) > 2 \\
+                           \ln\left( \frac{b_{max}}{b_{min}} \right) & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \geq 2 \\
                            2                                         & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \leq 2
                 \end{array}
             \right.
