@@ -213,6 +213,10 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            
+            b_{min} \equiv \lambda_{de Broglie}
+            
+            b_{max} \equiv \lambda_{Debye}
         
         This method is not valid if :math:`\Lambda < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
@@ -336,8 +340,7 @@ def Coulomb_logarithm(
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method! Choose from \"ls\", \"lsmini\", \"lsfulli\", \"lsclamp\", \"hyperls\", \"hlsmaxi\", 
-            \"hlsfulli\", or their aliases. Please refer to the documentation of this function for more information."
+            "Unknown method! Choose from \"ls\", \"lsmini\", \"lsfulli\", \"lsclamp\", \"hyperls\", \"hlsmaxi\", \"hlsfulli\", or their aliases. Please refer to the documentation of this function for more information."
         )
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
