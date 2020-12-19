@@ -157,10 +157,6 @@ def Coulomb_logarithm(
         If the input velocity is greater than 5% of the speed of
         light.
 
-    See Also
-    --------
-    impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
-
     Notes
     -----
     **Overview of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
@@ -191,11 +187,11 @@ def Coulomb_logarithm(
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner impact parameter and the outer
     impact parameter for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed 
-    by `impact_parameter`.
+    by `impact_parameter`, another function.
 
     .. note:: 
-        PlasmaPy recommends Method 7, `"hlsfulli"` or `hlsfi"`, for most users. The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
-        the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
+        PlasmaPy recommends Method 7, `"hlsfullinterp"` or `hlsfi"`, for most users. The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
+        the straight-line Landau-Spitzer methods fail if :math:`\ln{\Lambda} < 0`.
     
     **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
     
@@ -241,7 +237,9 @@ def Coulomb_logarithm(
         assumptions made in the standard analysis of Coulomb collisions
         are invalid.
         
-        This method is not valid if :math:`\Lambda < 0`, which may be true if the 
+        Valid For: Only dilute, weakly coupled plasmas.
+        
+        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the 
         coupling parameter is high (such as for dense, cold plasmas).
     Option 2: `"lsmininterp"` or `"lsmini"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
@@ -257,15 +255,17 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \lambda_{Debye}
         
-        This method is not valid if :math:`\Lambda < 0`, which may be true if the coupling 
+        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true for nonideal plasmas and if the coupling 
         parameter is high (such as for dense, cold plasmas).
-        This is the first method in Table 1 of Reference [4].
+        
+        Note: This is the first method in Table 1 of Reference [4].
+        
     Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
-        and the ion sphere radius (:math:`a_i`), allowing for descriptions of dilute plasmas.
+        and the ion sphere radius (:math:`a_i`).
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
@@ -276,9 +276,13 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
-        This method is not valid if :math:`\Lambda < 0`, which may be true if the coupling 
+        Valid For: Dilute plasmas
+        
+        Invalid For: This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true for nonideal plasmas and if the coupling 
         parameter is high (such as for dense, cold plasmas).
-        This is the second method in Table 1 of Reference [4].
+        
+        Note: This is the second method in Table 1 of Reference [4].
+        
     Option 4: `"lsclamp"` or `"lsc"` (Landau-Spitzer with a clamp)
         A straight-line Landau-Spitzer method in which the value of :math:`\Lambda` is clamped at 
         a minimum of :math:`2` so that it does not fail for Coulomb logarithm < 0, unlike the 
@@ -288,6 +292,15 @@ def Coulomb_logarithm(
         
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        
+         .. math::
+            \ln{\Lambda} \equiv 
+            \left\{
+                \begin{array}{ll}
+                           \ln\left( \frac{b_{max}}{b_{min}} \right) & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) > 2 \\
+                           2                                         & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \leq 2
+                \end{array}
+            \right.
             
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
@@ -295,9 +308,11 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \lambda_{Debye}
         
-        This method cannot fail because it is impossible for :math:`\Lambda < 0` in this 
+        Invalid For: N/A. This method cannot fail because it is impossible for :math:`\ln{\Lambda} < 0` in this 
         method, even for a large coupling parameter.
-        This is the third method in Table 1 of Reference [4].
+        
+        Note: This is the third method in Table 1 of Reference [4].
+        
     Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
@@ -315,8 +330,10 @@ def Coulomb_logarithm(
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
         unlike the non-hyperbolic Landau-Spitzer methods. This method cannot fail because it is 
-        impossible for :math:`\Lambda < 0` in this method, even for a high coupling parameter.
-        This is the fourth method in Table 1 of Reference [4].
+        impossible for :math:`\ln{\Lambda} < 0` in this method, even for a high coupling parameter.
+        
+        Note: This is the fourth method in Table 1 of Reference [4].
+        
     Option 6: `"hlsmaxinterp"` or `"hlsmaxi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated 
         between the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
@@ -334,14 +351,16 @@ def Coulomb_logarithm(
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
         unlike the non-hyperbolic Landau-Spitzer methods. This method cannot fail because it is 
-        impossible for :math:`\Lambda < 0` in this method, even for a high coupling parameter.
-        This is the fifth method in Table 1 of Reference [4].
+        impossible for :math:`\ln{\Lambda} < 0` in this method, even for a high coupling parameter.
+        
+        Note: This is the fifth method in Table 1 of Reference [4].
+        
     Option 7: `"hlsfullinterp"` or `"hlsfi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
         :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
-        and the ion sphere radius (:math:`a_i`), allowing for descriptions of dilute plasmas.
+        and the ion sphere radius (:math:`a_i`).
         
         .. math::
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
@@ -355,8 +374,11 @@ def Coulomb_logarithm(
         A value of :math:`0` of :math:`b_{min}` is valid in this method and other hyperbolic 
         Landau-Spitzer methods because these methods do not diverge for small :math:`b_{min}`, 
         unlike the non-hyperbolic Landau-Spitzer methods. This method cannot fail because it is 
-        impossible for :math:`\Lambda < 0` in this method, even for a high coupling parameter.
-        This is the sixth method in Table 1 of Reference [4].
+        impossible for :math:`\ln{\Lambda} < 0` in this method, even for a high coupling parameter.
+        
+        Valid For: Dilute plasmas
+        
+        Note: This is the sixth method in Table 1 of Reference [4].
 
     Examples
     --------
@@ -383,6 +405,10 @@ def Coulomb_logarithm(
     .. [4] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
+    
+    See Also
+    --------
+    impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
     """
     # fetching impact min and max impact parameters
     bmin, bmax = impact_parameter(
