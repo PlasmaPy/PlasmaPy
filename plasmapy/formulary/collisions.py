@@ -173,22 +173,22 @@ def Coulomb_logarithm(
     6. `"hlsmaxinterp"` or `"hlsmaxi"`
     7. `"hlsfullinterp"` or `"hlsfi"`
     
-    The first 4 methods are straight-line methods in which the trajectory of a Coulomb collision 
-    is modeled as a straight line. The last 3 methods are hyperbolic methods in which
+    The first 4 methods are straight-line Landau-Spitzer methods in which the trajectory of a Coulomb collision 
+    is modeled as a straight line. The last 3 methods are hyperbolic Landau-Spitzer methods in which
     the trajectory of a Coulomb collision is modeled as a hyperbola.
     
-    For straight-line Landau-Spitzer methods, the Coulomb logarithm is defined by
+    The Coulomb logarithm is defined for straight-line Landau-Spitzer methods by
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-
-    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
-    impact parameters for Coulomb collisions [1]_. They are computed by `impact_parameter`.
     
-    For hyperbolic Landau-Spitzer methods, the Coulomb logarithm is defined by
+    and for hyperbolic Landau-Spitzer methods by
     
     .. math::
         \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+
+    where :math:`b_{min}` and :math:`b_{max}` are the inner and outer
+    impact parameters for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed by `impact_parameter`.
 
     The hyperbolic Landau-Spitzer methods are accurate for dense, cold plasmas for which 
     the straight-line Landau-Spitzer methods fail if :math:`\Lambda < 0`.
@@ -213,6 +213,7 @@ def Coulomb_logarithm(
                 \begin{array}{ll}
                            \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} > \rho_{\perp}
                            \rho_{\perp}         & \mbox{if } \rho_{\perp} > \lambda_{de Broglie}
+                \end{array}
             \right.
         
         .. math::
