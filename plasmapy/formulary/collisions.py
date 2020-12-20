@@ -109,7 +109,8 @@ def Coulomb_logarithm(
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. `z_mean` is a required parameter if `method` is
+        `"lsfullinterp"`, `"hlsmaxinterp"`, or `"hlsfullinterp"`.
 
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
@@ -604,7 +605,8 @@ def impact_parameter(
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. `z_mean` is a required parameter if `method` is
+        `"lsfullinterp"`, `"hlsmaxinterp"`, or `"hlsfullinterp"`.
 
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
