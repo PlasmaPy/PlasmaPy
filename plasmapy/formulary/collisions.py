@@ -201,7 +201,7 @@ def Coulomb_logarithm(
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
         higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
-        approach (:math:`\rho_{\perp}`) if they are not equal and either if they are equal and 
+        approach (:math:`\rho_{\perp}`) if they are not equal and either of the two if they are equal and 
         :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
@@ -219,9 +219,9 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \lambda_{Debye}
         
-        The inner impact parameter (:math:`b_{min}`) is the higher of (:math:`\lambda_{de Broglie}`) 
-        and (:math:`\rho_{\perp}`) because for impact parameters lower than (:math:`\lambda_{de Broglie}`), 
-        quantum effects cause the collision to be non-Coulombic [2]_[3]_.
+        The inner impact parameter (:math:`b_{min}`) is the higher of :math:`\lambda_{de Broglie}` 
+        and :math:`\rho_{\perp}` because for impact parameters lower than :math:`\lambda_{de Broglie}`, 
+        quantum effects cause the collision to be non-Coulombic [2]_ [3]_.
         
         The outer impact parameter (:math:`b_{max}`) is defined to be the Debye length 
         (:math:`\lambda_{Debye}`) because at distances higher than the
@@ -299,7 +299,7 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \lambda_{Debye}
         
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` in this 
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
         
         Note: This is the third method in Table 1 of Reference [4].
@@ -318,7 +318,7 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \lambda_{Debye}
         
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` in this 
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
         
         Note: This is the fourth method in Table 1 of Reference [4].
@@ -337,10 +337,10 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` in this 
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
         
-        This method overestimates :math:`\ln{\Lambda}` at high temperatures.
+        Caution: This method overestimates :math:`\ln{\Lambda}` at high temperatures.
         
         Note: This is the fifth method in Table 1 of Reference [4].
         
@@ -360,7 +360,7 @@ def Coulomb_logarithm(
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
         
-        This method is valid for any because it is impossible for :math:`\ln{\Lambda} < 0` in this 
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
 
         Note: This is the sixth method in Table 1 of Reference [4].
