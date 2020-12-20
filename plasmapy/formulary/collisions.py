@@ -121,7 +121,7 @@ def Coulomb_logarithm(
         The default method is the classical straight-line Landau-Spitzer method
         (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
         `"lsfullinterp"`, `"lsclampmininterp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
-        `"hlsfullinterp"`. Please refer to the :ref:`reference-to-Notes` section of this 
+        `"hlsfullinterp"`. Please refer to the `Notes <#Notes>`_ section of this 
         docstring for more information, including about abbreviated aliases of these names.
 
     Returns
@@ -155,8 +155,6 @@ def Coulomb_logarithm(
     : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
-
-    .. _reference-to-Notes:
     
     Notes
     -----
@@ -191,7 +189,8 @@ def Coulomb_logarithm(
     by `impact_parameter`, another function.
 
     .. note:: 
-        PlasmaPy recommends Option 7, `"hlsfullinterp"` or `"hlsfi"`, for most users because it is the most accurate for all plasmas, regardless of the strength of coupling.
+        PlasmaPy recommends Option 7, `"hlsfullinterp"` or `"hlsfi"`, for most users because it is the most accurate overall, 
+        regardless of a plasma's strength of coupling.
     
     **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
     
@@ -201,7 +200,7 @@ def Coulomb_logarithm(
     Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
         higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
-        approach (:math:`\rho_{\perp}`) if they are not equal and either of the two if they are equal and 
+        approach (:math:`\rho_{\perp}`) if they are not equal (and either of the two if they are equal) and 
         :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
         
         .. math::
@@ -252,9 +251,9 @@ def Coulomb_logarithm(
             b_{max} \equiv \lambda_{Debye}
         
         This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling 
-        parameter is high such as for nonideal, dense, cold plasmas.
+        parameter is high (such as for nonideal, dense, cold plasmas).
         
-        Note: This is the first method in Table 1 of Reference [4].
+        Note: This is the first method in Table 1 of Reference [4]_.
         
     Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
@@ -273,13 +272,13 @@ def Coulomb_logarithm(
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
        
         This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling 
-        parameter is high such as for nonideal, dense, cold plasmas.
+        parameter is high (such as for nonideal, dense, cold plasmas).
         
-        Note: This is the second method in Table 1 of Reference [4].
+        Note: This is the second method in Table 1 of Reference [4]_.
         
     Option 4: `"lsclampmininterp"` or `"lscmini"` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at 
-        a minimum of :math:`2` so that this method  for Coulomb logarithm < 0, unlike the 
+        a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0`, unlike by the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`). :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
@@ -302,7 +301,7 @@ def Coulomb_logarithm(
         This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
         
-        Note: This is the third method in Table 1 of Reference [4].
+        Note: This is the third method in Table 1 of Reference [4]_.
         
     Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
@@ -321,11 +320,11 @@ def Coulomb_logarithm(
         This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
         
-        Note: This is the fourth method in Table 1 of Reference [4].
+        Note: This is the fourth method in Table 1 of Reference [4]_.
         
     Option 6: `"hlsmaxinterp"` or `"hlsmaxi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated 
-        between the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
+        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated between 
+        the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
         and :math:`b_{min}` is defined to be the distance of closest approach (:math:`\rho_{\perp}`).
         
         .. math::
@@ -342,7 +341,7 @@ def Coulomb_logarithm(
         
         Caution: This method overestimates :math:`\ln{\Lambda}` at high temperatures.
         
-        Note: This is the fifth method in Table 1 of Reference [4].
+        Note: This is the fifth method in Table 1 of Reference [4]_.
         
     Option 7: `"hlsfullinterp"` or `"hlsfi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
@@ -363,7 +362,7 @@ def Coulomb_logarithm(
         This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
         method, even if the coupling parameter is high.
 
-        Note: This is the sixth method in Table 1 of Reference [4].
+        Note: This is the sixth method in Table 1 of Reference [4]_.
 
     Examples
     --------
