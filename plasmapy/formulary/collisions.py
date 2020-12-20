@@ -121,7 +121,7 @@ def Coulomb_logarithm(
         The default method is the classical straight-line Landau-Spitzer method
         (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
         `"lsfullinterp"`, `"lsclampmininterp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
-        `"hlsfullinterp"`. Please refer to the :ref:`Notes` section of this 
+        `"hlsfullinterp"`. Please refer to the Notes section of this 
         docstring for more information, including about abbreviated aliases of these names.
 
     Returns
@@ -398,6 +398,7 @@ def Coulomb_logarithm(
     bmin, bmax = impact_parameter(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
+    
     if method in ("classical", "ls", "GMS-1", "lsmininterp", "lsmini", "GMS-2", "lsfullinterp", "lsfulli"):
         ln_Lambda = np.log(bmax / bmin)
     elif method in ("GMS-3", "lsclampmininterp", "lscmini"):
@@ -413,9 +414,11 @@ def Coulomb_logarithm(
         raise ValueError(
             "Unknown method. Choose from \"classical\", \"lsmininterp\", \"lsfullinterp\", \"lsclampmininterp\", \"hlsmininterp\", \"hlsmaxinterp\", \"hlsfullinterp\", and their aliases. Please refer to the documentation of this function for more information."
         )
+    
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    # Allow NaNs through the < checks without warning
+    
+    #Allow NaNs through the < checks without warning
     with np.errstate(invalid="ignore"):
         if np.any(ln_Lambda < 2) and method in ["classical", "ls", "GMS-1", "lsmininterp", "lsmini", "GMS-2", "lsfullinterp", "lsfulli"]:
             warnings.warn(
@@ -429,6 +432,7 @@ def Coulomb_logarithm(
                 "coupling effects",
                 utils.CouplingWarning,
             )
+    
     return ln_Lambda
 
 
@@ -462,6 +466,7 @@ def _replaceNanVwithThermalV(V, T, m):
     if np.any(V == 0):
         raise utils.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
+    
     if V is None:
         V = parameters.thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
@@ -473,6 +478,7 @@ def _replaceNanVwithThermalV(V, T, m):
         else:
             V = V.copy()
             V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
+    
     return V
 
 
@@ -489,7 +495,6 @@ def impact_parameter_perp(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
@@ -527,10 +532,10 @@ def impact_parameter_perp(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -541,7 +546,6 @@ def impact_parameter_perp(
     .. math::
         b_{\perp} = \frac{Z_1 Z_2}{4 \pi \epsilon_0 m v^2}
 
-
     Examples
     --------
     >>> from astropy import units as u
@@ -550,12 +554,10 @@ def impact_parameter_perp(
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
 
-
     References
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -585,7 +587,6 @@ def impact_parameter(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
@@ -610,7 +611,7 @@ def impact_parameter(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -638,10 +639,10 @@ def impact_parameter(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -698,6 +699,7 @@ def impact_parameter(
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
     bPerp = impact_parameter_perp(T=T, species=species, V=V)
+    
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -766,6 +768,7 @@ def impact_parameter(
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
+   
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _boilerplate, so bmin will scalar.  However
@@ -773,6 +776,7 @@ def impact_parameter(
     # do we want to extend the scalar bmin to equal the length of bmax? Sure.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
         bmin = np.repeat(bmin, len(bmax))
+    
     return bmin.to(u.m), bmax.to(u.m)
 
 
@@ -793,13 +797,11 @@ def collision_frequency(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
-
 
     n : ~astropy.units.Quantity
         The density in units convertible to per cubic meter.
@@ -822,7 +824,7 @@ def collision_frequency(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -849,10 +851,10 @@ def collision_frequency(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -884,7 +886,6 @@ def collision_frequency(
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -941,12 +942,10 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     impact_param : ~astropy.units.Quantity
         Impact parameter for the collision.
 
-    Examples
-    --------
-    >>> Coulomb_cross_section(7e-10*u.m)
-    <Quantity 6.157...e-18 m2>
-    >>> Coulomb_cross_section(0.5*u.m)
-    <Quantity 3.141... m2>
+    Returns
+    -------
+    sigma : ~astropy.units.Quantity
+        The Coulomb collision cross section area.
 
     Notes
     -----
@@ -961,10 +960,12 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     calculation. Please note that it is not guaranteed to return the correct
     results for small angle collisions.
 
-    Returns
-    -------
-    ~astropy.units.Quantity
-        The Coulomb collision cross section area.
+    Examples
+    --------
+    >>> Coulomb_cross_section(7e-10*u.m)
+    <Quantity 6.157...e-18 m2>
+    >>> Coulomb_cross_section(0.5*u.m)
+    <Quantity 3.141... m2>
 
     References
     ----------
@@ -1003,7 +1004,7 @@ def fundamental_electron_collision_freq(
     n_e : ~astropy.units.Quantity
         The number density of the Maxwellian test electrons
 
-    ion: str
+    ion : str
         String signifying a particle type of the field ions, including charge
         state information.
 
@@ -1017,9 +1018,13 @@ def fundamental_electron_collision_freq(
         If not specified, the Coulomb log will is calculated using the
         `~plasmapy.formulary.Coulomb_logarithm` function.
 
-    coulomb_log_method : string, optional
+    coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
+
+    Returns
+    -------
+    nu_e : ~astropy.units.Quantity
 
     Notes
     -----
@@ -1123,7 +1128,7 @@ def fundamental_ion_collision_freq(
     n_i : ~astropy.units.Quantity
         The number density of the Maxwellian test ions
 
-    ion: str
+    ion : str
         String signifying a particle type of the test and field ions,
         including charge state information. This function assumes the test
         and field ions are the same species.
@@ -1141,6 +1146,10 @@ def fundamental_ion_collision_freq(
     coulomb_log_method : str, optional
         Method used for Coulomb logarithm calculation (see that function
         for more documentation). Choose from "classical" or "GMS-1" to "GMS-6".
+
+    Returns
+    -------
+    nu_i : ~astropy.units.Quantity
 
     Notes
     -----
@@ -1164,7 +1173,6 @@ def fundamental_ion_collision_freq(
     classical transport expressions. It is equivalent to:
     * 1/tau_i from ref [1]_, equation (2.5i) pp. 215,
     * nu_i from ref [2]_ pp. 33,
-
 
     References
     ----------
@@ -1247,14 +1255,13 @@ def mean_free_path(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
@@ -1272,7 +1279,7 @@ def mean_free_path(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -1299,10 +1306,10 @@ def mean_free_path(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1363,7 +1370,6 @@ def Spitzer_resistivity(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
@@ -1391,7 +1397,7 @@ def Spitzer_resistivity(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -1418,10 +1424,10 @@ def Spitzer_resistivity(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1490,14 +1496,13 @@ def mobility(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
@@ -1518,7 +1523,7 @@ def mobility(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -1545,10 +1550,10 @@ def mobility(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1617,7 +1622,6 @@ def Knudsen_number(
 
     Parameters
     ----------
-
     characteristic_length : ~astropy.units.Quantity
         Rough order-of-magnitude estimate of the relevant size of the system.
 
@@ -1645,7 +1649,7 @@ def Knudsen_number(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -1672,10 +1676,10 @@ def Knudsen_number(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1739,7 +1743,6 @@ def coupling_parameter(
 
     Parameters
     ----------
-
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
@@ -1764,7 +1767,7 @@ def coupling_parameter(
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
-    method: str, optional
+    method : str, optional
         Selects which theory to use when calculating the Coulomb
         logarithm. Defaults to classical method.
 
@@ -1791,10 +1794,10 @@ def coupling_parameter(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : ~astropy.units.UnitsWarning
         If units are not provided, SI units are assumed
 
-    ~plasmapy.utils.RelativityWarning
+    : ~plasmapy.utils.RelativityWarning
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1860,11 +1863,10 @@ def coupling_parameter(
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
     .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
-
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
+    
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
@@ -1881,11 +1883,13 @@ def coupling_parameter(
         n_i = n_e / z_mean
         # getting Wigner-Seitz radius based on ion density
         radius = Wigner_Seitz_radius(n_i)
+    
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
         coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
     else:
         coulombEnergy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
+    
     if method == "classical":
         # classical thermal kinetic energy
         kineticEnergy = k_B * T
