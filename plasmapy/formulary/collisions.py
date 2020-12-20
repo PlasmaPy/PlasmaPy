@@ -121,7 +121,7 @@ def Coulomb_logarithm(
         The default method is the classical straight-line Landau-Spitzer method
         (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
         `"lsfullinterp"`, `"lsclampmininterp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
-        `"hlsfullinterp"`. Please refer to the `Notes <#Notes>`_ section of this 
+        `"hlsfullinterp"`. Please refer to the :ref:`Notes` section of this 
         docstring for more information, including about abbreviated aliases of these names.
 
     Returns
