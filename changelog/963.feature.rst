@@ -1,1 +1,1 @@
-Further developed grid objects, improved documentation.
+Further developed grid objects and improved their documentation, including several example notebooks.
