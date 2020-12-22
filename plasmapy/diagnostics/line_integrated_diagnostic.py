@@ -1,10 +1,13 @@
+"""
+Defines the LineIntegratedDiagnostic base class
+"""
 
+__all__ = [
+        "LineIntegratedDiagnostic",
+        ]
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
-import scipy.interpolate as interp
-import warnings
 
 from plasmapy.plasma.grids import CartesianGrid
 
@@ -165,18 +168,11 @@ class LineIntegratedDiagnostic:
         nx = nx / np.linalg.norm(nx)
         self.hax_n = nx # Unit vector for hax, detector horizontal axis
 
-        print(self.det_n)
-
-
         # Define the detector vertical axis as being orthogonal to the
         # detector axis and the horizontal axis
         ny = np.cross(nx, self.det_n)
         ny = -ny / np.linalg.norm(ny)
         self.vax_n = ny # Unit vector for vax, detector vertical axis
-
-        print(f"Hax_n: {self.hax_n}")
-        print(f"Vax_n: {self.vax_n}")
-
 
         xax = np.linspace(size[0][0], size[0][1], num=int(bins[0]))
         yax = np.linspace(size[1][0], size[1][1], num=int(bins[1]))
@@ -239,12 +235,17 @@ class LineIntegratedDiagnostic:
         # Evaluate the integrand at each position
         self.integration_pts = pts
 
-        integrand = self._integrand()
+        integrands = self._integrand()
+
+        if not isinstance(integrands, tuple):
+            integrands = [integrands,]
 
         # Integrate
-        integral = np.trapz(integrand, axis=2)*ds
+        integral = []
+        for integrand in integrands:
+            integral.append(np.trapz(integrand, axis=2)*ds)
 
-        return xax, yax, integral
+        return (xax, yax, *integral)
 
 
     def _integrand(self):
@@ -310,7 +311,7 @@ if __name__ == '__main__':
 
     class TestIntegrator(LineIntegratedDiagnostic):
         def _integrand(self):
-            return self.integration_pts[...,0]
+            return self.integration_pts[...,0], self.integration_pts[...,1]
 
     # Make a little grid
     ax = np.linspace(-1,1,3)*u.mm
@@ -323,7 +324,7 @@ if __name__ == '__main__':
 
     obj = TestIntegrator(grid, source, detector)
 
-    obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[2,2],
+    hax, vax, integral, _ = obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[2,2],
                           collimated=False, num=10)
 
 

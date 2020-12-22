@@ -529,8 +529,7 @@ class AbstractGrid(ABC):
 
         # Interpolate indices
         i = self.interpolator(pos2)
-        # Convert any non-NaN values to ints
-        i = i.astype(np.int32)
+
 
         return i
 
@@ -568,10 +567,18 @@ class AbstractGrid(ABC):
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
 
+        # Get the indices that are equal to nan (fill values), then set
+        # their values to 0. They will be over-written after the interpolation
+        nan_ind = np.argwhere(np.isnan(i))
+        i[nan_ind] = 0
+        i = i.astype(np.int32)
+
         # Fetch the values at those indices from each quantity
         output = []
         for arg in args:
             values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
+            # Overwrite out-of-bounds values
+            values[nan_ind] = 0
             values = np.squeeze(values)
             values *= self.ds[arg].attrs["unit"]
             output.append(values)
@@ -649,6 +656,12 @@ class CartesianGrid(AbstractGrid):
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
 
+        # Get the indices that are equal to nan (fill values), then set
+        # their values to 0. They will be over-written after the interpolation
+        nan_ind = np.argwhere(np.isnan(i))
+        i[nan_ind] = 0
+        i = i.astype(np.int32)
+
         # Calculate the grid positions for each particle as interpolated
         # by the nearest neighbor interpolator
         xpos = self.ax0[i[:, 0]]
@@ -698,6 +711,7 @@ class CartesianGrid(AbstractGrid):
                     weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
                     weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
+                    weight[nan_ind]=0
 
                     # For each argument, include the contributed by this
                     # grid vertex
