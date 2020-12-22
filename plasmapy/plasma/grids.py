@@ -16,7 +16,6 @@ import warnings
 import xarray as xr
 
 from abc import ABC
-from scipy.special import erf as erf  # Used in planar discontinuity example
 from typing import Union
 
 # These standard keys are used throughout PlasmaPy to refer to certain
