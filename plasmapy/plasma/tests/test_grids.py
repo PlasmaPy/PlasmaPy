@@ -225,24 +225,6 @@ def test_NonUniformCartesianGrid():
     grid.add_quantities(rho=q1)
 
 
-def test_example_grids():
-    example_names = [
-        "axially_magnetized_cylinder",
-        "electrostatic_discontinuity",
-        "electrostatic_gaussian_sphere",
-    ]
-    for s in example_names:
-        grid = grids.example_grid(s, L=1 * u.cm, num=100)
-
-    # Test invalid name
-    with pytest.raises(ValueError):
-        grid = grids.example_grid("not_a_valid_example_name", L=1 * u.cm, num=100)
-
-    # Test different length input types
-    L = np.array([1, 2, 3]) * u.cm
-    grid = grids.example_grid("electrostatic_gaussian_sphere", L=L, num=100)
-
-
 if __name__ == "__main__":
     # test_AbstractGrid()
     # test_CartesianGrid()
@@ -250,4 +232,4 @@ if __name__ == "__main__":
     # test_nearest_neighbor_interpolator()
     # test_volume_averaged_interpolator()
     # test_NonUniformCartesianGrid()
-    test_example_grids()
+    pass
