@@ -6,7 +6,6 @@ __all__ = [
     "AbstractGrid",
     "CartesianGrid",
     "NonUniformCartesianGrid",
-    "example_grid",
 ]
 
 import astropy.units as u
