@@ -17,10 +17,10 @@ means:
 
  * the many kinds of warnings and exceptions you may (hopefully not!)
    encounter while working with PlasmaPy, such as
-   `~plasmapy.utils.RelativityWarning` or `~plasmapy.utils.PhysicsError`.
+   `~plasmapy.utils.exceptions.RelativityWarning` or `~plasmapy.utils.exceptions.PhysicsError`.
  * decorators we use for reusable physical quantity computation and
    checking, such as `~plasmapy.utils.decorators.validate_quantities` and
-   `~plasmapy.utils.check_relativistic`.
+   `~plasmapy.utils.decorators.check_relativistic`.
  * Some helper utilities for importing and testing packages such as
    `~plasmapy.utils.formatting.formatting.call_string`.
 

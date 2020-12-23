@@ -1,1 +1,1 @@
-Removed colorama as a dependency.
+Removed `colorama` as a dependency.
