@@ -289,7 +289,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="relies on weak coupling"):
+        with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
@@ -326,7 +326,7 @@ class Test_Coulomb_logarithm:
         Murillo, and Schlanges PRE (2002). This checks for when
         a negative (invalid) Coulomb logarithm is returned.
         """
-        with pytest.warns(exceptions.CouplingWarning, match="relies on weak coupling"):
+        with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
                 self.density2,
