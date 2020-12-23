@@ -1,7 +1,7 @@
 :orphan:
 
 `plasmapy.utils.code_repr`
-======================================
+==========================
 
 .. currentmodule:: plasmapy.utils.code_repr
 
