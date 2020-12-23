@@ -7,4 +7,4 @@ Particle movement integrators
 Reference/API
 =============
 
-.. automodapi:: plasmapy.simulation.particletracker
+.. automodapi:: plasmapy.simulation.particle_integrators
