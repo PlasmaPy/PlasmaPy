@@ -20,9 +20,9 @@ from plasmapy.particles.elements import (
     _Elements,
 )
 from plasmapy.particles.exceptions import (
-    AtomicWarning,
     InvalidElementError,
     InvalidParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
@@ -130,7 +130,7 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     """
     Return an appropriate error message for an
-    `~plasmapy.utils.InvalidParticleError`.
+    `~plasmapy.particles.exceptions.InvalidParticleError`.
     """
     errmsg = f"The argument {repr(argument)} "
     if mass_numb is not None or Z is not None:
@@ -179,28 +179,26 @@ def _parse_and_check_atomic_input(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the arguments do not correspond to a valid particle or
         antiparticle.
 
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the particle is valid but does not correspond to an element,
         ion, or isotope.
 
     `TypeError`
         If the argument or any of the keyword arguments is not of the
         correct type.
-
     """
 
     def _atomic_number_to_symbol(atomic_numb: Integral):
         """
         Return the atomic symbol associated with an integer
         representing an atomic number, or raises an
-        `~plasmapy.utils.InvalidParticleError` if the atomic number does
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-
         if atomic_numb in _atomic_numbers_to_symbols.keys():
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
@@ -212,7 +210,7 @@ def _parse_and_check_atomic_input(
         Return a `tuple` containing a `str` that should represent an
         element or isotope, and either an `int` representing the
         charge or `None` if no charge information is provided.  Raise
-        an `~plasmapy.utils.InvalidParticleError` if charge information
+        an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
         is inputted incorrectly.
         """
 
@@ -270,7 +268,7 @@ def _parse_and_check_atomic_input(
         Return a tuple containing a string that should represent
         an element, and either an integer representing the mass
         number or None if no mass number is available.  Raises an
-        `~plasmapy.utils.InvalidParticleError` if the mass number
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the mass number
         information is inputted incorrectly.
         """
 
@@ -301,7 +299,6 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-
         if element_info.lower() in _element_names_to_symbols.keys():
             element = _element_names_to_symbols[element_info.lower()]
         elif element_info in _atomic_numbers_to_symbols.values():
@@ -311,7 +308,6 @@ def _parse_and_check_atomic_input(
                 f"The string '{element_info}' does not correspond to "
                 f"a valid element."
             )
-
         return element
 
     def _reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
@@ -319,7 +315,7 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
         or `None` if no mass number information is available.  Raises an
-        `~plasmapy.utils.InvalidParticleError` for isotopes that have
+        `~plasmapy.particles.exceptions.InvalidParticleError` for isotopes that have
         not yet been discovered.
         """
 
@@ -409,7 +405,7 @@ def _parse_and_check_atomic_input(
             warnings.warn(
                 "Redundant mass number information for particle "
                 f"'{argument}' with mass_numb = {mass_numb}.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     if mass_numb_from_arg is not None:
@@ -425,7 +421,7 @@ def _parse_and_check_atomic_input(
             warnings.warn(
                 "Redundant charge information for particle "
                 f"'{argument}' with Z = {Z}.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     if Z_from_arg is not None:
@@ -442,7 +438,7 @@ def _parse_and_check_atomic_input(
                 f"Particle '{argument}' has an integer charge "
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
-                AtomicWarning,
+                ParticleWarning,
             )
 
     isotope = _reconstruct_isotope_symbol(element, mass_numb)
