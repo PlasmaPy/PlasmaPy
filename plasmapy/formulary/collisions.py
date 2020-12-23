@@ -109,8 +109,8 @@ def Coulomb_logarithm(
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters. `z_mean` is a required parameter if `method` is
-        `"lsfullinterp"`, `"hlsmaxinterp"`, or `"hlsfullinterp"`.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"lsfullinterp"``, ``"hlsmaxinterp"``, or ``"hlsfullinterp"``.
 
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
@@ -120,9 +120,9 @@ def Coulomb_logarithm(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer method
-        (`"classical"` or `"ls"`). The other 6 supported methods are `"lsmininterp"`,
-        `"lsfullinterp"`, `"lsclampmininterp"`, `"hlsmininterp"`, `"hlsmaxinterp"`, and 
-        `"hlsfullinterp"`. Please refer to the Notes section of this 
+        (``"classical"`` or ``"ls"``). The other 6 supported methods are ``"lsmininterp"``,
+        ``"lsfullinterp"``, ``"lsclampmininterp"``, ``"hlsmininterp"``, ``"hlsmaxinterp"``, and 
+        ``"hlsfullinterp"``. Please refer to the Notes section of this 
         docstring for more information, including about abbreviated aliases of these names.
 
     Returns
@@ -163,22 +163,22 @@ def Coulomb_logarithm(
     
     PlasmaPy supports 7 methods of computing the Coulomb logarithm:
     
-    1. `"classical"` or `"ls"`
-    2. `"lsmininterp"` or `"lsmini"`
-    3. `"lsfullinterp"` or `"lsfi"`
-    4. `"lsclampmininterp"` or `"lscmini"`
-    5. `"hlsmininterp"` or `"hlsmini"`
-    6. `"hlsmaxinterp"` or `"hlsmaxi"`
-    7. `"hlsfullinterp"` or `"hlsfi"`
+    1. ``"classical"`` or ``"ls"``
+    2. ``"lsmininterp"`` or ``"lsmini"``
+    3. ``"lsfullinterp"`` or ``"lsfi"``
+    4. ``"lsclampmininterp"`` or ``"lscmini"``
+    5. ``"hlsmininterp"`` or ``"hlsmini"``
+    6. ``"hlsmaxinterp"`` or ``"hlsmaxi"``
+    7. ``"hlsfullinterp"`` or ``"hlsfi"``
     
-    Option 1 through Option 4 are straight-line Landau-Spitzer (`"ls..."`) methods in which the trajectory of a 
+    Options 1–4 are straight-line Landau-Spitzer (``"ls..."``) methods in which the trajectory of a 
     Coulomb collision is modeled as a straight line. For the straight-line Landau-Spitzer methods, the Coulomb 
     logarithm (:math:`\ln{\Lambda}`) is defined to be:
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
     
-    Option 5 through Option 7 are hyperbolic Landau-Spitzer (`"hls..."`) methods in which the trajectory of a 
+    Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in which the trajectory of a 
     Coulomb collision is modeled as a hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb 
     logarithm (:math:`\ln{\Lambda}`) is defined to be:
     
@@ -190,15 +190,15 @@ def Coulomb_logarithm(
     by `impact_parameter`, another function.
 
     .. note:: 
-        PlasmaPy recommends Option 7, `"hlsfullinterp"` or `"hlsfi"`, for most users because it is the most accurate overall, 
-        regardless of a plasma's strength of coupling.
+        For strongly-coupled plasma, PlasmaPy recommends Option 7, ``"hlsfullinterp"`` or ``"hlsfi"``,
+        because it provides high accuracy regardless of a plasma's strength of coupling.
     
     **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
     
     In this section, further information about each method, such as about interpolation and other special 
     features, is documented. Please refer to Reference [4]_ for additional information about these methods.
     
-    Option 1: `"classical"` or `"ls"` (Landau-Spitzer)
+    Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
         higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
         approach (:math:`\rho_{\perp}`) if they are not equal (and either of the two if they are equal) and 
@@ -237,7 +237,7 @@ def Coulomb_logarithm(
         
         Please refer to Reference [1]_ for additional information about this method.
         
-    Option 2: `"lsmininterp"` or `"lsmini"` (Landau-Spitzer, interpolation of :math:`b_{min}`)
+    Option 2: ``"lsmininterp"`` or ``"lsmini"`` (Landau-Spitzer, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
@@ -256,7 +256,7 @@ def Coulomb_logarithm(
         
         Note: This is the first method in Table 1 of Reference [4]_.
         
-    Option 3: `"lsfullinterp"` or `"lsfi"` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
+    Option 3: ``"lsfullinterp"`` or ``"lsfi"`` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
@@ -277,7 +277,7 @@ def Coulomb_logarithm(
         
         Note: This is the second method in Table 1 of Reference [4]_.
         
-    Option 4: `"lsclampmininterp"` or `"lscmini"` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
+    Option 4: ``"lsclampmininterp"`` or ``"lscmini"`` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at 
         a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0`, unlike by the 
         classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
@@ -304,7 +304,7 @@ def Coulomb_logarithm(
         
         Note: This is the third method in Table 1 of Reference [4]_.
         
-    Option 5: `"hlsmininterp"` or `"hlsmini"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
+    Option 5: ``"hlsmininterp"`` or ``"hlsmini"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
         de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
@@ -323,7 +323,7 @@ def Coulomb_logarithm(
         
         Note: This is the fourth method in Table 1 of Reference [4]_.
         
-    Option 6: `"hlsmaxinterp"` or `"hlsmaxi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
+    Option 6: ``"hlsmaxinterp"`` or ``"hlsmaxi"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated between 
         the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
         and :math:`b_{min}` is defined to be the distance of closest approach (:math:`\rho_{\perp}`).
@@ -344,7 +344,7 @@ def Coulomb_logarithm(
         
         Note: This is the fifth method in Table 1 of Reference [4]_.
         
-    Option 7: `"hlsfullinterp"` or `"hlsfi"` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
+    Option 7: ``"hlsfullinterp"`` or ``"hlsfi"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
         (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
@@ -605,8 +605,8 @@ def impact_parameter(
         a macroscopic description is valid. This is used to recover the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters. `z_mean` is a required parameter if `method` is
-        `"lsfullinterp"`, `"hlsmaxinterp"`, or `"hlsfullinterp"`.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"lsfullinterp"``, ``"hlsmaxinterp"``, or ``"hlsfullinterp"``.
 
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles.  If not provided,
