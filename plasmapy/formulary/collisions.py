@@ -399,8 +399,15 @@ def Coulomb_logarithm(
     bmin, bmax = impact_parameter(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
-    
-    if method in ("classical", "LS", "ls_min_interp", "GMS-1", "ls_full_interp", "GMS-2"):
+
+    if method in (
+        "classical",
+        "LS",
+        "ls_min_interp",
+        "GMS-1",
+        "ls_full_interp",
+        "GMS-2",
+    ):
         ln_Lambda = np.log(bmax / bmin)
     elif method in ("ls_clamp_mininterp", "GMS-3"):
         ln_Lambda = np.log(bmax / bmin)
@@ -409,23 +416,37 @@ def Coulomb_logarithm(
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in ("hls_min_interp", "GMS-4", "hls_max_interp", "GMS-5", "hls_full_interp", "GMS-6"):
+    elif method in (
+        "hls_min_interp",
+        "GMS-4",
+        "hls_max_interp",
+        "GMS-5",
+        "hls_full_interp",
+        "GMS-6",
+    ):
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            "Unknown method. Choose from \"classical\", \"ls_min_interp\", \"ls_full_interp\", "
-            "\"ls_clamp_mininterp\", \"hls_min_interp\", \"hls_max_interp\", \"hls_full_interp\", "
+            'Unknown method. Choose from "classical", "ls_min_interp", "ls_full_interp", '
+            '"ls_clamp_mininterp", "hls_min_interp", "hls_max_interp", "hls_full_interp", '
             "and their aliases. Please refer to the documentation of this function for more information."
         )
-    
+
     # applying dimensionless units
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
-    
-    #Allow NaNs through the < checks without warning
+
+    # Allow NaNs through the < checks without warning
     with np.errstate(invalid="ignore"):
-        if np.any(ln_Lambda < 2) and method in ["classical", "LS", "ls_min_interp", "GMS-1", "ls_full_interp", "GMS-2"]:
+        if np.any(ln_Lambda < 2) and method in [
+            "classical",
+            "LS",
+            "ls_min_interp",
+            "GMS-1",
+            "ls_full_interp",
+            "GMS-2",
+        ]:
             warnings.warn(
-                f"The Coulomb logarithm is {ln_Lambda}, and the specified method, \"{method}\", depends on "
+                f'The Coulomb logarithm is {ln_Lambda}, and the specified method, "{method}", depends on '
                 "weak coupling.",
                 utils.CouplingWarning,
             )
@@ -435,7 +456,7 @@ def Coulomb_logarithm(
                 "coupling effects may exist for the plasma.",
                 utils.CouplingWarning,
             )
-    
+
     return ln_Lambda
 
 
@@ -469,7 +490,7 @@ def _replaceNanVwithThermalV(V, T, m):
     if np.any(V == 0):
         raise utils.PhysicsError("You cannot have a collision for zero velocity!")
     # getting thermal velocity of system if no velocity is given
-    
+
     if V is None:
         V = parameters.thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
@@ -481,7 +502,7 @@ def _replaceNanVwithThermalV(V, T, m):
         else:
             V = V.copy()
             V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
-    
+
     return V
 
 
@@ -707,7 +728,7 @@ def impact_parameter(
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90 degree Coulomb collision
     bPerp = impact_parameter_perp(T=T, species=species, V=V)
-    
+
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
     if method == "classical":
@@ -776,7 +797,7 @@ def impact_parameter(
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
     else:
         raise ValueError(f"Method {method} not found!")
-   
+
     # ARRAY NOTES
     # it could be that bmin and bmax have different sizes. If Te is a scalar,
     # T and V will be scalar from _boilerplate, so bmin will scalar.  However
@@ -784,7 +805,7 @@ def impact_parameter(
     # do we want to extend the scalar bmin to equal the length of bmax? Sure.
     if np.isscalar(bmin.value) and not np.isscalar(bmax.value):
         bmin = np.repeat(bmin, len(bmax))
-    
+
     return bmin.to(u.m), bmax.to(u.m)
 
 
@@ -904,7 +925,7 @@ def collision_frequency(
     # using a more descriptive name for the thermal velocity using
     # reduced mass
     V_reduced = V_r
-    
+
     if species[0] in ("e", "e-") and species[1] in ("e", "e-"):
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
@@ -937,7 +958,7 @@ def collision_frequency(
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
         # Coulomb logarithm
         cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
-   
+
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
     # collision frequency where Coulomb logarithm accounts for
@@ -1906,7 +1927,7 @@ def coupling_parameter(
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    
+
     if np.isnan(z_mean):
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
@@ -1923,13 +1944,13 @@ def coupling_parameter(
         n_i = n_e / z_mean
         # getting Wigner-Seitz radius based on ion density
         radius = Wigner_Seitz_radius(n_i)
-    
+
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
         coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
     else:
         coulombEnergy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
-    
+
     if method == "classical":
         # classical thermal kinetic energy
         kineticEnergy = k_B * T
