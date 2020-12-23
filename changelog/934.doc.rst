@@ -1,0 +1,2 @@
+Added description to :func:`~plasmapy.formulary.parameters.Hall_parameter`
+signature and equation in docstrings.
