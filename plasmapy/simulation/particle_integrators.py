@@ -61,16 +61,3 @@ def boris_push(x, v, b, e, q, m, dt):
     v[...] = vplus + hqmdt * e
 
     x += v * dt
-
-
-c = constants.c.si.value
-
-
-def _Lorentz_factor(u):
-    """Calculates the Lorentz factor from the relativistic momentum.
-
-    The analogous calculation from velocity is
-
-    np.sqrt(1 - ((np.linalg.norm(velocity) / c) ** 2))
-    """
-    return np.sqrt(1 + ((np.linalg.norm(u) / c) ** 2))
