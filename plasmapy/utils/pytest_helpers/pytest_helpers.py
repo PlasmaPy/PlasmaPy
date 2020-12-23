@@ -1,4 +1,4 @@
-"""Test helpers utilities."""
+"""Utilities to help with testing."""
 
 __all__ = [
     "assert_can_handle_nparray",
