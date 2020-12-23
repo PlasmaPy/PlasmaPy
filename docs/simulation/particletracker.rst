@@ -18,14 +18,6 @@ future.
 
     /notebooks/particle_stepper
 
-Submodules
-==========
-
-.. toctree::
-   :maxdepth: 1
-
-   particle_integrators
-
 Reference/API
 =============
 

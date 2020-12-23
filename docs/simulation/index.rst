@@ -12,7 +12,8 @@ Introduction
 ============
 
 The `~plasmapy.simulation` subpackage provides basic, didactic reference
-implementations of popular methods of simulating plasmas.
+implementations of popular methods of simulating plasmas, and interfaces
+to common simulation tools.
 
 Submodules
 ==========
@@ -21,6 +22,8 @@ Submodules
    :maxdepth: 2
 
    particletracker
+   particle_integrators
+   abstractions
 
 
 Reference/API

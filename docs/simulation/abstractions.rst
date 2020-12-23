@@ -1,5 +1,3 @@
-:orphan:
-
 `plasmapy.simulation.abstractions`
 ==================================
 
@@ -7,4 +5,3 @@
 
 .. automodapi::  plasmapy.simulation.abstractions
    :include-all-objects:
-   :no-heading:
