@@ -28,7 +28,7 @@ from plasmapy.tests.helpers.exceptions import (
     UnexpectedResultFail,
 )
 from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning, PlasmaPyWarning
-from plasmapy.utils.formatting.formatting import (
+from plasmapy.utils.formatting import (
     _name_with_article,
     _object_name,
     call_string,
