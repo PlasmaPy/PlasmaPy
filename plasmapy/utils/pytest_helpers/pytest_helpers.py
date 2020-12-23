@@ -27,12 +27,8 @@ from plasmapy.tests.helpers.exceptions import (
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
+from plasmapy.utils.code_repr import _name_with_article, _object_name, call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
-from plasmapy.utils.code_repr import (
-    _name_with_article,
-    _object_name,
-    call_string,
-)
 
 
 def _process_input(wrapped_function: Callable):  # coverage: ignore
@@ -628,7 +624,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
 
 def assert_can_handle_nparray(
-    function_to_test, insert_some_nans=None, insert_all_nans=None, kwargs=None,
+    function_to_test,
+    insert_some_nans=None,
+    insert_all_nans=None,
+    kwargs=None,
 ):
     """
     Test for ability to handle numpy array quantities.
