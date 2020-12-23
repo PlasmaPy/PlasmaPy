@@ -13,19 +13,20 @@ stepper implementing the Boris algorithm.
 This module is highly unstable and is expected to change a lot in the
 future.
 
-
 .. nbgallery::
     :caption: Examples
 
     /notebooks/particle_stepper
 
+Submodules
+==========
+
+.. toctree::
+   particle_integrators
+
 Reference/API
 =============
 
 .. automodapi:: plasmapy.simulation.particletracker
-   :no-heading:
-   :no-main-docstr:
-
-.. automodapi:: plasmapy.simulation.particle_integrators
    :no-heading:
    :no-main-docstr:
