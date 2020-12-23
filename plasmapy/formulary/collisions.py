@@ -121,8 +121,8 @@ def Coulomb_logarithm(
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer method
         (``"classical"`` or ``"LS"``). The other 6 supported methods are ``"ls_min_interp"``,
-        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``, ``"hls_min_interp"``, ``"hls_max_interp"``, and 
-        ``"hls_full_interp"``. Please refer to the Notes section of this 
+        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``, ``"hls_min_interp"``, ``"hls_max_interp"``, and
+        ``"hls_full_interp"``. Please refer to the Notes section of this
         docstring for more information, including about abbreviated aliases of these names.
 
     Returns
@@ -156,13 +156,13 @@ def Coulomb_logarithm(
     : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
-    
+
     Notes
     -----
     **Overview of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
-    
+
     PlasmaPy supports 7 methods of computing the Coulomb logarithm:
-    
+
     1. ``"classical"`` or ``"LS"``
     2. ``"ls_min_interp"`` or ``"GMS-1"``
     3. ``"ls_full_interp"`` or ``"GMS-2"``
@@ -170,197 +170,197 @@ def Coulomb_logarithm(
     5. ``"hls_min_interp"`` or ``"GMS-4"``
     6. ``"hls_max_interp"`` or ``"GMS-5"``
     7. ``"hls_full_interp"`` or ``"GMS-6"``
-    
-    Options 1–4 are straight-line Landau-Spitzer (``"ls..."``) methods in which the trajectory of a 
-    Coulomb collision is modeled as a straight line. For the straight-line Landau-Spitzer methods, the Coulomb 
+
+    Options 1–4 are straight-line Landau-Spitzer (``"ls..."``) methods in which the trajectory of a
+    Coulomb collision is modeled as a straight line. For the straight-line Landau-Spitzer methods, the Coulomb
     logarithm (:math:`\ln{\Lambda}`) is defined to be:
 
     .. math::
         \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-    
-    Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in which the trajectory of a 
-    Coulomb collision is modeled as a hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb 
+
+    Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in which the trajectory of a
+    Coulomb collision is modeled as a hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb
     logarithm (:math:`\ln{\Lambda}`) is defined to be:
-    
+
     .. math::
         \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner impact parameter and the outer
-    impact parameter for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed 
+    impact parameter for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed
     by `impact_parameter`, another function.
 
-    .. note:: 
+    .. note::
         For strongly-coupled plasma, PlasmaPy recommends Option 7, ``"hls_full_interp"`` or ``"GMS-6"``,
         because of its high accuracy regardless of a plasma's strength of coupling.
-    
+
     **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
-    
-    In this section, further information about each method, such as about interpolation and other special 
+
+    In this section, further information about each method, such as about interpolation and other special
     features, is documented. Please refer to Reference [4]_ for additional information about these methods.
-    
+
     Option 1: ``"classical"`` or ``"LS"`` (Landau-Spitzer)
-        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the 
-        higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest 
-        approach (:math:`\rho_{\perp}`) if they are not equal (and either of the two if they are equal) and 
+        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the
+        higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest
+        approach (:math:`\rho_{\perp}`) if they are not equal (and either of the two if they are equal) and
         :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-            
+
         .. math::
-            b_{min} \equiv 
+            b_{min} \equiv
             \left\{
                 \begin{array}{ll}
                            \lambda_{de Broglie} & \mbox{if } \lambda_{de Broglie} \geq \rho_{\perp} \\
                            \rho_{\perp}         & \mbox{if } \rho_{\perp} \geq \lambda_{de Broglie}
                 \end{array}
             \right.
-        
+
         .. math::
             b_{max} \equiv \lambda_{Debye}
-        
-        The inner impact parameter (:math:`b_{min}`) is the higher of :math:`\lambda_{de Broglie}` 
-        and :math:`\rho_{\perp}` because for impact parameters lower than :math:`\lambda_{de Broglie}`, 
+
+        The inner impact parameter (:math:`b_{min}`) is the higher of :math:`\lambda_{de Broglie}`
+        and :math:`\rho_{\perp}` because for impact parameters lower than :math:`\lambda_{de Broglie}`,
         quantum effects cause the collision to be non-Coulombic [2]_ [3]_.
-        
-        The outer impact parameter (:math:`b_{max}`) is defined to be the Debye length 
+
+        The outer impact parameter (:math:`b_{max}`) is defined to be the Debye length
         (:math:`\lambda_{Debye}`) because at distances higher than the
         Debye length, the electric fields created by other particles are
         screened out by the electrons rearranging themselves.
 
         The uncertainty of the classical straight-line Landau-Spitzer method is on the order
         of its reciprocal.
-        
+
         This method is invalid if :math:`\ln{\Lambda} < 2` because of the uncertainty of the classical
-        straight-line Landau-Spitzer method and if :math:`\ln{\Lambda} < 0`, which may be true if the 
+        straight-line Landau-Spitzer method and if :math:`\ln{\Lambda} < 0`, which may be true if the
         coupling parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Please refer to Reference [1]_ for additional information about this method.
-        
+
     Option 2: ``"ls_min_interp"`` or ``"GMS-1"`` (Landau-Spitzer, interpolation of :math:`b_{min}`)
-        A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
-        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the
+        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-            
+
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
-        
+
         .. math::
             b_{max} \equiv \lambda_{Debye}
-        
-        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling 
+
+        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Note: This is the first method in Table 1 of Reference [4]_.
-        
+
     Option 3: ``"ls_full_interp"`` or ``"GMS-2"`` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
-        (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
-        :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
+        (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`).
+        :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`)
         and the ion sphere radius (:math:`a_i`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
-        
+
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
-            
+
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
-       
-        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling 
+
+        This method is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Note: This is the second method in Table 1 of Reference [4]_.
-        
+
     Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
-        A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at 
-        a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0`, unlike by the 
-        classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie 
-        wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at
+        a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0`, unlike by the
+        classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie
+        wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach
         (:math:`\rho_{\perp}`). :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
-        
+
         .. math::
-            \ln{\Lambda} \equiv 
+            \ln{\Lambda} \equiv
             \left\{
                 \begin{array}{ll}
                            \ln\left( \frac{b_{max}}{b_{min}} \right) & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \geq 2 \\
                            2                                         & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \leq 2
                 \end{array}
             \right.
-            
+
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
-        
+
         .. math::
             b_{max} \equiv \lambda_{Debye}
-        
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
+
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this
         method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Note: This is the third method in Table 1 of Reference [4]_.
-        
+
     Option 5: ``"hls_min_interp"`` or ``"GMS-4"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the 
-        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach 
+        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the
+        de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach
         (:math:`\rho_{\perp}`) and :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
-        
+
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
-            
+
         .. math::
             b_{max} \equiv \lambda_{Debye}
-        
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
+
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this
         method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Note: This is the fourth method in Table 1 of Reference [4]_.
-        
+
     Option 6: ``"hls_max_interp"`` or ``"GMS-5"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated between 
+        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated between
         the Debye length (:math:`\lambda_{Debye}`) and the ion sphere radius (:math:`a_i`)
         and :math:`b_{min}` is defined to be the distance of closest approach (:math:`\rho_{\perp}`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
-        
+
         .. math::
             b_{min} \equiv \rho_{\perp}
-        
+
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
-        
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
+
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this
         method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
-        
+
         Caution: This method overestimates :math:`\ln{\Lambda}` at high temperatures.
-        
+
         Note: This is the fifth method in Table 1 of Reference [4]_.
-        
+
     Option 7: ``"hls_full_interp"`` or ``"GMS-6"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
         A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
         are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
-        (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`). 
-        :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`) 
+        (:math:`\lambda_{de Broglie}`) and the distance of closest approach (:math:`\rho_{\perp}`).
+        :math:`b_{max}` is interpolated between the Debye length (:math:`\lambda_{Debye}`)
         and the ion sphere radius (:math:`a_i`).
-        
+
         .. math::
             \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
-        
+
         .. math::
             b_{min} \equiv \sqrt{\lambda_{de Broglie}^2 + \rho_{\perp}^2}
-            
+
         .. math::
             b_{max} \equiv \sqrt{\lambda_{Debye}^2 + a_i^2}
-        
-        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this 
+
+        This method is valid for any plasma because it is impossible for :math:`\ln{\Lambda} < 0` by this
         method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
 
         Note: This is the sixth method in Table 1 of Reference [4]_.
@@ -390,7 +390,7 @@ def Coulomb_logarithm(
     .. [4] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
-    
+
     See Also
     --------
     impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
