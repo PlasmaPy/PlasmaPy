@@ -27,7 +27,6 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.simulation
-   :noindex:
    :no-heading:
    :no-main-docstr:
    :inherited-members:

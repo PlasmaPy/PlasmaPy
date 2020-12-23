@@ -8,4 +8,3 @@ Reference/API
 =============
 
 .. automodapi:: plasmapy.simulation.particletracker
-   :noindex:
