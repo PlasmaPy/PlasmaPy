@@ -444,8 +444,7 @@ def Coulomb_logarithm(
             "GMS-2",
         ]:
             warnings.warn(
-                f'The Coulomb logarithm is {ln_Lambda}, and the specified method, "{method}", depends on '
-                'weak coupling.',
+                f'The Coulomb logarithm is {ln_Lambda}, and the specified method, "{method}", depends on weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
