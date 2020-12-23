@@ -1,3 +1,11 @@
+"""Particle movement integrators, for particle simulations.
+
+These do not have `astropy.units` support, choosing instead to
+limit overhead and increase performance.
+
+They act in-place on position and velocity arrays to reduce
+memory allocation.
+"""
 import math
 import numpy as np
 
@@ -6,24 +14,24 @@ from astropy import constants
 
 def boris_push(x, v, b, e, q, m, dt):
     r"""
-    Implement the explicit Boris pusher for moving and accelerating particles.
+    The explicit Boris pusher.
 
     Parameters
     ----------
     x : np.ndarray
-        particle position at full timestep
+        particle position at full timestep, in SI (meter) units.
     v : np.ndarray
-        particle velocity at half timestep
-    b : np.ndarray
-        magnetic field at full timestep
-    e : float
-        electric field at full timestep
+        particle velocity at half timestep, in SI (meter/second) units.
+    B : np.ndarray
+        magnetic field at full timestep, in SI (tesla) units.
+    E : float
+        electric field at full timestep, in SI (V/m) units.
     q : float
-        particle charge
+        particle charge, in SI (Coulomb) units.
     m : float
-        particle mass
+        particle mass, in SI (kg) units.
     dt : float
-        timestep
+        timestep, in SI (second) units.
 
     Notes
     ----------
@@ -38,8 +46,8 @@ def boris_push(x, v, b, e, q, m, dt):
        field.
     3. Add the second half of the impulse from the electric field.
 
-    This ends up causing the magnetic field action to be properly
-    "centered" in time, and the algorithm conserves energy.
+    This ends up causing the magnetic field action to be properly "centered" in
+    time, and the algorithm, being a symplectic integrator, conserves energy.
 
     References
     ----------
@@ -49,15 +57,15 @@ def boris_push(x, v, b, e, q, m, dt):
            https://www.particleincell.com/2011/vxb-rotation/
     """
     hqmdt = 0.5 * dt * q / m
-    vminus = v + hqmdt * e
+    vminus = v + hqmdt * E
 
     # rotate to add magnetic field
-    t = b * hqmdt
+    t = B * hqmdt
     s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
     vprime = vminus + np.cross(vminus, t)
     vplus = vminus + np.cross(vprime, s)
 
     # add second half of electric impulse
-    v[...] = vplus + hqmdt * e
+    v[...] = vplus + hqmdt * E
 
     x += v * dt
