@@ -16,10 +16,10 @@ __all__ = [
 ]
 
 from plasmapy.utils import (
+    code_repr,
     datatype_factory_base,
     decorators,
     exceptions,
-    code_repr,
     roman,
 )
 from plasmapy.utils.exceptions import (
