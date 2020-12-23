@@ -1,12 +1,12 @@
+"""Tools for formatting strings, including for error messages."""
 
+__all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 import inspect
 import numpy as np
 
 from astropy import units as u
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-
-__all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 
 def _format_quantity(arg: u.Quantity) -> str:
