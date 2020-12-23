@@ -27,7 +27,7 @@ from plasmapy.tests.helpers.exceptions import (
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
-from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning, PlasmaPyWarning
+from plasmapy.utils.exceptions import PlasmaPyWarning
 from plasmapy.utils.formatting import (
     _name_with_article,
     _object_name,
@@ -72,7 +72,6 @@ def _process_input(wrapped_function: Callable):  # coverage: ignore
     return decorator(wrapped_function)
 
 
-@deprecated(since="0.5.0", warning_type=PlasmaPyDeprecationWarning)
 @_process_input
 def run_test(
     func,
@@ -220,11 +219,6 @@ def run_test(
             run_test(inputs)
 
     """
-
-    warnings.warn(
-        "'run_test' is deprecated; use 'plasmapy.tests.helpers.test_runner' instead",
-        DeprecationWarning,
-    )
 
     if kwargs is None:
         kwargs = {}
