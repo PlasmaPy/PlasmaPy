@@ -1,2 +1,2 @@
-Added functions in ``plasmapy.utils.formatting`` to reproduce the strings
+Added functions in `plasmapy.utils.formatting` to reproduce the strings
 to call a method or access an attribute of a class instance.
