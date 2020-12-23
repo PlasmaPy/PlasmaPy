@@ -427,9 +427,7 @@ def Coulomb_logarithm(
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            'Unknown method. Choose from "classical", "ls_min_interp", "ls_full_interp", '
-            '"ls_clamp_mininterp", "hls_min_interp", "hls_max_interp", "hls_full_interp", '
-            "and their aliases. Please refer to the documentation of this function for more information."
+            'Unknown method. Choose from "classical", "ls_min_interp", "ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", "hls_max_interp", "hls_full_interp", and their aliases. Please refer to the documentation of this function for more information.'
         )
 
     # applying dimensionless units
@@ -447,7 +445,7 @@ def Coulomb_logarithm(
         ]:
             warnings.warn(
                 f'The Coulomb logarithm is {ln_Lambda}, and the specified method, "{method}", depends on '
-                "weak coupling.",
+                'weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
