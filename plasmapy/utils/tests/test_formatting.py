@@ -3,7 +3,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.utils.formatting import (
+from plasmapy.utils.code_repr import (
     _format_quantity,
     _string_together_warnings_for_printing,
     attribute_call_string,

@@ -13,7 +13,7 @@ from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.
     _parse_and_check_atomic_input,
 )
 from plasmapy.particles.special_particles import ParticleZoo
-from plasmapy.utils.formatting import call_string
+from plasmapy.utils.code_repr import call_string
 
 
 def _particle_call_string(arg, kwargs=None) -> str:

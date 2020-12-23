@@ -19,7 +19,7 @@ from plasmapy.utils import (
     datatype_factory_base,
     decorators,
     exceptions,
-    formatting,
+    code_repr,
     roman,
 )
 from plasmapy.utils.exceptions import (
