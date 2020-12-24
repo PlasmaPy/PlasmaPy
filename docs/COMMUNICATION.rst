@@ -15,7 +15,7 @@ bridged (mirrored) to `Gitter <https://gitter.im/PlasmaPy/Lobby>`__.
 -------------------------------------------------------------------------
 
 PlasmaPy's `GitHub Discussions page
-<https://github.com/PlasmaPy/PlasmaPy/discussions`__ is a great place to
+<https://github.com/PlasmaPy/PlasmaPy/discussions>`__ is a great place to
 suggest ideas, bring up discussion topics, and ask questions in threaded public
 discussions.
 
