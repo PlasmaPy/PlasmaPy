@@ -12,7 +12,7 @@ get a response, for PlasmaPy is our `Matrix room
 bridged (mirrored) to `Gitter <https://gitter.im/PlasmaPy/Lobby>`__.
 
 `GitHub Discussions <https://github.com/PlasmaPy/PlasmaPy/discussions>`__
-------------------------------------------------------
+-------------------------------------------------------------------------
 
 PlasmaPy's `GitHub Discussions page
 <https://github.com/PlasmaPy/PlasmaPy/discussions`__ is a great place to
