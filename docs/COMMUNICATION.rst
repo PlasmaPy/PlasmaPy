@@ -6,8 +6,8 @@ Feedback and Communication
 `Matrix chat <https://app.element.io/#/room/#plasmapy:matrix.org>`__
 --------------------------------------------------------------------
 
-The primary communication channel, and the quickest way to ask a question and
-get a response, for PlasmaPy is our `Matrix room
+The primary communication channel for PlasmaPy, and the quickest way to ask
+a question and get a response, is our `Matrix room
 <https://app.element.io/#/room/#plasmapy:openastronomy.org>`__. It is is
 bridged (mirrored) to `Gitter <https://gitter.im/PlasmaPy/Lobby>`__.
 
