@@ -1782,13 +1782,13 @@ def coupling_parameter(
     return coupling
 
 
-@particle_input
-@check_quantity()
+@validate_quantities(T={"equivalencies": u.temperature_energy()})
+@particles.particle_input
 def Dreicer_electric_field(
     T: u.K,
-    n_i: 1 / u.m ** 3,
-    ion: Particle,
-    coulomb_log: numbers.Real = None,
+    n_i: u.m ** -3,
+    ion: particles.Particle,
+    coulomb_log: u.dimensionless_unscaled = None,
     vTh: u.m / u.s = np.nan * u.m / u.s,
     coulomb_log_method: str = "classical",
 ) -> u.V / u.m:
@@ -1806,7 +1806,7 @@ def Dreicer_electric_field(
     n_i : ~astropy.units.Quantity
         The ions density in units convertible to per cubic meter.
 
-    ion : Particle
+    ion : particles.Particle
 
     coulomb_log : float or dimensionless ~astropy.units.Quantity, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
@@ -1865,7 +1865,7 @@ def Dreicer_electric_field(
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> Dreicer_electric_field(T, n, 'p')
-    <Quantity 1.74996887 V / m>
+    <Quantity 1.74996834 V / m>
 
     References
     ----------
@@ -1874,10 +1874,10 @@ def Dreicer_electric_field(
     """
     if coulomb_log is None:
         coulomb_log = Coulomb_logarithm(
-            T, n_i, (Particle("e"), ion), method=coulomb_log_method
+            T, n_i, (particles.Particle("e"), ion), method=coulomb_log_method
         )
     vTh = _replaceNanVwithThermalV(vTh, T, m_e)
     thermal_electron_velocity = vTh
     denominator = (4 * pi * eps0) ** 2 * m_e * thermal_electron_velocity ** 2
     dreicer_electric_field = n_i * ion.charge ** 2 * e * coulomb_log / denominator
-    return dreicer_electric_field.to(u.V / u.m)
+    return dreicer_electric_field
