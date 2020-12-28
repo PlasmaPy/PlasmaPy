@@ -46,7 +46,7 @@ def _code_repr_of_arg(arg) -> str:
         return repr(arg)
 
 
-def _code_repr_of_keyword(keyword) -> str:
+def _code_repr_of_keyword_name(keyword) -> str:
     """Transform a keyword into a format as would appear in a function call."""
     if isinstance(keyword, str):
         return str(keyword)
@@ -69,7 +69,7 @@ def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str
 
     for kwarg in kwargs:
         args_and_kwargs += (
-            f"{_code_repr_of_keyword(kwarg)}={_code_repr_of_arg(kwargs[kwarg])}, "
+            f"{_code_repr_of_keyword_name(kwarg)}={_code_repr_of_arg(kwargs[kwarg])}, "
         )
 
     if args_and_kwargs[-2:] == ", ":
