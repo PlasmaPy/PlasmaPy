@@ -9,7 +9,7 @@ from astropy import units as u
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 
-def _format_quantity(arg: u.Quantity) -> str:
+def _code_repr_of_quantity(arg: u.Quantity) -> str:
     """
     Transform a `~astropy.units.Quantity` into a format as would appear
     in a function call.
@@ -36,17 +36,17 @@ def _format_quantity(arg: u.Quantity) -> str:
     return formatted
 
 
-def _format_arg(arg) -> str:
+def _code_repr_of_arg(arg) -> str:
     """Transform an argument into a format as would appear in a function call."""
     if hasattr(arg, "__name__"):
         return arg.__name__
     elif isinstance(arg, u.Quantity):
-        return _format_quantity(arg)
+        return _code_repr_of_quantity(arg)
     else:
         return repr(arg)
 
 
-def _format_kw(keyword) -> str:
+def _code_repr_of_keyword(keyword) -> str:
     """Transform a keyword into a format as would appear in a function call."""
     if isinstance(keyword, str):
         return str(keyword)
@@ -56,7 +56,7 @@ def _format_kw(keyword) -> str:
         return repr(keyword)
 
 
-def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
+def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     """
     Take positional and keyword arguments, and format them into a
     string as they would appear in a function call.
@@ -65,10 +65,12 @@ def _format_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     args_and_kwargs = ""
 
     for arg in args:
-        args_and_kwargs += f"{_format_arg(arg)}, "
+        args_and_kwargs += f"{_code_repr_of_arg(arg)}, "
 
     for kwarg in kwargs:
-        args_and_kwargs += f"{_format_kw(kwarg)}={_format_arg(kwargs[kwarg])}, "
+        args_and_kwargs += (
+            f"{_code_repr_of_keyword(kwarg)}={_code_repr_of_arg(kwargs[kwarg])}, "
+        )
 
     if args_and_kwargs[-2:] == ", ":
         args_and_kwargs = args_and_kwargs[:-2]
@@ -147,7 +149,7 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     attribute_call_string
     method_call_string
     """
-    args_and_kwargs = _format_args_and_kwargs(args, kwargs)
+    args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs)
     return f"{f.__name__}({args_and_kwargs})"
 
 
@@ -170,9 +172,9 @@ def attribute_call_string(
         The name of the attribute of class ``cls``
 
     cls_args : `tuple`, `list`, or any; optional
-        A `tuple` or `list` containing the positional arguments to be
-        used during instantiation of ``cls``, or any other `object` if
-        there is only one positional argument
+        A `tuple` or `list` containing positional arguments, or any
+        other type of `object` if there is only one positional argument,
+        to be used during instantiation of ``cls``
 
     cls_kwargs: `dict`, optional
         A `dict` containing the keyword arguments to be used during
@@ -216,9 +218,10 @@ def method_call_string(
         The name of the method in class ``cls``
 
     cls_args : `tuple`, `list`, or any; optional
-        A `tuple` or `list` containing the positional arguments to be
-        used during instantiation of ``cls``, or any other `object` if
-        there is only one positional argument
+        A `tuple` or `list` containing positional arguments, or any
+        other type of `object` if there is only one positional argument,
+        to be used during instantiation of ``cls``
+
 
     cls_kwargs: `dict`, optional
         A `dict` containing the keyword arguments to be used during
@@ -253,5 +256,5 @@ def method_call_string(
     attribute_call_string
     """
     class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"
-    method_args_and_kwargs = _format_args_and_kwargs(method_args, method_kwargs)
+    method_args_and_kwargs = _code_repr_of_args_and_kwargs(method_args, method_kwargs)
     return f"{class_call_string}.{method}({method_args_and_kwargs})"

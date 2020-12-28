@@ -4,7 +4,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.utils.code_repr import (
-    _format_quantity,
+    _code_repr_of_quantity,
     _string_together_warnings_for_printing,
     attribute_call_string,
     call_string,
@@ -118,14 +118,14 @@ def test_format_quantity(quantity, expected):
     Test that `~astropy.units.Quantity` objects get converted into a
     string as expected.
     """
-    assert _format_quantity(quantity) == expected
+    assert _code_repr_of_quantity(quantity) == expected
 
 
 @pytest.mark.parametrize("not_a_quantity", [3.5, "1.2"])
 def test_format_quantity_typeerror(not_a_quantity):
     """"""
     with pytest.raises(TypeError):
-        _format_quantity(not_a_quantity)
+        _code_repr_of_quantity(not_a_quantity)
 
 
 def test_stringing_together_warning():
