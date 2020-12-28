@@ -1,7 +1,7 @@
 .. _contributing-to-plasmapy:
 
-Contributing to PlasmaPy
-========================
+How to Contribute
+=================
 
 There are numerous ways to contribute to PlasmaPy, including by
 providing code and documentation, suggesting and discussing ideas,
@@ -36,34 +36,6 @@ most valuable to the project as a whole, because you're coming to the
 project with fresh eyes, so you can see the errors and assumptions that
 seasoned contributors have glossed over.
 
-.. _sharing-ideas:
-
-Sharing ideas
--------------
-
-There are several methods of communication that are being used in the
-early stages of PlasmaPy development:
-
--  `Signing up for the PlasmaPy email
-   list <https://groups.google.com/forum/#!forum/plasmapy>`_ will allow
-   you to participate in broader discussions and keep up with the latest
-   developments.
-
--  The `PlasmaPy repository on
-   GitHub <https://github.com/PlasmaPy/plasmapy>`_ is the best place to
-   `submit issues <https://github.com/PlasmaPy/plasmapy/issues>`_ and
-   review `pull
-   requests <https://github.com/PlasmaPy/plasmapy/pulls>`_.
-
--  The PlasmaPy
-   `Matrix <https://riot.im/app/#/room/#plasmapy:matrix.org>`_ or
-   `Gitter <https://gitter.im/PlasmaPy/Lobby>`_ joint channel is a
-   great place to have informal conversations, coordinate efforts, and
-   share ideas.
-
--  We have approximately biweekly telecons that are announced on the
-   email list.
-
 Contributing code or documentation to PlasmaPy
 ----------------------------------------------
 
@@ -93,10 +65,21 @@ familiar with git by going through these tutorials or a `Software
 Carpentry <https://software-carpentry.org/>`_ workshop prior to making
 code contributions. Do note that you can usually find help in the
 `PlasmaPy Matrix
-chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`_.
+chatroom <https://app.element.io/#/room/#plasmapy:matrix.org>`_.
 
 For actual guidelines for working on PlasmaPy, please see our
 :ref:`plasmapy-development-guide`.
+
+Towncrier changelog entries
+---------------------------
+
+Every pull request should include a changelog entry. Please see
+`changelog/README.rst` for instructions.
+
+To summarize, put a file like ``<PULL REQUEST>.<TYPE>.rst``, where ``<PULL
+REQUEST>`` is a pull request number, and ``<TYPE>`` is one of ``breaking``,
+``feature``, ``bugfix``, ``doc``, ``removal``, ``trivial``. If unsure, ask
+a maintainer.
 
 Footnotes
 ^^^^^^^^^

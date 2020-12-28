@@ -1,0 +1,7 @@
+codecov:
+  token: 85c13d8a-e9e1-49fd-97d4-7ba103f3e830
+coverage:
+  status:
+    project:
+      default:
+        threshold: 0.2%

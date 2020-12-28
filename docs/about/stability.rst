@@ -91,7 +91,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.atomic
+                plasmapy.particles
             </td>
             <td align='center'>
                 <span class="dev"></span>
@@ -103,7 +103,7 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.classes
+                plasmapy.plasma
             </td>
             <td align='center'>
                 <span class="dev"></span>
@@ -116,70 +116,13 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.constants
-            </td>
-            <td align='center'>
-                <span class="stable"></span>
-            </td>
-            <td>
-                We do not anticipate that there will be any major backward
-                incompatible changes within the
-                <tt class="docutils literal"><span class="pre">constants</span></tt>
-                subpackage.  However, the values for constants may be updated
-                when improved values become available.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.diagnostics
+                plasmapy.formulary
             </td>
             <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
-                This subpackage is in the early stages of development.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.mathematics
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                The
-                <tt class="docutils literal"><span class="pre">mathematics</span></tt>
-                subpackage is in the early stages of development.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.physics
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                The
-                <tt class="docutils literal"><span class="pre">physics</span></tt>
-                subpackage may undergo significant reorganization with potentially
-                major changes to the API.  We anticipate that there will be major
-                additions to this package.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                plasmapy.transport
-            </td>
-            <td align='center'>
-                <span class="dev"></span>
-            </td>
-            <td>
-                The
-                <tt class="docutils literal"><span class="pre">transport</span></tt>
-                subpackage will likely undergo significant reorganization
-                and expansion with major changes to the API.
+                The <tt class="docutils literal"><span class="pre">formulary</span></tt> subpackage should now be reasonably stable, with possible additions rather than removals now being in scope.
             </td>
         </tr>
         <tr>

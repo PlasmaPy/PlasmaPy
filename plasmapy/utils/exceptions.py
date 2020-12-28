@@ -1,9 +1,23 @@
 """Exceptions and warnings specific to PlasmaPy."""
+__all__ = [
+    "PlasmaPyError",
+    "PhysicsError",
+    "InvalidRomanNumeralError",
+    "OutOfRangeError",
+    "RelativityError",
+    "RomanError",
+    "PlasmaPyWarning",
+    "CouplingWarning",
+    "PhysicsWarning",
+    "RelativityWarning",
+]
 
+from astropy.units import UnitsWarning
 
-# ----------
-# Exceptions
-# ----------
+# ------------------------------------------------------------------------------
+#   Exceptions
+# ------------------------------------------------------------------------------
+
 
 class PlasmaPyError(Exception):
     """
@@ -12,6 +26,7 @@ class PlasmaPyError(Exception):
     All custom exceptions raised by PlasmaPy should inherit from this
     class and be defined in this module.
     """
+
     pass
 
 
@@ -19,73 +34,49 @@ class PhysicsError(PlasmaPyError, ValueError):
     """
     The base exception for physics-related errors.
     """
+
     pass
+
+
+class RomanError(PlasmaPyError):
+    """A base exception for errors from `~plasmapy.utils.roman`."""
+
+    pass
+
+
+# ^^^^^^^^^^^^ Base Exceptions should be defined above this comment ^^^^^^^^^^^^
 
 
 class RelativityError(PhysicsError):
     """
     An exception for speeds greater than the speed of light.
     """
+
     pass
 
 
-class AtomicError(PlasmaPyError):
-    """An exception for errors in the `~plasmapy.atomic` subpackage."""
-    pass
-
-
-class MissingAtomicDataError(AtomicError):
-    """An exception for missing atomic or particle data."""
-    pass
-
-
-class ChargeError(AtomicError):
-    """An exception for incorrect or missing charge information."""
-    pass
-
-
-class UnexpectedParticleError(AtomicError):
-    """An exception for when a particle is not of the expected category."""
-    pass
-
-
-class InvalidIonError(UnexpectedParticleError):
+class OutOfRangeError(RomanError):
     """
-    An exception for when an argument is a valid particle but not a
-    valid ion.
+    An exception to be raised for integers that outside of the range
+    that can be converted to Roman numerals.
     """
+
     pass
 
 
-class InvalidIsotopeError(UnexpectedParticleError):
+class InvalidRomanNumeralError(RomanError):
     """
-    An exception for when an argument is a valid particle but not a
-    valid isotope.
+    An exception to be raised when the input is not a valid Roman
+    numeral.
     """
+
     pass
 
 
-class InvalidElementError(UnexpectedParticleError):
-    """
-    An exception for when an argument is a valid particle is not a
-    valid element.
-    """
-    pass
+# ------------------------------------------------------------------------------
+#   Warnings
+# ------------------------------------------------------------------------------
 
-
-class InvalidParticleError(AtomicError):
-    """An exception for when a particle is invalid."""
-    pass
-
-
-class DataStandardError(PlasmaPyError):
-    """An exception for when HDF5 is not defined by OpenPMD standard."""
-    pass
-
-
-# ----------
-# Warnings:
-# ----------
 
 class PlasmaPyWarning(Warning):
     """
@@ -98,12 +89,17 @@ class PlasmaPyWarning(Warning):
     execution if unhandled.
 
     """
+
     pass
 
 
 class PhysicsWarning(PlasmaPyWarning):
-    """The base warning for `~plasmapy.physics` related warnings."""
+    """The base warning for warnings related to non-physical situations."""
+
     pass
+
+
+# ^^^^^^^^^^^^^ Base Warnings should be defined above this comment ^^^^^^^^^^^^^
 
 
 class RelativityWarning(PhysicsWarning):
@@ -111,6 +107,7 @@ class RelativityWarning(PhysicsWarning):
     A warning for when relativistic velocities are being used in or are
     returned by non-relativistic functionality.
     """
+
     pass
 
 
@@ -119,12 +116,4 @@ class CouplingWarning(PhysicsWarning):
     A warning for functions that rely on a particular coupling regime to be valid.
     """
 
-
-class AtomicWarning(PlasmaPyWarning):
-    """The base warning for the `~plasmapy.atomic` subpackage."""
-    pass
-
-
-class MissingAtomicDataWarning(AtomicWarning):
-    """Warning for use when atomic or particle data is missing."""
     pass

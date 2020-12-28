@@ -9,17 +9,18 @@ dependencies:
   - numpy
   - scipy
   - astropy
-  - cython
   - h5py
   - matplotlib
   - mpmath
   - pillow
   - colorama
+  - pip
   - pip:
     - numpydoc
     - pytest
     - lmfit
-    - sphinx
+    - pygments>=2.4.1
+    - sphinx>2
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme

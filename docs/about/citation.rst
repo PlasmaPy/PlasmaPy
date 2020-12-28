@@ -1,44 +1,36 @@
 .. _citation:
 
-Acknowledging and Citing PlasmaPy
-=================================
+Acknowledging and Citing
+========================
 
-If you use PlasmaPy for a project resulting in a publication, we ask
-that you cite the following reference (`BibTeX
-<https://zenodo.org/record/1238132/export/hx#.WvMkQK0cChc>`_):
+If you use PlasmaPy for a project that results in a research publication,
+we ask that you cite the `Zenodo <https://zenodo.org>`__ record for the
+specific version of PlasmaPy used in your project.  Citing a software
+package promotes scientific reproducibility, gives credit to its developers,
+and highlights the importance of software as a vital research product.
 
-* PlasmaPy Community, Nicholas A. Murphy, Andrew J. Leonard, Dominik
-  Stańczak, Pawel M. Kozlowski, Samuel J. Langendorf, Colby C. Haggerty,
-  Jasper P. Beckers, Stuart J. Mumford, Tulasi N. Parashar, and Yi-Min
-  Huang. (2018, April). *PlasmaPy: an open source community-developed
-  Python package for plasma physics.* Zenodo.
-  http://doi.org/10.5281/zenodo.1238132
+Version 0.5.0 of PlasmaPy may be cited with the following reference:
 
-We provide the following standard acknowledgment that you may use
-instead of a citation in the body of a paper.
+   PlasmaPy Community et al. (2020). *PlasmaPy*, version 0.5.0, Zenodo,
+   http://doi.org/10.5281/zenodo.4313063
 
-* This research made use of PlasmaPy, a community-developed open source
-  core Python package for plasma physics (PlasmaPy Community 2018).
+This reference may be made, for example, by adding the following line
+to the methods or acknowledgements section of a paper.
 
-The source code for the most recent release of PlasmaPy (version
-0.1.1) is archived on `Zenodo
-<https://zenodo.org/communities/plasmapy>`__ and can be cited using
-the following reference (`BibTeX
-<https://zenodo.org/record/1436019/export/hx#.W6wUbxxG2Pc>`__):
+   This research made use of PlasmaPy version 0.5.0, a community-developed
+   open source Python package for plasma science (PlasmaPy Community et al.
+   2020).
 
-* PlasmaPy Community, Nicholas A. Murphy, Dominik Stańczak,
-  Pawel M. Kozlowski, Samuel J. Langendorf, Andrew J. Leonard,
-  Jasper P. Beckers, Colby C. Haggerty, Stuart J. Mumford, Ritiek
-  Malhotra, Ludovico Bessi, Sean Carroll, Apoorv Choubey, Roberto Díaz
-  Pérez, Leah Einhorn, Thomas Fan, Graham Goudeau, Silvina Guidoni,
-  Julien Hillairet, Poh Zi How, Yi-Min Huang, Nabil Humphrey, Maria
-  Isupova, Siddharth Kulshrestha, Piotr Kuszaj, Joshua Munn, Tulasi
-  Parashar, Neil Patel, Raajit Raj, Dawa Nurbu Sherpa, David Stansby,
-  Antoine Tavant, and Sixue Xu. (2018, May 27). *PlasmaPy* (Version
-  0.1.1). Zenodo. http://doi.org/10.5281/zenodo.1436019
+A paper written using `AASTeX <https://journals.aas.org/aastexguide>`__
+use the ``\software{PlasmaPy}`` command to cite PlasmaPy.
 
-We highly encourage researchers to acknowledge the packages that
-PlasmaPy depends on, including but not limited to 
-`Astropy <https://www.astropy.org/acknowledging.html>`__, 
+All public releases of PlasmaPy, as well as many informational resources
+on PlasmaPy, are openly archived in the
+`PlasmaPy Community <https://zenodo.org/communities/plasmapy>`__
+on `Zenodo <https://zenodo.org>`__.
+
+We encourage authors to acknowledge the packages that PlasmaPy
+depends on, including but not limited to
+`Astropy <https://www.astropy.org/acknowledging.html>`__,
 `NumPy <https://www.scipy.org/citing.html#numpy>`__, and
 `SciPy <https://www.scipy.org/citing.html#scipy-the-library>`__.

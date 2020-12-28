@@ -1,7 +1,7 @@
 .. _plasmapy-code-of-conduct:
 
-PlasmaPy Community Code of Conduct
-==================================
+Community Code of Conduct
+=========================
 
 The PlasmaPy community strives to follow the best practices in open
 source software development. New contributors are encouraged to join the

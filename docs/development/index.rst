@@ -1,8 +1,8 @@
 .. _plasmapy-development-guide:
 
-**************************
-PlasmaPy Development Guide
-**************************
+*****************
+Development Guide
+*****************
 
 .. toctree::
    :maxdepth: 3

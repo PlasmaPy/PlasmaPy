@@ -1,0 +1,24 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.1.0
+    hooks:
+    -   id: check-yaml
+    -   id: check-json
+    -   id: check-symlinks
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: check-ast
+    -   id: requirements-txt-fixer
+-   repo: https://github.com/timothycrosley/isort
+    rev: 5.2.2
+    hooks:
+    -   id: isort
+        name: isort
+        entry: isort
+        require_serial: true
+        language: python
+        types: [python]
+-   repo: https://github.com/psf/black
+    rev: 19.10b0
+    hooks:
+    -   id: black

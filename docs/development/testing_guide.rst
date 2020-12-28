@@ -32,7 +32,7 @@ Overview
 Pull requests that create or change functionality must include tests
 and documentation before being merged.
 
-PlasmaPy uses **`pytest <https://docs.pytest.org>`_** for software
+PlasmaPy uses `pytest <https://docs.pytest.org>`_ for software
 testing.  The test suite may be run locally or automatically via pull
 requests on `GitHub <https://github.com/>`_.  PlasmaPy undergoes
 continuous integration testing of the code base by `Travis CI
@@ -103,9 +103,8 @@ tests and verify that examples in docstrings produce the expected
 output.  This command (which was enabled by `integrating pytest with
 setuptools
 <https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner>`_)
-ensures that the package is set up and `Cython <http://cython.org>`_
-code is compiled before the tests are run.  These tests should be run in
-a Python environment in which PlasmaPy has not already been installed.
+ensures that the package is set up. These tests should be run in a Python
+environment in which PlasmaPy has not already been installed.
 
 Command line options for pytest may be passed using the ``-a`` flag.
 For example, if you want to stop pytest after two test failures, return
@@ -116,9 +115,12 @@ short traceback reports, and run tests only if the test path contains
 
   python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
 
-One may also run ``pytest`` as a shortcut from the command line, though
-this command may result in an error if pytest collects tests of Cython
-code.
+One may also run ``pytest`` from the command line.
+
+Some tests in the test suite can take a long time to run, which can
+slow down development. These tests can be identified with the pytest annotation
+``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
+To exclusively test the slow tests, execute ``pytest -m slow``.
 
 .. _testing-guidelines-running-tests-python:
 
@@ -160,6 +162,8 @@ maintainable, and robust tests.
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, and as efficient as possible.
 
+* Slow tests can be annotated with ``@pytest.mark.slow`` when they cannot be made more efficient.
+
 .. _testing-guidelines-writing-tests-organization:
 
 Test organization and collection
@@ -170,9 +174,9 @@ Pytest has certain `test discovery conventions
 that are used to collect the tests to be run.
 
 The tests for each subpackage are contained in a ``tests`` subfolder.
-For example, the tests for `~plasmapy.atomic` are located in
-``plasmapy/atomic/tests``.  Test files should begin with ``test_`` and
-generally contain the name of the module or `object` that is being
+For example, the tests for `~plasmapy.particles` are located in
+``plasmapy/particles/tests``.  Test files should begin with ``test_``
+and generally contain the name of the module or `object` that is being
 tested.
 
 The functions that are to be tested in each test file should likewise be
@@ -221,6 +225,26 @@ be included in the error message by using `f-strings
 
 .. _testing-guidelines-writing-tests-warnings:
 
+Floating point comparisons
+--------------------------
+
+Comparisons between floating point numbers with `==` is fraught with
+peril because of limited precision and rounding errors.  Moreover, the
+values of fundamental constants in `astropy.constants` are occasionally
+refined as improvements become available.
+
+Using `numpy.isclose` when comparing floating point numbers and
+`astropy.units.isclose` for `astropy.units.Quantity` instances lets us
+avoid these difficulties.  The ``rtol`` keyword for each of these
+functions allows us to set an acceptable relative tolerance.  Ideally,
+``rtol`` should be set to be an order of magnitude or two greater than
+the expected uncertainty.  For mathematical functions, a value of
+``rtol=1e-14`` may be appropriate.  For quantities that depend on
+physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
+be required, depending on how much the accepted values for fundamental
+constants are likely to change.  For comparing arrays, `numpy.allclose`
+and `astropy.units.allclose` should be used instead.
+
 Testing warnings and exceptions
 -------------------------------
 
@@ -240,10 +264,10 @@ To test that a function issues an appropriate warning, use
   import warnings
 
   def issue_warning():
-      warnings.warn("grumblemuffins", UserWarning)
+      warnings.warn("Beware the ides of March", UserWarning)
 
   def test_issue_warning():
-      with pytest.warns(UserWarning, message="UserWarning not issued."):
+      with pytest.warns(UserWarning):
           issue_warning()
 
 To test that a function raises an appropriate exception, use
@@ -255,8 +279,9 @@ To test that a function raises an appropriate exception, use
       raise Exception
 
   def test_raise_exception():
-      with pytest.raises(Exception, message="Exception not raised."):
+      with pytest.raises(Exception):
           raise_exception()
+          pytest.fail("Exception not raised.")
 
 .. _testing-guidelines-writing-tests-parametrize:
 
@@ -340,16 +365,16 @@ other `~astropy.units.Quantity` objects to within a certain tolerance.
 Occasionally tests will be needed to make sure that a function will
 return the same value for different arguments (e.g., due to symmetry
 properties). PlasmaPy's `~plasmapy.utils` subpackage contains the
-`~plasmapy.utils.run_test` and
-`~plasmapy.utils.run_test_equivalent_calls` helper functions that can
+`~plasmapy.utils.pytest_helpers.run_test` and
+`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` helper functions that can
 generically perform many of these comparisons and checks.
 
-The `~plasmapy.utils.run_test` function can be used to check that a
-callable object returns the expected result, raises the expected
-exception, or issues the expected warning for different positional and
-keyword arguments.  This function is particularly useful when unit
-testing straightforward functions when you have a bunch of inputs and
-know the expected result.
+The `~plasmapy.utils.pytest_helpers.run_test` function can be used to
+check that a callable object returns the expected result, raises the
+expected exception, or issues the expected warning for different
+positional and keyword arguments. This function is particularly useful
+when unit testing straightforward functions when you have a bunch of
+inputs and know the expected result.
 
 Suppose that we want to test the trigonometric property that
 
@@ -357,24 +382,24 @@ Suppose that we want to test the trigonometric property that
 
   \sin(\theta) = \cos(\theta + \frac{\pi}{2}).
 
-We may use `~plasmapy.utils.run_test` as in the following example to
+We may use `~plasmapy.utils.pytest_helpers.run_test` as in the following example to
 check the case of :math:`\theta \equiv 0`.
 
 .. code-block:: python
 
   from numpy import sin, cos, pi
-  from plasmapy.utils import run_test
+  from plasmapy.utils.pytest_helpers import run_test
 
   def test_trigonometric_properties():
       run_test(func=sin, args=0, expected_outcome=cos(pi/2), atol=1e-16)
 
-We may use `pytest.mark.parametrize` with `~plasmapy.utils.run_test` to
-check multiple cases.  If `~plasmapy.utils.run_test` only receives one
-positional argument that is a `list` or `tuple`, then it will assume
-that `list` or `tuple` contains the `callable`, the positional
-arguments, the keyword arguments (which may be omitted), and the
-expected outcome (which may be the returned `object`, a warning, or an
-exception).
+We may use `pytest.mark.parametrize` with
+`~plasmapy.utils.pytest_helpers.run_test` to check multiple cases.  If
+`~plasmapy.utils.pytest_helpers.run_test` only receives one positional
+argument that is a `list` or `tuple`, then it will assume that `list`
+or `tuple` contains the `callable`, the positional arguments, the
+keyword arguments (which may be omitted), and the expected outcome
+(which may be the returned `object`, a warning, or an exception).
 
 .. code-block:: python
 
@@ -402,8 +427,8 @@ code.
       plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
 
 We may also use `pytest.mark.parametrize` with
-`~plasmapy.utils.run_test_equivalent_calls` to sequentially test
-multiple symmetry properties.
+`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to
+sequentially test multiple symmetry properties.
 
 .. code-block:: python
 
@@ -415,10 +440,15 @@ This parametrized function will check that ``cos(1)`` is within
 ``1e-16`` of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of
 ``sin(0)``.
 
-Please refer to the documentation for `~plasmapy.utils.run_test` and
-`~plasmapy.utils.run_test_equivalent_calls` to learn about the full
-capabilities of these pytest helper functions (including for testing
-functions that return `~astropy.units.Quantity` objects).
+Please refer to the documentation for
+`~plasmapy.utils.pytest_helpers.run_test` and
+`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to learn
+about the full capabilities of these pytest helper functions (including
+for testing functions that return `~astropy.units.Quantity` objects).
+
+.. warning::
+    The API within `~plasmapy.utils.pytest_helpers` is not yet stable
+    and may change in the near future.
 
 .. _testing-guidelines-writing-tests-fixtures:
 
@@ -515,9 +545,7 @@ the following example, lines 3 and 4 will be ignored in coverage tests.
       raise RuntimeError from exc
 
 The ``.coveragerc`` file is used to specify lines of code and files that
-should always be ignored in coverage tests.  For example, tests in
-``astropy-helpers`` should not be run because those tests are performed
-through the ``astropy-helpers`` repository.
+should always be ignored in coverage tests.
 
 .. note::
 
