@@ -4,12 +4,12 @@ import pytest
 from astropy import units as u
 
 from plasmapy.utils.code_repr import (
-    _code_repr_of_quantity,
     _code_repr_of_arg,
     _code_repr_of_args_and_kwargs,
     _code_repr_of_keyword_name,
-    _object_name,
+    _code_repr_of_quantity,
     _name_with_article,
+    _object_name,
     _string_together_warnings_for_printing,
     attribute_call_string,
     call_string,
