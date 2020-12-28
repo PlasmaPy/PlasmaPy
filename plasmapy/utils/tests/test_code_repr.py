@@ -5,6 +5,11 @@ from astropy import units as u
 
 from plasmapy.utils.code_repr import (
     _code_repr_of_quantity,
+    _code_repr_of_arg,
+    _code_repr_of_args_and_kwargs,
+    _code_repr_of_keyword_name,
+    _object_name,
+    _name_with_article,
     _string_together_warnings_for_printing,
     attribute_call_string,
     call_string,
@@ -90,7 +95,7 @@ class_attribute_call_string_table = [
     ((), {}, "SampleClass().attr"),
     ((1, 2), {"a": "x", "b": "y"}, "SampleClass(1, 2, a='x', b='y').attr"),
     (1, {}, "SampleClass(1).attr"),
-    ({"dict": "ionary"}, {}, "SampleClass({'dict': 'ionary'}).attr"),
+    ({"key": "value"}, {}, "SampleClass({'key': 'value'}).attr"),
 ]
 
 
@@ -113,7 +118,7 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
         (np.array([3.5, 4.2]) * u.m ** -2.5, "np.array([3.5, 4.2])*u.m**-2.5"),
     ],
 )
-def test_format_quantity(quantity, expected):
+def test_code_repr_of_quantity(quantity, expected):
     """
     Test that `~astropy.units.Quantity` objects get converted into a
     string as expected.
@@ -122,13 +127,13 @@ def test_format_quantity(quantity, expected):
 
 
 @pytest.mark.parametrize("not_a_quantity", [3.5, "1.2"])
-def test_format_quantity_typeerror(not_a_quantity):
+def test_code_repr_of_quantity_typeerror(not_a_quantity):
     """"""
     with pytest.raises(TypeError):
         _code_repr_of_quantity(not_a_quantity)
 
 
-def test_stringing_together_warning():
+def test_string_together_warnings():
     """Test that warning names and messages get strung together correctly."""
     warnings = [UserWarning, DeprecationWarning]
     warning_messages = ["msg1", "msg2"]
