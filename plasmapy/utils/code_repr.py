@@ -117,15 +117,25 @@ def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str
     return args_and_kwargs
 
 
-def _name_with_article(ex: Exception) -> str:
+def _exc_name_with_indef_article(ex: Exception) -> str:
     """
-    Return a string with an indefinite article and the name of
+    Return a string with an indefinite article and name of
     exception ``ex``.
+
+    Notes
+    -----
+    If this function is to be expanded for cases beyond exceptions,
+    we would need to either expand the treatment of cases that do not
+    follow the general rule, or use a library like `inflect` on PyPI.
     """
-    exception_name = ex.__name__
-    use_an = exception_name[0] in "aeiouAEIOU" and exception_name[0:4] != "User"
+    starts_with_vowel_but_uses_a = ["use", "uni"]
+    name = ex.__name__
+    use_an = all([
+        name[0] in "aeiouAEIOU",
+        name[0:3].lower() not in starts_with_vowel_but_uses_a,
+    ])
     indefinite_article = "an" if use_an else "a"
-    return f"{indefinite_article} {exception_name}"
+    return f"{indefinite_article} {name}"
 
 
 def _object_name(obj: Any, showmodule=False) -> str:
