@@ -7,6 +7,7 @@ from plasmapy.utils.code_repr import (
     _code_repr_of_arg,
     _code_repr_of_args_and_kwargs,
     _code_repr_of_keyword_name,
+    _code_repr_of_ndarray,
     _code_repr_of_quantity,
     _name_with_article,
     _object_name,
@@ -109,6 +110,51 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
 
 
 @pytest.mark.parametrize(
+    "array_inputs, max_items, expected",
+    [
+        ([0], np.inf, 'np.array([0])'),
+        ([0., 1.], np.inf, 'np.array([0., 1.])'),
+        ([0.0, 1.142], np.inf, 'np.array([0., 1.142])'),
+        ([[0, 1, 2], [3, 4, 5]], np.inf, "np.array([[0, 1, 2], [3, 4, 5]])"),
+        ([np.inf], np.inf, 'np.array([np.inf])'),
+        ([np.nan], np.inf, 'np.array([np.nan])'),
+        ([np.nan, np.inf, -np.inf], np.inf, "np.array([np.nan, np.inf, -np.inf])"),
+        ([1], 1, "np.array([1])"),
+        ([1, 2], 1, "np.array([1, ...])"),
+        ([1, 2, 3, 4], 2, "np.array([1, 2, ...])"),
+        ([[1, 2, 3], [4, 5, 6]], 5, "np.array([[1, 2, 3], [4, 5, ...]])"),
+        ([[[1, 2], [3, 4]], [[5, 6], [7, 8]]], 1, "np.array([[[1, ...]]])"),
+    ],
+)
+def test__code_repr_of_ndarray(array_inputs, max_items, expected):
+    """
+    Test that `numpy.ndarray` objects get converted into a string as
+    expected.  Subsequently, test that evaluating the code representation
+    of an ndarray returns an array equal to the array created from
+    `array_inputs`.
+    """
+    array = np.array(array_inputs)
+    actual = _code_repr_of_ndarray(array, max_items=max_items)
+    if actual != expected:
+        pytest.fail(
+            f"The representation of an ndarray for array_inputs = {array_inputs} "
+            f"and max_items = {max_items} is not the expected result:\n"
+            f"expected: {repr(expected)}\n"
+            f"actual:   {repr(actual)}\n"
+        )
+
+    if max_items >= array.size:
+        recreated_array = eval(actual)
+        if not np.allclose(array, recreated_array, atol=1e-15, equal_nan=True):
+            pytest.fail(
+                f"Evaluating the representation of an ndarray for array_inputs = "
+                f"{array_inputs} and max_items = {max_items} does not recreate "
+                f"the original array, as expected."
+                f"array:           {array}\n"
+                f"recreated_array: {recreated_array}"
+            )
+
+@pytest.mark.parametrize(
     "quantity, expected",
     [
         (5.3 * u.m, "5.3*u.m"),
@@ -120,7 +166,7 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
 )
 def test_code_repr_of_quantity(quantity, expected):
     """
-    Test that `~astropy.units.Quantity` objects get converted into a
+    Test that `astropy.units.Quantity` objects get converted into a
     string as expected.
     """
     assert _code_repr_of_quantity(quantity) == expected
@@ -128,7 +174,10 @@ def test_code_repr_of_quantity(quantity, expected):
 
 @pytest.mark.parametrize("not_a_quantity", [3.5, "1.2"])
 def test_code_repr_of_quantity_typeerror(not_a_quantity):
-    """"""
+    """
+    Test that `_code_repr_of_quantity` raises a `TypeError` when
+    supplied with an object other than a `astropy.units.Quantity`.
+    """
     with pytest.raises(TypeError):
         _code_repr_of_quantity(not_a_quantity)
 

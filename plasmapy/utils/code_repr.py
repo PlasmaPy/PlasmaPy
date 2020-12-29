@@ -9,6 +9,48 @@ from astropy import units as u
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 
+def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
+    """
+    Transform a `~numpy.ndarray` into a format as would appear in a
+    function call, after having done ``import numpy as np``.
+
+    If ``max_items`` is less than ``array.size``, then include only the
+    first ``max_items`` elements of the array in the resulting string
+    and replace the remaining items with ``"..."``.
+    """
+
+    def remove_excess_spaces(string: str) -> str:
+        string = " ".join(string.split())
+        string = string.replace(" ,", ",")
+        string = string.replace("[ ", "[")
+        return string
+
+    def put_np_before_infs_and_nans(string: str) -> str:
+        string = string.replace("inf", "np.inf")
+        string = string.replace("nan", "np.nan")
+        return string
+
+    def replace_excess_items_with_ellipsis(s, max_items):
+        substrings_between_commas = s.split(",")
+        to_comma_before_ellipsis = ",".join(substrings_between_commas[0:max_items])
+        substring_after_last_comma = substrings_between_commas[-1]
+        closing_brackets = "]" * substring_after_last_comma.count("]")
+        closing = f", ...{closing_brackets})"
+        return to_comma_before_ellipsis + closing
+
+    if not isinstance(array, np.ndarray):
+        raise TypeError("Expecting an ndarray.")
+
+    s = np.array_repr(array, max_line_width=np.inf, suppress_small=False)
+    s = remove_excess_spaces(s)
+    s = put_np_before_infs_and_nans(s)
+
+    if array.size > max_items:
+        s = replace_excess_items_with_ellipsis(s, max_items)
+
+    return f"np.{s}"
+
+
 def _code_repr_of_quantity(arg: u.Quantity) -> str:
     """
     Transform a `~astropy.units.Quantity` into a format as would appear
