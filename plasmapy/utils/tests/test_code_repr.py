@@ -10,7 +10,7 @@ from plasmapy.utils.code_repr import (
     _code_repr_of_args_and_kwargs,
     _code_repr_of_ndarray,
     _code_repr_of_quantity,
-    _exc_name_with_indef_article,
+    _exception_name_with_indef_article,
     _object_name,
     _string_together_warnings_for_printing,
     attribute_call_string,
@@ -261,12 +261,12 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
         (ValueError, "a ValueError"),
     ],
 )
-def test__exc_name_with_indef_article(obj, expected):
+def test__exception_name_with_indef_article(obj, expected):
     """
-    Test that `_exc_name_with_indef_article` returns the expected string, which
+    Test that `_exception_name_with_indef_article` returns the expected string, which
     contains ``"a "`` or ``"an "`` followed by the name of ``obj``.
     """
-    name_with_article = _exc_name_with_indef_article(obj)
+    name_with_article = _exception_name_with_indef_article(obj)
     if name_with_article != expected:
         pytest.fail(
             f"For calling _exc_name_with_indef_article for {obj}, expecting "
@@ -274,6 +274,25 @@ def test__exc_name_with_indef_article(obj, expected):
         )
 
 
-@pytest.mark.xfail
-def test__object_name():
-    raise NotImplementedError
+@pytest.mark.parametrize(
+    "obj, showmodule, expected_name",
+    [
+        (ValueError, False, "ValueError"),
+        (TypeError, True, "TypeError"),
+        (np.ndarray, False, "ndarray"),
+        (np.ndarray, True, "np.ndarray"),
+        (super, False, "super"),
+        (super, True, "super"),  # hide module for builtins even if showmodule==True
+        (u.Unit, False, "Unit"),
+        (u.Unit, True, "u.Unit"),
+    ],
+)
+def test__object_name(obj, showmodule, expected_name):
+    actual_name = _object_name(obj, showmodule=showmodule)
+    if actual_name != expected_name:
+        pytest.fail(
+            f"For obj = {repr(obj)}, the expected output of _obj_name with "
+            f"showmodule = {showmodule} does not match the actual output:\n"
+            f"  expected: {expected_name}\n"
+            f"  actual:   {actual_name}"
+        )
