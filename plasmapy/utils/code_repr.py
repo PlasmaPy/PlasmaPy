@@ -88,31 +88,20 @@ def _code_repr_of_arg(arg) -> str:
         return repr(arg)
 
 
-def _code_repr_of_keyword_name(keyword) -> str:
-    """Transform a keyword into a format as would appear in a function call."""
-    if isinstance(keyword, str):
-        return str(keyword)
-    elif hasattr(keyword, "__name__"):
-        return keyword.__name__
-    else:
-        return repr(keyword)
-
-
 def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     """
     Take positional and keyword arguments, and format them into a
     string as they would appear in a function call.
     """
-    args = args if isinstance(args, tuple) else (args,)
+    args_collection = args if isinstance(args, tuple) else (args,)
+
     args_and_kwargs = ""
 
-    for arg in args:
+    for arg in args_collection:
         args_and_kwargs += f"{_code_repr_of_arg(arg)}, "
 
-    for kwarg in kwargs:
-        args_and_kwargs += (
-            f"{_code_repr_of_keyword_name(kwarg)}={_code_repr_of_arg(kwargs[kwarg])}, "
-        )
+    for kwarg in kwargs.keys():
+        args_and_kwargs += f"{kwarg}={_code_repr_of_arg(kwargs[kwarg])}, "
 
     if args_and_kwargs[-2:] == ", ":
         args_and_kwargs = args_and_kwargs[:-2]
