@@ -16,7 +16,6 @@ import numpy as np
 import pytest
 import warnings
 
-from astropy.utils.decorators import deprecated
 from typing import Any, Callable, Dict
 
 from plasmapy.tests.helpers.exceptions import (

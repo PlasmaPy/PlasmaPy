@@ -117,7 +117,7 @@ def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str
     return args_and_kwargs
 
 
-def _exception_name_with_indef_article(ex: Exception) -> str:
+def _name_with_article(ex: Exception) -> str:
     """
     Return a string with an indefinite article and name of
     exception ``ex``.

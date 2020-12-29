@@ -10,7 +10,7 @@ from plasmapy.utils.code_repr import (
     _code_repr_of_args_and_kwargs,
     _code_repr_of_ndarray,
     _code_repr_of_quantity,
-    _exception_name_with_indef_article,
+    _name_with_article,
     _object_name,
     _string_together_warnings_for_printing,
     attribute_call_string,
@@ -261,12 +261,12 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
         (ValueError, "a ValueError"),
     ],
 )
-def test__exception_name_with_indef_article(obj, expected):
+def test__name_with_article(obj, expected):
     """
-    Test that `_exception_name_with_indef_article` returns the expected string, which
+    Test that `_name_with_article` returns the expected string, which
     contains ``"a "`` or ``"an "`` followed by the name of ``obj``.
     """
-    name_with_article = _exception_name_with_indef_article(obj)
+    name_with_article = _name_with_article(obj)
     if name_with_article != expected:
         pytest.fail(
             f"For calling _exc_name_with_indef_article for {obj}, expecting "
