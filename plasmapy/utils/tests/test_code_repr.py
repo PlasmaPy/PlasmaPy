@@ -8,10 +8,9 @@ from astropy import units as u
 from plasmapy.utils.code_repr import (
     _code_repr_of_arg,
     _code_repr_of_args_and_kwargs,
-    _code_repr_of_keyword_name,
     _code_repr_of_ndarray,
     _code_repr_of_quantity,
-    _name_with_article,
+    _exc_name_with_indef_article,
     _object_name,
     _string_together_warnings_for_printing,
     attribute_call_string,
@@ -114,12 +113,12 @@ def test_class_attribute_call_string(c_args, c_kwargs, expected):
 @pytest.mark.parametrize(
     "array_inputs, max_items, expected",
     [
-        ([0], np.inf, 'np.array([0])'),
-        ([0., 1.], np.inf, 'np.array([0., 1.])'),
-        ([0.0, 1.142], np.inf, 'np.array([0., 1.142])'),
+        ([0], np.inf, "np.array([0])"),
+        ([0.0, 1.0], np.inf, "np.array([0., 1.])"),
+        ([0.0, 1.142], np.inf, "np.array([0., 1.142])"),
         ([[0, 1, 2], [3, 4, 5]], np.inf, "np.array([[0, 1, 2], [3, 4, 5]])"),
-        ([np.inf], np.inf, 'np.array([np.inf])'),
-        ([np.nan], np.inf, 'np.array([np.nan])'),
+        ([np.inf], np.inf, "np.array([np.inf])"),
+        ([np.nan], np.inf, "np.array([np.nan])"),
         ([np.nan, np.inf, -np.inf], np.inf, "np.array([np.nan, np.inf, -np.inf])"),
         ([1], 1, "np.array([1])"),
         ([1, 2], 1, "np.array([1, ...])"),
@@ -155,6 +154,7 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
                 f"array:           {array}\n"
                 f"recreated_array: {recreated_array}"
             )
+
 
 @pytest.mark.parametrize(
     "quantity, expected",
@@ -192,3 +192,88 @@ def test_string_together_warnings():
     assert (
         _string_together_warnings_for_printing(warnings, warning_messages) == expected
     )
+
+
+@pytest.mark.parametrize(
+    "arg, expected",
+    [
+        (1, "1"),
+        ("asdf", "'asdf'"),
+        (3.42, "3.42"),
+        ([3.42, 3.84], "[3.42, 3.84]"),
+        (4.2 * u.m, "4.2*u.m"),
+        (np.array([1, 2, 3]), "np.array([1, 2, 3])"),
+        (np.array([[1, 2], [3, 4]]), "np.array([[1, 2], [3, 4]])"),
+        (np.array([1.0, 2.0, 3.0]) * u.m / u.s, "np.array([1., 2., 3.])*u.m/u.s"),
+    ],
+)
+def test__code_repr_of_arg(arg, expected):
+    """
+    Test that _code_repr_of_arg correctly transforms arguments into a
+    `str` the represents how the arg would appear in code.
+    """
+    code_repr_of_arg = _code_repr_of_arg(arg)
+    if code_repr_of_arg != expected:
+        pytest.fail(
+            f"_code_repr_of_arg is not returning the expected result.\n"
+            f"arg = {arg}\n"
+            f"expected:         {expected}\n"
+            f"code_repr_of_arg: {code_repr_of_arg}"
+        )
+
+
+@pytest.mark.parametrize(
+    "args, kwargs, expected",
+    [
+        ((), {}, ""),
+        (1, {"a": "b"}, "1, a='b'"),
+        ((1, 2, 3), {"a": "A", "b": "B"}, "1, 2, 3, a='A', b='B'"),
+    ],
+)
+def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
+    """
+    Test that `_code_repr_of_args_and_kwargs` returns a string containing
+    the positional and keyword arguments, as they would appear in a
+    function call.
+    """
+    args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs)
+    if args_and_kwargs != expected:
+        pytest.fail(
+            f"_code_repr_of_args_and_kwargs with the following arguments:\n"
+            f"  args:   {args}\n"
+            f"  kwargs: {kwargs}\n"
+            f"is not returning the expected string:\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual:   {repr(args_and_kwargs)}"
+        )
+
+
+@pytest.mark.parametrize(
+    "obj, expected",
+    [
+        (ArithmeticError, "an ArithmeticError"),
+        (EOFError, "an EOFError"),
+        (IndexError, "an IndexError"),
+        (OSError, "an OSError"),
+        (TypeError, "a TypeError"),
+        (UserWarning, "a UserWarning"),
+        (UnicodeError, "a UnicodeError"),
+        (ValueError, "a ValueError"),
+    ],
+)
+def test__exc_name_with_indef_article(obj, expected):
+    """
+    Test that `_exc_name_with_indef_article` returns the expected string, which
+    contains ``"a "`` or ``"an "`` followed by the name of ``obj``.
+    """
+    name_with_article = _exc_name_with_indef_article(obj)
+    if name_with_article != expected:
+        pytest.fail(
+            f"For calling _exc_name_with_indef_article for {obj}, expecting "
+            f"{repr(expected)} but got {repr(name_with_article)}."
+        )
+
+
+@pytest.mark.xfail
+def test__object_name():
+    raise NotImplementedError
