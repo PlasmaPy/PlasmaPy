@@ -1,3 +1,5 @@
+"""Tests for code representation functions."""
+
 import numpy as np
 import pytest
 
