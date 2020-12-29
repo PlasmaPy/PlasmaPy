@@ -37,6 +37,31 @@ call_string_table = [
     (generic_function, (), {"x": "c"}, "generic_function(x='c')"),
     (
         generic_function,
+        (1, 2, 3),
+        {"a": 4, "b": 5, "c": 6},
+        "generic_function(1, 2, 3, a=4, b=5, c=6)",
+    ),
+    (
+        generic_function,
+        np.array((1.0, 2.0)),
+        {},
+        "generic_function(np.array([1., 2.]))",
+    ),
+    (
+        generic_function,
+        np.array((3.0, 4.0)) * u.m,
+        {},
+        "generic_function(np.array([3., 4.])*u.m)",
+    ),
+    (
+        generic_function,
+        (ValueError,),
+        {"x": TypeError},
+        "generic_function(ValueError, x=TypeError)",
+    ),
+    (generic_function, (), {"bowl": super}, "generic_function(bowl=super)"),
+    (
+        generic_function,
         (1, "b"),
         {"b": 42, "R2": "D2"},
         "generic_function(1, 'b', b=42, R2='D2')",
@@ -50,7 +75,17 @@ def test_call_string(function, args, kwargs, expected):
     Tests that call_string returns a string that is equivalent to the
     function call.
     """
-    assert expected == call_string(function, args, kwargs)
+    actual = call_string(function, args, kwargs)
+    if expected != actual:
+        pytest.fail(
+            "When call_string is called with:\n"
+            f"  function: {function.__name__}\n"
+            f"  args:     {args}\n"
+            f"  kwargs:   {kwargs}\n"
+            "the actual result does not match the expected result:\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual:   {repr(actual)}"
+        )
 
 
 class SampleClass:
@@ -85,12 +120,24 @@ class_method_call_string_table = [
 @pytest.mark.parametrize(
     "c_args, c_kwargs, m_args, m_kwargs, expected", class_method_call_string_table
 )
-def test_class_method_call_string(c_args, c_kwargs, m_args, m_kwargs, expected):
+def test_method_call_string(c_args, c_kwargs, m_args, m_kwargs, expected):
     """Test that `method_call_string` returns the expected results."""
     actual = method_call_string(
         SampleClass, "method", c_args, c_kwargs, m_args, m_kwargs
     )
-    assert expected == actual
+    if expected != actual:
+        pytest.fail(
+            "When method_call_string is called with:\n"
+            f"  cls:      SampleClass\n"
+            f"  method:   'method'\n"
+            f"  c_args:   {c_args}\n"
+            f"  c_kwargs: {c_kwargs}\n"
+            f"  m_args:   {m_args}\n"
+            f"  m_kwargs: {m_kwargs}\n"
+            "the actual outcome does not match the expected result:\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual:   {repr(actual)}"
+        )
 
 
 class_attribute_call_string_table = [
@@ -104,10 +151,20 @@ class_attribute_call_string_table = [
 @pytest.mark.parametrize(
     "c_args, c_kwargs, expected", class_attribute_call_string_table
 )
-def test_class_attribute_call_string(c_args, c_kwargs, expected):
+def test_attribute_call_string(c_args, c_kwargs, expected):
     """Test that `attribute_call_string` returns the expected results."""
     actual = attribute_call_string(SampleClass, "attr", c_args, c_kwargs)
-    assert expected == actual
+    if expected != actual:
+        pytest.fail(
+            "When attribute_call_string is called with:\n"
+            f"  cls:      SampleClass\n"
+            f"  attr:     'attr'\n"
+            f"  c_args:   {c_args}\n"
+            f"  c_kwargs: {c_kwargs}\n"
+            "the actual outcome does not match the expected result:\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual:   {repr(actual)}"
+        )
 
 
 @pytest.mark.parametrize(
@@ -140,8 +197,8 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
         pytest.fail(
             f"The representation of an ndarray for array_inputs = {array_inputs} "
             f"and max_items = {max_items} is not the expected result:\n"
-            f"expected: {repr(expected)}\n"
-            f"actual:   {repr(actual)}\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual:   {repr(actual)}\n"
         )
 
     if max_items >= array.size:
@@ -166,16 +223,23 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected):
         (np.array([3.5, 4.2]) * u.m ** -2.5, "np.array([3.5, 4.2])*u.m**-2.5"),
     ],
 )
-def test_code_repr_of_quantity(quantity, expected):
+def test__code_repr_of_quantity(quantity, expected):
     """
     Test that `astropy.units.Quantity` objects get converted into a
     string as expected.
     """
-    assert _code_repr_of_quantity(quantity) == expected
+    actual = _code_repr_of_quantity(quantity)
+    if actual != expected:
+        pytest.fail(
+            f"_code_repr_of_quantity for {quantity} is not producing the "
+            f"expected result:\n"
+            f"expected: {repr(expected)}\n"
+            f"actual:   {repr(actual)}"
+        )
 
 
 @pytest.mark.parametrize("not_a_quantity", [3.5, "1.2"])
-def test_code_repr_of_quantity_typeerror(not_a_quantity):
+def test__code_repr_of_quantity_typeerror(not_a_quantity):
     """
     Test that `_code_repr_of_quantity` raises a `TypeError` when
     supplied with an object other than a `astropy.units.Quantity`.
@@ -184,14 +248,19 @@ def test_code_repr_of_quantity_typeerror(not_a_quantity):
         _code_repr_of_quantity(not_a_quantity)
 
 
-def test_string_together_warnings():
+def test__string_together_warnings_for_printing():
     """Test that warning names and messages get strung together correctly."""
     warnings = [UserWarning, DeprecationWarning]
     warning_messages = ["msg1", "msg2"]
     expected = "UserWarning: msg1\n\nDeprecationWarning: msg2"
-    assert (
-        _string_together_warnings_for_printing(warnings, warning_messages) == expected
-    )
+    actual = _string_together_warnings_for_printing(warnings, warning_messages)
+    if actual != expected:
+        pytest.fail(
+            f"_string_together_warnings_for_printing is not producing the "
+            f"expected result:\n"
+            f"  expected: {repr(expected)}\n"
+            f"  actual: {repr(actual)}"
+        )
 
 
 @pytest.mark.parametrize(
@@ -228,6 +297,8 @@ def test__code_repr_of_arg(arg, expected):
         ((), {}, ""),
         (1, {"a": "b"}, "1, a='b'"),
         ((1, 2, 3), {"a": "A", "b": "B"}, "1, 2, 3, a='A', b='B'"),
+        (np.array([1.0, 2.0]), {"k": 3}, "np.array([1., 2.]), k=3"),
+        (np.array([1.0, 2.0]) * u.m / u.s, {}, "np.array([1., 2.])*u.m/u.s"),
     ],
 )
 def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
@@ -269,7 +340,7 @@ def test__name_with_article(obj, expected):
     name_with_article = _name_with_article(obj)
     if name_with_article != expected:
         pytest.fail(
-            f"For calling _exc_name_with_indef_article for {obj}, expecting "
+            f"When calling _name_with_article for {obj}, expecting "
             f"{repr(expected)} but got {repr(name_with_article)}."
         )
 
@@ -288,6 +359,7 @@ def test__name_with_article(obj, expected):
     ],
 )
 def test__object_name(obj, showmodule, expected_name):
+    """Test that `_object_name` produces the expected output."""
     actual_name = _object_name(obj, showmodule=showmodule)
     if actual_name != expected_name:
         pytest.fail(
