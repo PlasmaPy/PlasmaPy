@@ -3,6 +3,7 @@
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 import inspect
+import numbers
 import numpy as np
 
 from astropy import units as u
@@ -82,10 +83,18 @@ def _code_repr_of_arg(arg) -> str:
     """Transform an argument into a format as would appear in a function call."""
     if hasattr(arg, "__name__"):
         return arg.__name__
-    elif isinstance(arg, u.Quantity):
-        return _code_repr_of_quantity(arg)
-    else:
-        return repr(arg)
+
+    function_for_type = {
+        u.Quantity: _code_repr_of_quantity,
+        np.ndarray: _code_repr_of_ndarray,
+    }
+
+    for arg_type in function_for_type.keys():
+        if isinstance(arg, arg_type):
+            code_repr_func = function_for_type[arg_type]
+            return code_repr_func(arg)
+
+    return repr(arg)
 
 
 def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
