@@ -117,7 +117,7 @@ def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str
     return args_and_kwargs
 
 
-def _exc_name_with_indef_article(ex: Exception) -> str:
+def _exception_name_with_indef_article(ex: Exception) -> str:
     """
     Return a string with an indefinite article and name of
     exception ``ex``.
@@ -140,19 +140,34 @@ def _exc_name_with_indef_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
+def _substitute_module_shortcuts(module_name):
+    """Substitute common import shortcuts within module names."""
+    replacements = {
+        "numpy": "np",
+        "builtins": "",
+        "astropy.units.core": "u",
+        "astropy.units.quantity": "u",
+        "astropy.units.decorators": "u",
+        "astropy.units": "u",
+    }
+    for old, new in replacements.items():
+        if module_name.startswith(old):
+            module_name = module_name.replace(old, new, 1)
+    return module_name
+
+
 def _object_name(obj: Any, showmodule=False) -> str:
     """
     Return the name of an `object`.  If the `object` has a `__name__`
     attribute and ``showmodule`` is `True`, then prepend the module
-    name if not in `builtins`.
+    name if not in `builtins`.  Replace ``"numpy"`` with ``"np"`` and
+    substitute ``"u"`` for several modules in `astropy.units`.
     """
     obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
-
-    if hasattr(obj, "__name__") and showmodule is True:
-        module_name = inspect.getmodule(obj).__name__  # ADD TEST
-        if module_name != "builtins":
-            obj_name = f"{module_name}.{obj_name}"  # ADD TEST
-
+    module_name = inspect.getmodule(obj).__name__ if showmodule else ""
+    module_name = _substitute_module_shortcuts(module_name)
+    if module_name:
+        obj_name = f"{module_name}.{obj_name}"
     return obj_name
 
 
