@@ -130,10 +130,12 @@ def _exc_name_with_indef_article(ex: Exception) -> str:
     """
     starts_with_vowel_but_uses_a = ["use", "uni"]
     name = ex.__name__
-    use_an = all([
-        name[0] in "aeiouAEIOU",
-        name[0:3].lower() not in starts_with_vowel_but_uses_a,
-    ])
+    use_an = all(
+        [
+            name[0] in "aeiouAEIOU",
+            name[0:3].lower() not in starts_with_vowel_but_uses_a,
+        ]
+    )
     indefinite_article = "an" if use_an else "a"
     return f"{indefinite_article} {name}"
 
