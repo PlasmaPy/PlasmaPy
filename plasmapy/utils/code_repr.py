@@ -33,8 +33,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     def replace_excess_items_with_ellipsis(s, max_items):
         substrings_between_commas = s.split(",")
         to_comma_before_ellipsis = ",".join(substrings_between_commas[0:max_items])
-        substring_after_last_comma = substrings_between_commas[-1]
-        closing_brackets = "]" * substring_after_last_comma.count("]")
+        closing_brackets = "]" * substrings_between_commas[-1].count("]")
         closing = f", ...{closing_brackets})"
         return to_comma_before_ellipsis + closing
 
@@ -59,10 +58,8 @@ def _code_repr_of_quantity(arg: u.Quantity) -> str:
     if not isinstance(arg, u.Quantity):
         raise TypeError("Expecting a Quantity.")
 
-    formatted = f"{repr(arg.value)}"
-
-    if isinstance(arg.value, np.ndarray):
-        formatted = "np." + formatted
+    is_ndarray = isinstance(arg.value, np.ndarray)
+    formatted = _code_repr_of_ndarray(arg.value) if is_ndarray else repr(arg.value)
 
     if arg.unit == u.dimensionless_unscaled:
         formatted += "*u.dimensionless_unscaled"
