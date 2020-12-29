@@ -3,7 +3,6 @@
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 import inspect
-import numbers
 import numpy as np
 
 from astropy import units as u
@@ -100,7 +99,7 @@ def _code_repr_of_arg(arg) -> str:
 def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str:
     """
     Take positional and keyword arguments, and format them into a
-    string as they would appear in a function call.
+    string as they would appear in a function call (excluding parentheses).
     """
     args_collection = args if isinstance(args, tuple) else (args,)
 
