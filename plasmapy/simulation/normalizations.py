@@ -24,6 +24,19 @@ from plasmapy.utils.decorators import validate_quantities
 #
 #   dimensionless_plasma * normalizations -> dimensional_plasma
 
+_unit_for_physical_type = {
+    u.T: "magnetic_field",
+    u.m: "length",
+    u.s: "time",
+    u.K: "temperature",
+    u.J: "energy",
+    u.m / u.s: "velocity",
+    u.A / u.m ** 2: "current_density",
+    u.Pa: "pressure",
+    u.V / u.m: "electric_field",
+    u.m ** -3: "number_density",
+}
+
 
 class AbstractNormalizations(abc.ABC):
     """
@@ -32,11 +45,43 @@ class AbstractNormalizations(abc.ABC):
     """
 
     @abc.abstractmethod
-    def magnetic_field(self) -> u.T:
+    def current_density(self) -> u.A / u.m ** 2:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def electric_field(self) -> u.V / u.m:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def ion(self) -> Particle:
         raise NotImplementedError
 
     @abc.abstractmethod
     def length(self) -> u.m:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def magnetic_field(self) -> u.T:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def magnetic_flux(self) -> u.T * u.m:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def mass(self) -> u.kg:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def number_density(self) -> u.m ** -3:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def pressure(self) -> u.Pa:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def temperature(self) -> u.K:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -47,20 +92,47 @@ class AbstractNormalizations(abc.ABC):
     def velocity(self) -> u.m / u.s:
         raise NotImplementedError
 
-    @abc.abstractmethod
-    def current_density(self) -> u.A / u.m ** 2:
-        raise NotImplementedError
+    _irreducible_units_to_physical_type = {
+        u.A: "current",
+        u.K: "temperature",
+        u.kg: "mass",
+        u.m: "length",
+        u.s: "time",
+    }  # probably not needed
 
-    @abc.abstractmethod
-    def pressure(self) -> u.Pa:
-        raise NotImplementedError
+    _base_units_to_physical_type = {
+        u.kg: "mass",
+        u.m: "length",
+        u.s: "time",
+        u.T: "magnetic_field",
+        u.K: "temperature",
+    }  # to use with .decompose(bases=...)
 
-    @abc.abstractmethod
-    def electric_field(self) -> u.V / u.m:
-        raise NotImplementedError
+    # Maybe make the base units the ones associated with the normalizations
+    # passed to the Normalization class upon instantiation.
+
+    _base_units = [u.kg, u.K, u.m, u.s, u.T]
+
+    def normalization_from_unit(self, unit: u.UnitBase) -> u.Quantity:
+        """
+        First draft!  Takes a (probably composite) unit, decomposes it
+        to the base units used for the normalization, gets the normalizations
+        associated with the relevant base units, takes it to the appropriate
+        power, and then multiplies them together.
+
+        """
 
 
-class IdealMHDNormalizations(AbstractNormalizations):
+        unit_decomposition = unit.si.decompose(bases=self._base_units)
+        normalization = 1.0 * u.dimensionless_unscaled
+        for base_unit, power in unit_decomposition.bases, unit_decomposition.powers:
+            normalization_for_base = self._base_units_to_physical_type[base_unit]
+            normalization *= normalization_for_base ** power
+        return normalization.to(unit)
+
+
+
+class MHDNormalizations(AbstractNormalizations):
     """
     Class to represent normalizations of the equations of ideal
     magnetohydrodynamics (MHD).
@@ -206,9 +278,6 @@ class IdealMHDNormalizations(AbstractNormalizations):
         """The normalization for magnetic flux."""
         return self.magnetic_field * self.length
 
-
-class MHDNormalizations(IdealMHDNormalizations):
-    """..."""
 
     @property
     def resistivity(self) -> u.ohm * u.m:
