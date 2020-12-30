@@ -5,7 +5,7 @@ __all__ = ["ExpectedTestOutcome"]
 import inspect
 
 from typing import Any
-
+from plasmapy.utils.code_repr import call_string
 
 def _is_warning(obj) -> bool:
     """Return `True` if the argument is a warning, and `False` otherwise."""
@@ -178,7 +178,7 @@ class ExpectedTestOutcome:
             )
 
     def __repr__(self):
-        return f"ExpectedTestOutcome({self.expected_outcome})"
+        return call_string(ExpectedTestOutcome, self.expected_outcome)
 
     def __str__(self):
         return self.__repr__()
