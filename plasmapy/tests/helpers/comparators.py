@@ -8,19 +8,19 @@ from typing import Any, Optional, Tuple, Union
 
 from plasmapy.tests.helpers.actual import ActualTestOutcome
 from plasmapy.tests.helpers.exceptions import (
-    ExceptionMismatchError,
+    ExceptionMismatchFail,
     Failed,
-    InconsistentTypeError,
     InvalidTestError,
-    MissingExceptionError,
-    MissingWarningError,
-    UnexpectedExceptionError,
-    UnexpectedResultError,
-    UnexpectedWarningError,
-    WarningMismatchError,
+    MissingExceptionFail,
+    MissingWarningFail,
+    TypeMismatchFail,
+    UnexpectedExceptionFail,
+    UnexpectedResultFail,
+    UnexpectedWarningFail,
+    WarningMismatchFail,
 )
 from plasmapy.tests.helpers.expected import ExpectedTestOutcome
-from plasmapy.utils.formatting.formatting import (
+from plasmapy.utils.code_repr import (
     _name_with_article,
     _object_name,
     _string_together_warnings_for_printing,
@@ -455,7 +455,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(errmsg)
-        self._add_exception(ExceptionMismatchError)
+        self._add_exception(ExceptionMismatchFail)
 
     def _make_missing_exception_errmsg(self):
         """
@@ -470,7 +470,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(errmsg)
-        self._add_exception(MissingExceptionError)
+        self._add_exception(MissingExceptionFail)
 
         # TODO: improve representation of the value (as repr doesn't
         #       always result in something particularly readable.)
@@ -485,7 +485,7 @@ class CompareActualExpected:
             f"{_name_with_article(self.actual.exception_type)}."
         )
         self._add_errmsg(errmsg)
-        self._add_exception(UnexpectedExceptionError)
+        self._add_exception(UnexpectedExceptionFail)
 
     def _make_incompatible_units_errmsg(self):
         """
@@ -539,7 +539,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(errmsg)
-        self._add_exception(InconsistentTypeError)
+        self._add_exception(TypeMismatchFail)
 
     def _make_value_mismatch_errmsg_if_necessary(self):
         """
@@ -571,7 +571,7 @@ class CompareActualExpected:
         elif not comparison.units_are_identical:
             self._make_nonidentical_units_errmsg()
         else:
-            self._add_exception(UnexpectedResultError)
+            self._add_exception(UnexpectedResultFail)
 
         # TODO: Should we add a method to check whether the len(...) of
         #       the expected and actual outcomes matches or not?  That
@@ -589,7 +589,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(missing_warning_errmsg)
-        self._add_exception(MissingWarningError)
+        self._add_exception(MissingWarningFail)
 
     def _make_unexpected_warnings_errmsg(self):
         """
@@ -610,7 +610,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(unexpected_warnings_errmsg)
-        self._add_exception(UnexpectedWarningError)
+        self._add_exception(UnexpectedWarningFail)
 
     def _make_warning_mismatch_errmsg_if_necessary(self):
         """
@@ -640,7 +640,7 @@ class CompareActualExpected:
         )
 
         self._add_errmsg(warning_mismatch_errmsg)
-        self._add_exception(WarningMismatchError)
+        self._add_exception(WarningMismatchFail)
 
         # TODO: Figure out a way to deal to deal with deprecation warnings.
         #       We should not count those as test failures, but those should
