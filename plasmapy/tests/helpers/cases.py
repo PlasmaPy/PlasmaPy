@@ -38,10 +38,10 @@ class FunctionTestCase(_AbstractTestCase):
     ----------
     expected
         The expected outcome of the test, which can be an exception,
-        a warning, the resulting object, or a tuple that contains
+        a warning, the resulting object, or a `tuple` that contains
         a warning and the resulting object.
 
-    function
+    function : Callable
         The function to be tested.
 
     args : optional
@@ -65,7 +65,7 @@ class FunctionTestCase(_AbstractTestCase):
         The absolute tolerance to be supplied to `astropy.units.isclose`
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
-        ``this`` and ``that``.  Defaults to zero in the appropriate units.
+        the two `~astropy.units.Quantity` objects being compared.
 
     Examples
     --------
@@ -250,7 +250,7 @@ class MethodTestCase:
         The absolute tolerance to be supplied to `astropy.units.isclose`
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
-        ``this`` and ``that``.  Defaults to zero in the appropriate units.
+        the two `~astropy.units.Quantity` objects being compared.
 
     Examples
     --------
@@ -437,7 +437,7 @@ class AttrTestCase:
         The absolute tolerance to be supplied to `astropy.units.isclose`
         or `~astropy.units.allclose`.  If ``atol`` is a
         `~astropy.units.Quantity`, then it must have the same units as
-        ``this`` and ``that``.  Defaults to zero in the appropriate units.
+        the two `~astropy.units.Quantity` objects being compared.
 
     Examples
     --------
