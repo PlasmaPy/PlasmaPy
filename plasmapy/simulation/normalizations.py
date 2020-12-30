@@ -4,38 +4,11 @@ import abc
 
 from astropy import constants as const
 from astropy import units as u
-from typing import Optional
+from typing import Optional, List
 
 from plasmapy import formulary
 from plasmapy.particles import Particle, particle_input
 from plasmapy.utils.decorators import validate_quantities
-
-# Behavior to implement in the future: if we have a classes called, say,
-# UniformPlasma and DimensionlessPlasma, then we should be able to do
-# operations like:
-#
-#   uniform_plasma / normalizations -> dimensionless_plasma
-#
-#   dimensionless_plasma * normalizations = uniform_plasma
-#
-# More generally:
-#
-#   dimensional_plasma / normalizations -> dimensionless_plasma
-#
-#   dimensionless_plasma * normalizations -> dimensional_plasma
-
-_unit_for_physical_type = {
-    u.T: "magnetic_field",
-    u.m: "length",
-    u.s: "time",
-    u.K: "temperature",
-    u.J: "energy",
-    u.m / u.s: "velocity",
-    u.A / u.m ** 2: "current_density",
-    u.Pa: "pressure",
-    u.V / u.m: "electric_field",
-    u.m ** -3: "number_density",
-}
 
 
 class AbstractNormalizations(abc.ABC):
@@ -43,6 +16,9 @@ class AbstractNormalizations(abc.ABC):
     An abstract interface for classes that represent the normalizations
     of equations describing plasmas.
     """
+
+    @abc.abstractmethod
+    def base_units(self) -> List[u.UnitBase]:
 
     @abc.abstractmethod
     def current_density(self) -> u.A / u.m ** 2:
@@ -92,45 +68,8 @@ class AbstractNormalizations(abc.ABC):
     def velocity(self) -> u.m / u.s:
         raise NotImplementedError
 
-    _irreducible_units_to_physical_type = {
-        u.A: "current",
-        u.K: "temperature",
-        u.kg: "mass",
-        u.m: "length",
-        u.s: "time",
-    }  # probably not needed
 
-    _base_units_to_physical_type = {
-        u.kg: "mass",
-        u.m: "length",
-        u.s: "time",
-        u.T: "magnetic_field",
-        u.K: "temperature",
-    }  # to use with .decompose(bases=...)
-
-    # Maybe make the base units the ones associated with the normalizations
-    # passed to the Normalization class upon instantiation.
-
-    _base_units = [u.kg, u.K, u.m, u.s, u.T]
-
-    def normalization_from_unit(self, unit: u.UnitBase) -> u.Quantity:
-        """
-        First draft!  Takes a (probably composite) unit, decomposes it
-        to the base units used for the normalization, gets the normalizations
-        associated with the relevant base units, takes it to the appropriate
-        power, and then multiplies them together.
-
-        """
-
-
-        unit_decomposition = unit.si.decompose(bases=self._base_units)
-        normalization = 1.0 * u.dimensionless_unscaled
-        for base_unit, power in unit_decomposition.bases, unit_decomposition.powers:
-            normalization_for_base = self._base_units_to_physical_type[base_unit]
-            normalization *= normalization_for_base ** power
-        return normalization.to(unit)
-
-
+# Below is a first draft, which needs a lot of revising.
 
 class MHDNormalizations(AbstractNormalizations):
     """
@@ -278,7 +217,6 @@ class MHDNormalizations(AbstractNormalizations):
         """The normalization for magnetic flux."""
         return self.magnetic_field * self.length
 
-
     @property
     def resistivity(self) -> u.ohm * u.m:
         """The normalization for the resistivity."""
@@ -318,3 +256,71 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def thermal_conductivity(self):
         raise NotImplementedError
+
+
+def normalization_from_unit(normalizations: AbstractNormalizations, unit: u.UnitBase) -> u.Quantity:
+    """
+    First draft!  Takes a (probably composite) unit, decomposes it
+    to the base units used for the normalization, gets the normalizations
+    associated with the relevant base units, takes it to the appropriate
+    power, and then multiplies them together.
+
+    """
+
+    unit_decomposition = unit.si.decompose(bases=self._base_units)
+    normalization = 1.0 * u.dimensionless_unscaled
+    for base_unit, power in unit_decomposition.bases, unit_decomposition.powers:
+        normalization_for_base = self._base_units_to_physical_type[base_unit]
+        normalization *= normalization_for_base ** power
+    return normalization.to(unit)
+
+
+
+
+# Behavior to implement in the future: if we have a classes called, say,
+# UniformPlasma and DimensionlessPlasma, then we should be able to do
+# operations like:
+#
+#   uniform_plasma / normalizations -> dimensionless_plasma
+#
+#   dimensionless_plasma * normalizations = uniform_plasma
+#
+# More generally:
+#
+#   dimensional_plasma / normalizations -> dimensionless_plasma
+#
+#   dimensionless_plasma * normalizations -> dimensional_plasma
+
+_unit_for_physical_type = {
+    u.T: "magnetic_field",
+    u.m: "length",
+    u.s: "time",
+    u.K: "temperature",
+    u.J: "energy",
+    u.m / u.s: "velocity",
+    u.A / u.m ** 2: "current_density",
+    u.Pa: "pressure",
+    u.V / u.m: "electric_field",
+    u.m ** -3: "number_density",
+}
+
+_irreducible_units_to_physical_type = {
+    u.A: "current",
+    u.K: "temperature",
+    u.kg: "mass",
+    u.m: "length",
+    u.s: "time",
+}  # probably not needed
+
+_base_units_to_physical_type = {
+    u.kg: "mass",
+    u.m: "length",
+    u.s: "time",
+    u.T: "magnetic_field",
+    u.K: "temperature",
+}  # to use with .decompose(bases=...)
+
+# Maybe make the base units the ones associated with the normalizations
+# passed to the Normalization class upon instantiation.
+
+_base_units = [u.kg, u.K, u.m, u.s, u.T]

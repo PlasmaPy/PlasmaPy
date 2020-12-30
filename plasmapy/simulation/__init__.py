@@ -11,7 +11,6 @@ from plasmapy.simulation.abstractions import (
 )
 from plasmapy.simulation.normalizations import (
     AbstractNormalizations,
-    IdealMHDNormalizations,
     MHDNormalizations,
 )
 from plasmapy.simulation.particletracker import ParticleTracker
