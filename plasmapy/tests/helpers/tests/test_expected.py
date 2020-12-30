@@ -9,70 +9,7 @@ from plasmapy.tests.helpers.expected import (
     _is_warning_and_value,
     ExpectedTestOutcome,
 )
-
-is_warning_test_inputs = [
-    (Warning, True),
-    (UserWarning, True),
-    (Exception, False),
-    (BaseException, False),
-    ("", False),
-]
-
-
-@pytest.mark.parametrize("possible_warning, actually_a_warning", is_warning_test_inputs)
-def test_is_warning(possible_warning, actually_a_warning: bool):
-    """
-    Test that `~plasmapy.utils.pytest_helpers.expected._is_warning`
-    returns `True` for warnings and `False` for other objects.
-    """
-    assert _is_warning(possible_warning) is actually_a_warning
-
-
-is_exception_test_inputs = [
-    (Warning, False),
-    (UserWarning, False),
-    (Exception, True),
-    (BaseException, True),
-    ("", False),
-]
-
-
-@pytest.mark.parametrize(
-    "possible_exception, actually_an_exception", is_exception_test_inputs
-)
-def test_is_exception(possible_exception, actually_an_exception: bool):
-    """
-    Test that `~plasmapy.utils.pytest_helpers.expected._is_exception`
-    returns `True` for exceptions and `False` for other objects.
-    """
-    assert _is_exception(possible_exception) is actually_an_exception
-
-
-is_warning_and_value_test_inputs = [
-    ((Warning, ""), True),
-    (["", UserWarning], True),
-    ((Warning, UserWarning), False),
-    (Warning, False),
-    (UserWarning, False),
-    (Exception, False),
-    (BaseException, False),
-    ("", False),
-]
-
-
-@pytest.mark.parametrize(
-    "is_warning_and_value, actually_warning_and_value",
-    is_warning_and_value_test_inputs,
-)
-def test__is_warning_and_value(is_warning_and_value, actually_warning_and_value: bool):
-    """
-    Test that `_is_warning_and_value` returns `True` for a `tuple` or
-    `list` containing a warning and an `object` that is not a `Warning`,
-    and `False` for anything else.
-    """
-
-    assert _is_warning_and_value(is_warning_and_value) is actually_warning_and_value
-
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 expected_exception = KeyError
 expected_warning = UserWarning
@@ -83,7 +20,7 @@ Case = collections.namedtuple("Case", ["argument", "attribute", "correct_outcome
 expected_value_and_warning = (expected_value, expected_warning)
 expected_warning_and_value = (expected_warning, expected_value)
 
-cases = [
+expected_outcome_test_cases = [
     Case(expected_exception, "expected_exception", expected_exception),
     Case(expected_exception, "expected_outcome", expected_exception),
     Case(expected_exception, "expecting_an_exception", True),
@@ -114,10 +51,9 @@ cases = [
 ]
 
 
-@pytest.mark.parametrize("case", cases)
+@pytest.mark.parametrize("case", expected_outcome_test_cases)
 def test_expected_test_outcome_attributes(case: Case):
-    """Test that attributes of `ExpectedTestOutcome` return the correct values."""
-
+    """Test that `ExpectedTestOutcome` attributes each return the expected values."""
     expected_outcome = ExpectedTestOutcome(case.argument)
     result = expected_outcome.__getattribute__(case.attribute)
     if result is not case.correct_outcome and result != case.correct_outcome:
@@ -144,7 +80,6 @@ exception_raising_cases = [
 @pytest.mark.parametrize("case", exception_raising_cases)
 def test_expected_test_outcome_exceptions(case: Case):
     """Test that attributes of `ExpectedTestOutcome` raise exceptions as needed."""
-
     if not issubclass(case.correct_outcome, Exception):
         raise TypeError(
             "Incorrect test setup: the expected outcome must be an exception."
@@ -156,3 +91,70 @@ def test_expected_test_outcome_exceptions(case: Case):
             f"The ExpectedTestOutcome instance for {case.argument} did not "
             f"raise the expected exception but instead returned {result}."
         )
+
+
+is_warning_test_inputs = [
+    (Warning, True),
+    (UserWarning, True),
+    (PlasmaPyWarning, True),
+    (Exception, False),
+    (BaseException, False),
+    ("", False),
+]
+
+
+@pytest.mark.parametrize("possible_warning, actually_a_warning", is_warning_test_inputs)
+def test__is_warning(possible_warning, actually_a_warning: bool):
+    """
+    Test that `~plasmapy.utils.pytest_helpers.expected._is_warning`
+    returns `True` for warnings and `False` for other objects.
+    """
+    if _is_warning(possible_warning) is not actually_a_warning:
+        pytest.fail("sadfljkasdf;liajsdf")
+
+
+is_exception_test_inputs = [
+    (Warning, False),
+    (UserWarning, False),
+    (Exception, True),
+    (BaseException, True),
+    ("", False),
+]
+
+
+@pytest.mark.parametrize(
+    "possible_exception, actually_an_exception", is_exception_test_inputs
+)
+def test_is_exception(possible_exception, actually_an_exception: bool):
+    """
+    Test that `~plasmapy.utils.pytest_helpers.expected._is_exception`
+    returns `True` for exceptions and `False` for other objects.
+    """
+    if _is_exception(possible_exception) is not actually_an_exception:
+        pytest.fail("fasdfasd")
+
+
+is_warning_and_value_test_inputs = [
+    ((Warning, ""), True),
+    (["", UserWarning], True),
+    ((Warning, UserWarning), False),
+    (Warning, False),
+    (UserWarning, False),
+    (Exception, False),
+    (BaseException, False),
+    ("", False),
+]
+
+
+@pytest.mark.parametrize(
+    "is_warning_and_value, actually_warning_and_value",
+    is_warning_and_value_test_inputs,
+)
+def test__is_warning_and_value(is_warning_and_value, actually_warning_and_value: bool):
+    """
+    Test that `_is_warning_and_value` returns `True` for a `tuple` or
+    `list` containing a warning and an `object` that is not a `Warning`,
+    and `False` for anything else.
+    """
+    if _is_warning_and_value(is_warning_and_value) is not actually_warning_and_value:
+        pytest.fail("sdfasdfas")
