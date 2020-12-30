@@ -100,6 +100,7 @@ is_warning_test_inputs = [
     (Exception, False),
     (BaseException, False),
     ("", False),
+    ((Warning, 1), False),
 ]
 
 
@@ -109,8 +110,13 @@ def test__is_warning(possible_warning, actually_a_warning: bool):
     Test that `~plasmapy.utils.pytest_helpers.expected._is_warning`
     returns `True` for warnings and `False` for other objects.
     """
-    if _is_warning(possible_warning) is not actually_a_warning:
-        pytest.fail("sadfljkasdf;liajsdf")
+    interpreted_as_warning = _is_warning(possible_warning)
+    if interpreted_as_warning != actually_a_warning:
+        pytest.fail(
+            f"_is_warning({repr(possible_warning)}) should return "
+            f"{actually_a_warning}, but is instead returning "
+            f"{interpreted_as_warning}."
+        )
 
 
 is_exception_test_inputs = [
@@ -130,8 +136,13 @@ def test_is_exception(possible_exception, actually_an_exception: bool):
     Test that `~plasmapy.utils.pytest_helpers.expected._is_exception`
     returns `True` for exceptions and `False` for other objects.
     """
-    if _is_exception(possible_exception) is not actually_an_exception:
-        pytest.fail("fasdfasd")
+    interpreted_as_exception = _is_exception(possible_exception)
+    if interpreted_as_exception != actually_an_exception:
+        pytest.fail(
+            f"_is_exception({repr(possible_exception)} should return "
+            f"{actually_an_exception}, but is instead returning "
+            f"{interpreted_as_exception}."
+        )
 
 
 is_warning_and_value_test_inputs = [
@@ -147,14 +158,21 @@ is_warning_and_value_test_inputs = [
 
 
 @pytest.mark.parametrize(
-    "is_warning_and_value, actually_warning_and_value",
+    "possible_warning_and_value, actually_warning_and_value",
     is_warning_and_value_test_inputs,
 )
-def test__is_warning_and_value(is_warning_and_value, actually_warning_and_value: bool):
+def test__is_warning_and_value(
+    possible_warning_and_value, actually_warning_and_value: bool
+):
     """
     Test that `_is_warning_and_value` returns `True` for a `tuple` or
     `list` containing a warning and an `object` that is not a `Warning`,
     and `False` for anything else.
     """
-    if _is_warning_and_value(is_warning_and_value) is not actually_warning_and_value:
-        pytest.fail("sdfasdfas")
+    interpreted_as_warning_and_value = _is_warning_and_value(possible_warning_and_value)
+    if interpreted_as_warning_and_value != actually_warning_and_value:
+        pytest.fail(
+            f"_is_warning_and_value returns {interpreted_as_warning_and_value} "
+            f"with {repr(possible_warning_and_value)} as an argument, but is "
+            f"expected to return {actually_warning_and_value}."
+        )
