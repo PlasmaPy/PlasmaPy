@@ -5,6 +5,7 @@ __all__ = [
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
+    "particle_like",
 ]
 
 import astropy.constants as const
@@ -21,15 +22,15 @@ from typing import List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
-    AtomicError,
-    AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataError,
-    MissingAtomicDataWarning,
+    MissingParticleDataError,
+    MissingParticleDataWarning,
+    ParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.parsing import (
@@ -91,9 +92,9 @@ _valid_categories = (
 def _category_errmsg(particle, category: str) -> str:
     """
     Return an error message when an attribute raises an
-    `~plasmapy.utils.InvalidElementError`,
-    `~plasmapy.utils.InvalidIonError`, or
-    `~plasmapy.utils.InvalidIsotopeError`.
+    `~plasmapy.particles.exceptions.InvalidElementError`,
+    `~plasmapy.particles.exceptions.InvalidIonError`, or
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`.
     """
     article = "an" if category[0] in "aeiouAEIOU" else "a"
     errmsg = (
@@ -164,10 +165,10 @@ class AbstractParticle(ABC):
 
     def __bool__(self):
         """
-        Raise an `~plasmapy.utils.AtomicError` because particles
+        Raise an `~plasmapy.particles.exceptions.ParticleError` because particles
         do not have a truth value.
         """
-        raise AtomicError("The truth value of a particle is not defined.")
+        raise ParticleError("The truth value of a particle is not defined.")
 
     def json_dump(self, fp, **kwargs):
         """
@@ -224,27 +225,27 @@ class Particle(AbstractParticle):
         For when any of the arguments or keywords is not of the required
         type.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         Raised when the particle input does not correspond to a valid
         particle or is contradictory.
 
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         For when an attribute is being accessed that requires
         information about an element, but the particle is not an
         element, isotope, or ion.
 
-    `~plasmapy.utils.InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         For when an attribute is being accessed that requires
         information about an isotope or nuclide, but the particle is not
         an isotope (or an ion of an isotope).
 
-    `~plasmapy.utils.ChargeError`
+    `~plasmapy.particles.exceptions.ChargeError`
         For when either the `~plasmapy.particles.Particle.charge` or
         `~plasmapy.particles.Particle.integer_charge` attributes is
         being accessed but the charge information for the particle is
         not available.
 
-    `~plasmapy.utils.AtomicError`
+    `~plasmapy.particles.exceptions.ParticleError`
         Raised for attempts at converting a
         `~plasmapy.particles.Particle` object to a `bool`.
 
@@ -437,7 +438,7 @@ class Particle(AbstractParticle):
             if mass_numb is not None or Z is not None:
                 if particle == "p+" and (mass_numb == 1 or Z == 1):
                     warnings.warn(
-                        "Redundant mass number or charge information.", AtomicWarning
+                        "Redundant mass number or charge information.", ParticleWarning
                     )
                 else:
                     raise InvalidParticleError(
@@ -540,7 +541,6 @@ class Particle(AbstractParticle):
         >>> lead = Particle('lead')
         >>> repr(lead)
         'Particle("Pb")'
-
         """
         return f'Particle("{self.particle}")'
 
@@ -562,7 +562,7 @@ class Particle(AbstractParticle):
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
-        `~plasmapy.utils.AtomicError`.
+        `~plasmapy.particles.exceptions.ParticleError`.
 
         Examples
         --------
@@ -572,7 +572,6 @@ class Particle(AbstractParticle):
         False
         >>> electron == 'e-'
         True
-
         """
         if isinstance(other, str):
             try:
@@ -615,7 +614,7 @@ class Particle(AbstractParticle):
         same_attributes = self._attributes == other._attributes
 
         if same_particle and not same_attributes:  # coverage: ignore
-            raise AtomicError(
+            raise ParticleError(
                 f"{self} and {other} should be the same Particle, but "
                 f"have differing attributes.\n\n"
                 f"The attributes of {self} are:\n\n{self._attributes}\n\n"
@@ -638,8 +637,7 @@ class Particle(AbstractParticle):
         instance, then this method will raise a `TypeError`.  If
         ``other.particle`` equals ``self.particle`` but the attributes
         differ, then this method will raise a
-        `~plasmapy.utils.AtomicError`.
-
+        `~plasmapy.particles.exceptions.ParticleError`.
         """
         return not self.__eq__(other)
 
@@ -653,7 +651,7 @@ class Particle(AbstractParticle):
     def __invert__(self):
         """
         Return the corresponding antiparticle, or raise an
-        `~plasmapy.utils.AtomicError` if the particle is not an
+        `~plasmapy.particles.exceptions.ParticleError` if the particle is not an
         elementary particle.
         """
         return self.antiparticle
@@ -678,7 +676,6 @@ class Particle(AbstractParticle):
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': ('e-',), 'kwargs': {}}}}
-
         """
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["__init__"]["args"] = (self.particle,)
@@ -694,7 +691,6 @@ class Particle(AbstractParticle):
         >>> electron = Particle('electron')
         >>> electron.particle
         'e-'
-
         """
         return self._attributes["particle"]
 
@@ -702,7 +698,7 @@ class Particle(AbstractParticle):
     def antiparticle(self):
         """
         Return the corresponding antiparticle, or raise an
-        `~plasmapy.utils.AtomicError` if the particle is not an
+        `~plasmapy.particles.exceptions.ParticleError` if the particle is not an
         elementary particle.
 
         This attribute may be accessed by using the unary operator ``~``
@@ -717,12 +713,11 @@ class Particle(AbstractParticle):
         >>> antineutron = Particle('antineutron')
         >>> ~antineutron
         Particle("n")
-
         """
         if self.particle in _antiparticles.keys():
             return Particle(_antiparticles[self.particle])
         else:
-            raise AtomicError(
+            raise ParticleError(
                 "The unary operator can only be used for elementary "
                 "particles and antiparticles."
             )
@@ -738,7 +733,6 @@ class Particle(AbstractParticle):
         >>> alpha = Particle('alpha')
         >>> alpha.element
         'He'
-
         """
         return self._attributes["element"]
 
@@ -753,7 +747,6 @@ class Particle(AbstractParticle):
         >>> alpha = Particle('alpha')
         >>> alpha.isotope
         'He-4'
-
         """
         return self._attributes["isotope"]
 
@@ -771,7 +764,6 @@ class Particle(AbstractParticle):
         >>> hydrogen_atom = Particle('H', Z=0)
         >>> hydrogen_atom.ionic_symbol
         'H 0+'
-
         """
         return self._attributes["ion"]
 
@@ -793,7 +785,6 @@ class Particle(AbstractParticle):
         >>> hydrogen_atom = Particle('H', Z=0)
         >>> hydrogen_atom.roman_symbol
         'H I'
-
         """
         if not self._attributes["element"]:
             return None
@@ -811,7 +802,7 @@ class Particle(AbstractParticle):
     def element_name(self) -> str:
         """
         Return the name of the element corresponding to this
-        particle, or raise an `~plasmapy.utils.InvalidElementError` if
+        particle, or raise an `~plasmapy.particles.exceptions.InvalidElementError` if
         the particle does not correspond to an element.
 
         Examples
@@ -819,7 +810,6 @@ class Particle(AbstractParticle):
         >>> tritium = Particle('T')
         >>> tritium.element_name
         'hydrogen'
-
         """
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
@@ -833,9 +823,9 @@ class Particle(AbstractParticle):
         `None` otherwise.
 
         If the particle is not a valid element, then this
-        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        attribute will raise an `~plasmapy.particles.exceptions.InvalidElementError`.
         If it is not an isotope, then this attribute will raise an
-        `~plasmapy.utils.InvalidIsotopeError`.
+        `~plasmapy.particles.exceptions.InvalidIsotopeError`.
 
         Examples
         --------
@@ -845,7 +835,6 @@ class Particle(AbstractParticle):
         >>> iron_isotope = Particle("Fe-56", Z=16)
         >>> iron_isotope.isotope_name
         'iron-56'
-
         """
         if not self.element:
             raise InvalidElementError(_category_errmsg(self.particle, "element"))
@@ -866,7 +855,7 @@ class Particle(AbstractParticle):
         """
         Return the particle's integer charge.
 
-        This attribute will raise a `~plasmapy.utils.ChargeError` if the
+        This attribute will raise a `~plasmapy.particles.exceptions.ChargeError` if the
         charge has not been specified.
 
         Examples
@@ -874,7 +863,6 @@ class Particle(AbstractParticle):
         >>> muon = Particle('mu-')
         >>> muon.integer_charge
         -1
-
         """
         if self._attributes["integer charge"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
@@ -885,7 +873,7 @@ class Particle(AbstractParticle):
         """
         Return the particle's electron charge in coulombs.
 
-        This attribute will raise a `~plasmapy.utils.ChargeError` if the
+        This attribute will raise a `~plasmapy.particles.exceptions.ChargeError` if the
         charge has not been specified.
 
         Examples
@@ -893,7 +881,6 @@ class Particle(AbstractParticle):
         >>> electron = Particle('e-')
         >>> electron.charge
         <Quantity -1.60217662e-19 C>
-
         """
         if self._attributes["charge"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
@@ -908,23 +895,22 @@ class Particle(AbstractParticle):
         Return an element's standard atomic weight in kg.
 
         If the particle is isotope or ion or not an element, this
-        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        attribute will raise an `~plasmapy.particles.exceptions.InvalidElementError`.
 
         If the element does not have a defined standard atomic weight,
         this attribute will raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
         Examples
         --------
         >>> oxygen = Particle('O')
         >>> oxygen.standard_atomic_weight
         <Quantity 2.656696...e-26 kg>
-
         """
         if self.isotope or self.is_ion or not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
         if self._attributes["standard atomic weight"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The standard atomic weight of {self} is unavailable."
             )
         return self._attributes["standard atomic weight"].to(u.kg)
@@ -935,9 +921,9 @@ class Particle(AbstractParticle):
         Return the mass of the bare nucleus of an isotope or a neutron.
 
         This attribute will raise a
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
+        `~plasmapy.particles.exceptions.InvalidIsotopeError` if the particle is not an
         isotope or neutron, or a
-        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        `~plasmapy.particles.exceptions.MissingParticleDataError` if the isotope mass is
         not available.
 
         Examples
@@ -945,7 +931,6 @@ class Particle(AbstractParticle):
         >>> deuterium = Particle('D')
         >>> deuterium.nuclide_mass
         <Quantity 3.34358372e-27 kg>
-
         """
 
         if self.isotope == "H-1":
@@ -963,7 +948,7 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The mass of a {self.isotope} nuclide is not available."
             )
 
@@ -995,7 +980,7 @@ class Particle(AbstractParticle):
 
         If the mass is unavailable (e.g., for neutrinos or elements with
         no standard atomic weight), then this attribute will raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
         Examples
         --------
@@ -1007,7 +992,6 @@ class Particle(AbstractParticle):
         <Quantity 6.64556...e-27 kg>
         >>> Particle('alpha').mass
         <Quantity 6.64465...e-27 kg>
-
         """
 
         if self._attributes["mass"] is not None:
@@ -1021,7 +1005,7 @@ class Particle(AbstractParticle):
                 base_mass = self._attributes["standard atomic weight"]
 
             if base_mass is None:
-                raise MissingAtomicDataError(
+                raise MissingParticleDataError(
                     f"The mass of ion '{self.ionic_symbol}' is not available."
                 )
 
@@ -1039,7 +1023,7 @@ class Particle(AbstractParticle):
             if mass is not None:
                 return mass.to(u.kg)
 
-        raise MissingAtomicDataError(f"The mass of {self} is not available.")
+        raise MissingParticleDataError(f"The mass of {self} is not available.")
 
     @property
     def nuclide_mass(self) -> u.Quantity:
@@ -1047,9 +1031,9 @@ class Particle(AbstractParticle):
         Return the mass of the bare nucleus of an isotope or a neutron.
 
         This attribute will raise a
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not an
+        `~plasmapy.particles.exceptions.InvalidIsotopeError` if the particle is not an
         isotope or neutron, or a
-        `~plasmapy.utils.MissingAtomicDataError` if the isotope mass is
+        `~plasmapy.particles.exceptions.MissingParticleDataError` if the isotope mass is
         not available.
 
         Examples
@@ -1057,7 +1041,6 @@ class Particle(AbstractParticle):
         >>> deuterium = Particle('D')
         >>> deuterium.nuclide_mass
         <Quantity 3.34358372e-27 kg>
-
         """
 
         if self.isotope == "H-1":
@@ -1075,7 +1058,7 @@ class Particle(AbstractParticle):
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The mass of a {self.isotope} nuclide is not available."
             )
 
@@ -1094,7 +1077,7 @@ class Particle(AbstractParticle):
         of the nucleus only.
 
         If the mass of the particle is not known, then raise a
-        `~plasmapy.utils.MissingAtomicDataError`.
+        `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
         Examples
         --------
@@ -1109,14 +1092,13 @@ class Particle(AbstractParticle):
         >>> electron = Particle('electron')
         >>> electron.mass_energy.to('MeV')
         <Quantity 0.510998... MeV>
-
         """
         try:
             mass = self.nuclide_mass if self.isotope else self.mass
             energy = mass * const.c ** 2
             return energy.to(u.J)
-        except MissingAtomicDataError:
-            raise MissingAtomicDataError(
+        except MissingParticleDataError:
+            raise MissingParticleDataError(
                 f"The mass energy of {self.particle} is not available "
                 f"because the mass is unknown."
             ) from None
@@ -1127,7 +1109,7 @@ class Particle(AbstractParticle):
         Return the nuclear binding energy in joules.
 
         This attribute will raise an
-        `~plasmapy.utils.InvalidIsotopeError` if the particle is not a
+        `~plasmapy.particles.exceptions.InvalidIsotopeError` if the particle is not a
         nucleon or isotope.
 
         Examples
@@ -1146,7 +1128,6 @@ class Particle(AbstractParticle):
         <Quantity 0. J>
         >>> proton.binding_energy
         <Quantity 0. J>
-
         """
 
         if self._attributes["baryon number"] == 1:
@@ -1176,7 +1157,7 @@ class Particle(AbstractParticle):
         Return the number of protons in an element, isotope, or ion.
 
         If the particle is not an element, then this attribute will
-        raise an `~plasmapy.utils.InvalidElementError`.
+        raise an `~plasmapy.particles.exceptions.InvalidElementError`.
 
         Examples
         --------
@@ -1186,7 +1167,6 @@ class Particle(AbstractParticle):
         >>> curium = Particle('Cm')
         >>> curium.atomic_number
         96
-
         """
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
@@ -1201,14 +1181,13 @@ class Particle(AbstractParticle):
         of neutrons in an isotope or nuclide.
 
         If the particle is not an isotope, then this attribute will
-        raise an `~plasmapy.utils.InvalidIsotopeError`.
+        raise an `~plasmapy.particles.exceptions.InvalidIsotopeError`.
 
         Examples
         --------
         >>> alpha = Particle('helium-4 2+')
         >>> alpha.mass_number
         4
-
         """
         if not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
@@ -1223,7 +1202,7 @@ class Particle(AbstractParticle):
         or ``1`` for a neutron.
 
         If this particle is not an isotope or neutron, then this
-        attribute will raise an `~plasmapy.utils.InvalidIsotopeError`.
+        attribute will raise an `~plasmapy.particles.exceptions.InvalidIsotopeError`.
 
         Examples
         --------
@@ -1232,7 +1211,6 @@ class Particle(AbstractParticle):
         2
         >>> Particle('n').neutron_number
         1
-
         """
         if self.particle == "n":
             return 1
@@ -1250,7 +1228,7 @@ class Particle(AbstractParticle):
         ion, or ``1`` for an electron.
 
         If this particle is not an ion or electron, then this attribute
-        will raise an `~plasmapy.utils.InvalidIonError`.
+        will raise an `~plasmapy.particles.exceptions.InvalidIonError`.
 
         Examples
         --------
@@ -1258,7 +1236,6 @@ class Particle(AbstractParticle):
         3
         >>> Particle('e-').electron_number
         1
-
         """
         if self.particle == "e-":
             return 1
@@ -1273,16 +1250,15 @@ class Particle(AbstractParticle):
         Return the isotopic abundance of an isotope.
 
         If the isotopic abundance is not available, this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.  If the
+        raise a `~plasmapy.particles.exceptions.MissingParticleDataError`.  If the
         particle is not an isotope or is an ion of an isotope, then this
-        attribute will raise an `~plasmapy.utils.InvalidIsotopeError`.
+        attribute will raise an `~plasmapy.particles.exceptions.InvalidIsotopeError`.
 
         Examples
         --------
         >>> D = Particle('deuterium')
         >>> D.isotopic_abundance
         0.000115
-
         """
         from .atomic import common_isotopes
 
@@ -1295,7 +1271,7 @@ class Particle(AbstractParticle):
             warnings.warn(
                 f"No isotopes of {self.element} have an isotopic abundance. "
                 f"The isotopic abundance of {self.isotope} is being returned as 0.0",
-                AtomicWarning,
+                ParticleWarning,
             )
 
         return abundance
@@ -1310,17 +1286,16 @@ class Particle(AbstractParticle):
         number is equivalent to the mass number for isotopes.
 
         If the baryon number is unavailable, then this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.
+        raise a `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
         Examples
         --------
         >>> alpha = Particle('alpha')
         >>> alpha.baryon_number
         4
-
         """
         if self._attributes["baryon number"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The baryon number for '{self.particle}' is not available."
             )
         return self._attributes["baryon number"]
@@ -1335,7 +1310,7 @@ class Particle(AbstractParticle):
         antileptons, excluding bound electrons in an atom or ion.
 
         If the lepton number is unavailable, then this attribute will
-        raise a `~plasmapy.utils.MissingAtomicDataError`.
+        raise a `~plasmapy.particles.exceptions.MissingParticleDataError`.
 
         Examples
         --------
@@ -1345,10 +1320,9 @@ class Particle(AbstractParticle):
         -1
         >>> Particle('He-4 0+').lepton_number
         0
-
         """
         if self._attributes["lepton number"] is None:  # coverage: ignore
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The lepton number for {self.particle} is not available."
             )
         return self._attributes["lepton number"]
@@ -1362,14 +1336,13 @@ class Particle(AbstractParticle):
         Particles that do not have sufficiently well-constrained
         half-lives will return a `str` containing the information
         that is available about the half-life and issue a
-        `~plasmapy.utils.MissingAtomicDataWarning`.
+        `~plasmapy.particles.exceptions.MissingParticleDataWarning`.
 
         Examples
         --------
         >>> neutron = Particle('n')
         >>> neutron.half_life
         <Quantity 881.5 s>
-
         """
         if self.element and not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self.particle, "isotope"))
@@ -1378,11 +1351,11 @@ class Particle(AbstractParticle):
             warnings.warn(
                 f"The half-life for {self.particle} is not known precisely; "
                 "returning string with estimated value.",
-                MissingAtomicDataWarning,
+                MissingParticleDataWarning,
             )
 
         if self._attributes["half-life"] is None:
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The half-life of '{self.particle}' is not available."
             )
         return self._attributes["half-life"]
@@ -1393,17 +1366,16 @@ class Particle(AbstractParticle):
         Return the spin of the particle.
 
         If the spin is unavailable, then a
-        `~plasmapy.utils.MissingAtomicDataError` will be raised.
+        `~plasmapy.particles.exceptions.MissingParticleDataError` will be raised.
 
         Examples
         --------
         >>> positron = Particle('e+')
         >>> positron.spin
         0.5
-
         """
         if self._attributes["spin"] is None:
-            raise MissingAtomicDataError(
+            raise MissingParticleDataError(
                 f"The spin of particle '{self.particle}' is unavailable."
             )
 
@@ -1416,7 +1388,7 @@ class Particle(AbstractParticle):
         group, and block information about an element.
 
         If the particle is not an element, isotope, or ion, then this
-        attribute will raise an `~plasmapy.utils.InvalidElementError`.
+        attribute will raise an `~plasmapy.particles.exceptions.InvalidElementError`.
 
         Examples
         --------
@@ -1429,7 +1401,6 @@ class Particle(AbstractParticle):
         11
         >>> gold.periodic_table.block
         'd'
-
         """
         if self.element:
             return self._attributes["periodic table"]
@@ -1506,7 +1477,7 @@ class Particle(AbstractParticle):
                 return set(arg)
 
         if category_tuple and require:  # coverage: ignore
-            raise AtomicError(
+            raise ParticleError(
                 "No positional arguments are allowed if the `require` keyword "
                 "is set in is_category."
             )
@@ -1530,7 +1501,7 @@ class Particle(AbstractParticle):
 
         for problem_categories, adjective in categories_and_adjectives:
             if problem_categories:
-                raise AtomicError(
+                raise ParticleError(
                     f"The following categories in {self.__repr__()}"
                     f".is_category are {adjective}: {problem_categories}"
                 )
@@ -1871,7 +1842,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
         if self._mass is np.nan:
             warnings.warn(
-                "DimensionlessParticle mass set to NaN", MissingAtomicDataWarning
+                "DimensionlessParticle mass set to NaN", MissingParticleDataWarning
             )
 
     @charge.setter
@@ -1885,7 +1856,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
         if self._charge is np.nan:
             warnings.warn(
-                "DimensionlessParticle charge set to NaN", MissingAtomicDataWarning
+                "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
 
@@ -1998,7 +1969,9 @@ class CustomParticle(AbstractParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn("CustomParticle mass set to NaN kg", MissingAtomicDataWarning)
+            warnings.warn(
+                "CustomParticle mass set to NaN kg", MissingParticleDataWarning
+            )
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
@@ -2028,7 +2001,7 @@ class CustomParticle(AbstractParticle):
         if q is None:
             q = np.nan * u.C
             warnings.warn(
-                "CustomParticle charge set to NaN C", MissingAtomicDataWarning
+                "CustomParticle charge set to NaN C", MissingParticleDataWarning
             )
         elif isinstance(q, str):
             q = u.Quantity(q)
@@ -2061,3 +2034,9 @@ class CustomParticle(AbstractParticle):
                 "a real number that represents the ratio of the charge to "
                 "the elementary charge."
             )
+
+
+# TODO: Describe valid particle representations in docstring of particle_like
+
+particle_like = Union[str, Integral, Particle]
+"""A typing construct for valid representations of a particle."""

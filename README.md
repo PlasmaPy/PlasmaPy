@@ -44,12 +44,11 @@ on our
 [Matrix](https://app.element.io/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. Both of these are the same chat channel; Gitter uses a bridge to link the two.
 
-## [Discourse room](https://plasmapy.discourse.group/)
+## [GitHub discussions](https://github.com/PlasmaPy/PlasmaPy/discussions)
 
-We have recently created a [PlasmaPy Discourse
-group](https://plasmapy.discourse.group/) in order to allow threaded
-public discussions on a variety of topics.  This group is a great
-place to suggest ideas, bring up discussion topics, and ask questions.
+We're now trying out GitHub discussions for more varied topics that aren't
+exactly issues with the existing code base. It's a great place to suggest
+ideas, bring up discussion topics, and ask questions.
 
 ## [Mailing list](https://groups.google.com/forum/#!forum/plasmapy)
 
