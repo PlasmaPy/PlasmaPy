@@ -14,16 +14,16 @@ from plasmapy.tests.helpers.comparators import (
     CompareValues,
 )
 from plasmapy.tests.helpers.exceptions import (
-    ExceptionMismatchError,
+    ExceptionMismatchFail,
     Failed,
-    InconsistentTypeError,
+    TypeMismatchFail,
     InvalidTestError,
-    MissingExceptionError,
-    MissingWarningError,
-    UnexpectedExceptionError,
-    UnexpectedResultError,
-    UnexpectedWarningError,
-    WarningMismatchError,
+    MissingExceptionFail,
+    MissingWarningFail,
+    UnexpectedExceptionFail,
+    UnexpectedResultFail,
+    UnexpectedWarningFail,
+    WarningMismatchFail,
 )
 from plasmapy.tests.helpers.expected import ExpectedTestOutcome
 from plasmapy.tests.helpers.inputs import FunctionTestInputs
@@ -40,7 +40,7 @@ from plasmapy.tests.helpers.tests.sample_functions import (
     SampleWarningSubclass,
     sum_of_args_and_kwargs,
 )
-from plasmapy.utils.formatting.formatting import _name_with_article
+from plasmapy.utils.code_repr import _name_with_article
 
 noargs = ()
 nokwargs = {}
@@ -48,40 +48,40 @@ nokwargs = {}
 
 table_of_function_args_kwargs_expected_and_exception = [
     (raise_exception, noargs, nokwargs, SampleException, None),
-    (raise_exception, noargs, nokwargs, Exception, ExceptionMismatchError),
+    (raise_exception, noargs, nokwargs, Exception, ExceptionMismatchFail),
     (
         raise_exception,
         noargs,
         nokwargs,
         SampleExceptionSubclass,
-        ExceptionMismatchError,
+        ExceptionMismatchFail,
     ),
-    (raise_exception, noargs, nokwargs, 42, UnexpectedExceptionError),
+    (raise_exception, noargs, nokwargs, 42, UnexpectedExceptionFail),
     (raise_exception, noargs, nokwargs, SampleWarning, Failed),
     (return_42, noargs, nokwargs, 42, None),
-    (return_42, noargs, nokwargs, 6 * 9, UnexpectedResultError),
-    (return_42, noargs, nokwargs, 42.0, InconsistentTypeError),
-    (return_42, noargs, nokwargs, SampleException, MissingExceptionError),
-    (return_42, noargs, nokwargs, (SampleWarning, 42), MissingWarningError),
-    (return_42, noargs, nokwargs, (42, SampleWarning), MissingWarningError),
+    (return_42, noargs, nokwargs, 6 * 9, UnexpectedResultFail),
+    (return_42, noargs, nokwargs, 42.0, TypeMismatchFail),
+    (return_42, noargs, nokwargs, SampleException, MissingExceptionFail),
+    (return_42, noargs, nokwargs, (SampleWarning, 42), MissingWarningFail),
+    (return_42, noargs, nokwargs, (42, SampleWarning), MissingWarningFail),
     (return_42_meters, noargs, nokwargs, 42.0 * u.m, None),
     (return_42_meters, noargs, nokwargs, 42 * (1 + 1e-15) * u.m, None),
     (return_42_meters, noargs, nokwargs, 4200.0 * u.cm, u.UnitsError),
     (return_42_meters, noargs, nokwargs, 42 * u.kg, u.UnitsError),
-    (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, UnexpectedResultError),
+    (return_42_meters, noargs, nokwargs, 6 * 9 * u.m, UnexpectedResultFail),
     (return_42_meters, noargs, nokwargs, u.m, None),
     (return_42_meters, noargs, nokwargs, u.cm, u.UnitsError),
     (return_none, noargs, nokwargs, None, None),
-    (return_none, noargs, nokwargs, False, InconsistentTypeError),
+    (return_none, noargs, nokwargs, False, TypeMismatchFail),
     (issue_warning_return_42, noargs, nokwargs, SampleWarning, None),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         SampleWarningSubclass,
-        WarningMismatchError,
+        WarningMismatchFail,
     ),
-    (issue_warning_return_42, noargs, nokwargs, Warning, WarningMismatchError),
+    (issue_warning_return_42, noargs, nokwargs, Warning, WarningMismatchFail),
     (issue_warning_return_42, noargs, nokwargs, (SampleWarning, 42), None),
     (issue_warning_return_42, noargs, nokwargs, (42, SampleWarning), None),
     (
@@ -89,86 +89,86 @@ table_of_function_args_kwargs_expected_and_exception = [
         noargs,
         nokwargs,
         (SampleWarning, 6 * 9),
-        UnexpectedResultError,
+        UnexpectedResultFail,
     ),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         (6 * 9, SampleWarning),
-        UnexpectedResultError,
+        UnexpectedResultFail,
     ),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         (SampleWarningSubclass, 42),
-        WarningMismatchError,
+        WarningMismatchFail,
     ),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         (42, SampleWarningSubclass),
-        WarningMismatchError,
+        WarningMismatchFail,
     ),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         (Warning, 42),
-        WarningMismatchError,
+        WarningMismatchFail,
     ),
     (
         issue_warning_return_42,
         noargs,
         nokwargs,
         (42, Warning),
-        WarningMismatchError,
+        WarningMismatchFail,
     ),
-    (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningError),
+    (issue_warning_return_42, noargs, nokwargs, 42, UnexpectedWarningFail),
     (sum_of_args_and_kwargs, (2, 3), {"kw1": 5, "kw2": 7}, 17, None),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         42,
-        UnexpectedResultError,
+        UnexpectedResultFail,
     ),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         Warning,
-        MissingWarningError,
+        MissingWarningFail,
     ),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         Exception,
-        MissingExceptionError,
+        MissingExceptionFail,
     ),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         (Warning, 17),
-        MissingWarningError,
+        MissingWarningFail,
     ),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         (17, Warning),
-        MissingWarningError,
+        MissingWarningFail,
     ),
     (
         sum_of_args_and_kwargs,
         (2, 3),
         {"kw1": 5, "kw2": 7},
         "17",
-        InconsistentTypeError,
+        TypeMismatchFail,
     ),
 ]
 
@@ -195,8 +195,8 @@ def test_compare_actual_expected(function, args, kwargs, expected, expected_exce
 
     expected
         The expected outcome of the test to be provided to
-        `CompareActualExpected`.  The value of this ``expected`` will
-        sometimes be correct and sometimes  be incorrect in order to
+        `CompareActualExpected`.  The value of ``expected`` will
+        sometimes be correct and sometimes be incorrect in order to
         perform test this class.
 
     test_should_pass
@@ -247,7 +247,7 @@ def test_compare_actual_expected(function, args, kwargs, expected, expected_exce
         if comparison.exception is not expected_exception:
             actual_exception_from_test = _name_with_article(comparison.exception)
             expected_exception_for_test = _name_with_article(expected_exception)
-            raise ExceptionMismatchError(
+            raise ExceptionMismatchFail(
                 f"This should should raise {expected_exception_for_test}, "
                 f"but instead raised {actual_exception_from_test}." + test_information
             )
