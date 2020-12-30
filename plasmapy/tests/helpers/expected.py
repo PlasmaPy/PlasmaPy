@@ -33,15 +33,15 @@ def _is_warning_and_value(obj) -> bool:
 
 class ExpectedTestOutcome:
     """
-    A class to represent the outcome of a test.
+    A class to represent the expected outcome of a test.
 
     Parameters
     ----------
     expected
-        The value that is expected to be returned, the exception that
-        is expected to be raised, the warning that is expected to be
-        issued, or a `tuple` or `list` containing a warning and the
-        expected value (in either order).
+        A value that is expected to be returned during a test,
+        an exception that is expected to be raised, a warning that is
+        expected to be issued, or a `tuple` or `list` containing a
+        warning and the expected value (in either order).
 
     Examples
     --------
@@ -88,7 +88,18 @@ class ExpectedTestOutcome:
     """
 
     def __init__(self, expected):
-        self.expected_outcome = expected
+        self._info = dict()
+        if _is_warning(expected):
+            self._info["warning"] = expected
+        elif _is_exception(expected):
+            self._info["exception"] = expected
+        elif _is_warning_and_value(expected):
+            warning_is_first = _is_warning(expected[0])
+            warning_index, value_index = (0, 1) if warning_is_first else (1, 0)
+            self._info["warning"] = expected[warning_index]
+            self._info["value"] = expected[value_index]
+        else:
+            self._info["value"] = expected
 
     @property
     def expected_outcome(self) -> Any:
@@ -106,21 +117,6 @@ class ExpectedTestOutcome:
         else:
             return self.expected_value
 
-    @expected_outcome.setter
-    def expected_outcome(self, expected):
-        self._info = dict()
-        if _is_warning(expected):
-            self._info["warning"] = expected
-        elif _is_exception(expected):
-            self._info["exception"] = expected
-        elif _is_warning_and_value(expected):
-            warning_is_first = _is_warning(expected[0])
-            warning_index, value_index = (0, 1) if warning_is_first else (1, 0)
-            self._info["warning"] = expected[warning_index]
-            self._info["value"] = expected[value_index]
-        else:
-            self._info["value"] = expected
-
     @property
     def expecting_a_value(self) -> bool:
         """
@@ -137,7 +133,9 @@ class ExpectedTestOutcome:
         if self.expecting_a_value:
             return self._info["value"]
         else:
-            raise RuntimeError("The test is not expected to return a value.")
+            raise RuntimeError(
+                "The expected outcome does not include a value being returned."
+            )
 
     @property
     def expecting_an_exception(self) -> bool:
@@ -155,7 +153,9 @@ class ExpectedTestOutcome:
         if self.expecting_an_exception:
             return self._info["exception"]
         else:
-            raise RuntimeError("The test is not expected to raise an exception.")
+            raise RuntimeError(
+                "The expected outcome is not the raising of an exception."
+            )
 
     @property
     def expecting_a_warning(self) -> bool:
@@ -173,7 +173,9 @@ class ExpectedTestOutcome:
         if self.expecting_a_warning:
             return self._info["warning"]
         else:
-            raise RuntimeError("The test is not expected to issue a warning.")
+            raise RuntimeError(
+                "The expected outcome does not include a warning being issued."
+            )
 
     def __repr__(self):
         return f"ExpectedTestOutcome({self.expected_outcome})"
