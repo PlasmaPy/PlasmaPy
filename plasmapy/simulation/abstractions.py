@@ -21,25 +21,21 @@ class AbstractSimulation(ABC):
         """
         Print out a summary of the simulation parameters and status.
         """
-
         pass
 
     @abstractmethod
     def initialize(self) -> NoReturn:
         """Prepare the simulation to be run."""
-
         pass
 
     @abstractmethod
     def simulate(self):
         """Perform the actual simulation."""
-
         pass
 
     @abstractmethod
     def finalize(self) -> NoReturn:
         """Perform the steps to close the simulation and output data."""
-
         pass
 
 
@@ -52,7 +48,6 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     This interface is incomplete and unstable, and is thus subject to
     change at any time.
     """
-
     pass
 
 
