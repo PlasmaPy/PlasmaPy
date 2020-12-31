@@ -58,8 +58,8 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
 
 class AbstractNormalizations(ABC):
     """
-    An abstract base class to represent the normalizations of systems of
-    equations describing plasmas.
+    An abstract base class to represent the normalization constants for
+    systems of equations describing plasmas.
 
     ... warning::
         This interface is unstable and is subject to change.
