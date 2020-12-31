@@ -6,8 +6,8 @@ __all__ = [
 ]
 
 from plasmapy.simulation.abstractions import (
+    AbstractNormalizations,
     AbstractSimulation,
     AbstractTimeDependentSimulation,
 )
-from plasmapy.simulation.normalizations import AbstractNormalizations
 from plasmapy.simulation.particletracker import ParticleTracker
