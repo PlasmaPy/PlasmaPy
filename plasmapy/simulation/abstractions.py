@@ -5,6 +5,8 @@ __all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation"]
 from abc import ABC, abstractmethod
 from typing import NoReturn
 
+import astropy.units as u
+
 
 class AbstractSimulation(ABC):
     """
