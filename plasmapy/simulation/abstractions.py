@@ -2,10 +2,10 @@
 
 __all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation"]
 
+import astropy.units as u
+
 from abc import ABC, abstractmethod
 from typing import NoReturn
-
-import astropy.units as u
 
 
 class AbstractSimulation(ABC):
@@ -50,10 +50,11 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     This interface is incomplete and unstable, and is thus subject to
     change at any time.
     """
+
     pass
 
 
-class AbstractNormalizations(ABC):  # coverage: ignore
+class AbstractNormalizations(ABC):
     """
     An abstract base class to represent the normalizations of systems of
     equations describing plasmas.
