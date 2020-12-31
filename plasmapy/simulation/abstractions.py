@@ -7,6 +7,8 @@ import astropy.units as u
 from abc import ABC, abstractmethod
 from typing import NoReturn
 
+from plasmapy.particles import Particle
+
 
 class AbstractSimulation(ABC):
     """
