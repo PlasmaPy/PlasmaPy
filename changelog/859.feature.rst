@@ -1,2 +1,2 @@
-Created the `~plasmapy.simulation.normalizations.AbstractNormalizations` class
+Created the `~plasmapy.simulation.abstractions.AbstractNormalizations` class
 to serve as an abstract interface for future classes that represent normalizations.
