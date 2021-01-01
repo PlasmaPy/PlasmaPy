@@ -1,6 +1,10 @@
 """Abstract classes for numerical simulations."""
 
-__all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation"]
+__all__ = [
+    "AbstractNormalizations",
+    "AbstractSimulation",
+    "AbstractTimeDependentSimulation",
+]
 
 import astropy.units as u
 
