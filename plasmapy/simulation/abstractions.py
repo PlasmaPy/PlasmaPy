@@ -63,8 +63,8 @@ class AbstractNormalizations(ABC):
     An abstract base class to represent the normalization constants for
     systems of equations describing plasmas.
 
-    ... warning::
-        This interface is unstable and is subject to change.
+    .. warning::
+       This interface is unstable and is subject to change.
     """
 
     @property
