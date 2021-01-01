@@ -11,8 +11,6 @@ import astropy.units as u
 from abc import ABC, abstractmethod
 from typing import NoReturn
 
-from plasmapy.particles import Particle
-
 
 class AbstractSimulation(ABC):
     """
@@ -97,15 +95,6 @@ class AbstractNormalizations(ABC):
     @abstractmethod
     def heat_flux(self) -> u.J * u.m ** -2 * u.s ** -1:
         """The normalization for heat flux."""
-        ...
-
-    @property
-    @abstractmethod
-    def ion(self) -> Particle:
-        """
-        The ion in the plasma, which could be a positron in the case
-        of a pair plasma.
-        """
         ...
 
     @property
