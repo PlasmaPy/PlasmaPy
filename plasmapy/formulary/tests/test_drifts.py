@@ -33,7 +33,7 @@ class Test_diamagnetic_drift:
 
     def test_diamagnetic_drift_2d_array(self):
         dp = u.Quantity([[1, 0, 0], [1, 0, 0], [1, 0, 0]], unit=u.N / u.m ** 3)
-        B = - u.Quantity([[0, 1, 0], [0, 1, 0], [0, 1, 0]], unit=u.T)
+        B = -u.Quantity([[0, 1, 0], [0, 1, 0], [0, 1, 0]], unit=u.T)
 
         result = drifts.diamagnetic_drift(2 * dp, 3 * B, self.n, self.q)
         assert_quantity_allclose(
@@ -139,6 +139,3 @@ class Test_force_drift:
 
     def test_alias(self):
         assert drifts.vfd_ is drifts.force_drift
-
-
-

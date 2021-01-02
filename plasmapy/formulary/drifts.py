@@ -17,9 +17,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities
-def diamagnetic_drift(
-    dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C
-) -> u.m / u.s:
+def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u.s:
     r"""
     Calculate the diamagnetic fluid perpendicular drift.
 
@@ -72,7 +70,7 @@ def diamagnetic_drift(
     # np.cross drops units right now, thus this hack: see
     # https://github.com/PlasmaPy/PlasmaPy/issues/59
     cross = np.cross(dp.si.value, B.si.value) * dp.unit * B.unit
-    return - cross / q / n / (B * B).sum(-1)
+    return -cross / q / n / (B * B).sum(-1)
 
 
 vd_ = diamagnetic_drift
@@ -192,6 +190,3 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
 vfd_ = force_drift
 """ Alias to :func:`force_drift`. """
-
-
-
