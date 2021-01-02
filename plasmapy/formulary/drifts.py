@@ -2,8 +2,10 @@
 Formulas for calculating particle drifts.
 """
 __all__ = [
+    "diamagnetic_drift",
     "ExB_drift",
     "force_drift",
+    "vd_",
     "veb_",
     "vfd_",
 ]
@@ -12,6 +14,69 @@ import astropy.units as u
 import numpy as np
 
 from plasmapy.utils.decorators import validate_quantities
+
+
+@validate_quantities
+def diamagnetic_drift(
+    dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C
+) -> u.m / u.s:
+    r"""
+    Calculate the diamagnetic fluid perpendicular drift.
+
+    **Aliases:** `vd_`
+
+    Parameters
+    ----------
+    dp : ~astropy.units.Quantity
+        Pressure gradient vector
+    B  : ~astropy.units.Quantity
+        Magnetic field vector
+    n  : ~astropy.units.Quantity
+        Number density
+    q  : ~astropy.units.Quantity
+        Particle charge
+
+    Returns
+    -------
+    v: ~astropy.units.Quantity
+        Drift velocity, in m/s
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> dp = np.array([0, -1, 0]) * u.Pa / u.m
+    >>> b = np.array([0, 0, 1]) * u.T
+    >>> n = 1 / u.m ** 3
+    >>> q = 1 * u.C
+    >>> diamagnetic_drift(dp, b, n, q)
+    <Quantity [ 1., -0., -0.] m / s>
+
+    Notes
+    -----
+    The diamagnetic drift is given by
+
+    .. math::
+
+        \vec{v} = -\frac{ \nabla p \times \vec{B} }{ q n |B|^2 }
+
+    This is the velocity component of a fluid element perpendicular to the
+    magnetic field.
+
+    References
+    ----------
+    - Chen, Introduction to Plasma Physics and Controlled Fusion, 3.65
+
+    """
+
+    # np.cross drops units right now, thus this hack: see
+    # https://github.com/PlasmaPy/PlasmaPy/issues/59
+    cross = np.cross(dp.si.value, B.si.value) * dp.unit * B.unit
+    return - cross / q / n / (B * B).sum(-1)
+
+
+vd_ = diamagnetic_drift
+""" Alias to :func:`diamagnetic_drift`. """
 
 
 @validate_quantities
@@ -127,3 +192,6 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
 vfd_ = force_drift
 """ Alias to :func:`force_drift`. """
+
+
+
