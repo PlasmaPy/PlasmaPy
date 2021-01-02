@@ -37,18 +37,31 @@ class Test_Coulomb_logarithm:
         self.density2 = 1e23 * u.cm ** -3
         self.z_mean = 2.5
         self.particles = ("e", "p")
+        self.ls_min_interp = 3.4014290066940966
         self.gms1 = 3.4014290066940966
+        self.ls_min_interp_negative = -3.4310536971592493
         self.gms1_negative = -3.4310536971592493
+        self.ls_full_interp = 3.6349941014645157
         self.gms2 = 3.6349941014645157
+        self.ls_full_interp_negative = -1.379394033464292
         self.gms2_negative = -1.379394033464292
+        self.ls_clamp_mininterp = 3.4014290066940966
         self.gms3 = 3.4014290066940966
+        self.ls_clamp_mininterp_negative = 2
         self.gms3_negative = 2
+        self.ls_clamp_mininterp_non_scalar = (2, 2)
         self.gms3_non_scalar = (2, 2)
+        self.hls_min_interp = 3.401983996820073
         self.gms4 = 3.401983996820073
+        self.hls_min_interp_negative = 0.0005230791851781715
         self.gms4_negative = 0.0005230791851781715
+        self.hls_max_interp = 3.7196690506837693
         self.gms5 = 3.7196690506837693
+        self.hls_max_interp_negative = 0.03126832674323108
         self.gms5_negative = 0.03126832674323108
+        self.hls_full_interp = 3.635342040477818 
         self.gms6 = 3.635342040477818
+        self.hls_full_interp_negative = 0.030720859361047514
         self.gms6_negative = 0.030720859361047514
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
@@ -57,11 +70,18 @@ class Test_Coulomb_logarithm:
         "kwargs",
         [
             {"method": "classical"},
+            {"method": "LS"},
+            {"method": "ls_min_interp"},
             {"method": "GMS-1"},
+            {"method": "ls_full_interp", "z_mean": 1.0},
             {"method": "GMS-2", "z_mean": 1.0},
+            {"method": "ls_clamp_mininterp"},
             {"method": "GMS-3"},
+            {"method": "hls_min_interp"},
             {"method": "GMS-4"},
+            {"method": "hls_max_interp", "z_mean": 1.0},
             {"method": "GMS-5", "z_mean": 1.0},
+            {"method": "hls_full_interp", "z_mean": 1.0},
             {"method": "GMS-6", "z_mean": 1.0},
         ],
     )
@@ -262,6 +282,27 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_ls_min_interp(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=np.nan * u.dimensionless_unscaled,
+                V=np.nan * u.m / u.s,
+                method="ls_min_interp",
+            )
+        testTrue = np.isclose(methodVal, self.ls_min_interp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for ls_min_interp should be "
+            f"{self.ls_min_interp} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
     def test_GMS1(self):
         """
         Test for first version of Coulomb logarithm from Gericke,
@@ -283,6 +324,22 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_ls_min_interp_negative(self):
+        """
+        Test for first version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
+            Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=np.nan * u.dimensionless_unscaled,
+                V=np.nan * u.m / u.s,
+                method="ls_min_interp",
+            )
+
     def test_GMS1_negative(self):
         """
         Test for first version of Coulomb logarithm from Gericke,
@@ -298,6 +355,27 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="GMS-1",
             )
+
+    def test_ls_full_interp(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="ls_full_interp",
+            )
+        testTrue = np.isclose(methodVal, self.ls_full_interp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-2 should be "
+            f"{self.ls_full_interp} and not {methodVal}."
+        )
+        assert testTrue, errStr
 
     def test_GMS2(self):
         """
@@ -320,6 +398,22 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_ls_full_interp_negative(self):
+        """
+        Test for second version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks for when
+        a negative (invalid) Coulomb logarithm is returned.
+        """
+        with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
+            methodVal = Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="ls_full_interp",
+            )
+
     def test_GMS2_negative(self):
         """
         Test for second version of Coulomb logarithm from Gericke,
@@ -335,6 +429,27 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="GMS-2",
             )
+
+    def test_ls_clamp_mininterp(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="ls_clamp_mininterp",
+            )
+        testTrue = np.isclose(methodVal, self.ls_clamp_mininterp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for ls_clamp_minterp should be "
+            f"{self.ls_clamp_mininterp} and not {methodVal}."
+        )
+        assert testTrue, errStr
 
     def test_GMS3(self):
         """
@@ -354,6 +469,29 @@ class Test_Coulomb_logarithm:
         errStr = (
             f"Coulomb logarithm for GMS-3 should be "
             f"{self.gms3} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
+    def test_ls_clamp_mininterp_negative(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="ls_clamp_mininterp",
+            )
+        testTrue = np.isclose(methodVal, self.ls_clamp_mininterp_negative, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-3 should be "
+            f"{self.ls_clamp_mininterp_negative} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -380,6 +518,29 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_ls_clamp_mininterp_non_scalar_density(self):
+        """
+        Test for third version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        passing in a collection of density values returns a
+        collection of Coulomb logarithm values.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                10 * 1160 * u.K,
+                (1e23 * u.cm ** -3, 1e20 * u.cm ** -3),
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="ls_clamp_mininterp",
+            )
+        testTrue = np.isclose(methodVal, self.ls_clamp_mininterp_non_scalar, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-3 should be "
+            f"{self.ls_clamp_mininterp_non_scalar} and not {methodVal}."
+        )
+        assert testTrue.all(), errStr
+
     def test_GMS3_non_scalar_density(self):
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -403,6 +564,27 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue.all(), errStr
 
+    def test_hls_min_interp(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_min_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_min_interp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-4 should be "
+            f"{self.hls_min_interp} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
     def test_GMS4(self):
         """
         Test for fourth version of Coulomb logarithm from Gericke,
@@ -421,6 +603,29 @@ class Test_Coulomb_logarithm:
         errStr = (
             f"Coulomb logarithm for GMS-4 should be "
             f"{self.gms4} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
+    def test_hls_min_interp_negative(self):
+        """
+        Test for fourth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_min_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_min_interp_negative, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-4 should be "
+            f"{self.hls_min_interp_negative} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -447,6 +652,27 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_hls_max_interp(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_max_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_max_interp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-5 should be "
+            f"{self.hls_max_interp} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
     def test_GMS5(self):
         """
         Test for fifth version of Coulomb logarithm from Gericke,
@@ -465,6 +691,29 @@ class Test_Coulomb_logarithm:
         errStr = (
             f"Coulomb logarithm for GMS-5 should be "
             f"{self.gms5} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
+    def test_hls_max_interp_negative(self):
+        """
+        Test for fifth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_max_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_max_interp_negative, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-5 should be "
+            f"{self.hls_max_interp_negative} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -491,6 +740,27 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_hls_full_interp(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002).
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature1,
+                self.density1,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_full_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_full_interp, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-6 should be "
+            f"{self.hls_full_interp} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
     def test_GMS6(self):
         """
         Test for sixth version of Coulomb logarithm from Gericke,
@@ -509,6 +779,29 @@ class Test_Coulomb_logarithm:
         errStr = (
             f"Coulomb logarithm for GMS-6 should be "
             f"{self.gms6} and not {methodVal}."
+        )
+        assert testTrue, errStr
+
+    def test_hls_full_interp_negative(self):
+        """
+        Test for sixth version of Coulomb logarithm from Gericke,
+        Murillo, and Schlanges PRE (2002). This checks whether
+        a positive value is returned whereas the classical Coulomb
+        logarithm would return a negative value.
+        """
+        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+            methodVal = Coulomb_logarithm(
+                self.temperature2,
+                self.density2,
+                self.particles,
+                z_mean=self.z_mean,
+                V=np.nan * u.m / u.s,
+                method="hls_full_interp",
+            )
+        testTrue = np.isclose(methodVal, self.hls_full_interp_negative, rtol=1e-6, atol=0.0)
+        errStr = (
+            f"Coulomb logarithm for GMS-6 should be "
+            f"{self.hls_full_interp_negative} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -535,6 +828,16 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    def test_ls_full_interp_zmean_error(self):
+        """
+        Tests whether ls_full_interp raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(
+                self.temperature2, self.density2, self.particles, method="ls_full_interp"
+            )
+
     def test_GMS2_zmean_error(self):
         """
         Tests whether GMS-2 raises z_mean error when a z_mean is not
@@ -545,6 +848,16 @@ class Test_Coulomb_logarithm:
                 self.temperature2, self.density2, self.particles, method="GMS-2"
             )
 
+    def test_hls_max_interp_zmean_error(self):
+        """
+        Tests whether hls_max_interp raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(
+                self.temperature2, self.density2, self.particles, method="hls_max_interp"
+            )
+
     def test_GMS5_zmean_error(self):
         """
         Tests whether GMS-5 raises z_mean error when a z_mean is not
@@ -553,6 +866,16 @@ class Test_Coulomb_logarithm:
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-5"
+            )
+
+    def test_hls_full_interp_zmean_error(self):
+        """
+        Tests whether hls_full_interp raises z_mean error when a z_mean is not
+        provided.
+        """
+        with pytest.raises(ValueError):
+            methodVal = Coulomb_logarithm(
+                self.temperature2, self.density2, self.particles, method="hls_full_interp"
             )
 
     def test_GMS6_zmean_error(self):
