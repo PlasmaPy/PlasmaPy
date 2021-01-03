@@ -735,7 +735,7 @@ def impact_parameter(
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method == "classical":
+    if method == "classical" or method == "LS":
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
