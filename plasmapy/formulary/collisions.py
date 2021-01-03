@@ -714,10 +714,17 @@ def impact_parameter(
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method in ("GMS-2", "GMS-5", "GMS-6"):
+    if method in (
+        "ls_full_interp",
+        "GMS-2",
+        "hls_max_interp",
+        "GMS-5",
+        "hls_full_interp",
+        "GMS-6",
+    ):
         if np.isnan(z_mean):
             raise ValueError(
-                "Must provide a z_mean for GMS-2, GMS-5, and GMS-6 methods."
+                'Must provide a z_mean for "ls_full_interp", "hls_max_interp", and "hls_full_interp" methods.'
             )
     # Debye length
     lambdaDe = parameters.Debye_length(T, n_e)
@@ -747,14 +754,14 @@ def impact_parameter(
         except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
-    elif method == "GMS-1":
+    elif method == "ls_min_interp" or method == "GMS-1":
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "GMS-2":
+    elif method == "ls_full_interp" or method == "GMS-2":
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
         # being interpolated. The interpolation is between the Debye
@@ -766,17 +773,17 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "GMS-3":
+    elif method == "ls_clamp_mininterp" or method == "GMS-3":
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "GMS-4":
+    elif method == "hls_min_interp" or method == "GMS-4":
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie ** 2 + bPerp ** 2) ** (1 / 2)
-    elif method == "GMS-5":
+    elif method == "hls_max_interp" or method == "GMS-5":
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -784,7 +791,7 @@ def impact_parameter(
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe ** 2 + ionRadius ** 2) ** (1 / 2)
         bmin = bPerp
-    elif method == "GMS-6":
+    elif method == "hls_full_interp" or method == "GMS-6":
         # 6th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean

@@ -59,7 +59,7 @@ class Test_Coulomb_logarithm:
         self.gms5 = 3.7196690506837693
         self.hls_max_interp_negative = 0.03126832674323108
         self.gms5_negative = 0.03126832674323108
-        self.hls_full_interp = 3.635342040477818 
+        self.hls_full_interp = 3.635342040477818
         self.gms6 = 3.635342040477818
         self.hls_full_interp_negative = 0.030720859361047514
         self.gms6_negative = 0.030720859361047514
@@ -488,7 +488,9 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="ls_clamp_mininterp",
             )
-        testTrue = np.isclose(methodVal, self.ls_clamp_mininterp_negative, rtol=1e-6, atol=0.0)
+        testTrue = np.isclose(
+            methodVal, self.ls_clamp_mininterp_negative, rtol=1e-6, atol=0.0
+        )
         errStr = (
             f"Coulomb logarithm for GMS-3 should be "
             f"{self.ls_clamp_mininterp_negative} and not {methodVal}."
@@ -534,7 +536,9 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="ls_clamp_mininterp",
             )
-        testTrue = np.isclose(methodVal, self.ls_clamp_mininterp_non_scalar, rtol=1e-6, atol=0.0)
+        testTrue = np.isclose(
+            methodVal, self.ls_clamp_mininterp_non_scalar, rtol=1e-6, atol=0.0
+        )
         errStr = (
             f"Coulomb logarithm for GMS-3 should be "
             f"{self.ls_clamp_mininterp_non_scalar} and not {methodVal}."
@@ -622,7 +626,9 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="hls_min_interp",
             )
-        testTrue = np.isclose(methodVal, self.hls_min_interp_negative, rtol=1e-6, atol=0.0)
+        testTrue = np.isclose(
+            methodVal, self.hls_min_interp_negative, rtol=1e-6, atol=0.0
+        )
         errStr = (
             f"Coulomb logarithm for GMS-4 should be "
             f"{self.hls_min_interp_negative} and not {methodVal}."
@@ -710,7 +716,9 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="hls_max_interp",
             )
-        testTrue = np.isclose(methodVal, self.hls_max_interp_negative, rtol=1e-6, atol=0.0)
+        testTrue = np.isclose(
+            methodVal, self.hls_max_interp_negative, rtol=1e-6, atol=0.0
+        )
         errStr = (
             f"Coulomb logarithm for GMS-5 should be "
             f"{self.hls_max_interp_negative} and not {methodVal}."
@@ -798,7 +806,9 @@ class Test_Coulomb_logarithm:
                 V=np.nan * u.m / u.s,
                 method="hls_full_interp",
             )
-        testTrue = np.isclose(methodVal, self.hls_full_interp_negative, rtol=1e-6, atol=0.0)
+        testTrue = np.isclose(
+            methodVal, self.hls_full_interp_negative, rtol=1e-6, atol=0.0
+        )
         errStr = (
             f"Coulomb logarithm for GMS-6 should be "
             f"{self.hls_full_interp_negative} and not {methodVal}."
@@ -835,7 +845,10 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
-                self.temperature2, self.density2, self.particles, method="ls_full_interp"
+                self.temperature2,
+                self.density2,
+                self.particles,
+                method="ls_full_interp",
             )
 
     def test_GMS2_zmean_error(self):
@@ -855,7 +868,10 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
-                self.temperature2, self.density2, self.particles, method="hls_max_interp"
+                self.temperature2,
+                self.density2,
+                self.particles,
+                method="hls_max_interp",
             )
 
     def test_GMS5_zmean_error(self):
@@ -875,7 +891,10 @@ class Test_Coulomb_logarithm:
         """
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
-                self.temperature2, self.density2, self.particles, method="hls_full_interp"
+                self.temperature2,
+                self.density2,
+                self.particles,
+                method="hls_full_interp",
             )
 
     def test_GMS6_zmean_error(self):
