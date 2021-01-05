@@ -13,7 +13,7 @@ import plasmapy.formulary.parameters as pfp
 from plasmapy.utils.decorators import validate_quantities
 
 
-class analytical_dispersion_solutions:
+class DispersionSolutions:
 
     @validate_quantities(
         B={"can_be_negative": False},
@@ -53,7 +53,6 @@ class analytical_dispersion_solutions:
         self.theta = theta
         self.z = z
 
-    #TODO: Add single fluid dispersion solution
     def analytical_two_fluid_dispersion_solution(self):
         r"""
         Return a dictionary of frequencies corresponding to the
@@ -151,7 +150,7 @@ class analytical_dispersion_solutions:
 
         References
         ----------
-        .. [1] PM bellan, Improved basis set for low frequency plasma
+        .. [1] PM Bellan, Improved basis set for low frequency plasma
         waves, 2012, JGR, 117, A12219, doi:10.1029/2012JA017856
         .. [2] TE Stringer, Low-frequency waves in an unbounded
         plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
@@ -211,8 +210,7 @@ class analytical_dispersion_solutions:
         # plasmapy.formulary.parameters
         omega_pe = pfp.plasma_frequency(n=self.n, particle="e-", z_mean=self.z)
 
-        # Compute the dimensionless parameters corresponding to equation 32 of
-        # Bellan2012JGR
+        # Compute the dimensionless parameters corresponding to equation 32 of [1]
         alpha = (np.cos(self.theta.to("rad")) ** 2).value
         beta = (c_s ** 2 / v_A ** 2).value
 
@@ -221,21 +219,19 @@ class analytical_dispersion_solutions:
 
         Lambda = (kv ** 2 * v_A ** 2 / omega_ci ** 2).value
 
-        # Compute the dimensionless parameters corresponding to equation 2 of
-        # Bellan2012JGR
+        # Compute the dimensionless parameters corresponding to equation 2 of [1]
         Q = 1 + (kv ** 2 * c ** 2 / omega_pe ** 2).value
 
-        # Compute the dimensionless parameters corresponding to equation 35 of
-        # Bellan2012JGR
+        # Compute the dimensionless parameters corresponding to equation 35 of [1]
         A = (Q + Q ** 2 * beta + Q * alphav + alphav * Lambda) / Q ** 2
         B = alphav * (1 + 2 * Q * beta + Lambda * beta) / Q ** 2
         C = alphav ** 2 * beta / Q ** 2
 
-        # Compute the dimensionless parameters corresponding to equation 36 of
-        # Bellan2012JGR
+        # Compute the dimensionless parameters corresponding to equation 36 of [1]
         p = (3 * B - A ** 2) / 3
         q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
+        # These correspond to different parts of equation 38 of [1]
         R = 2 * Lambda * np.lib.scimath.sqrt(-p / 3)
         S = 3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)
         T = Lambda * A / 3
