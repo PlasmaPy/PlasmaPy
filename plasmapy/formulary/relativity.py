@@ -208,8 +208,15 @@ def quiver_velocity(E: u.V / u.m, w: 1 / u.s, q: u.C, m: u.kg):
     >>> quiver_velocity(E1, w1, q1, m1)
     <Quantity 5.866... e-08>
 
+    >>> from astropy import units as u
+    >>> E1 = 500 * u.V / u.m
+    >>> m1 = m_e
+    >>> q1 = e
+    >>> w1 = 4e5 * u.Hz
+    >>> quiver_velocity(E1, w1, q1, m1)
+    <Quantity 0.733...>
     """
 
     a = np.abs(E * q / (m * w * c))
 
-    return a
+    return a * u.dimensionless_unscaled
