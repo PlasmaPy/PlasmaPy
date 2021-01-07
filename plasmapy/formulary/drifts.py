@@ -67,9 +67,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
     """
 
-    # np.cross drops units right now, thus this hack: see
-    # https://github.com/PlasmaPy/PlasmaPy/issues/59
-    cross = np.cross(dp.si.value, B.si.value) * dp.unit * B.unit
+    cross = np.cross(dp, B)
     return -cross / q / n / (B * B).sum(-1)
 
 
