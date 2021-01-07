@@ -96,17 +96,28 @@ class AbstractGrid(ABC):
     def __repr__(self):
 
         line_sep = "-----------------------------\n"
+        shape = list(self.shape)
+        coords = list(self.ds.coords.keys())
+        ax_units = self.units
+        ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        s = f"*** Grid summary ***\n{type(self)}\n"
-        s += f"Shape: {self.shape}\nUnits: {self.units}\n"
+        coord_lbls = [str(i) + ": " + str(j) for i, j in zip(coords, shape)]
+
+        s = f"*** Grid Summary ***\n{type(self)}\n"
+
+        s += f"Dimensions: ({', '.join(coord_lbls)})\n"
 
         if self.is_uniform_grid:
             s += (
-                "Uniformly Spaced, dx,dy,dz = "
-                f"({self.dax0:.3f},{self.dax1:.3f},{self.dax2:.3f})\n"
+                "Uniformly Spaced: (dax0, dax1, dax2) = "
+                f"({self.dax0:.3f}, {self.dax1:.3f}, {self.dax2:.3f})\n"
             )
         else:
             s += "Non-Uniform Spacing\n"
+
+        s += line_sep + "Coordinates:\n"
+        for i in range(len(self.shape)):
+            s += f"\t-> {coords[i]} ({ax_units[i]}) {ax_dtypes[i]} ({shape[i]},)\n"
 
         keys = list(self.ds.data_vars)
         rkeys = [k for k in keys if k in recognized_keys]
@@ -118,7 +129,9 @@ class AbstractGrid(ABC):
         else:
             for key in rkeys:
                 unit = self.ds[key].attrs["unit"]
-                s += f"-> {key} ({unit})\n"
+                dtype = self.ds[key].dtype
+                shape = self.ds[key].shape
+                s += f"\t-> {key} ({unit}) {dtype} {shape} \n"
 
         s += line_sep + "Unrecognized Quantities:\n"
         if len(nrkeys) == 0:
@@ -126,7 +139,9 @@ class AbstractGrid(ABC):
         else:
             for key in nrkeys:
                 unit = self.ds[key].attrs["unit"]
-                s += f"-> {key} ({unit})\n"
+                dtype = self.ds[key].dtype
+                shape = self.ds[key].shape
+                s += f"\t-> {key} ({unit}) {dtype} {shape} \n"
 
         return s
 
