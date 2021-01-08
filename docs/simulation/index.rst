@@ -24,8 +24,6 @@ Submodules
    particletracker
    particle_integrators
    abstractions
-
-
 Reference/API
 =============
 
