@@ -13,3 +13,4 @@ Thomson scattering
     :caption: Examples
 
     /notebooks/thomson
+	/notebooks/thomson_fitting
