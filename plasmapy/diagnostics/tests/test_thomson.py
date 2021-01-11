@@ -333,3 +333,43 @@ def test_split_populations():
     deviation = (Skw0 - Skw1) / Skw0 * 100
 
     assert np.all(deviation < 1e-6), "Failed split populations test"
+
+
+def test_thomson_fit():
+
+    alpha, wavelength, spectral_density = gen_collective_spectrum()
+
+    fit_vars = ["n"]
+
+    # Initialize a fit for density, but guess the wrong density
+    fit = thomson.fit_thomson(
+        wavelength,
+        532 * u.nm,
+        spectral_density,
+        fit_vars,
+        efract=None,
+        ifract=None,
+        ion_species=["C-12 5+"],
+        probe_vec=np.array([1, 0, 0]),
+        scatter_vec=np.array([0, 1, 0]),
+        n=1e17 * u.cm ** -3,
+        Te=10 * u.eV,
+        Ti=10 * u.eV,
+        electron_vel=None,
+        ion_vel=None,
+    )
+
+    # Assert that the density was found correctly
+    deviation = (fit["n"] - 5e17) / 5e17
+    assert deviation < 0.1
+
+    # TODO: Test fitting multiple species, test fitting multiple paramters at
+    # once
+
+
+if __name__ == "__main__":
+    test_collective_spectrum()
+    test_non_collective_spectrum()
+    test_different_input_types()
+    test_split_populations()
+    test_thomson_fit()
