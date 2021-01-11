@@ -16,23 +16,8 @@ import warnings
 import xarray as xr
 
 from abc import ABC
+from collections import namedtuple
 from typing import Union
-
-# These standard keys are used throughout PlasmaPy to refer to certain
-# plasma quantities. This dictionary also provides the expected unit.
-recognized_keys = {
-    "x": ("x spatial position", u.m),
-    "y": ("y spatial position", u.m),
-    "z": ("z spatial position", u.m),
-    "rho": ("Mass density", u.kg / u.m ** 3),
-    "E_x": ("Electric field (x component)", u.V / u.m),
-    "E_y": ("Electric field (y component)", u.V / u.m),
-    "E_z": ("Electric field (z component)", u.V / u.m),
-    "B_x": ("Magnetic field (x component)", u.T),
-    "B_y": ("Magnetic field (y component)", u.T),
-    "B_z": ("Magnetic field (z component)", u.T),
-    "phi": ("Electric Scalar Potential", u.V),
-}
 
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
@@ -87,6 +72,44 @@ class AbstractGrid(ABC):
         """
         return True
 
+    # A named tuple describing a key recognized by PlasmaPy to correspond to
+    # a particular physical quantity
+    RecognizedQuantity = namedtuple(
+        "RecognizedQuantities", ["key", "description", "unit"]
+    )
+
+    # These standard keys are used to refer to certain
+    # physical quantities. This dictionary also provides the expected unit.
+    _recognized_quantities_list = [
+        RecognizedQuantity("x", "x spatial position", u.m),
+        RecognizedQuantity("y", "y spatial position", u.m),
+        RecognizedQuantity("z", "z spatial position", u.m),
+        RecognizedQuantity("rho", "Mass density", u.kg / u.m ** 3),
+        RecognizedQuantity("E_x", "Electric field (x component)", u.V / u.m),
+        RecognizedQuantity("E_y", "Electric field (y component)", u.V / u.m),
+        RecognizedQuantity("E_z", "Electric field (z component)", u.V / u.m),
+        RecognizedQuantity("B_x", "Magnetic field (x component)", u.T),
+        RecognizedQuantity("B_y", "Magnetic field (y component)", u.T),
+        RecognizedQuantity("B_z", "Magnetic field (z component)", u.T),
+        RecognizedQuantity("phi", "Electric Scalar Potential", u.V),
+    ]
+
+    # Create a dict of recognized quantities for fast access by key
+    _recognized_quantities = {}
+    for rq in _recognized_quantities_list:
+        _recognized_quantities[rq.key] = rq
+
+    @property
+    def recognized_quantities(self):
+        r"""
+        A dictionary of standard key names representing particular physical
+        quantities. Using these keys allows these
+        quantities to be recognized automatically by other PlasmaPy functions.
+        Each entry contains a tuple containing a description and the unit
+        associated with the quantity.
+        """
+        return self._recognized_quantities
+
     # *************************************************************************
     # Fundamental properties of the grid
     # *************************************************************************
@@ -118,8 +141,8 @@ class AbstractGrid(ABC):
             s += f"\t-> {coords[i]} ({ax_units[i]}) {ax_dtypes[i]} ({shape[i]},)\n"
 
         keys = list(self.ds.data_vars)
-        rkeys = [k for k in keys if k in recognized_keys]
-        nrkeys = [k for k in keys if k not in recognized_keys]
+        rkeys = [k for k in keys if k in list(self.recognized_quantities.keys())]
+        nrkeys = [k for k in keys if k not in list(self.recognized_quantities.keys())]
 
         s += line_sep + "Recognized Quantities:\n"
         if len(rkeys) == 0:
@@ -428,14 +451,14 @@ class AbstractGrid(ABC):
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in recognized_keys.keys():
+            if key in self.recognized_quantities.keys():
                 try:
-                    quantity.to(recognized_keys[key][1])
+                    quantity.to(self.recognized_quantities[key].unit)
                 except u.UnitConversionError:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
-                        f"for that recognized key ({recognized_keys[key]})."
+                        f"for that recognized key ({self.recognized_quantities[key]})."
                     )
 
             else:
