@@ -1,0 +1,1 @@
+Added a fitting function for 1D spectra to the Thomson scattering diagnostic module.
