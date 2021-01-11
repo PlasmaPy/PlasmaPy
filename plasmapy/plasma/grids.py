@@ -242,7 +242,12 @@ class AbstractGrid(ABC):
     @property
     def ax0(self):
         r"""
-        Axis 1: Only valid if grid is uniform: otherwise an exception is raised
+        First axis of the grid, only valid for uniform grids
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
         """
 
         if self.is_uniform_grid:
@@ -254,7 +259,14 @@ class AbstractGrid(ABC):
 
     @property
     def ax1(self):
-        r"""Axis 2: Only valid if grid is uniform: otherwise an exception is raised"""
+        r"""
+        Second axis of the grid, only valid for uniform grids
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
+        """
         if self.is_uniform_grid:
             return self.ds.coords["ax1"].values * self.unit1
         else:
@@ -265,8 +277,12 @@ class AbstractGrid(ABC):
     @property
     def ax2(self):
         r"""
-        Axis 3
-        Only valid if grid is uniform: otherwise an exception is raised
+        Third axis of the grid, only valid for uniform grids
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
         """
         if self.is_uniform_grid:
             return self.ds.coords["ax2"].values * self.unit2
@@ -278,8 +294,12 @@ class AbstractGrid(ABC):
     @property
     def dax0(self):
         r"""
-        Grid step size along axis 1
-        Only valid if grid is uniform: otherwise an exception is raised
+        Grid step size along axis :attr:`ax0`, only valid for uniform grids.
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
         """
         if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax0))
@@ -292,8 +312,12 @@ class AbstractGrid(ABC):
     @property
     def dax1(self):
         r"""
-        Grid step size along axis 2
-        Only valid if grid is uniform: otherwise an exception is raised
+        Grid step size along axis :attr:`ax1`, only valid for uniform grids.
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
         """
         if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax1))
@@ -306,8 +330,12 @@ class AbstractGrid(ABC):
     @property
     def dax2(self):
         r"""
-        Grid step size along axis 3
-        Only valid if grid is uniform: otherwise an exception is raised
+        Grid step size along axis :attr:`ax2`, only valid for uniform grids.
+
+        Raises
+        ------
+        ValueError
+            If grid is non-uniform.
         """
         if self.is_uniform_grid:
             return np.mean(np.gradient(self.ax2))
