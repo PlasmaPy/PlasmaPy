@@ -1,1 +1,2 @@
-Further developed grid objects and improved their documentation, including several example notebooks.
+Further developed grid objects (`plasmapy.plasma.grids`) and improved their
+documentation, including several example notebooks.
