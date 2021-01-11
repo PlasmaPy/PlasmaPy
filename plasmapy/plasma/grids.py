@@ -96,8 +96,8 @@ class AbstractGrid(ABC):
 
     # Create a dict of recognized quantities for fast access by key
     _recognized_quantities = {}
-    for rq in _recognized_quantities_list:
-        _recognized_quantities[rq.key] = rq
+    for _rq in _recognized_quantities_list:
+        _recognized_quantities[_rq.key] = _rq
 
     @property
     def recognized_quantities(self):
@@ -179,7 +179,10 @@ class AbstractGrid(ABC):
 
     @property
     def grids(self):
-        r"""Grids of vertex positions"""
+        r"""
+        Three grids of vertex positions (in each coordinate), each having
+        shape (N0, N1, N2)
+        """
         if self.is_uniform_grid:
             pts0, pts1, pts2 = np.meshgrid(self.ax0, self.ax1, self.ax2, indexing="ij")
             _grids = (pts0, pts1, pts2)
@@ -194,7 +197,9 @@ class AbstractGrid(ABC):
 
     @property
     def grid(self):
-        r"""A single grid of vertex positions"""
+        r"""
+        A single grid of vertex positions of shape (N0, N1, N2, 3)
+        """
         pts0, pts1, pts2 = self.grids
         if self.is_uniform_grid:
             n0, n1, n2 = pts0.shape
@@ -249,7 +254,12 @@ class AbstractGrid(ABC):
     def unit(self):
         r"""
         The unit for the entire grid. Only valid if all dimensions of the
-        grid have the same units: otherwise, an exception is raised.
+        grid have the same units.
+
+        Raises
+        ------
+        ValueError
+            If all grid dimensions do not have identical units.
         """
         if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
             return self.units[0]
@@ -599,7 +609,7 @@ class AbstractGrid(ABC):
     def interpolator(self):
         r"""
         A nearest-neighbor interpolator that returns the nearest grid index
-        to a position
+        to a position.
         """
         if self._interpolator is None:
             if self.is_uniform_grid:
