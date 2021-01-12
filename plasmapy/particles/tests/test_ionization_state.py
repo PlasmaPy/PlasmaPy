@@ -10,9 +10,86 @@ from plasmapy.particles import (
     Particle,
     particle_symbol,
 )
-from plasmapy.particles.exceptions import AtomicError, InvalidIsotopeError
-from plasmapy.particles.ionization_state import IonizationState
+from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
+from plasmapy.particles.ionization_state import IonicFraction, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
+
+ionic_fraction_table = [
+    ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
+    ("He 1+", None, None),
+    ("H-2 0+", None, None),
+]
+
+
+@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
+def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
+
+    instance = IonicFraction(
+        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
+    )
+
+    # Prepare to check for the default values when they are not set
+
+    if ionic_fraction is None:
+        ionic_fraction = np.nan
+    if number_density is None:
+        number_density = np.nan * u.m ** -3
+
+    assert Particle(ion) == Particle(instance.ionic_symbol)
+    assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
+    assert u.isclose(instance.number_density, number_density, equal_nan=True)
+
+
+@pytest.mark.parametrize(
+    "invalid_fraction, expected_exception",
+    [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError)],
+)
+def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
+    """
+    Test that IonicFraction raises exceptions when the ionic fraction
+    is out of the interval [0,1] or otherwise invalid.
+    """
+    with pytest.raises(expected_exception):
+        IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
+
+
+@pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
+def test_ionic_fraction_invalid_particles(invalid_particle):
+    """
+    Test that `~plasmapy.particles.IonicFraction` raises the appropriate
+    exception when passed a particle that isn't a neutral or ion.
+    """
+    with pytest.raises(ParticleError):
+        IonicFraction(invalid_particle, ionic_fraction=0)
+
+
+@pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
+def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
+    """
+    Test that a `TypeError` is raised when an `IonicFraction` object
+    is compared to an `IonicFraction` object of a different ion.
+    """
+    fraction = 0.251
+
+    ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
+
+    assert (ionic_fraction_1 == ionic_fraction_2) is False
+
+
+def test_ionization_state_ion_input_error():
+    """
+    Test that `~plasmapy.particles.IonizationState` raises the appropriate
+    exception when an ion is the base particle and ionic fractions are
+    specified
+    """
+
+    ion = "He 1+"
+    unnecessary_ionic_fractions = [0.0, 0.0, 1.0]
+
+    with pytest.raises(ParticleError):
+        IonizationState(ion, ionic_fractions=unnecessary_ionic_fractions)
+
 
 test_cases = {
     "Li": {
@@ -49,6 +126,9 @@ test_cases = {
 }
 
 test_names = test_cases.keys()
+
+
+# TODO: Refactor these tests using fixtures
 
 
 class Test_IonizationState:
@@ -131,7 +211,7 @@ class Test_IonizationState:
         Test that comparisons of `IonizationState` instances for
         different elements fail.
         """
-        with pytest.raises(AtomicError):
+        with pytest.raises(ParticleError):
             self.instances["Li"] == self.instances["H"]
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -213,7 +293,7 @@ class Test_IonizationState:
         Test that an `IonizationState` instance cannot be indexed
         outside of the bounds of allowed integer charges.
         """
-        with pytest.raises(AtomicError):
+        with pytest.raises(ParticleError):
             self.instances["Li"][index]
 
     def test_normalization(self):
@@ -244,11 +324,9 @@ class Test_IonizationState:
             self.instances[test_name].atomic_number,
         )
 
-        expected_element = self.instances[test_name]._particle_instance.element
-        expected_isotope = self.instances[test_name]._particle_instance.isotope
-        expected_atomic_number = self.instances[
-            test_name
-        ]._particle_instance.atomic_number
+        expected_element = self.instances[test_name]._particle.element
+        expected_isotope = self.instances[test_name]._particle.isotope
+        expected_atomic_number = self.instances[test_name]._particle.atomic_number
 
         resulting_identifications = Identifications(
             expected_element, expected_isotope, expected_atomic_number
@@ -335,11 +413,12 @@ class Test_IonizationState:
         # (see Astropy issue #7901 on GitHub).
 
         for keys in zip(integer_charges, symbols, particles):
+
             set_of_str_values = {str(instance[key]) for key in keys}
             if len(set_of_str_values) != 1:
                 errors.append(
                     f"\n\n"
-                    f"The following keys in test {test_name} did not "
+                    f"The following keys in test '{test_name}' did not "
                     f"produce identical outputs as required: {keys}. "
                     f"The set containing string representations of"
                     f"the values is:\n\n{set_of_str_values}"
@@ -374,18 +453,18 @@ class Test_IonizationState:
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 
 tests_for_exceptions = {
-    "too few nstates": IE({"particle": "H", "ionic_fractions": [1.0]}, AtomicError),
+    "too few nstates": IE({"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
     "too many nstates": IE(
-        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]}, AtomicError
+        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]}, ParticleError
     ),
     "ionic fraction < 0": IE(
-        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]}, AtomicError
+        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]}, ParticleError
     ),
     "ionic fraction > 1": IE(
-        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]}, AtomicError
+        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]}, ParticleError
     ),
     "invalid ionic fraction": IE(
-        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]}, AtomicError
+        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]}, ParticleError
     ),
     "bad n_elem units": IE(
         {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
@@ -400,11 +479,11 @@ tests_for_exceptions = {
             "ionic_fractions": [1.0, 0.0, 0.0],
             "n_elem": -1 * u.m ** -3,
         },
-        AtomicError,
+        ParticleError,
     ),
     "negative T_e": IE(
         {"particle": "He", "ionic_fractions": [1.0, 0.0, 0.0], "T_e": -1 * u.K},
-        AtomicError,
+        ParticleError,
     ),
     "redundant ndens": IE(
         {
@@ -412,9 +491,53 @@ tests_for_exceptions = {
             "ionic_fractions": np.array([3, 4]) * u.m ** -3,
             "n_elem": 4 * u.m ** -3,
         },
-        AtomicError,
+        ParticleError,
     ),
 }
+
+
+ions = ["Fe 6+", "p", "He-4 0+", "triton", "alpha", "Ne +0"]
+
+
+@pytest.mark.parametrize("ion", ions)
+def test_IonizationState_ionfracs_from_ion_input(ion):
+
+    ionization_state = IonizationState(ion)
+    ion_particle = Particle(ion)
+    actual_ionic_fractions = ionization_state.ionic_fractions
+
+    expected_ionic_fractions = np.zeros(ion_particle.atomic_number + 1)
+    expected_ionic_fractions[ion_particle.integer_charge] = 1.0
+
+    if not np.allclose(expected_ionic_fractions, actual_ionic_fractions, atol=1e-16):
+        pytest.fail(
+            f"The returned ionic fraction for IonizationState({repr(ion)}) "
+            f"should have entirely been in the Z = {ion_particle.integer_charge} "
+            f"level, but was instead: {ionization_state.ionic_fractions}."
+        )
+
+
+@pytest.mark.parametrize("ion", ions)
+def test_IonizationState_base_particles_from_ion_input(ion):
+    """
+    Test that supplying an ion to IonizationState will result in the
+    base particle being the corresponding isotope or ion and that the
+    ionic fraction of the corresponding charge level is 100%.
+    """
+
+    ionization_state = IonizationState(ion)
+    ion_particle = Particle(ion)
+
+    if ion_particle.isotope:
+        expected_base_particle = ion_particle.isotope
+    else:
+        expected_base_particle = ion_particle.element
+
+    if expected_base_particle != ionization_state.base_particle:
+        pytest.fail(
+            f"The expected base particle was {expected_base_particle}, "
+            f"but the returned base particle was {ionization_state.base_particle}. "
+        )
 
 
 @pytest.mark.parametrize("test", tests_for_exceptions.keys())
@@ -499,6 +622,10 @@ def test_nans():
 
 
 def test_setting_ionic_fractions():
+    """
+    Test the setter for the ``ionic_fractions`` attribute on
+    `~plasmapy.particles.IonizationState`.
+    """
     instance = IonizationState("He")
     new_ionic_fractions = [0.2, 0.5, 0.3]
     instance.ionic_fractions = new_ionic_fractions
@@ -559,11 +686,11 @@ class Test_IonizationStateNumberDensitiesSetter:
         ), "IonizationState.n_e not set correctly after number_densities was set."
 
     def test_that_negative_density_raises_error(self):
-        with pytest.raises(AtomicError, match="cannot be negative"):
+        with pytest.raises(ParticleError, match="cannot be negative"):
             self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m ** -3)
 
     def test_incorrect_number_of_charge_states_error(self):
-        with pytest.raises(AtomicError, match="Incorrect number of charge states"):
+        with pytest.raises(ParticleError, match="Incorrect number of charge states"):
             self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m ** -3)
 
     def test_incorrect_units_error(self):

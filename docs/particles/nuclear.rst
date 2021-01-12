@@ -1,11 +1,15 @@
+.. _particles-nuclear-reactions:
+
 Nuclear Reactions
 *****************
 
-Binding Energy
+.. _particles-nuclear-binding-energy:
+
+Binding energy
 ==============
 
 The binding energy of a nuclide may be accessed either as an
-attribute of a `~plasmapy.particles.Particle` instance, or by using the
+attribute of a `~plasmapy.particles.Particle` object, or by using the
 `~plasmapy.particles.nuclear_binding_energy` function.
 
 >>> from plasmapy.particles import Particle, nuclear_binding_energy
@@ -15,8 +19,10 @@ attribute of a `~plasmapy.particles.Particle` instance, or by using the
 >>> nuclear_binding_energy('D').to('GeV')
 <Quantity 0.00222457 GeV>
 
-Nuclear Reactions
-=================
+.. _particles-nuclear-reaction-energy:
+
+Nuclear reaction energy
+=======================
 
 The energy released from a nuclear reaction may be found using the
 `~plasmapy.particles.nuclear_reaction_energy` function.  The input may be
