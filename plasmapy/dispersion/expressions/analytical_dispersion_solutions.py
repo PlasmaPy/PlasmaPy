@@ -123,10 +123,8 @@ class DispersionSolutions:
             \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt(-\frac{3}{p}
             \right) - \frac{2\pi}{3}j \right) + \frac{A\Lambda}{3})
 
-        Where,
-            j = 0 ==> fast mode
-            j = 1 ==> Alfven mode
-            j = 2 ==> Acoustic mode
+        Where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
+        Alfven mode, and :math:`j = 2` represents the Acoustic mode.
 
         The above equation is derived from the general wave equation in the low
         frequency regime, where both electrons and ions play significant role (in
@@ -134,29 +132,40 @@ class DispersionSolutions:
         process is dominated by electron dynamics).
 
         The complete dispersion equation is thus written as (from equation (1) of
-        [1]):
+        [1]_):
 
         .. math::
-            \left( cos^2\theta - Q\frac{\omega^2}{k^2 {v_A}^2} \right) \left[
-            \left( cos^2\theta - \frac{\omega^2}{k^2 {c_s}^2 \right) -
-            Q\frac{\omega^2}{k^2 {v_A}^2 \left( 1 - \frac{\omega^2}{k^2 {c_s}^2
-            \right) \right] = \left(1 - \frac{\omega^2}{k^2 {c_s}^2 \right)
-            \frac{\omega^2}{{\omega_{ci}}^2}cos^2\theta
-    
+            \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
+            \left[
+                \left( \cos^2 \theta - \frac{\omega^2}{k^2 {c_s}^2} \right)
+                - Q \frac{\omega^2}{k^2 {v_A}^2} \left(
+                    1 - \frac{\omega^2}{k^2 {c_s}^2}
+                \right)
+            \right] \\
+                &= \left(1 - \frac{\omega^2}{k^2 {c_s}^2} \right)
+                \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
+
         Here,
+
         .. math::
             Q = 1 + k^2 c^2/{\omega_{pe}}^2
-        \omega_{ci} is the proton gyrofrequency
+
+        :math:`\omega_{ci}` is the proton gyrofrequency.
 
         References
         ----------
-        .. [1] PM Bellan, Improved basis set for low frequency plasma
-        waves, 2012, JGR, 117, A12219, doi:10.1029/2012JA017856
-        .. [2] TE Stringer, Low-frequency waves in an unbounded
-        plasma, 1963, JNE, Part C, doi:10.1088/0368-3281/5/2/304
-        .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A.
-        Role of Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
-        87, 195004
+        .. [1] PM bellan, Improved basis set for low frequency plasma waves, 2012,
+            JGR, 117, A12219, doi: `10.1029/2012JA017856
+            <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+
+        .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
+            Part C, doi: `10.1088/0368-3281/5/2/304
+            <https://doi.org/10.1088/0368-3281/5/2/304>`_
+
+        .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A. Role of
+            Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
+            87, 195004, doi: `10.1103/PhysRevLett.87.195004
+            <https://doi.org/10.1103/PhysRevLett.87.195004>`_
 
         Examples
         --------
@@ -171,7 +180,9 @@ class DispersionSolutions:
         >>> z = 1
         >>> omega = tfds(B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z)
         >>> omega
-        {'fast_mode': <Quantity [[1520.5794506]] rad / s>, 'alfven_mode': <Quantity [[1261.75471561]] rad / s>, 'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
+        {'fast_mode': <Quantity [[1520.5794506]] rad / s>,
+        'alfven_mode': <Quantity [[1261.75471561]] rad / s>,
+        'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
 
         >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.m ** -1
         >>> theta = np.linspace(5, 85, 100) * u.deg
@@ -186,16 +197,16 @@ class DispersionSolutions:
         >>> omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
         >>> omega = tfds(n=n, B=B, T_e=T_e, T_i=T_i, theta=theta, z=z, k=k_arr)
         >>> omega['fast_mode'][:,40]
-         <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
-	                1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
-
+        <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
+                   1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
         """
 
         # Required derived parameters
         # Compute the ion sound speed using the function from
         # plasmapy.formulary.parameters
         c_s = pfp.ion_sound_speed(
-            T_e=self.T_e, T_i=self.T_i, n_e=self.z * self.n, gamma_e=self.gamma_e, gamma_i=self.gamma_i, ion=self.ion
+            T_e=self.T_e, T_i=self.T_i, n_e=self.z * self.n,
+            gamma_e=self.gamma_e, gamma_i=self.gamma_i, ion=self.ion
         )
 
         # Compute the ion Alfven speed using the function from
@@ -210,7 +221,8 @@ class DispersionSolutions:
         # plasmapy.formulary.parameters
         omega_pe = pfp.plasma_frequency(n=self.n, particle="e-", z_mean=self.z)
 
-        # Compute the dimensionless parameters corresponding to equation 32 of [1]
+        # Compute the dimensionless parameters corresponding to equation 32 of
+        # Bellan2012JGR
         alpha = (np.cos(self.theta.to("rad")) ** 2).value
         beta = (c_s ** 2 / v_A ** 2).value
 
@@ -219,19 +231,23 @@ class DispersionSolutions:
 
         Lambda = (kv ** 2 * v_A ** 2 / omega_ci ** 2).value
 
-        # Compute the dimensionless parameters corresponding to equation 2 of [1]
+        # Compute the dimensionless parameters corresponding to equation 2 of
+        # Bellan2012JGR
         Q = 1 + (kv ** 2 * c ** 2 / omega_pe ** 2).value
 
-        # Compute the dimensionless parameters corresponding to equation 35 of [1]
+        # Compute the dimensionless parameters corresponding to equation 35 of
+        # Bellan2012JGR
         A = (Q + Q ** 2 * beta + Q * alphav + alphav * Lambda) / Q ** 2
         B = alphav * (1 + 2 * Q * beta + Lambda * beta) / Q ** 2
         C = alphav ** 2 * beta / Q ** 2
 
-        # Compute the dimensionless parameters corresponding to equation 36 of [1]
+        # Compute the dimensionless parameters corresponding to equation 36 of
+        # Bellan2012JGR
         p = (3 * B - A ** 2) / 3
         q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
-        # These correspond to different parts of equation 38 of [1]
+        # These correspond to different parts of equation 38 of
+        # Bellan2012JGR
         R = 2 * Lambda * np.lib.scimath.sqrt(-p / 3)
         S = 3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)
         T = Lambda * A / 3
