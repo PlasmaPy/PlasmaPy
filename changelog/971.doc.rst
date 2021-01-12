@@ -1,1 +1,1 @@
-Added the ExB drift notebook, which demonstrates the analytical solution for the drift and the implementation of the corresponding ``formulary`` functions for it  
+Added the ExB drift notebook, which demonstrates the analytical solution for the drift and the implementation of the corresponding ``formulary`` functions for it
