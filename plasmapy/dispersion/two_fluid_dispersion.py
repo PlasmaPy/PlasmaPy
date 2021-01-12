@@ -227,6 +227,8 @@ def two_fluid_dispersion_solution(
     p = (3 * B - A ** 2) / 3
     q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
+    # These correspond to different parts of equation 38 of
+    # Bellan2012JGR
     R = 2 * Lambda * np.lib.scimath.sqrt(-p / 3)
     S = 3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)
     T = Lambda * A / 3
