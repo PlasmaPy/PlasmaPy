@@ -10,9 +10,10 @@ Example Notebooks
 -----------------
 
 .. nbgallery::
+   :glob:
+   :reversed:
 
-   /notebooks/dispersion/dispersion_function
-   /notebooks/dispersion/two_fluid_dispersion
+   /notebooks/dispersion/*
 
 Sub-Packages & Modules
 ----------------------
