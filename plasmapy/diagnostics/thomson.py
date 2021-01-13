@@ -11,7 +11,6 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 
-# from scipy.optimize import curve_fit
 import lmfit
 import numpy as np
 
