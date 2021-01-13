@@ -35,8 +35,12 @@ def two_fluid_dispersion_solution(
     z=1,
 ):
     r"""
-    Return a dictionary of frequencies corresponding to the solutions of
-    dispersion relation in low frequency regime.
+    Using the solution provided by Bellan 2012, calculate the analytical
+    solution to the two fluid, low-frequency (:math:`\omega/kc \ll 1`) dispersion
+    relation presented by Stringer 1963.  This dispersion relation also
+    assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
+    field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
+    see the **Notes** section below.
 
     **Aliases:** `tfds_`
 
@@ -97,24 +101,9 @@ def two_fluid_dispersion_solution(
 
     Notes
     -----
-    Computes the solution for wave dispersion relation based on equation 38 of
-    [1]
 
-    .. math::
-        \frac{\omega}{\omega_{ci}} = \sqrt{2\Lambda \sqrt{-\frac{p}{3}} cos
-        \left( \frac{1}{3} cos^{-1}\left( \frac{3q}{2p} \sqrt{-\frac{3}{p}
-        \right)} - \frac{2\pi}{3}j + \frac{\Lambda A}{3}}
-
-    where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
-    Alfven mode, and :math:`j = 2` represents the Acoustic mode.
-
-    The above equation is derived from the general wave equation in the low
-    frequency regime, where both electrons and ions play significant role (in
-    the high frequency regime ions do not play any significant role and the
-    process is dominated by electron dynamics).
-
-    The complete dispersion equation is thus written as (from equation (1) of
-    [1]_):
+    The complete dispersion equation presented by Springer 1963 [2]_ (equation 1
+    of Bellan 2012 [1]_) is:
 
     .. math::
         \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
@@ -127,27 +116,56 @@ def two_fluid_dispersion_solution(
             &= \left(1 - \frac{\omega^2}{k^2 {c_s}^2} \right)
               \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
 
-    Here,
+    where
 
     .. math::
-        Q = 1 + k^2 c^2/{\omega_{pe}}^2
+        Q &= 1 + k^2 c^2/{\omega_{pe}}^2 \\
+        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
 
-    :math:`\omega_{ci}` is the proton gyrofrequency.
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber, :math:`v_A`
+    is the Alfvén velocity, :math:`c_s` is the sound speed, :math:`\omega_{ci}` is
+    the ion gyrofrequency, and :math:`\omega_{pe}` is the electron plasma frequency.
+    This relation does additionally assumme low-frequency waves
+    :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
+    quasi-neutrality.
+
+    Following section 5 of Bellan 2012 [1]_ the exact roots of the above dispersion
+    equation can be derived and expressed as one analytical solution (equation 38
+    of Bellan 2012 [1]_):
+
+    .. math::
+        \frac{\omega}{\omega_{ci}} = \sqrt{
+            2 \Lambda \sqrt{-\frac{P}{3}} \cos\left(
+                \frac{1}{3} \cos^{-1}\left(
+                    \frac{3q}{2p} \sqrt{-\frac{3}{p}}
+                \right)
+                - \frac{2 \pi}{3}j
+            \right)
+            + \frac{\Lambda A}{3}
+        }
+
+    where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
+    Alfvén mode, and :math:`j = 2` represents the Acoustic mode.  Additionally,
+
+    .. math::
+        p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
+        A &= \frac{Q + Q^2 \beta + Q \alpha + \alpha \Lambda}{Q^2} \;
+            , \; B = \alpha \frac{1 + 2 Q \beta + \Lambda \beta}{Q^2} \;
+            , \; C = \frac{\alpha^2 \beta}{Q^2} \\
+        \alpha &= \cos^2 \theta \;
+            , \; \beta = \left( \frac{c_s}{v_A}\right)^2 \;
+            , \; \Lambda = \left( \frac{k v_{A}}{\omega_{ci}}\right)^2
 
     References
     ----------
     .. [1] PM bellan, Improved basis set for low frequency plasma waves, 2012,
-           JGR, 117, A12219, doi: `10.1029/2012JA017856
-           <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+       JGR, 117, A12219, doi: `10.1029/2012JA017856
+       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
     .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
-           Part C, doi: `10.1088/0368-3281/5/2/304
-           <https://doi.org/10.1088/0368-3281/5/2/304>`_
-
-    .. [3] Rogers, B. N.; Denton, R. E.; Drake, J. F. & Shay, M. A. Role of
-           Dispersive Waves in Collisionless Magnetic Reconnection, prl, 2001,
-           87, 195004, doi: `10.1103/PhysRevLett.87.195004
-           <https://doi.org/10.1103/PhysRevLett.87.195004>`_
+       Part C, doi: `10.1088/0368-3281/5/2/304
+       <https://doi.org/10.1088/0368-3281/5/2/304>`_
 
     Examples
     --------
