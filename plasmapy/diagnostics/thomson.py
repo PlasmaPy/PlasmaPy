@@ -10,7 +10,6 @@ __all__ = [
 
 import astropy.constants as const
 import astropy.units as u
-
 import lmfit
 import numpy as np
 
