@@ -116,6 +116,12 @@ def two_fluid_dispersion_solution(
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
 
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When the computed wave frequencies violate the low-frequency
+        (:math:`\omega/kc \ll 1`) assumption of the dispersion relation.
+
     Notes
     -----
 
