@@ -90,15 +90,31 @@ def two_fluid_dispersion_solution(
     Raises
     ------
     TypeError
-        The magnetic field and density arguments are not instances of
-        `~astropy.units.Quantity` and cannot be converted into those.
+        If applicable arguments are not instances of `~astropy.units.Quantity` or
+        cannot be converted into one.
+
+    TypeError
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+
+    TypeError
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
 
     ~astropy.units.UnitConversionError
-        If the magnetic field or density is not in appropriate units.
+        If applicable arguments do not have units convertible to the expected
+        units.
 
     ValueError
-        If the magnetic field, density or wavenumber is negative, or the ion
-        mass or charge state cannot be found.
+        If the ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+
+    ValueError
+        If ``ion`` is not of category ion or element.
+
+    ValueError
+        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        `astropy.units.Quantity` (i.e. an array).
+
+    ValueError
+        If ``k`` or ``theta`` are not single valued or a 1-D array.
 
     Notes
     -----
