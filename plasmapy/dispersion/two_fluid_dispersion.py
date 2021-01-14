@@ -224,6 +224,66 @@ def two_fluid_dispersion_solution(
                1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
     """
 
+    # validate argument ion
+    if not isinstance(ion, Particle):
+        try:
+            ion = Particle(ion)
+        except TypeError:
+            raise TypeError(
+                f"For argument 'ion' expected type {Particle} but got {type(ion)}."
+            )
+    if not (ion.is_ion or ion.is_category("element")):
+        raise ValueError(f"The particle passed for 'ion' must be an ion or element.")
+
+    # validate z_mean
+    if z_mean is None:
+        try:
+            z_mean = abs(ion.integer_charge)
+        except ChargeError:
+            z_mean = 1
+    else:
+        if not isinstance(z_mean, (int, np.integer, float, np.floating)):
+            raise TypeError(
+                f"Expected int or float for argument 'z_mean', but got {type(z_mean)}."
+            )
+        z_mean = abs(z_mean)
+
+    # validate arguments
+    for arg_name in ("B", "n_i", "T_e", "T_i"):
+        val = locals()[arg_name].squeeze()
+        if val.shape != ():
+            raise ValueError(
+                f"Argument '{arg_name}' must a single value and not an array of "
+                f"shape {val.shape}."
+            )
+        locals()[arg_name] = val
+
+    # validate arguments
+    for arg_name in ("gamma_e", "gamma_i"):
+        if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+            raise TypeError(
+                f"Expected int or float for argument '{arg_name}', but got "
+                f"{type(locals()[arg_name])}.")
+
+    # validate argument k
+    k = k.squeeze()
+    if not (k.ndim == 0 or k.ndim == 1):
+        raise ValueError(
+            f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
+            f" got array of shape {k.shape}."
+        )
+    if np.any(k < 0):
+        raise ValueError(f"Argument 'k' can not be a or have negative values.")
+
+    # validate argument theta
+    theta = theta.squeeze()
+    theta = theta.to(u.radian)
+    if not (theta.ndim == 0 or theta.ndim == 1):
+        raise ValueError(
+            f"Argument 'theta' needs to be a single valued or 1D array astropy "
+            f"Quantity, got array of shape {k.shape}."
+        )
+
     # Required derived parameters
     # Compute the ion sound speed using the function from
     # plasmapy.formulary.parameters
