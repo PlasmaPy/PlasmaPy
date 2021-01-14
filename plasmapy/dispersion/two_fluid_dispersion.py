@@ -284,24 +284,20 @@ def two_fluid_dispersion_solution(
             f"Quantity, got array of shape {k.shape}."
         )
 
-    # Required derived parameters
-    # Compute the ion sound speed using the function from
-    # plasmapy.formulary.parameters
+    # Calc needed plasma parameters
+    n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
-        T_e=T_e, T_i=T_i, n_e=z * n, gamma_e=gamma_e, gamma_i=gamma_i, ion=ion
+        T_e=T_e,
+        T_i=T_i,
+        ion=ion,
+        n_e=n_e,
+        gamma_e=gamma_e,
+        gamma_i=gamma_i,
+        z_mean=z_mean,
     )
-
-    # Compute the ion Alfven speed using the function from
-    # plasmapy.formulary.parameters
-    v_A = pfp.Alfven_speed(B, n, ion=ion)
-
-    # Compute the ion gyro frequency using the function from
-    # plasmapy.formulary.parameters
-    omega_ci = pfp.gyrofrequency(B=B, particle="p+", signed=False, Z=z)
-
-    # Compute the electron plasma frequency using the function from
-    # plasmapy.formulary.parameters
-    omega_pe = pfp.plasma_frequency(n=n, particle="e-", z_mean=z)
+    v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
+    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
+    omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
 
     # Compute the dimensionless parameters corresponding to equation 32 of
     # Bellan2012JGR
