@@ -317,26 +317,28 @@ def two_fluid_dispersion_solution(
     p = (3 * B - A ** 2) / 3
     q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
-    # These correspond to different parts of equation 38 of
-    # Bellan2012JGR
-    R = 2 * Lambda * np.lib.scimath.sqrt(-p / 3)
-    S = 3 * q / (2 * p) * np.lib.scimath.sqrt(-3 / p)
+    # Bellan2012JGR params equation 38
+    R = 2 * Lambda * np.emath.sqrt(-p / 3)
+    S = 3 * q / (2 * p) * np.emath.sqrt(-3 / p)
     T = Lambda * A / 3
-
-    # List out the three wave modes for which this function gives the
-    # frequencies
-    keys = ["fast_mode", "alfven_mode", "acoustic_mode"]
-
-    # Create a dictionary with the wave mode names as its keys
-    omega = dict.fromkeys(keys)
-
-    # Compute the value of  omega for each key and for each value of wavenumber
-    # and direction of propagation
-    for (ind, key) in zip(range(3), keys):
+    omega = {}
+    for ind, key in enumerate(("fast_mode", "alfven_mode", "acoustic_mode")):
         # The solution corresponding to equation 38
-        omega[key] = omega_ci * np.lib.scimath.sqrt(
-            R * np.cos(1 / 3 * np.lib.scimath.arccos(S) - 2 * np.pi / 3 * ind) + T
+        w = omega_ci * np.emath.sqrt(
+            R * np.cos(1 / 3 * np.emath.arccos(S) - 2 * np.pi / 3 * ind) + T
         )
+        omega[key] = w.squeeze()
+
+        # check for violation of dispersion relation assumptions
+        # (i.e. low-frequency, w/kc << 0.1)
+        wkc_max = np.max(w.value / (kv * c.value))
+        if wkc_max > 0.1:
+            warn(
+                f"The {key} calculation produced a high-frequency wave (w/kc == "
+                f"{wkc_max}), which violates the low-frequency (w/kc << 1) assumption "
+                f"of the dispersion relation.",
+                PhysicsWarning,
+            )
 
     return omega
 
