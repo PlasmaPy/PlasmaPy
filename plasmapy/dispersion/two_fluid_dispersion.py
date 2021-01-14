@@ -16,27 +16,22 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 @validate_quantities(
     B={"can_be_negative": False},
-    m_e={"can_be_negative": False},
-    m_i={"can_be_negative": False},
-    n={"can_be_negative": False},
+    n_i={"can_be_negative": False},
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    theta={"can_be_negative": True},
 )
 def two_fluid_dispersion_solution(
     *,
     B: u.T,
-    k: u.m ** -1,
-    n: u.m ** -3,
+    ion: Union[str, Particle],
+    k: u.rad / u.m,
+    n_i: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
-    gamma_e=1,
-    gamma_i=3,
-    ion="p+",
-    m_e: u.kg = m_e,
-    m_i: u.kg = m_p,
+    gamma_e: Union[float, int] = 1,
+    gamma_i: Union[float, int] = 3,
     theta: u.deg = 45 * u.deg,
-    z=1,
+    z_mean: Union[float, int] = None,
 ):
     r"""
     Using the solution provided by Bellan 2012, calculate the analytical
