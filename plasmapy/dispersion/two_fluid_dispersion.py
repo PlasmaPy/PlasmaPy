@@ -45,39 +45,39 @@ def two_fluid_dispersion_solution(
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
-        Magnetic field
-    gamma_e : float or int
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to :math:`T`.
+    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
+        charge state information is provided, then the ions are assumed to be
+        singly ionized.
+    k : `~astropy.units.Quantity`
+        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        valued or 1-D array of length :math:`N`.
+    n_i : `~astropy.units.Quantity`
+        Ion number density in units convertible to :math:`m^{-3}`.
+    T_e : `~astropy.units.Quantity`
+        The electron temperature in units of :math:`K` or :math:`eV`.
+    T_i : `~astropy.units.Quantity`
+        The ion temperature in units of :math:`K` or :math:`eV`.
+    gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
-    gamma_i : float or int
+    gamma_i : `float` or `int`, optional
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-    ion : string, optional
-        Representation of the ion species (e.g., `'p'` for protons,
-        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
-        helium-4), which defaults to protons.  If no charge state
-        information is provided, then the ions are assumed to be
-        singly charged.
-    k : ~astropy.units.Quantity
-        Wave number
-    m_e : ~astropy.units.Quantity
-        Mass of negative ion which defaults to electron
-    m_i : ~astropy.units.Quantity
-        Mass of positive ion which defaults to proton
-    n : ~astropy.units.Quantity
-        Number density.
-    T_e : ~astropy.units.Quantity
-        The electron temperature
-    T_i : ~astropy.units.Quantity
-        The ion temperature
-    theta : ~astropy.units.Quantity
-        Angle of propagation which defaults to 45 degrees.
-    z : float or integer
-        Average ionization number which defaults to 1 for protons.
+    theta : `~astropy.units.Quantity`
+        The angle of propagation of the wave with respect to the magnetic field,
+        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
+        Either single valued or 1-D array of size :math:`M`. (Default
+        ``45 * u.deg``)
+    z_mean : `float` or int, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  Will override any charge state defined by argument ``ion``.
 
     Returns
     -------
