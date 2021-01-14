@@ -3,11 +3,15 @@ __all__ = ["two_fluid_dispersion_solution", "tfds_"]
 import astropy.units as u
 import numpy as np
 
-from astropy.constants.si import c, e, k_B, m_e, m_p, mu0
+from astropy.constants.si import c
+from typing import Union
+from warnings import warn
 
-import plasmapy.formulary.parameters as pfp
-
+from plasmapy.formulary import parameters as pfp
+from plasmapy.particles import Particle
+from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import PhysicsWarning
 
 
 @validate_quantities(
