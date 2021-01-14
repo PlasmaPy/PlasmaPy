@@ -299,28 +299,21 @@ def two_fluid_dispersion_solution(
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
 
-    # Compute the dimensionless parameters corresponding to equation 32 of
-    # Bellan2012JGR
-    alpha = (np.cos(theta.to("rad")) ** 2).value
-    beta = (c_s ** 2 / v_A ** 2).value
+    # Bellan2012JGR params equation 32
+    alpha = np.cos(theta.value) ** 2
+    beta = (c_s / v_A).to(u.dimensionless_unscaled).value ** 2
+    alphav, kv = np.meshgrid(alpha, k.value)  # create grid
+    Lambda = (kv * v_A.value / omega_ci.value) ** 2
 
-    # Create a meshgrid of direction of propagation and the wavenumber
-    alphav, kv = np.meshgrid(alpha, k)
+    # Bellan2012JGR params equation 2
+    Q = 1 + (kv * c.value / omega_pe.value) ** 2
 
-    Lambda = (kv ** 2 * v_A ** 2 / omega_ci ** 2).value
-
-    # Compute the dimensionless parameters corresponding to equation 2 of
-    # Bellan2012JGR
-    Q = 1 + (kv ** 2 * c ** 2 / omega_pe ** 2).value
-
-    # Compute the dimensionless parameters corresponding to equation 35 of
-    # Bellan2012JGR
-    A = (Q + Q ** 2 * beta + Q * alphav + alphav * Lambda) / Q ** 2
+    # Bellan2012JGR params equation 35
+    A = ((1 + alphav) / Q) + beta + (alphav * Lambda / Q ** 2)
     B = alphav * (1 + 2 * Q * beta + Lambda * beta) / Q ** 2
-    C = alphav ** 2 * beta / Q ** 2
+    C = beta * (alphav / Q) ** 2
 
-    # Compute the dimensionless parameters corresponding to equation 36 of
-    # Bellan2012JGR
+    # Bellan2012JGR params equation 36
     p = (3 * B - A ** 2) / 3
     q = (9 * A * B - 2 * A ** 3 - 27 * C) / 27
 
