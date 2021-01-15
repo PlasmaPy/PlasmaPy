@@ -28,9 +28,9 @@ def two_fluid_dispersion_solution(
     n_i: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
+    theta: u.deg,
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
-    theta: u.deg = 45 * u.deg,
     z_mean: Union[float, int] = None,
 ):
     r"""
@@ -61,6 +61,10 @@ def two_fluid_dispersion_solution(
         The electron temperature in units of :math:`K` or :math:`eV`.
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
+    theta : `~astropy.units.Quantity`, single valued or 1-D array
+        The angle of propagation of the wave with respect to the magnetic field,
+        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
+        Either single valued or 1-D array of size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
@@ -70,11 +74,6 @@ def two_fluid_dispersion_solution(
         The adiabatic index for ions, which defaults to 3. This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
-    theta : `~astropy.units.Quantity`
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
-        Either single valued or 1-D array of size :math:`M`. (Default
-        ``45 * u.deg``)
     z_mean : `float` or int, optional
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  Will override any charge state defined by argument ``ion``.
