@@ -5,7 +5,12 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.two_fluid_dispersion import two_fluid_dispersion_solution
+from plasmapy.dispersion.two_fluid_dispersion import (
+    tfds_,
+    two_fluid_dispersion_solution,
+)
+from plasmapy.particles import Particle
+from plasmapy.formulary import parameters as pfp
 from plasmapy.utils.exceptions import PhysicsWarning
 
 k = 0.0001 * u.rad/u.m
