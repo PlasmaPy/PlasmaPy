@@ -26,6 +26,7 @@ k_arr = np.linspace(10 ** -7, 10 ** -2, 10000) * u.rad/u.m
 theta_arr = np.linspace(5, 85, 100) * u.deg
 c = 3.0e8 * u.m / u.s
 
+
 @pytest.mark.skip
 def test_two_fluid_dispersion():
     r"""Test the two fluid analytical dispersion solution"""
@@ -191,6 +192,7 @@ class TestTwoFluidDispersionSolution:
         ],
     )
     def test_raises(self, kwargs, _error):
+        """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
             two_fluid_dispersion_solution(**kwargs)
 
@@ -212,5 +214,6 @@ class TestTwoFluidDispersionSolution:
         ],
     )
     def test_warns(self, kwargs, _warning):
+        """Test scenarios the issue a `Warning`."""
         with pytest.warns(_warning):
             two_fluid_dispersion_solution(**kwargs)
