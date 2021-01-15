@@ -52,7 +52,7 @@ def two_fluid_dispersion_solution(
         for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
         charge state information is provided, then the ions are assumed to be
         singly ionized.
-    k : `~astropy.units.Quantity`
+    k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to :math:`rad / m`.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
@@ -104,6 +104,9 @@ def two_fluid_dispersion_solution(
 
     ValueError
         If the ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+
+    ValueError
+        If ``k`` is negative or zero.
 
     ValueError
         If ``ion`` is not of category ion or element.
@@ -271,7 +274,7 @@ def two_fluid_dispersion_solution(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
         )
-    if np.any(k < 0):
+    if np.any(k <= 0):
         raise ValueError(f"Argument 'k' can not be a or have negative values.")
 
     # validate argument theta
