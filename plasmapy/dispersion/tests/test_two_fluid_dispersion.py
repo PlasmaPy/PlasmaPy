@@ -6,6 +6,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.dispersion.two_fluid_dispersion import two_fluid_dispersion_solution
+from plasmapy.utils.exceptions import PhysicsWarning
 
 k = 0.0001 * u.rad/u.m
 B = 8.3e-9 * u.T
@@ -204,5 +205,23 @@ class TestTwoFluidDispersionSolution:
         with pytest.raises(_error):
             two_fluid_dispersion_solution(**kwrgs)
 
-    def test_warns(self):
-        pass
+    @pytest.mark.parametrize(
+        "kwargs, _warning",
+        [
+            (
+                {
+                    "B": 8.3e-7 * u.T,
+                    "ion": "p+",
+                    "k": 0.0001 * u.rad/u.m,
+                    "n_i": 3.0e6 * u.m ** -3,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "theta": 5 * u.deg,
+                },
+                PhysicsWarning,
+            ),
+        ],
+    )
+    def test_warns(self, kwargs, _warning):
+        with pytest.warns(_warning):
+            two_fluid_dispersion_solution(**kwargs)
