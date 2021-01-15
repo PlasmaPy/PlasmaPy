@@ -172,6 +172,10 @@ class TestTwoFluidDispersionSolution:
         "k": (2 * np.pi * u.rad) / (0.56547 * u.m),
     }
 
+    def test_alias(self):
+        """Test the associated alias is defined correctly."""
+        assert tfds_ is two_fluid_dispersion_solution
+
     @pytest.mark.parametrize(
         "kwargs, _error",
         [
