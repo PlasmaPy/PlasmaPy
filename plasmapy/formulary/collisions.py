@@ -105,15 +105,15 @@ def Coulomb_logarithm(
         (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
@@ -195,8 +195,9 @@ def Coulomb_logarithm(
 
     **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
 
-    In this section, further information about each method, such as about interpolation and other special
-    features, is documented. Please refer to Reference [4]_ for additional information about these methods.
+    In this section, further information about each method, such as about
+    interpolation and other special features, is documented. Please refer
+    to Reference [4]_ for additional information about these methods.
 
     Option 1: ``"classical"`` or ``"LS"`` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the
@@ -1814,7 +1815,7 @@ def coupling_parameter(
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
         The average ionization (arithmetic mean) for a plasma where the
