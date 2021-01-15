@@ -170,7 +170,7 @@ class TestTwoFluidDispersionSolution:
     }
 
     @pytest.mark.parametrize(
-        "kwrgs, _error",
+        "kwargs, _error",
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -201,9 +201,9 @@ class TestTwoFluidDispersionSolution:
             ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
         ],
     )
-    def test_raises(self, kwrgs, _error):
+    def test_raises(self, kwargs, _error):
         with pytest.raises(_error):
-            two_fluid_dispersion_solution(**kwrgs)
+            two_fluid_dispersion_solution(**kwargs)
 
     @pytest.mark.parametrize(
         "kwargs, _warning",
