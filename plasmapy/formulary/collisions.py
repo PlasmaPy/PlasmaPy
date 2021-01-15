@@ -194,7 +194,7 @@ def Coulomb_logarithm(
         For strongly-coupled plasma, PlasmaPy recommends Option 7, ``"hls_full_interp"`` or ``"GMS-6"``,
         because of its high accuracy regardless of a plasma's strength of coupling.
 
-    **Explanation of PlasmaPy-Supported Methods of Computing the Coulomb Logarithm**
+    **Explanation of Supported Methods of Computing the Coulomb Logarithm**
 
     In this section, further information about each method, such as about
     interpolation and other special features, is documented. Please refer
