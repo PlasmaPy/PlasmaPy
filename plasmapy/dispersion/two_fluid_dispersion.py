@@ -332,9 +332,7 @@ def two_fluid_dispersion_solution(
 
         # check for violation of dispersion relation assumptions
         # (i.e. low-frequency, w/kc << 0.1)
-        kc = kv * c.value
-        kc[kc==0] = np.nan #getting rid of '0' values
-        wkc_max = np.max(w.value / kc)
+        wkc_max = np.max(w.value / (kv * c.value))
         if wkc_max > 0.1:
             warnings.warn(
                 f"The {key} calculation produced a high-frequency wave (w/kc == "
