@@ -193,32 +193,29 @@ def two_fluid_dispersion_solution(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion_solution as tfds
-    >>> k = 0.01 * u.m ** -1
+    >>> from plasmapy.dispersion import two_fluid_dispersion as tfds
+    >>> k = 0.01 * u.rad/u.m
     >>> theta = 30 * u.deg
     >>> B = 8.3E-9 * u.T
-    >>> n = 5.e6 * u.m ** -3
+    >>> n_i = 5.e6 * u.m ** -3
     >>> T_e = 1.6e6 * u.K
     >>> T_i = 4.e5 * u.K
-    >>> z = 1
-    >>> omega = tfds(B=B, k=k, n=n, T_e=T_e, T_i=T_i, theta=theta, z=z)
+    >>> z_mean = 1
+    >>> omega = tfds(B=B, k=k, n_i=n_i, T_e=T_e, T_i=T_i, theta=theta, z_mean=z_mean)
     >>> omega
     {'fast_mode': <Quantity [[1520.5794506]] rad / s>,
      'alfven_mode': <Quantity [[1261.75471561]] rad / s>,
      'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
 
-    >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.m ** -1
+    >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.rad/u.m
     >>> theta = np.linspace(5, 85, 100) * u.deg
-    >>> n = 5.e6 * u.m ** -3
+    >>> n_i = 5.e6 * u.m ** -3
     >>> B = 8.3E-9 * u.T
     >>> T_e = 1.6e6 * u.K
     >>> T_i = 4.e5 * u.K
-    >>> z = 1
-    >>> c = 3.e8 * u.m/u.s
-    >>> c_s = pfp.ion_sound_speed(T_e=T_e, T_i=T_i, n_e=z * n, ion='p+')
-    >>> v_A = pfp.Alfven_speed( B, n, ion='p+')
-    >>> omega_ci = pfp.gyrofrequency(B=B, particle='p+', signed=False, Z=z)
-    >>> omega = tfds(n=n, B=B, T_e=T_e, T_i=T_i, theta=theta, z=z, k=k_arr)
+    >>> z_mean = 1
+	>>> ion = 'p+'
+    >>> omega = tfds(n_i=n_i, B=B, ion=ion, T_e=T_e, T_i=T_i, theta=theta, z_mean=z_mean, k=k_arr)
     >>> omega['fast_mode'][:,40]
     <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
                1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
@@ -331,7 +328,9 @@ def two_fluid_dispersion_solution(
 
         # check for violation of dispersion relation assumptions
         # (i.e. low-frequency, w/kc << 0.1)
-        wkc_max = np.max(w.value / (kv * c.value))
+        kc = kv * c.value
+        kc[kc==0] = np.nan #getting rid of '0' values
+        wkc_max = np.max(w.value / kc)
         if wkc_max > 0.1:
             warn(
                 f"The {key} calculation produced a high-frequency wave (w/kc == "
