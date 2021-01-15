@@ -70,7 +70,7 @@ class Test_Coulomb_logarithm:
         "kwargs",
         [
             {"method": "classical"},
-            {"method": "LS"},
+            {"method": "ls"},
             {"method": "ls_min_interp"},
             {"method": "GMS-1"},
             {"method": "ls_full_interp", "z_mean": 1.0},

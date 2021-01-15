@@ -120,7 +120,7 @@ def Coulomb_logarithm(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the Notes section of this docstring for more
@@ -160,11 +160,11 @@ def Coulomb_logarithm(
 
     Notes
     -----
-    **Overview of Supported Methods of Computing the Coulomb Logarithm**
+    **Summary of Supported Methods of Computing the Coulomb Logarithm**
 
     PlasmaPy supports 7 methods of computing the Coulomb logarithm:
 
-    1. ``"classical"`` or ``"LS"``
+    1. ``"classical"`` or ``"ls"``
     2. ``"ls_min_interp"`` or ``"GMS-1"``
     3. ``"ls_full_interp"`` or ``"GMS-2"``
     4. ``"ls_clamp_mininterp"`` or ``"GMS-3"``
@@ -187,8 +187,11 @@ def Coulomb_logarithm(
         \ln{\Lambda} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner impact parameter and the outer
-    impact parameter for Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are each computed
-    by `impact_parameter`, another function.
+    impact parameter, respectively, for Coulomb collisions [1]_;
+    :math:`b_{min}` and :math:`b_{max}` are each computed by `impact_parameter`, another function.
+
+    The abbreviations of Options 2-7 (``"GMS-..."``) refer to the first initials of the three authors
+    of Reference [4]_.
 
     .. note::
         For strongly-coupled plasma, PlasmaPy recommends Option 7, ``"hls_full_interp"`` or ``"GMS-6"``,
@@ -198,9 +201,10 @@ def Coulomb_logarithm(
 
     In this section, further information about each method, such as about
     interpolation and other special features, is documented. Please refer
-    to Reference [4]_ for additional information about these methods.
+    to Reference [1]_ and Reference [4]_ for additional information about
+    these methods.
 
-    Option 1: ``"classical"`` or ``"LS"`` (Landau-Spitzer)
+    Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
         The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the
         higher of the de Broglie wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest
         approach (:math:`\rho_{\perp}`) if they are not equal (and either of the two if they are equal) and
@@ -233,8 +237,8 @@ def Coulomb_logarithm(
         The uncertainty of the classical straight-line Landau-Spitzer method is on the order
         of its reciprocal.
 
-        This method is invalid if :math:`\ln{\Lambda} < 2` because of the uncertainty of the classical
-        straight-line Landau-Spitzer method and if :math:`\ln{\Lambda} < 0`, which may be true if the
+        This method is invalid if :math:`\ln{\Lambda} < 2` because of the uncertainty of this method
+        and is invalid if :math:`\ln{\Lambda} < 0`, which may be true if the
         coupling parameter is high (such as for nonideal, dense, cold plasmas).
 
         Please refer to Reference [1]_ for additional information about this method.
@@ -281,8 +285,8 @@ def Coulomb_logarithm(
 
     Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
         A straight-line Landau-Spitzer method in which the value of :math:`\ln{\Lambda}` is clamped at
-        a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0`, unlike by the
-        classical Landau-Spitzer method. :math:`b_{min}` is interpolated between the de Broglie
+        a minimum of :math:`2` so that it is impossible for :math:`\ln{\Lambda} < 0` (which is possible by the
+        classical Landau-Spitzer method). :math:`b_{min}` is interpolated between the de Broglie
         wavelength (:math:`\lambda_{de Broglie}`) and the distance of closest approach
         (:math:`\rho_{\perp}`). :math:`b_{max}` is defined to be the Debye length (:math:`\lambda_{Debye}`).
 
@@ -404,7 +408,7 @@ def Coulomb_logarithm(
 
     if method in (
         "classical",
-        "LS",
+        "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
@@ -439,7 +443,7 @@ def Coulomb_logarithm(
     with np.errstate(invalid="ignore"):
         if np.any(ln_Lambda < 2) and method in [
             "classical",
-            "LS",
+            "ls",
             "ls_min_interp",
             "GMS-1",
             "ls_full_interp",
@@ -638,7 +642,7 @@ def impact_parameter(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -738,7 +742,7 @@ def impact_parameter(
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method == "classical" or method == "LS":
+    if method == "classical" or method == "ls":
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
@@ -864,7 +868,7 @@ def collision_frequency(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1065,7 +1069,7 @@ def fundamental_electron_collision_freq(
     coulomb_log_method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1195,7 +1199,7 @@ def fundamental_ion_collision_freq(
     coulomb_log_method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1337,7 +1341,7 @@ def mean_free_path(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1461,7 +1465,7 @@ def Spitzer_resistivity(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1592,7 +1596,7 @@ def mobility(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1724,7 +1728,7 @@ def Knudsen_number(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
@@ -1847,7 +1851,7 @@ def coupling_parameter(
     method : str, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
         are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
