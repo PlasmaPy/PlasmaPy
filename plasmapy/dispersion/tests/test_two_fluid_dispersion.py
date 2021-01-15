@@ -303,6 +303,8 @@ class TestTwoFluidDispersionSolution:
                         "theta": 0 * u.deg,
                     },
             ),
+            #
+            # z_mean defaults to 1
             (
                     {
                         **_kwargs_bellan2012,
