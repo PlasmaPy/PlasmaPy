@@ -98,7 +98,7 @@ def two_fluid_dispersion_solution(
     TypeError
         If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
 
-    ~astropy.units.UnitConversionError
+    ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the expected
         units.
 
