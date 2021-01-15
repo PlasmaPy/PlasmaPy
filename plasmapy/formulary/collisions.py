@@ -119,11 +119,12 @@ def Coulomb_logarithm(
 
     method : str, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer method
-        (``"classical"`` or ``"LS"``). The other 6 supported methods are ``"ls_min_interp"``,
-        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``, ``"hls_min_interp"``, ``"hls_max_interp"``, and
-        ``"hls_full_interp"``. Please refer to the Notes section of this
-        docstring for more information, including about abbreviated aliases of these names.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the Notes section of this docstring for more
+        information, including about abbreviated aliases of these names.
 
     Returns
     -------
@@ -612,33 +613,33 @@ def impact_parameter(
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"lsfullinterp"``, ``"hlsmaxinterp"``, or ``"hlsfullinterp"``.
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
     method : str, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer method
-        (``"classical"`` or ``"LS"``). The other 6 supported methods are 
-        ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``, 
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
         information about these methods.
@@ -845,27 +846,29 @@ def collision_frequency(
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
     method : str, optional
         The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer method
-        (``"classical"`` or ``"LS"``). The other 6 supported methods are ``"ls_min_interp"``,
-        ``"ls_full_interp"``, ``"ls_clamp_mininterp"``, ``"hls_min_interp"``, ``"hls_max_interp"``, and
-        ``"hls_full_interp"``. Please refer to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of `Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -1309,24 +1312,25 @@ def mean_free_path(
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : ~astropy.units.Quantity
         The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
@@ -1438,18 +1442,19 @@ def Spitzer_resistivity(
         and the ion density for electron-ion and ion-ion collisions.
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
@@ -1461,7 +1466,6 @@ def Spitzer_resistivity(
         ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
         Please refer to the docstring of `Coulomb_logarithm` for more
         information about these methods.
-        about these methods.
 
     Returns
     -------
@@ -1560,27 +1564,28 @@ def mobility(
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : ~astropy.units.Quantity
         The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters. It is also used the obtain the average mobility
         of a plasma with multiple charge state species. When z_mean
         is not given, the average charge between the two particles is
-        used instead.
+        used instead. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
@@ -1694,24 +1699,25 @@ def Knudsen_number(
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
-        (listed first) and the target particle (listed second)
+        (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
@@ -1816,24 +1822,25 @@ def coupling_parameter(
     T : ~astropy.units.Quantity
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
-        the target particle
+        the target particle.
 
     n_e : ~astropy.units.Quantity
-        The electron density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic meter.
 
     species : tuple
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : ~astropy.units.Quantity, optional
-        The average ionization (arithmetic mean) for a plasma where the
-        a macroscopic description is valid. This is used to recover the
+        The average ionization (arithmetic mean) of a plasma for which
+        a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
-        impact parameters.
+        impact parameters. ``z_mean`` is a required parameter if ``method`` is
+        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : ~astropy.units.Quantity, optional
-        The relative velocity between particles.  If not provided,
+        The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
         where `mu` is the reduced mass.
 
