@@ -324,3 +324,44 @@ class TestTwoFluidDispersionSolution:
 
         for mode in ws:
             assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            ({**_kwargs_bellan2012, "theta": 0 * u.deg}, {"shape": ()}),
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "theta": 0 * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "theta": [10, 20, 30, 40, 50] * u.deg,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3, 5)},
+            ),
+            (
+                {
+                    **_kwargs_bellan2012,
+                    "theta": [10, 20, 30, 40, 50] * u.deg,
+                },
+                {"shape": (5,)},
+            ),
+        ],
+    )
+    def test_return_structure(self, kwargs, expected):
+        """Test the structure of the returned values."""
+        ws = two_fluid_dispersion_solution(**kwargs)
+
+        assert isinstance(ws, dict)
+        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
+
+        for mode, val in ws.items():
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.rad / u.s
+            assert val.shape == expected["shape"]
