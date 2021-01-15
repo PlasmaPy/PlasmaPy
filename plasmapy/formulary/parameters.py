@@ -906,8 +906,14 @@ def Hall_parameter(
         then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.parameters.thermal_speed`).
     coulomb_log_method : `str`, optional
-        Method used for Coulomb logarithm calculation. (see
-        `~plasmapy.formulary.collisions.Coulomb_logarithm`)
+        The method by which to compute the Coulomb logarithm.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"LS"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     See Also
     --------
