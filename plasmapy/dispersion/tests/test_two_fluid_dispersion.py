@@ -25,6 +25,7 @@ k_arr = np.linspace(10 ** -7, 10 ** -2, 10000) * u.rad/u.m
 theta_arr = np.linspace(5, 85, 100) * u.deg
 c = 3.0e8 * u.m / u.s
 
+@pytest.mark.skip
 def test_two_fluid_dispersion():
     r"""Test the two fluid analytical dispersion solution"""
 
