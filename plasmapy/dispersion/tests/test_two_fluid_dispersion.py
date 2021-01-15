@@ -286,3 +286,41 @@ class TestTwoFluidDispersionSolution:
         for mode, val in ws.items():
             norm = (np.absolute(val) / (kwargs["k"] * va)).value ** 2
             assert np.isclose(norm, expected[mode])
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                    {
+                        **_kwargs_bellan2012,
+                        "ion": Particle("He"),
+                        "z_mean": 2.0,
+                        "theta": 0 * u.deg,
+                    },
+                    {
+                        **_kwargs_bellan2012,
+                        "ion": Particle("He +2"),
+                        "theta": 0 * u.deg,
+                    },
+            ),
+            (
+                    {
+                        **_kwargs_bellan2012,
+                        "ion": Particle("He"),
+                        "theta": 0 * u.deg,
+                    },
+                    {
+                        **_kwargs_bellan2012,
+                        "ion": Particle("He+"),
+                        "theta": 0 * u.deg,
+                    },
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = two_fluid_dispersion_solution(**kwargs)
+        ws_expected = two_fluid_dispersion_solution(**expected)
+
+        for mode in ws:
+            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
