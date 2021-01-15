@@ -163,6 +163,14 @@ class TestTwoFluidDispersionSolution:
         "T_i": 4.0e5 * u.K,
         "theta": 45 * u.deg,
     }
+    _kwargs_bellan2012 = {
+        "B": 400e-4 * u.T,
+        "ion": Particle("He+"),
+        "n_i": 6.358e19 * u.m ** -3,
+        "T_e": 20 * u.eV,
+        "T_i": 10 * u.eV,
+        "k": (2 * np.pi * u.rad) / (0.56547 * u.m),
+    }
 
     @pytest.mark.parametrize(
         "kwargs, _error",
@@ -222,3 +230,55 @@ class TestTwoFluidDispersionSolution:
         """Test scenarios the issue a `Warning`."""
         with pytest.warns(_warning):
             two_fluid_dispersion_solution(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {**_kwargs_bellan2012, "theta": 0 * u.deg},
+                {
+                    "fast_mode": 1.8631944,
+                    "alfven_mode": 0.5366538,
+                    "acoustic_mode": 0.4000832,
+                },
+            ),
+            (
+                {**_kwargs_bellan2012, "theta": 90 * u.deg},
+                {
+                    "fast_mode": 1.4000284,
+                    "alfven_mode": 0.0,
+                    "acoustic_mode": 0.0,
+                },
+            ),
+        ],
+    )
+    def test_on_bellan2012_vals(self, kwargs, expected):
+        """
+        Test calculated values based on Figure 1 of Bellan 2012
+        (DOI: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856).
+        """
+        # theta and k values need to be single valued for this test to function
+        # correctly
+
+        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"])
+        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"])
+        wci = pfp.wc_(kwargs["B"], kwargs["ion"])
+
+        beta = (cs / va).value ** 2
+        if not np.isclose(beta, 0.4, atol=1e-4):
+            pytest.fail(
+                f"The Bellan 2012 paper requires a 'beta' value of 0.4 and the test "
+                f"parameters yielded {beta:.6f}."
+            )
+
+        Lambda = (kwargs["k"] * va / wci).value ** 2
+        if not np.isclose(Lambda, 0.4, atol=1e-4):
+            pytest.fail(
+                f"The Bellan 2012 paper requires a 'Lambda' value of 0.4 and the test "
+                f"parameters yielded {Lambda:.6f}."
+            )
+
+        ws = two_fluid_dispersion_solution(**kwargs)
+        for mode, val in ws.items():
+            norm = (np.absolute(val) / (kwargs["k"] * va)).value ** 2
+            assert np.isclose(norm, expected[mode])
