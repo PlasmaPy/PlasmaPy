@@ -2,10 +2,10 @@ __all__ = ["two_fluid_dispersion_solution", "tfds_"]
 
 import astropy.units as u
 import numpy as np
+import warnings
 
 from astropy.constants.si import c
 from typing import Union
-from warnings import warn
 
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
@@ -288,15 +288,17 @@ def two_fluid_dispersion_solution(
 
     # Calc needed plasma parameters
     n_e = z_mean * n_i
-    c_s = pfp.ion_sound_speed(
-        T_e=T_e,
-        T_i=T_i,
-        ion=ion,
-        n_e=n_e,
-        gamma_e=gamma_e,
-        gamma_i=gamma_i,
-        z_mean=z_mean,
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=PhysicsWarning)
+        c_s = pfp.ion_sound_speed(
+            T_e=T_e,
+            T_i=T_i,
+            ion=ion,
+            n_e=n_e,
+            gamma_e=gamma_e,
+            gamma_i=gamma_i,
+            z_mean=z_mean,
+        )
     v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
@@ -335,7 +337,7 @@ def two_fluid_dispersion_solution(
         # (i.e. low-frequency, w/kc << 0.1)
         wkc_max = np.max(w.value / (kv * c.value))
         if wkc_max > 0.1:
-            warn(
+            warnings.warn(
                 f"The {key} calculation produced a high-frequency wave (w/kc == "
                 f"{wkc_max}), which violates the low-frequency (w/kc << 1) assumption "
                 f"of the dispersion relation.",
