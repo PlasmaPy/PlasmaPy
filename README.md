@@ -86,7 +86,7 @@ you can install PlasmaPy from [pip](https://pypi.org/project/pip/)
 ```Shell
 pip install plasmapy
 ```
-If you have 
+If you have
 [installed conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html),
 then you can also get PlasmaPy  from
 ```Shell
@@ -99,7 +99,7 @@ PlasmaPy requires Python 3.6+.
 
 # License
 
-PlasmaPy is permissively licensed under a 
+PlasmaPy is permissively licensed under a
 [3-clause BSD license with added protections
 against software patents](LICENSE.md).
 
