@@ -336,8 +336,8 @@ def two_fluid_dispersion_solution(
         if wkc_max > 0.1:
             warnings.warn(
                 f"The {key} calculation produced a high-frequency wave (w/kc == "
-                f"{wkc_max}), which violates the low-frequency (w/kc << 1) assumption "
-                f"of the dispersion relation.",
+                f"{wkc_max:.3f}), which violates the low-frequency (w/kc << 1) "
+                f"assumption of the dispersion relation.",
                 PhysicsWarning,
             )
 
