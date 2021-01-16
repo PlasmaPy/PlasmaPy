@@ -88,6 +88,8 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Ramiz Qudsi <https://github.com/ahmadryan>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
 * `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
 * `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
+* `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy

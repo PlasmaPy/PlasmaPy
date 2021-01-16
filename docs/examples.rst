@@ -18,3 +18,4 @@ General-purpose and introductory examples from PlasmaPy.
     :reversed:
 
     notebooks/*
+    notebooks/*/*
