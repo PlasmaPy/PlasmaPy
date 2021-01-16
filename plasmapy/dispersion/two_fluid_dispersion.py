@@ -226,7 +226,6 @@ def two_fluid_dispersion_solution(
                [0.01534..., 0.01558...]] rad / s>
     """
 
-
     # validate argument ion
     if not isinstance(ion, Particle):
         try:
