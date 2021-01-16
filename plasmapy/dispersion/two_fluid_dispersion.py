@@ -262,7 +262,8 @@ def two_fluid_dispersion_solution(
         if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}.")
+                f"{type(locals()[arg_name])}."
+            )
 
     # validate argument k
     k = k.squeeze()

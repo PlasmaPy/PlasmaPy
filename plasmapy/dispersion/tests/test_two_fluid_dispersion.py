@@ -1,4 +1,4 @@
-"""Tests for the two fluid dispersion"""
+"""Tests for the two fluid dispersion solution."""
 
 import numpy as np
 import pytest
@@ -9,8 +9,8 @@ from plasmapy.dispersion.two_fluid_dispersion import (
     tfds_,
     two_fluid_dispersion_solution,
 )
-from plasmapy.particles import Particle
 from plasmapy.formulary import parameters as pfp
+from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
@@ -18,7 +18,7 @@ class TestTwoFluidDispersionSolution:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "ion": "p+",
-        "k": 0.0001 * u.rad/u.m,
+        "k": 0.0001 * u.rad / u.m,
         "n_i": 5.0e6 * u.m ** -3,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
@@ -81,7 +81,7 @@ class TestTwoFluidDispersionSolution:
                 {
                     "B": 8.3e-7 * u.T,
                     "ion": "p+",
-                    "k": 0.0001 * u.rad/u.m,
+                    "k": 0.0001 * u.rad / u.m,
                     "n_i": 3.0e6 * u.m ** -3,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
@@ -109,11 +109,7 @@ class TestTwoFluidDispersionSolution:
             ),
             (
                 {**_kwargs_bellan2012, "theta": 90 * u.deg},
-                {
-                    "fast_mode": 1.4000284,
-                    "alfven_mode": 0.0,
-                    "acoustic_mode": 0.0,
-                },
+                {"fast_mode": 1.4000284, "alfven_mode": 0.0, "acoustic_mode": 0.0},
             ),
         ],
     )
@@ -152,31 +148,19 @@ class TestTwoFluidDispersionSolution:
         "kwargs, expected",
         [
             (
-                    {
-                        **_kwargs_bellan2012,
-                        "ion": Particle("He"),
-                        "z_mean": 2.0,
-                        "theta": 0 * u.deg,
-                    },
-                    {
-                        **_kwargs_bellan2012,
-                        "ion": Particle("He +2"),
-                        "theta": 0 * u.deg,
-                    },
+                {
+                    **_kwargs_bellan2012,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                    "theta": 0 * u.deg,
+                },
+                {**_kwargs_bellan2012, "ion": Particle("He +2"), "theta": 0 * u.deg},
             ),
             #
             # z_mean defaults to 1
             (
-                    {
-                        **_kwargs_bellan2012,
-                        "ion": Particle("He"),
-                        "theta": 0 * u.deg,
-                    },
-                    {
-                        **_kwargs_bellan2012,
-                        "ion": Particle("He+"),
-                        "theta": 0 * u.deg,
-                    },
+                {**_kwargs_bellan2012, "ion": Particle("He"), "theta": 0 * u.deg},
+                {**_kwargs_bellan2012, "ion": Particle("He+"), "theta": 0 * u.deg},
             ),
         ],
     )
@@ -209,10 +193,7 @@ class TestTwoFluidDispersionSolution:
                 {"shape": (3, 5)},
             ),
             (
-                {
-                    **_kwargs_bellan2012,
-                    "theta": [10, 20, 30, 40, 50] * u.deg,
-                },
+                {**_kwargs_bellan2012, "theta": [10, 20, 30, 40, 50] * u.deg},
                 {"shape": (5,)},
             ),
         ],
