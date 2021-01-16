@@ -195,33 +195,37 @@ def two_fluid_dispersion_solution(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion as tfds
-    >>> k = 0.01 * u.rad/u.m
-    >>> theta = 30 * u.deg
-    >>> B = 8.3E-9 * u.T
-    >>> n_i = 5.e6 * u.m ** -3
-    >>> T_e = 1.6e6 * u.K
-    >>> T_i = 4.e5 * u.K
-    >>> z_mean = 1
-    >>> omega = tfds(B=B, k=k, n_i=n_i, T_e=T_e, T_i=T_i, theta=theta, z_mean=z_mean)
-    >>> omega
-    {'fast_mode': <Quantity [[1520.5794506]] rad / s>,
-     'alfven_mode': <Quantity [[1261.75471561]] rad / s>,
-     'acoustic_mode': <Quantity [[0.6881521]] rad / s>}
+    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> inputs = {
+    ...     "k": 0.01 * u.rad / u.m,
+    ...     "theta": 30 * u.deg,
+    ...     "B": 8.3e-9 * u.T,
+    ...     "n_i": 5e6 * u.m ** -3,
+    ...     "T_e": 1.6e6 * u.K,
+    ...     "T_i": 4.0e5 * u.K,
+    ...     "ion": "p+",
+    ... }
+    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas
+    {'fast_mode': <Quantity 1520.57... rad / s>,
+     'alfven_mode': <Quantity 1261.75... rad / s>,
+     'acoustic_mode': <Quantity 0.688152... rad / s>}
 
-    >>> k_arr = np.linspace(10**-7, 10**-2, 10000) * u.rad/u.m
-    >>> theta = np.linspace(5, 85, 100) * u.deg
-    >>> n_i = 5.e6 * u.m ** -3
-    >>> B = 8.3E-9 * u.T
-    >>> T_e = 1.6e6 * u.K
-    >>> T_i = 4.e5 * u.K
-    >>> z_mean = 1
-	>>> ion = 'p+'
-    >>> omega = tfds(n_i=n_i, B=B, ion=ion, T_e=T_e, T_i=T_i, theta=theta, z_mean=z_mean, k=k_arr)
-    >>> omega['fast_mode'][:,40]
-    <Quantity [1.61176312e-02, 1.77335334e-01, 3.38688590e-01, ...,
-               1.52030361e+03, 1.52045553e+03, 1.52060745e+03] rad / s>
+    >>> inputs = {
+    ...     "k": [1e-7, 2e-7] * u.rad / u.m,
+    ...     "theta": [10, 20] * u.deg,
+    ...     "B": 8.3e-9 * u.T,
+    ...     "n_i": 5e6 * u.m ** -3,
+    ...     "T_e": 1.6e6 * u.K,
+    ...     "T_i": 4.0e5 * u.K,
+    ...     "ion": "He+",
+    ... }
+    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas['fast_mode']
+    <Quantity [[0.00767..., 0.00779... ],
+               [0.01534..., 0.01558...]] rad / s>
     """
+
 
     # validate argument ion
     if not isinstance(ion, Particle):
