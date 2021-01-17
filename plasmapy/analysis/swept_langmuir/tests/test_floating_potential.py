@@ -27,9 +27,13 @@ class TestFindFloatingPotential:
 
         assert issubclass(FloatingPotentialResults, tuple)
         assert hasattr(FloatingPotentialResults, "_fields")
-        assert (
-            FloatingPotentialResults._fields
-            == ("vf", "vf_err", "rsq", "func", "islands", "indices")
+        assert FloatingPotentialResults._fields == (
+            "vf",
+            "vf_err",
+            "rsq",
+            "func",
+            "islands",
+            "indices",
         )
         assert hasattr(FloatingPotentialResults, "_fields_defaults")
         assert FloatingPotentialResults._field_defaults == {}
@@ -45,7 +49,7 @@ class TestFindFloatingPotential:
 
         assert _sl.helpers.check_sweep is _sl.floating_potential.check_sweep
 
-        with mock.patch(_sl.floating_potential.__name__ + '.check_sweep') as mock_cs:
+        with mock.patch(_sl.floating_potential.__name__ + ".check_sweep") as mock_cs:
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
             assert mock_cs.call_count == 1
