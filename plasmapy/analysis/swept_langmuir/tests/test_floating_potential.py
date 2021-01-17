@@ -11,8 +11,8 @@ from unittest import mock
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as _sl
 from plasmapy.analysis.swept_langmuir.floating_potential import (
-    FloatingPotentialResults,
     find_floating_potential,
+    FloatingPotentialResults,
 )
 
 
