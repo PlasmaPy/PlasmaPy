@@ -15,7 +15,7 @@ Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 (functionality) you need to analyze your data.  Functionality is built around
 `numpy arrays <https://numpy.org/doc/stable/reference/arrays.html>`_ and each
 function has a well-defined, focused task.  For example, :func:`numpy.fft.fft`
-does one specific task, compute the one-dimensional discrete Fourier Transform.
+does one specific task: compute the one-dimensional discrete Fourier Transform.
 Similarly, :func:`plasmapy.analysis.swept_langmuir.find_floating_potential` only
 finds the floating potential for a given Langmuir trace.  It does not have
 smoothing.  It does not do any filtering.  It does not do any signal
