@@ -103,7 +103,7 @@ def two_fluid_dispersion_solution(
         units.
 
     ValueError
-        If the ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
 
     ValueError
         If ``k`` is negative or zero.
@@ -151,7 +151,7 @@ def two_fluid_dispersion_solution(
     :math:`\omega` is the wave frequency, :math:`k` is the wavenumber, :math:`v_A`
     is the Alfvén velocity, :math:`c_s` is the sound speed, :math:`\omega_{ci}` is
     the ion gyrofrequency, and :math:`\omega_{pe}` is the electron plasma frequency.
-    This relation does additionally assumme low-frequency waves
+    This relation does additionally assume low-frequency waves
     :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
     quasi-neutrality.
 
@@ -171,7 +171,7 @@ def two_fluid_dispersion_solution(
         }
 
     where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
-    Alfvén mode, and :math:`j = 2` represents the Acoustic mode.  Additionally,
+    Alfvén mode, and :math:`j = 2` represents the acoustic mode.  Additionally,
 
     .. math::
         p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
@@ -184,7 +184,7 @@ def two_fluid_dispersion_solution(
 
     References
     ----------
-    .. [1] PM bellan, Improved basis set for low frequency plasma waves, 2012,
+    .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
        JGR, 117, A12219, doi: `10.1029/2012JA017856
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
