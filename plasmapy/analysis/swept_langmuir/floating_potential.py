@@ -68,7 +68,7 @@ def find_floating_potential(
 
     threshold: positive, non-zero `int`
         Max allowed index distance between crossing-points before a new
-        crossing-island is formed.  That is, if `threshold=5` then consecutive
+        crossing-island is formed.  That is, if ``threshold=5`` then consecutive
         crossing-points are considered to be in the same crossing-island if
         they are within 5 index steps of each other. (Default: 1)
 
@@ -110,14 +110,14 @@ def find_floating_potential(
 
     vf_err: `float` or `numpy.nan`
         The uncertainty associated with the floating potential calculation
-        (units same as `vf`).  Returns `numpy.nan` if the floating potential
+        (units same as ``vf``).  Returns `numpy.nan` if the floating potential
         can not be determined.  Like :math:`V_f`:, the calculation depends on
         the applied fit function.  The `root_solve()` method also describes
         how this is calculated.
 
     rsq: `float`
         The coefficient of determination (r-squared) value of the fit.  See the
-        documentation of the `rsq` property on the associated fit function
+        documentation of the ``rsq`` property on the associated fit function
         (e.g. the
         `~plasmapy.analysis.fit_functions.ExponentialPlusOffset.rsq`
         property of
