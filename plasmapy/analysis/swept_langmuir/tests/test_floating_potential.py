@@ -5,6 +5,7 @@ Tests for functionality contained in
 
 import numpy as np
 import pytest
+import sys
 
 from unittest import mock
 
@@ -14,6 +15,28 @@ from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     FloatingPotentialResults,
 )
+
+
+def test_floating_potential_namedtuple():
+    """
+    Test structure of the namedtuple used to return computed floating potential
+    data.
+    """
+
+    assert issubclass(FloatingPotentialResults, tuple)
+    assert hasattr(FloatingPotentialResults, "_fields")
+    assert FloatingPotentialResults._fields == (
+        "vf",
+        "vf_err",
+        "rsq",
+        "func",
+        "islands",
+        "indices",
+    )
+    if sys.version_info >= (3, 7):
+        # TODO: remove if clause when python 3.6 support is dropped
+        assert hasattr(FloatingPotentialResults, "_field_defaults")
+        assert FloatingPotentialResults._field_defaults == {}
 
 
 class TestFindFloatingPotential:
