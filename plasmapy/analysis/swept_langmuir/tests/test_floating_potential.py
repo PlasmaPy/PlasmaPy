@@ -57,3 +57,40 @@ class TestFindFloatingPotential:
             assert len(mock_cs.call_args.args) == 2
             assert np.array_equal(mock_cs.call_args.args[0], varr)
             assert np.array_equal(mock_cs.call_args.args[1], carr)
+
+    @pytest.mark.parametrize(
+        "kwargs, _error",
+        [
+            # errors on kwarg fit_type
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "wrong",
+                },
+                ValueError,
+            ),
+            #
+            # errors on kwarg min_points
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "min_points": "wrong",
+                },
+                TypeError,
+            ),
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "min_points": -1,
+                },
+                ValueError,
+            ),
+        ],
+    )
+    def test_raises(self, kwargs, _error):
+        """Test scenarios that raise `Exception`s."""
+        with pytest.raises(_error):
+            find_floating_potential(**kwargs)
