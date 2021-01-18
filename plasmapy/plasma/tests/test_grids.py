@@ -32,6 +32,8 @@ def test_AbstractGrid():
 
     print(grid)
 
+    print(grid.grid_resolution)
+
     array = grid.grid
     units = grid.units
 
@@ -212,6 +214,9 @@ def test_volume_averaged_interpolator():
 
 def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
+
+    print(grid.grid_resolution)
+    print(grid)
 
     pts0, pts1, pts2 = grid.grids
     shape = grid.shape

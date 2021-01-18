@@ -378,6 +378,36 @@ class AbstractGrid(ABC):
                 "uniformly spaced grids."
             )
 
+    @property
+    def grid_resolution(self):
+        r"""
+        A scalar estimate of the grid resolution.
+
+        For uniform grids, this is the minima of [dax0, dax1, dax2].
+
+        For non-uniform grids, it is the closest spacing between two points.
+        """
+
+        if self.is_uniform_grid:
+            return min(self.dax0, self.dax1, self.dax2)
+        else:
+            # Make a deep copy the grid
+            temp_grid = np.copy(self.grid)
+            npos = self.shape[0]
+            distances = np.zeros(npos)
+
+            for i in range(npos):
+                # Replace the current index with inf, so we don't just get
+                # a distance of zero
+                temp_grid[i,:] = np.inf
+
+                # Calculate the minimum of all the distances
+                dist = np.min(np.linalg.norm(temp_grid - self.grid[i,:], axis=1))
+                distances[i] = dist
+
+            return np.min(distances)
+
+
     # *************************************************************************
     # Loading and creating grids
     # *************************************************************************
@@ -699,6 +729,8 @@ class AbstractGrid(ABC):
         # that are above a certain tolerance distance?
         # currently the nonuniform interpolator can't tell when a value
         # is out of bounds...
+        # NOTE: this also requires a grid-resolution number for
+        # non-uniform grids, so that needs to be developed first...
 
         # Note: i contains nan values which must be replaced with 0's with
         # appropriate units in the second layer interpolator functions.
