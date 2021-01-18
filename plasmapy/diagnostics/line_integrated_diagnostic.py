@@ -361,8 +361,8 @@ class LineIntegratedDiagnostic:
         max_theta_grid = self._max_theta_grid()
 
         # This array holds the indices of all particles that WILL hit the grid
-        self.gi = np.where(theta < max_theta_grid)[0]
-        self.nparticles_grid = len(self.gi)
+        self.grid_ind = np.where(theta < max_theta_grid)[0]
+        self.nparticles_grid = len(self.grid_ind)
 
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3]) * u.m / u.s
@@ -379,7 +379,7 @@ class LineIntegratedDiagnostic:
         self.v = np.matmul(self.v, rot)
 
         # Place particles at the source
-        self.r = np.outer(np.ones(self.nparticles), self.source)
+        self.x = np.outer(np.ones(self.nparticles), self.source)
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
@@ -469,7 +469,7 @@ class LineIntegratedDiagnostic:
         # Time for fastest possible particle to reach the grid.
         t = (dist / self.v0).to(u.s)
 
-        self.r = self.r + self.v * t
+        self.x = self.x + self.v * t
 
 
 
@@ -481,7 +481,7 @@ class LineIntegratedDiagnostic:
         This step applies to all particles, including those that never touched
         the grid.
         """
-        dist_remaining = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
         v_towards_det = np.dot(self.v, -self.det_n)
 
@@ -493,16 +493,16 @@ class LineIntegratedDiagnostic:
         # So, we can remove them from the arrays
         condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
         ind = np.nonzero(np.where(condition, 0, 1))[0]
-        self.r = self.r[ind, :]
+        self.x = self.x[ind, :]
         self.v = self.v[ind, :]
-        self.nparticles_grid = self.r.shape[0]
+        self.nparticles_grid = self.x.shape[0]
         t = t[ind]
 
-        self.r += self.v * np.outer(t, np.ones(3))
+        self.x += self.v * np.outer(t, np.ones(3))
 
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
 
@@ -515,22 +515,27 @@ class LineIntegratedDiagnostic:
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
+
+        pos = self.x[self.grid_ind,:]
+
         # Calculate grid positions closest to each particle
-        self.grid.nearest_neighbor_interpolator()
+        gridded_pos = self.grid.nearest_neighbor_interpolator()
 
 
 
         # Update the list of particles on and off the grid
         # The sum of this grid (# particles on the grid) is used to decide
         # when to terminate the run loop
-        dist = np.linalg.norm(
-            self.r[self.gi, :] - self.grid.grid[self.xi, self.yi, self.zi, :], axis=1
-        )
+        dist = np.linalg.norm(pos - gridded_pos, axis=1)
         self.on_grid = np.where(dist < self.ds, 1, 0)
         self.entered_grid += self.on_grid
 
+
+        pos = # Def here
+
         # Estimate the E and B fields for each particle
-        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x")
+        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(self.grid_ind, "E_x", "E_y", "E_z",
+                                                                        "B_x", "B_y", "B_y")
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
@@ -551,7 +556,7 @@ class LineIntegratedDiagnostic:
 
 
         # Update the positions
-        self.r[self.gi, :] += self.v[self.gi, :] * dt
+        self.x[self.gi, :] += self.v[self.gi, :] * dt
 
 
     def run(self,max_theta=0.9 * np.pi / 2 * u.rad):
