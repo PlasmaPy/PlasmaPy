@@ -11,8 +11,9 @@ please first look through https://github.com/PlasmaPy/PlasmaPy/issues and check
 whether no other issue already describes your problem.
 
 For more general "how do I do X?" type questions, please speak to us in real
-time on https://riot.im/app/#/room/#plasmapy:openastronomy.org or ask on Discourse
-https://plasmapy.discourse.group
+time on https://app.element.io/#/room/#plasmapy:openastronomy.org or ask on
+Github Discussions: https://github.com/plasmapy/plasmapy/discussions . We'll be
+more than happy to help! :)
 
 -->
 

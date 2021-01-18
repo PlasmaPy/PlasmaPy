@@ -12,9 +12,11 @@ dependencies:
   - h5py
   - matplotlib
   - mpmath
+  - pandas
   - pillow
   - colorama
   - pip
+  - xarray
   - pip:
     - numpydoc
     - pytest
