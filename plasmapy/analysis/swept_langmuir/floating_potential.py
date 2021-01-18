@@ -77,7 +77,7 @@ def find_floating_potential(
         See **How it works** above for additional details.  The following list
         specifies the optional values:
 
-        - ``min_points = None`` (Default) The larger of 5 and
+        - ``min_points = None`` (Default) The largest of 5 and
           ``factor * array_size`` is taken, where ``array_size`` is the size of
           ``voltage`` and ``factor = 0.1`` for ``fit_type = "linear"`` and
           ``0.2`` for ``"exponential"``.
@@ -191,10 +191,7 @@ def find_floating_potential(
     elif min_points >= 1:
         min_points = int(np.round(min_points))
     else:
-        raise ValueError(
-            f"Got {min_points}, but 'min_points' must be an int or float "
-            f"greater than or equal to 0."
-        )
+        raise ValueError(f"Argument 'min_points' can not be negative ({min_points}).")
 
     # find possible crossing points (cp)
     lower_vals = current < 0
