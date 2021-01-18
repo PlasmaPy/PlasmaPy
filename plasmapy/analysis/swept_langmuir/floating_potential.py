@@ -148,9 +148,9 @@ def find_floating_potential(
         fit_func = _settings[fit_type]["func"]()
         rtn["func"] = fit_func
     except KeyError:
-        raise KeyError(
-            f"Requested fit function '{fit_type}' is  not a valid option.  "
-            f"Examine kwarg 'fit_curve' for valid options."
+        raise ValueError(
+            f"Requested fit '{fit_type}' is not a valid option.  Valid options "
+            f"are {list(_settings.keys())}."
         )
 
     # check voltage and current arrays
