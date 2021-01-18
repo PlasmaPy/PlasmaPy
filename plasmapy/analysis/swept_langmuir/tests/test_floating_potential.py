@@ -45,22 +45,6 @@ class TestFindFloatingPotential:
     `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
 
-    def test_returned_namedtuple(self):
-        """Test structure of the namedtuple used to return computed data."""
-
-        assert issubclass(FloatingPotentialResults, tuple)
-        assert hasattr(FloatingPotentialResults, "_fields")
-        assert FloatingPotentialResults._fields == (
-            "vf",
-            "vf_err",
-            "rsq",
-            "func",
-            "islands",
-            "indices",
-        )
-        assert hasattr(FloatingPotentialResults, "_fields_defaults")
-        assert FloatingPotentialResults._field_defaults == {}
-
     def test_call_of_check_sweep(self):
         """
         Test `find_floating_potential` appropriately calls
