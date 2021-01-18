@@ -7,9 +7,35 @@ __all__ = [
         ]
 
 import astropy.units as u
+import astropy.constants as const
+
 import numpy as np
 
 from plasmapy.plasma.grids import CartesianGrid
+
+
+def _rot_a_to_b(a, b):
+    r"""
+    Calculates the 3D rotation matrix that will rotate vector a to be aligned
+    with vector b.
+    """
+    # Normalize both vectors
+    a = a / np.linalg.norm(a)
+    b = b / np.linalg.norm(b)
+
+    # Manually handle the case where a and b point in opposite directions
+    if np.dot(a, b) == -1:
+        return -np.identity(3)
+
+    axb = np.cross(a, b)
+    c = np.dot(a, b)
+    vskew = np.array(
+        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
+    ).T  # Transpose to get right orientation
+
+    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
+
+
 
 
 class LineIntegratedDiagnostic:
@@ -264,21 +290,223 @@ class LineIntegratedDiagnostic:
     # ************************************************************************
     # Particle Tracing Method (for non-linear problems)
     # ************************************************************************
+    def _max_theta_grid(self):
+        r"""
+        Using the grid and the source position, compute the maximum particle
+        theta that will impact the grid. This value can be used to determine
+        which particles are worth tracking.
+        """
+        ind = 0
+        theta = np.zeros([8])
+        for x in [0, -1]:
+            for y in [0, -1]:
+                for z in [0, -1]:
+                    # Souce to grid corner vector
+                    vec = self.grid.grid[x, y, z, :] - self.source
+
+                    # Calculate angle between vec and the source-to-detector
+                    # axis, which is the central axis of the proton beam
+                    theta[ind] = np.arccos(
+                        np.dot(vec.value, self.source_to_detector.value)
+                        / np.linalg.norm(vec.value)
+                        / np.linalg.norm(self.source_to_detector.value)
+                    )
+                    ind += 1
+        return np.max(theta)
 
 
     def _generate_particles(self):
-        """
-        Generate particles
+        r"""
+        Generates the angular distributions about the Z-axis, then
+        rotates those distributions to align with the source-to-detector axis.
+
+        By default, protons are generated over almost the entire pi/2. However,
+        if the detector is far from the source, many of these particles will
+        never be observed. The max_theta keyword allows these extraneous
+        particles to be neglected to focus computational resources on the
+        particles who will actually hit the detector.
 
         """
+
+        self._log("Creating Particles")
+
+
+        self.charge = const.e.si
+        self.mass = const.m_p.si
+
+        # Calculate the velocity corresponding to the proton energy
+        #self.v_nonrel = np.sqrt(2 * self.proton_energy / const.m_p.si).to(u.m / u.s)
+        ER = (self.proton_energy/(self.mass*const.c.si**2)).to(u.dimensionless_unscaled)
+        self.v0 = const.si.c*np.sqrt(1 - 1/(ER+1)**2)
+
+
+        max_theta = self.max_theta.to(u.rad).value
+        # Create a probability vector for the theta distribution
+        # Theta must follow a sine distribution in order for the proton
+        # flux per solid angle to be uniform.
+        arg = np.linspace(0, max_theta, num=int(1e5))
+        prob = np.sin(arg)
+        prob *= 1 / np.sum(prob)
+
+        # Randomly choose theta's weighted with the sine probabilities
+        theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
+
+        # Also generate a uniform phi distribution
+        phi = np.random.uniform(size=self.nparticles) * 2 * np.pi
+
+        # Determine the angle aboe which particles will not hit the grid
+        # these particles can be ignored until the end of the simulation,
+        # then immediately advanced to the detector grid with their original
+        # velocities
+        max_theta_grid = self._max_theta_grid()
+
+        # This array holds the indices of all particles that WILL hit the grid
+        self.gi = np.where(theta < max_theta_grid)[0]
+        self.nparticles_grid = len(self.gi)
+
+        # Construct the velocity distribution around the z-axis
+        self.v = np.zeros([self.nparticles, 3]) * u.m / u.s
+        self.v[:, 0] = self.v0 * np.sin(theta) * np.cos(phi)
+        self.v[:, 1] = self.v0 * np.sin(theta) * np.sin(phi)
+        self.v[:, 2] = self.v0 * np.cos(theta)
+
+        # Calculate the rotation matrix
+        a = np.array([0, 0, 1])
+        b = self.detector - self.source
+        rot = _rot_a_to_b(a, b)
+
+        # Apply rotation matrix to calculated velocity distribution
+        self.v = np.matmul(self.v, rot)
+
+        # Place particles at the source
+        self.r = np.outer(np.ones(self.nparticles), self.source)
+
+        # Create flags for tracking when particles during the simulation
+        # on_grid -> zero if the particle is off grid, 1
+        self.on_grid = np.zeros([self.nparticles_grid])
+        # Entered grid -> non-zero if particle EVER entered the grid
+        self.entered_grid = np.zeros([self.nparticles_grid])
+
+    def _adaptive_dt(self):
+        r"""
+        Calculate the appropraite dt based on a number of considerations
+        including the local grid resolution (ds) and the gyroperiod of the
+        particles in the current fields.
+        """
+        # If dt was explicitly set, ignore this fcn
+        if self.dt is not None:
+            return self.dt
+
+        # Compute the timestep indicated by the grid resolution
+        # min is taken for irregular grids, in which different particles
+        # have different local grid resolutions
+        gridstep = 0.5*(np.min(self.ds) / self.v0).to(u.s)
+
+        #print(f"gridstep = {gridstep.to(u.s):.1e}")
+
+        # If not, compute a number of possible timesteps
+        # Compute the cyclotron gyroperiod
+        Bmag = np.max( np.sqrt(self.grid['B_x']**2 +
+                               self.grid['B_y']**2 +
+                               self.grid['B_z']**2))
+        if Bmag == 0:
+            gyroperiod = np.inf * u.s
+        else:
+            gyroperiod = (2 * np.pi * const.m_p.si / (const.e.si * np.max(Bmag))).to(
+                u.s
+            )
+
+        # TODO: introduce a minimum timestep based on electric fields too!
+
+        # TODO: Clean up the way timestep ranges are specified in the
+        # user API.
+
+
+        # Create an array of all the possible time steps we computed
+        candidates = np.array([gyroperiod.value, gridstep.value]) * u.s
+
+        if all(candidates > self.dt_range[1]):
+            return self.dt_range[1]
+
+        # Unless it interferes with the range, always choose the smallest
+        # time step
+        dt = np.min(candidates)
+
+        if dt > self.dt_range[0]:
+            return dt
+        else:
+            return self.dt_range[0]
+
+    def _adaptive_ds(self):
+        r"""
+        Compute the local grid resolution for each particle (used for determining
+        a maximum timestep based on grid spacing).
+        """
+
+        # TODO: clean this up? Probably will only accept uniform grids
+        # right now because calculating ds for non-uniform grids is a
+        # problem in itself.
+
+        if self.grid.regular_grid:
+            # If self.ds is a scalar (as setup by the init function)
+            # extend it to be the length of npartiles_grid
+            if self.ds.size == 1:
+                self.ds = self.ds * np.ones(self.nparticles_grid)
+            else:
+                pass
+
 
 
     def _advance_to_grid(self):
+        r"""
+        Advances all particles to the timestep when the first particle should
+        be entering the grid. Doing in this in one step (rather than pushing
+        the particles through zero fields) saves computation time.
         """
-        Advance particles to close to the start of the grid
-        """
+        # Distance from the source to the nearest gridpoint
+        dist = np.min(np.linalg.norm(self.grid.grid - self.source, axis=3))
 
-    def run(self):
+        # Time for fastest possible particle to reach the grid.
+        t = (dist / self.v0).to(u.s)
+
+        self.r = self.r + self.v * t
+
+
+
+    def _advance_to_detector(self):
+        r"""
+        Advances all particles to the detector plane. This method will be
+        called after all particles have cleared the grid.
+
+        This step applies to all particles, including those that never touched
+        the grid.
+        """
+        dist_remaining = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+
+        v_towards_det = np.dot(self.v, -self.det_n)
+
+        # Time remaining for each particle to reach detector plane
+        t = dist_remaining / v_towards_det
+
+        # If particles have not yet reached the detector plane and are moving
+        # away from it, they will never reach the detector.
+        # So, we can remove them from the arrays
+        condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
+        ind = np.nonzero(np.where(condition, 0, 1))[0]
+        self.r = self.r[ind, :]
+        self.v = self.v[ind, :]
+        self.nparticles_grid = self.r.shape[0]
+        t = t[ind]
+
+        self.r += self.v * np.outer(t, np.ones(3))
+
+        # Check that all points are now in the detector plane
+        # (Eq. of a plane is nhat*x + d = 0)
+        plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
+
+
+    def run(self,max_theta=0.9 * np.pi / 2 * u.rad):
         """
         Run the particle tracer
         """
@@ -289,14 +517,6 @@ class LineIntegratedDiagnostic:
 
 
         # Run the particle tracker
-
-
-    def _advance_to_detector(self):
-        """
-        Advance particles to the detector plane and discard any particles that
-        will never reach the detector plane (eg. moving away)
-        """
-
 
     def create_image(self):
         """
