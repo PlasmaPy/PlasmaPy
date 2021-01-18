@@ -506,6 +506,54 @@ class LineIntegratedDiagnostic:
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
 
+    def _push(self):
+        r"""
+        Advance particles using an implementation of the time-centered
+        Boris algorithm
+        """
+
+        # Calculate the local grid resolution for each particle
+        self._adaptive_ds()
+
+        # Calculate grid positions closest to each particle
+        self.grid.nearest_neighbor_interpolator()
+
+
+
+        # Update the list of particles on and off the grid
+        # The sum of this grid (# particles on the grid) is used to decide
+        # when to terminate the run loop
+        dist = np.linalg.norm(
+            self.r[self.gi, :] - self.grid.grid[self.xi, self.yi, self.zi, :], axis=1
+        )
+        self.on_grid = np.where(dist < self.ds, 1, 0)
+        self.entered_grid += self.on_grid
+
+        # Estimate the E and B fields for each particle
+        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x")
+
+        # Calculate the adaptive timestep from the fields currently experienced
+        # by the particles
+        dt = self._adaptive_dt(B)
+
+
+
+        # Push only particles on a grid trajectory
+        v = self.v[self.gi, :]
+
+
+        vc = np.max(v)/const.c.si
+
+        if vc > 0.1:
+            self._relativistic_boris(v,dt, E, B)
+        else:
+            self._boris(v,dt, E, B)
+
+
+        # Update the positions
+        self.r[self.gi, :] += self.v[self.gi, :] * dt
+
+
     def run(self,max_theta=0.9 * np.pi / 2 * u.rad):
         """
         Run the particle tracer
