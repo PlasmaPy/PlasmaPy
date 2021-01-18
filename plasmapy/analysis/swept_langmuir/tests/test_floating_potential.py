@@ -22,7 +22,7 @@ class TestFindFloatingPotential:
     `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
 
-    def test_return_namedtuple(self):
+    def test_returned_namedtuple(self):
         """Test structure of the namedtuple used to return computed data."""
 
         assert issubclass(FloatingPotentialResults, tuple)
