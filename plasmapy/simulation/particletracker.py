@@ -60,7 +60,10 @@ class ParticleTracker:
     .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
 
-    integrators = {"explicit_boris": particle_integrators.boris_push}
+    integrators = {
+        "explicit_boris": particle_integrators.boris_push,
+        "explicit_boris_relativistic": particle_integrators.boris_push_relativistic,
+    }
 
     _wip_integrators = {}
 
