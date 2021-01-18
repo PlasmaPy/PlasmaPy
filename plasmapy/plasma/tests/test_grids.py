@@ -60,6 +60,12 @@ def test_AbstractGrid():
     with pytest.raises(ValueError):
         grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, num=10)
 
+
+    # Test on_grid
+    pos = np.array([[2, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    assert np.all(grid.on_grid(pos) == np.array([False,True]))
+
+
     # Test adding a quantity
     q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantities(B_x=q)
@@ -148,6 +154,11 @@ def test_interpolate_indices():
     pout = grid.grid[int(i)] * grid.unit
     assert np.allclose(pos, pout, atol=0.5)
 
+    # Test that out of range returns NaN
+    pos = np.array([3, -0.3, 0]) * u.cm
+    i = grid.interpolate_indices(pos)[0]
+    assert np.isnan(i)
+
 
 def test_nearest_neighbor_interpolator():
     # Create grid
@@ -178,7 +189,7 @@ def test_nearest_neighbor_interpolator():
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    grid.add_quantities(x=grid.grids[0] * u.cm)
+    grid.add_quantities(x=grid.grids[0])
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
@@ -225,6 +236,10 @@ def test_NonUniformCartesianGrid():
     # Grid should be non-uniform
     assert grid.is_uniform_grid == False
 
+    # Test on_grid
+    pos = np.array([[2, -0.3, 0], [0.1, -0.1, 0]]) * u.cm
+    assert np.all(grid.on_grid(pos) == np.array([False,True]))
+
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantities(rho=q1)
@@ -233,8 +248,8 @@ def test_NonUniformCartesianGrid():
 if __name__ == "__main__":
     # test_AbstractGrid()
     # test_CartesianGrid()
-    # test_interpolate_indices()
-    # test_nearest_neighbor_interpolator()
+    test_interpolate_indices()
+    test_nearest_neighbor_interpolator()
     # test_volume_averaged_interpolator()
     # test_NonUniformCartesianGrid()
     pass

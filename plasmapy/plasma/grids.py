@@ -188,9 +188,9 @@ class AbstractGrid(ABC):
             _grids = (pts0, pts1, pts2)
         else:
             _grids = (
-                self.ds["ax0"].data,
-                self.ds["ax1"].data,
-                self.ds["ax2"].data,
+                self.ds["ax0"].data*self.unit0,
+                self.ds["ax1"].data*self.unit1,
+                self.ds["ax2"].data*self.unit2,
             )
 
         return _grids
@@ -218,17 +218,17 @@ class AbstractGrid(ABC):
     @property
     def pts0(self):
         r"""Array of positions in dimension 1"""
-        return self.grids[0] * self.unit0
+        return self.grids[0]
 
     @property
     def pts1(self):
         r"""Array of positions in dimension 2"""
-        return self.grids[1] * self.unit1
+        return self.grids[1]
 
     @property
     def pts2(self):
         r"""Array of positions in dimension 3"""
-        return self.grids[2] * self.unit2
+        return self.grids[2]
 
     @property
     def units(self):
@@ -377,6 +377,7 @@ class AbstractGrid(ABC):
                 "The grid step size properties are only valid on "
                 "uniformly spaced grids."
             )
+
 
     @property
     def grid_resolution(self):
@@ -635,6 +636,46 @@ class AbstractGrid(ABC):
     # Interpolators
     # *************************************************************************
 
+
+    def on_grid(self, pos):
+        r"""
+        Given a list of positions, determines which are in the region
+        bounded by the grid points.
+
+        For non-uniform grids, "on grid" is defined as being bounded by
+        grid points in all axes.
+
+        Parameters
+        ----------
+        pos : np.ndarray or u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid.
+
+        """
+
+        pts0, pts1, pts2 = self.grids
+        ax0_min, ax0_max = np.min(self.pts0).si.value, np.max(self.pts0).si.value
+        ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
+        ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
+
+        npos = pos.shape[0]
+        on_grid = np.zeros(npos)
+        for i in range(npos):
+            if (ax0_min < pos[i,0] and
+                ax0_max > pos[i,0] and
+                ax1_min < pos[i,1] and
+                ax1_max > pos[i,1] and
+                ax2_min < pos[i,2] and
+                ax2_max > pos[i,2]):
+
+                on_grid[i] = True
+            else:
+                on_grid[i] = False
+
+        return on_grid
+
+
+
     @property
     def interpolator(self):
         r"""
@@ -695,6 +736,8 @@ class AbstractGrid(ABC):
         Interpolate the nearest grid indices to a position using a
         nearest-neighbor interpolator
 
+        For positions that are not on the grid, a `np.nan` values is returned.
+
         Parameters
         ----------
         pos : np.ndarray or u.Quantity array, shape (n,3)
@@ -722,18 +765,18 @@ class AbstractGrid(ABC):
             for i in range(3):
                 pos2[:, i] = (pos[:, i] * self.units[i]).si.value
 
-        # Interpolate indices
-        i = self.interpolator(pos2)
+        # Interpolate indices (return float64 for consistency so that they can
+        #  contain NaNs)
+        i = self.interpolator(pos2).astype(np.float64)
 
-        # TODO: Check interpolated positions and reject any (set to NaN)
-        # that are above a certain tolerance distance?
-        # currently the nonuniform interpolator can't tell when a value
-        # is out of bounds...
-        # NOTE: this also requires a grid-resolution number for
-        # non-uniform grids, so that needs to be developed first...
+        # Find any positions that were out of bounds and set those to NaN
+        # (this should be redundent for uniform grids, but required for
+        # non-uniform grids.)
+        out_of_bounds = np.where(self.on_grid(pos2) == 0)
+        i[out_of_bounds, ...] = np.nan
 
-        # Note: i contains nan values which must be replaced with 0's with
-        # appropriate units in the second layer interpolator functions.
+        # Note: i contains nan values which must be replaced with some integer
+        # as appropriate in the second layer interpolator functions.
 
         return i
 
