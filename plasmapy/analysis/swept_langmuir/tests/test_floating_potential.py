@@ -60,10 +60,14 @@ class TestFindFloatingPotential:
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
             assert mock_cs.call_count == 1
-            assert mock_cs.call_args.kwargs == {}
-            assert len(mock_cs.call_args.args) == 2
-            assert np.array_equal(mock_cs.call_args.args[0], varr)
-            assert np.array_equal(mock_cs.call_args.args[1], carr)
+
+            # passed args
+            assert len(mock_cs.call_args[0]) == 2
+            assert np.array_equal(mock_cs.call_args[0][0], varr)
+            assert np.array_equal(mock_cs.call_args[0][1], carr)
+
+            # passed kwargs
+            assert mock_cs.call_args[1] == {}
 
     @pytest.mark.parametrize(
         "kwargs, _error",
