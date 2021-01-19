@@ -73,7 +73,7 @@ def boris_push(x, v, B, E, q, m, dt):
 
 def boris_push_relativistic(x, v, B, E, q, m, dt):
     r"""
-    The explicit Boris pusher, including realtivistic corrections.
+    The explicit Boris pusher, including relativistic corrections.
 
     Parameters
     ----------
