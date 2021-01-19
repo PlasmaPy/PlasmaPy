@@ -653,6 +653,9 @@ class AbstractGrid(ABC):
 
         """
 
+        if hasattr(pos, "unit"):
+            pos = pos.si.value
+
         pts0, pts1, pts2 = self.grids
         ax0_min, ax0_max = np.min(self.pts0).si.value, np.max(self.pts0).si.value
         ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
@@ -1029,3 +1032,4 @@ class NonUniformCartesianGrid(CartesianGrid):
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
 
         return arr0, arr1, arr2
+
