@@ -10,8 +10,10 @@ import astropy.units as u
 import astropy.constants as const
 
 import numpy as np
+import warnings
 
 from plasmapy.plasma.grids import CartesianGrid
+from plasmapy.simulation.particle_integrators import boris_push
 
 
 def _rot_a_to_b(a, b):
@@ -38,20 +40,31 @@ def _rot_a_to_b(a, b):
 
 
 
+
+
+
+
 class LineIntegratedDiagnostic:
 
 
     def __init__(self, grid : u.m,
                  source,
                  detector,
-                 geometry = 'cartesian',
                  verbose=True,
                  ):
 
         self.grid = grid
         self.verbose = verbose
 
-        # TODO: auto-detect geometry based on units of source and/or detector
+        geo_units = [x.unit for x in source]
+        if geo_units[2].is_equivalent(u.rad):
+            geometry = 'spherical'
+        elif geo_units[1].is_equivalent(u.rad):
+            geometry = 'cylindrical'
+        else:
+            geometry = 'cartesian'
+
+
 
         # Convert geometrical inputs between coordinates systems
         if geometry == "cartesian":
@@ -387,7 +400,7 @@ class LineIntegratedDiagnostic:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
-    def _adaptive_dt(self):
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
         Calculate the appropraite dt based on a number of considerations
         including the local grid resolution (ds) and the gyroperiod of the
@@ -406,9 +419,8 @@ class LineIntegratedDiagnostic:
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
-        Bmag = np.max( np.sqrt(self.grid['B_x']**2 +
-                               self.grid['B_y']**2 +
-                               self.grid['B_z']**2))
+        Bmag = np.max( np.sqrt(Bx**2 + By**2 + Bz**2))
+
         if Bmag == 0:
             gyroperiod = np.inf * u.s
         else:
@@ -437,6 +449,7 @@ class LineIntegratedDiagnostic:
         else:
             return self.dt_range[0]
 
+
     def _adaptive_ds(self):
         r"""
         Compute the local grid resolution for each particle (used for determining
@@ -447,6 +460,7 @@ class LineIntegratedDiagnostic:
         # right now because calculating ds for non-uniform grids is a
         # problem in itself.
 
+
         if self.grid.regular_grid:
             # If self.ds is a scalar (as setup by the init function)
             # extend it to be the length of npartiles_grid
@@ -454,6 +468,10 @@ class LineIntegratedDiagnostic:
                 self.ds = self.ds * np.ones(self.nparticles_grid)
             else:
                 pass
+        else:
+            raise NotImplementedError("Adaptive timestep is not yet supportd for "
+                                      "non-uniform grids, because the adaptive "
+                                      "grid resolution is not supported.")
 
 
 
@@ -515,66 +533,298 @@ class LineIntegratedDiagnostic:
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
-
         pos = self.x[self.grid_ind,:]
 
-        # Calculate grid positions closest to each particle
-        gridded_pos = self.grid.nearest_neighbor_interpolator()
-
-
-
         # Update the list of particles on and off the grid
-        # The sum of this grid (# particles on the grid) is used to decide
-        # when to terminate the run loop
-        dist = np.linalg.norm(pos - gridded_pos, axis=1)
-        self.on_grid = np.where(dist < self.ds, 1, 0)
+        self.on_grid = grid.on_grid(pos)
+        # entered_grid is zero at the end if a particle has never
+        # entered the grid
         self.entered_grid += self.on_grid
 
 
-        pos = # Def here
-
         # Estimate the E and B fields for each particle
-        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(self.grid_ind, "E_x", "E_y", "E_z",
+        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
                                                                         "B_x", "B_y", "B_y")
+
+        E = np.array([Ex, Ey, Ez])
+        E = np.moveaxis(E, 0, -1)
+        B = np.array([Bx, By, Bz])
+        B = np.moveaxis(B, 0, -1)
+        print(E.shape)
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
-        dt = self._adaptive_dt(B)
+        # If user sets dt explicitly, that's handled in _adpative_dt
+        dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
 
 
+        # TODO: Test v/c and implement relativistic Boris push when required
+        #vc = np.max(v)/const.c.si
 
-        # Push only particles on a grid trajectory
-        v = self.v[self.gi, :]
+        boris_push(self.x.si.value,
+                   self.v.si.value,
+                   B.si.value,
+                   E.si.value,
+                   self.q.si.value,
+                   self.m.si.value,
+                   dt.si.value)
 
+    def _stop_condition(self):
+        r"""
+        The stop condition is that most of the particles have entered the grid
+        and almost all have now left it.
+        """
+        # Count the number of particles who have entered, which is the
+        # number of non-zero entries in entered_grid
+        n_entered = np.nonzero(self.entered_grid)[0].size
 
-        vc = np.max(v)/const.c.si
+        # How many of the particles have entered the grid
+        entered = np.sum(n_entered) / self.nparticles_grid
 
-        if vc > 0.1:
-            self._relativistic_boris(v,dt, E, B)
+        # Of the particles that have entered the grid, how many are currently
+        # on the grid?
+        # if/else avoids dividing by zero
+        if np.sum(n_entered) > 0:
+            still_on = np.sum(self.on_grid) / np.sum(n_entered)
         else:
-            self._boris(v,dt, E, B)
+            still_on = 0.0
+
+        if entered > 0.1 and still_on < 0.001:
+            self._log(
+                f"Stop condition reached: {entered*100:.0f}% entered "
+                f"({n_entered})"
+                f", {still_on*100:.0f}% are still on the grid"
+            )
+
+            # Warn user if < 10% of the particles ended up on the grid
+            if n_entered < 0.1 * self.nparticles:
+                warnings.warn(
+                    f"Only {100*n_entered/self.nparticles:.2f}% of "
+                    "particles entered the field grid: consider "
+                    "decreasing the max_theta to increase this "
+                    "number.",
+                    RuntimeWarning,
+                )
+
+            return True
+        else:
+            return False
 
 
-        # Update the positions
-        self.x[self.gi, :] += self.v[self.gi, :] * dt
 
+    def run(
+        self,
+        nparticles,
+        max_theta=0.9 * np.pi / 2 * u.rad,
+        dt=None,
+        dt_range=np.array([0, np.infty]) * u.s,
+        field_weighting="nearest neighbor",
+    ):
+        r"""
+        Runs a particle-tracing simulation.
+        Timesteps are adaptively calculated based on the
+        local grid resolution of the particles and the electric and magnetic
+        fields they are experiencing. Both regular (uniform) and irregular
+        grids are supported, although the former is faster. After all particles
+        have left the simulated field volume, they are advanced to the
+        detector plane where they can be used to construct a synthetic
+        diagnostic image.
 
-    def run(self,max_theta=0.9 * np.pi / 2 * u.rad):
+        Parameters
+        ----------
+        nparticles : integer
+            The number of particles to include in the simulation. The default
+            is 1e5.
+
+        max_theta : `~astropy.units.Quantity`, optional
+            The largest velocity vector angle (measured from the
+            source-to-detector axis) for which particles should be generated.
+            Decreasing this angle can eliminate particles that would never
+            reach the detector region of interest. The default is 0.9*pi/2.
+            Units must be convertable to radians.
+
+        dt : `~astropy.units.Quantity`, optional
+            An explicitly set timestep in units convertable to seconds.
+            Setting this optional keyword overrules the adaptive time step
+            capability and forces the use of this timestep throughout.
+
+        dt_range : `~astropy.units.Quantity`, array shape (2,), optional
+            A range into which the adaptive dt will be coerced.
+            The default is np.array([0, np.infty])*u.s.
+
+        field_weighting : str
+            String that selects the field weighting algorithm used to determine
+            what fields are felt by the particles. Options are:
+
+            * 'nearest neighbor': Particles are assigned the fields on
+                the grid vertex closest to them.
+
+            * 'volume averaged' : The fields experienced by a field are a
+                volume-average of the eight grid points surrounding them.
+
+        Returns
+        -------
+        None.
+
         """
-        Run the particle tracer
+
+        # Load inputs
+        self.nparticles = int(nparticles)
+        self.dt = dt
+        self.dt_range = dt_range
+        self.field_weighting = field_weighting
+
+        # TODO: Error check that grid contains E and B variables required
+
+        # Advance the particles to the near the start of the simulation
+        # volume
+        self._advance_to_grid()
+
+        # Push the particles until the stop condition is satisfied
+        # (no more particles on the simulation grid)
+        while not self._stop_condition():
+            if self.verbose:
+                fract = 100 * np.sum(self.on_grid) / self.nparticles_grid
+                self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
+            self._push()
+
+
+        # Advance the particles to the image plane
+        # At this stage, remove any particles that are not going to ever
+        # hit the grid.
+        self._advance_to_detector()
+
+        self._log("Run completed")
+
+
+    def particle_image(
+        self, size=None, bins=None, null=False, optical_density=False
+    ):
+        r"""
+        Calculate a particle count histogram in the
+        image plane. The horizontal axis in the detector plane is defined to
+        be perpendicular to both the source-to-detector vector and the z-axis
+        (unless the source-to-detector axis is parallel to the z axis, in which
+        case the horizontal axis is the x-axis). The vertical axis is defined
+        to be orthgonal to both the source-to-detector vector and the
+        horizontal axis.
+
+        Parameters
+        ----------
+        size : `~astropy.units.Quantity`, shape (2,2), optional
+            The size of the detector array, specified as the minimum
+            and maximum values included in both the horizontal and vertical
+            directions in the detector plane coordinates. Shape is
+            [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
+
+        bins : array of integers, shape (2)
+            The number of bins in each direction in the format [hbins, vbins].
+            The default is [250,250].
+
+        null: bool
+            If True, returns the intensity in the image plane in the absence
+            of simulated fields.
+
+
+        optical_density: bool
+            If True, return the optical density rather than the intensity
+
+            .. math::
+                OD = -log_{10}(Intensity/I_0)
+
+            where I_O is the intensity on the detector plane in the absence of
+            simulated fields. Default is False.
+
+        Returns
+        -------
+        hax : `~astropy.units.Quantity` array shape (hbins,)
+            The horizontal axis of the synthetic radiograph in meters.
+
+        vax : `~astropy.units.Quantity` array shape (vbins, )
+            The vertical axis of the synthetic radiograph in meters.
+
+        intensity : ndarray, shape (hbins, vbins)
+            The number of protons counted in each bin of the histogram.
         """
 
+        # Note that, at the end of the simulation, all particles were moved
+        # into the image plane.
 
-        # Create an instance of plasmapy's ParticleTracker using the
-        # particles previously generated
+        # Define detector horizontal axis as being perpendicular to both the
+        # detector axis and the z-axis. In the case where the detector axis
+        # is aligned with the z-axis, just automatically chose the horizontal
+        # axis to be the x-axis.
+        if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
+            nx = np.array([1, 0, 0])
+        else:
+            nx = np.cross(np.array([0, 0, 1]), self.det_n)
+        nx = nx / np.linalg.norm(nx)
 
+        # Define the detector vertical axis as being orthogonal to the
+        # detector axis and the horizontal axis
+        ny = np.cross(nx, self.det_n)
+        ny = -ny / np.linalg.norm(ny)
 
-        # Run the particle tracker
+        # If null is True, use the predicted positions in the absence of
+        # simulated fields
+        if null:
+            r = self.r0
+        else:
+            r = self.r
 
-    def create_image(self):
-        """
-        Create a histogram image of particle locations in the image plane
-        """
+        # Determine locations of points in the detector plane using unit
+        # vectors
+        xloc = np.dot(r - self.detector, nx)
+        yloc = np.dot(r - self.detector, ny)
+
+        if size is None:
+            # If a detector size is not given, choose lengths based on the
+            # dimensions of the grid
+            w = self.mag * np.max(
+                [
+                    np.max(np.abs(self.grid.xarr.value)),
+                    np.max(np.abs(self.grid.yarr.value)),
+                    np.max(np.abs(self.grid.zarr.value)),
+                ]
+            )
+
+            size = np.array([[-w, w], [-w, w]]) * self.grid.unit
+
+        # If #bins is not set, make a guess
+        if bins is None:
+            bins = [200, 200]
+
+        # Generate the histogram
+        intensity, h, v = np.histogram2d(
+            xloc.si.value, yloc.si.value, range=size.si.value, bins=bins
+        )
+
+        # Throw a warning if < 50% of the particles are included on the
+        # histogram
+        percentage = 100 * np.sum(intensity) / self.nparticles
+        if percentage < 50:
+            warnings.warn(
+                f"Only {percentage:.2f}% of the particles are shown "
+                " on this synthetic radiograph. Consider increasing "
+                " the size to include more.",
+                RuntimeWarning,
+            )
+
+        if optical_density:
+            # Generate the null radiograph
+            x, y, I0 = self.particle_image(size=size, bins=bins, null=True)
+
+            # Calcualte I0 as the mean of the non-zero values in the null
+            # histogram. Zeros are just outside of the illuminate area.
+            I0 = np.mean(I0[I0 != 0])
+
+            # Overwrite any zeros in intensity to avoid log10(0)
+            intensity[intensity == 0] = 1
+
+            # Calculate the optical_density
+            intensity = -np.log10(intensity / I0)
+
+        return h * u.m, v * u.m, intensity
 
 
 
