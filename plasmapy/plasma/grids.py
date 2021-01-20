@@ -208,9 +208,9 @@ class AbstractGrid(ABC):
             n = pts0.size
             grid = np.zeros([n, 3])
 
-        grid[..., 0] = pts0
-        grid[..., 1] = pts1
-        grid[..., 2] = pts2
+        grid[..., 0] = pts0.si.value
+        grid[..., 1] = pts1.si.value
+        grid[..., 2] = pts2.si.value
         _grid = grid
 
         return _grid
