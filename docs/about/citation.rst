@@ -3,36 +3,31 @@
 Acknowledging and Citing
 ========================
 
-If you use PlasmaPy for a project resulting in a publication, we ask
-that you cite both the specific version of PlasmaPy used in your
-project and an informational reference.  Including these references
-provides credit to developers of PlasmaPy and enables greater
-scientific reproducibility.
+If you use PlasmaPy for a project that results in a research publication,
+we ask that you cite the `Zenodo <https://zenodo.org>`__ record for the
+specific version of PlasmaPy used in your project.  Citing a software
+package promotes scientific reproducibility, gives credit to its developers,
+and highlights the importance of software as a vital research product.
 
-Version 0.2.0 of PlasmaPy may be cited using the following reference.
+Version 0.5.0 of PlasmaPy may be cited with the following reference:
 
-* PlasmaPy Community et al. (2019). *PlasmaPy version 0.2.0*, Zenodo,
-  http://doi.org/10.5281/zenodo.3235817
+   PlasmaPy Community et al. (2020). *PlasmaPy*, version 0.5.0, Zenodo,
+   http://doi.org/10.5281/zenodo.4313063
 
-The current standard informational reference for PlasmaPy is
+This reference may be made, for example, by adding the following line
+to the methods or acknowledgements section of a paper.
 
-* PlasmaPy Community, Nicholas A. Murphy, Andrew J. Leonard, Dominik
-  Stańczak, Pawel M. Kozlowski, Samuel J. Langendorf, Colby C. Haggerty,
-  Jasper P. Beckers, Stuart J. Mumford, Tulasi N. Parashar, and Yi-Min
-  Huang. (2018). *PlasmaPy: an open source community-developed
-  Python package for plasma physics*, Zenodo,
-  http://doi.org/10.5281/zenodo.1238132
+   This research made use of PlasmaPy version 0.5.0, a community-developed
+   open source Python package for plasma science (PlasmaPy Community et al.
+   2020).
 
-These references may be made by adding the following line to the
-methods or acknowledgements sections of a paper.
+A paper written using `AASTeX <https://journals.aas.org/aastexguide>`__
+use the ``\software{PlasmaPy}`` command to cite PlasmaPy.
 
-* This research made use of PlasmaPy version 0.2.0, a
-  community-developed open source Python package for plasma
-  physics (PlasmaPy Community et al. 2018, 2019).
-
-All public releases of PlasmaPy are openly archived in the `PlasmaPy
-Community <https://zenodo.org/communities/plasmapy>`__ on `Zenodo
-<https://zenodo.org>`__.
+All public releases of PlasmaPy, as well as many informational resources
+on PlasmaPy, are openly archived in the
+`PlasmaPy Community <https://zenodo.org/communities/plasmapy>`__
+on `Zenodo <https://zenodo.org>`__.
 
 We encourage authors to acknowledge the packages that PlasmaPy
 depends on, including but not limited to

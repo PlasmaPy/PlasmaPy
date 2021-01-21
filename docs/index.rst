@@ -40,10 +40,11 @@ package for plasma physics currently under development.
    :maxdepth: 1
    :caption: Package features
 
-   Diagnostics <diagnostics/index>
+   ad/index
+   Dispersion <dispersion/index>
    Formulary <formulary/index>
    Particles <particles/index>
-   Particle Tracker <simulation/particletracker>
+   Simulation <simulation/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 
