@@ -188,9 +188,9 @@ class AbstractGrid(ABC):
             _grids = (pts0, pts1, pts2)
         else:
             _grids = (
-                self.ds["ax0"].data,
-                self.ds["ax1"].data,
-                self.ds["ax2"].data,
+                self.ds["ax0"].data*self.unit0,
+                self.ds["ax1"].data*self.unit1,
+                self.ds["ax2"].data*self.unit2,
             )
 
         return _grids
@@ -199,14 +199,16 @@ class AbstractGrid(ABC):
     def grid(self):
         r"""
         A single grid of vertex positions of shape (N0, N1, N2, 3)
+
+        Only defined for grids for which the `unit` property is defined.
         """
         pts0, pts1, pts2 = self.grids
         if self.is_uniform_grid:
             n0, n1, n2 = pts0.shape
-            grid = np.zeros([n0, n1, n2, 3])
+            grid = np.zeros([n0, n1, n2, 3])*self.unit
         else:
             n = pts0.size
-            grid = np.zeros([n, 3])
+            grid = np.zeros([n, 3])*self.unit
 
         grid[..., 0] = pts0
         grid[..., 1] = pts1
@@ -218,17 +220,17 @@ class AbstractGrid(ABC):
     @property
     def pts0(self):
         r"""Array of positions in dimension 1"""
-        return self.grids[0] * self.unit0
+        return self.grids[0]
 
     @property
     def pts1(self):
         r"""Array of positions in dimension 2"""
-        return self.grids[1] * self.unit1
+        return self.grids[1]
 
     @property
     def pts2(self):
         r"""Array of positions in dimension 3"""
-        return self.grids[2] * self.unit2
+        return self.grids[2]
 
     @property
     def units(self):
@@ -377,6 +379,35 @@ class AbstractGrid(ABC):
                 "The grid step size properties are only valid on "
                 "uniformly spaced grids."
             )
+
+    @property
+    def grid_resolution(self):
+        r"""
+        A scalar estimate of the grid resolution.
+
+        For uniform grids, this is the minima of [dax0, dax1, dax2].
+
+        For non-uniform grids, it is the closest spacing between two points.
+        """
+
+        if self.is_uniform_grid:
+            return min(self.dax0, self.dax1, self.dax2)
+        else:
+            # Make a deep copy the grid
+            temp_grid = np.copy(self.grid)
+            npos = self.shape[0]
+            distances = np.zeros(npos)
+
+            for i in range(npos):
+                # Replace the current index with inf, so we don't just get
+                # a distance of zero
+                temp_grid[i,:] = np.inf
+
+                # Calculate the minimum of all the distances
+                dist = np.min(np.linalg.norm(temp_grid - self.grid[i,:], axis=1))
+                distances[i] = dist
+
+            return np.min(distances)
 
     # *************************************************************************
     # Loading and creating grids
@@ -604,6 +635,53 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # Interpolators
     # *************************************************************************
+
+    def on_grid(self, pos):
+        r"""
+        Given a list of positions, determines which are in the region
+        bounded by the grid points.
+
+        For non-uniform grids, "on grid" is defined as being bounded by
+        grid points in all axes.
+
+        Parameters
+        ----------
+        pos : np.ndarray or u.Quantity array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid.
+
+        """
+
+        if hasattr(pos, "unit"):
+            pos = pos.si.value
+
+        if self.is_uniform_grid:
+            ax0_min, ax0_max = np.min(self.ax0.si.value), np.max(self.ax0.si.value)
+            ax1_min, ax1_max = np.min(self.ax1.si.value), np.max(self.ax1.si.value)
+            ax2_min, ax2_max = np.min(self.ax2.si.value), np.max(self.ax2.si.value)
+
+        else:
+            pts0, pts1, pts2 = self.grids
+            ax0_min, ax0_max = np.min(self.pts0).si.value, np.max(self.pts0).si.value
+            ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
+            ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
+
+
+        npos = pos.shape[0]
+        on_grid = np.zeros(npos)
+        for i in range(npos):
+            if (ax0_min < pos[i,0] and
+                ax0_max > pos[i,0] and
+                ax1_min < pos[i,1] and
+                ax1_max > pos[i,1] and
+                ax2_min < pos[i,2] and
+                ax2_max > pos[i,2]):
+
+                on_grid[i] = True
+            else:
+                on_grid[i] = False
+
+        return on_grid
 
     @property
     def interpolator(self):

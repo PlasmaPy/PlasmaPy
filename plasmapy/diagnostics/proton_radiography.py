@@ -12,13 +12,43 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-import scipy.interpolate as interp
+
 import warnings
 
 from abc import ABC, abstractmethod
-from scipy.special import erf as erf
 
-from plasmapy.plasma import fields as fields
+from plasmapy.plasma.grids import AbstractGrid
+from plasmapy.simulation.particle_integrators import boris_push
+
+
+import time
+
+
+class Timer:
+    def __init__(self, text):
+        self.t0 = time.time()
+
+        self.print = False
+
+        if self.print:
+            print("Starting timer")
+            print("Now performing: " + text)
+
+    def lap(self, text):
+        if self.print:
+            t0 = time.time()
+            print(f"...took {(t0 - self.t0)*1e3:.2f} ms")
+            self.t0 = t0
+            print("Now performing: " + text)
+
+    def reset(self):
+        if self.print:
+            t0 = time.time()
+            print(f"...took {(t0 - self.t0)*1e3:.2f} ms")
+
+
+
+
 
 
 def _rot_a_to_b(a, b):
@@ -53,24 +83,16 @@ class SyntheticProtonRadiograph:
 
     Parameters
     ----------
-    grid : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
-        An array giving the positions of each grid point. Units must be
-        convertable to meters.
+    grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass
+        A Grid object containing the required keys [E_x, E_y, E_z, B_x, B_y, B_z]
 
-    E : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
-        The vector electric field at each gridpoint. Units must be
-        convertable to V/m.
 
-    B : `~astropy.units.Quantity`, shape (nx,ny,nz,3)
-        The vector magnetic field at each grid point. Units must be
-        convertable to Tesla.
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the field grid to the location
         of the proton point source. This vector will be interpreted as
         being in either cartesian, cylindrical, or spherical coordinates
-        based on the geometry keyword. The units of the vector must be
-        compatible with the geometry chosen:
+        based on its units. Valid geometries are:
         * Cartesian (x,y,z) : (meters, meters, meters)
         * cylindrical (r, theta, z) : (meters, radians, meters)
         * spherical (r, theta, phi) : (meters, radians, radians)
@@ -82,17 +104,11 @@ class SyntheticProtonRadiograph:
         point defines the normal vector of the detector plane. This vector
         can also be specified in cartesian, cylindrical, or spherical
         coordinates by setting the geometry keyword and using the
-        appropriate units.
+        appropriate units (see the `source` keyword`)
 
     proton_energy : `~astropy.units.Quantity`, optional
         The energy of the protons, convertable to eV. The default is
         14 MeV.
-
-    geometry : string, optional
-        A keyword that allows the source and detector vectors to be
-        specified in different coordinate systems. Valid values are
-        'cartesian', 'cylindrical', and 'spherical'. The default
-        value is 'cartesian'.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
@@ -101,30 +117,163 @@ class SyntheticProtonRadiograph:
 
     def __init__(
         self,
-        grid: u.m,
-        E: u.V / u.m,
-        B: u.T,
+        grid : AbstractGrid,
         source: u.m,
         detector: u.m,
-        proton_energy=14 * u.MeV,
-        geometry="cartesian",
+        proton_energy= 15 * u.MeV,
         verbose=True,
-    ):
+        ):
         r"""
-        Initalize the simPrad object, carry out coordinate transformations,
+        Initalize the SyntheticProtonRadiograph object, carry out coordinate transformations,
         and compute several quantities that will be used elsewhere.
         """
 
-        # Convert grid to PosGrid object
-        if isinstance(grid, fields.PosGrid):
-            self.grid = grid
-        else:
-            self.grid = fields.PosGrid(grid=grid)
+         # self.grid is the grid object
+        self.grid = grid
+        # self.grid_arr is the grid positions in si units. This is created here
+        # so that it isn't continously called later
+        self.grid_arr = grid.grid.to(u.m).value
 
-        self.E = E
-        self.B = B
         self.proton_energy = proton_energy
         self.verbose = verbose
+
+
+        # ************************************************************************
+        # Setup the source and detector geometries
+        # ************************************************************************
+
+        # Auto-detect source and detector geometry based on units
+        geo_units = [x.unit for x in source]
+        if geo_units[2].is_equivalent(u.rad):
+            geometry = 'spherical'
+        elif geo_units[1].is_equivalent(u.rad):
+            geometry = 'cylindrical'
+        else:
+            geometry = 'cartesian'
+
+        # Convert geometrical inputs between coordinates systems
+        if geometry == "cartesian":
+            x, y, z = source
+
+            self.source = np.zeros(3)
+            self.source[0] = x.to(u.m).value
+            self.source[1] = y.to(u.m).value
+            self.source[2] = z.to(u.m).value
+
+            x, y, z = detector
+            self.detector = np.zeros(3)
+            self.detector[0] = x.to(u.m).value
+            self.detector[1] = y.to(u.m).value
+            self.detector[2] = z.to(u.m).value
+
+        elif geometry == "cylindrical":
+            r, t, z = source
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            z = z.to(u.m)
+            self.source = np.zeros(3)
+            self.source[0] = (r * np.cos(t)).to(u.m).value
+            self.source[1] = (r * np.sin(t)).to(u.m).value
+            self.source[2] = z.to(u.m).value
+
+            r, t, z = detector
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            z = z.to(u.m)
+            self.detector = np.zeros(3)
+            self.detector[0] = (r * np.cos(t)).to(u.m).value
+            self.detector[1] = (r * np.sin(t)).to(u.m).value
+            self.detector[2] = z.to(u.m).value
+
+        elif geometry == "spherical":
+            r, t, p = source
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            p = p.to(u.rad).value
+            self.source = np.zeros(3)
+            self.source[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+            self.source[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+            self.source[2] = (r * np.cos(t)).to(u.m).value
+
+            r, t, p = detector
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            p = p.to(u.rad).value
+            self.detector = np.zeros(3)
+            self.detector[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+            self.detector[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+            self.detector[2] = (r * np.cos(t)).to(u.m).value
+
+        self._log(f"Source: {self.source} m")
+        self._log(f"Detector: {self.detector} m")
+
+        # Calculate normal vectors (facing towards the grid origin) for both
+        # the source and detector planes
+        self.src_n = self.source / np.linalg.norm(
+            self.source
+        )
+        self.det_n = -self.detector / np.linalg.norm(
+            self.detector
+        )
+        # Vector directly from source to detector
+        self.src_det = self.detector - self.source
+
+        # Experiment axis is the unit vector from the source to the detector
+        self.src_det_n = self.src_det / np.linalg.norm(
+            self.src_det
+        )
+
+        self.mag = 1 + np.linalg.norm(self.detector)/np.linalg.norm(self.source)
+
+        # TODO: Check that source-detector vector actually passes through the grid
+        # This used to be done by a vector_intersects method in grid that isn't currently implemented...
+
+        # ************************************************************************
+        # Define the detector plane
+        # ************************************************************************
+
+        # Create unit vectors that define the detector plane
+        # Create 2D grids of detector points
+        # Define plane  horizontal axis
+        if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
+            nx = np.array([1, 0, 0])
+        else:
+            nx = np.cross(np.array([0, 0, 1]), self.det_n)
+        nx = nx / np.linalg.norm(nx)
+        self.det_hax = nx # Unit vector for hax, detector horizontal axis
+
+        # Define the detector vertical axis as being orthogonal to the
+        # detector axis and the horizontal axis
+        ny = np.cross(nx, self.det_n)
+        ny = -ny / np.linalg.norm(ny)
+        self.det_vax = ny # Unit vector for vax, detector vertical axis
+
+
+        print("validating quantities")
+        # ************************************************************************
+        # Validate the E and B fields
+        # ************************************************************************
+        # Error check that grid contains E and B variables required
+        # If missing, warn user and then replace with an array of zeros
+        req_quantities = ['E_x', 'E_y', 'E_z', 'B_x', 'B_y', 'B_z']
+        for rq in req_quantities:
+            if rq not in list(self.grid.ds.data_vars):
+                warnings.warn(f"{rq} not specified for provided grid."
+                              "This quantity will be assumed to be zero.")
+                # Add the quantity to
+                unit = self.grid._recognized_quantities[rq].unit
+                arg = {rq:np.zeros(self.grid.shape)*unit}
+                self.grid.add_quantities(**arg)
+
+
+        """
+        #TODO: redo data validation to use grids directly...
+        # This is going too slowly.
+        # Create E and B arrays to validate
+        E = np.array([self.grid['E_x'], self.grid['E_y'], self.grid['E_z']])
+        E = np.moveaxis(E, 0,-1)
+        B = np.array([self.grid['B_x'], self.grid['B_y'], self.grid['B_z']])
+        B = np.moveaxis(B, 0,-1)
 
         # Validate input arrays
         # Check that all finite
@@ -164,158 +313,18 @@ class SyntheticProtonRadiograph:
                     RuntimeWarning,
                 )
 
+    """
 
-
-        # Convert geometrical inputs between coordinates systems
-        if geometry == "cartesian":
-            x, y, z = source
-            self.source = np.zeros(3) * u.m
-            self.source[0] = x.to(u.m)
-            self.source[1] = y.to(u.m)
-            self.source[2] = z.to(u.m)
-
-            x, y, z = detector
-            self.detector = np.zeros(3) * u.m
-            self.detector[0] = x.to(u.m)
-            self.detector[1] = y.to(u.m)
-            self.detector[2] = z.to(u.m)
-
-        elif geometry == "cylindrical":
-            r, t, z = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.source = np.zeros(3) * u.m
-            self.source[0] = r * np.cos(t)
-            self.source[1] = r * np.sin(t)
-            self.source[2] = z
-
-            r, t, z = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.detector = np.zeros(3) * u.m
-            self.detector[0] = r * np.cos(t)
-            self.detector[1] = r * np.sin(t)
-            self.detector[2] = z
-
-        elif geometry == "spherical":
-            r, t, p = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.source = np.zeros(3) * u.m
-            self.source[0] = r * np.sin(t) * np.cos(p)
-            self.source[1] = r * np.sin(t) * np.sin(p)
-            self.source[2] = r * np.cos(t)
-
-            r, t, p = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.detector = np.zeros(3) * u.m
-            self.detector[0] = r * np.sin(t) * np.cos(p)
-            self.detector[1] = r * np.sin(t) * np.sin(p)
-            self.detector[2] = r * np.cos(t)
-
-        self._log("Source: " + str(self.source.to(u.mm)))
-        self._log("Detector: " + str(self.detector.to(u.mm)))
-
-        # Check that source-detector vector actually passes through the grid
-        if not self.grid.vector_intersects(self.source, self.detector):
-            raise ValueError(
-                "The vector from the source to the detector "
-                "does not pass through the grid! "
-                f"Source: {self.source}, "
-                f"Detector: {self.detector}"
-            )
-
-        # Calculate some parameters involving the source and detector locations
-        self.det_n = -self.detector.si.value / np.linalg.norm(
-            self.detector.si.value
-        )  # Plane normal vec
-
-        # Vector directly from source to detector
-        self.source_to_detector = self.detector - self.source
-        # Experiment axis is the unit vector from the source to the detector
-        self.exp_ax = self.source_to_detector.si.value / np.linalg.norm(
-            self.source_to_detector.si.value
-        )
-
-        # Compute the magnification
-        self.mag = 1 + (
-            np.linalg.norm(self.detector.si.value)
-            / np.linalg.norm(self.source.si.value)
-        )
 
     def _log(self, msg):
         if self.verbose:
             print(msg)
 
-    def _init_interpolator(self):
-        r""""
-        Auto-detects whether the given grid is uniform or irregular and
-        creates an appropriate interpolator. Also calculates the grid
-        resolution for use in choosing an appropriate timestep.
-        """
-        # Create a grid of indices for use in interpolation
-        nx, ny, nz, x = self.grid.shape
-        indgrid = np.indices([nx, ny, nz])
-        indgrid = np.moveaxis(indgrid, 0, -1)
 
-        if self.grid.regular_grid:
-            self._log("Auto-detected a regularly spaced grid.")
-        else:
-            self._log("Auto-detected an irregularly spaced grid.")
-
-        if self.grid.regular_grid:
-            # Create axes under the regular grid assumption
-            dvec = (
-                np.array([self.grid.dx.value, self.grid.dy.value, self.grid.dz.value])
-                * self.grid.dx.unit
-            )
-
-            # Estimate the grid-point spacing along the source_to_detector vector
-            # Will be expanded to a constant array of length nparticles_grid
-            # when _adaptive_ds() is called.
-            self.ds = np.linalg.norm(np.dot(dvec, self.exp_ax))
-
-            # Initialize the interpolator
-            pts = (
-                self.grid.xaxis.si.value,
-                self.grid.yaxis.si.value,
-                self.grid.zaxis.si.value,
-            )
-            self._log("Creating regular grid interpolator")
-            self.interpolator = interp.RegularGridInterpolator(
-                pts, indgrid, method="nearest", bounds_error=False, fill_value=-1
-            )
-
-        else:
-            # Flat arrays of points for irregular grid interpolation fcn
-            pts = np.zeros([nx * ny * nz, 3])
-            pts[:, 0] = self.grid.xarr.flatten().si.value
-            pts[:, 1] = self.grid.yarr.flatten().si.value
-            pts[:, 2] = self.grid.xarr.flatten().si.value
-
-            # Flatten the index grid for irregular grid interpolation fcn
-            indgrid2 = np.zeros([nx * ny * nz, 3])
-            indgrid2[:, 0] = indgrid[:, :, :, 0].flatten()
-            indgrid2[:, 1] = indgrid[:, :, :, 1].flatten()
-            indgrid2[:, 2] = indgrid[:, :, :, 2].flatten()
-
-            # Initialize the interpolator
-            self._log("Creating irregular grid interpolator")
-            self.interpolator = interp.NearestNDInterpolator(pts, indgrid2)
-
-            # If dt is not explicitly set, create an array of the
-            # distance to the nearest neighbor of each grid
-            if self.dt is None:
-                # TODO
-                # self.ds is used for determining when particles are on-grid
-                # Somewhat ambiguous how to chose a single value for this for an
-                # irregular grid: this may not be the best solution.
-                self.ds = np.median(self.grid.nearest_neighbor)
+    # Define some constants so they don't get constantly re-evaluated
+    _e = const.e.si.value
+    _c = const.c.si.value
+    _m_p = const.m_p.si.value
 
     def _max_theta_grid(self):
         r"""
@@ -329,19 +338,19 @@ class SyntheticProtonRadiograph:
             for y in [0, -1]:
                 for z in [0, -1]:
                     # Souce to grid corner vector
-                    vec = self.grid.grid[x, y, z, :] - self.source
+                    vec = self.grid_arr[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
                     # axis, which is the central axis of the proton beam
                     theta[ind] = np.arccos(
-                        np.dot(vec.value, self.source_to_detector.value)
-                        / np.linalg.norm(vec.value)
-                        / np.linalg.norm(self.source_to_detector.value)
+                        np.dot(vec, self.src_det)
+                        / np.linalg.norm(vec)
+                        / np.linalg.norm(self.src_det)
                     )
                     ind += 1
         return np.max(theta)
 
-    def _generate_particles(self, max_theta=0.9 * np.pi / 2 * u.rad):
+    def _generate_particles(self):
         r"""
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
@@ -357,20 +366,17 @@ class SyntheticProtonRadiograph:
         self._log("Creating Particles")
 
 
-        self.charge = const.e.si
-        self.mass = const.m_p.si
+        self.q = self._e
+        self.m = self._m_p
 
         # Calculate the velocity corresponding to the proton energy
-        #self.v_nonrel = np.sqrt(2 * self.proton_energy / const.m_p.si).to(u.m / u.s)
-        ER = (self.proton_energy/(self.mass*const.c.si**2)).to(u.dimensionless_unscaled)
-        self.v0 = const.si.c*np.sqrt(1 - 1/(ER+1)**2)
+        ER = self.proton_energy*1.6e-19/(self.m*self._c**2)
+        self.v0 = self._c*np.sqrt(1 - 1/(ER+1)**2)
 
-
-        max_theta = max_theta.to(u.rad).value
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the proton
         # flux per solid angle to be uniform.
-        arg = np.linspace(0, max_theta, num=int(1e5))
+        arg = np.linspace(0, self.max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
@@ -380,23 +386,24 @@ class SyntheticProtonRadiograph:
         # Also generate a uniform phi distribution
         phi = np.random.uniform(size=self.nparticles) * 2 * np.pi
 
-        # Determine the angle aboe which particles will not hit the grid
+        # Determine the angle above which particles will not hit the grid
         # these particles can be ignored until the end of the simulation,
         # then immediately advanced to the detector grid with their original
         # velocities
         max_theta_grid = self._max_theta_grid()
 
         # This array holds the indices of all particles that WILL hit the grid
-        self.gi = np.where(theta < max_theta_grid)[0]
-        self.nparticles_grid = len(self.gi)
+        self.grid_ind = np.where(theta < max_theta_grid)[0]
+        self.nparticles_grid = len(self.grid_ind)
 
         # Construct the velocity distribution around the z-axis
-        self.v = np.zeros([self.nparticles, 3]) * u.m / u.s
+        self.v = np.zeros([self.nparticles, 3])
         self.v[:, 0] = self.v0 * np.sin(theta) * np.cos(phi)
         self.v[:, 1] = self.v0 * np.sin(theta) * np.sin(phi)
         self.v[:, 2] = self.v0 * np.cos(theta)
 
-        # Calculate the rotation matrix
+        # Calculate the rotation matrix that rotates the z-axis
+        # onto the source-detector axis
         a = np.array([0, 0, 1])
         b = self.detector - self.source
         rot = _rot_a_to_b(a, b)
@@ -405,7 +412,7 @@ class SyntheticProtonRadiograph:
         self.v = np.matmul(self.v, rot)
 
         # Place particles at the source
-        self.r = np.outer(np.ones(self.nparticles), self.source)
+        self.x = np.outer(np.ones(self.nparticles), self.source)
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
@@ -413,47 +420,117 @@ class SyntheticProtonRadiograph:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
+
+
+
+
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
+        r"""
+        Calculate the appropraite dt based on a number of considerations
+        including the local grid resolution (ds) and the gyroperiod of the
+        particles in the current fields.
+        """
+        # If dt was explicitly set, ignore this fcn
+        if self.dt.size == 1:
+            return self.dt
+
+        # Compute the timestep indicated by the grid resolution
+        # min is taken for irregular grids, in which different particles
+        # have different local grid resolutions
+        ds = self._adaptive_ds()
+        gridstep = 0.5*(np.min(ds) / self.v0)
+
+        #print(f"gridstep = {gridstep.to(u.s):.1e}")
+
+        # If not, compute a number of possible timesteps
+        # Compute the cyclotron gyroperiod
+        Bmag = np.max( np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
+
+        if Bmag == 0:
+            gyroperiod = np.inf
+        else:
+            gyroperiod = (2 * np.pi * self._m_p / (self._e * np.max(Bmag)))
+
+        # TODO: introduce a minimum timestep based on electric fields too!
+
+        # Create an array of all the possible time steps we computed
+        candidates = np.array([gyroperiod, gridstep])
+
+        # Enforce limits on dt
+        candidates = np.clip(candidates, self.dt[0], self.dt[1])
+
+        # dt is the min of the remaining candidates
+        return np.min(candidates)
+
+
+    def _adaptive_ds(self):
+        r"""
+        Compute the local grid resolution for each particle (used for determining
+        a maximum timestep based on grid spacing).
+        """
+
+        # TODO: Replace with call to grid.grid_resolution.
+        # Can't apply to non-uniform grids until grid_resolution is defined for those
+
+        if self.grid.is_uniform_grid:
+            ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
+            return ds.to(u.m).value
+        else:
+            raise NotImplementedError("Adaptive timestep is not yet supportd for "
+                                      "non-uniform grids, because the adaptive "
+                                      "grid resolution is not supported.")
+
+
+
+    def _advance_to_grid(self):
+        r"""
+        Advances all particles to the timestep when the first particle should
+        be entering the grid. Doing in this in one step (rather than pushing
+        the particles through zero fields) saves computation time.
+        """
+        # Distance from the source to the nearest gridpoint
+        dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
+
+        # Find the particle with the highest speed towards the grid
+        vmax = np.max( np.dot(self.v, -self.src_n) )
+
+
+        # Time for fastest possible particle to reach the grid.
+        t = dist / vmax
+
+        self.x = self.x + self.v * t
+
+
     def _generate_null(self):
         r"""
-        Calculate the distribution of particles on the detector in the absence
+        Calculate the distribution of particles on the detector plane in the absence
         of any simulated fields.
         """
         # Calculate the unit vector from the source to the detector
         dist = np.linalg.norm(self.source_to_detector)
-        uvec = self.source_to_detector.to(u.m).value / dist.to(u.m).value
+        uvec = self.source_to_detector / dist
 
         # Calculate the remaining distance each particle needs to travel
         # along that unit vector
         remaining = np.dot(self.source, uvec)
 
         # Calculate the time remaining to reach that plane and push
-        t = ((dist - remaining) / np.dot(self.v, uvec)).to(u.s)
+        t = (dist - remaining) / np.dot(self.v, uvec)
 
         # Calculate the particle positions for that case
-        self.r0 = self.source + self.v * np.outer(t, np.ones(3))
+        self.x0 = self.source + self.v * np.outer(t, np.ones(3))
 
-    def _advance_to_grid(self):
-        r"""
-        Advances all particles to the timestep when the first particle should
-        be entering the grid (to save time)
-        """
-        # Distance from the source to the nearest gridpoint
-        dist = np.min(np.linalg.norm(self.grid.grid - self.source, axis=3))
 
-        # Time for fastest possible particle to reach the grid.
-        t = (dist / self.v0).to(u.s)
-
-        self.r = self.r + self.v * t
 
     def _advance_to_detector(self):
         r"""
-        Once all particles have cleared the grid, advance them to the detector
-        plane.
+        Advances all particles to the detector plane. This method will be
+        called after all particles have cleared the grid.
 
-        This step applies to all particles, not just those that will hit the
-        grid.
+        This step applies to all particles, including those that never touched
+        the grid.
         """
-        dist_remaining = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
         v_towards_det = np.dot(self.v, -self.det_n)
 
@@ -465,345 +542,80 @@ class SyntheticProtonRadiograph:
         # So, we can remove them from the arrays
         condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
         ind = np.nonzero(np.where(condition, 0, 1))[0]
-        self.r = self.r[ind, :]
+        self.x = self.x[ind, :]
         self.v = self.v[ind, :]
-        self.nparticles_grid = self.r.shape[0]
+        self.nparticles_grid = self.x.shape[0]
         t = t[ind]
 
-        self.r += self.v * np.outer(t, np.ones(3))
+        self.x += self.v * np.outer(t, np.ones(3))
 
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(self.r, self.det_n) + np.linalg.norm(self.detector)
+        plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
-    def _place_particles(self):
-        r"""
-        For each particle, find the indicies of the nearest field assuming that
-        the fields are placed on a regular grid
-        """
-        # Interpolate the grid indices that best match each particle position
-        i = self.interpolator(self.r[self.gi, :].si.value)
 
-        # Store the grid positions
-        self.xi = i[:, 0].astype(np.int32)
-        self.yi = i[:, 1].astype(np.int32)
-        self.zi = i[:, 2].astype(np.int32)
 
-    def _estimate_fields(self):
-        """
-        Return the field experienced by each particle.
 
-        If field_weighting = 'volume averaged', use a volume-averaged field
-        weighting scheme. If not, use a neareset-neighbor scheme.
-        """
-
-        #print(f"{np.max(self.E[...,0]):.2e}")
-
-        if self.field_weighting == "nearest neighbor":
-            E = self.E[self.xi, self.yi, self.zi, :]
-            B = self.B[self.xi, self.yi, self.zi, :]
-
-            # Set fields for off-grid particles
-            E = E * np.outer(self.on_grid, np.ones(3))
-            B = B * np.outer(self.on_grid, np.ones(3))
-
-        elif self.field_weighting == "volume averaged":
-            if not self.grid.regular_grid:
-                raise ValueError(
-                    "Volume weighting fields is currently "
-                    " only supported on regular grids."
-                )
-
-            # Load the positions of each particle, and of the grid point
-            # interpolated for it
-            rpos = self.r[self.gi, :]
-            gpos = self.grid.grid[self.xi, self.yi, self.zi, :]
-
-            nx, ny, nz, nax = self.grid.shape
-
-            # Determine the points bounding the grid cell containing the
-            # particle
-            x0 = np.where(rpos[:, 0] > gpos[:, 0], self.xi, self.xi - 1)
-            x1 = x0 + 1
-            y0 = np.where(rpos[:, 1] > gpos[:, 1], self.yi, self.yi - 1)
-            y1 = y0 + 1
-            z0 = np.where(rpos[:, 2] > gpos[:, 2], self.zi, self.zi - 1)
-            z1 = z0 + 1
-
-            # Calculate the cell volume
-            # TODO: if this could be done for an arbitrary mesh of 8 points,
-            # this algorithm could be used on irregualr grids. Make it so?
-            cell_vol = self.grid.dx * self.grid.dy * self.grid.dz
-
-            E = np.zeros([len(self.xi), 3]) * self.E.unit
-            B = np.zeros([len(self.xi), 3]) * self.B.unit
-
-            for x in [x0, x1]:
-                for y in [y0, y1]:
-                    for z in [z0, z1]:
-
-                        # Determine if gridpoint is within bounds
-                        valid = (
-                            (x >= 0)
-                            & (x < nx)
-                            & (y >= 0)
-                            & (y < ny)
-                            & (z >= 0)
-                            & (z < nz)
-                        )
-                        out = np.where(valid == False)
-
-                        # Distance from grid vertex to particle position
-                        d = np.abs(self.grid.grid[x, y, z, :] - rpos)
-
-                        # Fraction of cell volume that is closest to the
-                        # current point
-                        weight = d[:, 0] * d[:, 1] * d[:, 2] / cell_vol
-                        weight[out] = 0
-                        weight = np.outer(weight, np.ones(3))
-
-                        E += weight * self.E[x, y, z, :]
-                        B += weight * self.B[x, y, z, :]
-
-        return E, B
-
-    def _adaptive_dt(self, B):
-        r"""
-        Calculate the appropraite dt based on a number of considerations
-        including the local grid resolution (ds) and the gyroperiod of the
-        particles in the current fields.
-        """
-        # If dt was explicitly set, ignore this fcn
-        if self.dt is not None:
-            return self.dt
-
-        # Compute the timestep indicated by the grid resolution
-        # min is taken for irregular grids, in which different particles
-        # have different local grid resolutions
-        gridstep = 0.5*(np.min(self.ds) / self.v0).to(u.s)
-
-        #print(f"gridstep = {gridstep.to(u.s):.1e}")
-
-        # If not, compute a number of possible timesteps
-        # Compute the cyclotron gyroperiod
-        Bmag = np.max(np.linalg.norm(B, axis=1))  # B is [nparticles,3] here
-        if Bmag == 0:
-            gyroperiod = np.inf * u.s
-        else:
-            gyroperiod = (2 * np.pi * const.m_p.si / (const.e.si * np.max(Bmag))).to(
-                u.s
-            )
-
-        # Create an array of all the possible time steps we computed
-        candidates = np.array([gyroperiod.value, gridstep.value]) * u.s
-
-        if all(candidates > self.dt_range[1]):
-            return self.dt_range[1]
-
-        # Unless it interferes with the range, always choose the smallest
-        # time step
-        dt = np.min(candidates)
-
-        if dt > self.dt_range[0]:
-            return dt
-        else:
-            return self.dt_range[0]
-
-    def _adaptive_ds(self):
-        r"""
-        Compute the local grid resolution for each particle (for determining
-        if the particle should be influenced by the grid or not). For regular
-        grids this is a constant array, but for irregular grids it changes
-        as the particles move
-        """
-
-        if self.grid.regular_grid:
-            # If self.ds is a scalar (as setup by the init function)
-            # extend it to be the length of npartiles_grid
-            if self.ds.size == 1:
-                self.ds = self.ds * np.ones(self.nparticles_grid)
-            else:
-                pass
-        else:
-            # Calculate ds for each particle as the nearest-neighbor
-            # distance of its assigned gridpoint
-            self.ds = self.grid.nearest_neighbor[self.xi, self.yi, self.zi]
 
     def _push(self):
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
-        # Calculate the indices of the field grid points nearest to each particle
-        # Note that this is the most time-intensive part of each push
-        self._place_particles()
+
+        t = Timer("Adaptive ds")
 
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
+        pos = self.x[self.grid_ind,:]*u.m
+
+        t.lap("Finding on_grid")
+
+        # TODO: Testing suggests this is a relatively slow step:
+        # maybe it's faster to interpolate the positions, calculate distances,
+        # and compare with the grid resolution?
+
         # Update the list of particles on and off the grid
-        dist = np.linalg.norm(
-            self.r[self.gi, :] - self.grid.grid[self.xi, self.yi, self.zi, :], axis=1
-        )
-        self.on_grid = np.where(dist < self.ds, 1, 0)
+        self.on_grid = self.grid.on_grid(pos)
+        # entered_grid is zero at the end if a particle has never
+        # entered the grid
         self.entered_grid += self.on_grid
 
+
+        t.lap("Interpolating fields")
+
+
         # Estimate the E and B fields for each particle
-        E, B = self._estimate_fields()
+        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
+                                                                        "B_x", "B_y", "B_z")
+
+
+        t.lap("Rearranging fields")
+        E = np.array([Ex.to(u.V/u.m).value, Ey.to(u.V/u.m).value, Ez.to(u.V/u.m).value])
+        E = np.moveaxis(E, 0, -1)
+        B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
+        B = np.moveaxis(B, 0, -1)
+
+        t.lap("Adaptive dt")
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
-        dt = self._adaptive_dt(B)
+        # If user sets dt explicitly, that's handled in _adpative_dt
+        dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
 
+        t.lap("boris push")
 
+        # TODO: Test v/c and implement relativistic Boris push when required
+        #vc = np.max(v)/_c
+        x = self.x[self.grid_ind, :]
+        v = self.v[self.grid_ind, :]
+        boris_push(x, v, B, E, self.q, self.m, dt)
+        self.x[self.grid_ind, :] = x
+        self.v[self.grid_ind, :] = v
 
-        # Push only particles on a grid trajectory
-        v = self.v[self.gi, :]
-
-
-        vc = np.max(v)/const.c.si
-
-        if vc > 0.1:
-            self._relativistic_boris(v,dt, E, B)
-        else:
-            self._boris(v,dt, E, B)
-
-
-        # Update the positions
-        self.r[self.gi, :] += self.v[self.gi, :] * dt
-
-    def _boris(self,v, dt, E, B):
-        hqmdt = 0.5 *dt* self.charge / self.mass
-        vminus = v + hqmdt * E
-
-        # rotate to add magnetic field
-        t = B * hqmdt
-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-        vprime = vminus + np.cross(vminus, t)
-        vplus = vminus + np.cross(vprime, s)
-
-        # add second half of electric impulse
-        self.v[self.gi, :] = vplus + hqmdt * E
-
-
-    def _relativistic_boris(self, v, dt, E, B):
-        γ = (1/np.sqrt(1 - (v/const.c.si)**2))
-        uvel  = v*γ
-
-        uvel_minus = uvel + self.charge * E * dt/ (2*self.mass)
-
-        γ1 = np.sqrt(1 + (uvel_minus/const.c.si)**2)
-
-        # Birdsall has a factor of c incorrect in the definiton of t?
-        # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
-        t = (self.charge * B * dt / (2*γ1*self.mass))
-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-
-        uvel_prime = uvel_minus + np.cross(uvel_minus.si.value, t) * u.m / u.s
-        uvel_plus = uvel_minus + np.cross(uvel_prime.si.value, s) * u.m / u.s
-        uvel_new = uvel_plus + + self.charge * E * dt/ (2*self.mass)
-
-        # You can show that this expression is equivalent to calculating
-        # v_new  then calculating γnew using the usual formula
-        γ2 = np.sqrt(1 + (uvel_new/const.c.si)**2)
-
-        # Update the velocities of the particles that are being pushed
-        self.v[self.gi, :] = uvel_new/γ2
-
-
-
-    def run(
-        self,
-        nparticles,
-        max_theta=0.9 * np.pi / 2 * u.rad,
-        dt=None,
-        dt_range=np.array([0, np.infty]) * u.s,
-        field_weighting="nearest neighbor",
-    ):
-        r"""
-        Runs a particle-tracing simulation using the geometry defined in the
-        SimPrad object. Timesteps are adaptively calculated based on the
-        local grid resolution of the particles and the electric and magnetic
-        fields they are experiencing. Both regular (uniform) and irregular
-        grids are supported, although the former is faster. After all particles
-        have left the simulated field volume, they are advanced to the
-        detector plane where they can be used to construct a synthetic
-        proton radiograph.
-
-        Parameters
-        ----------
-        nparticles : integer
-            The number of particles to include in the simulation. The default
-            is 1e5.
-
-        max_theta : `~astropy.units.Quantity`, optional
-            The largest velocity vector angle (measured from the
-            source-to-detector axis) for which particles should be generated.
-            Decreasing this angle can eliminate particles that would never
-            reach the detector region of interest. The default is 0.9*pi/2.
-            Units must be convertable to radians.
-
-        dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertable to seconds.
-            Setting this optional keyword overrules the adaptive time step
-            capability and forces the use of this timestep throughout.
-
-        dt_range : `~astropy.units.Quantity`, array shape (2,), optional
-            A range into which the adaptive dt will be coerced.
-            The default is np.array([0, np.infty])*u.s.
-
-        field_weighting : str
-            String that selects the field weighting algorithm used to determine
-            what fields are felt by the particles. Options are:
-
-            * 'nearest neighbor': Particles are assigned the fields on
-                the grid vertex closest to them.
-
-            * 'volume averaged' : The fields experienced by a field are a
-                volume-average of the eight grid points surrounding them.
-
-        Returns
-        -------
-        None.
-
-        """
-        # Load inputs
-        self.nparticles = int(nparticles)
-        self.dt = dt
-        self.dt_range = dt_range
-        self.field_weighting = field_weighting
-
-        # Initialize the interpolators and grid resolution matrices
-        self._init_interpolator()
-
-        # Initialize variables and create the particle distribution
-        self._generate_particles(max_theta=max_theta)
-
-        # Generate a null distribution (where the particles would go without
-        # simulated fields)
-        self._generate_null()
-
-        # Advance the particles to the near the start of the simulation
-        # volume
-        self._advance_to_grid()
-
-        # Push the particles until the stop condition is satisfied
-        # (no more particles on the simulation grid)
-        while not self._stop_condition():
-            if self.verbose:
-                fract = 100 * np.sum(self.on_grid) / self.nparticles_grid
-                self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
-            self._push()
-
-            #print(self.calc_ke(total=True))
-
-        # Advance the particles to the image plane
-        # At this stage, remove any particles that are not going to ever
-        # hit the grid.
-        self._advance_to_detector()
-
-        self._log("Run completed")
+        t.reset()
 
     def _stop_condition(self):
         r"""
@@ -846,21 +658,103 @@ class SyntheticProtonRadiograph:
         else:
             return False
 
-    def calc_ke(self, total=True):
-        r"""
-        Calculate the total kinetic energy of some or all particles. This calculation
-        is currently done on velocity time steps (half-integer time steps)
-        but it's good enough for ensuring energy is conserved.'
-        """
-        ke = 0.5 * self.mass * np.sum(self.v ** 2, axis=1)
 
-        if total:
-            return np.sum(ke).to(u.J)
+    def run(
+        self,
+        nparticles, proton_energy,
+        max_theta=0.9 * np.pi / 2 * u.rad,
+        dt=None,
+        field_weighting="nearest neighbor",
+    ):
+        r"""
+        Runs a particle-tracing simulation.
+        Timesteps are adaptively calculated based on the
+        local grid resolution of the particles and the electric and magnetic
+        fields they are experiencing. After all particles
+        have left the grid, they are advanced to the
+        detector plane where they can be used to construct a synthetic
+        diagnostic image.
+
+        Parameters
+        ----------
+        nparticles : integer
+            The number of particles to include in the simulation. The default
+            is 1e5.
+
+        proton_energy : `~astropy.units.Quantity`
+            The energy of the protons, in units convertible to eV
+
+        max_theta : `~astropy.units.Quantity`, optional
+            The largest velocity vector angle (measured from the
+            source-to-detector axis) for which particles should be generated.
+            Decreasing this angle can eliminate particles that would never
+            reach the detector region of interest. The default is 0.9*pi/2.
+            Units must be convertable to radians.
+
+        dt : `~astropy.units.Quantity`, optional
+            An explicitly set timestep in units convertable to seconds.
+            Setting this optional keyword overrules the adaptive time step
+            capability and forces the use of this timestep throughout. If a tuple
+            of timesteps is provided, the adaptive timstep will be clamped
+            between the first and second values.
+
+        field_weighting : str
+            String that selects the field weighting algorithm used to determine
+            what fields are felt by the particles. Options are:
+
+            * 'nearest neighbor': Particles are assigned the fields on
+                the grid vertex closest to them.
+
+            * 'volume averaged' : The fields experienced by a field are a
+                volume-average of the eight grid points surrounding them.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        # Load inputs
+        self.nparticles = int(nparticles)
+        self.proton_energy = proton_energy.to(u.eV).value
+        self.max_theta = max_theta.to(u.rad).value
+        self.field_weighting = field_weighting
+
+
+        if dt is None:
+            self.dt = np.array([0., np.inf])*u.s
         else:
-            return ke.to(u.J)
+            self.dt = dt
+
+        self.dt = (self.dt).to(u.s).value
+
+        # Generate the particles
+        self._generate_particles()
+
+        # Advance the particles to the near the start of the simulation
+        # volume
+        self._advance_to_grid()
+
+        # Push the particles until the stop condition is satisfied
+        # (no more particles on the simulation grid)
+        while not self._stop_condition():
+            if self.verbose:
+                fract = 100 * np.sum(self.on_grid) / self.nparticles_grid
+                self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
+            self._push()
+
+        # Advance the particles to the image plane
+        # At this stage, remove any particles that are not going to ever
+        # hit the grid.
+        self._advance_to_detector()
+
+        self._log("Run completed")
+
+
+
 
     def synthetic_radiograph(
-        self, size=None, bins=None, null=False, optical_density=False
+        self, size=None, bins=[200, 200], null=False, optical_density=False
     ):
         r"""
         Calculate a "synthetic radiograph" (particle count histogram in the
@@ -873,7 +767,7 @@ class SyntheticProtonRadiograph:
 
         Parameters
         ----------
-        size : `~astropy.units.Quantity`, shape (2,2), optional
+        size : `~astropy.units.Quantity`, shape (2,2)
             The size of the detector array, specified as the minimum
             and maximum values included in both the horizontal and vertical
             directions in the detector plane coordinates. Shape is
@@ -912,53 +806,36 @@ class SyntheticProtonRadiograph:
         # Note that, at the end of the simulation, all particles were moved
         # into the image plane.
 
-        # Define detector horizontal axis as being perpendicular to both the
-        # detector axis and the z-axis. In the case where the detector axis
-        # is aligned with the z-axis, just automatically chose the horizontal
-        # axis to be the x-axis.
-        if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
-            nx = np.array([1, 0, 0])
-        else:
-            nx = np.cross(np.array([0, 0, 1]), self.det_n)
-        nx = nx / np.linalg.norm(nx)
-
-        # Define the detector vertical axis as being orthogonal to the
-        # detector axis and the horizontal axis
-        ny = np.cross(nx, self.det_n)
-        ny = -ny / np.linalg.norm(ny)
-
         # If null is True, use the predicted positions in the absence of
         # simulated fields
         if null:
-            r = self.r0
+            x = self.x0
         else:
-            r = self.r
+            x = self.x
 
         # Determine locations of points in the detector plane using unit
         # vectors
-        xloc = np.dot(r - self.detector, nx)
-        yloc = np.dot(r - self.detector, ny)
+        xloc = np.dot(x - self.detector, self.det_hax)
+        yloc = np.dot(x - self.detector, self.det_vax)
 
         if size is None:
             # If a detector size is not given, choose lengths based on the
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid.xarr.value)),
-                    np.max(np.abs(self.grid.yarr.value)),
-                    np.max(np.abs(self.grid.zarr.value)),
+                    np.max(np.abs(self.grid.pts0.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts1.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts2.to(u.m).value)),
                 ]
             )
 
             size = np.array([[-w, w], [-w, w]]) * self.grid.unit
 
-        # If #bins is not set, make a guess
-        if bins is None:
-            bins = [200, 200]
+
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(
-            xloc.si.value, yloc.si.value, range=size.si.value, bins=bins
+            xloc, yloc, range=size.to(u.m).value, bins=bins
         )
 
         # Throw a warning if < 50% of the particles are included on the
