@@ -21,36 +21,6 @@ from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-import time
-
-
-class Timer:
-    def __init__(self, text):
-        self.t0 = time.time()
-
-        self.print = False
-
-        if self.print:
-            print("Starting timer")
-            print("Now performing: " + text)
-
-    def lap(self, text):
-        if self.print:
-            t0 = time.time()
-            print(f"...took {(t0 - self.t0)*1e3:.2f} ms")
-            self.t0 = t0
-            print("Now performing: " + text)
-
-    def reset(self):
-        if self.print:
-            t0 = time.time()
-            print(f"...took {(t0 - self.t0)*1e3:.2f} ms")
-
-
-
-
-
-
 def _rot_a_to_b(a, b):
     r"""
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
@@ -249,41 +219,53 @@ class SyntheticProtonRadiograph:
         self.det_vax = ny # Unit vector for vax, detector vertical axis
 
 
-        print("validating quantities")
         # ************************************************************************
         # Validate the E and B fields
         # ************************************************************************
-        # Error check that grid contains E and B variables required
-        # If missing, warn user and then replace with an array of zeros
+
         req_quantities = ['E_x', 'E_y', 'E_z', 'B_x', 'B_y', 'B_z']
         for rq in req_quantities:
+
+            # Error check that grid contains E and B variables required
             if rq not in list(self.grid.ds.data_vars):
                 warnings.warn(f"{rq} not specified for provided grid."
                               "This quantity will be assumed to be zero.")
-                # Add the quantity to
+                # If missing, warn user and then replace with an array of zeros
                 unit = self.grid._recognized_quantities[rq].unit
                 arg = {rq:np.zeros(self.grid.shape)*unit}
                 self.grid.add_quantities(**arg)
 
 
-        """
-        #TODO: redo data validation to use grids directly...
-        # This is going too slowly.
-        # Create E and B arrays to validate
-        E = np.array([self.grid['E_x'], self.grid['E_y'], self.grid['E_z']])
-        E = np.moveaxis(E, 0,-1)
-        B = np.array([self.grid['B_x'], self.grid['B_y'], self.grid['B_z']])
-        B = np.moveaxis(B, 0,-1)
-
-        # Validate input arrays
-        # Check that all finite
-        arrays = {"grid": self.grid.grid, "E": E, "B": B}
-        for x in arrays.keys():
-            if not np.isfinite(arrays[x]).all():
+            # Check that there are no infinite values
+            if not np.isfinite(self.grid[rq]).all():
                 raise ValueError(
-                    f"Input arrays must be finite: {x} contains "
+                    f"Input arrays must be finite: {rq} contains "
                     "either NaN or infinite values."
                 )
+
+            arr = np.abs(self.grid[rq])
+            edge_max = np.max(np.array([
+                    np.max(arr[0, :, :]),
+                    np.max(arr[-1, :, :]),
+                    np.max(arr[:, 0, :]),
+                    np.max(arr[:, -1, :]),
+                    np.max(arr[:, :, 0]),
+                    np.max(arr[:, :, -1]),
+                ]))
+
+            if edge_max > 1e-3*np.max(arr):
+                unit = grid.recognized_quantities[rq].unit
+                warnings.warn(
+                    "Fields should go to zero at edges of grid to avoid "
+                    f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
+                    f"found on the edge of the {rq} array. Consider applying a "
+                    "envelope function to force the fields at the edge to go to "
+                    "zero.",
+                    RuntimeWarning,
+                )
+
+
+        """
 
         # Check that the edges of the fields go close to zero at the edges
         arrays = {"E": E, "B": B}
@@ -313,7 +295,7 @@ class SyntheticProtonRadiograph:
                     RuntimeWarning,
                 )
 
-    """
+         """
 
 
     def _log(self, msg):
@@ -555,23 +537,16 @@ class SyntheticProtonRadiograph:
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
 
-
-
-
     def _push(self):
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
 
-        t = Timer("Adaptive ds")
-
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
         pos = self.x[self.grid_ind,:]*u.m
-
-        t.lap("Finding on_grid")
 
         # TODO: Testing suggests this is a relatively slow step:
         # maybe it's faster to interpolate the positions, calculate distances,
@@ -584,28 +559,21 @@ class SyntheticProtonRadiograph:
         self.entered_grid += self.on_grid
 
 
-        t.lap("Interpolating fields")
-
-
         # Estimate the E and B fields for each particle
         Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
                                                                         "B_x", "B_y", "B_z")
 
 
-        t.lap("Rearranging fields")
         E = np.array([Ex.to(u.V/u.m).value, Ey.to(u.V/u.m).value, Ez.to(u.V/u.m).value])
         E = np.moveaxis(E, 0, -1)
         B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
 
-        t.lap("Adaptive dt")
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adpative_dt
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
-
-        t.lap("boris push")
 
         # TODO: Test v/c and implement relativistic Boris push when required
         #vc = np.max(v)/_c
@@ -615,7 +583,6 @@ class SyntheticProtonRadiograph:
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
 
-        t.reset()
 
     def _stop_condition(self):
         r"""
