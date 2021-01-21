@@ -68,16 +68,17 @@ class LineIntegratedDiagnostic:
         # Convert geometrical inputs between coordinates systems
         if geometry == "cartesian":
             x, y, z = source
+
             self.source = np.zeros(3)
-            self.source[0] = x.si.value
-            self.source[1] = y.si.value
-            self.source[2] = z.si.value
+            self.source[0] = x.to(u.m).value
+            self.source[1] = y.to(u.m).value
+            self.source[2] = z.to(u.m).value
 
             x, y, z = detector
             self.detector = np.zeros(3)
-            self.detector[0] = x.si.value
-            self.detector[1] = y.si.value
-            self.detector[2] = z.si.value
+            self.detector[0] = x.to(u.m).value
+            self.detector[1] = y.to(u.m).value
+            self.detector[2] = z.to(u.m).value
 
         elif geometry == "cylindrical":
             r, t, z = source
@@ -85,18 +86,18 @@ class LineIntegratedDiagnostic:
             t = t.to(u.rad).value
             z = z.to(u.m)
             self.source = np.zeros(3)
-            self.source[0] = (r * np.cos(t)).si.value
-            self.source[1] = (r * np.sin(t)).si.value
-            self.source[2] = z.si.value
+            self.source[0] = (r * np.cos(t)).to(u.m).value
+            self.source[1] = (r * np.sin(t)).to(u.m).value
+            self.source[2] = z.to(u.m).value
 
             r, t, z = detector
             r = r.to(u.m)
             t = t.to(u.rad).value
             z = z.to(u.m)
             self.detector = np.zeros(3)
-            self.detector[0] = (r * np.cos(t)).si.value
-            self.detector[1] = (r * np.sin(t)).si.value
-            self.detector[2] = z.si.value
+            self.detector[0] = (r * np.cos(t)).to(u.m).value
+            self.detector[1] = (r * np.sin(t)).to(u.m).value
+            self.detector[2] = z.to(u.m).value
 
         elif geometry == "spherical":
             r, t, p = source
@@ -104,21 +105,21 @@ class LineIntegratedDiagnostic:
             t = t.to(u.rad).value
             p = p.to(u.rad).value
             self.source = np.zeros(3)
-            self.source[0] = (r * np.sin(t) * np.cos(p)).si.value
-            self.source[1] = (r * np.sin(t) * np.sin(p)).si.value
-            self.source[2] = (r * np.cos(t)).si.value
+            self.source[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+            self.source[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+            self.source[2] = (r * np.cos(t)).to(u.m).value
 
             r, t, p = detector
             r = r.to(u.m)
             t = t.to(u.rad).value
             p = p.to(u.rad).value
             self.detector = np.zeros(3)
-            self.detector[0] = (r * np.sin(t) * np.cos(p)).si.value
-            self.detector[1] = (r * np.sin(t) * np.sin(p)).si.value
-            self.detector[2] = (r * np.cos(t)).si.value
+            self.detector[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+            self.detector[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+            self.detector[2] = (r * np.cos(t)).to(u.m).value
 
-        self._log(f"Source: {self.source*100} mm")
-        self._log(f"Detector: {self.detector*100} mm")
+        self._log(f"Source: {self.source} m")
+        self._log(f"Detector: {self.detector} m")
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
@@ -135,6 +136,8 @@ class LineIntegratedDiagnostic:
         self.src_det_n = self.src_det_vec / np.linalg.norm(
             self.src_det_vec
         )
+
+        self.mag = 1 + np.linalg.norm(self.detector)/np.linalg.norm(self.source)
 
         # Create unit vectors that define the detector plane
         self._create_detector_plane()
@@ -183,7 +186,7 @@ class LineIntegratedDiagnostic:
     # ************************************************************************
 
 
-    def evaluate_integral(self, size=np.array([[-1,1],[-1,1]])*u.cm, bins=[50,50], collimated=True,
+    def line_integral(self, size=np.array([[-1,1],[-1,1]])*u.cm, bins=[50,50], collimated=True,
                     num=100):
         """
         Analagous to run
@@ -223,8 +226,8 @@ class LineIntegratedDiagnostic:
         """
 
         # Create arrays of detector grid points
-        xax = np.linspace(size[0][0].si.value, size[0][1].si.value, num=int(bins[0]))
-        yax = np.linspace(size[1][0].si.value, size[1][1].si.value, num=int(bins[1]))
+        xax = np.linspace(size[0][0].to(u.m).value, size[0][1].to(u.m).value, num=int(bins[0]))
+        yax = np.linspace(size[1][0].to(u.m).value, size[1][1].to(u.m).value, num=int(bins[1]))
         x_offset, y_offset = np.meshgrid(xax, yax, indexing='ij')
 
         # Shift those points in space to be in the detector plane
@@ -240,16 +243,6 @@ class LineIntegratedDiagnostic:
             src_pts = np.outer( np.ones([bins[0], bins[1]]), self.source)
             src_pts = np.reshape(src_pts, (bins[0], bins[1], 3))
 
-
-        # Calculate the unit vector of integration at each point
-        # for use in integrands later
-        lines = det_pts - src_pts
-        lines = np.moveaxis(lines, -1,0)
-        unit_v = lines/np.linalg.norm(lines, axis=0)
-        unit_v = np.outer(unit_v, np.ones(num))
-        unit_v = np.reshape(unit_v, (3, bins[0], bins[1], num))
-        unit_v = np.moveaxis(unit_v, 0, 3)
-        self.unit_v = unit_v
 
         # Determine where the grid begins and ends as fractions of the
         # source-to-detector vector
@@ -279,11 +272,8 @@ class LineIntegratedDiagnostic:
         pts = mi+b
         pts = np.moveaxis(pts, 2, 3)
 
-
-        # Evaluate the integrand at each position
-        self.integration_pts = pts
-
-        integrands = self._integrand()
+        # Evaluate the integrands
+        integrands = self.integrand(pts)
 
         if not isinstance(integrands, tuple):
             integrands = [integrands,]
@@ -291,18 +281,27 @@ class LineIntegratedDiagnostic:
         # Integrate
         integral = []
         for integrand in integrands:
-            integral.append(np.trapz(integrand, axis=2)*ds)
+            integral.append(np.trapz(integrand, axis=2)*(ds*u.m))
 
         return (xax*u.m, yax*u.m, *integral)
 
 
-    def _integrand(self):
+    def integrand(self, pts):
         """
         Returns the integrand at a particular position.
 
         This method is over-written by subclasses to reflect actual
         diagnostic physics, and can pull plasma parameter information from
         the parameters dict provided.
+
+        Parameters
+        ----------
+
+        pts: np.array (bins[0], bins[1], num ,3)
+            Positions (in si units) at which the integrand will be
+            evaluated. The third axis is the one over which the integrands
+            will subsequently be integrated
+
         """
         raise NotImplementedError("The integrand method must be implemented"
                              " for this diagnostic.")
@@ -365,7 +364,7 @@ class LineIntegratedDiagnostic:
 
         # Calculate the velocity corresponding to the proton energy
         ER = (self.proton_energy/(self.mass*const.c.si**2)).to(u.dimensionless_unscaled)
-        self.v0 = (const.si.c*np.sqrt(1 - 1/(ER+1)**2)).si.value
+        self.v0 = (const.si.c*np.sqrt(1 - 1/(ER+1)**2)).to(u.m/u.s).value
 
 
         max_theta = self.max_theta.to(u.rad).value
@@ -408,7 +407,7 @@ class LineIntegratedDiagnostic:
         self.v = np.matmul(self.v, rot)
 
         # Place particles at the source
-        self.x = np.outer(np.ones(self.nparticles), self.source.si.value)
+        self.x = np.outer(np.ones(self.nparticles), self.source)
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
@@ -466,7 +465,7 @@ class LineIntegratedDiagnostic:
 
         if self.grid.regular_grid:
             ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
-            return ds.si.value
+            return ds.to(u.m).value
         else:
             raise NotImplementedError("Adaptive timestep is not yet supportd for "
                                       "non-uniform grids, because the adaptive "
@@ -495,18 +494,18 @@ class LineIntegratedDiagnostic:
         of any simulated fields.
         """
         # Calculate the unit vector from the source to the detector
-        dist = np.linalg.norm(self.source_to_detector).si.value
-        uvec = self.source_to_detector.si.value / dist
+        dist = np.linalg.norm(self.source_to_detector)
+        uvec = self.source_to_detector / dist
 
         # Calculate the remaining distance each particle needs to travel
         # along that unit vector
-        remaining = np.dot(self.source.si.value, uvec)
+        remaining = np.dot(self.source, uvec)
 
         # Calculate the time remaining to reach that plane and push
         t = (dist - remaining) / np.dot(self.v, uvec)
 
         # Calculate the particle positions for that case
-        self.r0 = self.source.si.value + self.v * np.outer(t, np.ones(3))
+        self.r0 = self.source + self.v * np.outer(t, np.ones(3))
 
 
 
@@ -555,7 +554,7 @@ class LineIntegratedDiagnostic:
         pos = self.x[self.grid_ind,:]
 
         # Update the list of particles on and off the grid
-        self.on_grid = grid.on_grid(pos)
+        self.on_grid = self.grid.on_grid(pos)
         # entered_grid is zero at the end if a particle has never
         # entered the grid
         self.entered_grid += self.on_grid
@@ -565,9 +564,9 @@ class LineIntegratedDiagnostic:
         Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
                                                                         "B_x", "B_y", "B_y")
 
-        E = np.array([Ex.si.value, Ey.si.value, Ez.si.value])
+        E = np.array([Ex.to(u.V/u.m).value, Ey.to(u.V/u.m).value, Ez.to(u.V/u.m).value])
         E = np.moveaxis(E, 0, -1)
-        B = np.array([Bx.si.value, By.si.value, Bz.si.value])
+        B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
 
         # Calculate the adaptive timestep from the fields currently experienced
@@ -579,13 +578,7 @@ class LineIntegratedDiagnostic:
         # TODO: Test v/c and implement relativistic Boris push when required
         #vc = np.max(v)/_c
 
-        boris_push(self.x.si.value,
-                   self.v.si.value,
-                   B.si.value,
-                   E.si.value,
-                   self.q.si.value,
-                   self.m.si.value,
-                   dt.si.value)
+        boris_push(self.x, self.v, B, E, self.q, self.m, dt)
 
     def _stop_condition(self):
         r"""
@@ -636,6 +629,7 @@ class LineIntegratedDiagnostic:
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         field_weighting="nearest neighbor",
+        proton_energy = 15*u.MeV,
     ):
         r"""
         Runs a particle-tracing simulation.
@@ -686,6 +680,7 @@ class LineIntegratedDiagnostic:
         # Load inputs
         self.nparticles = int(nparticles)
         self.field_weighting = field_weighting
+        self.proton_energy = proton_energy
 
         if dt is None:
             self.dt = np.array([0., np.inf])
@@ -696,12 +691,12 @@ class LineIntegratedDiagnostic:
         # If missing, warn user and then replace with an array of zeros
         req_quantities = ['E_x', 'E_y', 'E_z', 'B_x', 'B_y', 'B_z']
         for rq in req_quantities:
-            if rq not in list(self.grid.data_vars):
+            if rq not in list(self.grid.ds.data_vars):
                 warnings.warn(f"{rq} not specified for provided grid."
                               "This quantity will be assumed to be zero.")
                 # Add the quantity to
                 unit = self.grid._recognized_quantities[rq].unit
-                arg = {rq:np.zeros(grid.shape)*unit}
+                arg = {rq:np.zeros(self.grid.shape)*unit}
                 self.grid.add_quantities(**arg)
 
 
@@ -726,12 +721,12 @@ class LineIntegratedDiagnostic:
         self._log("Run completed")
 
 
-    def particle_image(
+    def detector_histogram(
         self, size=None, bins=None, null=False, optical_density=False
     ):
         r"""
         Calculate a particle count histogram in the
-        image plane. The horizontal axis in the detector plane is defined to
+        detector plane. The horizontal axis in the detector plane is defined to
         be perpendicular to both the source-to-detector vector and the z-axis
         (unless the source-to-detector axis is parallel to the z axis, in which
         case the horizontal axis is the x-axis). The vertical axis is defined
@@ -752,17 +747,8 @@ class LineIntegratedDiagnostic:
 
         null: bool
             If True, returns the intensity in the image plane in the absence
-            of simulated fields.
+            of the grid.
 
-
-        optical_density: bool
-            If True, return the optical density rather than the intensity
-
-            .. math::
-                OD = -log_{10}(Intensity/I_0)
-
-            where I_O is the intensity on the detector plane in the absence of
-            simulated fields. Default is False.
 
         Returns
         -------
@@ -796,9 +782,9 @@ class LineIntegratedDiagnostic:
             # dimensions of the grid
             w = self.mag * np.max(
                 [
-                    np.max(np.abs(self.grid.pts0.si.value)),
-                    np.max(np.abs(self.grid.pts1.si.value)),
-                    np.max(np.abs(self.grid.pts2.si.value)),
+                    np.max(np.abs(self.grid.pts0.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts1.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts2.to(u.m).value)),
                 ]
             )
 
@@ -810,7 +796,7 @@ class LineIntegratedDiagnostic:
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(
-            xloc.si.value, yloc.si.value, range=size.si.value, bins=bins
+            xloc.to(u.m).value, yloc.to(u.m).value, range=size.to(u.m).value, bins=bins
         )
 
         # Throw a warning if < 50% of the particles are included on the
@@ -823,20 +809,6 @@ class LineIntegratedDiagnostic:
                 " the size to include more.",
                 RuntimeWarning,
             )
-
-        if optical_density:
-            # Generate the null radiograph
-            x, y, I0 = self.particle_image(size=size, bins=bins, null=True)
-
-            # Calcualte I0 as the mean of the non-zero values in the null
-            # histogram. Zeros are just outside of the illuminate area.
-            I0 = np.mean(I0[I0 != 0])
-
-            # Overwrite any zeros in intensity to avoid log10(0)
-            intensity[intensity == 0] = 1
-
-            # Calculate the optical_density
-            intensity = -np.log10(intensity / I0)
 
         return h * u.m, v * u.m, intensity
 
