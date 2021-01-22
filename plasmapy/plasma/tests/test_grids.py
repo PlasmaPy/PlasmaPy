@@ -191,16 +191,28 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pout, 0 * u.cm, atol=0.1)
 
+
+    # Test persistance
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistant=True)
+    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistant=True)
+
+
     # ***********************************************************************
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(x=grid.grids[0], y=grid.grids[1])
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.5)
+
+    # Test persistance
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistant=True)
+    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistant=True)
 
 
 def test_volume_averaged_interpolator():
@@ -260,7 +272,7 @@ if __name__ == "__main__":
     # test_CartesianGrid()
     # test_grid_methods()
     # test_interpolate_indices()
-    # test_nearest_neighbor_interpolator()
-    test_volume_averaged_interpolator()
+    test_nearest_neighbor_interpolator()
+    # test_volume_averaged_interpolator()
     # test_NonUniformCartesianGrid()
     pass

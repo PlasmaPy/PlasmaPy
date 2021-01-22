@@ -863,10 +863,12 @@ class AbstractGrid(ABC):
                     f"Existing keys are: {self.quantities}"
                 )
 
-        nargs = len(args)
+
 
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
+        nparticles = i.shape[0]
+        nargs = len(args)
 
         # Get the indices that are equal to nan (fill values), then set
         # their values to 0. They will be over-written after the interpolation
@@ -893,29 +895,39 @@ class AbstractGrid(ABC):
 
         if not persistant or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
-            nx, ny, nz = self.shape
-            self._interp_quantities = np.zeros([nx, ny, nz, nargs])
+            if self.is_uniform_grid:
+                nx, ny, nz = self.shape
+                self._interp_quantities = np.zeros([nx, ny, nz, nargs])
+            else:
+                npoints = self.shape[0]
+                self._interp_quantities = np.zeros([npoints, nargs])
             self._interp_units = []
             self._interp_args = args
+
             for j, arg in enumerate(args):
                 self._interp_quantities[..., j] = self.ds[arg].values
                 self._interp_units.append(self.ds[arg].attrs["unit"])
 
 
         # Fetch the values at those indices from each quantity
+        if self.is_uniform_grid:
+            values = self._interp_quantities[i[:, 0], i[:, 1], i[:, 2], :]
+        else:
+            values = self._interp_quantities[i]
+
+        # Apply the NaN mask (set any values that were out of bounds
+        # to zero)
+        values *= np.outer(nan_mask, np.ones(nargs))
+
+        # Split output array into arrays with units
+        # Apply units to output arrays
         output = []
-        for arg in args:
-            # Read the values from the dataset
-            if self.is_uniform_grid:
-                values = self.ds[arg].values[i[:, 0], i[:, 1], i[:, 2]]
-            else:
-                values = self.ds[arg].values[i]
-            # Apply the NaN mask (set any values that were out of bounds
-            # to zero)
-            values *= nan_mask
-            values = np.squeeze(values)
-            values *= self.ds[arg].attrs["unit"]
-            output.append(values)
+        for i in range(nargs):
+            output.append(values[:, i] * self._interp_units[i])
+
+        if not persistant:
+            self.interp_quantities = None
+            self.interp_units = None
 
         if len(output) == 1:
             return output[0]
