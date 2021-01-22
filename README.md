@@ -23,19 +23,38 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-PlasmaPy is an open source community developed Python package for
-plasma science that is currently under development.  PlasmaPy intends to
-be for plasma science what [Astropy](https://github.com/astropy/astropy) is for
-astronomy — a collection of functionality commonly used and shared
-between plasma physicists and researchers globally, running within and
-leveraging the open source scientific Python ecosystem.  The goals of
-this project are more thoroughly described in [this recent video](https://youtu.be/E8RwQF5wcXM).
-We are in the process of writing [online
+[PlasmaPy](https://www.plasmapy.org/) is an open source community 
+developed Python package for plasma science that is currently under
+development.PlasmaPy intends to be for plasma science what 
+[Astropy](https://github.com/astropy/astropy) is for astronomy — a
+collection of functionality commonly used and shared between plasma
+scientists and researchers globally, running within and leveraging the
+open source scientific Python ecosystem. The goals of this project are
+more thoroughly described in [this recent video](https://youtu.be/E8RwQF5wcXM).
+Current functionality is described in [PlasmaPy's online
 documentation](http://docs.plasmapy.org/en/latest/).
 
 We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/stable/CONTRIBUTING.html)
-and have a [Code of Conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
+and have a [code of conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
+
+# Installation
+
+If you have [installed Python](https://wiki.python.org/moin/BeginnersGuide/Download),
+you can install PlasmaPy from [pip](https://pypi.org/project/pip/)
+(sometimes `pip3`) via
+```Shell
+pip install plasmapy
+```
+If you have
+[installed conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html),
+then you can also get PlasmaPy from
+```Shell
+conda install -c conda-forge plasmapy
+```
+To contribute
+to the package, check out [our instructions on installing PlasmaPy from
+source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-from-source-code).
 
 # Community
 
@@ -85,24 +104,6 @@ if you would like to (optionally anonymously) suggest
 a feature/topic for consideration. These will be reposted on the mailing list
 or directly in GitHub issues, as appropriate, for further discussion.
 
-# Installation
-
-If you have [installed Python](https://wiki.python.org/moin/BeginnersGuide/Download),
-you can install PlasmaPy from [pip](https://pypi.org/project/pip/)
-(sometimes `pip3`) via
-```Shell
-pip install plasmapy
-```
-If you have
-[installed conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html),
-then you can also get PlasmaPy  from
-```Shell
-conda install -c conda-forge plasmapy
-```
-To contribute
-to the package, check out [our instructions on installing PlasmaPy from
-source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-from-source-code).
-
 # License
 
 PlasmaPy is permissively licensed under a
@@ -111,16 +112,24 @@ against software patents](LICENSE.md).
 
 # Citing PlasmaPy
 
-If you use PlasmaPy in a research publication, we ask that you cite the
-Zenodo record for the specific version of PlasmaPy that you used.
-Please see the [``docs/about/citation.rst``](./docs/about/citation.rst)
-file for more detailed instructions on how to cite PlasmaPy.
+An [emerging best practice for software
+citation](https://doi.org/10.7717/peerj-cs.86) is to cite the _specific
+version_ of each software package used in a research project (instead of
+only citing a journal article, website, or GitHub repository). The
+citation should include a persistent identifier that uniquely identifies
+which version of the software was used. We therefore ask that you cite
+the specific version of PlasmaPy used in your research project. Releases
+of PlasmaPy are available in the 
+[PlasmaPy community](https://zenodo.org/communities/plasmapy) on 
+[Zenodo](https://zenodo.org/), along with many other PlasmaPy resources.
+Please check our documentation for more detailed [citation
+instructions](./docs/about/citation.rst).
 
 # Acknowledgements
 
 Early development on PlasmaPy was supported in part by the U.S.
 Department of Energy, the Smithsonian Institution, and Google Summer of
-Code.  Ongoing PlasmaPy development is being supported through a
+Code. Ongoing PlasmaPy development is being supported through a
 collaborative award from the U.S. National Science Foundation's
 Cyberinfrastructure for Sustained Scientific Innovation program and a
-NASA HDEE grant.
+NASA Heliophysics Data Environment Enhancements award.
