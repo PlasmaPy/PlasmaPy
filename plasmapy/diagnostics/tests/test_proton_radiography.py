@@ -142,14 +142,14 @@ def test_coordinate_systems():
     assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
 
 
-
-
 def test_input_validation():
     """
     Intentionally raise a number of errors.
     """
 
-    # INIT ERRORS
+    # ************************************************************************
+    # During initialization
+    # ************************************************************************
 
     grid = _test_grid("electrostatic_gaussian_sphere")
     source = (-10 * u.mm, 90 * u.deg, 45 * u.deg)
@@ -174,37 +174,37 @@ def test_input_validation():
     grid['E_x'][0, 0, 0] = 0 *u.V/u.m
 
 
-
-
-    """
     # Raise error when source-to-detector vector doesn't pass through the
     # field grid
     source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
     detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(
-            grid, E, B, source_bad, detector_bad, geometry="cartesian", verbose=False
-        )
+        sim = prad.SyntheticProtonRadiograph(grid,  source_bad, detector_bad, verbose=False)
 
-    # RUNTIME ERRORS
-    sim = prad.SyntheticProtonRadiograph(
-        grid, E, B, source, detector, geometry="spherical", verbose=False
-    )
+
+    # ************************************************************************
+    # During runtime
+    # ************************************************************************
+
+    sim = prad.SyntheticProtonRadiograph(grid,  source, detector, verbose=False)
 
     # Chose too large of a max_theta so that many particles miss the grid
     with pytest.warns(RuntimeWarning):
-        sim.run(1e4, max_theta=0.99 * np.pi / 2 * u.rad)
+        sim.run(1e4, 15*u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
+
+
+    # ************************************************************************
+    # During runtime
+    # ************************************************************************
     # SYNTHETIC RADIOGRAPH ERRORS
-    sim.run(1e4, max_theta=np.pi / 10 * u.rad)
+    sim.run(1e4, 15*u.MeV, max_theta=np.pi / 10 * u.rad)
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
     with pytest.warns(RuntimeWarning):
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
-
         hax, vax, values = sim.synthetic_radiograph(size=size)
-    """
 
 if __name__ == '__main__':
     #test_coordinate_systems()

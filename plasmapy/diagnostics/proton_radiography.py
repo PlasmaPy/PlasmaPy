@@ -195,8 +195,10 @@ class SyntheticProtonRadiograph:
 
         self.mag = 1 + np.linalg.norm(self.detector)/np.linalg.norm(self.source)
 
-        # TODO: Check that source-detector vector actually passes through the grid
-        # This used to be done by a vector_intersects method in grid that isn't currently implemented...
+        # Check that source-detector vector actually passes through the grid
+        if not self.grid.vector_intersects(self.source*u.m, self.detector*u.m):
+            raise ValueError("The vector between the source and the detector "
+                             "does not intersect the grid provided!")
 
         # ************************************************************************
         # Define the detector plane
@@ -265,37 +267,6 @@ class SyntheticProtonRadiograph:
                 )
 
 
-        """
-
-        # Check that the edges of the fields go close to zero at the edges
-        arrays = {"E": E, "B": B}
-        for k in arrays.keys():
-            arr = arrays[k]
-            arr = np.linalg.norm(arr, axis=3).value
-            edge_max = np.array(
-                [
-                    np.max(arr[0, :, :]),
-                    np.max(arr[-1, :, :]),
-                    np.max(arr[:, 0, :]),
-                    np.max(arr[:, -1, :]),
-                    np.max(arr[:, :, 0]),
-                    np.max(arr[:, :, -1]),
-                ]
-            )
-            edge_max = np.max(edge_max)
-
-            if edge_max > 0.01 * np.median(arr):
-                warnings.warn(
-                    "Fields should go to zero at edges of grid to avoid "
-                    f"non-physical effects, but a value of {edge_max:.2E} "
-                    f" {arrays[k].unit} was "
-                    f"found on the edge of the {k} array. Consider applying a "
-                    "envelope function to force the fields at the edge to go to "
-                    "zero.",
-                    RuntimeWarning,
-                )
-
-         """
 
 
     def _log(self, msg):
@@ -543,14 +514,11 @@ class SyntheticProtonRadiograph:
         Boris algorithm
         """
 
+
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
         pos = self.x[self.grid_ind,:]*u.m
-
-        # TODO: Testing suggests this is a relatively slow step:
-        # maybe it's faster to interpolate the positions, calculate distances,
-        # and compare with the grid resolution?
 
         # Update the list of particles on and off the grid
         self.on_grid = self.grid.on_grid(pos)
@@ -560,6 +528,8 @@ class SyntheticProtonRadiograph:
 
 
         # Estimate the E and B fields for each particle
+        # Note that this interpolation step is BY FAR the slowest part of the push
+        # loop. Any speed improvements will have to come from here.
         Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
                                                                         "B_x", "B_y", "B_z")
 
