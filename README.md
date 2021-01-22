@@ -63,7 +63,7 @@ Come discuss plasma software with us!
 PlasmaPy's weekly [office hours](http://www.plasmapy.org/meetings/office_hours/)
 on Thursdays at [19:00 UTC](http://time.unitarium.com/utc/6pm)
 are an opportunity to chat with active members of the PlasmaPy
-community about the package and project.    
+community about the package and project.
 
 ## [GitHub discussions](https://github.com/PlasmaPy/PlasmaPy/discussions)
 
