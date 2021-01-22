@@ -2,34 +2,37 @@
 
 # PlasmaPy
 
-[![PyPI version](https://img.shields.io/pypi/v/plasmapy)](https://pypi.org/project/plasmapy/)
-[![Conda version](https://img.shields.io/conda/v/conda-forge/plasmapy)](https://img.shields.io/conda/v/conda-forge/plasmapy)
-[![PyPI version](https://img.shields.io/pypi/pyversions/plasmapy?style=plastic)](https://img.shields.io/pypi/pyversions/plasmapy?style=plastic)
+[![PyPI version](https://img.shields.io/pypi/v/plasmapy?style=flat&logo=pypi)](https://pypi.org/project/plasmapy/)
+[![Conda version](https://img.shields.io/conda/v/conda-forge/plasmapy?style=flat&logo=anaconda)](https://img.shields.io/conda/v/conda-forge/plasmapy)
+[![PyPI version](https://img.shields.io/pypi/pyversions/plasmapy?style=flat&logo=python)](https://img.shields.io/pypi/pyversions/plasmapy?style=plastic)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 
-[![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
-[![Gitter (bridged to Matrix)](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/PlasmaPy/Lobby)
-[![Follow PlasmaPy on Twitter](https://img.shields.io/twitter/follow/plasmapy?tyle=social)](https://twitter.com/plasmapy)
+
+
+[![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
+[![Matrix](https://img.shields.io/badge/gitter-join%20chat-emerald?style=flat&logo=gitter)](https://gitter.im/PlasmaPy/Lobby)
+[![YouTube](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
+[![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
+
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amaster)
 [![GitHub Actions — Style linters](https://github.com/PlasmaPy/PlasmaPy/workflows/Style%20linters/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3AStyle-linters+branch%3Amaster)
-[![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
-
+[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/master/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
+[![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/master?filepath=docs/notebooks)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-PlasmaPy is an open source community developed Python 3.6+ package for
-plasma physics that is currently under development.  PlasmaPy intends to
-be for plasmas what [Astropy](https://github.com/astropy/astropy) is for
+PlasmaPy is an open source community developed Python package for
+plasma science that is currently under development.  PlasmaPy intends to
+be for plasma science what [Astropy](https://github.com/astropy/astropy) is for
 astronomy — a collection of functionality commonly used and shared
 between plasma physicists and researchers globally, running within and
 leveraging the open source scientific Python ecosystem.  The goals of
-this project are more thoroughly described in our [vision
-statement](http://docs.plasmapy.org/en/stable/about/vision_statement.html)
-and [this recent video](https://youtu.be/E8RwQF5wcXM).
+this project are more thoroughly described in [this recent video](https://youtu.be/E8RwQF5wcXM).
 We are in the process of writing [online
 documentation](http://docs.plasmapy.org/en/latest/).
 
@@ -37,7 +40,7 @@ We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/sta
 and have a [Code of Conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
-# Feedback and communication
+# Community
 
 ## [Matrix chat](https://app.element.io/#/room/#plasmapy:openastronomy.org)
 
@@ -57,6 +60,13 @@ Any last minute changes will be discussed on
 As of January 2021, our meetings are on Tuesdays at
 [19:00 UTC](http://time.unitarium.com/utc/6pm).
 Come discuss plasma software with us!
+
+## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)
+
+PlasmaPy's weekly [office hours](http://www.plasmapy.org/meetings/office_hours/)
+on Thursdays at [19:00 UTC](http://time.unitarium.com/utc/6pm)
+are an opportunity to chat with active members of the PlasmaPy
+community about the package and project.    
 
 ## [GitHub discussions](https://github.com/PlasmaPy/PlasmaPy/discussions)
 
@@ -95,7 +105,6 @@ conda install -c conda-forge plasmapy
 To contribute
 to the package, check out [our instructions on installing PlasmaPy from
 source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-from-source-code).
-PlasmaPy requires Python 3.6+.
 
 # License
 
