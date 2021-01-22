@@ -233,6 +233,11 @@ def test_input_validation():
     with pytest.warns(RuntimeWarning):
         sim.run(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
+    # Test an invalid field weighting keyword
+    with pytest.raises(ValueError):
+        sim.run(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad,
+                field_weighting = 'not a valid field weighting')
+
     # ************************************************************************
     # During runtime
     # ************************************************************************
@@ -246,9 +251,25 @@ def test_input_validation():
         hax, vax, values = sim.synthetic_radiograph(size=size)
 
 
+
+def test_run_options():
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+
+    # Cartesian
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    # Catch warnings (test fields aren't well behaved at edges)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.run(1e4, 3 * u.MeV, max_theta=10 * u.deg, field_weighting = 'nearest neighbor')
+
+
+
 if __name__ == "__main__":
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
+    test_run_options()
     pass
 

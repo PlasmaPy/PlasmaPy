@@ -505,10 +505,16 @@ class SyntheticProtonRadiograph:
         # Estimate the E and B fields for each particle
         # Note that this interpolation step is BY FAR the slowest part of the push
         # loop. Any speed improvements will have to come from here.
-        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-            pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
-            persistant=True,
-        )
+        if self.field_weighting == 'volume averaged':
+            Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
+                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
+                persistant=True,
+            )
+        elif self.field_weighting == 'nearest neighbor':
+            Ex, Ey, Ez, Bx, By, Bz = self.grid.nearest_neighbor_interpolator(
+                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
+                persistant=True,
+            )
 
         E = np.array(
             [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
@@ -577,7 +583,7 @@ class SyntheticProtonRadiograph:
         proton_energy,
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
-        field_weighting="nearest neighbor",
+        field_weighting="volume averaged",
     ):
         r"""
         Runs a particle-tracing simulation.
@@ -631,7 +637,15 @@ class SyntheticProtonRadiograph:
         self.nparticles = int(nparticles)
         self.proton_energy = proton_energy.to(u.eV).value
         self.max_theta = max_theta.to(u.rad).value
-        self.field_weighting = field_weighting
+
+
+        field_weightings = ['volume averaged', 'nearest neighbor']
+        if field_weighting in field_weightings:
+            self.field_weighting = field_weighting
+        else:
+            raise ValueError(f"{field_weighting} is not a valid option for ",
+                             "field_weighting. Valid choices are",
+                             f"{field_weightings}")
 
         if dt is None:
             self.dt = np.array([0.0, np.inf]) * u.s
