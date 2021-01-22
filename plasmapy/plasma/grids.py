@@ -692,11 +692,11 @@ class AbstractGrid(ABC):
         Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
         returns false. This is a standard ray-box intersection algorithm.
         """
-        p1, p2, grid = p1.si.value, p2.si.value, self.grid.si.value
+        p1, p2 = p1.si.value, p2.si.value
         # Caclulate the minimum and maximum of each
-        Ax, Bx = np.min(grid[..., 0]), np.max(grid[..., 0])
-        Ay, By = np.min(grid[..., 1]), np.max(grid[..., 1])
-        Az, Bz = np.min(grid[..., 2]), np.max(grid[..., 2])
+        Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
+        Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
+        Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
         A = np.array([Ax, Ay, Az])
         B = np.array([Bx, By, Bz])
 
