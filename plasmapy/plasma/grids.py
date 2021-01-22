@@ -959,7 +959,6 @@ class CartesianGrid(AbstractGrid):
                     f"Existing keys are: {key_list}"
                 )
 
-
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
@@ -982,8 +981,8 @@ class CartesianGrid(AbstractGrid):
         # Load the arrays to be interpolated from and their units
         quantities = np.zeros([nx, ny, nz, nargs])
         units = []
-        for j,arg in enumerate(args):
-            quantities[...,j] = self.ds[arg].values
+        for j, arg in enumerate(args):
+            quantities[..., j] = self.ds[arg].values
             units.append(self.ds[arg].attrs["unit"])
 
         # Create a list of empty arrays to hold results
@@ -1024,9 +1023,7 @@ class CartesianGrid(AbstractGrid):
                     out = np.where(valid == False)
 
                     # Distance from grid vertex to particle position
-                    grid_pos = (
-                        np.array([ax0[x], ax1[y], ax2[z]])
-                    )
+                    grid_pos = np.array([ax0[x], ax1[y], ax2[z]])
                     grid_pos = np.moveaxis(grid_pos, 0, -1)
 
                     d = np.abs(grid_pos - pos)
@@ -1034,18 +1031,18 @@ class CartesianGrid(AbstractGrid):
                     # Fraction of cell volume that is closest to the
                     # current point
                     weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
-                    #weight = weight.to(u.dimensionless_unscaled)
+                    # weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
                     weight *= nan_mask
                     weight = np.outer(weight, np.ones([6]))
 
-                    sum_value +=  weight * quantities[x,y,z,:]
+                    sum_value += weight * quantities[x, y, z, :]
 
         # Split output array into arrays with units
         # Apply units to output arrays
         output = []
         for i in range(nargs):
-            output.append(sum_value[:,i]*units[i])
+            output.append(sum_value[:, i] * units[i])
 
         if len(output) == 1:
             return output[0]

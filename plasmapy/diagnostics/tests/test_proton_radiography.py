@@ -109,6 +109,47 @@ def _test_grid(name, L=1 * u.mm, num=100):
     return grid
 
 
+def run_1D_example(name):
+    """
+    Run a simulation through an example with parameters optimized to
+    sum up to a lineout along x. The goal is to run a realtively fast
+    sim with a quasi-1D field grid that can then be summed to get good
+    enough statistics to use as a test.
+    """
+    grid = _test_grid(name, L=1 * u.mm, num=50)
+
+    # Cartesian
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    # Catch warnings (test fields aren't well behaved at edges)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim.run(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+
+        size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
+        bins = [200, 60]
+        hax, vax, values = sim.synthetic_radiograph(size=size, bins=bins)
+
+    values = np.mean(values[:, 20:40], axis=1)
+
+    return hax, values
+
+
+def test_1D_deflections():
+    # Check B-deflection
+    hax, lineout = run_1D_example("constant_bz")
+    loc = hax[np.argmax(lineout)]
+    assert np.isclose(loc.si.value, 0.0165, 0.005)
+
+    # Check E-deflection
+    hax, lineout = run_1D_example("constant_ex")
+    loc = hax[np.argmax(lineout)]
+    assert np.isclose(loc.si.value, 0.0335, 0.005)
+
+
 def test_coordinate_systems():
     """
     Check that specifying the same point in different coordinate systems
@@ -186,13 +227,13 @@ def test_input_validation():
 
     # Chose too large of a max_theta so that many particles miss the grid
     with pytest.warns(RuntimeWarning):
-        sim.run(1e4, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
+        sim.run(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
     # SYNTHETIC RADIOGRAPH ERRORS
-    sim.run(1e4, 15 * u.MeV, max_theta=np.pi / 10 * u.rad)
+    sim.run(1e3, 15 * u.MeV, max_theta=np.pi / 10 * u.rad)
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
@@ -202,5 +243,7 @@ def test_input_validation():
 
 
 if __name__ == "__main__":
+    pass
     # test_coordinate_systems()
-    test_input_validation()
+    # test_input_validation()
+    # test_1D_deflections()
