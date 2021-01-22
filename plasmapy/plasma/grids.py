@@ -139,7 +139,7 @@ class AbstractGrid(ABC):
         for i in range(len(self.shape)):
             s += f"\t-> {coords[i]} ({ax_units[i]}) {ax_dtypes[i]} ({shape[i]},)\n"
 
-        keys = list(self.ds.data_vars)
+        keys = self.quantities
         rkeys = [k for k in keys if k in list(self.recognized_quantities.keys())]
         nrkeys = [k for k in keys if k not in list(self.recognized_quantities.keys())]
 
@@ -523,6 +523,14 @@ class AbstractGrid(ABC):
             data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
             self.ds[key] = data
 
+    @property
+    def quantities(self):
+        r"""
+        A list of the keys corresponding to the quantities currently defined on
+        the grid.
+        """
+        return list(self.ds.data_vars)
+
     def _make_grid(
         self,
         start: Union[int, float, u.Quantity],
@@ -713,6 +721,8 @@ class AbstractGrid(ABC):
 
     # These arrays are used to enable persistant interpolation (faster repeated
     # calls with the same grid and arguments)
+
+    _interp_args = []
     _interp_quantities = None
     _interp_units = None
 
@@ -816,7 +826,7 @@ class AbstractGrid(ABC):
 
         return i
 
-    def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+    def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
         no higher-order weighting.
@@ -831,21 +841,29 @@ class AbstractGrid(ABC):
         *args : str
             Strings that correspond to DataArrays in the dataset
 
+        persistant : bool
+            If true, the interpolator will assume the grid and its contents have not
+            changed since the last interpolation. This substantially speeds up the
+            interpolation when many interpolations are performed on the same grid
+            in a loop. Persistant overrides to False if the arguments list has
+            changed since the last call.
+
         """
         # pos is validated in interpolate_indices
 
         # Validate args
         # must be np.ndarray or u.Quantity arrays of same shape as grid
-        key_list = list(self.ds.data_vars)
         for arg in args:
 
-            if not arg in key_list:
+            if not arg in self.quantities:
                 raise KeyError(
                     "Quantity arguments must correspond to "
                     "DataArrays in the DataSet. "
                     f"{arg} was not found. "
-                    f"Existing keys are: {key_list}"
+                    f"Existing keys are: {self.quantities}"
                 )
+
+        nargs = len(args)
 
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
@@ -865,6 +883,24 @@ class AbstractGrid(ABC):
         # Replace all NaNs temporarily with 0
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
+
+
+        # If persistant, double check the arguments list hasn't changed
+        # If they have, run as non-persistant this time
+        if persistant and args != self._interp_args:
+            persistant = False
+
+
+        if not persistant or self._interp_quantities is None:
+            # Load the arrays to be interpolated from and their units
+            nx, ny, nz = self.shape
+            self._interp_quantities = np.zeros([nx, ny, nz, nargs])
+            self._interp_units = []
+            self._interp_args = args
+            for j, arg in enumerate(args):
+                self._interp_quantities[..., j] = self.ds[arg].values
+                self._interp_units.append(self.ds[arg].attrs["unit"])
+
 
         # Fetch the values at those indices from each quantity
         output = []
@@ -886,7 +922,7 @@ class AbstractGrid(ABC):
         else:
             return tuple(output)
 
-    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
         no higher-order weighting.
@@ -900,6 +936,13 @@ class AbstractGrid(ABC):
 
         *args : str
             Strings that correspond to DataArrays in the dataset
+
+        persistant : bool
+            If true, the interpolator will assume the grid and its contents have not
+            changed since the last interpolation. This substantially speeds up the
+            interpolation when many interpolations are performed on the same grid
+            in a loop. Persistant overrides to False if the arguments list has
+            changed since the last call.
 
         """
 
@@ -927,21 +970,6 @@ class CartesianGrid(AbstractGrid):
 
 
     def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
-        r"""
-        Interpolate values on the grid using a nearest-neighbor scheme with
-        no higher-order weighting.
-
-        Parameters
-        ----------
-        pos :  u.Quantity array, shape (n,3)
-            An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If an np.ndarray
-            is provided, units will be assumed to match those of the grid.
-
-        *args : str
-            Strings that correspond to DataArrays in the dataset
-
-        """
 
         # Condition pos
         # If a single point was given, add empty dimension
@@ -954,15 +982,14 @@ class CartesianGrid(AbstractGrid):
 
         # Validate args
         # must be np.ndarray or u.Quantity arrays of same shape as grid
-        key_list = list(self.ds.data_vars)
         for arg in args:
 
-            if not arg in key_list:
+            if not arg in self.quantities:
                 raise KeyError(
                     "Quantity arguments must correspond to "
                     "DataArrays in the DataSet. "
                     f"{arg} was not found. "
-                    f"Existing keys are: {key_list}"
+                    f"Existing keys are: {self.quantities}"
                 )
 
         # Interpolate the indices
@@ -982,16 +1009,24 @@ class CartesianGrid(AbstractGrid):
 
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
-        nx, ny, nz = self.shape
+
+
+        # If persistant, double check the arguments list hasn't changed
+        # If they have, run as non-persistant this time
+        if persistant and args != self._interp_args:
+            persistant = False
 
 
         if not persistant or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
+            nx, ny, nz = self.shape
             self._interp_quantities = np.zeros([nx, ny, nz, nargs])
             self._interp_units = []
+            self._interp_args = args
             for j, arg in enumerate(args):
                 self._interp_quantities[..., j] = self.ds[arg].values
                 self._interp_units.append(self.ds[arg].attrs["unit"])
+
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])
@@ -1042,7 +1077,7 @@ class CartesianGrid(AbstractGrid):
                     # weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
                     weight *= nan_mask
-                    weight = np.outer(weight, np.ones([6]))
+                    weight = np.outer(weight, np.ones([nargs]))
 
                     sum_value += weight * self._interp_quantities[x, y, z, :]
 

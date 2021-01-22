@@ -210,7 +210,7 @@ class SyntheticProtonRadiograph:
         for rq in req_quantities:
 
             # Error check that grid contains E and B variables required
-            if rq not in list(self.grid.ds.data_vars):
+            if rq not in self.grid.quantities:
                 warnings.warn(
                     f"{rq} not specified for provided grid."
                     "This quantity will be assumed to be zero.",

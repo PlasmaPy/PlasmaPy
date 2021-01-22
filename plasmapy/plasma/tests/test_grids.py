@@ -228,6 +228,17 @@ def test_volume_averaged_interpolator():
     pout = grid.volume_averaged_interpolator(pos, "x")
     assert np.allclose(pout, 0 * u.cm, atol=0.1)
 
+    # Try running with persistance
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    p1,p2= grid.volume_averaged_interpolator(pos, "x", "y", persistant=True)
+    p1,p2 = grid.volume_averaged_interpolator(pos, "x", "y", persistant=True)
+    # Try changing the arg list, make sure it catchs this and auto-reverts
+    # to non-persistant interpolation in that case
+    p1, p2 = grid.volume_averaged_interpolator(pos, "x", persistant=True)
+    assert p1.size == 1
+
+
+
 
 def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
@@ -247,9 +258,9 @@ def test_NonUniformCartesianGrid():
 if __name__ == "__main__":
     # test_AbstractGrid()
     # test_CartesianGrid()
-    test_grid_methods()
+    # test_grid_methods()
     # test_interpolate_indices()
     # test_nearest_neighbor_interpolator()
-    # test_volume_averaged_interpolator()
+    test_volume_averaged_interpolator()
     # test_NonUniformCartesianGrid()
     pass
