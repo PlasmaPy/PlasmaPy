@@ -247,9 +247,8 @@ def test_input_validation():
 
 
 if __name__ == "__main__":
+    test_coordinate_systems()
+    test_input_validation()
+    test_1D_deflections()
     pass
-    # test_coordinate_systems()
-    # test_input_validation()
-    # test_1D_deflections()
-
 

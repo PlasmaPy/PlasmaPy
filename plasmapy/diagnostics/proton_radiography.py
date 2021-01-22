@@ -506,7 +506,8 @@ class SyntheticProtonRadiograph:
         # Note that this interpolation step is BY FAR the slowest part of the push
         # loop. Any speed improvements will have to come from here.
         Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-            pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z"
+            pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
+            persistant=True,
         )
 
         E = np.array(

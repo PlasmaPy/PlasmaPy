@@ -19,7 +19,6 @@ from abc import ABC
 from collections import namedtuple
 from typing import Union
 
-
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
@@ -712,6 +711,11 @@ class AbstractGrid(ABC):
     # Interpolators
     # *************************************************************************
 
+    # These arrays are used to enable persistant interpolation (faster repeated
+    # calls with the same grid and arguments)
+    _interp_quantities = None
+    _interp_units = None
+
     @property
     def interpolator(self):
         r"""
@@ -920,7 +924,9 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
-    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args):
+
+
+    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
         no higher-order weighting.
@@ -978,12 +984,14 @@ class CartesianGrid(AbstractGrid):
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
         nx, ny, nz = self.shape
 
-        # Load the arrays to be interpolated from and their units
-        quantities = np.zeros([nx, ny, nz, nargs])
-        units = []
-        for j, arg in enumerate(args):
-            quantities[..., j] = self.ds[arg].values
-            units.append(self.ds[arg].attrs["unit"])
+
+        if not persistant or self._interp_quantities is None:
+            # Load the arrays to be interpolated from and their units
+            self._interp_quantities = np.zeros([nx, ny, nz, nargs])
+            self._interp_units = []
+            for j, arg in enumerate(args):
+                self._interp_quantities[..., j] = self.ds[arg].values
+                self._interp_units.append(self.ds[arg].attrs["unit"])
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])
@@ -1036,13 +1044,17 @@ class CartesianGrid(AbstractGrid):
                     weight *= nan_mask
                     weight = np.outer(weight, np.ones([6]))
 
-                    sum_value += weight * quantities[x, y, z, :]
+                    sum_value += weight * self._interp_quantities[x, y, z, :]
 
         # Split output array into arrays with units
         # Apply units to output arrays
         output = []
         for i in range(nargs):
-            output.append(sum_value[:, i] * units[i])
+            output.append(sum_value[:, i] * self._interp_units[i])
+
+        if not persistant:
+            self.interp_quantities = None
+            self.interp_units = None
 
         if len(output) == 1:
             return output[0]
