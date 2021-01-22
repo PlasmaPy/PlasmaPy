@@ -14,6 +14,6 @@
    :caption: Sub-Packages and Modules
 
    langmuir
-   proton_radiography
    Swept Langmuir Analysis <langmuir>
+   proton_radiography
    thomson
