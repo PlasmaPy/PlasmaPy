@@ -167,6 +167,8 @@ class AbstractGrid(ABC):
         return s
 
     def __getitem__(self, key):
+
+
         return self.ds[key]
 
     @property
@@ -632,9 +634,12 @@ class AbstractGrid(ABC):
 
         return pts0, pts1, pts2
 
+
     # *************************************************************************
-    # Interpolators
+    # Methods
     # *************************************************************************
+
+
 
     def on_grid(self, pos):
         r"""
@@ -655,6 +660,7 @@ class AbstractGrid(ABC):
         if hasattr(pos, "unit"):
             pos = pos.si.value
 
+        # Find the bounds
         if self.is_uniform_grid:
             ax0_min, ax0_max = np.min(self.ax0.si.value), np.max(self.ax0.si.value)
             ax1_min, ax1_max = np.min(self.ax1.si.value), np.max(self.ax1.si.value)
@@ -666,22 +672,50 @@ class AbstractGrid(ABC):
             ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
             ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
 
+        # Check each point elementwise against the bounds
+        on_grid = (np.greater(ax0_min, pos[:,0]).astype(np.int8) +
+                   np.less(ax0_max, pos[:,0]).astype(np.int8) +
+                   np.greater(ax1_min, pos[:,1]).astype(np.int8) +
+                   np.less(ax1_max, pos[:,1]).astype(np.int8) +
+                   np.greater(ax2_min, pos[:,2]).astype(np.int8) +
+                   np.less(ax2_max, pos[:,2]).astype(np.int8)
+                  )
 
-        npos = pos.shape[0]
-        on_grid = np.zeros(npos)
-        for i in range(npos):
-            if (ax0_min < pos[i,0] and
-                ax0_max > pos[i,0] and
-                ax1_min < pos[i,1] and
-                ax1_max > pos[i,1] and
-                ax2_min < pos[i,2] and
-                ax2_max > pos[i,2]):
+        return np.where(on_grid == 0, True, False)
 
-                on_grid[i] = True
-            else:
-                on_grid[i] = False
 
-        return on_grid
+    def vector_intersects(self, p1, p2):
+        r"""
+        Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
+        returns false. This is a standard ray-box intersection algorithm.
+        """
+        p1, p2, grid = p1.si.value, p2.si.value, self.grid.si.value
+        # Caclulate the minimum and maximum of each
+        Ax, Bx = np.min(grid[..., 0]), np.max(grid[..., 0])
+        Ay, By = np.min(grid[..., 1]), np.max(grid[..., 1])
+        Az, Bz = np.min(grid[..., 2]), np.max(grid[..., 2])
+        A = np.array([Ax, Ay, Az])
+        B = np.array([Bx, By, Bz])
+
+        # Calculate the equation of the line from p1 to p2 such that
+        # r = p1 + t*D
+        D = p2 - p1
+
+        # Calculate the intersection points. These operations are just vectorized
+        # for convenience. Ignore div-by-zero: outputting infty's here is fine.
+        with np.errstate(divide="ignore"):
+            Tmin = (A - p1) / D
+            Tmax = (B - p1) / D
+
+        Tmin = np.max(Tmin)
+        Tmax = np.min(Tmax)
+
+        return Tmin < Tmax
+
+
+    # *************************************************************************
+    # Interpolators
+    # *************************************************************************
 
     @property
     def interpolator(self):
