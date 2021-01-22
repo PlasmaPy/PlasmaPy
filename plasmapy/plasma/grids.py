@@ -959,6 +959,7 @@ class CartesianGrid(AbstractGrid):
                     f"Existing keys are: {key_list}"
                 )
 
+
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
@@ -973,11 +974,26 @@ class CartesianGrid(AbstractGrid):
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
 
+        # Load grid attributes (so this isn't repeated)
+        ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
+
+        # Load the arrays to be interpolated from
+        quantities = {}
+        # Create a list of empty arrays to hold results
+        output = []
+        # Fill both arrays
+        for arg in args:
+            quantities[arg] = (self.ds[arg].values, self.ds[arg].attrs["unit"])
+            output.append(np.zeros([nparticles]))
+
+        # Strip units from pos (eliminate unit operations in loop)
+        pos = pos.si.value
+
         # Calculate the grid positions for each particle as interpolated
         # by the nearest neighbor interpolator
-        xpos = self.ax0[i[:, 0]]
-        ypos = self.ax1[i[:, 1]]
-        zpos = self.ax2[i[:, 2]]
+        xpos = ax0[i[:, 0]]
+        ypos = ax1[i[:, 1]]
+        zpos = ax2[i[:, 2]]
 
         # Determine the points bounding the grid cell containing the
         # particle
@@ -989,13 +1005,9 @@ class CartesianGrid(AbstractGrid):
         z1 = z0 + 1
 
         # Calculate the cell volume
-        cell_vol = self.dax0 * self.dax1 * self.dax2
+        cell_vol = self.dax0.si.value * self.dax1.si.value * self.dax2.si.value
         n0, n1, n2 = self.shape
 
-        # Create a list of empty arrays to hold final results
-        output = []
-        for i, arg in enumerate(args):
-            output.append(np.zeros([nparticles]) * self.ds[arg].attrs["unit"])
 
         # Go through all of the vertices around the position and volume-
         # weight the values
@@ -1011,7 +1023,7 @@ class CartesianGrid(AbstractGrid):
 
                     # Distance from grid vertex to particle position
                     grid_pos = (
-                        np.array([self.ax0[x], self.ax1[y], self.ax2[z]]) * self.unit
+                        np.array([ax0[x], ax1[y], ax2[z]])
                     )
                     grid_pos = np.moveaxis(grid_pos, 0, -1)
 
@@ -1020,18 +1032,20 @@ class CartesianGrid(AbstractGrid):
                     # Fraction of cell volume that is closest to the
                     # current point
                     weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
-                    weight = weight.to(u.dimensionless_unscaled)
+                    #weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
 
                     # For each argument, include the contributed by this
                     # grid vertex
                     for i, arg in enumerate(args):
-                        values = self.ds[arg].values[x, y, z]
                         # Apply nan_mask to set out-of-bounds values to 0
-                        values *= nan_mask
+                        # Also apply weights
+                        # Then, add to the output array
+                        output[i] += weight * nan_mask * quantities[arg][0][x, y, z]
 
-                        values *= self.ds[arg].attrs["unit"]
-                        output[i] += weight * values
+        # Apply units to output array
+        for i, arg in enumerate(args):
+            output[i] *= quantities[arg][1]
 
         if len(output) == 1:
             return output[0]
