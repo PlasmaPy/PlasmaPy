@@ -387,7 +387,7 @@ class AbstractGrid(ABC):
 
         For uniform grids, this is the minima of [dax0, dax1, dax2].
 
-        For non-uniform grids, it is the closest spacing between two points.
+        For non-uniform grids, it is the closest spacing between any two points.
         """
 
         if self.is_uniform_grid:

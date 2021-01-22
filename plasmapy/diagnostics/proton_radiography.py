@@ -50,7 +50,9 @@ class SyntheticProtonRadiograph:
     Parameters
     ----------
     grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
-        A Grid object containing the required keys [E_x, E_y, E_z, B_x, B_y, B_z]
+        A Grid object containing the required quantities [E_x, E_y, E_z, B_x, B_y, B_z].
+        If any of these quantities are missing, a warning will be given and that
+        quantity will be assumed to be zero everywhere.
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
@@ -167,12 +169,14 @@ class SyntheticProtonRadiograph:
         # the source and detector planes
         self.src_n = self.source / np.linalg.norm(self.source)
         self.det_n = -self.detector / np.linalg.norm(self.detector)
+
         # Vector directly from source to detector
         self.src_det = self.detector - self.source
 
         # Experiment axis is the unit vector from the source to the detector
         self.src_det_n = self.src_det / np.linalg.norm(self.src_det)
 
+        # Magnification
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
 
         # Check that source-detector vector actually passes through the grid
@@ -187,7 +191,6 @@ class SyntheticProtonRadiograph:
         # ************************************************************************
 
         # Create unit vectors that define the detector plane
-        # Create 2D grids of detector points
         # Define plane  horizontal axis
         if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
             nx = np.array([1, 0, 0])
@@ -331,6 +334,7 @@ class SyntheticProtonRadiograph:
         max_theta_grid = self._max_theta_grid()
 
         # This array holds the indices of all particles that WILL hit the grid
+        # Only these particles will actually be pushed through the fields
         self.grid_ind = np.where(theta < max_theta_grid)[0]
         self.nparticles_grid = len(self.grid_ind)
 
@@ -358,24 +362,6 @@ class SyntheticProtonRadiograph:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
-    def _adaptive_ds(self):
-        r"""
-        Compute the local grid resolution for each particle (used for determining
-        a maximum timestep based on grid spacing).
-        """
-
-        # TODO: Replace with call to grid.grid_resolution.
-        # Can't apply to non-uniform grids until grid_resolution is defined for those
-
-        if self.grid.is_uniform_grid:
-            ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
-            return ds.to(u.m).value
-        else:
-            raise NotImplementedError(
-                "Adaptive timestep is not yet supportd for "
-                "non-uniform grids, because the adaptive "
-                "grid resolution is not supported."
-            )
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
@@ -388,9 +374,7 @@ class SyntheticProtonRadiograph:
             return self.dt
 
         # Compute the timestep indicated by the grid resolution
-        # min is taken for irregular grids, in which different particles
-        # have different local grid resolutions
-        ds = self._adaptive_ds()
+        ds = self.grid.grid_resolution.to(u.m).value
         gridstep = 0.5 * (np.min(ds) / self.v0)
 
         # print(f"gridstep = {gridstep.to(u.s):.1e}")
@@ -490,9 +474,6 @@ class SyntheticProtonRadiograph:
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
-
-        # Calculate the local grid resolution for each particle
-        self._adaptive_ds()
 
         pos = self.x[self.grid_ind, :] * u.m
 
@@ -624,8 +605,10 @@ class SyntheticProtonRadiograph:
             * 'nearest neighbor': Particles are assigned the fields on
                 the grid vertex closest to them.
 
-            * 'volume averaged' : The fields experienced by a field are a
+            * 'volume averaged' : The fields experienced by a particle are a
                 volume-average of the eight grid points surrounding them.
+
+            The default is 'volume averaged'.
 
         Returns
         -------
@@ -633,11 +616,10 @@ class SyntheticProtonRadiograph:
 
         """
 
-        # Load inputs
+        # Load and validate inputs
         self.nparticles = int(nparticles)
         self.proton_energy = proton_energy.to(u.eV).value
         self.max_theta = max_theta.to(u.rad).value
-
 
         field_weightings = ['volume averaged', 'nearest neighbor']
         if field_weighting in field_weightings:
@@ -648,17 +630,16 @@ class SyntheticProtonRadiograph:
                              f"{field_weightings}")
 
         if dt is None:
+            # Set dt as an infinite range by default (auto dt with no restrictions)
             self.dt = np.array([0.0, np.inf]) * u.s
         else:
             self.dt = dt
-
         self.dt = (self.dt).to(u.s).value
 
         # Generate the particles
         self._generate_particles()
 
-        # Advance the particles to the near the start of the simulation
-        # volume
+        # Advance the particles to the near the start of the grid
         self._advance_to_grid()
 
         # Push the particles until the stop condition is satisfied
@@ -670,8 +651,7 @@ class SyntheticProtonRadiograph:
             self._push()
 
         # Advance the particles to the image plane
-        # At this stage, remove any particles that are not going to ever
-        # hit the grid.
+        # At this stage, remove any particles that will never hit the detector plane
         self._advance_to_detector()
 
         self._log("Run completed")
@@ -698,12 +678,11 @@ class SyntheticProtonRadiograph:
 
         bins : array of integers, shape (2)
             The number of bins in each direction in the format [hbins, vbins].
-            The default is [250,250].
+            The default is [200,200].
 
         null: bool
             If True, returns the intensity in the image plane in the absence
             of simulated fields.
-
 
         optical_density: bool
             If True, return the optical density rather than the intensity
