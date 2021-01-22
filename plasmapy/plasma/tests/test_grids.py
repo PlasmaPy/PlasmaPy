@@ -135,7 +135,6 @@ def test_grid_methods():
     assert grid.vector_intersects(p2, p1) == False
 
 
-
 def test_interpolate_indices():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
