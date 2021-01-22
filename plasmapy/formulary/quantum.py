@@ -74,7 +74,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     ~plasmapy.utils.RelativityError
         If the magnitude of `V` is faster than the speed of light.
-    
+
     Warns
     -----
     ~astropy.units.UnitsWarning
