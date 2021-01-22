@@ -127,9 +127,13 @@ def test_grid_methods():
     # This vector passes through the grid
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm
     assert grid.vector_intersects(p1, p2) == True
+    # Test going backwards yields the same result
+    assert grid.vector_intersects(p2, p1) == True
     # This one doesn't
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm
     assert grid.vector_intersects(p1, p2) == False
+    assert grid.vector_intersects(p2, p1) == False
+
 
 
 def test_interpolate_indices():
@@ -264,11 +268,11 @@ def test_NonUniformCartesianGrid():
 
 
 if __name__ == "__main__":
-    test_AbstractGrid()
-    test_CartesianGrid()
+    # test_AbstractGrid()
+    # test_CartesianGrid()
     test_grid_methods()
-    test_interpolate_indices()
-    test_nearest_neighbor_interpolator()
-    test_volume_averaged_interpolator()
-    test_NonUniformCartesianGrid()
+    # test_interpolate_indices()
+    # test_nearest_neighbor_interpolator()
+    # test_volume_averaged_interpolator()
+    # test_NonUniformCartesianGrid()
     pass

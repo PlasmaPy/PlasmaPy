@@ -702,7 +702,7 @@ class AbstractGrid(ABC):
 
         # Calculate the equation of the line from p1 to p2 such that
         # r = p1 + t*D
-        D = p2 - p1
+        D = np.abs(p2 - p1)
 
         # Calculate the intersection points. These operations are just vectorized
         # for convenience. Ignore div-by-zero: outputting infty's here is fine.
