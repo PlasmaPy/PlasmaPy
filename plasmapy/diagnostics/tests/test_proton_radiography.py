@@ -9,9 +9,8 @@ import warnings
 
 from scipy.special import erf
 
-
-from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.diagnostics import proton_radiography as prad
+from plasmapy.plasma.grids import CartesianGrid
 
 
 def _test_grid(name, L=1 * u.mm, num=100):
@@ -48,17 +47,16 @@ def _test_grid(name, L=1 * u.mm, num=100):
     if L.size > 1:
         L = np.max(L)
 
-    if name == 'empty':
+    if name == "empty":
         pass
 
-    elif name == 'constant_bz':
-        Bz = np.ones(grid.shape)*10*u.T
+    elif name == "constant_bz":
+        Bz = np.ones(grid.shape) * 10 * u.T
         grid.add_quantities(B_z=Bz)
 
-    elif name == 'constant_ex':
-        Ex = np.ones(grid.shape)*5e8*u.V/u.m
+    elif name == "constant_ex":
+        Ex = np.ones(grid.shape) * 5e8 * u.V / u.m
         grid.add_quantities(E_x=Ex)
-
 
     elif name == "axially_magnetized_cylinder":
         a = L / 4
@@ -99,18 +97,16 @@ def _test_grid(name, L=1 * u.mm, num=100):
             "No example corresponding to the provided name " f"({name}) exists."
         )
 
-
     # If any of the following quantities are missing, add them as empty arrays
-    req_quantities = ['E_x', 'E_y', 'E_z', 'B_x', 'B_y', 'B_z']
+    req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
     for q in req_quantities:
         if q not in list(grid.ds.data_vars):
             unit = grid.recognized_quantities[q].unit
-            arg = {q:np.zeros(grid.shape) * unit}
+            arg = {q: np.zeros(grid.shape) * unit}
             grid.add_quantities(**arg)
 
     return grid
-
 
 
 def test_coordinate_systems():
@@ -157,48 +153,46 @@ def test_input_validation():
 
     # Check that an error is raised when an input grid has a nan or infty value
     # First check NaN
-    grid['E_x'][0, 0, 0] = np.nan * u.V / u.m
+    grid["E_x"][0, 0, 0] = np.nan * u.V / u.m
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(grid,  source, detector, verbose=False)
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
 
-    grid['E_x'][0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
+    grid["E_x"][0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(grid,  source, detector, verbose=False)
-    grid['E_x'][0, 0, 0] = 0 *u.V/u.m
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
 
     # Check what happens if a value is large realtive to the rest of the array
-    grid['E_x'][0, 0, 0] = 0.5*np.max(grid['E_x'])
-    #with pytest.raises(ValueError):
+    grid["E_x"][0, 0, 0] = 0.5 * np.max(grid["E_x"])
+    # with pytest.raises(ValueError):
     with pytest.warns(RuntimeWarning):
-        sim = prad.SyntheticProtonRadiograph(grid,  source, detector, verbose=False)
-    grid['E_x'][0, 0, 0] = 0 *u.V/u.m
-
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
 
     # Raise error when source-to-detector vector doesn't pass through the
     # field grid
     source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
     detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(grid,  source_bad, detector_bad, verbose=False)
-
+        sim = prad.SyntheticProtonRadiograph(
+            grid, source_bad, detector_bad, verbose=False
+        )
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
 
-    sim = prad.SyntheticProtonRadiograph(grid,  source, detector, verbose=False)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
 
     # Chose too large of a max_theta so that many particles miss the grid
     with pytest.warns(RuntimeWarning):
-        sim.run(1e4, 15*u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
-
-
+        sim.run(1e4, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
     # SYNTHETIC RADIOGRAPH ERRORS
-    sim.run(1e4, 15*u.MeV, max_theta=np.pi / 10 * u.rad)
+    sim.run(1e4, 15 * u.MeV, max_theta=np.pi / 10 * u.rad)
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
@@ -206,6 +200,7 @@ def test_input_validation():
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
         hax, vax, values = sim.synthetic_radiograph(size=size)
 
-if __name__ == '__main__':
-    #test_coordinate_systems()
+
+if __name__ == "__main__":
+    # test_coordinate_systems()
     test_input_validation()

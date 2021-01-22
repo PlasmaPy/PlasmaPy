@@ -168,7 +168,6 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
 
-
         return self.ds[key]
 
     @property
@@ -190,9 +189,9 @@ class AbstractGrid(ABC):
             _grids = (pts0, pts1, pts2)
         else:
             _grids = (
-                self.ds["ax0"].data*self.unit0,
-                self.ds["ax1"].data*self.unit1,
-                self.ds["ax2"].data*self.unit2,
+                self.ds["ax0"].data * self.unit0,
+                self.ds["ax1"].data * self.unit1,
+                self.ds["ax2"].data * self.unit2,
             )
 
         return _grids
@@ -207,10 +206,10 @@ class AbstractGrid(ABC):
         pts0, pts1, pts2 = self.grids
         if self.is_uniform_grid:
             n0, n1, n2 = pts0.shape
-            grid = np.zeros([n0, n1, n2, 3])*self.unit
+            grid = np.zeros([n0, n1, n2, 3]) * self.unit
         else:
             n = pts0.size
-            grid = np.zeros([n, 3])*self.unit
+            grid = np.zeros([n, 3]) * self.unit
 
         grid[..., 0] = pts0
         grid[..., 1] = pts1
@@ -403,10 +402,10 @@ class AbstractGrid(ABC):
             for i in range(npos):
                 # Replace the current index with inf, so we don't just get
                 # a distance of zero
-                temp_grid[i,:] = np.inf
+                temp_grid[i, :] = np.inf
 
                 # Calculate the minimum of all the distances
-                dist = np.min(np.linalg.norm(temp_grid - self.grid[i,:], axis=1))
+                dist = np.min(np.linalg.norm(temp_grid - self.grid[i, :], axis=1))
                 distances[i] = dist
 
             return np.min(distances)
@@ -634,12 +633,9 @@ class AbstractGrid(ABC):
 
         return pts0, pts1, pts2
 
-
     # *************************************************************************
     # Methods
     # *************************************************************************
-
-
 
     def on_grid(self, pos):
         r"""
@@ -673,16 +669,16 @@ class AbstractGrid(ABC):
             ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
 
         # Check each point elementwise against the bounds
-        on_grid = (np.greater(ax0_min, pos[:,0]).astype(np.int8) +
-                   np.less(ax0_max, pos[:,0]).astype(np.int8) +
-                   np.greater(ax1_min, pos[:,1]).astype(np.int8) +
-                   np.less(ax1_max, pos[:,1]).astype(np.int8) +
-                   np.greater(ax2_min, pos[:,2]).astype(np.int8) +
-                   np.less(ax2_max, pos[:,2]).astype(np.int8)
-                  )
+        on_grid = (
+            np.greater(ax0_min, pos[:, 0]).astype(np.int8)
+            + np.less(ax0_max, pos[:, 0]).astype(np.int8)
+            + np.greater(ax1_min, pos[:, 1]).astype(np.int8)
+            + np.less(ax1_max, pos[:, 1]).astype(np.int8)
+            + np.greater(ax2_min, pos[:, 2]).astype(np.int8)
+            + np.less(ax2_max, pos[:, 2]).astype(np.int8)
+        )
 
         return np.where(on_grid == 0, True, False)
-
 
     def vector_intersects(self, p1, p2):
         r"""
@@ -711,7 +707,6 @@ class AbstractGrid(ABC):
         Tmax = np.min(Tmax)
 
         return Tmin < Tmax
-
 
     # *************************************************************************
     # Interpolators

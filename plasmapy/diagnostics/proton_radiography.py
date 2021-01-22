@@ -12,7 +12,6 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-
 import warnings
 
 from abc import ABC, abstractmethod
@@ -87,18 +86,18 @@ class SyntheticProtonRadiograph:
 
     def __init__(
         self,
-        grid : AbstractGrid,
+        grid: AbstractGrid,
         source: u.m,
         detector: u.m,
-        proton_energy= 15 * u.MeV,
+        proton_energy=15 * u.MeV,
         verbose=True,
-        ):
+    ):
         r"""
         Initalize the SyntheticProtonRadiograph object, carry out coordinate transformations,
         and compute several quantities that will be used elsewhere.
         """
 
-         # self.grid is the grid object
+        # self.grid is the grid object
         self.grid = grid
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continously called later
@@ -107,7 +106,6 @@ class SyntheticProtonRadiograph:
         self.proton_energy = proton_energy
         self.verbose = verbose
 
-
         # ************************************************************************
         # Setup the source and detector geometries
         # ************************************************************************
@@ -115,11 +113,11 @@ class SyntheticProtonRadiograph:
         # Auto-detect source and detector geometry based on units
         geo_units = [x.unit for x in source]
         if geo_units[2].is_equivalent(u.rad):
-            geometry = 'spherical'
+            geometry = "spherical"
         elif geo_units[1].is_equivalent(u.rad):
-            geometry = 'cylindrical'
+            geometry = "cylindrical"
         else:
-            geometry = 'cartesian'
+            geometry = "cartesian"
 
         # Convert geometrical inputs between coordinates systems
         if geometry == "cartesian":
@@ -179,26 +177,22 @@ class SyntheticProtonRadiograph:
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
-        self.src_n = self.source / np.linalg.norm(
-            self.source
-        )
-        self.det_n = -self.detector / np.linalg.norm(
-            self.detector
-        )
+        self.src_n = self.source / np.linalg.norm(self.source)
+        self.det_n = -self.detector / np.linalg.norm(self.detector)
         # Vector directly from source to detector
         self.src_det = self.detector - self.source
 
         # Experiment axis is the unit vector from the source to the detector
-        self.src_det_n = self.src_det / np.linalg.norm(
-            self.src_det
-        )
+        self.src_det_n = self.src_det / np.linalg.norm(self.src_det)
 
-        self.mag = 1 + np.linalg.norm(self.detector)/np.linalg.norm(self.source)
+        self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
 
         # Check that source-detector vector actually passes through the grid
-        if not self.grid.vector_intersects(self.source*u.m, self.detector*u.m):
-            raise ValueError("The vector between the source and the detector "
-                             "does not intersect the grid provided!")
+        if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
+            raise ValueError(
+                "The vector between the source and the detector "
+                "does not intersect the grid provided!"
+            )
 
         # ************************************************************************
         # Define the detector plane
@@ -212,31 +206,31 @@ class SyntheticProtonRadiograph:
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
         nx = nx / np.linalg.norm(nx)
-        self.det_hax = nx # Unit vector for hax, detector horizontal axis
+        self.det_hax = nx  # Unit vector for hax, detector horizontal axis
 
         # Define the detector vertical axis as being orthogonal to the
         # detector axis and the horizontal axis
         ny = np.cross(nx, self.det_n)
         ny = -ny / np.linalg.norm(ny)
-        self.det_vax = ny # Unit vector for vax, detector vertical axis
-
+        self.det_vax = ny  # Unit vector for vax, detector vertical axis
 
         # ************************************************************************
         # Validate the E and B fields
         # ************************************************************************
 
-        req_quantities = ['E_x', 'E_y', 'E_z', 'B_x', 'B_y', 'B_z']
+        req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
         for rq in req_quantities:
 
             # Error check that grid contains E and B variables required
             if rq not in list(self.grid.ds.data_vars):
-                warnings.warn(f"{rq} not specified for provided grid."
-                              "This quantity will be assumed to be zero.")
+                warnings.warn(
+                    f"{rq} not specified for provided grid."
+                    "This quantity will be assumed to be zero."
+                )
                 # If missing, warn user and then replace with an array of zeros
                 unit = self.grid._recognized_quantities[rq].unit
-                arg = {rq:np.zeros(self.grid.shape)*unit}
+                arg = {rq: np.zeros(self.grid.shape) * unit}
                 self.grid.add_quantities(**arg)
-
 
             # Check that there are no infinite values
             if not np.isfinite(self.grid[rq]).all():
@@ -246,16 +240,20 @@ class SyntheticProtonRadiograph:
                 )
 
             arr = np.abs(self.grid[rq])
-            edge_max = np.max(np.array([
-                    np.max(arr[0, :, :]),
-                    np.max(arr[-1, :, :]),
-                    np.max(arr[:, 0, :]),
-                    np.max(arr[:, -1, :]),
-                    np.max(arr[:, :, 0]),
-                    np.max(arr[:, :, -1]),
-                ]))
+            edge_max = np.max(
+                np.array(
+                    [
+                        np.max(arr[0, :, :]),
+                        np.max(arr[-1, :, :]),
+                        np.max(arr[:, 0, :]),
+                        np.max(arr[:, -1, :]),
+                        np.max(arr[:, :, 0]),
+                        np.max(arr[:, :, -1]),
+                    ]
+                )
+            )
 
-            if edge_max > 1e-3*np.max(arr):
+            if edge_max > 1e-3 * np.max(arr):
                 unit = grid.recognized_quantities[rq].unit
                 warnings.warn(
                     "Fields should go to zero at edges of grid to avoid "
@@ -266,13 +264,9 @@ class SyntheticProtonRadiograph:
                     RuntimeWarning,
                 )
 
-
-
-
     def _log(self, msg):
         if self.verbose:
             print(msg)
-
 
     # Define some constants so they don't get constantly re-evaluated
     _e = const.e.si.value
@@ -318,13 +312,12 @@ class SyntheticProtonRadiograph:
 
         self._log("Creating Particles")
 
-
         self.q = self._e
         self.m = self._m_p
 
         # Calculate the velocity corresponding to the proton energy
-        ER = self.proton_energy*1.6e-19/(self.m*self._c**2)
-        self.v0 = self._c*np.sqrt(1 - 1/(ER+1)**2)
+        ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
+        self.v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the proton
@@ -373,10 +366,6 @@ class SyntheticProtonRadiograph:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
-
-
-
-
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
         Calculate the appropraite dt based on a number of considerations
@@ -391,18 +380,18 @@ class SyntheticProtonRadiograph:
         # min is taken for irregular grids, in which different particles
         # have different local grid resolutions
         ds = self._adaptive_ds()
-        gridstep = 0.5*(np.min(ds) / self.v0)
+        gridstep = 0.5 * (np.min(ds) / self.v0)
 
-        #print(f"gridstep = {gridstep.to(u.s):.1e}")
+        # print(f"gridstep = {gridstep.to(u.s):.1e}")
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
-        Bmag = np.max( np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
+        Bmag = np.max(np.sqrt(Bx ** 2 + By ** 2 + Bz ** 2)).to(u.T).value
 
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = (2 * np.pi * self._m_p / (self._e * np.max(Bmag)))
+            gyroperiod = 2 * np.pi * self._m_p / (self._e * np.max(Bmag))
 
         # TODO: introduce a minimum timestep based on electric fields too!
 
@@ -414,7 +403,6 @@ class SyntheticProtonRadiograph:
 
         # dt is the min of the remaining candidates
         return np.min(candidates)
-
 
     def _adaptive_ds(self):
         r"""
@@ -429,11 +417,11 @@ class SyntheticProtonRadiograph:
             ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
             return ds.to(u.m).value
         else:
-            raise NotImplementedError("Adaptive timestep is not yet supportd for "
-                                      "non-uniform grids, because the adaptive "
-                                      "grid resolution is not supported.")
-
-
+            raise NotImplementedError(
+                "Adaptive timestep is not yet supportd for "
+                "non-uniform grids, because the adaptive "
+                "grid resolution is not supported."
+            )
 
     def _advance_to_grid(self):
         r"""
@@ -445,14 +433,12 @@ class SyntheticProtonRadiograph:
         dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
 
         # Find the particle with the highest speed towards the grid
-        vmax = np.max( np.dot(self.v, -self.src_n) )
-
+        vmax = np.max(np.dot(self.v, -self.src_n))
 
         # Time for fastest possible particle to reach the grid.
         t = dist / vmax
 
         self.x = self.x + self.v * t
-
 
     def _generate_null(self):
         r"""
@@ -472,8 +458,6 @@ class SyntheticProtonRadiograph:
 
         # Calculate the particle positions for that case
         self.x0 = self.source + self.v * np.outer(t, np.ones(3))
-
-
 
     def _advance_to_detector(self):
         r"""
@@ -507,18 +491,16 @@ class SyntheticProtonRadiograph:
         plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
         assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
 
-
     def _push(self):
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
 
-
         # Calculate the local grid resolution for each particle
         self._adaptive_ds()
 
-        pos = self.x[self.grid_ind,:]*u.m
+        pos = self.x[self.grid_ind, :] * u.m
 
         # Update the list of particles on and off the grid
         self.on_grid = self.grid.on_grid(pos)
@@ -526,19 +508,19 @@ class SyntheticProtonRadiograph:
         # entered the grid
         self.entered_grid += self.on_grid
 
-
         # Estimate the E and B fields for each particle
         # Note that this interpolation step is BY FAR the slowest part of the push
         # loop. Any speed improvements will have to come from here.
-        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(pos, "E_x", "E_y", "E_z",
-                                                                        "B_x", "B_y", "B_z")
+        Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
+            pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z"
+        )
 
-
-        E = np.array([Ex.to(u.V/u.m).value, Ey.to(u.V/u.m).value, Ez.to(u.V/u.m).value])
+        E = np.array(
+            [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
+        )
         E = np.moveaxis(E, 0, -1)
         B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
-
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
@@ -546,13 +528,12 @@ class SyntheticProtonRadiograph:
         dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
 
         # TODO: Test v/c and implement relativistic Boris push when required
-        #vc = np.max(v)/_c
+        # vc = np.max(v)/_c
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
         boris_push(x, v, B, E, self.q, self.m, dt)
         self.x[self.grid_ind, :] = x
         self.v[self.grid_ind, :] = v
-
 
     def _stop_condition(self):
         r"""
@@ -595,10 +576,10 @@ class SyntheticProtonRadiograph:
         else:
             return False
 
-
     def run(
         self,
-        nparticles, proton_energy,
+        nparticles,
+        proton_energy,
         max_theta=0.9 * np.pi / 2 * u.rad,
         dt=None,
         field_weighting="nearest neighbor",
@@ -657,9 +638,8 @@ class SyntheticProtonRadiograph:
         self.max_theta = max_theta.to(u.rad).value
         self.field_weighting = field_weighting
 
-
         if dt is None:
-            self.dt = np.array([0., np.inf])*u.s
+            self.dt = np.array([0.0, np.inf]) * u.s
         else:
             self.dt = dt
 
@@ -686,9 +666,6 @@ class SyntheticProtonRadiograph:
         self._advance_to_detector()
 
         self._log("Run completed")
-
-
-
 
     def synthetic_radiograph(
         self, size=None, bins=[200, 200], null=False, optical_density=False
@@ -767,8 +744,6 @@ class SyntheticProtonRadiograph:
             )
 
             size = np.array([[-w, w], [-w, w]]) * self.grid.unit
-
-
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(

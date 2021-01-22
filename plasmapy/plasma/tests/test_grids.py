@@ -118,21 +118,18 @@ def test_grid_methods():
         np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
     )
 
-
     # Test on-grid
     pos = np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm
     out = grid.on_grid(pos)
     assert np.all(out == np.array([True, False]))
 
-
     # Test vector_intersects
     # This vector passes through the grid
-    p1, p2 = np.array([0,-5,0])*u.cm, np.array([0,5,0])*u.cm
+    p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm
     assert grid.vector_intersects(p1, p2) == True
     # This one doesn't
-    p1, p2 = np.array([0,-5,0])*u.cm, np.array([0,-5,10])*u.cm
+    p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm
     assert grid.vector_intersects(p1, p2) == False
-
 
 
 def test_interpolate_indices():
@@ -248,11 +245,11 @@ def test_NonUniformCartesianGrid():
 
 
 if __name__ == "__main__":
-    #test_AbstractGrid()
-    #test_CartesianGrid()
+    # test_AbstractGrid()
+    # test_CartesianGrid()
     test_grid_methods()
     # test_interpolate_indices()
-    #test_nearest_neighbor_interpolator()
-    #test_volume_averaged_interpolator()
+    # test_nearest_neighbor_interpolator()
+    # test_volume_averaged_interpolator()
     # test_NonUniformCartesianGrid()
     pass
