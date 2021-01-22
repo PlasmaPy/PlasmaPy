@@ -963,6 +963,7 @@ class CartesianGrid(AbstractGrid):
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
+        nargs = len(args)
 
         # Get the indices that are equal to nan (fill values), then set
         # their values to 0. They will be over-written after the interpolation
@@ -976,15 +977,17 @@ class CartesianGrid(AbstractGrid):
 
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
+        nx, ny, nz = self.shape
 
-        # Load the arrays to be interpolated from
-        quantities = {}
+        # Load the arrays to be interpolated from and their units
+        quantities = np.zeros([nx, ny, nz, nargs])
+        units = []
+        for j,arg in enumerate(args):
+            quantities[...,j] = self.ds[arg].values
+            units.append(self.ds[arg].attrs["unit"])
+
         # Create a list of empty arrays to hold results
-        output = []
-        # Fill both arrays
-        for arg in args:
-            quantities[arg] = (self.ds[arg].values, self.ds[arg].attrs["unit"])
-            output.append(np.zeros([nparticles]))
+        sum_value = np.zeros([nparticles, nargs])
 
         # Strip units from pos (eliminate unit operations in loop)
         pos = pos.si.value
@@ -1007,7 +1010,6 @@ class CartesianGrid(AbstractGrid):
         # Calculate the cell volume
         cell_vol = self.dax0.si.value * self.dax1.si.value * self.dax2.si.value
         n0, n1, n2 = self.shape
-
 
         # Go through all of the vertices around the position and volume-
         # weight the values
@@ -1034,18 +1036,16 @@ class CartesianGrid(AbstractGrid):
                     weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
                     #weight = weight.to(u.dimensionless_unscaled)
                     weight[out] = 0
+                    weight *= nan_mask
+                    weight = np.outer(weight, np.ones([6]))
 
-                    # For each argument, include the contributed by this
-                    # grid vertex
-                    for i, arg in enumerate(args):
-                        # Apply nan_mask to set out-of-bounds values to 0
-                        # Also apply weights
-                        # Then, add to the output array
-                        output[i] += weight * nan_mask * quantities[arg][0][x, y, z]
+                    sum_value +=  weight * quantities[x,y,z,:]
 
-        # Apply units to output array
-        for i, arg in enumerate(args):
-            output[i] *= quantities[arg][1]
+        # Split output array into arrays with units
+        # Apply units to output arrays
+        output = []
+        for i in range(nargs):
+            output.append(sum_value[:,i]*units[i])
 
         if len(output) == 1:
             return output[0]
