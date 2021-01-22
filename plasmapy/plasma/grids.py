@@ -720,7 +720,7 @@ class AbstractGrid(ABC):
     # Interpolators
     # *************************************************************************
 
-    # These arrays are used to enable persistant interpolation (faster repeated
+    # These arrays are used to enable persistent interpolation (faster repeated
     # calls with the same grid and arguments)
 
     _interp_args = []
@@ -828,7 +828,7 @@ class AbstractGrid(ABC):
         return i
 
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -844,11 +844,11 @@ class AbstractGrid(ABC):
         *args : str
             Strings that correspond to DataArrays in the dataset
 
-        persistant : bool
+        persistent : bool
             If true, the interpolator will assume the grid and its contents have not
             changed since the last interpolation. This substantially speeds up the
             interpolation when many interpolations are performed on the same grid
-            in a loop. Persistant overrides to False if the arguments list has
+            in a loop. persistent overrides to False if the arguments list has
             changed since the last call.
 
         """
@@ -887,12 +887,12 @@ class AbstractGrid(ABC):
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
 
-        # If persistant, double check the arguments list hasn't changed
-        # If they have, run as non-persistant this time
-        if persistant and args != self._interp_args:
-            persistant = False
+        # If persistent, double check the arguments list hasn't changed
+        # If they have, run as non-persistent this time
+        if persistent and args != self._interp_args:
+            persistent = False
 
-        if not persistant or self._interp_quantities is None:
+        if not persistent or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
             if self.is_uniform_grid:
                 nx, ny, nz = self.shape
@@ -923,7 +923,7 @@ class AbstractGrid(ABC):
         for i in range(nargs):
             output.append(values[:, i] * self._interp_units[i])
 
-        if not persistant:
+        if not persistent:
             self.interp_quantities = None
             self.interp_units = None
 
@@ -933,7 +933,7 @@ class AbstractGrid(ABC):
             return tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -949,11 +949,11 @@ class AbstractGrid(ABC):
         *args : str
             Strings that correspond to DataArrays in the dataset
 
-        persistant : bool
+        persistent : bool
             If true, the interpolator will assume the grid and its contents have not
             changed since the last interpolation. This substantially speeds up the
             interpolation when many interpolations are performed on the same grid
-            in a loop. Persistant overrides to False if the arguments list has
+            in a loop. persistent overrides to False if the arguments list has
             changed since the last call.
 
         """
@@ -980,7 +980,7 @@ class CartesianGrid(AbstractGrid):
                 )
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
 
         # Condition pos
@@ -1022,12 +1022,12 @@ class CartesianGrid(AbstractGrid):
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
 
-        # If persistant, double check the arguments list hasn't changed
-        # If they have, run as non-persistant this time
-        if persistant and args != self._interp_args:
-            persistant = False
+        # If persistent, double check the arguments list hasn't changed
+        # If they have, run as non-persistent this time
+        if persistent and args != self._interp_args:
+            persistent = False
 
-        if not persistant or self._interp_quantities is None:
+        if not persistent or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
             nx, ny, nz = self.shape
             self._interp_quantities = np.zeros([nx, ny, nz, nargs])
@@ -1096,7 +1096,7 @@ class CartesianGrid(AbstractGrid):
         for i in range(nargs):
             output.append(sum_value[:, i] * self._interp_units[i])
 
-        if not persistant:
+        if not persistent:
             self.interp_quantities = None
             self.interp_units = None
 
