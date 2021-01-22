@@ -109,7 +109,6 @@ or directly in GitHub issues, as appropriate, for further discussion.
 PlasmaPy is permissively licensed under a
 [3-clause BSD license with added protections
 against software patents](LICENSE.md).
-
 # Citing PlasmaPy
 
 An [emerging best practice for software
@@ -119,8 +118,8 @@ only citing a journal article, website, or GitHub repository). The
 citation should include a persistent identifier that uniquely identifies
 which version of the software was used. We therefore ask that you cite
 the specific version of PlasmaPy used in your research project. Releases
-of PlasmaPy are available in the 
-[PlasmaPy community](https://zenodo.org/communities/plasmapy) on 
+of PlasmaPy are available in the
+[PlasmaPy community](https://zenodo.org/communities/plasmapy) on
 [Zenodo](https://zenodo.org/), along with many other PlasmaPy resources.
 Please check our documentation for more detailed [citation
 instructions](./docs/about/citation.rst).
