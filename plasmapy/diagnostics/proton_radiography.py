@@ -14,8 +14,6 @@ import astropy.units as u
 import numpy as np
 import warnings
 
-from abc import ABC, abstractmethod
-
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
@@ -47,18 +45,15 @@ class SyntheticProtonRadiograph:
     Represents a proton radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
     coordinates. The proton source and detector plane are defined by vectors
-    from the origin of the field grid, and the energy of the protons
-    can be set.
+    from the origin of the grid.
 
     Parameters
     ----------
-    grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass
+    grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
         A Grid object containing the required keys [E_x, E_y, E_z, B_x, B_y, B_z]
 
-
-
     source : `~astropy.units.Quantity`, shape (3)
-        A vector pointing from the origin of the field grid to the location
+        A vector pointing from the origin of the grid to the location
         of the proton point source. This vector will be interpreted as
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
@@ -68,16 +63,11 @@ class SyntheticProtonRadiograph:
         In spherical coordinates theta is the polar angle.
 
     detector : `~astropy.units.Quantity`, shape (3)
-        A vector pointing from the origin of the field grid to the center
+        A vector pointing from the origin of the grid to the center
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
         can also be specified in cartesian, cylindrical, or spherical
-        coordinates by setting the geometry keyword and using the
-        appropriate units (see the `source` keyword`)
-
-    proton_energy : `~astropy.units.Quantity`, optional
-        The energy of the protons, convertable to eV. The default is
-        14 MeV.
+        coordinates (see the `source` keyword).
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
@@ -89,7 +79,6 @@ class SyntheticProtonRadiograph:
         grid: AbstractGrid,
         source: u.m,
         detector: u.m,
-        proton_energy=15 * u.MeV,
         verbose=True,
     ):
         r"""
@@ -103,7 +92,6 @@ class SyntheticProtonRadiograph:
         # so that it isn't continously called later
         self.grid_arr = grid.grid.to(u.m).value
 
-        self.proton_energy = proton_energy
         self.verbose = verbose
 
         # ************************************************************************
@@ -225,12 +213,14 @@ class SyntheticProtonRadiograph:
             if rq not in list(self.grid.ds.data_vars):
                 warnings.warn(
                     f"{rq} not specified for provided grid."
-                    "This quantity will be assumed to be zero."
+                    "This quantity will be assumed to be zero.",
+                    RuntimeWarning,
                 )
                 # If missing, warn user and then replace with an array of zeros
                 unit = self.grid._recognized_quantities[rq].unit
                 arg = {rq: np.zeros(self.grid.shape) * unit}
                 self.grid.add_quantities(**arg)
+
 
             # Check that there are no infinite values
             if not np.isfinite(self.grid[rq]).all():
@@ -239,6 +229,8 @@ class SyntheticProtonRadiograph:
                     "either NaN or infinite values."
                 )
 
+            # Check that the max values on the edges of the arrays are
+            # small relative to the maximum values on that grid
             arr = np.abs(self.grid[rq])
             edge_max = np.max(
                 np.array(
@@ -366,6 +358,25 @@ class SyntheticProtonRadiograph:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
+    def _adaptive_ds(self):
+        r"""
+        Compute the local grid resolution for each particle (used for determining
+        a maximum timestep based on grid spacing).
+        """
+
+        # TODO: Replace with call to grid.grid_resolution.
+        # Can't apply to non-uniform grids until grid_resolution is defined for those
+
+        if self.grid.is_uniform_grid:
+            ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
+            return ds.to(u.m).value
+        else:
+            raise NotImplementedError(
+                "Adaptive timestep is not yet supportd for "
+                "non-uniform grids, because the adaptive "
+                "grid resolution is not supported."
+            )
+
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
         Calculate the appropraite dt based on a number of considerations
@@ -404,24 +415,6 @@ class SyntheticProtonRadiograph:
         # dt is the min of the remaining candidates
         return np.min(candidates)
 
-    def _adaptive_ds(self):
-        r"""
-        Compute the local grid resolution for each particle (used for determining
-        a maximum timestep based on grid spacing).
-        """
-
-        # TODO: Replace with call to grid.grid_resolution.
-        # Can't apply to non-uniform grids until grid_resolution is defined for those
-
-        if self.grid.is_uniform_grid:
-            ds = min([self.grid.dax0, self.grid.dax1, self.grid.dax2])
-            return ds.to(u.m).value
-        else:
-            raise NotImplementedError(
-                "Adaptive timestep is not yet supportd for "
-                "non-uniform grids, because the adaptive "
-                "grid resolution is not supported."
-            )
 
     def _advance_to_grid(self):
         r"""
@@ -438,6 +431,7 @@ class SyntheticProtonRadiograph:
         # Time for fastest possible particle to reach the grid.
         t = dist / vmax
 
+        # Coast the particles to the advanced position
         self.x = self.x + self.v * t
 
     def _generate_null(self):

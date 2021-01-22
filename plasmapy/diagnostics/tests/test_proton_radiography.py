@@ -249,7 +249,7 @@ def test_input_validation():
 if __name__ == "__main__":
     pass
     # test_coordinate_systems()
-    test_input_validation()
+    # test_input_validation()
     # test_1D_deflections()
 
 
