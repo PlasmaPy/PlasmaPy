@@ -46,7 +46,6 @@ class AbstractGrid(ABC):
     def __init__(self, *seeds, num=100, **kwargs):
 
         # Initialize some variables
-        self._is_uniform_grid = None
         self._interpolator = None
 
         # If three inputs are given, assume it's a user-provided grid
@@ -128,7 +127,7 @@ class AbstractGrid(ABC):
 
         s += f"Dimensions: ({', '.join(coord_lbls)})\n"
 
-        if self.is_uniform_grid:
+        if self.is_uniform:
             s += (
                 "Uniformly Spaced: (dax0, dax1, dax2) = "
                 f"({self.dax0:.3f}, {self.dax1:.3f}, {self.dax2:.3f})\n"
@@ -173,7 +172,7 @@ class AbstractGrid(ABC):
     @property
     def shape(self):
         r""" Shape of the grid"""
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
         else:
             return self.ds.coords["ax0"].shape
@@ -184,7 +183,7 @@ class AbstractGrid(ABC):
         Three grids of vertex positions (in each coordinate), each having
         shape (N0, N1, N2)
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             pts0, pts1, pts2 = np.meshgrid(self.ax0, self.ax1, self.ax2, indexing="ij")
             _grids = (pts0, pts1, pts2)
         else:
@@ -204,7 +203,7 @@ class AbstractGrid(ABC):
         Only defined for grids for which the `unit` property is defined.
         """
         pts0, pts1, pts2 = self.grids
-        if self.is_uniform_grid:
+        if self.is_uniform:
             n0, n1, n2 = pts0.shape
             grid = np.zeros([n0, n1, n2, 3]) * self.unit
         else:
@@ -286,7 +285,7 @@ class AbstractGrid(ABC):
             If grid is non-uniform.
         """
 
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return self.ds.coords["ax0"].values * self.unit0
         else:
             raise ValueError(
@@ -303,7 +302,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return self.ds.coords["ax1"].values * self.unit1
         else:
             raise ValueError(
@@ -320,7 +319,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return self.ds.coords["ax2"].values * self.unit2
         else:
             raise ValueError(
@@ -337,7 +336,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return np.mean(np.gradient(self.ax0))
         else:
             raise ValueError(
@@ -355,7 +354,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return np.mean(np.gradient(self.ax1))
         else:
             raise ValueError(
@@ -373,7 +372,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return np.mean(np.gradient(self.ax2))
         else:
             raise ValueError(
@@ -391,7 +390,7 @@ class AbstractGrid(ABC):
         For non-uniform grids, it is the closest spacing between any two points.
         """
 
-        if self.is_uniform_grid:
+        if self.is_uniform:
             return min(self.dax0, self.dax1, self.dax2)
         else:
             # Make a deep copy the grid
@@ -443,13 +442,13 @@ class AbstractGrid(ABC):
                 f"pts2 = {pts2.shape}."
             )
 
-        self.is_uniform_grid = _detect_is_uniform_grid(pts0, pts1, pts2)
+        self.is_uniform = _detect_is_uniform_grid(pts0, pts1, pts2)
 
         # Create dataset
         self.ds = xr.Dataset()
 
         self.ds.attrs["axis_units"] = [pts0.unit, pts1.unit, pts2.unit]
-        if self.is_uniform_grid:
+        if self.is_uniform:
             self.ds.coords["ax0"] = pts0[:, 0, 0]
             self.ds.coords["ax1"] = pts1[0, :, 0]
             self.ds.coords["ax2"] = pts2[0, 0, :]
@@ -508,7 +507,7 @@ class AbstractGrid(ABC):
                     f"Warning: {key} is not recognized quantity key", stacklevel=2
                 )
 
-            if self.is_uniform_grid:
+            if self.is_uniform:
                 axes = ["ax0", "ax1", "ax2"]
             # If grid is non-uniform, flatten quantity
             else:
@@ -665,7 +664,7 @@ class AbstractGrid(ABC):
             pos = pos.si.value
 
         # Find the bounds
-        if self.is_uniform_grid:
+        if self.is_uniform:
             ax0_min, ax0_max = np.min(self.ax0.si.value), np.max(self.ax0.si.value)
             ax1_min, ax1_max = np.min(self.ax1.si.value), np.max(self.ax1.si.value)
             ax2_min, ax2_max = np.min(self.ax2.si.value), np.max(self.ax2.si.value)
@@ -734,7 +733,7 @@ class AbstractGrid(ABC):
         to a position.
         """
         if self._interpolator is None:
-            if self.is_uniform_grid:
+            if self.is_uniform:
                 self._make_uniform_grid_interpolator()
             else:
                 self._make_nonuniform_grid_interpolator()
@@ -878,7 +877,7 @@ class AbstractGrid(ABC):
         # position are NaN, and 0 otherwise.
 
         # i has different shape for non-uniform grids
-        if self.is_uniform_grid:
+        if self.is_uniform:
             nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
         else:
             nan_mask = np.where(np.isnan(i), 0, 1)
@@ -894,7 +893,7 @@ class AbstractGrid(ABC):
 
         if not persistent or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
-            if self.is_uniform_grid:
+            if self.is_uniform:
                 nx, ny, nz = self.shape
                 self._interp_quantities = np.zeros([nx, ny, nz, nargs])
             else:
@@ -908,7 +907,7 @@ class AbstractGrid(ABC):
                 self._interp_units.append(self.ds[arg].attrs["unit"])
 
         # Fetch the values at those indices from each quantity
-        if self.is_uniform_grid:
+        if self.is_uniform:
             values = self._interp_quantities[i[:, 0], i[:, 1], i[:, 2], :]
         else:
             values = self._interp_quantities[i]

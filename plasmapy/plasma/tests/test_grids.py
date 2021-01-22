@@ -14,7 +14,7 @@ def test_AbstractGrid():
 
     # Create grid with single u.Quantity args
     grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=10)
-    assert grid.is_uniform_grid
+    assert grid.is_uniform
 
     # Create grid with lists of  u.Quantity args
     grid = grids.AbstractGrid(
@@ -22,13 +22,13 @@ def test_AbstractGrid():
         [1 * u.cm, 1 * u.cm, 1 * u.cm],
         num=[10, 10, 10],
     )
-    assert grid.is_uniform_grid
+    assert grid.is_uniform
 
     # Create grid with arrays of u.quantities
     grid = grids.AbstractGrid(
         np.array([-1] * 3) * u.cm, np.array([1] * 3) * u.cm, num=[10, 10, 10]
     )
-    assert grid.is_uniform_grid
+    assert grid.is_uniform
 
     print(grid)
 
@@ -96,12 +96,12 @@ def test_CartesianGrid():
     x_arr, y_arr, z_arr = grid.grids
     x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
     d_x, d_y, d_z = grid.dax0, grid.dax1, grid.dax2
-    is_uniform_grid = grid.is_uniform_grid
+    is_uniform = grid.is_uniform
     shape = grid.shape
     unit = grid.units
 
     # Grid should be uniform
-    assert grid.is_uniform_grid == True
+    assert grid.is_uniform == True
 
     # Test initializing with a provided grid
     grid2 = grids.CartesianGrid(grid.grids[0], grid.grids[1], grid.grids[2],)
@@ -256,7 +256,7 @@ def test_NonUniformCartesianGrid():
     units = grid.units
 
     # Grid should be non-uniform
-    assert grid.is_uniform_grid == False
+    assert grid.is_uniform == False
 
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
