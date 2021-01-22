@@ -750,6 +750,11 @@ class SyntheticProtonRadiograph:
             xloc, yloc, range=size.to(u.m).value, bins=bins
         )
 
+        # h, v are the bin edges: compute the centers to produce arrays
+        # of the right length (then trim off the extra point)
+        h = ((h + np.roll(h, -1))/2)[0:-1]
+        v = ((v + np.roll(v, -1))/2)[0:-1]
+
         # Throw a warning if < 50% of the particles are included on the
         # histogram
         percentage = 100 * np.sum(intensity) / self.nparticles
