@@ -123,15 +123,13 @@ def run_1D_example(name):
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     # Catch warnings (test fields aren't well behaved at edges)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
 
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-        sim.run(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.run(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
 
-        size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
-        bins = [200, 60]
-        hax, vax, values = sim.synthetic_radiograph(size=size, bins=bins)
+    size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
+    bins = [200, 60]
+    hax, vax, values = sim.synthetic_radiograph(size=size, bins=bins)
 
     values = np.mean(values[:, 20:40], axis=1)
 
@@ -219,6 +217,12 @@ def test_input_validation():
             grid, source_bad, detector_bad, verbose=False
         )
 
+    # Test raises warning when one (or more) of the required fields is missing
+    grid_bad = CartesianGrid(-1*u.mm, 1*u.mm, num=50)
+    with pytest.warns(RuntimeWarning):
+        sim = prad.SyntheticProtonRadiograph(grid_bad, source, detector, verbose=True)
+
+
     # ************************************************************************
     # During runtime
     # ************************************************************************
@@ -245,5 +249,7 @@ def test_input_validation():
 if __name__ == "__main__":
     pass
     # test_coordinate_systems()
-    # test_input_validation()
+    test_input_validation()
     # test_1D_deflections()
+
+
