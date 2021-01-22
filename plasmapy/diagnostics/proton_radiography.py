@@ -77,11 +77,7 @@ class SyntheticProtonRadiograph:
     """
 
     def __init__(
-        self,
-        grid: AbstractGrid,
-        source: u.m,
-        detector: u.m,
-        verbose=True,
+        self, grid: AbstractGrid, source: u.m, detector: u.m, verbose=True,
     ):
         r"""
         Initalize the SyntheticProtonRadiograph object, carry out coordinate transformations,
@@ -224,7 +220,6 @@ class SyntheticProtonRadiograph:
                 arg = {rq: np.zeros(self.grid.shape) * unit}
                 self.grid.add_quantities(**arg)
 
-
             # Check that there are no infinite values
             if not np.isfinite(self.grid[rq]).all():
                 raise ValueError(
@@ -362,14 +357,13 @@ class SyntheticProtonRadiograph:
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
 
-
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
         Calculate the appropraite dt based on a number of considerations
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
-        # If dt was explicitly set, ignore this fcn
+        # If dt was explicitly set, skip the rest of this function
         if self.dt.size == 1:
             return self.dt
 
@@ -377,12 +371,11 @@ class SyntheticProtonRadiograph:
         ds = self.grid.grid_resolution.to(u.m).value
         gridstep = 0.5 * (np.min(ds) / self.v0)
 
-        # print(f"gridstep = {gridstep.to(u.s):.1e}")
-
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
         Bmag = np.max(np.sqrt(Bx ** 2 + By ** 2 + Bz ** 2)).to(u.T).value
 
+        # Compute the gyroperiod
         if Bmag == 0:
             gyroperiod = np.inf
         else:
@@ -398,7 +391,6 @@ class SyntheticProtonRadiograph:
 
         # dt is the min of the remaining candidates
         return np.min(candidates)
-
 
     def _advance_to_grid(self):
         r"""
@@ -486,17 +478,16 @@ class SyntheticProtonRadiograph:
         # Estimate the E and B fields for each particle
         # Note that this interpolation step is BY FAR the slowest part of the push
         # loop. Any speed improvements will have to come from here.
-        if self.field_weighting == 'volume averaged':
+        if self.field_weighting == "volume averaged":
             Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
-                persistant=True,
+                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z", persistant=True,
             )
-        elif self.field_weighting == 'nearest neighbor':
+        elif self.field_weighting == "nearest neighbor":
             Ex, Ey, Ez, Bx, By, Bz = self.grid.nearest_neighbor_interpolator(
-                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z",
-                persistant=True,
+                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z", persistant=True,
             )
 
+        # Create arrays of E and B as required by push algorithm
         E = np.array(
             [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
         )
@@ -511,6 +502,7 @@ class SyntheticProtonRadiograph:
 
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
+
         x = self.x[self.grid_ind, :]
         v = self.v[self.grid_ind, :]
         boris_push(x, v, B, E, self.q, self.m, dt)
@@ -621,13 +613,15 @@ class SyntheticProtonRadiograph:
         self.proton_energy = proton_energy.to(u.eV).value
         self.max_theta = max_theta.to(u.rad).value
 
-        field_weightings = ['volume averaged', 'nearest neighbor']
+        field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
             self.field_weighting = field_weighting
         else:
-            raise ValueError(f"{field_weighting} is not a valid option for ",
-                             "field_weighting. Valid choices are",
-                             f"{field_weightings}")
+            raise ValueError(
+                f"{field_weighting} is not a valid option for ",
+                "field_weighting. Valid choices are",
+                f"{field_weightings}",
+            )
 
         if dt is None:
             # Set dt as an infinite range by default (auto dt with no restrictions)

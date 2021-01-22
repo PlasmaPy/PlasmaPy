@@ -19,6 +19,7 @@ from abc import ABC
 from collections import namedtuple
 from typing import Union
 
+
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
@@ -826,7 +827,9 @@ class AbstractGrid(ABC):
 
         return i
 
-    def nearest_neighbor_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
+    def nearest_neighbor_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+    ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
         no higher-order weighting.
@@ -863,8 +866,6 @@ class AbstractGrid(ABC):
                     f"Existing keys are: {self.quantities}"
                 )
 
-
-
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
@@ -886,12 +887,10 @@ class AbstractGrid(ABC):
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
 
-
         # If persistant, double check the arguments list hasn't changed
         # If they have, run as non-persistant this time
         if persistant and args != self._interp_args:
             persistant = False
-
 
         if not persistant or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
@@ -907,7 +906,6 @@ class AbstractGrid(ABC):
             for j, arg in enumerate(args):
                 self._interp_quantities[..., j] = self.ds[arg].values
                 self._interp_units.append(self.ds[arg].attrs["unit"])
-
 
         # Fetch the values at those indices from each quantity
         if self.is_uniform_grid:
@@ -934,7 +932,9 @@ class AbstractGrid(ABC):
         else:
             return tuple(output)
 
-    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
+    def volume_averaged_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+    ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
         no higher-order weighting.
@@ -979,9 +979,9 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
-
-
-    def volume_averaged_interpolator(self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False):
+    def volume_averaged_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistant=False
+    ):
 
         # Condition pos
         # If a single point was given, add empty dimension
@@ -1022,12 +1022,10 @@ class CartesianGrid(AbstractGrid):
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
 
-
         # If persistant, double check the arguments list hasn't changed
         # If they have, run as non-persistant this time
         if persistant and args != self._interp_args:
             persistant = False
-
 
         if not persistant or self._interp_quantities is None:
             # Load the arrays to be interpolated from and their units
@@ -1038,7 +1036,6 @@ class CartesianGrid(AbstractGrid):
             for j, arg in enumerate(args):
                 self._interp_quantities[..., j] = self.ds[arg].values
                 self._interp_units.append(self.ds[arg].attrs["unit"])
-
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])

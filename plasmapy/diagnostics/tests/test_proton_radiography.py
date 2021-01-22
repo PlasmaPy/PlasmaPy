@@ -218,10 +218,9 @@ def test_input_validation():
         )
 
     # Test raises warning when one (or more) of the required fields is missing
-    grid_bad = CartesianGrid(-1*u.mm, 1*u.mm, num=50)
+    grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
     with pytest.warns(RuntimeWarning):
         sim = prad.SyntheticProtonRadiograph(grid_bad, source, detector, verbose=True)
-
 
     # ************************************************************************
     # During runtime
@@ -235,8 +234,12 @@ def test_input_validation():
 
     # Test an invalid field weighting keyword
     with pytest.raises(ValueError):
-        sim.run(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad,
-                field_weighting = 'not a valid field weighting')
+        sim.run(
+            1e3,
+            15 * u.MeV,
+            max_theta=0.99 * np.pi / 2 * u.rad,
+            field_weighting="not a valid field weighting",
+        )
 
     # ************************************************************************
     # During runtime
@@ -251,7 +254,6 @@ def test_input_validation():
         hax, vax, values = sim.synthetic_radiograph(size=size)
 
 
-
 def test_run_options():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -262,8 +264,7 @@ def test_run_options():
     # Catch warnings (test fields aren't well behaved at edges)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.run(1e4, 3 * u.MeV, max_theta=10 * u.deg, field_weighting = 'nearest neighbor')
-
+    sim.run(1e4, 3 * u.MeV, max_theta=10 * u.deg, field_weighting="nearest neighbor")
 
 
 if __name__ == "__main__":
@@ -272,4 +273,3 @@ if __name__ == "__main__":
     test_1D_deflections()
     test_run_options()
     pass
-
