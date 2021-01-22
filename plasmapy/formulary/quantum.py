@@ -54,8 +54,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         Particle velocity in units convertible to meters per second.
 
     particle : str or ~astropy.units.Quantity
-        Representation of the particle species (e.g., `'e'`, `'p'`, `'D+'`,
-        or `'He-4 1+'`) or the particle mass in units convertible to
+        Representation of the particle species (e.g., ``'e'``, ``'p'``, ``'D+'``,
+        or ``'He-4 1+'``) or the particle mass in units convertible to
         kilograms.
 
     Returns
@@ -77,8 +77,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
-        If units are not provided, SI units are assumed
+    : ~astropy.units.UnitsWarning
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
