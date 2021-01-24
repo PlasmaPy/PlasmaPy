@@ -1859,6 +1859,9 @@ class DimensionlessParticle(AbstractParticle):
                 "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
+    def antiparticle(self):
+        """Return an antiparticle of `CustomParticle`."""
+        return DimensionlessParticle(mass=self.mass, charge=-self.charge)
 
 class CustomParticle(AbstractParticle):
     """
@@ -2035,6 +2038,9 @@ class CustomParticle(AbstractParticle):
                 "the elementary charge."
             )
 
+    def antiparticle(self):
+        """Return an antiparticle of `CustomParticle`."""
+        return CustomParticle(mass=self.mass, charge=-self.charge)
 
 # TODO: Describe valid particle representations in docstring of particle_like
 
