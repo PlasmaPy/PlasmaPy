@@ -2042,6 +2042,10 @@ class CustomParticle(AbstractParticle):
         """Return an antiparticle of `CustomParticle`."""
         return CustomParticle(mass=self.mass, charge=-self.charge)
 
+    def particle(self):
+        """Return a symbol representing the custom particle."""
+        return self.__repr__()
+
 # TODO: Describe valid particle representations in docstring of particle_like
 
 particle_like = Union[str, Integral, Particle]
