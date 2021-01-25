@@ -1885,6 +1885,7 @@ class DimensionlessParticle(AbstractParticle):
                 "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
+
 class CustomParticle(AbstractParticle):
     """
     A class to represent custom particles.
