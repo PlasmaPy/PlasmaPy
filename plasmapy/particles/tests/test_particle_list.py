@@ -24,16 +24,16 @@ particle_list_arguments = [
     (custom_particle, electron, "e-"),
 ]
 
-attributes = [
-    "antiparticle",
+numerical_attributes = [
+#    "antiparticle",
     "baryon_number",
     "binding_energy",
     "charge",
     "half_life",
     "isotopic_abundance",
-    "lepton_number",
     "mass",
     "mass_number",
+    "mass_energy",
     "roman_symbol",
     "spin",
     "standard_atomic_weight",
@@ -47,8 +47,8 @@ def test_particle_list_creation_membership(args):
         assert isinstance(particle, (Particle, CustomParticle))
 
 
-@pytest.mark.parametrize("attribute", attributes)
-def test_particle_list_attributes(attribute):
+@pytest.mark.parametrize("attribute", numerical_attributes)
+def test_particle_list_quantity_attributes(attribute):
     """
     Test that the attributes of ParticleList correspond to the
     attributes of the listed particles.
