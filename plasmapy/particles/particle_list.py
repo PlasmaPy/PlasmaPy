@@ -15,7 +15,6 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    particle_like,
 )
 
 
@@ -61,7 +60,7 @@ class ParticleList(collections.UserList):
                     new_particles.append(Particle(obj))
                 except (TypeError, InvalidParticleError) as exc:
                     raise InvalidParticleError(
-                        f"The object {obj} supplied to ParticleList is not particle-like."
+                        f"The object {obj} supplied to ParticleList is not a "
                         f"particle-like object."
                     ) from exc
 
@@ -77,56 +76,40 @@ class ParticleList(collections.UserList):
     def __str__(self):
         return f"ParticleList({repr(self.data)})"
 
-    def _get_particle_attribute(self, attr, unit=None, expected_type=None):
+    def _get_particle_attribute(self, attr, unit=None, default=None):
+        """
+        Get the values of a particular attribute from all of the particles.
+
+        If a ``unit`` is provided, then this function will return a
+        `~astropy.units.Quantity`
+
+        """
 
         if attr in self._attribute_values:
             return self._attribute_values[attr]
 
-        if unit:
-            default_value = np.nan * unit
-        elif expected_type is str:
-            default_value = ""
-        elif expected_type in (float, int):
-            default_value = np.nan
-        else:
-            default_value = None
-
         values = []
         for particle in self.data:
             try:
-                values.append(getattr(particle, attr))
+                value = getattr(particle, attr)
             except Exception:
-                values.append(default_value)
+                value = default
+            finally:
+                values.append(value)
 
         if unit:
             values = u.Quantity(values)
-        elif expected_type in (int, float):
-            values = np.array(values)
+
 
         self._attribute_values[attr] = values
 
         return values
-
-    @property
-    def antiparticle(self):
-        """A `ParticleList` with the antiparticles of the particles."""
-        return ParticleList(self._get_particle_attribute("antiparticle"))
 
     @particle_input
     def append(self, particle: Particle):
         """Append a particle to the end of the list."""
         self.data.append(particle)
         self._reset_attribute_values()
-
-    @property
-    def baryon_number(self) -> List[int]:
-        """An array of the baryon number of the particles."""
-        return self._get_particle_attribute("baryon_number", expected_type=int)
-
-    @property
-    def binding_energy(self) -> u.J:
-        """An array of the binding energies of the particles."""
-        return self._get_particle_attribute("binding_energy", unit=u.J)
 
     @property
     def charge(self) -> u.C:
@@ -152,18 +135,6 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("integer_charge", expected_type=float)
 
-    def is_category(self) -> list:
-        raise NotImplementedError
-
-    def isotopic_abundance(self) -> float:
-        """An array of the isotopic abundances of the particles."""
-        return self._get_particle_attribute("isotopic_abundance", expected_type=float)
-
-    @property
-    def lepton_number(self) -> list:
-        """An array of the lepton numbers of the particles."""
-        return self._get_particle_attribute("lepton_number")
-
     @property
     def mass(self) -> u.kg:
         """An array of the masses of the particles."""
@@ -172,7 +143,7 @@ class ParticleList(collections.UserList):
     @property
     def mass_number(self) -> list:
         """An array of the mass numbers of the particles."""
-        return self._get_particle_attribute("mass_number")
+        return self._get_particle_attribute("mass_number", default=0)
 
     @property
     def nuclide_mass(self) -> u.kg:
@@ -180,18 +151,18 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("nuclide_mass", u.kg)
 
     @property
-    def roman_symbol(self) -> List[str]:
-        """A list containing the particle symbol in Roman notation."""
-        return self._get_particle_attribute("roman_symbol", expected_type=str)
+    def particle(self) -> str:
+        """A list of the symbols of the particles."""
+        return self._get_particle_attribute("particle")
 
     @property
     def sort(self):
-        raise NotImplementedError
+        raise RuntimeError("Unable to sort a ParticleList.")
 
     @property
     def spin(self) -> np.ndarray:
         """An array containing the spins of the particles."""
-        return self._get_particle_attribute("spin")
+        return self._get_particle_attribute("spin", default=np.nan)
 
     @property
     def standard_atomic_weight(self):
@@ -199,4 +170,29 @@ class ParticleList(collections.UserList):
         An array containing the standard atomic weights of the
         particles.
         """
-        return self._get_particle_attribute("standard_atomic_weight")
+        return self._get_particle_attribute("standard_atomic_weight", unit=u.kg, default=np.nan * u.kg)
+
+    @property
+    def binding_energy(self) -> u.J:
+        """An array of the binding energies of the particles."""
+        return self._get_particle_attribute("binding_energy", unit=u.J, default=np.nan * u.J)
+
+class IonicLevels(ParticleList):
+
+    @particle_input(any_of={"element", "isotope"}, exclude={"ion"})
+    def __init__(self, particle: Particle, Z_min=0, Z_max=None):
+        """
+        Return a `list` that contains `Particle` instances for all of the
+        ionic levels of ``element``, including the neutral level.
+
+        """
+        if Z_max is None:
+            Z_max = particle.atomic_number + 1
+        self.data = [Particle(particle, Z) for Z in range(Z_min, Z_max + 1)]
+        self._reset_attribute_values()
+
+    @property
+    def roman_symbol(self) -> List[str]:
+        """A list containing the particle symbol in Roman notation."""
+        return self._get_particle_attribute("roman_symbol", default_value="N/A")
+
