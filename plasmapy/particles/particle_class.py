@@ -2036,7 +2036,19 @@ class CustomParticle(AbstractParticle):
             )
 
 
-# TODO: Describe valid particle representations in docstring of particle_like
-
 particle_like = Union[str, Integral, Particle]
-"""A typing construct for valid representations of a particle."""
+"""
+A typing construct for valid representations of a particle.
+
+A particle in PlasmaPy may be represented using:
+
+* A string with the particle's symbol or name,
+* An integer representing the atomic number, or
+* An instance of `~plasmapy.particles.particle_class.Particle`.
+
+Examples
+--------
+The particle of
+
+>>> from plasmapy.particles import Particle
+"""
