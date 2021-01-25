@@ -1,0 +1,3 @@
+Add a ``symbol`` attribute to `~plasmapy.particles.particle_class.AbstractParticle`
+and therefore `~plasmapy.particles.particle_class.CustomParticle` and
+`~plasmapy.particles.particle_class.DimensionlessParticle`.
