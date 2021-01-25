@@ -266,7 +266,7 @@ class Particle(AbstractParticle):
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `~plasmapy.particles.Particle.particle` attribute returns the
+    The `~plasmapy.particles.Particle.symbol` attribute returns the
     particle's symbol in the standard form.
 
     >>> positron.symbol
@@ -565,7 +565,7 @@ class Particle(AbstractParticle):
 
         If ``other`` is not a `str` or `~plasmapy.particles.Particle`
         instance, then this method will raise a `TypeError`.  If
-        ``other.particle`` equals ``self.particle`` but the attributes
+        ``other.symbol`` equals ``self.symbol`` but the attributes
         differ, then this method will raise a
         `~plasmapy.particles.exceptions.ParticleError`.
 
@@ -640,7 +640,7 @@ class Particle(AbstractParticle):
 
         If ``other`` is not a `str` or `~plasmapy.particles.Particle`
         instance, then this method will raise a `TypeError`.  If
-        ``other.particle`` equals ``self.particle`` but the attributes
+        ``other.symbol`` equals ``self.symbol`` but the attributes
         differ, then this method will raise a
         `~plasmapy.particles.exceptions.ParticleError`.
         """
