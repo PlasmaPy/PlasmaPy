@@ -65,11 +65,15 @@ class IonicFraction:
                 return False
 
             ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction, other.ionic_fraction, rtol=1e-15,
+                self.ionic_fraction,
+                other.ionic_fraction,
+                rtol=1e-15,
             )
 
             number_density_within_tolerance = u.isclose(
-                self.number_density, other.number_density, rtol=1e-15,
+                self.number_density,
+                other.number_density,
+                rtol=1e-15,
             )
 
             return all(
@@ -649,8 +653,7 @@ class IonizationState:
         instances corresponding to each ion.
         """
         return [
-            Particle(self._particle.symbol, Z=i)
-            for i in range(self.atomic_number + 1)
+            Particle(self._particle.symbol, Z=i) for i in range(self.atomic_number + 1)
         ]
 
     @property

@@ -684,18 +684,18 @@ class Particle(AbstractParticle):
     @property
     def particle(self) -> Optional[str]:
         """
-        Return the particle's symbol.
+            Return the particle's symbol.
 
-    .. deprecated:: 0.6.0
-          `Particle.symbol` has been deprecated and will be removed in
-          a subsequent release of PlasmaPy.  Use `Particle.particle`
-          instead.
+        .. deprecated:: 0.6.0
+              `Particle.symbol` has been deprecated and will be removed in
+              a subsequent release of PlasmaPy.  Use `Particle.particle`
+              instead.
 
-        Examples
-        --------
-        >>> electron = Particle('electron')
-        >>> electron.particle
-        'e-'
+            Examples
+            --------
+            >>> electron = Particle('electron')
+            >>> electron.particle
+            'e-'
         """
         warnings.warn(
             "Particle.particle has been deprecated and will be removed in "
@@ -1633,8 +1633,7 @@ class Particle(AbstractParticle):
             )
         if not self.is_category(any_of={"charged", "uncharged"}):
             raise ChargeError(
-                f"Cannot ionize {self.symbol} because its charge "
-                f"is not specified."
+                f"Cannot ionize {self.symbol} because its charge " f"is not specified."
             )
         if self.integer_charge == self.atomic_number:
             raise InvalidIonError(
