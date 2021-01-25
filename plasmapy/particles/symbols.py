@@ -284,7 +284,7 @@ def particle_symbol(
     >>> particle_symbol('H-1', Z=-1)
     'H-1 1-'
     """
-    return particle.particle
+    return particle.symbol
 
 
 @particle_input

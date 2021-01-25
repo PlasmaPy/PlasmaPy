@@ -542,7 +542,7 @@ class IonizationStateCollection:
                 n_elems = {}
 
             for key in sorted_keys:
-                new_key = particles[key].particle
+                new_key = particles[key].symbol
                 _particle_instances.append(particles[key])
                 if new_key in _elements_and_isotopes:
                     raise ParticleError(
@@ -572,10 +572,10 @@ class IonizationStateCollection:
                     isinstance(inputs[key], np.ndarray)
                     and inputs[key].dtype.kind == "f"
                 ):
-                    new_ionic_fractions[particles[key].particle] = inputs[key]
+                    new_ionic_fractions[particles[key].symbol] = inputs[key]
                 else:
                     try:
-                        new_ionic_fractions[particles[key].particle] = np.array(
+                        new_ionic_fractions[particles[key].symbol] = np.array(
                             inputs[key], dtype=np.float
                         )
                     except ValueError as exc:
@@ -632,10 +632,10 @@ class IonizationStateCollection:
                 key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0)
             )
             _elements_and_isotopes = [
-                particle.particle for particle in _particle_instances
+                particle.symbol for particle in _particle_instances
             ]
             new_ionic_fractions = {
-                particle.particle: np.full(
+                particle.symbol: np.full(
                     particle.atomic_number + 1, fill_value=np.nan, dtype=np.float64
                 )
                 for particle in _particle_instances

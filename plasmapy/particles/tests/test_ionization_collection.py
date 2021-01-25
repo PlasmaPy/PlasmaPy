@@ -157,7 +157,7 @@ class TestIonizationStateCollection:
     def test_that_particles_were_set_correctly(self, test_name):
         input_particles = tests[test_name]["inputs"].keys()
         particles = [Particle(input_particle) for input_particle in input_particles]
-        expected_particles = {p.particle for p in particles}
+        expected_particles = {p.symbol for p in particles}
         actual_particles = {
             particle for particle in self.instances[test_name].ionic_fractions.keys()
         }

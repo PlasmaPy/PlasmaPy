@@ -80,6 +80,24 @@ Strings representing particles may be accessed using the
 `~plasmapy.particles.Particle.isotope`, and
 `~plasmapy.particles.Particle.ionic_symbol` attributes.
 
+>>> antimuon.symbol
+'mu+'
+>>> triton.element
+'H'
+>>> alpha.isotope
+'He-4'
+>>> deuteron.ionic_symbol
+'D 1+'
+
+>>> antimuon.symbol
+'mu+'
+>>> triton.element
+'H'
+>>> alpha.isotope
+'He-4'
+>>> deuteron.ionic_symbol
+'D 1+'
+
 >>> antimuon.particle
 'mu+'
 >>> triton.element

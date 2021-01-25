@@ -668,7 +668,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         "baryon",
     }:
 
-        particle = Isotope.particle
+        particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
             f"Particle({repr(particle)}).nuclide_mass does not equal "
@@ -1198,8 +1198,8 @@ def test_particles_from_json_string(cls, kwargs, json_string, expected_exception
     if expected_exception is None:
         instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
-        expected_particle = instance.particle
-        actual_particle = instance_from_json.particle
+        expected_particle = instance.symbol
+        actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
             f"Expected {expected_particle}\nGot {actual_particle}"
         )
@@ -1222,8 +1222,8 @@ def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
         test_file_object = io.StringIO(json_string)
         test_file_object.seek(0, io.SEEK_SET)
         instance_from_json = json_load_particle(test_file_object)
-        expected_particle = instance.particle
-        actual_particle = instance_from_json.particle
+        expected_particle = instance.symbol
+        actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
             f"Expected {expected_particle}\nGot {actual_particle}"
         )
