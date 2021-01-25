@@ -163,6 +163,11 @@ class AbstractParticle(ABC):
         }
         return json_dictionary
 
+    @property
+    def symbol(self):
+        """Return a string representation of the particle."""
+        return self.__repr__()
+
     def __bool__(self):
         """
         Raise an `~plasmapy.particles.exceptions.ParticleError` because particles
@@ -1879,7 +1884,6 @@ class DimensionlessParticle(AbstractParticle):
             warnings.warn(
                 "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
-
 
 class CustomParticle(AbstractParticle):
     """
