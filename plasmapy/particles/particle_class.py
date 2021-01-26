@@ -687,20 +687,14 @@ class Particle(AbstractParticle):
         return particle_dictionary
 
     @property
-    def particle(self) -> Optional[str]:
+    def particle(self) -> str:
         """
-        Return the particle's symbol.
+        Return the symbol of the particle, atom, isotope, or ion.
 
         .. deprecated:: 0.6.0
             `Particle.particle` has been deprecated and will be removed in
             a subsequent release of PlasmaPy.  Use `Particle.symbol`
             instead.
-
-        Examples
-        --------
-        >>> electron = Particle('electron')
-        >>> electron.particle
-        'e-'
         """
         warnings.warn(
             "Particle.particle has been deprecated and will be removed in "
@@ -710,15 +704,24 @@ class Particle(AbstractParticle):
         return self.symbol
 
     @property
-    def symbol(self) -> Optional[str]:
+    def symbol(self) -> str:
         """
-        Return the particle's symbol.
+        Return the symbol of the particle, atom, isotope, or ion.
+
+        This attribute will return the canonical symbol for special
+        particles (e.g., ``"p+"``, ``"e-"``, or ``"n"``), the atomic
+        symbol for elements (e.g., ``"Fe"``), the isotopic symbol for
+        isotopes (e.g., ``"D"`` or ``"Fe-56"``), and the ionic symbol
+        for ions (e.g., ``"N 1+"`` or ``"He-4 1+"``).
 
         Examples
         --------
-        >>> electron = Particle('electron')
+        >>> electron = Particle('positron')
         >>> electron.symbol
-        'e-'
+        'e+'
+        >>> deuteron = Particle('D 1+')
+        >>> deuteron.symbol
+        'D 1+'
         """
         return self._attributes["symbol"]
 
