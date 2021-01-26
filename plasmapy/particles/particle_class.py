@@ -1,5 +1,7 @@
 """The Particle class."""
 
+from __future__ import annotations
+
 __all__ = [
     "AbstractParticle",
     "CustomParticle",
@@ -18,7 +20,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import List, Optional, Set, Tuple, Union
+from typing import Any, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
@@ -208,7 +210,7 @@ class Particle(AbstractParticle):
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.particles.Particle`
+    argument : `particle_like`
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
@@ -370,10 +372,7 @@ class Particle(AbstractParticle):
     """
 
     def __init__(
-        self,
-        argument: Union[str, Integral],
-        mass_numb: Integral = None,
-        Z: Integral = None,
+        self, argument: particle_like, mass_numb: Integral = None, Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
@@ -2036,19 +2035,92 @@ class CustomParticle(AbstractParticle):
             )
 
 
-particle_like = Union[str, Integral, Particle]
+particle_like = Union[str, Integral, Particle, CustomParticle]
 """
-A typing construct for valid representations of a particle.
+An `object` is particle-like if it can uniquely identify an ion, atom,
+isotope, special particle, or custom particle.
 
-A particle in PlasmaPy may be represented using:
-
-* A string with the particle's symbol or name,
-* An integer representing the atomic number, or
-* An instance of `~plasmapy.particles.particle_class.Particle`.
-
-Examples
---------
-The particle of
+Notes
+-----
+Particles in PlasmaPy are canonically represented as instances of the
+`~plasmapy.particles.particle_class.Particle` class.
 
 >>> from plasmapy.particles import Particle
+>>> Particle("proton")
+Particle("p+")
+>>> Particle("neutron")
+Particle("n")
+
+All `~plasmapy.particles.particle_class.Particle` instances are
+particle-like.  Any `object` that can be passed as a sole argument to
+the `~plasmapy.particles.particle_class.Particle` class is considered
+particle-like.
+
+An **element** may also be represented by a string that contains the
+atomic symbol (case-sensitive) or the name of the element, or an integer
+representing the atomic number.  For example, iron can be represented as
+``"Fe"``, ``"iron"``, ``"Iron"``, or ``26``.  If any of these objects is
+passed to `~plasmapy.particles.particle_class.Particle`, it will create
+a `~plasmapy.particles.particle_class.Particle` instance for iron.
+
+An **isotope** may also be represented by a string that contains an
+atomic symbol or element name followed by a hyphen and the mass number
+(with no spaces in between).   For example, :sup:`56`Fe can be
+represented as ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``.
+A `~plasmapy.particles.particle_class.Particle` instance for an isotope
+can also be created by passing a representation of iron as the first
+argument and specifying the mass number with the argument ``mass_numb``.
+
+>>> Particle(26, mass_numb=56)
+Particle("Fe-56")
+
+An **ion** or **ionic level** is represented as a string that contains a
+representation of an element or isotope, followed by a space, and then
+the charge information (e.g., ``"2+"``).  The charge information in the
+string includes an integer either followed or preceded by a plus or
+minus sign.  For example, Fe:sup:`2+` can be represented as
+``"Fe 2+"``, while :sup:`56`Fe:sup:`0+` can be represented as
+``"iron-56 +0"``.  The integer charge can alternatively be specified
+using the ``Z`` keyword to `~plasmapy.particles.particle_class.Particle`.
+
+>>> Particle("He-4", Z=2)
+Particle("He-4 2+")
+
+A **special particle** may be represented by a string that contains a
+the name of the particle or a standard symbol for it.  A neutron can be
+represented as ``"n"`` or ``"neutron"``, a proton can be represented as
+``"p"``, ``"p+"``, or ``"proton"``, and an electron can be represented
+by ``"e"``, ``"e-"``, or ``"electron"``.
+
+Instances of the `~plasmapy.particles.particle_class.CustomParticle`
+class are considered particle-like because the mass and charge of the
+custom particle are uniquely defined in physical units.
+
+`~plasmapy.particles.particle_class.DimensionlessParticle` instances are
+not considered particle-like because (without normalization information)
+they do not *uniquely* identify a particle.
 """
+
+
+def is_particle_like(obj: Any) -> bool:
+    """
+    Return `True` if an `object` is `particle_like`, and `False`
+    otherwise.
+
+    Examples
+    --------
+    >>> from plasmapy.particles.particle_class import (
+    ...     Particle, CustomParticle, is_particle_like,
+    ... )
+    >>> is_particle_like("Fe-56 2+")
+    True
+    """
+    if isinstance(obj, (Particle, CustomParticle)):
+        return True
+
+    try:
+        Particle(obj)
+    except Exception:
+        return False
+    else:
+        return True
