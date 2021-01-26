@@ -704,7 +704,8 @@ class Particle(AbstractParticle):
         """
         warnings.warn(
             "Particle.particle has been deprecated and will be removed in "
-            "a subsequent release. Use Particle.symbol instead."
+            "a subsequent release. Use Particle.symbol instead.",
+            FutureWarning,
         )
         return self.symbol
 
