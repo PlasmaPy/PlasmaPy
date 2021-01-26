@@ -422,7 +422,7 @@ class Particle(AbstractParticle):
 
         if particle_symbol in _Particles.keys():  # special particles
 
-            attributes["particle"] = particle_symbol
+            attributes["symbol"] = particle_symbol
 
             for attribute in _Particles[particle_symbol].keys():
                 attributes[attribute] = _Particles[particle_symbol][attribute]
@@ -720,7 +720,7 @@ class Particle(AbstractParticle):
         >>> electron.symbol
         'e-'
         """
-        return self._attributes["particle"]
+        return self._attributes["symbol"]
 
     @property
     def antiparticle(self):
