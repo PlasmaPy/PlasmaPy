@@ -102,40 +102,12 @@ if you would like to (optionally anonymously) suggest
 a feature/topic for consideration. These will be reposted on the mailing list
 or directly in GitHub issues, as appropriate, for further discussion.
 
-<<<<<<< HEAD
-=======
-## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://meet.jit.si/plasmapy)
-
-We have weekly community meetings in the
-[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
-The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
-agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
-Any last minute changes will be discussed on
-[Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of April 2020, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/6pm).
-Come discuss plasma software with us!
-
-# Installation
-
-You can get PlasmaPy from pip via `pip install plasmapy`. To contribute
-to the package, check out [our instructions on installing PlasmaPy from
-source](http://docs.plasmapy.org/en/stable/install.html#building-and-installing-from-source-code).
-
-You can also get PlasmaPy from `conda` via `conda install -c conda-forge plasmapy`.
-
-Like most scientific Python packages, PlasmaPy probably runs better on the
-[Anaconda distribution](https://www.anaconda.com/downloads).
-
-PlasmaPy requires Python 3.7+ and is [not compatible with
-Python 2](https://pythonclock.org/).
-
->>>>>>> f75276121552098e6e37b125d768018e7cd95577
 # License
 
 PlasmaPy is permissively licensed under a
 [3-clause BSD license with added protections
 against software patents](LICENSE.md).
+
 # Citing PlasmaPy
 
 An [emerging best practice for software
