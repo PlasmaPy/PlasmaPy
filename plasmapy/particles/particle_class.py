@@ -2036,49 +2036,6 @@ class CustomParticle(AbstractParticle):
             )
 
 
-def _is_particle_like(obj: Any) -> bool:
-    """
-    Return `True` if an `object` can uniquely represent a physical
-    particle, and `False` otherwise.
-
-    Examples
-    --------
-    >>> from plasmapy.particles.particle_class import (
-    ...     particle_like, Particle, CustomParticle, DimensionlessParticle,
-    ... )
-    >>> import astropy.units as u
-
-    >>> particle_like.is_particle_like("Fe-56 2+")
-    True
-    >>> particle_like.is_particle_like("he")  # atomic symbols are case-sensitive
-    False
-
-    Custom particles are considered `particle_like` because they provide
-    the mass and/or charge in physical units.
-
-    >>> custom_particle = CustomParticle(mass=1e-26 * u.kg, charge=1e-18 * u.C)
-    >>> particle_like.is_particle_like(custom_particle)
-    True
-
-    Dimensionless particles are not considered `particle_like` because,
-    without normalization information, they do not uniquely identify a
-    physical particle.
-
-    >>> dimensionless_particle = DimensionlessParticle(mass=1, charge=1)
-    >>> particle_like.is_particle_like(dimensionless_particle)
-    False
-    """
-    if isinstance(obj, (Particle, CustomParticle)):
-        return True
-
-    try:
-        Particle(obj)
-    except Exception:
-        return False
-    else:
-        return True
-
-
 particle_like = Union[str, Integral, Particle, CustomParticle]
 """
 An `object` is particle-like if it can uniquely identify an ion, atom,
@@ -2145,4 +2102,45 @@ not considered particle-like because (without normalization information)
 they do not *uniquely* identify a particle.
 """
 
-particle_like.is_particle_like = _is_particle_like
+
+def is_particle_like(obj: Any) -> bool:
+    """
+    Return `True` if an `object` can uniquely represent a physical
+    particle, and `False` otherwise.
+
+    Examples
+    --------
+    >>> from plasmapy.particles.particle_class import (
+    ...     particle_like, Particle, CustomParticle, DimensionlessParticle,
+    ... )
+    >>> import astropy.units as u
+
+    >>> is_particle_like("Fe-56 2+")
+    True
+    >>> is_particle_like("he")  # atomic symbols are case-sensitive
+    False
+
+    Custom particles are considered `particle_like` because they provide
+    the mass and/or charge in physical units.
+
+    >>> custom_particle = CustomParticle(mass=1e-26 * u.kg, charge=1e-18 * u.C)
+    >>> is_particle_like(custom_particle)
+    True
+
+    Dimensionless particles are not considered `particle_like` because,
+    without normalization information, they do not uniquely identify a
+    physical particle.
+
+    >>> dimensionless_particle = DimensionlessParticle(mass=1, charge=1)
+    >>> is_particle_like(dimensionless_particle)
+    False
+    """
+    if isinstance(obj, (Particle, CustomParticle)):
+        return True
+
+    try:
+        Particle(obj)
+    except Exception:
+        return False
+    else:
+        return True
