@@ -592,12 +592,12 @@ class Particle(AbstractParticle):
                 f"The equality of a Particle object with a {type(other)} is undefined."
             )
 
-        no_particle_attr = "particle" not in dir(self) or "particle" not in dir(other)
+        no_symbol_attr = "symbol" not in dir(self) or "symbol" not in dir(other)
         no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(
             other
         )
 
-        if no_particle_attr or no_attributes_attr:  # coverage: ignore
+        if no_symbol_attr or no_attributes_attr:  # coverage: ignore
             raise TypeError(f"The equality of {self} with {other} is undefined.")
 
         same_particle = self.symbol == other.symbol
