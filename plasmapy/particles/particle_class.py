@@ -1,7 +1,5 @@
 """The Particle class."""
 
-from __future__ import annotations
-
 __all__ = [
     "AbstractParticle",
     "CustomParticle",
@@ -210,7 +208,7 @@ class Particle(AbstractParticle):
 
     Parameters
     ----------
-    argument : `particle_like`
+    argument : `str`, `int`,
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
@@ -372,7 +370,10 @@ class Particle(AbstractParticle):
     """
 
     def __init__(
-        self, argument: particle_like, mass_numb: Integral = None, Z: Integral = None,
+        self,
+        argument: Union[str, Integral],
+        mass_numb: Integral = None,
+        Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
