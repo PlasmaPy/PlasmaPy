@@ -4,6 +4,7 @@ __all__ = [
     "AbstractParticle",
     "CustomParticle",
     "DimensionlessParticle",
+    "is_particle_like",
     "Particle",
     "particle_like",
 ]
