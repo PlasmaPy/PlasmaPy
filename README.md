@@ -8,7 +8,6 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
-[![Matrix](https://img.shields.io/badge/gitter-join%20chat-emerald?style=flat&logo=gitter)](https://gitter.im/PlasmaPy/Lobby)
 [![YouTube](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
