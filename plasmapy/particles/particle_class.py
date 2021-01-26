@@ -418,30 +418,30 @@ class Particle(AbstractParticle):
         # case-insensitive aliases for particles, return the standard
         # symbol. Otherwise, return the original argument.
 
-        particle = _dealias_particle_aliases(argument)
+        particle_symbol = _dealias_particle_aliases(argument)
 
-        if particle in _Particles.keys():  # special particles
+        if particle_symbol in _Particles.keys():  # special particles
 
-            attributes["particle"] = particle
+            attributes["particle"] = particle_symbol
 
-            for attribute in _Particles[particle].keys():
-                attributes[attribute] = _Particles[particle][attribute]
+            for attribute in _Particles[particle_symbol].keys():
+                attributes[attribute] = _Particles[particle_symbol][attribute]
 
             particle_taxonomy = ParticleZoo._taxonomy_dict
             all_categories = particle_taxonomy.keys()
 
             for category in all_categories:
-                if particle in particle_taxonomy[category]:
+                if particle_symbol in particle_taxonomy[category]:
                     categories.add(category)
 
             if attributes["name"] in _specific_particle_categories:
                 categories.add(attributes["name"])
 
-            if particle == "p+":
+            if particle_symbol == "p+":
                 categories.update({"element", "isotope", "ion"})
 
             if mass_numb is not None or Z is not None:
-                if particle == "p+" and (mass_numb == 1 or Z == 1):
+                if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
                     warnings.warn(
                         "Redundant mass number or charge information.", ParticleWarning
                     )
