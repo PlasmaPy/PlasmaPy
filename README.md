@@ -19,7 +19,7 @@
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
-PlasmaPy is an open source community developed Python 3.6+ package for
+PlasmaPy is an open source community developed Python 3.7+ package for
 plasma physics in the early stages of development.  PlasmaPy intends to
 be for plasmas what [Astropy](https://github.com/astropy/astropy) is for
 astronomy — a collection of functionality commonly used and shared
@@ -86,7 +86,7 @@ You can also get PlasmaPy from `conda` via `conda install -c conda-forge plasmap
 Like most scientific Python packages, PlasmaPy probably runs better on the
 [Anaconda distribution](https://www.anaconda.com/downloads).
 
-PlasmaPy requires Python 3.6+ and is [not compatible with
+PlasmaPy requires Python 3.7+ and is [not compatible with
 Python 2](https://pythonclock.org/).
 
 # License
