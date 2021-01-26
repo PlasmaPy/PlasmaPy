@@ -89,24 +89,6 @@ Strings representing particles may be accessed using the
 >>> deuteron.ionic_symbol
 'D 1+'
 
->>> antimuon.symbol
-'mu+'
->>> triton.element
-'H'
->>> alpha.isotope
-'He-4'
->>> deuteron.ionic_symbol
-'D 1+'
-
->>> antimuon.symbol
-'mu+'
->>> triton.element
-'H'
->>> alpha.isotope
-'He-4'
->>> deuteron.ionic_symbol
-'D 1+'
-
 .. _particle-class-categories:
 
 Categories
