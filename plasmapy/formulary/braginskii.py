@@ -254,6 +254,16 @@ class ClassicalTransport:
         on the ion transport coefficients. Defaults to T_e / T_i. Only
         has effect if mu is non-zero.
 
+    coulomb_log_method : str, optional
+        The method by which to compute the Coulomb logarithm.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
+
     Raises
     ------
     ValueError

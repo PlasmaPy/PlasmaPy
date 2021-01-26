@@ -1,0 +1,6 @@
+The `~plasmapy.particles.particle_class.Particle` class now contains an
+attribute named ``symbol`` that is intended to replace ``particle``. The
+``symbol`` attribute has been added as a property to
+`~plasmapy.particles.particle_class.AbstractParticle`,
+`~plasmapy.particles.particle_class.CustomParticle`, and
+`~plasmapy.particles.particle_class.DimensionlessParticle`.
