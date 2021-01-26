@@ -692,8 +692,8 @@ class Particle(AbstractParticle):
         Return the particle's symbol.
 
         .. deprecated:: 0.6.0
-            `Particle.symbol` has been deprecated and will be removed in
-            a subsequent release of PlasmaPy.  Use `Particle.particle`
+            `Particle.particle` has been deprecated and will be removed in
+            a subsequent release of PlasmaPy.  Use `Particle.symbol`
             instead.
 
         Examples
