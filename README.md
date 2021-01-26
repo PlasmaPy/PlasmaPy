@@ -43,7 +43,7 @@ If you have [installed Python](https://wiki.python.org/moin/BeginnersGuide/Downl
 you can install PlasmaPy from [pip](https://pypi.org/project/pip/)
 (sometimes `pip3`) via
 ```Shell
-pip install plasmapy
+python -m pip install plasmapy
 ```
 If you have
 [installed conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html),
