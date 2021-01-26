@@ -41,7 +41,7 @@ New contributors are very welcome!
 
 If you have [installed Python](https://wiki.python.org/moin/BeginnersGuide/Download),
 you can install PlasmaPy from [pip](https://pypi.org/project/pip/)
-(sometimes `pip3`) via
+via
 ```Shell
 python -m pip install plasmapy
 ```
