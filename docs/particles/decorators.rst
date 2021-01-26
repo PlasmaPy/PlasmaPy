@@ -62,7 +62,7 @@ classes as well:
   class ExampleClass:
       @particle_input
       def particle_symbol(self, particle: Particle) -> str:
-          return particle.particle
+          return particle.symbol
 
 On occasion it is necessary for a function to accept only certain
 categories of particles.  The `~plasmapy.particles.particle_input`

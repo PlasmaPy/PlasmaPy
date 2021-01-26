@@ -15,7 +15,7 @@ Installing PlasmaPy
 Requirements
 ============
 
-PlasmaPy requires Python version 3.6 or newer.
+PlasmaPy requires Python version 3.7 or newer.
 PlasmaPy requires the following packages for installation:
 
 - `NumPy <http://www.numpy.org/>`_ 1.18.1 or newer

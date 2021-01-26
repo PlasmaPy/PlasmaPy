@@ -20,8 +20,8 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
-    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
+if sys.version_info < (3, 7):
+    raise Exception("PlasmaPy does not support Python < 3.7")
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
