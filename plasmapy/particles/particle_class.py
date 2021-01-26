@@ -916,49 +916,6 @@ class Particle(AbstractParticle):
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
-    def nuclide_mass(self) -> u.Quantity:
-        """
-        Return the mass of the bare nucleus of an isotope or a neutron.
-
-        This attribute will raise a
-        `~plasmapy.particles.exceptions.InvalidIsotopeError` if the particle is not an
-        isotope or neutron, or a
-        `~plasmapy.particles.exceptions.MissingParticleDataError` if the isotope mass is
-        not available.
-
-        Examples
-        --------
-        >>> deuterium = Particle('D')
-        >>> deuterium.nuclide_mass
-        <Quantity 3.34358372e-27 kg>
-        """
-
-        if self.isotope == "H-1":
-            return const.m_p
-        elif self.isotope == "D":
-            return _special_ion_masses["D 1+"]
-        elif self.isotope == "T":
-            return _special_ion_masses["T 1+"]
-        elif self.particle == "n":
-            return const.m_n
-
-        if not self.isotope:
-            raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
-
-        base_mass = self._attributes["isotope mass"]
-
-        if base_mass is None:  # coverage: ignore
-            raise MissingParticleDataError(
-                f"The mass of a {self.isotope} nuclide is not available."
-            )
-
-        _nuclide_mass = (
-            self._attributes["isotope mass"] - self.atomic_number * const.m_e
-        )
-
-        return _nuclide_mass.to(u.kg)
-
-    @property
     def mass(self) -> u.Quantity:
         """
         Return the mass of the particle in kilograms.
