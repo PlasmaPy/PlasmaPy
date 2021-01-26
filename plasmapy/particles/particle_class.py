@@ -2037,6 +2037,10 @@ class CustomParticle(AbstractParticle):
             )
 
 
+# TODO: Need to incorporate particle_like into @particle_input
+
+# TODO: Decide if DimensionlessParticle should be in particle_like
+
 particle_like = Union[str, Integral, Particle, CustomParticle]
 """
 An `object` is particle-like if it can uniquely identify an ion, atom,
@@ -2102,6 +2106,9 @@ custom particle are uniquely defined in physical units.
 not considered particle-like because (without normalization information)
 they do not *uniquely* identify a particle.
 """
+
+
+# TODO: Need to incorporate is_particle_like into @particle_input
 
 
 def is_particle_like(obj: Any) -> bool:
