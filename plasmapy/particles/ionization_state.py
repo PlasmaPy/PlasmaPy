@@ -286,7 +286,7 @@ class IonizationState:
 
         except Exception as exc:
             raise ParticleError(
-                f"Unable to create IonizationState object for {particle.particle}."
+                f"Unable to create IonizationState object for {particle.symbol}."
             ) from exc
 
     def __str__(self) -> str:
@@ -649,8 +649,7 @@ class IonizationState:
         instances corresponding to each ion.
         """
         return [
-            Particle(self._particle.particle, Z=i)
-            for i in range(self.atomic_number + 1)
+            Particle(self._particle.symbol, Z=i) for i in range(self.atomic_number + 1)
         ]
 
     @property
