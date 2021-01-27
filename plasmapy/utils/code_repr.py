@@ -134,22 +134,6 @@ def _name_with_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
-def _substitute_module_shortcuts(module_name):
-    """Substitute common import shortcuts within module names."""
-    replacements = {
-        "numpy": "np",
-        "builtins": "",
-        "astropy.units.core": "u",
-        "astropy.units.quantity": "u",
-        "astropy.units.decorators": "u",
-        "astropy.units": "u",
-    }
-    for old, new in replacements.items():
-        if module_name.startswith(old):
-            module_name = module_name.replace(old, new, 1)
-    return module_name
-
-
 def _object_name(obj: Any, showmodule=False) -> str:
     """
     Return the name of an `object`.  If the `object` has a `__name__`
@@ -157,9 +141,25 @@ def _object_name(obj: Any, showmodule=False) -> str:
     name if not in `builtins`.  Replace ``"numpy"`` with ``"np"`` and
     substitute ``"u"`` for several modules in `astropy.units`.
     """
+
+    def substitute_module_shortcuts(module_name):
+        """Substitute common import shortcuts within module names."""
+        replacements = {
+            "numpy": "np",
+            "builtins": "",
+            "astropy.units.core": "u",
+            "astropy.units.quantity": "u",
+            "astropy.units.decorators": "u",
+            "astropy.units": "u",
+        }
+        for old, new in replacements.items():
+            if module_name.startswith(old):
+                module_name = module_name.replace(old, new, 1)
+        return module_name
+
     obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
     module_name = inspect.getmodule(obj).__name__ if showmodule else ""
-    module_name = _substitute_module_shortcuts(module_name)
+    module_name = substitute_module_shortcuts(module_name)
     if module_name:
         obj_name = f"{module_name}.{obj_name}"
     return obj_name
