@@ -105,8 +105,8 @@ def _code_repr_of_args_and_kwargs(args: Any = tuple(), kwargs: Dict = {}) -> str
     for arg in args_collection:
         args_and_kwargs += f"{_code_repr_of_arg(arg)}, "
 
-    for kwarg in kwargs.keys():
-        args_and_kwargs += f"{kwarg}={_code_repr_of_arg(kwargs[kwarg])}, "
+    for kw_name, kw_val in kwargs.items():
+        args_and_kwargs += f"{kw_name}={_code_repr_of_arg(kw_val)}, "
 
     if args_and_kwargs[-2:] == ", ":
         args_and_kwargs = args_and_kwargs[:-2]
