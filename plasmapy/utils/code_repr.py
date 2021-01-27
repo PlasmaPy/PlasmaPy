@@ -52,6 +52,9 @@ def _code_repr_of_quantity(arg: u.Quantity) -> str:
     Transform a `~astropy.units.Quantity` into a format as would appear
     in a function call.
     """
+    if not isinstance(arg, u.Quantity):
+        print(arg)
+
     is_ndarray = isinstance(arg.value, np.ndarray)
     formatted = _code_repr_of_ndarray(arg.value) if is_ndarray else repr(arg.value)
 
@@ -177,15 +180,15 @@ def _string_together_warnings_for_printing(
     return "\n\n".join(warnings_with_messages)
 
 
-def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
+def call_string(f: Callable, args: Any = tuple(), kwargs: Dict[str, Any] = {}) -> str:
     """
-    Return a string with the equivalent call of a callable object such
-    as a function or class.
+    Approximate a call of a function or class with positional and
+    keyword arguments.
 
     Parameters
     ----------
     f : callable
-        The callable object to be used in the string representation
+        A function, class, or other callable object
 
     args : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing positional arguments, or any
@@ -194,17 +197,33 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict = {}) -> str:
     kwargs : `dict`, optional
         A `dict` containing keyword arguments
 
+    Returns
+    -------
+    str
+        Approximation to a call of ``f`` with ``args`` as positional
+        arguments and ``kwargs`` as keyword arguments.
+
+    See Also
+    --------
+    attribute_call_string
+    method_call_string
+
+    Notes
+    -----
+    This function will generally provide an exact call string for most
+    common types of simple positional and keyword arguments.  When
+    dealing with types that are not accounted for, this function will
+    fall back on `repr`.
+
+    This function assumes aliases of ``u`` for `astropy.units` and ``np``
+    for `numpy`.
+
     Examples
     --------
     >>> call_string(int, 3.14159)
     'int(3.14159)'
     >>> call_string(int, args=(9.2,), kwargs={'base': 2})
     'int(9.2, base=2)'
-
-    See Also
-    --------
-    attribute_call_string
-    method_call_string
     """
     args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs)
     return f"{f.__name__}({args_and_kwargs})"
@@ -217,8 +236,8 @@ def attribute_call_string(
     cls_kwargs: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
-    Return a string to represent accessing an attribute of an object,
-    such as an attribute of an instance in a class.
+    Approximate the command to instantiate a class, and access an
+    attribute of the resulting class instance.
 
     Parameters
     ----------
@@ -237,6 +256,28 @@ def attribute_call_string(
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``
 
+    Returns
+    -------
+    str
+        Approximation of a command to instantiate ``cls`` with
+        ``cls_args`` as positional arguments and ``cls_kwargs`` as
+        keyword arguments, and then access the attribute ``attr``.
+
+    See Also
+    --------
+    attribute_call_string
+    method_call_string
+
+    Notes
+    -----
+    This function will generally provide an exact call string for most
+    common types of simple positional and keyword arguments.  When
+    dealing with types that are not accounted for, this function will
+    fall back on `repr`.
+
+    This function assumes aliases of ``u`` for `astropy.units` and ``np``
+    for `numpy`.
+
     Examples
     --------
     >>> class SampleClass:
@@ -245,10 +286,10 @@ def attribute_call_string(
     ...     @property
     ...     def attribute(self):
     ...         return 42
-    >>> cls_args = (1,)
+    >>> cls_args = (1, 2)
     >>> cls_kwargs = {'kwarg1': 2}
     >>> attribute_call_string(SampleClass, 'attribute', cls_args, cls_kwargs)
-    'SampleClass(1, kwarg1=2).attribute'
+    'SampleClass(1, 2, kwarg1=2).attribute'
     """
     cls_args = tuple() if cls_args is None else cls_args
     cls_kwargs = dict() if cls_kwargs is None else cls_kwargs
@@ -259,12 +300,13 @@ def method_call_string(
     cls,
     method: str,
     cls_args: Any = tuple(),
-    cls_kwargs: Dict = {},
+    cls_kwargs: Dict[str, Any] = {},
     method_args: Any = tuple(),
-    method_kwargs: Dict = {},
+    method_kwargs: Dict[str, Any] = {},
 ) -> str:
     """
-    Return a string to represent calling a class method.
+    Approximate the command to instantiate a class, and then call a
+    method in the resulting class instance.
 
     Parameters
     ----------
@@ -292,6 +334,30 @@ def method_call_string(
         A `dict` containing the keyword arguments to be used during
         the method call
 
+    Returns
+    -------
+    str
+        Approximation of a command to instantiate ``cls`` with
+        ``cls_args`` as positional arguments and ``cls_kwargs`` as
+        keyword arguments, and then call a method of the resulting
+        instance with ``method_args`` as positional arguments and
+        ``method_kwargs`` as keyword arguments.
+
+    See Also
+    --------
+    call_string
+    attribute_call_string
+
+    Notes
+    -----
+    This function will generally provide an exact call string for most
+    common types of simple positional and keyword arguments.  When
+    dealing with types that are not accounted for, this function will
+    fall back on `repr`.
+
+    This function assumes aliases of ``u`` for `astropy.units` and ``np``
+    for `numpy`.
+
     Examples
     --------
     >>> class SampleClass:
@@ -305,11 +371,6 @@ def method_call_string(
     >>> m_kwargs = {'method_kwarg': 4}
     >>> method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
     'SampleClass(1, cls_kwarg=2).method(3, method_kwarg=4)'
-
-    See Also
-    --------
-    call_string
-    attribute_call_string
     """
     class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"
     method_args_and_kwargs = _code_repr_of_args_and_kwargs(method_args, method_kwargs)
