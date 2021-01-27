@@ -308,15 +308,13 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
     function call.
     """
     args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs)
-    if args_and_kwargs != expected:
-        pytest.fail(
-            f"_code_repr_of_args_and_kwargs with the following arguments:\n"
-            f"  args:   {args}\n"
-            f"  kwargs: {kwargs}\n"
-            f"is not returning the expected string:\n"
-            f"  expected: {repr(expected)}\n"
-            f"  actual:   {repr(args_and_kwargs)}"
-        )
+    assert args_and_kwargs == expected, (
+        f"_code_repr_of_args_and_kwargs with the following arguments:\n"
+        f"  args:   {args}\n"
+        f"  kwargs: {kwargs}\n"
+        f"is not returning the expected string:\n"
+        f"  expected: {repr(expected)}\n"
+    )
 
 
 @pytest.mark.parametrize(
