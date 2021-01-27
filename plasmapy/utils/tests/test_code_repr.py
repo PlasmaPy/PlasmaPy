@@ -100,6 +100,24 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
             kwargs={"b": 42, "R2": "D2"},
             expected="generic_function(1, 'b', b=42, R2='D2')",
         ),
+        function_case(
+            func=generic_function,
+            args=np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            kwargs={},
+            expected="generic_function(np.array([1, 2, 3, 4, 5, 6, 7, 8, ...]))",
+        ),
+        function_case(
+            func=generic_function,
+            args=[(1, "a")],
+            kwargs={},
+            expected="generic_function((1, 'a'))",
+        ),
+        function_case(
+            func=generic_function,
+            args=([1, "a"],),
+            kwargs={},
+            expected="generic_function([1, 'a'])",
+        ),
     ],
 )
 def test_call_string(func, args, kwargs, expected):
@@ -107,7 +125,7 @@ def test_call_string(func, args, kwargs, expected):
     Tests that call_string returns a string that is equivalent to the
     function call.
     """
-    actual = call_string(func, args, kwargs)
+    actual = call_string(func, args, kwargs, max_items=8)
     assert actual == expected, (
         "When call_string is called with:\n"
         f"  function: {func.__name__}\n"
