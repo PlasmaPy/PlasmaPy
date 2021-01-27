@@ -190,12 +190,12 @@ def test_method_call_string(
 ):
     """Test that `method_call_string` returns the expected results."""
     actual = method_call_string(
-        SampleClass,
-        "method",
-        args_to_cls,
-        kwargs_to_cls,
-        args_to_method,
-        kwargs_to_method,
+        cls=SampleClass,
+        method="method",
+        args_to_cls=args_to_cls,
+        kwargs_to_cls=kwargs_to_cls,
+        args_to_method=args_to_method,
+        kwargs_to_method=kwargs_to_method,
     )
     assert actual == expected, (
         "When method_call_string is called with:\n"
