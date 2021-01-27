@@ -284,6 +284,7 @@ def method_call_string(
         A `tuple` or `list` containing positional arguments, or any
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``
+
     cls_kwargs: `dict`, optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``
