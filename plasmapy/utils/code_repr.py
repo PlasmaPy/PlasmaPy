@@ -37,9 +37,6 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         closing = f", ...{closing_brackets})"
         return to_comma_before_ellipsis + closing
 
-    if not isinstance(array, np.ndarray):
-        raise TypeError("Expecting an ndarray.")
-
     s = np.array_repr(array, max_line_width=np.inf, suppress_small=False)
     s = remove_excess_spaces(s)
     s = put_np_before_infs_and_nans(s)
@@ -55,9 +52,6 @@ def _code_repr_of_quantity(arg: u.Quantity) -> str:
     Transform a `~astropy.units.Quantity` into a format as would appear
     in a function call.
     """
-    if not isinstance(arg, u.Quantity):
-        raise TypeError("Expecting a Quantity.")
-
     is_ndarray = isinstance(arg.value, np.ndarray)
     formatted = _code_repr_of_ndarray(arg.value) if is_ndarray else repr(arg.value)
 
