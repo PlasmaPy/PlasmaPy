@@ -194,7 +194,7 @@ def test_method_call_string(
 
 
 attribute_case = namedtuple(
-    "attribute_case", ("args_to_cls", "kwargs_to_cls", "expected",)
+    "attribute_case", ("args_to_cls", "kwargs_to_cls", "expected",),
 )
 
 
