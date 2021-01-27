@@ -232,8 +232,8 @@ def call_string(f: Callable, args: Any = tuple(), kwargs: Dict[str, Any] = {}) -
 def attribute_call_string(
     cls,
     attr: str,
-    cls_args: Optional[Union[Tuple, Any]] = None,
-    cls_kwargs: Optional[Dict[str, Any]] = None,
+    args_to_cls: Optional[Union[Tuple, Any]] = None,
+    kwargs_to_cls: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Approximate the command to instantiate a class, and access an
@@ -247,12 +247,12 @@ def attribute_call_string(
     attr: `str`
         The name of the attribute of class ``cls``
 
-    cls_args : `tuple`, `list`, or any; optional
+    args_to_cls : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing positional arguments, or any
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``
 
-    cls_kwargs: `dict`, optional
+    kwargs_to_cls: `dict`, optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``
 
@@ -260,7 +260,7 @@ def attribute_call_string(
     -------
     str
         Approximation of a command to instantiate ``cls`` with
-        ``cls_args`` as positional arguments and ``cls_kwargs`` as
+        ``args_to_cls`` as positional arguments and ``kwargs_to_cls`` as
         keyword arguments, and then access the attribute ``attr``.
 
     See Also
@@ -286,23 +286,23 @@ def attribute_call_string(
     ...     @property
     ...     def attribute(self):
     ...         return 42
-    >>> cls_args = (1, 2)
-    >>> cls_kwargs = {'kwarg1': 2}
-    >>> attribute_call_string(SampleClass, 'attribute', cls_args, cls_kwargs)
+    >>> args_to_cls = (1, 2)
+    >>> kwargs_to_cls = {'kwarg1': 2}
+    >>> attribute_call_string(SampleClass, 'attribute', args_to_cls, kwargs_to_cls)
     'SampleClass(1, 2, kwarg1=2).attribute'
     """
-    cls_args = tuple() if cls_args is None else cls_args
-    cls_kwargs = dict() if cls_kwargs is None else cls_kwargs
-    return f"{call_string(cls, cls_args, cls_kwargs)}.{attr}"
+    args_to_cls = tuple() if args_to_cls is None else args_to_cls
+    kwargs_to_cls = dict() if kwargs_to_cls is None else kwargs_to_cls
+    return f"{call_string(cls, args_to_cls, kwargs_to_cls)}.{attr}"
 
 
 def method_call_string(
     cls,
     method: str,
-    cls_args: Any = tuple(),
-    cls_kwargs: Dict[str, Any] = {},
-    method_args: Any = tuple(),
-    method_kwargs: Dict[str, Any] = {},
+    args_to_cls: Any = tuple(),
+    kwargs_to_cls: Dict[str, Any] = {},
+    args_to_method: Any = tuple(),
+    kwargs_to_method: Dict[str, Any] = {},
 ) -> str:
     """
     Approximate the command to instantiate a class, and then call a
@@ -316,21 +316,21 @@ def method_call_string(
     method: `str`
         The name of the method in class ``cls``
 
-    cls_args : `tuple`, `list`, or any; optional
+    args_to_cls : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing positional arguments, or any
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``
 
-    cls_kwargs: `dict`, optional
+    kwargs_to_cls: `dict`, optional
         A `dict` containing the keyword arguments to be used during
         instantiation of ``cls``
 
-    method_args : `tuple`, `list`, or any; optional
+    args_to_method : `tuple`, `list`, or any; optional
         A `tuple` or `list` containing the positional arguments to be
         used in the method call, or any other `object` if there is only
         one positional argument
 
-    method_kwargs: `dict`, optional
+    kwargs_to_method: `dict`, optional
         A `dict` containing the keyword arguments to be used during
         the method call
 
@@ -338,10 +338,10 @@ def method_call_string(
     -------
     str
         Approximation of a command to instantiate ``cls`` with
-        ``cls_args`` as positional arguments and ``cls_kwargs`` as
+        ``args_to_cls`` as positional arguments and ``kwargs_to_cls`` as
         keyword arguments, and then call a method of the resulting
-        instance with ``method_args`` as positional arguments and
-        ``method_kwargs`` as keyword arguments.
+        instance with ``args_to_method`` as positional arguments and
+        ``kwargs_to_method`` as keyword arguments.
 
     See Also
     --------
@@ -372,6 +372,8 @@ def method_call_string(
     >>> method_call_string(SampleClass, 'method', c_args, c_kwargs, m_args, m_kwargs)
     'SampleClass(1, cls_kwarg=2).method(3, method_kwarg=4)'
     """
-    class_call_string = f"{call_string(cls, cls_args, cls_kwargs)}"
-    method_args_and_kwargs = _code_repr_of_args_and_kwargs(method_args, method_kwargs)
-    return f"{class_call_string}.{method}({method_args_and_kwargs})"
+    class_call_string = f"{call_string(cls, args_to_cls, kwargs_to_cls)}"
+    args_to_method_and_kwargs = _code_repr_of_args_and_kwargs(
+        args_to_method, kwargs_to_method
+    )
+    return f"{class_call_string}.{method}({args_to_method_and_kwargs})"
