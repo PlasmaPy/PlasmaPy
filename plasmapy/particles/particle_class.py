@@ -2058,7 +2058,7 @@ a `~plasmapy.particles.particle_class.Particle` instance for iron.
 
 An **isotope** may also be represented by a string that contains an
 atomic symbol or element name followed by a hyphen and the mass number
-(with no spaces in between).   For example, :sup:`56`Fe can be
+(with no spaces in between).   For example, :sup:`56`\ Fe can be
 represented as ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``.
 A `~plasmapy.particles.particle_class.Particle` instance for an isotope
 can also be created by passing a representation of iron as the first
