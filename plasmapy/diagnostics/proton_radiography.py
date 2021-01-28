@@ -12,7 +12,10 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+import sys
 import warnings
+
+from tqdm import tqdm
 
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
@@ -636,13 +639,28 @@ class SyntheticProtonRadiograph:
         # Advance the particles to the near the start of the grid
         self._advance_to_grid()
 
+        # Initialize a "progress bar" (really more of a meter)
+        # Setting sys.stdout lets this play nicely with regular print()
+        pbar = tqdm(
+            initial=0,
+            total=self.nparticles_grid + 1,
+            disable=not self.verbose,
+            desc="Particles on grid",
+            unit="particles",
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
+            file=sys.stdout,
+        )
+
         # Push the particles until the stop condition is satisfied
         # (no more particles on the simulation grid)
         while not self._stop_condition():
-            if self.verbose:
-                fract = 100 * np.sum(self.on_grid) / self.nparticles_grid
-                self._log(f"{fract:.1f}% on grid ({np.sum(self.on_grid)})")
+            n_on_grid = np.sum(self.on_grid)
+            pbar.n = n_on_grid
+            pbar.last_print_n = n_on_grid
+            pbar.update()
+
             self._push()
+        pbar.close()
 
         # Advance the particles to the image plane
         # At this stage, remove any particles that will never hit the detector plane
