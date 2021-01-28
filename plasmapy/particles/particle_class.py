@@ -2028,7 +2028,8 @@ class CustomParticle(AbstractParticle):
 # TODO: Decide if DimensionlessParticle should be in particle_like
 
 particle_like = Union[str, Integral, Particle, CustomParticle]
-"""
+
+particle_like.__doc__ = """
 An `object` is particle-like if it can uniquely identify an ion, atom,
 isotope, special particle, or custom particle.
 
