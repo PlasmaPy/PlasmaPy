@@ -7,6 +7,8 @@ import numpy as np
 import pytest
 import warnings
 
+from numpy.testing import assert_allclose
+
 from plasmapy.plasma import grids as grids
 
 
@@ -264,6 +266,8 @@ def test_NonUniformCartesianGrid():
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantities(rho=q1)
+
+    assert 0 < grid.grid_resolution < 2
 
 
 if __name__ == "__main__":

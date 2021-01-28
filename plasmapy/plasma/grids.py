@@ -17,6 +17,7 @@ import xarray as xr
 
 from abc import ABC
 from collections import namedtuple
+from scipy.spatial import distance
 from typing import Union
 
 
@@ -393,20 +394,8 @@ class AbstractGrid(ABC):
         if self.is_uniform:
             return min(self.dax0, self.dax1, self.dax2)
         else:
-            # Make a deep copy the grid
-            temp_grid = np.copy(self.grid)
-            npos = self.shape[0]
-            distances = np.zeros(npos)
-
-            for i in range(npos):
-                # Replace the current index with inf, so we don't just get
-                # a distance of zero
-                temp_grid[i, :] = np.inf
-
-                # Calculate the minimum of all the distances
-                dist = np.min(np.linalg.norm(temp_grid - self.grid[i, :], axis=1))
-                distances[i] = dist
-
+            distances = distance.cdist(self.grid, self.grid)
+            np.fill_diagonal(distances, np.inf)
             return np.min(distances)
 
     # *************************************************************************
