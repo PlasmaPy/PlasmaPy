@@ -29,4 +29,5 @@ Reference/API
 
 .. automodapi:: plasmapy.utils.decorators
 .. automodapi:: plasmapy.utils.exceptions
+.. automodapi:: plasmapy.utils.code_repr
 .. automodapi:: plasmapy.utils.pytest_helpers
