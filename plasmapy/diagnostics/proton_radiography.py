@@ -11,6 +11,7 @@ __all__ = [
 
 import astropy.constants as const
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import warnings
@@ -266,6 +267,10 @@ class SyntheticProtonRadiograph:
     _c = const.c.si.value
     _m_p = const.m_p.si.value
 
+    # *************************************************************************
+    # Particle creation methods
+    # *************************************************************************
+
     def _max_theta_grid(self):
         r"""
         Using the grid and the source position, compute the maximum particle
@@ -290,28 +295,11 @@ class SyntheticProtonRadiograph:
                     ind += 1
         return np.max(theta)
 
-    def _generate_particles(self):
-        r"""
-        Generates the angular distributions about the Z-axis, then
-        rotates those distributions to align with the source-to-detector axis.
-
-        By default, protons are generated over almost the entire pi/2. However,
-        if the detector is far from the source, many of these particles will
-        never be observed. The max_theta keyword allows these extraneous
-        particles to be neglected to focus computational resources on the
-        particles who will actually hit the detector.
-
+    def _angles_monte_carlo(self):
         """
-
-        self._log("Creating Particles")
-
-        self.q = self._e
-        self.m = self._m_p
-
-        # Calculate the velocity corresponding to the proton energy
-        ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
-        self.v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
-
+        Generates angles for each particle randomly such that the flux
+        per solid angle is uniform
+        """
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the proton
         # flux per solid angle to be uniform.
@@ -324,6 +312,114 @@ class SyntheticProtonRadiograph:
 
         # Also generate a uniform phi distribution
         phi = np.random.uniform(size=self.nparticles) * 2 * np.pi
+
+        return theta, phi
+
+    def _angles_uniform(self):
+        """
+        Generates angles for each particle such that their velocities are
+        uniformly distributed on a grid in theta and phi.
+        """
+        # Calculate the approximate square root
+        n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
+
+        # Set new nparticles to be a perfect square
+        self.nparticles = n_per ** 2
+
+        # Create an imaginary grid positioned 1 unit from the source
+        # and spanning max_theta at the corners
+        extent = np.sin(self.max_theta) / np.sqrt(2)
+        arr = np.linspace(-extent, extent, num=n_per)
+        harr, varr = np.meshgrid(arr, arr, indexing="ij")
+
+        # calculate the angles from the source for each point in
+        # the grid.
+        theta = np.arctan(np.sqrt(harr ** 2 + varr ** 2))
+        phi = np.arctan2(varr, harr)
+
+        return theta.flatten(), phi.flatten()
+
+    def create_particles(
+        self,
+        nparticles,
+        proton_energy,
+        max_theta=0.9 * np.pi / 2 * u.rad,
+        charge=None,
+        mass=None,
+        distribution="monte-carlo",
+    ):
+        r"""
+        Generates the angular distributions about the Z-axis, then
+        rotates those distributions to align with the source-to-detector axis.
+
+        By default, protons are generated over almost the entire pi/2. However,
+        if the detector is far from the source, many of these particles will
+        never be observed. The max_theta keyword allows these extraneous
+        particles to be neglected to focus computational resources on the
+        particles who will actually hit the detector.
+
+        nparticles : integer
+            The number of particles to include in the simulation. The default
+            is 1e5.
+
+        proton_energy : `~astropy.units.Quantity`
+            The energy of the particle, in units convertible to eV
+
+        max_theta : `~astropy.units.Quantity`, optional
+            The largest velocity vector angle (measured from the
+            source-to-detector axis) for which particles should be generated.
+            Decreasing this angle can eliminate particles that would never
+            reach the detector region of interest. The default is 0.9*pi/2.
+            Units must be convertable to radians.
+
+        charge : `~astropy.units.Quantity`
+            The charge of the particle, in units convertable to Columbs.
+            The default is the proton charge.
+
+
+        mass : `~astropy.units.Quantity`
+            The mass of the particle, in units convertable to kg.
+            The default is the proton mass.
+
+
+        distribution: str
+            A keyword which determines how particles will be distributed
+            in velocity space. Options are:
+
+                - 'monte-carlo': velocities will be chosen randomly,
+                    such that the flux per solid angle is uniform.
+
+                - 'uniform': velocities will be distrbuted such that,
+                   left unpreturbed,they will form a uniform pattern
+                   on the detection plane.
+
+            Simulations run in the `uniform` mode will imprint a grid pattern
+            on the image, but will well-sample the field grid with a
+            smaller number of particles. The default is `monte-carlo`
+
+
+        """
+        self._log("Creating Particles")
+
+        # Load inputs
+        self.nparticles = int(nparticles)
+        self.proton_energy = proton_energy.to(u.eV).value
+        self.max_theta = max_theta.to(u.rad).value
+        if charge is None:
+            charge = self._e
+        if mass is None:
+            mass = self._m_p
+        self.q = charge
+        self.m = mass
+
+        # Calculate the velocity corresponding to the proton energy
+        ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
+        self.v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
+
+        if distribution == "monte-carlo":
+            theta, phi = self._angles_monte_carlo()
+        elif distribution == "uniform":
+            theta, phi = self._angles_uniform()
 
         # Determine the angle above which particles will not hit the grid
         # these particles can be ignored until the end of the simulation,
@@ -359,6 +455,10 @@ class SyntheticProtonRadiograph:
         self.on_grid = np.zeros([self.nparticles_grid])
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
+
+    # *************************************************************************
+    # Run/push loop methods
+    # *************************************************************************
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
@@ -533,12 +633,6 @@ class SyntheticProtonRadiograph:
             still_on = 0.0
 
         if entered > 0.1 and still_on < 0.001:
-            self._log(
-                f"Stop condition reached: {entered*100:.0f}% entered "
-                f"({n_entered})"
-                f", {still_on*100:.0f}% are still on the grid"
-            )
-
             # Warn user if < 10% of the particles ended up on the grid
             if n_entered < 0.1 * self.nparticles:
                 warnings.warn(
@@ -554,12 +648,7 @@ class SyntheticProtonRadiograph:
             return False
 
     def run(
-        self,
-        nparticles,
-        proton_energy,
-        max_theta=0.9 * np.pi / 2 * u.rad,
-        dt=None,
-        field_weighting="volume averaged",
+        self, dt=None, field_weighting="volume averaged",
     ):
         r"""
         Runs a particle-tracing simulation.
@@ -572,19 +661,6 @@ class SyntheticProtonRadiograph:
 
         Parameters
         ----------
-        nparticles : integer
-            The number of particles to include in the simulation. The default
-            is 1e5.
-
-        proton_energy : `~astropy.units.Quantity`
-            The energy of the protons, in units convertible to eV
-
-        max_theta : `~astropy.units.Quantity`, optional
-            The largest velocity vector angle (measured from the
-            source-to-detector axis) for which particles should be generated.
-            Decreasing this angle can eliminate particles that would never
-            reach the detector region of interest. The default is 0.9*pi/2.
-            Units must be convertable to radians.
 
         dt : `~astropy.units.Quantity`, optional
             An explicitly set timestep in units convertable to seconds.
@@ -612,10 +688,6 @@ class SyntheticProtonRadiograph:
         """
 
         # Load and validate inputs
-        self.nparticles = int(nparticles)
-        self.proton_energy = proton_energy.to(u.eV).value
-        self.max_theta = max_theta.to(u.rad).value
-
         field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
             self.field_weighting = field_weighting
@@ -633,8 +705,12 @@ class SyntheticProtonRadiograph:
             self.dt = dt
         self.dt = (self.dt).to(u.s).value
 
-        # Generate the particles
-        self._generate_particles()
+        # Check to make sure particles have already been generated
+        if not hasattr(self, "x"):
+            raise ValueError(
+                "The create_particles method must be called before "
+                "running the particle tracing algorithm."
+            )
 
         # Advance the particles to the near the start of the grid
         self._advance_to_grid()
@@ -667,6 +743,10 @@ class SyntheticProtonRadiograph:
         self._advance_to_detector()
 
         self._log("Run completed")
+
+    # *************************************************************************
+    # Synthetic diagnostic methods (creating output)
+    # *************************************************************************
 
     def synthetic_radiograph(
         self, size=None, bins=[200, 200], null=False, optical_density=False

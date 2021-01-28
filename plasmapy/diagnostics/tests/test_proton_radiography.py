@@ -125,7 +125,8 @@ def run_1D_example(name):
     # Catch warnings (test fields aren't well behaved at edges)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.run(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
+    sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
     bins = [200, 60]
@@ -223,35 +224,49 @@ def test_input_validation():
         sim = prad.SyntheticProtonRadiograph(grid_bad, source, detector, verbose=True)
 
     # ************************************************************************
+    # During create_particles
+    # ************************************************************************
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
+
+    # ************************************************************************
     # During runtime
     # ************************************************************************
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-
-    # Chose too large of a max_theta so that many particles miss the grid
-    with pytest.warns(RuntimeWarning):
-        sim.run(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
+    sim.create_particles(1e3, 15 * u.MeV)
 
     # Test an invalid field weighting keyword
     with pytest.raises(ValueError):
-        sim.run(
-            1e3,
-            15 * u.MeV,
-            max_theta=0.99 * np.pi / 2 * u.rad,
-            field_weighting="not a valid field weighting",
-        )
+        sim.run(field_weighting="not a valid field weighting")
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
     # SYNTHETIC RADIOGRAPH ERRORS
-    sim.run(1e3, 15 * u.MeV, max_theta=np.pi / 10 * u.rad)
+    sim.run()
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
     with pytest.warns(RuntimeWarning):
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
         hax, vax, values = sim.synthetic_radiograph(size=size)
+
+
+def test_create_particles():
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+
+    # Cartesian
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
+    sim.create_particles(
+        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="monte-carlo"
+    )
+
+    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
 
 def test_run_options():
@@ -261,15 +276,17 @@ def test_run_options():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Catch warnings (test fields aren't well behaved at edges)
+    # TODO: Catch warnings (test fields aren't well behaved at edges)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.run(1e4, 3 * u.MeV, max_theta=10 * u.deg, field_weighting="nearest neighbor")
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.run(field_weighting="nearest neighbor")
 
 
 if __name__ == "__main__":
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
+    test_create_particles()
     test_run_options()
     pass
