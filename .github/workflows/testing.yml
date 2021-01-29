@@ -83,7 +83,7 @@ jobs:
       with:
         file: ./coverage.xml
   build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    name: Packaging
     runs-on: ubuntu-18.04
     needs: tests
     steps:
