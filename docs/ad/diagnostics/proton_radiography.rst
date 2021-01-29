@@ -1,13 +1,15 @@
 .. _proton_radiography:
 
-******************
-Proton Radiography
-******************
+***************************
+Proton radiography analysis
+***************************
 
 .. currentmodule:: plasmapy.diagnostics.proton_radiography
 
 .. automodapi:: plasmapy.diagnostics.proton_radiography
    :no-heading:
+
+|
 
 .. nbgallery::
     :caption: Examples
