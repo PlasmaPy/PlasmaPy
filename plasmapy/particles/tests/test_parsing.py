@@ -13,7 +13,7 @@ from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.
     _parse_and_check_atomic_input,
 )
 from plasmapy.particles.special_particles import ParticleZoo
-from plasmapy.utils import call_string
+from plasmapy.utils.code_repr import call_string
 
 
 def _particle_call_string(arg, kwargs=None) -> str:
@@ -95,7 +95,7 @@ parse_check_table = [
         "He",
         {"Z": 1, "mass_numb": 4},
         {
-            "particle": "He-4 1+",
+            "symbol": "He-4 1+",
             "element": "He",
             "isotope": "He-4",
             "ion": "He-4 1+",
@@ -107,7 +107,7 @@ parse_check_table = [
         "alpha",
         {},
         {
-            "particle": "He-4 2+",
+            "symbol": "He-4 2+",
             "element": "He",
             "isotope": "He-4",
             "ion": "He-4 2+",
@@ -119,7 +119,7 @@ parse_check_table = [
         1,
         {},
         {
-            "particle": "H",
+            "symbol": "H",
             "element": "H",
             "isotope": None,
             "ion": None,
@@ -131,7 +131,7 @@ parse_check_table = [
         "p",
         {},
         {
-            "particle": "p+",
+            "symbol": "p+",
             "element": "H",
             "isotope": "H-1",
             "ion": "p+",
@@ -143,7 +143,7 @@ parse_check_table = [
         "H",
         {"mass_numb": 2},
         {
-            "particle": "D",
+            "symbol": "D",
             "element": "H",
             "isotope": "D",
             "ion": None,
@@ -155,7 +155,7 @@ parse_check_table = [
         2,
         {},
         {
-            "particle": "He",
+            "symbol": "He",
             "element": "He",
             "isotope": None,
             "ion": None,
@@ -167,7 +167,7 @@ parse_check_table = [
         "T",
         {"Z": 0},
         {
-            "particle": "T 0+",
+            "symbol": "T 0+",
             "element": "H",
             "isotope": "T",
             "ion": "T 0+",
@@ -179,7 +179,7 @@ parse_check_table = [
         "Fe-56+++++++",
         {},
         {
-            "particle": "Fe-56 7+",
+            "symbol": "Fe-56 7+",
             "element": "Fe",
             "isotope": "Fe-56",
             "ion": "Fe-56 7+",
@@ -191,7 +191,7 @@ parse_check_table = [
         "H-",
         {},
         {
-            "particle": "H 1-",
+            "symbol": "H 1-",
             "element": "H",
             "isotope": None,
             "ion": "H 1-",
@@ -203,7 +203,7 @@ parse_check_table = [
         "D+",
         {},
         {
-            "particle": "D 1+",
+            "symbol": "D 1+",
             "element": "H",
             "isotope": "D",
             "ion": "D 1+",
@@ -215,7 +215,7 @@ parse_check_table = [
         "Au",
         {},
         {
-            "particle": "Au",
+            "symbol": "Au",
             "element": "Au",
             "isotope": None,
             "ion": None,
@@ -227,7 +227,7 @@ parse_check_table = [
         "Ar 2-",
         {},
         {
-            "particle": "Ar 2-",
+            "symbol": "Ar 2-",
             "element": "Ar",
             "isotope": None,
             "ion": "Ar 2-",
@@ -239,7 +239,7 @@ parse_check_table = [
         "Fe +24",
         {"mass_numb": 56},
         {
-            "particle": "Fe-56 24+",
+            "symbol": "Fe-56 24+",
             "element": "Fe",
             "isotope": "Fe-56",
             "ion": "Fe-56 24+",
@@ -251,7 +251,7 @@ parse_check_table = [
         "Be-8 +3",
         {},
         {
-            "particle": "Be-8 3+",
+            "symbol": "Be-8 3+",
             "element": "Be",
             "isotope": "Be-8",
             "ion": "Be-8 3+",
@@ -263,7 +263,7 @@ parse_check_table = [
         "p+",
         {},
         {
-            "particle": "p+",
+            "symbol": "p+",
             "element": "H",
             "isotope": "H-1",
             "ion": "p+",

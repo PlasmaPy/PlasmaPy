@@ -1,0 +1,5 @@
+Add the function
+:func:`~plasmapy.dispersion.two_fluid_dispersion.two_fluid_dispersion_solution` to
+`plasmapy.dispersion`, which gives an analytical solution to the dispersion relation as
+derived by P. M. Bellan 2012 (DOI: `10.1029/2012JA017856
+<https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_).

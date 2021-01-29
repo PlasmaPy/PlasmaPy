@@ -75,12 +75,12 @@ SI units.
 <Quantity 0.49225958 GeV>
 
 Strings representing particles may be accessed using the
-`~plasmapy.particles.Particle.particle`,
+`~plasmapy.particles.Particle.symbol`,
 `~plasmapy.particles.Particle.element`,
 `~plasmapy.particles.Particle.isotope`, and
 `~plasmapy.particles.Particle.ionic_symbol` attributes.
 
->>> antimuon.particle
+>>> antimuon.symbol
 'mu+'
 >>> triton.element
 'H'
