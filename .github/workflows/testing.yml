@@ -64,6 +64,11 @@ jobs:
             python: 3.8
             toxenv: py38
 
+          - name: Documentation
+            os: ubuntu-latest
+            python: 3.8
+            toxenv: build_docs
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
