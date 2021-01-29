@@ -11,7 +11,6 @@ __all__ = [
 
 import astropy.constants as const
 import astropy.units as u
-import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import warnings

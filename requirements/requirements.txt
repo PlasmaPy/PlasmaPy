@@ -9,4 +9,5 @@ numpy >= 1.18.1
 pandas >= 1.0.0
 scipy >= 1.2
 setuptools >= 41.2
+tqdm >= 4.56.0
 xarray  >= 0.14.0
