@@ -1,0 +1,1 @@
+Moved remaining CI from CircleCI to GitHub Actions.
