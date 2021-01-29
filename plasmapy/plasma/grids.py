@@ -16,7 +16,9 @@ import warnings
 import xarray as xr
 
 from abc import ABC
+from cached_property import cached_property
 from collections import namedtuple
+from scipy.spatial import distance
 from typing import Union
 
 
@@ -393,20 +395,8 @@ class AbstractGrid(ABC):
         if self.is_uniform:
             return min(self.dax0, self.dax1, self.dax2)
         else:
-            # Make a deep copy the grid
-            temp_grid = np.copy(self.grid)
-            npos = self.shape[0]
-            distances = np.zeros(npos)
-
-            for i in range(npos):
-                # Replace the current index with inf, so we don't just get
-                # a distance of zero
-                temp_grid[i, :] = np.inf
-
-                # Calculate the minimum of all the distances
-                dist = np.min(np.linalg.norm(temp_grid - self.grid[i, :], axis=1))
-                distances[i] = dist
-
+            distances = distance.cdist(self.grid, self.grid)
+            np.fill_diagonal(distances, np.inf)
             return np.min(distances)
 
     # *************************************************************************
@@ -719,12 +709,40 @@ class AbstractGrid(ABC):
     # Interpolators
     # *************************************************************************
 
-    # These arrays are used to enable persistent interpolation (faster repeated
-    # calls with the same grid and arguments)
-
+    # This property holds the list of quantity keys currently being interpolated
+    # It's used in the following cached properties
     _interp_args = []
-    _interp_quantities = None
-    _interp_units = None
+
+    @cached_property
+    def _interp_quantities(self):
+        r"""
+        Create a dimensionless array of quantites to be interpolated
+        """
+        nargs = len(self._interp_args)
+        # Load the arrays to be interpolated from and their units
+        if self.is_uniform:
+            nx, ny, nz = self.shape
+            _interp_quantities = np.zeros([nx, ny, nz, nargs])
+        else:
+            npoints = self.shape[0]
+            _interp_quantities = np.zeros([npoints, nargs])
+
+        for j, arg in enumerate(self._interp_args):
+            _interp_quantities[..., j] = self.ds[arg].values
+
+        return _interp_quantities
+
+    @cached_property
+    def _interp_units(self):
+        r"""
+        Create a list of the units corresponding to the last dimension
+        in the _interp_quantities array.
+        """
+        _interp_units = []
+        for j, arg in enumerate(self._interp_args):
+            _interp_units.append(self.ds[arg].attrs["unit"])
+
+        return _interp_units
 
     @property
     def interpolator(self):
@@ -865,9 +883,16 @@ class AbstractGrid(ABC):
                     f"Existing keys are: {self.quantities}"
                 )
 
+        # If persistent, double check the arguments list hasn't changed
+        # If they have, run as non-persistent this time
+        if persistent and args != self._interp_args:
+            persistent = False
+
+        # Update _interp_args variable
+        self._interp_args = args
+
         # Interpolate the nearest-neighbor indices
         i = self.interpolate_indices(pos)
-        nparticles = i.shape[0]
         nargs = len(args)
 
         # Get the indices that are equal to nan (fill values), then set
@@ -886,25 +911,14 @@ class AbstractGrid(ABC):
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
 
-        # If persistent, double check the arguments list hasn't changed
-        # If they have, run as non-persistent this time
-        if persistent and args != self._interp_args:
-            persistent = False
-
-        if not persistent or self._interp_quantities is None:
-            # Load the arrays to be interpolated from and their units
-            if self.is_uniform:
-                nx, ny, nz = self.shape
-                self._interp_quantities = np.zeros([nx, ny, nz, nargs])
-            else:
-                npoints = self.shape[0]
-                self._interp_quantities = np.zeros([npoints, nargs])
-            self._interp_units = []
-            self._interp_args = args
-
-            for j, arg in enumerate(args):
-                self._interp_quantities[..., j] = self.ds[arg].values
-                self._interp_units.append(self.ds[arg].attrs["unit"])
+        # If not persistent, clear the cached properties so they are re-created
+        # when called below
+        if not persistent:
+            try:
+                del self._interp_quantities
+                del self._interp_units
+            except AttributeError:
+                pass
 
         # Fetch the values at those indices from each quantity
         if self.is_uniform:
@@ -921,10 +935,6 @@ class AbstractGrid(ABC):
         output = []
         for i in range(nargs):
             output.append(values[:, i] * self._interp_units[i])
-
-        if not persistent:
-            self.interp_quantities = None
-            self.interp_units = None
 
         if len(output) == 1:
             return output[0]
@@ -1003,6 +1013,14 @@ class CartesianGrid(AbstractGrid):
                     f"Existing keys are: {self.quantities}"
                 )
 
+        # If persistent, double check the arguments list hasn't changed
+        # If they have, run as non-persistent this time
+        if persistent and args != self._interp_args:
+            persistent = False
+
+        # Update _interp_args variable
+        self._interp_args = args
+
         # Interpolate the indices
         i = self.interpolate_indices(pos)
         nparticles = i.shape[0]
@@ -1026,15 +1044,14 @@ class CartesianGrid(AbstractGrid):
         if persistent and args != self._interp_args:
             persistent = False
 
-        if not persistent or self._interp_quantities is None:
-            # Load the arrays to be interpolated from and their units
-            nx, ny, nz = self.shape
-            self._interp_quantities = np.zeros([nx, ny, nz, nargs])
-            self._interp_units = []
-            self._interp_args = args
-            for j, arg in enumerate(args):
-                self._interp_quantities[..., j] = self.ds[arg].values
-                self._interp_units.append(self.ds[arg].attrs["unit"])
+        # If not persistent, clear the cached properties so they are re-created
+        # when called below
+        if not persistent:
+            try:
+                del self._interp_quantities
+                del self._interp_units
+            except AttributeError:
+                pass
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])
@@ -1094,10 +1111,6 @@ class CartesianGrid(AbstractGrid):
         output = []
         for i in range(nargs):
             output.append(sum_value[:, i] * self._interp_units[i])
-
-        if not persistent:
-            self.interp_quantities = None
-            self.interp_units = None
 
         if len(output) == 1:
             return output[0]

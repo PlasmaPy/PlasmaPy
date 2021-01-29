@@ -1,5 +1,7 @@
 # Required Packages w/ version
 astropy >= 4.0
+cached-property >= 1.5.2
+colorama >= 0.3
 h5py >= 2.8
 lmfit >= 1.0.1
 matplotlib >= 2.0

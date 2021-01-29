@@ -7,6 +7,8 @@ import numpy as np
 import pytest
 import warnings
 
+from numpy.testing import assert_allclose
+
 from plasmapy.plasma import grids as grids
 
 
@@ -265,11 +267,14 @@ def test_NonUniformCartesianGrid():
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantities(rho=q1)
 
+    # Test grid resolution for non-uniform grids
+    assert 0 < grid.grid_resolution < 2
+
 
 if __name__ == "__main__":
     # test_AbstractGrid()
     # test_CartesianGrid()
-    test_grid_methods()
+    # test_grid_methods()
     # test_interpolate_indices()
     # test_nearest_neighbor_interpolator()
     # test_volume_averaged_interpolator()
