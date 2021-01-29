@@ -11,8 +11,9 @@ from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.parameters import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import code_repr
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class PlasmaBlob(GenericPlasma):
@@ -69,7 +70,7 @@ class PlasmaBlob(GenericPlasma):
             "Z": self.Z,
         }
 
-        return call_string(PlasmaBlob, (), argument_dict)
+        return code_repr.call_string(PlasmaBlob, (), argument_dict)
 
     @property
     def electron_temperature(self):
