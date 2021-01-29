@@ -43,6 +43,52 @@ def _rot_a_to_b(a, b):
     return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
 
 
+def _coerce_to_cartesian_si(pos):
+    """
+    Takes a tuple of `astropy.unit.Quantity` values representing a position
+    in space in either Cartesian, cylindrical, or spherical coordinates, and
+    returns a numpy array representing the same point in Cartesian
+    coordinates and units of meters.
+    """
+    # Auto-detect geometry based on units
+    geo_units = [x.unit for x in pos]
+    if geo_units[2].is_equivalent(u.rad):
+        geometry = "spherical"
+    elif geo_units[1].is_equivalent(u.rad):
+        geometry = "cylindrical"
+    else:
+        geometry = "cartesian"
+
+    # Convert geometrical inputs between coordinates systems
+    pos_out = np.zeros(3)
+    if geometry == "cartesian":
+        x, y, z = pos
+        pos_out[0] = x.to(u.m).value
+        pos_out[1] = y.to(u.m).value
+        pos_out[2] = z.to(u.m).value
+
+    elif geometry == "cylindrical":
+        r, t, z = pos
+        r = r.to(u.m)
+        t = t.to(u.rad).value
+        z = z.to(u.m)
+        pos_out[0] = (r * np.cos(t)).to(u.m).value
+        pos_out[1] = (r * np.sin(t)).to(u.m).value
+        pos_out[2] = z.to(u.m).value
+
+    elif geometry == "spherical":
+        r, t, p = pos
+        r = r.to(u.m)
+        t = t.to(u.rad).value
+        p = p.to(u.rad).value
+
+        pos_out[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+        pos_out[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+        pos_out[2] = (r * np.cos(t)).to(u.m).value
+
+    return pos_out
+
+
 class SyntheticProtonRadiograph:
     r"""
     Represents a proton radiography experiment with simulated or
@@ -74,13 +120,29 @@ class SyntheticProtonRadiograph:
         can also be specified in cartesian, cylindrical, or spherical
         coordinates (see the `source` keyword).
 
+    detector_hdir : `numpy.ndarray`, shape (3), optional
+        A unit vector (in Cartesian coordinates) defining the horizontal
+        direction on the detector plane. By default, the horizontal axis in the
+        detector plane is defined to be perpendicular to both the
+        source-to-detector vector and the z-axis (unless the source-to-detector axis
+        is parallel to the z axis, in which case the horizontal axis is the x-axis).
+
+        The detector vertical axis is then defined
+        to be orthgonal to both the source-to-detector vector and the
+        detector horizontal axis.
+
     verbose : bool, optional
         If true, updates on the status of the program will be printed
         into the command line while running.
     """
 
     def __init__(
-        self, grid: AbstractGrid, source: u.m, detector: u.m, verbose=True,
+        self,
+        grid: AbstractGrid,
+        source: u.m,
+        detector: u.m,
+        detector_hdir=None,
+        verbose=True,
     ):
         r"""
         Initalize the SyntheticProtonRadiograph object, carry out coordinate transformations,
@@ -99,68 +161,8 @@ class SyntheticProtonRadiograph:
         # Setup the source and detector geometries
         # ************************************************************************
 
-        # Auto-detect source and detector geometry based on units
-        geo_units = [x.unit for x in source]
-        if geo_units[2].is_equivalent(u.rad):
-            geometry = "spherical"
-        elif geo_units[1].is_equivalent(u.rad):
-            geometry = "cylindrical"
-        else:
-            geometry = "cartesian"
-
-        # Convert geometrical inputs between coordinates systems
-        if geometry == "cartesian":
-            x, y, z = source
-
-            self.source = np.zeros(3)
-            self.source[0] = x.to(u.m).value
-            self.source[1] = y.to(u.m).value
-            self.source[2] = z.to(u.m).value
-
-            x, y, z = detector
-            self.detector = np.zeros(3)
-            self.detector[0] = x.to(u.m).value
-            self.detector[1] = y.to(u.m).value
-            self.detector[2] = z.to(u.m).value
-
-        elif geometry == "cylindrical":
-            r, t, z = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.source = np.zeros(3)
-            self.source[0] = (r * np.cos(t)).to(u.m).value
-            self.source[1] = (r * np.sin(t)).to(u.m).value
-            self.source[2] = z.to(u.m).value
-
-            r, t, z = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.detector = np.zeros(3)
-            self.detector[0] = (r * np.cos(t)).to(u.m).value
-            self.detector[1] = (r * np.sin(t)).to(u.m).value
-            self.detector[2] = z.to(u.m).value
-
-        elif geometry == "spherical":
-            r, t, p = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.source = np.zeros(3)
-            self.source[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
-            self.source[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
-            self.source[2] = (r * np.cos(t)).to(u.m).value
-
-            r, t, p = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.detector = np.zeros(3)
-            self.detector[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
-            self.detector[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
-            self.detector[2] = (r * np.cos(t)).to(u.m).value
-
+        self.source = _coerce_to_cartesian_si(source)
+        self.detector = _coerce_to_cartesian_si(detector)
         self._log(f"Source: {self.source} m")
         self._log(f"Detector: {self.detector} m")
 
@@ -189,20 +191,15 @@ class SyntheticProtonRadiograph:
         # Define the detector plane
         # ************************************************************************
 
-        # Create unit vectors that define the detector plane
-        # Define plane  horizontal axis
-        if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
-            nx = np.array([1, 0, 0])
+        # Load or calculate the detector hdir
+        if detector_hdir is not None:
+            self.det_hdir = detector_hdir / np.linalg.norm(detector_hdir)
         else:
-            nx = np.cross(np.array([0, 0, 1]), self.det_n)
-        nx = nx / np.linalg.norm(nx)
-        self.det_hax = nx  # Unit vector for hax, detector horizontal axis
+            self.det_hdir = self._default_detector_hdir()
 
-        # Define the detector vertical axis as being orthogonal to the
-        # detector axis and the horizontal axis
-        ny = np.cross(nx, self.det_n)
-        ny = -ny / np.linalg.norm(ny)
-        self.det_vax = ny  # Unit vector for vax, detector vertical axis
+        # Calculate the detector vdir
+        ny = np.cross(self.det_hdir, self.det_n)
+        self.det_vdir = -ny / np.linalg.norm(ny)
 
         # ************************************************************************
         # Validate the E and B fields
@@ -256,6 +253,20 @@ class SyntheticProtonRadiograph:
                     "zero.",
                     RuntimeWarning,
                 )
+
+    def _default_detector_hdir(self):
+        """
+        Calculates the default horizontal unit vector for the detector plane
+        (see __init__ description for details)
+        """
+        # Create unit vectors that define the detector plane
+        # Define plane  horizontal axis
+        if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
+            nx = np.array([1, 0, 0])
+        else:
+            nx = np.cross(np.array([0, 0, 1]), self.det_n)
+        nx = nx / np.linalg.norm(nx)
+        return nx
 
     def _log(self, msg):
         if self.verbose:
@@ -755,12 +766,7 @@ class SyntheticProtonRadiograph:
     ):
         r"""
         Calculate a "synthetic radiograph" (particle count histogram in the
-        image plane). The horizontal axis in the detector plane is defined to
-        be perpendicular to both the source-to-detector vector and the z-axis
-        (unless the source-to-detector axis is parallel to the z axis, in which
-        case the horizontal axis is the x-axis). The vertical axis is defined
-        to be orthgonal to both the source-to-detector vector and the
-        horizontal axis.
+        image plane).
 
         Parameters
         ----------
@@ -811,8 +817,8 @@ class SyntheticProtonRadiograph:
 
         # Determine locations of points in the detector plane using unit
         # vectors
-        xloc = np.dot(x - self.detector, self.det_hax)
-        yloc = np.dot(x - self.detector, self.det_vax)
+        xloc = np.dot(x - self.detector, self.det_hdir)
+        yloc = np.dot(x - self.detector, self.det_vdir)
 
         if size is None:
             # If a detector size is not given, choose lengths based on the

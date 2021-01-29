@@ -253,6 +253,22 @@ def test_input_validation():
         hax, vax, values = sim.synthetic_radiograph(size=size)
 
 
+def test_init():
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+
+    # Cartesian
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
+    # Test manually setting hdir and vdir
+    hdir = np.array([1, 0, 1])
+    sim = prad.SyntheticProtonRadiograph(
+        grid, source, detector, verbose=False, detector_hdir=hdir
+    )
+
+
 def test_create_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -287,6 +303,7 @@ if __name__ == "__main__":
     # test_coordinate_systems()
     # test_input_validation()
     # test_1D_deflections()
+    test_init()
     # test_create_particles()
     # test_run_options()
     pass
