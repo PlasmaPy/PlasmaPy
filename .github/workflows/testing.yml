@@ -107,7 +107,7 @@ jobs:
       run: |
         python setup.py bdist_wheel
         python setup.py sdist
-    - name: Publish distribution 📦 to PyPI
+    - name: Publish distribution, if tagged, 📦 to PyPI
       if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
