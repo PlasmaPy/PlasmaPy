@@ -144,10 +144,6 @@ class SyntheticProtonRadiograph:
         detector_hdir=None,
         verbose=True,
     ):
-        r"""
-        Initalize the SyntheticProtonRadiograph object, carry out coordinate transformations,
-        and compute several quantities that will be used elsewhere.
-        """
 
         # self.grid is the grid object
         self.grid = grid
