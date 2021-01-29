@@ -952,7 +952,7 @@ def Hall_parameter(
 
     gyro_frequency = gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
-    if particles.Particle(particle).particle == "e-":
+    if particles.Particle(particle).symbol == "e-":
         coll_rate = fundamental_electron_collision_freq(
             T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
         )
