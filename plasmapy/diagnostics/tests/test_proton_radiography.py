@@ -300,10 +300,10 @@ def test_run_options():
 
 
 if __name__ == "__main__":
-    # test_coordinate_systems()
-    # test_input_validation()
-    # test_1D_deflections()
+    test_coordinate_systems()
+    test_input_validation()
+    test_1D_deflections()
     test_init()
-    # test_create_particles()
-    # test_run_options()
+    test_create_particles()
+    test_run_options()
     pass

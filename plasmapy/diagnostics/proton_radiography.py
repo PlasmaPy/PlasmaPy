@@ -168,17 +168,15 @@ class SyntheticProtonRadiograph:
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
-        self.src_n = self.source / np.linalg.norm(self.source)
+        self.src_n = -self.source / np.linalg.norm(self.source)
         self.det_n = -self.detector / np.linalg.norm(self.detector)
 
         # Vector directly from source to detector
         self.src_det = self.detector - self.source
 
-        # Experiment axis is the unit vector from the source to the detector
-        self.src_det_n = self.src_det / np.linalg.norm(self.src_det)
-
         # Magnification
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
+        self._log(f"Magnification: {self.mag}")
 
         # Check that source-detector vector actually passes through the grid
         if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
@@ -502,7 +500,7 @@ class SyntheticProtonRadiograph:
         dist = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
 
         # Find the particle with the highest speed towards the grid
-        vmax = np.max(np.dot(self.v, -self.src_n))
+        vmax = np.max(np.dot(self.v, self.src_n))
 
         # Time for fastest possible particle to reach the grid.
         t = dist / vmax
@@ -514,6 +512,9 @@ class SyntheticProtonRadiograph:
         r"""
         Calculate the distribution of particles on the detector plane in the absence
         of any simulated fields.
+
+        These positions are used to quickly compute null radiographs, which are
+        used to determine the degree of deflection.
         """
         # Calculate the unit vector from the source to the detector
         dist = np.linalg.norm(self.source_to_detector)
@@ -566,6 +567,7 @@ class SyntheticProtonRadiograph:
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
+        # Get a list of positions (input for interpolator)
         pos = self.x[self.grid_ind, :] * u.m
 
         # Update the list of particles on and off the grid
