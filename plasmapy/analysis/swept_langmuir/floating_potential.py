@@ -26,7 +26,7 @@ def find_floating_potential(
     """
     Determines the floating potential (:math:`V_f`) for a given Current-Voltage
     (IV) curve obtained from a swept Langmuir probe.  The floating potential is
-    the probe bias where the collected current equals to zero :math:`I = 0`.
+    the probe bias where the collected current equals zero :math:`I = 0`.
 
     **How it works**
 
