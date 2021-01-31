@@ -5,7 +5,6 @@ Tests for functionality contained in
 
 import numpy as np
 import pytest
-import sys
 
 from unittest import mock
 
@@ -33,10 +32,8 @@ def test_floating_potential_namedtuple():
         "islands",
         "indices",
     )
-    if sys.version_info >= (3, 7):
-        # TODO: remove if clause when python 3.6 support is dropped
-        assert hasattr(FloatingPotentialResults, "_field_defaults")
-        assert FloatingPotentialResults._field_defaults == {}
+    assert hasattr(FloatingPotentialResults, "_field_defaults")
+    assert FloatingPotentialResults._field_defaults == {}
 
 
 class TestFindFloatingPotential:
