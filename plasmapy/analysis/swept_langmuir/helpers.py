@@ -31,7 +31,7 @@ def check_sweep(voltage: np.ndarray, current: np.ndarray) -> None:
 
         If the ``voltage`` array is not monotonically increasing.
 
-        If the ``current`` array never cross zero (i.e. has not floating
+        If the ``current`` array never crosses zero (i.e. has no floating
         potential).
 
         If the ``current`` array does not start form a negative ion-saturation
