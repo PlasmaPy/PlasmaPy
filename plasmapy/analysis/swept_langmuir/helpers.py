@@ -108,8 +108,8 @@ def check_sweep(
 
     # check array structure
     if not (
-            np.issubdtype(current.dtype, np.floating)
-            or np.issubdtype(current.dtype, np.integer)
+        np.issubdtype(current.dtype, np.floating)
+        or np.issubdtype(current.dtype, np.integer)
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for current, but"
