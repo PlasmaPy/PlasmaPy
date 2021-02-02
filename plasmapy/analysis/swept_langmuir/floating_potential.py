@@ -1,6 +1,7 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
 __all__ = ["find_floating_potential"]
 
+import numbers
 import numpy as np
 
 from collections import namedtuple
