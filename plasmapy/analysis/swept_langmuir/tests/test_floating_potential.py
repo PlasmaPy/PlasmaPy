@@ -111,6 +111,14 @@ class TestFindFloatingPotential:
                 },
                 ValueError,
             ),
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "min_points": 0,
+                },
+                ValueError,
+            ),
             #
             # errors on kwarg threshold
             (
@@ -221,7 +229,7 @@ class TestFindFloatingPotential:
     @pytest.mark.parametrize(
         "min_points, fit_type, islands, indices",
         [
-            (0, "linear", [slice(29, 31)], slice(0, 70)),
+            (np.inf, "linear", [slice(29, 31)], slice(0, 70)),
             (1, "linear", [slice(29, 31)], slice(29, 31)),
             (15, "linear", [slice(29, 31)], slice(22, 38)),
             (16, "linear", [slice(29, 31)], slice(22, 38)),

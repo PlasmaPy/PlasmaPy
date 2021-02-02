@@ -58,7 +58,7 @@ def find_floating_potential(
           ``factor * array_size`` is taken, where ``array_size`` is the size of
           ``voltage`` and ``factor = 0.1`` for ``fit_type = "linear"`` and
           ``0.2`` for ``"exponential"``.
-        - ``min_points = 0`` The entire passed array is fitted.
+        - ``min_points = numpy.inf`` The entire passed array is fitted.
         - ``min_points >= 1`` Exact minimum number of points.
         - ``0 < min_points < 0`` The minimum number of points is taken as
           ``min_points * array_size``.
@@ -182,7 +182,7 @@ def find_floating_potential(
             f"Argument 'min_points' is wrong type '{type(min_points)}', expecting "
             f"an int or float."
         )
-    elif min_points == 0:
+    elif np.isinf(min_points):
         # this signals to use all points
         pass
     elif 0 < min_points < 1:
@@ -214,7 +214,7 @@ def find_floating_potential(
     threshold_indices = np.where(cp_intervals > threshold)[0]
     n_islands = threshold_indices.size + 1
 
-    if min_points == 0:
+    if np.isinf(min_points):
         rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
     elif n_islands == 1:
         rtn["islands"] = [slice(cp_candidates[0], cp_candidates[-1] + 1)]
@@ -245,7 +245,7 @@ def find_floating_potential(
             return FloatingPotentialResults(**rtn)
 
     # Construct crossing-island (pad if needed)
-    if min_points == 0:
+    if np.isinf(min_points):
         # us all points
         istart = 0
         istop = voltage.size - 1
