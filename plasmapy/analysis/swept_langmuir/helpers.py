@@ -16,12 +16,14 @@ def check_sweep(
     ----------
     voltage: `numpy.ndarray`
         1D `numpy.ndarray` representing the voltage of the swept Langmuir trace.
-        Voltage should be monotonically increasing.
+        Voltage should be monotonically increasing.  *No units are assumed or
+        checked, but values should be in volts.*
 
     current: `numpy.ndarray`
         1D `numpy.ndarray` representing the current of the swept Langmuir trace.
         Values should start from a negative ion-saturation current and increase
-        to a positive electron-saturation current.
+        to a positive electron-saturation current.  *No units are assumed or
+        checked, but values should be in amperes.*
 
     strip_units: `bool`
         (Default: `True`) If `True``, then the units on ``voltage`` and/or
