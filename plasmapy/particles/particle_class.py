@@ -2035,8 +2035,10 @@ isotope, special particle, or custom particle.
 
 Notes
 -----
-Particles in PlasmaPy are canonically represented as instances of the
-`~plasmapy.particles.particle_class.Particle` class.
+Real world particles are typically represented as instances of the
+`~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
+Custom particles can be constructed with the
+`~plasmapy.particles.particle_class.CustomParticle` class
 
 >>> from plasmapy.particles import Particle
 >>> Particle("proton")
