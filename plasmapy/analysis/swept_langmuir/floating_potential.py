@@ -51,7 +51,7 @@ def find_floating_potential(
 
     min_points: positive `int` or `float`
         Minimum number of data points required for the fitting to be applied to.
-        See **Notes** above for additional details.  The following list
+        See **Notes** section below for additional details.  The following list
         specifies the optional values:
 
         - ``min_points = None`` (Default) The largest of 5 and
