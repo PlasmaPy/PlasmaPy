@@ -155,7 +155,7 @@ def find_floating_potential(
 
     # check voltage and current arrays
     try:
-        check_sweep(voltage, current)
+        voltage, current = check_sweep(voltage, current, strip_units=True)
     except (TypeError, ValueError) as err:
         # did not pass checks
         warn(err.args[0], PlasmaPyWarning)
@@ -248,7 +248,7 @@ def find_floating_potential(
     if min_points == 0:
         # us all points
         istart = 0
-        istop = voltage.size
+        istop = voltage.size - 1
     else:
         istart = cp_candidates[0]
         istop = cp_candidates[-1]
