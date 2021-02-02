@@ -46,10 +46,9 @@ class TestFindFloatingPotential:
     _null_result = FloatingPotentialResults(
         vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
     )._asdict()
-    _linear_p_sine_voltage = np.linspace(-10.0, 15, 70)
-    _linear_p_sine_current = np.linspace(-3.1, 4.1, 70) + 1.2 * np.sin(
-        1.2 * _linear_p_sine_voltage
-    )
+    _voltage = np.linspace(-10.0, 15, 70)
+    _linear_current = np.linspace(-3.1, 4.1, 70)
+    _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
 
     def test_call_of_check_sweep(self):
         """
@@ -158,7 +157,7 @@ class TestFindFloatingPotential:
             # too many crossing islands
             (
                 {
-                    "voltage": _linear_p_sine_voltage,
+                    "voltage": _voltage,
                     "current": _linear_p_sine_current,
                     "fit_type": "linear",
                 },
@@ -173,7 +172,7 @@ class TestFindFloatingPotential:
             # min_points is larger than array size
             (
                 {
-                    "voltage": _linear_p_sine_voltage,
+                    "voltage": _voltage,
                     "current": _linear_p_sine_current,
                     "fit_type": "linear",
                     "threshold": 8,
