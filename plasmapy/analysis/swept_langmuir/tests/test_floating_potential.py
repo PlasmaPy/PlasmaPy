@@ -342,6 +342,6 @@ class TestFindFloatingPotential:
                 if np.isnan(val):
                     assert np.isnan(rtn_val)
                 else:
-                    assert np.isclose(rtn_val, val)
+                    assert np.isclose(rtn_val, val, atol=1e-7)
             else:
                 assert rtn_val == val
