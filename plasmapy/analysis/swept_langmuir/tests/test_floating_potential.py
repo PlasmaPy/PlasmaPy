@@ -185,7 +185,7 @@ class TestFindFloatingPotential:
                     "vf_err": 0.03306472,
                     "rsq": 0.8446441,
                     "func": ffuncs.Linear(),
-                    "islands": [slice(27, 41), ],
+                    "islands": [slice(27, 41)],
                     "indices": slice(0, 70),
                 },
                 PlasmaPyWarning,
@@ -216,17 +216,17 @@ class TestFindFloatingPotential:
     @pytest.mark.parametrize(
         "min_points, fit_type, islands, indices",
         [
-            (0, "linear", [slice(29, 31), ], slice(0, 70)),
-            (1, "linear", [slice(29, 31), ], slice(29, 31)),
-            (15, "linear", [slice(29, 31), ], slice(22, 38)),
-            (16, "linear", [slice(29, 31), ], slice(22, 38)),
-            (0.14, "linear", [slice(29, 31), ], slice(25, 35)),
+            (0, "linear", [slice(29, 31)], slice(0, 70)),
+            (1, "linear", [slice(29, 31)], slice(29, 31)),
+            (15, "linear", [slice(29, 31)], slice(22, 38)),
+            (16, "linear", [slice(29, 31)], slice(22, 38)),
+            (0.14, "linear", [slice(29, 31)], slice(25, 35)),
             #
             # rely on default min_points
             # - linear -> 0.1 * array size & ceiling to the nearest even
             # - exponential -> 0.2 * array size & ceiling to the nearest even
-            (None, "linear", [slice(29, 31), ], slice(26, 34)),
-            (None, "exponential", [slice(26, 28), ], slice(20, 34)),
+            (None, "linear", [slice(29, 31)], slice(26, 34)),
+            (None, "exponential", [slice(26, 28)], slice(20, 34)),
         ],
     )
     def test_kwarg_min_points(self, min_points, fit_type, islands, indices):
@@ -261,7 +261,7 @@ class TestFindFloatingPotential:
                     "vf_err": 0.0,
                     "rsq": 1.0,
                     "func": ffuncs.Linear(),
-                    "islands": [slice(29, 31), ],
+                    "islands": [slice(29, 31)],
                     "indices": slice(22, 38),
                 },
             ),
@@ -299,7 +299,7 @@ class TestFindFloatingPotential:
                     "vf_err": 3.153378e-8,
                     "rsq": 1.0,
                     "func": ffuncs.Linear(),
-                    "islands": [slice(5, 7), ],
+                    "islands": [slice(5, 7)],
                     "indices": slice(0, 16),
                 },
             ),
@@ -318,7 +318,7 @@ class TestFindFloatingPotential:
                     "vf_err": 0.0,
                     "rsq": 1.0,
                     "func": ffuncs.Linear(),
-                    "islands": [slice(68, 70), ],
+                    "islands": [slice(68, 70)],
                     "indices": slice(54, 70),
                 },
             ),
