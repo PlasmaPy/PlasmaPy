@@ -49,6 +49,7 @@ class TestFindFloatingPotential:
     _voltage = np.linspace(-10.0, 15, 70)
     _linear_current = np.linspace(-3.1, 4.1, 70)
     _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
+    _exp_current = -1.3 + 2.2 * np.exp(_voltage)
 
     def test_call_of_check_sweep(self):
         """
@@ -211,3 +212,30 @@ class TestFindFloatingPotential:
                     assert np.isclose(rtn_val, val)
             else:
                 assert rtn_val == val
+
+    @pytest.mark.parametrize(
+        "min_points, fit_type, islands, indices",
+        [
+            (0, "linear", [slice(29, 31), ], slice(0, 70)),
+            (1, "linear", [slice(29, 31), ], slice(29, 31)),
+            (15, "linear", [slice(29, 31), ], slice(22, 38)),
+            (16, "linear", [slice(29, 31), ], slice(22, 38)),
+            (0.14, "linear", [slice(29, 31), ], slice(25, 35)),
+            #
+            # rely on default min_points
+            # - linear -> 0.1 * array size & ceiling to the nearest even
+            # - exponential -> 0.2 * array size & ceiling to the nearest even
+            (None, "linear", [slice(29, 31), ], slice(26, 34)),
+            (None, "exponential", [slice(26, 28), ], slice(20, 34)),
+        ],
+    )
+    def test_kwarg_min_points(self, min_points, fit_type, islands, indices):
+        voltage = self._voltage
+        current = self._linear_current if fit_type == "linear" else self._exp_current
+        results = find_floating_potential(
+            voltage, current, min_points=min_points, fit_type=fit_type,
+        )
+        assert isinstance(results, FloatingPotentialResults)
+
+        assert results.islands == islands
+        assert results.indices == indices
