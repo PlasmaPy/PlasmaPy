@@ -2030,8 +2030,9 @@ class CustomParticle(AbstractParticle):
 particle_like = Union[str, Integral, Particle, CustomParticle]
 
 particle_like.__doc__ = """
-An `object` is particle-like if it can uniquely identify an ion, atom,
-isotope, special particle, or custom particle.
+An `object` is particle-like if it can be identified as an instance of 
+`~plasmapy.particles.particle_class.Particle` or 
+`~plasmapy.particles.particle_class.CustumParticle`, or cast into one.
 
 Notes
 -----
