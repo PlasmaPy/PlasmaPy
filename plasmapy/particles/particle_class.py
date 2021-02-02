@@ -6,7 +6,6 @@ __all__ = [
     "AbstractParticle",
     "CustomParticle",
     "DimensionlessParticle",
-    "is_particle_like",
     "Particle",
     "particle_like",
 ]
@@ -2030,25 +2029,36 @@ class CustomParticle(AbstractParticle):
 particle_like = Union[str, Integral, Particle, CustomParticle]
 
 particle_like.__doc__ = """
-An `object` is particle-like if it can be identified as an instance of 
-`~plasmapy.particles.particle_class.Particle` or 
-`~plasmapy.particles.particle_class.CustumParticle`, or cast into one.
+An `object` is particle-like if it can be identified as an instance of
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
 Notes
 -----
 Real world particles are typically represented as instances of the
 `~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
-Custom particles can be constructed with the
-`~plasmapy.particles.particle_class.CustomParticle` class
 
 >>> from plasmapy.particles import Particle
+
 >>> Particle("proton")
 Particle("p+")
 >>> Particle("neutron")
 Particle("n")
 
+Custom particles can be constructed with the
+`~plasmapy.particles.particle_class.CustomParticle` class.
+
+>>> from plasmapy.particles import CustomParticle
+>>> import astropy.units as u
+
+>>> custom_particle = CustomParticle(mass=1e-24 * u.kg, charge=-5e-18 * u.C)
+>>> custom_particle.mass
+<Quantity 1.e-24 kg>
+>>> custom_particle.charge
+<Quantity -5.e-18 C>
+
 All `~plasmapy.particles.particle_class.Particle` instances and variables
-that can be cast into a `~plasmapy.particles.particle_class.Particle` 
+that can be cast into a `~plasmapy.particles.particle_class.Particle`
 instances are particle-like.
 
 An **element** may also be represented by a string that contains the
@@ -2074,33 +2084,41 @@ representation of an element or isotope, followed by a space, and then
 the charge information (e.g., ``"2+"``).  The charge information in the
 string includes an integer either followed or preceded by a plus or
 minus sign.  For example, Fe:sup:`2+` can be represented as
-``"Fe 2+"``, while :sup:`56`Fe:sup:`0+` can be represented as
-``"iron-56 +0"``.  The integer charge can alternatively be specified
-using the ``Z`` keyword to `~plasmapy.particles.particle_class.Particle`.
+``"Fe 2+"``, while :sup:`56`\ Fe:sup:`0+` can be represented as
+``"iron-56 +0"``.  Ions can also be represented using the Roman numeral
+notation that is common in astrophysical spectroscopy.  Here, the Roman
+numeral represents the integer charge plus one (e.g., ``"H I"``
+represents H:sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He:sup:`1+`).
+The integer charge can alternatively be specified using the ``Z``
+keyword to `~plasmapy.particles.particle_class.Particle`.
 
 >>> Particle("He-4", Z=2)
 Particle("He-4 2+")
 
-A **special particle** may be represented by a string that contains a
-the name of the particle or a standard symbol for it.  A neutron can be
-represented as ``"n"`` or ``"neutron"``, a proton can be represented as
-``"p"``, ``"p+"``, or ``"proton"``, and an electron can be represented
-by ``"e"``, ``"e-"``, or ``"electron"``.
+A **special particle** may be represented by a string that contains
+the name of the particle (case-insensitive) or a standard symbol for it
+(case-sensitive).  A neutron can be represented as ``"n"`` or
+``"neutron"``; a proton can be represented as ``"p+"``, ``"p"``, or
+``"Proton"``; and an electron can be represented by ``"e-"``, ``"e"``,
+or ``"ELECTRON"``.
 
 Instances of the `~plasmapy.particles.particle_class.CustomParticle`
 class are considered particle-like because the mass and charge of the
 custom particle are uniquely defined in physical units.
 
 `~plasmapy.particles.particle_class.DimensionlessParticle` instances are
-not considered particle-like because (without normalization information)
-they do not *uniquely* identify a particle.
+not considered particle-like because, without normalization information,
+they do not *uniquely* identify a physical particle and therefore cannot
+be used in `plasmapy.formulary`.
 """
 
+# TODO: Set it up so that `isinstance(x, particle_like)` will return
+#  `True` for something particle-like, and `False` for everything else.
+#  This might need to be done with a custom type rather than defining
+#  `particle_like` with  `typing.Union[...]`.
 
-# TODO: Need to incorporate is_particle_like into @particle_input
 
-
-def is_particle_like(obj: Any) -> bool:
+def _is_particle_like(obj: Any) -> bool:
     """
     Return `True` if an `object` can uniquely represent a physical
     particle, and `False` otherwise.
@@ -2108,20 +2126,24 @@ def is_particle_like(obj: Any) -> bool:
     Examples
     --------
     >>> from plasmapy.particles.particle_class import (
-    ...     particle_like, Particle, CustomParticle, DimensionlessParticle,
+    ...     particle_like,
+    ...     Particle,
+    ...     CustomParticle,
+    ...     DimensionlessParticle,
+    ...     _is_particle_like,
     ... )
     >>> import astropy.units as u
 
-    >>> is_particle_like("Fe-56 2+")
+    >>> _is_particle_like("Fe-56 2+")
     True
-    >>> is_particle_like("he")  # atomic symbols are case-sensitive
+    >>> _is_particle_like("he")  # atomic symbols are case-sensitive
     False
 
     Custom particles are considered `particle_like` because they provide
     the mass and/or charge in physical units.
 
     >>> custom_particle = CustomParticle(mass=1e-26 * u.kg, charge=1e-18 * u.C)
-    >>> is_particle_like(custom_particle)
+    >>> _is_particle_like(custom_particle)
     True
 
     Dimensionless particles are not considered `particle_like` because,
@@ -2129,7 +2151,7 @@ def is_particle_like(obj: Any) -> bool:
     physical particle.
 
     >>> dimensionless_particle = DimensionlessParticle(mass=1, charge=1)
-    >>> is_particle_like(dimensionless_particle)
+    >>> _is_particle_like(dimensionless_particle)
     False
     """
     if isinstance(obj, (Particle, CustomParticle)):
