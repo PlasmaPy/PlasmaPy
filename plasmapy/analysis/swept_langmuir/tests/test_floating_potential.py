@@ -357,7 +357,7 @@ class TestFindFloatingPotential:
         )
 
         assert isinstance(results, FloatingPotentialResults)
-        assert np.isclose(results.vf, -b/m)
+        assert np.isclose(results.vf, -b / m)
         assert np.isclose(results.vf_err, 0.0)
         assert np.isclose(results.rsq, 1.0)
         assert isinstance(results.func, ffuncs.Linear)
