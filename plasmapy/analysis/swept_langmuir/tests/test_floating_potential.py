@@ -47,9 +47,8 @@ class TestFindFloatingPotential:
         vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
     )._asdict()
     _linear_p_sine_voltage = np.linspace(-10.0, 15, 70)
-    _linear_p_sine_current = (
-        np.linspace(-3.1, 4.1, 70) + 1.2 * np.sin(1.2 * _linear_p_sine_voltage),
-    )
+    _linear_p_sine_current = \
+        np.linspace(-3.1, 4.1, 70) + 1.2 * np.sin(1.2 * _linear_p_sine_voltage)
 
     def test_call_of_check_sweep(self):
         """
@@ -124,6 +123,27 @@ class TestFindFloatingPotential:
                 },
                 TypeError,
             ),
+            #
+            # TypeError on voltage/current arrays from check_sweep
+            (
+                {
+                    "voltage": "not an array",
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "linear",
+                },
+                TypeError,
+            ),
+            #
+            # ValueError on voltage/current arrays from check_sweep
+            #   (not linearly increasing)
+            (
+                {
+                    "voltage": np.array([2.0, 1, 0, -1]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "linear",
+                },
+                ValueError,
+            ),
         ],
     )
     def test_raises(self, kwargs, _error):
@@ -134,28 +154,6 @@ class TestFindFloatingPotential:
     @pytest.mark.parametrize(
         "kwargs, expected, _warning",
         [
-            # check_sweep returns a TypeError
-            (
-                {
-                    "voltage": "not an array",
-                    "current": np.array([-1.0, 0, 1, 2]),
-                    "fit_type": "linear",
-                },
-                {**_null_result, "func": ffuncs.Linear()},
-                PlasmaPyWarning,
-            ),
-            #
-            # check_sweep returns a ValueError (not linearly increasing)
-            (
-                {
-                    "voltage": np.array([2.0, 1, 0, -1]),
-                    "current": np.array([-1.0, 0, 1, 2]),
-                    "fit_type": "linear",
-                },
-                {**_null_result, "func": ffuncs.Linear()},
-                PlasmaPyWarning,
-            ),
-            #
             # too many crossing islands
             (
                 {
