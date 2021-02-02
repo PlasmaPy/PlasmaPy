@@ -14,6 +14,7 @@ from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
     FloatingPotentialResults,
 )
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 def test_floating_potential_namedtuple():
@@ -41,6 +42,14 @@ class TestFindFloatingPotential:
     Tests for function
     `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
     """
+
+    _null_result = FloatingPotentialResults(
+        vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
+    )._asdict()
+    _linear_p_sine_voltage = np.linspace(-10.0, 15, 70)
+    _linear_p_sine_current = (
+        np.linspace(-3.1, 4.1, 70) + 1.2 * np.sin(1.2 * _linear_p_sine_voltage),
+    )
 
     def test_call_of_check_sweep(self):
         """
@@ -120,3 +129,86 @@ class TestFindFloatingPotential:
         """Test scenarios that raise `Exception`s."""
         with pytest.raises(_error):
             find_floating_potential(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected, _warning",
+        [
+            # check_sweep returns a TypeError
+            (
+                {
+                    "voltage": "not an array",
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "linear",
+                },
+                {**_null_result, "func": ffuncs.Linear()},
+                PlasmaPyWarning,
+            ),
+            #
+            # check_sweep returns a ValueError (not linearly increasing)
+            (
+                {
+                    "voltage": np.array([2.0, 1, 0, -1]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "linear",
+                },
+                {**_null_result, "func": ffuncs.Linear()},
+                PlasmaPyWarning,
+            ),
+            #
+            # too many crossing islands
+            (
+                {
+                    "voltage": _linear_p_sine_voltage,
+                    "current": _linear_p_sine_current,
+                    "fit_type": "linear",
+                },
+                {
+                    **_null_result,
+                    "func": ffuncs.Linear(),
+                    "islands": [slice(27, 29), slice(36, 38), slice(39, 41)],
+                },
+                PlasmaPyWarning,
+            ),
+            #
+            # min_points is larger than array size
+            (
+                    {
+                        "voltage": _linear_p_sine_voltage,
+                        "current": _linear_p_sine_current,
+                        "fit_type": "linear",
+                        "threshold": 8,
+                        "min_points": 80,
+                    },
+                    {
+                        **_null_result,
+                        "vf": 0.6355491,
+                        "vf_err": 0.03306472,
+                        "rsq": 0.8446441,
+                        "func": ffuncs.Linear(),
+                        "islands": [slice(27, 41),],
+                        "indices": slice(0, 70),
+                    },
+                    PlasmaPyWarning,
+            ),
+        ],
+    )
+    def test_warnings(self, kwargs, expected, _warning):
+        """Test scenarios that issue warnings."""
+        with pytest.warns(_warning):
+            results = find_floating_potential(**kwargs)
+            assert isinstance(results, FloatingPotentialResults)
+
+        for key, val in expected.items():
+            rtn_val = getattr(results, key)
+
+            if val is None:
+                assert rtn_val is None
+            elif key == "func" and val is not None:
+                assert isinstance(rtn_val, val.__class__)
+            elif np.isscalar(val):
+                if np.isnan(val):
+                    assert np.isnan(rtn_val)
+                else:
+                    assert np.isclose(rtn_val, val)
+            else:
+                assert rtn_val == val
