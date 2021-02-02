@@ -63,6 +63,7 @@ class TestFindFloatingPotential:
         assert _sl.helpers.check_sweep is _sl.floating_potential.check_sweep
 
         with mock.patch(_sl.floating_potential.__name__ + ".check_sweep") as mock_cs:
+            mock_cs.return_value = varr, carr
             find_floating_potential(voltage=varr, current=carr, fit_type="linear")
 
             assert mock_cs.call_count == 1
@@ -73,7 +74,7 @@ class TestFindFloatingPotential:
             assert np.array_equal(mock_cs.call_args[0][1], carr)
 
             # passed kwargs
-            assert mock_cs.call_args[1] == {}
+            assert mock_cs.call_args[1] == {"strip_units": True}
 
     @pytest.mark.parametrize(
         "kwargs, _error",
