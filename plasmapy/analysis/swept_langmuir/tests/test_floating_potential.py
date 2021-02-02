@@ -185,7 +185,7 @@ class TestFindFloatingPotential:
                     "vf_err": 0.03306472,
                     "rsq": 0.8446441,
                     "func": ffuncs.Linear(),
-                    "islands": [slice(27, 41),],
+                    "islands": [slice(27, 41), ],
                     "indices": slice(0, 70),
                 },
                 PlasmaPyWarning,
@@ -230,6 +230,10 @@ class TestFindFloatingPotential:
         ],
     )
     def test_kwarg_min_points(self, min_points, fit_type, islands, indices):
+        """
+        Test functionality of keyword `min_points` and how it affects the
+        size of the crossing-point island.
+        """
         voltage = self._voltage
         current = self._linear_current if fit_type == "linear" else self._exp_current
         results = find_floating_potential(
@@ -239,3 +243,105 @@ class TestFindFloatingPotential:
 
         assert results.islands == islands
         assert results.indices == indices
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            # simple linear
+            (
+                {
+                    "voltage": _voltage,
+                    "current": _linear_current,
+                    "fit_type": "linear",
+                    "min_points": 16,
+                },
+                {
+                    **_null_result,
+                    "vf": 0.7638889,
+                    "vf_err": 0.0,
+                    "rsq": 1.0,
+                    "func": ffuncs.Linear(),
+                    "islands": [slice(29, 31), ],
+                    "indices": slice(22, 38),
+                },
+            ),
+            #
+            # multiple islands merged with min_points
+            (
+                {
+                    "voltage": _voltage,
+                    "current": _linear_p_sine_current,
+                    "fit_type": "linear",
+                    "min_points": 16,
+                },
+                {
+                    **_null_result,
+                    "vf": -8.8243208,
+                    "vf_err": 032.9961,
+                    "rsq": 0.005084178,
+                    "func": ffuncs.Linear(),
+                    "islands": [slice(27, 29), slice(36, 38), slice(39, 41)],
+                    "indices": slice(26, 42),
+                },
+            ),
+            #
+            # crossing-point near front of the array
+            (
+                {
+                    "voltage": _voltage,
+                    "current": _linear_current + 2.5,
+                    "fit_type": "linear",
+                    "min_points": 16,
+                },
+                {
+                    **_null_result,
+                    "vf": -7.91666667,
+                    "vf_err": 3.153378e-8,
+                    "rsq": 1.0,
+                    "func": ffuncs.Linear(),
+                    "islands": [slice(5, 7), ],
+                    "indices": slice(0, 16),
+                },
+            ),
+            #
+            # crossing-point near end of the array
+            (
+                {
+                    "voltage": _voltage,
+                    "current": _linear_current - 4.0,
+                    "fit_type": "linear",
+                    "min_points": 16,
+                },
+                {
+                    **_null_result,
+                    "vf": 14.6527778,
+                    "vf_err": 0.0,
+                    "rsq": 1.0,
+                    "func": ffuncs.Linear(),
+                    "islands": [slice(68, 70), ],
+                    "indices": slice(54, 70),
+                },
+            ),
+        ],
+    )
+    def test_island_finding(self, kwargs, expected):
+        """
+        Test scenarios related to the identification of crossing-point islands.
+        """
+        results = find_floating_potential(**kwargs)
+        assert isinstance(results, FloatingPotentialResults)
+
+        for key, val in expected.items():
+            rtn_val = getattr(results, key)
+
+            if val is None:
+                assert rtn_val is None
+            elif key == "func" and val is not None:
+                assert isinstance(rtn_val, val.__class__)
+            elif np.isscalar(val):
+                if np.isnan(val):
+                    assert np.isnan(rtn_val)
+                else:
+                    assert np.isclose(rtn_val, val)
+            else:
+                assert rtn_val == val
