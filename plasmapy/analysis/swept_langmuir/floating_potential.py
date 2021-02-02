@@ -24,7 +24,7 @@ def find_floating_potential(
     fit_type: str = "exponential",
 ):
     """
-    Determines the floating potential (:math:`V_f`) for a given Current-Voltage
+    Determines the floating potential (:math:`V_f`) for a given current-voltage
     (IV) curve obtained from a swept Langmuir probe.  The floating potential is
     the probe bias where the collected current equals zero :math:`I = 0`.
 
@@ -48,7 +48,7 @@ def find_floating_potential(
 
     3. To calculate the floating potential...
 
-       - If the crossing-island contains less points than ``min_points``, then
+       - If the crossing-island contains fewer points than ``min_points``, then
          each side of the crossing-island is equally padded with the nearest
          neighbor points until ``min_points`` is satisfied.
        - A fit is then performed using `scipy.stats.linregress` for
@@ -225,7 +225,7 @@ def find_floating_potential(
         for start, stop in zip(isl_start, isl_stop):
             rtn["islands"].append(slice(start, stop))
 
-        # do islands fall within min_points window
+        # do islands fall within min_points window?
         isl_window = (
             np.abs(np.r_[rtn["islands"][-1]][-1] - np.r_[rtn["islands"][0]][0]) + 1
         )
