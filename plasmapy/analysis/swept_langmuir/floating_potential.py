@@ -27,34 +27,8 @@ def find_floating_potential(
     """
     Determines the floating potential (:math:`V_f`) for a given current-voltage
     (IV) curve obtained from a swept Langmuir probe.  The floating potential is
-    the probe bias where the collected current equals zero :math:`I = 0`.
-
-    **How it works**
-
-    1. The current array ``current`` is scanned for all points equal to zero and
-       point pairs that straddle :math:`I = 0`.  This forms an array of
-       "crossing-points."
-    2. The crossing-points are then grouped into "crossing-islands" in based on
-       the ``threshold`` keyword.
-
-       - A new island is formed when a successive crossing-point is more (index)
-         steps away from the previous crossing-point than allowed by
-         ``threshold``.
-       - If multiple crossing-islands are identified, then the span from the
-         first point in the first island to the last point in the last island is
-         compared to ``min_points``.  If the span is less than or equal to
-         ``min_points``, then that span is taken as one larger crossing-island
-         for the fit; otherwise, the function is incapable of identifying
-         :math:`V_f` and will return `numpy.nan` values.
-
-    3. To calculate the floating potential...
-
-       - If the crossing-island contains fewer points than ``min_points``, then
-         each side of the crossing-island is equally padded with the nearest
-         neighbor points until ``min_points`` is satisfied.
-       - A fit is then performed using `scipy.stats.linregress` for
-         ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
-         ``fit_type="exponential"``.
+    the probe bias where the collected current equals zero :math:`I = 0`.  (For
+    additional details see the **Notes** section below.)
 
     Parameters
     ----------
@@ -75,7 +49,7 @@ def find_floating_potential(
 
     min_points: positive `int` or `float`
         Minimum number of data points required for the fitting to be applied to.
-        See **How it works** above for additional details.  The following list
+        See **Notes** above for additional details.  The following list
         specifies the optional values:
 
         - ``min_points = None`` (Default) The largest of 5 and
@@ -135,6 +109,34 @@ def find_floating_potential(
         A `slice` object representing the indices of ``voltage`` and ``current``
         arrays used for the fit.
 
+    Notes
+    -----
+    The internal functionality works like:
+
+    1. The current array ``current`` is scanned for all points equal to zero and
+       point pairs that straddle :math:`I = 0`.  This forms an array of
+       "crossing-points."
+    2. The crossing-points are then grouped into "crossing-islands" in based on
+       the ``threshold`` keyword.
+
+       - A new island is formed when a successive crossing-point is more (index)
+         steps away from the previous crossing-point than allowed by
+         ``threshold``.
+       - If multiple crossing-islands are identified, then the span from the
+         first point in the first island to the last point in the last island is
+         compared to ``min_points``.  If the span is less than or equal to
+         ``min_points``, then that span is taken as one larger crossing-island
+         for the fit; otherwise, the function is incapable of identifying
+         :math:`V_f` and will return `numpy.nan` values.
+
+    3. To calculate the floating potential...
+
+       - If the crossing-island contains fewer points than ``min_points``, then
+         each side of the crossing-island is equally padded with the nearest
+         neighbor points until ``min_points`` is satisfied.
+       - A fit is then performed using `scipy.stats.linregress` for
+         ``fit_type="linear"`` and `scipy.optimize.curve_fit` for
+         ``fit_type="exponential"``.
     """
     rtn = FloatingPotentialResults(
         vf=np.nan, vf_err=np.nan, rsq=None, func=None, islands=None, indices=None
