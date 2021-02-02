@@ -2044,10 +2044,9 @@ Particle("p+")
 >>> Particle("neutron")
 Particle("n")
 
-All `~plasmapy.particles.particle_class.Particle` instances are
-particle-like.  Any `object` that can be passed as a sole argument to
-the `~plasmapy.particles.particle_class.Particle` class is considered
-particle-like.
+All `~plasmapy.particles.particle_class.Particle` instances and variables
+that can be cast into a `~plasmapy.particles.particle_class.Particle` 
+instances are particle-like.
 
 An **element** may also be represented by a string that contains the
 atomic symbol (case-sensitive) or the name of the element, or an integer
