@@ -225,7 +225,7 @@ def find_floating_potential(
         for start, stop in zip(isl_start, isl_stop):
             rtn["islands"].append(slice(start, stop))
 
-        # do islands fall within min_points window?
+        # do islands fall within the min_points window?
         isl_window = (
             np.abs(np.r_[rtn["islands"][-1]][-1] - np.r_[rtn["islands"][0]][0]) + 1
         )
