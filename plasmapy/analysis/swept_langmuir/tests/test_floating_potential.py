@@ -345,3 +345,41 @@ class TestFindFloatingPotential:
                     assert np.isclose(rtn_val, val, atol=1e-7)
             else:
                 assert rtn_val == val
+
+    @pytest.mark.parametrize("m, b", [(2.0, 0.0), (1.33, -0.1), (0.5, -0.1)])
+    def test_perfect_linear(self, m, b):
+        """Test calculated fit parameters on a few perfectly linear cases."""
+        voltage = self._voltage
+        current = m * voltage + b
+
+        results = find_floating_potential(
+            voltage=voltage, current=current, fit_type="linear", min_points=0.8,
+        )
+
+        assert isinstance(results, FloatingPotentialResults)
+        assert np.isclose(results.vf, -b/m)
+        assert np.isclose(results.vf_err, 0.0)
+        assert np.isclose(results.rsq, 1.0)
+        assert isinstance(results.func, ffuncs.Linear)
+        assert np.allclose(results.func.params, (m, b))
+        assert np.allclose(results.func.param_errors, (0.0, 0.0), atol=2e-8)
+
+    @pytest.mark.parametrize(
+        "a, alpha, b", [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
+    )
+    def test_perfect_exponential(self, a, alpha, b):
+        """Test calculated fit parameters on a few perfectly exponential cases."""
+        voltage = self._voltage
+        current = a * np.exp(alpha * voltage) + b
+
+        results = find_floating_potential(
+            voltage=voltage, current=current, fit_type="exponential", min_points=0.8,
+        )
+
+        assert isinstance(results, FloatingPotentialResults)
+        assert np.isclose(results.vf, np.log(-b / a) / alpha)
+        assert np.isclose(results.vf_err, 0.0, 1e-7)
+        assert np.isclose(results.rsq, 1.0)
+        assert isinstance(results.func, ffuncs.ExponentialPlusOffset)
+        assert np.allclose(results.func.params, (a, alpha, b))
+        assert np.allclose(results.func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)
