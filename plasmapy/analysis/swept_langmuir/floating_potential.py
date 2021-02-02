@@ -157,7 +157,7 @@ def find_floating_potential(
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
     # condition kwarg threshold
-    if isinstance(threshold, (int, np.integer)):
+    if isinstance(threshold, numbers.Integral):
         if threshold < 1:
             raise ValueError(
                 f"Keyword 'threshold' has value ({threshold}) less than 1, "
