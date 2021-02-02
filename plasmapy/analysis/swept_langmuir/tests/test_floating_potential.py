@@ -96,6 +96,24 @@ class TestFindFloatingPotential:
                 },
                 ValueError,
             ),
+            #
+            # errors on kwarg threshold
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "threshold": -1,
+                },
+                ValueError,
+            ),
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "threshold": "wrong type",
+                },
+                TypeError,
+            ),
         ],
     )
     def test_raises(self, kwargs, _error):

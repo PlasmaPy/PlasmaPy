@@ -164,16 +164,15 @@ def find_floating_potential(
     # condition kwarg threshold
     if isinstance(threshold, (int, np.integer)):
         if threshold < 1:
-            threshold = 1
-            warn(
-                f"threshold ({threshold}) is less than 1 and needs to be"
-                f" an int >= 1, using a value of 1",
-                PlasmaPyWarning,
+            raise ValueError(
+                f"Keyword 'threshold' has value ({threshold}) less than 1, "
+                f"value must be an int >= 1."
             )
-
     else:
-        threshold = 1
-        warn(f"threshold is NOT a integer >= 1, using a value of 1", PlasmaPyWarning)
+        raise TypeError(
+            f"Keyword 'threshold' is of type {type(threshold)}, expected an int "
+            f"int >= 1."
+        )
 
     # condition min_points
     if min_points is None:
