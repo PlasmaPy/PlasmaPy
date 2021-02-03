@@ -1,7 +1,7 @@
 .. include:: /ad/ad_attention.inc
 
 .. warning::
-   This package will be deprecated in favor of `plasmapy.analysis.swept_langmuir`.
+   This module will be deprecated in favor of `plasmapy.analysis.swept_langmuir`.
 
 .. _langmuir:
 

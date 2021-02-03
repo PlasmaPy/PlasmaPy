@@ -10,7 +10,7 @@ PlasmaPy Documentation
    :hidden:
 
    notebooks/physics
-   notebooks/dispersion_function
+   notebooks/dispersion/two_fluid_dispersion
    notebooks/thomson
 
 .. image:: _static/graphic-circular.png
@@ -20,7 +20,7 @@ PlasmaPy Documentation
 
 
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
-community-developed core `Python <https://www.python.org/>`_ 3.6+
+community-developed core `Python <https://www.python.org/>`_ 3.7+
 package for plasma physics currently under development.
 
 
@@ -40,10 +40,11 @@ package for plasma physics currently under development.
    :maxdepth: 1
    :caption: Package features
 
-   Analyses & Diagnostics <ad/index>
+   ad/index
+   Dispersion <dispersion/index>
    Formulary <formulary/index>
    Particles <particles/index>
-   Particle Tracker <simulation/particletracker>
+   Simulation <simulation/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 

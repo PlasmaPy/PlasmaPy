@@ -113,8 +113,7 @@ def test_Plasma3D_derived_vars():
 
 @pytest.mark.slow
 def test_Plasma3D_add_magnetostatics():
-    r"""Function to test add_magnetostatic function
-    """
+    r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
         np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m
     )

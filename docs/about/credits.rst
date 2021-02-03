@@ -5,8 +5,8 @@ Authors and Credits
 PlasmaPy Coordinating Committee
 ===============================
 
-* Drew Leonard
-* Nick Murphy
+* Erik Everson
+* Nicholas Murphy
 * Tulasi Parashar
 * Dominik Stańczak
 
@@ -27,8 +27,10 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Justin Bergeron <https://github.com/Justin-Bergeron>`__
 * `Ludovico Bessi <https://github.com/ludoro>`__
 * `BH4 <https://github.com/BH4>`__
+* `Khalil Bryant <https://github.com/KhalilBryant>`__
 * `Sean Carroll <https://github.com/seanwilliamcarroll>`__
 * `Sean Chambers <https://github.com/schambers>`__
+* `Ankur Chattopadhyay <https://github.com/chttrjeankr>`__
 * `Apoorv Choubey <https://github.com/apooravc>`__
 * `cclauss <https://github.com/cclauss>`__
 * `Jacob Deal <https://github.com/Jac0bDeal>`__
@@ -67,29 +69,35 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Roberto Díaz Pérez <https://github.com/RobertTnf>`__
 * `Jakub Polak <https://github.com/Ishinomori>`__
 * `Raajit Raj <https://github.com/raajitr>`__
+* `Vishwas Rajashekar <https://github.com/DarkAEther>`__ (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
 * `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
 * `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
 * `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
 * `Angad Singh <https://github.com/singha95>`__
 * `Ankit Singh <https://github.com/Griffintaur>`__
-* `Brigitta Sipocz <http://github.com/bsipocz>`__
+* `Brigitta Sipőcz <http://github.com/bsipocz>`__
 * `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
 * `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
 * `Antoine Tavant <https://github.com/antoinelpp>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Thomas Varnish <https://github.com/tvarnish>`__
+* `Anthony Vo <https://github.com/anthony-vo>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
-* `Ankur Chattopadhyay <https://github.com/chttrjeankr>`__
-* `Vishwas Rajashekar <https://github.com/DarkAEther>`__ (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
+* `Cody Skinner <https://github.com/wskinner74>`__
+* `Ramiz Qudsi <https://github.com/ahmadryan>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
+* `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
+* `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
+* `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
 contributors on GitHub
-<https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__. If you
-made a contribution that was merged and your name is missing from the
-list, your information is incorrect, or you do not wish to be listed,
-then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
+<https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__.  If you made
+a contribution to PlasmaPy that was merged and your name is missing from the
+list, your information is incorrect, or you do not wish to be listed, then
+please submit a pull request.
 
 Other Credits
 =============
@@ -97,7 +105,8 @@ Other Credits
 The PlasmaPy Community thanks the SunPy and Astropy communities for
 inspiring this project in the first place, providing much helpful
 advice, and showing examples of how to build a community-wide open
-source scientific software package.
+source scientific software package.  The PlasmaPy Community also thanks
+the Python in Heliophysics Community.
 
 Acknowledgements
 ================

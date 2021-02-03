@@ -25,6 +25,7 @@ Sub-Packages & Modules
 .. autosummary::
 
    floating_potential
+   helpers
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
    :no-main-docstr:

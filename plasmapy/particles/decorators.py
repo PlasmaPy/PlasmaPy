@@ -13,12 +13,12 @@ import numbers
 from typing import Any, Callable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
+    ParticleError,
 )
 from plasmapy.particles.particle_class import Particle
 
@@ -32,7 +32,7 @@ def _particle_errmsg(
 ) -> str:
     """
     Return a string with an appropriate error message for an
-    `~plasmapy.utils.InvalidParticleError`.
+    `~plasmapy.particles.exceptions.InvalidParticleError`.
     """
     errmsg = f"In {funcname}, {argname} = {repr(argval)} "
     if mass_numb is not None or Z is not None:
@@ -66,7 +66,7 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
     for condition, phrase in errmsg_table:
         if condition:
             category_errmsg += (
-                f"The particle {phrase} of the following categories: " f"{condition}. "
+                f"The particle {phrase} of the following categories: {condition}. "
             )
 
     return category_errmsg
@@ -98,17 +98,17 @@ def particle_input(
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then an `~plasmapy.utils.AtomicError`
+        all of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
         will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then an `~plasmapy.utils.AtomicError`
+        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
         will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then an `~plasmapy.utils.AtomicError`
+        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
         will be raised.
 
     none_shall_pass : `bool`, optional
@@ -121,10 +121,11 @@ def particle_input(
     Notes
     -----
     If the annotated argument is named `element`, `isotope`, or `ion`,
-    then the decorator will raise an `~plasmapy.utils.InvalidElementError`,
-    `~plasmapy.utils.InvalidIsotopeError`, or `~plasmapy.utils.InvalidIonError`
-    if the particle does not correspond to an element, isotope, or ion,
-    respectively.
+    then the decorator will raise an
+    `~plasmapy.particles.exceptions.InvalidElementError`,
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
+    `~plasmapy.particles.exceptions.InvalidIonError` if the particle
+    does not correspond to an element, isotope, or ion, respectively.
 
     If exactly one argument is annotated with `~plasmapy.particles.Particle`,
     then the keywords ``Z`` and ``mass_numb`` may be used to specify the
@@ -143,29 +144,29 @@ def particle_input(
         If the number of input elements in a collection do not match the
         number of expected elements.
 
-    `~plasmapy/utils/InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the annotated argument does not correspond to a valid
         particle.
 
-    `~plasmapy/utils/InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If an annotated argument is named ``element``, and the input
         does not correspond to an element, isotope, or ion.
 
-    `~plasmapy/utils/InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If an annotated argument is named ``isotope``, and the input
         does not correspond to an isotope or an ion of an isotope.
 
-    `~plasmapy/utils/InvalidIonError`
+    `~plasmapy.particles.exceptions.InvalidIonError`
         If an annotated argument is named ``ion``, and the input does
         not correspond to an ion.
 
-    `~plasmapy/utils/ChargeError`
+    `~plasmapy.particles.exceptions.ChargeError`
         If ``'charged'`` is in the ``require`` argument and the particle
         is not explicitly charged, or if ``any_of = {'charged',
         'uncharged'}`` and the particle does not have charge information
         associated with it.
 
-    `~plasmapy/utils/AtomicError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If an annotated argument does not meet the criteria set by the
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
@@ -231,7 +232,6 @@ def particle_input(
         )
         def selective_function(particle: Particle):
             return particle
-
     """
 
     if exclude is None:
@@ -304,14 +304,14 @@ def particle_input(
                         args_to_become_particles.append(argname)
 
             if not args_to_become_particles:
-                raise AtomicError(
+                raise ParticleError(
                     f"None of the arguments or keywords to {funcname} "
                     f"have been annotated with Particle, as required "
                     f"by the @particle_input decorator."
                 )
             elif len(args_to_become_particles) > 1:
                 if "Z" in argnames or "mass_numb" in argnames:
-                    raise AtomicError(
+                    raise ParticleError(
                         f"The arguments Z and mass_numb in {funcname} are not "
                         f"allowed when more than one argument or keyword is "
                         f"annotated with Particle in functions decorated "
@@ -420,9 +420,10 @@ def particle_input(
 
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
-
-        # Convert the argument to a Particle object if it is not
-        # already one.
+        """
+        Convert the argument to a `~plasmapy.particles.Particle` object
+        if it is not already one.
+        """
 
         if not already_particle:
 
@@ -488,7 +489,7 @@ def particle_input(
         # maximally useful error message.
 
         if not particle.is_category(require=require, exclude=exclude, any_of=any_of):
-            raise AtomicError(
+            raise ParticleError(
                 _category_errmsg(particle, require, exclude, any_of, funcname)
             )
 

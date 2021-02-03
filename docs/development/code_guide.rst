@@ -7,7 +7,7 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.6 and
+Code written for PlasmaPy must be compatible with Python 3.7 and
 later.
 
 Coding Style
