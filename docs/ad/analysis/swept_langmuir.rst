@@ -26,6 +26,7 @@ Sub-Packages & Modules
 
    floating_potential
    helpers
+   ion_saturation_current
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
    :no-main-docstr:
