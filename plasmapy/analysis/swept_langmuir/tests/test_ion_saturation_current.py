@@ -34,3 +34,13 @@ def test_ion_saturation_current_namedtuple():
     assert hasattr(IonSaturationCurrentResults, "_field_defaults")
     assert IonSaturationCurrentResults._field_defaults == {}
 
+
+class TestFindIonSaturationCurrent:
+    """
+    Tests for function
+    `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
+    """
+
+    def test_alias(self):
+        """Test the associated alias(es) is(are) defined correctly."""
+        assert find_isat_ is find_ion_saturation_current
