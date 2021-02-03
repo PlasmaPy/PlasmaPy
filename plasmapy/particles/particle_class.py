@@ -2106,5 +2106,4 @@ custom particle are provided in physical units.
 not considered particle-like because, without normalization information,
 they do not *uniquely* identify a physical particle and therefore cannot
 be used in `plasmapy.formulary`.
-
 """
