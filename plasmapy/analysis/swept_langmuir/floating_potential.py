@@ -297,4 +297,4 @@ def find_floating_potential(
 
 
 find_vf_ = find_floating_potential
-"""Alias to :func:`find_floating_potential`. """
+"""Alias to :func:`find_floating_potential`."""
