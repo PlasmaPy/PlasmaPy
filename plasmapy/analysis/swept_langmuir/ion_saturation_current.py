@@ -3,12 +3,13 @@ Functionality for determining the ion-saturation current of a Langmuir sweep.
 """
 __all__ = ["find_ion_saturation_current", "find_isat_"]
 
+import numbers
 import numpy as np
 
 from collections import namedtuple
 
 from plasmapy.analysis import fit_functions as ffuncs
-
+from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 
 IonSaturationCurrentResults = namedtuple(
     "FloatingPotentialResults",
@@ -19,35 +20,56 @@ IonSaturationCurrentResults = namedtuple(
 def find_ion_saturation_current(
     voltage: np.ndarray,
     current: np.ndarray,
-    upper_bound=None,
-    fit_type: str = "explinear",
+    upper_bound: float = None,
+    fit_type: str = "exp_plus_linear",
 ):
     rtn = IonSaturationCurrentResults(
-        isat_func=None,
-        rsq=None,
-        func=None,
-        indices=None,
+        isat_func=None, rsq=None, func=None, indices=None,
     )._asdict()
 
-    fit_funcs = {
-        "linear": ffuncs.Linear(),
-        "explinear": ffuncs.ExponentialPlusLinear(),
-        "expffset": ffuncs.ExponentialPlusOffset(),
+    _settings = {
+        "linear": {
+            "func": ffuncs.Linear, "default_ubound_frac": 0.4,
+        },
+        "exp_plus_linear": {
+            "func": ffuncs.ExponentialPlusLinear, "default_ubound_frac": 1.0,
+        },
+        "exp_plus_offset": {
+            "func": ffuncs.ExponentialPlusOffset, "default_ubound_frac": 1.0,
+        },
     }
     try:
-        fit_func = fit_funcs[fit_type]
+        default_ubound_frac = _settings[fit_type]["default_ubound_frac"]
+        fit_func = _settings[fit_type]["func"]()
         rtn["func"] = fit_func
     except KeyError:
-        raise KeyError(
-            f"Requested fit function '{fit_type}' is  not a valid option, "
-            f"expecting on of '{list(fit_funcs)}'.  Examine kwarg 'fit_curve' "
-            f"for valid options."
+        raise ValueError(
+            f"Requested fit '{fit_type}' is not a valid option.  Valid options "
+            f"are {list(_settings.keys())}."
         )
 
-    # mask = np.where(current <= 0)[0]
+    # check voltage and current arrays
+    voltage, current = check_sweep(voltage, current, strip_units=True)
+
+    # condition kwarg upper_bound
     if upper_bound is None:
-        upper_bound = 0
-    mask = np.where(voltage <= upper_bound)[0]
+        current_min = current.min()
+        current_bound = (1.0 - default_ubound_frac) * current_min
+        mask = np.where(current <= current_bound)[0]
+
+    elif not isinstance(upper_bound, numbers.Real):
+        raise TypeError(
+            f"Keyword 'upper_bound' is of type {type(upper_bound)}, expected an "
+            f"int or float."
+        )
+    else:
+        mask = np.where(voltage <= upper_bound)[0]
+        if mask.size == 0:
+            raise ValueError(
+                f"The value for keyword 'upper_bound' ({upper_bound}) resulted in "
+                f"identifying a fit window of size 0."
+            )
+    mask = slice(0, mask[-1] + 1)
     rtn["indices"] = mask
 
     volt_sub = voltage[mask]
@@ -56,19 +78,11 @@ def find_ion_saturation_current(
 
     rtn["rsq"] = fit_func.rsq
 
-    isat = ffuncs.Linear()
-    try:
-        m = fit_func.parameters.m
-        m_err = fit_func.parameters_err.m
-    except AttributeError:
-        m = m_err = 0.0
-    try:
-        b = fit_func.parameters.b
-        b_err = fit_func.parameters_err.b
-    except AttributeError:
-        b = b_err = 0.0
-    isat.parameters = [m, b]
-    isat.parameters_err = [m_err, b_err]
+    m = getattr(fit_func.params, "m", 0.0)
+    b = getattr(fit_func.params, "b", 0.0)
+    m_err = getattr(fit_func.param_errors, "m", 0.0)
+    b_err = getattr(fit_func.param_errors, "b", 0.0)
+    isat = ffuncs.Linear(params=(m, b), param_errors=(m_err, b_err))
     rtn["isat_func"] = isat
 
     return IonSaturationCurrentResults(**rtn)
