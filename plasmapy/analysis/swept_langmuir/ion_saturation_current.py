@@ -1,7 +1,7 @@
 """
 Functionality for determining the ion-saturation current of a Langmuir sweep.
 """
-__all__ = ["find_ion_saturation_current"]
+__all__ = ["find_ion_saturation_current", "find_isat_"]
 
 import numpy as np
 
@@ -72,3 +72,7 @@ def find_ion_saturation_current(
     rtn["isat_func"] = isat
 
     return IonSaturationCurrentResults(**rtn)
+
+
+find_isat_ = find_ion_saturation_current
+"""Alias to :func:`find_ion_saturation_current`."""
