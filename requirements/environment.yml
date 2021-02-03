@@ -16,6 +16,7 @@ dependencies:
   - pillow
   - pip
   - xarray
+  - sympy
   - pip:
     - numpydoc
     - pytest
