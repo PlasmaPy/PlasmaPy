@@ -744,6 +744,7 @@ class TestCheckValues:
             ("can_be_inf", True),
             ("can_be_nan", True),
             ("none_shall_pass", False),
+            ("can_be_zero", True),
         ]
         for key, val in _defaults:
             assert cv._CheckValues__check_defaults[key] == val
@@ -1001,6 +1002,22 @@ class TestCheckValues:
                     "args": [None],
                     "arg_name": "arg",
                     "checks": {**default_checks, "none_shall_pass": True},
+                }
+            },
+            # tests for check 'can_be_zero'
+            {
+                "input": {
+                    "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg],
+                    "arg_name": "arg",
+                    "checks": {**default_checks, "can_be_zero": False},
+                },
+                "raises": ValueError,
+            },
+            {
+                "input": {
+                    "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg,],
+                    "arg_name": "arg",
+                    "checks": {**default_checks, "can_be_zero": True},
                 }
             },
         ]
