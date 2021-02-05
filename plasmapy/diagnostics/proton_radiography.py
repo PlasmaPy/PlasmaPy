@@ -478,7 +478,7 @@ class SyntheticProtonRadiograph:
         # TODO: introduce a minimum timestep based on electric fields too!
 
         # Create an array of all the possible time steps we computed
-        candidates = np.array([gyroperiod, gridstep])
+        candidates = np.array([gyroperiod/12, gridstep])
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt[0], self.dt[1])
