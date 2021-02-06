@@ -25,6 +25,9 @@ def _rot_a_to_b(a, b):
     r"""
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
     with vector b.
+
+    The algorithm is based on this discussion on StackExchange:
+    https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
     """
     # Normalize both vectors
     a = a / np.linalg.norm(a)
@@ -486,9 +489,9 @@ class SyntheticProtonRadiograph:
         # dt is the min of the remaining candidates
         return np.min(candidates)
 
-    def _advance_to_grid(self):
+    def _coast_to_grid(self):
         r"""
-        Advances all particles to the timestep when the first particle should
+        Coasts all particles to the timestep when the first particle should
         be entering the grid. Doing in this in one step (rather than pushing
         the particles through zero fields) saves computation time.
         """
@@ -504,7 +507,7 @@ class SyntheticProtonRadiograph:
         # Coast the particles to the advanced position
         self.x = self.x + self.v * t
 
-    def _generate_null(self):
+    def _generate_null_distribution(self):
         r"""
         Calculate the distribution of particles on the detector plane in the absence
         of any simulated fields.
@@ -526,9 +529,9 @@ class SyntheticProtonRadiograph:
         # Calculate the particle positions for that case
         self.x0 = self.source + self.v * np.outer(t, np.ones(3))
 
-    def _advance_to_detector(self):
+    def _coast_to_detector(self):
         r"""
-        Advances all particles to the detector plane. This method will be
+        Coasts all particles to the detector plane. This method will be
         called after all particles have cleared the grid.
 
         This step applies to all particles, including those that never touched
@@ -724,7 +727,7 @@ class SyntheticProtonRadiograph:
         self.entered_grid = np.zeros([self.nparticles_grid])
 
         # Advance the particles to the near the start of the grid
-        self._advance_to_grid()
+        self._coast_to_grid()
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
@@ -751,7 +754,7 @@ class SyntheticProtonRadiograph:
 
         # Advance the particles to the image plane
         # At this stage, remove any particles that will never hit the detector plane
-        self._advance_to_detector()
+        self._coast_to_detector()
 
         self._log("Run completed")
 
