@@ -433,8 +433,6 @@ class SyntheticProtonRadiograph:
         else:
             self.max_theta = max_theta.to(u.rad).value
 
-        print(np.rad2deg(self.max_theta))
-
         # Calculate the velocity corresponding to the proton energy
         ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
         self.v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
@@ -769,7 +767,7 @@ class SyntheticProtonRadiograph:
     # *************************************************************************
 
     def synthetic_radiograph(
-        self, size=None, bins=[200, 200], null=False, optical_density=False
+        self, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
     ):
         r"""
         Calculate a "synthetic radiograph" (particle count histogram in the
@@ -787,7 +785,7 @@ class SyntheticProtonRadiograph:
             The number of bins in each direction in the format [hbins, vbins].
             The default is [200,200].
 
-        null: bool
+        ignore_grid: bool
             If True, returns the intensity in the image plane in the absence
             of simulated fields.
 
@@ -815,9 +813,9 @@ class SyntheticProtonRadiograph:
         # Note that, at the end of the simulation, all particles were moved
         # into the image plane.
 
-        # If null is True, use the predicted positions in the absence of
+        # If ignore_grid is True, use the predicted positions in the absence of
         # simulated fields
-        if null:
+        if ignore_grid:
             x = self.x0
         else:
             x = self.x
@@ -863,7 +861,7 @@ class SyntheticProtonRadiograph:
 
         if optical_density:
             # Generate the null radiograph
-            x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, null=True)
+            x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, ignore_grid=True)
 
             # Calcualte I0 as the mean of the non-zero values in the null
             # histogram. Zeros are just outside of the illuminate area.
