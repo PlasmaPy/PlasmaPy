@@ -442,11 +442,6 @@ class SyntheticProtonRadiograph:
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
 
-        # This array holds the indices of all particles that WILL hit the grid
-        # Only these particles will actually be pushed through the fields
-        self.grid_ind = np.where(theta < self.max_theta_hit_grid)[0]
-        self.nparticles_grid = len(self.grid_ind)
-
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3])
         self.v[:, 0] = self.v0 * np.sin(theta) * np.cos(phi)
@@ -464,6 +459,13 @@ class SyntheticProtonRadiograph:
 
         # Place particles at the source
         self.x = np.outer(np.ones(self.nparticles), self.source)
+
+        # Determine which particles should be tracked
+        # This array holds the indices of all particles that WILL hit the grid
+        # Only these particles will actually be pushed through the fields
+        self.grid_ind = np.where(theta < self.max_theta_hit_grid)[0]
+        self.nparticles_grid = len(self.grid_ind)
+        self.fract_tracked = self.nparticles_grid / self.nparticles
 
     # *************************************************************************
     # Run/push loop methods
@@ -569,6 +571,19 @@ class SyntheticProtonRadiograph:
         self.nparticles_grid = self.x.shape[0]
         t = t[ind]
 
+        # Store the number of particles deflected
+        self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
+
+        # Warn the user if a large number of particles are being deflected
+        if self.fract_deflected > 0.05:
+            warnings.warn(
+                f"{100*self.fract_deflected:.1f}% particles have been "
+                "deflected away from the detector plane. The fields "
+                "provided may be too high to successfully radiograph "
+                "with this particle energy.",
+                RuntimeWarning,
+            )
+
         self.x += self.v * np.outer(t, np.ones(3))
 
         # Check that all points are now in the detector plane
@@ -631,24 +646,24 @@ class SyntheticProtonRadiograph:
         """
         # Count the number of particles who have entered, which is the
         # number of non-zero entries in entered_grid
-        n_entered = np.nonzero(self.entered_grid)[0].size
+        self.num_entered = np.nonzero(self.entered_grid)[0].size
 
         # How many of the particles have entered the grid
-        entered = np.sum(n_entered) / self.nparticles_grid
+        self.fract_entered = np.sum(self.num_entered) / self.nparticles_grid
 
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
         # if/else avoids dividing by zero
-        if np.sum(n_entered) > 0:
-            still_on = np.sum(self.on_grid) / np.sum(n_entered)
+        if np.sum(self.num_entered) > 0:
+            still_on = np.sum(self.on_grid) / np.sum(self.num_entered)
         else:
             still_on = 0.0
 
-        if entered > 0.1 and still_on < 0.001:
+        if self.fract_entered > 0.1 and still_on < 0.001:
             # Warn user if < 10% of the particles ended up on the grid
-            if n_entered < 0.1 * self.nparticles:
+            if self.num_entered < 0.1 * self.nparticles:
                 warnings.warn(
-                    f"Only {100*n_entered/self.nparticles:.2f}% of "
+                    f"Only {100*self.num_entered/self.nparticles:.2f}% of "
                     "particles entered the field grid: consider "
                     "decreasing the max_theta to increase this "
                     "number.",
@@ -764,7 +779,22 @@ class SyntheticProtonRadiograph:
         # At this stage, remove any particles that will never hit the detector plane
         self._coast_to_detector()
 
+        # Log a summary of the run
+
         self._log("Run completed")
+
+        self._log("Fraction of particles tracked: " f"{self.fract_tracked*100:.1f}%")
+
+        self._log(
+            "Fraction of tracked particles that entered the grid: "
+            f"{self.fract_entered*100:.1f}%"
+        )
+
+        self._log(
+            "Fraction of tracked particles deflected away from the "
+            "detector plane: "
+            f"{self.fract_deflected*100}%"
+        )
 
     @property
     def max_deflection(self):
