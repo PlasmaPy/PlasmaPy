@@ -184,6 +184,12 @@ class SyntheticProtonRadiograph:
                 "does not intersect the grid provided!"
             )
 
+        # Determine the angle above which particles will not hit the grid
+        # these particles can be ignored until the end of the simulation,
+        # then immediately advanced to the detector grid with their original
+        # velocities
+        self.max_theta_hit_grid = self._max_theta_hit_grid()
+
         # ************************************************************************
         # Define the detector plane
         # ************************************************************************
@@ -265,6 +271,30 @@ class SyntheticProtonRadiograph:
         nx = nx / np.linalg.norm(nx)
         return nx
 
+    def _max_theta_hit_grid(self):
+        r"""
+        Using the grid and the source position, compute the maximum particle
+        theta that will impact the grid. This value can be used to determine
+        which particles are worth tracking.
+        """
+        ind = 0
+        theta = np.zeros([8])
+        for x in [0, -1]:
+            for y in [0, -1]:
+                for z in [0, -1]:
+                    # Souce to grid corner vector
+                    vec = self.grid_arr[x, y, z, :] - self.source
+
+                    # Calculate angle between vec and the source-to-detector
+                    # axis, which is the central axis of the proton beam
+                    theta[ind] = np.arccos(
+                        np.dot(vec, self.src_det)
+                        / np.linalg.norm(vec)
+                        / np.linalg.norm(self.src_det)
+                    )
+                    ind += 1
+        return np.max(theta)
+
     def _log(self, msg):
         if self.verbose:
             print(msg)
@@ -326,7 +356,7 @@ class SyntheticProtonRadiograph:
         self,
         nparticles,
         proton_energy,
-        max_theta=0.9 * np.pi / 2 * u.rad,
+        max_theta=None,
         charge=None,
         mass=None,
         distribution="monte-carlo",
@@ -352,7 +382,8 @@ class SyntheticProtonRadiograph:
             The largest velocity vector angle (measured from the
             source-to-detector axis) for which particles should be generated.
             Decreasing this angle can eliminate particles that would never
-            reach the detector region of interest. The default is 0.9*pi/2.
+            reach the detector region of interest. If no value is given, a
+            guess will be made based on the size of the grid.
             Units must be convertable to radians.
 
         charge : `~astropy.units.Quantity`
@@ -387,13 +418,22 @@ class SyntheticProtonRadiograph:
         # Load inputs
         self.nparticles = int(nparticles)
         self.proton_energy = proton_energy.to(u.eV).value
-        self.max_theta = max_theta.to(u.rad).value
         if charge is None:
             charge = self._e
         if mass is None:
             mass = self._m_p
         self.q = charge
         self.m = mass
+
+        # If max_theta is not specified, make a guess based on the grid size
+        if max_theta is None:
+            self.max_theta = np.clip(
+                1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2
+            )
+        else:
+            self.max_theta = max_theta.to(u.rad).value
+
+        print(np.rad2deg(self.max_theta))
 
         # Calculate the velocity corresponding to the proton energy
         ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
@@ -404,9 +444,10 @@ class SyntheticProtonRadiograph:
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
 
-        # Store the theta's to later compare with max_grid_theta
-        # to determine which particles will never cross the grid
-        self.theta0 = theta
+        # This array holds the indices of all particles that WILL hit the grid
+        # Only these particles will actually be pushed through the fields
+        self.grid_ind = np.where(theta < self.max_theta_hit_grid)[0]
+        self.nparticles_grid = len(self.grid_ind)
 
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3])
@@ -429,30 +470,6 @@ class SyntheticProtonRadiograph:
     # *************************************************************************
     # Run/push loop methods
     # *************************************************************************
-
-    def _max_theta_grid(self):
-        r"""
-        Using the grid and the source position, compute the maximum particle
-        theta that will impact the grid. This value can be used to determine
-        which particles are worth tracking.
-        """
-        ind = 0
-        theta = np.zeros([8])
-        for x in [0, -1]:
-            for y in [0, -1]:
-                for z in [0, -1]:
-                    # Souce to grid corner vector
-                    vec = self.grid_arr[x, y, z, :] - self.source
-
-                    # Calculate angle between vec and the source-to-detector
-                    # axis, which is the central axis of the proton beam
-                    theta[ind] = np.arccos(
-                        np.dot(vec, self.src_det)
-                        / np.linalg.norm(vec)
-                        / np.linalg.norm(self.src_det)
-                    )
-                    ind += 1
-        return np.max(theta)
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
@@ -481,7 +498,7 @@ class SyntheticProtonRadiograph:
         # TODO: introduce a minimum timestep based on electric fields too!
 
         # Create an array of all the possible time steps we computed
-        candidates = np.array([gyroperiod/12, gridstep])
+        candidates = np.array([gyroperiod / 12, gridstep])
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt[0], self.dt[1])
@@ -708,17 +725,6 @@ class SyntheticProtonRadiograph:
                 "The create_particles method must be called before "
                 "running the particle tracing algorithm."
             )
-
-        # Determine the angle above which particles will not hit the grid
-        # these particles can be ignored until the end of the simulation,
-        # then immediately advanced to the detector grid with their original
-        # velocities
-        max_theta_grid = self._max_theta_grid()
-
-        # This array holds the indices of all particles that WILL hit the grid
-        # Only these particles will actually be pushed through the fields
-        self.grid_ind = np.where(self.theta0 < max_theta_grid)[0]
-        self.nparticles_grid = len(self.grid_ind)
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
