@@ -724,6 +724,10 @@ class SyntheticProtonRadiograph:
                 "running the particle tracing algorithm."
             )
 
+        # Store a copy of the initial velocity distribution in memory
+        # This will be used later to calculate the maximum deflection
+        self.v_init = np.copy(self.v)
+
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1
         self.on_grid = np.zeros([self.nparticles_grid])
@@ -761,6 +765,33 @@ class SyntheticProtonRadiograph:
         self._coast_to_detector()
 
         self._log("Run completed")
+
+    @property
+    def max_deflection(self):
+        """
+        The maximum deflection experienced by one of the particles, determined
+        by comparing their initial and final velocitiy vectors.
+
+        This value can be used to determine the proton radiography regime
+        using the dimensionless number defined by Kugland et al. 2012
+
+        Returns
+        -------
+        max_deflection : float
+            The maximum deflection in radians
+
+        """
+        # Normalize the initial and final velocities
+        v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
+        v_init_norm = self.v_init / np.linalg.norm(self.v_init, axis=1, keepdims=True)
+        # Compute the dot product
+        proj = np.sum(v_norm * v_init_norm, axis=1)
+        # In case of numerical errors, make sure the output is within the domain of
+        # arccos
+        proj = np.where(proj > 1, 1, proj)
+        max_deflection = np.max(np.arccos(proj))
+
+        return max_deflection
 
     # *************************************************************************
     # Synthetic diagnostic methods (creating output)
