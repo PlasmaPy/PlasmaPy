@@ -1015,7 +1015,7 @@ class TestCheckValues:
             },
             {
                 "input": {
-                    "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg,],
+                    "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg],
                     "arg_name": "arg",
                     "checks": {**default_checks, "can_be_zero": True},
                 }

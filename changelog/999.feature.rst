@@ -1,5 +1,5 @@
-Added new ``can_be_zero`` argument to
-`~plasmapy.utils.decorators.checks.CheckValues`,
+Added new ``can_be_zero`` check parameter to
+`~plasmapy.utils.decorators.checks.CheckValues` and its dependents (
 `~plasmapy.utils.decorators.checks.check_values`,
 `~plasmapy.utils.decorators.validators.ValidateQuantities`,
-`~plasmapy.utils.decorators.validators.validate_quantities`.
+`~plasmapy.utils.decorators.validators.validate_quantities`).

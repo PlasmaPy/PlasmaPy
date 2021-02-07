@@ -95,7 +95,7 @@ class CheckValues(CheckBase):
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
-        can_be_zero      `bool`  [DEFAULT `True`] values can be zeros
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
@@ -1215,7 +1215,7 @@ def check_values(
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
-        can_be_zero      `bool`  [DEFAULT `True`] values can be zeros
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
