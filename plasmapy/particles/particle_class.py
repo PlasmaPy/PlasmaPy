@@ -2035,7 +2035,7 @@ Real world particles are typically represented as instances of the
 `~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
 
 >>> from plasmapy.particles import Particle
-
+>>>
 >>> Particle("proton")
 Particle("p+")
 >>> Particle("neutron")
