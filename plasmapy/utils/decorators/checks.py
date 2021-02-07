@@ -304,7 +304,6 @@ class CheckValues(CheckBase):
 
         # check values
         # * 'none_shall_pass' always needs to be checked first
-        # * 'can_be_nan' should be second to simplify other checks
         ckeys = list(self.__check_defaults.keys())
         ckeys.remove("none_shall_pass")
         ckeys = ("none_shall_pass",) + tuple(ckeys)
@@ -314,10 +313,6 @@ class CheckValues(CheckBase):
                     break
                 elif arg is None:
                     raise ValueError(f"{valueerror_msg} Nones.")
-
-            elif ckey == "can_be_nan":
-                if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
-                    raise ValueError(f"{valueerror_msg} NaNs.")
 
             elif ckey == "can_be_negative":
                 if not arg_checks[ckey] and np.any(arg < 0):
@@ -330,6 +325,10 @@ class CheckValues(CheckBase):
             elif ckey == "can_be_inf":
                 if not arg_checks[ckey] and np.any(np.isinf(arg)):
                     raise ValueError(f"{valueerror_msg} infs.")
+
+            elif ckey == "can_be_nan":
+                if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
+                    raise ValueError(f"{valueerror_msg} NaNs.")
 
             elif ckey == "can_be_zero":
                 if not arg_checks[ckey] and np.any(arg == 0):
