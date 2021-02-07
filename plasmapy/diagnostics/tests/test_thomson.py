@@ -367,6 +367,38 @@ def test_split_populations():
 
 
 
+def fit_epw(wavelengths, data, settings, params,
+            fit_method = 'leastsq',
+            max_iter=None):
+
+    # Strip units off of the data (if present)
+    if hasattr(data, 'unit'):
+        data = data.value
+    # Normalize the data
+    data = data/np.max(data)
+
+    # Create the model
+    model = thomson.epw_model(wavelengths, settings, params)
+
+
+    # Conduct the fit
+    result = model.fit(data,
+                        params,
+                        wavelengths=wavelengths,
+                        method=fit_method, max_nfev=max_iter)
+
+    print(result.values)
+
+    print(result.chisqr)
+
+    plt.plot(wavelengths, data)
+    plt.plot(wavelengths, result.best_fit)
+    plt.show()
+
+    # https://lmfit.github.io/lmfit-py/model.html
+
+
+
 
 
 def test_fit_epw():
@@ -377,13 +409,19 @@ def test_fit_epw():
     n = 5e17 * u.cm ** -3
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
+    Te = 10 * u.eV
+
+
+    settings = {}
+    settings['probe_vec'] = np.array([1, 0, 0])
+    settings['scatter_vec'] = np.array([0, 1, 0])
+    settings['electron_vdir'] = None
+    settings['probe_wavelength'] = 532
 
 
 
 
     # TEST ONE POPULATION
-    Te = 10 * u.eV
-
 
     alpha, Skw = thomson.spectral_density_epw(
         wavelengths,
@@ -395,82 +433,43 @@ def test_fit_epw():
     )
 
     data = Skw.value
-    data += np.random.rand(data.size)*np.max(data)*0.25
-
-    settings = {}
-    settings['probe_vec'] = np.array([1, 0, 0])
-    settings['scatter_vec'] = np.array([0, 1, 0])
-    settings['electron_vdir'] = None
+    data += np.random.rand(data.size)*np.max(data)*0.1
 
 
     params = Parameters()
-    params.add('probe_wavelength', value=532, vary=False)
     params.add('n', value=2e17, vary=True, min=1e17, max=1e18)
     params.add('Te_0', value=5, vary=True, min=0.5, max=25)
-    params.add('efract_0', value=1, vary=False)
-
-    result = thomson.fit_epw(wavelengths, data, settings, params)
 
 
-    # TEST MULTIPLE POPULATIONS
-
-    Te = np.array([3,12]) * u.eV
-    efract = [0.2, 0.8]
-
-    alpha, Skw = thomson.spectral_density_epw(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        efract=efract,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
-
-    data = Skw.value
-    data += np.random.rand(data.size)*np.max(data)*0.05
-
-    settings = {}
-    settings['probe_vec'] = np.array([1, 0, 0])
-    settings['scatter_vec'] = np.array([0, 1, 0])
-    settings['electron_vdir'] = None
-
-
-    params = Parameters()
-    params.add('probe_wavelength', value=532, vary=False)
-    params.add('n', value=5e17, vary=False, min=1e17, max=1e18)
-    params.add('Te_0', value=5, vary=True, min=0.5, max=25)
-    params.add('Te_1', value=5, vary=True, min=0.5, max=25)
-    params.add('efract_0', value=0.5, vary=True, min=0.1, max=0.9)
-    params.add('efract_1', expr='1-efract_0')
-
-    result = thomson.fit_epw(wavelengths, data, settings, params)
-
-
-
-
+    fit_epw(wavelengths, data, settings, params)
 
 
 def test_param_to_array_fcns():
-        params = Parameters()
+    """
+    Tests a few low-level routines used to convert lmfit scalar parameters
+    into array input for `spectral_density` based on a naming convention
+    """
+    params = Parameters()
 
-        # Create two groups of test variabels, one scalars and one vectors
-        prefix = 'Te'
-        for i in range(3):
-            params.add(prefix + f'_{i}', value=2)
+    # Create two groups of test variabels, one scalars and one vectors
+    prefix = 'Te'
+    for i in range(3):
+        params.add(prefix + f'_{i}', value=2)
 
-        prefix = 'ion_vel'
-        for i in range(2):
-            for j in ['x', 'y', 'z']:
-                params.add(prefix + f'_{j}_{i}', value=2)
+    prefix = 'ion_vel'
+    for i in range(2):
+        for j in ['x', 'y', 'z']:
+            params.add(prefix + f'_{j}_{i}', value=2)
 
-        arr = thomson._params_to_array(params, 'Te', vector=False)
-        assert arr.shape == (3,)
-        assert np.mean(arr) == 2
+    arr = thomson._params_to_array(params, 'Te', vector=False)
+    assert arr.shape == (3,)
+    assert np.mean(arr) == 2
 
-        arr = thomson._params_to_array(params, 'ion_vel', vector=True)
-        assert arr.shape == (2,3)
-        assert np.mean(arr) == 2
+    arr = thomson._params_to_array(params, 'ion_vel', vector=True)
+    assert arr.shape == (2,3)
+    assert np.mean(arr) == 2
+
+
 
 
 
