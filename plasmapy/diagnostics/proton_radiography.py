@@ -533,8 +533,8 @@ class SyntheticProtonRadiograph:
         used to determine the degree of deflection.
         """
         # Calculate the unit vector from the source to the detector
-        dist = np.linalg.norm(self.source_to_detector)
-        uvec = self.source_to_detector / dist
+        dist = np.linalg.norm(self.src_det)
+        uvec = self.src_det / dist
 
         # Calculate the remaining distance each particle needs to travel
         # along that unit vector
@@ -748,6 +748,10 @@ class SyntheticProtonRadiograph:
         self.on_grid = np.zeros([self.nparticles_grid])
         # Entered grid -> non-zero if particle EVER entered the grid
         self.entered_grid = np.zeros([self.nparticles_grid])
+
+        # Generate a null distribution of points (the result in the absence of
+        # any fields) for statistical comparison
+        self._generate_null_distribution()
 
         # Advance the particles to the near the start of the grid
         self._coast_to_grid()
