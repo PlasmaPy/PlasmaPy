@@ -7,7 +7,7 @@ __all__ = [
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
-    "particle_like",
+    "ParticleLike",
 ]
 
 import astropy.constants as const
@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import Any, List, Optional, Set, Tuple, Union
+from typing import List, Optional, Set, Tuple, TypeVar, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
@@ -215,7 +215,7 @@ class Particle(AbstractParticle):
 
     Parameters
     ----------
-    argument : `particle_like`, excluding `CustomParticle` instances
+    argument : `ParticleLike`, excluding `CustomParticle` instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
@@ -377,7 +377,7 @@ class Particle(AbstractParticle):
     """
 
     def __init__(
-        self, argument: particle_like, mass_numb: Integral = None, Z: Integral = None,
+        self, argument: ParticleLike, mass_numb: Integral = None, Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
@@ -2022,12 +2022,14 @@ class CustomParticle(AbstractParticle):
                 ) from exc
 
 
-particle_like = Union[str, Integral, Particle, CustomParticle]
+ParticleLike = TypeVar("ParticleLike", str, int, Particle, CustomParticle)
 
-particle_like.__doc__ = """
+ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
+
+This variable is intended for use in type hint annotations.
 
 Notes
 -----
