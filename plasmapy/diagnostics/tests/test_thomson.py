@@ -367,37 +367,6 @@ def test_split_populations():
 
 
 
-def fit_epw(wavelengths, data, settings, params,
-            fit_method = 'leastsq',
-            max_iter=None):
-
-    # Strip units off of the data (if present)
-    if hasattr(data, 'unit'):
-        data = data.value
-    # Normalize the data
-    data = data/np.max(data)
-
-    # Create the model
-    model = thomson.epw_model(wavelengths, settings, params)
-
-
-    # Conduct the fit
-    result = model.fit(data,
-                        params,
-                        wavelengths=wavelengths,
-                        method=fit_method, max_nfev=max_iter)
-
-    print(result.values)
-
-    print(result.chisqr)
-
-    plt.plot(wavelengths, data)
-    plt.plot(wavelengths, result.best_fit)
-    plt.show()
-
-    # https://lmfit.github.io/lmfit-py/model.html
-
-
 def fit_thomson(wavelengths, data, settings, params,
             fit_method = 'leastsq',
             max_iter=None):
@@ -428,54 +397,6 @@ def fit_thomson(wavelengths, data, settings, params,
     plt.show()
 
     # https://lmfit.github.io/lmfit-py/model.html
-
-
-
-
-
-
-def test_fit_epw():
-
-    # Set some constants
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    Te = 10 * u.eV
-
-
-    settings = {}
-    settings['probe_vec'] = np.array([1, 0, 0])
-    settings['scatter_vec'] = np.array([0, 1, 0])
-    settings['electron_vdir'] = None
-    settings['probe_wavelength'] = probe_wavelength
-
-
-
-
-    # TEST ONE POPULATION
-
-    alpha, Skw = thomson.spectral_density_epw(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
-
-    data = Skw.value
-    data += np.random.rand(data.size)*np.max(data)*0.1
-
-
-    params = Parameters()
-    params.add('n', value=2e17, vary=True, min=1e17, max=1e18)
-    params.add('Te_0', value=5, vary=True, min=0.5, max=25)
-
-
-    fit_epw(wavelengths, data, settings, params)
-
 
 
 def test_fit_thomson():
@@ -572,7 +493,6 @@ def test_param_to_array_fcns():
 
 if __name__ == "__main__":
     test_fit_thomson()
-    # test_fit_epw()
     # test_collective_spectrum()
     # test_non_collective_spectrum()
     # test_different_input_types()
