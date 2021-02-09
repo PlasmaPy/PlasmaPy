@@ -27,11 +27,10 @@ works better with a `git add`, then `git commit` workflow than a `git commit
 -a` workflow - that way, you can check via `git diff` what the automated
 changes actually did.
 
-Note that the "Style linters / pre-commit (pull_request)" part of our
-Continuous Integration system can and will (metaphorically) shout at you if it
-finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply `black` and `isort` manually, let
-pre-commit do the version management for you instead!
+Note that the `pre-commit.ci <https://pre-commit.ci/>`_ part of our
+Continuous Integration system can automatically apply these fixes for you.
+You will still need to `git pull` the changes, so let your local pre-commit
+instance do it for you instead!
 
 Our pre-commit suite can be found in `.pre-commit-config.yaml
 <https://github.com/PlasmaPy/PlasmaPy/blob/master/.pre-commit-config.yaml>`_.
