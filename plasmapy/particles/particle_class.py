@@ -2069,12 +2069,12 @@ An **ion** or **ionic level** is represented as a string that contains a
 representation of an element or isotope, followed by a space, and then
 the charge information (e.g., ``"2+"``).  The charge information in the
 string includes an integer either followed or preceded by a plus or
-minus sign.  For example, Fe:sup:`2+` can be represented as
-``"Fe 2+"``, while :sup:`56`\ Fe:sup:`0+` can be represented as
+minus sign.  For example, Fe\ :sup:`2+` can be represented as
+``"Fe 2+"``, while :sup:`56`\ Fe\ :sup:`0+` can be represented as
 ``"iron-56 +0"``.  Ions can also be represented using the Roman numeral
 notation that is common in astrophysical spectroscopy.  Here, the Roman
 numeral represents the integer charge plus one (e.g., ``"H I"``
-represents H:sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He:sup:`1+`).
+represents H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
 The integer charge can alternatively be specified using the ``Z``
 keyword to `~plasmapy.particles.particle_class.Particle`.
 
