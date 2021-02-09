@@ -31,3 +31,7 @@ repos:
     - id: nbqa-isort
       additional_dependencies: [isort==5.7.0]
       args: [--nbqa-mutate]
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.4
+    hooks:
+    -   id: flake8
