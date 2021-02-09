@@ -102,13 +102,16 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     and recombination of ions with electrons are balanced.
 
     .. math::
-        \frac{N_j}{N_k} = \frac{1}{n_e} \frac{g_j}{4 g_k a_0^{3}} \left( \frac{k_B T_e}{\pi E_H} \right)^{\frac{3}{2}}
-         \exp\left( \frac{-E_{jk}}{k_B T_e} \right)
+        \frac{N_j}{N_k} = \frac{1}{n_e} \frac{g_j}{4 g_k a_0^{3}} \left(
+                              \frac{k_B T_e}{\pi E_H}
+                          \right)^{\frac{3}{2}}
+                          \exp\left( \frac{-E_{jk}}{k_B T_e} \right)
 
     Where :math:`k_B` is the Boltzmann constant,
     :math:`a_0` is the Bohr radius,
     :math:`E_H` is the ionization energy of Hydrogen,
-    :math:`N_j` and :math:`N_k` are the population of ions in the j and k states respectively.
+    :math:`N_j` and :math:`N_k` are the population of ions in the j and k states
+    respectively.
     This function is equivalent to Eq. 3.47 in `Drake`_.
 
     Parameters
@@ -164,9 +167,10 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     Notes
     -----
-    For reference to this function and for more information regarding the Saha equation,
-    see chapter 3 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
-    Inertial Fusion and Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
+    For reference to this function and for more information regarding the Saha
+    equation, see chapter 3 of R Paul Drake's book, "High-Energy-Density
+    Physics: Foundation of Inertial Fusion and Experimental Astrophysics" (
+    `DOI: 10.1007/978-3-319-67711-8_3`_).
 
     .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
     .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
