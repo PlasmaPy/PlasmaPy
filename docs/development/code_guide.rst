@@ -85,7 +85,7 @@ PlasmaPy Code Style Guide, codified
 * Use ``Optional[type]`` for type hinted keyword arguments with a
   default value of ``None``.
 
-* There should be at most one pun per 1284 lines of code.
+* There should be at least one pun per 1284 lines of code.
 
 
 Branches, commits, and pull requests
