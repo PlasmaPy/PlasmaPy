@@ -2044,50 +2044,47 @@ All `~plasmapy.particles.particle_class.Particle` instances and variables
 that can be cast into `~plasmapy.particles.particle_class.Particle`
 instances are particle-like.
 
-Elements
-^^^^^^^^
-An **element** may also be represented by a string that contains the
-atomic symbol (case-sensitive) or the name of the element, or an integer
-representing the atomic number.
+**Elements**
 
-For example, iron can be represented as ``"Fe"``, ``"iron"``, ``"Iron"``,
-or ``26``.  If any of these objects is
-passed to `~plasmapy.particles.particle_class.Particle`, it will create
-a `~plasmapy.particles.particle_class.Particle` instance for iron.
+An element may be represented by a string that contains the atomic symbol
+(case-sensitive) or the name of the element, or an integer representing
+the atomic number.  For example, iron can be represented as ``"Fe"``,
+``"iron"``, ``"Iron"``, or ``26``.  If any of these objects is passed to
+`~plasmapy.particles.particle_class.Particle`, it will create a
+`~plasmapy.particles.particle_class.Particle` instance for iron.
 
-Isotopes
-^^^^^^^^
-An **isotope** may also be represented by a string that contains an
+**Isotopes**
+
+An isotope may also be represented by a string that contains an
 atomic symbol or element name followed by a hyphen and the mass number
 (with no spaces in between).   For example, :sup:`56`\ Fe can be
 represented as ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``.
 
-Ions
-^^^^
-An **ion** or **ionic level** is represented as a string that contains a
+**Ions**
+
+An ion or ionic level is represented as a string that contains a
 representation of an element or isotope, followed by a space, and then
-the charge information (e.g., ``"2+"``).
+the charge information (e.g., ``"2+"``).  The charge information in the
+string includes an integer either followed or preceded by a ``+`` or
+``-`` to indicate the sign of the charge.  For example, Fe\ :sup:`2+`
+can be represented as ``"Fe 2+"``, while :sup:`56`\ Fe\ :sup:`0+` can be
+represented as ``"iron-56 +0"``.  Ions can also be represented using the
+Roman numeral notation that is common in astrophysical spectroscopy.
+Here, the Roman numeral represents the integer charge plus one (e.g.,
+``"H I"`` represents H\ :sup:`0+` and ``"He-4 II"`` represents
+:sup:`4`\ He\ :sup:`1+`).
 
-The charge information in the string includes an integer either followed
-or preceded by a ``+`` or ``-`` to indicate the sign of the charge.  For
-example, Fe\ :sup:`2+` can be represented as ``"Fe 2+"``, while
-:sup:`56`\ Fe\ :sup:`0+` can be represented as ``"iron-56 +0"``.  Ions
-can also be represented using the Roman numeral notation that is common
-in astrophysical spectroscopy. Here, the Roman numeral represents the
-integer charge plus one (e.g., ``"H I"`` represents H\ :sup:`0+` and
-``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
+**Special particles**
 
-Special particles
-^^^^^^^^^^^^^^^^^
-A **special particle** may be represented by a string that contains
+A special particle may be represented by a string that contains
 the name of the particle (case-insensitive) or a standard symbol for it
 (case-sensitive).  A neutron can be represented as ``"n"`` or
 ``"neutron"``; a proton can be represented as ``"p+"``, ``"p"``, or
 ``"Proton"``; and an electron can be represented by ``"e-"``, ``"e"``,
 or ``"ELECTRON"``.
 
-Custom particles
-^^^^^^^^^^^^^^^^
+**Custom particles**
+
 Custom particles constructed with the
 `~plasmapy.particles.particle_class.CustomParticle` class are considered
 particle-like because the properties of the custom particle are provided
