@@ -202,8 +202,11 @@ def spectral_density(
     if electron_vel is not None:
         pass
     elif (electron_speed is not None) and (electron_vdir is not None):
-        electron_vdir = electron_vdir / np.linalg.norm(electron_vdir, axis=1)
-        electron_vel = np.outer(electron_speed, np.ones(3)) * electron_vdir
+        norm = np.linalg.norm(electron_vdir, axis=1, keepdims=True)
+        if all(norm == 0):
+            electron_vel = np.zeros(3) * u.m / u.s
+        else:
+            electron_vel = np.outer(electron_speed, np.ones(3)) * electron_vdir
     else:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
 
@@ -212,8 +215,11 @@ def spectral_density(
     if ion_vel is not None:
         pass
     elif (ion_speed is not None) and (ion_vdir is not None):
-        ion_vdir = ion_vdir / np.linalg.norm(ion_vdir, axis=1)
-        ion_vel = np.outer(ion_speed, np.ones(3)) * ion_vdir
+        norm = np.linalg.norm(ion_vdir, axis=1, keepdims=True)
+        if all(norm == 0):
+            ion_vel = np.zeros(3) * u.m / u.s
+        else:
+            ion_vel = np.outer(ion_speed, np.ones(3)) * ion_vdir
     else:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
@@ -329,7 +335,6 @@ def spectral_density(
 
 
     # Calculate the susceptibilities
-
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
         chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
