@@ -2022,7 +2022,7 @@ class CustomParticle(AbstractParticle):
                 ) from exc
 
 
-ParticleLike = TypeVar("ParticleLike", str, int, Particle, CustomParticle)
+ParticleLike = TypeVar("ParticleLike", str, Integral, Particle, CustomParticle)
 
 ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
@@ -2037,50 +2037,48 @@ Real world particles are typically represented as instances of the
 `~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
 
 >>> from plasmapy.particles import Particle
->>>
 >>> Particle("proton")
 Particle("p+")
->>> Particle("neutron")
-Particle("n")
 
 All `~plasmapy.particles.particle_class.Particle` instances and variables
-that can be cast into a `~plasmapy.particles.particle_class.Particle`
+that can be cast into `~plasmapy.particles.particle_class.Particle`
 instances are particle-like.
 
+Elements
+^^^^^^^^
 An **element** may also be represented by a string that contains the
 atomic symbol (case-sensitive) or the name of the element, or an integer
-representing the atomic number.  For example, iron can be represented as
-``"Fe"``, ``"iron"``, ``"Iron"``, or ``26``.  If any of these objects is
+representing the atomic number.
+
+For example, iron can be represented as ``"Fe"``, ``"iron"``, ``"Iron"``,
+or ``26``.  If any of these objects is
 passed to `~plasmapy.particles.particle_class.Particle`, it will create
 a `~plasmapy.particles.particle_class.Particle` instance for iron.
 
+Isotopes
+^^^^^^^^
 An **isotope** may also be represented by a string that contains an
 atomic symbol or element name followed by a hyphen and the mass number
 (with no spaces in between).   For example, :sup:`56`\ Fe can be
 represented as ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``.
-A `~plasmapy.particles.particle_class.Particle` instance for an isotope
-can also be created by passing a representation of iron as the first
-argument and specifying the mass number with the argument ``mass_numb``.
 
->>> Particle(26, mass_numb=56)
-Particle("Fe-56")
-
+Ions
+^^^^
 An **ion** or **ionic level** is represented as a string that contains a
 representation of an element or isotope, followed by a space, and then
-the charge information (e.g., ``"2+"``).  The charge information in the
-string includes an integer either followed or preceded by a plus or
-minus sign.  For example, Fe\ :sup:`2+` can be represented as
-``"Fe 2+"``, while :sup:`56`\ Fe\ :sup:`0+` can be represented as
-``"iron-56 +0"``.  Ions can also be represented using the Roman numeral
-notation that is common in astrophysical spectroscopy.  Here, the Roman
-numeral represents the integer charge plus one (e.g., ``"H I"``
-represents H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
-The integer charge can alternatively be specified using the ``Z``
-keyword to `~plasmapy.particles.particle_class.Particle`.
+the charge information (e.g., ``"2+"``).
 
->>> Particle("He-4", Z=2)
-Particle("He-4 2+")
+The charge information in the string includes an integer either followed
+or preceded by a ``+`` or ``-`` to indicate the sign of the charge.  For
+example, Fe\ :sup:`2+` can be represented as ``"Fe 2+"``, while
+:sup:`56`\ Fe\ :sup:`0+` can be represented as ``"iron-56 +0"``.  Ions
+can also be represented using the Roman numeral notation that is common
+in astrophysical spectroscopy. Here, the Roman numeral represents the
+integer charge plus one (e.g., ``"H I"`` represents H\ :sup:`0+` and
+``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
 
+Special particles
+^^^^^^^^^^^^^^^^^
 A **special particle** may be represented by a string that contains
 the name of the particle (case-insensitive) or a standard symbol for it
 (case-sensitive).  A neutron can be represented as ``"n"`` or
@@ -2088,26 +2086,18 @@ the name of the particle (case-insensitive) or a standard symbol for it
 ``"Proton"``; and an electron can be represented by ``"e-"``, ``"e"``,
 or ``"ELECTRON"``.
 
-Custom particles can be constructed with the
-`~plasmapy.particles.particle_class.CustomParticle` class.
+Custom particles
+^^^^^^^^^^^^^^^^
+Custom particles constructed with the
+`~plasmapy.particles.particle_class.CustomParticle` class are considered
+particle-like because the properties of the custom particle are provided
+in physical units.
 
->>> from plasmapy.particles import CustomParticle
->>> import astropy.units as u
+.. note::
 
->>> dust_particle = CustomParticle(mass=1e-23 * u.kg, charge=-1e-17 * u.C)
->>> dust_particle.mass
-<Quantity 1.e-23 kg>
->>> dust_particle.charge
-<Quantity -1.e-17 C>
-
-Instances of the `~plasmapy.particles.particle_class.CustomParticle`
-class are considered particle-like because the mass and charge of the
-custom particle are provided in physical units.
-
-`~plasmapy.particles.particle_class.DimensionlessParticle` instances are
-not considered particle-like because, without normalization information,
-they do not *uniquely* identify a physical particle and therefore cannot
-be used in `plasmapy.formulary`.
+    `~plasmapy.particles.particle_class.DimensionlessParticle`
+    instances are not particle-like because, without normalization
+    information, they do not uniquely identify a physical particle.
 
 See Also
 --------
@@ -2117,8 +2107,8 @@ CustomParticle
 
 Examples
 --------
-`ParticleLike` is used as a type hint annotation to indicate that an
-argument or variable should be a valid representation of a particle.
+When `ParticleLike` is used as a type hint annotation, it indicates that
+an argument or variable should be a valid representation of a particle.
 
 >>> from plasmapy.particles import ParticleLike
 >>> def sample_function(particle: ParticleLike):
