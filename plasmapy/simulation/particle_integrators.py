@@ -71,7 +71,7 @@ def boris_push(x, v, B, E, q, m, dt):
     x += v * dt
 
 
-_c = constants.c.si.value
+_c = constants.c
 
 
 def boris_push_relativistic(x, v, B, E, q, m, dt):
