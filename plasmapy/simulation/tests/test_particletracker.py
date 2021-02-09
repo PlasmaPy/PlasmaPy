@@ -10,6 +10,11 @@ from plasmapy.plasma.sources import Plasma3D
 from plasmapy.simulation.particletracker import ParticleTracker
 
 
+@pytest.fixture(params=ParticleTracker._all_integrators)
+def integrator(request):
+    return request.param
+
+
 @pytest.fixture()
 def uniform_magnetic_field(N=3, max_x=1):
     x = np.linspace(-max_x, max_x, N) * u.m
@@ -102,7 +107,7 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 
 
 @pytest.mark.slow
-def test_particle_exb_drift(uniform_magnetic_field):
+def test_particle_exb_drift(uniform_magnetic_field, integrator):
     r"""
     Tests the particle stepper for a field with magnetic field in the Z
     direction, electric field in the y direction. This should produce a
@@ -120,7 +125,9 @@ def test_particle_exb_drift(uniform_magnetic_field):
         .to(u.m / u.s)
     )
 
-    s = ParticleTracker(test_plasma, "p", 5, dt=1e-10 * u.s, nt=int(5e3))
+    s = ParticleTracker(
+        test_plasma, "p", 5, dt=1e-10 * u.s, nt=int(5e3), integrator=integrator
+    )
     s.v[:, 2] += np.random.normal(size=s.N) * u.m / u.s
 
     s.run()
