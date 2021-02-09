@@ -2029,7 +2029,7 @@ An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
-This variable is intended for use in type hint annotations.
+This variable is intended for use as a type hint annotation.
 
 Notes
 -----
@@ -2108,4 +2108,19 @@ custom particle are provided in physical units.
 not considered particle-like because, without normalization information,
 they do not *uniquely* identify a physical particle and therefore cannot
 be used in `plasmapy.formulary`.
+
+See Also
+--------
+Particle
+CustomParticle
+~plasmapy.particles.decorators.particle_input
+
+Examples
+--------
+`ParticleLike` is used as a type hint annotation to indicate that an
+argument or variable should be a valid representation of a particle.
+
+>>> from plasmapy.particles import ParticleLike
+>>> def sample_function(particle: ParticleLike):
+...     pass
 """
