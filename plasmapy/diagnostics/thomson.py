@@ -5,7 +5,7 @@ part of the diagnostics package.
 
 __all__ = [
     "spectral_density",
-    "fit_thomson",
+    "thomson_model",
 ]
 
 import astropy.constants as const
@@ -13,9 +13,7 @@ import astropy.units as u
 import numpy as np
 import warnings
 
-from collections import namedtuple
-from lmfit import Model, Parameter, Parameters
-
+from lmfit import Model
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
@@ -49,10 +47,10 @@ def spectral_density(
     efract: np.ndarray = None,
     ifract: np.ndarray = None,
     ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
-    electron_vel: u.m/u.s = None,
+    electron_vel: u.m / u.s = None,
     electron_vdir: np.ndarray = None,
-    electron_speed: u.m/u.s = None,
-    ion_vel: u.m/u.s = None,
+    electron_speed: u.m / u.s = None,
+    ion_vel: u.m / u.s = None,
     ion_vdir: np.ndarray = None,
     ion_speed: np.ndarray = None,
     probe_vec=np.array([1, 0, 0]),
@@ -210,7 +208,6 @@ def spectral_density(
     else:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
 
-
     # Condition the electron velocity keywords
     if ion_vel is not None:
         pass
@@ -222,7 +219,6 @@ def spectral_density(
             ion_vel = np.outer(ion_speed, np.ones(3)) * ion_vdir
     else:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
-
 
     # Condition ion_species
     if isinstance(ion_species, (str, Particle)):
@@ -273,7 +269,6 @@ def spectral_density(
             f"Te ({Te.size}), or electron velocity ({electron_vel.shape[0]})."
         )
 
-
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
@@ -291,13 +286,12 @@ def spectral_density(
     # np.nan_to_num and warning filter catch nan's generated when
     # efract or ifract == 0 (when calculating EPW or IAW spectra separately)
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore', RuntimeWarning)
+        warnings.simplefilter("ignore", RuntimeWarning)
         ne = np.nan_to_num(efract * n, nan=0)
         ni = np.nan_to_num(ifract * n / zbar, nan=0)  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency(n=n, particle="e-")
-
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
@@ -328,11 +322,9 @@ def spectral_density(
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
     alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
 
-
     # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
     xe = (np.outer(1 / vTe, 1 / k) * w_e).to(u.dimensionless_unscaled)
     xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
-
 
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
@@ -379,115 +371,11 @@ def spectral_density(
     return np.mean(alpha), Skw
 
 
-def spectral_density_epw(
-    wavelengths: u.nm,
-    probe_wavelength: u.nm,
-    n: u.m ** -3,
-    Te: u.K,
-    efract: np.ndarray = None,
-    electron_vel: u.m/u.s = None,
-    electron_vdir: np.ndarray = None,
-    electron_speed: u.m/u.s = None,
-    probe_vec=np.array([1, 0, 0]),
-    scatter_vec=np.array([0, 1, 0]),
-) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
-    """
-    This wrapper on `spectral_density` takes only electron parameters
-    and returns only the electron feature. This is accomplished by setting
-    ifract=[0.0], Ti= 1 K, and ion_vel to None.
-
-    Parameters
-    ----------
-
-    wavelengths : `~astropy.units.Quantity`
-        Array of wavelengths over which the spectral density function
-        will be calculated. (convertible to nm)
-
-    probe_wavelength : `~astropy.units.Quantity`
-        Wavelength of the probe laser. (convertible to nm)
-
-    n : `~astropy.units.Quantity`
-        Mean (0th order) density of all plasma components combined.
-        (convertible to cm^-3.)
-
-    Te : `~astropy.units.Quantity`, shape (Ne, )
-        Temperature of each electron component. Shape (Ne, ) must be equal to the
-        number of electron components Ne. (in K or convertible to eV)
-
-    efract : array_like, shape (Ne, ), optional
-        An array-like object where each element represents the fraction (or ratio)
-        of the electron component number density to the total electron number density.
-        Must sum to 1.0. Default is a single electron component.
-
-    electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
-        Velocity of each electron component in the rest frame. (convertible to m/s)
-        Defaults to a stationary plasma [0, 0, 0] m/s.
-
-    electron_vdir : np.ndarray, shape (Ne,3), optional
-        Unit vectors describing the velocity of each electron population.
-        Setting electron_vel overrides this keyword.
-
-    electron_speed : `~astropy.units.Quantity`, shape (Ne), optional
-        A scalar speed for each electron population. Must be used along with
-        electron_vdir. Setting electron_vel overrides this keyword.
-
-    probe_vec : float `~numpy.ndarray`, shape (3, )
-        Unit vector in the direction of the probe laser. Defaults to
-        [1, 0, 0].
-
-    scatter_vec : float `~numpy.ndarray`, shape (3, )
-        Unit vector pointing from the scattering volume to the detector.
-        Defaults to [0, 1, 0] which, along with the default `probe_vec`,
-        corresponds to a 90 degree scattering angle geometry.
-
-    Returns
-    -------
-    alpha : float
-        Mean scattering parameter, where `alpha` > 1 corresponds to collective
-        scattering and `alpha` < 1 indicates non-collective scattering. The
-        scattering parameter is calculated based on the total plasma density n.
-
-    Skw : `~astropy.units.Quantity`
-        Computed spectral density function over the input `wavelengths` array
-        with units of s/rad.
-
-    """
-    return spectral_density(wavelengths,
-                            probe_wavelength,
-                            n,
-                            Te,
-                            1*u.K,
-                            efract=efract,
-                            ifract=[0.0],
-                            ion_species = ['p+'],
-                            electron_vel = electron_vel,
-                            electron_vdir = electron_vdir,
-                            electron_speed = electron_speed,
-                            ion_vel = None,
-                            ion_vdir = None,
-                            ion_speed = None,
-                            probe_vec = probe_vec,
-                            scatter_vec = scatter_vec,)
-
-
-# Note: There is no spectral_density_iaw function, because the ion feature
-# depends on the electron temperature. However, since the ion feature is much
-# larger than the electron feature, fitting the full spectrum (without blocking the
-# IAW feature) is essentially the same as fitting the ion feature.
-
-
-
-
-
-
-
-
-
-
 # ***************************************************************************
 # These functions are necessary to interface scalar Parameter objects with
 # the array inputs of spectral_density
 # ***************************************************************************
+
 
 def _count_populations_in_params(keys, prefix):
     """
@@ -502,7 +390,6 @@ def _count_populations_in_params(keys, prefix):
         else:
             break
     return i
-
 
 
 def _params_to_array(params, prefix, vector=False):
@@ -520,10 +407,10 @@ def _params_to_array(params, prefix, vector=False):
     keys = list(params.keys())
 
     if vector:
-        npop = _count_populations_in_params(keys, prefix + '_x')
-        output = np.zeros([npop,3])
+        npop = _count_populations_in_params(keys, prefix + "_x")
+        output = np.zeros([npop, 3])
         for i in range(npop):
-            for j, ax in enumerate(['x','y','z']):
+            for j, ax in enumerate(["x", "y", "z"]):
                 output[i, j] = params[prefix + f"_{ax}_{i}"].value
 
     else:
@@ -533,7 +420,6 @@ def _params_to_array(params, prefix, vector=False):
             output[i] = params[prefix + f"_{i}"]
 
     return output
-
 
 
 # ***************************************************************************
@@ -549,26 +435,22 @@ def _thomson_model(wavelengths, settings, **params):
 
     """
 
-
     # LOAD FROM SETTINGS
-    ion_species = settings['ion_species']
-    probe_vec = settings['probe_vec']
-    scatter_vec = settings['scatter_vec']
-    electron_vdir = settings['electron_vdir']
-    ion_vdir = settings['ion_vdir']
-    probe_wavelength = settings['probe_wavelength']
-
-
+    ion_species = settings["ion_species"]
+    probe_vec = settings["probe_vec"]
+    scatter_vec = settings["scatter_vec"]
+    electron_vdir = settings["electron_vdir"]
+    ion_vdir = settings["ion_vdir"]
+    probe_wavelength = settings["probe_wavelength"]
 
     # LOAD FROM PARAMS
-    n = params['n'] * u.cm ** -3
-    Te = _params_to_array(params, 'Te') * u.eV
-    Ti = _params_to_array(params, 'Ti') * u.eV
-    efract = _params_to_array(params, 'efract')
-    ifract = _params_to_array(params, 'ifract')
-    electron_speed = _params_to_array(params, 'electron_speed') * u.m/u.s
-    ion_speed = _params_to_array(params, 'ion_speed') * u.m/u.s
-
+    n = params["n"] * u.cm ** -3
+    Te = _params_to_array(params, "Te") * u.eV
+    Ti = _params_to_array(params, "Ti") * u.eV
+    efract = _params_to_array(params, "efract")
+    ifract = _params_to_array(params, "ifract")
+    electron_speed = _params_to_array(params, "electron_speed") * u.m / u.s
+    ion_speed = _params_to_array(params, "ion_speed") * u.m / u.s
 
     alpha, model_Skw = spectral_density(
         wavelengths,
@@ -579,20 +461,19 @@ def _thomson_model(wavelengths, settings, **params):
         ion_species=ion_species,
         efract=efract,
         ifract=ifract,
-        electron_vdir = electron_vdir,
-        electron_speed = electron_speed,
-        ion_vdir = ion_vdir,
-        ion_speed = ion_speed,
+        electron_vdir=electron_vdir,
+        electron_speed=electron_speed,
+        ion_vdir=ion_vdir,
+        ion_speed=ion_speed,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
     )
 
     # Strip units and normalize
     model_Skw = model_Skw.to(u.s / u.rad).value
-    model_Skw *= 1/np.max(model_Skw)
+    model_Skw *= 1 / np.max(model_Skw)
 
     return model_Skw
-
 
 
 def thomson_model(wavelengths, settings, params):
@@ -652,57 +533,53 @@ def thomson_model(wavelengths, settings, params):
     skeys = list(settings.keys())
     pkeys = list(params.keys())
 
-    req_settings = ['probe_wavelength', 'probe_vec', 'scatter_vec', 'ion_species']
+    req_settings = ["probe_wavelength", "probe_vec", "scatter_vec", "ion_species"]
     for k in req_settings:
         if k not in skeys:
             raise KeyError(f"{k} was not provided in settings, but is required.")
 
-    req_params = ['n', 'Te_0', 'Ti_0']
+    req_params = ["n", "Te_0", "Ti_0"]
     for k in req_params:
         if k not in pkeys:
             raise KeyError(f"{k} was not provided in parameters, but is required.")
 
-
     # Fill any missing settings
-    if 'electron_vdir' not in skeys:
-        settings['electron_vdir'] = None
-
+    if "electron_vdir" not in skeys:
+        settings["electron_vdir"] = None
 
     # Fill any missing required parameters
-    if 'efract_0' not in pkeys:
-        params.add('efract_0', value=1.0, vary=False)
+    if "efract_0" not in pkeys:
+        params.add("efract_0", value=1.0, vary=False)
 
-    if 'electron_speed' not in pkeys:
-        params.add('electron_speed_0', value=0.0, vary=False)
-
+    if "electron_speed" not in pkeys:
+        params.add("electron_speed_0", value=0.0, vary=False)
 
     # Automatically add an expression to the last efract parameter to
     # indicate that it depends on the others (so they sum to 1.0)
     # The resulting expression for the last of three will look like
     # efract_2.expr = "1.0 - efract_0 - efract_1"
-    num_e = _count_populations_in_params(pkeys, 'efract')
+    num_e = _count_populations_in_params(pkeys, "efract")
     if num_e > 1:
-        nums = ["efract_" + str(i) for i in range(num_e-1)]
-        nums.insert(0, '1.0')
-        params['efract_' + str(num_e-1)].expr = ' - '.join(nums)
+        nums = ["efract_" + str(i) for i in range(num_e - 1)]
+        nums.insert(0, "1.0")
+        params["efract_" + str(num_e - 1)].expr = " - ".join(nums)
 
-    num_i = _count_populations_in_params(pkeys, 'ifract')
+    num_i = _count_populations_in_params(pkeys, "ifract")
     if num_i > 1:
-        nums = ["ifract_" + str(i) for i in range(num_i-1)]
-        nums.insert(0, '1.0')
-        params['ifract_' + str(num_i-1)].expr = ' - '.join(nums)
-
-
+        nums = ["ifract_" + str(i) for i in range(num_i - 1)]
+        nums.insert(0, "1.0")
+        params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
 
     # Encode the fixed settings in the model by lambifying the fit function
     # This new model_fcn now has the setting parameters embedded for subsequent
     # calls
-    model_fcn = lambda wavelengths, **params : _thomson_model(wavelengths, settings, **params)
+    model_fcn = lambda wavelengths, **params: _thomson_model(
+        wavelengths, settings, **params
+    )
 
     # Create a lmfit.Model
     # nan_policy='omit' automatically ignores NaN values in data, allowing those
     # to be used to represnt regions of missing data
-    model = Model(model_fcn, independent_vars=['wavelengths'], nan_policy='omit')
-
+    model = Model(model_fcn, independent_vars=["wavelengths"], nan_policy="omit")
 
     return model

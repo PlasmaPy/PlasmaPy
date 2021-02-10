@@ -3,12 +3,11 @@ Tests for Thomson scattering analysis functions
 """
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-import matplotlib.pyplot as plt
-
-from lmfit import Parameters, Parameter
+from lmfit import Parameters
 
 from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle
@@ -125,7 +124,6 @@ def gen_collective_epw_spectrum():
     scatter_vec = np.array([0, 1, 0])
     Te = 10 * u.eV
 
-
     alpha, Skw = thomson.spectral_density_epw(
         wavelengths,
         probe_wavelength,
@@ -136,8 +134,6 @@ def gen_collective_epw_spectrum():
     )
 
     return alpha, wavelengths, Skw
-
-
 
 
 def test_different_input_types():
@@ -365,28 +361,28 @@ def test_split_populations():
     assert np.all(deviation < 1e-6), "Failed split populations test"
 
 
-
-
-def fit_thomson(wavelengths, data, settings, params,
-            fit_method = 'leastsq',
-            max_iter=None):
-
+def fit_thomson(
+    wavelengths,
+    data,
+    settings,
+    params,
+    fit_method="differential_evolution",
+    max_iter=None,
+):
 
     # Strip units off of the data (if present)
-    if hasattr(data, 'unit'):
+    if hasattr(data, "unit"):
         data = data.value
     # Normalize the data
-    data = data/np.max(data)
+    data = data / np.max(data)
 
     # Create the model
     model = thomson.thomson_model(wavelengths, settings, params)
 
-
     # Conduct the fit
-    result = model.fit(data,
-                        params,
-                        wavelengths=wavelengths,
-                        method=fit_method, max_nfev=max_iter)
+    result = model.fit(
+        data, params, wavelengths=wavelengths, method=fit_method, max_nfev=max_iter
+    )
 
     print(result.values)
 
@@ -402,61 +398,73 @@ def fit_thomson(wavelengths, data, settings, params,
 def test_fit_thomson():
 
     # Generate theoretical spectrum
-    probe_wavelength = 532*u.nm
-    wavelengths = np.arange(probe_wavelength.value-3, probe_wavelength.value+3, 0.001)*u.nm
+    probe_wavelength = 532 * u.nm
+    wavelengths = (
+        np.arange(probe_wavelength.value - 3, probe_wavelength.value + 3, 0.001) * u.nm
+    )
 
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
-    n = 2e17*u.cm**-3
-    ion_species = ['H+', 'C-12 5+']
-    Te = 10*u.eV
+    n = 2e17 * u.cm ** -3
+    ion_species = ["H+", "C-12 5+"]
+    Te = 10 * u.eV
     Ti = np.array([20, 50]) * u.eV
-    electron_vel = np.array([[0, 0, 0]])*u.km/u.s
-    ion_vel =  np.array([[0, 0, 0], [200, 0, 0]])*u.km/u.s
+    electron_vel = np.array([[0, 0, 0]]) * u.km / u.s
+    ion_vel = np.array([[0, 0, 0], [200, 0, 0]]) * u.km / u.s
     ifract = [0.3, 0.7]
 
-
-    alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
-                         n, Te, Ti, ion_species=ion_species,
-                         ifract=ifract,
-                         electron_vel=electron_vel,ion_vel=ion_vel,
-                         probe_vec=probe_vec, scatter_vec=scatter_vec)
-
-
+    alpha, Skw = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        ifract=ifract,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
 
     settings = {}
-    settings['probe_wavelength'] = probe_wavelength
-    settings['probe_vec'] = probe_vec
-    settings['scatter_vec'] = scatter_vec
-    settings['ion_species'] = ion_species
-    settings['ion_vdir'] = np.array([[0, 0, 0], [1, 0, 0]])
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ion_species
+    settings["ion_vdir"] = np.array([[0, 0, 0], [1, 0, 0]])
 
     params = Parameters()
-    params.add('n', value=n.value, vary=False)
-    params.add('Te_0', value=10, vary=False, min=5, max=20)
-    params.add('Ti_0', value=10, vary=True, min=5, max=70)
-    params.add('Ti_1', value=10, vary=True, min=5, max=70)
-    params.add('ifract_0', value=0.5, vary=True, min=0.1, max=0.9)
-    params.add('ifract_1', value=0.5, vary=True, min=0.1, max=0.9, expr='1.0 - ifract_0')
-    params.add('ion_speed_0', value=0, vary=False)
-    params.add('ion_speed_1', value=0, vary=True, min=0, max=1e6)
-
-
-
+    params.add("n", value=n.value, vary=False)
+    params.add("Te_0", value=10, vary=False, min=5, max=20)
+    params.add("Ti_0", value=10, vary=True, min=5, max=70)
+    params.add("Ti_1", value=10, vary=True, min=5, max=70)
+    params.add("ifract_0", value=0.5, vary=True, min=0.1, max=0.9)
+    params.add(
+        "ifract_1", value=0.5, vary=True, min=0.1, max=0.9, expr="1.0 - ifract_0"
+    )
+    params.add("ion_speed_0", value=0, vary=False)
+    params.add("ion_speed_1", value=0, vary=True, min=0, max=1e6)
 
     # TEST TWO POPULATIONS
-    alpha, Skw = thomson.spectral_density(wavelengths, probe_wavelength,
-                     n, Te, Ti, ion_species=ion_species,
-                     ifract=ifract,
-                     electron_vel=electron_vel,ion_vel=ion_vel,
-                     probe_vec=probe_vec, scatter_vec=scatter_vec)
+    alpha, Skw = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        ifract=ifract,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
 
     data = Skw.value
-    data += np.random.rand(data.size)*np.max(data)*0.1
-
-
+    data += np.random.rand(data.size) * np.max(data) * 0.1
 
     fit_thomson(wavelengths, data, settings, params)
 
@@ -469,33 +477,30 @@ def test_param_to_array_fcns():
     params = Parameters()
 
     # Create two groups of test variabels, one scalars and one vectors
-    prefix = 'Te'
+    prefix = "Te"
     for i in range(3):
-        params.add(prefix + f'_{i}', value=2)
+        params.add(prefix + f"_{i}", value=2)
 
-    prefix = 'ion_vel'
+    prefix = "ion_vel"
     for i in range(2):
-        for j in ['x', 'y', 'z']:
-            params.add(prefix + f'_{j}_{i}', value=2)
+        for j in ["x", "y", "z"]:
+            params.add(prefix + f"_{j}_{i}", value=2)
 
-    arr = thomson._params_to_array(params, 'Te', vector=False)
+    arr = thomson._params_to_array(params, "Te", vector=False)
     assert arr.shape == (3,)
     assert np.mean(arr) == 2
 
-    arr = thomson._params_to_array(params, 'ion_vel', vector=True)
-    assert arr.shape == (2,3)
+    arr = thomson._params_to_array(params, "ion_vel", vector=True)
+    assert arr.shape == (2, 3)
     assert np.mean(arr) == 2
 
 
-
-
-
-
 if __name__ == "__main__":
-    test_fit_thomson()
+    pass
+    # test_fit_thomson()
     # test_collective_spectrum()
     # test_non_collective_spectrum()
     # test_different_input_types()
     # test_split_populations()
     # test_thomson_fit()
-    #test_param_to_array_fcns()
+    # test_param_to_array_fcns()
