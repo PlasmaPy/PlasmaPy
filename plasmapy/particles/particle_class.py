@@ -2028,8 +2028,8 @@ ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
 `Particle` or `CustomParticle`, or cast into one.
 
-`ParticleLike` is intended for use as a type hint annotation, and
-indicates that an argument or variable should represent a physical
+`ParticleLike` is intended for use as a type hint annotation to
+indicate that an argument or variable should represent a physical
 particle. Particle-like objects can include strings, integers, or
 instances of the `Particle` or `CustomParticle` classes.
 
@@ -2059,7 +2059,7 @@ An isotope may be represented by a string that contains an atomic symbol
 or element name, followed by a hyphen and the mass number (with no spaces
 in between). The isotope :sup:`56`\ Fe can be represented as
 ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``. :sup:`1`\ H can be
-represented by ``"protium"``, :sup:`2`\ H can be represented by ``"D``"
+represented by ``"protium"``, :sup:`2`\ H can be represented by ``"D"``
 or ``"deuterium"``, and :sup:`3`\ H can be represented by ``"T"`` or
 ``"tritium"``.
 
