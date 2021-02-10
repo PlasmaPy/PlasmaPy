@@ -2113,7 +2113,7 @@ CustomParticle
 Examples
 --------
 Using `ParticleLike` as a type hint annotation indicates that an
-argument or variable represent a physical particle.
+argument or variable should represent a physical particle.
 
 >>> from plasmapy.particles import ParticleLike, Particle
 >>> def is_electron(particle: ParticleLike):
