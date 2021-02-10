@@ -431,7 +431,7 @@ def _thomson_model(wavelengths, settings, **params):
     """
     lmfit Model function for fitting Thomson spectra
 
-    For descriptions of arguments, see the `fit_thomson` function.
+    For descriptions of arguments, see the `thomson_model` function.
 
     """
 
@@ -478,7 +478,7 @@ def _thomson_model(wavelengths, settings, **params):
 
 def thomson_model(wavelengths, settings, params):
     """
-    Returns a `lmfit` Model function for the EPW feature.
+    Returns a `lmfit.Model` function for Thomson spectrum
 
 
     Parameters
