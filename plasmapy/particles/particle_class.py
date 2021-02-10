@@ -2028,23 +2028,22 @@ ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
 `Particle` or `CustomParticle`, or cast into one.
 
-`ParticleLike` is intended for use as a type hint annotation to
-indicate that an argument or variable should represent a physical
-particle. Particle-like objects can include strings, integers, or
-instances of the `Particle` or `CustomParticle` classes.
+When used as a type hint annotation, `ParticleLike` indicates that an
+argument should represent a physical particle. Particle-like objects
+can include strings, integers, or instances of the `Particle` or
+`CustomParticle` classes.
 
 Notes
 -----
 Real world particles are typically represented as instances of the
-`~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
+`Particle` class in PlasmaPy.
 
 >>> from plasmapy.particles import Particle
 >>> Particle("proton")
 Particle("p+")
 
-All `~plasmapy.particles.particle_class.Particle` instances, and
-objects that can be cast into `~plasmapy.particles.particle_class.Particle`
-instances are particle-like.
+All `Particle` instances, and objects that can be cast into `Particle`
+instances, are particle-like.
 
 **Elements**
 
