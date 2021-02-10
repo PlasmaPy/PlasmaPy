@@ -268,6 +268,12 @@ def test_init():
         grid, source, detector, verbose=False, detector_hdir=hdir
     )
 
+    # Test special case hdir == [0,0,1]
+    hdir = np.array([0, 0, 1])
+    sim = prad.SyntheticProtonRadiograph(
+        grid, source, detector, verbose=False, detector_hdir=hdir
+    )
+
 
 def test_create_particles():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
@@ -291,12 +297,36 @@ def test_run_options():
     # Cartesian
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
-    # TODO: Catch warnings (test fields aren't well behaved at edges)
+    # Try running with nearest neighbor interpolator
+    # Test manually setting a timestep
+    sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+
+    # Test max_deflections
+    sim.max_deflection
+
+
+def test_synthetic_radiograph():
+
+    # CREATE A RADIOGRAPH OBJECT
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
+
+    size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
+    bins = [200, 60]
+
+    # Test optical density
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
+
+    # Test size is None, default bins
+    h, v, i = sim.synthetic_radiograph()
 
 
 if __name__ == "__main__":
@@ -305,5 +335,6 @@ if __name__ == "__main__":
     # test_1D_deflections()
     # test_init()
     # test_create_particles()
-    # test_run_options()
+    test_run_options()
+    # test_synthetic_radiograph()
     pass
