@@ -148,6 +148,7 @@ def test_grid_methods():
     out = grid.on_grid(pos)
     assert np.all(out == np.array([True, False]))
 
+
 def test_interpolate_indices():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
@@ -306,6 +307,7 @@ def test_NonUniformCartesianGrid():
         grid.dax1
     with pytest.raises(ValueError):
         grid.dax2
+
 
 if __name__ == "__main__":
     # test_AbstractGrid()
