@@ -3,9 +3,9 @@ import astropy.units as u
 from dataclasses import dataclass
 from typing import Optional
 
-import plasmapy
-
 from plasmapy.formulary import gyrofrequency, mass_density, thermal_speed
+
+from . import particle_class
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Species:
     stellarator diagnostic.
     """
 
-    particle: plasmapy.particles.Particle
+    particle: particle_class.Particle
     number_density: Optional[u.Quantity] = None
     temperature: Optional[u.Quantity] = None
     pressure: Optional[u.Quantity] = None
