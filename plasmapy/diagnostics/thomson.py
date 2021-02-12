@@ -6,6 +6,7 @@ part of the diagnostics package.
 __all__ = [
     "spectral_density",
     "thomson_model",
+    "mc_error",
 ]
 
 import astropy.constants as const
@@ -13,6 +14,7 @@ import astropy.units as u
 import numpy as np
 import warnings
 
+from collections import namedtuple
 from lmfit import Model
 from typing import List, Tuple, Union
 
@@ -21,14 +23,19 @@ from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
+# Define some constants
+C = const.c.si  # speed of light
+
+
 # TODO: interface for inputting a multi-species configuration could be
 # simplified using the plasmapy.classes.plasma_base class if that class
 # included ion and electron drift velocities and information about the ion
 # atomic species.
 
 
-# Define some constants
-C = const.c.si  # speed of light
+# TODO: If we can make this object pickle-able then we can set
+# workers=-1 as a kw to differential_evolution to parallelize execution for fitting!
+# The probem is a lambda function used in the Particle class...
 
 
 @validate_quantities(
@@ -427,7 +434,7 @@ def _params_to_array(params, prefix, vector=False):
 # ***************************************************************************
 
 
-def _thomson_model(wavelengths, settings, **params):
+def _thomson_model(wavelengths, settings=None, **params):
     """
     lmfit Model function for fitting Thomson spectra
 
@@ -547,12 +554,21 @@ def thomson_model(wavelengths, settings, params):
     if "electron_vdir" not in skeys:
         settings["electron_vdir"] = None
 
+    if "ion_vdir" not in skeys:
+        settings["ion_vdir"] = None
+
     # Fill any missing required parameters
     if "efract_0" not in pkeys:
         params.add("efract_0", value=1.0, vary=False)
 
+    if "ifract_0" not in pkeys:
+        params.add("ifract_0", value=1.0, vary=False)
+
     if "electron_speed" not in pkeys:
         params.add("electron_speed_0", value=0.0, vary=False)
+
+    if "ion_speed" not in pkeys:
+        params.add("ion_speed_0", value=0.0, vary=False)
 
     # Automatically add an expression to the last efract parameter to
     # indicate that it depends on the others (so they sum to 1.0)
@@ -570,16 +586,136 @@ def thomson_model(wavelengths, settings, params):
         nums.insert(0, "1.0")
         params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
 
-    # Encode the fixed settings in the model by lambifying the fit function
-    # This new model_fcn now has the setting parameters embedded for subsequent
-    # calls
-    model_fcn = lambda wavelengths, **params: _thomson_model(
-        wavelengths, settings, **params
-    )
-
     # Create a lmfit.Model
     # nan_policy='omit' automatically ignores NaN values in data, allowing those
     # to be used to represnt regions of missing data
-    model = Model(model_fcn, independent_vars=["wavelengths"], nan_policy="omit")
+    # the "settings" dict is an additional kwarg that will be passed to the model function on every call
+    model = Model(
+        _thomson_model,
+        independent_vars=["wavelengths"],
+        nan_policy="omit",
+        settings=settings,
+    )
 
     return model
+
+
+def mc_error(
+    wavelengths,
+    data,
+    model,
+    result,
+    nsamples=1000,
+    chisqr_cutoff=0.05,
+    max_iter=15,
+    verbose=False,
+):
+
+    # Create a mask that sets NaN => 0
+    not_nan = np.argwhere(np.logical_not(np.isnan(data)))
+    data = data[not_nan]
+
+    # Estimate the degrees of freedom (non-trivial datapoints)
+    # This allows calculation of reduced chi2, without which the chisq_cutoff
+    # appropriate will change with the length of the data sample.
+    DOF = np.sum(np.where(data > 0.01, 1, 0))
+
+    # Get the best-fit parameters
+    params = result.init_params
+    best_chisqr = result.redchi
+
+    if best_chisqr > chisqr_cutoff:
+        raise ValueError("Best fit chisqr > chisqr_cutoff. That won't work!")
+
+    # Find all of the free parameters in params, add to a dict
+    free_param_keys = []
+    for p in list(params.keys()):
+        if params[p].vary:
+            free_param_keys.append(p)
+
+    # Create a dictionary of ranges to explore
+    ranges = {}
+    Range = namedtuple("Range", ["min", "max", "center", "init_range"])
+    for p in free_param_keys:
+        min_val = params[p].min
+        max_val = params[p].max
+        center_val = result.best_values[p]
+        init_range = 0.5 * (max_val - min_val)
+        ranges[p] = Range(
+            min=min_val, max=max_val, center=center_val, init_range=init_range
+        )
+
+    iteration = 0
+    range_mult = 1
+    free_params = {}
+
+    final_nsamples = nsamples
+    quick_samples = np.min([nsamples, 100])
+    nsamples = quick_samples
+
+    while iteration < max_iter:
+        iteration += 1
+
+        if verbose:
+            print(f"Iteration: {iteration}, Nsamples: {nsamples}")
+
+        # Create Monte-Carlo distributions of values for the free params
+        for p in free_param_keys:
+            r = ranges[p]
+            lower = np.clip(r.center - range_mult * r.init_range, r.min, r.max)
+            upper = np.clip(r.center + range_mult * r.init_range, r.min, r.max)
+
+            # print(f"{p}-bounds: [{lower},{upper}]")
+
+            free_params[p] = np.random.uniform(low=lower, high=upper, size=nsamples)
+
+        # Create a list of dicts that can be used as keywords to override params
+        changed_params = []
+        for i in range(nsamples):
+            changed_params.append({k: v[i] for (k, v) in free_params.items()})
+
+        chisq = np.zeros(nsamples)
+        for i in range(nsamples):
+            # Evaluate the model at the parameters, normalize the result then
+            # calculate the Chi2 against the data
+            evaluated = model.eval(params, **changed_params[i], wavelengths=wavelengths)
+            evaluated *= 1 / np.nanmax(evaluated[not_nan])
+
+            chisq[i] = np.sum((evaluated[not_nan] - data) ** 2 / data) / DOF
+
+        # Find all samples that are within the chisq cutoff
+        ind = np.argwhere(chisq < chisqr_cutoff)
+
+        fract_in = len(ind) / nsamples
+
+        if verbose:
+            print(f"Min chi2, Max chi2: {np.min(chisq)}, {np.max(chisq)}")
+            print(f"Fract in: {fract_in}")
+
+        # If all the chi2 are too big, reduce the range multiplier
+        if fract_in < 0.3:
+            # print("Decreasing range")
+            range_mult *= 0.6
+            nsamples = quick_samples
+        # If all the chi2 are too small, increase the range multiplier
+        elif fract_in > 0.7:
+            # print("Increasing range")
+            range_mult *= 1.5
+            nsamples = quick_samples
+        else:
+            if nsamples == final_nsamples:
+                # print(f"Terminating with {len(ind)} inside bounds")
+                break
+            else:
+                # Repeat one more time, now with the total number of samples
+                nsamples = final_nsamples
+
+    if iteration >= max_iter:
+        print("WARNING: did not finish properly!")
+
+    # Calculate the min and max values for each parameter that satisfy the chi2 test
+    for p in list(free_params.keys()):
+        v = free_params[p][ind]
+        free_params[p] = (np.min(v), np.max(v))
+
+    return free_params

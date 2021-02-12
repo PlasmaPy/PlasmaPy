@@ -374,28 +374,83 @@ def fit_thomson(
     if hasattr(data, "unit"):
         data = data.value
     # Normalize the data
-    data = data / np.max(data)
+    data = data / np.nanmax(data)
 
     # Create the model
     model = thomson.thomson_model(wavelengths, settings, params)
 
+    fit_kws = {}
     # Conduct the fit
     result = model.fit(
-        data, params, wavelengths=wavelengths, method=fit_method, max_nfev=max_iter
+        data,
+        params,
+        wavelengths=wavelengths,
+        method=fit_method,
+        max_nfev=max_iter,
+        fit_kws=fit_kws,
     )
 
     print(result.values)
 
     print(result.chisqr)
 
-    plt.plot(wavelengths, data)
-    plt.plot(wavelengths, result.best_fit)
+    not_nan = np.argwhere(np.logical_not(np.isnan(data)))
+
+    print(f"Num nans: {wavelengths.size - len(not_nan)}")
+
+    params = result.init_params
+
+    best_fit = model.eval(params, wavelengths=wavelengths, **result.best_values)
+    best_fit *= 1 / np.nanmax(best_fit[not_nan])
+
+    # MY chisquare estimate
+    my_residual = best_fit[not_nan] - data[not_nan]
+    mychisqr = np.sum((my_residual) ** 2 / data[not_nan])
+
+    est_dof = np.sum(np.where(data[not_nan] > 0.01, 1, 0))
+
+    print(f"Est. number of DOF: {est_dof}")
+
+    print(f"My chisqr: {mychisqr/est_dof}")
+    plt.title(f"chi2 = {result.chisqr:.3f}")
+
+    plt.plot(wavelengths, data, label="data")
+    plt.plot(wavelengths[not_nan], best_fit[not_nan], label="best fit")
+
+    plt.plot(wavelengths[not_nan], result.residual, label="lmfit residual")
+    plt.plot(wavelengths[not_nan], my_residual, label="my residual")
+
+    sigmas = thomson.mc_error(
+        wavelengths, data, model, result, verbose=True, chisqr_cutoff=0.02, nsamples=200
+    )
+
+    print(sigmas)
+
+    floor_fit_params = {}
+    ceiling_fit_params = {}
+    for k in list(sigmas.keys()):
+        floor = sigmas[k][0]
+        ceiling = sigmas[k][1]
+        floor_fit_params[k] = floor
+        ceiling_fit_params[k] = ceiling
+        print(f"{k} between {floor:.2e} and {ceiling:.2e}")
+
+    floor_fit = model.eval(params, wavelengths=wavelengths, **floor_fit_params)
+    floor_fit *= 1 / np.nanmax(floor_fit[not_nan])
+
+    ceiling_fit = model.eval(params, wavelengths=wavelengths, **ceiling_fit_params)
+    ceiling_fit *= 1 / np.nanmax(ceiling_fit[not_nan])
+
+    plt.plot(wavelengths[not_nan], floor_fit[not_nan], label="floor fit")
+    plt.plot(wavelengths[not_nan], ceiling_fit[not_nan], label="ceiling fit")
+
+    plt.xlim(525, 540)
+    plt.ylim(-0.5, 1.1)
+    plt.legend()
     plt.show()
 
-    # https://lmfit.github.io/lmfit-py/model.html
 
-
-def test_fit_thomson():
+def test_fit_thomson_iaw():
 
     # Generate theoretical spectrum
     probe_wavelength = 532 * u.nm
@@ -429,6 +484,9 @@ def test_fit_thomson():
         scatter_vec=scatter_vec,
     )
 
+    data = Skw.value
+    data *= 1 + np.random.normal(loc=0, scale=0.1, size=wavelengths.size)
+
     settings = {}
     settings["probe_wavelength"] = probe_wavelength
     settings["probe_vec"] = probe_vec
@@ -439,16 +497,36 @@ def test_fit_thomson():
     params = Parameters()
     params.add("n", value=n.value, vary=False)
     params.add("Te_0", value=10, vary=False, min=5, max=20)
-    params.add("Ti_0", value=10, vary=True, min=5, max=70)
-    params.add("Ti_1", value=10, vary=True, min=5, max=70)
-    params.add("ifract_0", value=0.5, vary=True, min=0.1, max=0.9)
+    params.add("Ti_0", value=20, vary=True, min=5, max=70)
+    params.add("Ti_1", value=50, vary=True, min=5, max=70)
+    params.add("ifract_0", value=0.3, vary=False, min=0.2, max=0.8)
     params.add(
-        "ifract_1", value=0.5, vary=True, min=0.1, max=0.9, expr="1.0 - ifract_0"
+        "ifract_1", value=0.7, vary=False, min=0.2, max=0.8, expr="1.0 - ifract_0"
     )
     params.add("ion_speed_0", value=0, vary=False)
-    params.add("ion_speed_1", value=0, vary=True, min=0, max=1e6)
+    params.add("ion_speed_1", value=2e5, vary=True, min=0, max=1e6)
 
-    # TEST TWO POPULATIONS
+    fit_thomson(wavelengths, data, settings, params)
+
+
+def test_fit_thomson_epw():
+
+    # Generate theoretical spectrum
+    probe_wavelength = 532 * u.nm
+    wavelengths = (
+        np.linspace(probe_wavelength.value - 30, probe_wavelength.value + 30, num=1200)
+        * u.nm
+    )
+
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(63)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    n = 2e17 * u.cm ** -3
+    ion_species = ["H+"]
+    Te = 10 * u.eV
+    Ti = np.array([20]) * u.eV
+
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
@@ -456,15 +534,79 @@ def test_fit_thomson():
         Te,
         Ti,
         ion_species=ion_species,
-        ifract=ifract,
-        electron_vel=electron_vel,
-        ion_vel=ion_vel,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
     )
 
     data = Skw.value
-    data += np.random.rand(data.size) * np.max(data) * 0.1
+
+    notch_range = (531, 533)
+    x0 = np.argmin(np.abs(wavelengths.value - notch_range[0]))
+    x1 = np.argmin(np.abs(wavelengths.value - notch_range[1]))
+    data[x0:x1] = np.nan
+
+    data *= 1 + np.random.normal(loc=0, scale=0.1, size=wavelengths.size)
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ion_species
+
+    params = Parameters()
+    params.add("n", value=n.value, vary=True, min=8e16, max=6e17)
+    params.add("Te_0", value=10, vary=True, min=5, max=20)
+    params.add("Ti_0", value=20, vary=False, min=5, max=70)
+
+    fit_thomson(wavelengths, data, settings, params)
+
+
+def test_fit_thomson_noncollective():
+
+    # Generate theoretical spectrum
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(63)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    wavelengths = (
+        np.linspace(probe_wavelength.value - 50, probe_wavelength.value + 50, num=500)
+        * u.nm
+    )
+
+    n = 5e15 * u.cm ** -3
+    Te = 5 * u.eV
+    Ti = np.array([1]) * u.eV
+    ion_species = ["H+"]
+
+    alpha, Skw = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+
+    data = Skw.value
+    data *= 1 + np.random.normal(loc=0, scale=0.05, size=wavelengths.size)
+
+    plt.plot(wavelengths, data)
+    plt.xlim(515, 545)
+    plt.show()
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ion_species
+
+    params = Parameters()
+    params.add("n", value=8e15, vary=True, min=1e14, max=2e16)
+    params.add("Te_0", value=1, vary=True, min=0.1, max=20)
+    params.add("Ti_0", value=1, vary=False)
 
     fit_thomson(wavelengths, data, settings, params)
 
@@ -497,7 +639,9 @@ def test_param_to_array_fcns():
 
 if __name__ == "__main__":
     pass
-    # test_fit_thomson()
+    test_fit_thomson_noncollective()
+    # test_fit_thomson_epw()
+    # test_fit_thomson_iaw()
     # test_collective_spectrum()
     # test_non_collective_spectrum()
     # test_different_input_types()
