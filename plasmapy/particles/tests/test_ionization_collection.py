@@ -217,13 +217,10 @@ class TestIonizationStateCollection:
         if isinstance(inputs, dict):
             input_keys = list(tests[test_name]["inputs"].keys())
 
-            input_keys = sorted(
-                input_keys,
-                key=lambda k: (
-                    atomic_number(k),
-                    mass_number(k) if Particle(k).isotope else 0,
-                ),
-            )
+            def sort_key(k):
+                return atomic_number(k), mass_number(k) if Particle(k).isotope else 0
+
+            input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys):
                 expected = tests[test_name]["inputs"][input_key]
