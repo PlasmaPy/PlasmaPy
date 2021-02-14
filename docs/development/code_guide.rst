@@ -49,9 +49,6 @@ Coding Style
 * Use ``Optional[type]`` for type hinted keyword arguments with a
   default value of ``None``.
 
-* Avoid using `lambda` to define functions, as this can prevent an
-  object from being pickled or serialized.
-
 * There should be at most one pun per 1284 lines of code.
 
 pre-commit hooks
