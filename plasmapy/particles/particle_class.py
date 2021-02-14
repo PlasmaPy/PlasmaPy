@@ -405,8 +405,7 @@ class Particle(AbstractParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-        # For Python 3.10, change `type(None)` to `types.NoneType`
-        self._attributes = defaultdict(type(None))
+        self._attributes = defaultdict(lambda: None)
         attributes = self._attributes
 
         # Use this set to keep track of particle categories such as

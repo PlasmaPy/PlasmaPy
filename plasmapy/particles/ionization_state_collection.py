@@ -23,10 +23,6 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def atomic_number_and_mass_number(p: Particle):
-    return (p.atomic_number, p.mass_number if p.isotope else 0)
-
-
 class IonizationStateCollection:
     """
     Describe the ionization state distributions of multiple elements
@@ -166,11 +162,8 @@ class IonizationStateCollection:
                     )
                 set_abundances = False
 
-        def return_none():
-            return None
-
         try:
-            self._pars = collections.defaultdict(return_none)
+            self._pars = collections.defaultdict(lambda: None)
             self.T_e = T_e
             self.n0 = n0
             self.tol = tol
@@ -533,14 +526,12 @@ class IonizationStateCollection:
             # mass number since we will often want to plot and analyze
             # things and this is the most sensible order.
 
-            def _sort_entries_by_atomic_and_mass_numbers(k):
-                return (
+            sorted_keys = sorted(
+                original_keys,
+                key=lambda k: (
                     particles[k].atomic_number,
                     particles[k].mass_number if particles[k].isotope else 0,
-                )
-
-            sorted_keys = sorted(
-                original_keys, key=_sort_entries_by_atomic_and_mass_numbers
+                ),
             )
 
             _elements_and_isotopes = []
@@ -637,8 +628,9 @@ class IonizationStateCollection:
                     "Invalid inputs to IonizationStateCollection."
                 ) from exc
 
-            _particle_instances.sort(key=atomic_number_and_mass_number)
-
+            _particle_instances.sort(
+                key=lambda p: (p.atomic_number, p.mass_number if p.isotope else 0)
+            )
             _elements_and_isotopes = [
                 particle.symbol for particle in _particle_instances
             ]
