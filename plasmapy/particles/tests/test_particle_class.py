@@ -977,6 +977,8 @@ customized_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
+    (CustomParticle, {"symbol": 1}, TypeError),
+    (DimensionlessParticle, {"symbol": 2}, TypeError),
 ]
 
 
