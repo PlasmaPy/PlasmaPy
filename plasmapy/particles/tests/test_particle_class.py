@@ -977,8 +977,6 @@ customized_particle_errors = [
     (CustomParticle, {"mass": np.complex128(5 + 2j) * u.kg}, InvalidParticleError),
     (CustomParticle, {"charge": "not a charge"}, InvalidParticleError),
     (CustomParticle, {"charge": "5.0 km"}, InvalidParticleError),
-    (CustomParticle, {"symbol": 1}, TypeError),
-    (DimensionlessParticle, {"symbol": 2}, TypeError),
 ]
 
 
@@ -1021,6 +1019,15 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
             f"from_str: {from_str}"
             f"from_repr: {from_repr}"
         )
+
+
+@pytest.mark.parametrize("cls", [CustomParticle, DimensionlessParticle])
+@pytest.mark.parametrize("not_a_str", [1, u.kg])
+def test_typeerror_redefining_symbol(cls, not_a_str):
+    """Test that the symbol attribute cannot be set to something besides a string"""
+    instance = cls()
+    with pytest.raises(TypeError):
+        instance.symbol = not_a_str
 
 
 custom_particles_from_json_tests = [
