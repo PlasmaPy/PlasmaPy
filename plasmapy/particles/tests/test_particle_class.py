@@ -928,6 +928,20 @@ def test_customized_particles(cls, kwargs, attr, expected):
         )
 
 
+@pytest.mark.parametrize(
+    "cls, symbol, expected",
+    [
+        (CustomParticle, None, "CustomParticle(mass=nan kg, charge=nan C)"),
+        (CustomParticle, "η", "η"),
+        (DimensionlessParticle, None, "DimensionlessParticle(mass=nan, charge=nan)"),
+        (DimensionlessParticle, "η", "η"),
+    ],
+)
+def test_custom_particle_symbol(cls, symbol, expected):
+    instance = cls(symbol=symbol)
+    assert instance.symbol == expected
+
+
 customized_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
@@ -1010,32 +1024,33 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 custom_particles_from_json_tests = [
     (
         DimensionlessParticle,
-        {"mass": 5.2, "charge": 6.3},
+        {"mass": 5.2, "charge": 6.3, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+            "kwargs": {"mass": 5.2, "charge": 6.3, "symbol": "ξ"}}}}',
         None,
     ),
     (
         DimensionlessParticle,
-        {"mass": 5.2},
+        {"mass": 5.2, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": NaN}}}}',
+            "kwargs": {"mass": 5.2, "charge": NaN, "symbol": "ξ"}}}}',
         None,
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", '
+        '"symbol": "ξ"}}}}',
         None,
     ),
     (
@@ -1256,21 +1271,21 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", "symbol": "ξ"}}}}',
     ),
     (
         DimensionlessParticle,
-        {"mass": 5.2, "charge": 6.3},
+        {"mass": 5.2, "charge": 6.3, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle",\
         "module": "plasmapy.particles.particle_class",\
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+            "kwargs": {"mass": 5.2, "charge": 6.3, "symbol": "ξ"}}}}',
     ),
 ]
 
