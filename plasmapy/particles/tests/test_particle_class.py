@@ -3,6 +3,8 @@ import inspect
 import io
 import json
 import numpy as np
+import os
+import pickle
 import pytest
 
 from astropy import constants as const
@@ -1318,3 +1320,27 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
         f"expected_repr = {expected_repr['__init__']}.\n\n"
         f"json_repr: {test_dict['__init__']}"
     )
+
+
+class TestPickledParticles:
+    """
+    Test that `Particle`, `CustomParticle`, and `DimensionlessParticle`
+    instances can be pickled.
+    """
+
+    filename = "pickled_particle.p"
+
+    @pytest.mark.parametrize(
+        "particle",
+        [
+            pytest.param(Particle("n"), marks=pytest.mark.xfail(reason="issue #1011")),
+            CustomParticle(mass=5e-26 * u.kg),
+            DimensionlessParticle(mass=1.2),
+        ],
+    )
+    def test_pickling_particles(self, particle):
+        with open(self.filename, "wb") as pickle_file:
+            pickle.dump(particle, pickle_file)
+
+    def teardown_method(self):
+        os.remove(self.filename)
