@@ -19,8 +19,6 @@ class TestPickling:
     Test that different objects in `plasmapy.particles` can be pickled.
     """
 
-    filename = "pickled_particles.p"
-
     xfail = pytest.mark.xfail(reason="see issue #1011")
 
     @pytest.mark.parametrize(
@@ -34,9 +32,7 @@ class TestPickling:
             pytest.param(IonizationStateCollection({"H": [0.5, 0.5]}), marks=xfail),
         ],
     )
-    def test_pickling_particles(self, instance):
-        with open(self.filename, "wb") as pickle_file:
+    def test_pickling_particles(self, instance, tmp_path):
+        filename = tmp_path / "pickled_particles.p"
+        with open(filename, "wb") as pickle_file:
             pickle.dump(instance, pickle_file)
-
-    def teardown_method(self):
-        os.remove(self.filename)
