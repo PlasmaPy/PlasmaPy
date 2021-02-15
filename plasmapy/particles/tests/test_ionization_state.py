@@ -1,6 +1,8 @@
 import astropy.units as u
 import collections
 import numpy as np
+import os
+import pickle
 import pytest
 
 from plasmapy.particles import (
@@ -705,3 +707,27 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_kappa_isinf_when_not_set(self):
         assert np.isinf(self.instance.kappa)
+
+
+class TestPickling:
+    """
+    Test that `IonicFraction` and `IonizationState` can be pickled.
+    """
+
+    filename = "pickled_ionstates.p"
+    ionfrac = IonicFraction("p+", 0.1, 1e9 * u.m ** -3)
+    ionstate = IonizationState("H", [0.5, 0.5])
+
+    @pytest.mark.parametrize(
+        "instance",
+        [
+            pytest.param(ionfrac, marks=pytest.mark.xfail(reason="issue #1011")),
+            pytest.param(ionstate, marks=pytest.mark.xfail(reason="issue #1011")),
+        ],
+    )
+    def test_pickling_particles(self, instance):
+        with open(self.filename, "wb") as pickle_file:
+            pickle.dump(instance, pickle_file)
+
+    def teardown_method(self):
+        os.remove(self.filename)
