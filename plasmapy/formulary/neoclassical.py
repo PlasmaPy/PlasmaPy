@@ -1,5 +1,10 @@
 import numpy as np
 
+from astropy import constants
+from typing import List
+
+from plasmapy.particles.species import Species
+
 
 def xab_ratio(a, b):
     return b.thermal_speed() / a.thermal_speed()
@@ -47,3 +52,46 @@ def N_matrix(species_a, species_b):
     )
     N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
     return N
+
+
+from plasmapy.formulary.collisions import Coulomb_logarithm
+
+CL = lambda ai, bj: Coulomb_logarithm(
+    bj.temperature, bj.number_density, (ai.particle, bj.particle)
+)
+
+
+def collision_frequency_ai_bj(ai, bj):
+    return (
+        4
+        / (3 * np.sqrt(np.pi))
+        * (
+            4
+            * np.pi
+            * ai.particle.charge ** 2
+            * bj.particle.charge ** 2
+            * bj.number_density
+            * CL(ai, bj)
+        )
+        / (
+            (4 * np.pi * constants.eps0) ** 2
+            * ai.particle.mass ** 2
+            * ai.thermal_speed() ** 3
+        )
+    ).si
+
+
+def effective_momentum_relaxation_rate(
+    charge_states_a: List[Species], charge_states_b: List[Species]
+):
+    def contributions():
+        for ai in charge_states_a:
+            for bj in charge_states_b:
+                # Eq. A4, Houlberg_1997
+                # Eq. A3, Houlberg_1997
+                yield ai.mass_density() * collision_frequency_ai_bj(ai, bj)
+
+    return sum(contributions())
+
+
+# effective_momentum_relaxation_rate([hydrogen], [carbon])
