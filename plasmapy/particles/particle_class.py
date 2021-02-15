@@ -163,23 +163,6 @@ class AbstractParticle(ABC):
         }
         return json_dictionary
 
-    @property
-    def symbol(self) -> str:
-        """
-        Return the symbol assigned to the particle.  If no symbol was
-        defined, then return the value given by `repr`.
-        """
-        return self._symbol
-
-    @symbol.setter
-    def symbol(self, new_symbol: str):
-        if new_symbol is None:
-            self._symbol = repr(self)
-        elif isinstance(new_symbol, str):
-            self._symbol = new_symbol
-        else:
-            raise TypeError("symbol needs to be a string.")
-
     def __bool__(self):
         """
         Raise an `~plasmapy.particles.exceptions.ParticleError` because particles
@@ -265,6 +248,11 @@ class Particle(AbstractParticle):
     `~plasmapy.particles.exceptions.ParticleError`
         Raised for attempts at converting a
         `~plasmapy.particles.Particle` object to a `bool`.
+
+    See Also
+    --------
+    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.DimensionlessParticle
 
     Examples
     --------
@@ -1724,10 +1712,16 @@ class DimensionlessParticle(AbstractParticle):
         The mass of the dimensionless particle.  Defaults to `numpy.nan`.
 
     charge : real number, keyword-only, optional
-        The electric charge of the dimensionless particle.
+        The electric charge of the dimensionless particle.  Defaults to
+        `numpy.nan`.
 
     symbol : str, optional
         The symbol to be assigned to the dimensionless particle.
+
+    See Also
+    --------
+    ~plasmapy.particles.Particle
+    ~plasmapy.particles.CustomParticle
 
     Notes
     -----
@@ -1868,6 +1862,23 @@ class DimensionlessParticle(AbstractParticle):
                 "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
+    @property
+    def symbol(self) -> str:
+        """
+        Return the symbol assigned to the dimensionless particle.  If no
+        symbol was defined, then return the value given by `repr`.
+        """
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, new_symbol: str):
+        if new_symbol is None:
+            self._symbol = repr(self)
+        elif isinstance(new_symbol, str):
+            self._symbol = new_symbol
+        else:
+            raise TypeError("symbol needs to be a string.")
+
 
 class CustomParticle(AbstractParticle):
     """
@@ -1910,11 +1921,13 @@ class CustomParticle(AbstractParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
+    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
     >>> custom_particle.mass
     <Quantity 1.5e-26 kg>
     >>> custom_particle.charge
     <Quantity -1.60217...e-19 C>
+    >>> custom_particle.symbol
+    'Ξ'
     """
 
     def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol=None):
@@ -2050,6 +2063,37 @@ class CustomParticle(AbstractParticle):
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
                 ) from exc
+
+    @property
+    def mass_energy(self) -> u.J:
+        """
+        Return the mass energy of the custom particle.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> custom_particle = CustomParticle(mass = 2e-25 * u.kg, charge = 0 * u.C)
+        >>> custom_particle.mass_energy.to('GeV')
+        <Quantity 112.19177208 GeV>
+        """
+        return (self.mass * const.c ** 2).to(u.J)
+
+    @property
+    def symbol(self) -> str:
+        """
+        Return the symbol assigned to the custom particle.  If no symbol
+        was defined, then return the value given by `repr`.
+        """
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, new_symbol: str):
+        if new_symbol is None:
+            self._symbol = repr(self)
+        elif isinstance(new_symbol, str):
+            self._symbol = new_symbol
+        else:
+            raise TypeError("symbol needs to be a string.")
 
 
 # TODO: Describe valid particle representations in docstring of particle_like
