@@ -23,7 +23,7 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def atomic_number_and_mass_number(p: Particle):
+def _atomic_number_and_mass_number(p: Particle):
     return (p.atomic_number, p.mass_number if p.isotope else 0)
 
 
@@ -637,7 +637,7 @@ class IonizationStateCollection:
                     "Invalid inputs to IonizationStateCollection."
                 ) from exc
 
-            _particle_instances.sort(key=atomic_number_and_mass_number)
+            _particle_instances.sort(key=_atomic_number_and_mass_number)
 
             _elements_and_isotopes = [
                 particle.symbol for particle in _particle_instances

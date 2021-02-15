@@ -992,13 +992,13 @@ class CheckUnits(CheckBase):
 
         normalized = []
 
-        def return_arg(x):
+        def return_argument(x):
             return x
 
         for i, equiv in enumerate(equivalencies):
             if len(equiv) == 2:
                 from_unit, to_unit = equiv
-                a = b = return_arg
+                a = b = return_argument
             elif len(equiv) == 3:
                 from_unit, to_unit, a = equiv
                 b = a
