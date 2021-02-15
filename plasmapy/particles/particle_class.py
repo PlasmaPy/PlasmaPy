@@ -164,9 +164,21 @@ class AbstractParticle(ABC):
         return json_dictionary
 
     @property
-    def symbol(self):
-        """Return a string representation of the particle."""
-        return self.__repr__()
+    def symbol(self) -> str:
+        """
+        Return the symbol assigned to the particle.  If no symbol was
+        defined, then return the value given by `repr`.
+        """
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, new_symbol: str):
+        if new_symbol is None:
+            self._symbol = repr(self)
+        elif isinstance(new_symbol, str):
+            self._symbol = new_symbol
+        else:
+            raise TypeError("symbol needs to be a string.")
 
     def __bool__(self):
         """
@@ -1787,23 +1799,6 @@ class DimensionlessParticle(AbstractParticle):
         return new_obj
 
     @property
-    def symbol(self) -> str:
-        """
-        Return the symbol assigned to the dimensionless particle.  If no
-        symbol was defined, then return the value given by `repr`
-        """
-        return self._symbol
-
-    @symbol.setter
-    def symbol(self, new_symbol: str):
-        if new_symbol is None:
-            self._symbol = repr(self)
-        elif isinstance(new_symbol, str):
-            self._symbol = new_symbol
-        else:
-            raise TypeError("symbol needs to be a string.")
-
-    @property
     def json_dict(self) -> dict:
         """
         A `json` friendly dictionary representation of the particle. (see
@@ -2055,23 +2050,6 @@ class CustomParticle(AbstractParticle):
                 raise u.UnitsError(
                     "The mass of a custom particle must have units of mass."
                 ) from exc
-
-    @property
-    def symbol(self) -> str:
-        """
-        Return the symbol assigned to the custom. particle.  If no symbol
-        was defined, then return the value given by `repr`.
-        """
-        return self._symbol
-
-    @symbol.setter
-    def symbol(self, new_symbol: str):
-        if new_symbol is None:
-            self._symbol = repr(self)
-        elif isinstance(new_symbol, str):
-            self._symbol = new_symbol
-        else:
-            raise TypeError("symbol needs to be a string.")
 
 
 # TODO: Describe valid particle representations in docstring of particle_like
