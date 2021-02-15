@@ -95,6 +95,7 @@ class CheckValues(CheckBase):
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
@@ -133,6 +134,7 @@ class CheckValues(CheckBase):
         "can_be_inf": True,
         "can_be_nan": True,
         "none_shall_pass": False,
+        "can_be_zero": True,
     }
 
     def __init__(
@@ -313,12 +315,8 @@ class CheckValues(CheckBase):
                     raise ValueError(f"{valueerror_msg} Nones.")
 
             elif ckey == "can_be_negative":
-                if not arg_checks[ckey]:
-                    # Allow NaNs through without raising a warning
-                    with np.errstate(invalid="ignore"):
-                        isneg = np.any(arg < 0)
-                    if isneg:
-                        raise ValueError(f"{valueerror_msg} negative numbers.")
+                if not arg_checks[ckey] and np.any(arg < 0):
+                    raise ValueError(f"{valueerror_msg} negative numbers.")
 
             elif ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
@@ -331,6 +329,10 @@ class CheckValues(CheckBase):
             elif ckey == "can_be_nan":
                 if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
                     raise ValueError(f"{valueerror_msg} NaNs.")
+
+            elif ckey == "can_be_zero":
+                if not arg_checks[ckey] and np.any(arg == 0):
+                    raise ValueError(f"{valueerror_msg} zeros.")
 
 
 class CheckUnits(CheckBase):
@@ -1212,6 +1214,7 @@ def check_values(
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
