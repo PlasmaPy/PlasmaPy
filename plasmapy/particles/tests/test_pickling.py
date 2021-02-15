@@ -36,3 +36,8 @@ class TestPickling:
         filename = tmp_path / "pickled_particles.p"
         with open(filename, "wb") as pickle_file:
             pickle.dump(instance, pickle_file)
+
+        with open(filename, "r") as pickle_file:
+            loaded_particle = pickle.load(pickle_file)
+
+        assert loaded_particle == loaded_particle
