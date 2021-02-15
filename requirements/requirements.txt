@@ -8,6 +8,7 @@ matplotlib >= 2.0
 mpmath >= 1.0.0
 numpy >= 1.18.1
 pandas >= 1.0.0
+pytest-regressions
 scipy >= 1.2
 setuptools >= 41.2
 xarray  >= 0.14.0
