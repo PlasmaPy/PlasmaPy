@@ -2,6 +2,7 @@ import astropy.units as u
 import pytest
 
 from plasmapy.formulary.neoclassical import (
+    charge_weighting_factor,
     collision_frequency_ai_bj,
     effective_momentum_relaxation_rate,
     M_matrix,
@@ -37,3 +38,8 @@ def test_number(function, num_regression):
 def test_number_between_ionization_states(function, num_regression):
     data = function(hydrogen_states, carbon_states)
     num_regression.check({function.__name__: data.si.value})
+
+
+def test_weighted_ionization_factor(num_regression):
+    data = charge_weighting_factor(0, carbon_states)
+    num_regression.check({"xi": data.si.value})

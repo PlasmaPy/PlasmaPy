@@ -94,4 +94,13 @@ def effective_momentum_relaxation_rate(
     return sum(contributions())
 
 
-# effective_momentum_relaxation_rate([hydrogen], [carbon])
+def charge_weighting_factor(i, a_states):
+    """Charge weighting factor; Houlberg_1997, eq.11
+
+    TODO Is this not acctually Z_eff, or some contribution to it? Should that not be a method of IonizationState?
+    """
+    ai = a_states[i]
+    denominator = sum(
+        state.number_density * state.particle.integer_charge ** 2 for state in a_states
+    )
+    return ai.number_density * ai.particle.integer_charge ** 2 / denominator
