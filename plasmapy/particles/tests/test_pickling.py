@@ -24,7 +24,7 @@ class TestPickling:
     @pytest.mark.parametrize(
         "instance",
         [
-            CustomParticle(mass=1 * u.kg),
+            CustomParticle(mass=1 * u.kg, charge=1 * u.C),
             DimensionlessParticle(mass=5, charge=5),
             pytest.param(Particle("p+"), marks=xfail),
             pytest.param(IonicFraction("p+", 0.1, 1e9 * u.m ** -3), marks=xfail),
@@ -32,12 +32,16 @@ class TestPickling:
             pytest.param(IonizationStateCollection({"H": [0.5, 0.5]}), marks=xfail),
         ],
     )
-    def test_pickling_particles(self, instance, tmp_path):
+    def test_pickling(self, instance, tmp_path):
+        """
+        Test that different objects contained within `plasmapy.particles`
+        can be pickled and unpickled.
+        """
         filename = tmp_path / "pickled_particles.p"
         with open(filename, "wb") as pickle_file:
             pickle.dump(instance, pickle_file)
 
-        with open(filename, "r") as pickle_file:
+        with open(filename, "rb") as pickle_file:
             loaded_particle = pickle.load(pickle_file)
 
-        assert loaded_particle == loaded_particle
+        assert str(instance) == str(loaded_particle)
