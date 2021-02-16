@@ -166,11 +166,8 @@ class IonizationStateCollection:
                     )
                 set_abundances = False
 
-        def return_none():
-            return None
-
         try:
-            self._pars = collections.defaultdict(return_none)
+            self._pars = dict()
             self.T_e = T_e
             self.n0 = n0
             self.tol = tol
