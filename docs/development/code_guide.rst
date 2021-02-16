@@ -49,9 +49,8 @@ Coding Style
 * Use ``Optional[type]`` for type hinted keyword arguments with a
   default value of ``None``.
 
-* Avoid using `lambda`.  Anonymous functions created with `lambda`
-  cannot be pickled, and `lambda` notation may be unfamiliar to
-  newcomers to Python.
+* Avoid using `lambda` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
 
 * There should be at most one pun per 1284 lines of code.
 
