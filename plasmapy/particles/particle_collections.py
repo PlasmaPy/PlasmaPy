@@ -34,10 +34,12 @@ class ParticleList(collections.UserList):
     ParticleList([Particle("e-"), Particle("e+")])
 
     """
+
     def _reset_attribute_values(self) -> NoReturn:
         """
-        Delete the cache of attribute values that were stored to prevent
-        them from needing to be recalculated.
+        Delete the cache of attribute values that were stored.
+
+
         """
         self._attribute_values = dict()
 
@@ -81,8 +83,7 @@ class ParticleList(collections.UserList):
         Get the values of a particular attribute from all of the particles.
 
         If a ``unit`` is provided, then this function will return a
-        `~astropy.units.Quantity`
-
+        `~astropy.units.Quantity` in that unit.
         """
 
         if attr in self._attribute_values:
@@ -99,7 +100,6 @@ class ParticleList(collections.UserList):
 
         if unit:
             values = u.Quantity(values)
-
 
         self._attribute_values[attr] = values
 
@@ -141,58 +141,20 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("mass", unit=u.kg)
 
     @property
-    def mass_number(self) -> list:
-        """An array of the mass numbers of the particles."""
-        return self._get_particle_attribute("mass_number", default=0)
+    def mass_energy(self) -> u.J:
+        """
+        An array of the mass energies of the particles in joules.
+
+        If the particle is an isotope or nuclide, return the mass energy
+        of the nucleus only.
+        """
+        return self._get_particle_attribute("mass_energy", unit=u.J)
 
     @property
-    def nuclide_mass(self) -> u.kg:
-        """An array of the nuclide masses of the particles."""
-        return self._get_particle_attribute("nuclide_mass", u.kg)
-
-    @property
-    def particle(self) -> str:
+    def symbols(self) -> List[str]:
         """A list of the symbols of the particles."""
-        return self._get_particle_attribute("particle")
+        return self._get_particle_attribute("symbol")
 
     @property
     def sort(self):
         raise RuntimeError("Unable to sort a ParticleList.")
-
-    @property
-    def spin(self) -> np.ndarray:
-        """An array containing the spins of the particles."""
-        return self._get_particle_attribute("spin", default=np.nan)
-
-    @property
-    def standard_atomic_weight(self):
-        """
-        An array containing the standard atomic weights of the
-        particles.
-        """
-        return self._get_particle_attribute("standard_atomic_weight", unit=u.kg, default=np.nan * u.kg)
-
-    @property
-    def binding_energy(self) -> u.J:
-        """An array of the binding energies of the particles."""
-        return self._get_particle_attribute("binding_energy", unit=u.J, default=np.nan * u.J)
-
-class IonicLevels(ParticleList):
-
-    @particle_input(any_of={"element", "isotope"}, exclude={"ion"})
-    def __init__(self, particle: Particle, Z_min=0, Z_max=None):
-        """
-        Return a `list` that contains `Particle` instances for all of the
-        ionic levels of ``element``, including the neutral level.
-
-        """
-        if Z_max is None:
-            Z_max = particle.atomic_number + 1
-        self.data = [Particle(particle, Z) for Z in range(Z_min, Z_max + 1)]
-        self._reset_attribute_values()
-
-    @property
-    def roman_symbol(self) -> List[str]:
-        """A list containing the particle symbol in Roman notation."""
-        return self._get_particle_attribute("roman_symbol", default_value="N/A")
-

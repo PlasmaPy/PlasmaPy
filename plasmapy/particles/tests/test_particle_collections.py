@@ -1,14 +1,16 @@
 """Tests for particle collections."""
 
+import astropy.units as u
 import pytest
 
-import astropy.units as u
-
-from plasmapy.particles.particle_class import Particle, DimensionlessParticle, CustomParticle
-from plasmapy.particles.particle_list import ParticleList
+from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.exceptions import *
-from plasmapy.particles import electron, proton, alpha, neutron
-
+from plasmapy.particles.particle_class import (
+    CustomParticle,
+    DimensionlessParticle,
+    Particle,
+)
+from plasmapy.particles.particle_collections import ParticleList
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
@@ -25,19 +27,11 @@ particle_list_arguments = [
 ]
 
 numerical_attributes = [
-#    "antiparticle",
-    "baryon_number",
-    "binding_energy",
     "charge",
-    "half_life",
-    "isotopic_abundance",
     "mass",
-    "mass_number",
     "mass_energy",
-    "roman_symbol",
-    "spin",
-    "standard_atomic_weight",
 ]
+
 
 @pytest.mark.parametrize("args", particle_list_arguments)
 def test_particle_list_creation_membership(args):
@@ -62,9 +56,3 @@ def test_particle_list_quantity_attributes(attribute):
     actual = getattr(particle_list, attribute)
     expected = [getattr(particle, attribute) for particle in expected_particles]
     assert u.allclose(actual, expected, equal_nan=True)
-
-
-
-
-
-
