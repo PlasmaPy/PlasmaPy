@@ -151,10 +151,10 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("mass_energy", unit=u.J)
 
     @property
+    def sort(self):
+        raise RuntimeError("Unable to sort a ParticleList.")
+
+    @property
     def symbols(self) -> List[str]:
         """A list of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
-
-    @property
-    def sort(self):
-        raise RuntimeError("Unable to sort a ParticleList.")
