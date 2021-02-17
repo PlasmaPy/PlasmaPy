@@ -24,7 +24,7 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    *particles : `particle-like`
+    *particles : `particle_like`
         A series of particle-like objects.
 
     Examples
@@ -35,16 +35,8 @@ class ParticleList(collections.UserList):
 
     """
 
-    def _reset_attribute_values(self) -> NoReturn:
-        """
-        Delete the cache of attribute values that were stored.
-
-
-        """
-        self._attribute_values = dict()
-
     @staticmethod
-    def _turn_into_particles(particles) -> List[AbstractParticle]:
+    def _get_list_of_particle_like_instances(particles) -> List[AbstractParticle]:
         """"""
         if len(particles) == 1 and isinstance(particles[0], (tuple, list)):
             particles = particles[0]
@@ -69,8 +61,7 @@ class ParticleList(collections.UserList):
         return new_particles
 
     def __init__(self, *particles):
-        self.data = self._turn_into_particles(particles)
-        self._reset_attribute_values()
+        self._data = self._get_list_of_particle_like_instances(particles)
 
     def __repr__(self):
         return self.__str__()
@@ -83,62 +74,55 @@ class ParticleList(collections.UserList):
         Get the values of a particular attribute from all of the particles.
 
         If a ``unit`` is provided, then this function will return a
-        `~astropy.units.Quantity` in that unit.
+        `~astropy.units.Quantity` array with that unit.
         """
-
-        if attr in self._attribute_values:
-            return self._attribute_values[attr]
-
-        values = []
-        for particle in self.data:
-            try:
-                value = getattr(particle, attr)
-            except Exception:
-                value = default
-            finally:
-                values.append(value)
-
+        values = [getattr(particle, attr, default) for particle in self.data]
         if unit:
             values = u.Quantity(values)
-
-        self._attribute_values[attr] = values
-
         return values
 
     @particle_input
     def append(self, particle: Particle):
         """Append a particle to the end of the list."""
         self.data.append(particle)
-        self._reset_attribute_values()
 
     @property
     def charge(self) -> u.C:
         """An array of the electric charges of the particles."""
-        return self._get_particle_attribute("charge", unit=u.C)
+        return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
+
+    @property
+    def data(self) -> List:
+        """
+        A regular `list` containing the particles contained in the
+        `ParticleList` instance.
+
+        The ``data`` attribute should not be modified directly.
+        """
+        return self._data
 
     @property
     def half_life(self) -> u.s:
         """An array of the half-lives of the particles."""
-        return self._get_particle_attribute("half_life", unit=u.s)
+        return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
     @particle_input
     def insert(self, index, particle: Particle):
         """Insert a particle before an index."""
         self.data.insert(index, particle)
-        self._reset_attribute_values()
 
     @property
-    def integer_charge(self):
+    def integer_charge(self) -> np.array:
         """
         An array of the quantized charges of the particles, as multiples
         of the elementary charge.
         """
-        return self._get_particle_attribute("integer_charge", expected_type=float)
+        return np.array(self._get_particle_attribute("integer_charge", default=np.nan))
 
     @property
     def mass(self) -> u.kg:
         """An array of the masses of the particles."""
-        return self._get_particle_attribute("mass", unit=u.kg)
+        return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
     def mass_energy(self) -> u.J:
@@ -148,10 +132,12 @@ class ParticleList(collections.UserList):
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
         """
-        return self._get_particle_attribute("mass_energy", unit=u.J)
+        return self._get_particle_attribute(
+            "mass_energy", unit=u.J, default=np.nan * u.J
+        )
 
-    @property
     def sort(self):
+        # TODO: Enable sorting if a key is provided.
         raise RuntimeError("Unable to sort a ParticleList.")
 
     @property
