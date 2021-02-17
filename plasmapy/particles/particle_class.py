@@ -2022,7 +2022,7 @@ class CustomParticle(AbstractParticle):
                 ) from exc
 
 
-ParticleLike = TypeVar("ParticleLike", str, Integral, Particle, CustomParticle)
+ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
 ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
