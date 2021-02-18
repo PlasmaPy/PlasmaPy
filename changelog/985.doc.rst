@@ -1,2 +1,2 @@
 Describe what constitutes a valid representation of a particle in the docstring
-for the `plasmapy.particles.particle_class.particle_like` typing construct.
+for the `plasmapy.particles.particle_class.ParticleLike` typing construct.

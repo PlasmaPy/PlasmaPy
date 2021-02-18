@@ -161,7 +161,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: `ParticleLike`
+    particle: `~plasmapy.particles.particle_class.ParticleLike`
         A `str` or `~plasmapy.particles.Particle` instance representing
         an element, isotope, or ion; or an integer representing the
         atomic number of an element.
