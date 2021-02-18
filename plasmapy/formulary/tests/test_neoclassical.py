@@ -2,10 +2,10 @@ import astropy.units as u
 import pytest
 
 from plasmapy.formulary.neoclassical import M_matrix, N_matrix
-from plasmapy.particles import Particle, proton, Species
+from plasmapy.particles import IonizationState, Particle, proton
 
-hydrogen = Species(proton, 1e20 * u.m ** -3, temperature=10 * u.eV)
-carbon = Species(Particle("C+"), 1e19 * u.m ** -3, temperature=10 * u.eV)
+hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+carbon = IonizationState("C+", n_elem=1e19 * u.m ** -3, T_e=10 * u.eV)
 
 
 @pytest.mark.parametrize(

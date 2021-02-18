@@ -1,15 +1,17 @@
 import numpy as np
 
+from plasmapy.formulary import thermal_speed
+
 
 def xab_ratio(a, b):
-    return b.thermal_speed() / a.thermal_speed()
+    return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
 
 
 def M_matrix(species_a, species_b):
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.temperature / b.temperature
-    mass_ratio = a.particle.mass / b.particle.mass
+    temperature_ratio = a.T_e / b.T_e
+    mass_ratio = a._particle.mass / b._particle.mass
     """equations A5a through A5f, Houlberg_1997"""
     M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
@@ -30,8 +32,8 @@ def N_matrix(species_a, species_b):
     """equations A6a through A6f, Houlberg_1997"""
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.temperature / b.temperature
-    mass_ratio = a.particle.mass / b.particle.mass
+    temperature_ratio = a.T_e / b.T_e
+    mass_ratio = a._particle.mass / b._particle.mass
     N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
     N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
