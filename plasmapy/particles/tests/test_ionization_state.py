@@ -1,6 +1,8 @@
 import astropy.units as u
 import collections
 import numpy as np
+import os
+import pickle
 import pytest
 
 from plasmapy.particles import (

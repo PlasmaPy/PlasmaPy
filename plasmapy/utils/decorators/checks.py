@@ -19,6 +19,7 @@ import warnings
 from astropy import units as u
 from astropy.constants import c
 from functools import reduce
+from operator import add
 from typing import Any, Dict, List, Tuple, Union
 
 from plasmapy.utils.decorators.helpers import preserve_signature
@@ -724,7 +725,7 @@ class CheckUnits(CheckBase):
                 #     (from_unit, to_unit, forward_func, backward_func)
                 #
                 if all(isinstance(el, Equivalency) for el in _equivs):
-                    _equivs = reduce(lambda x, y: x + y, _equivs)
+                    _equivs = reduce(add, _equivs)
                 else:
                     _equivs = self._normalize_equivalencies(_equivs)
 
@@ -991,10 +992,13 @@ class CheckUnits(CheckBase):
 
         normalized = []
 
+        def return_argument(x):
+            return x
+
         for i, equiv in enumerate(equivalencies):
             if len(equiv) == 2:
                 from_unit, to_unit = equiv
-                a = b = lambda x: x
+                a = b = return_argument
             elif len(equiv) == 3:
                 from_unit, to_unit, a = equiv
                 b = a
