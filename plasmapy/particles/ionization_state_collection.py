@@ -39,14 +39,14 @@ class IonizationStateCollection:
         instances with units of number density.
 
     abundances: `dict`, optional, keyword-only
-        A `dict` with `ParticleLike` elements or isotopes as keys and
-        the corresponding relative abundance as values.  The values must
-        be positive real numbers.
+        A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
+        objects used as the keys and the corresponding relative abundance as the
+        values.  The values must be positive real numbers.
 
     log_abundances: `dict`, optional, keyword-only
-        A `dict` with `ParticleLike` elements or isotopes as keys and
-        the corresponding base 10 logarithms of their relative
-        abundances as values.  The values must be real numbers.
+        A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
+        objects used as the keys and the corresponding base 10 logarithms of their
+        relative abundances as the values.  The values must be real numbers.
 
     n0: `~astropy.units.Quantity`, optional, keyword-only
         The number density normalization factor corresponding to the
