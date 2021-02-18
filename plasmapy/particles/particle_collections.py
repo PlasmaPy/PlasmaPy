@@ -15,7 +15,7 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    particle_like,
+    ParticleLike,
 )
 
 
@@ -26,7 +26,7 @@ class ParticleList(collections.UserList):
     Parameters
     ----------
     particles : iterable
-        An iterable that provides a sequence of `particle_like` objects.
+        An iterable that provides a sequence of `ParticleLike` objects.
 
     Examples
     --------
@@ -46,7 +46,7 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Iterable[particle_like],
+        particles: Iterable[ParticleLike],
     ) -> List[AbstractParticle]:
         """"""
 
