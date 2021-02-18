@@ -3,18 +3,18 @@ import numpy as np
 from astropy import constants
 from typing import List
 
-from plasmapy.particles.species import Species
+from plasmapy.formulary import thermal_speed
 
 
 def xab_ratio(a, b):
-    return b.thermal_speed() / a.thermal_speed()
+    return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
 
 
 def M_matrix(species_a, species_b):
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.temperature / b.temperature
-    mass_ratio = a.particle.mass / b.particle.mass
+    temperature_ratio = a.T_e / b.T_e
+    mass_ratio = a._particle.mass / b._particle.mass
     """equations A5a through A5f, Houlberg_1997"""
     M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
@@ -35,8 +35,8 @@ def N_matrix(species_a, species_b):
     """equations A6a through A6f, Houlberg_1997"""
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.temperature / b.temperature
-    mass_ratio = a.particle.mass / b.particle.mass
+    temperature_ratio = a.T_e / b.T_e
+    mass_ratio = a._particle.mass / b._particle.mass
     N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
     N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
@@ -56,40 +56,49 @@ def N_matrix(species_a, species_b):
 
 from plasmapy.formulary.collisions import Coulomb_logarithm
 
-CL = lambda ai, bj: Coulomb_logarithm(
-    bj.temperature, bj.number_density, (ai.particle, bj.particle)
+CL = lambda a, b: Coulomb_logarithm(
+    b.T_e,
+    b.n_elem,
+    (a.base_particle, b.base_particle),  # simplifying assumption after A4
 )
 
 
-def collision_frequency_ai_bj(ai, bj):
-    return (
-        4
-        / (3 * np.sqrt(np.pi))
-        * (
-            4
-            * np.pi
-            * ai.particle.charge ** 2
-            * bj.particle.charge ** 2
-            * bj.number_density
-            * CL(ai, bj)
-        )
-        / (
-            (4 * np.pi * constants.eps0) ** 2
-            * ai.particle.mass ** 2
-            * ai.thermal_speed() ** 3
-        )
-    ).si
-
-
-def effective_momentum_relaxation_rate(
-    charge_states_a: List[Species], charge_states_b: List[Species]
-):
+def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
     def contributions():
+        CL = lambda ai, bj: Coulomb_logarithm(
+            charge_states_b.T_e,
+            charge_states_b.n_elem,
+            (ai._particle, bj._particle),  # simplifying assumption after A4
+        )
         for ai in charge_states_a:
+            if ai._particle.charge == 0:
+                continue
             for bj in charge_states_b:
+                if bj._particle.charge == 0:
+                    continue
                 # Eq. A4, Houlberg_1997
                 # Eq. A3, Houlberg_1997
-                yield ai.mass_density() * collision_frequency_ai_bj(ai, bj)
+                collision_frequency_ai_bj = (
+                    4
+                    / (3 * np.sqrt(np.pi))
+                    * (
+                        4
+                        * np.pi
+                        * ai._particle.charge ** 2
+                        * bj._particle.charge ** 2
+                        * bj.number_density
+                        * CL(ai, bj)
+                    )
+                    / (
+                        (4 * np.pi * constants.eps0) ** 2
+                        * ai._particle.mass ** 2
+                        * thermal_speed(charge_states_a.T_e, ai._particle) ** 3
+                    )
+                ).si
+
+                yield (
+                    ai.number_density * ai._particle.mass
+                ) * collision_frequency_ai_bj
 
     return sum(contributions())
 
@@ -101,6 +110,6 @@ def charge_weighting_factor(i, a_states):
     """
     ai = a_states[i]
     denominator = sum(
-        state.number_density * state.particle.integer_charge ** 2 for state in a_states
+        state.number_density * state.integer_charge ** 2 for state in a_states
     )
-    return ai.number_density * ai.particle.integer_charge ** 2 / denominator
+    return ai.number_density * ai.integer_charge ** 2 / denominator
