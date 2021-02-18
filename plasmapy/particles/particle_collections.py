@@ -15,6 +15,7 @@ from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    particle_like,
 )
 
 
@@ -24,22 +25,30 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    *particles : `particle_like`
-        A series of particle-like objects.
+    particles : iterable
+        An iterable that provides a sequence of `particle_like` objects.
 
     Examples
     --------
-    >>> from plasmapy.particles import Particle, ParticleList
-    >>> ParticleList("e-", "e+")
-    ParticleList([Particle("e-"), Particle("e+")])
-
+    >>> from plasmapy.particles import ParticleList
+    >>> particle_list = ParticleList(["e-", "e+"])
+    >>> particle_list[0]
+    Particle("e-")
+    >>> particle_list.mass
+    <Quantity [9.1093...e-31, 9.1093...e-31] kg>
+    >>> particle_list.charge
+    <Quantity [-1.60217663e-19,  1.60217663e-19] C>
+    >>> particle_list.symbols
+    ['e-', 'e+']
+    >>> particle_list + [Particle("p+")]
+    ParticleList(['e-', 'e+', 'p+'])
     """
 
     @staticmethod
-    def _get_list_of_particle_like_instances(particles) -> List[AbstractParticle]:
+    def _list_of_particles_and_custom_particles(
+        particles: Iterable[particle_like],
+    ) -> List[AbstractParticle]:
         """"""
-        if len(particles) == 1 and isinstance(particles[0], (tuple, list)):
-            particles = particles[0]
 
         new_particles = []
         for obj in particles:
@@ -60,14 +69,14 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, *particles):
-        self._data = self._get_list_of_particle_like_instances(particles)
+    def __init__(self, particles: Iterable):
+        self._data = self._list_of_particles_and_custom_particles(particles)
 
     def __repr__(self):
-        return self.__str__()
+        return f"ParticleList({repr(self.symbols)})"
 
     def __str__(self):
-        return f"ParticleList({repr(self.data)})"
+        return str(self.data)
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
         """
@@ -83,7 +92,7 @@ class ParticleList(collections.UserList):
 
     @particle_input
     def append(self, particle: Particle):
-        """Append a particle to the end of the list."""
+        """Append a particle to the end of the `ParticleList`."""
         self.data.append(particle)
 
     @property
@@ -100,6 +109,13 @@ class ParticleList(collections.UserList):
         The ``data`` attribute should not be modified directly.
         """
         return self._data
+
+    def extend(self, other):
+        if isinstance(other, ParticleList):
+            self.data.extend(other)
+        else:
+            for obj in other:
+                self.append(obj)
 
     @property
     def half_life(self) -> u.s:
@@ -133,12 +149,19 @@ class ParticleList(collections.UserList):
         of the nucleus only.
         """
         return self._get_particle_attribute(
-            "mass_energy", unit=u.J, default=np.nan * u.J
+            "mass_energy", unit=u.J, default=np.nan * u.J,
         )
 
-    def sort(self):
-        # TODO: Enable sorting if a key is provided.
-        raise RuntimeError("Unable to sort a ParticleList.")
+    def sort(self, key: Callable = None, reverse: bool = False):
+        """
+        Sort the `ParticleList` in-place.
+
+        For more information, refer to the documentation for `list.sort`.
+        """
+        if key is None:
+            raise TypeError("Unable to sort a ParticleList without a key.")
+        else:
+            self._data.sort(key=key, reverse=False)
 
     @property
     def symbols(self) -> List[str]:
