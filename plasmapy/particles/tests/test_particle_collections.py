@@ -4,7 +4,6 @@ import astropy.units as u
 import pytest
 
 from plasmapy.particles import alpha, electron, neutron, proton
-from plasmapy.particles.exceptions import *
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -17,13 +16,13 @@ dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
 
 particle_list_arguments = [
     (),
-    (electron,),
-    (electron, proton),
-    (electron, proton, alpha),
-    ("e-", "e+"),
-    (electron, "e-"),
-    (custom_particle,),
-    (custom_particle, electron, "e-"),
+    ([electron]),
+    ([electron, proton]),
+    ([electron, proton, alpha]),
+    (["e-", "e+"]),
+    ([electron, "e-"]),
+    ([custom_particle]),
+    ([custom_particle, electron, "e-"]),
 ]
 
 attributes = [
@@ -35,7 +34,7 @@ attributes = [
 
 @pytest.mark.parametrize("args", particle_list_arguments)
 def test_particle_list_creation_membership(args):
-    particle_list = ParticleList(*args)
+    particle_list = ParticleList(args)
     for arg, particle in zip(args, particle_list):
         assert particle == arg
         assert isinstance(particle, (Particle, CustomParticle))
