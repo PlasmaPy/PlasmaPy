@@ -1,0 +1,3 @@
+Create `plasmapy.particles.ParticleList` as a list-like collection for
+instances of `plasmapy.particles.Particle` and
+`plasmapy.particles.CustomParticle`.
