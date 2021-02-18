@@ -825,7 +825,7 @@ class SyntheticProtonRadiograph:
         proj = np.where(proj > 1, 1, proj)
         max_deflection = np.max(np.arccos(proj))
 
-        return max_deflection*u.rad
+        return max_deflection * u.rad
 
     # *************************************************************************
     # Synthetic diagnostic methods (creating output)

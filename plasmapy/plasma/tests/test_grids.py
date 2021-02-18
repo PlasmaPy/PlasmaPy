@@ -111,11 +111,11 @@ def test_CartesianGrid():
         grid.grids[0], grid.grids[1], grid.grids[2], test_quantity=q
     )
 
-    # Units not all consistent
+    # Test that input with the wrong units will raise an exception
+    L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
+    L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(
-            [-1 * u.m, -1 * u.rad, -1 * u.m], [1 * u.m, 1 * u.rad, 1 * u.m]
-        )
+        grid = grids.CartesianGrid(L0, L1, num=10)
 
 
 def test_grid_methods():
@@ -308,13 +308,19 @@ def test_NonUniformCartesianGrid():
     with pytest.raises(ValueError):
         grid.dax2
 
+    # Test that input with the wrong units will raise an exception
+    L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
+    L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
+    with pytest.raises(ValueError):
+        grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
+
 
 if __name__ == "__main__":
     # test_AbstractGrid()
-    # test_CartesianGrid()
+    test_CartesianGrid()
     # test_grid_methods()
     # test_interpolate_indices()
     # test_nearest_neighbor_interpolator()
     # test_volume_averaged_interpolator()
-    # test_NonUniformCartesianGrid()
+    test_NonUniformCartesianGrid()
     pass
