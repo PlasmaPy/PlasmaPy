@@ -122,7 +122,7 @@ def run_1D_example(name):
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Catch warnings (test fields aren't well behaved at edges)
+    # TODO: Catch warnings (test fields aren't well behaved at edges)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
