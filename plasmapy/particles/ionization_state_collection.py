@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.ionization_state import IonicFraction, IonizationState
-from plasmapy.particles.particle_class import Particle, particle_like
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
@@ -43,14 +43,14 @@ class IonizationStateCollection:
         instances with units of number density.
 
     abundances: `dict`, optional, keyword-only
-        A `dict` with `particle_like` elements or isotopes as keys and
-        the corresponding relative abundance as values.  The values must
-        be positive real numbers.
+        A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
+        objects used as the keys and the corresponding relative abundance as the
+        values.  The values must be positive real numbers.
 
     log_abundances: `dict`, optional, keyword-only
-        A `dict` with `particle_like` elements or isotopes as keys and
-        the corresponding base 10 logarithms of their relative
-        abundances as values.  The values must be real numbers.
+        A `dict` with `~plasmapy.particles.particle_class.ParticleLike`
+        objects used as the keys and the corresponding base 10 logarithms of their
+        relative abundances as the values.  The values must be real numbers.
 
     n0: `~astropy.units.Quantity`, optional, keyword-only
         The number density normalization factor corresponding to the
@@ -719,12 +719,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> Optional[Dict[particle_like, Real]]:
+    def abundances(self) -> Optional[Dict[ParticleLike, Real]]:
         """Return the elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: Optional[Dict[particle_like, Real]]):
+    def abundances(self, abundances_dict: Optional[Dict[ParticleLike, Real]]):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose
