@@ -236,6 +236,10 @@ def test_particle_list_adding_particle_list(various_particles):
 
 
 def test_add_particle_list_and_particle(various_particles):
+    """
+    Test that a `ParticleList` can be added to a `Particle` on the right
+    and then return a `ParticleList`.
+    """
     new_particle_list = various_particles + electron
     assert new_particle_list[-1] == electron
     assert new_particle_list[0:-1] == various_particles
@@ -243,6 +247,10 @@ def test_add_particle_list_and_particle(various_particles):
 
 
 def test_add_particle_and_particle_list(various_particles):
+    """
+    Test that a `Particle` can be added to a `ParticleList` on the right
+    and then return a `ParticleList`.
+    """
     new_particle_list = electron + various_particles
     assert new_particle_list[0] == electron
     assert new_particle_list[1:] == various_particles
@@ -250,6 +258,10 @@ def test_add_particle_and_particle_list(various_particles):
 
 
 def test_add_particle_and_particle_like():
+    """
+    Test that a `Particle` can be added to a particle-like object on the
+    right and then return a `ParticleList`.
+    """
     heavy_isotopes_of_hydrogen = Particle("D") + "T"
     assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
     assert heavy_isotopes_of_hydrogen[0] == "D"
@@ -257,6 +269,10 @@ def test_add_particle_and_particle_like():
 
 
 def test_add_particle_like_and_particle():
+    """
+    Test that a particle-like object on the left can be added to a
+    `Particle` instance on the right and then return a `ParticleList`.
+    """
     heavy_isotopes_of_hydrogen = "D" + Particle("T")
     assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
     assert heavy_isotopes_of_hydrogen[0] == "D"
@@ -264,8 +280,23 @@ def test_add_particle_like_and_particle():
 
 
 def test_particle_list_gt_as_nuclear_reaction_energy():
+    """
+    Test that `ParticleList.__gt__` can be used to get the same result
+    as `nuclear_reaction_energy`.
+    """
     reactants = ParticleList(["D+", "T+"])
     products = ParticleList(["alpha", "n"])
     expected_energy = nuclear_reaction_energy("D + T --> alpha + n")
     actual_energy = reactants > products
+    assert u.allclose(expected_energy, actual_energy)
+
+
+def test_particle_gt_as_radioactive_decay():
+    """
+    Test a nuclear reaction where a `Particle` instance is the sole
+    reactant on the left side.
+    """
+    tritium = Particle("T")
+    expected_energy = nuclear_reaction_energy("T -> He-3 + e")
+    actual_energy = tritium > Particle("He-3") + "e"
     assert u.allclose(expected_energy, actual_energy)
