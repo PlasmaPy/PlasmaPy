@@ -77,7 +77,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -161,12 +161,12 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         Electron temperature.
 
     Returns
     -------
-    lambda_dbTh : ~astropy.units.Quantity
+    lambda_dbTh : `~astropy.units.Quantity`
         The thermal de Broglie wavelength for electrons in meters.
 
     Raises
@@ -285,12 +285,12 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     Returns
     -------
-    lambda_TF : ~astropy.units.Quantity
+    lambda_TF : `~astropy.units.Quantity`
         The Thomas-Fermi screening length in meters.
 
     Raises
@@ -361,12 +361,12 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         Particle number density.
 
     Returns
     -------
-    radius : ~astropy.units.Quantity
+    radius : `~astropy.units.Quantity`
         The Wigner-Seitz radius in meters.
 
     Raises
@@ -422,7 +422,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -430,7 +430,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    beta_mu : ~astropy.units.Quantity
+    beta_mu : `~astropy.units.Quantity`
         The dimensionless ideal chemical potential. That is the ratio of
         the ideal chemical potential to the thermal energy.
 
@@ -541,7 +541,7 @@ def _chemical_potential_interp(n_e, T):
 
     Parameters
     ----------
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -549,7 +549,7 @@ def _chemical_potential_interp(n_e, T):
 
     Returns
     -------
-    beta_mu : ~astropy.units.Quantity
+    beta_mu : `~astropy.units.Quantity`
         The dimensionless chemical potential, which is a ratio of
         chemical potential energy to thermal kinetic energy.
 
