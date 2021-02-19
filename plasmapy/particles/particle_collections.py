@@ -161,7 +161,7 @@ class ParticleList(collections.UserList):
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
         else:
-            self._data.sort(key=key, reverse=False)
+            self._data.sort(key=key, reverse=reverse)
 
     @property
     def symbols(self) -> List[str]:
