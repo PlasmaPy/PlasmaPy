@@ -11,6 +11,7 @@ from plasmapy.formulary.neoclassical import (
     N_matrix,
     N_script,
     pitch_angle_diffusion_rate,
+    trapped_fraction,
 )
 from plasmapy.particles import IonizationState, Particle, proton
 
@@ -66,3 +67,11 @@ def test_pitch_angle_diffusion_rate(num_regression):
     x = np.logspace(-6, 6, 5000)
     ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
     num_regression.check({"x": x, "ν_D_ai": ν_D_ai.si.value})
+
+
+def test_trapped_fraction(num_regression):
+    h = np.linspace(0.35, 1)  # h = B / B_max
+    h2mean = np.mean(h ** 2)  # these are actually flux surface averages TODO
+    hmean = np.mean(h)
+    f_t = trapped_fraction(h, hmean, h2mean)
+    num_regression.check({"h": h, "h2mean": h2mean, "hmean": hmean, "f_t": f_t})
