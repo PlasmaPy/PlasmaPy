@@ -117,3 +117,29 @@ def charge_weighting_factor(i, a_states):
         state.number_density * state.integer_charge ** 2 for state in a_states
     )
     return ai.number_density * ai.integer_charge ** 2 / denominator
+
+
+def N_script(species_a, species_b):
+    N = N_matrix(species_a, species_b)
+    # Equation A2b
+    N_script = effective_momentum_relaxation_rate(species_a, species_b) * N
+    return N_script
+
+
+def M_script(species_a, all_species):
+    # Equation A2a
+    def gener():
+        for species_b in all_species:
+            if species_b is not species_a:  # direct comparison glitches out
+                yield M_matrix(
+                    species_a, species_b
+                ) * effective_momentum_relaxation_rate(species_a, species_b)
+
+    return sum(gener())
+
+
+def L_friction_coefficient(species_a, i, species_b, j, all_species):
+    parenthesis = N_script(species_a, species_b) * charge_weighting_factor(j, species_b)
+    if species_a is species_b and i == j:
+        parenthesis += M_script(species_a, all_species)
+    return charge_weighting_factor(i, species_a) * parenthesis
