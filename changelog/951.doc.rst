@@ -1,0 +1,1 @@
+Improves the documentation of quantum.py.
