@@ -1,9 +1,11 @@
 import numpy as np
 
 from astropy import constants
+from scipy.special import erf
 from typing import List
 
 from plasmapy.formulary import thermal_speed
+from plasmapy.formulary.mathematics import Chandrasekhar_G
 
 
 def xab_ratio(a, b):
@@ -143,3 +145,28 @@ def L_friction_coefficient(species_a, i, species_b, j, all_species):
     if species_a is species_b and i == j:
         parenthesis += M_script(species_a, all_species)
     return charge_weighting_factor(i, species_a) * parenthesis
+
+
+def pitch_angle_diffusion_rate(x, index, a_states, all_species):
+    # Houlberg_1997, equation B4b,
+    ai = a_states[index]
+
+    def sum_items():
+        for b in all_species:
+            xab = xab_ratio(
+                a_states, b
+            )  # TOZO should be over all other species, not ionization states
+            numerator = erf(x / xab) - Chandrasekhar_G(x / xab)
+            denominator = x ** 3
+            fraction = numerator / denominator
+            result = fraction * effective_momentum_relaxation_rate(a_states, b)
+            yield result
+
+    return (
+        charge_weighting_factor(index, a_states)
+        / (ai.number_density * ai._particle.mass)
+        * 3
+        * np.sqrt(np.pi)
+        / 4
+        * sum(sum_items())
+    )
