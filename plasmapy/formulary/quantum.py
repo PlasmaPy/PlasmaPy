@@ -35,14 +35,17 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Calculates the de Broglie wavelength.
 
-    The de Broglie wavelength is given by
+    Formula
+    -------
+
+    The de Broglie wavelength is defined by
 
     .. math::
 
         \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
 
     where :math:`h` is the Planck constant, :math:`p` is the
-    relativistic momentum of the particle, :math:`gamma` is the
+    relativistic momentum of the particle, :math:`\gamma` is the
     Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
     particle's velocity.
 
@@ -80,19 +83,6 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    Notes
-    -----
-    The de Broglie wavelength is given by
-
-    .. math::
-
-        \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
-
-    where :math:`h` is the Planck constant, :math:`p` is the
-    relativistic momentum of the particle, :math:`gamma` is the
-    Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
-    particle's velocity.
-
     Examples
     --------
     >>> from astropy import units as u
@@ -123,8 +113,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
             m = particle.to(u.kg)
         except Exception:
             raise u.UnitConversionError(
-                "The second argument for deBroglie"
-                " wavelength must be either a "
+                "The second argument for deBroglie_wavelength must be either a "
                 "representation of a particle or a"
                 " Quantity with units of mass."
             )
