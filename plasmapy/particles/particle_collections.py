@@ -90,9 +90,10 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)
         return values
 
-    @particle_input
-    def append(self, particle: Particle):
+    def append(self, particle):
         """Append a particle to the end of the `ParticleList`."""
+        if not isinstance(particle, (Particle, CustomParticle)):
+            particle = Particle(particle)
         self.data.append(particle)
 
     @property
