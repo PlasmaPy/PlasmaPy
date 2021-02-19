@@ -53,10 +53,13 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     V : ~astropy.units.Quantity
         Particle velocity in units convertible to meters per second.
 
-    particle : str or ~astropy.units.Quantity
-        Representation of the particle species (e.g., ``'e'``, ``'p'``, ``'D+'``,
-        or ``'He-4 1+'``) or the particle mass in units convertible to
-        kilograms.
+    particle : `str`, `~plasmapy.particles.Particle`, or `~astropy.units.Quantity`
+        An instance of `~plasmapy.particles.particle_class.Particle`, or
+        an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
+        ``'He-4 1+'``), for the particle of interest, or the particle
+        mass in units convertible to kg.  If a `plasmapy`
+        `~plasmapy.particles.particle_class.Particle` instance is given, then the
+        particle mass is retrieved from the object.
 
     Returns
     -------
@@ -66,14 +69,14 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     Raises
     ------
     TypeError
-        The velocity is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+        If the velocity is not a `~astropy.units.Quantity` and cannot be
+        converted into a `~astropy.units.Quantity`.
 
     ~astropy.units.UnitConversionError
         If the velocity is not in appropriate units.
 
     ~plasmapy.utils.RelativityError
-        If the magnitude of `V` is faster than the speed of light.
+        If the magnitude of `V` is higher than the speed of light.
 
     Warns
     -----
