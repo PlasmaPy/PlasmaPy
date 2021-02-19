@@ -72,11 +72,48 @@ class ParticleList(collections.UserList):
     def __init__(self, particles: Iterable):
         self._data = self._list_of_particles_and_custom_particles(particles)
 
+    @staticmethod
+    def _cast_other_as_particle_list(other):
+        if isinstance(other, ParticleList):
+            return other
+
+        try:
+            return ParticleList(other)
+        except (InvalidParticleError, TypeError):
+            pass
+
+        try:
+            return ParticleList([other])
+        except (InvalidParticleError, TypeError):
+            raise InvalidParticleError(f"Cannot cast {other} into a ParticleList")
+
+    def __add__(self, other):
+        try:
+            other_as_particle_list = self._cast_other_as_particle_list(other)
+        except (TypeError, InvalidParticleError) as exc:
+            raise InvalidParticleError(
+                f"Cannot add {repr(other)} to a ParticleList."
+            ) from exc
+
+        return ParticleList(self.data + other_as_particle_list.data)
+
+    def __radd__(self, other):
+        other_as_particle_list = self._cast_other_as_particle_list(other)
+        return other_as_particle_list.__add__(self)
+
     def __repr__(self):
         return f"ParticleList({repr(self.symbols)})"
 
+    def __gt__(self, other):
+        from plasmapy.particles.nuclear import nuclear_reaction_energy
+
+        other_as_particle_list = self._cast_other_as_particle_list(other)
+        return nuclear_reaction_energy(
+            reactants=self.symbols, products=other_as_particle_list.symbols
+        )
+
     def __str__(self):
-        return str(self.data)
+        return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
         """
