@@ -70,10 +70,14 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
             charge_states_b.n_elem,
             (ai._particle, bj._particle),  # simplifying assumption after A4
         )
-        for ai in charge_states_a:
+        for i in range(
+            len(charge_states_a.number_densities)
+        ):  # These really need to implement len.
+            ai = charge_states_a[i]
             if ai._particle.charge == 0:
                 continue
-            for bj in charge_states_b:
+            for j in range(len(charge_states_b.number_densities)):
+                bj = charge_states_b[j]
                 if bj._particle.charge == 0:
                     continue
                 # Eq. A4, Houlberg_1997
