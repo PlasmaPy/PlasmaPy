@@ -249,8 +249,15 @@ def test_add_particle_and_particle_list(various_particles):
     assert isinstance(new_particle_list, ParticleList)
 
 
-def test_add_particle_and_particle():
+def test_add_particle_and_particle_like():
     heavy_isotopes_of_hydrogen = Particle("D") + "T"
+    assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
+    assert heavy_isotopes_of_hydrogen[0] == "D"
+    assert heavy_isotopes_of_hydrogen[1] == "T"
+
+
+def test_add_particle_like_and_particle():
+    heavy_isotopes_of_hydrogen = "D" + Particle("T")
     assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
     assert heavy_isotopes_of_hydrogen[0] == "D"
     assert heavy_isotopes_of_hydrogen[1] == "T"
@@ -262,10 +269,3 @@ def test_particle_list_gt_as_nuclear_reaction_energy():
     expected_energy = nuclear_reaction_energy("D + T --> alpha + n")
     actual_energy = reactants > products
     assert u.allclose(expected_energy, actual_energy)
-
-    # actual_energy = Particle("D") + "T" > alpha + neutron
-
-    # nuclear_reaction_energy("D + T --> alpha + n")
-    # < Quantity
-    # 2.8181e-12
-    # J >

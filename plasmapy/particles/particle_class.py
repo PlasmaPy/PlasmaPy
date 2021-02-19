@@ -646,6 +646,21 @@ class Particle(AbstractParticle):
         """
         return not self.__eq__(other)
 
+    @property
+    def _as_particle_list(self):
+        from plasmapy.particles.particle_collections import ParticleList
+
+        return ParticleList([self])
+
+    def __add__(self, other):
+        return self._as_particle_list + other
+
+    def __radd__(self, other):
+        return other + self._as_particle_list
+
+    def __gt__(self, other):
+        return self._as_particle_list.__gt__(other)
+
     def __hash__(self) -> int:
         """
         Allow use of `hash` so that a `~plasmapy.particles.Particle`
