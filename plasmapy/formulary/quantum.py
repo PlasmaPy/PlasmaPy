@@ -33,12 +33,9 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
-    Calculates the de Broglie wavelength.
+    Returns the de Broglie wavelength.
 
-    Formula
-    -------
-
-    The de Broglie wavelength is defined by
+    Formula: The de Broglie wavelength is defined by
 
     .. math::
 
@@ -46,8 +43,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     where :math:`h` is the Planck constant, :math:`p` is the
     relativistic momentum of the particle, :math:`\gamma` is the
-    Lorentz factor, :math:`m` is the particle's mass, and :math:`V` is the
-    particle's velocity.
+    Lorentz factor, :math:`m` is the mass of the particle, and
+    :math:`V` is the velocity of the particle.
 
     **Aliases:** `lambdaDB_`
 
