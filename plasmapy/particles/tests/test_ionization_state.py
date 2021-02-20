@@ -707,3 +707,16 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_kappa_isinf_when_not_set(self):
         assert np.isinf(self.instance.kappa)
+
+
+@pytest.mark.xfail
+def test_iteration_with_nested_iterator():
+    hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+
+    i = 0
+    for fraction in hydrogen:
+        for fraction2 in hydrogen:
+            i += 1
+            print(i, fraction, fraction2)
+            # should output 4 pairs...
+    assert i == 4
