@@ -35,7 +35,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Returns the de Broglie wavelength.
 
-    Formula: The de Broglie wavelength is defined by
+    Formula: The de Broglie wavelength (:math:'\lambda_{dB}') of a particle is defined by
 
     .. math::
 
@@ -50,20 +50,20 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Parameters
     ----------
-    V : ~astropy.units.Quantity
+    V : `~astropy.units.Quantity`
         Particle velocity in units convertible to meters per second.
 
     particle : `str`, `~plasmapy.particles.Particle`, or `~astropy.units.Quantity`
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
-        mass in units convertible to kg.  If a `plasmapy`
+        mass in units convertible to kg.  If a plasmapy
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
         particle mass is retrieved from the object.
 
     Returns
     -------
-    lambda_dB : ~astropy.units.Quantity
+    lambda_dB : `~astropy.units.Quantity`
         The de Broglie wavelength in units of meters.
 
     Raises
