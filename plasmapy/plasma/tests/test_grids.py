@@ -67,6 +67,10 @@ def test_AbstractGrid():
     # Test accessing a quantity using __getitem__ or directly
     Bx = grid.ds["B_x"]
     Bx = grid["B_x"]
+    # Assert that the array returned is a u.Quantity
+    assert isinstance(Bx, u.Quantity)
+    # Assert that the array returned has the right shape
+    assert Bx.shape == grid.shape
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg

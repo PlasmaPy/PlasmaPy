@@ -168,8 +168,10 @@ class AbstractGrid(ABC):
         return s
 
     def __getitem__(self, key):
-
-        return self.ds[key]
+        """
+        Given a key, return the corresponding array as an `astropy.Quantity`
+        """
+        return self.ds[key].data * self.ds[key].attrs["unit"]
 
     @property
     def shape(self):
