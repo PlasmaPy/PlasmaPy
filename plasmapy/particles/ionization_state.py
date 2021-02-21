@@ -8,6 +8,7 @@ __all__ = ["IonizationState", "IonicFraction"]
 import numpy as np
 import warnings
 
+from astropy import constants as const
 from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
@@ -18,7 +19,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
@@ -731,6 +732,20 @@ class IonizationState:
                 states_info.append(state_info)
 
         return states_info
+
+    def mean_particle(self, include_neutrals: bool = True) -> CustomParticle:
+        """
+        Return a `~plasmapy.particles.particle_class.CustomParticle`
+        instance representing the mean particle in this ionization state.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, include only ions.
+            Defaults to `True`.
+        """
+        pass
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """

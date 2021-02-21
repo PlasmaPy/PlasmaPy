@@ -5,7 +5,6 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
-import collections
 import numpy as np
 
 from numbers import Integral, Real
@@ -18,7 +17,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.ionization_state import IonicFraction, IonizationState
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
@@ -858,6 +857,23 @@ class IonizationStateCollection:
             self._tol = np.real(atol)
         else:
             raise ValueError("Need 0 <= tol <= 1.")
+
+    def mean_particle(self, include_neutrals: bool = True) -> CustomParticle:
+        """
+        Return a `~plasmapy.particles.particle_class.CustomParticle`
+        instance representing the mean particle included across all
+        ionization states.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, include only ions.
+            Defaults to `True`.
+        """
+        # If the relative abundances are NaN, then this should return a
+        # `CustomParticle` with NaNs for the charge and mass.
+        pass
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
