@@ -11,7 +11,6 @@ from typing import *
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import *
 from plasmapy.particles.particle_class import (
-    AbstractParticle,
     CustomParticle,
     DimensionlessParticle,
     Particle,
@@ -47,9 +46,11 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Iterable[ParticleLike],
-    ) -> List[AbstractParticle]:
-        """"""
-
+    ) -> List[Union[Particle, CustomParticle]]:
+        """
+        Convert an iterable that provides `ParticleLike` objects into a
+        `list` containing `Particle` and `CustomParticle` instances.
+        """
         new_particles = []
         for obj in particles:
             if isinstance(obj, (Particle, CustomParticle)):
@@ -94,7 +95,6 @@ class ParticleList(collections.UserList):
             raise InvalidParticleError(
                 f"Cannot add {repr(other)} to a ParticleList."
             ) from exc
-
         return ParticleList(self.data + other_as_particle_list.data)
 
     def __radd__(self, other):
