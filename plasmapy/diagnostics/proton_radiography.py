@@ -418,12 +418,16 @@ class SyntheticProtonRadiograph:
         # Load inputs
         self.nparticles = int(nparticles)
         self.proton_energy = proton_energy.to(u.eV).value
-        if charge is None:
-            charge = self._e
-        if mass is None:
-            mass = self._m_p
-        self.q = charge
-        self.m = mass
+
+        if charge is not None:
+            self.q = charge.to(u.C).value
+        else:
+            self.q = self._e
+
+        if mass is not None:
+            self.m = mass.to(u.kg).value
+        else:
+            self.m = self._m_p
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
@@ -441,6 +445,10 @@ class SyntheticProtonRadiograph:
             theta, phi = self._angles_monte_carlo()
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
+
+        # Temporarily save theta to later determine which particles
+        # should be tracked
+        self.theta = theta
 
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3])
@@ -460,12 +468,78 @@ class SyntheticProtonRadiograph:
         # Place particles at the source
         self.x = np.outer(np.ones(self.nparticles), self.source)
 
-        # Determine which particles should be tracked
-        # This array holds the indices of all particles that WILL hit the grid
-        # Only these particles will actually be pushed through the fields
-        self.grid_ind = np.where(theta < self.max_theta_hit_grid)[0]
-        self.nparticles_grid = len(self.grid_ind)
-        self.fract_tracked = self.nparticles_grid / self.nparticles
+    def load_particles(self, x, v, charge=None, mass=None):
+        r"""
+        Load arrays of particle positions and velocities
+
+        x : `~astropy.units.Quantity`, shape (N,3)
+            Positions for N particles
+
+        v: `~astropy.units.Quantity`, shape (N,3)
+            Velocities for N particles
+
+        charge : `~astropy.units.Quantity`, optional
+            The charge of the particle, in units convertable to Columbs.
+            The default is the proton charge.
+
+
+        mass : `~astropy.units.Quantity`, optional
+            The mass of the particle, in units convertable to kg.
+            The default is the proton mass.
+
+
+        distribution: str
+            A keyword which determines how particles will be distributed
+            in velocity space. Options are:
+
+                - 'monte-carlo': velocities will be chosen randomly,
+                    such that the flux per solid angle is uniform.
+
+                - 'uniform': velocities will be distrbuted such that,
+                   left unpreturbed,they will form a uniform pattern
+                   on the detection plane.
+
+            Simulations run in the `uniform` mode will imprint a grid pattern
+            on the image, but will well-sample the field grid with a
+            smaller number of particles. The default is `monte-carlo`
+
+
+        """
+
+        if charge is not None:
+            self.q = charge.to(u.C).value
+        else:
+            self.q = self._e
+
+        if mass is not None:
+            self.m = mass.to(u.kg).value
+        else:
+            self.m = self._m_p
+
+        if x.shape[0] != v.shape[0]:
+            raise ValueError(
+                "Provided x and v arrays have inconsistent numbers "
+                " of particles "
+                f"({x.shape[0]} and {v.shape[0]} respectively)."
+            )
+        else:
+            self.nparticles = x.shape[0]
+
+        self.x = x.to(u.m).value
+        self.v = v.to(u.m / u.s).value
+
+        self.theta = np.arccos(
+            np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1)
+        )
+
+        n_wrong_way = np.sum(np.where(self.theta > np.pi / 2, 1, 0))
+        if n_wrong_way > 1:
+            warnings.warn(
+                f"{100*n_wrong_way/self.nparticles:.2f}% of particles "
+                "initialized are heading away from the grid. Check the orientation "
+                " of the provided velocity vectors.",
+                RuntimeWarning,
+            )
 
     # *************************************************************************
     # Run/push loop methods
@@ -742,6 +816,13 @@ class SyntheticProtonRadiograph:
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
+
+        # Determine which particles should be tracked
+        # This array holds the indices of all particles that WILL hit the grid
+        # Only these particles will actually be pushed through the fields
+        self.grid_ind = np.where(self.theta < self.max_theta_hit_grid)[0]
+        self.nparticles_grid = len(self.grid_ind)
+        self.fract_tracked = self.nparticles_grid / self.nparticles
 
         # Create flags for tracking when particles during the simulation
         # on_grid -> zero if the particle is off grid, 1

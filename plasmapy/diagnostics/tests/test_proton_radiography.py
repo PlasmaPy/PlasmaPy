@@ -2,6 +2,7 @@
 Tests for proton radiography functions
 """
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import pytest
@@ -290,6 +291,45 @@ def test_create_particles():
 
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
+    # Test specifying charge and mass
+    charge = 3 * const.e.si
+    mass = const.m_e.si
+    sim.create_particles(1e3, 15 * u.MeV, charge=charge, mass=mass)
+
+
+def test_load_particles():
+
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+
+    # Cartesian
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
+
+    # Test adding unequal numbers of particles
+    x = np.zeros([100, 3]) * u.m
+    v = np.ones([150, 3]) * u.m / u.s
+    with pytest.raises(ValueError):
+        sim.load_particles(x, v)
+
+    # Test creating particles with explict keywords
+    x = sim.x * u.m
+    v = sim.v * u.m / u.s
+
+    charge = 3 * const.e.si
+    mass = const.m_e.si
+
+    # Try setting particles going the wrong direction
+    with pytest.warns(RuntimeWarning):
+        sim.load_particles(x, -v)
+
+    sim.load_particles(x, v, charge=charge, mass=mass)
+
+    # Run the tracker to make sure everything works
+    sim.run(field_weighting="nearest neighbor")
+
 
 def test_run_options():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
@@ -330,11 +370,12 @@ def test_synthetic_radiograph():
 
 
 if __name__ == "__main__":
-    # test_coordinate_systems()
-    # test_input_validation()
-    # test_1D_deflections()
-    # test_init()
-    # test_create_particles()
+    test_coordinate_systems()
+    test_input_validation()
+    test_1D_deflections()
+    test_init()
+    test_create_particles()
+    test_load_particles()
     test_run_options()
-    # test_synthetic_radiograph()
+    test_synthetic_radiograph()
     pass
