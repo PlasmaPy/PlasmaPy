@@ -335,28 +335,7 @@ class IonizationStateCollection:
         self._ionic_fractions[particle][:] = new_fractions[:]
 
     def __iter__(self):
-        """
-        Prepare an `~plasmapy.particles.IonizationStateCollection` instance for
-        iteration.
-        """
-        self._element_index = 0
-        return self
-
-    def __next__(self):
-        if self._element_index < len(self.base_particles):
-            particle = self.base_particles[self._element_index]
-            result = IonizationState(
-                particle,
-                self.ionic_fractions[particle],
-                T_e=self.T_e,
-                n_elem=np.sum(self.number_densities[particle]),
-                tol=self.tol,
-            )
-            self._element_index += 1
-            return result
-        else:
-            del self._element_index
-            raise StopIteration
+        yield from [self[key] for key in self.ionic_fractions.keys()]
 
     def __eq__(self, other):
 

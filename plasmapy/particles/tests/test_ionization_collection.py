@@ -902,3 +902,15 @@ def test_number_density_assignment():
     instance = IonizationStateCollection(["H", "He"])
     number_densities = [2, 3, 5] * u.m ** -3
     instance["He"] = number_densities
+
+
+def test_iteration_with_nested_iterator():
+    ionization_states = IonizationStateCollection(["H", "He"])
+
+    i = 0
+    for ionization_state1 in ionization_states:
+        assert isinstance(ionization_state1, IonizationState)
+        for ionization_state2 in ionization_states:
+            assert isinstance(ionization_state2, IonizationState)
+            i += 1
+    assert i == 4
