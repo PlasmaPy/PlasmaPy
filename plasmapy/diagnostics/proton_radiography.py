@@ -17,6 +17,8 @@ import warnings
 
 from tqdm import tqdm
 
+from plasmapy import particles
+from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
@@ -355,13 +357,13 @@ class SyntheticProtonRadiograph:
 
         return theta.flatten(), phi.flatten()
 
+    @particles.particle_input
     def create_particles(
         self,
         nparticles,
         proton_energy,
         max_theta=None,
-        charge=None,
-        mass=None,
+        particle: Particle = Particle("p+"),
         distribution="monte-carlo",
     ):
         r"""
@@ -390,15 +392,9 @@ class SyntheticProtonRadiograph:
             guess will be made based on the size of the grid.
             Units must be convertible to radians.
 
-        charge : `~astropy.units.Quantity`
-            The charge of the particle, in units convertable to Columbs.
-            The default is the proton charge.
-
-
-        mass : `~astropy.units.Quantity`
-            The mass of the particle, in units convertable to kg.
-            The default is the proton mass.
-
+        particle : ~plasmapy.particles.Particle or string representation of same, optional
+            Representation of the particle species as either a `Particle` object
+            or a string representation. The default particle is protons.
 
         distribution: str
             A keyword which determines how particles will be distributed
@@ -425,16 +421,8 @@ class SyntheticProtonRadiograph:
         # Load inputs
         self.nparticles = int(nparticles)
         self.proton_energy = proton_energy.to(u.eV).value
-
-        if charge is not None:
-            self.q = charge.to(u.C).value
-        else:
-            self.q = self._e
-
-        if mass is not None:
-            self.m = mass.to(u.kg).value
-        else:
-            self.m = self._m_p
+        self.q = particle.charge.to(u.C).value
+        self.m = particle.mass.to(u.kg).value
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
@@ -475,7 +463,10 @@ class SyntheticProtonRadiograph:
         # Place particles at the source
         self.x = np.tile(self.source, (self.nparticles, 1))
 
-    def load_particles(self, x, v, charge=None, mass=None):
+    @particles.particle_input
+    def load_particles(
+        self, x, v, particle: Particle = Particle("p+"),
+    ):
         r"""
         Load arrays of particle positions and velocities
 
@@ -485,15 +476,9 @@ class SyntheticProtonRadiograph:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        charge : `~astropy.units.Quantity`, optional
-            The charge of the particle, in units convertable to Columbs.
-            The default is the proton charge.
-
-
-        mass : `~astropy.units.Quantity`, optional
-            The mass of the particle, in units convertable to kg.
-            The default is the proton mass.
-
+        particle : ~plasmapy.particles.Particle or string representation of same, optional
+            Representation of the particle species as either a `Particle` object
+            or a string representation. The default particle is protons.
 
         distribution: str
             A keyword which determines how particles will be distributed
@@ -512,16 +497,8 @@ class SyntheticProtonRadiograph:
 
 
         """
-
-        if charge is not None:
-            self.q = charge.to(u.C).value
-        else:
-            self.q = self._e
-
-        if mass is not None:
-            self.m = mass.to(u.kg).value
-        else:
-            self.m = self._m_p
+        self.q = particle.charge.to(u.C).value
+        self.m = particle.mass.to(u.kg).value
 
         if x.shape[0] != v.shape[0]:
             raise ValueError(

@@ -291,10 +291,10 @@ def test_create_particles():
 
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
-    # Test specifying charge and mass
+    # Test specifying particle
     charge = 3 * const.e.si
     mass = const.m_e.si
-    sim.create_particles(1e3, 15 * u.MeV, charge=charge, mass=mass)
+    sim.create_particles(1e3, 15 * u.MeV, particle="e")
 
 
 def test_load_particles():
@@ -318,14 +318,12 @@ def test_load_particles():
     x = sim.x * u.m
     v = sim.v * u.m / u.s
 
-    charge = 3 * const.e.si
-    mass = const.m_e.si
-
     # Try setting particles going the wrong direction
     with pytest.warns(RuntimeWarning):
         sim.load_particles(x, -v)
 
-    sim.load_particles(x, v, charge=charge, mass=mass)
+    # Try specifying a larger ion (not a proton or electron)
+    sim.load_particles(x, v, particle="C-12 +3")
 
     # Run the tracker to make sure everything works
     sim.run(field_weighting="nearest neighbor")
