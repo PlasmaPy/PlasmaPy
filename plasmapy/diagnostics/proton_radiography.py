@@ -131,7 +131,7 @@ class SyntheticProtonRadiograph:
         is parallel to the z axis, in which case the horizontal axis is the x-axis).
 
         The detector vertical axis is then defined
-        to be orthgonal to both the source-to-detector vector and the
+        to be orthogonal to both the source-to-detector vector and the
         detector horizontal axis.
 
     verbose : bool, optional
