@@ -1009,7 +1009,7 @@ class SyntheticProtonRadiograph:
             # Generate the null radiograph
             x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, ignore_grid=True)
 
-            # Calcualte I0 as the mean of the non-zero values in the null
+            # Calculate I0 as the mean of the non-zero values in the null
             # histogram. Zeros are just outside of the illuminate area.
             I0 = np.mean(I0[I0 != 0])
 
