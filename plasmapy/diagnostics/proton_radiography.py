@@ -324,7 +324,7 @@ class SyntheticProtonRadiograph:
         theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(size=self.nparticles) * 2 * np.pi
+        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)
 
         return theta, phi
 
