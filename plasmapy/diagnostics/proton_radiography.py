@@ -466,7 +466,7 @@ class SyntheticProtonRadiograph:
         self.v = np.matmul(self.v, rot)
 
         # Place particles at the source
-        self.x = np.outer(np.ones(self.nparticles), self.source)
+        self.x = np.tile(self.source, (self.nparticles, 1))
 
     def load_particles(self, x, v, charge=None, mass=None):
         r"""
