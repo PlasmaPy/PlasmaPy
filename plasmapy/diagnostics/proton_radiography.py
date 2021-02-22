@@ -113,9 +113,11 @@ class SyntheticProtonRadiograph:
         of the proton point source. This vector will be interpreted as
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
+
         * Cartesian (x,y,z) : (meters, meters, meters)
         * cylindrical (r, theta, z) : (meters, radians, meters)
         * spherical (r, theta, phi) : (meters, radians, radians)
+
         In spherical coordinates theta is the polar angle.
 
     detector : `~astropy.units.Quantity`, shape (3)
