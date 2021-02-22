@@ -5,7 +5,9 @@ __all__ = ["ExpectedTestOutcome"]
 import inspect
 
 from typing import Any
+
 from plasmapy.utils.code_repr import call_string
+
 
 def _is_warning(obj) -> bool:
     """Return `True` if the argument is a warning, and `False` otherwise."""
@@ -23,8 +25,8 @@ def _is_exception(obj) -> bool:
 def _is_warning_and_value(obj) -> bool:
     """
     Return `True` if the argument is a `tuple` or `list` containing two
-    items: a warning and an `object` that is not a warning; and `False`
-    otherwise.
+    items: a warning and an `object` that is not a warning (in either
+    order); and `False` otherwise.
     """
     if not isinstance(obj, (list, tuple)) or len(obj) != 2:
         return False
@@ -37,7 +39,7 @@ class ExpectedTestOutcome:
 
     Parameters
     ----------
-    expected
+    expected : `object`
         A value that is expected to be returned during a test,
         an exception that is expected to be raised, a warning that is
         expected to be issued, or a `tuple` or `list` containing a
