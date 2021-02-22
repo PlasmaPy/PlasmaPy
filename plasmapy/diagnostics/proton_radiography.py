@@ -658,7 +658,7 @@ class SyntheticProtonRadiograph:
                 RuntimeWarning,
             )
 
-        self.x += self.v * np.outer(t, np.ones(3))
+        self.x += self.v * t[:, np.newaxis]
 
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
