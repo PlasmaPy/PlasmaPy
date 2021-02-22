@@ -15,13 +15,12 @@ Installing PlasmaPy
 Requirements
 ============
 
-PlasmaPy requires Python version 3.6 or newer.
+PlasmaPy requires Python version 3.7 or newer.
 PlasmaPy requires the following packages for installation:
 
 - `NumPy <http://www.numpy.org/>`_ 1.18.1 or newer
 - `SciPy <https://www.scipy.org/>`_ 1.2 or newer
 - `Astropy <http://www.astropy.org/>`_ 4.0 or newer
-- `colorama <https://pypi.org/project/colorama/>`_ 0.3 or newer
 
 PlasmaPy also depends on the following packages for optional features:
 

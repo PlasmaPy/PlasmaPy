@@ -45,16 +45,16 @@ Docstrings
 * Docstrings must be raw string `literals
   <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_
   if they contain backslashes.  A raw string literal is denoted by
-  having an `r` immediately precede quotes or triple quotes:
+  having an ``r`` immediately precede quotes or triple quotes:
 
 .. code-block:: python
 
-   r""" I did not like unstable eigenfunctions at first, but then they
+   r"""
+   I did not like unstable eigenfunctions at first, but then they
    grew on me.
-
    """
 
-* Simple functions may need only a one-line docstring.
+* Simple private functions may need only a one-line docstring.
 
 Narrative Documentation
 =======================

@@ -3,6 +3,8 @@ import inspect
 import io
 import json
 import numpy as np
+import os
+import pickle
 import pytest
 
 from astropy import constants as const
@@ -12,15 +14,15 @@ from astropy.constants import c, e, m_e, m_n, m_p
 from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
-    AtomicError,
-    AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIonError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataError,
-    MissingAtomicDataWarning,
+    MissingParticleDataError,
+    MissingParticleDataWarning,
+    ParticleError,
+    ParticleWarning,
 )
 from plasmapy.particles.isotopes import _Isotopes
 from plasmapy.particles.particle_class import (
@@ -29,7 +31,8 @@ from plasmapy.particles.particle_class import (
     Particle,
 )
 from plasmapy.particles.special_particles import ParticleZoo
-from plasmapy.utils import call_string, roman
+from plasmapy.utils import roman
+from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
@@ -38,7 +41,7 @@ test_Particle_table = [
         "neutron",
         {},
         {
-            "particle": "n",
+            "symbol": "n",
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
@@ -61,7 +64,7 @@ test_Particle_table = [
         "p+",
         {},
         {
-            "particle": "p+",
+            "symbol": "p+",
             "element": "H",
             "element_name": "hydrogen",
             "isotope": "H-1",
@@ -100,7 +103,7 @@ test_Particle_table = [
         "p-",
         {},
         {
-            "particle": "p-",
+            "symbol": "p-",
             "element": None,
             "element_name": InvalidElementError,
             "isotope": None,
@@ -125,7 +128,7 @@ test_Particle_table = [
         "e-",
         {},
         {
-            "particle": "e-",
+            "symbol": "e-",
             "element": None,
             "element_name": InvalidElementError,
             "isotope": None,
@@ -153,7 +156,7 @@ test_Particle_table = [
         "e+",
         {},
         {
-            "particle": "e+",
+            "symbol": "e+",
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
@@ -185,7 +188,7 @@ test_Particle_table = [
         "H",
         {},
         {
-            "particle": "H",
+            "symbol": "H",
             "element": "H",
             "isotope": None,
             "isotope_name": InvalidIsotopeError,
@@ -195,7 +198,7 @@ test_Particle_table = [
             "charge": ChargeError,
             "integer_charge": ChargeError,
             "mass_number": InvalidIsotopeError,
-            "baryon_number": AtomicError,
+            "baryon_number": ParticleError,
             "lepton_number": 0,
             "half_life": InvalidIsotopeError,
             "standard_atomic_weight": (1.008 * u.u).to(u.kg),
@@ -210,7 +213,7 @@ test_Particle_table = [
         "H 1-",
         {},
         {
-            "particle": "H 1-",
+            "symbol": "H 1-",
             "element": "H",
             "isotope": None,
             "isotope_name": InvalidIsotopeError,
@@ -219,7 +222,7 @@ test_Particle_table = [
             "is_ion": True,
             "integer_charge": -1,
             "mass_number": InvalidIsotopeError,
-            "baryon_number": MissingAtomicDataError,
+            "baryon_number": MissingParticleDataError,
             "lepton_number": 0,
             "half_life": InvalidIsotopeError,
             "standard_atomic_weight": InvalidElementError,
@@ -233,7 +236,7 @@ test_Particle_table = [
         "H-1 0+",
         {},
         {
-            "particle": "H-1 0+",
+            "symbol": "H-1 0+",
             "element": "H",
             "isotope": "H-1",
             "isotope_name": "hydrogen-1",
@@ -258,7 +261,7 @@ test_Particle_table = [
         "D+",
         {},
         {
-            "particle": "D 1+",
+            "symbol": "D 1+",
             "element": "H",
             "element_name": "hydrogen",
             "isotope": "D",
@@ -283,7 +286,7 @@ test_Particle_table = [
         "tritium",
         {"Z": 1},
         {
-            "particle": "T 1+",
+            "symbol": "T 1+",
             "element": "H",
             "isotope": "T",
             "isotope_name": "tritium",
@@ -305,7 +308,7 @@ test_Particle_table = [
         "Fe",
         {"Z": 17, "mass_numb": 56},
         {
-            "particle": "Fe-56 17+",
+            "symbol": "Fe-56 17+",
             "element": "Fe",
             "element_name": "iron",
             "isotope": "Fe-56",
@@ -329,7 +332,7 @@ test_Particle_table = [
         "alpha",
         {},
         {
-            "particle": "He-4 2+",
+            "symbol": "He-4 2+",
             "element": "He",
             "element_name": "helium",
             "isotope": "He-4",
@@ -351,7 +354,7 @@ test_Particle_table = [
         "He-4 0+",
         {},
         {
-            "particle": "He-4 0+",
+            "symbol": "He-4 0+",
             "element": "He",
             "isotope": "He-4",
             "mass_energy": 5.971919969131517e-10 * u.J,
@@ -361,7 +364,7 @@ test_Particle_table = [
         "Li",
         {"mass_numb": 7},
         {
-            "particle": "Li-7",
+            "symbol": "Li-7",
             "element": "Li",
             "element_name": "lithium",
             "isotope": "Li-7",
@@ -382,7 +385,7 @@ test_Particle_table = [
         "Cn-276",
         {"Z": 22},
         {
-            "particle": "Cn-276 22+",
+            "symbol": "Cn-276 22+",
             "element": "Cn",
             "isotope": "Cn-276",
             "isotope_name": "copernicium-276",
@@ -402,7 +405,7 @@ test_Particle_table = [
         "muon",
         {},
         {
-            "particle": "mu-",
+            "symbol": "mu-",
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
@@ -420,12 +423,12 @@ test_Particle_table = [
         "nu_tau",
         {},
         {
-            "particle": "nu_tau",
+            "symbol": "nu_tau",
             "element": None,
             "isotope": None,
             "isotope_name": InvalidElementError,
-            "mass": MissingAtomicDataError,
-            "mass_energy": MissingAtomicDataError,
+            "mass": MissingParticleDataError,
+            "mass_energy": MissingParticleDataError,
             "integer_charge": 0,
             "mass_number": InvalidIsotopeError,
             "element_name": InvalidElementError,
@@ -443,18 +446,18 @@ test_Particle_table = [
             'is_category(any_of={"matter", "boson"})': True,
             'is_category(any_of=["antimatter", "boson", "charged"])': False,
             'is_category(["fermion", "lepton"], exclude="matter")': False,
-            'is_category("lepton", "invalid")': AtomicError,
-            'is_category(["boson"], exclude=["lepton", "invalid"])': AtomicError,
-            'is_category("boson", exclude="boson")': AtomicError,
-            'is_category(any_of="boson", exclude="boson")': AtomicError,
+            'is_category("lepton", "invalid")': ParticleError,
+            'is_category(["boson"], exclude=["lepton", "invalid"])': ParticleError,
+            'is_category("boson", exclude="boson")': ParticleError,
+            'is_category(any_of="boson", exclude="boson")': ParticleError,
         },
     ),
-    (Particle("C"), {}, {"particle": "C", "atomic_number": 6, "element": "C"}),
+    (Particle("C"), {}, {"symbol": "C", "atomic_number": 6, "element": "C"}),
     (
         Particle("C"),
         {"Z": 3, "mass_numb": 14},
         {
-            "particle": "C-14 3+",
+            "symbol": "C-14 3+",
             "element": "C",
             "isotope": "C-14",
             "ionic_symbol": "C-14 3+",
@@ -478,7 +481,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     try:
         particle = Particle(arg, **kwargs)
     except Exception as exc:
-        raise AtomicError(f"Problem creating {call}") from exc
+        raise ParticleError(f"Problem creating {call}") from exc
 
     for key in expected_dict.keys():
         expected = expected_dict[key]
@@ -487,7 +490,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
             # Exceptions are expected to be raised when accessing certain
             # attributes for some particles.  For example, accessing a
-            # neutrino's mass should raise a MissingAtomicDataError since
+            # neutrino's mass should raise a MissingParticleDataError since
             # only upper limits of neutrino masses are presently available.
             # If expected_dict[key] is an exception, then check to make
             # sure that this exception is raised.
@@ -564,9 +567,9 @@ test_Particle_error_table = [
     ("neutron", {}, ".mass_number", InvalidIsotopeError),
     ("He", {"mass_numb": 4}, ".charge", ChargeError),
     ("He", {"mass_numb": 4}, ".integer_charge", ChargeError),
-    ("Fe", {}, ".spin", MissingAtomicDataError),
-    ("nu_e", {}, ".mass", MissingAtomicDataError),
-    ("Og", {}, ".standard_atomic_weight", MissingAtomicDataError),
+    ("Fe", {}, ".spin", MissingParticleDataError),
+    ("nu_e", {}, ".mass", MissingParticleDataError),
+    ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
     (Particle("C-14"), {"mass_numb": 13}, "", InvalidParticleError),
     (Particle("Au 1+"), {"Z": 2}, "", InvalidParticleError),
     ([], {}, "", TypeError),
@@ -599,9 +602,9 @@ def test_Particle_errors(arg, kwargs, attribute, exception):
 
 # arg, kwargs, attribute, exception
 test_Particle_warning_table = [
-    ("H----", {}, "", AtomicWarning),
-    ("alpha", {"mass_numb": 4}, "", AtomicWarning),
-    ("alpha", {"Z": 2}, "", AtomicWarning),
+    ("H----", {}, "", ParticleWarning),
+    ("alpha", {"mass_numb": 4}, "", ParticleWarning),
+    ("alpha", {"Z": 2}, "", ParticleWarning),
 ]
 
 
@@ -633,7 +636,7 @@ def test_Particle_cmp():
     with pytest.raises(TypeError):
         electron == 1
 
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         electron == "dfasdf"
 
 
@@ -668,7 +671,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         "baryon",
     }:
 
-        particle = Isotope.particle
+        particle = Isotope.symbol
 
         assert Isotope.nuclide_mass == Ion.mass, (
             f"Particle({repr(particle)}).nuclide_mass does not equal "
@@ -704,7 +707,7 @@ def test_particle_half_life_string():
     """
     Find the first isotope where the half-life is stored as a string
     (because the uncertainties are too great), and tests that requesting
-    the half-life of that isotope causes a `MissingAtomicDataWarning`
+    the half-life of that isotope causes a `MissingParticleDataWarning`
     whilst returning a string.
     """
 
@@ -713,7 +716,7 @@ def test_particle_half_life_string():
         if isinstance(half_life, str):
             break
 
-    with pytest.warns(MissingAtomicDataWarning):
+    with pytest.warns(MissingParticleDataWarning):
         assert isinstance(Particle(isotope).half_life, str)
 
 
@@ -723,7 +726,7 @@ def test_particle_is_electron(p, is_one):
 
 
 def test_particle_bool_error():
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         bool(Particle("e-"))
 
 
@@ -758,7 +761,7 @@ def test_antiparticle_inversion(particle, antiparticle):
 
 
 def test_unary_operator_for_elements():
-    with pytest.raises(AtomicError):
+    with pytest.raises(ParticleError):
         Particle("C").antiparticle
 
 
@@ -927,6 +930,20 @@ def test_customized_particles(cls, kwargs, attr, expected):
         )
 
 
+@pytest.mark.parametrize(
+    "cls, symbol, expected",
+    [
+        (CustomParticle, None, "CustomParticle(mass=nan kg, charge=nan C)"),
+        (CustomParticle, "η", "η"),
+        (DimensionlessParticle, None, "DimensionlessParticle(mass=nan, charge=nan)"),
+        (DimensionlessParticle, "η", "η"),
+    ],
+)
+def test_custom_particle_symbol(cls, symbol, expected):
+    instance = cls(symbol=symbol)
+    assert instance.symbol == expected
+
+
 customized_particle_errors = [
     (DimensionlessParticle, {"mass": -1e-36}, InvalidParticleError),
     (DimensionlessParticle, {"mass": [1, 1]}, InvalidParticleError),
@@ -1006,35 +1023,45 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
         )
 
 
+@pytest.mark.parametrize("cls", [CustomParticle, DimensionlessParticle])
+@pytest.mark.parametrize("not_a_str", [1, u.kg])
+def test_typeerror_redefining_symbol(cls, not_a_str):
+    """Test that the symbol attribute cannot be set to something besides a string"""
+    instance = cls()
+    with pytest.raises(TypeError):
+        instance.symbol = not_a_str
+
+
 custom_particles_from_json_tests = [
     (
         DimensionlessParticle,
-        {"mass": 5.2, "charge": 6.3},
+        {"mass": 5.2, "charge": 6.3, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+            "kwargs": {"mass": 5.2, "charge": 6.3, "symbol": "ξ"}}}}',
         None,
     ),
     (
         DimensionlessParticle,
-        {"mass": 5.2},
+        {"mass": 5.2, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": NaN}}}}',
+            "kwargs": {"mass": 5.2, "charge": NaN, "symbol": "ξ"}}}}',
         None,
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", '
+        '"symbol": "ξ"}}}}',
         None,
     ),
     (
@@ -1198,8 +1225,8 @@ def test_particles_from_json_string(cls, kwargs, json_string, expected_exception
     if expected_exception is None:
         instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
-        expected_particle = instance.particle
-        actual_particle = instance_from_json.particle
+        expected_particle = instance.symbol
+        actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
             f"Expected {expected_particle}\nGot {actual_particle}"
         )
@@ -1222,8 +1249,8 @@ def test_particles_from_json_file(cls, kwargs, json_string, expected_exception):
         test_file_object = io.StringIO(json_string)
         test_file_object.seek(0, io.SEEK_SET)
         instance_from_json = json_load_particle(test_file_object)
-        expected_particle = instance.particle
-        actual_particle = instance_from_json.particle
+        expected_particle = instance.symbol
+        actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
             f"Expected {expected_particle}\nGot {actual_particle}"
         )
@@ -1255,21 +1282,21 @@ particle_json_repr_table = [
     ),
     (
         CustomParticle,
-        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C"}}}}',
+            "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", "symbol": "ξ"}}}}',
     ),
     (
         DimensionlessParticle,
-        {"mass": 5.2, "charge": 6.3},
+        {"mass": 5.2, "charge": 6.3, "symbol": "ξ"},
         '{"plasmapy_particle": {"type": "DimensionlessParticle",\
         "module": "plasmapy.particles.particle_class",\
         "date_created": "...", "__init__": {\
             "args": [], \
-            "kwargs": {"mass": 5.2, "charge": 6.3}}}}',
+            "kwargs": {"mass": 5.2, "charge": 6.3, "symbol": "ξ"}}}}',
     ),
 ]
 

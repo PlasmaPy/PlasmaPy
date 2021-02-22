@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 #
 # PlasmaPy documentation build configuration file, created by
@@ -49,6 +49,7 @@ extensions = [
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
 
 intersphinx_mapping = {
@@ -110,10 +111,8 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -218,7 +217,11 @@ html_favicon = "./_static/icon.ico"
 
 # -- NBSphinx options
 
-nbsphinx_thumbnails = {"notebooks/*": "_images/graphic-circular.png"}
+nbsphinx_thumbnails = {
+    "notebooks/*": "_images/graphic-circular.png",
+    "notebooks/plasma/grids_cartesian": "_static/notebook_images/uniform_grid_thumbnail.png",
+    "notebooks/plasma/grids_nonuniform": "_static/notebook_images/nonuniform_grid_thumbnail.png",
+}
 
 # adapted from https://github.com/spatialaudio/nbsphinx/blob/58b8034dd9d7349c1b4ac3e7a7d6baa87ab2a6a9/doc/conf.py
 

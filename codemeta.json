@@ -39,7 +39,6 @@
         "science"
     ],
     "programmingLanguage": [
-        "Python 3.6",
         "Python 3.7",
         "Python 3.8",
         "Python 3.9"
@@ -48,9 +47,8 @@
         "OS Independent"
     ],
     "softwareRequirements": [
-        "python >= 3.6",
+        "python >= 3.7",
         "astropy >= 4.0",
-        "colorama >= 0.3",
         "h5py >= 2.8",
         "lmfit >= 1.0.1",
         "matplotlib >= 2.0",
@@ -63,7 +61,7 @@
         "https://www.plasmapy.org/",
         "https://docs.plasmapy.org/",
         "https://app.element.io/#/room/#plasmapy-coredev:openastronomy.org",
-        "https://plasmapy.discourse.group/",
+        "https://github.com/PlasmaPy/PlasmaPy/discussions",
         "https://groups.google.com/forum/#!forum/plasmapy",
         "https://zenodo.org/communities/plasmapy",
         "https://github.com/PlasmaPy/PlasmaPy-PLEPs",
