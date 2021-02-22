@@ -14,7 +14,7 @@ from plasmapy.diagnostics import proton_radiography as prad
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(name, L=1 * u.mm, num=100):
+def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
     r"""
     Generates grids representing some common physical scenarios for testing
     and illustration. Valid example names are:
@@ -52,7 +52,7 @@ def _test_grid(name, L=1 * u.mm, num=100):
         pass
 
     elif name == "constant_bz":
-        Bz = np.ones(grid.shape) * 10 * u.T
+        Bz = np.ones(grid.shape) * B0
         grid.add_quantities(B_z=Bz)
 
     elif name == "constant_ex":
@@ -357,6 +357,22 @@ def test_run_options():
     # Test max_deflections
     sim.max_deflection
 
+    # Test way too big of a max_theta
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
+    with pytest.warns(RuntimeWarning):
+        sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+
+    # Test extreme deflections -> warns user
+    # This requires instatiating a whole new example field with a really
+    # big B-field
+    grid = _test_grid("constant_bz", num=50, B0=500 * u.T)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=1 * u.deg)
+    with pytest.warns(RuntimeWarning):
+        sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+
 
 def test_synthetic_radiograph():
 
@@ -387,4 +403,5 @@ if __name__ == "__main__":
     test_create_particles()
     test_load_particles()
     test_run_options()
+    test_synthetic_radiograph()
     pass
