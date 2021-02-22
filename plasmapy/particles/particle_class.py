@@ -1,11 +1,13 @@
 """The Particle class."""
 
+from __future__ import annotations
+
 __all__ = [
     "AbstractParticle",
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
-    "particle_like",
+    "ParticleLike",
 ]
 
 import astropy.constants as const
@@ -163,11 +165,6 @@ class AbstractParticle(ABC):
         }
         return json_dictionary
 
-    @property
-    def symbol(self):
-        """Return a string representation of the particle."""
-        return self.__repr__()
-
     def __bool__(self):
         """
         Raise an `~plasmapy.particles.exceptions.ParticleError` because particles
@@ -213,7 +210,7 @@ class Particle(AbstractParticle):
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.particles.Particle`
+    argument : `ParticleLike`, excluding `CustomParticle` instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `Particle` instance.
@@ -253,6 +250,11 @@ class Particle(AbstractParticle):
     `~plasmapy.particles.exceptions.ParticleError`
         Raised for attempts at converting a
         `~plasmapy.particles.Particle` object to a `bool`.
+
+    See Also
+    --------
+    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.DimensionlessParticle
 
     Examples
     --------
@@ -375,10 +377,7 @@ class Particle(AbstractParticle):
     """
 
     def __init__(
-        self,
-        argument: Union[str, Integral],
-        mass_numb: Integral = None,
-        Z: Integral = None,
+        self, argument: ParticleLike, mass_numb: Integral = None, Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
@@ -405,7 +404,8 @@ class Particle(AbstractParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-        self._attributes = defaultdict(lambda: None)
+        # For Python 3.10, change `type(None)` to `types.NoneType`
+        self._attributes = defaultdict(type(None))
         attributes = self._attributes
 
         # Use this set to keep track of particle categories such as
@@ -1709,30 +1709,43 @@ class DimensionlessParticle(AbstractParticle):
     Parameters
     ----------
     mass : positive real number, keyword-only, optional
-        The mass of the dimensionless particle.
+        The mass of the dimensionless particle.  Defaults to `numpy.nan`.
 
     charge : real number, keyword-only, optional
-        The electric charge of the dimensionless particle.
+        The electric charge of the dimensionless particle.  Defaults to
+        `numpy.nan`.
+
+    symbol : str, optional
+        The symbol to be assigned to the dimensionless particle.
+
+    See Also
+    --------
+    ~plasmapy.particles.Particle
+    ~plasmapy.particles.CustomParticle
 
     Notes
     -----
-    If the charge or mass is not specified, then the corresponding value
-    will be set to ``numpy.nan``.
+    `DimensionlessParticle` instances are not considered `ParticleLike`
+    because dimensionless particles cannot uniquely identify a physical
+    particle without normalization information.
 
     Examples
     --------
     >>> from plasmapy.particles import DimensionlessParticle
-    >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0)
+    >>> dimensionless_particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
     >>> dimensionless_particle.mass
     1.0
     >>> dimensionless_particle.charge
     -1.0
+    >>> dimensionless_particle.symbol
+    'ξ'
     """
 
-    def __init__(self, *, mass: Real = None, charge: Real = None):
+    def __init__(self, *, mass: Real = None, charge: Real = None, symbol: str = None):
         try:
             self.mass = mass
             self.charge = charge
+            self.symbol = symbol
         except Exception as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
@@ -1793,18 +1806,21 @@ class DimensionlessParticle(AbstractParticle):
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0}}}}
+            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
+            'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan}}}}
+            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan,
+            'symbol': 'DimensionlessParticle(mass=1.0, charge=nan)'}}}}
         """
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
             "mass": self.mass,
             "charge": self.charge,
+            "symbol": self.symbol,
         }
         return particle_dictionary
 
@@ -1846,6 +1862,23 @@ class DimensionlessParticle(AbstractParticle):
                 "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
             )
 
+    @property
+    def symbol(self) -> str:
+        """
+        Return the symbol assigned to the dimensionless particle.  If no
+        symbol was defined, then return the value given by `repr`.
+        """
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, new_symbol: str):
+        if new_symbol is None:
+            self._symbol = repr(self)
+        elif isinstance(new_symbol, str):
+            self._symbol = new_symbol
+        else:
+            raise TypeError("symbol needs to be a string.")
+
 
 class CustomParticle(AbstractParticle):
     """
@@ -1859,11 +1892,14 @@ class CustomParticle(AbstractParticle):
     mass : ~astropy.units.Quantity, optional
         The mass of the custom particle in units of mass.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real
+    charge : ~astropy.units.Quantity or ~numbers.Real, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
         charge.  If provided as a real number, then it is treated as the
         ratio of the charge to the elementary charge.
+
+    symbol : str, optional
+        The symbol to be assigned to the custom particle.
 
     Raises
     ------
@@ -1885,17 +1921,20 @@ class CustomParticle(AbstractParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1)
+    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
     >>> custom_particle.mass
     <Quantity 1.5e-26 kg>
     >>> custom_particle.charge
     <Quantity -1.60217...e-19 C>
+    >>> custom_particle.symbol
+    'Ξ'
     """
 
-    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None):
+    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol=None):
         try:
             self.mass = mass
             self.charge = charge
+            self.symbol = symbol
         except Exception as exc:
             raise InvalidParticleError(
                 f"Unable to create a custom particle with a mass of "
@@ -1922,23 +1961,26 @@ class CustomParticle(AbstractParticle):
 
         Examples
         --------
-        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C)
+        >>> custom_particle = CustomParticle(mass=5.12 * u.kg, charge=6.2 * u.C, symbol="ξ")
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C'}}}}
+            '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
+            'symbol': 'ξ'}}}}
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg', 'charge': 'nan C'}}}}
+            '__init__': {'args': (), 'kwargs': {'mass': '1.5e-26 kg', 'charge': 'nan C',
+            'symbol': 'CustomParticle(mass=1.5e-26 kg, charge=nan C)'}}}}
         """
         particle_dictionary = super().json_dict
         particle_dictionary["plasmapy_particle"]["__init__"]["kwargs"] = {
             "mass": str(self.mass),
             "charge": str(self.charge),
+            "symbol": self.symbol,
         }
         return particle_dictionary
 
@@ -2022,8 +2064,132 @@ class CustomParticle(AbstractParticle):
                     "The mass of a custom particle must have units of mass."
                 ) from exc
 
+    @property
+    def mass_energy(self) -> u.J:
+        """
+        Return the mass energy of the custom particle.
 
-# TODO: Describe valid particle representations in docstring of particle_like
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> custom_particle = CustomParticle(mass = 2e-25 * u.kg, charge = 0 * u.C)
+        >>> custom_particle.mass_energy.to('GeV')
+        <Quantity 112.19177208 GeV>
+        """
+        return (self.mass * const.c ** 2).to(u.J)
 
-particle_like = Union[str, Integral, Particle]
-"""A typing construct for valid representations of a particle."""
+    @property
+    def symbol(self) -> str:
+        """
+        Return the symbol assigned to the custom particle.  If no symbol
+        was defined, then return the value given by `repr`.
+        """
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, new_symbol: str):
+        if new_symbol is None:
+            self._symbol = repr(self)
+        elif isinstance(new_symbol, str):
+            self._symbol = new_symbol
+        else:
+            raise TypeError("symbol needs to be a string.")
+
+
+ParticleLike = Union[str, Integral, Particle, CustomParticle]
+
+ParticleLike.__doc__ = """
+An `object` is particle-like if it can be identified as an instance of
+`Particle` or `CustomParticle`, or cast into one.
+
+When used as a type hint annotation, `ParticleLike` indicates that an
+argument should represent a physical particle. Particle-like objects
+can include strings, integers, or instances of the `Particle` or
+`CustomParticle` classes.
+
+Notes
+-----
+Real world particles are typically represented as instances of the
+`Particle` class in PlasmaPy.
+
+>>> from plasmapy.particles import Particle
+>>> Particle("proton")
+Particle("p+")
+
+All `Particle` instances, and objects that can be cast into `Particle`
+instances, are particle-like.
+
+* **Elements**
+
+    An element may also be represented by a string that contains the atomic
+    symbol (case-sensitive) or the name of the element, or an integer
+    representing the atomic number. The element iron can be represented as
+    ``"Fe"``, ``"iron"``, ``"Iron"``, ``26``, or ``Particle("Fe")``.
+
+* **Isotopes**
+
+    An isotope may be represented by a string that contains an atomic symbol
+    or element name, followed by a hyphen and the mass number (with no spaces
+    in between). The isotope :sup:`56`\ Fe can be represented as
+    ``"Fe-56"``, ``"iron-56"``, or ``Particle("Fe-56")``. :sup:`1`\ H can be
+    represented by ``"protium"``, :sup:`2`\ H can be represented by ``"D"``
+    or ``"deuterium"``, and :sup:`3`\ H can be represented by ``"T"`` or
+    ``"tritium"``.
+
+* **Ions**
+
+    An ion or ionic level may be represented by a string that contains a
+    representation of an element or isotope, followed by charge information.
+    For example, ``"He 1+"``, ``"He+"``, ``"helium 1+"``, and ``"He II"``
+    all represent singly ionized helium.
+
+    Charge information is typically separated from the element or isotope by
+    a space, and given as an integer paired with a plus or minus sign. The
+    sign can either precede or follow the integer (e.g., ``"Fe 0+"`` or
+    ``"Fe +0"``). The charge information can also be given as a series of
+    plus signs or of minus signs that immediately follow the element or
+    isotope (e.g., ``"Fe++"`` for Fe\ :sup:`2+`\ ).
+
+    Ions can also be represented using Roman numeral notation, where the Roman
+    numeral indicates the integer charge plus one (e.g., ``"H I"`` represents
+    H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
+
+    D\ :sup:`1+` can also be represented by ``"deuteron"``, T\ :sup:`1+` can
+    be represented by ``"triton"``, and :sup:`4`\ He\ :sup:`2+` can be
+    represented by ``"alpha"``.
+
+* **Special particles**
+
+    A special particle may be represented by a string that contains
+    the name of the particle (case-insensitive) or a standard symbol for it
+    (case-sensitive). A neutron can be represented as ``"n"`` or
+    ``"neutron"``; a proton can be represented as ``"p+"``, ``"p"``, or
+    ``"Proton"``; and an electron can be represented by ``"e-"``, ``"e"``,
+    or ``"ELECTRON"``.
+
+* **Custom particles**
+
+    `~plasmapy.particles.particle_class.CustomParticle` instances are
+    particle-like because particle properties are provided in physical units.
+
+.. note::
+
+    `~plasmapy.particles.particle_class.DimensionlessParticle`
+    instances are *not* particle-like because, without normalization
+    information, they do not uniquely identify a physical particle.
+
+See Also
+--------
+Particle
+CustomParticle
+~plasmapy.particles.decorators.particle_input
+
+Examples
+--------
+Using `ParticleLike` as a type hint annotation indicates that an
+argument or variable should represent a physical particle.
+
+>>> from plasmapy.particles import ParticleLike, Particle
+>>> def is_electron(particle: ParticleLike):
+...     return particle == Particle("e-")
+"""
