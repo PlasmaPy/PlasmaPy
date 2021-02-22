@@ -282,7 +282,7 @@ class SyntheticProtonRadiograph:
         for x in [0, -1]:
             for y in [0, -1]:
                 for z in [0, -1]:
-                    # Souce to grid corner vector
+                    # Source to grid corner vector
                     vec = self.grid_arr[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
