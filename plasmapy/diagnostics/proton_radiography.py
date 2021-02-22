@@ -638,8 +638,12 @@ class SyntheticProtonRadiograph:
         # If particles have not yet reached the detector plane and are moving
         # away from it, they will never reach the detector.
         # So, we can remove them from the arrays
-        condition = np.logical_and(v_towards_det < 0, dist_remaining > 0)
-        ind = np.nonzero(np.where(condition, 0, 1))[0]
+
+        # Find the indices of all particles that we should keep:
+        # i.e. those still moving towards the detector.
+        ind = np.logical_not((v_towards_det < 0) & (dist_remaining > 0)).nonzero()[0]
+
+        # Drop the other particles
         self.x = self.x[ind, :]
         self.v = self.v[ind, :]
         self.nparticles_grid = self.x.shape[0]
