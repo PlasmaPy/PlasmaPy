@@ -1184,11 +1184,22 @@ class CartesianGrid(AbstractGrid):
             return tuple(output)
 
 
-class NonUniformCartesianGrid(CartesianGrid):
+class NonUniformCartesianGrid(AbstractGrid):
     r"""
     A Cartesian grid in which the _make_mesh method produces a non-uniformly
     spaced grid.
     """
+
+    def _validate(self):
+        # Check that all units are lengths
+        for i in range(3):
+            try:
+                self.units[i].to(u.m)
+            except u.UnitConversionError:
+                raise ValueError(
+                    "Units of grid are not valid for a Cartesian "
+                    f"grid: {self.units}."
+                )
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
