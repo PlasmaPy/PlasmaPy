@@ -376,7 +376,8 @@ class SyntheticProtonRadiograph:
             is 1e5.
 
         proton_energy : `~astropy.units.Quantity`
-            The energy of the particle, in units convertible to eV
+            The energy of the particle, in units convertible to eV.
+            All particles are given the same energy.
 
         max_theta : `~astropy.units.Quantity`, optional
             The largest velocity vector angle (measured from the
