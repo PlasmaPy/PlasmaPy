@@ -996,10 +996,10 @@ class SyntheticProtonRadiograph:
 
         # Throw a warning if < 50% of the particles are included on the
         # histogram
-        percentage = 100 * np.sum(intensity) / self.nparticles
-        if percentage < 50:
+        percentage = np.sum(intensity) / self.nparticles
+        if percentage < 0.5:
             warnings.warn(
-                f"Only {percentage:.2f}% of the particles are shown "
+                f"Only {percentage:.2%} of the particles are shown "
                 " on this synthetic radiograph. Consider increasing "
                 " the size to include more.",
                 RuntimeWarning,
