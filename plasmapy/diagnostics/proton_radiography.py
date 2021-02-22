@@ -311,7 +311,7 @@ class SyntheticProtonRadiograph:
     def _angles_monte_carlo(self):
         """
         Generates angles for each particle randomly such that the flux
-        per solid angle is uniform
+        per solid angle is uniform.
         """
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the proton
@@ -331,7 +331,10 @@ class SyntheticProtonRadiograph:
     def _angles_uniform(self):
         """
         Generates angles for each particle such that their velocities are
-        uniformly distributed on a grid in theta and phi.
+        uniformly distributed on a grid in theta and phi. This method
+        requires that `nparticles` be a perfect square. If it is not,
+        `nparticles` will be set as the largest perfect square smaller
+        than the provided `nparticles`.
         """
         # Calculate the approximate square root
         n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
@@ -405,7 +408,10 @@ class SyntheticProtonRadiograph:
 
                 - 'uniform': velocities will be distrbuted such that,
                    left unpreturbed,they will form a uniform pattern
-                   on the detection plane.
+                   on the detection plane. This method
+                   requires that `nparticles` be a perfect square. If it is not,
+                   `nparticles` will be set as the largest perfect square smaller
+                   than the provided `nparticles`.
 
             Simulations run in the `uniform` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
