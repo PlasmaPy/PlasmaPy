@@ -408,7 +408,7 @@ class SyntheticProtonRadiograph:
                     such that the flux per solid angle is uniform.
 
                 - 'uniform': velocities will be distrbuted such that,
-                   left unpreturbed,they will form a uniform pattern
+                   left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
                    requires that `nparticles` be a perfect square. If it is not,
                    `nparticles` will be set as the largest perfect square smaller
