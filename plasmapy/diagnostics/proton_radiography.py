@@ -384,7 +384,7 @@ class SyntheticProtonRadiograph:
             Decreasing this angle can eliminate particles that would never
             reach the detector region of interest. If no value is given, a
             guess will be made based on the size of the grid.
-            Units must be convertable to radians.
+            Units must be convertible to radians.
 
         charge : `~astropy.units.Quantity`
             The charge of the particle, in units convertable to Columbs.
