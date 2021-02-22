@@ -554,7 +554,7 @@ class SyntheticProtonRadiograph:
 
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
         r"""
-        Calculate the appropraite dt based on a number of considerations
+        Calculate the appropriate dt based on a number of considerations
         including the local grid resolution (ds) and the gyroperiod of the
         particles in the current fields.
         """
