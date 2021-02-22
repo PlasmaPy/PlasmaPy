@@ -85,14 +85,14 @@ class SampleClass(SampleClassNoArgs):
             None,
             None,
             "call_string",
-            "sample_function_no_args()",
+            "accept_no_args_and_return_value()",
         ),
         (
             add_args_and_kwargs,
             sample_args,
             sample_kwargs,
             "call_string",
-            "sample_function(2, 3, kwarg1=13, kwarg2=17)",
+            "add_args_and_kwargs(2, 3, kwarg1=13, kwarg2=17)",
         ),
     ],
 )
