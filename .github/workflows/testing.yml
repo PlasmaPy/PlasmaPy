@@ -18,15 +18,10 @@ jobs:
       matrix:
         include:
 
-          - name: Python 3.6 with minimal dependencies
+          - name: Python 3.7 with minimal dependencies
             os: ubuntu-latest
-            python: 3.6
-            toxenv: py36-minimal
-
-          - name: Python 3.6
-            os: ubuntu-latest
-            python: 3.6
-            toxenv: py36
+            python: 3.7
+            toxenv: py37-minimal
 
           - name: Python 3.7
             os: ubuntu-latest
@@ -42,6 +37,11 @@ jobs:
             os: ubuntu-latest
             python: 3.8
             toxenv: py38-cov
+
+          - name: Python 3.8, slow tests with code coverage
+            os: ubuntu-latest
+            python: 3.8
+            toxenv: py38-slow-cov
 
           - name: Python 3.8 with Numpy dev
             os: ubuntu-latest
@@ -64,6 +64,11 @@ jobs:
             python: 3.8
             toxenv: py38
 
+          - name: Documentation
+            os: ubuntu-latest
+            python: 3.8
+            toxenv: build_docs
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -73,11 +78,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python }}
-    - name: Install language-pack-fr and tzdata
-      if: startsWith(matrix.os, 'ubuntu')
-      run: sudo apt-get install language-pack-fr tzdata
     - name: Install Python dependencies
       run: python -m pip install --upgrade tox codecov
+    - name: Install language-pack-fr and tzdata
+      if: startsWith(matrix.name, 'Documentation')
+      run: sudo apt-get install graphviz pandoc
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
@@ -86,7 +91,7 @@ jobs:
       with:
         file: ./coverage.xml
   build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+    name: Packaging
     runs-on: ubuntu-18.04
     needs: tests
     steps:
@@ -102,12 +107,19 @@ jobs:
     - name: Install requirements
       run: |
         pip install --upgrade pip
-        pip install setuptools numpy wheel setuptools_scm
-    - name: Build a binary wheel and a source tarball
+        pip install setuptools numpy wheel setuptools_scm twine
+    - name: Build a binary wheel
+      run: python setup.py bdist_wheel
+    - name: Build a source tarball
+      run: python setup.py sdist
+    - name: Twine check
+      run: twine check dist/*
+    - name: Install PlasmaPy in all variants
       run: |
-        python setup.py bdist_wheel
-        python setup.py sdist
-    - name: Publish distribution 📦 to PyPI
+        pip install --progress-bar off .[all,dev]
+        pip install -e .[all,dev]
+        python setup.py develop
+    - name: Publish distribution, if tagged, 📦 to PyPI
       if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
