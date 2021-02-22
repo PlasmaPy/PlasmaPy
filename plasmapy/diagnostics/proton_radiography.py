@@ -136,7 +136,7 @@ class SyntheticProtonRadiograph:
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
-        into the command line while running.
+        into the standard output while running.
     """
 
     def __init__(
