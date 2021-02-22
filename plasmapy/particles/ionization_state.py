@@ -32,7 +32,7 @@ class IonicFraction:
 
     Parameters
     ----------
-    ion: `~plasmapy.particles.particle_class.particle_like`
+    ion: `~plasmapy.particles.particle_class.ParticleLike`
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional
@@ -161,7 +161,7 @@ class IonizationState:
 
     Parameters
     ----------
-    particle: `particle_like`
+    particle: `~plasmapy.particles.particle_class.ParticleLike`
         A `str` or `~plasmapy.particles.Particle` instance representing
         an element, isotope, or ion; or an integer representing the
         atomic number of an element.
@@ -342,26 +342,7 @@ class IonizationState:
         )
 
     def __iter__(self):
-        """Initialize an instance prior to iteration."""
-        self._charge_index = 0
-        return self
-
-    def __next__(self):
-        """
-        Return a `~plasmapy.particles.IonicFraction` instance that contains
-        information about a particular ionization level.
-        """
-        if self._charge_index <= self.atomic_number:
-            result = IonicFraction(
-                ion=Particle(self.base_particle, Z=self._charge_index),
-                ionic_fraction=self.ionic_fractions[self._charge_index],
-                number_density=self.number_densities[self._charge_index],
-            )
-            self._charge_index += 1
-            return result
-        else:
-            del self._charge_index
-            raise StopIteration
+        yield from [self[i] for i in range(self.atomic_number + 1)]
 
     def __eq__(self, other):
         """
