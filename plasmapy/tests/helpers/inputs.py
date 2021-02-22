@@ -2,10 +2,10 @@
 
 __all__ = [
     "AbstractTestInputs",
-    "FunctionTestInputs",
-    "GenericClassTestInputs",
     "ClassAttributeTestInputs",
     "ClassMethodTestInputs",
+    "FunctionTestInputs",
+    "GenericClassTestInputs",
 ]
 
 import inspect
@@ -14,7 +14,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, List, NoReturn, Optional, Tuple, Union
 
 from plasmapy.tests.helpers.exceptions import InvalidTestError
-from plasmapy.utils.formatting.formatting import (
+from plasmapy.utils.code_repr import (
     _object_name,
     attribute_call_string,
     call_string,
@@ -173,14 +173,14 @@ class GenericClassTestInputs(AbstractTestInputs):
         return self._info["cls"]
 
     @property
-    def cls_args(self) -> Union[Tuple, List]:
+    def args_to_cls(self) -> Union[Tuple, List]:
         """The positional arguments to be passed to the class during instantiation."""
-        return self._info["cls_args"]
+        return self._info["args_to_cls"]
 
     @property
-    def cls_kwargs(self) -> Dict[str, Any]:
+    def kwargs_to_cls(self) -> Dict[str, Any]:
         """The keyword arguments to be passed to the class during instantiation."""
-        return self._info["cls_kwargs"]
+        return self._info["kwargs_to_cls"]
 
     @cls.setter
     def cls(self, provided_cls):
@@ -189,13 +189,13 @@ class GenericClassTestInputs(AbstractTestInputs):
         else:
             raise TypeError("Expecting a class.")
 
-    @cls_args.setter
-    def cls_args(self, provided_cls_args: Any):
-        self._info["cls_args"] = _validate_args(provided_cls_args)
+    @args_to_cls.setter
+    def args_to_cls(self, provided_args_to_cls: Any):
+        self._info["args_to_cls"] = _validate_args(provided_args_to_cls)
 
-    @cls_kwargs.setter
-    def cls_kwargs(self, provided_cls_kwargs: Optional[Dict[str, Any]]):
-        self._info["cls_kwargs"] = _validate_kwargs(provided_cls_kwargs)
+    @kwargs_to_cls.setter
+    def kwargs_to_cls(self, provided_kwargs_to_cls: Optional[Dict[str, Any]]):
+        self._info["kwargs_to_cls"] = _validate_kwargs(provided_kwargs_to_cls)
 
 
 class ClassAttributeTestInputs(GenericClassTestInputs):
@@ -213,14 +213,14 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
     attribute : str
         The name of the attribute contained in ``cls`` to be tested.
 
-    cls_args : optional
+    args_to_cls : optional
         The positional arguments to be provided to the class that is
         being tested during instantiation. If this is a `tuple` or
         `list`, then the arguments will be each of the items in the
         collection. If there is only one positional argument, then it
         may be inputted as is without being put into a `tuple` or `list`.
 
-    cls_kwargs : `dict`, optional
+    kwargs_to_cls : `dict`, optional
         The keyword arguments to be provided to the class that is
         being tested during instantiation. If provided, the keys of
         this `dict` must be strings.
@@ -235,22 +235,22 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         self,
         cls,
         attribute: str,
-        cls_args: Any = None,
-        cls_kwargs: Optional[Dict[str, Any]] = None,
+        args_to_cls: Any = None,
+        kwargs_to_cls: Optional[Dict[str, Any]] = None,
     ):
 
         try:
             self._info = {}
             self.cls = cls
-            self.cls_args = cls_args
-            self.cls_kwargs = cls_kwargs
+            self.args_to_cls = args_to_cls
+            self.kwargs_to_cls = kwargs_to_cls
             self.attribute = attribute
         except Exception as exc:
             # TODO: Make sure that the input variables are being represented correctly here
             raise InvalidTestError(
                 f"Unable to instantiate ClassAttributeTestInputs for "
-                f"class {cls.__name__} with cls_args = {repr(cls_args)}, "
-                f"cls_kwargs = {repr(cls_kwargs)}, and attribute = "
+                f"class {cls.__name__} with args_to_cls = {repr(args_to_cls)}, "
+                f"kwargs_to_cls = {repr(kwargs_to_cls)}, and attribute = "
                 f"{repr(attribute)}."
             ) from exc
 
@@ -271,7 +271,7 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
     def call(self) -> Any:
         """Instantiate the class and access the attribute."""
         __tracebackhide__ = True
-        instance = self.cls(*self.cls_args, **self.cls_kwargs)
+        instance = self.cls(*self.args_to_cls, **self.kwargs_to_cls)
         return getattr(instance, self.attribute)
 
     @property
@@ -283,8 +283,8 @@ class ClassAttributeTestInputs(GenericClassTestInputs):
         return attribute_call_string(
             cls=self.cls,
             attr=self.attribute,
-            cls_args=self.cls_args,
-            cls_kwargs=self.cls_kwargs,
+            args_to_cls=self.args_to_cls,
+            kwargs_to_cls=self.kwargs_to_cls,
         )
 
 
@@ -303,26 +303,26 @@ class ClassMethodTestInputs(GenericClassTestInputs):
     method : `str`
         The name of the method contained in ``cls`` to be tested.
 
-    cls_args : optional
+    args_to_cls : optional
         The positional arguments to be provided to the class that is
         being tested during instantiation.  If this is a `tuple` or
         `list`, then the arguments will be each of the items in the
         collection. If there is only one positional argument, then it
         may be inputted as is without being put into a `tuple` or `list`.
 
-    cls_kwargs : `dict`, optional
+    kwargs_to_cls : `dict`, optional
         The keyword arguments to be provided to the function that is
         being tested. If provided, the keys of this `dict` must be
         strings.
 
-    method_args : optional
+    args_to_method : optional
         The positional arguments to be provided to the method that is
         being tested.  If this is a `tuple` or `list`, then the
         arguments will be each of the items in the collection. If there
         is only one positional argument, then it may be inputted as is
         without being put into a `tuple` or `list`.
 
-    method_kwargs : `dict`, optional
+    kwargs_to_method : `dict`, optional
         The keyword arguments to be provided to the method that is being
         tested. If provided, the keys of this `dict` must be strings.
 
@@ -337,27 +337,27 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         self,
         cls,
         method: str,
-        cls_args=None,
-        cls_kwargs: Optional[Dict[str, Any]] = None,
-        method_args=None,
-        method_kwargs: Optional[Dict[str, Any]] = None,
+        args_to_cls=None,
+        kwargs_to_cls: Optional[Dict[str, Any]] = None,
+        args_to_method=None,
+        kwargs_to_method: Optional[Dict[str, Any]] = None,
     ):
 
         try:
             self._info = {}
             self.cls = cls
-            self.cls_args = cls_args
-            self.cls_kwargs = cls_kwargs
+            self.args_to_cls = args_to_cls
+            self.kwargs_to_cls = kwargs_to_cls
             self.method = method
-            self.method_args = method_args
-            self.method_kwargs = method_kwargs
+            self.args_to_method = args_to_method
+            self.kwargs_to_method = kwargs_to_method
         except Exception as exc:
             # TODO: Test that error message is representing things correctly
             raise InvalidTestError(
                 f"Unable to instantiate ClassMethodTestInputs for class "
-                f"{cls.__name__} with cls_args = {cls_args}, cls_kwargs = "
-                f"{cls_kwargs}, method = {method}, method_args = "
-                f"{method_args}, and method_kwargs = {method_kwargs}."
+                f"{cls.__name__} with args_to_cls = {args_to_cls}, kwargs_to_cls = "
+                f"{kwargs_to_cls}, method = {method}, args_to_method = "
+                f"{args_to_method}, and kwargs_to_method = {kwargs_to_method}."
             ) from exc
 
     @property
@@ -366,24 +366,24 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         return self._info["method"]
 
     @property
-    def cls_args(self) -> Union[Tuple, List]:
+    def args_to_cls(self) -> Union[Tuple, List]:
         """The positional arguments to be provided to the class upon instantiation."""
-        return self._info["cls_args"]
+        return self._info["args_to_cls"]
 
     @property
-    def cls_kwargs(self) -> Dict[str, Any]:
+    def kwargs_to_cls(self) -> Dict[str, Any]:
         """The keyword arguments to be provided to the class upon instantiation."""
-        return self._info["cls_kwargs"]
+        return self._info["kwargs_to_cls"]
 
     @property
-    def method_args(self) -> Union[Tuple, List]:
+    def args_to_method(self) -> Union[Tuple, List]:
         """The positional arguments to be provided to the method being tested."""
-        return self._info["method_args"]
+        return self._info["args_to_method"]
 
     @property
-    def method_kwargs(self) -> Dict[str, Any]:
+    def kwargs_to_method(self) -> Dict[str, Any]:
         """The keyword arguments to be provided to the method being tested."""
-        return self._info["method_kwargs"]
+        return self._info["kwargs_to_method"]
 
     @method.setter
     def method(self, method_name: str):
@@ -405,28 +405,28 @@ class ClassMethodTestInputs(GenericClassTestInputs):
                 f"{self.cls.__name__} to be callable."
             )
 
-    @cls_args.setter
-    def cls_args(self, provided_args):
-        self._info["cls_args"] = _validate_args(provided_args)
+    @args_to_cls.setter
+    def args_to_cls(self, provided_args):
+        self._info["args_to_cls"] = _validate_args(provided_args)
 
-    @cls_kwargs.setter
-    def cls_kwargs(self, provided_kwargs: Optional[Dict[str, Any]]):
-        self._info["cls_kwargs"] = _validate_kwargs(provided_kwargs)
+    @kwargs_to_cls.setter
+    def kwargs_to_cls(self, provided_kwargs: Optional[Dict[str, Any]]):
+        self._info["kwargs_to_cls"] = _validate_kwargs(provided_kwargs)
 
-    @method_args.setter
-    def method_args(self, provided_args):
-        self._info["method_args"] = _validate_args(provided_args)
+    @args_to_method.setter
+    def args_to_method(self, provided_args):
+        self._info["args_to_method"] = _validate_args(provided_args)
 
-    @method_kwargs.setter
-    def method_kwargs(self, provided_kwargs: Optional[Dict[str, Any]]):
-        self._info["method_kwargs"] = _validate_kwargs(provided_kwargs)
+    @kwargs_to_method.setter
+    def kwargs_to_method(self, provided_kwargs: Optional[Dict[str, Any]]):
+        self._info["kwargs_to_method"] = _validate_kwargs(provided_kwargs)
 
     def call(self) -> Any:
         """Instantiate the class and call the appropriate method."""
         __tracebackhide__ = True
-        instance = self.cls(*self.cls_args, **self.cls_kwargs)
+        instance = self.cls(*self.args_to_cls, **self.kwargs_to_cls)
         method = getattr(instance, self.method)
-        return method(*self.method_args, **self.method_kwargs)
+        return method(*self.args_to_method, **self.kwargs_to_method)
 
     @property
     def call_string(self) -> str:
@@ -437,8 +437,8 @@ class ClassMethodTestInputs(GenericClassTestInputs):
         return method_call_string(
             cls=self.cls,
             method=self.method,
-            cls_args=self.cls_args,
-            cls_kwargs=self.cls_kwargs,
-            method_args=self.method_args,
-            method_kwargs=self.method_kwargs,
+            args_to_cls=self.args_to_cls,
+            kwargs_to_cls=self.kwargs_to_cls,
+            args_to_method=self.args_to_method,
+            kwargs_to_method=self.kwargs_to_method,
         )

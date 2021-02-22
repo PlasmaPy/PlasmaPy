@@ -16,8 +16,8 @@ sample_args_list = [5, 7]
 sample_kwargs = {"kwarg1": 13, "kwarg2": 17}
 bad_kwargs_nonstring_key = {"kwarg1": 19, 23: 29}
 bad_kwargs_wrong_type = [31, 37]
-sample_method_args = (41, 43)
-sample_method_kwargs = {"method_kwarg1": 47, "method_kwarg2": 53}
+sample_args_to_method = (41, 43)
+sample_kwargs_to_method = {"method_kwarg1": 47, "method_kwarg2": 53}
 sample_value = 59
 
 
@@ -156,12 +156,12 @@ def test_function_test_inputs_errors(function, args, kwargs):
     "cls, args, kwargs, attribute_being_tested, expected",
     [
         (SampleClass, sample_args, sample_kwargs, "cls", SampleClass),
-        (SampleClass, sample_args, sample_kwargs, "cls_args", sample_args),
-        (SampleClass, sample_args_list, sample_kwargs, "cls_args", sample_args_list),
-        (SampleClass, None, None, "cls_args", ()),
-        (SampleClass, 42, None, "cls_args", (42,)),
-        (SampleClass, sample_args, sample_kwargs, "cls_kwargs", sample_kwargs),
-        (SampleClass, sample_args, None, "cls_kwargs", {}),
+        (SampleClass, sample_args, sample_kwargs, "args_to_cls", sample_args),
+        (SampleClass, sample_args_list, sample_kwargs, "args_to_cls", sample_args_list),
+        (SampleClass, None, None, "args_to_cls", ()),
+        (SampleClass, 42, None, "args_to_cls", (42,)),
+        (SampleClass, sample_args, sample_kwargs, "kwargs_to_cls", sample_kwargs),
+        (SampleClass, sample_args, None, "kwargs_to_cls", {}),
         (SampleClass, sample_args, None, "attribute", "sample_attribute"),
         (SampleClass, None, None, "call_string", "SampleClass().sample_attribute"),
         (
@@ -279,28 +279,28 @@ common_inputs = (
     SampleClass,
     sample_args,
     sample_kwargs,
-    sample_method_args,
-    sample_method_kwargs,
+    sample_args_to_method,
+    sample_kwargs_to_method,
 )
 
 
 @pytest.mark.parametrize(
-    "cls, cls_args, cls_kwargs, method_args, method_kwargs, attribute_being_tested, expected",
+    "cls, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, attribute_being_tested, expected",
     [
         (*common_inputs, "cls", SampleClass),
-        (*common_inputs, "cls_args", sample_args),
-        (*common_inputs, "cls_kwargs", sample_kwargs),
-        (*common_inputs, "method_args", sample_method_args),
-        (*common_inputs, "method_kwargs", sample_method_kwargs),
+        (*common_inputs, "args_to_cls", sample_args),
+        (*common_inputs, "kwargs_to_cls", sample_kwargs),
+        (*common_inputs, "args_to_method", sample_args_to_method),
+        (*common_inputs, "kwargs_to_method", sample_kwargs_to_method),
         (*common_inputs, "method", "sample_method"),
         (SampleClassNoArgs, None, None, None, None, "cls", SampleClassNoArgs),
-        (SampleClassNoArgs, None, None, None, None, "cls_args", ()),
-        (SampleClassNoArgs, None, None, None, None, "cls_kwargs", {}),
+        (SampleClassNoArgs, None, None, None, None, "args_to_cls", ()),
+        (SampleClassNoArgs, None, None, None, None, "kwargs_to_cls", {}),
         (SampleClassNoArgs, None, None, None, None, "method", "sample_method"),
-        (SampleClassNoArgs, None, None, None, None, "method_args", ()),
-        (SampleClassNoArgs, None, None, None, None, "method_kwargs", {}),
-        (SampleClassNoArgs, 42, None, None, None, "cls_args", (42,)),
-        (SampleClassNoArgs, None, None, 42, None, "method_args", (42,)),
+        (SampleClassNoArgs, None, None, None, None, "args_to_method", ()),
+        (SampleClassNoArgs, None, None, None, None, "kwargs_to_method", {}),
+        (SampleClassNoArgs, 42, None, None, None, "args_to_cls", (42,)),
+        (SampleClassNoArgs, None, None, 42, None, "args_to_method", (42,)),
         (
             SampleClassNoArgs,
             None,
@@ -322,10 +322,10 @@ common_inputs = (
 )
 def test_class_method_test_inputs(
     cls,
-    cls_args,
-    cls_kwargs,
-    method_args,
-    method_kwargs,
+    args_to_cls,
+    kwargs_to_cls,
+    args_to_method,
+    kwargs_to_method,
     attribute_being_tested,
     expected,
 ):
@@ -339,17 +339,17 @@ def test_class_method_test_inputs(
     cls
         The sample class being passed to ``ClassMethodTestInputs``
 
-    cls_args
+    args_to_cls
         Positional arguments to be used when instantiating ``cls``
 
-    cls_kwargs : `dict` or `None`
+    kwargs_to_cls : `dict` or `None`
         Keyword arguments to be used when instantiating ``cls``
 
-    method_args
+    args_to_method
         Positional arguments to be used when calling the method
         ``sample_method`` in an instance of ``cls``
 
-    method_kwargs : `dict` or `None`
+    kwargs_to_method : `dict` or `None`
         Keyword arguments to be used when calling the method
         ``sample_method`` in an instance of ``cls``
 
@@ -364,7 +364,7 @@ def test_class_method_test_inputs(
     """
     method_name = "sample_method"
     instance = ClassMethodTestInputs(
-        cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
+        cls, method_name, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method
     )
     value_of_attribute = getattr(instance, attribute_being_tested)
     if value_of_attribute != expected:
@@ -375,11 +375,16 @@ def test_class_method_test_inputs(
 
 
 @pytest.mark.parametrize(
-    "cls, cls_args, cls_kwargs, method_args, method_kwargs, expected",
-    [(*common_inputs, sum(sample_method_args) + sum(sample_method_kwargs.values()))],
+    "cls, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected",
+    [
+        (
+            *common_inputs,
+            sum(sample_args_to_method) + sum(sample_kwargs_to_method.values()),
+        )
+    ],
 )
 def test_class_method_test_inputs_call(
-    cls, cls_args, cls_kwargs, method_args, method_kwargs, expected
+    cls, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected
 ):
     """
     Test that the ``call`` method on ClassMethodTestInputs returns
@@ -388,7 +393,7 @@ def test_class_method_test_inputs_call(
     """
     method_name = "sample_method"
     instance = ClassMethodTestInputs(
-        cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
+        cls, method_name, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method
     )
     value_of_call = instance.call()
     if value_of_call != expected:
@@ -396,14 +401,14 @@ def test_class_method_test_inputs_call(
             f"The call method on a ClassMethodTestInputs instance is "
             f"returning {value_of_call}, rather than the expected value "
             f"of {expected}.  This case has cls = {cls.__name__}, "
-            f"cls_args = {cls_args}, cls_kwargs = {cls_kwargs}, "
-            f"method_args = {method_args}, and method_kwargs = "
-            f"{method_kwargs}."
+            f"args_to_cls = {args_to_cls}, kwargs_to_cls = {kwargs_to_cls}, "
+            f"args_to_method = {args_to_method}, and kwargs_to_method = "
+            f"{kwargs_to_method}."
         )
 
 
 @pytest.mark.parametrize(
-    "cls, cls_args, cls_kwargs, method_args, method_kwargs, method_name",
+    "cls, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, method_name",
     [
         (*common_inputs, 42),
         (*common_inputs, "sample_attribute"),
@@ -413,7 +418,7 @@ def test_class_method_test_inputs_call(
     ],
 )
 def test_class_method_test_inputs_errors(
-    cls, cls_args, cls_kwargs, method_args, method_kwargs, method_name
+    cls, args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, method_name
 ):
     """
     Test that ``ClassMethodTestInputs`` raises exceptions upon
@@ -423,7 +428,12 @@ def test_class_method_test_inputs_errors(
     """
     with pytest.raises(InvalidTestError):
         ClassMethodTestInputs(
-            cls, method_name, cls_args, cls_kwargs, method_args, method_kwargs
+            cls,
+            method_name,
+            args_to_cls,
+            kwargs_to_cls,
+            args_to_method,
+            kwargs_to_method,
         )
 
 
