@@ -618,7 +618,7 @@ class SyntheticProtonRadiograph:
         t = (dist - remaining) / np.dot(self.v, uvec)
 
         # Calculate the particle positions for that case
-        self.x0 = self.source + self.v * np.outer(t, np.ones(3))
+        self.x0 = self.source + self.v * t[:, np.newaxis]
 
     def _coast_to_detector(self):
         r"""
