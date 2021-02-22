@@ -40,8 +40,7 @@ def _validate_kwargs(kwargs: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Check that the argument is a valid `dict` to represent keyword
     arguments to be provided to some function.  If the input is `None`,
-    then this function will return an empty `dict`.  This function does
-    not check that
+    then this function will return an empty `dict`.
 
     Raises
     ------

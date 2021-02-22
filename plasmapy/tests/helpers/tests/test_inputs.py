@@ -21,17 +21,17 @@ sample_kwargs_to_method = {"method_kwarg1": 47, "method_kwarg2": 53}
 sample_value = 59
 
 
-def sample_function(arg1, arg2, kwarg1=None, kwarg2=None):
+def add_args_and_kwargs(arg1, arg2, kwarg1=None, kwarg2=None):
     """Sum up the positional and keyword arguments."""
     return sum([arg1, arg2, kwarg1, kwarg2])
 
 
-def sample_function_one_arg(arg):
+def double_argument(arg):
     """Double the argument."""
     return arg * 2
 
 
-def sample_function_no_args():
+def accept_no_args_and_return_value():
     """Return a sample value."""
     return sample_value
 
@@ -61,22 +61,34 @@ class SampleClass(SampleClassNoArgs):
 @pytest.mark.parametrize(
     "function, args, kwargs, attribute, expected",
     [
-        (sample_function, sample_args, sample_kwargs, "function", sample_function),
-        (sample_function, sample_args, sample_kwargs, "args", sample_args),
-        (sample_function, sample_args_list, sample_kwargs, "args", sample_args_list),
-        (sample_function, sample_args, sample_kwargs, "kwargs", sample_kwargs),
-        (sample_function_one_arg, sample_value, None, "args", (sample_value,)),
-        (sample_function_no_args, None, None, "args", ()),
-        (sample_function_no_args, None, None, "kwargs", {}),
         (
-            sample_function_no_args,
+            add_args_and_kwargs,
+            sample_args,
+            sample_kwargs,
+            "function",
+            add_args_and_kwargs,
+        ),
+        (add_args_and_kwargs, sample_args, sample_kwargs, "args", sample_args),
+        (
+            add_args_and_kwargs,
+            sample_args_list,
+            sample_kwargs,
+            "args",
+            sample_args_list,
+        ),
+        (add_args_and_kwargs, sample_args, sample_kwargs, "kwargs", sample_kwargs),
+        (double_argument, sample_value, None, "args", (sample_value,)),
+        (accept_no_args_and_return_value, None, None, "args", ()),
+        (accept_no_args_and_return_value, None, None, "kwargs", {}),
+        (
+            accept_no_args_and_return_value,
             None,
             None,
             "call_string",
             "sample_function_no_args()",
         ),
         (
-            sample_function,
+            add_args_and_kwargs,
             sample_args,
             sample_kwargs,
             "call_string",
@@ -100,18 +112,13 @@ def test_function_test_inputs(function, args, kwargs, attribute, expected):
     "function, args, kwargs, expected",
     [
         (
-            sample_function,
+            add_args_and_kwargs,
             sample_args,
             sample_kwargs,
-            sample_function(*sample_args, **sample_kwargs),
+            add_args_and_kwargs(*sample_args, **sample_kwargs),
         ),
-        (
-            sample_function_one_arg,
-            sample_value,
-            None,
-            sample_function_one_arg(sample_value),
-        ),
-        (sample_function_no_args, None, None, sample_value),
+        (double_argument, sample_value, None, double_argument(sample_value),),
+        (accept_no_args_and_return_value, None, None, sample_value),
     ],
 )
 def test_function_test_inputs_call(function, args, kwargs, expected):
@@ -133,8 +140,8 @@ def test_function_test_inputs_call(function, args, kwargs, expected):
 @pytest.mark.parametrize(
     "function, args, kwargs",
     [
-        (sample_function, sample_args, bad_kwargs_nonstring_key),
-        (sample_function, sample_args, bad_kwargs_wrong_type),
+        (add_args_and_kwargs, sample_args, bad_kwargs_nonstring_key),
+        (add_args_and_kwargs, sample_args, bad_kwargs_wrong_type),
         ("not a function", None, None),
     ],
 )
@@ -414,7 +421,7 @@ def test_class_method_test_inputs_call(
         (*common_inputs, "sample_attribute"),
         (SampleClass, None, (), None, None, "sample_method"),
         (SampleClass, None, None, None, (), "sample_method"),
-        (sample_function, None, None, None, None, "sample_method"),
+        (add_args_and_kwargs, None, None, None, None, "sample_method"),
     ],
 )
 def test_class_method_test_inputs_errors(
