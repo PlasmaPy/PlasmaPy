@@ -797,8 +797,8 @@ class SyntheticProtonRadiograph:
         # Check to make sure particles have already been generated
         if not hasattr(self, "x"):
             raise ValueError(
-                "The create_particles method must be called before "
-                "running the particle tracing algorithm."
+                "Either the create_particles or load_particles method must be "
+                "called before running the particle tracing algorithm."
             )
 
         # Store a copy of the initial velocity distribution in memory
@@ -970,7 +970,10 @@ class SyntheticProtonRadiograph:
                 ]
             )
 
-            size = np.array([[-w, w], [-w, w]]) * self.grid.unit
+            # The factor of 5 here is somewhat arbitrary: we just want a
+            # region a few times bigger than the image of the grid on the
+            # detector, since protons could be deflected out
+            size = 5 * np.array([[-w, w], [-w, w]]) * u.m
 
         # Generate the histogram
         intensity, h, v = np.histogram2d(

@@ -161,17 +161,17 @@ def test_coordinate_systems():
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
     detector = (70.07 * u.mm, 70.07 * u.mm, 0 * u.mm)
-    sim1 = prad.SyntheticProtonRadiograph(grid, source, detector)
+    sim1 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
 
     # Cylindrical
     source = (-1 * u.cm, 45 * u.deg, 0 * u.mm)
     detector = (10 * u.cm, 45 * u.deg, 0 * u.mm)
-    sim2 = prad.SyntheticProtonRadiograph(grid, source, detector)
+    sim2 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
 
     # In spherical
     source = (-0.01 * u.m, 90 * u.deg, 45 * u.deg)
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
-    sim3 = prad.SyntheticProtonRadiograph(grid, source, detector)
+    sim3 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
 
     assert np.allclose(sim1.source, sim2.source, atol=1e-2)
     assert np.allclose(sim2.source, sim3.source, atol=1e-2)
@@ -270,10 +270,16 @@ def test_init():
     )
 
     # Test special case hdir == [0,0,1]
-    hdir = np.array([0, 0, 1])
-    sim = prad.SyntheticProtonRadiograph(
-        grid, source, detector, verbose=False, detector_hdir=hdir
-    )
+    source = (0 * u.mm, 0 * u.mm, -10 * u.mm)
+    detector = (0 * u.mm, 0 * u.mm, 200 * u.mm)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    assert all(sim.det_hdir == np.array([1, 0, 0]))
+
+    # Test that hdir is calculated correctly if src-det axis is anti-parallel to z
+    source = (0 * u.mm, 0 * u.mm, 10 * u.mm)
+    detector = (0 * u.mm, 0 * u.mm, -200 * u.mm)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
 def test_create_particles():
@@ -336,6 +342,12 @@ def test_run_options():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
+    # Test that trying to call run() without creating particles
+    # raises an exception
+    with pytest.raises(ValueError):
+        sim.run()
+
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
     # Try running with nearest neighbor interpolator
@@ -360,11 +372,11 @@ def test_synthetic_radiograph():
     size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
     bins = [200, 60]
 
-    # Test optical density
-    h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
-
     # Test size is None, default bins
     h, v, i = sim.synthetic_radiograph()
+
+    # Test optical density
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
 
 
 if __name__ == "__main__":
@@ -375,5 +387,4 @@ if __name__ == "__main__":
     test_create_particles()
     test_load_particles()
     test_run_options()
-    test_synthetic_radiograph()
     pass
