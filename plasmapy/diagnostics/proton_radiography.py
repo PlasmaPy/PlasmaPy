@@ -663,7 +663,7 @@ class SyntheticProtonRadiograph:
         # Check that all points are now in the detector plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
-        assert np.allclose(plane_eq, np.zeros(self.nparticles_grid), atol=1e-6)
+        assert np.allclose(plane_eq, 0, atol=1e-6)
 
     def _push(self):
         r"""
