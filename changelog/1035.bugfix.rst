@@ -1,0 +1,3 @@
+Fixed two bugs in `proton_radiography.SyntheticProtonRadiograph`:
+- The `max_deflection` property now works properly even when particles are deflected from the grid.
+- The adaptive timestep function now works when particles are provided using `load_particles`
