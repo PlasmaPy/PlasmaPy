@@ -304,9 +304,7 @@ class SyntheticProtonRadiograph:
             print(msg)
 
     # Define some constants so they don't get constantly re-evaluated
-    _e = const.e.si.value
     _c = const.c.si.value
-    _m_p = const.m_p.si.value
 
     # *************************************************************************
     # Particle creation methods
@@ -553,7 +551,7 @@ class SyntheticProtonRadiograph:
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = 2 * np.pi * self._m_p / (self._e * np.max(Bmag))
+            gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
 
         # TODO: introduce a minimum timestep based on electric fields too!
 
