@@ -85,7 +85,7 @@ def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
         b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = np.exp(-(arg ** 2)) * u.V
+        potential = 5e4*np.exp(-(arg ** 2)) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
@@ -399,15 +399,61 @@ def test_synthetic_radiograph():
 
 
 def test_insert_mesh():
-    grid = _test_grid("empty", num=50)
+    grid = _test_grid("electrostatic_gaussian_sphere", num=100)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
+
+    sim.create_particles(5e5, 3 * u.MeV, max_theta=10 * u.deg)
+
+
+    # Setup the mesh
+    location = np.array([0, -2, 0])*u.mm
+    width = 1.5*u.mm
+    height = 1.5*u.mm
+    xcells = 16
+    ycells = 16
+    wire_thickness = 20*u.um
+
+
+    mag = 1 + (200+ 2)/(10 -2)
+    print(mag)
+    xmax = (width.to(u.mm).value/2)*mag
+    vmax = (height.to(u.mm).value/2)*mag
+
+
+    mesh_hdir = None
+    mesh_hdir = np.array([1,0,0])
+
+    sim.add_mesh(location, width, height, xcells, ycells, wire_thickness,
+                 mesh_hdir=mesh_hdir)
+
+
+    sim.run(field_weighting="nearest neighbor")
+
+
+    size = np.array([[-1, 1], [-1, 1]]) * 2.5 * u.cm
+    bins = [200, 200]
+
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
+
+    fig, ax = plt.subplots()
+    ax.pcolormesh(h.to(u.mm).value, v.to(u.mm).value, i.T, cmap='Blues_r')
+    ax.set_aspect('equal')
+    ax.set_xlabel("x (mm)")
+    ax.set_ylabel("y (mm)")
+    #ax.axvline(x=xmax)
+    #ax.axvline(x=-xmax)
+    #ax.axhline(y=vmax)
+    #ax.axhline(y=-vmax)
+
+
 
 
 
 if __name__ == "__main__":
+    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -416,4 +462,6 @@ if __name__ == "__main__":
     test_load_particles()
     test_run_options()
     test_synthetic_radiograph()
+    """
+    test_insert_mesh()
     pass

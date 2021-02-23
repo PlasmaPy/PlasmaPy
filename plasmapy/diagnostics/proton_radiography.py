@@ -316,75 +316,87 @@ class SyntheticProtonRadiograph:
 
 
 
-    def insert_mesh(self, location, width, height, xcells, ycells, wire_thickness):
+    def add_mesh(self, location, width, height, xcells, ycells, wire_thickness,
+                 mesh_hdir = None,
+                 mesh_vdir = None):
 
-        location = location.si.value
+        location = _coerce_to_cartesian_si(location)
+
         width = width.si.value
         height = height.si.value
         wire_thickness = wire_thickness.si.value
 
-        # TODO: accept mesh location in spherical or cylindrical coordinates too
+        # If no hdir/vdir is specified, calculate a default value
+        # If one is specified, make sure it is normalized
+        if mesh_hdir is None:
+            # Re-calculate the default here, in case the user
+            # specified a different det_hdir
+            mesh_hdir = self._default_detector_hdir()
+        else:
+            mesh_hdir = mesh_hdir/np.linalg.norm(mesh_hdir)
+
+        if mesh_vdir is None:
+            mesh_vdir = np.cross(mesh_hdir, self.det_n)
+            mesh_vdir = -mesh_vdir / np.linalg.norm(mesh_vdir)
+        else:
+            mesh_vdir = mesh_vdir/np.linalg.norm(mesh_vdir)
+
+
+        print(mesh_hdir)
+        print(mesh_vdir)
+
+
+        mesh_normal = np.cross(mesh_hdir, mesh_vdir)
+
+
 
         # TODO: Raise exception if mesh is AFTER the field grid
 
-        # TODO: Make sure this all works when the mesh center is NOT
-        # centered on the source-detector axis.
 
-        # Define the plane of the mesh and calculate the positions of each
-        # particle in that plane
-        dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(location)
-        v_towards_mesh = np.dot(self.v, -self.det_n)
-        # Time remaining for each particle to reach the mesh
-        t = dist_remaining / v_towards_mesh
+        # Calculate the times required to evolve each particle to the mesh
+        # plane
+        t = np.inner(location[np.newaxis, :] - self.x, mesh_normal)/ \
+            np.inner(self.v, mesh_normal)
+
+
+
+
         # Particle positions in the mesh
-        x = self.x + self.v * np.outer(t, np.ones(3))
+        x = self.x + self.v * t[:,np.newaxis]
         # Particle positions in 2D on the mesh plane
-        xloc = np.dot(x - location, self.det_hax)
-        yloc = np.dot(x - location, self.det_vax)
+        xloc = np.dot(x - location, mesh_hdir)
+        yloc = np.dot(x - location, mesh_vdir)
 
 
         no_hit = np.ones([self.nparticles])
-        xshift = np.dot(location, self.det_hax)
-        yshift = np.dot(location, self.det_vax)
-
 
         half_thick = wire_thickness/2
 
         # Mark particles that overlap vertical or horizontal position with a wire
-        h_centers = np.linspace(-width/2, width/2, num=xcells+1)  + xshift
+        h_centers = np.linspace(-width/2, width/2, num=xcells+1)
         for c in h_centers:
             no_hit *= np.where(np.isclose(xloc, c, atol=half_thick), 0, 1)
 
 
-        v_centers = np.linspace(-height/2, height/2, num=ycells+1) + yshift
+        v_centers = np.linspace(-height/2, height/2, num=ycells+1)
         for c in v_centers:
             no_hit *= np.where(np.isclose(yloc, c, atol=half_thick), 0, 1)
 
         #  Put back any particles that are outside the mesh boundaries
-        no_hit = np.where(np.logical_and(xloc > np.max(h_centers) + half_thick,
+        no_hit = np.where(np.logical_or(xloc > np.max(h_centers) + half_thick,
                                          xloc < np.min(h_centers) - half_thick),
                                           1, no_hit)
 
-        no_hit = np.where(np.logical_and(yloc > np.max(v_centers) + half_thick,
+        no_hit = np.where(np.logical_or(yloc > np.max(v_centers) + half_thick,
                                          yloc < np.min(v_centers) - half_thick),
                                           1, no_hit)
 
         i = np.argwhere(no_hit)[:,0]
 
-        print(i.shape)
-
-        print(self.x.shape)
-        print(self.nparticles)
-
-
         self.x = self.x[i, :]
         self.v = self.v[i, :]
+        self.theta = self.theta[i] # Importat to apply here to get correct grid_ind
         self.nparticles = len(i)
-
-        print(self.x.shape)
-
-        print(self.nparticles)
-
 
 
 
