@@ -35,7 +35,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Returns the de Broglie wavelength.
 
-    Formula: The de Broglie wavelength (:math:'\lambda_{dB}') of a particle is defined by
+    Formula: The de Broglie wavelength (:math:`\lambda_{dB}`) of a particle is defined by
 
     .. math::
 
@@ -75,8 +75,8 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     ~astropy.units.UnitConversionError
         If the velocity is not in appropriate units.
 
-    ~plasmapy.utils.RelativityError
-        If the magnitude of `V` is higher than the speed of light.
+    ~plasmapy.utils.exceptions.RelativityError
+        If the magnitude of `V` is larger than the speed of light.
 
     Warns
     -----
@@ -171,7 +171,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -229,7 +229,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -295,7 +295,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -371,7 +371,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -436,7 +436,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
