@@ -13,6 +13,8 @@ from scipy.special import erf
 from plasmapy.diagnostics import proton_radiography as prad
 from plasmapy.plasma.grids import CartesianGrid
 
+import matplotlib.pyplot as plt
+
 
 def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
     r"""
@@ -393,6 +395,16 @@ def test_synthetic_radiograph():
 
     # Test optical density
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
+
+
+
+def test_insert_mesh():
+    grid = _test_grid("empty", num=50)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
 
 
 if __name__ == "__main__":

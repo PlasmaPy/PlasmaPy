@@ -308,6 +308,87 @@ class SyntheticProtonRadiograph:
     _c = const.c.si.value
     _m_p = const.m_p.si.value
 
+
+
+    # *************************************************************************
+    # Create mesh
+    # *************************************************************************
+
+
+
+    def insert_mesh(self, location, width, height, xcells, ycells, wire_thickness):
+
+        location = location.si.value
+        width = width.si.value
+        height = height.si.value
+        wire_thickness = wire_thickness.si.value
+
+        # TODO: accept mesh location in spherical or cylindrical coordinates too
+
+        # TODO: Raise exception if mesh is AFTER the field grid
+
+        # TODO: Make sure this all works when the mesh center is NOT
+        # centered on the source-detector axis.
+
+        # Define the plane of the mesh and calculate the positions of each
+        # particle in that plane
+        dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(location)
+        v_towards_mesh = np.dot(self.v, -self.det_n)
+        # Time remaining for each particle to reach the mesh
+        t = dist_remaining / v_towards_mesh
+        # Particle positions in the mesh
+        x = self.x + self.v * np.outer(t, np.ones(3))
+        # Particle positions in 2D on the mesh plane
+        xloc = np.dot(x - location, self.det_hax)
+        yloc = np.dot(x - location, self.det_vax)
+
+
+        no_hit = np.ones([self.nparticles])
+        xshift = np.dot(location, self.det_hax)
+        yshift = np.dot(location, self.det_vax)
+
+
+        half_thick = wire_thickness/2
+
+        # Mark particles that overlap vertical or horizontal position with a wire
+        h_centers = np.linspace(-width/2, width/2, num=xcells+1)  + xshift
+        for c in h_centers:
+            no_hit *= np.where(np.isclose(xloc, c, atol=half_thick), 0, 1)
+
+
+        v_centers = np.linspace(-height/2, height/2, num=ycells+1) + yshift
+        for c in v_centers:
+            no_hit *= np.where(np.isclose(yloc, c, atol=half_thick), 0, 1)
+
+        #  Put back any particles that are outside the mesh boundaries
+        no_hit = np.where(np.logical_and(xloc > np.max(h_centers) + half_thick,
+                                         xloc < np.min(h_centers) - half_thick),
+                                          1, no_hit)
+
+        no_hit = np.where(np.logical_and(yloc > np.max(v_centers) + half_thick,
+                                         yloc < np.min(v_centers) - half_thick),
+                                          1, no_hit)
+
+        i = np.argwhere(no_hit)[:,0]
+
+        print(i.shape)
+
+        print(self.x.shape)
+        print(self.nparticles)
+
+
+        self.x = self.x[i, :]
+        self.v = self.v[i, :]
+        self.nparticles = len(i)
+
+        print(self.x.shape)
+
+        print(self.nparticles)
+
+
+
+
+
     # *************************************************************************
     # Particle creation methods
     # *************************************************************************
