@@ -632,6 +632,7 @@ class SyntheticProtonRadiograph:
         # Drop the other particles
         self.x = self.x[ind, :]
         self.v = self.v[ind, :]
+        self.v_init = self.v_init[ind, :]
         self.nparticles_grid = self.x.shape[0]
         t = t[ind]
 
