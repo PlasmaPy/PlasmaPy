@@ -12,7 +12,7 @@ from plasmapy.particles.exceptions import (
 )
 
 from ..decorators import particle_input
-from ..particle_class import Particle
+from ..particle_class import CustomParticle, Particle, ParticleLike
 
 
 @particle_input
@@ -688,3 +688,13 @@ def test_not_ion(particle):
             f"{repr(particle)} even though the annotated argument is named "
             "'ion'."
         )
+
+
+def test_custom_particle():
+    @particle_input
+    def return_particle(particle: Particle):
+        return particle
+
+    custom_particle = CustomParticle()
+    result = return_particle(custom_particle)
+    assert isinstance(result, CustomParticle)
