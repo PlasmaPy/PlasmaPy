@@ -50,7 +50,7 @@ def _everything_is_particle_or_custom_particle(iterable):
     Test that every object in an iterable is either a `Particle` instance
     or a `CustomParticle` instance.
     """
-    return all([isinstance(p, (Particle, CustomParticle)) for p in iterable])
+    return all(isinstance(p, (Particle, CustomParticle)) for p in iterable)
 
 
 @pytest.mark.parametrize(
