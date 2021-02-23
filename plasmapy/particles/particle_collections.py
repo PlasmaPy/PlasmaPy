@@ -46,7 +46,7 @@ class ParticleList(collections.UserList):
     @staticmethod
     def _list_of_particles_and_custom_particles(
         particles: Iterable[ParticleLike],
-    ) -> List[Union[Particle, CustomParticle]]:
+    ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
         Convert an iterable that provides `ParticleLike` objects into a
         `list` containing `Particle` and `CustomParticle` instances.
