@@ -35,7 +35,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Returns the de Broglie wavelength.
 
-    Formula: The de Broglie wavelength (:math:`\lambda_{dB}`) of a particle is defined by
+    The de Broglie wavelength (:math:`\lambda_{dB}`) of a particle is defined by
 
     .. math::
 
