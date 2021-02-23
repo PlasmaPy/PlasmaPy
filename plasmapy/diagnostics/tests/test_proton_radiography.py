@@ -369,11 +369,14 @@ def test_run_options():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(RuntimeWarning):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
-        # Calc max deflection
-        sim.max_deflection
+    # Calc max deflection: should be between 0 and pi/2
+    # Note: that's only true because max_theta is very small
+    # More generally, max_deflection can be a bit bigger than pi/2 for
+    # particles that begin at an angle then deflect all the way around.
+    assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
 def test_synthetic_radiograph():
