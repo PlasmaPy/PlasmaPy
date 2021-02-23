@@ -1,1 +1,1 @@
-Improves the documentation of quantum.py.
+Improves documentation of `plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality.

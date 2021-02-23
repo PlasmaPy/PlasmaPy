@@ -57,7 +57,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
-        mass in units convertible to kg.  If a plasmapy
+        mass in units convertible to kg.  If a PlasmaPy
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
         particle mass is retrieved from the object.
 
@@ -176,7 +176,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Notes
     -----
-    The thermal de Broglie wavelength is approximately the average deBroglie
+    The thermal de Broglie wavelength is approximately the average de Broglie
     wavelength for electrons in an ideal gas and is given by
 
     .. math::
