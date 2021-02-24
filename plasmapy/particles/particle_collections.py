@@ -84,7 +84,7 @@ class ParticleList(collections.UserList):
     >>> noble_gases[-1]
     Particle("Og")
 
-    The `>` operator may be used with `Particle` and `ParticleList`
+    The ``>`` operator may be used with `Particle` and `ParticleList`
     instances to access the nuclear reaction energy.
 
     >>> reactants = ParticleList(["deuterium", "tritium"])
@@ -289,7 +289,7 @@ the `ParticleList` is empty or the index is out of range.
 """
 
 ParticleList.remove.__doc__ = """
-Remove the first occurrence of a `ParticleLike` ``value``.  Raise
+Remove the first occurrence of a `ParticleLike` item.  Raise
 `ValueError` if the value is not present.
 """
 
