@@ -303,8 +303,8 @@ class Particle(AbstractPhysicalParticle):
     'e+'
 
     The `~plasmapy.particles.Particle.element`,
-    `~plasmapy.particles.Particle.isotope`,
-    `~plasmapy.particles.Particle.ionic_symbol`, return
+    `~plasmapy.particles.Particle.isotope`, and
+    `~plasmapy.particles.Particle.ionic_symbol` attributes provide
     the symbols for each of these different types of particles.
 
     >>> proton.element
@@ -322,7 +322,7 @@ class Particle(AbstractPhysicalParticle):
     'D 0+'
 
     If the particle doesn't belong to one of those categories, then
-    these attributes return `None`.
+    these attributes provide `None`.
 
     >>> positron.element is None
     True
@@ -337,7 +337,7 @@ class Particle(AbstractPhysicalParticle):
     >>> True if Particle('alpha').is_ion else False
     True
 
-    Many of the attributes return physical properties of a particle.
+    Many of the attributes provide physical properties of a particle.
 
     >>> electron.integer_charge
     -1
