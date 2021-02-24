@@ -79,6 +79,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
         (["tritium", "hydrogen-3"], "T"),
         (["triton", "tritium+", "tritium 1+", "tritium +1"], "T 1+"),
         (["alpha"], "He-4 2+"),
+        (["Freddie"], "Hg"),
     ]
 
     for aliases, symbol in case_sensitive_aliases_for_a_symbol:
