@@ -4,6 +4,7 @@ from __future__ import annotations
 
 __all__ = [
     "AbstractParticle",
+    "AbstractPhysicalParticle",
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
@@ -204,7 +205,30 @@ class AbstractParticle(ABC):
         return json.dumps(self.json_dict, **kwargs)
 
 
-class Particle(AbstractParticle):
+class AbstractPhysicalParticle(AbstractParticle):
+    @property
+    def _as_particle_list(self):
+        from plasmapy.particles.particle_collections import ParticleList
+
+        return ParticleList([self])
+
+    def __add__(self, other):
+        return self._as_particle_list + other
+
+    def __radd__(self, other):
+        return other + self._as_particle_list
+
+    def __mul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __rmul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __gt__(self, other):
+        return self._as_particle_list.__gt__(other)
+
+
+class Particle(AbstractPhysicalParticle):
     """
     A class for an individual particle or antiparticle.
 
@@ -253,8 +277,9 @@ class Particle(AbstractParticle):
 
     See Also
     --------
-    ~plasmapy.particles.CustomParticle
-    ~plasmapy.particles.DimensionlessParticle
+    CustomParticle
+    DimensionlessParticle
+    ~plasmapy.particles.particle_collections.ParticleList
 
     Examples
     --------
@@ -264,6 +289,7 @@ class Particle(AbstractParticle):
     >>> electron = Particle('e-')
     >>> neutron = Particle('neutron')
     >>> deuteron = Particle('D', Z=1)
+    >>> triton = Particle('T+')
     >>> alpha = Particle('He', mass_numb=4, Z=2)
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
@@ -334,10 +360,6 @@ class Particle(AbstractParticle):
     particle, then the unary ``~`` (invert) operator may be used to
     return the particle's antiparticle.
 
-    >>> ~electron
-    Particle("e+")
-    >>> ~proton
-    Particle("p-")
     >>> ~positron
     Particle("e-")
 
@@ -359,6 +381,18 @@ class Particle(AbstractParticle):
     Particle("Fe 1+")
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
+
+    Adding particles together will create a `~plasmapy.particles.ParticleList`,
+    which is a list-like collection of particles.
+
+    >>> proton + 2 * electron
+    ParticleList(['p+', 'e-', 'e-'])
+
+    The ``>`` operator can be used with `Particle` and/or `ParticleList`
+    objects to return the nuclear reaction energy.
+
+    >>> deuteron + triton > alpha + neutron
+    <Quantity 2.81810898e-12 J>
 
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
@@ -645,21 +679,6 @@ class Particle(AbstractParticle):
         `~plasmapy.particles.exceptions.ParticleError`.
         """
         return not self.__eq__(other)
-
-    @property
-    def _as_particle_list(self):
-        from plasmapy.particles.particle_collections import ParticleList
-
-        return ParticleList([self])
-
-    def __add__(self, other):
-        return self._as_particle_list + other
-
-    def __radd__(self, other):
-        return other + self._as_particle_list
-
-    def __gt__(self, other):
-        return self._as_particle_list.__gt__(other)
 
     def __hash__(self) -> int:
         """
@@ -1895,7 +1914,7 @@ class DimensionlessParticle(AbstractParticle):
             raise TypeError("symbol needs to be a string.")
 
 
-class CustomParticle(AbstractParticle):
+class CustomParticle(AbstractPhysicalParticle):
     """
     A class to represent custom particles.
 
