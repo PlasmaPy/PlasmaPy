@@ -300,3 +300,25 @@ def test_particle_gt_as_radioactive_decay():
     expected_energy = nuclear_reaction_energy("T -> He-3 + e")
     actual_energy = tritium > Particle("He-3") + "e"
     assert u.allclose(expected_energy, actual_energy)
+
+
+@pytest.mark.parametrize("method", ["append", "__add__", "__radd__"])
+@pytest.mark.parametrize("invalid_particle", invalid_particles)
+def test_particle_list_invalid_ops(various_particles, invalid_particle, method):
+    """
+    Test that operations with invalid particles raise the appropriate
+    exceptions.
+    """
+    with pytest.raises((InvalidParticleError, TypeError)):
+        getattr(various_particles, method)(invalid_particle)
+
+
+@pytest.mark.parametrize("particle", [electron, CustomParticle()])
+@pytest.mark.parametrize("method", ["__mul__", "__rmul__"])
+def test_particle_multiplication(method, particle):
+    """
+    Test that multiplying a `Particle` or `CustomParticle` with an
+    integer returns a `ParticleList` that contains the correct values.
+    """
+    particle_list = getattr(particle, method)(3)
+    assert particle_list == [particle, particle, particle]
