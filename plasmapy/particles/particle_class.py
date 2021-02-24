@@ -302,7 +302,9 @@ class Particle(AbstractPhysicalParticle):
     >>> positron.symbol
     'e+'
 
-    The ``element``, ``isotope``, and ``ionic_symbol`` attributes return
+    The `~plasmapy.particles.Particle.element`,
+    `~plasmapy.particles.Particle.isotope`,
+    `~plasmapy.particles.Particle.ionic_symbol`, return
     the symbols for each of these different types of particles.
 
     >>> proton.element
@@ -359,7 +361,7 @@ class Particle(AbstractPhysicalParticle):
     2
 
     If a `~plasmapy.particles.Particle` instance represents an elementary
-    particle, then the unary ``~`` (invert) operator may be used to
+    particle, then the unary `~` (invert) operator may be used to
     return the particle's antiparticle.
 
     >>> ~positron
@@ -1605,14 +1607,14 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        `~plasmapy.particles.exceptions.InvalidElementError`
             If the `~plasmapy.particles.Particle` is not an element.
 
-        ~plasmapy.particles.ChargeError
+        `~plasmapy.particles.exceptions.ChargeError`
             If no charge information for the `~plasmapy.particles.Particle`
             object is specified.
 
-        ~plasmapy.particles.InvalidIonError
+        `~plasmapy.particles.exceptions.InvalidIonError`
             If there are less than ``n`` remaining bound electrons.
 
         ValueError

@@ -8,7 +8,6 @@ import numpy as np
 
 from typing import *
 
-from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import *
 from plasmapy.particles.particle_class import (
     CustomParticle,
@@ -20,7 +19,7 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list`-like collection of `Particle` and/or `CustomParticle` objects.
+    A `list` like collection of `Particle` and/or `CustomParticle` objects.
 
     Parameters
     ----------
@@ -48,7 +47,8 @@ class ParticleList(collections.UserList):
     >>> particle_list[0]
     Particle("e-")
 
-    Attributes such as ``mass`` and ``charge`` will return a
+    Attributes such as `~plasmapy.particles.ParticleList.mass`
+    and `~plasmapy.particles.ParticleList.charge` will return a
     `~astropy.units.Quantity` array containing the values of the
     corresponding attribute for each particle in the `ParticleList`.
 
@@ -84,7 +84,7 @@ class ParticleList(collections.UserList):
     >>> noble_gases[-1]
     Particle("Og")
 
-    The ``>`` operator may be used with `Particle` and `ParticleList`
+    The `>` operator may be used with `Particle` and `ParticleList`
     instances to access the nuclear reaction energy.
 
     >>> reactants = ParticleList(["deuterium", "tritium"])
@@ -178,8 +178,9 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)
         return values
 
-    def append(self, particle):
+    def append(self, particle: ParticleLike):
         """Append a particle to the end of the `ParticleList`."""
+        # TODO: use particle_input when it works with CustomParticle and ParticleLike
         if not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
         self.data.append(particle)
@@ -190,20 +191,25 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> List:
+    def data(self) -> List[Union[Particle, CustomParticle]]:
         """
         A regular `list` containing the particles contained in the
         `ParticleList` instance.
 
-        The ``data`` attribute should not be modified directly.
+        The `~plasmapy.particles.ParticleList.data` attribute should not
+        be modified directly.
         """
         return self._data
 
-    def extend(self, other):
-        if isinstance(other, ParticleList):
-            self.data.extend(other)
+    def extend(self, iterable: Iterable[ParticleLike]):
+        """
+        Extend the sequence by appending `ParticleLike` elements
+        from the iterable.
+        """
+        if isinstance(iterable, ParticleList):
+            self.data.extend(iterable)
         else:
-            for obj in other:
+            for obj in iterable:
                 self.append(obj)
 
     @property
@@ -211,9 +217,11 @@ class ParticleList(collections.UserList):
         """An array of the half-lives of the particles."""
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    @particle_input
-    def insert(self, index, particle: Particle):
+    def insert(self, index, particle: ParticleLike):
         """Insert a particle before an index."""
+        # TODO: use particle_input when it works with CustomParticle and ParticleLike
+        if not isinstance(particle, (Particle, CustomParticle)):
+            particle = Particle(particle)
         self.data.insert(index, particle)
 
     @property
@@ -243,9 +251,7 @@ class ParticleList(collections.UserList):
 
     def sort(self, key: Callable = None, reverse: bool = False):
         """
-        Sort the `ParticleList` in-place.
-
-        For more information, refer to the documentation for `list.sort`.
+        Sort the `ParticleList` in-place.  For more information, refer to the documentation for `list.sort`.
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
@@ -256,3 +262,32 @@ class ParticleList(collections.UserList):
     def symbols(self) -> List[str]:
         """A list of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
+
+
+ParticleList.clear.__doc__ = """Remove all items from the `ParticleList`."""
+
+ParticleList.copy.__doc__ = """Return a shallow copy of the `ParticleList`."""
+
+ParticleList.count.__doc__ = """
+Return the number of occurrences of ``value``.  Here, ``value`` may be a
+`Particle`, `CustomParticle`, or `ParticleLike` representation of a particle.
+"""
+
+ParticleList.extend.__doc__ = """
+Extend `ParticleList` by casting `ParticleLike` items from ``iterable``
+into `Particle` or `CustomParticle` instances.
+"""
+
+ParticleList.index.__doc__ = """Return first index of a `ParticleLike` value."""
+
+ParticleList.pop.__doc__ = """
+Remove and return item at index (default last).  Raise `IndexError` if
+the `ParticleList` is empty or the index is out of range.
+"""
+
+ParticleList.remove.__doc__ = """
+Remove the first occurrence of a `ParticleLike` ``value``.  Raise
+`ValueError` if the value is not present.
+"""
+
+ParticleList.reverse.__doc__ = """Reverse the `ParticleList` in place."""
