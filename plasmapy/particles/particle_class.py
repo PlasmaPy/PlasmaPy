@@ -1463,6 +1463,23 @@ class Particle(AbstractPhysicalParticle):
         Return `True` if the particle is in all of the inputted
         categories, and `False` the particle is not.
 
+        Parameters
+        ----------
+        *category_tuple
+            Required categories in the form of one or more `str` objects
+            or an iterable.
+
+        require : `str` or iterable providing `str` objects, optional, keyword-only
+            ...
+
+        any_of : `str` or iterable providing `str` objects, optional, keyword-only
+            ...
+
+        exclude : `str` or iterable providing `str` objects, optional, keyword-only
+            ...
+
+        Notes
+        -----
         Required categories may be entered as positional arguments,
         including as a `list`, `set`, or `tuple` of required categories.
         These may also be included using the ``require`` keyword
@@ -1487,7 +1504,6 @@ class Particle(AbstractPhysicalParticle):
         True
         >>> Particle('mu+').is_category('antilepton', exclude='baryon')
         True
-
         """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
