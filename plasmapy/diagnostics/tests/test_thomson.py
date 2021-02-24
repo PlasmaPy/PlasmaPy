@@ -80,7 +80,7 @@ def multiple_ion_species_spectrum():
             ion_species=ion_species,
             probe_vec=probe_vec,
             scatter_vec=scatter_vec,
-            fluid_vel=fluid_vel,
+            electron_vel=electron_vel,
             ion_vel=ion_vel,
         )
 
@@ -166,7 +166,7 @@ def test_different_input_types():
             alpha, Skw = thomson.spectral_density(
                 wavelengths,
                 probe_wavelength,
-                ne,
+                n,
                 Te,
                 Ti,
                 ifract=ifract,
