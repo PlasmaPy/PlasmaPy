@@ -175,7 +175,6 @@ def test_different_input_types():
                 scatter_vec=scatter_vec,
             )
 
-
     # Raise a Value Error with inconsistent electron array lengths
     # Te.size != efract.size
     with pytest.raises(ValueError):

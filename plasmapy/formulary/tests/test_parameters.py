@@ -50,11 +50,11 @@ from plasmapy.formulary.parameters import (
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import (
+    ImplicitUnitConversionWarning,
     PhysicsError,
     PhysicsWarning,
     RelativityError,
     RelativityWarning,
-    ImplicitUnitConversionWarning,
 )
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 

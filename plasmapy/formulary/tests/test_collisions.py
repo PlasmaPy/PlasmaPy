@@ -80,7 +80,7 @@ class Test_Coulomb_logarithm:
             {"method": "hls_min_interp"},
             {"method": "GMS-4"},
             {"method": "hls_max_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
-            {"method": "GMS-5", "z_mean": 1.0* u.dimensionless_unscaled},
+            {"method": "GMS-5", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "hls_full_interp", "z_mean": 1.0 * u.dimensionless_unscaled},
             {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],

@@ -7,6 +7,8 @@ import scipy.integrate as spint
 from astropy import units as u
 from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
 
+from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
+
 from ..distribution import (
     kappa_velocity_1D,
     kappa_velocity_3D,
@@ -18,7 +20,6 @@ from ..distribution import (
     Maxwellian_velocity_3D,
 )
 from ..parameters import kappa_thermal_speed, thermal_speed
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 
 # test class for Maxwellian_1D (velocity) function:
 
