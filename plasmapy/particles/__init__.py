@@ -26,6 +26,7 @@ from plasmapy.particles.ionization_state_collection import IonizationStateCollec
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     AbstractParticle,
+    AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
     Particle,
