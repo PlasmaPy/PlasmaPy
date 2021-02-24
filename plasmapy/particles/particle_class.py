@@ -322,7 +322,7 @@ class Particle(AbstractPhysicalParticle):
     'D 0+'
 
     If the particle doesn't belong to one of those categories, then
-    these attributes provide `None`.
+    these attributes are `None`.
 
     >>> positron.element is None
     True
