@@ -2137,8 +2137,6 @@ class CustomParticle(AbstractPhysicalParticle):
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
-ParticleLike.__name__ = "ParticleLike"
-
 ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
 `Particle` or `CustomParticle`, or cast into one.
