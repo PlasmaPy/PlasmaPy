@@ -21,7 +21,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import List, Optional, Set, Tuple, Union
+from typing import Iterable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
@@ -1453,41 +1453,86 @@ class Particle(AbstractPhysicalParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Set, Tuple, List] = None,
-        any_of: Union[str, Set, Tuple, List] = None,
-        exclude: Union[str, Set, Tuple, List] = None,
+        require: Union[str, Iterable[str]] = None,
+        any_of: Union[str, Iterable[str]] = None,
+        exclude: Union[str, Iterable[str]] = None,
     ) -> bool:
         """
         Determine if the particle meets categorization criteria.
 
-        Return `True` if the particle is in all of the inputted
-        categories, and `False` the particle is not.
+        Return `True` if the particle is consistent with the provided
+        categories, and `False` otherwise.
 
-        Required categories may be entered as positional arguments,
-        including as a `list`, `set`, or `tuple` of required categories.
-        These may also be included using the ``require`` keyword
-        argument.  This method will return `False` if the particle is
-        not in all of the required categories.
+        Parameters
+        ----------
+        *category_tuple
+            Required categories in the form of one or more `str` objects
+            or an iterable.
 
-        If categories are inputted using the ``any_of`` keyword
-        argument, then this method will return `False` if the particle
-        is not of any of the categories in ``any_of``.
+        require : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories.  This method will return `False` if
+            the `Particle` does not belong to all of these categories.
 
-        If the ``exclude`` keyword is set, then this method will return
-        `False` if the particle is in any of the excluded categories,
-        whether or not the particle matches the other criteria.
+        any_of : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories. This method will return `False` if
+            the `Particle` does not belong to at least one of these
+            categories.
+
+        exclude : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories.  This method will return `False` if
+            the `Particle` belongs to any of these categories.
+
+        Notes
+        -----
+        A `set` containing all valid categories may be accessed by the
+        ``valid_categories`` attribute of `~Particle.is_category`.
 
         Examples
-        --------
-        >>> Particle('e-').is_category('lepton')
+        -----
+        Required categories may be entered as positional arguments,
+        including as a `list`, `set`, or `tuple` of required categories.
+
+        >>> electron = Particle("e-")
+        >>> electron.is_category("lepton")
         True
-        >>> Particle('p+').is_category('baryon', exclude='charged')
+        >>> electron.is_category("lepton", "baryon")
         False
-        >>> Particle('n').is_category({'matter', 'baryon'}, exclude={'charged'})
-        True
-        >>> Particle('mu+').is_category('antilepton', exclude='baryon')
+        >>> electron.is_category(["fermion", "matter"])
         True
 
+        Required arguments may also be provided using the ``require``
+        keyword argument.
+
+        >>> electron.is_category(require="lepton")
+        True
+        >>> electron.is_category(require=["lepton", "baryon"])
+        False
+
+        This method will return `False` if the particle does not belong
+        to at least one of the categories provided with the ``any_of``
+        keyword argument.
+
+        >>> electron.is_category(any_of=["lepton", "baryon"])
+        True
+        >>> electron.is_category(any_of=("noble gas", "lanthanide", "halogen"))
+        False
+
+        This method will return `False` if the particle belongs to any
+        of the categories provided in the ``exclude`` keyword argument.
+
+        >>> electron.is_category(exclude="baryon")
+        True
+        >>> electron.is_category(exclude={"lepton", "baryon"})
+        False
+
+        The ``require``, ``any_of``, and ``exclude`` keywords may be
+        combined.  If the particle matches all of the provided criteria,
+        then `~Particle.is_category` will return `True`.
+
+        >>> electron.is_category(
+        ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
+        ... )
+        False
         """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
@@ -1510,12 +1555,8 @@ class Particle(AbstractPhysicalParticle):
             )
 
         require = become_set(category_tuple) if category_tuple else become_set(require)
-
         exclude = become_set(exclude)
         any_of = become_set(any_of)
-
-        if not require and not exclude and not any_of:
-            return _valid_categories
 
         invalid_categories = (require | exclude | any_of) - _valid_categories
 
@@ -1736,6 +1777,10 @@ class Particle(AbstractPhysicalParticle):
             self.__init__(base_particle, Z=new_integer_charge)
         else:
             return Particle(base_particle, Z=new_integer_charge)
+
+
+Particle.is_category.valid_categories = _valid_categories
+"""All valid particle categories."""
 
 
 class DimensionlessParticle(AbstractParticle):
