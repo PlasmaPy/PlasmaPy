@@ -34,6 +34,9 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     """
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
+    
+    ::math..
+        `theta` = frac{ET}{ET}
 
     Parameters
     ----------
