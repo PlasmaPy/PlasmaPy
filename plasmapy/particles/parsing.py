@@ -47,13 +47,21 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
         case_insensitive_aliases[name.lower()] = symbol
 
     case_sensitive_aliases_for_a_symbol = [
-        (["beta-", "e"], "e-"),
-        (["beta+"], "e+"),
-        (["p", "H-1+", "H-1 1+", "H-1 +1", "H-1 II"], "p+"),
-        (["n-1"], "n"),
+        (["beta-", "β-", "β⁻", "e", "e⁻"], "e-"),
+        (["beta+", "β+", "β⁺", "e⁺"], "e+"),
+        (["p", "p⁺", "H-1+", "H-1 1+", "H-1 +1", "H-1 II"], "p+"),
+        (["n-1", "n⁰"], "n"),
         (["H-2"], "D"),
         (["H-2+", "H-2 1+", "H-2 +1", "D+", "D II"], "D 1+"),
         (["H-3+", "H-3 1+", "H-3 +1", "T+", "T II"], "T 1+"),
+        (["α"], "He-4 2+"),
+        (["τ", "τ-", "τ⁻"], "tau-"),
+        (["τ+", "τ⁺"], "tau+"),
+        (["μ-", "μ⁻"], "mu-"),
+        (["μ+", "μ⁺"], "mu+"),
+        (["ν_e"], "nu_e"),
+        (["ν_μ"], "nu_mu"),
+        (["ν_τ"], "nu_tau"),
     ]
 
     case_insensitive_aliases_for_a_symbol = [
@@ -78,6 +86,8 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
         (["deuteron", "deuterium+", "deuterium 1+", "deuterium +1"], "D 1+"),
         (["tritium", "hydrogen-3"], "T"),
         (["triton", "tritium+", "tritium 1+", "tritium +1"], "T 1+"),
+        (["diproton"], "He-2 2+"),
+        (["helion"], "He-3 2+"),
         (["alpha"], "He-4 2+"),
     ]
 
