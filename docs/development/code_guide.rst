@@ -87,6 +87,9 @@ PlasmaPy Code Style Guide, codified
 
 * There should be at least one pun per 1284 lines of code.
 
+* Avoid using `lambda` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
+
 
 Branches, commits, and pull requests
 ====================================
