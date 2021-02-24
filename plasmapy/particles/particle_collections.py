@@ -278,7 +278,10 @@ Extend `ParticleList` by casting `ParticleLike` items from ``iterable``
 into `Particle` or `CustomParticle` instances.
 """
 
-ParticleList.index.__doc__ = """Return first index of a `ParticleLike` value."""
+ParticleList.index.__doc__ = """
+Return first index of a `ParticleLike` value. Raise `ValueError` if
+the value is not present.
+"""
 
 ParticleList.pop.__doc__ = """
 Remove and return item at index (default last).  Raise `IndexError` if
