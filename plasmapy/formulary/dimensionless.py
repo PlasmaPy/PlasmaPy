@@ -35,8 +35,13 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
     
-    ::math..
-        `theta` = frac{ET}{ET}
+    The quantum theta (:math:`\theta`) of a plasma is defined by
+
+    .. math::
+        \theta = \frac{E_{T}}{E_{F}}
+
+    where :math:`E_{T}` is the thermal energy of the plasma and
+    :math:`E_{F}}` is the Fermi energy of the plasma.
 
     Parameters
     ----------
@@ -75,6 +80,14 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     """
     The ratio of thermal pressure to magnetic pressure.
+
+    The beta (:math:`\beta`) of a plasma is defined by
+
+    .. math::
+        \beta = \frac{p_{th}}{p_{mag}}
+
+    where :math:`p_{th}` is the thermal pressure of the plasma and
+    :math:`p_{mag}` is the magnetic pressure of the plasma.
 
     Parameters
     ----------
