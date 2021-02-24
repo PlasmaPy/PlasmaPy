@@ -24,7 +24,7 @@ the repository.
 This will cause pre-commit to download the right versions of linters we use,
 then run an automated style checking suite on every commit.  Do note that this
 works better with a `git add`, then `git commit` workflow than a `git commit
--a` workflow - that way, you can check via `git diff` what the automated
+-a` workflow — that way, you can check via `git diff` what the automated
 changes actually did.
 
 Note that the "Style linters / pre-commit (pull_request)" part of our
@@ -43,8 +43,8 @@ It includes
 * `isort <https://pycqa.github.io/isort/>`_ to
   automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
-  to notebooks as well.
-* a few tools for requirements.txt, .yml files and the like.
+  to example notebooks as well.
+* a few tools for `requirements.txt`, `.yml` files and the like.
 
 PlasmaPy Code Style Guide, codified
 -----------------------------------
