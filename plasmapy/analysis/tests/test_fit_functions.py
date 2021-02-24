@@ -5,11 +5,9 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-from contextlib import ExitStack as does_not_raise
+from contextlib import nullcontext as does_not_raise
 
 import plasmapy.analysis.fit_functions as ffuncs
-
-# ^ ExitStack can be replaced with nullcontext when we require >= python 3.7
 
 
 class TestAbstractFitFunction:
