@@ -20,27 +20,78 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A list-like collection of `Particle` and/or `CustomParticle` objects.
+    A `list`-like collection of `Particle` and/or `CustomParticle` objects.
 
     Parameters
     ----------
     particles : iterable
         An iterable that provides a sequence of `ParticleLike` objects.
+        Objects that are not a `Particle` or `CustomParticle` instance
+        will be cast into a `Particle` instance.
+
+    Raises
+    ------
+    `~plasmapy.particles.exceptions.InvalidParticleError`
+        If an object supplied to `ParticleList` is not `ParticleLike`.
+
+    TypeError
+        If a `DimensionlessParticle` is provided.
 
     Examples
     --------
+    A `ParticleList` can be created by calling it with a `list`, `tuple`,
+    or other iterable that provides `~plasmapy.particles.ParticleLike`
+    objects.
+
     >>> from plasmapy.particles import ParticleList
     >>> particle_list = ParticleList(["e-", "e+"])
     >>> particle_list[0]
     Particle("e-")
+
+    Attributes such as ``mass`` and ``charge`` will return a
+    `~astropy.units.Quantity` array containing the values of the
+    corresponding attribute for each particle in the `ParticleList`.
+
     >>> particle_list.mass
     <Quantity [9.1093...e-31, 9.1093...e-31] kg>
     >>> particle_list.charge
     <Quantity [-1.60217663e-19,  1.60217663e-19] C>
     >>> particle_list.symbols
     ['e-', 'e+']
-    >>> particle_list + [Particle("p+")]
-    ParticleList(['e-', 'e+', 'p+'])
+
+    `ParticleList` instances can also be created through addition and
+    multiplication with `Particle`, `CustomParticle`, and `ParticleList`
+    instances.
+
+    >>> from plasmapy.particles import Particle, CustomParticle
+    >>> import astropy.units as u
+    >>> proton = Particle("p+")
+    >>> custom_particle = CustomParticle(mass=1e-26*u.kg, charge=6e-19*u.C)
+    >>> 2 * proton + custom_particle
+    ParticleList(['p+', 'p+', 'CustomParticle(mass=1e-26 kg, charge=6e-19 C)'])
+
+    These operations may also be performed using `ParticleLike` objects.
+
+    >>> particle_list + "deuteron"
+    ParticleList(['e-', 'e+', 'D 1+'])
+
+    Normal `list` methods may also be used on `ParticleList` objects.
+    When a `ParticleLike` object is appended to a `ParticleList`, that
+    object will be cast into a `Particle`.
+
+    >>> noble_gases = ParticleList(["He", "Ar", "Kr", "Xe", "Rn"])
+    >>> noble_gases.append("Og")
+    >>> noble_gases[-1]
+    Particle("Og")
+
+    The ``>`` operator may be used with `Particle` and `ParticleList`
+    instances to access the nuclear reaction energy.
+
+    >>> reactants = ParticleList(["deuterium", "tritium"])
+    >>> products = ParticleList(["alpha", "neutron"])
+    >>> energy = reactants > products
+    >>> energy.to("MeV")
+    <Quantity 17.58925... MeV>
     """
 
     @staticmethod
