@@ -206,6 +206,8 @@ class AbstractParticle(ABC):
 
 
 class AbstractPhysicalParticle(AbstractParticle):
+    """Base class for particles that are defined with physical units."""
+
     @property
     def _as_particle_list(self):
         from plasmapy.particles.particle_collections import ParticleList
