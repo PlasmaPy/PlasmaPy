@@ -1,0 +1,4 @@
+The ``particle`` attribute of `~plasmapy.particles.particle_class.Particle`
+has been deprecated in favor of the new ``symbol`` attribute.  The ``particle``
+attribute now issues a `FutureWarning` to indicate that it will be removed in
+a future release.

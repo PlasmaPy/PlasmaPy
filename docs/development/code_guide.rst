@@ -7,7 +7,7 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.6 and
+Code written for PlasmaPy must be compatible with Python 3.7 and
 later.
 
 Coding Style
@@ -17,20 +17,21 @@ Coding Style
   <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
-  * The PEP 8 Speaks integration on GitHub will comment when there are
-    any departures from the PEP 8 style guide.
-
-  * PEP 8 compliance may be checked locally using
-    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
-
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 99 characters.
+    PlasmaPy is 88 characters.
 
   * Docstrings and comments should generally be limited to
-    72 characters.
+    about 72 characters.
 
-* Follow the existing coding style within a subpackage.
+* During code development, use
+  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package and `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+
+* Follow the existing coding style within a subpackage.  This includes,
+  for example, variable naming conventions.
 
 * Use standard abbreviations for imported packages when possible, such
   as ``import numpy as np``, ``import matplotlib as mpl``, ``import
@@ -42,15 +43,14 @@ Coding Style
   functionality should be put into a separate file.
 
 * Use absolute imports, such as
-  ``from plasmapy.mathematics import Fermi_integral``,
-  rather than relative imports such as
-  ``from ..mathematics import Fermi_integral``.
+  ``from plasmapy.particles import Particle``, rather than relative
+  imports such as ``from ..particles import Particle``.
 
-* For multiline imports, instead of using ``\`` to break lines, wrap the
-  imported names in ``()`` parentheses and use consistent whitespace.
+* Use ``Optional[type]`` for type hinted keyword arguments with a
+  default value of ``None``.
 
-* Use ``Optional[type]`` for type hinted keyword arguments with a default value of
-  ``None``.
+* Avoid using `lambda` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
 
 * There should be at most one pun per 1284 lines of code.
 

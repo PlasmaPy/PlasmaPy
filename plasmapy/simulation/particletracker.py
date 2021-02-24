@@ -10,6 +10,9 @@ import scipy.interpolate as interp
 from astropy import constants
 
 from plasmapy.particles import atomic
+from plasmapy.utils.decorators import validate_quantities
+
+from . import particle_integrators
 
 
 class ParticleTracker:
@@ -57,7 +60,13 @@ class ParticleTracker:
     .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
     """
 
-    @u.quantity_input(dt=u.s)
+    integrators = {"explicit_boris": particle_integrators.boris_push}
+
+    _wip_integrators = {}
+
+    _all_integrators = dict(**integrators, **_wip_integrators)
+
+    @validate_quantities(dt=u.s)
     def __init__(
         self,
         plasma,
@@ -66,6 +75,7 @@ class ParticleTracker:
         scaling=1,
         dt=np.inf * u.s,
         nt=np.inf,
+        integrator="explicit_boris",
     ):
 
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
@@ -96,6 +106,8 @@ class ParticleTracker:
         # interpolation on non-equal spatial domain dimensions
         _B = np.moveaxis(self.plasma.magnetic_field.si.value, 0, -1)
         _E = np.moveaxis(self.plasma.electric_field.si.value, 0, -1)
+
+        self.integrator = self._all_integrators[integrator]
 
         self._B_interpolator = interp.RegularGridInterpolator(
             (self.plasma.x.si.value, self.plasma.y.si.value, self.plasma.z.si.value),
@@ -159,24 +171,16 @@ class ParticleTracker:
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        dt = -self.dt / 2 if init else self.dt
         b, e = self._interpolate_fields()
 
-        # add first half of electric impulse
-        vminus = self.v + self.eff_q * e / self.eff_m * dt * 0.5
-
-        # rotate to add magnetic field
-        t = -b * self.eff_q / self.eff_m * dt * 0.5
-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-        vprime = vminus + np.cross(vminus.si.value, t) * u.m / u.s
-        vplus = vminus + np.cross(vprime.si.value, s) * u.m / u.s
-
-        # add second half of electric impulse
-        v_new = vplus + self.eff_q * e / self.eff_m * dt * 0.5
-
-        self.v = v_new
-        if not init:
-            self.x += self.v * dt
+        if init:
+            self.integrator(
+                self.x.copy(), self.v, b, e, self.q, self.m, -0.5 * self.dt,
+            )  # we don't want to change position here
+        else:
+            self.integrator(
+                self.x, self.v, b, e, self.q, self.m, self.dt,
+            )
 
     def run(self):
         r"""
@@ -206,8 +210,9 @@ class ParticleTracker:
 
     def plot_trajectories(self):  # coverage: ignore
         r"""Draws trajectory history."""
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
@@ -233,8 +238,9 @@ class ParticleTracker:
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()

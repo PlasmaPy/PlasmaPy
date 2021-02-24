@@ -20,22 +20,15 @@ __all__ = [
 # This is the same check as the one at the top of setup.py
 import sys
 
-if sys.version_info < tuple((int(val) for val in "3.6".split("."))):
-    raise Exception("PlasmaPy does not support Python < {}".format(3.6))
+if sys.version_info < (3, 7):
+    raise Exception("PlasmaPy does not support Python < 3.7")
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from plasmapy import (
-    diagnostics,
-    formulary,
-    particles,
-    plasma,
-    simulation,
-    utils,
-)
+from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
 
 # define version
 try:
@@ -84,7 +77,7 @@ except pkg_resources.DistributionNotFound:
 #: PlasmaPy citation instructions
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided in the "
-    "online documentation at: http://docs.plasmapy.org/en/latest/about/citation.html"
+    "online documentation at: http://docs.plasmapy.org/en/stable/about/citation.html"
 )
 
 
@@ -100,8 +93,9 @@ def online_help(query):
     query : str
         The search query.
     """
-    from urllib.parse import urlencode
     import webbrowser
+
+    from urllib.parse import urlencode
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"

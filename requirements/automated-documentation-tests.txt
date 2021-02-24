@@ -1,14 +1,17 @@
 -r requirements.txt
+
+# doc pkgs
 ipykernel
 ipywidgets
 nbsphinx
 
 numpydoc
 pillow
+pygments >= 2.4.1
 pytest
 setuptools-scm
-sphinx <= 2.4.4
-sphinx-automodapi
+sphinx >= 2.4.4
+sphinx-automodapi >= 0.13
 sphinx-copybutton
 sphinx-gallery
 sphinx_rtd_theme

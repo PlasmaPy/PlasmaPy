@@ -1,14 +1,15 @@
 import astropy.units as u
 import numpy as np
 import pytest
+
 from astropy.constants import c
 
 from plasmapy.formulary.dimensionless import (
-    Mag_Reynolds,
-    Reynolds_number,
     beta,
+    Mag_Reynolds,
     quantum_theta,
     Re_,
+    Reynolds_number,
     Rm_,
 )
 from plasmapy.utils import RelativityError

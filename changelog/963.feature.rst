@@ -1,0 +1,1 @@
+Further developed grid objects (`plasmapy.plasma.grids`), including improved documentation and several example notebooks, better support for quantities on grids (including recognized keys representing physical quantities) and interpolation on non-uniform grids.

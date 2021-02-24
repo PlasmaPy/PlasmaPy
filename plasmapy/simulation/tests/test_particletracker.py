@@ -1,8 +1,9 @@
 import astropy.units as u
 import numpy as np
 import pytest
+
 from astropy import units as u
-from astropy.modeling import models, fitting
+from astropy.modeling import fitting, models
 from scipy.optimize import curve_fit
 
 from plasmapy.plasma.sources import Plasma3D
@@ -103,17 +104,17 @@ def fit_sine_curve(position, t, expected_gyrofrequency, phase=0):
 @pytest.mark.slow
 def test_particle_exb_drift(uniform_magnetic_field):
     r"""
-        Tests the particle stepper for a field with magnetic field in the Z
-        direction, electric field in the y direction. This should produce a
-        drift in the negative X direction, with the drift velocity
+    Tests the particle stepper for a field with magnetic field in the Z
+    direction, electric field in the y direction. This should produce a
+    drift in the negative X direction, with the drift velocity
 
-        v_e = ExB / B^2
+    v_e = ExB / B^2
 
-        which is independent of ion charge.
+    which is independent of ion charge.
     """
     test_plasma = uniform_magnetic_field
     test_plasma.electric_field[1] = 1 * u.V / u.m
-    expected_drift_velocity = (
+    expected_drift_velocity = -(
         -(test_plasma.electric_field_strength / test_plasma.magnetic_field_strength)
         .mean()
         .to(u.m / u.s)

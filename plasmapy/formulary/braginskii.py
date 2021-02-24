@@ -131,9 +131,9 @@ __all__ = [
     "electron_viscosity",
 ]
 
+import numpy as np
 import warnings
 
-import numpy as np
 from astropy import units as u
 from astropy.constants.si import e, k_B, m_e
 
@@ -143,7 +143,7 @@ from plasmapy.formulary.collisions import (
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )
-from plasmapy.formulary.parameters import Hall_parameter, _grab_charge
+from plasmapy.formulary.parameters import _grab_charge, Hall_parameter
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
@@ -254,6 +254,16 @@ class ClassicalTransport:
         on the ion transport coefficients. Defaults to T_e / T_i. Only
         has effect if mu is non-zero.
 
+    coulomb_log_method : str, optional
+        The method by which to compute the Coulomb logarithm.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
+
     Raises
     ------
     ValueError
@@ -336,9 +346,7 @@ class ClassicalTransport:
         valid_fields = ["parallel", "par", "perpendicular", "perp", "cross", "all"]
         is_valid_field = self.field_orientation in valid_fields
         if not is_valid_field:
-            raise ValueError(
-                f"Unknown field orientation " f"'{self.field_orientation}'"
-            )
+            raise ValueError(f"Unknown field orientation '{self.field_orientation}'")
 
         # values and units have already been checked by decorator
         self.T_e = T_e
@@ -352,7 +360,7 @@ class ClassicalTransport:
                 self.m_i = particles.particle_mass(ion)
             except Exception:
                 raise ValueError(
-                    f"Unable to find mass of particle: " f"{ion} in ClassicalTransport"
+                    f"Unable to find mass of particle: {ion} in ClassicalTransport"
                 )
         else:
             self.m_i = m_i

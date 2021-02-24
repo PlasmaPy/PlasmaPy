@@ -2,12 +2,12 @@
 
 import numpy as np
 import pytest
+
 from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.braginskii import (
-    ClassicalTransport,
     _check_Z,
     _nondim_resist_braginskii,
     _nondim_resist_ji_held,
@@ -28,6 +28,7 @@ from plasmapy.formulary.braginskii import (
     _nondim_visc_i_braginskii,
     _nondim_visc_i_ji_held,
     _nondim_viscosity,
+    ClassicalTransport,
     electron_thermal_conductivity,
     electron_viscosity,
     ion_thermal_conductivity,
@@ -318,10 +319,10 @@ class Test_classical_transport:
                 ct2.V_ei,
             )
             testTrue = hall_i == ct2.hall_i
-            errStr = f"Ion hall parameter should be {hall_i} " f"and not {ct2.hall_i}."
+            errStr = f"Ion hall parameter should be {hall_i} and not {ct2.hall_i}."
         assert testTrue, errStr
         testTrue = hall_e == ct2.hall_e
-        errStr = f"Electron hall parameter should be {hall_e} " f"and not {ct2.hall_e}."
+        errStr = f"Electron hall parameter should be {hall_e} and not {ct2.hall_e}."
         assert testTrue, errStr
 
     def test_invalid_model(self):
@@ -603,7 +604,7 @@ class Test_classical_transport:
         calculated = self.all_variables[key]
         testTrue = np.allclose(expected, calculated.si.value)
         errStr = (
-            f"Expected values of {key} are {expected} and not" f"{calculated.si.value}."
+            f"Expected values of {key} are {expected} and not{calculated.si.value}."
         )
         assert testTrue, errStr
 
@@ -1074,7 +1075,7 @@ def test__nondim_tc_e_ji_held(hall, Z, field_orientation, expected):
     kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
     kappa_check = expected
     testTrue = np.isclose(kappa_hat, kappa_check, rtol=2e-2)
-    errStr = f"Kappa hat from ji-held should be {kappa_check} " f"and not {kappa_hat}."
+    errStr = f"Kappa hat from ji-held should be {kappa_check} and not {kappa_hat}."
     assert testTrue, errStr
 
 

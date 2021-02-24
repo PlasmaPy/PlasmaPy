@@ -9,7 +9,25 @@ repos:
     -   id: trailing-whitespace
     -   id: check-ast
     -   id: requirements-txt-fixer
+-   repo: https://github.com/timothycrosley/isort
+    rev: 5.7.0
+    hooks:
+    -   id: isort
+        name: isort
+        entry: isort
+        require_serial: true
+        language: python
+        types: [python]
 -   repo: https://github.com/psf/black
     rev: 19.10b0
     hooks:
     -   id: black
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 0.5.7
+  hooks:
+    - id: nbqa-black
+      additional_dependencies: [black==19.10b0]
+      args: [--nbqa-mutate]
+    - id: nbqa-isort
+      additional_dependencies: [isort==5.7.0]
+      args: [--nbqa-mutate]

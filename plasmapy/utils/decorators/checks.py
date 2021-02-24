@@ -13,13 +13,14 @@ __all__ = [
 import collections
 import functools
 import inspect
-import warnings
-from functools import reduce
-from typing import Any, Dict, List, Tuple, Union
-
 import numpy as np
+import warnings
+
 from astropy import units as u
 from astropy.constants import c
+from functools import reduce
+from operator import add
+from typing import Any, Dict, List, Tuple, Union
 
 from plasmapy.utils.decorators.helpers import preserve_signature
 from plasmapy.utils.exceptions import (
@@ -95,6 +96,7 @@ class CheckValues(CheckBase):
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
@@ -133,6 +135,7 @@ class CheckValues(CheckBase):
         "can_be_inf": True,
         "can_be_nan": True,
         "none_shall_pass": False,
+        "can_be_zero": True,
     }
 
     def __init__(
@@ -313,12 +316,8 @@ class CheckValues(CheckBase):
                     raise ValueError(f"{valueerror_msg} Nones.")
 
             elif ckey == "can_be_negative":
-                if not arg_checks[ckey]:
-                    # Allow NaNs through without raising a warning
-                    with np.errstate(invalid="ignore"):
-                        isneg = np.any(arg < 0)
-                    if isneg:
-                        raise ValueError(f"{valueerror_msg} negative numbers.")
+                if not arg_checks[ckey] and np.any(arg < 0):
+                    raise ValueError(f"{valueerror_msg} negative numbers.")
 
             elif ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
@@ -331,6 +330,10 @@ class CheckValues(CheckBase):
             elif ckey == "can_be_nan":
                 if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
                     raise ValueError(f"{valueerror_msg} NaNs.")
+
+            elif ckey == "can_be_zero":
+                if not arg_checks[ckey] and np.any(arg == 0):
+                    raise ValueError(f"{valueerror_msg} zeros.")
 
 
 class CheckUnits(CheckBase):
@@ -722,7 +725,7 @@ class CheckUnits(CheckBase):
                 #     (from_unit, to_unit, forward_func, backward_func)
                 #
                 if all(isinstance(el, Equivalency) for el in _equivs):
-                    _equivs = reduce(lambda x, y: x + y, _equivs)
+                    _equivs = reduce(add, _equivs)
                 else:
                     _equivs = self._normalize_equivalencies(_equivs)
 
@@ -989,10 +992,13 @@ class CheckUnits(CheckBase):
 
         normalized = []
 
+        def return_argument(x):
+            return x
+
         for i, equiv in enumerate(equivalencies):
             if len(equiv) == 2:
                 from_unit, to_unit = equiv
-                a = b = lambda x: x
+                a = b = return_argument
             elif len(equiv) == 3:
                 from_unit, to_unit, a = equiv
                 b = a
@@ -1212,6 +1218,7 @@ def check_values(
         can_be_inf       `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan       `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass  `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero      `bool`  [DEFAULT `True`] values can be zero
         ================ ======= ================================================
 
     Notes
