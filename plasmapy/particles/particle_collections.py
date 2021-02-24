@@ -187,14 +187,17 @@ class ParticleList(collections.UserList):
 
     @property
     def charge(self) -> u.C:
-        """An array of the electric charges of the particles."""
+        """
+        A `~astropy.units.Quantity` array of the electric charges of the
+        particles.
+        """
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
-        A regular `list` containing the particles contained in the
-        `ParticleList` instance.
+        A `list` containing the particles contained in the `ParticleList`
+        instance.
 
         The `~plasmapy.particles.ParticleList.data` attribute should not
         be modified directly.
@@ -204,7 +207,7 @@ class ParticleList(collections.UserList):
     def extend(self, iterable: Iterable[ParticleLike]):
         """
         Extend the sequence by appending `ParticleLike` elements
-        from the iterable.
+        from ``iterable``.
         """
         if isinstance(iterable, ParticleList):
             self.data.extend(iterable)
@@ -214,7 +217,7 @@ class ParticleList(collections.UserList):
 
     @property
     def half_life(self) -> u.s:
-        """An array of the half-lives of the particles."""
+        """A `~astropy.units.Quantity` array of the half-lives of the particles."""
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
     def insert(self, index, particle: ParticleLike):
@@ -234,13 +237,14 @@ class ParticleList(collections.UserList):
 
     @property
     def mass(self) -> u.kg:
-        """An array of the masses of the particles."""
+        """A `~astropy.units.Quantity` array of the masses of the particles."""
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
     def mass_energy(self) -> u.J:
         """
-        An array of the mass energies of the particles in joules.
+        A `~astropy.units.Quantity` array of the mass energies of the
+        particles.
 
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
@@ -251,7 +255,8 @@ class ParticleList(collections.UserList):
 
     def sort(self, key: Callable = None, reverse: bool = False):
         """
-        Sort the `ParticleList` in-place.  For more information, refer to the documentation for `list.sort`.
+        Sort the `ParticleList` in-place.  For more information, refer
+        to the documentation for `list.sort`.
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
@@ -264,12 +269,14 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("symbol")
 
 
+# Override the docstrings for the parent class
+
 ParticleList.clear.__doc__ = """Remove all items from the `ParticleList`."""
 
 ParticleList.copy.__doc__ = """Return a shallow copy of the `ParticleList`."""
 
 ParticleList.count.__doc__ = """
-Return the number of occurrences of ``value``.  Here, ``value`` may be a
+Return the number of occurrences of ``item``.  Here, ``item`` may be a
 `Particle`, `CustomParticle`, or `ParticleLike` representation of a particle.
 """
 

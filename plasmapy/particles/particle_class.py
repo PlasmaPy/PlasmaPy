@@ -210,6 +210,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     @property
     def _as_particle_list(self):
+        # Avoid circular imports by importing here
         from plasmapy.particles.particle_collections import ParticleList
 
         return ParticleList([self])
