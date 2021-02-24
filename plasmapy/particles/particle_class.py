@@ -4,6 +4,7 @@ from __future__ import annotations
 
 __all__ = [
     "AbstractParticle",
+    "AbstractPhysicalParticle",
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
@@ -204,7 +205,33 @@ class AbstractParticle(ABC):
         return json.dumps(self.json_dict, **kwargs)
 
 
-class Particle(AbstractParticle):
+class AbstractPhysicalParticle(AbstractParticle):
+    """Base class for particles that are defined with physical units."""
+
+    @property
+    def _as_particle_list(self):
+        # Avoid circular imports by importing here
+        from plasmapy.particles.particle_collections import ParticleList
+
+        return ParticleList([self])
+
+    def __add__(self, other):
+        return self._as_particle_list + other
+
+    def __radd__(self, other):
+        return other + self._as_particle_list
+
+    def __mul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __rmul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __gt__(self, other):
+        return self._as_particle_list.__gt__(other)
+
+
+class Particle(AbstractPhysicalParticle):
     """
     A class for an individual particle or antiparticle.
 
@@ -253,8 +280,9 @@ class Particle(AbstractParticle):
 
     See Also
     --------
-    ~plasmapy.particles.CustomParticle
-    ~plasmapy.particles.DimensionlessParticle
+    CustomParticle
+    DimensionlessParticle
+    ~plasmapy.particles.particle_collections.ParticleList
 
     Examples
     --------
@@ -264,6 +292,7 @@ class Particle(AbstractParticle):
     >>> electron = Particle('e-')
     >>> neutron = Particle('neutron')
     >>> deuteron = Particle('D', Z=1)
+    >>> triton = Particle('T+')
     >>> alpha = Particle('He', mass_numb=4, Z=2)
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
@@ -274,7 +303,9 @@ class Particle(AbstractParticle):
     >>> positron.symbol
     'e+'
 
-    The ``element``, ``isotope``, and ``ionic_symbol`` attributes return
+    The `~plasmapy.particles.Particle.element`,
+    `~plasmapy.particles.Particle.isotope`, and
+    `~plasmapy.particles.Particle.ionic_symbol` attributes provide
     the symbols for each of these different types of particles.
 
     >>> proton.element
@@ -292,7 +323,7 @@ class Particle(AbstractParticle):
     'D 0+'
 
     If the particle doesn't belong to one of those categories, then
-    these attributes return `None`.
+    these attributes are `None`.
 
     >>> positron.element is None
     True
@@ -307,7 +338,7 @@ class Particle(AbstractParticle):
     >>> True if Particle('alpha').is_ion else False
     True
 
-    Many of the attributes return physical properties of a particle.
+    Many of the attributes provide physical properties of a particle.
 
     >>> electron.integer_charge
     -1
@@ -331,13 +362,9 @@ class Particle(AbstractParticle):
     2
 
     If a `~plasmapy.particles.Particle` instance represents an elementary
-    particle, then the unary ``~`` (invert) operator may be used to
+    particle, then the unary `~` (invert) operator may be used to
     return the particle's antiparticle.
 
-    >>> ~electron
-    Particle("e+")
-    >>> ~proton
-    Particle("p-")
     >>> ~positron
     Particle("e-")
 
@@ -359,6 +386,18 @@ class Particle(AbstractParticle):
     Particle("Fe 1+")
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
+
+    Adding particles together will create a `~plasmapy.particles.ParticleList`,
+    which is a list-like collection of particles.
+
+    >>> proton + 2 * electron
+    ParticleList(['p+', 'e-', 'e-'])
+
+    The ``>`` operator can be used with `Particle` and/or `ParticleList`
+    objects to return the nuclear reaction energy.
+
+    >>> deuteron + triton > alpha + neutron
+    <Quantity 2.81810898e-12 J>
 
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
@@ -1569,14 +1608,14 @@ class Particle(AbstractParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        `~plasmapy.particles.exceptions.InvalidElementError`
             If the `~plasmapy.particles.Particle` is not an element.
 
-        ~plasmapy.particles.ChargeError
+        `~plasmapy.particles.exceptions.ChargeError`
             If no charge information for the `~plasmapy.particles.Particle`
             object is specified.
 
-        ~plasmapy.particles.InvalidIonError
+        `~plasmapy.particles.exceptions.InvalidIonError`
             If there are less than ``n`` remaining bound electrons.
 
         ValueError
@@ -1880,7 +1919,7 @@ class DimensionlessParticle(AbstractParticle):
             raise TypeError("symbol needs to be a string.")
 
 
-class CustomParticle(AbstractParticle):
+class CustomParticle(AbstractPhysicalParticle):
     """
     A class to represent custom particles.
 

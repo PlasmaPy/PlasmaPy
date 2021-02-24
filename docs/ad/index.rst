@@ -14,7 +14,13 @@ PlasmaPy gives each their own sub-packages, `plasmapy.analysis` and
 Think of the `plasmapy.analysis` as your toolbox.  It has all the tools
 (functionality) you need to analyze your data.  Functionality is built around
 `numpy arrays <https://numpy.org/doc/stable/reference/arrays.html>`_ and each
-function has a well-defined, focused task.
+function has a well-defined, focused task.  For example, :func:`numpy.fft.fft`
+does one specific task: compute the one-dimensional discrete Fourier Transform.
+Similarly, :func:`plasmapy.analysis.swept_langmuir.find_floating_potential` only
+finds the floating potential for a given Langmuir trace.  It does not have
+smoothing.  It does not do any filtering.  It does not do any signal
+conditioning.  Its sole task is to find the floating potential of a single
+Langmuir trace.
 
 Diagnostics have a much broader scope and leverage the tools
 defined in `plasmapy.analysis` to give a more integrated user experience when
@@ -32,7 +38,8 @@ on some of following key areas...
 #. Quick viewing of analyzed data with default plotting routines.
 #. Fully defining the physical parameters of a diagnostic with purposely
    designed `Probe` classes that are integrated into the analysis workflow.
-#. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook widgets.
+#. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook
+   widgets.
 
 ----
 
