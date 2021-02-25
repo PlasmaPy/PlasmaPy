@@ -40,8 +40,8 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     .. math::
         \theta = \frac{E_{T}}{E_{F}}
 
-    where :math:`E_{T}` is the thermal energy of the plasma and
-    :math:`E_{F}` is the Fermi energy of the plasma.
+    where :math:`E_{T}` is the thermal energy of the plasma
+    and :math:`E_{F}` is the Fermi energy of the plasma.
 
     Parameters
     ----------
@@ -86,8 +86,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     .. math::
         \beta = \frac{p_{th}}{p_{mag}}
 
-    where :math:`p_{th}` is the thermal pressure of the plasma and
-    :math:`p_{mag}` is the magnetic pressure of the plasma.
+    where :math:`p_{th}` is the thermal pressure of the plasma
+    and :math:`p_{mag}` is the magnetic pressure of the plasma.
 
     Parameters
     ----------
