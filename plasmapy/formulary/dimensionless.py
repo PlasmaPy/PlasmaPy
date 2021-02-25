@@ -41,7 +41,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
         \theta = \frac{E_{T}}{E_{F}}
 
     where :math:`E_{T}` is the thermal energy of the plasma and
-    :math:`E_{F}}` is the Fermi energy of the plasma.
+    :math:`E_{F}` is the Fermi energy of the plasma.
 
     Parameters
     ----------
