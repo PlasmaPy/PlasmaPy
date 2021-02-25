@@ -31,7 +31,7 @@ from plasmapy.utils.decorators import validate_quantities
     n_e={"can_be_negative": False},
 )
 def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
-    """
+    r"""
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
 
@@ -78,7 +78,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     n={"can_be_negative": False},
 )
 def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
-    """
+    r"""
     The ratio of thermal pressure to magnetic pressure.
 
     The beta (:math:`\beta`) of a plasma is defined by
