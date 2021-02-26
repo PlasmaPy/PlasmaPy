@@ -4,6 +4,7 @@ from __future__ import annotations
 
 __all__ = [
     "AbstractParticle",
+    "AbstractPhysicalParticle",
     "CustomParticle",
     "DimensionlessParticle",
     "Particle",
@@ -20,7 +21,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import List, Optional, Set, Tuple, Union
+from typing import Iterable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.elements import _Elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
@@ -204,7 +205,33 @@ class AbstractParticle(ABC):
         return json.dumps(self.json_dict, **kwargs)
 
 
-class Particle(AbstractParticle):
+class AbstractPhysicalParticle(AbstractParticle):
+    """Base class for particles that are defined with physical units."""
+
+    @property
+    def _as_particle_list(self):
+        # Avoid circular imports by importing here
+        from plasmapy.particles.particle_collections import ParticleList
+
+        return ParticleList([self])
+
+    def __add__(self, other):
+        return self._as_particle_list + other
+
+    def __radd__(self, other):
+        return other + self._as_particle_list
+
+    def __mul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __rmul__(self, other):
+        return self._as_particle_list.__mul__(other)
+
+    def __gt__(self, other):
+        return self._as_particle_list.__gt__(other)
+
+
+class Particle(AbstractPhysicalParticle):
     """
     A class for an individual particle or antiparticle.
 
@@ -253,8 +280,9 @@ class Particle(AbstractParticle):
 
     See Also
     --------
-    ~plasmapy.particles.CustomParticle
-    ~plasmapy.particles.DimensionlessParticle
+    CustomParticle
+    DimensionlessParticle
+    ~plasmapy.particles.particle_collections.ParticleList
 
     Examples
     --------
@@ -264,6 +292,7 @@ class Particle(AbstractParticle):
     >>> electron = Particle('e-')
     >>> neutron = Particle('neutron')
     >>> deuteron = Particle('D', Z=1)
+    >>> triton = Particle('T+')
     >>> alpha = Particle('He', mass_numb=4, Z=2)
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
@@ -274,7 +303,9 @@ class Particle(AbstractParticle):
     >>> positron.symbol
     'e+'
 
-    The ``element``, ``isotope``, and ``ionic_symbol`` attributes return
+    The `~plasmapy.particles.Particle.element`,
+    `~plasmapy.particles.Particle.isotope`, and
+    `~plasmapy.particles.Particle.ionic_symbol` attributes provide
     the symbols for each of these different types of particles.
 
     >>> proton.element
@@ -292,7 +323,7 @@ class Particle(AbstractParticle):
     'D 0+'
 
     If the particle doesn't belong to one of those categories, then
-    these attributes return `None`.
+    these attributes are `None`.
 
     >>> positron.element is None
     True
@@ -307,7 +338,7 @@ class Particle(AbstractParticle):
     >>> True if Particle('alpha').is_ion else False
     True
 
-    Many of the attributes return physical properties of a particle.
+    Many of the attributes provide physical properties of a particle.
 
     >>> electron.integer_charge
     -1
@@ -331,13 +362,9 @@ class Particle(AbstractParticle):
     2
 
     If a `~plasmapy.particles.Particle` instance represents an elementary
-    particle, then the unary ``~`` (invert) operator may be used to
+    particle, then the unary `~` (invert) operator may be used to
     return the particle's antiparticle.
 
-    >>> ~electron
-    Particle("e+")
-    >>> ~proton
-    Particle("p-")
     >>> ~positron
     Particle("e-")
 
@@ -359,6 +386,18 @@ class Particle(AbstractParticle):
     Particle("Fe 1+")
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
+
+    Adding particles together will create a `~plasmapy.particles.ParticleList`,
+    which is a list-like collection of particles.
+
+    >>> proton + 2 * electron
+    ParticleList(['p+', 'e-', 'e-'])
+
+    The ``>`` operator can be used with `Particle` and/or `ParticleList`
+    objects to return the nuclear reaction energy.
+
+    >>> deuteron + triton > alpha + neutron
+    <Quantity 2.81810898e-12 J>
 
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
@@ -1414,41 +1453,86 @@ class Particle(AbstractParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Union[str, Set, Tuple, List] = None,
-        any_of: Union[str, Set, Tuple, List] = None,
-        exclude: Union[str, Set, Tuple, List] = None,
+        require: Union[str, Iterable[str]] = None,
+        any_of: Union[str, Iterable[str]] = None,
+        exclude: Union[str, Iterable[str]] = None,
     ) -> bool:
         """
         Determine if the particle meets categorization criteria.
 
-        Return `True` if the particle is in all of the inputted
-        categories, and `False` the particle is not.
+        Return `True` if the particle is consistent with the provided
+        categories, and `False` otherwise.
 
-        Required categories may be entered as positional arguments,
-        including as a `list`, `set`, or `tuple` of required categories.
-        These may also be included using the ``require`` keyword
-        argument.  This method will return `False` if the particle is
-        not in all of the required categories.
+        Parameters
+        ----------
+        *category_tuple
+            Required categories in the form of one or more `str` objects
+            or an iterable.
 
-        If categories are inputted using the ``any_of`` keyword
-        argument, then this method will return `False` if the particle
-        is not of any of the categories in ``any_of``.
+        require : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories.  This method will return `False` if
+            the `Particle` does not belong to all of these categories.
 
-        If the ``exclude`` keyword is set, then this method will return
-        `False` if the particle is in any of the excluded categories,
-        whether or not the particle matches the other criteria.
+        any_of : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories. This method will return `False` if
+            the `Particle` does not belong to at least one of these
+            categories.
+
+        exclude : `str` or iterable providing `str` objects, optional, keyword-only
+            One or more categories.  This method will return `False` if
+            the `Particle` belongs to any of these categories.
+
+        Notes
+        -----
+        A `set` containing all valid categories may be accessed by the
+        ``valid_categories`` attribute of `~Particle.is_category`.
 
         Examples
-        --------
-        >>> Particle('e-').is_category('lepton')
+        -----
+        Required categories may be entered as positional arguments,
+        including as a `list`, `set`, or `tuple` of required categories.
+
+        >>> electron = Particle("e-")
+        >>> electron.is_category("lepton")
         True
-        >>> Particle('p+').is_category('baryon', exclude='charged')
+        >>> electron.is_category("lepton", "baryon")
         False
-        >>> Particle('n').is_category({'matter', 'baryon'}, exclude={'charged'})
-        True
-        >>> Particle('mu+').is_category('antilepton', exclude='baryon')
+        >>> electron.is_category(["fermion", "matter"])
         True
 
+        Required arguments may also be provided using the ``require``
+        keyword argument.
+
+        >>> electron.is_category(require="lepton")
+        True
+        >>> electron.is_category(require=["lepton", "baryon"])
+        False
+
+        This method will return `False` if the particle does not belong
+        to at least one of the categories provided with the ``any_of``
+        keyword argument.
+
+        >>> electron.is_category(any_of=["lepton", "baryon"])
+        True
+        >>> electron.is_category(any_of=("noble gas", "lanthanide", "halogen"))
+        False
+
+        This method will return `False` if the particle belongs to any
+        of the categories provided in the ``exclude`` keyword argument.
+
+        >>> electron.is_category(exclude="baryon")
+        True
+        >>> electron.is_category(exclude={"lepton", "baryon"})
+        False
+
+        The ``require``, ``any_of``, and ``exclude`` keywords may be
+        combined.  If the particle matches all of the provided criteria,
+        then `~Particle.is_category` will return `True`.
+
+        >>> electron.is_category(
+        ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
+        ... )
+        False
         """
 
         def become_set(arg: Union[str, Set, Tuple, List]) -> Set[str]:
@@ -1471,12 +1555,8 @@ class Particle(AbstractParticle):
             )
 
         require = become_set(category_tuple) if category_tuple else become_set(require)
-
         exclude = become_set(exclude)
         any_of = become_set(any_of)
-
-        if not require and not exclude and not any_of:
-            return _valid_categories
 
         invalid_categories = (require | exclude | any_of) - _valid_categories
 
@@ -1569,14 +1649,14 @@ class Particle(AbstractParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        `~plasmapy.particles.exceptions.InvalidElementError`
             If the `~plasmapy.particles.Particle` is not an element.
 
-        ~plasmapy.particles.ChargeError
+        `~plasmapy.particles.exceptions.ChargeError`
             If no charge information for the `~plasmapy.particles.Particle`
             object is specified.
 
-        ~plasmapy.particles.InvalidIonError
+        `~plasmapy.particles.exceptions.InvalidIonError`
             If there are less than ``n`` remaining bound electrons.
 
         ValueError
@@ -1697,6 +1777,10 @@ class Particle(AbstractParticle):
             self.__init__(base_particle, Z=new_integer_charge)
         else:
             return Particle(base_particle, Z=new_integer_charge)
+
+
+Particle.is_category.valid_categories = _valid_categories
+"""All valid particle categories."""
 
 
 class DimensionlessParticle(AbstractParticle):
@@ -1880,7 +1964,7 @@ class DimensionlessParticle(AbstractParticle):
             raise TypeError("symbol needs to be a string.")
 
 
-class CustomParticle(AbstractParticle):
+class CustomParticle(AbstractPhysicalParticle):
     """
     A class to represent custom particles.
 
