@@ -568,10 +568,8 @@ expected_properties = {
     "integer_charges": [0, 1, 2],
     "ionic_fractions": np.array([0.2, 0.3, 0.5]),
     "ionic_symbols": ["He-4 0+", "He-4 1+", "He-4 2+"],
-    # "_is_normalized()": True,
     "number_densities": np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     "tol": 2e-14,
-    # "__str__()": "<IonizationState instance for He-4>",
 }
 
 
