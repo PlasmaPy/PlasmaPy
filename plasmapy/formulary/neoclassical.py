@@ -145,7 +145,7 @@ def L_friction_coefficient(species_a, i, species_b, j, all_species):
 
 def pitch_angle_diffusion_rate(x, index, a_states, all_species):
     # Houlberg_1997, equation B4b,
-    ai = a_states[index]
+    ai = a_states[index]  # TODO I wouldn't need to carry the index around, if...
 
     def sum_items():
         for b in all_species:
