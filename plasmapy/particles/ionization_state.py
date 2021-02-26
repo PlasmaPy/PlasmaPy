@@ -141,7 +141,7 @@ class IonicFraction:
     @property
     def number_density(self) -> u.m ** -3:
         """The number density of the ion."""
-        return self._number_density.to(u.m ** -3)
+        return self._number_density
 
     @number_density.setter
     @validate_quantities(
