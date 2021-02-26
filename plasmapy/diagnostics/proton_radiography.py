@@ -228,7 +228,7 @@ class SyntheticProtonRadiograph:
                 self.grid.add_quantities(**arg)
 
             # Check that there are no infinite values
-            if not np.isfinite(self.grid[rq]).all():
+            if not np.isfinite(self.grid[rq].value).all():
                 raise ValueError(
                     f"Input arrays must be finite: {rq} contains "
                     "either NaN or infinite values."
@@ -236,7 +236,10 @@ class SyntheticProtonRadiograph:
 
             # Check that the max values on the edges of the arrays are
             # small relative to the maximum values on that grid
-            arr = np.abs(self.grid[rq])
+            #
+            # Array must be dimensionless to re-assemble it into an array
+            # of max values like this
+            arr = np.abs(self.grid[rq]).value
             edge_max = np.max(
                 np.array(
                     [
