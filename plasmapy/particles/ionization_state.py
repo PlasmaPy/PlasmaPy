@@ -88,7 +88,7 @@ class IonicFraction:
         self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
     ):
         try:
-            self._particle = ion
+            self.ion = ion
             self.ionic_fraction = ionic_fraction
             self.number_density = number_density
             self.T_i = T_i
@@ -105,12 +105,12 @@ class IonicFraction:
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
-        return self._particle.ionic_symbol
+        return self.ion.ionic_symbol
 
     @property
     def integer_charge(self) -> Integral:
         """The integer charge of the ion."""
-        return self._particle.integer_charge
+        return self.ion.integer_charge
 
     @property
     def ionic_fraction(self) -> Real:
