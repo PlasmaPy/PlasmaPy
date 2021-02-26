@@ -72,14 +72,10 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
             charge_states_b.n_elem,
             (ai._particle, bj._particle),  # simplifying assumption after A4
         )
-        for i in range(
-            len(charge_states_a.number_densities)
-        ):  # These really need to implement len.
-            ai = charge_states_a[i]
+        for ai in charge_states_a:
             if ai._particle.charge == 0:
                 continue
-            for j in range(len(charge_states_b.number_densities)):
-                bj = charge_states_b[j]
+            for bj in charge_states_b:
                 if bj._particle.charge == 0:
                     continue
                 # Eq. A4, Houlberg_1997
@@ -155,7 +151,7 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
         for b in all_species:
             xab = xab_ratio(
                 a_states, b
-            )  # TOZO should be over all other species, not ionization states
+            )  # TODO should be over all other species, not ionization states
             numerator = erf(x / xab) - Chandrasekhar_G(x / xab)
             denominator = x ** 3
             fraction = numerator / denominator
