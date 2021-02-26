@@ -324,6 +324,7 @@ class IonizationState:
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
+                T_i=self.T_e,
             )
         else:
             if not isinstance(value, Particle):
@@ -344,6 +345,7 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
                     number_density=self.number_densities[Z],
+                    T_i=self.T_e,
                 )
             else:
                 if not same_element or not same_isotope:
