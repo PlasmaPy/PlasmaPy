@@ -13,6 +13,42 @@ later.
 Coding Style
 ============
 
+TL;DR: use pre-commit
+---------------------
+
+PlasmaPy has a configuration for the `pre-commit framework
+<https://pre-commit.com/>`_ that takes care of style mostly automatically.
+Install it with `pip install pre-commit`, then use `pre-commit install` within
+the repository.
+
+This will cause pre-commit to download the right versions of linters we use,
+then run an automated style checking suite on every commit.  Do note that this
+works better with a `git add`, then `git commit` workflow than a `git commit
+-a` workflow — that way, you can check via `git diff` what the automated
+changes actually did.
+
+Note that the "Style linters / pre-commit (pull_request)" part of our
+Continuous Integration system can and will (metaphorically) shout at you if it
+finds you didn't apply the linters. Also note that the linters' output may vary
+with version, so, rather than apply `black` and `isort` manually, let
+pre-commit do the version management for you instead!
+
+Our pre-commit suite can be found in `.pre-commit-config.yaml
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/.pre-commit-config.yaml>`_.
+It includes
+
+* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package
+* `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
+  to example notebooks as well.
+* a few tools for `requirements.txt`, `.yml` files and the like.
+
+PlasmaPy Code Style Guide, codified
+-----------------------------------
+
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
   <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
@@ -49,25 +85,11 @@ Coding Style
 * Use ``Optional[type]`` for type hinted keyword arguments with a
   default value of ``None``.
 
+* There should be at least one pun per 1284 lines of code.
+
 * Avoid using `lambda` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
 
-* There should be at most one pun per 1284 lines of code.
-
-pre-commit hooks
-----------------
-
-PlasmaPy has a configuration for `pre-commit` that takes care of style mostly
-automatically. Install it with `pip install pre-commit`, then use `pre-commit
-install` within the repository.
-
-This will cause git to run an automated style checking suite, mostly composed
-of `flake8` and `black`, on every commit. Do note that this works better with
-a `git add`, then `git commit` workflow than a `git commit -a` workflow - that
-way, you can check via `git diff` what the automated changes actually did.
-
-Note that `flake8` does not change your files automatically (help in setting
-that up, if possible, most welcome!).
 
 Branches, commits, and pull requests
 ====================================
