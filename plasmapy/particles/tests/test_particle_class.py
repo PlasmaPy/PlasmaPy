@@ -3,6 +3,8 @@ import inspect
 import io
 import json
 import numpy as np
+import os
+import pickle
 import pytest
 
 from astropy import constants as const
@@ -1342,3 +1344,20 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
         f"expected_repr = {expected_repr['__init__']}.\n\n"
         f"json_repr: {test_dict['__init__']}"
     )
+
+
+def test_particle_is_category_valid_categories():
+    """Test the location where valid categories may be accessed."""
+    assert hasattr(Particle.is_category, "valid_categories")
+    some_valid_categories = {
+        "lepton",
+        "fermion",
+        "matter",
+        "nonmetal",
+        "electron",
+        "ion",
+        "isotope",
+        "charged",
+        "uncharged",
+    }
+    assert some_valid_categories.issubset(Particle.is_category.valid_categories)

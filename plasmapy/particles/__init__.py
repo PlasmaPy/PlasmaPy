@@ -26,11 +26,13 @@ from plasmapy.particles.ionization_state_collection import IonizationStateCollec
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     AbstractParticle,
+    AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
     Particle,
-    particle_like,
+    ParticleLike,
 )
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,
