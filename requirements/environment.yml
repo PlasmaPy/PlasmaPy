@@ -15,7 +15,7 @@ dependencies:
   - pandas
   - pillow
   - pip
-  - xarray < 0.17
+  - xarray
   - pip:
     - numpydoc
     - pytest
