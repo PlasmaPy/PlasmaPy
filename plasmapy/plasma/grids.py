@@ -564,11 +564,17 @@ class AbstractGrid(ABC):
                 )
 
             if self.is_uniform:
-                axes = ["ax0", "ax1", "ax2"]
+                dims = ["ax0", "ax1", "ax2"]
+                coords = {
+                    "ax0": self.ds.coords["ax0"],
+                    "ax1": self.ds.coords["ax1"],
+                    "ax2": self.ds.coords["ax2"],
+                }
             # If grid is non-uniform, flatten quantity
             else:
                 quantity = quantity.flatten()
-                axes = ["ax"]
+                dims = ["ax"]
+                coords = {"ax": self.ds.coords["ax"]}
 
             if quantity.shape != self.shape:
                 raise ValueError(
@@ -576,7 +582,9 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
-            data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
+            data = xr.DataArray(
+                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+            )
             self.ds[key] = data
 
     @property

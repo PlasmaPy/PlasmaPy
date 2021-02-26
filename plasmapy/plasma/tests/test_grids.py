@@ -243,6 +243,9 @@ def test_nearest_neighbor_interpolator():
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+
+    print(grid.shape)
+
     grid.add_quantities(x=grid.grids[0], y=grid.grids[1])
 
     # One position
@@ -293,12 +296,13 @@ def test_volume_averaged_interpolator():
 
 def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
-    grid.add_quantities(x=grid.grids[0])
 
     pts0, pts1, pts2 = grid.grids
+
     shape = grid.shape
     units = grid.units
 
+    grid.add_quantities(x=pts0)
     print(grid)
 
     # Grid should be non-uniform
@@ -338,6 +342,7 @@ def test_NonUniformCartesianGrid():
 
 
 if __name__ == "__main__":
+    """
     test_AbstractGrid()
     test_CartesianGrid()
     test_grid_methods()
@@ -345,4 +350,5 @@ if __name__ == "__main__":
     test_nearest_neighbor_interpolator()
     test_volume_averaged_interpolator()
     test_NonUniformCartesianGrid()
+    """
     pass
