@@ -194,21 +194,26 @@ def test_input_validation():
 
     # Check that an error is raised when an input grid has a nan or infty value
     # First check NaN
-    grid["E_x"][0, 0, 0] = np.nan * u.V / u.m
+    Ex = grid["E_x"]
+    Ex[0, 0, 0] = np.nan * u.V / u.m
+    grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
-    grid["E_x"][0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
+    Ex[0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
+    grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Check what happens if a value is large realtive to the rest of the array
-    grid["E_x"][0, 0, 0] = 0.5 * np.max(grid["E_x"])
+    Ex[0, 0, 0] = 0.5 * np.max(Ex)
+    grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
     with pytest.warns(RuntimeWarning):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Raise error when source-to-detector vector doesn't pass through the
     # field grid
