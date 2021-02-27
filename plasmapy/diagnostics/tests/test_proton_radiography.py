@@ -504,7 +504,10 @@ def test_insert_mesh():
     # Create a synthetic radiograph
     size = np.array([[-1, 1], [-1, 1]]) * 2 * u.cm
     bins = [100, 50]
-    h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
+    # Filter warnings because many particles are off the radiograph
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
 
     # Sum up the vertical direction
     line = np.sum(i, axis=1)
