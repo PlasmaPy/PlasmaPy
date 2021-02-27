@@ -308,36 +308,107 @@ class SyntheticProtonRadiograph:
     _c = const.c.si.value
     _m_p = const.m_p.si.value
 
-
-
     # *************************************************************************
     # Create mesh
     # *************************************************************************
 
+    def add_mesh(
+        self, location, extent, nwires, wire_diameter, mesh_hdir=None, mesh_vdir=None
+    ):
+        """
+        Add a wire mesh grid between the particle source and the object grid
+        that blocks particles which intersect the wires.
+
+        Parameters
+        ----------
+        location : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the center of the
+            mesh grid. This location must be between the source and the
+            object grid.
+
+            This vector will be interpreted as
+            being in either cartesian, cylindrical, or spherical coordinates
+            based on its units. Valid geometries are:
+
+            * Cartesian (x,y,z) : (meters, meters, meters)
+            * cylindrical (r, theta, z) : (meters, radians, meters)
+            * spherical (r, theta, phi) : (meters, radians, radians)
+
+            In spherical coordinates theta is the polar angle.
+
+        extent : Tuple of 1 or 2 `~astropy.units.Quantity`
+            The size of the mesh grid (in the mesh plane). If one value
+            is provided, the mesh is circular and the value provided is
+            interpreted as the diameter. If two values are provided, the
+            mesh is rectangular and they the values are interpreted as the
+            width and height respectively.
+
+        nwires : Tuple of 1 or 2 ints
+            The number of wires in the horizontal and vertical directions. If
+            only one value is provided, the number in the two directions is
+            assumed to be equal. Note that a wire will cross the center of the
+            grid only when nwires is odd.
+
+        wire_diameter : `~astropy.units.Quantity`
+            The diameter of the wires.
+
+        mesh_hdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction on the mesh plane. Modifying this vector can rotate the
+            mesh in the plane or tilt the mesh plane relative to the
+            source-detector axis. By default, `mesh_hdir` is set equal to
+            `detector_hdir` (see `detector_hdir` keyword in `__init__`).
+
+        mesh_vdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the vertical
+            direction on the mesh plane. Modifying this vector can tilt the
+            mesh relative to the source-detector axis. By default, `mesh_vdir`
+            is defined to be perpendicular to `mesh_hdir` and the detector
+            plane normal (such that the mesh is parallel to the detector plane).
+
+        Raises
+        ------
+        ValueError
+            Raises a ValueError if the provided mesh location is not
+            between the source and the object grid.
+
+            Raises a ValueError if the specified grid removes ALL of the
+            particles.
 
 
-    def add_mesh(self, location, extent, xcells, ycells, wire_thickness,
-                 mesh_hdir = None,
-                 mesh_vdir = None):
+        Returns
+        -------
+
+        nremoved : int
+            The number of particles removed
+
+        """
 
         location = _coerce_to_cartesian_si(location)
-        wire_thickness = wire_thickness.si.value
-        half_thick = wire_thickness/2
+        wire_radius = wire_diameter.si.value / 2
 
         if not isinstance(extent, tuple):
             extent = (extent,)
 
         if len(extent) == 1:
-            radius = 0.5*extent[0].si.value
+            radius = 0.5 * extent[0].si.value
             width = extent[0].si.value
             height = extent[0].si.value
-        elif len (extent) == 2:
+        elif len(extent) == 2:
             radius = None
             width = extent[0].si.value
             height = extent[1].si.value
         else:
-            raise ValueError("extent must be a tuple of 1 or 2 elements, but "
-                             f"{len(extent)} elements were provided.")
+            raise ValueError(
+                "extent must be a tuple of 1 or 2 elements, but "
+                f"{len(extent)} elements were provided."
+            )
+
+        if not isinstance(nwires, tuple):
+            nwires = (nwires,)
+
+        if len(nwires) != 2:
+            nwires = (nwires[0], nwires[0])
 
         # If no hdir/vdir is specified, calculate a default value
         # If one is specified, make sure it is normalized
@@ -346,82 +417,95 @@ class SyntheticProtonRadiograph:
             # specified a different det_hdir
             mesh_hdir = self._default_detector_hdir()
         else:
-            mesh_hdir = mesh_hdir/np.linalg.norm(mesh_hdir)
+            mesh_hdir = mesh_hdir / np.linalg.norm(mesh_hdir)
 
         if mesh_vdir is None:
             mesh_vdir = np.cross(mesh_hdir, self.det_n)
             mesh_vdir = -mesh_vdir / np.linalg.norm(mesh_vdir)
         else:
-            mesh_vdir = mesh_vdir/np.linalg.norm(mesh_vdir)
+            mesh_vdir = mesh_vdir / np.linalg.norm(mesh_vdir)
 
         mesh_normal = np.cross(mesh_hdir, mesh_vdir)
 
-
-        # TODO: Raise exception if mesh is AFTER the field grid
-
+        # Raise exception if mesh is AFTER the field grid
+        if np.linalg.norm(location - self.source) > np.linalg.norm(self.source):
+            raise ValueError(
+                f"The specified mesh location, {location},"
+                "is not between the source and the origin."
+            )
 
         # Calculate the times required to evolve each particle to the mesh
         # plane
-        t = np.inner(location[np.newaxis, :] - self.x, mesh_normal)/ \
-            np.inner(self.v, mesh_normal)
-
-
-
+        t = np.inner(location[np.newaxis, :] - self.x, mesh_normal) / np.inner(
+            self.v, mesh_normal
+        )
 
         # Calculate Particle positions in the mesh plane
-        x = self.x + self.v * t[:,np.newaxis]
+        x = self.x + self.v * t[:, np.newaxis]
         # Particle positions in 2D on the mesh plane
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
-
 
         # Create an array in which 0 indicates that a particle has hit one of
         # the wires and any other value indicates that it has not
         no_hit = np.ones([self.nparticles])
 
-
         # Mark particles that overlap vertical or horizontal position with a wire
-        h_centers = np.linspace(-width/2, width/2, num=xcells+1)
+        h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
         for c in h_centers:
-            no_hit *= np.where(np.isclose(xloc, c, atol=half_thick), 0, 1)
+            no_hit *= np.where(np.isclose(xloc, c, atol=wire_radius), 0, 1)
 
-
-        v_centers = np.linspace(-height/2, height/2, num=ycells+1)
+        v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])
         for c in v_centers:
-            no_hit *= np.where(np.isclose(yloc, c, atol=half_thick), 0, 1)
+            no_hit *= np.where(np.isclose(yloc, c, atol=wire_radius), 0, 1)
 
         # Put back any particles that are outside the mesh boundaries
         # First handle the case where the mesh is rectangular
         if radius is None:
-
-            no_hit = np.where(np.logical_or(xloc > np.max(h_centers) + half_thick,
-                                             xloc < np.min(h_centers) - half_thick),
-                                              1, no_hit)
-
-            no_hit = np.where(np.logical_or(yloc > np.max(v_centers) + half_thick,
-                                             yloc < np.min(v_centers) - half_thick),
-                                              1, no_hit)
+            # Replace particles outside the x-boundary
+            no_hit = np.where(
+                np.logical_or(
+                    xloc > np.max(h_centers) + wire_radius,
+                    xloc < np.min(h_centers) - wire_radius,
+                ),
+                1,
+                no_hit,
+            )
+            # Replace particles outside the y-boundary
+            no_hit = np.where(
+                np.logical_or(
+                    yloc > np.max(v_centers) + wire_radius,
+                    yloc < np.min(v_centers) - wire_radius,
+                ),
+                1,
+                no_hit,
+            )
         # Handle the case where the mesh is circular
         else:
-            loc_rad = np.sqrt(xloc**2 + yloc**2)
+            loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
             no_hit = np.where(loc_rad > radius, 1, no_hit)
 
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
-            no_hit *= np.where(np.isclose(loc_rad, radius, atol=half_thick), 0, 1)
+            no_hit *= np.where(np.isclose(loc_rad, radius, atol=wire_radius), 0, 1)
 
+        # Identify the particles that have hit something, then remove them from
+        # all of the arrays
+        i = np.argwhere(no_hit)[:, 0]
+        nremoved = self.nparticles - i.size
 
-
-
-        i = np.argwhere(no_hit)[:,0]
+        if self.nparticles - nremoved <= 0:
+            raise ValueError(
+                "The specified mesh is blocking all of the particles. "
+                f"The wire diameter ({wire_diameter}) may be too large."
+            )
 
         self.x = self.x[i, :]
         self.v = self.v[i, :]
-        self.theta = self.theta[i] # Importat to apply here to get correct grid_ind
+        self.theta = self.theta[i]  # Importat to apply here to get correct grid_ind
         self.nparticles = len(i)
 
-
-
+        return nremoved
 
     # *************************************************************************
     # Particle creation methods

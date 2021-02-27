@@ -13,8 +13,6 @@ from scipy.special import erf
 from plasmapy.diagnostics import proton_radiography as prad
 from plasmapy.plasma.grids import CartesianGrid
 
-import matplotlib.pyplot as plt
-
 
 def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
     r"""
@@ -85,7 +83,7 @@ def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
         b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = 5e4*np.exp(-(arg ** 2)) * u.V
+        potential = 5e4 * np.exp(-(arg ** 2)) * u.V
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
@@ -138,6 +136,44 @@ def run_1D_example(name):
     values = np.mean(values[:, 20:40], axis=1)
 
     return hax, values
+
+
+def run_mesh_example(
+    location=np.array([0, -2, 0]) * u.mm,
+    extent=(2 * u.mm, 1.5 * u.mm),
+    nwires=9,
+    wire_diameter=20 * u.um,
+    mesh_hdir=None,
+    mesh_vdir=None,
+    nparticles=1e4,
+    problem="electrostatic_gaussian_sphere",
+):
+    """
+    Takes all of the add_mesh parameters and runs a standard example problem
+    simulation using them.
+
+    Returns the sim object for use in additional tests
+    """
+
+    grid = _test_grid(problem, num=100)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
+
+    sim.add_mesh(
+        location,
+        extent,
+        nwires,
+        wire_diameter,
+        mesh_hdir=mesh_hdir,
+        mesh_vdir=mesh_vdir,
+    )
+
+    sim.run(field_weighting="nearest neighbor")
+
+    return sim
 
 
 def test_1D_deflections():
@@ -397,55 +433,113 @@ def test_synthetic_radiograph():
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
 
 
-
 def test_insert_mesh():
-    grid = _test_grid("electrostatic_gaussian_sphere", num=100)
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
+    # ************************************************************
+    # Test various input configurations
+    # ************************************************************
 
-    sim.create_particles(1e5, 3 * u.MeV, max_theta=10 * u.deg)
+    # Test a circular mesh
+    run_mesh_example(extent=1 * u.mm)
 
+    # Test providng hdir
+    run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]))
 
-    # Setup the mesh
-    location = np.array([0, -2, 0])*u.mm
-    extent = (1.5*u.mm, 1.5*u.mm)
-    xcells = 16
-    ycells = 16
-    wire_thickness = 20*u.um
+    # Test providing hdir and vdir
+    run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]), mesh_vdir=np.array([0, 0.1, 1]))
 
+    # ************************************************************
+    # Test invalid inputs
+    # ************************************************************
 
-    mag = 1 + (200+ 2)/(10 -2)
-    print(mag)
-    xmax = (extent[0].to(u.mm).value/2)*mag
+    # Test invalid extent (too many elements)
+    with pytest.raises(ValueError):
+        run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
 
-    mesh_hdir = None
-    mesh_hdir = np.array([1,0,0])
+    # Test wire mesh completely blocks all particles (in thise case because
+    # the wire diameter is absurdely large)
+    with pytest.raises(ValueError):
+        run_mesh_example(wire_diameter=5 * u.mm)
 
-    sim.add_mesh(location, extent, xcells, ycells, wire_thickness,
-                 mesh_hdir=mesh_hdir)
+    # Test if wire mesh is not between the source and object
+    with pytest.raises(ValueError):
+        run_mesh_example(location=np.array([0, 3, 0]) * u.mm)
 
+    # ************************************************************
+    # Test that mesh is the right size in the detector plane, and that
+    # the wire spacing images correctly.
+    # This is actually a good overall test of the whole proton radiography
+    # particle tracing algorithm.
+    # ************************************************************
+    loc = np.array([0, -2, 0]) * u.mm
+    extent = (1 * u.mm, 1 * u.mm)
+    wire_diameter = 30 * u.um
+    nwires = 9
+    sim = run_mesh_example(
+        problem="empty",
+        nparticles=1e5,
+        location=loc,
+        extent=extent,
+        wire_diameter=wire_diameter,
+        nwires=nwires,
+    )
 
-    sim.run(field_weighting="nearest neighbor")
+    # Calculate the width that the grid SHOULD have on the image plane
+    src_to_mesh = np.linalg.norm(loc.si.value - sim.source)
+    mesh_to_det = np.linalg.norm(sim.detector - loc.si.value)
+    mag = 1 + mesh_to_det / src_to_mesh
+    true_width = mag * extent[0].to(u.mm).value
+    true_spacing = true_width / (nwires - 1)
 
-
-    size = np.array([[-1, 1], [-1, 1]]) * 3 * u.cm
-    bins = [200, 200]
-
+    # Create a synthetic radiograph
+    size = np.array([[-1, 1], [-1, 1]]) * 2 * u.cm
+    bins = [100, 50]
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
 
-    fig, ax = plt.subplots()
-    ax.pcolormesh(h.to(u.mm).value, v.to(u.mm).value, i.T, cmap='Blues_r')
-    ax.set_aspect('equal')
-    ax.set_xlabel("x (mm)")
-    ax.set_ylabel("y (mm)")
-    #ax.axvline(x=xmax)
-    #ax.axvline(x=-xmax)
+    # Sum up the vertical direction
+    line = np.sum(i, axis=1)
 
+    # Determine the points that are on gridlines: where 1/line is above the
+    # median by a lot
+    ind = np.argwhere(1 / line > 2 * np.median(1 / line))
+    hwhere = h.to(u.mm).value[ind]
+    measured_width = np.max(hwhere) - np.min(hwhere)
 
+    # Calculate the max spatial frequency (should be close to the grid spacing)
+    dx = np.abs(size[0][1] - size[0][0]).to(u.mm).value / bins[0]
+    fnyquist = int(bins[0] / 2)
+    freqs = np.fft.fftfreq(h.size, d=dx)
+    freqs = freqs[0:fnyquist]
+    # Calculate the positive frequency power spectrum
+    pspect = np.abs(np.fft.fft(1 / line)) ** 2
+    pspect = pspect[0:fnyquist]
+    pspect = np.where(np.abs(freqs) < 0.1, 0, pspect)  # Mask the low frequencies
 
+    # Measured spacing is the inverse of the maximum spatial frequency
+    measured_spacing = 1 / freqs[np.argmax(pspect)]
 
+    # This test is somewhat tricky, so here's a matplotlib plot
+    # that can be uncommented for debugging
+    """
+    fig, ax = plt.subplots(nrows=3, figsize=(4,15))
+    ax[0].pcolormesh(h.to(u.mm).value, v.to(u.mm).value, i.T, cmap='Blues_r')
+    ax[0].set_aspect('equal')
+    ax[0].axvline(x=np.max(hwhere), color='red')
+    ax[0].axvline(x=np.min(hwhere), color='red')
+
+    ax[1].plot(h.to(u.mm).value, 1/line)
+    ax[1].axhline(y=np.median(1/line))
+    ax[1].axvline(x=np.max(hwhere), color='red')
+    ax[1].axvline(x=np.min(hwhere), color='red')
+
+    ax[2].plot(freqs, pspect)
+    """
+
+    # Verify that the edges of the mesh are imaged correctly
+    assert np.isclose(measured_width, true_width, 1)
+
+    # Verify that the spacing is correct by checking the FFT
+    assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
 if __name__ == "__main__":
@@ -458,6 +552,6 @@ if __name__ == "__main__":
     test_load_particles()
     test_run_options()
     test_synthetic_radiograph()
-    """
     test_insert_mesh()
+    """
     pass
