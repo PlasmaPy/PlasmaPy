@@ -316,15 +316,28 @@ class SyntheticProtonRadiograph:
 
 
 
-    def add_mesh(self, location, width, height, xcells, ycells, wire_thickness,
+    def add_mesh(self, location, extent, xcells, ycells, wire_thickness,
                  mesh_hdir = None,
                  mesh_vdir = None):
 
         location = _coerce_to_cartesian_si(location)
-
-        width = width.si.value
-        height = height.si.value
         wire_thickness = wire_thickness.si.value
+        half_thick = wire_thickness/2
+
+        if not isinstance(extent, tuple):
+            extent = (extent,)
+
+        if len(extent) == 1:
+            radius = 0.5*extent[0].si.value
+            width = extent[0].si.value
+            height = extent[0].si.value
+        elif len (extent) == 2:
+            radius = None
+            width = extent[0].si.value
+            height = extent[1].si.value
+        else:
+            raise ValueError("extent must be a tuple of 1 or 2 elements, but "
+                             f"{len(extent)} elements were provided.")
 
         # If no hdir/vdir is specified, calculate a default value
         # If one is specified, make sure it is normalized
@@ -341,13 +354,7 @@ class SyntheticProtonRadiograph:
         else:
             mesh_vdir = mesh_vdir/np.linalg.norm(mesh_vdir)
 
-
-        print(mesh_hdir)
-        print(mesh_vdir)
-
-
         mesh_normal = np.cross(mesh_hdir, mesh_vdir)
-
 
 
         # TODO: Raise exception if mesh is AFTER the field grid
@@ -361,16 +368,17 @@ class SyntheticProtonRadiograph:
 
 
 
-        # Particle positions in the mesh
+        # Calculate Particle positions in the mesh plane
         x = self.x + self.v * t[:,np.newaxis]
         # Particle positions in 2D on the mesh plane
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
 
 
+        # Create an array in which 0 indicates that a particle has hit one of
+        # the wires and any other value indicates that it has not
         no_hit = np.ones([self.nparticles])
 
-        half_thick = wire_thickness/2
 
         # Mark particles that overlap vertical or horizontal position with a wire
         h_centers = np.linspace(-width/2, width/2, num=xcells+1)
@@ -382,14 +390,28 @@ class SyntheticProtonRadiograph:
         for c in v_centers:
             no_hit *= np.where(np.isclose(yloc, c, atol=half_thick), 0, 1)
 
-        #  Put back any particles that are outside the mesh boundaries
-        no_hit = np.where(np.logical_or(xloc > np.max(h_centers) + half_thick,
-                                         xloc < np.min(h_centers) - half_thick),
-                                          1, no_hit)
+        # Put back any particles that are outside the mesh boundaries
+        # First handle the case where the mesh is rectangular
+        if radius is None:
 
-        no_hit = np.where(np.logical_or(yloc > np.max(v_centers) + half_thick,
-                                         yloc < np.min(v_centers) - half_thick),
-                                          1, no_hit)
+            no_hit = np.where(np.logical_or(xloc > np.max(h_centers) + half_thick,
+                                             xloc < np.min(h_centers) - half_thick),
+                                              1, no_hit)
+
+            no_hit = np.where(np.logical_or(yloc > np.max(v_centers) + half_thick,
+                                             yloc < np.min(v_centers) - half_thick),
+                                              1, no_hit)
+        # Handle the case where the mesh is circular
+        else:
+            loc_rad = np.sqrt(xloc**2 + yloc**2)
+            no_hit = np.where(loc_rad > radius, 1, no_hit)
+
+            # In the case of a circular mesh, also create a round wire along the
+            # outside edge
+            no_hit *= np.where(np.isclose(loc_rad, radius, atol=half_thick), 0, 1)
+
+
+
 
         i = np.argwhere(no_hit)[:,0]
 

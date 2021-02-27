@@ -405,13 +405,12 @@ def test_insert_mesh():
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
 
-    sim.create_particles(5e5, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(1e5, 3 * u.MeV, max_theta=10 * u.deg)
 
 
     # Setup the mesh
     location = np.array([0, -2, 0])*u.mm
-    width = 1.5*u.mm
-    height = 1.5*u.mm
+    extent = (1.5*u.mm, 1.5*u.mm)
     xcells = 16
     ycells = 16
     wire_thickness = 20*u.um
@@ -419,21 +418,19 @@ def test_insert_mesh():
 
     mag = 1 + (200+ 2)/(10 -2)
     print(mag)
-    xmax = (width.to(u.mm).value/2)*mag
-    vmax = (height.to(u.mm).value/2)*mag
-
+    xmax = (extent[0].to(u.mm).value/2)*mag
 
     mesh_hdir = None
     mesh_hdir = np.array([1,0,0])
 
-    sim.add_mesh(location, width, height, xcells, ycells, wire_thickness,
+    sim.add_mesh(location, extent, xcells, ycells, wire_thickness,
                  mesh_hdir=mesh_hdir)
 
 
     sim.run(field_weighting="nearest neighbor")
 
 
-    size = np.array([[-1, 1], [-1, 1]]) * 2.5 * u.cm
+    size = np.array([[-1, 1], [-1, 1]]) * 3 * u.cm
     bins = [200, 200]
 
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
@@ -445,8 +442,7 @@ def test_insert_mesh():
     ax.set_ylabel("y (mm)")
     #ax.axvline(x=xmax)
     #ax.axvline(x=-xmax)
-    #ax.axhline(y=vmax)
-    #ax.axhline(y=-vmax)
+
 
 
 
