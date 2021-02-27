@@ -1,0 +1,1 @@
+Added the `add_mesh()` method to `diagnostics.proton_radiography.SyntheticProtonRadiograph` to allow the creation of synthetic proton radiographs that include a mesh wire reference grid.
