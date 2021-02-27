@@ -3,4 +3,4 @@ Several changes to `grids.py` (and one refactor in `diagnostics.proton_radiograp
 - Added the `grid.require_quantities` method that verifies that a list of quantities are present on a grid.
 - Used `grid.require_quantities` to refactor code in `diagnostics.proton_radiography.SyntheticProtonRadiograph`
 - Fixed a bug in `grids.py` for non-uniform grids that arose when `xarray` upgraded to `v0.17.0`
- 
+
