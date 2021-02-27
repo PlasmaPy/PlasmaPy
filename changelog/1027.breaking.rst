@@ -1,0 +1,6 @@
+Several changes to `grids.py` (and one refactor in `diagnostics.proton_radiography`
+- (BREAKING)`grid.__getitem__` now returns a `u.Quantity` array instead of a reference to a `xarray.DataArray`.
+- Added the `grid.require_quantities` method that verifies that a list of quantities are present on a grid.
+- Used `grid.require_quantities` to refactor code in `diagnostics.proton_radiography.SyntheticProtonRadiograph`
+- Fixed a bug in `grids.py` for non-uniform grids that arose when `xarray` upgraded to `v0.17.0`
+ 
