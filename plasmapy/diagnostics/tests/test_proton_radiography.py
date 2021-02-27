@@ -123,9 +123,10 @@ def run_1D_example(name):
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # TODO: Catch warnings (test fields aren't well behaved at edges)
-
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    # Catch warnings because these fields aren't well-behaved at the edges
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     sim.run()
 
@@ -346,7 +347,7 @@ def test_run_options():
     # Cartesian
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
 
     # Test that trying to call run() without creating particles
     # raises an exception
@@ -373,7 +374,11 @@ def test_run_options():
     grid = _test_grid("constant_bz", num=50, B0=250 * u.T)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
+    # Catch warnings because these fields aren't well-behaved at the edges
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(RuntimeWarning):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
@@ -406,6 +411,7 @@ def test_synthetic_radiograph():
 
 
 if __name__ == "__main__":
+    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -414,4 +420,5 @@ if __name__ == "__main__":
     test_load_particles()
     test_run_options()
     test_synthetic_radiograph()
+    """
     pass
