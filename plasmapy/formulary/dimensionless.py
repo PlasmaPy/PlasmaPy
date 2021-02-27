@@ -69,7 +69,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     Notes
     -----
     The thermal energy of the plasma (:math:`E_{T}`) is defined by
-    
+
     .. math::
         E_{T} = k_{B} * T
 
