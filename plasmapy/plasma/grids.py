@@ -234,8 +234,12 @@ class AbstractGrid(ABC):
     def __getitem__(self, key):
         """
         Given a key, return the corresponding array as an `astropy.Quantity`
+
+        Returning with copy=False means that the array returned is a direct
+        reference to the underlying DataArray, so changes made will be reflected
+        in the underlying DataArray.
         """
-        return self.ds[key].data * self.ds[key].attrs["unit"]
+        return u.Quantity(self.ds[key].data, self.ds[key].attrs["unit"], copy=False)
 
     @property
     def shape(self):

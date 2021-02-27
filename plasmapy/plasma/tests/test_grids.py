@@ -64,6 +64,10 @@ def test_AbstractGrid():
     q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantities(B_x=q)
 
+    # Test setting a subset of a quantity array
+    grid["B_x"][0, 0, 0] = 21 * u.T
+    assert grid["B_x"][0, 0, 0] == 21 * u.T
+
     # Test accessing a quantity using __getitem__ or directly
     Bx = grid.ds["B_x"]
     Bx = grid["B_x"]
