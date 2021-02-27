@@ -73,7 +73,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     .. math::
         E_{T} = k_{B} * T
 
-    where :math:`k_{B}` is the Boltzmann constant and
+    where :math:`k_{B}` is the Boltzmann constant
     and :math:`T` is the temperature of the plasma.
 
     See Also
