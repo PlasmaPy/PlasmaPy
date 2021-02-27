@@ -232,21 +232,26 @@ def test_input_validation():
 
     # Check that an error is raised when an input grid has a nan or infty value
     # First check NaN
-    grid["E_x"][0, 0, 0] = np.nan * u.V / u.m
+    Ex = grid["E_x"]
+    Ex[0, 0, 0] = np.nan * u.V / u.m
+    grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
-    grid["E_x"][0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
+    Ex[0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
+    grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Check what happens if a value is large realtive to the rest of the array
-    grid["E_x"][0, 0, 0] = 0.5 * np.max(grid["E_x"])
+    Ex[0, 0, 0] = 0.5 * np.max(Ex)
+    grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
     with pytest.warns(RuntimeWarning):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    grid["E_x"][0, 0, 0] = 0 * u.V / u.m
+    Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Raise error when source-to-detector vector doesn't pass through the
     # field grid
@@ -403,13 +408,18 @@ def test_run_options():
     # Test extreme deflections -> warns user
     # This requires instatiating a whole new example field with a really
     # big B-field
-    grid = _test_grid("constant_bz", num=50, B0=500 * u.T)
+    grid = _test_grid("constant_bz", num=50, B0=250 * u.T)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=1 * u.deg)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(RuntimeWarning):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
+    # Calc max deflection: should be between 0 and pi/2
+    # Note: that's only true because max_theta is very small
+    # More generally, max_deflection can be a bit bigger than pi/2 for
+    # particles that begin at an angle then deflect all the way around.
+    assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
 def test_synthetic_radiograph():

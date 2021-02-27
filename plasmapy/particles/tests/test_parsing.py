@@ -1,12 +1,11 @@
 import pytest
 
-from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.error_messages.call_string?
+from plasmapy.particles.parsing import (
     _case_insensitive_aliases,
     _case_sensitive_aliases,
     _dealias_particle_aliases,
@@ -14,18 +13,6 @@ from plasmapy.particles.parsing import (  # duplicate with utils.pytest_helpers.
 )
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils.code_repr import call_string
-
-
-def _particle_call_string(arg, kwargs=None) -> str:
-    """
-    Return a `str` that recreates the call to create a particular
-    `~plasmapy.particles.Particle` instance from the input.
-    """
-    if kwargs is None:
-        kwargs = {}
-
-    return call_string(Particle, arg, kwargs)
-
 
 aliases_and_symbols = [
     ("electron", "e-"),
@@ -52,6 +39,12 @@ aliases_and_symbols = [
     ("H-1+", "p+"),
     ("H-1 +1", "p+"),
     ("hydrogen-1+", "p+"),
+    ("α", "He-4 2+"),
+    ("β-", "e-"),
+    ("β⁻", "e-"),
+    ("β+", "e+"),
+    ("τ", "tau-"),
+    ("τ+", "tau+"),
 ]
 
 
@@ -332,7 +325,8 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         _parse_and_check_atomic_input(arg, **kwargs)
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
-            f"{_particle_call_string(arg, kwargs)}, but no exception was raised."
+            f"{call_string(_parse_and_check_atomic_input, arg, kwargs)}, "
+            f"but no exception was raised."
         )
 
 
@@ -345,7 +339,8 @@ def test_parse_InvalidElementErrors(arg):
         _parse_and_check_atomic_input(arg)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{_particle_call_string(arg)}, but no exception was raised."
+            f"{call_string(_parse_and_check_atomic_input, arg)}, "
+            f"but no exception was raised."
         )
 
 
@@ -369,12 +364,13 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
         if not record:
             pytest.fail(
                 f"No AtomicWarning was issued by "
-                f"{_particle_call_string(arg, kwargs)} but the expected number "
+                f"{call_string(_parse_and_check_atomic_input, arg, kwargs)} but the expected number "
                 f"of warnings was {num_warnings}"
             )
 
     assert len(record) == num_warnings, (
-        f"The number of AtomicWarnings issued by {_particle_call_string(arg, kwargs)} "
+        f"The number of AtomicWarnings issued by "
+        f"{call_string(_parse_and_check_atomic_input, arg, kwargs)} "
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )

@@ -213,22 +213,13 @@ class SyntheticProtonRadiograph:
         # ************************************************************************
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+
+        self.grid.require_quantities(req_quantities, replace_with_zeros=True)
+
         for rq in req_quantities:
 
-            # Error check that grid contains E and B variables required
-            if rq not in self.grid.quantities:
-                warnings.warn(
-                    f"{rq} not specified for provided grid."
-                    "This quantity will be assumed to be zero.",
-                    RuntimeWarning,
-                )
-                # If missing, warn user and then replace with an array of zeros
-                unit = self.grid._recognized_quantities[rq].unit
-                arg = {rq: np.zeros(self.grid.shape) * unit}
-                self.grid.add_quantities(**arg)
-
             # Check that there are no infinite values
-            if not np.isfinite(self.grid[rq]).all():
+            if not np.isfinite(self.grid[rq].value).all():
                 raise ValueError(
                     f"Input arrays must be finite: {rq} contains "
                     "either NaN or infinite values."
@@ -236,7 +227,10 @@ class SyntheticProtonRadiograph:
 
             # Check that the max values on the edges of the arrays are
             # small relative to the maximum values on that grid
-            arr = np.abs(self.grid[rq])
+            #
+            # Array must be dimensionless to re-assemble it into an array
+            # of max values like this
+            arr = np.abs(self.grid[rq]).value
             edge_max = np.max(
                 np.array(
                     [
@@ -304,9 +298,7 @@ class SyntheticProtonRadiograph:
             print(msg)
 
     # Define some constants so they don't get constantly re-evaluated
-    _e = const.e.si.value
     _c = const.c.si.value
-    _m_p = const.m_p.si.value
 
     # *************************************************************************
     # Create mesh
@@ -635,7 +627,7 @@ class SyntheticProtonRadiograph:
 
         # Calculate the velocity corresponding to the proton energy
         ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
-        self.v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
+        v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
             theta, phi = self._angles_monte_carlo()
@@ -648,9 +640,9 @@ class SyntheticProtonRadiograph:
 
         # Construct the velocity distribution around the z-axis
         self.v = np.zeros([self.nparticles, 3])
-        self.v[:, 0] = self.v0 * np.sin(theta) * np.cos(phi)
-        self.v[:, 1] = self.v0 * np.sin(theta) * np.sin(phi)
-        self.v[:, 2] = self.v0 * np.cos(theta)
+        self.v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
+        self.v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
+        self.v[:, 2] = v0 * np.cos(theta)
 
         # Calculate the rotation matrix that rotates the z-axis
         # onto the source-detector axis
@@ -742,7 +734,7 @@ class SyntheticProtonRadiograph:
 
         # Compute the timestep indicated by the grid resolution
         ds = self.grid.grid_resolution.to(u.m).value
-        gridstep = 0.5 * (np.min(ds) / self.v0)
+        gridstep = 0.5 * (np.min(ds) / self.vmax)
 
         # If not, compute a number of possible timesteps
         # Compute the cyclotron gyroperiod
@@ -752,7 +744,7 @@ class SyntheticProtonRadiograph:
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = 2 * np.pi * self._m_p / (self._e * np.max(Bmag))
+            gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
 
         # TODO: introduce a minimum timestep based on electric fields too!
 
@@ -831,6 +823,7 @@ class SyntheticProtonRadiograph:
         # Drop the other particles
         self.x = self.x[ind, :]
         self.v = self.v[ind, :]
+        self.v_init = self.v_init[ind, :]
         self.nparticles_grid = self.x.shape[0]
         t = t[ind]
 
@@ -1005,6 +998,10 @@ class SyntheticProtonRadiograph:
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
+
+        # Calculate the maximum velocity
+        # Used for determining the grid crossing maximum timestep
+        self.vmax = np.max(np.linalg.norm(self.v, axis=-1))
 
         # Determine which particles should be tracked
         # This array holds the indices of all particles that WILL hit the grid
