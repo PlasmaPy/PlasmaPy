@@ -213,19 +213,10 @@ class SyntheticProtonRadiograph:
         # ************************************************************************
 
         req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-        for rq in req_quantities:
 
-            # Error check that grid contains E and B variables required
-            if rq not in self.grid.quantities:
-                warnings.warn(
-                    f"{rq} not specified for provided grid."
-                    "This quantity will be assumed to be zero.",
-                    RuntimeWarning,
-                )
-                # If missing, warn user and then replace with an array of zeros
-                unit = self.grid._recognized_quantities[rq].unit
-                arg = {rq: np.zeros(self.grid.shape) * unit}
-                self.grid.add_quantities(**arg)
+        self.grid.require_quantities(req_quantities, replace_with_zeros=True)
+
+        for rq in req_quantities:
 
             # Check that there are no infinite values
             if not np.isfinite(self.grid[rq].value).all():
