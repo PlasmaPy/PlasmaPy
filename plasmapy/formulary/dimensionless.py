@@ -66,6 +66,9 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     -------
     theta: ~astropy.units.Quantity
 
+    See Also
+    --------
+    plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = constants.k_B * T
@@ -111,6 +114,10 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     beta: ~astropy.units.Quantity
         Dimensionless quantity.
 
+    See Also
+    --------
+    plasmapy.formulary.parameters.thermal_pressure
+    plasmapy.formulary.parameters.magnetic_pressure
     """
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
