@@ -145,6 +145,25 @@ class TestValidateQuantities:
                 },
                 "raises": ValueError,
             },
+            {
+                "descr": "define both validations on args and validations_on_return",
+                "setup": {
+                    "function": self.foo,
+                    "args": (5,),
+                    "kwargs": {},
+                    "validations": {
+                        "x": {"units": [u.cm], "none_shall_pass": False},
+                        "validations_on_return": {
+                            "units": [u.cm],
+                            "can_be_zero": False,
+                        },
+                    },
+                },
+                "output": {
+                    "x": {"units": [u.cm], "none_shall_pass": False},
+                    "validations_on_return": {"units": [u.cm], "can_be_zero": False},
+                },
+            },
         ]  # type: List[Dict[str, Any]]
 
         for case in _cases:

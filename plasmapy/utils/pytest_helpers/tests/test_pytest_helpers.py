@@ -12,7 +12,7 @@ from plasmapy.tests.helpers import (
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
-from plasmapy.utils import call_string
+from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
 from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
 
@@ -48,31 +48,6 @@ def return_arg(arg: Any, should_warn: bool = False) -> Any:
     if should_warn:
         warnings.warn("", UserWarning)
     return arg
-
-
-# function, args, kwargs, expected
-call_string_table = [
-    (generic_function, (), {}, "generic_function()"),
-    (generic_function, (1), {}, "generic_function(1)"),
-    (generic_function, ("x"), {}, "generic_function('x')"),
-    (generic_function, (1, "b", {}), {}, "generic_function(1, 'b', {})"),
-    (generic_function, (), {"kw": 1}, "generic_function(kw=1)"),
-    (generic_function, (), {"x": "c"}, "generic_function(x='c')"),
-    (
-        generic_function,
-        (1, "b"),
-        {"b": 42, "R2": "D2"},
-        "generic_function(1, 'b', b=42, R2='D2')",
-    ),
-    (run_test, run_test, {run_test: run_test}, "run_test(run_test, run_test=run_test)"),
-]
-
-
-@pytest.mark.parametrize("function,args,kwargs,expected", call_string_table)
-def test_call_string(function, args, kwargs, expected):
-    """Tests that call_string returns a string that is
-    equivalent to the function call."""
-    assert expected == call_string(function, args, kwargs)
 
 
 f_args_kwargs_expected_whaterror = [

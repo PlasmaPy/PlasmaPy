@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.7
 # -*- coding: utf-8 -*-
 #
 # PlasmaPy documentation build configuration file, created by
@@ -111,7 +111,13 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "notebooks/langmuir_samples",
+    "**.ipynb_checkpoints",
+]
 
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
@@ -219,6 +225,7 @@ html_favicon = "./_static/icon.ico"
 
 nbsphinx_thumbnails = {
     "notebooks/*": "_images/graphic-circular.png",
+    "notebooks/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
     "notebooks/plasma/grids_cartesian": "_static/notebook_images/uniform_grid_thumbnail.png",
     "notebooks/plasma/grids_nonuniform": "_static/notebook_images/nonuniform_grid_thumbnail.png",
 }

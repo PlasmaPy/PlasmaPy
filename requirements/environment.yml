@@ -14,9 +14,8 @@ dependencies:
   - mpmath
   - pandas
   - pillow
-  - colorama
   - pip
-  - xarray
+  - xarray < 0.17
   - pip:
     - numpydoc
     - pytest

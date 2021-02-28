@@ -1,6 +1,8 @@
 import astropy.units as u
 import collections
 import numpy as np
+import os
+import pickle
 import pytest
 
 from plasmapy.particles import (
@@ -705,3 +707,13 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_kappa_isinf_when_not_set(self):
         assert np.isinf(self.instance.kappa)
+
+
+def test_iteration_with_nested_iterator():
+    hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+
+    i = 0
+    for fraction in hydrogen:
+        for fraction2 in hydrogen:
+            i += 1
+    assert i == 4
