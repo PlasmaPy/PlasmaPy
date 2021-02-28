@@ -211,7 +211,7 @@ def spectral_density(
         if all(norm == 0):
             electron_vel = np.zeros(3) * u.m / u.s
         else:
-            electron_vel = np.outer(electron_speed, np.ones(3)) * electron_vdir
+            electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     else:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
 
@@ -223,7 +223,7 @@ def spectral_density(
         if all(norm == 0):
             ion_vel = np.zeros(3) * u.m / u.s
         else:
-            ion_vel = np.outer(ion_speed, np.ones(3)) * ion_vdir
+            ion_vel = ion_speed[:, np.newaxis] * ion_vdir
     else:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
@@ -279,6 +279,7 @@ def spectral_density(
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
+
 
     # Calculate plasma parameters
     vTe = thermal_speed(Te, particle="e-")
