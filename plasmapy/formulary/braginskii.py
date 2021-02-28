@@ -450,6 +450,17 @@ class ClassicalTransport:
         """
         Calculate the resistivity.
 
+        The resistivity (:math:`\alpha`) of a plasma is defined by
+
+        .. math::
+            \alpha = \frac{\hat{\alpha}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+
+        where :math:`\hat{\alpha}` is the non-dimensional resistivity of the plasma,
+        :math:`n_e` is the electron number density of the plasma,
+        :math:`e` is Euler's number,
+        :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+        and :math:`m_{e}` is the mass of an electron.
+
         Notes
         -----
 
@@ -485,6 +496,8 @@ class ClassicalTransport:
         """
         Calculate the thermoelectric conductivity.
 
+        The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+
         Notes
         -----
         To be improved.
@@ -504,6 +517,18 @@ class ClassicalTransport:
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for ions.
+
+        The ion thermal conductivity (:math:`\kappa`) of a plasma is defined by
+
+        .. math::
+            \kappa = \hat{\kappa} * \frac{n_{i} * k_{B}^2 * T_{i} * \tau_{i}}{m_{i}}
+
+        where :math:`\hat{\kappa}` is the non-dimensional ion thermal conductivity of the plasma,
+        :math:`n_{i}` is the ion number density of the plasma,
+        :math:`k_{B}` is the Boltzmann constant,
+        :math:`T_{i}` is the ion temperature of the plasma,
+        :math:`\tau_{i}` is the fundamental ion collision period of the plasma,
+        and :math:`m_{i}` is the mass of an ion of the plasma.
 
         Notes
         -----
@@ -545,6 +570,18 @@ class ClassicalTransport:
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
         """
         Calculate the thermal conductivity for electrons.
+
+        The electron thermal conductivity (:math:`\kappa`) of a plasma is defined by
+
+        .. math::
+            \kappa = \hat{\kappa} * \frac{n_{e} * k_{B}^2 * T_{e} * \tau_{e}}{m_{e}}
+
+        where :math:`\hat{\kappa}` is the non-dimensional electron thermal conductivity of the plasma,
+        :math:`n_{e}` is the electron number density of the plasma,
+        :math:`k_{B}` is the Boltzmann constant,
+        :math:`T_{e}` is the electron temperature of the plasma,
+        :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+        and :math:`m_{e}` is the mass of an electron.
 
         Notes
         -----
@@ -599,6 +636,8 @@ class ClassicalTransport:
         """
         Calculate the ion viscosity.
 
+        The ion viscosity (:math:`\eta`) of a plasma is defined by...
+
         Notes
         -----
         This is the dynamic viscosity that you find for ions in the classical
@@ -643,6 +682,8 @@ class ClassicalTransport:
     def electron_viscosity(self) -> u.Pa * u.s:
         """
         Calculate the electron viscosity.
+
+        The electron viscosity (:math:`\eta`) of a plasma is defined by...
 
         Notes
         -----
@@ -746,6 +787,18 @@ def resistivity(
     """
     Calculate the resistivity.
 
+    The resistivity (:math:`\alpha`) of a plasma is defined by
+
+    .. math::
+
+        \alpha = \frac{\hat{\alpha}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+
+    where :math:`\hat{\alpha}` is the non-dimensional resistivity of the plasma,
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`e` is Euler's number,
+    :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+    and :math:`m_{e}` is the mass of an electron.
+
     Notes
     -----
 
@@ -800,7 +853,11 @@ def thermoelectric_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ):
-    """Calculate the thermoelectric conductivity."""
+    """
+    Calculate the thermoelectric conductivity.
+
+    The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+    """
     ct = ClassicalTransport(
         T_e,
         n_e,
@@ -837,6 +894,19 @@ def ion_thermal_conductivity(
 ) -> u.W / u.m / u.K:
     """
     Calculate the thermal conductivity for ions.
+
+    The ion thermal conductivity (:math:`\kappa`) of a plasma is defined by
+
+    .. math::
+
+        \kappa = \hat{\kappa} * \frac{n_{i} * k_{B}^2 * T_{i} * \tau_{i}}{m_{i}}
+
+    where :math:`\hat{\kappa}` is the non-dimensional ion thermal conductivity of the plasma,
+    :math:`n_{i}` is the ion number density of the plasma,
+    :math:`k_{B}` is the Boltzmann constant,
+    :math:`T_{i}` is the ion temperature of the plasma,
+    :math:`\tau_{i}` is the fundamental ion collision period of the plasma,
+    and :math:`m_{i}` is the mass of an ion of the plasma.
 
     Notes
     -----
@@ -894,6 +964,19 @@ def electron_thermal_conductivity(
 ) -> u.W / u.m / u.K:
     """
     Calculate the thermal conductivity for electrons.
+
+    The electron thermal conductivity (:math:`\kappa`) of a plasma is defined by
+
+    .. math::
+
+        \kappa = \hat{\kappa} * \frac{n_{e} * k_{B}^2 * T_{e} * \tau_{e}}{m_{e}}
+
+    where :math:`\hat{\kappa}` is the non-dimensional electron thermal conductivity of the plasma,
+    :math:`n_{e}` is the electron number density of the plasma,
+    :math:`k_{B}` is the Boltzmann constant,
+    :math:`T_{e}` is the electron temperature of the plasma,
+    :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+    and :math:`m_{e}` is the mass of an electron.
 
     Notes
     -----
@@ -964,6 +1047,8 @@ def ion_viscosity(
     """
     Calculate the ion viscosity.
 
+    The ion viscosity (:math:`\eta`) of a plasma is defined by...
+
     Notes
     -----
     This is the dynamic viscosity that you find for ions in the classical
@@ -1017,6 +1102,8 @@ def electron_viscosity(
 ) -> u.Pa * u.s:
     """
     Calculate the electron viscosity.
+
+    The electron viscosity (:math:`\eta`) of a plasma is defined by...
 
     Notes
     -----
