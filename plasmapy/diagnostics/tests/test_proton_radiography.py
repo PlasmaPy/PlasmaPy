@@ -149,7 +149,7 @@ def run_mesh_example(
     problem="electrostatic_gaussian_sphere",
 ):
     """
-    Takes all of the add_mesh parameters and runs a standard example problem
+    Takes all of the add_wire_mesh parameters and runs a standard example problem
     simulation using them.
 
     Returns the sim object for use in additional tests
@@ -162,7 +162,7 @@ def run_mesh_example(
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
 
-    sim.add_mesh(
+    sim.add_wire_mesh(
         location,
         extent,
         nwires,
@@ -443,7 +443,7 @@ def test_synthetic_radiograph():
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
 
 
-def test_insert_mesh():
+def test_add_wire_mesh():
 
     # ************************************************************
     # Test various input configurations
@@ -565,6 +565,6 @@ if __name__ == "__main__":
     test_load_particles()
     test_run_options()
     test_synthetic_radiograph()
-    test_insert_mesh()
+    test_add_wire_mesh()
     """
     pass

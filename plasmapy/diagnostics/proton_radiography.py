@@ -304,7 +304,7 @@ class SyntheticProtonRadiograph:
     # Create mesh
     # *************************************************************************
 
-    def add_mesh(
+    def add_wire_mesh(
         self, location, extent, nwires, wire_diameter, mesh_hdir=None, mesh_vdir=None
     ):
         """
