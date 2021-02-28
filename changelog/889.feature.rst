@@ -1,0 +1,4 @@
+Create the analysis sub-package `plasmapy.analysis.swept_langmuir` for analysis
+code related to analyzing swept Langmuir traces.  Sub-package is initiated with
+functionality for calculating the floating potential,
+`~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
