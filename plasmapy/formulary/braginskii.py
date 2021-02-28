@@ -447,7 +447,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def resistivity(self) -> u.Ohm * u.m:
-        """
+        r"""
         Calculate the resistivity.
 
         The resistivity (:math:`\alpha`) of a plasma is defined by
@@ -493,7 +493,7 @@ class ClassicalTransport:
 
     @property
     def thermoelectric_conductivity(self):
-        """
+        r"""
         Calculate the thermoelectric conductivity.
 
         The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
@@ -515,7 +515,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
-        """
+        r"""
         Calculate the thermal conductivity for ions.
 
         The ion thermal conductivity (:math:`\kappa`) of a plasma is defined by
@@ -568,7 +568,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
-        """
+        r"""
         Calculate the thermal conductivity for electrons.
 
         The electron thermal conductivity (:math:`\kappa`) of a plasma is defined by
@@ -633,7 +633,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_viscosity(self) -> u.Pa * u.s:
-        """
+        r"""
         Calculate the ion viscosity.
 
         The ion viscosity (:math:`\eta`) of a plasma is defined by...
@@ -680,7 +680,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_viscosity(self) -> u.Pa * u.s:
-        """
+        r"""
         Calculate the electron viscosity.
 
         The electron viscosity (:math:`\eta`) of a plasma is defined by...
