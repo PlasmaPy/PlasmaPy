@@ -124,7 +124,9 @@ def run_1D_example(name):
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     # Expect warnings because these fields aren't well-behaved at the edges
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(
+        RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
+    ):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     sim.run()
@@ -226,7 +228,7 @@ def test_input_validation():
 
     # Test raises warning when one (or more) of the required fields is missing
     grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning, match="is not specified for the provided grid."):
         sim = prad.SyntheticProtonRadiograph(grid_bad, source, detector, verbose=True)
 
     # ************************************************************************
@@ -254,7 +256,9 @@ def test_input_validation():
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(
+        RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
+    ):
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
         hax, vax, values = sim.synthetic_radiograph(size=size)
 
@@ -364,7 +368,7 @@ def test_run_options():
 
     # Test way too big of a max_theta
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(RuntimeWarning, match="of " "particles entered the field grid"):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
 
     # Test extreme deflections -> warns user
@@ -375,10 +379,15 @@ def test_run_options():
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     # Expectwarnings because these fields aren't well-behaved at the edges
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(
+        RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
+    ):
         sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
-    with pytest.warns(RuntimeWarning):
+    with pytest.warns(
+        RuntimeWarning,
+        match="particles have been " "deflected away from the detector plane",
+    ):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
     # Calc max deflection: should be between 0 and pi/2
     # Note: that's only true because max_theta is very small
