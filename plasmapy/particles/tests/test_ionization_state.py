@@ -101,7 +101,7 @@ test_cases = {
     },
     "Li ground state": {
         "particle": "Li",
-        "ionic_fractions": np.array([1, 0, 0, 0], dtype=np.int64),
+        "ionic_fractions": np.array([1, 0, 0, 0], dtype=int),
         "tol": 1e-15,
     },
     "H": {"particle": "H", "ionic_fractions": [0.6, 0.4], "tol": 1e-8},

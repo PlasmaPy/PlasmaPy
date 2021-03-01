@@ -249,7 +249,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
-    @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
+    @validate_quantities(T_e={"unit": u.K, "equivalencies": u.temperature_energy()})
     @particle_input(require="element")
     def __init__(
         self,
@@ -574,7 +574,6 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         if self._T_e is None:
@@ -582,7 +581,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @validate_quantities(equivalencies=u.temperature_energy())
+    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
@@ -662,7 +661,7 @@ class IonizationState:
     @property
     def integer_charges(self) -> np.ndarray:
         """Return an array with the integer charges."""
-        return np.arange(0, self.atomic_number + 1, dtype=np.int)
+        return np.arange(0, self.atomic_number + 1, dtype=int)
 
     @property
     def Z_mean(self) -> np.float64:
