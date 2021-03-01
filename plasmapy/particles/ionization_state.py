@@ -22,7 +22,7 @@ from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
-    "Number densities must be Quantity objects with units of inverse " "volume."
+    "Number densities must be Quantity objects with units of inverse volume."
 )
 
 
