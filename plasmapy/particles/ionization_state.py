@@ -22,7 +22,7 @@ from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
-    "Number densities must be Quantity objects with units of inverse " "volume."
+    "Number densities must be Quantity objects with units of inverse volume."
 )
 
 
@@ -84,11 +84,15 @@ class IonicFraction:
             ) from exc
 
     @particle_input
-    def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
+    def __init__(
+        self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
+    ):
         try:
             self.ion = ion
             self.ionic_fraction = ionic_fraction
             self.number_density = number_density
+            self.T_i = T_i
+
         except Exception as exc:
             raise ParticleError("Unable to create IonicFraction object") from exc
 
@@ -141,7 +145,7 @@ class IonicFraction:
     @property
     def number_density(self) -> u.m ** -3:
         """The number density of the ion."""
-        return self._number_density.to(u.m ** -3)
+        return self._number_density
 
     @number_density.setter
     @validate_quantities(
@@ -152,6 +156,21 @@ class IonicFraction:
             self._number_density = np.nan * u.m ** -3
         else:
             self._number_density = n
+
+    @property
+    def T_i(self) -> u.K:
+        """The ion temperature of this particular charge state."""
+        return self._T_i
+
+    @T_i.setter
+    @validate_quantities(
+        T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
+    )
+    def T_i(self, T: u.K):
+        if T is None:
+            self._T_i = np.nan * u.K
+        else:
+            self._T_i = T
 
 
 class IonizationState:
@@ -230,7 +249,7 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
-    @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
+    @validate_quantities(T_e={"unit": u.K, "equivalencies": u.temperature_energy()})
     @particle_input(require="element")
     def __init__(
         self,
@@ -305,6 +324,7 @@ class IonizationState:
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
+                T_i=self.T_e,
             )
         else:
             if not isinstance(value, Particle):
@@ -325,6 +345,7 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
                     number_density=self.number_densities[Z],
+                    T_i=self.T_e,
                 )
             else:
                 if not same_element or not same_isotope:
@@ -553,7 +574,6 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         if self._T_e is None:
@@ -561,7 +581,7 @@ class IonizationState:
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
 
     @T_e.setter
-    @validate_quantities(equivalencies=u.temperature_energy())
+    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
     def T_e(self, value: u.K):
         """Set the electron temperature."""
         try:
@@ -641,7 +661,7 @@ class IonizationState:
     @property
     def integer_charges(self) -> np.ndarray:
         """Return an array with the integer charges."""
-        return np.arange(0, self.atomic_number + 1, dtype=np.int)
+        return np.arange(0, self.atomic_number + 1, dtype=int)
 
     @property
     def Z_mean(self) -> np.float64:

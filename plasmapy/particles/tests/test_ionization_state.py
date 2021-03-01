@@ -101,7 +101,7 @@ test_cases = {
     },
     "Li ground state": {
         "particle": "Li",
-        "ionic_fractions": np.array([1, 0, 0, 0], dtype=np.int64),
+        "ionic_fractions": np.array([1, 0, 0, 0], dtype=int),
         "tol": 1e-15,
     },
     "H": {"particle": "H", "ionic_fractions": [0.6, 0.4], "tol": 1e-8},
@@ -555,14 +555,6 @@ def test_IonizationState_exceptions(test):
     )
 
 
-kwargs = {
-    "particle": "He-4",
-    "ionic_fractions": [0.2, 0.3, 0.5],
-    "T_e": 5.0 * u.kK,
-    "tol": 2e-14,
-    "n_elem": 1e13 * u.cm ** -3,
-}
-
 expected_properties = {
     "T_e": 5000.0 * u.K,
     "tol": 2e-14,
@@ -576,23 +568,33 @@ expected_properties = {
     "integer_charges": [0, 1, 2],
     "ionic_fractions": np.array([0.2, 0.3, 0.5]),
     "ionic_symbols": ["He-4 0+", "He-4 1+", "He-4 2+"],
-    "_is_normalized()": True,
     "number_densities": np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     "tol": 2e-14,
-    "__str__()": "<IonizationState instance for He-4>",
 }
 
-instance = IonizationState(**kwargs)
+
+@pytest.fixture
+def instance():
+    kwargs = {
+        "particle": "He-4",
+        "ionic_fractions": [0.2, 0.3, 0.5],
+        "T_e": 5.0 * u.kK,
+        "tol": 2e-14,
+        "n_elem": 1e13 * u.cm ** -3,
+    }
+
+    instance = IonizationState(**kwargs)
+    return instance
 
 
-@pytest.mark.parametrize("key", expected_properties.keys())
-def test_IonizationState_attributes(key):
+@pytest.mark.parametrize("key", expected_properties)
+def test_IonizationState_attributes(instance, key):
     """
     Test a specific case that the `IonizationState` attributes are
     working as expected.
     """
     expected = expected_properties[key]
-    actual = eval(f"instance.{key}")
+    actual = getattr(instance, key)
 
     if isinstance(expected, u.Quantity):
         assert expected.unit == actual.unit, f"Unit mismatch for IonizationState.{key}"
@@ -604,6 +606,24 @@ def test_IonizationState_attributes(key):
             assert expected == actual
         except ValueError:
             assert np.allclose(expected, actual)
+
+
+def test_IonizationState_methods(instance):
+    assert instance._is_normalized()
+    assert str(instance) == "<IonizationState instance for He-4>"
+
+
+def test_IonizationState_ion_temperatures(instance):
+    for ionic_fraction in instance:
+        assert instance.T_e == ionic_fraction.T_i
+
+
+@pytest.mark.xfail(
+    reason="IonizationState currently does not store IonicFractions, but generates them on the fly!"
+)
+def test_IonizationState_ion_temperature_persistence(instance):
+    instance[0].T_i += 1 * u.K
+    assert instance[0].T_i - instance.T_e == (1 * u.K)
 
 
 def test_nans():

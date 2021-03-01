@@ -12,4 +12,4 @@ pytest-regressions
 scipy >= 1.2
 setuptools >= 41.2
 tqdm >= 4.56.0
-xarray  >= 0.14.0
+xarray  >= 0.14.0,<0.17.0
