@@ -990,8 +990,8 @@ class SyntheticProtonRadiograph:
         if percentage < 0.5:
             warnings.warn(
                 f"Only {percentage:.2%} of the particles are shown "
-                " on this synthetic radiograph. Consider increasing "
-                " the size to include more.",
+                "on this synthetic radiograph. Consider increasing "
+                "the size to include more.",
                 RuntimeWarning,
             )
 
