@@ -96,9 +96,9 @@ def _coerce_to_cartesian_si(pos):
 
 class SyntheticProtonRadiograph:
     r"""
-    Represents a proton radiography experiment with simulated or
+    Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
-    coordinates. The proton source and detector plane are defined by vectors
+    coordinates. The particle source and detector plane are defined by vectors
     from the origin of the grid.
 
     Parameters
@@ -110,7 +110,7 @@ class SyntheticProtonRadiograph:
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
-        of the proton point source. This vector will be interpreted as
+        of the particle source. This vector will be interpreted as
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
@@ -289,7 +289,7 @@ class SyntheticProtonRadiograph:
                     vec = self.grid_arr[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
-                    # axis, which is the central axis of the proton beam
+                    # axis, which is the central axis of the particle beam
                     theta[ind] = np.arccos(
                         np.dot(vec, self.src_det)
                         / np.linalg.norm(vec)
@@ -521,7 +521,7 @@ class SyntheticProtonRadiograph:
         per solid angle is uniform.
         """
         # Create a probability vector for the theta distribution
-        # Theta must follow a sine distribution in order for the proton
+        # Theta must follow a sine distribution in order for the particle
         # flux per solid angle to be uniform.
         arg = np.linspace(0, self.max_theta, num=int(1e5))
         prob = np.sin(arg)
@@ -566,7 +566,7 @@ class SyntheticProtonRadiograph:
     def create_particles(
         self,
         nparticles,
-        proton_energy,
+        particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),
         distribution="monte-carlo",
@@ -575,7 +575,7 @@ class SyntheticProtonRadiograph:
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
 
-        By default, protons are generated over almost the entire pi/2. However,
+        By default, particless are generated over almost the entire pi/2. However,
         if the detector is far from the source, many of these particles will
         never be observed. The max_theta keyword allows these extraneous
         particles to be neglected to focus computational resources on the
@@ -585,7 +585,7 @@ class SyntheticProtonRadiograph:
             The number of particles to include in the simulation. The default
             is 1e5.
 
-        proton_energy : `~astropy.units.Quantity`
+        particle_energy : `~astropy.units.Quantity`
             The energy of the particle, in units convertible to eV.
             All particles are given the same energy.
 
@@ -625,7 +625,7 @@ class SyntheticProtonRadiograph:
 
         # Load inputs
         self.nparticles = int(nparticles)
-        self.proton_energy = proton_energy.to(u.eV).value
+        self.particle_energy = particle_energy.to(u.eV).value
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -637,8 +637,8 @@ class SyntheticProtonRadiograph:
         else:
             self.max_theta = max_theta.to(u.rad).value
 
-        # Calculate the velocity corresponding to the proton energy
-        ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
+        # Calculate the velocity corresponding to the particle energy
+        ER = self.particle_energy * 1.6e-19 / (self.m * self._c ** 2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
@@ -1105,7 +1105,7 @@ class SyntheticProtonRadiograph:
         The maximum deflection experienced by one of the particles, determined
         by comparing their initial and final velocitiy vectors.
 
-        This value can be used to determine the proton radiography regime
+        This value can be used to determine the charged particle radiography regime
         using the dimensionless number defined by Kugland et al. 2012
 
         Returns
@@ -1171,7 +1171,7 @@ class SyntheticProtonRadiograph:
             The vertical axis of the synthetic radiograph in meters.
 
         intensity : ndarray, shape (hbins, vbins)
-            The number of protons counted in each bin of the histogram.
+            The number of particles counted in each bin of the histogram.
         """
 
         # Note that, at the end of the simulation, all particles were moved
@@ -1202,7 +1202,7 @@ class SyntheticProtonRadiograph:
 
             # The factor of 5 here is somewhat arbitrary: we just want a
             # region a few times bigger than the image of the grid on the
-            # detector, since protons could be deflected out
+            # detector, since particles could be deflected out
             size = 5 * np.array([[-w, w], [-w, w]]) * u.m
 
         # Generate the histogram
