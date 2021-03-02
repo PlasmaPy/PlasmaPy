@@ -38,10 +38,20 @@ jobs:
             python: 3.8
             toxenv: py38-cov
 
+          - name: Python 3.8, slow tests with code coverage
+            os: ubuntu-latest
+            python: 3.8
+            toxenv: py38-slow-cov
+
           - name: Python 3.8 with Numpy dev
             os: ubuntu-latest
             python: 3.8
             toxenv: py38-numpydev
+
+          - name: Python 3.9 with Xarray dev
+            os: ubuntu-latest
+            python: 3.9
+            toxenv: py39-numpydev
 
           - name: Python 3.9
             os: ubuntu-latest

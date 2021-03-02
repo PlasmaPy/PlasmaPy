@@ -1,0 +1,1 @@
+Properly handled warnings in `test_proton_radiography.py`

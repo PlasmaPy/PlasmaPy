@@ -13,5 +13,6 @@
    :maxdepth: 1
    :caption: Sub-Packages and Modules
 
-   Swept Langmuir Analysis (will be deprecated) <langmuir>
+   proton_radiography
+   Swept Langmuir (will be deprecated) <langmuir>
    thomson
