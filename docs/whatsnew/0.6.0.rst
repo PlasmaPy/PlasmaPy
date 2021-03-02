@@ -1,5 +1,2 @@
-Plasmapy v0.6.0 (to be released mid-march)
-==========================================
-
 .. changelog::
    :towncrier:
