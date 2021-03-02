@@ -160,6 +160,11 @@ class SyntheticProtonRadiograph:
 
         self.verbose = verbose
 
+        # A list of wire meshes added to the grid with add_wire_mesh
+        # Particles that would hit these meshes will be removed at runtime
+        # by apply_wire_mesh
+        self.mesh_list = []
+
         # ************************************************************************
         # Setup the source and detector geometries
         # ************************************************************************
@@ -367,13 +372,6 @@ class SyntheticProtonRadiograph:
             Raises a ValueError if the specified grid removes ALL of the
             particles.
 
-
-        Returns
-        -------
-
-        nremoved : int
-            The number of particles removed
-
         """
 
         location = _coerce_to_cartesian_si(location)
@@ -417,8 +415,6 @@ class SyntheticProtonRadiograph:
         else:
             mesh_vdir = mesh_vdir / np.linalg.norm(mesh_vdir)
 
-        mesh_normal = np.cross(mesh_hdir, mesh_vdir)
-
         # Raise exception if mesh is AFTER the field grid
         if np.linalg.norm(location - self.source) > np.linalg.norm(self.source):
             raise ValueError(
@@ -426,14 +422,35 @@ class SyntheticProtonRadiograph:
                 "is not between the source and the origin."
             )
 
-        # Calculate the times required to evolve each particle to the mesh
-        # plane
-        t = np.inner(location[np.newaxis, :] - self.x, mesh_normal) / np.inner(
-            self.v, mesh_normal
-        )
+        mesh_entry = {
+            "location": location,
+            "wire_radius": wire_radius,
+            "radius": radius,
+            "width": width,
+            "height": height,
+            "nwires": nwires,
+            "mesh_hdir": mesh_hdir,
+            "mesh_vdir": mesh_vdir,
+        }
 
-        # Calculate Particle positions in the mesh plane
-        x = self.x + self.v * t[:, np.newaxis]
+        self.mesh_list.append(mesh_entry)
+
+    def _apply_wire_mesh(
+        self,
+        location=None,
+        wire_radius=None,
+        radius=None,
+        width=None,
+        height=None,
+        nwires=None,
+        mesh_hdir=None,
+        mesh_vdir=None,
+    ):
+        """
+        Apply wire meshes that were added to self.mesh_list
+        """
+        x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
+
         # Particle positions in 2D on the mesh plane
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
@@ -489,15 +506,13 @@ class SyntheticProtonRadiograph:
         if self.nparticles - nremoved <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
-                f"The wire diameter ({wire_diameter}) may be too large."
+                f"The wire diameter ({2*wire_radius}) may be too large."
             )
 
         self.x = self.x[i, :]
         self.v = self.v[i, :]
         self.theta = self.theta[i]  # Importat to apply here to get correct grid_ind
         self.nparticles = len(i)
-
-        return nremoved
 
     # *************************************************************************
     # Particle creation methods
@@ -775,6 +790,34 @@ class SyntheticProtonRadiograph:
         # Coast the particles to the advanced position
         self.x = self.x + self.v * t
 
+    def _coast_to_plane(self, center, hdir, vdir):
+        """
+        Calculates the positions where the current trajectories of each
+        particle impact a plane, described by the plane's center and
+        horizontal and vertical unit vectors.
+
+        Returns an [nparticles, 3] array of the particle positions in the plane
+
+        Note that this function does not alter self.x itself. That is done by
+        setting self.x = the output of this function.
+        """
+
+        normal = np.cross(hdir, vdir)
+
+        # Calculate the time required to evolve each particle into the
+        # plane
+        t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
+
+        # Calculate particle positions in the plane
+        x = self.x + self.v * t[:, np.newaxis]
+
+        # Check that all points are now in the plane
+        # (Eq. of a plane is nhat*x + d = 0)
+        plane_eq = np.dot(x - center, normal)
+        assert np.allclose(plane_eq, 0, atol=1e-6)
+
+        return x
+
     def _generate_null_distribution(self):
         r"""
         Calculate the distribution of particles on the detector plane in the absence
@@ -797,20 +840,14 @@ class SyntheticProtonRadiograph:
         # Calculate the particle positions for that case
         self.x0 = self.source + self.v * t[:, np.newaxis]
 
-    def _coast_to_detector(self):
+    def _remove_deflected_particles(self):
         r"""
-        Coasts all particles to the detector plane. This method will be
-        called after all particles have cleared the grid.
-
-        This step applies to all particles, including those that never touched
-        the grid.
+        Removes any particles that have been deflected away from the detector
+        plane (eg. those that will never hit the grid)
         """
         dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
         v_towards_det = np.dot(self.v, -self.det_n)
-
-        # Time remaining for each particle to reach detector plane
-        t = dist_remaining / v_towards_det
 
         # If particles have not yet reached the detector plane and are moving
         # away from it, they will never reach the detector.
@@ -825,7 +862,6 @@ class SyntheticProtonRadiograph:
         self.v = self.v[ind, :]
         self.v_init = self.v_init[ind, :]
         self.nparticles_grid = self.x.shape[0]
-        t = t[ind]
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
@@ -839,13 +875,6 @@ class SyntheticProtonRadiograph:
                 "with this particle energy.",
                 RuntimeWarning,
             )
-
-        self.x += self.v * t[:, np.newaxis]
-
-        # Check that all points are now in the detector plane
-        # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
-        assert np.allclose(plane_eq, 0, atol=1e-6)
 
     def _push(self):
         r"""
@@ -995,6 +1024,10 @@ class SyntheticProtonRadiograph:
                 "called before running the particle tracing algorithm."
             )
 
+        # If meshes have been added, apply them now
+        for mesh in self.mesh_list:
+            self._apply_wire_mesh(**mesh)
+
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
@@ -1046,9 +1079,11 @@ class SyntheticProtonRadiograph:
             self._push()
         pbar.close()
 
+        # Remove particles that will never reach the detector
+        self._remove_deflected_particles()
+
         # Advance the particles to the image plane
-        # At this stage, remove any particles that will never hit the detector plane
-        self._coast_to_detector()
+        self.x = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
         # Log a summary of the run
 

@@ -162,7 +162,6 @@ def run_mesh_example(
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
 
     sim.add_wire_mesh(
         location,
@@ -173,6 +172,7 @@ def run_mesh_example(
         mesh_vdir=mesh_vdir,
     )
 
+    sim.create_particles(nparticles, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
 
     return sim
