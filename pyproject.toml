@@ -7,7 +7,6 @@ build-backend = "setuptools.build_meta"
     filename = "CHANGELOG.rst"
     directory = "changelog/"
     issue_format = "`#{issue} <https://github.com/plasmapy/plasmapy/pull/{issue}>`__"
-    template = "changelog/template.rst"
 
     [[tool.towncrier.type]]
         directory = "breaking"
