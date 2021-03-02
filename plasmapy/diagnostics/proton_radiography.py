@@ -162,7 +162,7 @@ class SyntheticProtonRadiograph:
 
         # A list of wire meshes added to the grid with add_wire_mesh
         # Particles that would hit these meshes will be removed at runtime
-        # by apply_wire_mesh
+        # by _apply_wire_mesh
         self.mesh_list = []
 
         # ************************************************************************
@@ -368,9 +368,6 @@ class SyntheticProtonRadiograph:
         ValueError
             Raises a ValueError if the provided mesh location is not
             between the source and the object grid.
-
-            Raises a ValueError if the specified grid removes ALL of the
-            particles.
 
         """
 
