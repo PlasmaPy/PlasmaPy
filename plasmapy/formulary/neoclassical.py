@@ -70,13 +70,13 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
         CL = lambda ai, bj: Coulomb_logarithm(
             charge_states_b.T_e,
             charge_states_b.n_elem,
-            (ai._particle, bj._particle),  # simplifying assumption after A4
+            (ai.ion, bj.ion),  # simplifying assumption after A4
         )
         for ai in charge_states_a:
-            if ai._particle.charge == 0:
+            if ai.ion.charge == 0:
                 continue
             for bj in charge_states_b:
-                if bj._particle.charge == 0:
+                if bj.ion.charge == 0:
                     continue
                 # Eq. A4, Houlberg_1997
                 # Eq. A3, Houlberg_1997
@@ -86,21 +86,19 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
                     * (
                         4
                         * np.pi
-                        * ai._particle.charge ** 2
-                        * bj._particle.charge ** 2
+                        * ai.ion.charge ** 2
+                        * bj.ion.charge ** 2
                         * bj.number_density
                         * CL(ai, bj)
                     )
                     / (
                         (4 * np.pi * constants.eps0) ** 2
-                        * ai._particle.mass ** 2
-                        * thermal_speed(charge_states_a.T_e, ai._particle) ** 3
+                        * ai.ion.mass ** 2
+                        * thermal_speed(charge_states_a.T_e, ai.ion) ** 3
                     )
                 ).si
 
-                yield (
-                    ai.number_density * ai._particle.mass
-                ) * collision_frequency_ai_bj
+                yield (ai.number_density * ai.ion.mass) * collision_frequency_ai_bj
 
     return sum(contributions())
 
@@ -160,7 +158,7 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
 
     return (
         charge_weighting_factor(index, a_states)
-        / (ai.number_density * ai._particle.mass)
+        / (ai.number_density * ai.ion.mass)
         * 3
         * np.sqrt(np.pi)
         / 4
@@ -171,6 +169,6 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
 def trapped_fraction(h, hmean, h2mean):
     # Houlberg_1997, equations B5-B7
     f_tu = 1 - h2mean / hmean ** 2 * (1 - (1 - hmean) ** 0.5 * (1 + hmean / 2))
-    f_tl = 1 - h2mean * (h ** -2 * (1 - (1 - h) ** 1 / 2) * (1 + h / 2))
+    f_tl = 1 - h2mean * (h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2))
     f_t = 0.75 * f_tu + 0.25 * f_tl
     return f_t
