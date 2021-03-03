@@ -15,9 +15,6 @@ class SymbolicEquilibrium:
     A: float
     elongation: float
     triangularity: float
-    N_1: float
-    N_2: float
-    N_3: float
     config: str
 
     def __post_init__(self):
@@ -147,8 +144,9 @@ class SymbolicEquilibrium:
         return fs
 
 
-params = plasmaboundaries.ITER
-eq = SymbolicEquilibrium(**params, config="non-null")
-eq.plot()
-fs = eq.get_flux_surface(0)
-fs.plot(B=True, n=True)
+if __name__ == "__main__":
+    params = plasmaboundaries.ITER
+    eq = SymbolicEquilibrium(**params, config="non-null")
+    eq.plot()
+    fs = eq.get_flux_surface(0)
+    fs.plot(B=True, n=True)

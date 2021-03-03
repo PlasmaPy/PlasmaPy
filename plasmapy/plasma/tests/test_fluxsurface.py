@@ -115,3 +115,10 @@ def test_fs_flux_surface_cosine_modes(m: int):
 def test_fs_flux_surface_average_annihilates_Bdot(array):
     under_average = np.array([B @ ai for B, ai in zip(fs.Bvectors.T, array)])
     assert abs(fs.flux_surface_average(under_average)) < 0.01
+
+
+@pytest.mark.xfail(reason="Currently negative")
+def test_fs_trapped_fraction(num_regression):
+    f_t = fs.trapped_fraction()
+    num_regression.check({"f_t": f_t})
+    assert 0 < f_t < 0.5

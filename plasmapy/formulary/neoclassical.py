@@ -134,7 +134,9 @@ def M_script(species_a, all_species):
     return sum(gener())
 
 
+# TODO refactor for ionizationstatecollection
 def L_friction_coefficient(species_a, i, species_b, j, all_species):
+    # Houlberg_1997, equation 10
     parenthesis = N_script(species_a, species_b) * charge_weighting_factor(j, species_b)
     if species_a is species_b and i == j:
         parenthesis += M_script(species_a, all_species)
@@ -164,11 +166,3 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
         / 4
         * sum(sum_items())
     )
-
-
-def trapped_fraction(h, hmean, h2mean):
-    # Houlberg_1997, equations B5-B7
-    f_tu = 1 - h2mean / hmean ** 2 * (1 - (1 - hmean) ** 0.5 * (1 + hmean / 2))
-    f_tl = 1 - h2mean * (h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2))
-    f_t = 0.75 * f_tu + 0.25 * f_tl
-    return f_t

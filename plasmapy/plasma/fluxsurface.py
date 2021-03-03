@@ -83,3 +83,17 @@ class FluxSurface:
         gamma = 2 * np.pi / integral[-1]
         integral *= gamma
         return integral
+
+    def trapped_fraction(self):
+        from plasmapy.formulary import neoclassical
+
+        h = self.Bmag / self.Bmax
+        hmean = self.flux_surface_average(h)
+        h2mean = self.flux_surface_average(h ** 2)
+        # Houlberg_1997, equations B5-B7
+        f_tu = 1 - h2mean / hmean ** 2 * (1 - (1 - hmean) ** 0.5 * (1 + hmean / 2))
+        f_tl = 1 - h2mean * self.flux_surface_average(
+            h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2)
+        )
+        f_t = 0.75 * f_tu + 0.25 * f_tl
+        return f_t
