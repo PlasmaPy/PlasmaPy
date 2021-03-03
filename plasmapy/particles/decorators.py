@@ -504,3 +504,38 @@ def particle_input(
         return decorator(wrapped_function)
     else:
         return decorator
+
+
+class _ParticleInput:
+    @property
+    def annotations(self) -> Set[Any]:
+        """A set of the annotations"""
+        return {Particle, ParticleLike}
+
+    @classmethod
+    def as_decorator(
+        cls,
+        func=None,
+        require=None,
+        any_of=None,
+        exclude=None,
+        allow_custom_particles=True,
+        allow_particle_lists=True,
+    ):
+        self = cls(**kwargs)
+        if func is not None and not kwargs:
+            return self(func)
+        else:
+            return self
+
+    def __init__(self, func=None, require=None, any_of=None):
+        self.func = func
+        self.require = require
+        self.any_of = any_of
+        self.exclude = exclude
+
+    def __call__(self, wrapped_function):
+        pass
+
+
+# particle_input = _ParticleInput.as_decorator
