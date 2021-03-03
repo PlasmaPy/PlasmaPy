@@ -506,52 +506,9 @@ def particle_input(
         return decorator
 
 
-class QuantityInput:
+class _ParticleInput:
     @classmethod
     def as_decorator(cls, func=None, **kwargs):
-        r"""
-        A decorator for validating the units of arguments to functions.
-        Unit specifications can be provided as keyword arguments to the
-        decorator, or by using function annotation syntax. Arguments to the
-        decorator take precedence over any function annotations present.
-        A `~astropy.units.UnitsError` will be raised if the unit attribute of
-        the argument is not equivalent to the unit specified to the decorator or
-        in the annotation. If the argument has no unit attribute, i.e. it is not
-        a Quantity object, a `ValueError` will be raised unless the argument is
-        an annotation. This is to allow non Quantity annotations to pass
-        through.
-        Where an equivalency is specified in the decorator, the function will be
-        executed with that equivalency in force.
-        Notes
-        -----
-        The checking of arguments inside variable arguments to a function is not
-        supported (i.e. \*arg or \**kwargs).
-        Examples
-        --------
-        .. code-block:: python
-            import astropy.units as u
-            @u.quantity_input(myangle=u.arcsec)
-            def myfunction(myangle):
-                return myangle**2
-        .. code-block:: python
-            import astropy.units as u
-            @u.quantity_input
-            def myfunction(myangle: u.arcsec):
-                return myangle**2
-        Also you can specify a return value annotation, which will
-        cause the function to always return a `~astropy.units.Quantity` in that
-        unit.
-        .. code-block:: python
-            import astropy.units as u
-            @u.quantity_input
-            def myfunction(myangle: u.arcsec) -> u.deg**2:
-                return myangle**2
-        Using equivalencies::
-            import astropy.units as u
-            @u.quantity_input(myenergy=u.eV, equivalencies=u.mass_energy())
-            def myfunction(myenergy):
-                return myenergy**2
-        """
         self = cls(**kwargs)
         if func is not None and not kwargs:
             return self(func)
@@ -569,7 +526,7 @@ class QuantityInput:
         wrapped_signature = inspect.signature(wrapped_function)
 
         # Define a new function to return in place of the wrapped one
-        @wraps(wrapped_function)
+        @functools.wraps(wrapped_function)
         def wrapper(*func_args, **func_kwargs):
             # Bind the arguments to our new function to the signature of the original.
             bound_args = wrapped_signature.bind(*func_args, **func_kwargs)
@@ -604,54 +561,52 @@ class QuantityInput:
 
                 # If the targets is empty, then no target units or physical
                 #   types were specified so we can continue to the next arg
-                if targets is inspect.Parameter.empty:
-                    continue
+            #                if targets is inspect.Parameter.empty:
+            #                    continue
 
-                # If the argument value is None, and the default value is None,
-                #   pass through the None even if there is a target unit
-                if arg is None and param.default is None:
-                    continue
+            # If the argument value is None, and the default value is None,
+            #   pass through the None even if there is a target unit
+            #                if arg is None and param.default is None:
+            #                    continue
 
-                # Here, we check whether multiple target unit/physical type's
-                #   were specified in the decorator/annotation, or whether a
-                #   single string (unit or physical type) or a Unit object was
-                #   specified
-                if isinstance(targets, str) or not isinstance(targets, Sequence):
-                    valid_targets = [targets]
+            # Here, we check whether multiple target unit/physical type's
+            #   were specified in the decorator/annotation, or whether a
+            #   single string (unit or physical type) or a Unit object was
+            #   specified
+            #                if isinstance(targets, str) or not isinstance(targets, Sequence):
+            #                    valid_targets = [targets]
 
-                # Check for None in the supplied list of allowed units and, if
-                #   present and the passed value is also None, ignore.
-                elif None in targets:
-                    if arg is None:
-                        continue
-                    else:
-                        valid_targets = [t for t in targets if t is not None]
+            # Check for None in the supplied list of allowed units and, if
+            #   present and the passed value is also None, ignore.
+            #                elif None in targets:
+            #                    if arg is None:
+            #                        continue
+            #                    else:
+            #                        valid_targets = [t for t in targets if t is not None]
 
-                else:
-                    valid_targets = targets
+            #                else:
+            #                    valid_targets = targets
 
-                # If we're dealing with an annotation, skip all the targets that
-                #    are not strings or subclasses of Unit. This is to allow
-                #    non unit related annotations to pass through
-                if is_annotation:
-                    valid_targets = [
-                        t for t in valid_targets if isinstance(t, (str, UnitBase))
-                    ]
+            # If we're dealing with an annotation, skip all the targets that
+            #    are not strings or subclasses of Unit. This is to allow
+            #    non unit related annotations to pass through
+            #                if is_annotation:
+            #                    valid_targets = [
+            #                        t for t in valid_targets if isinstance(t, (str, UnitBase))
+            #                    ]
 
-                # Now we loop over the allowed units/physical types and validate
-                #   the value of the argument:
-                _validate_arg_value(
-                    param.name,
-                    wrapped_function.__name__,
-                    arg,
-                    valid_targets,
-                    self.equivalencies,
-                    self.strict_dimensionless,
-                )
+            # Now we loop over the allowed units/physical types and validate
+            #   the value of the argument:
+            #                _validate_arg_value(
+            #                    param.name,
+            #                    wrapped_function.__name__,
+            #                    arg,
+            #                    valid_targets,
+            #                    self.equivalencies,
+            #                    self.strict_dimensionless,
+            #                )
 
-            # Call the original function with any equivalencies in force.
-            with add_enabled_equivalencies(self.equivalencies):
-                return_ = wrapped_function(*func_args, **func_kwargs)
+            return_ = wrapped_function(*func_args, **func_kwargs)
 
             valid_empty = (inspect.Signature.empty, None)
             if wrapped_signature.return_annotation not in valid_empty:
@@ -662,4 +617,4 @@ class QuantityInput:
         return wrapper
 
 
-quantity_input = QuantityInput.as_decorator
+particle_input2 = _ParticleInput.as_decorator
