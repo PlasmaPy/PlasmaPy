@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
 from dataclasses import dataclass
@@ -39,7 +40,7 @@ class FluxSurface:
     def Bt(self):
         return self.Bt_func(self.R, self.Z)
 
-    def plot(self, ax=None, n=False, B=False, **kwargs):
+    def plot(self, ax=None, n=False, B=False, legend=True, **kwargs):
         if ax is None:
             fig, ax = plt.subplots()
             ax.set_aspect("equal")
@@ -50,7 +51,8 @@ class FluxSurface:
             ax.quiver(self.R, self.Z, self.Brvals, self.Bzvals, **kwargs)
         if n:
             ax.quiver(self.R, self.Z, self.nr, self.nz, **kwargs)
-        ax.legend()
+        if legend:
+            ax.legend()
         return ax
 
     def plot_psi(self, ax=None):

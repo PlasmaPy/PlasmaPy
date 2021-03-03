@@ -95,8 +95,14 @@ def test_fs_flux_surface_average(array):
 
 
 @given(m=integers(-100, 100))
-def test_fs_flux_surface_modes(m: int):
+def test_fs_flux_surface_sine_modes(m: int):
     mode = np.sin(fs.Theta * m)
+    assert abs(fs.flux_surface_average(mode)) < 0.1
+
+
+@given(m=integers(-100, 100).filter(lambda x: x != 0))
+def test_fs_flux_surface_cosine_modes(m: int):
+    mode = np.cos(fs.Theta * m)
     assert abs(fs.flux_surface_average(mode)) < 0.1
 
 
