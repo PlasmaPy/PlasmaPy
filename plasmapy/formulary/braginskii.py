@@ -496,7 +496,8 @@ class ClassicalTransport:
         r"""
         Calculate the thermoelectric conductivity.
 
-        The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by... .. todo::
+        The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+        .. todo::
 
         Notes
         -----
@@ -636,7 +637,8 @@ class ClassicalTransport:
         r"""
         Calculate the ion viscosity.
 
-        The ion viscosity (:math:`\eta`) of a plasma is defined by... .. todo::
+        The ion viscosity (:math:`\eta`) of a plasma is defined by...
+        .. todo::
 
         Notes
         -----
@@ -683,7 +685,8 @@ class ClassicalTransport:
         r"""
         Calculate the electron viscosity.
 
-        The electron viscosity (:math:`\eta`) of a plasma is defined by... .. todo::
+        The electron viscosity (:math:`\eta`) of a plasma is defined by...
+        .. todo::
 
         Notes
         -----
@@ -856,7 +859,8 @@ def thermoelectric_conductivity(
     r"""
     Calculate the thermoelectric conductivity.
 
-    The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by... .. todo::
+    The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+    .. todo::
     """
     ct = ClassicalTransport(
         T_e,
@@ -1047,7 +1051,8 @@ def ion_viscosity(
     r"""
     Calculate the ion viscosity.
 
-    The ion viscosity (:math:`\eta`) of a plasma is defined by... .. todo::
+    The ion viscosity (:math:`\eta`) of a plasma is defined by...
+    .. todo::
 
     Notes
     -----
@@ -1103,7 +1108,8 @@ def electron_viscosity(
     r"""
     Calculate the electron viscosity.
 
-    The electron viscosity (:math:`\eta`) of a plasma is defined by... .. todo::
+    The electron viscosity (:math:`\eta`) of a plasma is defined by...
+    .. todo::
 
     Notes
     -----
