@@ -1,0 +1,1 @@
+Created an example notebook demonstrating how the `SyntheticProtonRadiograph` class can be used to generate synthetic proton radiographs with arbitrary source profiles.
