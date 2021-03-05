@@ -23,9 +23,6 @@ class SymbolicEquilibrium:
             A=self.A,
             elongation=self.elongation,
             triangularity=self.triangularity,
-            N_1=self.N_1,
-            N_2=self.N_2,
-            N_3=self.N_3,
         )
         self.psi = plasmaboundaries.compute_psi(params, config=self.config)
         Rsym, Zsym = sympy.symbols("R Z")
@@ -39,12 +36,17 @@ class SymbolicEquilibrium:
         self.Bzfunc = sympy.lambdify((Rsym, Zsym), Bz)
         self.Brdifffunc = sympy.lambdify((Rsym, Zsym), Bdiff_r)
         self.Bzdifffunc = sympy.lambdify((Rsym, Zsym), Bdiff_z)
-        assert (
-            (Br * Rsym).diff(Rsym) / Rsym + Bz.diff(Zsym)
-        ).simplify() == 0  # due to toroidal symmetry
+        # assert (
+        #     (Br * Rsym).diff(Rsym) / Rsym + Bz.diff(Zsym)
+        # ).simplify() == 0  # due to toroidal symmetry
+        # TODO change to close to 0 evaluated on grid
 
     def plot(
-        self, rminmaxstep=(0.6, 1.4, 0.01), zminmaxstep=(-0.6, 0.6, 0.01), savepath=None
+        self,
+        rminmaxstep=(0.6, 1.4, 0.01),
+        zminmaxstep=(-0.6, 0.6, 0.01),
+        savepath=None,
+        vmax=0,
     ):
         rmin, rmax, rstep = rminmaxstep
         zmin, zmax, zstep = zminmaxstep
@@ -54,9 +56,9 @@ class SymbolicEquilibrium:
         R, Z = np.meshgrid(r, z)
         PSI = self.psi(R, Z)  # compute magnetic flux
 
-        levels = np.linspace(PSI.min(), 0, num=25)
+        levels = np.sort(np.linspace(PSI.min(), 0, num=25))
         fig, ax = plt.subplots()
-        CS = ax.contourf(R, Z, PSI, levels=levels, vmax=0)
+        CS = ax.contourf(R, Z, PSI, levels=levels, vmax=vmax)
         ax.contour(R, Z, PSI, levels=[0], colors="black")  # display the separatrix
 
         plt.colorbar(CS, label="Magnetic flux $\Psi$")

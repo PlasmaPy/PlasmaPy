@@ -35,6 +35,11 @@ class FluxSurface:
         self.Bmag = np.sqrt(self.B2)
         self.Bmax = self.Bmag.max()
         self.Bmin = self.Bmag.min()
+        integrand = self.Bmag / self.Bp
+        integral = integrate.cumulative_trapezoid(integrand, self.lp, initial=0)
+        self.gamma = 2 * np.pi / integral[-1]
+        integral *= self.gamma
+        self.Theta = integral
 
     @cached_property
     def Bt(self):
@@ -75,14 +80,6 @@ class FluxSurface:
     def theta(self):
         theta = 2 * np.pi * self.dL / self.Lp
         return theta
-
-    @cached_property
-    def Theta(self):
-        integrand = self.Bmag / self.Bp
-        integral = integrate.cumulative_trapezoid(integrand, self.lp, initial=0)
-        gamma = 2 * np.pi / integral[-1]
-        integral *= gamma
-        return integral
 
     def trapped_fraction(self):
         from plasmapy.formulary import neoclassical
