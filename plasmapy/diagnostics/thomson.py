@@ -565,10 +565,10 @@ def thomson_model(wavelengths, settings, params):
     if "ifract_0" not in pkeys:
         params.add("ifract_0", value=1.0, vary=False)
 
-    if "electron_speed" not in pkeys:
+    if "electron_speed_0" not in pkeys:
         params.add("electron_speed_0", value=0.0, vary=False)
 
-    if "ion_speed" not in pkeys:
+    if "ion_speed_0" not in pkeys:
         params.add("ion_speed_0", value=0.0, vary=False)
 
     # Automatically add an expression to the last efract parameter to
@@ -586,6 +586,12 @@ def thomson_model(wavelengths, settings, params):
         nums = ["ifract_" + str(i) for i in range(num_i - 1)]
         nums.insert(0, "1.0")
         params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
+
+    # TODO: raise an exception if the number of any of the ion or electron
+    # quantities isn't consistent with the number of that species defined
+    # by ifract or efract.
+    # Yes spectral_density() will complain about this, but catch that
+    # mistake earlier here for a better error message!
 
     # Create a lmfit.Model
     # nan_policy='omit' automatically ignores NaN values in data, allowing those
