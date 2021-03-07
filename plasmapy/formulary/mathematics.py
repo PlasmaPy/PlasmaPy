@@ -4,7 +4,7 @@ relevant to plasma physics. Usually, those are used somewhere else in
 the code but were deemed general enough for the mathematical apparatus
 to be abstracted from the main function interface.
 """
-__all__ = ["Fermi_integral"]
+__all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
 import numpy as np
