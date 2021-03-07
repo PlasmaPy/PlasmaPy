@@ -418,7 +418,6 @@ def test_synthetic_radiograph():
 
 
 if __name__ == "__main__":
-    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -427,5 +426,4 @@ if __name__ == "__main__":
     test_load_particles()
     test_run_options()
     test_synthetic_radiograph()
-    """
     pass

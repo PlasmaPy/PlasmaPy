@@ -92,3 +92,43 @@ def Fermi_integral(
         return integral_arr
     else:
         raise TypeError(f"Improper type {type(x)} given for argument x.")
+
+
+def rot_a_to_b(a, b):
+    r"""
+    Calculates the 3D rotation matrix that will rotate vector a to be aligned
+    with vector b.
+
+    Parameters
+    ----------
+    a : ~np.ndarray, shape (3)
+        Pre-rotation orientation unit vector
+
+    b : ~np.ndarray, shape (3)
+        Post-rotation orientation unit vector
+
+    Returns
+    -------
+    R : ~np.ndarray, shape(3,3)
+        The rotation matrix that will rotate vector a to be parallel to
+        vector b.
+
+
+    The algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
+    """
+
+    # Normalize both vectors
+    a = a / np.linalg.norm(a)
+    b = b / np.linalg.norm(b)
+
+    # Manually handle the case where a and b point in opposite directions
+    if np.dot(a, b) == -1:
+        return -np.identity(3)
+
+    axb = np.cross(a, b)
+    c = np.dot(a, b)
+    vskew = np.array(
+        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
+    ).T  # Transpose to get right orientation
+
+    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
