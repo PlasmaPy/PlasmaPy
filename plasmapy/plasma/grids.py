@@ -111,6 +111,70 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
+    def require_quantities(self, req_quantities, replace_with_zeros=False):
+        r"""
+        Checks to make sure that a list of required quantities are present.
+        Optionally, can create missing quantities and fill them with
+        an array of zeros.
+
+        Parameters
+        ----------
+        req_quantities : list of str
+            A list of quantity keys that are required
+
+        replace_with_zeros : boolean, optional
+            If true, missing quantities will be replaced with an array
+            of zeros. If false, an exception will be raised instead.
+            The default is False.
+
+        Raises
+        ------
+        KeyError
+            If `replace_with_zeros` is False and a required quantity is missing,
+            raises a KeyError.
+
+        KeyError
+            If `replace_with_zeros` is True but the quantity is not in the
+            list of recognized quantities, raises a KeyError. This is because
+            in this case the units for the quantity are unknown, so an array
+            of zeros cannot be constructed.
+
+        Returns
+        -------
+        None.
+
+        """
+        for rq in req_quantities:
+
+            # Error check that grid contains E and B variables required
+            if rq not in self.quantities:
+
+                # If missing, warn user and then replace with an array of zeros
+                if replace_with_zeros:
+                    warnings.warn(
+                        f"{rq} is not specified for the provided grid."
+                        "This quantity will be assumed to be zero.",
+                        RuntimeWarning,
+                    )
+
+                    if rq in self.recognized_quantities.keys():
+                        unit = self.recognized_quantities[rq].unit
+                    else:
+                        raise KeyError(
+                            f"{rq} is not a recognized key, and "
+                            "so cannot be automatically assumed "
+                            "to be zero."
+                        )
+
+                    arg = {rq: np.zeros(self.shape) * unit}
+                    self.add_quantities(**arg)
+
+                else:
+                    raise KeyError(
+                        f"{rq} is not specified for the provided "
+                        "grid but is required."
+                    )
+
     # *************************************************************************
     # Fundamental properties of the grid
     # *************************************************************************
@@ -168,8 +232,14 @@ class AbstractGrid(ABC):
         return s
 
     def __getitem__(self, key):
+        """
+        Given a key, return the corresponding array as an `astropy.Quantity`
 
-        return self.ds[key]
+        Returning with copy=False means that the array returned is a direct
+        reference to the underlying DataArray, so changes made will be reflected
+        in the underlying DataArray.
+        """
+        return u.Quantity(self.ds[key].data, self.ds[key].attrs["unit"], copy=False)
 
     @property
     def shape(self):
@@ -498,11 +568,17 @@ class AbstractGrid(ABC):
                 )
 
             if self.is_uniform:
-                axes = ["ax0", "ax1", "ax2"]
+                dims = ["ax0", "ax1", "ax2"]
+                coords = {
+                    "ax0": self.ds.coords["ax0"],
+                    "ax1": self.ds.coords["ax1"],
+                    "ax2": self.ds.coords["ax2"],
+                }
             # If grid is non-uniform, flatten quantity
             else:
                 quantity = quantity.flatten()
-                axes = ["ax"]
+                dims = ["ax"]
+                coords = {"ax": self.ds.coords["ax"]}
 
             if quantity.shape != self.shape:
                 raise ValueError(
@@ -510,7 +586,9 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
-            data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
+            data = xr.DataArray(
+                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+            )
             self.ds[key] = data
 
     @property
