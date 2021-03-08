@@ -82,16 +82,36 @@ class FluxSurface:
         theta = 2 * np.pi * self.dL / self.Lp
         return theta
 
-    def trapped_fraction(self):
-        from plasmapy.formulary import neoclassical
-
+    @cached_property
+    def _h(self):
         h = self.Bmag / self.Bmax
-        hmean = self.flux_surface_average(h)
-        h2mean = self.flux_surface_average(h ** 2)
-        # Houlberg_1997, equations B5-B7
+        return h
+
+    @cached_property
+    def _hmean(self):
+        hmean = self.flux_surface_average(self._h)
+        return hmean
+
+    @cached_property
+    def _h2mean(self):
+        h2mean = self.flux_surface_average(self._h ** 2)
+        return h2mean
+
+    @cached_property
+    def _f_tu(self):
+        hmean, h2mean = self._hmean, self._h2mean
         f_tu = 1 - h2mean / hmean ** 2 * (1 - (1 - hmean) ** 0.5 * (1 + hmean / 2))
+        return f_tu
+
+    @cached_property
+    def _f_tl(self):
+        # Houlberg_1997, equations B5-B7
+        h, hmean, h2mean = self._h, self._hmean, self._h2mean
         f_tl = 1 - h2mean * self.flux_surface_average(
             h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2)
         )
-        f_t = 0.75 * f_tu + 0.25 * f_tl
+        return f_tl
+
+    def trapped_fraction(self):
+        f_t = 0.75 * self._f_tu + 0.25 * self._f_tl
         return f_t
