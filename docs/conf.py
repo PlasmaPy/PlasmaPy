@@ -44,7 +44,7 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
-    'sphinx.ext.todo",
+    "sphinx.ext.todo",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "nbsphinx",
