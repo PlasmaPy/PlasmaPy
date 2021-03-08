@@ -70,10 +70,14 @@ class FluxSurface:
         ax.axhline(self.psi)
         return ax
 
-    def flux_surface_average(self, quantity):
+    def flux_surface_average(self, quantity, simpson=False):
         # TODO test the <B dot ... > = 0 property
         integrand = 1 / self.Bp
-        return integrate.simpson(integrand * quantity, self.lp) / integrate.simpson(
+        if simpson:
+            integrator = integrate.simpson
+        else:
+            integrator = integrate.trapezoid
+        return integrator(integrand * quantity, self.lp) / integrator(
             integrand, self.lp
         )
 

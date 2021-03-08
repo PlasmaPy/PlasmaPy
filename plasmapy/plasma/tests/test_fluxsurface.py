@@ -28,29 +28,47 @@ def test_fs_Bmag(num_regression, flux_surface):
     )
 
 
-from hypothesis import given, infer, settings
+import hypothesis
 
-# @given(
-#     array=arrays(
-#         float,
-#         flux_surface.R.size,
-#         elements=floats(-1e60, 1e60, allow_nan=False, allow_infinity=False),
-#     )
-# )
-# def test_fs_flux_surface_average(array):
-#     average = fs.flux_surface_average(array)
-#     assert average.min() <= average <= average.max()
+from hypothesis import given, infer, settings
+from hypothesis.strategies import composite
+
+
+@composite
+def contour_shaped_array(draw, elements):
+    def c_shaped_array(flux_surface):
+        array = draw(arrays(float, flux_surface.R.shape, elements=elements))
+        return array
+
+    return c_shaped_array
+
+
+@pytest.mark.xfail(reason="This does not actually seem true")
+@given(
+    build=contour_shaped_array(
+        floats(-1e10, 1e10, allow_nan=False, allow_infinity=False)
+    )
+)
+def test_fs_flux_surface_average(build, flux_surface):
+    array = build(flux_surface)
+    hypothesis.note(f"array = {repr(array)}")  # extra reporting
+
+    average = flux_surface.flux_surface_average(array)
+    assert array.min() <= average
+    assert average <= array.max()
 
 
 @given(m=integers(-100, 100).filter(lambda x: x != 0))
 def test_fs_flux_surface_sine_modes(m: int, flux_surface):
     mode = np.sin(flux_surface.Theta * m)
+    mode /= np.linalg.norm(mode, ord=2)
     assert abs(flux_surface.flux_surface_average(mode)) < 0.1
 
 
 @given(m=integers(1, 100))
 def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
     mode = np.cos(flux_surface.Theta * m)
+    mode /= np.linalg.norm(mode, ord=2)
     assert abs(flux_surface.flux_surface_average(mode)) < 0.1
 
 
@@ -70,3 +88,7 @@ def test_fs_trapped_fraction(num_regression, flux_surface):
     f_t = flux_surface.trapped_fraction()
     num_regression.check({"f_t": f_t})
     assert 0 < f_t < 0.5
+
+
+if __name__ == "__main__":
+    breakpoint()
