@@ -3,7 +3,10 @@ import numpy as np
 import plasmaboundaries
 import sympy
 
+from astropy import constants
+from astropy import units as u
 from dataclasses import dataclass
+from scipy import optimize
 from skimage import measure
 
 from plasmapy.plasma.fluxsurface import FluxSurface
@@ -16,6 +19,7 @@ class SymbolicEquilibrium:
     elongation: float
     triangularity: float
     config: str
+    B0: float
 
     def __post_init__(self):
         params = dict(
@@ -24,14 +28,30 @@ class SymbolicEquilibrium:
             elongation=self.elongation,
             triangularity=self.triangularity,
         )
+
         self.psi = plasmaboundaries.compute_psi(params, config=self.config)
         Rsym, Zsym = sympy.symbols("R Z")
         psisym = self.psi(Rsym, Zsym, pkg="sp")
+
+        psifunc = sympy.lambdify([(Rsym, Zsym)], psisym, modules="numpy")
+        minimization = optimize.minimize(psifunc, x0=[1.0, 0.0])
+        R0, Z0 = minimization.x
+        psi0 = minimization.fun
         Br = -psisym.diff(Zsym) / Rsym
         Bz = psisym.diff(Rsym) / Rsym
         B = sympy.sqrt(Br ** 2 + Bz ** 2)
+        mu0 = constants.mu0.si.value
         Bdiff_r = B.diff(Rsym)
         Bdiff_z = B.diff(Zsym)
+
+        psym = (-(psi0 ** 2) / (mu0 * R0 ** 4) * (1 - self.A) * psisym).simplify()
+        self.Bphi2 = (
+            R0 ** 2
+            / Rsym ** 2
+            * (self.B0 ** 2 - 2 * psi0 ** 2 / R0 ** 4 * self.A * psisym)
+        )
+        self.Bphi = self.Bphi2 ** 0.5
+        self.Bphifunc = sympy.lambdify((Rsym, Zsym), self.Bphi)
         self.Brfunc = sympy.lambdify((Rsym, Zsym), Br)
         self.Bzfunc = sympy.lambdify((Rsym, Zsym), Bz)
         self.Brdifffunc = sympy.lambdify((Rsym, Zsym), Bdiff_r)
@@ -70,11 +90,7 @@ class SymbolicEquilibrium:
         return ax
 
     def get_flux_surface(
-        self,
-        psi_value,
-        Bt_func=lambda R, Z: 5.3,
-        rminmaxstep=(0.6, 1.4, 0.01),
-        zminmaxstep=(-0.6, 0.6, 0.01),
+        self, psi_value, rminmaxstep=(0.6, 1.4, 0.01), zminmaxstep=(-0.6, 0.6, 0.01),
     ):
         rmin, rmax, rstep = rminmaxstep
         zmin, zmax, zstep = zminmaxstep
@@ -133,13 +149,14 @@ class SymbolicEquilibrium:
         Bzvals = self.Bzfunc(Rcontour, Zcontour)
         Bprimervals = self.Brdifffunc(Rcontour, Zcontour)
         Bprimezvals = self.Bzdifffunc(Rcontour, Zcontour)
+        Bphivals = self.Bphifunc(Rcontour, Zcontour)
         fs = FluxSurface(
             Rcontour,
             Zcontour,
             psi_value,
             Brvals,
             Bzvals,
-            Bt_func,
+            Bphivals,
             Bprimervals,
             Bprimezvals,
         )

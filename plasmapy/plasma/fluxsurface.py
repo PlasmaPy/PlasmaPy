@@ -14,7 +14,7 @@ class FluxSurface:
     psi: float
     Brvals: np.ndarray
     Bzvals: np.ndarray
-    Bt_func: Callable
+    Bphivals: np.ndarray
     Bprimervals: np.ndarray
     Bprimezvals: np.ndarray
 
@@ -31,10 +31,11 @@ class FluxSurface:
         self.lp = np.cumsum(self.dL)
         self.Lp = np.sum(self.dL)
         self.Bp = np.linalg.norm(self.Bvectors, axis=0)
-        self.B2 = self.Bp ** 2 + self.Bt_func(self.R, self.Z) ** 2
+        self.B2 = self.Bp ** 2 + self.Bphivals ** 2
         self.Bmag = np.sqrt(self.B2)
         self.Bmax = self.Bmag.max()
         self.Bmin = self.Bmag.min()
+
         integrand = self.Bmag / self.Bp
         integral = integrate.cumulative_trapezoid(integrand, self.lp, initial=0)
         self.gamma = 2 * np.pi / integral[-1]
