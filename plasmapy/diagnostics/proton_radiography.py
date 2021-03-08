@@ -815,28 +815,6 @@ class SyntheticProtonRadiograph:
 
         return x
 
-    def _generate_null_distribution(self):
-        r"""
-        Calculate the distribution of particles on the detector plane in the absence
-        of any simulated fields.
-
-        These positions are used to quickly compute null radiographs, which are
-        used to determine the degree of deflection.
-        """
-        # Calculate the unit vector from the source to the detector
-        dist = np.linalg.norm(self.src_det)
-        uvec = self.src_det / dist
-
-        # Calculate the remaining distance each particle needs to travel
-        # along that unit vector
-        remaining = np.dot(self.source, uvec)
-
-        # Calculate the time remaining to reach that plane and push
-        t = (dist - remaining) / np.dot(self.v, uvec)
-
-        # Calculate the particle positions for that case
-        self.x0 = self.source + self.v * t[:, np.newaxis]
-
     def _remove_deflected_particles(self):
         r"""
         Removes any particles that have been deflected away from the detector
@@ -1048,7 +1026,7 @@ class SyntheticProtonRadiograph:
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
-        self._generate_null_distribution()
+        self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
         # Advance the particles to the near the start of the grid
         self._coast_to_grid()
