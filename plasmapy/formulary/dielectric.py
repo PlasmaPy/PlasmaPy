@@ -27,37 +27,38 @@ RotatingTensorElements = namedtuple(
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
-    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Magnetized cold plasma dielectric permittivity tensor elements.
 
-    Elements (S, D, P) are given in the "Stix" frame, ie. with B // z.
+    Elements (S, D, P) are given in the "Stix" frame, i.e. with
+    :math:`B ∥ \hat{z}`\ .
 
     The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : list of str
-        List of the plasma particle species
-        e.g.: ['e', 'D+'] or ['e', 'D+', 'He+'].
+    species : `list` of `str`
+        List of the plasma particle species,
+        e.g.: ``['e', 'D+']`` or ``['e', 'D+', 'He+']``.
 
-    n : list of ~astropy.units.Quantity
+    n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter
         The order of the species densities should follow species.
 
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         Electromagnetic wave frequency in rad/s.
 
     Returns
     -------
-    sum : ~astropy.units.Quantity
+    sum : `~astropy.units.Quantity`
         S ("Sum") dielectric tensor element.
 
-    difference : ~astropy.units.Quantity
+    difference : `~astropy.units.Quantity`
         D ("Difference") dielectric tensor element.
 
-    plasma : ~astropy.units.Quantity
+    plasma : `~astropy.units.Quantity`
         P ("Plasma") dielectric tensor element.
 
     Notes
@@ -123,11 +124,11 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
-    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Magnetized cold plasma dielectric permittivity tensor elements.
 
-    Elements (L, R, P) are given in the "rotating" basis, ie. in the basis
+    Elements (L, R, P) are given in the "rotating" basis, i.e. in the basis
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`,
-    where the tensor is diagonal and with B // z.
+    where the tensor is diagonal and with :math:`B // z`\ .
 
     The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
 
@@ -137,25 +138,25 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         Magnetic field magnitude in units convertible to tesla.
 
     species : list of str
-        The plasma particle species (e.g.: `['e', 'D+']` or
-        `['e', 'D+', 'He+']`.
+        The plasma particle species (e.g.: ``['e', 'D+']`` or
+        ``['e', 'D+', 'He+']``.
 
-    n : list of ~astropy.units.Quantity
+    n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter.
         The order of the species densities should follow species.
 
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         Electromagnetic wave frequency in rad/s.
 
     Returns
     -------
-    left : ~astropy.units.Quantity
+    left : `~astropy.units.Quantity`
         L ("Left") Left-handed circularly polarization tensor element.
 
-    right : ~astropy.units.Quantity
+    right : `~astropy.units.Quantity`
         R ("Right") Right-handed circularly polarization tensor element.
 
-    plasma : ~astropy.units.Quantity
+    plasma : `~astropy.units.Quantity`
         P ("Plasma") dielectric tensor element.
 
     Notes
@@ -224,35 +225,36 @@ def permittivity_1D_Maxwellian(
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    The classical dielectric permittivity for a 1D Maxwellian plasma. This
-    function can calculate both the ion and electron permittivities. No
-    additional effects are considered (e.g. magnetic fields, relativistic
-    effects, strongly coupled regime, etc.)
+    The classical dielectric permittivity for a 1D Maxwellian plasma.
+
+    This function can calculate both the ion and electron permittivities.
+    No additional effects are considered (e.g. magnetic fields, relativistic
+    effects, strongly coupled regime, etc.).
 
     Parameters
     ----------
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         The frequency in rad/s of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : ~astropy.units.Quantity
+    kWave : `~astropy.units.Quantity`
         The corresponding wavenumber, in rad/m, of the electromagnetic wave
         propagating through the plasma. This is often modulated by the
         dispersion of the plasma or by relativistic effects. See em_wave.py
         for ways to calculate this.
 
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The plasma temperature - this can be either the electron or the ion
         temperature, but should be consistent with density and particle.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The plasma density - this can be either the electron or the ion
         density, but should be consistent with temperature and particle.
 
-    particle : str
+    particle : `str`
         The plasma particle species.
 
-    z_mean : str
+    z_mean : `str`
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 
@@ -276,12 +278,12 @@ def permittivity_1D_Maxwellian(
 
         x = \frac{\omega}{k v_{Th}}
 
-    :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
+    :math:`\chi_e` and :math:`\chi_i` are the electron and ion permittivities,
     respectively. :math:`Z'` is the derivative of the plasma dispersion
     function. :math:`\alpha` is the scattering parameter which delineates
     the difference between the collective and non-collective Thomson
     scattering regimes. :math:`x` is the dimensionless phase velocity
-    of the EM wave propagating through the plasma.
+    of the electromagnetic wave propagating through the plasma.
 
     References
     ----------
