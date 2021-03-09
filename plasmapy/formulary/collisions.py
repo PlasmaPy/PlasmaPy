@@ -1460,7 +1460,7 @@ def Spitzer_resistivity(
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-        where `mu` is the reduced mass.
+        where :math:`\mu` is the reduced mass.
 
     method : str, optional
         The method by which to compute the Coulomb logarithm.
@@ -1474,7 +1474,7 @@ def Spitzer_resistivity(
     Returns
     -------
     spitzer : float or numpy.ndarray
-        The resistivity of the plasma in Ohm meters.
+        The resistivity of the plasma in ohm meters.
 
     Raises
     ------
@@ -1486,7 +1486,7 @@ def Spitzer_resistivity(
         If the units on any of the inputs are incorrect
 
     TypeError
-        If the n_e, T, or V are not Quantities.
+        If any of ``n_e``, ``T``, or ``V`` are not Quantities.
 
     RelativityError
         If the input velocity is same or greater than the speed
@@ -1816,10 +1816,11 @@ def coupling_parameter(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
-    r"""Coupling parameter.
-    Coupling parameter compares Coulomb energy to kinetic energy (typically)
-    thermal. Classical plasmas are weakly coupled Gamma << 1, whereas dense
-    plasmas tend to have significant to strong coupling Gamma >= 1.
+    r"""
+    Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
+
+    Classical plasmas are weakly coupled (:math:`Γ ≪ 1`\ ), whereas dense
+    plasmas tend to have significant to strong coupling (:math:`Γ ≥ 1`\ ).
 
     Parameters
     ----------
@@ -1846,7 +1847,7 @@ def coupling_parameter(
     V : ~astropy.units.Quantity, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-        where `mu` is the reduced mass.
+        where :math:`mu` is the reduced mass.
 
     method : str, optional
         The method by which to compute the Coulomb logarithm.
@@ -1859,7 +1860,7 @@ def coupling_parameter(
 
     Returns
     -------
-    coupling : float or numpy.ndarray
+    coupling : float or `~numpy.ndarray`
         The coupling parameter for a plasma.
 
     Raises
@@ -1868,22 +1869,22 @@ def coupling_parameter(
         If the mass or charge of either particle cannot be found, or
         any of the inputs contain incorrect values.
 
-    UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect
 
     TypeError
-        If the n_e, T, or V are not Quantities.
+        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1972,22 +1973,22 @@ def coupling_parameter(
 
     # Coulomb potential energy between particles
     if np.isnan(z_mean):
-        coulombEnergy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
+        coulomb_energy = charges[0] * charges[1] / (4 * np.pi * eps0 * radius)
     else:
-        coulombEnergy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
+        coulomb_energy = (z_mean * e) ** 2 / (4 * np.pi * eps0 * radius)
 
     if method == "classical":
         # classical thermal kinetic energy
-        kineticEnergy = k_B * T
+        kinetic_energy = k_B * T
     elif method == "quantum":
         # quantum kinetic energy for dense plasmas
         lambda_deBroglie = thermal_deBroglie_wavelength(T)
-        chemicalPotential = chemical_potential(n_e, T)
-        fermiIntegral = Fermi_integral(chemicalPotential.si.value, 1.5)
-        denom = (n_e * lambda_deBroglie ** 3) * fermiIntegral
-        kineticEnergy = 2 * k_B * T / denom
-        if np.all(np.imag(kineticEnergy) == 0):
-            kineticEnergy = np.real(kineticEnergy)
+        chem_potential = chemical_potential(n_e, T)
+        fermi_integral = Fermi_integral(chem_potential.si.value, 1.5)
+        denominator = (n_e * lambda_deBroglie ** 3) * fermi_integral
+        kinetic_energy = 2 * k_B * T / denominator
+        if np.all(np.imag(kinetic_energy) == 0):
+            kinetic_energy = np.real(kinetic_energy)
         else:  # coverage: ignore
             raise ValueError(
                 "Kinetic energy should not be imaginary."
@@ -1999,5 +2000,5 @@ def coupling_parameter(
             f"'quantum', instead of '{method}'."
         )
 
-    coupling = coulombEnergy / kineticEnergy
+    coupling = coulomb_energy / kinetic_energy
     return coupling
