@@ -528,7 +528,160 @@ def original_particle_input(
 class _ParticleInput:
     @classmethod
     def as_decorator(cls, func=None, **kwargs):
-        """..."""
+        """
+        Convert arguments to methods and functions to
+        `~plasmapy.particles.Particle` objects.
+
+        Take positional and keyword arguments that are annotated with
+        `~plasmapy.particles.Particle`, and pass through the
+        `~plasmapy.particles.Particle` object corresponding to those arguments
+        to the decorated function or method.
+
+        Optionally, raise an exception if the particle does not satisfy the
+        specified categorical criteria.
+
+        Parameters
+        ----------
+        wrapped_function : `callable`
+            The function or method to be decorated.
+
+        require : `str`, `set`, `list`, or `tuple`, optional
+            Categories that a particle must be in.  If a particle is not in
+            all of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
+            will be raised.
+
+        any_of : `str`, `set`, `list`, or `tuple`, optional
+            Categories that a particle may be in.  If a particle is not in
+            any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
+            will be raised.
+
+        exclude : `str`, `set`, `list`, or `tuple`, optional
+            Categories that a particle cannot be in.  If a particle is in
+            any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
+            will be raised.
+
+        none_shall_pass : `bool`, optional
+            If set to `True`, then the decorated argument may be set to
+            `None` without raising an exception.  In such cases, this
+            decorator will pass `None` through to the decorated function or
+            method.  If set to `False` and the annotated argument is given
+            a value of `None`, then this decorator will raise a `TypeError`.
+
+        Notes
+        -----
+        If the annotated argument is named `element`, `isotope`, or `ion`,
+        then the decorator will raise an
+        `~plasmapy.particles.exceptions.InvalidElementError`,
+        `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
+        `~plasmapy.particles.exceptions.InvalidIonError` if the particle
+        does not correspond to an element, isotope, or ion, respectively.
+
+        If exactly one argument is annotated with `~plasmapy.particles.Particle`,
+        then the keywords ``Z`` and ``mass_numb`` may be used to specify the
+        integer charge and/or mass number of an ion or isotope.  However,
+        the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
+        in order to enable this functionality.
+
+        Raises
+        ------
+        `TypeError`
+            If the annotated argument is not a `str`, `int`, `tuple`, `list`
+            or `~plasmapy.particles.Particle`; or if ``Z`` or ``mass_numb`` is
+            not an `int`.
+
+        `ValueError`
+            If the number of input elements in a collection do not match the
+            number of expected elements.
+
+        `~plasmapy.particles.exceptions.InvalidParticleError`
+            If the annotated argument does not correspond to a valid
+            particle.
+
+        `~plasmapy.particles.exceptions.InvalidElementError`
+            If an annotated argument is named ``element``, and the input
+            does not correspond to an element, isotope, or ion.
+
+        `~plasmapy.particles.exceptions.InvalidIsotopeError`
+            If an annotated argument is named ``isotope``, and the input
+            does not correspond to an isotope or an ion of an isotope.
+
+        `~plasmapy.particles.exceptions.InvalidIonError`
+            If an annotated argument is named ``ion``, and the input does
+            not correspond to an ion.
+
+        `~plasmapy.particles.exceptions.ChargeError`
+            If ``'charged'`` is in the ``require`` argument and the particle
+            is not explicitly charged, or if ``any_of = {'charged',
+            'uncharged'}`` and the particle does not have charge information
+            associated with it.
+
+        `~plasmapy.particles.exceptions.ParticleError`
+            If an annotated argument does not meet the criteria set by the
+            categories in the ``require``, ``any_of``, and ``exclude``
+            keywords; if more than one argument is annotated and ``Z`` or
+            ``mass_numb`` are used as arguments; or if none of the arguments
+            have been annotated with `~plasmapy.particles.Particle`.
+
+        Examples
+        --------
+        The following simple decorated function returns the
+        `~plasmapy.particles.Particle` object created from the function's
+        sole argument:
+
+        .. code-block:: python
+
+            from plasmapy.particles import particle_input, Particle
+            @particle_input
+            def decorated_function(particle: Particle):
+                return particle
+
+        This decorator may also be used to accept arguments using tuple
+        annotation containing specific number of elements or using list
+        annotation which accepts any number of elements in an iterable.
+        Returns a tuple of `~plasmapy.particles.Particle`:
+
+        .. code-block:: python
+
+            from plasmapy.particles import particle_input, Particle
+            @particle_input
+            def decorated_tuple_function(particles: (Particle, Particle)):
+                return particles
+            sample_particles = decorated_tuple_function(('He', 'Li'))
+
+            @particle_input
+            def decorated_list_function(particles: [Particle]):
+                return particles
+            sample_particles = decorated_list_function(('Al 3+', 'C'))
+            sample_particles = decorated_list_function(['He', 'Ne', 'Ar'])
+
+        This decorator may be used for methods in instances of classes, as
+        in the following example:
+
+        .. code-block:: python
+
+            from plasmapy.particles import particle_input, Particle
+            class SampleClass:
+                @particle_input
+                def decorated_method(self, particle: Particle):
+                    return particle
+            sample_instance = SampleClass()
+            sample_instance.decorated_method('Fe')
+
+        Some functions may intended to be used with only certain categories
+        of particles.  The ``require``, ``any_of``, and ``exclude`` keyword
+        arguments enable this functionality.
+
+        .. code-block:: python
+
+            from plasmapy.particles import particle_input, Particle
+            @particle_input(
+                require={'matter'},
+                any_of={'charged', 'uncharged},
+                exclude={'neutrino', 'antineutrino'},
+            )
+            def selective_function(particle: Particle):
+                return particle
+        """
         # The following code allows the decorator to be used either with
         # or without arguments.  We can invoke the decorator either as
         # `@particle_input` or `@particle_input()`, where the latter
