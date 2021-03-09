@@ -62,6 +62,7 @@ def spectral_density(
     ion_speed: np.ndarray = None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
+    inst_fcn=None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral density function for Thomson scattering of a
@@ -161,6 +162,12 @@ def spectral_density(
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default `probe_vec`,
         corresponds to a 90 degree scattering angle geometry.
+
+    inst_fcn : function
+        A function representing the insturment function that takes an `~astropy.units.Quantity`
+        of wavelengths (centered on zero) and returns the insturment point
+        spread function. The resulting array will be convolved with the
+        spectral density function before it is returned.
 
     Returns
     -------
@@ -280,7 +287,6 @@ def spectral_density(
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
 
-
     # Calculate plasma parameters
     vTe = thermal_speed(Te, particle="e-")
     vTi, ion_z = [], []
@@ -376,6 +382,23 @@ def spectral_density(
     # Recast as real: imaginary part is already zero
     Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
 
+    # Apply an insturment function if one is provided
+    if inst_fcn is not None and callable(inst_fcn):
+        # Create an array of wavelengths of the same size as wavelengths
+        # but centered on zero
+        wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
+        eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
+        # Evaluate the insturment function
+        inst_fcn_arr = inst_fcn(eval_w)
+        # Ensure inst_fcn is normalized
+        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
+        # Convolve the insturment function with the spectral density
+        # linear rather than circular convolution is important here!
+
+        # TODO: Is numpy, scipy.signal, or astropy the best convolution
+        # function here??
+        Skw = np.convolve(Skw.value, inst_fcn_arr.value, mode="same") * Skw.unit
+
     return np.mean(alpha), Skw
 
 
@@ -450,6 +473,7 @@ def _thomson_model(wavelengths, settings=None, **params):
     electron_vdir = settings["electron_vdir"]
     ion_vdir = settings["ion_vdir"]
     probe_wavelength = settings["probe_wavelength"]
+    inst_fcn = settings["inst_fcn"]
 
     # LOAD FROM PARAMS
     n = params["n"] * u.cm ** -3
@@ -475,6 +499,7 @@ def _thomson_model(wavelengths, settings=None, **params):
         ion_speed=ion_speed,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
+        inst_fcn=inst_fcn,
     )
 
     # Strip units and normalize
@@ -557,6 +582,9 @@ def thomson_model(wavelengths, settings, params):
 
     if "ion_vdir" not in skeys:
         settings["ion_vdir"] = None
+
+    if "inst_fcn" not in skeys:
+        settings["inst_fcn"] = None
 
     # Fill any missing required parameters
     if "efract_0" not in pkeys:
