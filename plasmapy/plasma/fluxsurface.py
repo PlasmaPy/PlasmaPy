@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from astropy import constants
 from dataclasses import dataclass
 from functools import cached_property
 from scipy import integrate
@@ -42,9 +43,14 @@ class FluxSurface:
         integral *= self.gamma
         self.Theta = integral
 
-    @cached_property
-    def Bt(self):
-        return self.Bt_func(self.R, self.Z)
+        F = (
+            self.flux_surface_average(self.R * self.Bphivals)
+            * 2
+            * np.pi
+            / constants.mu0
+        )  # FS average because this is supposed to be constant on the flux surface
+        psiprime = 1  # TODO if rho \equiv psi, this should work?
+        self.Fhat = constants.mu0 * F
 
     def plot(self, ax=None, n=False, B=False, legend=True, **kwargs):
         if ax is None:
