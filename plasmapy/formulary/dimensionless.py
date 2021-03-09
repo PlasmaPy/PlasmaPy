@@ -45,9 +45,9 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature of the plasma.
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
           The electron number density of the plasma.
 
     Examples
@@ -64,7 +64,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    theta: ~astropy.units.Quantity
+    theta: `~astropy.units.Quantity`
 
     Notes
     -----
