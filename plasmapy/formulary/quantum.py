@@ -312,8 +312,8 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     This quantity is often used in place of the Debye length for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
 
-    The electrical potential will drop by a factor of 1/e every Thomas-Fermi
-    screening length.
+    The electrical potential will drop by a factor of :math:`1/e` every
+    Thomas-Fermi screening length.
 
     Plasmas will generally be quasineutral on length scales significantly
     larger than the Thomas-Fermi screening length.
@@ -340,8 +340,10 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 )
 def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     r"""
-    Calculate the Wigner-Seitz radius, which approximates the inter-
-    particle spacing. It is the radius of a sphere whose volume is
+    Calculate the Wigner-Seitz radius, which approximates the inter-particle
+    spacing.
+
+    This function returns is the radius of a sphere whose volume is
     equal to the mean volume per atom in a solid. This parameter is
     often used to calculate the coupling parameter.
     When ion density is used, this is the ion sphere radius, i.e., the
@@ -411,7 +413,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    n_e : `~astropy.units.Quantity`
+    n_e : ~astropy.units.Quantity
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -428,7 +430,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     TypeError
         If argument is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
     ValueError
