@@ -6,11 +6,27 @@ as arguments and passes through the corresponding instance of the
 """
 __all__ = ["particle_input"]
 
+import astropy.constants as const
+import astropy.units as u
+import collections
 import functools
 import inspect
 import numbers
+import numpy as np
 
-from typing import Any, Callable, List, Optional, Set, Tuple, Union
+from typing import (
+    AbstractSet,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Mapping,
+    NoReturn,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -19,8 +35,10 @@ from plasmapy.particles.exceptions import (
     InvalidIsotopeError,
     InvalidParticleError,
     ParticleError,
+    UnexpectedParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
 
 
 def _particle_errmsg(
@@ -72,12 +90,12 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
     return category_errmsg
 
 
-def particle_input(
+def original_particle_input(
     wrapped_function: Callable = None,
     require: Union[str, Set, List, Tuple] = None,
     any_of: Union[str, Set, List, Tuple] = None,
     exclude: Union[str, Set, List, Tuple] = None,
-    none_shall_pass: bool = False,
+    none_shall_pass=False,
 ) -> Any:
     """
     Convert arguments to methods and functions to
@@ -242,23 +260,24 @@ def particle_input(
         require = set()
 
     def decorator(wrapped_function: Callable):
-        wrapped_signature = inspect.signature(wrapped_function)
+        wrapped_signature = inspect.signature(wrapped_function)  # DONE
 
         # add '__signature__' to methods that are copied from
         # wrapped_function onto wrapper
-        assigned = list(functools.WRAPPER_ASSIGNMENTS)
-        assigned.append("__signature__")
+        assigned = list(functools.WRAPPER_ASSIGNMENTS)  # DONE
+        assigned.append("__signature__")  # DONE
 
         @functools.wraps(wrapped_function, assigned=assigned)
-        def wrapper(*args, **kwargs):
-            annotations = wrapped_function.__annotations__
-            bound_args = wrapped_signature.bind(*args, **kwargs)
+        def wrapper(*func_args, **func_kwargs):
+            annotations = wrapped_function.__annotations__  # DONE
+            bound_args = wrapped_signature.bind(*func_args, **func_kwargs)
 
             default_arguments = bound_args.signature.parameters
             arguments = bound_args.arguments
-            argnames = bound_args.signature.parameters.keys()
+            argument_names = bound_args.signature.parameters.keys()
 
             # Handle optional-only arguments in function declaration
+            # Handled in bound_args setter
             for default_arg in default_arguments:
                 # The argument is not contained in `arguments` if the
                 # user does not explicitly pass an optional argument.
@@ -267,7 +286,7 @@ def particle_input(
                 if default_arg not in arguments:
                     arguments[default_arg] = default_arguments[default_arg].default
 
-            funcname = wrapped_function.__name__
+            function_name = wrapped_function.__name__
 
             args_to_become_particles = []
             for argname in annotations.keys():
@@ -305,14 +324,14 @@ def particle_input(
 
             if not args_to_become_particles:
                 raise ParticleError(
-                    f"None of the arguments or keywords to {funcname} "
+                    f"None of the arguments or keywords to {function_name} "
                     f"have been annotated with Particle, as required "
                     f"by the @particle_input decorator."
                 )
             elif len(args_to_become_particles) > 1:
-                if "Z" in argnames or "mass_numb" in argnames:
+                if "Z" in argument_names or "mass_numb" in argument_names:
                     raise ParticleError(
-                        f"The arguments Z and mass_numb in {funcname} are not "
+                        f"The arguments Z and mass_numb in {function_name} are not "
                         f"allowed when more than one argument or keyword is "
                         f"annotated with Particle in functions decorated "
                         f"with @particle_input."
@@ -350,7 +369,7 @@ def particle_input(
 
             new_kwargs = {}
 
-            for argname in argnames:
+            for argname in argument_names:
                 raw_argval = arguments[argname]
                 if isinstance(raw_argval, (tuple, list)):
                     # Input argument value is a tuple or list
@@ -393,7 +412,7 @@ def particle_input(
                     else:
                         params = (argval, Z, mass_numb)
                         particle = get_particle(
-                            argname, params, already_particle, funcname
+                            argname, params, already_particle, function_name
                         )
 
                     if isinstance(raw_argval, (tuple, list)):
@@ -509,112 +528,378 @@ def particle_input(
 class _ParticleInput:
     @classmethod
     def as_decorator(cls, func=None, **kwargs):
+        """..."""
+        # The following code allows the decorator to be used either with
+        # or without arguments.  We can invoke the decorator either as
+        # `@particle_input` or `@particle_input()`, where the latter
+        # form allows the decorator to have arguments.
         self = cls(**kwargs)
         if func is not None and not kwargs:
             return self(func)
         else:
             return self
 
-    def __init__(self, func=None, strict_dimensionless=False, **kwargs):
-        self.equivalencies = kwargs.pop("equivalencies", [])
-        self.decorator_kwargs = kwargs
-        self.strict_dimensionless = strict_dimensionless
+    def __init__(
+        self,
+        func=None,
+        require=None,
+        any_of=None,
+        exclude=None,
+        allow_particle_lists=True,
+        allow_custom_particles=True,
+    ):
+        self._data = collections.defaultdict(lambda: None)
+        self._data["new_kwargs"] = dict()
+        self.require = require if require else set()
+        self.any_of = any_of if any_of else set()
+        self.exclude = exclude if exclude else set()
+        self.allow_particle_lists = bool(allow_particle_lists)
+        self.allow_custom_particles = bool(allow_custom_particles)
 
-    def __call__(self, wrapped_function):
+    def __call__(self, wrapped_function: Callable):
 
-        # Extract the function signature for the function we are wrapping.
-        wrapped_signature = inspect.signature(wrapped_function)
+        self.wrapped_function = wrapped_function
 
-        # Define a new function to return in place of the wrapped one
-        @functools.wraps(wrapped_function)
+        assigned = list(functools.WRAPPER_ASSIGNMENTS)
+        assigned.append("__signature__")
+
+        @functools.wraps(wrapped_function, assigned=assigned)
         def wrapper(*func_args, **func_kwargs):
-            # Bind the arguments to our new function to the signature of the original.
-            bound_args = wrapped_signature.bind(*func_args, **func_kwargs)
-
-            # Iterate through the parameters of the original signature
-            for param in wrapped_signature.parameters.values():
-                # We do not support variable arguments (*args, **kwargs)
-                if param.kind in (
-                    inspect.Parameter.VAR_KEYWORD,
-                    inspect.Parameter.VAR_POSITIONAL,
-                ):
-                    continue
-
-                # Catch the (never triggered) case where bind relied on a default value.
-                if (
-                    param.name not in bound_args.arguments
-                    and param.default is not param.empty
-                ):
-                    bound_args.arguments[param.name] = param.default
-
-                # Get the value of this parameter (argument to new function)
-                arg = bound_args.arguments[param.name]
-
-                # Get target unit or physical type, either from decorator kwargs
-                #   or annotations
-                if param.name in self.decorator_kwargs:
-                    targets = self.decorator_kwargs[param.name]
-                    is_annotation = False
-                else:
-                    targets = param.annotation
-                    is_annotation = True
-
-                # If the targets is empty, then no target units or physical
-                #   types were specified so we can continue to the next arg
-            #                if targets is inspect.Parameter.empty:
-            #                    continue
-
-            # If the argument value is None, and the default value is None,
-            #   pass through the None even if there is a target unit
-            #                if arg is None and param.default is None:
-            #                    continue
-
-            # Here, we check whether multiple target unit/physical type's
-            #   were specified in the decorator/annotation, or whether a
-            #   single string (unit or physical type) or a Unit object was
-            #   specified
-            #                if isinstance(targets, str) or not isinstance(targets, Sequence):
-            #                    valid_targets = [targets]
-
-            # Check for None in the supplied list of allowed units and, if
-            #   present and the passed value is also None, ignore.
-            #                elif None in targets:
-            #                    if arg is None:
-            #                        continue
-            #                    else:
-            #                        valid_targets = [t for t in targets if t is not None]
-
-            #                else:
-            #                    valid_targets = targets
-
-            # If we're dealing with an annotation, skip all the targets that
-            #    are not strings or subclasses of Unit. This is to allow
-            #    non unit related annotations to pass through
-            #                if is_annotation:
-            #                    valid_targets = [
-            #                        t for t in valid_targets if isinstance(t, (str, UnitBase))
-            #                    ]
-
-            # Now we loop over the allowed units/physical types and validate
-            #   the value of the argument:
-            #                _validate_arg_value(
-            #                    param.name,
-            #                    wrapped_function.__name__,
-            #                    arg,
-            #                    valid_targets,
-            #                    self.equivalencies,
-            #                    self.strict_dimensionless,
-            #                )
-
-            return_ = wrapped_function(*func_args, **func_kwargs)
-
-            valid_empty = (inspect.Signature.empty, None)
-            if wrapped_signature.return_annotation not in valid_empty:
-                return return_.to(wrapped_signature.return_annotation)
-            else:
-                return return_
+            self.func_args = func_args
+            self.func_kwargs = func_kwargs
+            self.process_arguments()
+            return_ = wrapped_function(**self.new_kwargs)
+            return return_
 
         return wrapper
 
+    @property
+    def wrapped_function(self) -> Optional[Callable]:
+        """The function that is being decorated."""
+        return self._data["wrapped_function"]
 
-particle_input2 = _ParticleInput.as_decorator
+    @wrapped_function.setter
+    def wrapped_function(self, function: Callable):
+        self._data["wrapped_function"] = function
+        self._data["wrapped_signature"] = inspect.signature(function)
+        self._data["annotations"] = getattr(function, "__annotations__", {}).copy()
+        if "return" in self._data["annotations"]:
+            del self._data["annotations"]["return"]
+
+    @property
+    def annotations(self) -> Optional[Dict[str, Any]]:
+        """
+        Annotations for arguments in the decorated function.
+
+        The keys are the arguments to the decorated function that have
+        annotations.  The associated values are the annotations themselves.
+        Only arguments with annotations are included.
+        """
+        return self._data["annotations"]
+
+    @property
+    def _wrapped_signature(self) -> Optional[inspect.Signature]:
+        return self._data["wrapped_signature"]
+
+    @property
+    def _bound_args(self) -> Optional[inspect.BoundArguments]:
+        bound_args_ = self._wrapped_signature.bind(*self.func_args, **self.func_kwargs)
+        bound_args_.apply_defaults()
+        return bound_args_
+
+    @property
+    def _default_arguments(self) -> Mapping[str, inspect.Parameter]:
+        return self._bound_args.signature.parameters
+
+    @property
+    def new_kwargs(self) -> Optional[Dict[str, Any]]:
+        """The revised keyword arguments to be supplied to the decorated function."""
+        return self._data["new_kwargs"]
+
+    @property
+    def func_args(self) -> Optional[tuple]:
+        """Positional arguments as originally supplied to the decorated function."""
+        return self._data["func_args"]
+
+    @func_args.setter
+    def func_args(self, value: tuple):
+        self._data["func_args"] = value
+
+    @property
+    def func_kwargs(self) -> Optional[Dict[str, Any]]:
+        """Keyword arguments as originally supplied to the decorated function."""
+        return self._data["func_kwargs"]
+
+    @func_kwargs.setter
+    def func_kwargs(self, value: Dict[str, Any]):
+        self._data["func_kwargs"] = value
+
+    @property
+    def original_values(self) -> Dict[str, Any]:
+        """
+        The values that were originally passed as positional and keyword
+        arguments to the decorated function.
+        """
+        return self._bound_args.arguments
+
+    @property
+    def argument_names(self) -> AbstractSet:
+        """The names of the arguments to the original function."""
+        return self._bound_args.signature.parameters.keys()
+
+    @property
+    def particle_like_annotations(self) -> tuple:
+        """Annotations that correspond to `ParticleLike`."""
+        return ParticleLike, Optional[ParticleLike]
+
+    @property
+    def particle_list_annotations(self) -> tuple:
+        """Annotations that correspond to a collection of particles."""
+        return ParticleList, Optional[ParticleList]
+
+    @property
+    def all_particle_annotations(self) -> tuple:
+        """All annotations to be processed"""
+        return self.particle_list_annotations + self.particle_like_annotations
+
+    @property
+    def optional_particle_annotations(self) -> tuple:
+        """Annotations indicating that the value of the argument can be `None`."""
+        return Optional[ParticleLike], Optional[ParticleList]
+
+    def has_particle_like_annotation(self, argument) -> bool:
+        """
+        Return `True` if ``argument`` has an annotation indicating that
+        """
+        return self.annotations[argument] in self.particle_like_annotations
+
+    def has_particle_list_annotation(self, argument) -> bool:
+        annotation = self.annotations[argument]
+        if annotation in self.particle_list_annotations:
+            return True
+        if hasattr(annotation, "__len__"):
+            return all(item in self.particle_like_annotations for item in annotation)
+        return False
+
+    def particle_like_arguments(self) -> List[Any]:
+        """
+        The names of arguments that should be processed into particle
+        objects.
+        """
+        return_ = []
+        for argument, annotation in self.annotations.items():
+            if self.has_particle_like_annotation(argument):
+                return_.append(argument)
+        return return_
+
+    def particle_list_arguments(self) -> List[Any]:
+        """
+        The names of arguments that should be processed into
+        `ParticleList` objects.
+        """
+        return_ = []
+        for argument, annotation in self.annotations.items():
+            if annotation in self.particle_list_annotations:
+                return_.append(argument)
+        return return_
+
+    @property
+    def new_kwargs(self) -> Optional[Dict[str, Any]]:
+        """
+        The processed keyword arguments that are being provided to the
+        decorated function.
+        """
+        return self._data["new_kwargs"]
+
+    @property
+    def arguments_that_should_not_go_in_new_args(self):
+        """
+        Arguments that are used to create a `Particle` but should not be
+        passed to the original function.
+        """
+        return "mass_numb", "Z"
+
+    def put_original_argument_into_new_args(self, argument: str) -> NoReturn:
+        """
+        Pass through the value for the original argument to the
+        dictionary of new arguments without changing it.
+        """
+        if argument in self.new_kwargs.keys():
+            raise RuntimeError(f"{argument} already in new_kwargs")
+        self.new_kwargs[argument] = self.original_values[argument]
+
+    def put_processed_argument_into_new_args(self, argument: str, value) -> NoReturn:
+        """
+        Pass through a revised value for the original argument to the
+        dictionary of new arguments.
+        """
+        assert argument not in self.new_kwargs.keys()
+        self.new_kwargs[argument] = value
+
+    def check_for_errors(self):
+        """Check for errors in the arguments that were provided."""
+        Z = self.original_values.get("Z", None)
+        mass_numb = self.original_values.get("mass_numb", None)
+
+        Z_or_mass_numb_provided = Z is not None or mass_numb is not None
+        if len(self.particle_like_arguments()) != 1 and Z_or_mass_numb_provided:
+            raise ParticleError
+
+    def process_arguments(self) -> NoReturn:
+        """
+        Go through the arguments and convert them to the appropriate
+        particle or particle collection.
+        """
+        self.new_kwargs.clear()
+        self.check_for_errors()
+        for argument in self.original_values.keys():
+            if argument in self.arguments_that_should_not_go_in_new_args:
+                pass
+            elif argument not in self.annotations:
+                self.put_original_argument_into_new_args(argument)
+            else:
+                self.process_annotated_argument(argument)
+
+    def process_annotated_argument(self, argument: str):
+        """Process an argument that has an annotation."""
+        original_value = self.original_values[argument]
+        annotation = self.annotations[argument]
+
+        none_shall_pass = annotation in self.optional_particle_annotations
+
+        if original_value is None and none_shall_pass:
+            self.put_original_argument_into_new_args(argument)
+        elif self.has_particle_like_annotation(argument):
+            self.process_particle_like_argument(argument)
+        elif self.has_particle_list_annotation(argument):
+            self.process_particle_list_argument(argument)
+        else:
+            self.put_original_argument_into_new_args(argument)
+
+    def process_particle_like_argument(self, argument: str) -> NoReturn:
+        original_value = self.original_values[argument]
+        if isinstance(original_value, u.Quantity):
+            self.process_quantity_into_custom_particle(argument)
+        elif isinstance(original_value, (str, int, Particle)):
+            self.process_particle_like_into_particle(argument)
+
+    def process_quantity_into_custom_particle(self, argument: str) -> NoReturn:
+
+        if not self.allow_custom_particles:
+            raise ParticleError("Custom particles are not allowed.")
+
+        original_value = self.original_values[argument]
+
+        try:
+            n = len(original_value)
+        except TypeError:
+            pass
+        else:
+            if n != 1:
+                raise NotImplementedError(
+                    "Only non-array quantities can be provided at this time."
+                )
+
+        is_mass = original_value.unit.physical_type == "mass"
+        is_charge = original_value.unit.physical_type == "electrical charge"
+
+        Z = getattr(self.original_values, "Z", None)
+        mass_numb = getattr(self.original_values, "Z", None)
+
+        if is_charge and Z is not None:
+            raise ParticleError(
+                "Redundant or contradictory charge information was provided."
+            )
+
+        if mass_numb is not None:
+            raise ParticleError(
+                "The argument mass_numb cannot be provided for a particle "
+                "represented by a mass or a charge."
+            )
+
+        mass = original_value if is_mass else np.nan * u.kg
+
+        if Z is not None:
+            charge = Z * const.e
+        elif is_charge:
+            charge = original_value
+        else:
+            charge = np.nan * u.C
+
+        custom_particle = CustomParticle(mass=mass, charge=charge)
+        self.put_processed_argument_into_new_args(argument, custom_particle)
+
+    def process_particle_like_into_particle(self, argument):
+        original_value = self.original_values[argument]
+        mass_numb = self.original_values.get("mass_numb", None)
+        Z = self.original_values.get("Z", None)
+
+        if isinstance(original_value, Particle) and Z is None and mass_numb is None:
+            new_particle = original_value
+        else:
+            new_particle = Particle(original_value, mass_numb=mass_numb, Z=Z)
+
+        if not new_particle.is_category(
+            require=self.require, any_of=self.any_of, exclude=self.exclude
+        ):
+            errmsg = _category_errmsg(
+                new_particle,
+                require=self.require,
+                exclude=self.exclude,
+                any_of=self.any_of,
+                funcname=self.wrapped_function.__name__,
+            )
+            exception = ParticleError
+            #            if self.any_of.issuperset({"charged", "uncharged"}):
+            if {"charged", "uncharged"}.issubset(self.any_of):
+                if not new_particle.is_category(any_of={"charged", "uncharged"}):
+                    exception = ChargeError
+            raise exception(errmsg)
+
+        self.check_special_particle_names(argument, new_particle)
+        self.put_processed_argument_into_new_args(argument, new_particle)
+
+    def check_special_particle_names(self, argument, particle):
+        funcname = self.wrapped_function.__name__
+        if argument == "element" and not particle.is_category("element"):
+            errmsg = _category_errmsg(particle, "element", {}, {}, funcname)
+            raise InvalidElementError(errmsg)
+        elif argument == "isotope" and not particle.is_category("isotope"):
+            errmsg = _category_errmsg(particle, "isotope", {}, {}, funcname)
+            raise InvalidIsotopeError(errmsg)
+        elif argument == "ion" and not particle.is_category("ion"):
+            errmsg = _category_errmsg(particle, "ion", {}, {}, funcname)
+            raise InvalidIonError(errmsg)
+        elif argument == "ionic_level" and not particle.is_category("ion"):
+            if not particle.is_category(require="element"):
+                raise InvalidElementError
+            elif not particle.is_category(any_of={"charged", "uncharged"}):
+                raise ChargeError
+
+    def process_particle_list_argument(self, argument):
+        original_value = self.original_values[argument]
+        annotation = self.annotations[argument]
+
+        if isinstance(original_value, ParticleList):
+            particle_list = original_value
+        elif not hasattr(original_value, "__len__"):
+            particle_list = ParticleList((original_value))
+        else:
+            particle_list = ParticleList(original_value)
+
+        try:
+            expected_number_of_particles = len(annotation)
+        except TypeError:
+            pass
+        else:
+            actual_number_of_particles = len(particle_list)
+            if actual_number_of_particles != expected_number_of_particles:
+                raise ValueError(
+                    f"Expecting {expected_number_of_particles} particles, "
+                    f"but {actual_number_of_particles} were provided."
+                )
+
+        self.put_processed_argument_into_new_args(argument, particle_list)
+
+
+particle_input = _ParticleInput.as_decorator
