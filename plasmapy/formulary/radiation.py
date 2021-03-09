@@ -46,12 +46,12 @@ def thermal_bremsstrahlung(
        \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
        E_1(y)
 
-    where E_1 is the exponential integral
+    where :math:`E_1` is the exponential integral
 
     .. math::
         E_1 (y) = - \int_{-y}^\infty \frac{e^{-t}}{t}dt
 
-    and y is the dimensionless argument
+    and :math:`y` is the dimensionless argument
 
     .. math::
         y = \frac{1}{2} \frac{\omega^2 m_e}{k_{max}^2 k_B T_e}
@@ -62,38 +62,35 @@ def thermal_bremsstrahlung(
 
     Parameters
     ----------
-
     frequencies : `~astropy.units.Quantity`
         Array of frequencies over which the bremsstrahlung spectrum will be
-        calculated (convertable to Hz).
+        calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertable to m^-3)
+        Electron number density in the plasma (convertible to m:sup:`-3`\ )
 
     T_e : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV)
 
-    n_i : `~astropy.units.Quantity` (optional)
-        Ion number density in the plasma (convertable to m^-3). Defaults
-        to the quasi-neutral conditon n_i=n_e/Z.
+    n_i : `~astropy.units.Quantity`, optional
+        Ion number density in the plasma (convertible to m:sup:`-3`\ ). Defaults
+        to the quasi-neutral conditon :math:`n_i=n_e/Z`\ .
 
-    ion : str or `~plasmapy.particles.Particle`, optional
+    ion : `str` or `~plasmapy.particles.Particle`, optional
         An instance of `~plasmapy.particles.Particle`, or a string
         convertible to `~plasmapy.particles.Particle`.
 
     kmax :  `~astropy.units.Quantity`
-        Cutoff wavenumber (convertable to u.rad/u.m). Defaults to the inverse
-        of the electron de Broglie wavelength.
+        Cutoff wavenumber (convertible to radians per meter). Defaults
+        to the inverse of the electron de Broglie wavelength.
 
     Returns
     -------
-
     spectrum : `~astropy.units.Quantity`
         Computed bremsstrahlung spectrum over the frequencies provided.
 
     Notes
     -----
-
     For details, see "Radiation Processes in Plasmas" by
     Bekefi. `ISBN 978\\-0471063506`_.
 
