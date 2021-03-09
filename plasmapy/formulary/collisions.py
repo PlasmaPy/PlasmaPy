@@ -82,7 +82,7 @@ from plasmapy.utils.decorators.checks import _check_relativistic
 def Coulomb_logarithm(
     T: u.K,
     n_e: u.m ** -3,
-    species: (particles.Particle, particles.Particle),
+    species: (particles.ParticleLike, particles.ParticleLike),
     z_mean: u.dimensionless_unscaled = np.nan * u.dimensionless_unscaled,
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
@@ -465,7 +465,7 @@ def Coulomb_logarithm(
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particles.particle_input
-def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
+def _boilerPlate(T: u.K, species: (particles.ParticleLike, particles.ParticleLike), V):
     """
     Some boiler plate code for checking if inputs to functions in
     collisions.py are good. Also obtains reduced in mass in a
@@ -515,7 +515,7 @@ def _replaceNanVwithThermalV(V, T, m):
 @particles.particle_input
 def impact_parameter_perp(
     T: u.K,
-    species: (particles.Particle, particles.Particle),
+    species: (particles.ParticleLike, particles.ParticleLike),
     V: u.m / u.s = np.nan * u.m / u.s,
 ) -> u.m:
     r"""Distance of closest approach for a 90 degree Coulomb collision.

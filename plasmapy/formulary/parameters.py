@@ -52,7 +52,7 @@ from astropy.constants.si import c, e, eps0, k_B, mu0
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, ParticleLike
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
@@ -63,7 +63,7 @@ from plasmapy.utils.decorators import (
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
-def _grab_charge(ion: Particle, z_mean=None):
+def _grab_charge(ion: ParticleLike, z_mean=None):
     """Utility function to merge two possible inputs for particle charge.
 
     Parameters
@@ -353,7 +353,7 @@ va_ = Alfven_speed
 def ion_sound_speed(
     T_e: u.K,
     T_i: u.K,
-    ion: Particle,
+    ion: ParticleLike,
     n_e: u.m ** -3 = None,
     k: u.m ** -1 = None,
     gamma_e=1,
@@ -549,7 +549,7 @@ _coefficients = {
 @particles.particle_input
 def thermal_speed(
     T: u.K,
-    particle: Particle,
+    particle: ParticleLike,
     method="most_probable",
     mass: u.kg = np.nan * u.kg,
     ndim=3,
@@ -745,7 +745,7 @@ pth_ = thermal_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: Particle, method="most_probable"
+    T: u.K, kappa, particle: ParticleLike, method="most_probable"
 ) -> u.m / u.s:
     r"""Return the most probable speed for a particle within a Kappa
     distribution.
@@ -861,8 +861,8 @@ def Hall_parameter(
     n: u.m ** -3,
     T: u.K,
     B: u.T,
-    ion: Particle,
-    particle: Particle,
+    ion: ParticleLike,
+    particle: ParticleLike,
     coulomb_log=None,
     V=None,
     coulomb_log_method="classical",
@@ -972,7 +972,7 @@ betaH_ = Hall_parameter
     }
 )
 @angular_freq_to_hz
-def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
+def gyrofrequency(B: u.T, particle: ParticleLike, signed=False, Z=None) -> u.rad / u.s:
     r"""Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
@@ -1089,7 +1089,7 @@ wc_ = gyrofrequency
 )
 def gyroradius(
     B: u.T,
-    particle: Particle,
+    particle: ParticleLike,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
@@ -1253,7 +1253,7 @@ rhoc_ = gyroradius
     },
 )
 @angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
+def plasma_frequency(n: u.m ** -3, particle: ParticleLike, z_mean=None) -> u.rad / u.s:
     r"""Calculate the particle plasma frequency.
 
     **Aliases:** `wp_`
@@ -1507,7 +1507,7 @@ nD_ = Debye_number
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particles.particle_input(require="charged")
-def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
+def inertial_length(n: u.m ** -3, particle: ParticleLike) -> u.m:
     r"""
     Calculate a charged particle's inertial length.
 
@@ -1790,7 +1790,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
+def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: ParticleLike) -> u.rad / u.s:
     r"""
     Return the lower hybrid frequency.
 
