@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 _number_density_errmsg = (
@@ -32,7 +32,7 @@ class IonicFraction:
 
     Parameters
     ----------
-    ion: `~plasmapy.particles.particle_class.ParticleLike`
+    ionic_level: `~plasmapy.particles.particle_class.ParticleLike`
         The ion for the corresponding ionic fraction.
 
     ionic_fraction: real number between 0 and 1, optional
@@ -84,9 +84,11 @@ class IonicFraction:
             ) from exc
 
     @particle_input
-    def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
+    def __init__(
+        self, ionic_level: ParticleLike, ionic_fraction=None, number_density=None
+    ):
         try:
-            self._particle = ion
+            self._particle = ionic_level
             self.ionic_fraction = ionic_fraction
             self.number_density = number_density
         except Exception as exc:
@@ -234,7 +236,7 @@ class IonizationState:
     @particle_input(require="element")
     def __init__(
         self,
-        particle: Particle,
+        particle: ParticleLike,
         ionic_fractions=None,
         *,
         T_e: u.K = np.nan * u.K,
@@ -302,7 +304,7 @@ class IonizationState:
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
             result = IonicFraction(
-                ion=Particle(self.base_particle, Z=value),
+                ionic_level=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
             )
@@ -322,7 +324,7 @@ class IonizationState:
             if same_element and same_isotope and has_charge_info:
                 Z = value.integer_charge
                 result = IonicFraction(
-                    ion=Particle(self.base_particle, Z=Z),
+                    ionic_level=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
                     number_density=self.number_densities[Z],
                 )

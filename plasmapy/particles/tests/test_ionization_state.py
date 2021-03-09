@@ -27,7 +27,7 @@ ionic_fraction_table = [
 def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
     instance = IonicFraction(
-        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
+        ionic_level=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
 
     # Prepare to check for the default values when they are not set
@@ -52,7 +52,7 @@ def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     is out of the interval [0,1] or otherwise invalid.
     """
     with pytest.raises(expected_exception):
-        IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
+        IonicFraction(ionic_level="Fe 6+", ionic_fraction=invalid_fraction)
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
@@ -73,8 +73,8 @@ def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     """
     fraction = 0.251
 
-    ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
-    ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
+    ionic_fraction_1 = IonicFraction(ionic_level=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicFraction(ionic_level=ion2, ionic_fraction=fraction)
 
     assert (ionic_fraction_1 == ionic_fraction_2) is False
 

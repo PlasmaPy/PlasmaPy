@@ -23,7 +23,7 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def _atomic_number_and_mass_number(p: Particle):
+def _atomic_number_and_mass_number(p: ParticleLike):
     return (p.atomic_number, p.mass_number if p.isotope else 0)
 
 
@@ -220,7 +220,7 @@ class IonizationStateCollection:
                         f"{int_charge} is not a valid charge for {particle}."
                     )
                 return IonicFraction(
-                    ion=particle_symbol(particle, Z=int_charge),
+                    ionic_level=particle_symbol(particle, Z=int_charge),
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     number_density=self.number_densities[particle][int_charge],
                 )
