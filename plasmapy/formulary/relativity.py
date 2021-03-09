@@ -29,18 +29,18 @@ def Lorentz_factor(V: u.m / u.s):
     Raises
     ------
     TypeError
-        The `V` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+        If ``V`` is not a `~astropy.units.Quantity` and cannot be
+        converted into a `~astropy.units.Quantity`.
 
     ~astropy.units.UnitConversionError
-        If the `V` is not in appropriate units.
+        If the ``V`` is not in appropriate units.
 
     ValueError
-        If the magnitude of `V` is faster than the speed of light.
+        If the magnitude of ``V`` is faster than the speed of light.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -94,8 +94,8 @@ def Lorentz_factor(V: u.m / u.s):
 )
 def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     """
-    Calculate the relativistic energy (in Joules) of an object of mass
-    `m` and velocity `v`.
+    Calculate the relativistic energy (in joules) of an object of mass
+    ``m`` and velocity ``v``.
 
     .. math::
 
@@ -114,7 +114,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     Returns
     -------
     `~astropy.Quantity`
-        The relativistic energy (in Joules) of an object of mass `m` moving at velocity `v`.
+        The relativistic energy (in joules) of an object of mass ``m`` moving at velocity ``v``.
 
     Raises
     ------
@@ -122,14 +122,14 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
         If input arguments are not instances `~astropy.units.Quantity` or
         convertible to a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `v` is not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If the ``v`` is not in appropriate units.
 
     ValueError
-        If the magnitude of `m` is negative or arguments are complex.
+        If the magnitude of ``m`` is negative or arguments are complex.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `v` is greater than the speed of light.
+        If the velocity ``v`` is greater than the speed of light.
 
     Warns
     -----
