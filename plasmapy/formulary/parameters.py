@@ -142,17 +142,17 @@ def mass_density(
         If the ``density`` does not have units equivalent to a number density
         or mass density.
 
-    `TypeError`
+    TypeError
         If ``density`` is not of type `~astropy.units.Quantity`, or convertible.
 
-    `TypeError`
+    TypeError
         If ``particle`` is not of type or convertible to
         `~plasmapy.particles.Particle`.
 
-    `TypeError`
+    TypeError
         If ``z_ratio`` is not of type `int` or `float`.
 
-    `ValueError`
+    ValueError
         If ``density`` is negative.
 
     Returns
@@ -257,35 +257,35 @@ def Alfven_speed(
     `~plasmapy.utils.exceptions.RelativityError`
         If the Alfven velocity is greater than or equal to the speed of light.
 
-    `TypeError`
+    TypeError
         If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
         or convertible.
 
-    `TypeError`
+    TypeError
         If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
 
-    `TypeError`
+    TypeError
         If ``z_mean`` is not of type `int` or `float`.
 
     `~astropy.units.UnitTypeError`
         If the magnetic field ``B`` does not have units equivalent to
-        :math:`Tesla`.
+        tesla.
 
     `~astropy.units.UnitTypeError`
         If the ``density`` does not have units equivalent to a number density
         or mass density.
 
-    `ValueError`
+    ValueError
         If ``density`` is negative.
 
     Warns
     -----
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the Alfven velocity exceeds 5% of the speed of light
+        If the Alfvén velocity exceeds 5% of the speed of light
 
     : `~astropy.units.UnitsWarning`
         If units are not provided for the magnetic field ``B``, units of
-        :math:`Tesla` are assumed.
+        tesla are assumed.
 
     Notes
     -----
@@ -313,7 +313,6 @@ def Alfven_speed(
     <Quantity 21664.18... m / s>
     >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
     <Quantity 21661.51... m / s>
-
     """
     if density.unit.is_equivalent(u.kg / u.m ** 3):
         rho = density
@@ -386,14 +385,14 @@ def ion_sound_speed(
     n_e : ~astropy.units.Quantity
         Electron number density. If this is not given, then ion_sound_speed
         will be approximated in the non-dispersive limit
-        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If n_e is given,
-        a value for k must also be given.
+        (:math:`k^2 \lambda_{D}^2` will be assumed zero). If ``n_e`` is given,
+        a value for ``k`` must also be given.
 
     k : ~astropy.units.Quantity
-        Wavenumber (in units of inverse length, e.g. per meter). If this
+        Wavenumber (in units of inverse length, e.g. m:sup:`-1`\ ). If this
         is not given, then ion_sound_speed will be approximated in the
         non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero).
-        If k is given, a value for n_e must also be given.
+        If ``k`` is given, a value for ``n_e`` must also be given.
 
     gamma_e : float or int
         The adiabatic index for electrons, which defaults to 1.  This
@@ -427,24 +426,24 @@ def ion_sound_speed(
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
 
-    ~plasmapy.utils.PhysicsError
+    `~plasmapy.utils.PhysicsError`
         If an adiabatic index is less than one.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the temperature, electron number density, or wavenumber
         is in incorrect units.
 
     Warns
     -----
-    RelativityWarning
+    `~plasmapy.utils.RelativityWarning`
         If the ion sound speed exceeds 5% of the speed of light.
 
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    PhysicsWarning
-        If only one of (k, n_e) is given, the non-dispersive limit
-        is assumed.
+    `~plasmapy.utils.PhysicsWarning`
+        If only one of ``k`` or ``n_e`` is given, the non-dispersive
+        limit is assumed.
 
     Notes
     -----
@@ -566,23 +565,23 @@ def thermal_speed(
         The particle temperature in either kelvin or energy per particle
 
     particle : ~plasmapy.particles.Particle
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4). If no
+        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the particles are
         assumed to be singly charged.
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
-        `'most_probable'` (default), `'rms'`, and `'mean_magnitude'`.
+        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
     mass : ~astropy.units.Quantity
-        The particle's mass override. Defaults to NaN and if so, doesn't do
+        The particle's mass override. Defaults to `~np.nan` and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
 
     ndim : int
         Dimensionality of space in which to calculate thermal velocity. Valid
-        values are 1,2,3.
+        values are 1, 2, or 3.
 
     Returns
     -------
@@ -592,9 +591,9 @@ def thermal_speed(
     Raises
     ------
     TypeError
-        The particle temperature is not a ~astropy.units.Quantity
+        The particle temperature is not a `~astropy.units.Quantity`
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
         energy per particle
 
@@ -604,10 +603,10 @@ def thermal_speed(
 
     Warns
     -----
-    RelativityWarning
-        If the ion sound speed exceeds 5% of the speed of light, or
+    `~plasmapy.utils.RelativityWarning`
+        If the ion sound speed exceeds 5% of the speed of light.
 
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -698,10 +697,10 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     Parameters
     ----------
     T : ~astropy.units.Quantity
-        The particle temperature in either kelvin or energy per particle
+        The particle temperature in either kelvin or energy per particle.
 
     n : ~astropy.units.Quantity
-        The particle number density in units convertible to m**-3.
+        The particle number density in units convertible to m:sup:`-3`\ .
 
     Examples
     --------
@@ -721,7 +720,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     TypeError
         The temperature or number density is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
         energy per particle.
 
@@ -771,7 +770,7 @@ def kappa_thermal_speed(
 
     method : str, optional
         Method to be used for calculating the thermal speed. Options are
-        'most_probable' (default), 'rms', and 'mean_magnitude'.
+        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
     Returns
     -------
@@ -783,7 +782,7 @@ def kappa_thermal_speed(
     TypeError
         The particle temperature is not a ~astropy.units.Quantity.
 
-    astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
         energy per particle.
 
@@ -793,10 +792,10 @@ def kappa_thermal_speed(
 
     Warns
     -----
-    RelativityWarning
-        If the particle thermal speed exceeds 5% of the speed of light, or
+    `~plasmapy.utils.RelativityWarning`
+        If the particle thermal speed exceeds 5% of the speed of light.
 
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -806,7 +805,8 @@ def kappa_thermal_speed(
     .. math::
         V_{th,i} = \sqrt{(2 \kappa - 3)\frac{2 k_B T_i}{\kappa m_i}}
 
-    For more discussion on the mean_magnitude calculation method, see [1]_.
+    For more discussion on the ``'mean_magnitude'`` calculation method,
+    see [1]_.
 
 
     Examples
@@ -825,8 +825,8 @@ def kappa_thermal_speed(
 
     See Also
     --------
-    plasmapy.formulary.kappa_thermal_speed
-    plasmapy.formulary.kappa_velocity_1D
+    ~plasmapy.formulary.kappa_thermal_speed
+    ~plasmapy.formulary.kappa_velocity_1D
     """
     # Checking thermal units
     if kappa <= 3 / 2:
@@ -1287,7 +1287,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
         If n_i is not a `~astropy.units.Quantity` or particle is not of
         an appropriate type.
 
-    UnitConversionError
+    `~astropy.units.UnitConversionError`
         If `n_i` is not in correct units
 
     ValueError
@@ -1296,7 +1296,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1309,7 +1309,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     At present, astropy.units does not allow direct conversions from
     radians/second for angular frequency to 1/second or Hz for
     frequency.  The dimensionless_angles equivalency allows that
-    conversion, but does not account for the factor of 2*pi. The
+    conversion, but does not account for the factor of 2π. The
     alternatives are to convert to cycle/second or to do the
     conversion manually, as shown in the examples.
 
@@ -1600,7 +1600,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     TypeError
         If the input is not a `~astropy.units.Quantity`.
 
-    UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the input is not in units convertible to tesla.
 
     ValueError
@@ -1609,7 +1609,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1626,7 +1626,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
     See Also
     --------
-    magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
+    `magnetic_energy_density` : returns an equivalent `~astropy.units.Quantity`,
         except in units of joules per cubic meter.
 
     Example
@@ -1738,18 +1738,18 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     Raises
     ------
     TypeError
-        If either of `B` or `n_e` is not a Quantity.
+        If either of ``B`` or ``n_e`` is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If either of `B` or `n_e` is in incorrect units.
+    `~astropy.units.UnitConversionError`
+        If either of ``B`` or ``n_e`` is in incorrect units.
 
     ValueError
-        If either of `B` or `n_e` contains invalid values or are of
+        If either of ``B`` or ``n_e`` contains invalid values or are of
         incompatible dimensions.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1818,20 +1818,20 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     Raises
     ------
     TypeError
-        If either of `B` or `n_i` is not a `~astropy.units.Quantity`,
+        If either of ``B`` or ``n_i`` is not a `~astropy.units.Quantity`,
         or ion is of an inappropriate type.
 
     ~astropy.units.UnitConversionError
-        If either of `B` or `n_i` is in incorrect units.
+        If either of ``B`` or ``n_i`` is in incorrect units.
 
     ValueError
-        If either of `B` or `n_i` contains invalid values or are of
+        If either of ``B`` or ``n_i`` contains invalid values or are of
         incompatible dimensions, or ion cannot be used to identify an
         ion or isotope.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
