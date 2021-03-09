@@ -405,8 +405,6 @@ def run_fit(
 
     """
 
-    # TODO: PERTURB THE INITIAL PARAMETERS OMG!
-
     true_params = copy.deepcopy(params)
 
     skeys = list(settings.keys())
@@ -530,7 +528,9 @@ def test_fitting():
     function on them
     """
 
-    # Setup a default settings and params
+    # ***************************************************
+    # Setup a number of different settings
+    # ***************************************************
 
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
@@ -544,6 +544,20 @@ def test_fitting():
     settings["ion_species"] = ["H+"]
     settings["ion_vdir"] = np.array([[1, 0, 0]])
     settings["electron_vdir"] = np.array([[1, 0, 0]])
+    single_species = copy.deepcopy(settings)
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ["H+", "H+", "C-12 +4"]
+    settings["ion_vdir"] = np.array([[0, 1, 0]])
+    settings["electron_vdir"] = np.array([[0, 1, 0]])
+    multi_species = copy.deepcopy(settings)
+
+    # ***************************************************
+    # Setup a number of different parameters
+    # ***************************************************
 
     params = Parameters()
     params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
@@ -561,6 +575,21 @@ def test_fitting():
     iaw_params = copy.deepcopy(params)
 
     params = Parameters()
+    params.add("n", value=1e19, vary=False)
+    params.add("Te_0", value=500, vary=False, min=5, max=1000)
+    params.add("Ti_0", value=200, vary=True, min=5, max=1000)
+    params.add("Ti_1", value=500, vary=True, min=5, max=1000)
+    params.add("Ti_2", value=400, vary=False, min=5, max=1000)
+    params.add("ifract_0", value=0.4, vary=False, min=0.2, max=0.8)
+    params.add("ifract_1", value=0.3, vary=False, min=0.2, max=0.8)
+    params.add("ifract_2", value=0.3, vary=False, min=0.2, max=0.8)
+    params.add("ion_speed_0", value=0, vary=False)
+    params.add("ion_speed_1", value=1e5, vary=True, min=0, max=5e5)
+    params.add("ion_speed_2", value=2e5, vary=False, min=0, max=5e5)
+    params.add("electron_speed_0", value=0, vary=False)
+    iaw_multispecies_params = copy.deepcopy(params)
+
+    params = Parameters()
     params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
     params.add("Te_0", value=10, vary=True, min=5, max=20)
     params.add("Ti_0", value=120, vary=False, min=5, max=70)
@@ -568,19 +597,30 @@ def test_fitting():
     params.add("electron_speed_0", value=0, vary=False)
     nc_params = copy.deepcopy(params)
 
+    # ***************************************************
+    # Setup a number of different wavelength ranges
+    # ***************************************************
+
     w0 = probe_wavelength.value
     iaw_wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
     epw_wavelengths = np.linspace(w0 - 40, w0 + 40, num=512) * u.nm
     nc_wavelengths = np.linspace(w0 - 60, w0 + 60, num=512) * u.nm
 
+    # ***************************************************
+    # Run a bunch of test fits
+    # ***************************************************
+
     print("Running EPW test fit")
-    run_fit(epw_wavelengths, epw_params, settings, notch=(531, 533))
+    run_fit(epw_wavelengths, epw_params, single_species, notch=(531, 533))
 
     print("Running IAW test fit")
-    run_fit(iaw_wavelengths, iaw_params, settings)
+    run_fit(iaw_wavelengths, iaw_params, single_species)
+
+    print("Running IAW multi-species test fit")
+    run_fit(iaw_wavelengths, iaw_multispecies_params, multi_species)
 
     print("Running Non-Collective test fit")
-    run_fit(nc_wavelengths, nc_params, settings)
+    run_fit(nc_wavelengths, nc_params, single_species)
 
 
 if __name__ == "__main__":
