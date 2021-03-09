@@ -35,14 +35,14 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataError,
 )
 from plasmapy.particles.isotopes import _Isotopes
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.symbols import atomic_symbol
 
 __all__.sort()
 
 
-@particle_input
-def atomic_number(element: Particle) -> Integral:
+@particle_input(allow_custom_particles=False)
+def atomic_number(element: ParticleLike) -> Integral:
     """
     Return the number of protons in an atom, isotope, or ion.
 
@@ -87,8 +87,8 @@ def atomic_number(element: Particle) -> Integral:
     return element.atomic_number
 
 
-@particle_input
-def mass_number(isotope: Particle) -> Integral:
+@particle_input(allow_custom_particles=False)
+def mass_number(isotope: ParticleLike) -> Integral:
     """Get the mass number (the number of protons and neutrons) of an
     isotope.
 
@@ -133,8 +133,8 @@ def mass_number(isotope: Particle) -> Integral:
     return isotope.mass_number
 
 
-@particle_input(exclude={"isotope", "ion"})
-def standard_atomic_weight(element: Particle) -> u.Quantity:
+@particle_input(exclude={"isotope", "ion"}, allow_custom_particles=False)
+def standard_atomic_weight(element: ParticleLike) -> u.Quantity:
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -193,9 +193,9 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
     return element.standard_atomic_weight
 
 
-@particle_input(exclude={"neutrino", "antineutrino"})
+@particle_input(exclude={"neutrino", "antineutrino"}, allow_custom_particles=False)
 def particle_mass(
-    particle: Particle, *, Z: Integral = None, mass_numb: Integral = None
+    particle: ParticleLike, *, Z: Integral = None, mass_numb: Integral = None
 ) -> u.Quantity:
     """
     Return the mass of a particle.
@@ -247,8 +247,10 @@ def particle_mass(
     return particle.mass
 
 
-@particle_input
-def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) -> Real:
+@particle_input(allow_custom_particles=False)
+def isotopic_abundance(
+    isotope: ParticleLike, mass_numb: Optional[Integral] = None
+) -> Real:
     """
     Return the isotopic abundances if known, and otherwise zero.
 
@@ -298,8 +300,8 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
     return isotope.isotopic_abundance
 
 
-@particle_input(any_of={"charged", "uncharged"})
-def integer_charge(particle: Particle) -> Integral:
+@particle_input(any_of={"charged", "uncharged"}, allow_custom_particles=False)
+def integer_charge(particle: ParticleLike) -> Integral:
     """Return the integer charge of a particle.
 
     Parameters
@@ -352,8 +354,8 @@ def integer_charge(particle: Particle) -> Integral:
     return particle.integer_charge
 
 
-@particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: Particle) -> u.C:
+@particle_input(any_of={"charged", "uncharged"}, allow_custom_particles=False)
+def electric_charge(particle: ParticleLike) -> u.C:
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -406,8 +408,8 @@ def electric_charge(particle: Particle) -> u.C:
     return particle.charge
 
 
-@particle_input
-def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
+@particle_input(allow_custom_particles=False)
+def is_stable(particle: ParticleLike, mass_numb: Optional[Integral] = None) -> bool:
     """
     Return `True` for stable isotopes and particles and `False` for
     unstable isotopes.
@@ -459,8 +461,10 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     return particle.is_category("stable")
 
 
-@particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
+@particle_input(any_of={"stable", "unstable", "isotope"}, allow_custom_particles=False)
+def half_life(
+    particle: ParticleLike, mass_numb: Optional[Integral] = None
+) -> u.Quantity:
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and `~numpy.inf` in seconds for stable isotopes and particles.
@@ -824,7 +828,10 @@ def stable_isotopes(
     return isotopes_list
 
 
-def reduced_mass(test_particle, target_particle) -> u.Quantity:
+@particle_input(allow_particle_lists=False)
+def reduced_mass(
+    test_particle: ParticleLike, target_particle: ParticleLike
+) -> u.Quantity:
     """
     Find the reduced mass between two particles.
 
@@ -868,36 +875,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714286e-27 kg>
     """
-
     # TODO: Add discussion on reduced mass and its importance to docstring
     # TODO: Add equation for reduced mass to docstring
-
-    def get_particle_mass(particle) -> u.Quantity:
-        """Return the mass of a particle.
-
-        Take a representation of a particle and returns the mass in
-        kg.  If the input is a `~astropy.units.Quantity` or
-        `~astropy.constants.Constant` with units of mass already, then
-        this returns that mass converted to kg.
-        """
-        try:
-            if isinstance(particle, (u.Quantity, const.Constant)):
-                return particle.to(u.kg)
-            if not isinstance(particle, Particle):
-                particle = Particle(particle)
-            return particle.mass.to(u.kg)
-        except u.UnitConversionError as exc1:
-            raise u.UnitConversionError(f"Incorrect units in reduced_mass.") from exc1
-        except MissingParticleDataError:
-            raise MissingParticleDataError(
-                f"Unable to find the reduced mass because the mass of "
-                f"{particle} is not available."
-            ) from None
-
-    test_mass = get_particle_mass(test_particle)
-    target_mass = get_particle_mass(target_particle)
-
-    return (test_mass * target_mass) / (test_mass + target_mass)
+    return (test_particle.mass * target_particle.mass) / (
+        test_particle.mass + target_particle.mass
+    )
 
 
 def periodic_table_period(argument: Union[str, Integral]) -> Integral:

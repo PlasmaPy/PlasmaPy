@@ -8,12 +8,12 @@ from typing import List, Optional, Union
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
 
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Optional[int] = None
+    particle: ParticleLike, mass_numb: Optional[int] = None
 ) -> u.Quantity:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -72,7 +72,7 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quantity:
+def mass_energy(particle: ParticleLike, mass_numb: Optional[int] = None) -> u.Quantity:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
