@@ -18,7 +18,7 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, ParticleLike
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
@@ -357,7 +357,7 @@ class SyntheticProtonRadiograph:
         nparticles,
         proton_energy,
         max_theta=None,
-        particle: Particle = Particle("p+"),
+        particle: ParticleLike = Particle("p+"),
         distribution="monte-carlo",
     ):
         r"""
@@ -459,7 +459,7 @@ class SyntheticProtonRadiograph:
 
     @particles.particle_input
     def load_particles(
-        self, x, v, particle: Particle = Particle("p+"),
+        self, x, v, particle: ParticleLike = Particle("p+"),
     ):
         r"""
         Load arrays of particle positions and velocities
