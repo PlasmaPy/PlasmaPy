@@ -14,7 +14,7 @@ from plasmapy.diagnostics import proton_radiography as prad
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
+def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
     r"""
     Generates grids representing some common physical scenarios for testing
     and illustration. Valid example names are:
@@ -43,6 +43,16 @@ def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
 
     grid = CartesianGrid(-L, L, num=num)
 
+    defaults = {
+        "B0": 10 * u.T,
+        "E0": 5e8 * u.V / u.m,
+        "phi0": 1.4e5 * u.V,
+    }
+
+    for k in defaults.keys():
+        if k not in kwargs.keys():
+            kwargs[k] = defaults[k]
+
     # If an array was provided to the constructor, reduce to a single
     # length scale now.
     if L.size > 1:
@@ -52,17 +62,17 @@ def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
         pass
 
     elif name == "constant_bz":
-        Bz = np.ones(grid.shape) * B0
+        Bz = np.ones(grid.shape) * kwargs["B0"]
         grid.add_quantities(B_z=Bz)
 
     elif name == "constant_ex":
-        Ex = np.ones(grid.shape) * 5e8 * u.V / u.m
+        Ex = np.ones(grid.shape) * kwargs["E0"]
         grid.add_quantities(E_x=Ex)
 
     elif name == "axially_magnetized_cylinder":
         a = L / 4
         radius = np.linalg.norm(grid.grid[..., 0:2] * grid.unit, axis=3)
-        Bz = np.where(radius < a, 100 * u.T, 0 * u.T)
+        Bz = np.where(radius < a, kwargs["B0"], 0 * u.T)
         grid.add_quantities(B_z=Bz)
 
     elif name == "electrostatic_discontinuity":
@@ -80,18 +90,13 @@ def _test_grid(name, L=1 * u.mm, num=100, B0=10 * u.T):
 
     elif name == "electrostatic_gaussian_sphere":
         a = L / 3
-        b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = 5e4 * np.exp(-(arg ** 2)) * u.V
+        potential = kwargs["phi0"] * np.exp(-(arg ** 2))
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
 
-        Ex = -np.where(radius < b, Ex, 0)
-        Ey = -np.where(radius < b, Ey, 0)
-        Ez = -np.where(radius < b, Ez, 0)
-
-        grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez, phi=potential)
+        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)
 
     else:
         raise ValueError(
@@ -455,6 +460,91 @@ def test_synthetic_radiograph():
     h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
 
 
+def test_gaussian_sphere_analytical_comparison():
+    """
+    This test runs a known example problem and compares to a theoretical
+    model for small deflections.
+
+    Still under construction (comparing the actual form of the radiograph
+    is possible but tricky to implement).
+    """
+
+    # The Gaussian sphere problem for small deflection potentials
+    # is solved in Kugland2012relation, and the equations referenced
+    # below are from that paper.
+
+    a = (1 * u.mm / 3).to(u.mm).value
+    phi0 = 1.4e5
+    W = 15e6
+
+    l = 10
+    L = 200
+
+    # Define and run the problem
+    grid = _test_grid("electrostatic_gaussian_sphere", num=100, phi0=phi0 * u.V)
+    source = (0 * u.mm, -l * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, L * u.mm, 0 * u.mm)
+
+    with pytest.warns(
+        RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
+    ):
+        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+
+    sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg)
+    sim.run()
+
+    size = np.array([[-1, 1], [-1, 1]]) * 4 * u.cm
+    bins = [100, 100]
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
+    h = h.to(u.mm).value / sim.mag
+    v = v.to(u.mm).value / sim.mag
+    r0 = h
+
+    # Calculate a lineout across the center of the plane (y=0)
+    v0 = np.argmin(np.abs(v))
+
+    line = np.mean(i[:, v0 - 6 : v0 + 6], axis=1)
+    # Zero the edge of the radiograph
+    line += -np.mean(line)
+    line *= 1 / np.max(np.abs(line))
+
+    # Calculate the theoretical deflection angles (Eq. 28)
+    theory = phi0 / W * np.sqrt(np.pi) * (r0 / a) * np.exp(-((r0 / a) ** 2))
+
+    max_deflection = np.max(np.abs(theory))
+    mu = np.sqrt(np.pi) * (phi0 / W) * (l / a)
+
+    # sim_mu = sim.max_deflection.to(u.rad).value*(l/a)
+
+    # Calculate the theoretical inversion (Eq. 31 )
+    theory_deflect = -2 * mu * (1 - (r0 / a) ** 2) * np.exp(-((r0 / a) ** 2))
+    theory_deflect *= 1 / np.max(np.abs(theory_deflect))
+
+    # Uncomment for debug
+    """
+    print(f"Theory max deflection: {max_deflection:.6f}")
+    print(f"Theory mu: {mu:.3f}")
+    print(f"Sim max deflection: {sim.max_deflection.to(u.rad).value:.6f}")
+    print(f"Sim mu: {sim_mu:.3f}")
+
+    import matplotlib.pyplot as plt
+    print(f"Theory max deflection: {max_deflection:.6f}")
+    print(f"Theory mu: {mu:.3f}")
+    print(f"Sim max deflection: {sim.max_deflection.to(u.rad).value:.6f}")
+    print(f"Sim mu: {sim_mu:.3f}")
+
+    fig, ax = plt.subplots()
+    ax.pcolormesh(h, v, i.T, shading='auto', cmap='Blues_r')
+    ax.set_aspect('equal')
+
+    fig, ax = plt.subplots()
+    ax.plot(h, line )
+    ax.plot(h, theory_deflect)
+    """
+
+    assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
+
+
 def test_add_wire_mesh():
 
     # ************************************************************
@@ -568,6 +658,7 @@ def test_add_wire_mesh():
 
 
 if __name__ == "__main__":
+    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -577,4 +668,6 @@ if __name__ == "__main__":
     test_run_options()
     test_synthetic_radiograph()
     test_add_wire_mesh()
+    """
+    test_gaussian_sphere_analytical_comparison()
     pass
