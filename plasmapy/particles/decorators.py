@@ -124,17 +124,28 @@ class _ParticleInput:
             any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
             will be raised.
 
-        none_shall_pass : `bool`, optional
-            If set to `True`, then the decorated argument may be set to
-            `None` without raising an exception.  In such cases, this
-            decorator will pass `None` through to the decorated function or
-            method.  If set to `False` and the annotated argument is given
-            a value of `None`, then this decorator will raise a `TypeError`.
+        allow_particle_lists : `bool`
+            If `True`, then this decorator will allow
+            `~plasmapy.particles.ParticleList` instances to be created
+            and/or passed through.
+
+        allow_custom_particles : `bool`
+            If `True`, then this decorator will allow
+            `~plasmapy.particles.ParticleList` instances to be created
+            and/or passed through.
 
         Notes
         -----
-        If the annotated argument is named `element`, `isotope`, or `ion`,
-        then the decorator will raise an
+        If the annotated argument is named ``element``, ``isotope``,
+        ``ion``, or ``ionic_level``, then the decorator will check if
+        the `plasmapy.particles.ParticleLike` object matches the
+        corresponding category.  The argument ``ion`` requires that the
+        particle be charged (e.g., ``Particle("He 1+")``, whereas
+        ``ionic_level`` allows neutral atoms (e.g., ``Particle("He 0+")``)
+
+
+        If the annotated argument is named ``element``, ``isotope``, or
+        ``ion``, then the decorator will raise an
         `~plasmapy.particles.exceptions.InvalidElementError`,
         `~plasmapy.particles.exceptions.InvalidIsotopeError`, or
         `~plasmapy.particles.exceptions.InvalidIonError` if the particle
@@ -142,9 +153,7 @@ class _ParticleInput:
 
         If exactly one argument is annotated with `~plasmapy.particles.Particle`,
         then the keywords ``Z`` and ``mass_numb`` may be used to specify the
-        integer charge and/or mass number of an ion or isotope.  However,
-        the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
-        in order to enable this functionality.
+        integer charge and/or mass number of an ion or isotope.
 
         Raises
         ------
@@ -154,8 +163,8 @@ class _ParticleInput:
             not an `int`.
 
         `ValueError`
-            If the number of input elements in a collection do not match the
-            number of expected elements.
+            If the number of input elements in a collection does not
+            match the number of expected elements.
 
         `~plasmapy.particles.exceptions.InvalidParticleError`
             If the annotated argument does not correspond to a valid
@@ -170,8 +179,8 @@ class _ParticleInput:
             does not correspond to an isotope or an ion of an isotope.
 
         `~plasmapy.particles.exceptions.InvalidIonError`
-            If an annotated argument is named ``ion``, and the input does
-            not correspond to an ion.
+            If an annotated argument is named ``ion`` (or ``ionic_level``),
+            and the input does not correspond to an ion (or ionic level).
 
         `~plasmapy.particles.exceptions.ChargeError`
             If ``'charged'`` is in the ``require`` argument and the particle
