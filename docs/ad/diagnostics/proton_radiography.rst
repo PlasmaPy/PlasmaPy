@@ -17,4 +17,3 @@ Proton radiography analysis
     /notebooks/proton_radiography_particle_tracing
     /notebooks/proton_radiography_particle_tracing_custom_source
     /notebooks/proton_radiography_particle_tracing_wire_mesh
-
