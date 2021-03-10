@@ -164,20 +164,20 @@ def Reynolds_number(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
     ------
     TypeError
         The `U` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+        converted into a `~astropy.units.Quantity`.
 
     ~astropy.units.UnitConversionError
-        If the `U` is not in appropriate units.
+        If ``U`` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `U` is greater than the speed of light.
+        If the velocity ``U`` is greater than the speed of light.
 
     Examples
     --------
@@ -236,7 +236,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
@@ -266,7 +266,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Returns
     -------
-    Rm: `~astropy.Quantity`
+    Rm: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """
