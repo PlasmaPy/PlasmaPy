@@ -489,9 +489,7 @@ class SyntheticProtonRadiograph:
 
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
-            hit[
-                np.isclose(loc_rad, radius, atol=wire_radius)
-            ] = True
+            hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
 
         # Identify the particles that have hit something, then remove them from
         # all of the arrays
@@ -813,9 +811,10 @@ class SyntheticProtonRadiograph:
 
         # Calculate particle positions in the plane
         if x is None:
-            x = self.x + self.v * t[:, np.newaxis]
-        else:
-            x[...] = self.x + self.v * t[:, np.newaxis]
+            # If no output array is provided, preallocate
+            x = np.empty_like(self.x)
+
+        x[...] = self.x + self.v * t[:, np.newaxis]
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
