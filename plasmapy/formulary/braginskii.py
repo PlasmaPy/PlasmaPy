@@ -547,7 +547,7 @@ class ClassicalTransport:
         defined similarly to other materials. The result is a conductivity in
         units of W / m / K, so if you assume you know where the heat is flowing
         (temperature gradient, cross-sectional area) you can calculate the
-        energy transport in Watts as conductivity * cross-sectional area *
+        energy transport in watts as conductivity * cross-sectional area *
         temperature gradient. In lab plasmas, typically the energy is flowing
         out of your high-temperature plasma to something else, like the walls
         of your device, and you are sad about this.
@@ -928,7 +928,7 @@ def ion_thermal_conductivity(
     defined similarly to other materials. The result is a conductivity in units
     of W / m / K, so if you assume you know where the heat is flowing
     (temperature gradient, cross-sectional area) you can calculate the energy
-    transport in Watts as conductivity * cross-sectional area * temperature
+    transport in watts as conductivity * cross-sectional area * temperature
     gradient. In lab plasmas, typically the energy is flowing out of your
     high-temperature plasma to something else, like the walls of your device,
     and you are sad about this.
