@@ -340,14 +340,14 @@ def Maxwellian_velocity_3D(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -466,26 +466,26 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
     Notes
     -----
     In one dimension, the Maxwellian speed distribution function describing
-    the distribution of particles with speed v in a plasma with temperature T
-    is given by:
+    the distribution of particles with speed :math:`v` in a plasma with
+    temperature :math:`T` is given by:
 
     .. math::
 
-       f(v) = 2 \frac{1}{(\pi v_{Th}^2)^{1/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
+       f(v) = 2 \frac{1}{(π v_{Th}^2)^{1/2}} \exp(-(v - V_{drift})^2 / v_{Th}^2 )
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
@@ -595,7 +595,7 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     .. math::
 
-       f = 2 \pi v (\pi v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
+       f = 2 π v (π v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
@@ -712,7 +712,7 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     .. math::
 
-       f = 4 \pi v^{2} (\pi v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
+       f = 4 π v^{2} (π v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
@@ -829,20 +829,20 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     -----
     In one dimension, the Kappa velocity distribution function describing
     the distribution of particles with speed :math:`v` in a plasma with
-    temperature :math:`T` and suprathermal parameter :math:`\kappa` is
+    temperature :math:`T` and suprathermal parameter :math:`κ` is
     given by:
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-\kappa}
+       f = A_κ \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-κ}
 
-    where :math:`v_{Th},\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{\sqrt{\pi} \kappa^{3/2} v_{Th},\kappa^2
-    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2)}}`
+    where :math:`v_{Th},κ` is the kappa thermal speed
+    and :math:`A_κ = \frac{1}{\sqrt{π} κ^{3/2} v_{Th},κ^2
+    \frac{Γ(κ + 1)}{Γ(κ - 1/2)}}`
     is the normalization constant.
 
-    As :math:`\kappa` approaches infinity, the kappa distribution function
+    As :math:`κ` approaches infinity, the kappa distribution function
     converges to the Maxwellian distribution function.
 
     Examples
@@ -914,8 +914,8 @@ def kappa_velocity_3D(
 ):
     r"""
     Return the probability density function for finding a particle with
-    velocity components `v_x`, `v_y`, and `v_z`in m/s in a suprathermal
-    plasma of temperature `T` and parameter 'kappa' which follows the
+    velocity components ``v_x``, ``v_y``, and ``v_z``in m/s in a suprathermal
+    plasma of temperature ``T`` and parameter ``kappa`` which follows the
     3D Kappa distribution function. This function assumes Cartesian
     coordinates.
 
@@ -936,7 +936,7 @@ def kappa_velocity_3D(
     kappa: ~astropy.units.Quantity
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. Kappa must be greater
+        of the Kappa velocity distribution function. ``kappa`` must be greater
         than :math:`3/2`.
 
     particle: str, optional
@@ -955,7 +955,7 @@ def kappa_velocity_3D(
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units: str, optional
@@ -967,19 +967,19 @@ def kappa_velocity_3D(
     Returns
     -------
     f : ~astropy.units.Quantity
-        Probability density in Velocity^-1, normalized so that:
+        Probability density in units of inverse velocity, normalized so that:
         :math:`\iiint_{0}^{\infty} f(\vec{v}) d\vec{v} = 1`
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -987,19 +987,19 @@ def kappa_velocity_3D(
     -----
     In three dimensions, the Kappa velocity distribution function describing
     the distribution of particles with speed :math:`v` in a plasma with
-    temperature :math:`T` and suprathermal parameter :math:`\kappa` is given by:
+    temperature :math:`T` and suprathermal parameter :math:`κ` is given by:
 
     .. math::
 
-       f = A_\kappa \left(1 + \frac{(\vec{v} -
-       \vec{V_{drift}})^2}{\kappa v_{Th},\kappa^2}\right)^{-(\kappa + 1)}
+       f = A_κ \left(1 + \frac{(\vec{v} -
+       \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-(κ + 1)}
 
-    where :math:`v_{Th},\kappa` is the kappa thermal speed
-    and :math:`A_\kappa = \frac{1}{2 \pi (\kappa v_{Th},\kappa^2)^{3/2}}
-    \frac{\Gamma(\kappa + 1)}{\Gamma(\kappa - 1/2) \Gamma(3/2)}` is the
+    where :math:`v_{Th},κ` is the kappa thermal speed
+    and :math:`A_κ = \frac{1}{2 π (κ v_{Th},κ^2)^{3/2}}
+    \frac{Γ(κ + 1)}{Γ(κ - 1/2) Γ(3/2)}` is the
     normalization constant.
 
-    As :math:`\kappa` approaches infinity, the kappa distribution function
+    As :math:`κ` approaches infinity, the kappa distribution function
     converges to the Maxwellian distribution function.
 
     See also
