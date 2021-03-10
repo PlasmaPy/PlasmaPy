@@ -491,7 +491,7 @@ class SyntheticProtonRadiograph:
             # outside edge
             hit[
                 np.isclose(loc_rad, radius, atol=wire_radius)
-            ] = True  # is this correct?
+            ] = True
 
         # Identify the particles that have hit something, then remove them from
         # all of the arrays
