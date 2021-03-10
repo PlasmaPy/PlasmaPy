@@ -27,7 +27,9 @@ from sphinx.application import Sphinx
 
 sys.path.insert(0, os.path.abspath(".."))
 
-from plasmapy import __version__ as release
+from pkg_resources import get_distribution
+
+release = get_distribution("plasmapy").version
 
 # -- General configuration ------------------------------------------------
 
@@ -44,12 +46,14 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx_changelog",
 ]
 
 intersphinx_mapping = {

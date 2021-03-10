@@ -31,9 +31,17 @@ from plasmapy.utils.decorators import validate_quantities
     n_e={"can_be_negative": False},
 )
 def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
-    """
+    r"""
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
+
+    The quantum theta (:math:`\theta`) of a plasma is defined by
+
+    .. math::
+        \theta = \frac{E_{T}}{E_{F}}
+
+    where :math:`E_{T}` is the thermal energy of the plasma
+    and :math:`E_{F}` is the Fermi energy of the plasma.
 
     Parameters
     ----------
@@ -58,6 +66,19 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     -------
     theta: ~astropy.units.Quantity
 
+    Notes
+    -----
+    The thermal energy of the plasma (:math:`E_{T}`) is defined by
+
+    .. math::
+        E_{T} = k_{B} * T
+
+    where :math:`k_{B}` is the Boltzmann constant
+    and :math:`T` is the temperature of the plasma.
+
+    See Also
+    --------
+    plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = constants.k_B * T
@@ -70,8 +91,16 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     n={"can_be_negative": False},
 )
 def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
-    """
+    r"""
     The ratio of thermal pressure to magnetic pressure.
+
+    The beta (:math:`\beta`) of a plasma is defined by
+
+    .. math::
+        \beta = \frac{p_{th}}{p_{mag}}
+
+    where :math:`p_{th}` is the thermal pressure of the plasma
+    and :math:`p_{mag}` is the magnetic pressure of the plasma.
 
     Parameters
     ----------
@@ -95,6 +124,10 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     beta: ~astropy.units.Quantity
         Dimensionless quantity.
 
+    See Also
+    --------
+    plasmapy.formulary.parameters.thermal_pressure
+    plasmapy.formulary.parameters.magnetic_pressure
     """
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
