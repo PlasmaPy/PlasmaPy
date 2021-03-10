@@ -67,13 +67,13 @@ def thermal_bremsstrahlung(
         calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertible to m:sup:`-3`\ )
+        Electron number density in the plasma (convertible to m\ :sup:`-3`\ )
 
     T_e : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV)
 
     n_i : `~astropy.units.Quantity`, optional
-        Ion number density in the plasma (convertible to m:sup:`-3`\ ). Defaults
+        Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
         to the quasi-neutral conditon :math:`n_i=n_e/Z`\ .
 
     ion : `str` or `~plasmapy.particles.Particle`, optional
