@@ -14,7 +14,16 @@ from plasmapy.diagnostics import proton_radiography as prad
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
+def _test_grid(
+    name,
+    L=1 * u.mm,
+    num=100,
+    B0=10 * u.T,
+    E0=5e8 * u.V / u.m,
+    phi0=1.4e5 * u.V,
+    a=None,
+    b=None,
+):
     r"""
     Generates grids representing some common physical scenarios for testing
     and illustration. Valid example names are:
@@ -34,6 +43,13 @@ def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
     num : int or list of three ints
         The number of points in each direction (or list of one for each dimension).
         Passed to the grid cosntructor as the num argument. The default is 100.
+
+    E0, B0, phi0 : u.Quantities
+        Scaling quantities used in the various examples
+
+    a, b : u.Quantities
+        Two length scales used in the various examples
+
     Returns
     -------
     grid : CartesianGrid
@@ -42,16 +58,6 @@ def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
     """
 
     grid = CartesianGrid(-L, L, num=num)
-
-    defaults = {
-        "B0": 10 * u.T,
-        "E0": 5e8 * u.V / u.m,
-        "phi0": 1.4e5 * u.V,
-    }
-
-    for k in defaults.keys():
-        if k not in kwargs.keys():
-            kwargs[k] = defaults[k]
 
     # If an array was provided to the constructor, reduce to a single
     # length scale now.
@@ -62,21 +68,23 @@ def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
         pass
 
     elif name == "constant_bz":
-        Bz = np.ones(grid.shape) * kwargs["B0"]
+        Bz = np.ones(grid.shape) * B0
         grid.add_quantities(B_z=Bz)
 
     elif name == "constant_ex":
-        Ex = np.ones(grid.shape) * kwargs["E0"]
+        Ex = np.ones(grid.shape) * E0
         grid.add_quantities(E_x=Ex)
 
     elif name == "axially_magnetized_cylinder":
-        a = L / 4
+        if a is None:
+            a = L / 4
         radius = np.linalg.norm(grid.grid[..., 0:2] * grid.unit, axis=3)
-        Bz = np.where(radius < a, kwargs["B0"], 0 * u.T)
+        Bz = np.where(radius < a, B0, 0 * u.T)
         grid.add_quantities(B_z=Bz)
 
     elif name == "electrostatic_discontinuity":
-        a = L / 2
+        if a is None:
+            a = L / 2
         delta = a / 120
 
         radius = np.linalg.norm(grid.grid[..., 0:2] * grid.unit, axis=3)
@@ -89,12 +97,19 @@ def _test_grid(name, L=1 * u.mm, num=100, **kwargs):
         grid.add_quantities(E_x=Ex, E_y=Ey, E_z=Ez, phi=potential)
 
     elif name == "electrostatic_gaussian_sphere":
-        a = L / 3
+        if a is None:
+            a = L / 3
+        if b is None:
+            b = L / 2
         radius = np.linalg.norm(grid.grid, axis=3)
         arg = (radius / a).to(u.dimensionless_unscaled)
-        potential = kwargs["phi0"] * np.exp(-(arg ** 2))
+        potential = phi0 * np.exp(-(arg ** 2))
 
         Ex, Ey, Ez = np.gradient(potential, grid.dax0, grid.dax1, grid.dax2)
+
+        Ex = np.where(radius < b, Ex, 0)
+        Ey = np.where(radius < b, Ey, 0)
+        Ez = np.where(radius < b, Ez, 0)
 
         grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)
 
@@ -482,7 +497,16 @@ def test_gaussian_sphere_analytical_comparison():
     L = 200
 
     # Define and run the problem
-    grid = _test_grid("electrostatic_gaussian_sphere", num=100, phi0=phi0 * u.V)
+    # Setting b to be much larger than the problem so that the field is not
+    # cut off at the edges. This is required to be directly
+    # comparable to the theoretical result.
+    grid = _test_grid(
+        "electrostatic_gaussian_sphere",
+        num=100,
+        phi0=phi0 * u.V,
+        a=a * u.mm,
+        b=20 * u.mm,
+    )
     source = (0 * u.mm, -l * u.mm, 0 * u.mm)
     detector = (0 * u.mm, L * u.mm, 0 * u.mm)
 
@@ -659,7 +683,6 @@ def test_add_wire_mesh():
 
 
 if __name__ == "__main__":
-    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -669,6 +692,5 @@ if __name__ == "__main__":
     test_run_options()
     test_synthetic_radiograph()
     test_add_wire_mesh()
-    """
     test_gaussian_sphere_analytical_comparison()
     pass
