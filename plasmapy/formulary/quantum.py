@@ -343,7 +343,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     Calculate the Wigner-Seitz radius, which approximates the inter-particle
     spacing.
 
-    This function returns is the radius of a sphere whose volume is
+    This function returns the radius of a sphere whose volume is
     equal to the mean volume per atom in a solid. This parameter is
     often used to calculate the coupling parameter.
     When ion density is used, this is the ion sphere radius, i.e., the
