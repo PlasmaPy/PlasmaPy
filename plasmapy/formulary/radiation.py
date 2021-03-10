@@ -1,5 +1,5 @@
 """
-Defin_es the Radiation module as part of the Plasma Formulary
+Functions for calculating quantities associated with electromagnetic radiation.
 """
 
 __all__ = [
@@ -11,7 +11,6 @@ import astropy.units as u
 import numpy as np
 
 from scipy.special import exp1
-from typing import List, Tuple, Union
 
 from plasmapy.formulary.parameters import plasma_frequency
 from plasmapy.particles import Particle, particle_input
@@ -35,29 +34,29 @@ def thermal_bremsstrahlung(
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""
-    Calculate the Bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`\hbar\omega \ll k_B*T_e`
+    Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
+    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`
 
     .. math::
-       \frac{dP}{d\omega} = \frac{8 \sqrt{2}}{3\sqrt{\pi}}
-       \bigg ( \frac{e^2}{4 \pi \epsilon_0} \bigg )^3
+       \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
+       \bigg ( \frac{e^2}{4 π \epsilon_0} \bigg )^3
        \bigg ( m_e c^2 \bigg )^{-\frac{3}{2}}
-       \bigg ( 1 - \frac{\omega_{pe}^2}{\omega^2} \bigg )^\frac{1}{2}
+       \bigg ( 1 - \frac{ω_{pe}^2}{ω^2} \bigg )^\frac{1}{2}
        \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
        E_1(y)
 
     where :math:`E_1` is the exponential integral
 
     .. math::
-        E_1 (y) = - \int_{-y}^\infty \frac{e^{-t}}{t}dt
+        E_1 (y) = - \int_{-y}^∞ \frac{e^{-t}}{t}dt
 
     and :math:`y` is the dimensionless argument
 
     .. math::
-        y = \frac{1}{2} \frac{\omega^2 m_e}{k_{max}^2 k_B T_e}
+        y = \frac{1}{2} \frac{ω^2 m_e}{k_{max}^2 k_B T_e}
 
     where   :math:`k_{max}` is a maximum wavenumber approximated here as
-    :math:`k_{max} = 1/\lambda_B` where  :math:`\lambda_B` is the electron
+    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron
     de Broglie wavelength.
 
     Parameters
@@ -67,14 +66,14 @@ def thermal_bremsstrahlung(
         calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertible to m\ :sup:`-3`\ )
+        Electron number density in the plasma (convertible to m\ :sup:`-3`\ ).
 
     T_e : `~astropy.units.Quantity`
-        Temperature of the electrons (in K or convertible to eV)
+        Temperature of the electrons (in K or convertible to eV).
 
     n_i : `~astropy.units.Quantity`, optional
         Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
-        to the quasi-neutral conditon :math:`n_i=n_e/Z`\ .
+        to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
 
     ion : `str` or `~plasmapy.particles.Particle`, optional
         An instance of `~plasmapy.particles.Particle`, or a string
