@@ -1486,7 +1486,7 @@ def Spitzer_resistivity(
         If the units on any of the inputs are incorrect
 
     TypeError
-        If any of ``n_e``, ``T``, or ``V`` are not Quantities.
+        If any of ``n_e``, ``T``, or ``V`` are not of type `~astropy.units.Quantity`.
 
     RelativityError
         If the input velocity is same or greater than the speed
@@ -1860,7 +1860,7 @@ def coupling_parameter(
 
     Returns
     -------
-    coupling : float or `~numpy.ndarray`
+    coupling : `float` or `~numpy.ndarray`
         The coupling parameter for a plasma.
 
     Raises

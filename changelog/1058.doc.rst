@@ -1,1 +1,1 @@
-Update reStructuredText formatting in `plasmapy.formulary`.
+Update formatting and broken `sphinx.ext.intersphinx` links in `plasmapy.formulary` docstrings.
