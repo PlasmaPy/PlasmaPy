@@ -452,52 +452,52 @@ class SyntheticProtonRadiograph:
         xloc = np.dot(x - location, mesh_hdir)
         yloc = np.dot(x - location, mesh_vdir)
 
-        # Create an array in which 0 indicates that a particle has hit one of
-        # the wires and any other value indicates that it has not
-        no_hit = np.ones([self.nparticles])
+        # Create an array in which True indicates that a particle has hit a wire
+        # and False indicates that it has not
+        hit = np.zeros(self.nparticles, dtype=bool)
 
         # Mark particles that overlap vertical or horizontal position with a wire
         h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
         for c in h_centers:
-            no_hit *= np.where(np.isclose(xloc, c, atol=wire_radius), 0, 1)
+            hit |= np.where(np.isclose(xloc, c, atol=wire_radius), True, False)
 
         v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])
         for c in v_centers:
-            no_hit *= np.where(np.isclose(yloc, c, atol=wire_radius), 0, 1)
+            hit |= np.where(np.isclose(yloc, c, atol=wire_radius), True, False)
 
         # Put back any particles that are outside the mesh boundaries
         # First handle the case where the mesh is rectangular
         if radius is None:
             # Replace particles outside the x-boundary
-            no_hit = np.where(
+            hit = np.where(
                 np.logical_or(
                     xloc > np.max(h_centers) + wire_radius,
                     xloc < np.min(h_centers) - wire_radius,
                 ),
-                1,
-                no_hit,
+                False,
+                hit,
             )
             # Replace particles outside the y-boundary
-            no_hit = np.where(
+            hit = np.where(
                 np.logical_or(
                     yloc > np.max(v_centers) + wire_radius,
                     yloc < np.min(v_centers) - wire_radius,
                 ),
-                1,
-                no_hit,
+                False,
+                hit,
             )
         # Handle the case where the mesh is circular
         else:
             loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
-            no_hit = np.where(loc_rad > radius, 1, no_hit)
+            hit = np.where(loc_rad > radius, False, hit)
 
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
-            no_hit *= np.where(np.isclose(loc_rad, radius, atol=wire_radius), 0, 1)
+            hit |= np.where(np.isclose(loc_rad, radius, atol=wire_radius), True, False)
 
         # Identify the particles that have hit something, then remove them from
         # all of the arrays
-        i = np.argwhere(no_hit)[:, 0]
+        i = np.argwhere(~hit)[:, 0]
         nremoved = self.nparticles - i.size
 
         if self.nparticles - nremoved <= 0:
