@@ -19,10 +19,10 @@ example.
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
 
 The ionization state for helium may be accessed using the
-``ionic_fractions`` attribute.  These ionic fractions correspond to the
+``ionic_levels`` attribute.  These ionic fractions correspond to the
 ``integer_charges`` attribute.
 
->>> ionization_state.ionic_fractions
+>>> ionization_state.ionic_levels
 array([0.05, 0.94, 0.01])
 >>> ionization_state.integer_charges
 array([0, 1, 2])
@@ -113,7 +113,7 @@ as arguments to the class.
 
 The ionic fractions will be stored as a `dict`.
 
->>> states.ionic_fractions
+>>> states.ionic_levels
 {'H': array([0.01, 0.99]), 'He': array([0.04, 0.95, 0.01])}
 
 The number density for each element is the product of the number

@@ -159,7 +159,7 @@ class TestIonizationStateCollection:
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.symbol for p in particles}
         actual_particles = {
-            particle for particle in self.instances[test_name].ionic_fractions.keys()
+            particle for particle in self.instances[test_name].ionic_levels.keys()
         }
 
         assert actual_particles == expected_particles, (
@@ -207,7 +207,7 @@ class TestIonizationStateCollection:
         )
 
     @pytest.mark.parametrize("test_name", test_names)
-    def test_that_ionic_fractions_are_set_correctly(self, test_name):
+    def test_that_ionic_levels_are_set_correctly(self, test_name):
 
         errmsg = ""
 
@@ -228,7 +228,7 @@ class TestIonizationStateCollection:
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
 
-                actual = self.instances[test_name].ionic_fractions[element]
+                actual = self.instances[test_name].ionic_levels[element]
 
                 if not np.allclose(actual, expected):
                     errmsg += (
@@ -248,7 +248,7 @@ class TestIonizationStateCollection:
             assert set(self.instances[test_name].base_particles) == elements_expected
 
             for element in elements_expected:
-                assert all(np.isnan(self.instances[test_name].ionic_fractions[element]))
+                assert all(np.isnan(self.instances[test_name].ionic_levels[element]))
         if errmsg:
             pytest.fail(errmsg)
 
@@ -260,14 +260,14 @@ class TestIonizationStateCollection:
         for key in instance.base_particles:
 
             try:
-                expected = instance.ionic_fractions[key]
+                expected = instance.ionic_levels[key]
             except Exception as exc:
                 pytest.fail(
-                    f"Unable to get ionic_fractions for '{key}' in test='{test_name}'."
+                    f"Unable to get ionic_levels for '{key}' in test='{test_name}'."
                 )
 
             try:
-                actual = instance[key].ionic_fractions
+                actual = instance[key].ionic_levels
             except Exception as exc:
                 pytest(f"Unable to get item {key} in test={test_name}.")
 
@@ -295,8 +295,8 @@ class TestIonizationStateCollection:
         instance = self.instances[test_name]
         for particle in instance.base_particles:
             for int_charge in range(0, atomic_number(particle) + 1):
-                actual = instance[particle, int_charge].ionic_fraction
-                expected = instance.ionic_fractions[particle][int_charge]
+                actual = instance[particle, int_charge].ionic_level
+                expected = instance.ionic_levels[particle][int_charge]
                 # We only need to check if one is broken
             if not np.isnan(actual) and np.isnan(expected):
                 assert np.isclose(actual, expected), (
@@ -319,7 +319,7 @@ class TestIonizationStateCollection:
         not_normalized_elements = []
         for element in instance.base_particles:
             is_not_normalized = not np.isclose(
-                np.sum(instance.ionic_fractions[element]), 1, atol=1e-19, rtol=0
+                np.sum(instance.ionic_levels[element]), 1, atol=1e-19, rtol=0
             )
 
             if is_not_normalized:
@@ -384,7 +384,7 @@ class TestIonizationStateCollectionItemAssignment:
             pytest.fail(
                 "Unable to change ionic fractions for an IonizationStateCollection instance."
             )
-        resulting_states = self.states[element].ionic_fractions
+        resulting_states = self.states[element].ionic_levels
 
         assert np.any(
             [
@@ -473,7 +473,7 @@ class TestIonizationStateCollectionAttributes:
         ), "kappa does not default to a value of inf."
 
     @pytest.mark.parametrize(
-        "uninitialized_attribute", ["number_densities", "ionic_fractions"]
+        "uninitialized_attribute", ["number_densities", "ionic_levels"]
     )
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute):
         command = f"self.instance.{uninitialized_attribute}"
@@ -506,22 +506,10 @@ class TestIonizationStateCollectionAttributes:
             ("T_e", "-1 * u.K", ParticleError),
             ("n0", "5 * u.m", u.UnitsError),
             ("n0", "-1 * u.m ** -3", ParticleError),
-            (
-                "ionic_fractions",
-                {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]},
-                ParticleError,
-            ),
-            (
-                "ionic_fractions",
-                {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]},
-                ParticleError,
-            ),
-            (
-                "ionic_fractions",
-                {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]},
-                ParticleError,
-            ),
-            ("ionic_fractions", {"H": [1.0, 0.0]}, ParticleError),
+            ("ionic_levels", {"H": [0.3, 0.7], "He": [-0.1, 0.4, 0.7]}, ParticleError,),
+            ("ionic_levels", {"H": [0.3, 0.7], "He": [1.01, 0.0, 0.7]}, ParticleError,),
+            ("ionic_levels", {"H": [0.3, 0.6], "He": [1.0, 0.0, 0.0]}, ParticleError,),
+            ("ionic_levels", {"H": [1.0, 0.0]}, ParticleError),
         ],
     )
     def test_attribute_exceptions(self, attribute, invalid_value, expected_exception):
@@ -533,7 +521,7 @@ class TestIonizationStateCollectionAttributes:
             exec(command)
             pytest.fail(errmsg)
 
-    def test_setting_ionic_fractions_for_single_element(self):
+    def test_setting_ionic_levels_for_single_element(self):
         """
         Test that __setitem__ correctly sets new ionic fractions when
         used for just H, while not changing the ionic fractions for He
@@ -541,15 +529,15 @@ class TestIonizationStateCollectionAttributes:
         """
         self.new_fractions = [0.3, 0.7]
         self.instance["H"] = self.new_fractions
-        resulting_fractions = self.instance.ionic_fractions["H"]
+        resulting_fractions = self.instance.ionic_levels["H"]
         assert np.allclose(
             self.new_fractions, resulting_fractions
         ), "Ionic fractions for H not set using __setitem__."
-        assert "He" in self.instance.ionic_fractions.keys(), (
-            "He is missing in ionic_fractions after __setitem__ was "
+        assert "He" in self.instance.ionic_levels.keys(), (
+            "He is missing in ionic_levels after __setitem__ was "
             "used to set H ionic fractions."
         )
-        assert np.all(np.isnan(self.instance.ionic_fractions["He"])), (
+        assert np.all(np.isnan(self.instance.ionic_levels["He"])), (
             "He ionic fractions are not all nans after __setitem__ "
             "was used to set H ionic fractions."
         )
@@ -630,7 +618,7 @@ class TestIonizationStateCollectionAttributes:
         result = instance[index]
 
         if np.all(np.isnan(instance.number_densities[index])):
-            inputs = instance.ionic_fractions[index]
+            inputs = instance.ionic_levels[index]
         else:
             inputs = instance.number_densities[index]
 
@@ -652,12 +640,12 @@ class TestIonizationStateCollectionAttributes:
         assert isinstance(result, IonicLevel)
         assert result.integer_charge == integer_charge
 
-        expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
+        expected_ionic_level = instance.ionic_levels[particle][integer_charge]
 
         assert np.any(
             [
-                np.isclose(result.ionic_fraction, expected_ionic_fraction),
-                np.isnan(result.ionic_fraction) and np.isnan(expected_ionic_fraction),
+                np.isclose(result.ionic_level, expected_ionic_level),
+                np.isnan(result.ionic_level) and np.isnan(expected_ionic_level),
             ]
         )
 
@@ -680,9 +668,9 @@ class TestIonizationStateCollectionAttributes:
         """
 
         element = "H"
-        valid_ionic_fractions = [0.54, 0.46]
+        valid_ionic_levels = [0.54, 0.46]
         original_n_elem = np.sum(self.instance.number_densities[element])
-        valid_number_densities = valid_ionic_fractions * original_n_elem
+        valid_number_densities = valid_ionic_levels * original_n_elem
 
         try:
             self.instance[element] = valid_number_densities
@@ -690,7 +678,7 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail("Unable to set valid number densities using item assignment.")
 
         assert u.quantity.allclose(
-            self.instance.ionic_fractions[element], valid_ionic_fractions
+            self.instance.ionic_levels[element], valid_ionic_levels
         ), "Item assignment of valid number densities did not yield correct ionic fractions."
 
         assert u.quantity.allclose(
@@ -713,16 +701,16 @@ class TestIonizationStateCollectionAttributes:
             assert not isinstance(self.instance.abundances[element], u.Quantity)
 
     @pytest.mark.parametrize("element", ["H", "He", "Fe"])
-    def test_ionic_fractions_not_quantities(self, element):
-        ionic_fractions = self.instance.ionic_fractions[element]
-        if isinstance(ionic_fractions, u.Quantity):
+    def test_ionic_levels_not_quantities(self, element):
+        ionic_levels = self.instance.ionic_levels[element]
+        if isinstance(ionic_levels, u.Quantity):
             pytest.fail(
                 f"The ionic fractions of {element} are a Quantity but should not be."
             )
 
-    def test_that_iron_ionic_fractions_are_still_undefined(self):
-        assert "Fe" in self.instance.ionic_fractions.keys()
-        iron_fractions = self.instance.ionic_fractions["Fe"]
+    def test_that_iron_ionic_levels_are_still_undefined(self):
+        assert "Fe" in self.instance.ionic_levels.keys()
+        iron_fractions = self.instance.ionic_levels["Fe"]
         assert len(iron_fractions) == atomic_number("Fe") + 1
         assert np.all(np.isnan(iron_fractions))
 
@@ -734,10 +722,8 @@ class TestIonizationStateCollectionAttributes:
         """
         assert self.instance.base_particles == self.elements
 
-    def test_base_particles_equal_ionic_fraction_particles(self):
-        assert self.instance.base_particles == list(
-            self.instance.ionic_fractions.keys()
-        )
+    def test_base_particles_equal_ionic_level_particles(self):
+        assert self.instance.base_particles == list(self.instance.ionic_levels.keys())
 
 
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
@@ -813,7 +799,7 @@ class TestIonizationStateCollectionDensityEqualities:
     """
     Test that IonizationStateCollection instances are equal or not equal to each
     other as they should be for different combinations of inputs
-    related to ionic_fractions, number densities, and abundances.
+    related to ionic_levels, number densities, and abundances.
     """
 
     @classmethod
@@ -822,12 +808,12 @@ class TestIonizationStateCollectionDensityEqualities:
         # Create arguments to IonizationStateCollection that are all consistent
         # with each other.
 
-        cls.ionic_fractions = {"H": [0.9, 0.1], "He": [0.99, 0.01, 0.0]}
+        cls.ionic_levels = {"H": [0.9, 0.1], "He": [0.99, 0.01, 0.0]}
         cls.abundances = {"H": 1, "He": 0.08}
         cls.n = 5.3 * u.m ** -3
         cls.number_densities = {
-            element: cls.ionic_fractions[element] * cls.n * cls.abundances[element]
-            for element in cls.ionic_fractions.keys()
+            element: cls.ionic_levels[element] * cls.n * cls.abundances[element]
+            for element in cls.ionic_levels.keys()
         }
 
         # The keys that begin with 'ndens' have enough information to
@@ -836,14 +822,14 @@ class TestIonizationStateCollectionDensityEqualities:
 
         cls.dict_of_kwargs = {
             "ndens1": {
-                "inputs": cls.ionic_fractions,
+                "inputs": cls.ionic_levels,
                 "abundances": cls.abundances,
                 "n0": cls.n,
             },
             "ndens2": {"inputs": cls.number_densities},
-            "no_ndens3": {"inputs": cls.ionic_fractions},
-            "no_ndens4": {"inputs": cls.ionic_fractions, "abundances": cls.abundances},
-            "no_ndens5": {"inputs": cls.ionic_fractions, "n0": cls.n},
+            "no_ndens3": {"inputs": cls.ionic_levels},
+            "no_ndens4": {"inputs": cls.ionic_levels, "abundances": cls.abundances},
+            "no_ndens5": {"inputs": cls.ionic_levels, "n0": cls.n},
         }
 
         cls.instances = {
