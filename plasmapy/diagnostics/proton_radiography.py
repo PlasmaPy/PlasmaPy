@@ -340,7 +340,7 @@ class SyntheticProtonRadiograph:
             mesh is rectangular and they the values are interpreted as the
             width and height respectively.
 
-        nwires : Tuple of 1 or 2 ints
+        nwires : Tuple of 1 or 2 ints, or a single int
             The number of wires in the horizontal and vertical directions. If
             only one value is provided, the number in the two directions is
             assumed to be equal. Note that a wire will cross the center of the
