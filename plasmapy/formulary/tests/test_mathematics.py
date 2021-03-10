@@ -37,3 +37,4 @@ if __name__ == "__main__":
     """
     test_rot_a_to_b()
     """
+    pass
