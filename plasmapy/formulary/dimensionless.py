@@ -47,6 +47,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     ----------
     T : `~astropy.units.Quantity`
         The temperature of the plasma.
+
     n_e : `~astropy.units.Quantity`
           The electron number density of the plasma.
 
@@ -78,7 +79,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    plasmapy.formulary.quantum.Fermi_energy
+    ~plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = constants.k_B * T
@@ -106,8 +107,10 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     ----------
     T : ~astropy.units.Quantity
         The temperature of the plasma.
+
     n : ~astropy.units.Quantity
         The particle density of the plasma.
+
     B : ~astropy.units.Quantity
         The magnetic field in the plasma.
 
@@ -126,8 +129,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    plasmapy.formulary.parameters.thermal_pressure
-    plasmapy.formulary.parameters.magnetic_pressure
+    ~plasmapy.formulary.parameters.thermal_pressure
+    ~plasmapy.formulary.parameters.magnetic_pressure
     """
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
@@ -155,10 +158,13 @@ def Reynolds_number(
     ----------
     rho : `~astropy.units.Quantity`
         The density of the plasma.
+
     U : `~astropy.units.Quantity`
         The flow velocity of the plasma.
+
     L : `~astropy.units.Quantity`
         The characteristic length scale.
+
     mu : `~astropy.units.Quantity`
         The dynamic viscosity of the plasma.
 
@@ -169,11 +175,11 @@ def Reynolds_number(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The `U` is not a `~astropy.units.Quantity` and cannot be
         converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
@@ -229,8 +235,10 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     ----------
     U : `~astropy.units.Quantity`
         The velocity scale of the plasma.
+
     L : `~astropy.units.Quantity`
         The length scale of the plasma.
+
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
@@ -241,12 +249,12 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Raises
     ------
-    TypeError
-        The `U` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+    `TypeError`
+        If ``U`` is not a `~astropy.units.Quantity` and cannot be
+        converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `U` is not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If ``U`` is not in appropriate units.
 
 
 
