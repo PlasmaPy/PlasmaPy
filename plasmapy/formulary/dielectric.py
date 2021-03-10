@@ -32,7 +32,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     Elements (S, D, P) are given in the "Stix" frame, i.e. with
     :math:`B ∥ \hat{z}`\ .
 
-    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+    The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
     Parameters
     ----------
@@ -64,7 +64,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     Notes
     -----
     The dielectric permittivity tensor is expressed in the Stix frame with
-    the :math:`\exp(-i \omega t)` time-harmonic convention as
+    the :math:`\exp(-i ω t)` time-harmonic convention as
     :math:`\varepsilon = \varepsilon_0 A`, with :math:`A` being
 
     .. math::
@@ -76,14 +76,14 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     where:
 
     .. math::
-        S = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+        S = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2 - \Omega_{c,s}^2}
 
-        D = \sum_s \frac{\Omega_{c,s}}{\omega}
-            \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+        D = \sum_s \frac{\Omega_{c,s}}{ω}
+            \frac{ω_{p,s}^2}{ω^2 - \Omega_{c,s}^2}
 
-        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+        P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
-    where :math:`\omega_{p,s}` is the plasma frequency and
+    where :math:`ω_{p,s}` is the plasma frequency and
     :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
@@ -128,9 +128,9 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Elements (L, R, P) are given in the "rotating" basis, i.e. in the basis
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`,
-    where the tensor is diagonal and with :math:`B // z`\ .
+    where the tensor is diagonal and with :math:`B ∥ z`\ .
 
-    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+    The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
     Parameters
     ----------
@@ -168,14 +168,14 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     .. math::
         L = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega\left(\omega - \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω - \Omega_{c,s}\right)}
 
         R = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega\left(\omega + \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω + \Omega_{c,s}\right)}
 
-        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+        P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
-    where :math:`\omega_{p,s}` is the plasma frequency and
+    where :math:`ω_{p,s}` is the plasma frequency and
     :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
@@ -270,17 +270,17 @@ def permittivity_1D_Maxwellian(
     by the following equations [1]_
 
     .. math::
-        \chi_e(k, \omega) = - \frac{\alpha_e^2}{2} Z'(x_e)
+        \chi_e(k, ω) = - \frac{α_e^2}{2} Z'(x_e)
 
-        \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
+        \chi_i(k, ω) = - \frac{α_i^2}{2}\frac{Z}{} Z'(x_i)
 
-        \alpha = \frac{\omega_p}{k v_{Th}}
+        α = \frac{ω_p}{k v_{Th}}
 
-        x = \frac{\omega}{k v_{Th}}
+        x = \frac{ω}{k v_{Th}}
 
     :math:`\chi_e` and :math:`\chi_i` are the electron and ion permittivities,
     respectively. :math:`Z'` is the derivative of the plasma dispersion
-    function. :math:`\alpha` is the scattering parameter which delineates
+    function. :math:`α` is the scattering parameter which delineates
     the difference between the collective and non-collective Thomson
     scattering regimes. :math:`x` is the dimensionless phase velocity
     of the electromagnetic wave propagating through the plasma.
