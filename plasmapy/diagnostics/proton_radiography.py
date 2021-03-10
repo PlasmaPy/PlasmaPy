@@ -314,7 +314,7 @@ class SyntheticProtonRadiograph:
     ):
         """
         Add a wire mesh grid between the particle source and the object grid
-        that blocks particles which intersect the wires.
+        that blocks particles whose paths intersect the wires.
 
         Parameters
         ----------
