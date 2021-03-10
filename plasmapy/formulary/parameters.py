@@ -591,7 +591,7 @@ def thermal_speed(
     Raises
     ------
     `TypeError`
-        The particle temperature is not a `~astropy.units.Quantity`
+        The particle temperature is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
