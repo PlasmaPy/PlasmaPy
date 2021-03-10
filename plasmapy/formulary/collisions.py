@@ -559,10 +559,10 @@ def impact_parameter_perp(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -672,10 +672,10 @@ def impact_parameter(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -885,22 +885,22 @@ def collision_frequency(
         If the mass or charge of either particle cannot be found, or
         any of the inputs contain incorrect values.
 
-    UnitConversionError
+    ~astropy.units.UnitConversionError
         If the units on any of the inputs are incorrect
 
     TypeError
         If the n_e, T, or V are not Quantities.
 
-    RelativityError
+    ~plasmapy.utils.exceptions.RelativityError
         If the input velocity is same or greater than the speed
         of light.
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1370,10 +1370,10 @@ def mean_free_path(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1494,10 +1494,10 @@ def Spitzer_resistivity(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1625,10 +1625,10 @@ def mobility(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1757,10 +1757,10 @@ def Knudsen_number(
 
     Warns
     -----
-    : ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : ~plasmapy.utils.RelativityWarning
+    : `~plasmapy.utils.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
@@ -1884,7 +1884,7 @@ def coupling_parameter(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of
         light.
 
