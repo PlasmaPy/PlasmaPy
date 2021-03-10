@@ -298,7 +298,7 @@ class IonizationStateCollection:
                     )
 
         try:
-            new_fractions = np.array(value, dtype=np.float64)
+            new_fractions = np.array(value, dtype=float)
         except Exception as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
@@ -561,7 +561,7 @@ class IonizationStateCollection:
                 else:
                     try:
                         new_ionic_fractions[particles[key].symbol] = np.array(
-                            inputs[key], dtype=np.float
+                            inputs[key], dtype=float
                         )
                     except ValueError as exc:
                         raise ParticleError(
@@ -600,7 +600,7 @@ class IonizationStateCollection:
 
                 new_abundances = {}
                 for key in _elements_and_isotopes:
-                    new_abundances[key] = np.float(n_elems[key] / self.n0)
+                    new_abundances[key] = float(n_elems[key] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
@@ -620,7 +620,7 @@ class IonizationStateCollection:
             ]
             new_ionic_fractions = {
                 particle.symbol: np.full(
-                    particle.atomic_number + 1, fill_value=np.nan, dtype=np.float64
+                    particle.atomic_number + 1, fill_value=np.nan, dtype=float
                 )
                 for particle in _particle_instances
             }
@@ -786,13 +786,14 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(equivalencies=u.temperature_energy())
+    @validate_quantities(
+        electron_temperature=dict(equivalencies=u.temperature_energy())
+    )
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
