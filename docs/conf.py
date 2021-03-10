@@ -27,7 +27,7 @@ from sphinx.application import Sphinx
 
 sys.path.insert(0, os.path.abspath(".."))
 
-from plasmpy import __version__ as release
+from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 
