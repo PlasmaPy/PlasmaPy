@@ -575,7 +575,7 @@ class SyntheticProtonRadiograph:
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
 
-        By default, particless are generated over almost the entire pi/2. However,
+        By default, particles are generated over almost the entire pi/2. However,
         if the detector is far from the source, many of these particles will
         never be observed. The max_theta keyword allows these extraneous
         particles to be neglected to focus computational resources on the
