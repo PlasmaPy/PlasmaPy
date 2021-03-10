@@ -3,7 +3,7 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
-__all__ = ["IonizationState", "IonicFraction"]
+__all__ = ["IonizationState", "IonicLevel"]
 
 import numpy as np
 import warnings
@@ -26,7 +26,7 @@ _number_density_errmsg = (
 )
 
 
-class IonicFraction:
+class IonicLevel:
     """
     Representation of the ionic fraction for a single ion.
 
@@ -49,7 +49,7 @@ class IonicFraction:
 
     Examples
     --------
-    >>> alpha_fraction = IonicFraction("alpha", ionic_fraction=0.31)
+    >>> alpha_fraction = IonicLevel("alpha", ionic_fraction=0.31)
     >>> alpha_fraction.ionic_symbol
     'He-4 2+'
     >>> alpha_fraction.integer_charge
@@ -94,11 +94,11 @@ class IonicFraction:
             self.T_i = T_i
 
         except Exception as exc:
-            raise ParticleError("Unable to create IonicFraction object") from exc
+            raise ParticleError("Unable to create IonicLevel object") from exc
 
     def __repr__(self):
         return (
-            f"IonicFraction({repr(self.ionic_symbol)}, "
+            f"IonicLevel({repr(self.ionic_symbol)}, "
             f"ionic_fraction={self.ionic_fraction})"
         )
 
@@ -217,7 +217,7 @@ class IonizationState:
 
     See Also
     --------
-    IonicFraction
+    IonicLevel
     plasmapy.particles.IonizationStateCollection
 
     Examples
@@ -314,13 +314,13 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> IonicFraction:
+    def __getitem__(self, value) -> IonicLevel:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             raise TypeError("IonizationState instances cannot be sliced.")
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
-            result = IonicFraction(
+            result = IonicLevel(
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
@@ -341,7 +341,7 @@ class IonizationState:
 
             if same_element and same_isotope and has_charge_info:
                 Z = value.integer_charge
-                result = IonicFraction(
+                result = IonicLevel(
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
                     number_density=self.number_densities[Z],

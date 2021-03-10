@@ -13,7 +13,7 @@ from plasmapy.particles import (
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
@@ -26,7 +26,7 @@ ionic_fraction_table = [
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
 def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
-    instance = IonicFraction(
+    instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
 
@@ -48,33 +48,33 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 )
 def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     """
-    Test that IonicFraction raises exceptions when the ionic fraction
+    Test that IonicLevel raises exceptions when the ionic fraction
     is out of the interval [0,1] or otherwise invalid.
     """
     with pytest.raises(expected_exception):
-        IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
+        IonicLevel(ion="Fe 6+", ionic_fraction=invalid_fraction)
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
 def test_ionic_fraction_invalid_particles(invalid_particle):
     """
-    Test that `~plasmapy.particles.IonicFraction` raises the appropriate
+    Test that `~plasmapy.particles.IonicLevel` raises the appropriate
     exception when passed a particle that isn't a neutral or ion.
     """
     with pytest.raises(ParticleError):
-        IonicFraction(invalid_particle, ionic_fraction=0)
+        IonicLevel(invalid_particle, ionic_fraction=0)
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
 def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     """
-    Test that a `TypeError` is raised when an `IonicFraction` object
-    is compared to an `IonicFraction` object of a different ion.
+    Test that a `TypeError` is raised when an `IonicLevel` object
+    is compared to an `IonicLevel` object of a different ion.
     """
     fraction = 0.251
 
-    ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
-    ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
+    ionic_fraction_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert (ionic_fraction_1 == ionic_fraction_2) is False
 
@@ -614,12 +614,12 @@ def test_IonizationState_methods(instance):
 
 
 def test_IonizationState_ion_temperatures(instance):
-    for ionic_fraction in instance:
-        assert instance.T_e == ionic_fraction.T_i
+    for ionic_level in instance:
+        assert instance.T_e == ionic_level.T_i
 
 
 @pytest.mark.xfail(
-    reason="IonizationState currently does not store IonicFractions, but generates them on the fly!"
+    reason="IonizationState currently does not store IonicLevels, but generates them on the fly!"
 )
 def test_IonizationState_ion_temperature_persistence(instance):
     instance[0].T_i += 1 * u.K

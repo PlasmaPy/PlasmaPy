@@ -1,0 +1,2 @@
+Add live rendering of changelog entries on documentation builds, based on
+`sphinx-changelog <https://github.com/OpenAstronomy/sphinx-changelog>`_.

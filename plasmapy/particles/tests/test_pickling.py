@@ -5,7 +5,7 @@ import os
 import pickle
 import pytest
 
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.ionization_state_collection import IonizationStateCollection
 from plasmapy.particles.particle_class import (
     CustomParticle,
@@ -27,7 +27,7 @@ class TestPickling:
             CustomParticle(mass=1 * u.kg, charge=1 * u.C),
             DimensionlessParticle(mass=5, charge=5),
             pytest.param(Particle("p+"), marks=xfail),
-            pytest.param(IonicFraction("p+", 0.1, 1e9 * u.m ** -3), marks=xfail),
+            pytest.param(IonicLevel("p+", 0.1, 1e9 * u.m ** -3), marks=xfail),
             pytest.param(IonizationState("H", [0.5, 0.5]), marks=xfail),
             pytest.param(IonizationStateCollection({"H": [0.5, 0.5]}), marks=xfail),
         ],
