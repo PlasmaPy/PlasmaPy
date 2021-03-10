@@ -209,7 +209,7 @@ def Alfven_speed(
     r"""
     Calculate the Alfvén speed.
 
-    The Alfven speed :math:`V_A` is the typical propagation speed of magnetic
+    The Alfvén speed :math:`V_A` is the typical propagation speed of magnetic
     disturbances in a plasma, and is given by:
 
     .. math::
@@ -226,7 +226,7 @@ def Alfven_speed(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`Tesla`.
+        The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible to
@@ -255,7 +255,7 @@ def Alfven_speed(
     Raises
     ------
     `~plasmapy.utils.exceptions.RelativityError`
-        If the Alfven velocity is greater than or equal to the speed of light.
+        If the Alfvén velocity is greater than or equal to the speed of light.
 
     TypeError
         If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
@@ -389,7 +389,7 @@ def ion_sound_speed(
         a value for ``k`` must also be given.
 
     k : ~astropy.units.Quantity
-        Wavenumber (in units of inverse length, e.g. m:sup:`-1`\ ). If this
+        Wavenumber (in units of inverse length, e.g. m\ :sup:`-1`\ ). If this
         is not given, then ion_sound_speed will be approximated in the
         non-dispersive limit (:math:`k^2 \lambda_{D}^2` will be assumed zero).
         If ``k`` is given, a value for ``n_e`` must also be given.
@@ -426,7 +426,7 @@ def ion_sound_speed(
     ValueError
         If the ion mass, adiabatic index, or temperature are invalid.
 
-    `~plasmapy.utils.PhysicsError`
+    `~plasmapy.utils.exceptions.PhysicsError`
         If an adiabatic index is less than one.
 
     `~astropy.units.UnitConversionError`
@@ -435,13 +435,13 @@ def ion_sound_speed(
 
     Warns
     -----
-    `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the ion sound speed exceeds 5% of the speed of light.
 
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    `~plasmapy.utils.PhysicsWarning`
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
         If only one of ``k`` or ``n_e`` is given, the non-dispersive
         limit is assumed.
 
@@ -603,10 +603,10 @@ def thermal_speed(
 
     Warns
     -----
-    `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the ion sound speed exceeds 5% of the speed of light.
 
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -792,10 +792,10 @@ def kappa_thermal_speed(
 
     Warns
     -----
-    `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the particle thermal speed exceeds 5% of the speed of light.
 
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -887,24 +887,31 @@ def Hall_parameter(
     ----------
     n : `~astropy.units.quantity.Quantity`
         The number density associated with ``particle``.
+
     T : `~astropy.units.quantity.Quantity`
         The temperature of associated with ``particle``.
+
     B : `~astropy.units.quantity.Quantity`
         The magnetic field.
+
     ion : `~plasmapy.particles.Particle`
         The type of ion ``particle`` is colliding with.
+
     particle : `~plasmapy.particles.Particle`
         The particle species for which the Hall parameter is calculated for.
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
         If no charge state information is provided, then the particles are
         assumed to be singly charged.
+
     coulomb_log : `float`, optional
         Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+
     V : `~astropy.units.quantity.Quantity`
         The relative velocity between ``particle`` and ``ion``.  If not provided,
         then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.parameters.thermal_speed`).
+
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
@@ -917,10 +924,10 @@ def Hall_parameter(
 
     See Also
     --------
-    plasmapy.formulary.parameters.gyrofrequency
-    plasmapy.formulary.collisions.fundamental_electron_collision_freq
-    plasmapy.formulary.collisions.fundamental_ion_collision_freq
-    plasmapy.formulary.collisions.Coulomb_logarithm
+    ~plasmapy.formulary.parameters.gyrofrequency
+    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.Coulomb_logarithm
 
     Returns
     -------
@@ -930,9 +937,9 @@ def Hall_parameter(
     Notes
     -----
     * For calculating the collision frequency
-      `~plamsapy.formulary.colisions.fundamental_electron_collision_freq` is used
+      `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` is used
       when ``particle`` is an electron and
-      `~plamsapy.formulary.colisions.fundamental_ion_collision_freq` when
+      `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` when
       ``particle`` is an ion.
     * The collision frequencies are calculated assuming a slowly moving
       Maxwellian distribution.
@@ -1000,7 +1007,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
         is used. This is effectively an average gyrofrequency for the
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
-        If not provided, it defaults to the integer charge of the `particle`.
+        If not provided, it defaults to the integer charge of the ``particle``.
 
     Returns
     -------
@@ -1019,7 +1026,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1034,11 +1041,11 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     frequency or the particle Larmor frequency.
 
     The recommended way to convert from angular frequency to frequency
-    is to use an equivalency between cycles per second and Hertz, as
-    Astropy's `dimensionles_angles` equivalency does not account for
-    the factor of 2*pi needed during this conversion.  The
-    `dimensionless_angles` equivalency is appropriate when dividing a
-    velocity by an angular frequency to get a length scale.
+    is to use an equivalency between cycles per second and hertz, as
+    Astropy's `~astropy.units.dimensionles_angles` equivalency does not
+    account for the factor of 2π needed during this conversion.  The
+    `~astropy.units.dimensionless_angles` equivalency is appropriate
+    when dividing a velocity by an angular frequency to get a length scale.
 
     Examples
     --------
@@ -1109,20 +1116,18 @@ def gyroradius(
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    Vperp : ~astropy.units.Quantity, optional
+    Vperp : ~astropy.units.Quantity, optional, keyword-only
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
-        Must be input as a keyword argument.
 
-    T_i : ~astropy.units.Quantity, optional
+    T_i : ~astropy.units.Quantity, optional, keyword-only
         The particle temperature in units convertible to kelvin.
-        Must be input as a keyword argument.
 
     Returns
     -------
     r_Li : ~astropy.units.Quantity
         The particle gyroradius in units of meters.  This
-        ~astropy.units.Quantity will be based on either the
+        `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
         the most probable speed for an particle within a Maxwellian
         distribution for the particle temperature.
@@ -1140,14 +1145,14 @@ def gyroradius(
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
     -----
-    One but not both of `Vperp` and `T_i` must be inputted.
+    One but not both of ``Vperp`` and ``T_i`` must be inputted.
 
-    If any of `B`, `Vperp`, or `T_i` is a number rather than a
+    If any of ``B``, ``Vperp``, or ``T_i`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
     warning will be raised.
 
@@ -1155,7 +1160,7 @@ def gyroradius(
     radius and is given by
 
     .. math::
-        r_{Li} = \frac{V_{\perp}}{omega_{ci}}
+        r_{Li} = \frac{V_{\perp}}{\omega_{ci}}
 
     where :math:`V_{\perp}` is the component of particle velocity that is
     perpendicular to the magnetic field and :math:`\omega_{ci}` is the
@@ -1284,19 +1289,19 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     Raises
     ------
     TypeError
-        If n_i is not a `~astropy.units.Quantity` or particle is not of
+        If ``n_i`` is not a `~astropy.units.Quantity` or particle is not of
         an appropriate type.
 
     `~astropy.units.UnitConversionError`
-        If `n_i` is not in correct units
+        If ``n_i`` is not in correct units
 
     ValueError
-        If `n_i` contains invalid values or particle cannot be used to
+        If ``n_i`` contains invalid values or particle cannot be used to
         identify an particle or isotope.
 
     Warns
     -----
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1391,7 +1396,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1404,7 +1409,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     for an electron plasma with nearly stationary ions.
 
-    The electrical potential will drop by a factor of 1/e every Debye
+    The electrical potential will drop by a factor of :math:`1/e` every Debye
     length.
 
     Plasmas will generally be quasineutral on length scales significantly
@@ -1460,7 +1465,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Returns
@@ -1474,7 +1479,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     a radius of a Debye length and is given by
 
     .. math::
-        N_D = \frac{4\pi}{3}n_e\lambda_D^3
+        N_D = \frac{4π}{3} n_e λ_D^3
 
     The Debye number is also known as the plasma parameter.
 
@@ -1530,17 +1535,18 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     Raises
     ------
     TypeError
-        If n not a `~astropy.units.Quantity` or particle is not a string.
+        If ``n`` is not a `~astropy.units.Quantity` or ``particle`` is
+        not a string.
 
     ~astropy.units.UnitConversionError
-        If n is not in units of a number density.
+        If ``n`` is not in units of a number density.
 
     ValueError
         The particle density does not have an appropriate value.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided and SI units are assumed.
 
     Notes
@@ -1609,7 +1615,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
     Warns
     -----
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1674,7 +1680,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1749,7 +1755,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
     Warns
     -----
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1831,7 +1837,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
     Warns
     -----
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
     Notes
@@ -1908,17 +1914,17 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
     ------
     TypeError
-        The `T_e` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+        ``T_e`` is not a `~astropy.units.Quantity` and cannot be
+        converted into one.
 
     ~astropy.units.UnitConversionError
-        If the `T_e` is not in appropriate units.
+        If ``T_e`` is not in appropriate units.
 
     Examples
     --------
