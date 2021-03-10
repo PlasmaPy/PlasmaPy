@@ -508,7 +508,7 @@ class SyntheticProtonRadiograph:
 
         self.x = self.x[i, :]
         self.v = self.v[i, :]
-        self.theta = self.theta[i]  # Importat to apply here to get correct grid_ind
+        self.theta = self.theta[i]  # Important to apply here to get correct grid_ind
         self.nparticles = len(i)
 
     # *************************************************************************
