@@ -485,7 +485,7 @@ class SyntheticProtonRadiograph:
         # Handle the case where the mesh is circular
         else:
             loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
-            hit[loc_radius > radius] = False
+            hit[loc_rad > radius] = False
 
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
