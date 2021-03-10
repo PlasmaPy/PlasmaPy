@@ -459,46 +459,45 @@ class SyntheticProtonRadiograph:
         # Mark particles that overlap vertical or horizontal position with a wire
         h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
         for c in h_centers:
-            hit |= np.where(np.isclose(xloc, c, atol=wire_radius), True, False)
+            hit |= np.isclose(xloc, c, atol=wire_radius)
 
         v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])
         for c in v_centers:
-            hit |= np.where(np.isclose(yloc, c, atol=wire_radius), True, False)
+            hit |= np.isclose(yloc, c, atol=wire_radius)
 
         # Put back any particles that are outside the mesh boundaries
         # First handle the case where the mesh is rectangular
         if radius is None:
             # Replace particles outside the x-boundary
-            hit = np.where(
+            hit[
                 np.logical_or(
                     xloc > np.max(h_centers) + wire_radius,
                     xloc < np.min(h_centers) - wire_radius,
-                ),
-                False,
-                hit,
-            )
+                )
+            ] = False
             # Replace particles outside the y-boundary
-            hit = np.where(
+            hit[
                 np.logical_or(
                     yloc > np.max(v_centers) + wire_radius,
                     yloc < np.min(v_centers) - wire_radius,
-                ),
-                False,
-                hit,
-            )
+                )
+            ] = False
         # Handle the case where the mesh is circular
         else:
             loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
-            hit = np.where(loc_rad > radius, False, hit)
+            hit[loc_radius > radius] = False
 
             # In the case of a circular mesh, also create a round wire along the
             # outside edge
-            hit |= np.where(np.isclose(loc_rad, radius, atol=wire_radius), True, False)
+            hit[
+                np.isclose(loc_rad, radius, atol=wire_radius)
+            ] = True  # is this correct?
 
         # Identify the particles that have hit something, then remove them from
         # all of the arrays
-        i = np.argwhere(~hit)[:, 0]
-        nremoved = self.nparticles - i.size
+        keep_these_particles = ~hit
+        number_kept_particles = keep_these_particles.sum()
+        nremoved = self.nparticles - number_kept_particles
 
         if self.nparticles - nremoved <= 0:
             raise ValueError(
@@ -506,10 +505,12 @@ class SyntheticProtonRadiograph:
                 f"The wire diameter ({2*wire_radius}) may be too large."
             )
 
-        self.x = self.x[i, :]
-        self.v = self.v[i, :]
-        self.theta = self.theta[i]  # Important to apply here to get correct grid_ind
-        self.nparticles = len(i)
+        self.x = self.x[keep_these_particles, :]
+        self.v = self.v[keep_these_particles, :]
+        self.theta = self.theta[
+            keep_these_particles
+        ]  # Important to apply here to get correct grid_ind
+        self.nparticles = number_kept_particles
 
     # *************************************************************************
     # Particle creation methods
