@@ -472,6 +472,7 @@ def test_gaussian_sphere_analytical_comparison():
     # The Gaussian sphere problem for small deflection potentials
     # is solved in Kugland2012relation, and the equations referenced
     # below are from that paper.
+    # https://doi.org/10.1063/1.4750234
 
     a = (1 * u.mm / 3).to(u.mm).value
     phi0 = 1.4e5
