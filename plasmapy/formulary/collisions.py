@@ -1819,8 +1819,10 @@ def coupling_parameter(
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
-    Classical plasmas are weakly coupled (:math:`Γ ≪ 1`\ ), whereas dense
-    plasmas tend to have significant to strong coupling (:math:`Γ ≥ 1`\ ).
+    Classical plasmas are weakly coupled (:math:`Γ ≪ 1`, where :math:`Γ`
+    is the coupling parameter).  Dense plasmas tend to have significant
+    to strong coupling (:math:`Γ ≥ 1`\ ).  For more details, see the
+    notes section below.
 
     Parameters
     ----------
@@ -1893,7 +1895,7 @@ def coupling_parameter(
     The coupling parameter is given by
 
     .. math::
-        \Gamma = \frac{E_{Coulomb}}{E_{Kinetic}}
+        Γ = \frac{E_{Coulomb}}{E_{Kinetic}}
 
     The Coulomb energy is given by
 
@@ -1916,18 +1918,18 @@ def coupling_parameter(
     the degeneracy parameter, modulated by the Fermi integral [1]_
 
     .. math::
-        E_{kinetic} = 2 k_B T_e / \chi f_{3/2} (\mu_{ideal} / k_B T_e)
+        E_{kinetic} = 2 k_B T_e / χ f_{3/2} (μ_{ideal} / k_B T_e)
 
-    where :math:`\chi` is the degeneracy parameter, :math:`f_{3/2}` is the
-    Fermi integral, and :math:`\mu_{ideal}` is the ideal chemical
+    where :math:`χ` is the degeneracy parameter, :math:`f_{3/2}` is the
+    Fermi integral, and :math:`μ_{ideal}` is the ideal chemical
     potential.
 
     The degeneracy parameter is given by
 
     .. math::
-        \chi = n_e \Lambda_{de Broglie} ^ 3
+        χ = n_e Λ_{de Broglie} ^ 3
 
-    where :math:`n_e` is the electron density and :math:`\Lambda_{de Broglie}`
+    where :math:`n_e` is the electron density and :math:`Λ_{de Broglie}`
     is the thermal de Broglie wavelength.
 
     See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
