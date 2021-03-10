@@ -142,17 +142,17 @@ def mass_density(
         If the ``density`` does not have units equivalent to a number density
         or mass density.
 
-    TypeError
+    `TypeError`
         If ``density`` is not of type `~astropy.units.Quantity`, or convertible.
 
-    TypeError
+    `TypeError`
         If ``particle`` is not of type or convertible to
         `~plasmapy.particles.Particle`.
 
-    TypeError
+    `TypeError`
         If ``z_ratio`` is not of type `int` or `float`.
 
-    ValueError
+    `ValueError`
         If ``density`` is negative.
 
     Returns
@@ -257,14 +257,14 @@ def Alfven_speed(
     `~plasmapy.utils.exceptions.RelativityError`
         If the Alfvén velocity is greater than or equal to the speed of light.
 
-    TypeError
+    `TypeError`
         If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
         or convertible.
 
-    TypeError
+    `TypeError`
         If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
 
-    TypeError
+    `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
 
     `~astropy.units.UnitTypeError`
@@ -275,7 +275,7 @@ def Alfven_speed(
         If the ``density`` does not have units equivalent to a number density
         or mass density.
 
-    ValueError
+    `ValueError`
         If ``density`` is negative.
 
     Warns
@@ -419,11 +419,11 @@ def ion_sound_speed(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If any of the arguments are not entered as keyword arguments
         or are of an incorrect type.
 
-    ValueError
+    `ValueError`
         If the ion mass, adiabatic index, or temperature are invalid.
 
     `~plasmapy.utils.exceptions.PhysicsError`
@@ -590,14 +590,14 @@ def thermal_speed(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The particle temperature is not a `~astropy.units.Quantity`
 
     `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
         energy per particle
 
-    ValueError
+    `ValueError`
         The particle temperature is invalid or particle cannot be used to
         identify an isotope or particle
 
@@ -700,7 +700,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
         The particle temperature in either kelvin or energy per particle.
 
     n : ~astropy.units.Quantity
-        The particle number density in units convertible to m:sup:`-3`\ .
+        The particle number density in units convertible to m\ :sup:`-3`\ .
 
     Examples
     --------
@@ -717,7 +717,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The temperature or number density is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
@@ -729,7 +729,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     The thermal pressure is given by:
 
     .. math::
-        T_{th} = nk_{B}T
+        T_{th} = n k_{B} T
     """
 
     return n * k_B * T
@@ -779,14 +779,14 @@ def kappa_thermal_speed(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The particle temperature is not a ~astropy.units.Quantity.
 
     `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
         energy per particle.
 
-    ValueError
+    `ValueError`
         The particle temperature is invalid or particle cannot be used to
         identify an isotope or particle.
 
@@ -995,7 +995,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    signed : bool, optional
+    signed : `bool`, optional
         The gyrofrequency can be defined as signed (negative for electron,
         positive for ion). Default is `False` (unsigned, i.e. always
         positive).
@@ -1012,22 +1012,22 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     Returns
     -------
     omega_c : ~astropy.units.Quantity
-        The particle gyrofrequency in units of radians per second
+        The particle gyrofrequency in units of radians per second.
 
     Raises
     ------
     TypeError
         If the magnetic field is not a `Quantity` or particle is not of an
-        appropriate type
+        appropriate type.
 
     ValueError
         If the magnetic field contains invalid values or particle cannot be
-        used to identify an particle or isotope
+        used to identify an particle or isotope.
 
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
@@ -1134,13 +1134,13 @@ def gyroradius(
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The arguments are of an incorrect type
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         The arguments do not have appropriate units
 
-    ValueError
+    `ValueError`
         If any argument contains invalid values
 
     Warns
