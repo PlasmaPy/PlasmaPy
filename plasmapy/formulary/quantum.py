@@ -35,14 +35,14 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
     Returns the de Broglie wavelength.
 
-    The de Broglie wavelength (:math:`\lambda_{dB}`) of a particle is defined by
+    The de Broglie wavelength (:math:`λ_{dB}`) of a particle is defined by
 
     .. math::
 
-        \lambda_{dB} = \frac{h}{p} = \frac{h}{\gamma m V}
+        λ_{dB} = \frac{h}{p} = \frac{h}{γ m V}
 
     where :math:`h` is the Planck constant, :math:`p` is the
-    relativistic momentum of the particle, :math:`\gamma` is the
+    relativistic momentum of the particle, :math:`γ` is the
     Lorentz factor, :math:`m` is the mass of the particle, and
     :math:`V` is the velocity of the particle.
 
@@ -68,14 +68,14 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If the velocity is not a `~astropy.units.Quantity` and cannot be
         converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the velocity is not in appropriate units.
 
-    ~plasmapy.utils.exceptions.RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the magnitude of `V` is larger than the speed of light.
 
     Warns
@@ -160,13 +160,13 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If argument is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warns
@@ -181,7 +181,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
     .. math::
 
-       \lambda_{dbTh} = \frac{h}{\sqrt{2 \pi m_e k_B T_e}}
+       λ_{dbTh} = \frac{h}{\sqrt{2 π m_e k_B T_e}}
 
     Example
     -------
@@ -218,13 +218,13 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If argument is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warns
@@ -239,8 +239,8 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
     .. math::
 
-       E_F = \frac{\pi^2 \hbar^2}{2 m_{e}}
-       \left( \frac{3 n_{e}}{\pi} \right )^{2/3}
+       E_F = \frac{π^2 ℏ^2}{2 m_{e}}
+       \left( \frac{3 n_{e}}{π} \right )^{2/3}
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
@@ -284,13 +284,13 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If argument is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warns
@@ -305,7 +305,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     .. math::
 
-       \lambda_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
+       λ_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
 
     for an electron degenerate gas.
 
@@ -362,13 +362,13 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If argument is not a ~astropy.units.Quantity.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warns
@@ -383,7 +383,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     volume per atom in a solid:
 
     .. math::
-        r = \left(\frac{3}{4 \pi n}\right)^{1/3}
+        r = \left(\frac{3}{4 π n}\right)^{1/3}
 
     See also
     --------
@@ -427,13 +427,13 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If argument is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warns
@@ -446,11 +446,11 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \chi_a = I_{1/2}(\beta \mu_a^{ideal})
+        \chi_a = I_{1/2}(β μ_a^{ideal})
 
     where :math:`\chi` is the degeneracy parameter, :math:`I_{1/2}` is the
-    Fermi integral with order 1/2, :math:`\beta` is the inverse thermal
-    energy :math:`\beta = 1/(k_B T)`, and :math:`\mu_a^{ideal}`
+    Fermi integral with order 1/2, :math:`β` is the inverse thermal
+    energy :math:`β = 1/(k_B T)`, and :math:`μ_a^{ideal}`
     is the ideal chemical potential.
 
     The definition for the ideal chemical potential is implicit, so it must
@@ -458,10 +458,10 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     of chemical potential approaching the degeneracy parameter. Since values
     returned from the Fermi_integral are complex, a nonlinear
     Levenberg-Marquardt least squares method is used to iteratively approach
-    a value of :math:`\mu` which minimizes
-    :math:`I_{1/2}(\beta \mu_a^{ideal}) - \chi_a`
+    a value of :math:`μ` which minimizes
+    :math:`I_{1/2}(β μ_a^{ideal}) - \chi_a`
 
-    This function returns :math:`\beta \mu^{ideal}` the dimensionless
+    This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
 
     Warning: at present this function is limited to relatively small
@@ -535,7 +535,7 @@ def _chemical_potential_interp(n_e, T):
     n_e : `~astropy.units.Quantity`
         Electron number density.
 
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy.
 
     Returns
@@ -546,18 +546,18 @@ def _chemical_potential_interp(n_e, T):
 
     Raises
     ------
-    TypeError
-        If argument is not a ~astropy.units.Quantity.
+    `TypeError`
+        If argument is not a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
 
-    ValueError
+    `ValueError`
         If argument contains invalid values.
 
     Warnings
     --------
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -565,8 +565,8 @@ def _chemical_potential_interp(n_e, T):
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \frac{\mu}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
-        \frac{4}{3 \sqrt{\pi}} +
+        \frac{μ}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
+        \frac{4}{3 \sqrt{π}} +
         \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
 
     where
@@ -576,7 +576,7 @@ def _chemical_potential_interp(n_e, T):
 
     is the degeneracy parameter, comparing the thermal energy to the Fermi
     energy, and the coefficients for the fitting formula
-    are A=0.25945, B=0.0072, b=0.858.
+    are A=0.25945, B=0.0072, and b=0.858.
 
     References
     ----------
