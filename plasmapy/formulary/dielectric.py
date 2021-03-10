@@ -289,7 +289,7 @@ def permittivity_1D_Maxwellian(
     ----------
     .. [1] J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
        Plasma scattering of electromagnetic radiation: theory and measurement
-       techniques. Chapter 5 Pg 106 (Academic press, 2010).
+       techniques. Chapter 5 Pg 106 (Academic Press, 2010).
 
     Example
     -------
