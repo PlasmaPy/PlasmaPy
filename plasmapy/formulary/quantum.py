@@ -214,7 +214,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     Returns
     -------
     energy_F : ~astropy.units.Quantity
-        The Fermi energy in Joules.
+        The Fermi energy in joules.
 
     Raises
     ------
