@@ -787,7 +787,7 @@ class SyntheticProtonRadiograph:
         # Coast the particles to the advanced position
         self.x = self.x + self.v * t
 
-    def _coast_to_plane(self, center, hdir, vdir):
+    def _coast_to_plane(self, center, hdir, vdir, x=None):
         """
         Calculates the positions where the current trajectories of each
         particle impact a plane, described by the plane's center and
@@ -795,8 +795,13 @@ class SyntheticProtonRadiograph:
 
         Returns an [nparticles, 3] array of the particle positions in the plane
 
-        Note that this function does not alter self.x itself. That is done by
-        setting self.x = the output of this function.
+        By default this function does not alter self.x. The optional keyword
+        x can be used to pass in an output array that will used to hold
+        the positions in the plane. This can be used to directly update self.x
+        as follows:
+
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x = self.x)
+
         """
 
         normal = np.cross(hdir, vdir)
@@ -806,7 +811,10 @@ class SyntheticProtonRadiograph:
         t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
 
         # Calculate particle positions in the plane
-        x = self.x + self.v * t[:, np.newaxis]
+        if x is None:
+            x = self.x + self.v * t[:, np.newaxis]
+        else:
+            x[...] = self.x + self.v * t[:, np.newaxis]
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
@@ -1058,7 +1066,7 @@ class SyntheticProtonRadiograph:
         self._remove_deflected_particles()
 
         # Advance the particles to the image plane
-        self.x = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
         # Log a summary of the run
 
