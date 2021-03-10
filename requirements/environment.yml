@@ -15,6 +15,7 @@ dependencies:
   - pandas
   - pillow
   - pip
+  - scikit-image
   - xarray < 0.17
   - pip:
     - numpydoc
