@@ -37,8 +37,8 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     Probability distribution function of velocity for a Maxwellian
     distribution in 1D.
 
-    Returns the probability density function at the velocity `v` in m/s
-    to find a particle `particle` in a plasma of temperature `T`
+    Returns the probability density function at the velocity ``v`` in m/s
+    to find a particle ``particle`` in a plasma of temperature ``T``
     following the Maxwellian distribution function.
 
     Parameters
@@ -47,7 +47,7 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
         The velocity in units convertible to m/s.
 
     T: ~astropy.units.Quantity
-        The temperature in Kelvin.
+        The temperature in kelvin.
 
     particle: str, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
@@ -162,18 +162,18 @@ def Maxwellian_velocity_2D(
         The velocity in y-direction units convertible to m/s.
 
     T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+        The temperature, preferably in kelvin.
 
     particle: str, optional
-        Representation of the particle species (e.g., ``'p'`` for protons,
+        Representation of the particle species [e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        (singly ionized helium-4)], which defaults to electrons.
 
     vx_drift: ~astropy.units.Quantity, optional
-        The drift velocity in x-direction units convertible to m/s.
+        The drift velocity in x-direction in units convertible to m/s.
 
     vy_drift: ~astropy.units.Quantity, optional
-        The drift velocity in y-direction units convertible to m/s.
+        The drift velocity in y-direction in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
@@ -289,14 +289,14 @@ def Maxwellian_velocity_3D(
     distribution in 3D.
 
     Return the probability density function for finding a particle with
-    velocity components `vx`, `vy`, and `vz` in m/s in an equilibrium
-    plasma of temperature `T` which follows the 3D Maxwellian distribution
+    velocity components ``vx``, ``vy``, and ``vz`` in m/s in an equilibrium
+    plasma of temperature ``T`` which follows the 3D Maxwellian distribution
     function. This function assumes Cartesian coordinates.
 
     Parameters
     ----------
     vx: ~astropy.units.Quantity
-        The velocity in x-direction units convertible to m/s.
+        The velocity in x-direction in units convertible to m/s.
 
     vy: ~astropy.units.Quantity
         The velocity in y-direction units convertible to m/s.
@@ -305,12 +305,12 @@ def Maxwellian_velocity_3D(
         The velocity in z-direction units convertible to m/s.
 
     T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+        The temperature, preferably in kelvin.
 
     particle: str, optional
         Representation of the particle species (e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for
+        singly ionized helium-4), which defaults to electrons.
 
     vx_drift: ~astropy.units.Quantity, optional
         The drift velocity in x-direction units convertible to m/s.
@@ -323,7 +323,7 @@ def Maxwellian_velocity_3D(
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units: str, optional
@@ -428,7 +428,7 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     in 1D.
 
     Return the probability density function for finding a particle with
-    speed `v` in m/s in an equilibrium plasma of temperature `T` which
+    speed ``v`` in m/s in an equilibrium plasma of temperature ``T`` which
     follows the Maxwellian distribution function.
 
     Parameters
@@ -437,19 +437,19 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         The speed in units convertible to m/s.
 
     T: ~astropy.units.Quantity
-        The temperature, preferably in Kelvin.
+        The temperature, preferably in kelvin.
 
     particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
+        (singly ionized helium-4)], which defaults to electrons.
 
     v_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units: str, optional
@@ -537,8 +537,8 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     in 2D.
 
     Return the probability density function of finding a particle with speed components
-    `vx` and `vy` in m/s in an equilibrium plasma of temperature
-    `T` which follows the 2D Maxwellian distribution function. This
+    ``vx`` and ``vy`` in m/s in an equilibrium plasma of temperature
+    ``T`` which follows the 2D Maxwellian distribution function. This
     function assumes Cartesian coordinates.
 
     Parameters
@@ -550,16 +550,16 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         The temperature, preferably in Kelvin.
 
     particle: str, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4),
+        which defaults to electrons.
 
     v_drift: ~astropy.units.Quantity
         The drift speed in units convertible to m/s.
 
     vTh: ~astropy.units.Quantity, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units: str, optional
