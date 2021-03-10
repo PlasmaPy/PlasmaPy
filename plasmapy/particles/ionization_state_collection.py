@@ -17,7 +17,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
@@ -75,7 +75,7 @@ class IonizationStateCollection:
 
     See Also
     --------
-    ~plasmapy.particles.ionization_state.IonicFraction
+    ~plasmapy.particles.ionization_state.IonicLevel
     ~plasmapy.particles.ionization_state.IonizationState
 
     Examples
@@ -187,7 +187,7 @@ class IonizationStateCollection:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> Union[IonizationState, IonicFraction]:
+    def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
 
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
@@ -219,7 +219,7 @@ class IonizationStateCollection:
                     raise ChargeError(
                         f"{int_charge} is not a valid charge for {particle}."
                     )
-                return IonicFraction(
+                return IonicLevel(
                     ion=particle_symbol(particle, Z=int_charge),
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     number_density=self.number_densities[particle][int_charge],
