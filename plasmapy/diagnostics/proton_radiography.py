@@ -344,7 +344,7 @@ class SyntheticProtonRadiograph:
             The number of wires in the horizontal and vertical directions. If
             only one value is provided, the number in the two directions is
             assumed to be equal. Note that a wire will cross the center of the
-            grid only when nwires is odd.
+            mesh only when nwires is odd.
 
         wire_diameter : `~astropy.units.Quantity`
             The diameter of the wires.
