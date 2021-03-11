@@ -76,7 +76,7 @@ class FluxSurface:
             fig, ax = plt.subplots()
             ax.set_xlabel("L")
             ax.set_ylabel(r"$\psi$")
-        ax.plot(self.lp, psi(self.R, self.Z))
+        ax.plot(self.lp, self.psi(self.R, self.Z))
         ax.axhline(self.psi)
         return ax
 
