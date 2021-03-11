@@ -32,4 +32,4 @@ jobs:
     - name: Install requirements
       run: pip install pydocstyle
     - name: Run pydocstyle
-      run: pydocstyle . --count --source
+      run: pydocstyle . --count
