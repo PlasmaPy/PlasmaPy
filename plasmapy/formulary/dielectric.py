@@ -225,7 +225,7 @@ def permittivity_1D_Maxwellian(
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    The classical dielectric permittivity for a 1D Maxwellian plasma.
+    Compute the classical dielectric permittivity for a 1D Maxwellian plasma.
 
     This function can calculate both the ion and electron permittivities.
     No additional effects are considered (e.g. magnetic fields, relativistic
