@@ -57,7 +57,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
-        mass in units convertible to kg.  If a PlasmaPy
+        mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the
         particle mass is retrieved from the object.
 
@@ -565,18 +565,18 @@ def _chemical_potential_interp(n_e, T):
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \frac{μ}{k_B T_e} = - \frac{3}{2} \ln \Theta + \ln
+        \frac{μ}{k_B T_e} = - \frac{3}{2} \ln Θ + \ln
         \frac{4}{3 \sqrt{π}} +
-        \frac{A \Theta^{-b - 1} + B \Theta^{-(b + 1) / 2}}{1 + A \Theta^{-b}}
+        \frac{A Θ^{-b - 1} + B Θ^{-(b + 1) / 2}}{1 + A Θ^{-b}}
 
     where
 
     .. math::
-        \Theta = \frac{k_B T_e}{E_F}
+        Θ = \frac{k_B T_e}{E_F}
 
-    is the degeneracy parameter, comparing the thermal energy to the Fermi
-    energy, and the coefficients for the fitting formula
-    are A=0.25945, B=0.0072, and b=0.858.
+    is the degeneracy parameter, comparing the thermal energy to the
+    Fermi energy, and the coefficients for the fitting formula are
+    :math:`A = 0.25945`\ , :math:`B = 0.0072`\ , and :math:`b = 0.858`\ .
 
     References
     ----------
