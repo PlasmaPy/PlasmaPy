@@ -45,7 +45,7 @@ class MagnetoStatics(abc.ABC):
 
 
 class MagneticDipole(MagnetoStatics):
-    """
+    r"""
     Simple magnetic dipole — two nearby opposite point charges.
 
     Parameters
