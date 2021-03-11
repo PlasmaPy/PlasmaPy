@@ -1,5 +1,6 @@
 """
-Functions for calculating quantities associated with electromagnetic radiation.
+Functions for calculating quantities associated with electromagnetic
+radiation.
 """
 
 __all__ = [
