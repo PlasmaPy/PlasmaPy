@@ -939,21 +939,21 @@ def kappa_velocity_3D(
         of the Kappa velocity distribution function. ``kappa`` must be greater
         than :math:`3/2`.
 
-    particle: str, optional
+    particle: `str`, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
-    vx_drift: ~astropy.units.Quantity, optional
+    vx_drift: `~astropy.units.Quantity`, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    vy_drift: ~astropy.units.Quantity, optional
+    vy_drift: `~astropy.units.Quantity`, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    vz_drift: ~astropy.units.Quantity, optional
+    vz_drift: `~astropy.units.Quantity`, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: ~astropy.units.Quantity, optional
+    vTh: `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
@@ -973,8 +973,8 @@ def kappa_velocity_3D(
     Raises
     ------
     `TypeError`
-        The parameter arguments are not Quantities and
-        cannot be converted into Quantities.
+        If any of the parameters is not a `~astropy.units.Quantity` and
+        cannot be converted into one.
 
     `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.

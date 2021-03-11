@@ -212,7 +212,7 @@ class ClassicalTransport:
         (:math:`B \times \nabla(T)`\ ). The option ``'all'`` will return a `numpy.array`
         of all three, ``np.array((par, perp, cross))``. Does not apply to viscosities.
 
-    coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
+    coulomb_log_ei: `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
@@ -233,26 +233,26 @@ class ClassicalTransport:
        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
        where :math`μ` is the reduced mass.
 
-    hall_e: float or dimensionless `~astropy.units.Quantity`, optional
+    hall_e: `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing calculations.
 
-    hall_i: float or dimensionless `~astropy.units.Quantity`, optional
+    hall_i: `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing
         calculations.
 
-    mu: optional, float or dimensionless `astropy.units.Quantity`
+    mu: `float` or dimensionless `astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: optional, float or dimensionless `~astropy.units.Quantity`
+    theta: `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to :math:`T_e / T_i`\ .
         Only has effect if ``mu`` is non-zero.
 
-    coulomb_log_method : str, optional
+    coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -267,7 +267,7 @@ class ClassicalTransport:
     `ValueError`
         On incorrect or unknown values of arguments.
 
-    `~plasmapy.utils.PhysicsError`
+    `~plasmapy.utils.exceptions.PhysicsError`
         If input or calculated values for Coulomb logarithms are nonphysical.
 
     Examples
@@ -553,7 +553,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        ~astropy.units.quantity.Quantity
 
         See also
         --------
@@ -618,7 +618,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        ~astropy.units.quantity.Quantity
 
         See also
         --------
@@ -653,13 +653,13 @@ class ClassicalTransport:
         -----
         This is the dynamic viscosity that you find for ions in the classical
         plasma, similar to the viscosity of air or water or honey. The big
-        effect is the T^5/2 dependence, so as classical plasmas get hotter they
+        effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
         become dramatically more viscous. The ion viscosity typically dominates
         over the electron viscosity.
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        ~astropy.units.quantity.Quantity
 
         See also
         --------
@@ -701,13 +701,13 @@ class ClassicalTransport:
         -----
         This is the dynamic viscosity that you find for electrons in the
         classical plasma, similar to the viscosity of air or water or honey.
-        The big effect is the T^5/2 dependence, so as classical plasmas get
+        The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
         hotter they become dramatically more viscous. The ion viscosity
         typically dominates over the electron viscosity.
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        ~astropy.units.quantity.Quantity
 
         See also
         --------
@@ -827,7 +827,7 @@ def resistivity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    ~astropy.units.quantity.Quantity
 
     """
     ct = ClassicalTransport(
@@ -933,7 +933,7 @@ def ion_thermal_conductivity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    ~astropy.units.quantity.Quantity
 
     See also
     --------
@@ -1015,7 +1015,7 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    ~astropy.units.quantity.Quantity
 
     See also
     --------
@@ -1072,7 +1072,7 @@ def ion_viscosity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    ~astropy.units.quantity.Quantity
 
     See also
     --------
@@ -1846,7 +1846,7 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
 def _nondim_tec_ji_held(hall, Z, field_orientation):
     """
-    Dimensionless thermoelectric conductivity - Ji-Held.
+    Dimensionless thermoelectric conductivity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -2145,7 +2145,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
 def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
     """
-    Dimensionless ion viscosity - Ji-Held.
+    Dimensionless ion viscosity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):

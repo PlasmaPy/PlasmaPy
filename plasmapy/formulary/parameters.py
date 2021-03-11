@@ -112,15 +112,15 @@ def mass_density(
     density for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
     species :math:`s`, and :math:`Z_{particle}` is the integer charge of
     ``particle``.  For example, if the electron density is given for :math:`n_s`
-    and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`.
+    and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`\ .
 
     **Aliases:** `rho_`
 
     Parameters
     ----------
     density : `~astropy.units.Quantity`
-        Either a particle number density (in units of :math:`m^{-3}` or
-        equivalent) or a mass density (in units of :math:`kg/m^3` or
+        Either a particle number density (in units of m\ :sup:`-3` or
+        equivalent) or a mass density (in units of kg / m\ :sup:`3` or
         equivalent).  If ``density`` is a mass density, then it will be passed
         through and returned without modification.
 
@@ -451,9 +451,9 @@ def ion_sound_speed(
 
     .. math::
 
-        V_S = \sqrt{\frac{\gamma_e Z k_B T_e + \gamma_i k_B T_i}{m_i (1 + k^2 λ_{D}^2)}}
+        V_S = \sqrt{\frac{γ_e Z k_B T_e + γ_i k_B T_i}{m_i (1 + k^2 λ_{D}^2)}}
 
-    where :math:`\gamma_e` and :math:`\gamma_i` are the electron and
+    where :math:`γ_e` and :math:`γ_i` are the electron and
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
     :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
     :math:`Z` is the charge state of the ion, :math:`m_i` is the
@@ -466,7 +466,7 @@ def ion_sound_speed(
 
     When the electron temperature is much greater than the ion
     temperature, the ion sound velocity reduces to
-    :math:`\sqrt{\gamma_e k_B T_e / m_i}`. Ion acoustic waves can
+    :math:`\sqrt{γ_e k_B T_e / m_i}`. Ion acoustic waves can
     therefore occur even when the ion temperature is zero.
 
     Example
@@ -586,7 +586,7 @@ def thermal_speed(
     Returns
     -------
     V : ~astropy.units.Quantity
-        particle thermal speed
+        The particle's thermal speed.
 
     Raises
     ------
@@ -595,11 +595,11 @@ def thermal_speed(
 
     `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
-        energy per particle
+        energy per particle.
 
     `ValueError`
         The particle temperature is invalid or particle cannot be used to
-        identify an isotope or particle
+        identify an isotope or particle.
 
     Warns
     -----
@@ -631,15 +631,15 @@ def thermal_speed(
        * - 1D
          - 0
          - 1
-         - :math:`2/\pi`
+         - :math:`2/π`
        * - 2D
          - 1
          - 2
-         - :math:`\pi/2`
+         - :math:`π/2`
        * - 3D
          - 2
          - 3
-         - :math:`8/\pi`
+         - :math:`8/π`
 
     The definition of thermal velocity varies by
     the square root of two depending on whether or not this velocity
@@ -1000,7 +1000,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
         positive for ion). Default is `False` (unsigned, i.e. always
         positive).
 
-    Z : float or ~astropy.units.Quantity, optional
+    Z : `float` or `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
@@ -1907,6 +1907,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     ----------
     T_e: `~astropy.units.Quantity`
         The electron temperature.
+
     B: `~astropy.units.Quantity`
         The magnitude of the magnetic field in the plasma.
 

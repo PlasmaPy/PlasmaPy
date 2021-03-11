@@ -95,10 +95,10 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     r"""
     The ratio of thermal pressure to magnetic pressure.
 
-    The beta (:math:`\beta`) of a plasma is defined by
+    The beta (:math:`β`) of a plasma is defined by
 
     .. math::
-        \beta = \frac{p_{th}}{p_{mag}}
+        β = \frac{p_{th}}{p_{mag}}
 
     where :math:`p_{th}` is the thermal pressure of the plasma
     and :math:`p_{mag}` is the magnetic pressure of the plasma.
@@ -150,7 +150,7 @@ def Reynolds_number(
 
     .. math::
 
-        Re = \frac{\rho U L }{\mu}
+        Re = \frac{\rho U L }{μ}
 
     **Aliases:** `Re_`
 
@@ -224,10 +224,10 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     .. math::
 
-        Rm = \frac{U L}{\eta}
+        Rm = \frac{U L}{η}
 
-    where :math:`\eta = \frac{1}{\mu_0 \sigma}`
-    and :math:`\mu_0` is the permeability of free space.
+    where :math:`η = \frac{1}{μ_0 σ}`
+    and :math:`μ_0` is the permeability of free space.
 
     **Aliases:** `Rm_`
 

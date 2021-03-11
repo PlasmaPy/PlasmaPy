@@ -65,26 +65,26 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     -----
     The dielectric permittivity tensor is expressed in the Stix frame with
     the :math:`\exp(-i ω t)` time-harmonic convention as
-    :math:`\varepsilon = \varepsilon_0 A`, with :math:`A` being
+    :math:`ε = ε_0 A`, with :math:`A` being
 
     .. math::
 
-        \varepsilon = \varepsilon_0 \left(\begin{matrix}  S & -i D & 0 \\
+        ε = ε_0 \left(\begin{matrix}  S & -i D & 0 \\
                               +i D & S & 0 \\
                               0 & 0 & P \end{matrix}\right)
 
     where:
 
     .. math::
-        S = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2 - \Omega_{c,s}^2}
+        S = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2 - Ω_{c,s}^2}
 
-        D = \sum_s \frac{\Omega_{c,s}}{ω}
-            \frac{ω_{p,s}^2}{ω^2 - \Omega_{c,s}^2}
+        D = \sum_s \frac{Ω_{c,s}}{ω}
+            \frac{ω_{p,s}^2}{ω^2 - Ω_{c,s}^2}
 
         P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
     where :math:`ω_{p,s}` is the plasma frequency and
-    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
     References
@@ -168,15 +168,15 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     .. math::
         L = 1 - \sum_s
-                \frac{ω_{p,s}^2}{ω\left(ω - \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω - Ω_{c,s}\right)}
 
         R = 1 - \sum_s
-                \frac{ω_{p,s}^2}{ω\left(ω + \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω + Ω_{c,s}\right)}
 
         P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
     where :math:`ω_{p,s}` is the plasma frequency and
-    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
     References
@@ -270,15 +270,15 @@ def permittivity_1D_Maxwellian(
     by the following equations [1]_
 
     .. math::
-        \chi_e(k, ω) = - \frac{α_e^2}{2} Z'(x_e)
+        χ_e(k, ω) = - \frac{α_e^2}{2} Z'(x_e)
 
-        \chi_i(k, ω) = - \frac{α_i^2}{2}\frac{Z}{} Z'(x_i)
+        χ_i(k, ω) = - \frac{α_i^2}{2}\frac{Z}{} Z'(x_i)
 
         α = \frac{ω_p}{k v_{Th}}
 
         x = \frac{ω}{k v_{Th}}
 
-    :math:`\chi_e` and :math:`\chi_i` are the electron and ion permittivities,
+    :math:`χ_e` and :math:`χ_i` are the electron and ion permittivities,
     respectively. :math:`Z'` is the derivative of the plasma dispersion
     function. :math:`α` is the scattering parameter which delineates
     the difference between the collective and non-collective Thomson
