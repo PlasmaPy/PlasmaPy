@@ -164,13 +164,13 @@ class ClassicalTransport:
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         Electron temperature in units of temperature or energy per particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    T_i : ~astropy.units.Quantity
+    T_i : `~astropy.units.Quantity`
         Ion temperature in units of temperature or energy per particle.
 
     n_i : `~astropy.units.Quantity`
@@ -214,42 +214,42 @@ class ClassicalTransport:
         (:math:`B \times \nabla(T)`\ ). The option ``'all'`` will return a `numpy.array`
         of all three, ``np.array((par, perp, cross))``. Does not apply to viscosities.
 
-    coulomb_log_ei: `float` or dimensionless `~astropy.units.Quantity`, optional
+    coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
-    V_ei: ~astropy.units.Quantity, optional
+    V_ei : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to `Coulomb_logarithm`
        function, not otherwise used.  If not provided, thermal velocity is
        assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
 
-    coulomb_log_ii: `float` or dimensionless `~astropy.units.Quantity`, optional
+    coulomb_log_ii : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
-    V_ii: ~astropy.units.Quantity, optional
+    V_ii : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
        `Coulomb_logarithm` function, not otherwise used. If not provided,
        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
        where :math`μ` is the reduced mass.
 
-    hall_e: `float` or dimensionless `~astropy.units.Quantity`, optional
+    hall_e : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing calculations.
 
-    hall_i: `float` or dimensionless `~astropy.units.Quantity`, optional
+    hall_i : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing
         calculations.
 
-    mu: `float` or dimensionless `~astropy.units.Quantity`, optional
+    mu : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: `float` or dimensionless `~astropy.units.Quantity`, optional
+    theta : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to :math:`T_e / T_i`\ .
         Only has effect if ``mu`` is non-zero.
@@ -464,13 +464,13 @@ class ClassicalTransport:
         The resistivity (:math:`α`) of a plasma is defined by
 
         .. math::
-            α = \frac{\hat{α}}{n_{e} e^2 \frac{τ_{e}}{m_{e}}}
+            α = \frac{\hat{α}}{n_e e^2 \frac{τ_e}{m_e}}
 
         where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
         :math:`n_e` is the electron number density of the plasma,
         :math:`e` is Euler's number,
-        :math:`τ_{e}` is the fundamental electron collision period of the plasma,
-        and :math:`m_{e}` is the mass of an electron.
+        :math:`τ_e` is the fundamental electron collision period of the plasma,
+        and :math:`m_e` is the mass of an electron.
 
         Notes
         -----
@@ -480,7 +480,7 @@ class ClassicalTransport:
         electrical current. The result is in units of ohm * m, so if you
         assume where the current is flowing in the plasma (length and
         cross-sectional area), you could calculate a DC resistance of the
-        plasma in ohms as resistivity * length / cross-sectional area.
+        plasma in ohms as resistivity × length / cross-sectional area.
 
         Experimentalists with plasma discharges may observe different V = IR
         Ohm's law behavior than suggested by the resistance calculated here,
@@ -820,7 +820,7 @@ def resistivity(
     electrical current. The result is in units of ohm * m, so if you
     assume where the current is flowing in the plasma (length and
     cross-sectional area), you could calculate a DC resistance of the
-    plasma in ohms as resistivity * length / cross-sectional area.
+    plasma in ohms as resistivity × length / cross-sectional area.
 
     Experimentalists with plasma discharges may observe different V = IR
     Ohm's law behavior than suggested by the resistance calculated here,
@@ -983,7 +983,7 @@ def electron_thermal_conductivity(
 
     .. math::
 
-        κ = \hat{κ} \frac{n_{e} k_{B}^2 T_{e} τ_{e}}{m_{e}}
+        κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
 
     where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
     :math:`n_{e}` is the electron number density of the plasma,
