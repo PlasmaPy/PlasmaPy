@@ -248,7 +248,7 @@ def permittivity_1D_Maxwellian(
         temperature, but should be consistent with density and particle.
 
     n : `~astropy.units.Quantity`
-        The plasma density - this can be either the electron or the ion
+        The plasma density — this can be either the electron or the ion
         density, but should be consistent with temperature and particle.
 
     particle : `str`
@@ -260,7 +260,7 @@ def permittivity_1D_Maxwellian(
 
     Returns
     -------
-    chi : ~astropy.units.Quantity
+    chi : `~astropy.units.Quantity`
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
