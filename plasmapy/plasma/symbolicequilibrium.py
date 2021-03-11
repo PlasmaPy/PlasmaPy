@@ -132,7 +132,7 @@ class SymbolicEquilibrium:
                 plt.gca().set_aspect("equal")
                 plt.show()
             raise ValueError(
-                f"Could not find contour for psi = {psi_value} ({len(contours)=})"
+                f"Could not find contour for psi = {psi_value} (len(contours)={len(contours)})"
             )
 
         contour = contours[0]
