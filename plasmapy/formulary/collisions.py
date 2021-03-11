@@ -92,19 +92,19 @@ def Coulomb_logarithm(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -112,12 +112,12 @@ def Coulomb_logarithm(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where `μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -128,7 +128,7 @@ def Coulomb_logarithm(
 
     Returns
     -------
-    ln_Lambda : float or numpy.ndarray
+    ln_Lambda : `float` or `numpy.ndarray`
         The dimensionless Coulomb logarithm.
 
     Raises
@@ -189,7 +189,7 @@ def Coulomb_logarithm(
     impact parameter, respectively, for Coulomb collisions [1]_;
     :math:`b_{min}` and :math:`b_{max}` are each computed by `impact_parameter`, another function.
 
-    The abbreviations of Options 2-7 (``"GMS-..."``) refer to the first initials of the three authors
+    The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first initials of the three authors
     of Reference [4]_.
 
     .. note::
@@ -522,16 +522,16 @@ def impact_parameter_perp(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -539,7 +539,7 @@ def impact_parameter_perp(
     Returns
     -------
     impact_parameter_perp : `float` or `numpy.ndarray`
-        The distance of closest approach for a 90 degree Coulomb collision.
+        The distance of closest approach for a 90° Coulomb collision.
 
     Raises
     ------
@@ -588,7 +588,7 @@ def impact_parameter_perp(
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    # Corresponds to a deflection of 90 degrees, which is valid when
+    # Corresponds to a deflection of 90°s, which is valid when
     # classical effects dominate.
     # !!!Note: an average ionization parameter will have to be
     # included here in the future
@@ -614,19 +614,19 @@ def impact_parameter(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -634,12 +634,12 @@ def impact_parameter(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -650,7 +650,7 @@ def impact_parameter(
 
     Returns
     -------
-    bmin, bmax : tuple of floats
+    bmin, bmax : `tuple` of floats
         The minimum and maximum impact parameters (distances) for a
         Coulomb collision.
 
@@ -737,7 +737,7 @@ def impact_parameter(
     lambdaDe = parameters.Debye_length(T, n_e)
     # de Broglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
-    # distance of closest approach in 90 degree Coulomb collision
+    # distance of closest approach in 90° Coulomb collision
     bPerp = impact_parameter_perp(T=T, species=species, V=V)
 
     # obtaining minimum and maximum impact parameters depending on which
@@ -837,22 +837,22 @@ def collision_frequency(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -860,12 +860,12 @@ def collision_frequency(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -944,7 +944,7 @@ def collision_frequency(
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
-        # impact parameter for 90 degree collision
+        # impact parameter for 90° collision
         bPerp = impact_parameter_perp(T=T, species=species, V=V_reduced)
         print(T, n, species, z_mean, method)
         # Coulomb logarithm
@@ -987,18 +987,18 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     Parameters
     ----------
-    impact_param : ~astropy.units.Quantity
+    impact_param : `~astropy.units.Quantity`
         Impact parameter for the collision.
 
     Returns
     -------
-    sigma : ~astropy.units.Quantity
+    sigma : `~astropy.units.Quantity`
         The Coulomb collision cross section area.
 
     Notes
     -----
     The collisional cross-section (see [1]_ for a graphical demonstration)
-    for a 90 degree Coulomb collision is obtained by
+    for a 90° Coulomb collision is obtained by
 
     .. math::
         σ = π (2 * ρ_⟂)^2
@@ -1046,13 +1046,13 @@ def fundamental_electron_collision_freq(
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         The electron temperature of the Maxwellian test electrons
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The number density of the Maxwellian test electrons
 
-    ion : str
+    ion : `str`
         String signifying a particle type of the field ions, including charge
         state information.
 
@@ -1077,7 +1077,7 @@ def fundamental_electron_collision_freq(
 
     Returns
     -------
-    nu_e : ~astropy.units.Quantity
+    nu_e : `~astropy.units.Quantity`
 
     Notes
     -----
@@ -1092,8 +1092,8 @@ def fundamental_electron_collision_freq(
     is the electron thermal velocity (the average, for a Maxwellian distribution).
 
     This implementation of the average collision frequency is is equivalent to:
-    * 1/tau_e from ref [1]_ eqn (2.5e) pp. 215,
-    * nu_e from ref [2]_ pp. 33,
+    * :math:`1/τ_e` from ref [1]_ eqn (2.5e) pp. 215,
+    * :math:`ν_e` from ref [2]_ pp. 33,
 
     References
     ----------
@@ -1175,23 +1175,23 @@ def fundamental_ion_collision_freq(
 
     Parameters
     ----------
-    T_i : ~astropy.units.Quantity
+    T_i : `~astropy.units.Quantity`
         The electron temperature of the Maxwellian test ions
 
-    n_i : ~astropy.units.Quantity
+    n_i : `~astropy.units.Quantity`
         The number density of the Maxwellian test ions
 
-    ion : str
+    ion : `str`
         String signifying a particle type of the test and field ions,
         including charge state information. This function assumes the test
         and field ions are the same species.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    coulomb_log : `float` or dimensionless ~astropy.units.Quantity, optional
+    coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the ions.
         If not specified, the Coulomb log will is calculated using the
         ~plasmapy.formulary.Coulomb_logarithm function.
@@ -1207,7 +1207,7 @@ def fundamental_ion_collision_freq(
 
     Returns
     -------
-    nu_i : ~astropy.units.Quantity
+    nu_i : `~astropy.units.Quantity`
 
     Notes
     -----
@@ -1229,8 +1229,8 @@ def fundamental_ion_collision_freq(
 
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
-    * 1/tau_i from ref [1]_, equation (2.5i) pp. 215,
-    * nu_i from ref [2]_ pp. 33,
+    * :math:`1/τ_i` from ref [1]_, equation (2.5i) pp. 215,
+    * :math:`ν_i` from ref [2]_ pp. 33,
 
     References
     ----------
@@ -1313,19 +1313,19 @@ def mean_free_path(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -1333,12 +1333,12 @@ def mean_free_path(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -1434,18 +1434,18 @@ def Spitzer_resistivity(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature.
         This should be the electron temperature for electron-electron
         and electron-ion collisions, and the ion temperature for
         ion-ion collisions.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The density in units convertible to per cubic meter.
         This should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -1453,11 +1453,11 @@ def Spitzer_resistivity(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -1565,19 +1565,19 @@ def mobility(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -1588,12 +1588,12 @@ def mobility(
         used instead. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where `μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -1604,7 +1604,7 @@ def mobility(
 
     Returns
     -------
-    mobility_value : float or numpy.ndarray
+    mobility_value : `float` or `numpy.ndarray`
         The electrical mobility of particles in a collisional plasma.
 
     Raises
@@ -1697,18 +1697,18 @@ def Knudsen_number(
 
     Parameters
     ----------
-    characteristic_length : ~astropy.units.Quantity
+    characteristic_length : `~astropy.units.Quantity`
         Rough order-of-magnitude estimate of the relevant size of the system.
 
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
@@ -1720,7 +1720,7 @@ def Knudsen_number(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -1749,7 +1749,7 @@ def Knudsen_number(
         If the units on any of the inputs are incorrect
 
     `TypeError`
-        If the n_e, T, or V are not Quantities.
+        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
     `RelativityError`
         If the input velocity is same or greater than the speed
@@ -1826,19 +1826,19 @@ def coupling_parameter(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and
         the target particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    species : tuple
+    species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) of a plasma for which
         a macroscopic description is valid. This parameter is used to compute the
         average ion density (given the average ionization and electron
@@ -1846,12 +1846,12 @@ def coupling_parameter(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
