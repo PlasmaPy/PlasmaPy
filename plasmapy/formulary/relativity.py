@@ -1,4 +1,4 @@
-r"""Functionality for calculating relativistic quantities (:math:`v \to c`)."""
+r"""Functions for calculating relativistic quantities (:math:`v \to c`)."""
 __all__ = ["Lorentz_factor", "relativistic_energy"]
 
 import astropy.units as u
@@ -17,7 +17,6 @@ def Lorentz_factor(V: u.m / u.s):
 
     Parameters
     ----------
-
     V : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
 
