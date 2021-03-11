@@ -218,7 +218,7 @@ def Maxwellian_velocity_2D(
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_1D
 
@@ -364,7 +364,7 @@ def Maxwellian_velocity_3D(
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_1D
 
@@ -599,7 +599,7 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_speed_1D
 
@@ -716,7 +716,7 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
 
-    See also
+    See Also
     --------
     Maxwellian_speed_1D
 
@@ -1002,7 +1002,7 @@ def kappa_velocity_3D(
     As :math:`κ → ∞`, the kappa distribution function converges to the
     Maxwellian distribution function.
 
-    See also
+    See Also
     --------
     kappa_velocity_1D
     kappa_thermal_speed
