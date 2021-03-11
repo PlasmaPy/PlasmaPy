@@ -35,13 +35,13 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     Compares Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
 
-    The quantum theta (:math:`\theta`) of a plasma is defined by
+    The quantum theta (:math:`θ`) of a plasma is defined by
 
     .. math::
-        \theta = \frac{E_{T}}{E_{F}}
+        θ = \frac{E_T}{E_F}
 
-    where :math:`E_{T}` is the thermal energy of the plasma
-    and :math:`E_{F}` is the Fermi energy of the plasma.
+    where :math:`E_T` is the thermal energy of the plasma
+    and :math:`E_F` is the Fermi energy of the plasma.
 
     Parameters
     ----------
@@ -69,12 +69,12 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The thermal energy of the plasma (:math:`E_{T}`) is defined by
+    The thermal energy of the plasma (:math:`E_T`) is defined by
 
     .. math::
-        E_{T} = k_{B} * T
+        E_T = k_B T
 
-    where :math:`k_{B}` is the Boltzmann constant
+    where :math:`k_B` is the Boltzmann constant
     and :math:`T` is the temperature of the plasma.
 
     See Also
@@ -105,13 +105,13 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature of the plasma.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The particle density of the plasma.
 
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field in the plasma.
 
     Examples
@@ -124,7 +124,7 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    beta: ~astropy.units.Quantity
+    beta: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     See Also
@@ -176,14 +176,14 @@ def Reynolds_number(
     Raises
     ------
     `TypeError`
-        The `U` is not a `~astropy.units.Quantity` and cannot be
+        If ``U`` is not a `~astropy.units.Quantity` and cannot be
         converted into a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity ``U`` is greater than the speed of light.
+        If ``U`` is greater than the speed of light.
 
     Examples
     --------
