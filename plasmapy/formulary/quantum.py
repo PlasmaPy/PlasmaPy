@@ -239,8 +239,8 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
     .. math::
 
-       E_F = \frac{π^2 ℏ^2}{2 m_{e}}
-       \left( \frac{3 n_{e}}{π} \right )^{2/3}
+       E_F = \frac{π^2 ℏ^2}{2 m_e}
+       \left( \frac{3 n_e}{π} \right)^{2/3}
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
@@ -305,7 +305,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     .. math::
 
-       λ_TF = \sqrt{\frac{2 \epsilon_0 E_F}{3 n_e e^2}}
+       λ_{TF} = \sqrt{\frac{2 ε_0 E_F}{3 n_e e^2}}
 
     for an electron degenerate gas.
 
