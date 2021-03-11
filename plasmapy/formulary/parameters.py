@@ -68,10 +68,10 @@ def _grab_charge(ion: Particle, z_mean=None):
 
     Parameters
     ----------
-    ion : ~plasmapy.particles.Particle
+    ion : `~plasmapy.particles.Particle`
         a string representing a charged particle, or a Particle object.
 
-    z_mean : float
+    z_mean : `float`
         An optional float describing the average ionization of a particle
         species.
 
@@ -366,46 +366,46 @@ def ion_sound_speed(
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         Electron temperature in units of temperature or energy per
         particle. If this is not given, then the electron temperature
         is assumed to be zero.
 
-    T_i : ~astropy.units.Quantity
+    T_i : `~astropy.units.Quantity`
         Ion temperature in units of temperature or energy per
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : ~plasmapy.particles.Particle
+    ion : `~plasmapy.particles.Particle`
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or 'He-4 +1' for singly ionized
         helium-4). If no charge state information is provided, then the
         ions are assumed to be singly charged.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density. If this is not given, then ion_sound_speed
         will be approximated in the non-dispersive limit
         (:math:`k^2 λ_{D}^2` will be assumed zero). If ``n_e`` is given,
         a value for ``k`` must also be given.
 
-    k : ~astropy.units.Quantity
+    k : `~astropy.units.Quantity`
         Wavenumber (in units of inverse length, e.g. m\ :sup:`-1`\ ). If this
         is not given, then ion_sound_speed will be approximated in the
         non-dispersive limit (:math:`k^2 λ_{D}^2` will be assumed zero).
         If ``k`` is given, a value for ``n_e`` must also be given.
 
-    gamma_e : float or int
+    gamma_e : `float` or `int`
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
         temperature rapidly enough that the electrons are effectively
         isothermal.
 
-    gamma_i : float or int
+    gamma_i : `float` or `int`
         The adiabatic index for ions, which defaults to 3.  This value
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (integer) of the ion
@@ -414,7 +414,7 @@ def ion_sound_speed(
 
     Returns
     -------
-    V_S : ~astropy.units.Quantity
+    V_S : `~astropy.units.Quantity`
         The ion sound speed in units of meters per second.
 
     Raises
@@ -561,31 +561,31 @@ def thermal_speed(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The particle temperature in either kelvin or energy per particle
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the particles are
         assumed to be singly charged.
 
-    method : str, optional
+    method : `str`, optional
         Method to be used for calculating the thermal speed. Options are
         ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
-    mass : ~astropy.units.Quantity
+    mass : `~astropy.units.Quantity`
         The particle's mass override. Defaults to `~np.nan` and if so, doesn't do
         anything, but if set, overrides mass acquired from `particle`. Useful
         with relative velocities of particles.
 
-    ndim : int
+    ndim : `int`
         Dimensionality of space in which to calculate thermal velocity. Valid
         values are 1, 2, or 3.
 
     Returns
     -------
-    V : ~astropy.units.Quantity
+    V : `~astropy.units.Quantity`
         The particle's thermal speed.
 
     Raises
@@ -696,10 +696,10 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The particle temperature in either kelvin or energy per particle.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The particle number density in units convertible to m\ :sup:`-3`\ .
 
     Examples
@@ -712,7 +712,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
     Returns
     -------
-    p_th : ~astropy.units.Quantity
+    p_th : `~astropy.units.Quantity`
         Thermal pressure.
 
     Raises
@@ -753,34 +753,34 @@ def kappa_thermal_speed(
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The particle temperature in either kelvin or energy per particle
 
-    kappa: float
+    kappa: `float`
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
         than 3/2.
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
         assumed to be singly charged.
 
-    method : str, optional
+    method : `str`, optional
         Method to be used for calculating the thermal speed. Options are
         ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
 
     Returns
     -------
-    V : ~astropy.units.Quantity
-        Particle thermal speed
+    V : `~astropy.units.Quantity`
+        Particle thermal speed.
 
     Raises
     ------
     `TypeError`
-        The particle temperature is not a ~astropy.units.Quantity.
+        The particle temperature is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If the particle temperature is not in units of temperature or
@@ -803,7 +803,7 @@ def kappa_thermal_speed(
     The particle thermal speed is given by:
 
     .. math::
-        V_{th,i} = \sqrt{(2 \kappa - 3)\frac{2 k_B T_i}{\kappa m_i}}
+        V_{th,i} = \sqrt{(2 κ - 3)\frac{2 k_B T_i}{κ m_i}}
 
     For more discussion on the ``'mean_magnitude'`` calculation method,
     see [1]_.
@@ -874,10 +874,10 @@ def Hall_parameter(
 
     .. math::
 
-        \beta_{s} = \frac{\Omega_{c s}}{\nu_{s s^{\prime}}}
+        β_{s} = \frac{Ω_{c s}}{ν_{s s^{\prime}}}
 
-    where :math:`\Omega_{c s}` is the gyrofrequncy for plasma species :math:`s`
-    (``particle``) and :math:`\nu_{s s^{\prime}}` is the collison frequency
+    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species :math:`s`
+    (``particle``) and :math:`ν_{s s^{\prime}}` is the collision frequency
     between plasma species :math:`s` (``particle``) and species
     :math:`s^{\prime}` (``ion``).
 
@@ -986,10 +986,10 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -1011,7 +1011,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     Returns
     -------
-    omega_c : ~astropy.units.Quantity
+    omega_c : `~astropy.units.Quantity`
         The particle gyrofrequency in units of radians per second.
 
     Raises
@@ -1107,25 +1107,25 @@ def gyroradius(
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    Vperp : ~astropy.units.Quantity, optional, keyword-only
+    Vperp : `~astropy.units.Quantity`, optional, keyword-only
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
-    T_i : ~astropy.units.Quantity, optional, keyword-only
+    T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
 
     Returns
     -------
-    r_Li : ~astropy.units.Quantity
+    r_Li : `~astropy.units.Quantity`
         The particle gyroradius in units of meters.  This
         `~astropy.units.Quantity` will be based on either the
         perpendicular component of particle velocity as inputted, or
@@ -1264,16 +1264,16 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     Parameters
     ----------
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         Particle number density in units convertible to per cubic meter.
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
-    z_mean : ~astropy.units.Quantity, optional
+    z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
         given then the atomic charge state (`int`) of the ion
@@ -1282,7 +1282,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     Returns
     -------
-    omega_p : ~astropy.units.Quantity
+    omega_p : `~astropy.units.Quantity`
         The particle plasma frequency in radians per second.
 
     Raises
@@ -1371,15 +1371,15 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    T_e: ~astropy.units.Quantity
+    T_e: `~astropy.units.Quantity`
         Electron temperature.
 
-    n_e: ~astropy.units.Quantity
+    n_e: `~astropy.units.Quantity`
         Electron number density.
 
     Returns
     -------
-    lambda_D : ~astropy.units.Quantity
+    lambda_D : `~astropy.units.Quantity`
         The Debye length in meters.
 
     Raises
@@ -1445,10 +1445,10 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
+    T_e : `~astropy.units.Quantity`
         Electron temperature.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     Raises
@@ -1469,7 +1469,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    N_D : ~astropy.units.Quantity
+    N_D : `~astropy.units.Quantity`
         Number of electrons within a sphere with a radius of the Debye length.
 
     Notes
@@ -1519,16 +1519,16 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
     Parameters
     ----------
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         Particle number density in units convertible to m\ :sup:`-3`\ .
 
-    particle : ~plasmapy.particles.Particle
+    particle : `~plasmapy.particles.Particle`
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
     Returns
     -------
-    d : ~astropy.units.Quantity
+    d : `~astropy.units.Quantity`
         The particle's inertial length in meters.
 
     Raises
@@ -1592,12 +1592,12 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field in units convertible to tesla.
 
     Returns
     -------
-    p_B : ~astropy.units.Quantity
+    p_B : `~astropy.units.Quantity`
         The magnetic pressure in units in pascals (newtons per square meter).
 
     Raises
@@ -1657,12 +1657,12 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field in units convertible to tesla.
 
     Returns
     -------
-    E_B : ~astropy.units.Quantity
+    E_B : `~astropy.units.Quantity`
         The magnetic energy density in units of joules per cubic meter.
 
     Raises
@@ -1729,15 +1729,15 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density.
 
     Returns
     -------
-    omega_uh : ~astropy.units.Quantity
+    omega_uh : `~astropy.units.Quantity`
         The upper hybrid frequency in radians per second.
 
     Raises
@@ -1803,13 +1803,13 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    n_i : ~astropy.units.Quantity
+    n_i : `~astropy.units.Quantity`
         Ion number density.
 
-    ion : ~plasmapy.particles.Particle
+    ion : `~plasmapy.particles.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
@@ -1817,7 +1817,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
     Returns
     -------
-    omega_lh : ~astropy.units.Quantity
+    omega_lh : `~astropy.units.Quantity`
         The lower hybrid frequency in radians per second.
 
     Raises
