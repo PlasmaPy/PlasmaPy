@@ -20,23 +20,23 @@ def Fermi_integral(
 
     Parameters
     ----------
-    x : float, int, complex, or ~numpy.ndarray
+    x : `float`, `int`, `complex`, or `~numpy.ndarray`
         Argument of the Fermi-Dirac integral function.
 
-    j : float, int, complex, or ~numpy.ndarray
+    j : `float`, `int`, `complex`, or `~numpy.ndarray`
         Order/index of the Fermi-Dirac integral function.
 
     Returns
     -------
-    integral : float, complex, or ~numpy.ndarray
+    integral : `float`, `complex`, or `~numpy.ndarray`
         Complete Fermi-Dirac integral for given argument and order.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If the argument is invalid.
 
-    ~astropy.units.UnitsError
+    `~astropy.units.UnitsError`
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
@@ -50,7 +50,7 @@ def Fermi_integral(
     defined as:
 
     .. math::
-        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\infty} \frac{t^j}{\exp{(t-x)} + 1} dt
+        F_j (x) = \frac{1}{Γ(j+1)} \int_0^∞ \frac{t^j}{\exp{(t-x)} + 1} dt
 
     for :math:`j > 0`.
 
