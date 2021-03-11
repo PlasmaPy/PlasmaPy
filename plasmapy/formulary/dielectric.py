@@ -244,7 +244,7 @@ def permittivity_1D_Maxwellian(
         for ways to calculate this.
 
     T : `~astropy.units.Quantity`
-        The plasma temperature - this can be either the electron or the ion
+        The plasma temperature — this can be either the electron or the ion
         temperature, but should be consistent with density and particle.
 
     n : `~astropy.units.Quantity`
