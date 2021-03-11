@@ -16,7 +16,7 @@ def test_rot_a_to_b():
     b = np.array([0, 1, 0])
     R = mathematics.rot_a_to_b(a, b)
     correct = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
-    assert np.allclose(R, correct, atol=1e-6)
+    np.testing.assert_allclose(R, correct, atol=1e-6)
 
     # Test the special case where the two vectors are parallel
     a = np.array([1, 0, 0])
