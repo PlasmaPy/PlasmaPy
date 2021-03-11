@@ -51,15 +51,15 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
 
     particle : `str`, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
-        ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
+        helium-4), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`, optional
         The drift velocity in units convertible to m/s.
 
     vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable velocity) in m/s. This is used for
-        optimization purposes to avoid re-calculating vTh, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units : `str`, optional
@@ -461,7 +461,7 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in speed^-1, normalized so that
+        Probability density in speed\ :sup:`-1`\ , normalized so that
         :math:`\int_{0}^∞ f(v) dv = 1`.
 
     Raises
@@ -571,7 +571,7 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in speed^-1, normalized so that:
+        Probability density in \ :sup:`-1`\ , normalized so that:
         :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -654,8 +654,8 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     distribution in 3D.
 
     Return the probability density function for finding a particle with
-    speed components `vx`, `vy`, and `vz` in m/s in an equilibrium
-    plasma of temperature `T` which follows the 3D Maxwellian
+    speed components ``vx``, ``vy``, and ``vz`` in m/s in an equilibrium
+    plasma of temperature ``T`` which follows the 3D Maxwellian
     distribution function. This function assumes Cartesian coordinates.
 
     Parameters
@@ -688,8 +688,8 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in speed^-1, normalized so that:
-        :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
+        Probability density in speed\ :sup:`-1`\ , normalized so that:
+        :math:`\iiint_0^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
     ------
@@ -802,14 +802,14 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
 
     units : `str`, optional
         Selects whether to run function with units and unit checks (when
-        equal to "units") or to run as unitless (when equal to "unitless").
-        The unitless version is substantially faster for intensive
-        computations.
+        equal to ``"units"``) or to run as unitless (when equal to
+        ``"unitless"``). The unitless version is substantially faster for
+        intensive computations.
 
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in Velocity^-1, normalized so that
+        Probability density in celocity\ :sup:`-1`\ , normalized so that
         :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises
@@ -842,8 +842,8 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     \frac{Γ(κ + 1)}{Γ(κ - 1/2)}}`
     is the normalization constant.
 
-    As :math:`κ` approaches infinity, the kappa distribution function
-    converges to the Maxwellian distribution function.
+    As :math:`κ → ∞`, the kappa distribution function converges to the
+    Maxwellian distribution function.
 
     Examples
     --------
@@ -999,8 +999,8 @@ def kappa_velocity_3D(
     \frac{Γ(κ + 1)}{Γ(κ - 1/2) Γ(3/2)}` is the
     normalization constant.
 
-    As :math:`κ` approaches infinity, the kappa distribution function
-    converges to the Maxwellian distribution function.
+    As :math:`κ → ∞`, the kappa distribution function converges to the
+    Maxwellian distribution function.
 
     See also
     --------
