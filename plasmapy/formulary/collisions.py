@@ -1506,7 +1506,7 @@ def Spitzer_resistivity(
     The Spitzer resistivity is given by [1]_ [2]_
 
     .. math::
-        \eta = \frac{m}{n Z_1 Z_2 q_e^2} ν_{1,2}
+        η = \frac{m}{n Z_1 Z_2 q_e^2} ν_{1,2}
 
     where :math:`m` is the ion mass or the reduced mass, :math:`n` is the
     ion density, :math:`Z` is the particle charge state, :math:`q_e` is the
@@ -1583,7 +1583,7 @@ def mobility(
         average ion density (given the average ionization and electron
         density) for calculating the ion sphere radius for non-classical
         impact parameters. It is also used the obtain the average mobility
-        of a plasma with multiple charge state species. When z_mean
+        of a plasma with multiple charge state species. When ``z_mean``
         is not given, the average charge between the two particles is
         used instead. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
