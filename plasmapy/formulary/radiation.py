@@ -55,7 +55,7 @@ def thermal_bremsstrahlung(
     .. math::
         y = \frac{1}{2} \frac{ω^2 m_e}{k_{max}^2 k_B T_e}
 
-    where   :math:`k_{max}` is a maximum wavenumber approximated here as
+    where :math:`k_{max}` is a maximum wavenumber approximated here as
     :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron
     de Broglie wavelength.
 
