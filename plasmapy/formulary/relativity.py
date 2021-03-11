@@ -18,24 +18,24 @@ def Lorentz_factor(V: u.m / u.s):
     Parameters
     ----------
 
-    V : ~astropy.units.Quantity
+    V : `~astropy.units.Quantity`
         The velocity in units convertible to meters per second.
 
     Returns
     -------
-    gamma : float or ~numpy.ndarray
+    gamma : `float` or `~numpy.ndarray`
         The Lorentz factor associated with the inputted velocities.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If ``V`` is not a `~astropy.units.Quantity` and cannot be
         converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the ``V`` is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the magnitude of ``V`` is faster than the speed of light.
 
     Warns
@@ -48,10 +48,10 @@ def Lorentz_factor(V: u.m / u.s):
     The Lorentz factor is a dimensionless number given by
 
     .. math::
-        \gamma = \frac{1}{\sqrt{1-\frac{V^2}{c^2}}}
+        γ = \frac{1}{\sqrt{1-\frac{V^2}{c^2}}}
 
     The Lorentz factor is approximately one for sub-relativistic
-    velocities, and goes to infinity as the velocity approaches the
+    velocities, and :math:`γ → ∞` as the velocity approaches the
     speed of light.
 
     Examples
@@ -60,7 +60,7 @@ def Lorentz_factor(V: u.m / u.s):
     >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
     1.130885603948959
-    >>> Lorentz_factor(299792458*u.m/u.s)
+    >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
 
@@ -72,21 +72,21 @@ def Lorentz_factor(V: u.m / u.s):
 
     if V.size > 1:
 
-        gamma = np.zeros_like(V.value)
+        γ = np.zeros_like(V.value)
 
         equals_c = np.abs(V) == c
         is_slow = ~equals_c
 
-        gamma[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
-        gamma[equals_c] = np.inf
+        γ[is_slow] = ((1 - (V[is_slow] / c) ** 2) ** -0.5).value
+        γ[equals_c] = np.inf
 
     else:
         if np.abs(V) == c:
-            gamma = np.inf
+            γ = np.inf
         else:
-            gamma = ((1 - (V / c) ** 2) ** -0.5).value
+            γ = ((1 - (V / c) ** 2) ** -0.5).value
 
-    return gamma
+    return γ
 
 
 @validate_quantities(
@@ -153,7 +153,6 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
         ...
     ValueError: The argument 'm' to function relativistic_energy() can not contain negative numbers.
     """
-
-    gamma = Lorentz_factor(v)
-    E = gamma * m * c ** 2
+    γ = Lorentz_factor(v)
+    E = γ * m * c ** 2
     return E
