@@ -88,7 +88,7 @@ def Coulomb_logarithm(
     method="classical",
 ):
     r"""
-    Computes the Coulomb logarithm.
+    Compute the Coulomb logarithm.
 
     Parameters
     ----------
@@ -466,9 +466,9 @@ def Coulomb_logarithm(
 @particles.particle_input
 def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
-    Some boiler plate code for checking if inputs to functions in
-    collisions.py are good. Also obtains reduced in mass in a
-    2 particle collision system along with thermal velocity.
+    Check the inputs to functions in ``collisions.py``.  Also obtains
+    reduced in mass in a 2 particle collision system along with thermal
+    velocity.
     """
     masses = [p.mass for p in species]
     charges = [np.abs(p.charge) for p in species]
@@ -1561,7 +1561,8 @@ def mobility(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m ** 2 / (u.V * u.s):
-    r"""Electrical mobility (m^2/(V s))
+    r"""
+    Return the electrical mobility.
 
     Parameters
     ----------
