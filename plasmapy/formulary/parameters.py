@@ -1,7 +1,5 @@
-"""
-This module gathers basic and general plasma parameters such as the
-plasma frequency or Debye length.
-"""
+"""Functions to calculate fundamental plasma parameters."""
+
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
@@ -64,7 +62,8 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 
 def _grab_charge(ion: Particle, z_mean=None):
-    """Utility function to merge two possible inputs for particle charge.
+    """
+    Merge two possible inputs for particle charge.
 
     Parameters
     ----------
@@ -100,12 +99,12 @@ def mass_density(
     particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
-    """
-    Calculates the mass density from a number density.
+    r"""
+    Calculate the mass density from a number density.
 
     .. math::
 
-        \\rho = \\left| \\frac{Z_{s}}{Z_{particle}} \\right| n_{s} m_{particle}
+        \rho = \left| \frac{Z_{s}}{Z_{particle}} \right| n_{s} m_{particle}
               = | Z_{ratio} | n_{s} m_{particle}
 
     where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
@@ -161,7 +160,7 @@ def mass_density(
         The mass density for the plasma species represented by ``particle``.
 
     Examples
-    -------
+    --------
     >>> import astropy.units as u
     >>> mass_density(1 * u.m ** -3, 'p')
     <Quantity 1.67262...e-27 kg / m3>
@@ -1887,11 +1886,13 @@ wlh_ = lower_hybrid_frequency
 )
 def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     r"""
-    The Bohm diffusion coefficient was conjectured to follow Bohm model of
-    the diffusion of plasma across a magnetic field and describe
-    the diffusion of early fusion energy machines.
-    The rate predicted by Bohm diffusion is much higher than classical diffusion
-    and if there were no exceptions, magnetically confined fusion would be impractical.
+    Return the Bohm diffusion coefficient.
+
+    The Bohm diffusion coefficient was conjectured to follow Bohm model
+    of the diffusion of plasma across a magnetic field and describe the
+    diffusion of early fusion energy machines. The rate predicted by
+    Bohm diffusion is much higher than classical diffusion, and if there
+    were no exceptions, magnetically confined fusion would be impractical.
 
     .. math::
 
