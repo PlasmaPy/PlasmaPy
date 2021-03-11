@@ -22,6 +22,10 @@ repos:
     rev: 19.10b0
     hooks:
     -   id: black
+-   repo: https://github.com/pycqa/pydocstyle
+    rev: 5.1.1  # pick a git hash / tag to point to
+    hooks:
+    -   id: pydocstyle
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 0.5.7
   hooks:
