@@ -1,4 +1,5 @@
-"""Functions to calculate classical transport coefficients.
+r"""
+Functions to calculate classical transport coefficients.
 
 .. nbgallery::
 
@@ -7,14 +8,15 @@
 Introduction
 ============
 
-Classical transport theory is derived by using kinetic theory to close the
-plasma two-fluid (electron and ion fluid) equations in the collisional limit.
-The first complete model in this form was done by S. I. Braginskii [1]_.
+Classical transport theory is derived by using kinetic theory to close
+the plasma two-fluid (electron and ion fluid) equations in the
+collisional limit. The first complete model in this form was done by
+S. I. Braginskii [1]_.
 
 This module uses fitting functions from literature ([1]_, [2]_, [3]_, [4]_,
-[5]_ and the next section) to calculate the transport coefficients, which are
-the resistivity, thermoelectric conductivity, thermal conductivity, and
-viscosity.
+[5]_ and the next section) to calculate the transport coefficients, which
+are the resistivity, thermoelectric conductivity, thermal conductivity,
+and viscosity.
 
 Keep in mind the following assumptions under which the transport equations
 are derived:
@@ -211,7 +213,7 @@ class ClassicalTransport:
         to transport perpendicular to the field direction (in the direction of
         the temperature gradient), while ``'cross'`` refers to the direction
         perpendicular to B and the gradient of temperature
-        (:math:`B \times \nabla(T)`\ ). The option ``'all'`` will return a `numpy.array`
+        (:math:`B × ∇T`\ ). The option ``'all'`` will return a `numpy.array`
         of all three, ``np.array((par, perp, cross))``. Does not apply to viscosities.
 
     coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
@@ -474,10 +476,9 @@ class ClassicalTransport:
 
         Notes
         -----
-
         The resistivity here is defined similarly to solid conductors, and thus
         represents the classical plasmas' property to resist the flow of
-        electrical current. The result is in units of ohm * m, so if you
+        electrical current. The result is in units of ohm meters, so if you
         assume where the current is flowing in the plasma (length and
         cross-sectional area), you could calculate a DC resistance of the
         plasma in ohms as resistivity × length / cross-sectional area.
@@ -533,14 +534,14 @@ class ClassicalTransport:
         The ion thermal conductivity (:math:`κ`) of a plasma is defined by
 
         .. math::
-            κ = \hat{κ} \frac{n_{i} k_{B}^2 T_{i} τ_{i}}{m_{i}}
+            κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
 
         where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
-        :math:`n_{i}` is the ion number density of the plasma,
-        :math:`k_{B}` is the Boltzmann constant,
-        :math:`T_{i}` is the ion temperature of the plasma,
-        :math:`τ_{i}` is the fundamental ion collision period of the plasma,
-        and :math:`m_{i}` is the mass of an ion of the plasma.
+        :math:`n_i` is the ion number density of the plasma,
+        :math:`k_B` is the Boltzmann constant,
+        :math:`T_i` is the ion temperature of the plasma,
+        :math:`τ_i` is the fundamental ion collision period of the plasma,
+        and :math:`m_i` is the mass of an ion of the plasma.
 
         Notes
         -----
@@ -557,7 +558,7 @@ class ClassicalTransport:
         -------
         `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_thermal_conductivity
 
@@ -586,14 +587,14 @@ class ClassicalTransport:
         The electron thermal conductivity (:math:`κ`) of a plasma is defined by
 
         .. math::
-            κ = \hat{κ} \frac{n_{e} k_{B}^2 T_{e} τ_{e}}{m_{e}}
+            κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
 
         where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
-        :math:`n_{e}` is the electron number density of the plasma,
-        :math:`k_{B}` is the Boltzmann constant,
-        :math:`T_{e}` is the electron temperature of the plasma,
-        :math:`τ_{e}` is the fundamental electron collision period of the plasma,
-        and :math:`m_{e}` is the mass of an electron.
+        :math:`n_e` is the electron number density of the plasma,
+        :math:`k_B` is the Boltzmann constant,
+        :math:`T_e` is the electron temperature of the plasma,
+        :math:`τ_e` is the fundamental electron collision period of the plasma,
+        and :math:`m_e` is the mass of an electron.
 
         Notes
         -----
@@ -622,7 +623,7 @@ class ClassicalTransport:
         -------
         `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_thermal_conductivity
 
@@ -663,7 +664,7 @@ class ClassicalTransport:
         -------
         `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         electron_viscosity
 
@@ -711,7 +712,7 @@ class ClassicalTransport:
         -------
         `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_viscosity
 
@@ -805,19 +806,19 @@ def resistivity(
 
     .. math::
 
-        α = \frac{\hat{α}}{n_{e} e^2 \frac{τ_{e}}{m_{e}}}
+        α = \frac{\hat{α}}{n_e e^2 \frac{τ_e}{m_e}}
 
     where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
     :math:`n_e` is the electron number density of the plasma,
     :math:`e` is Euler's number,
-    :math:`τ_{e}` is the fundamental electron collision period of the plasma,
-    and :math:`m_{e}` is the mass of an electron.
+    :math:`τ_e` is the fundamental electron collision period of the plasma,
+    and :math:`m_e` is the mass of an electron.
 
     Notes
     -----
     The resistivity here is defined similarly to solid conductors, and thus
     represents the classical plasmas' property to resist the flow of
-    electrical current. The result is in units of ohm * m, so if you
+    electrical current. The result is in units of ohm meters, so if you
     assume where the current is flowing in the plasma (length and
     cross-sectional area), you could calculate a DC resistance of the
     plasma in ohms as resistivity × length / cross-sectional area.
@@ -913,14 +914,14 @@ def ion_thermal_conductivity(
 
     .. math::
 
-        κ = \hat{κ} \frac{n_{i} k_{B}^2 T_{i} τ_{i}}{m_{i}}
+        κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
 
     where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
-    :math:`n_{i}` is the ion number density of the plasma,
-    :math:`k_{B}` is the Boltzmann constant,
-    :math:`T_{i}` is the ion temperature of the plasma,
-    :math:`τ_{i}` is the fundamental ion collision period of the plasma,
-    and :math:`m_{i}` is the mass of an ion of the plasma.
+    :math:`n_i` is the ion number density of the plasma,
+    :math:`k_B` is the Boltzmann constant,
+    :math:`T_i` is the ion temperature of the plasma,
+    :math:`τ_i` is the fundamental ion collision period of the plasma,
+    and :math:`m_i` is the mass of an ion of the plasma.
 
     Notes
     -----
@@ -937,7 +938,7 @@ def ion_thermal_conductivity(
     -------
     `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_thermal_conductivity
 
@@ -986,11 +987,11 @@ def electron_thermal_conductivity(
         κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
 
     where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
-    :math:`n_{e}` is the electron number density of the plasma,
-    :math:`k_{B}` is the Boltzmann constant,
-    :math:`T_{e}` is the electron temperature of the plasma,
-    :math:`τ_{e}` is the fundamental electron collision period of the plasma,
-    and :math:`m_{e}` is the mass of an electron.
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`k_B` is the Boltzmann constant,
+    :math:`T_e` is the electron temperature of the plasma,
+    :math:`τ_e` is the fundamental electron collision period of the plasma,
+    and :math:`m_e` is the mass of an electron.
 
     Notes
     -----
@@ -1019,7 +1020,7 @@ def electron_thermal_conductivity(
     -------
     `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_thermal_conductivity
 
@@ -1076,7 +1077,7 @@ def ion_viscosity(
     -------
     `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     electron_viscosity
 
@@ -1133,7 +1134,7 @@ def electron_viscosity(
     -------
     `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_viscosity
 
