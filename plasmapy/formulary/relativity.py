@@ -40,7 +40,7 @@ def Lorentz_factor(V: u.m / u.s):
 
     Warns
     -----
-    `~astropy.units.UnitsWarning`
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -113,7 +113,7 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     Returns
     -------
-    `~astropy.Quantity`
+    `~astropy.units.Quantity`
         The relativistic energy (in joules) of an object of mass ``m`` moving at velocity ``v``.
 
     Raises

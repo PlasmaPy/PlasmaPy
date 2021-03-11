@@ -112,12 +112,12 @@ def Coulomb_logarithm(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where `μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -531,7 +531,7 @@ def impact_parameter_perp(
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second)
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -553,7 +553,7 @@ def impact_parameter_perp(
     TypeError
         If either of ``T`` or ``V`` is not a `~astropy.units.Quantity`.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -634,12 +634,12 @@ def impact_parameter(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -666,7 +666,7 @@ def impact_parameter(
     TypeError
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1186,7 +1186,7 @@ def fundamental_ion_collision_freq(
         including charge state information. This function assumes the test
         and field ions are the same species.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -1333,12 +1333,12 @@ def mean_free_path(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -1364,7 +1364,7 @@ def mean_free_path(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1457,7 +1457,7 @@ def Spitzer_resistivity(
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -1488,7 +1488,7 @@ def Spitzer_resistivity(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` are not of type `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1588,12 +1588,12 @@ def mobility(
         used instead. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where `μ` is the reduced mass.
 
-    method : str, optional
+    method : `str`, optional
         The method by which to compute the Coulomb logarithm.
         The default method is the classical straight-line Landau-Spitzer
         method (``"classical"`` or ``"ls"``). The other 6 supported methods
@@ -1619,7 +1619,7 @@ def mobility(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1720,7 +1720,7 @@ def Knudsen_number(
         impact parameters. ``z_mean`` is a required parameter if ``method`` is
         ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
-    V : ~astropy.units.Quantity, optional
+    V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
         where :math:`μ` is the reduced mass.
@@ -1751,7 +1751,7 @@ def Knudsen_number(
     `TypeError`
         If the n_e, T, or V are not Quantities.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 

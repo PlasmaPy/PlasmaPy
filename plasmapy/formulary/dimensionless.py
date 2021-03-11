@@ -65,7 +65,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    theta: `~astropy.units.Quantity`
+    theta : `~astropy.units.Quantity`
 
     Notes
     -----
@@ -105,13 +105,13 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature of the plasma.
 
-    n : ~astropy.units.Quantity
+    n : `~astropy.units.Quantity`
         The particle density of the plasma.
 
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         The magnetic field in the plasma.
 
     Examples
@@ -274,7 +274,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Returns
     -------
-    Rm: `~astropy.units.Quantity`
+    Rm : `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """

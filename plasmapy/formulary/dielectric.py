@@ -134,10 +134,10 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : list of str
+    species : `list` of `str`
         The plasma particle species (e.g.: ``['e', 'D+']`` or
         ``['e', 'D+', 'He+']``.
 
