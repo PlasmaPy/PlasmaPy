@@ -32,4 +32,4 @@ jobs:
     - name: GitHub Action for Flake8
       uses: cclauss/GitHub-Action-for-Flake8@master
       with:
-        args: pydocstyle .
+        args: /home/runner/.local/bin/pydocstyle .
