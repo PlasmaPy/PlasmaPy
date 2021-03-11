@@ -52,11 +52,11 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If either of ``T_e`` or ``n`` is not a `~astropy.units.Quantity`
         and cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If either of ``T_e`` or ``n`` is not in appropriate units.
 
     Examples
@@ -147,7 +147,7 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     Returns
     -------
-    ratio: `~astropy.units.Quantity`
+    ratio : `~astropy.units.Quantity`
         The ratio of population of ions in ionization state j to state k.
 
     Examples
