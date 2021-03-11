@@ -21,11 +21,13 @@ are derived:
 
 1. The plasma is fully ionized, only consisting of ions and electrons.
    Neutral atoms are neglected.
-2. Turbulent transport does not dominate
+2. Turbulent transport does not dominate.
 3. The velocity distribution is close to Maxwellian. This implies:
-    i. Collisional mean free path << gradient scale length along field
-    ii. Gyroradius << gradient scale length perpendicular to field
-4. The plasma is highly collisional: collisional frequency >> gyrofrequency
+
+    a) Collisional mean free path ≪ gradient scale length along field.
+    b) Gyroradius ≪ gradient scale length perpendicular to field.
+
+4. The plasma is highly collisional: collisional frequency ≫ gyrofrequency.
 
 When classical transport is not valid, e.g. due to the presence of strong
 gradients or turbulent transport, the transport is significantly increased
@@ -98,9 +100,9 @@ Ji-Held [5]_
 
 This is a modern treatment of the classical transport problem that has been
 carried out with laudable care. It allows for arbitrary hall parameter and
-arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
+arbitrary :math:`Z` for all coefficients. Similar to the Epperlein-Haines model,
 it corrects some known inaccuracies in the original Braginskii results,
-notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
+notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 +infinity. It also studies effects of electron collisions in the ion
 terms, which all other treatments have not. To neglect electron-electron
 collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
@@ -163,13 +165,13 @@ class ClassicalTransport:
     Parameters
     ----------
     T_e : ~astropy.units.Quantity
-        Electron temperature in units of temperature or energy per particle
+        Electron temperature in units of temperature or energy per particle.
 
     n_e : ~astropy.units.Quantity
         The electron number density in units convertible to per cubic meter.
 
     T_i : ~astropy.units.Quantity
-        Ion temperature in units of temperature or energy per particle
+        Ion temperature in units of temperature or energy per particle.
 
     n_i : ~astropy.units.Quantity
         The ion number density in units convertible to per cubic meter.
@@ -462,12 +464,12 @@ class ClassicalTransport:
         The resistivity (:math:`α`) of a plasma is defined by
 
         .. math::
-            α = \frac{\hat{α}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+            α = \frac{\hat{α}}{n_{e} e^2 \frac{τ_{e}}{m_{e}}}
 
         where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
         :math:`n_e` is the electron number density of the plasma,
         :math:`e` is Euler's number,
-        :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+        :math:`τ_{e}` is the fundamental electron collision period of the plasma,
         and :math:`m_{e}` is the mass of an electron.
 
         Notes
@@ -506,7 +508,7 @@ class ClassicalTransport:
         Calculate the thermoelectric conductivity.
 
         .. todo::
-            The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+            The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
 
         Notes
         -----
@@ -531,13 +533,13 @@ class ClassicalTransport:
         The ion thermal conductivity (:math:`κ`) of a plasma is defined by
 
         .. math::
-            κ = \hat{κ} * \frac{n_{i} * k_{B}^2 * T_{i} * \tau_{i}}{m_{i}}
+            κ = \hat{κ} \frac{n_{i} k_{B}^2 T_{i} τ_{i}}{m_{i}}
 
         where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
         :math:`n_{i}` is the ion number density of the plasma,
         :math:`k_{B}` is the Boltzmann constant,
         :math:`T_{i}` is the ion temperature of the plasma,
-        :math:`\tau_{i}` is the fundamental ion collision period of the plasma,
+        :math:`τ_{i}` is the fundamental ion collision period of the plasma,
         and :math:`m_{i}` is the mass of an ion of the plasma.
 
         Notes
@@ -546,7 +548,7 @@ class ClassicalTransport:
         defined similarly to other materials. The result is a conductivity in
         units of W / m / K, so if you assume you know where the heat is flowing
         (temperature gradient, cross-sectional area) you can calculate the
-        energy transport in watts as conductivity * cross-sectional area *
+        energy transport in watts as conductivity × cross-sectional area ×
         temperature gradient. In lab plasmas, typically the energy is flowing
         out of your high-temperature plasma to something else, like the walls
         of your device, and you are sad about this.
@@ -584,13 +586,13 @@ class ClassicalTransport:
         The electron thermal conductivity (:math:`κ`) of a plasma is defined by
 
         .. math::
-            κ = \hat{κ} * \frac{n_{e} * k_{B}^2 * T_{e} * \tau_{e}}{m_{e}}
+            κ = \hat{κ} \frac{n_{e} k_{B}^2 T_{e} τ_{e}}{m_{e}}
 
         where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
         :math:`n_{e}` is the electron number density of the plasma,
         :math:`k_{B}` is the Boltzmann constant,
         :math:`T_{e}` is the electron temperature of the plasma,
-        :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+        :math:`τ_{e}` is the fundamental electron collision period of the plasma,
         and :math:`m_{e}` is the mass of an electron.
 
         Notes
@@ -803,12 +805,12 @@ def resistivity(
 
     .. math::
 
-        α = \frac{\hat{α}}{n_{e} * e^2 * \frac{\tau_{e}}{m_{e}}}
+        α = \frac{\hat{α}}{n_{e} e^2 \frac{τ_{e}}{m_{e}}}
 
     where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
     :math:`n_e` is the electron number density of the plasma,
     :math:`e` is Euler's number,
-    :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+    :math:`τ_{e}` is the fundamental electron collision period of the plasma,
     and :math:`m_{e}` is the mass of an electron.
 
     Notes
@@ -868,7 +870,7 @@ def thermoelectric_conductivity(
     Calculate the thermoelectric conductivity.
 
     .. todo::
-        The thermoelectric conductivity (:math:`\hat{\beta}`) of a plasma is defined by...
+        The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
     """
     ct = ClassicalTransport(
         T_e,
@@ -911,13 +913,13 @@ def ion_thermal_conductivity(
 
     .. math::
 
-        κ = \hat{κ} * \frac{n_{i} * k_{B}^2 * T_{i} * \tau_{i}}{m_{i}}
+        κ = \hat{κ} \frac{n_{i} k_{B}^2 T_{i} τ_{i}}{m_{i}}
 
     where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
     :math:`n_{i}` is the ion number density of the plasma,
     :math:`k_{B}` is the Boltzmann constant,
     :math:`T_{i}` is the ion temperature of the plasma,
-    :math:`\tau_{i}` is the fundamental ion collision period of the plasma,
+    :math:`τ_{i}` is the fundamental ion collision period of the plasma,
     and :math:`m_{i}` is the mass of an ion of the plasma.
 
     Notes
@@ -926,7 +928,7 @@ def ion_thermal_conductivity(
     defined similarly to other materials. The result is a conductivity in units
     of W / m / K, so if you assume you know where the heat is flowing
     (temperature gradient, cross-sectional area) you can calculate the energy
-    transport in watts as conductivity * cross-sectional area * temperature
+    transport in watts as conductivity × cross-sectional area × temperature
     gradient. In laboratory plasmas, typically the energy is flowing out of your
     high-temperature plasma to something else, like the walls of your device,
     and you are sad about this.
@@ -981,13 +983,13 @@ def electron_thermal_conductivity(
 
     .. math::
 
-        κ = \hat{κ} * \frac{n_{e} * k_{B}^2 * T_{e} * \tau_{e}}{m_{e}}
+        κ = \hat{κ} \frac{n_{e} k_{B}^2 T_{e} τ_{e}}{m_{e}}
 
     where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
     :math:`n_{e}` is the electron number density of the plasma,
     :math:`k_{B}` is the Boltzmann constant,
     :math:`T_{e}` is the electron temperature of the plasma,
-    :math:`\tau_{e}` is the fundamental electron collision period of the plasma,
+    :math:`τ_{e}` is the fundamental electron collision period of the plasma,
     and :math:`m_{e}` is the mass of an electron.
 
     Notes
@@ -1223,7 +1225,8 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
 
 
 def _nondim_resistivity(hall, Z, particle, model, field_orientation):
-    """Calculate dimensionless classical resistivity coefficients.
+    """
+    Calculate dimensionless classical resistivity coefficients.
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
@@ -1285,7 +1288,8 @@ def _check_Z(allowed_Z, Z):
 
 
 def _get_spitzer_harm_coeffs(Z):
-    """Return numerical coefficients from Spitzer-Harm '53.
+    """
+    Return numerical coefficients from Spitzer-Harm '53.
 
     Table III, Spitzer and Harm, Phys. Rev. Vol 89, 5, 1953
     """
@@ -1299,7 +1303,8 @@ def _get_spitzer_harm_coeffs(Z):
 
 
 def _nondim_tc_e_spitzer(Z):
-    """Dimensionless electron thermal conductivity — Spitzer.
+    """
+    Dimensionless electron thermal conductivity — Spitzer.
 
     This result is for parallel field or unmagnetized plasma only.
     """
