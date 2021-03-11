@@ -33,7 +33,7 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     r"""
-    Returns the de Broglie wavelength.
+    Return the de Broglie wavelength.
 
     The de Broglie wavelength (:math:`λ_{dB}`) of a particle is defined by
 
@@ -76,7 +76,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
         If the velocity is not in appropriate units.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the magnitude of `V` is larger than the speed of light.
+        If the magnitude of ``V`` is larger than the speed of light.
 
     Warns
     -----
@@ -245,7 +245,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
 
-    See also
+    See Also
     --------
     Thomas_Fermi_length
 
@@ -318,7 +318,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     Plasmas will generally be quasineutral on length scales significantly
     larger than the Thomas-Fermi screening length.
 
-    See also
+    See Also
     --------
     Fermi_energy
     plasmapy.formulary.Debye_length
@@ -385,7 +385,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     .. math::
         r = \left(\frac{3}{4 π n}\right)^{1/3}
 
-    See also
+    See Also
     --------
     Fermi_energy
 
