@@ -78,8 +78,8 @@ def _grab_charge(ion: Particle, z_mean=None):
     Returns
     -------
     float
-        if `z_mean` was passed, `z_mean`, otherwise, the integer charge
-        of the `ion`.
+        if ``z_mean`` was passed, ``z_mean``, otherwise, the integer charge
+        of ``ion``.
 
     """
     if z_mean is None:
@@ -457,10 +457,10 @@ def ion_sound_speed(
     ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
     :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
     :math:`Z` is the charge state of the ion, :math:`m_i` is the
-    ion mass, :math:`λ_{D}` is the Debye length, and :math:`k` is the
+    ion mass, :math:`λ_D` is the Debye length, and :math:`k` is the
     wavenumber.
 
-    In the non-dispersive limit (:math:`k^2 λ_{D}^2` is small) the
+    In the non-dispersive limit (:math:`k^2 λ_D^2` is small) the
     equation for :math:`V_S` is approximated (the denominator reduces
     to :math:`m_i`).
 
@@ -620,7 +620,7 @@ def thermal_speed(
     definition of :math:`v_{th}`: most probable, root-mean-square (RMS),
     or mean magnitude. The value of :math:`N` in each case is
 
-    .. list-table:: Values of constant N
+    .. list-table:: Values of constant :math:`N`
        :widths: 50, 25, 25, 25
        :header-rows: 1
 
@@ -663,7 +663,6 @@ def thermal_speed(
     <Quantity 674307... m / s>
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
-
     """
     m = mass if np.isfinite(mass) else particles.particle_mass(particle)
 
@@ -729,9 +728,8 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
     The thermal pressure is given by:
 
     .. math::
-        T_{th} = n k_{B} T
+        T_{th} = n k_B T
     """
-
     return n * k_B * T
 
 
@@ -757,9 +755,9 @@ def kappa_thermal_speed(
         The particle temperature in either kelvin or energy per particle
 
     kappa: `float`
-        The kappa parameter is a dimensionless number which sets the slope
+        The ``kappa`` parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. Kappa must be greater
+        of the Kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
     particle : `~plasmapy.particles.Particle`
@@ -980,7 +978,8 @@ betaH_ = Hall_parameter
 )
 @angular_freq_to_hz
 def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u.s:
-    r"""Calculate the particle gyrofrequency in units of radians per second.
+    r"""
+    Calculate the particle gyrofrequency in units of radians per second.
 
     **Aliases:** `oc_`, `wc_`
 
@@ -1017,12 +1016,12 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     Raises
     ------
     `TypeError`
-        If the magnetic field is not a `Quantity` or particle is not of an
-        appropriate type.
+        If the magnetic field is not a `~astropy.units.Quantity` or
+        ``particle`` is not of an appropriate type.
 
     `ValueError`
-        If the magnetic field contains invalid values or particle cannot be
-        used to identify an particle or isotope.
+        If the magnetic field contains invalid values or particle cannot
+        be used to identify an particle or isotope.
 
     Warns
     -----
@@ -1031,8 +1030,8 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     Notes
     -----
-    The particle gyrofrequency is the angular frequency of particle gyration
-    around magnetic field lines and is given by:
+    The particle gyrofrequency is the angular frequency of particle
+    gyration around magnetic field lines and is given by:
 
     .. math::
         ω_{ci} = \frac{Z e B}{m_i}
@@ -1043,7 +1042,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
     Astropy's `~astropy.units.dimensionles_angles` equivalency does not
-    account for the factor of 2π needed during this conversion.  The
+    account for the factor of :math:`2π` needed during this conversion.  The
     `~astropy.units.dimensionless_angles` equivalency is appropriate
     when dividing a velocity by an angular frequency to get a length scale.
 
@@ -1313,9 +1312,9 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     At present, `astropy.units` does not allow direct conversions from
     radians/second for angular frequency to 1/second or Hz for
     frequency.  The `~astropy.units.dimensionless_angles` equivalency
-    allows for that conversion, but does not account for the factor of 2π.
-    The alternatives are to convert to cycle/second or to do the
-    conversion manually, as shown in the examples.
+    allows for that conversion, but does not account for the factor of
+    :math:`2π`\ . The alternatives are to convert to cycle/second or to
+    do the conversion manually, as shown in the examples.
 
     Example
     -------
@@ -1330,7 +1329,6 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     <Quantity 1.78398...e+11 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
-
     """
 
     try:
@@ -1470,19 +1468,20 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     Returns
     -------
     N_D : `~astropy.units.Quantity`
-        Number of electrons within a sphere with a radius of the Debye length.
+        Number of electrons within a sphere with a radius of the Debye
+        length.
 
     Notes
     -----
-    The Debye number is the number of electrons contained within a sphere with
-    a radius of a Debye length and is given by
+    The Debye number is the number of electrons contained within a
+    sphere with a radius of a Debye length and is given by
 
     .. math::
         N_D = \frac{4π}{3} n_e λ_D^3
 
     The Debye number is also known as the plasma parameter.
 
-    Collective behavior requires a Debye number significantly larger than one.
+    Collective behavior requires :math:`N_D ≫ 1`\ .
 
     See Also
     --------
@@ -1668,7 +1667,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     Raises
     ------
     `TypeError`
-        If the input is not a Quantity.
+        If the input is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If the input is not in units convertible to tesla.
@@ -1837,7 +1836,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     Notes
     -----
