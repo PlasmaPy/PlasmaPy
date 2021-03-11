@@ -43,26 +43,26 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
 
     Parameters
     ----------
-    v: `~astropy.units.Quantity`
+    v : `~astropy.units.Quantity`
         The velocity in units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature in kelvin.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    v_drift: `~astropy.units.Quantity`, optional
+    v_drift : `~astropy.units.Quantity`, optional
         The drift velocity in units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable velocity) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -71,19 +71,19 @@ def Maxwellian_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"):
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in units of Velocity^-1, normalized so that
+        Probability density in units of velocity\ :sup:`-1`\ , normalized so that
         :math:`\int_{-∞}^{+∞} f(v) dv = 1`.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The parameter arguments are not Quantities and
         cannot be converted into Quantities.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters are not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -155,32 +155,32 @@ def Maxwellian_velocity_2D(
 
     Parameters
     ----------
-    vx: `~astropy.units.Quantity`
+    vx : `~astropy.units.Quantity`
         The velocity in x-direction units convertible to m/s.
 
-    vy: `~astropy.units.Quantity`
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species [e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
-    vx_drift: `~astropy.units.Quantity`, optional
+    vx_drift : `~astropy.units.Quantity`, optional
         The drift velocity in x-direction in units convertible to m/s.
 
-    vy_drift: `~astropy.units.Quantity`, optional
+    vy_drift : `~astropy.units.Quantity`, optional
         The drift velocity in y-direction in units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -189,7 +189,7 @@ def Maxwellian_velocity_2D(
     Returns
     -------
     f : `~astropy.units.Quantity`
-        Probability density in Velocity^-1, normalized so that
+        Probability density in Velocity\ :sup:`-1`\ , normalized so that
         :math:`\iiint_{0}^∞ f(\vec{v}) d\vec{v} = 1`.
 
     Raises
@@ -295,38 +295,38 @@ def Maxwellian_velocity_3D(
 
     Parameters
     ----------
-    vx: `~astropy.units.Quantity`
+    vx : `~astropy.units.Quantity`
         The velocity in x-direction in units convertible to m/s.
 
-    vy: `~astropy.units.Quantity`
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    vz: `~astropy.units.Quantity`
+    vz : `~astropy.units.Quantity`
         The velocity in z-direction units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for
         singly ionized helium-4), which defaults to electrons.
 
-    vx_drift: `~astropy.units.Quantity`, optional
+    vx_drift : `~astropy.units.Quantity`, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    vy_drift: `~astropy.units.Quantity`, optional
+    vy_drift : `~astropy.units.Quantity`, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    vz_drift: `~astropy.units.Quantity`, optional
+    vz_drift : `~astropy.units.Quantity`, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -433,26 +433,26 @@ def Maxwellian_speed_1D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Parameters
     ----------
-    v: `~astropy.units.Quantity`
+    v : `~astropy.units.Quantity`
         The speed in units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
-    v_drift: `~astropy.units.Quantity`
+    v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -576,14 +576,14 @@ def Maxwellian_speed_2D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -660,26 +660,26 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Parameters
     ----------
-    v: `~astropy.units.Quantity`
+    v : `~astropy.units.Quantity`
         The speed in units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    v_drift: `~astropy.units.Quantity`
+    v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating vTh, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -693,14 +693,14 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -775,32 +775,32 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
 
     Parameters
     ----------
-    v: `~astropy.units.Quantity`
+    v : `~astropy.units.Quantity`
         The velocity in units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature in kelvin.
 
-    kappa: `~astropy.units.Quantity`
+    kappa : `~astropy.units.Quantity`
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. Kappa must be greater
         than :math:`3/2`.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., `'p` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
-    v_drift: `~astropy.units.Quantity`, optional
+    v_drift : `~astropy.units.Quantity`, optional
         The drift velocity in units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating `vTh`, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
@@ -814,14 +814,14 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
 
     Raises
     ------
-    TypeError
+    `TypeError`
         A parameter argument is not a `~astropy.units.Quantity` and
         cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the parameters is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
@@ -921,44 +921,44 @@ def kappa_velocity_3D(
 
     Parameters
     ----------
-    vx: `~astropy.units.Quantity`
+    vx : `~astropy.units.Quantity`
         The velocity in x-direction units convertible to m/s.
 
-    vy: `~astropy.units.Quantity`
+    vy : `~astropy.units.Quantity`
         The velocity in y-direction units convertible to m/s.
 
-    vz: `~astropy.units.Quantity`
+    vz : `~astropy.units.Quantity`
         The velocity in z-direction units convertible to m/s.
 
-    T: `~astropy.units.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature, preferably in kelvin.
 
-    kappa: `~astropy.units.Quantity`
+    kappa : `~astropy.units.Quantity`
         The kappa parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
         of the Kappa velocity distribution function. ``kappa`` must be greater
         than :math:`3/2`.
 
-    particle: `str`, optional
+    particle : `str`, optional
         Representation of the particle species(e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
-    vx_drift: `~astropy.units.Quantity`, optional
+    vx_drift : `~astropy.units.Quantity`, optional
         The drift velocity in x-direction units convertible to m/s.
 
-    vy_drift: `~astropy.units.Quantity`, optional
+    vy_drift : `~astropy.units.Quantity`, optional
         The drift velocity in y-direction units convertible to m/s.
 
-    vz_drift: `~astropy.units.Quantity`, optional
+    vz_drift : `~astropy.units.Quantity`, optional
         The drift velocity in z-direction units convertible to m/s.
 
-    vTh: `~astropy.units.Quantity`, optional
+    vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
         optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
-    units: `str`, optional
+    units : `str`, optional
         Selects whether to run function with units and unit checks (when
         equal to "units") or to run as unitless (when equal to "unitless").
         The unitless version is substantially faster for intensive
