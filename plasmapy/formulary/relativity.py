@@ -99,9 +99,9 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
 
     .. math::
 
-        E = \\gamma m c^{2}
+        E = γ m c^2
 
-    where :math:`\\gamma` is the `Lorentz_factor`.
+    where :math:`γ` is the `Lorentz_factor`.
 
     Parameters
     ----------
@@ -114,18 +114,19 @@ def relativistic_energy(m: u.kg, v: u.m / u.s) -> u.Joule:
     Returns
     -------
     `~astropy.Quantity`
-        The relativistic energy (in joules) of an object of mass ``m`` moving at velocity ``v``.
+        The relativistic energy (in joules) of an object of mass ``m``
+        moving at velocity ``v``.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If input arguments are not instances `~astropy.units.Quantity` or
         convertible to a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If the ``v`` is not in appropriate units.
 
-    ValueError
+    `ValueError`
         If the magnitude of ``m`` is negative or arguments are complex.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
