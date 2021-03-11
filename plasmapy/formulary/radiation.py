@@ -39,7 +39,7 @@ def thermal_bremsstrahlung(
 
     .. math::
        \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
-       \bigg ( \frac{e^2}{4 π \epsilon_0} \bigg )^3
+       \bigg ( \frac{e^2}{4 π ε_0} \bigg )^3
        \bigg ( m_e c^2 \bigg )^{-\frac{3}{2}}
        \bigg ( 1 - \frac{ω_{pe}^2}{ω^2} \bigg )^\frac{1}{2}
        \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
