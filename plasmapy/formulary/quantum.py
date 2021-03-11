@@ -446,9 +446,9 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     The ideal chemical potential is given by [1]_:
 
     .. math::
-        \chi_a = I_{1/2}(β μ_a^{ideal})
+        χ_a = I_{1/2}(β μ_a^{ideal})
 
-    where :math:`\chi` is the degeneracy parameter, :math:`I_{1/2}` is the
+    where :math:`χ` is the degeneracy parameter, :math:`I_{1/2}` is the
     Fermi integral with order 1/2, :math:`β` is the inverse thermal
     energy :math:`β = 1/(k_B T)`, and :math:`μ_a^{ideal}`
     is the ideal chemical potential.
@@ -459,7 +459,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     returned from the Fermi_integral are complex, a nonlinear
     Levenberg-Marquardt least squares method is used to iteratively approach
     a value of :math:`μ` which minimizes
-    :math:`I_{1/2}(β μ_a^{ideal}) - \chi_a`
+    :math:`I_{1/2}(β μ_a^{ideal}) - χ_a`
 
     This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
