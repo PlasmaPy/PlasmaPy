@@ -32,7 +32,7 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     r"""
-    Compares Fermi energy to thermal kinetic energy to check if quantum
+    Compare Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
 
     The quantum theta (:math:`θ`) of a plasma is defined by
@@ -93,7 +93,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 )
 def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     r"""
-    The ratio of thermal pressure to magnetic pressure.
+    Compute the ratio of thermal pressure to magnetic pressure.
 
     The beta (:math:`β`) of a plasma is defined by
 
@@ -142,15 +142,17 @@ def Reynolds_number(
     rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
 ) -> u.dimensionless_unscaled:
     r"""
-    The Reynolds Number is a dimensionless quantity
-    that is used to predict flow patterns in fluids.
-    The Reynolds Number is defined as the ratio of inertial forces to viscous forces.
-    A low Reynolds Number describes smooth, laminar flow
-    while a high Reynolds Number describes rough, turbulent flow.
+    Compute the Reynolds number.
+
+    The Reynolds number is a dimensionless quantity that is used to
+    predict flow patterns in fluids. The Reynolds number is defined as
+    the ratio of inertial forces to viscous forces. A low Reynolds
+    number describes smooth, laminar flow while a high Reynolds number
+    describes rough, turbulent flow.
 
     .. math::
 
-        Re = \frac{\rho U L }{μ}
+        Re = \frac{ρ U L}{μ}
 
     **Aliases:** `Re_`
 
@@ -218,7 +220,9 @@ Re_ = Reynolds_number
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     r"""
-    The Magnetic Reynolds number is a dimensionless quantity that
+    Compute the magnetic Reynolds number
+
+    The magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
     to magnetic diffusion in a conducting medium.
 
