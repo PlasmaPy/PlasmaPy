@@ -3,9 +3,13 @@ import numpy as np
 
 from astropy import constants
 from dataclasses import dataclass
-from functools import cached_property
 from scipy import integrate
 from typing import Callable
+
+try:
+    from functools import cached_property
+except ImportError:
+    from cached_property import cached_property
 
 
 @dataclass
