@@ -1,6 +1,5 @@
-"""
-Formulas for calculating particle drifts.
-"""
+"""Functions for calculating particle drifts."""
+
 __all__ = [
     "diamagnetic_drift",
     "ExB_drift",
