@@ -616,9 +616,9 @@ def thermal_speed(
     .. math::
         V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
 
-    where the value of N depends on the dimensionality and the definition of
-    :math:`v_{th}`: most probable, root-mean-square (RMS), or mean magnitude.
-    The value of N in each case is
+    where the value of :math:`N` depends on the dimensionality and the
+    definition of :math:`v_{th}`: most probable, root-mean-square (RMS),
+    or mean magnitude. The value of :math:`N` in each case is
 
     .. list-table:: Values of constant N
        :widths: 50, 25, 25, 25
@@ -1371,10 +1371,10 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     Parameters
     ----------
-    T_e: `~astropy.units.Quantity`
+    T_e : `~astropy.units.Quantity`
         Electron temperature.
 
-    n_e: `~astropy.units.Quantity`
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     Returns
@@ -1905,10 +1905,10 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     Parameters
     ----------
-    T_e: `~astropy.units.Quantity`
+    T_e : `~astropy.units.Quantity`
         The electron temperature.
 
-    B: `~astropy.units.Quantity`
+    B : `~astropy.units.Quantity`
         The magnitude of the magnetic field in the plasma.
 
     Warns
@@ -1939,7 +1939,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     Returns
     -------
-    D_B: `~astropy.units.Quantity`
+    D_B : `~astropy.units.Quantity`
     The Bohm diffusion coefficient in meters squared per second.
 
     """
