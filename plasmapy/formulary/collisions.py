@@ -553,7 +553,7 @@ def impact_parameter_perp(
     TypeError
         If either of ``T`` or ``V`` is not a `~astropy.units.Quantity`.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -666,7 +666,7 @@ def impact_parameter(
     TypeError
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    RelativityError
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1364,7 +1364,7 @@ def mean_free_path(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1488,7 +1488,7 @@ def Spitzer_resistivity(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` are not of type `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1619,7 +1619,7 @@ def mobility(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 
@@ -1751,7 +1751,7 @@ def Knudsen_number(
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
 
-    `RelativityError`
+    `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
         of light.
 

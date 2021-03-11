@@ -65,7 +65,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    theta: `~astropy.units.Quantity`
+    theta : `~astropy.units.Quantity`
 
     Notes
     -----
@@ -274,7 +274,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Returns
     -------
-    Rm: `~astropy.units.Quantity`
+    Rm : `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """

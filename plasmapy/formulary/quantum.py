@@ -213,7 +213,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
     Returns
     -------
-    energy_F : ~astropy.units.Quantity
+    energy_F : `~astropy.units.Quantity`
         The Fermi energy in joules.
 
     Raises
@@ -413,7 +413,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Parameters
     ----------
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         Electron number density.
 
     T : ~astropy.units.Quantity
@@ -555,8 +555,8 @@ def _chemical_potential_interp(n_e, T):
     `ValueError`
         If argument contains invalid values.
 
-    Warnings
-    --------
+    Warns
+    -----
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 

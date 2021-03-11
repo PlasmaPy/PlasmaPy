@@ -173,7 +173,7 @@ class ClassicalTransport:
     T_i : ~astropy.units.Quantity
         Ion temperature in units of temperature or energy per particle.
 
-    n_i : ~astropy.units.Quantity
+    n_i : `~astropy.units.Quantity`
         The ion number density in units convertible to per cubic meter.
 
     ion : `str`
@@ -244,7 +244,7 @@ class ClassicalTransport:
         `None`, `Hall_parameter` will be used. Useful for comparing
         calculations.
 
-    mu: `float` or dimensionless `astropy.units.Quantity`, optional
+    mu: `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
@@ -555,7 +555,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        ~astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         See also
         --------
@@ -620,7 +620,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        ~astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         See also
         --------
@@ -661,7 +661,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        ~astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         See also
         --------
@@ -709,7 +709,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        ~astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         See also
         --------
@@ -829,7 +829,7 @@ def resistivity(
 
     Returns
     -------
-    ~astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
     """
     ct = ClassicalTransport(
@@ -935,7 +935,7 @@ def ion_thermal_conductivity(
 
     Returns
     -------
-    ~astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
     See also
     --------
@@ -1017,7 +1017,7 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    ~astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
     See also
     --------
@@ -1074,7 +1074,7 @@ def ion_viscosity(
 
     Returns
     -------
-    ~astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
     See also
     --------
