@@ -13,23 +13,12 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
     - uses: pre-commit/action@v2.0.0
-  flake8:
+  gitHubActionForFlake8:
     name: flake8
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: actions/setup-python@v2
-    - name: Install requirements
-      run: pip install flake8
-    - name: Run flake8
-      run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-exclude ".jupyter"
-  pydocstyle:
-    name: pydocstyle
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-python@v2
-    - name: Install requirements
-      run: pip install pydocstyle
-    - name: Run pydocstyle
-      run: pydocstyle plasmapy
+    - name: GitHub Action for Flake8
+      uses: cclauss/GitHub-Action-for-Flake8@master
+      with:
+        args: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-exclude ".jupyter"
