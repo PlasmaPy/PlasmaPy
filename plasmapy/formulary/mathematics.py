@@ -115,8 +115,10 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     R : `~numpy.ndarray`, shape (3,3)
         The rotation matrix that will rotate vector ``a`` onto vector ``b``.
 
-
-    The algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
+    Notes
+    -----
+    The algorithm is based on
+    `this discussion <https://math.stackexchange.com/a/476311>`_ on StackExchange:
     """
 
     # Normalize both vectors
