@@ -101,8 +101,9 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    a : ~np.ndarray, shape (3)
-        Pre-rotation orientation unit vector
+    a : `~numpy.ndarray`, shape (3,)
+        Vector to be rotated.  Should be a 1D, 3-element unit vector.  If ``a``
+        is not normalize, then it will be normalized.
 
     b : ~np.ndarray, shape (3)
         Post-rotation orientation unit vector
