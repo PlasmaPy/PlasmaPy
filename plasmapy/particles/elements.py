@@ -5,8 +5,7 @@ Module for loading atomic data for elements from
 The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 
 .. attention::
-    This module only contains non-public functionality.  To learn more about the
-    package functionality, examine the code itself.
+    This module is not part of PlasmaPy's public API.
 """
 __all__ = []
 
