@@ -2,8 +2,8 @@
 Functionality to parse representations of particles into standard form.
 
 .. attention::
-    This module only contains non-public functionality.  To learn more about the
-    package functionality, examine the code itself.
+    This module is not part of PlasmaPy's public API.
+
 """
 __all__ = []
 
@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
 from plasmapy.utils import roman
 
@@ -338,7 +338,7 @@ def _parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in _Isotopes.keys():
+            if isotope not in _isotopes.keys():
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."
