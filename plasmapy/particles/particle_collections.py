@@ -188,16 +188,16 @@ class ParticleList(collections.UserList):
     @property
     def charge(self) -> u.C:
         """
-        A `~astropy.units.Quantity` array of the electric charges of the
-        particles.
+        Return a `~astropy.units.Quantity` array of the electric charges
+        of the particles.
         """
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
-        A `list` containing the particles contained in the `ParticleList`
-        instance.
+        Return a `list` containing the particles contained in the
+        `ParticleList` instance.
 
         The `~plasmapy.particles.ParticleList.data` attribute should not
         be modified directly.
@@ -217,7 +217,10 @@ class ParticleList(collections.UserList):
 
     @property
     def half_life(self) -> u.s:
-        """A `~astropy.units.Quantity` array of the half-lives of the particles."""
+        """
+        Return a `~astropy.units.Quantity` array of the half-lives of
+        the particles.
+        """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
     def insert(self, index, particle: ParticleLike):
@@ -230,21 +233,24 @@ class ParticleList(collections.UserList):
     @property
     def integer_charge(self) -> np.array:
         """
-        An array of the quantized charges of the particles, as multiples
-        of the elementary charge.
+        Return an array of the quantized charges of the particles, as
+        multiples of the elementary charge.
         """
         return np.array(self._get_particle_attribute("integer_charge", default=np.nan))
 
     @property
     def mass(self) -> u.kg:
-        """A `~astropy.units.Quantity` array of the masses of the particles."""
+        """
+        Return a `~astropy.units.Quantity` array of the masses of the
+        particles.
+        """
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
     def mass_energy(self) -> u.J:
         """
-        A `~astropy.units.Quantity` array of the mass energies of the
-        particles.
+        Return a `~astropy.units.Quantity` array of the mass energies of
+        the particles.
 
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
@@ -255,8 +261,9 @@ class ParticleList(collections.UserList):
 
     def sort(self, key: Callable = None, reverse: bool = False):
         """
-        Sort the `ParticleList` in-place.  For more information, refer
-        to the documentation for `list.sort`.
+        Sort the `ParticleList` in-place.
+
+        For more information, refer to the documentation for `list.sort`.
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
@@ -265,7 +272,7 @@ class ParticleList(collections.UserList):
 
     @property
     def symbols(self) -> List[str]:
-        """A list of the symbols of the particles."""
+        """Return a `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
 
