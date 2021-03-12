@@ -9,7 +9,7 @@ PlasmaPy Documentation
 .. nbgallery::
    :hidden:
 
-   notebooks/physics
+   notebooks/proton_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/thomson
 
