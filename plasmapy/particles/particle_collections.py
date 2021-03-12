@@ -188,7 +188,7 @@ class ParticleList(collections.UserList):
     @property
     def charge(self) -> u.C:
         """
-        Return a `~astropy.units.Quantity` array of the electric charges
+        A `~astropy.units.Quantity` array of the electric charges
         of the particles.
         """
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
@@ -196,7 +196,7 @@ class ParticleList(collections.UserList):
     @property
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
-        Return a `list` containing the particles contained in the
+        A `list` containing the particles contained in the
         `ParticleList` instance.
 
         The `~plasmapy.particles.ParticleList.data` attribute should not
@@ -218,8 +218,8 @@ class ParticleList(collections.UserList):
     @property
     def half_life(self) -> u.s:
         """
-        Return a `~astropy.units.Quantity` array of the half-lives of
-        the particles.
+        A `~astropy.units.Quantity` array of the half-lives of the
+        particles.
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
@@ -233,24 +233,21 @@ class ParticleList(collections.UserList):
     @property
     def integer_charge(self) -> np.array:
         """
-        Return an array of the quantized charges of the particles, as
+        An array of the quantized charges of the particles, as
         multiples of the elementary charge.
         """
         return np.array(self._get_particle_attribute("integer_charge", default=np.nan))
 
     @property
     def mass(self) -> u.kg:
-        """
-        Return a `~astropy.units.Quantity` array of the masses of the
-        particles.
-        """
+        """A `~astropy.units.Quantity` array of the masses of the particles."""
         return self._get_particle_attribute("mass", unit=u.kg, default=np.nan * u.J)
 
     @property
     def mass_energy(self) -> u.J:
         """
-        Return a `~astropy.units.Quantity` array of the mass energies of
-        the particles.
+        A `~astropy.units.Quantity` array of the mass energies of the
+        particles.
 
         If the particle is an isotope or nuclide, return the mass energy
         of the nucleus only.
@@ -272,7 +269,7 @@ class ParticleList(collections.UserList):
 
     @property
     def symbols(self) -> List[str]:
-        """Return a `list` of the symbols of the particles."""
+        """A `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
 

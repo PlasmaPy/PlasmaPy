@@ -100,18 +100,18 @@ class IonicFraction:
 
     @property
     def ionic_symbol(self) -> str:
-        """Return the symbol of the ion."""
+        """The symbol of the ion."""
         return self._particle.ionic_symbol
 
     @property
     def integer_charge(self) -> Integral:
-        """Return the integer charge of the ion."""
+        """The integer charge of the ion."""
         return self._particle.integer_charge
 
     @property
     def ionic_fraction(self) -> Real:
         r"""
-        Return the fraction of particles of an element that are at this
+        The fraction of particles of an element that are at this
         ionization level.
 
         Notes
@@ -140,7 +140,7 @@ class IonicFraction:
 
     @property
     def number_density(self) -> u.m ** -3:
-        """Return the number density of the ion."""
+        """The number density of the ion."""
         return self._number_density.to(u.m ** -3)
 
     @number_density.setter
