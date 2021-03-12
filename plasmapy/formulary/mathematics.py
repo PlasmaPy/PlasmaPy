@@ -124,7 +124,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
                 -v_2 & v_1 & 0
             \end{bmatrix}
 
-    Note that this algorithm fails when :math:`1+c=0`, or when :math:`a` and
+    Note that this algorithm fails when :math:`1+c=0`, which occurs when :math:`a` and
     :math:`b` are anti-parallel. However, since the correct rotation matrix
     in this case is simply :math:`R=-I`, this function just handles this
     special case explicitly.
