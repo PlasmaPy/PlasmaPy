@@ -15,3 +15,4 @@ Proton radiography analysis
     :caption: Examples
 
     /notebooks/proton_radiography_particle_tracing
+    /notebooks/proton_radiography_particle_tracing_wire_mesh

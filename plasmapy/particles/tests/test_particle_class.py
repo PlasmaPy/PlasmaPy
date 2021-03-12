@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -712,7 +712,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _Isotopes[isotope].get("half-life", None)
+        half_life = _isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
