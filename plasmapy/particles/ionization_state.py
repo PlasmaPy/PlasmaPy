@@ -696,7 +696,7 @@ class IonizationState:
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
-    def _get_states_info(self, minimum_ionic_level=0.01) -> List[str]:
+    def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
         (if available) the number density for that ion.
