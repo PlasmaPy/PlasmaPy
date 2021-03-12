@@ -37,7 +37,7 @@ def test_rot_a_to_b(a, b, correct):
         # b is the wrong length
         (np.array([1, 0, 0]), np.array([1, 0]), ValueError),
         # both are the wrong length
-        (np.array([1, 0, 0, 0]), np.array([1, 0]), ValueError),
+        (np.array([1, 0]), np.array([1, 0]), ValueError),
     ],
 )
 def test_rot_a_to_b_raises(a, b, _raises):
