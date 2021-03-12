@@ -31,10 +31,3 @@ def test_rot_a_to_b():
     R = mathematics.rot_a_to_b(a, b)
     correct = -np.identity(3)
     assert np.allclose(R, correct, atol=1e-6)
-
-
-if __name__ == "__main__":
-    """
-    test_rot_a_to_b()
-    """
-    pass
