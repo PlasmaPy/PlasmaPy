@@ -35,7 +35,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
@@ -108,29 +108,29 @@ def _category_errmsg(particle, category: str) -> str:
 
 
 class AbstractParticle(ABC):
-    """
-    An abstract base class that defines the interface for particles.
-    """
+    """An abstract base class that defines the interface for particles."""
 
     @property
     @abstractmethod
     def mass(self) -> Union[u.Quantity, Real]:
+        """Provide the particle's mass."""
         raise NotImplementedError
 
     @property
     @abstractmethod
     def charge(self) -> Union[u.Quantity, Real]:
+        """Provide the particle's electric charge."""
         raise NotImplementedError
 
     @property
     def json_dict(self) -> dict:
         """
-        A dictionary representation of the particle object that is JSON friendly
-        (i.e. convertible to a JSON object).
+        Provide a dictionary representation of the particle object that
+        is JSON friendly (i.e. convertible to a JSON object).
 
         The dictionary should maintain the following format so
-        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded the resulting
-        JSON object.
+        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded
+        the resulting JSON object.
 
         .. code-block:: python
 
@@ -154,7 +154,7 @@ class AbstractParticle(ABC):
                 },
             }}
 
-        Only the `"__init__"` entry should be modified by the subclass.
+        Only the ``"__init__"`` entry should be modified by the subclass.
         """
         json_dictionary = {
             "plasmapy_particle": {
@@ -168,14 +168,15 @@ class AbstractParticle(ABC):
 
     def __bool__(self):
         """
-        Raise an `~plasmapy.particles.exceptions.ParticleError` because particles
-        do not have a truth value.
+        Raise an `~plasmapy.particles.exceptions.ParticleError` because
+        particles do not have a truth value.
         """
         raise ParticleError("The truth value of a particle is not defined.")
 
     def json_dump(self, fp, **kwargs):
         """
-        Writes the particle's `json_dict` to the `fp` file object using `json.dump`.
+        Write the particle's `json_dict` to the ``fp`` file object using
+        `json.dump`.
 
         Parameters
         ----------
@@ -189,8 +190,8 @@ class AbstractParticle(ABC):
 
     def json_dumps(self, **kwargs) -> str:
         """
-        Serialize the particle's `json_dict` into a JSON formatted `str` using
-        `json.dumps`.
+        Serialize the particle's `json_dict` into a JSON formatted `str`
+        using `json.dumps`.
 
         Parameters
         ----------
@@ -530,7 +531,7 @@ class Particle(AbstractPhysicalParticle):
 
             if isotope:
 
-                Isotope = _Isotopes[isotope]
+                Isotope = _isotopes[isotope]
 
                 attributes["baryon number"] = Isotope["mass number"]
                 attributes["isotope mass"] = Isotope.get("mass", None)
@@ -703,8 +704,9 @@ class Particle(AbstractPhysicalParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see
-        `AbstractParticle.json_dict` for more details)
+        Provide `json` friendly dictionary representation of the particle.
+
+        See `AbstractParticle.json_dict` for more details.
 
         Examples
         --------
@@ -1488,7 +1490,7 @@ class Particle(AbstractPhysicalParticle):
         ``valid_categories`` attribute of `~Particle.is_category`.
 
         Examples
-        -----
+        --------
         Required categories may be entered as positional arguments,
         including as a `list`, `set`, or `tuple` of required categories.
 
@@ -1879,8 +1881,9 @@ class DimensionlessParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see
-        `AbstractParticle.json_dict` for more details)
+        Provide a `json` friendly dictionary representation of the particle.
+
+        See `AbstractParticle.json_dict` for more details.
 
         Examples
         --------
@@ -2040,8 +2043,9 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the particle. (see
-        `AbstractParticle.json_dict` for more details)
+        Provide a `json` friendly dictionary representation of the particle.
+
+        See `AbstractParticle.json_dict` for more details.
 
         Examples
         --------
