@@ -35,7 +35,7 @@ class IonicLevel:
     ion: `~plasmapy.particles.particle_class.ParticleLike`
         The ion for the corresponding ionic fraction.
 
-    ionic_level: real number between 0 and 1, optional
+    ionic_fraction: real number between 0 and 1, optional
         The fraction of an element or isotope that is at this ionization
         level.
 
@@ -49,12 +49,12 @@ class IonicLevel:
 
     Examples
     --------
-    >>> alpha_fraction = IonicLevel("alpha", ionic_level=0.31)
+    >>> alpha_fraction = IonicLevel("alpha", ionic_fraction=0.31)
     >>> alpha_fraction.ionic_symbol
     'He-4 2+'
     >>> alpha_fraction.integer_charge
     2
-    >>> alpha_fraction.ionic_level
+    >>> alpha_fraction.ionic_fraction
     0.31
     """
 
@@ -65,7 +65,7 @@ class IonicLevel:
                 return False
 
             ionic_level_within_tolerance = np.isclose(
-                self.ionic_level, other.ionic_level, rtol=1e-15,
+                self.ionic_fraction, other.ionic_fraction, rtol=1e-15,
             )
 
             number_density_within_tolerance = u.isclose(
@@ -82,10 +82,10 @@ class IonicLevel:
             ) from exc
 
     @particle_input
-    def __init__(self, ion: Particle, ionic_level=None, number_density=None):
+    def __init__(self, ion: Particle, ionic_fraction=None, number_density=None):
         try:
             self.ion = ion
-            self.ionic_level = ionic_level
+            self.ionic_fraction = ionic_fraction
             self.number_density = number_density
 
         except Exception as exc:
@@ -93,7 +93,8 @@ class IonicLevel:
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, " f"ionic_level={self.ionic_level})"
+            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"ionic_fraction={self.ionic_fraction})"
         )
 
     @property
@@ -107,7 +108,7 @@ class IonicLevel:
         return self.ion.integer_charge
 
     @property
-    def ionic_level(self) -> Real:
+    def ionic_fraction(self) -> Real:
         r"""
         The fraction of particles of an element that are at this
         ionization level.
@@ -121,8 +122,8 @@ class IonicLevel:
         """
         return self._ionic_level
 
-    @ionic_level.setter
-    def ionic_level(self, ionfrac: Optional[Real]):
+    @ionic_fraction.setter
+    def ionic_fraction(self, ionfrac: Optional[Real]):
         if ionfrac is None or np.isnan(ionfrac):
             self._ionic_level = np.nan
         else:
@@ -301,7 +302,7 @@ class IonizationState:
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
             result = IonicLevel(
                 ion=Particle(self.base_particle, Z=value),
-                ionic_level=self.ionic_levels[value],
+                ionic_fraction=self.ionic_levels[value],
                 number_density=self.number_densities[value],
             )
         else:
@@ -321,7 +322,7 @@ class IonizationState:
                 Z = value.integer_charge
                 result = IonicLevel(
                     ion=Particle(self.base_particle, Z=Z),
-                    ionic_level=self.ionic_levels[Z],
+                    ionic_fraction=self.ionic_levels[Z],
                     number_density=self.number_densities[Z],
                 )
             else:
@@ -709,12 +710,12 @@ class IonizationState:
         states_info = []
 
         for state in self:
-            if state.ionic_level >= minimum_ionic_level:
+            if state.ionic_fraction >= minimum_ionic_level:
                 state_info = ""
                 symbol = state.ionic_symbol
                 if state.integer_charge < 10:
                     symbol = symbol[:-2] + " " + symbol[-2:]
-                fraction = "{:.3f}".format(state.ionic_level)
+                fraction = "{:.3f}".format(state.ionic_fractioionic_fraction)
 
                 state_info += f"{symbol}: {fraction}"
 

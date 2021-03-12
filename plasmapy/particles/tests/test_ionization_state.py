@@ -23,22 +23,22 @@ ionic_level_table = [
 ]
 
 
-@pytest.mark.parametrize("ion, ionic_level, number_density", ionic_level_table)
-def test_ionic_level_attributes(ion, ionic_level, number_density):
+@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_level_table)
+def test_ionic_level_attributes(ion, ionic_fraction, number_density):
 
     instance = IonicLevel(
-        ion=ion, ionic_level=ionic_level, number_density=number_density
+        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
 
     # Prepare to check for the default values when they are not set
 
-    if ionic_level is None:
-        ionic_level = np.nan
+    if ionic_fraction is None:
+        ionic_fraction = np.nan
     if number_density is None:
         number_density = np.nan * u.m ** -3
 
     assert Particle(ion) == Particle(instance.ionic_symbol)
-    assert u.isclose(instance.ionic_level, ionic_level, equal_nan=True)
+    assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
     assert u.isclose(instance.number_density, number_density, equal_nan=True)
 
 
@@ -52,7 +52,7 @@ def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
     is out of the interval [0,1] or otherwise invalid.
     """
     with pytest.raises(expected_exception):
-        IonicLevel(ion="Fe 6+", ionic_level=invalid_fraction)
+        IonicLevel(ion="Fe 6+", ionic_fraction=invalid_fraction)
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
@@ -62,7 +62,7 @@ def test_ionic_level_invalid_particles(invalid_particle):
     exception when passed a particle that isn't a neutral or ion.
     """
     with pytest.raises(ParticleError):
-        IonicLevel(invalid_particle, ionic_level=0)
+        IonicLevel(invalid_particle, ionic_fraction=0)
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
@@ -73,8 +73,8 @@ def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     """
     fraction = 0.251
 
-    ionic_level_1 = IonicLevel(ion=ion1, ionic_level=fraction)
-    ionic_level_2 = IonicLevel(ion=ion2, ionic_level=fraction)
+    ionic_level_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
+    ionic_level_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert (ionic_level_1 == ionic_level_2) is False
 
@@ -226,7 +226,7 @@ class Test_IonizationState:
 
         try:
             integer_charges = [state.integer_charge for state in states]
-            ionic_levels = np.array([state.ionic_level for state in states])
+            ionic_levels = np.array([state.ionic_fraction for state in states])
             ionic_symbols = [state.ionic_symbol for state in states]
         except Exception:
             pytest.fail(f"An attribute may be misnamed or missing ({test_name}).")
@@ -429,7 +429,9 @@ class Test_IonizationState:
         if errors:
             pytest.fail(str.join("", errors))
 
-    @pytest.mark.parametrize("attr", ["integer_charge", "ionic_level", "ionic_symbol"])
+    @pytest.mark.parametrize(
+        "attr", ["integer_charge", "ionic_fraction", "ionic_symbol"]
+    )
     def test_State_attrs(self, attr):
         """
         Test that an IonizationState instance returns something with the
