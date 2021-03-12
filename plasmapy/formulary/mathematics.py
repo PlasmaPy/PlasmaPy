@@ -103,7 +103,8 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         \vec v = \vec a \times \vec b
 
     and let :math:`\theta` be the angle between :math:`\vec a`
-    and :math:`\vec b` such that
+    and :math:`\vec b` such that the projection of :math:`\vec a` along
+    :math:`\vec b` is
 
     .. math::
         c = \vec a \cdot \vec b \cos\theta
