@@ -17,7 +17,7 @@ from typing import Dict, Union
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
     _element_names_to_symbols,
-    _Elements,
+    _elements,
 )
 from plasmapy.particles.exceptions import (
     InvalidElementError,
@@ -439,10 +439,10 @@ def _parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _Elements[element]["atomic number"]:
+        if Z > _elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {_Elements[element]['atomic number']}."
+                f"of {element}, which is {_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(

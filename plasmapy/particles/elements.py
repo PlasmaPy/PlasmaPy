@@ -40,16 +40,16 @@ def _element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-_Elements = json.loads(
+_elements = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/elements.json"),
     object_hook=_element_obj_hook,
 )
 
 
 _atomic_numbers_to_symbols = {
-    elemdict["atomic number"]: symb for (symb, elemdict) in _Elements.items()
+    elemdict["atomic number"]: symb for (symb, elemdict) in _elements.items()
 }
 
 _element_names_to_symbols = {
-    elemdict["element name"]: symb for (symb, elemdict) in _Elements.items()
+    elemdict["element name"]: symb for (symb, elemdict) in _elements.items()
 }

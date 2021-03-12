@@ -23,7 +23,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles.elements import _Elements, _PeriodicTable
+from plasmapy.particles.elements import _elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -518,7 +518,7 @@ class Particle(AbstractPhysicalParticle):
 
             # Element properties
 
-            Element = _Elements[element]
+            Element = _elements[element]
 
             attributes["atomic number"] = Element["atomic number"]
             attributes["element name"] = Element["element name"]
