@@ -97,7 +97,45 @@ def Fermi_integral(
 def rot_a_to_b(a, b):
     r"""
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b.
+    with vector b. The rotation matrix is calculated as follows. Let
+
+    .. math::
+        \vec v = \vec a \times \vec b
+
+    and let :math:`\theta` be the angle between :math:`\vec a`
+    and :math:`\vec b` such that
+
+    .. math::
+        s = |\vec v| sin(\theta)
+
+    and
+
+    .. math::
+        c = \vec a \cdot \vec b cos(\theta)
+
+    Then the rotation matrix :math:`R` is
+
+    .. math::
+        R = I + v_x + v_x^2 \fract{1}{1 + c}
+
+
+    Where :math:`I` is the identity matrix and :math:`v_x` is the
+    skew-symmetric cross-product matrix of :math:`v` defined as
+
+    .. math::
+        v_x = \begin{bmatrix}
+                0 & -v_3 & v_2 \\
+                v_3 & 0 & -v_1 \\
+                -v_2 & v_1 & 0
+            \end{bmatrix}
+
+    Note that this algorithm fails when :math:`1+c=0`, or when :math:`a` and
+    :math:`b` are anti-parallel. However, since the correct rotation matrix
+    in this case is simply :math:`R=-I`, this function just handles this
+    special case explicitly.
+
+    The algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
+
 
     Parameters
     ----------
@@ -112,9 +150,6 @@ def rot_a_to_b(a, b):
     R : ~np.ndarray, shape(3,3)
         The rotation matrix that will rotate vector a to be parallel to
         vector b.
-
-
-    The algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
     """
 
     # Normalize both vectors
