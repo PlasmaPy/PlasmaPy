@@ -94,7 +94,7 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
-def rot_a_to_b(a, b):
+def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
     with vector b.
