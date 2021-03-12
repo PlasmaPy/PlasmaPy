@@ -715,7 +715,7 @@ class IonizationState:
                 symbol = state.ionic_symbol
                 if state.integer_charge < 10:
                     symbol = symbol[:-2] + " " + symbol[-2:]
-                fraction = "{:.3f}".format(state.ionic_fractions)
+                fraction = "{:.3f}".format(state.ionic_fraction)
 
                 state_info += f"{symbol}: {fraction}"
 
