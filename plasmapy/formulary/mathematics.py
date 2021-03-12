@@ -96,8 +96,8 @@ def Fermi_integral(
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
-    Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b. The rotation matrix is calculated as follows. Let
+    Calculates the 3D rotation matrix that will rotate vector ``a`` to be aligned
+    with vector ``b``. The rotation matrix is calculated as follows. Let
 
     .. math::
         \vec v = \vec a \times \vec b
@@ -119,7 +119,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         R = I + v_x + v_x^2 \fract{1}{1 + c}
 
 
-    Where :math:`I` is the identity matrix and :math:`v_x` is the
+    where :math:`I` is the identity matrix and :math:`v_x` is the
     skew-symmetric cross-product matrix of :math:`v` defined as
 
     .. math::
@@ -134,7 +134,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     in this case is simply :math:`R=-I`, this function just handles this
     special case explicitly.
 
-    The algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
+    This algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
 
 
     Parameters
