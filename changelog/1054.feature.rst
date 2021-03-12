@@ -1,0 +1,1 @@
+Created a function,`~plasmapy.formulary.mathematics.rot_a_to_b`, that calculates the rotation matrix that will rotate one 3D vector onto another.
