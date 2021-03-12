@@ -18,34 +18,10 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
+from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
-
-
-def _rot_a_to_b(a, b):
-    r"""
-    Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b.
-
-    The algorithm is based on this discussion on StackExchange:
-    https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
-    """
-    # Normalize both vectors
-    a = a / np.linalg.norm(a)
-    b = b / np.linalg.norm(b)
-
-    # Manually handle the case where a and b point in opposite directions
-    if np.dot(a, b) == -1:
-        return -np.identity(3)
-
-    axb = np.cross(a, b)
-    c = np.dot(a, b)
-    vskew = np.array(
-        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
-    ).T  # Transpose to get right orientation
-
-    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
 
 
 def _coerce_to_cartesian_si(pos):
@@ -659,7 +635,7 @@ class SyntheticProtonRadiograph:
         # onto the source-detector axis
         a = np.array([0, 0, 1])
         b = self.detector - self.source
-        rot = _rot_a_to_b(a, b)
+        rot = rot_a_to_b(a, b)
 
         # Apply rotation matrix to calculated velocity distribution
         self.v = np.matmul(self.v, rot)
