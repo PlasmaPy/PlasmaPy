@@ -13,7 +13,7 @@ from plasmapy.particles import (
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
@@ -26,7 +26,7 @@ ionic_fraction_table = [
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
 def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 
-    instance = IonicFraction(
+    instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
 
@@ -48,33 +48,33 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
 )
 def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
     """
-    Test that IonicFraction raises exceptions when the ionic fraction
+    Test that IonicLevel raises exceptions when the ionic fraction
     is out of the interval [0,1] or otherwise invalid.
     """
     with pytest.raises(expected_exception):
-        IonicFraction(ion="Fe 6+", ionic_fraction=invalid_fraction)
+        IonicLevel(ion="Fe 6+", ionic_fraction=invalid_fraction)
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
 def test_ionic_fraction_invalid_particles(invalid_particle):
     """
-    Test that `~plasmapy.particles.IonicFraction` raises the appropriate
+    Test that `~plasmapy.particles.IonicLevel` raises the appropriate
     exception when passed a particle that isn't a neutral or ion.
     """
     with pytest.raises(ParticleError):
-        IonicFraction(invalid_particle, ionic_fraction=0)
+        IonicLevel(invalid_particle, ionic_fraction=0)
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
 def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     """
-    Test that a `TypeError` is raised when an `IonicFraction` object
-    is compared to an `IonicFraction` object of a different ion.
+    Test that a `TypeError` is raised when an `IonicLevel` object
+    is compared to an `IonicLevel` object of a different ion.
     """
     fraction = 0.251
 
-    ionic_fraction_1 = IonicFraction(ion=ion1, ionic_fraction=fraction)
-    ionic_fraction_2 = IonicFraction(ion=ion2, ionic_fraction=fraction)
+    ionic_fraction_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert (ionic_fraction_1 == ionic_fraction_2) is False
 
@@ -101,7 +101,7 @@ test_cases = {
     },
     "Li ground state": {
         "particle": "Li",
-        "ionic_fractions": np.array([1, 0, 0, 0], dtype=np.int64),
+        "ionic_fractions": np.array([1, 0, 0, 0], dtype=int),
         "tol": 1e-15,
     },
     "H": {"particle": "H", "ionic_fractions": [0.6, 0.4], "tol": 1e-8},
@@ -555,14 +555,6 @@ def test_IonizationState_exceptions(test):
     )
 
 
-kwargs = {
-    "particle": "He-4",
-    "ionic_fractions": [0.2, 0.3, 0.5],
-    "T_e": 5.0 * u.kK,
-    "tol": 2e-14,
-    "n_elem": 1e13 * u.cm ** -3,
-}
-
 expected_properties = {
     "T_e": 5000.0 * u.K,
     "tol": 2e-14,
@@ -576,23 +568,33 @@ expected_properties = {
     "integer_charges": [0, 1, 2],
     "ionic_fractions": np.array([0.2, 0.3, 0.5]),
     "ionic_symbols": ["He-4 0+", "He-4 1+", "He-4 2+"],
-    "_is_normalized()": True,
     "number_densities": np.array([2e18, 3e18, 5e18]) * u.m ** -3,
     "tol": 2e-14,
-    "__str__()": "<IonizationState instance for He-4>",
 }
 
-instance = IonizationState(**kwargs)
+
+@pytest.fixture
+def instance():
+    kwargs = {
+        "particle": "He-4",
+        "ionic_fractions": [0.2, 0.3, 0.5],
+        "T_e": 5.0 * u.kK,
+        "tol": 2e-14,
+        "n_elem": 1e13 * u.cm ** -3,
+    }
+
+    instance = IonizationState(**kwargs)
+    return instance
 
 
-@pytest.mark.parametrize("key", expected_properties.keys())
-def test_IonizationState_attributes(key):
+@pytest.mark.parametrize("key", expected_properties)
+def test_IonizationState_attributes(instance, key):
     """
     Test a specific case that the `IonizationState` attributes are
     working as expected.
     """
     expected = expected_properties[key]
-    actual = eval(f"instance.{key}")
+    actual = getattr(instance, key)
 
     if isinstance(expected, u.Quantity):
         assert expected.unit == actual.unit, f"Unit mismatch for IonizationState.{key}"
@@ -604,6 +606,11 @@ def test_IonizationState_attributes(key):
             assert expected == actual
         except ValueError:
             assert np.allclose(expected, actual)
+
+
+def test_IonizationState_methods(instance):
+    assert instance._is_normalized()
+    assert str(instance) == "<IonizationState instance for He-4>"
 
 
 def test_nans():
