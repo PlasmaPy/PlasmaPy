@@ -607,19 +607,6 @@ def test_IonizationState_methods(instance):
     assert str(instance) == "<IonizationState instance for He-4>"
 
 
-def test_IonizationState_ion_temperatures(instance):
-    for ionic_level in instance:
-        assert instance.T_e == ionic_level.T_i
-
-
-@pytest.mark.xfail(
-    reason="IonizationState currently does not store IonicLevels, but generates them on the fly!"
-)
-def test_IonizationState_ion_temperature_persistence(instance):
-    instance[0].T_i += 1 * u.K
-    assert instance[0].T_i - instance.T_e == (1 * u.K)
-
-
 def test_nans():
     """
     Test that when no ionic fractions or temperature are inputted,

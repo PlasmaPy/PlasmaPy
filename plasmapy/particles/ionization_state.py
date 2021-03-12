@@ -82,12 +82,11 @@ class IonicLevel:
             ) from exc
 
     @particle_input
-    def __init__(self, ion: Particle, ionic_level=None, number_density=None, T_i=None):
+    def __init__(self, ion: Particle, ionic_level=None, number_density=None):
         try:
             self.ion = ion
             self.ionic_level = ionic_level
             self.number_density = number_density
-            self.T_i = T_i
 
         except Exception as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
@@ -151,21 +150,6 @@ class IonicLevel:
             self._number_density = np.nan * u.m ** -3
         else:
             self._number_density = n
-
-    @property
-    def T_i(self) -> u.K:
-        """The ion temperature of this particular charge state."""
-        return self._T_i
-
-    @T_i.setter
-    @validate_quantities(
-        T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
-    )
-    def T_i(self, T: u.K):
-        if T is None:
-            self._T_i = np.nan * u.K
-        else:
-            self._T_i = T
 
 
 class IonizationState:
@@ -319,7 +303,6 @@ class IonizationState:
                 ion=Particle(self.base_particle, Z=value),
                 ionic_level=self.ionic_levels[value],
                 number_density=self.number_densities[value],
-                T_i=self.T_e,
             )
         else:
             if not isinstance(value, Particle):
@@ -340,7 +323,6 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_level=self.ionic_levels[Z],
                     number_density=self.number_densities[Z],
-                    T_i=self.T_e,
                 )
             else:
                 if not same_element or not same_isotope:
