@@ -106,17 +106,12 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     and :math:`\vec b` such that
 
     .. math::
-        s = |\vec v| sin(\theta)
-
-    and
-
-    .. math::
-        c = \vec a \cdot \vec b cos(\theta)
+        c = \vec a \cdot \vec b \cos\theta
 
     Then the rotation matrix :math:`R` is
 
     .. math::
-        R = I + v_x + v_x^2 \fract{1}{1 + c}
+        R = I + v_x + v_x^2 \frac{1}{1 + c}
 
 
     where :math:`I` is the identity matrix and :math:`v_x` is the
@@ -134,7 +129,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     in this case is simply :math:`R=-I`, this function just handles this
     special case explicitly.
 
-    This algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>` on StackExchange:
+    This algorithm is based on `this discussion <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>`_ on StackExchange:
 
 
     Parameters
