@@ -91,7 +91,8 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     Returns
     -------
     mass_energy: `~astropy.units.Quantity`
-        The mass energy of the particle (or in the case of ) in units of joules.
+        The mass energy of the particle (or, in the case of an isotope,
+        its nuclide) in units of joules.
 
     Raises
     ------
@@ -106,7 +107,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Examples
     --------
-
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
     """

@@ -410,7 +410,6 @@ class IonizationStateCollection:
         isotope.  The values will be `~numpy.ndarray` objects containing
         the ionic fractions for each ionization level corresponding to
         each element or isotope.
-
         """
         return self._ionic_fractions
 
@@ -773,9 +772,7 @@ class IonizationStateCollection:
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
-        """
-        Set the base 10 logarithm of the relative abundances.
-        """
+        """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
                 new_abundances_input = {}
@@ -849,9 +846,7 @@ class IonizationStateCollection:
 
     @tol.setter
     def tol(self, atol: Real):
-        """
-        Set the absolute tolerance for comparisons.
-        """
+        """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
