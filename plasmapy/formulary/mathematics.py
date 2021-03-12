@@ -96,8 +96,8 @@ def Fermi_integral(
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
-    Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b.
+    Calculates the 3D rotation matrix that will rotate vector ``a`` to be aligned
+    with vector ``b``.
 
     Parameters
     ----------
