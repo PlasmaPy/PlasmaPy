@@ -1,1 +1,4 @@
-Created an example notebook demonstrating how the `SyntheticProtonRadiograph` class can be used to generate synthetic proton radiographs with arbitrary source profiles.
+Created an example notebook demonstrating how the
+`~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph` class can be
+used to generate synthetic proton radiographs with arbitrary source profiles.  Add
+code documentation links to all proton radiograph notebooks.
