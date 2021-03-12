@@ -105,8 +105,10 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         Vector to be rotated.  Should be a 1D, 3-element unit vector.  If ``a``
         is not normalize, then it will be normalized.
 
-    b : ~np.ndarray, shape (3)
-        Post-rotation orientation unit vector
+    b : `~numpy.ndarray`, shape (3,)
+        Vector representing the desired orientation after rotation.  Should be
+        a 1D, 3-element unit vector.  If ``b`` is not normalized, then it will
+        be.
 
     Returns
     -------
