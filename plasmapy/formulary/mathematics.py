@@ -94,7 +94,7 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
-def rot_a_to_b(a, b):
+def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
     Calculates the 3D rotation matrix that will rotate vector a to be aligned
     with vector b. The rotation matrix is calculated as follows. Let
@@ -139,17 +139,20 @@ def rot_a_to_b(a, b):
 
     Parameters
     ----------
-    a : ~np.ndarray, shape (3)
-        Pre-rotation orientation unit vector
+    a : `~numpy.ndarray`, shape (3,)
+        Vector to be rotated.  Should be a 1D, 3-element unit vector.  If ``a``
+        is not normalize, then it will be normalized.
 
-    b : ~np.ndarray, shape (3)
-        Post-rotation orientation unit vector
+    b : `~numpy.ndarray`, shape (3,)
+        Vector representing the desired orientation after rotation.  Should be
+        a 1D, 3-element unit vector.  If ``b`` is not normalized, then it will
+        be.
 
     Returns
     -------
-    R : ~np.ndarray, shape(3,3)
-        The rotation matrix that will rotate vector a to be parallel to
-        vector b.
+    R : `~numpy.ndarray`, shape (3,3)
+        The rotation matrix that will rotate vector ``a`` onto vector ``b``.
+
     """
 
     # Normalize both vectors
