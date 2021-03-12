@@ -32,22 +32,23 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     r"""
-    Compares Fermi energy to thermal kinetic energy to check if quantum
+    Compare Fermi energy to thermal kinetic energy to check if quantum
     effects are important.
 
-    The quantum theta (:math:`\theta`) of a plasma is defined by
+    The quantum theta (:math:`θ`) of a plasma is defined by
 
     .. math::
-        \theta = \frac{E_{T}}{E_{F}}
+        θ = \frac{E_T}{E_F}
 
-    where :math:`E_{T}` is the thermal energy of the plasma
-    and :math:`E_{F}` is the Fermi energy of the plasma.
+    where :math:`E_T` is the thermal energy of the plasma
+    and :math:`E_F` is the Fermi energy of the plasma.
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature of the plasma.
-    n_e : ~astropy.units.Quantity
+
+    n_e : `~astropy.units.Quantity`
           The electron number density of the plasma.
 
     Examples
@@ -64,21 +65,21 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    theta: ~astropy.units.Quantity
+    theta : `~astropy.units.Quantity`
 
     Notes
     -----
-    The thermal energy of the plasma (:math:`E_{T}`) is defined by
+    The thermal energy of the plasma (:math:`E_T`) is defined by
 
     .. math::
-        E_{T} = k_{B} * T
+        E_T = k_B T
 
-    where :math:`k_{B}` is the Boltzmann constant
+    where :math:`k_B` is the Boltzmann constant
     and :math:`T` is the temperature of the plasma.
 
     See Also
     --------
-    plasmapy.formulary.quantum.Fermi_energy
+    ~plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
     thermal_energy = constants.k_B * T
@@ -92,23 +93,25 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 )
 def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
     r"""
-    The ratio of thermal pressure to magnetic pressure.
+    Compute the ratio of thermal pressure to magnetic pressure.
 
-    The beta (:math:`\beta`) of a plasma is defined by
+    The beta (:math:`β`) of a plasma is defined by
 
     .. math::
-        \beta = \frac{p_{th}}{p_{mag}}
+        β = \frac{p_{th}}{p_{mag}}
 
     where :math:`p_{th}` is the thermal pressure of the plasma
     and :math:`p_{mag}` is the magnetic pressure of the plasma.
 
     Parameters
     ----------
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature of the plasma.
-    n : ~astropy.units.Quantity
+
+    n : `~astropy.units.Quantity`
         The particle density of the plasma.
-    B : ~astropy.units.Quantity
+
+    B : `~astropy.units.Quantity`
         The magnetic field in the plasma.
 
     Examples
@@ -121,13 +124,13 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    beta: ~astropy.units.Quantity
+    beta: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     See Also
     --------
-    plasmapy.formulary.parameters.thermal_pressure
-    plasmapy.formulary.parameters.magnetic_pressure
+    ~plasmapy.formulary.parameters.thermal_pressure
+    ~plasmapy.formulary.parameters.magnetic_pressure
     """
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)
@@ -139,15 +142,17 @@ def Reynolds_number(
     rho: u.kg / u.m ** 3, U: u.m / u.s, L: u.m, mu: u.kg / (u.m * u.s)
 ) -> u.dimensionless_unscaled:
     r"""
-    The Reynolds Number is a dimensionless quantity
-    that is used to predict flow patterns in fluids.
-    The Reynolds Number is defined as the ratio of inertial forces to viscous forces.
-    A low Reynolds Number describes smooth, laminar flow
-    while a high Reynolds Number describes rough, turbulent flow.
+    Compute the Reynolds number.
+
+    The Reynolds number is a dimensionless quantity that is used to
+    predict flow patterns in fluids. The Reynolds number is defined as
+    the ratio of inertial forces to viscous forces. A low Reynolds
+    number describes smooth, laminar flow while a high Reynolds number
+    describes rough, turbulent flow.
 
     .. math::
 
-        Re = \frac{\rho U L }{\mu}
+        Re = \frac{ρ U L}{μ}
 
     **Aliases:** `Re_`
 
@@ -155,29 +160,32 @@ def Reynolds_number(
     ----------
     rho : `~astropy.units.Quantity`
         The density of the plasma.
+
     U : `~astropy.units.Quantity`
         The flow velocity of the plasma.
+
     L : `~astropy.units.Quantity`
         The characteristic length scale.
+
     mu : `~astropy.units.Quantity`
         The dynamic viscosity of the plasma.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
     ------
-    TypeError
-        The `U` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+    `TypeError`
+        If ``U`` is not a `~astropy.units.Quantity` and cannot be
+        converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `U` is not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If ``U`` is not in appropriate units.
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
-        If the velocity `U` is greater than the speed of light.
+        If ``U`` is greater than the speed of light.
 
     Examples
     --------
@@ -212,16 +220,18 @@ Re_ = Reynolds_number
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unscaled:
     r"""
-    The Magnetic Reynolds number is a dimensionless quantity that
+    Compute the magnetic Reynolds number
+
+    The magnetic Reynolds number is a dimensionless quantity that
     estimates the relative contributions of advection and induction
     to magnetic diffusion in a conducting medium.
 
     .. math::
 
-        Rm = \frac{U L}{\eta}
+        Rm = \frac{U L}{η}
 
-    where :math:`\eta = \frac{1}{\mu_0 \sigma}`
-    and :math:`\mu_0` is the permeability of free space.
+    where :math:`η = \frac{1}{μ_0 σ}`
+    and :math:`μ_0` is the permeability of free space.
 
     **Aliases:** `Rm_`
 
@@ -229,24 +239,26 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     ----------
     U : `~astropy.units.Quantity`
         The velocity scale of the plasma.
+
     L : `~astropy.units.Quantity`
         The length scale of the plasma.
+
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
     Warns
     -----
-    ~astropy.units.UnitsWarning
+    : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Raises
     ------
-    TypeError
-        The `U` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+    `TypeError`
+        If ``U`` is not a `~astropy.units.Quantity` and cannot be
+        converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `U` is not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If ``U`` is not in appropriate units.
 
 
 
@@ -266,8 +278,8 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
     Returns
     -------
-    Rm: `~astropy.Quantity`
-        Dimensionless quantity.
+    Rm : `~astropy.units.Quantity`
+        The magnetic Reynolds number.
 
     """
     eta = 1 / (mu0 * sigma)
