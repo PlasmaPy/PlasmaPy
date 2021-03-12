@@ -148,8 +148,16 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     """
 
-    # Normalize both vectors
+    # Normalize and validate both vectors
+
+    a = np.squeeze(a)
+    if a.shape != (3,):
+        raise ValueError(f"a must have shape (3,) but input has shape {a.shape}.")
     a = a / np.linalg.norm(a)
+
+    b = np.squeeze(b)
+    if b.shape != (3,):
+        raise ValueError(f"b must have shape (3,) but input has shape {b.shape}.")
     b = b / np.linalg.norm(b)
 
     # Manually handle the case where a and b point in opposite directions
