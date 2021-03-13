@@ -19,4 +19,4 @@ Langmuir analysis
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/langmuir_analysis
+    /notebooks/diagnostics/langmuir_analysis

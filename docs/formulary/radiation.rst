@@ -13,4 +13,4 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/thermal_bremsstrahlung
+    /notebooks/formulary/thermal_bremsstrahlung
