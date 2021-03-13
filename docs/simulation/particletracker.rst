@@ -16,7 +16,7 @@ future.
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/particle_stepper
+    /notebooks/simulation/particle_stepper
 
 Reference/API
 =============

@@ -58,8 +58,8 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
-    "pandas": ("http://pandas.pydata.org/pandas-docs/stable/", None),
-    "astropy": ("http://docs.astropy.org/en/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
 }
 
 autoclass_content = "both"
@@ -226,8 +226,9 @@ html_favicon = "./_static/icon.ico"
 # -- NBSphinx options
 
 nbsphinx_thumbnails = {
-    "notebooks/*": "_images/graphic-circular.png",
-    "notebooks/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
+    "notebooks/*": "_static/graphic-circular.png",
+    "notebooks/*/*": "_static/graphic-circular.png",
+    "notebooks/diagnostics/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
     "notebooks/plasma/grids_cartesian": "_static/notebook_images/uniform_grid_thumbnail.png",
     "notebooks/plasma/grids_nonuniform": "_static/notebook_images/nonuniform_grid_thumbnail.png",
 }

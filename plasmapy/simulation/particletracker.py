@@ -57,7 +57,7 @@ class ParticleTracker:
     ----------
     See `Particle Stepper Notebook`_.
 
-    .. _`Particle Stepper Notebook`: ../notebooks/particle_stepper.ipynb
+    .. _`Particle Stepper Notebook`: ../notebooks/simulation/particle_stepper.ipynb
     """
 
     integrators = {"explicit_boris": particle_integrators.boris_push}
