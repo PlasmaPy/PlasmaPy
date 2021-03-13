@@ -11,7 +11,7 @@ PlasmaPy Documentation
 
    notebooks/physics
    notebooks/dispersion/two_fluid_dispersion
-   notebooks/thomson
+   notebooks/diagnostics/thomson
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
