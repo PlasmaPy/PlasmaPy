@@ -24,21 +24,20 @@ ionic_level_table = [
 
 
 @pytest.mark.parametrize("ion, ionic_level, number_density", ionic_level_table)
-def test_ionic_level_attributes(ion, ionic_level, number_density):
-
+def test_ionic_level_attributes(ion, ionic_fraction, number_density):
     instance = IonicLevel(
-        ion=ion, ionic_level=ionic_level, number_density=number_density
+        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
 
     # Prepare to check for the default values when they are not set
 
-    if ionic_level is None:
-        ionic_level = np.nan
+    if ionic_fraction is None:
+        ionic_fraction = np.nan
     if number_density is None:
         number_density = np.nan * u.m ** -3
 
     assert Particle(ion) == Particle(instance.ionic_symbol)
-    assert u.isclose(instance.ionic_level, ionic_level, equal_nan=True)
+    assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
     assert u.isclose(instance.number_density, number_density, equal_nan=True)
 
 
@@ -52,7 +51,7 @@ def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
     is out of the interval [0,1] or otherwise invalid.
     """
     with pytest.raises(expected_exception):
-        IonicLevel(ion="Fe 6+", ionic_level=invalid_fraction)
+        IonicLevel(ion="Fe 6+", ionic_fraction=invalid_fraction)
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
@@ -62,7 +61,7 @@ def test_ionic_level_invalid_particles(invalid_particle):
     exception when passed a particle that isn't a neutral or ion.
     """
     with pytest.raises(ParticleError):
-        IonicLevel(invalid_particle, ionic_level=0)
+        IonicLevel(invalid_particle, ionic_fraction=0)
 
 
 @pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
@@ -73,8 +72,8 @@ def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     """
     fraction = 0.251
 
-    ionic_level_1 = IonicLevel(ion=ion1, ionic_level=fraction)
-    ionic_level_2 = IonicLevel(ion=ion2, ionic_level=fraction)
+    ionic_fraction_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
+    ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
     assert (ionic_level_1 == ionic_level_2) is False
 
@@ -101,7 +100,7 @@ test_cases = {
     },
     "Li ground state": {
         "particle": "Li",
-        "ionic_levels": np.array([1, 0, 0, 0], dtype=int),
+        "ionic_fractions": np.array([1, 0, 0, 0], dtype=int),
         "tol": 1e-15,
     },
     "H": {"particle": "H", "ionic_levels": [0.6, 0.4], "tol": 1e-8},
@@ -571,7 +570,7 @@ expected_properties = {
 def instance():
     kwargs = {
         "particle": "He-4",
-        "ionic_levels": [0.2, 0.3, 0.5],
+        "ionic_fractions": [0.2, 0.3, 0.5],
         "T_e": 5.0 * u.kK,
         "tol": 2e-14,
         "n_elem": 1e13 * u.cm ** -3,

@@ -49,7 +49,7 @@ class IonicLevel:
 
     Examples
     --------
-    >>> alpha_fraction = IonicLevel("alpha", ionic_level=0.31)
+    >>> alpha_fraction = IonicLevel("alpha", ionic_fraction=0.31)
     >>> alpha_fraction.ionic_symbol
     'He-4 2+'
     >>> alpha_fraction.integer_charge
@@ -82,19 +82,21 @@ class IonicLevel:
             ) from exc
 
     @particle_input
-    def __init__(self, ion: Particle, ionic_level=None, number_density=None, T_i=None):
+    def __init__(
+        self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
+    ):
         try:
             self.ion = ion
-            self.ionic_level = ionic_level
+            self.ionic_fraction = ionic_fraction
             self.number_density = number_density
             self.T_i = T_i
-
         except Exception as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
     def __repr__(self):
         return (
-            f"IonicLevel({repr(self.ionic_symbol)}, " f"ionic_level={self.ionic_level})"
+            f"IonicLevel({repr(self.ionic_symbol)}, "
+            f"ionic_fraction={self.ionic_fraction})"
         )
 
     @property
