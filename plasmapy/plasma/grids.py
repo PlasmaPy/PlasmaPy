@@ -243,7 +243,7 @@ class AbstractGrid(ABC):
         return u.Quantity(self.ds[key].data, self.ds[key].attrs["unit"], copy=False)
 
     @property
-    def is_uniform(self):
+    def is_uniform(self) -> bool:
         """
         A boolean value reflecting whether or not the grid points are
         uniformly spaced.
