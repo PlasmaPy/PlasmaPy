@@ -11,7 +11,7 @@ PlasmaPy Documentation
 
    notebooks/diagnostics/proton_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
-   notebooks/diagnostics/thomson
+   notebooks/neoclassics
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
