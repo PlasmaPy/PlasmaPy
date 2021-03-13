@@ -319,7 +319,7 @@ class IonizationState:
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
             result = IonicLevel(
                 ion=Particle(self.base_particle, Z=value),
-                ionic_level=self.ionic_levels[value],
+                ionic_fraction=self.ionic_levels[value],
                 number_density=self.number_densities[value],
                 T_i=self.T_e,
             )
