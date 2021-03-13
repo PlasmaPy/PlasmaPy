@@ -1,0 +1,2 @@
+Renamed attribute ``is_uniform_grid`` on `~plasmapy.plasma.grids.AbstractGrid`
+to ``is_uniform``.
