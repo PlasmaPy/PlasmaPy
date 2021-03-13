@@ -57,4 +57,3 @@ Plasma Objects
    :glob:
 
    notebooks/plasma/*
-
