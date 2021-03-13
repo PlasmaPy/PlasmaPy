@@ -1,0 +1,2 @@
+The ``State`` namedtuple was changed to the `~plasmapy.particles.IonicFraction`
+class.

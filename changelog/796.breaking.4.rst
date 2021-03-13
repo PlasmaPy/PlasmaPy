@@ -1,0 +1,3 @@
+``AtomicError`` was renamed to `~plasmapy.particles.exceptions.ParticleError`
+and ``MissingAtomicDataError`` was renamed to
+`~plasmapy.particles.exceptions.MissingParticleDataError`.
