@@ -3,7 +3,7 @@ Functions to calculate classical transport coefficients.
 
 .. nbgallery::
 
-    /notebooks/braginskii
+    /notebooks/formulary/braginskii
 
 Introduction
 ============
