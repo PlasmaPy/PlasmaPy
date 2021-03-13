@@ -1,4 +1,4 @@
-Renamed the availabe "methods" for computing the Coulomb logarithm in attemps
+Renamed the available "methods" for computing the Coulomb logarithm in an attempt
 to make the names more explicit.  This is implemented using the ``method`` keyword
 for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
 `~plasmapy.formulary.collisions.impact_parameter`, and then propogated throughout
