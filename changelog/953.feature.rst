@@ -1,1 +1,2 @@
-Refactor out particle tracking integrators from the ParticleTracker class
+Refactor out the `~plasmapy.simulation.particle_integrators.boris_push` tracking
+integrator algorithm from `~plasmapy.simulation.particletracker.ParticleTracker`.
