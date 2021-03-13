@@ -248,6 +248,13 @@ class AbstractGrid(ABC):
         A boolean value reflecting whether or not the grid points are
         uniformly spaced.
         """
+
+        if self._is_uniform is None:  # coverage: ignore
+            raise ValueError(
+                "The `is_uniform` attribute is not accessible "
+                "before a grid has been loaded."
+            )
+
         return self._is_uniform
 
     @property
