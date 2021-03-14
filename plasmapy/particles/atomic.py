@@ -35,7 +35,7 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataError,
 )
 from plasmapy.particles.isotopes import _isotopes
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.symbols import atomic_symbol
 
 __all__.sort()
@@ -205,7 +205,7 @@ def particle_mass(
     particle: `str`, `int`, or `~plasmapy.particles.Particle`
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
-        instance of the Particle class.
+        instance of the `~plasmapy.particles.Particle` class.
 
     Z: `int`, optional, keyword-only
         The ionization state of the ion.
@@ -221,7 +221,7 @@ def particle_mass(
     Raises
     ------
     `TypeError`
-        The argument is not a string, integer, or Quantity.
+        The argument is not a `str`, integer, or `~astropy.units.Quantity`.
 
     `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
@@ -300,12 +300,13 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
 @particle_input(any_of={"charged", "uncharged"})
 def integer_charge(particle: Particle) -> Integral:
-    """Return the integer charge of a particle.
+    """
+    Return the integer charge of a particle.
 
     Parameters
     ----------
-    particle : `str`
-        String representing a particle.
+    particle : `~plasmapy.particles.ParticleLike`
+        Representation of a particle.
 
     Returns
     -------
@@ -359,9 +360,8 @@ def electric_charge(particle: Particle) -> u.C:
 
     Parameters
     ----------
-    particle : `str`
-        String representing an element or isotope followed by integer
-        charge information.
+    particle : `~plasmapy.particles.ParticleLike`
+        Representation of a particle.
 
     Returns
     -------
@@ -414,9 +414,8 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
-        A string representing an isotope or particle, or an integer
-        representing an atomic number.
+    particle: `~plasmapy.particles.ParticleLike`
+        Representation of a particle.
 
     mass_numb: `int`, optional
         The mass number of the isotope.
@@ -467,10 +466,8 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
-        A string representing an isotope or particle, an integer
-        representing an atomic number, or an instance of the Particle
-        class.
+    particle: `~plasmapy.particles.ParticleLike`
+        Representation of a particle.
 
     mass_numb: `int`, optional
         The mass number of an isotope.
@@ -523,14 +520,14 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     ----------
     argument: `int` or `str`, optional
         A string representing an element, isotope, or ion or an
-        integer representing an atomic number
+        integer representing an atomic number.
 
     Returns
     -------
     isotopes_list: `list` containing `str` items or an empty `list`
-        List of all of the isotopes of an element that have been
+        A `list` of all of the isotopes of an element that have been
         discovered, sorted from lowest mass number to highest mass
-        number.  If no argument is provided, then a list of all known
+        number.  If no argument is provided, then a `list` of all known
         isotopes of every element will be returned that is sorted by
         atomic number, with entries for each element sorted by mass
         number.
@@ -548,7 +545,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
 
     Notes
     -----
-    This list returns both natural and artificially produced isotopes.
+    This `list` returns both natural and artificially produced isotopes.
 
     See Also
     --------
@@ -609,15 +606,14 @@ def common_isotopes(
     argument: Union[str, Integral] = None, most_common_only: bool = False
 ) -> List[str]:
     """
-    Return a list of isotopes of an element with an isotopic abundances
-    greater than zero, or if no input is provided, a list of all such
+    Return a `list` of isotopes of an element with an isotopic abundances
+    greater than zero, or if no input is provided, a `list` of all such
     isotopes for every element.
 
     Parameters
     ----------
-    argument: `int` or `str`, optional
-        A string or integer representing an atomic number or element,
-        or a string representing an isotope.
+    argument: `~plasmapy.particles.ParticleLike`
+        A representation of an element.
 
     most_common_only: `bool`
         If set to `True`, return only the most common isotope.
@@ -652,7 +648,7 @@ def common_isotopes(
 
     See Also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered.
+    known_isotopes : returns a `list` of isotopes that have been discovered.
 
     stable_isotopes : returns isotopes that are stable against radioactive decay.
 
@@ -727,8 +723,8 @@ def stable_isotopes(
     argument: Union[str, Integral] = None, unstable: bool = False
 ) -> List[str]:
     """
-    Return a list of all stable isotopes of an element, or if no input is
-    provided, a list of all such isotopes for every element.
+    Return a `list` of all stable isotopes of an element, or if no input is
+    provided, a `list` of all such isotopes for every element.
 
     Parameters
     ----------
@@ -743,7 +739,7 @@ def stable_isotopes(
     Returns
     -------
     StableIsotopes: `list` of strings or empty list
-        List of all stable isotopes of an element, sorted from lowest
+        A `list` of all stable isotopes of an element, sorted from lowest
         mass number.  If an element has no stable isotopes, this
         function returns an empty list.
 
@@ -769,7 +765,7 @@ def stable_isotopes(
 
     See Also
     --------
-    known_isotopes : returns a list of isotopes that have been discovered.
+    known_isotopes : returns a `list` of isotopes that have been discovered.
 
     common_isotopes : returns isotopes with non-zero isotopic abundances.
 
@@ -824,19 +820,19 @@ def stable_isotopes(
     return isotopes_list
 
 
-def reduced_mass(test_particle, target_particle) -> u.Quantity:
+def reduced_mass(test_particle: ParticleLike, target_particle: ParticleLike) -> u.kg:
     """
     Find the reduced mass between two particles.
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.Particle`,
-    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
+    test_particle : `~plasmapy.particles.ParticleLike` or `~astropy.units.Quantity`
+        Representation of a particle, or a `~astropy.units.Quantity`
+        with units of mass.
 
-        The test particle as represented by a string, an integer
-        representing atomic number, a `~plasmapy.particles.Particle`
-        object, or a `~astropy.units.Quantity` or
-        `~astropy.constants.Constant` with units of mass.
+    target_particle : `~plasmapy.particles.ParticleLike` or `~astropy.units.Quantity`
+        Representation of a particle, or a `~astropy.units.Quantity`
+        with units of mass.
 
     Returns
     -------
@@ -949,7 +945,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     return period
 
 
-def periodic_table_group(argument: Union[str, Integral]) -> Integral:
+def periodic_table_group(argument: ParticleLike) -> Integral:
     """
     Return the periodic table group.
 
@@ -1003,7 +999,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
     return group
 
 
-def periodic_table_block(argument: Union[str, Integral]) -> str:
+def periodic_table_block(argument: ParticleLike) -> str:
     """
     Return the periodic table block.
 
@@ -1057,7 +1053,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
     return block
 
 
-def periodic_table_category(argument: Union[str, Integral]) -> str:
+def periodic_table_category(argument: ParticleLike) -> str:
     """
     Return the periodic table category.
 
