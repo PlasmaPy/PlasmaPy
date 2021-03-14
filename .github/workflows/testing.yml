@@ -7,8 +7,6 @@ on:
       - v0.*.x
     tags:
       - "v*"
-    tags-ignore:
-      - "v*dev"
   pull_request:
 
 jobs:
