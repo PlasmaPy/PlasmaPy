@@ -47,7 +47,7 @@ The `~plasmapy.particles.Particle` objects that may be imported
 directly are: `~plasmapy.particles.proton`,
 `~plasmapy.particles.electron`, `~plasmapy.particles.neutron`,
 `~plasmapy.particles.positron`, `~plasmapy.particles.deuteron`,
-`~plasmpy.particles.triton`, and `plasmapy.particles.alpha`.
+`~plasmapy.particles.triton`, and `~plasmapy.particles.alpha`.
 
 .. _particle-class-properties:
 
