@@ -508,6 +508,26 @@
             "@type": "Person",
             "givenName": "Carol",
             "familyName": "Zhang"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Dhawal",
+            "familyName": "Modi"
+        },
+        {
+            "@type": "Person",
+            "givenName": "David",
+            "familyName": "Drozdov"
+        },
+        {
+            "@type": "Person",
+            "givenName": "Kevin",
+            "familyName": "Montes",
+            "@id": "https://orcid.org/0000-0002-0762-3708",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "MIT PSFC"
+            }
         }
     ]
 }
