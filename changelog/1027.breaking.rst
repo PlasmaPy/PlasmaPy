@@ -1,2 +1,0 @@
-The ``__getitem__`` method of `~plasmapy.plasma.grids.AbstractGrid` now returns
-a `~astropy.units.Quantity` array instead of a reference to a `xarray.DataArray`.

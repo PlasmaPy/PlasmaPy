@@ -1,2 +1,0 @@
-Add dependency ``pandas >= 1.0.0``.  Modify `xarray` dependency to be
-``xarray >= 0.14.0``.

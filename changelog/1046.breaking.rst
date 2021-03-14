@@ -1,3 +1,0 @@
-Renamed `IonicFraction` to `~plasmapy.particles.ionization_state.IonicLevel`.
-This lays groundwork for future changes, where that class is going to become
-more than a fraction.

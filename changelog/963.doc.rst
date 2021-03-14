@@ -1,2 +1,0 @@
-Add two Jupyter notebooks for functionality contained in `plasmapy.plasma.grids`:
-`grids_cartesian.ipynb` and `grids_nonuniform.ipynb`.

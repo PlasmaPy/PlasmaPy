@@ -1,2 +1,0 @@
-Refactor out the `~plasmapy.simulation.particle_integrators.boris_push` tracking
-integrator algorithm from `~plasmapy.simulation.particletracker.ParticleTracker`.

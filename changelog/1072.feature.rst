@@ -1,2 +1,0 @@
-Made `~plasmapy.plasma.grids.AbstractGrid.is_uniform` a properly-documented
-public attribute of `~plasmapy.plasma.grids.AbstractGrid`.

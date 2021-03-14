@@ -1,2 +1,0 @@
-Fixed a bug in `grids.py` for non-uniform grids that arose when `xarray` upgraded
-to `v0.17.0`

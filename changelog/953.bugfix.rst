@@ -1,2 +1,0 @@
-Fixed a minus sign bug in the Particle Tracker simulation that caused the
-E×B drift to go in the incorrect direction.

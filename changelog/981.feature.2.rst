@@ -1,3 +1,0 @@
-Add properties `~plasmapy.plasma.grids.AbstractGrid.grid_resolution` and
-`~plasmapy.plasma.grids.AbstractGrid.quantities` to
-`~plasmapy.plasma.grids.AbstractGrid`.

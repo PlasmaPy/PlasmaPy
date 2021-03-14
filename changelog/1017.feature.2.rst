@@ -1,3 +1,0 @@
-The greater than (``>``) operator can now be used between
-`~plasmapy.particles.Particle` and/or `~plasmapy.particles.ParticleList`
-instances to get the nuclear reaction energy.
