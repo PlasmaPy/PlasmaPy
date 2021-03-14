@@ -1,1 +1,1 @@
-Add notebook CI through nbqa
+Add notebook CI through `nbqa`.
