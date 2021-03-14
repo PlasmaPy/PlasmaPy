@@ -49,6 +49,7 @@ class AbstractGrid(ABC):
 
         # Initialize some variables
         self._interpolator = None
+        self._is_uniform = None
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
@@ -240,6 +241,21 @@ class AbstractGrid(ABC):
         in the underlying DataArray.
         """
         return u.Quantity(self.ds[key].data, self.ds[key].attrs["unit"], copy=False)
+
+    @property
+    def is_uniform(self) -> bool:
+        """
+        A boolean value reflecting whether or not the grid points are
+        uniformly spaced.
+        """
+
+        if self._is_uniform is None:  # coverage: ignore
+            raise ValueError(
+                "The `is_uniform` attribute is not accessible "
+                "before a grid has been loaded."
+            )
+
+        return self._is_uniform
 
     @property
     def shape(self):
@@ -502,7 +518,7 @@ class AbstractGrid(ABC):
                 f"pts2 = {pts2.shape}."
             )
 
-        self.is_uniform = _detect_is_uniform_grid(pts0, pts1, pts2)
+        self._is_uniform = _detect_is_uniform_grid(pts0, pts1, pts2)
 
         # Create dataset
         self.ds = xr.Dataset()
