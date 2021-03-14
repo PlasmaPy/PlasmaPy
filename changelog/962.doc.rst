@@ -1,2 +1,0 @@
-Update all docstrings associated with computing the Coulomb logarithm and the
-possible methods of calculation.

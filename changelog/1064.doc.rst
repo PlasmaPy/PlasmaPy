@@ -1,1 +1,0 @@
-Make minor fixes in `plasmapy.particles` docstrings.

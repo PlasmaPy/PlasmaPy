@@ -1,7 +1,0 @@
-Make several speed improvements to the functionality in `~plasmapy.plasma.grids`,
-including the addition of keyword ``persistent`` to
-`~plasmapy.plasma.grids.AbstractGrid` (and child class) methods
-`~plasmapy.plasma.grids.AbstractGrid.nearest_neighbor_interpolator` and
-`~plasmapy.plasma.grids.AbstractGrid.volume_averaged_interpolator`.  This keyword
-allows the interpolators to assume the last grid setup and contents if input
-arguments have not changed.

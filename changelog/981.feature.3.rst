@@ -1,3 +1,0 @@
-Add methods `~plasmapy.plasma.grids.AbstractGrid.on_grid` and
-`~plasmapy.plasma.grids.AbstractGrid.vector_intersects` to
-`~plasmapy.plasma.grids.AbstractGrid`.

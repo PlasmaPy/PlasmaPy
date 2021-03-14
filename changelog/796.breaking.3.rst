@@ -1,3 +1,0 @@
-Now, when the `~plasmapy.particles.IonizationState` class is provided with an ion,
-the ionic fraction for that ion is set to 100% for the corresponding element or
-isotope.

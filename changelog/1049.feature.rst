@@ -1,5 +1,0 @@
-Added the
-`~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.add_wire_mesh()`
-method to `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`
-to allow the creation of synthetic proton radiographs that include a wire mesh
-reference grid.

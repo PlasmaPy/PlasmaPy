@@ -1,3 +1,0 @@
-The `~plasmapy.plasma.grids.AbstractGrid` property
-`~plasmapy.plasma.grids.AbstractGrid.grid` is now dimensioned (has units) and
-cannot be accessed if all dimensions do not share the same units.

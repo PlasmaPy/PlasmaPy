@@ -1,3 +1,0 @@
-In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
-adaptive ``dt`` now calculates the cyclotron period using the provided particle
-charge and mass (previously assumed protons).

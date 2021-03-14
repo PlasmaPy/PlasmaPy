@@ -1,2 +1,0 @@
-For `plasmapy.plasma.grids` functionality, improve interpolation performance on
-non-uniform grids.
