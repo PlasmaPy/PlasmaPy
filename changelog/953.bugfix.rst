@@ -1,2 +1,2 @@
-Fixed a bug in the Particle Tracker simulation. The integrator had a sign
-error, thus the E×B drift came out in the incorrect direction.
+Fixed a minus sign bug in the Particle Tracker simulation that caused the
+E×B drift to go in the incorrect direction.

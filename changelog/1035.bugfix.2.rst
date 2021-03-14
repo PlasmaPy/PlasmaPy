@@ -1,0 +1,3 @@
+In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
+the adaptive timestep algorithm now works when particles are provided using
+`~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.load_particles`.
