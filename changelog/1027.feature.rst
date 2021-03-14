@@ -1,0 +1,4 @@
+Added method `~plasmapy.plasma.grids.AbstractGrid.require_quantities` to
+`~plasmapy.plasma.grids.AbstractGrid` that verifies a list of quantities is present
+on the grid.  Method is also incorported into
+`~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`.

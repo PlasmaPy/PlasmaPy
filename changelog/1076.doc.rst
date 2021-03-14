@@ -1,4 +1,3 @@
-Fix formatting and broken `sphinx.ext.intersphinx` links in docstrings
-in `plasmapy.particles`, `plasmapy.plasma`, `plasmapy.simulation`,
-`plasmapy.utils`; installation instructions in the docs; the
-subpackage stability matrix, and funding acknowledgments.
+Fix formatting and broken `sphinx.ext.intersphinx` links in docstrings in
+various places in the code base. Improve installation instructions in the docs;
+the subpackage stability matrix, and funding acknowledgments.

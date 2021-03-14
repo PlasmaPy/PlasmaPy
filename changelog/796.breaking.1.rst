@@ -1,0 +1,4 @@
+In `plasmapy.particles`, the ``IonizationStates`` class was renamed to
+`~plasmapy.particles.IonizationStateCollection`.  Argument ``n`` of
+``IonizationStates`` was changed to ``n0`` in
+`~plasmapy.particles.IonizationStateCollection`.
