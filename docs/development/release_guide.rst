@@ -88,12 +88,11 @@ Release
   --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
   a rebuild with the tagged version. This kicked us in the posterior for ``0.4.0``.
 
-At this point, `the OpenAstronomy Azure Pipelines
-<https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`_
-infrastructure should do most of the work for you! `Ensure that the pipeline
-goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist``
-and ``wheels_universal`` finish, check `PyPI
-<https://pypi.org/project/plasmapy/>`_ for the new version!
+At this point, the GitHub Actions packaging workflow should do most of the work
+for you! `Ensure that the pipeline goes through.
+<https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
+``wheels_universal`` finish, check `PyPI <https://pypi.org/project/plasmapy/>`_
+for the new version!
 
 Post-release
 ------------
