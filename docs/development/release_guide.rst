@@ -21,12 +21,14 @@ Release
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
   for version ``0.6.0``.
 
-% Update ``docs/citation.rst`` with the DOI for version ``0.6.0``.
+* Update ``docs/about/citation.rst`` with the DOI for version ``0.6.0``.
 
-* Update metadata in ``codemeta.json``.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.6.0`` and update
-  the author list (with affiliations and ORCIDs, when possible) to be
-  consistent with the Zenodo record.  Update any other tags if necessary.
+* Update version metadata in ``codemeta.json``.  In particular, update the
+  ``"identifier"`` tag with the DOI for version ``0.6.0``.
+
+* Update the author list (with affiliations and ORCIDs, when possible) to be
+  consistent with the Zenodo record.  Update any other tags if necessary. Check
+  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``
 
 * ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
