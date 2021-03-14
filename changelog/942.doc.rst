@@ -1,1 +1,1 @@
-Updated documentation for the ``particles`` and ``utils`` subpackages.
+Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages.
