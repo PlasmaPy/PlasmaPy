@@ -23,35 +23,51 @@ class ParticleTracker:
     Parameters
     ----------
     plasma : `Plasma`
-        plasma from which fields can be pulled
-    type : str
-        particle type. See `plasmapy.particles.atomic` for suitable arguments.
-        The default is a proton.
-    n_particles : int
-        number of macroparticles. The default is a single particle.
-    scaling : float
-        number of particles represented by each macroparticle.
-        The default is 1, which means a 1:1 correspondence between particles
+        Plasma from which fields can be pulled.
+
+    type : `str`
+        Particle type. See `plasmapy.particles.ParticleLike` for suitable
+        arguments. The default is a proton.
+
+    n_particles : `int`
+        Number of macroparticles. The default is a single particle.
+
+    scaling : `float`
+        Number of particles represented by each macroparticle.
+        The default is 1, which means a :math:`1:1` correspondence between particles
         and macroparticles.
+
     dt : `astropy.units.Quantity`
-        length of timestep
-    nt : int
-        number of timesteps
+        Duration of timestep
+
+    nt : `int`
+        Number of timesteps
 
     Attributes
     ----------
     x : `astropy.units.Quantity`
+        Current position. Shape (n, 3).
+
     v : `astropy.units.Quantity`
-        Current position and velocity, respectively. Shape (n, 3).
+        Current velocity. Shape (n, 3).
+
     position_history : `astropy.units.Quantity`
+        History of position.  Shape (nt, n, 3).
+
     velocity_history : `astropy.units.Quantity`
-        History of position and velocity. Shape (nt, n, 3).
+        History of velocity. Shape (nt, n, 3).
+
     q : `astropy.units.Quantity`
+        Charge of particle.
+
     m : `astropy.units.Quantity`
-        Charge and mass of particle.
+        Mass of particle.
+
     eff_q : `astropy.units.Quantity`
+        Total charge of macroparticle.
+
     eff_m : `astropy.units.Quantity`
-        Total charge and mass of macroparticle.
+        Total mass of macroparticle.
 
     Examples
     ----------
@@ -131,25 +147,25 @@ class ParticleTracker:
     @property
     def kinetic_energy_history(self):
         r"""
-        Calculates the kinetic energy history for each particle.
+        Calculate the kinetic energy history for each particle.
 
         Returns
         --------
-        ~astropy.units.Quantity
+        `~astropy.units.Quantity`
             Array of kinetic energies, shape (nt, n).
         """
         return (self.velocity_history ** 2).sum(axis=-1) * self.eff_m / 2
 
     def boris_push(self, init=False):
         r"""
-        Implements the Boris algorithm for moving particles and updating their
+        Implement the Boris algorithm for moving particles and updating their
         velocities.
 
         Arguments
         ----------
-        init : bool (optional)
-            If `True`, does not change the particle positions and sets dt
-            to -dt/2.
+        init : `bool`, optional
+            If `True`, does not change the particle positions and sets ``dt``
+            to ``-dt/2``.
 
         Notes
         ----------
@@ -184,7 +200,7 @@ class ParticleTracker:
 
     def run(self):
         r"""
-        Runs a simulation instance.
+        Run a simulation instance.
         """
         self.boris_push(init=True)
         self.position_history[0] = self.x
@@ -209,7 +225,7 @@ class ParticleTracker:
         )
 
     def plot_trajectories(self):  # coverage: ignore
-        r"""Draws trajectory history."""
+        r"""Draw trajectory history."""
         import matplotlib.pyplot as plt
 
         from astropy.visualization import quantity_support
@@ -230,11 +246,11 @@ class ParticleTracker:
 
     def plot_time_trajectories(self, plot="xyz"):  # coverage: ignore
         r"""
-        Draws position history versus time.
+        Draw position history versus time.
 
         Parameters
         ----------
-        plot : str (optional)
+        plot : `str`, optional
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
