@@ -5,10 +5,8 @@ Ionization state data structures
 
 The ionization state (or charge state) of a plasma refers to the
 fraction of an element that is at each ionization level.  For example,
-the ionization state of a pure helium plasma could be 5%
-He\ :sup:`0+`\ ,
-94% He\ :sup:`1+`,
-and 1% He\ :sup:`2+`\ .
+the ionization state of a pure helium plasma could be 5% He⁰⁺, 94% He¹⁺,
+and 1% He²⁺.
 
 The ionization state of a single element
 ========================================
@@ -21,36 +19,34 @@ example.
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
 
 The ionization state for helium may be accessed using the
-`~plasmapy.particles.IonizationState.ionic_fractions` attribute.
-These ionic fractions correspond to the
-`~plasmapy.particles.IonizationState.integer_charges` attribute.
+``ionic_fractions`` attribute.  These ionic fractions correspond to the
+``integer_charges`` attribute.
 
 >>> ionization_state.ionic_fractions
 array([0.05, 0.94, 0.01])
 >>> ionization_state.integer_charges
 array([0, 1, 2])
 
-The `~plasmapy.particles.IonizationState.Z_mean` attribute returns
-the mean integer charge averaged over all particles in that element.
+The ``Z_mean`` attribute returns the mean integer charge averaged
+over all particles in that element.
 
 >>> ionization_state.Z_mean
 0.96
 
-The `~plasmapy.particles.IonizationState.Z_rms` attribute returns
-the root mean square integer charge.
+The ``Z_rms`` attribute returns the root mean square integer charge.
 
 >>> ionization_state.Z_rms
 0.9899...
 
-The `~plasmapy.particles.IonizationState.Z_most_abundant` attribute
-returns a `list` of the most abundant ion(s).  The `list` may contain
-more than one integer charge in case of a tie.
+The ``Z_most_abundant`` attribute returns a `list` of the most abundant
+ion(s).  The `list` may contain more than one integer charge in case of
+a tie.
 
 >>> ionization_state.Z_most_abundant
 [1]
 
-The `~plasmapy.particles.IonizationState.summarize` method prints out
-the ionic fraction for the ions with an abundance of at least 1%.
+The ``summarize`` method prints out the ionic fraction for the ions with
+an abundance of at least 1%.
 
 >>> ionization_state.summarize()
 IonizationState instance for He with Z_mean = 0.96
@@ -68,14 +64,14 @@ The number density of the element may be specified through the
 ...     "He", [0.05, 0.94, 0.01], n_elem = 1e19 * u.m ** -3,
 ... )
 
-The `~plasmapy.particles.IonizationState.n_e` attribute provides
-the electron number density as a `~astropy.units.Quantity`.
+The ``n_e`` attribute provides the electron number density as a
+`~astropy.units.Quantity`.
 
 >>> ionization_state.n_e
 <Quantity 9.6e+18 1 / m3>
 
-The `~plasmapy.particles.IonizationState.number_densities`
-attribute provides the number density of each ion or neutral.
+The ``number_densities`` attribute provides the number density of each
+ion or neutral.
 
 >>> ionization_state.number_densities
 <Quantity [5.0e+17, 9.4e+18, 1.0e+17] 1 / m3>
@@ -121,10 +117,8 @@ The ionic fractions will be stored as a `dict`.
 {'H': array([0.01, 0.99]), 'He': array([0.04, 0.95, 0.01])}
 
 The number density for each element is the product of the number
-density scaling factor
-`~plasmapy.particles.IonizationStateCollection.n0` with that
-element's abundance.  The number density for each ion is the
-product of `~plasmapy.particles.IonizationStateCollection.n0`, the
+density scaling factor ``n0`` with that element's abundance.
+The number density for each ion is the product of ``n0``, the
 corresponding element's abundance, and the ionic fraction.
 
 >>> states.n0
@@ -154,8 +148,8 @@ corresponding element's abundance, and the ionic fraction.
 >>> states.number_densities["H"]
 <Quantity [5.00e+17, 4.95e+19] 1 / m3>
 
-The `~plasmapy.particles.IonizationStateCollection.summarize`
-method may also be used to summarize the ionization states.
+The `~plasmapy.particles.IonizationStates.summarize` method may also be
+used to get a summary of the ionization states.
 
 >>> states.summarize()
 ----------------------------------------------------------------
