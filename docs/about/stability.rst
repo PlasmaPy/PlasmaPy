@@ -141,9 +141,7 @@ PlasmaPy's planned and existing subpackages are:
                 <span class="dev"></span>
             </td>
             <td>
-                The API for ionization state functionality is likely to change in
-                subsequent releases. Changes to the API of the base functionality
-                are likely, but will probably follow deprecation warnings.
+                The API of this subpackage is likely to change in future releases.
             </td>
         </tr>
         <tr>
