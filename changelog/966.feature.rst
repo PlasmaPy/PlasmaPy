@@ -1,2 +1,2 @@
-Added the diamagnetic drift functionality to ~plasmapy.formulary.drifts and
-tests associated with this.
+Added the `~plasmapy.formulary.drifts.diamagnetic_drift` function to
+`~plasmapy.formulary.drifts`.
