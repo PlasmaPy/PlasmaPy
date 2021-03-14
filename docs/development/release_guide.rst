@@ -75,7 +75,9 @@ Release
 
 * Make sure that tests pass and that documentation builds without issue.
 
-* No, really, check twice.
+  * No, really, check twice. Let the tests do their thing. You want things tip
+    top, and by now, you want that cuppa tea anyway. Treat yourself! Celebrate
+    the new release and let the darn tests pass.
 
   * If you want to do any rebase to clean up the commit history on your ``0.6.x``
     branch, now is the time to do that. Ensure that no tests broke.
