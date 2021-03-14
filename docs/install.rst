@@ -147,6 +147,9 @@ by running
 
    python setup.py install
 
+Note, however, that this does not download all the dependencies. Check the
+`requirements/requirements.txt` file for the current set.
+
 .. _git: https://git-scm.com/
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _Conda: https://conda.io/docs/
