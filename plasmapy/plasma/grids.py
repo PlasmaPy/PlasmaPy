@@ -119,10 +119,10 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        req_quantities : list of str
+        req_quantities : `list` of `str`
             A list of quantity keys that are required
 
-        replace_with_zeros : boolean, optional
+        replace_with_zeros : `bool`, optional
             If true, missing quantities will be replaced with an array
             of zeros. If false, an exception will be raised instead.
             The default is False.
@@ -130,18 +130,18 @@ class AbstractGrid(ABC):
         Raises
         ------
         KeyError
-            If `replace_with_zeros` is False and a required quantity is missing,
-            raises a KeyError.
+            If ``replace_with_zeros`` is `False` and a required quantity
+            is missing.
 
         KeyError
-            If `replace_with_zeros` is True but the quantity is not in the
-            list of recognized quantities, raises a KeyError. This is because
-            in this case the units for the quantity are unknown, so an array
-            of zeros cannot be constructed.
+            If ``replace_with_zeros`` is `True` but the
+            `~astropy.units.Quantity` is not in the list of recognized
+            quantities. This is because in this case the units for the
+            quantity are unknown, so an array of zeros cannot be constructed.
 
         Returns
         -------
-        None.
+        `None`
 
         """
         for rq in req_quantities:
@@ -233,9 +233,9 @@ class AbstractGrid(ABC):
 
     def __getitem__(self, key):
         """
-        Given a key, return the corresponding array as an `astropy.Quantity`
+        Given a key, return the corresponding array as a `~astropy.units.Quantity`
 
-        Returning with copy=False means that the array returned is a direct
+        Returning with ``copy=False`` means that the array returned is a direct
         reference to the underlying DataArray, so changes made will be reflected
         in the underlying DataArray.
         """
@@ -272,7 +272,7 @@ class AbstractGrid(ABC):
         r"""
         A single grid of vertex positions of shape (N0, N1, N2, 3)
 
-        Only defined for grids for which the `unit` property is defined.
+        Only defined for grids for which the ``unit`` property is defined.
         """
         pts0, pts1, pts2 = self.grids
         if self.is_uniform:
@@ -291,37 +291,37 @@ class AbstractGrid(ABC):
 
     @property
     def pts0(self):
-        r"""Array of positions in dimension 1"""
+        r"""Array of positions in dimension 1."""
         return self.grids[0]
 
     @property
     def pts1(self):
-        r"""Array of positions in dimension 2"""
+        r"""Array of positions in dimension 2."""
         return self.grids[1]
 
     @property
     def pts2(self):
-        r"""Array of positions in dimension 3"""
+        r"""Array of positions in dimension 3."""
         return self.grids[2]
 
     @property
     def units(self):
-        r"""Returns a list of the units of each dimension"""
+        r"""Returns a `list` of the units of each dimension."""
         return self.ds.attrs["axis_units"]
 
     @property
     def unit0(self):
-        r"""Unit of dimension 1"""
+        r"""Unit of dimension 1."""
         return self.units[0]
 
     @property
     def unit1(self):
-        r"""Unit of dimension 2"""
+        r"""Unit of dimension 2."""
         return self.units[1]
 
     @property
     def unit2(self):
-        r"""Unit of dimension 3"""
+        r"""Unit of dimension 3."""
         return self.units[2]
 
     @property
@@ -332,7 +332,7 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If all grid dimensions do not have identical units.
         """
         if self.units[0] == self.units[1] and self.units[0] == self.units[2]:
@@ -353,7 +353,7 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If grid is non-uniform.
         """
 
@@ -371,7 +371,7 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If grid is non-uniform.
         """
         if self.is_uniform:
@@ -384,11 +384,11 @@ class AbstractGrid(ABC):
     @property
     def ax2(self):
         r"""
-        Third axis of the grid, only valid for uniform grids
+        Third axis of the grid, only valid for uniform grids.
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If grid is non-uniform.
         """
         if self.is_uniform:
@@ -405,7 +405,7 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If grid is non-uniform.
         """
         if self.is_uniform:
@@ -423,7 +423,7 @@ class AbstractGrid(ABC):
 
         Raises
         ------
-        ValueError
+        `ValueError`
             If grid is non-uniform.
         """
         if self.is_uniform:
@@ -481,11 +481,11 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        grid{0,1,2} : u.Quantity array, shape (n0, n1, n2)
+        grid{0,1,2} : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Grids of coordinate positions.
 
-        **kwargs: u.Quantity array, shape (n0, n1, n2)
-            Quantities defined on the grid
+        **kwargs: `~astropy.units.Quantity` array, shape (n0, n1, n2)
+            Quantities defined on the grid.
 
         Returns
         -------
@@ -608,8 +608,9 @@ class AbstractGrid(ABC):
         **kwargs,
     ):
         r"""
-        Creates a grid based on start, stop, and num values in a manner
-        that mirrors the interface of the np.linspace function.
+        Creates a grid based on ``start``, ``stop``, and ``num`` values
+        in a manner that mirrors the interface of the `numpy.linspace`
+        function.
 
         Parameters
         ----------
@@ -621,17 +622,18 @@ class AbstractGrid(ABC):
             End values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        num : int or list of three ints, optional
+        num : `int` or `list` of three `int` objects, optional
             The number of points in each dimension. If a single integer is
             given, the same number of points will be used in each dimension.
             The default is 100.
 
         **kwargs: Additional arguments
-            Any additional arguments will be passed directly to np.linspace()
+            Any additional arguments will be passed directly to
+            `numpy.linspace`.
 
         Returns
         -------
-        None.
+        `None`
 
         """
 
@@ -722,7 +724,7 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        pos : np.ndarray or u.Quantity array, shape (n,3)
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
             An array of positions in space, where the second dimension
             corresponds to the three dimensions of the grid.
 
@@ -757,8 +759,9 @@ class AbstractGrid(ABC):
 
     def vector_intersects(self, p1, p2):
         r"""
-        Returns True if the vector from p1 to p2 intersects the grid. Otherwise,
-        returns false. This is a standard ray-box intersection algorithm.
+        Returns `True` if the vector from ``p1`` to ``p2`` intersects
+        the grid. Otherwise, returns False. This is a standard ray-box
+        intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
         # Caclulate the minimum and maximum of each
@@ -793,9 +796,7 @@ class AbstractGrid(ABC):
 
     @cached_property
     def _interp_quantities(self):
-        r"""
-        Create a dimensionless array of quantites to be interpolated
-        """
+        r"""Create a dimensionless array of quantites to be interpolated."""
         nargs = len(self._interp_args)
         # Load the arrays to be interpolated from and their units
         if self.is_uniform:
@@ -814,7 +815,7 @@ class AbstractGrid(ABC):
     def _interp_units(self):
         r"""
         Create a list of the units corresponding to the last dimension
-        in the _interp_quantities array.
+        in the `_interp_quantities` array.
         """
         _interp_units = []
         for j, arg in enumerate(self._interp_args):
@@ -841,7 +842,7 @@ class AbstractGrid(ABC):
         Initializes a nearest-neighbor interpolator that returns the nearest
         grid indices for a given position (given in SI units).
 
-        This function works on a uniformly spaced grid
+        This function works on a uniformly spaced grid.
         """
         # Create a grid of indices for use in interpolation
         n0, n1, n2 = self.shape
@@ -864,7 +865,7 @@ class AbstractGrid(ABC):
         Initializes a nearest-neighbor interpolator that returns the nearest
         grid indices for a given position (given in SI units).
 
-        This function works on unstructured (non-uniform) data
+        This function works on unstructured (non-uniform) data/
         """
 
         # Make an array of point positions
@@ -884,17 +885,17 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        pos : np.ndarray or u.Quantity array, shape (n,3)
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
             An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If an np.ndarray
-            is provided, units will be assumed to match those of the grid.
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
 
         Returns
         -------
-
-        i : np.ndarray, shape (n,3)
+        i : `~numpy.ndarray`, shape (n,3)
             An array of indices corresponding to the positions such that
-            i[n,:] = ix,iy,iz such that grid[ix,iy,iz,:] ~ pos[n,:]
+            ``i[n,:] = ix,iy,iz`` such that ``grid[ix,iy,iz,:]`` ∼ pos[n,:]
 
         """
         # Condition pos
@@ -931,19 +932,19 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        pos : np.ndarray or u.Quantity array, shape (n,3)
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
             An array of positions in space, where the second dimension
             corresponds to the three dimensions of the grid. If an np.ndarray
             is provided, units will be assumed to match those of the grid.
 
-        *args : str
+        *args : `str`
             Strings that correspond to DataArrays in the dataset
 
-        persistent : bool
-            If true, the interpolator will assume the grid and its contents have not
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its contents have not
             changed since the last interpolation. This substantially speeds up the
             interpolation when many interpolations are performed on the same grid
-            in a loop. persistent overrides to False if the arguments list has
+            in a loop. ``persistent`` overrides to `False` if the arguments list has
             changed since the last call.
 
         """
@@ -1028,19 +1029,20 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        pos : np.ndarray or u.Quantity array, shape (n,3)
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
             An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If an np.ndarray
-            is provided, units will be assumed to match those of the grid.
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
 
-        *args : str
+        *args : `str`
             Strings that correspond to DataArrays in the dataset
 
-        persistent : bool
-            If true, the interpolator will assume the grid and its contents have not
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its contents have not
             changed since the last interpolation. This substantially speeds up the
             interpolation when many interpolations are performed on the same grid
-            in a loop. persistent overrides to False if the arguments list has
+            in a loop. ``persistent`` overrides to `False` if the arguments list has
             changed since the last call.
 
         """
@@ -1051,9 +1053,7 @@ class AbstractGrid(ABC):
 
 
 class CartesianGrid(AbstractGrid):
-    r"""
-    A uniformly spaced Cartesian grid.
-    """
+    r"""A uniformly spaced Cartesian grid."""
 
     def _validate(self):
         # Check that all units are lengths
@@ -1198,7 +1198,7 @@ class CartesianGrid(AbstractGrid):
 
 class NonUniformCartesianGrid(AbstractGrid):
     r"""
-    A Cartesian grid in which the _make_mesh method produces a non-uniformly
+    A Cartesian grid in which the ``_make_mesh`` method produces a non-uniformly
     spaced grid.
     """
 
@@ -1215,7 +1215,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
-        Creates mesh as part of _make_grid(). Separated into its own function
+        Creates mesh as part of ``_make_grid()``. Separated into its own function
         so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
