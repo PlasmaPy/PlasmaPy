@@ -1,4 +1,0 @@
-In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`, removed
-highly deflected particles so the call of
-`~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.max_deflection`
-does not raise an exception.

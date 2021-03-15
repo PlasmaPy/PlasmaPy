@@ -1,3 +1,0 @@
-Added the ExB drift notebook, which demonstrates the analytical solution for the
-drift and the implementation of the corresponding formulary drift functions,
-`~plasmapy.formulary.drifts.force_drift` and `~plasmapy.formulary.drifts.ExB_drift`.

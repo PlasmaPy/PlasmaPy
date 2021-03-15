@@ -1,1 +1,0 @@
-Remove `lambda` expressions from `plasmapy.particles` and `plasmapy.utils`.

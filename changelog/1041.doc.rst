@@ -1,3 +1,0 @@
-Adds formulas (which were missing) to the docstrings of
-`~plasmapy.formulary.dimensionless.quantum_theta` and
-`~plasmapy.formulary.dimensionless.beta`.

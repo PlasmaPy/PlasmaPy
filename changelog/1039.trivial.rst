@@ -1,2 +1,0 @@
-A set containing all valid particle categories may now be accessed via
-`plasmapy.particles.Particle.is_category.valid_categories`.

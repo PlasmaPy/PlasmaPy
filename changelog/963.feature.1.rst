@@ -1,3 +1,0 @@
-For `plasmapy.plasma.grids` functionality, add better support for recognizing and
-handling physical quantities (e.g. spatial position, magnetic field, etc.) added
-to a grid object.
