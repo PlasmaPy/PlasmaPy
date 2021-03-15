@@ -21,12 +21,14 @@ Release
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
   for version ``0.6.0``.
 
-% Update ``docs/citation.rst`` with the DOI for version ``0.6.0``.
+* Update ``docs/about/citation.rst`` with the DOI for version ``0.6.0``.
 
-* Update metadata in ``codemeta.json``.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.6.0`` and update
-  the author list (with affiliations and ORCIDs, when possible) to be
-  consistent with the Zenodo record.  Update any other tags if necessary.
+* Update version metadata in ``codemeta.json``.  In particular, update the
+  ``"identifier"`` tag with the DOI for version ``0.6.0``.
+
+* Update the author list (with affiliations and ORCIDs, when possible) to be
+  consistent with the Zenodo record.  Update any other tags if necessary. Check
+  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``
 
 * ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
   version `(see the latest commit on master)
@@ -73,7 +75,9 @@ Release
 
 * Make sure that tests pass and that documentation builds without issue.
 
-* No, really, check twice.
+  * No, really, check twice. Let the tests do their thing. You want things tip
+    top, and by now, you want that cuppa tea anyway. Treat yourself! Celebrate
+    the new release and let the darn tests pass.
 
   * If you want to do any rebase to clean up the commit history on your ``0.6.x``
     branch, now is the time to do that. Ensure that no tests broke.
@@ -86,12 +90,11 @@ Release
   --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
   a rebuild with the tagged version. This kicked us in the posterior for ``0.4.0``.
 
-At this point, `the OpenAstronomy Azure Pipelines
-<https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`_
-infrastructure should do most of the work for you! `Ensure that the pipeline
-goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist``
-and ``wheels_universal`` finish, check `PyPI
-<https://pypi.org/project/plasmapy/>`_ for the new version!
+At this point, the GitHub Actions packaging workflow should do most of the work
+for you! `Ensure that the pipeline goes through.
+<https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
+``wheels_universal`` finish, check `PyPI <https://pypi.org/project/plasmapy/>`_
+for the new version!
 
 Post-release
 ------------

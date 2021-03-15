@@ -86,13 +86,17 @@ def test_AbstractGrid():
     with pytest.raises(KeyError):
         grid.require_quantities(req_q, replace_with_zeros=False)
     # Do replace
-    grid.require_quantities(req_q, replace_with_zeros=True)
+    with pytest.warns(RuntimeWarning, match="This quantity will be assumed to be zero"):
+        grid.require_quantities(req_q, replace_with_zeros=True)
     req_q = ["B_x", "B_y"]
     # Test with a key that is not there, but cannot be replaced because
     # it's not a recognized key
     req_q = ["B_x", "not_a_recognized_key"]
     with pytest.raises(KeyError):
-        grid.require_quantities(req_q, replace_with_zeros=True)
+        with pytest.warns(
+            RuntimeWarning, match="This quantity will be assumed to be zero"
+        ):
+            grid.require_quantities(req_q, replace_with_zeros=True)
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg

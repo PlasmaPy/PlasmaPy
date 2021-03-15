@@ -16,7 +16,7 @@ dependencies:
   - pillow
   - pip
   - scikit-image
-  - xarray < 0.17
+  - xarray
   - pip:
     - numpydoc
     - pytest
