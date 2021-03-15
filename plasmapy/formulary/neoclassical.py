@@ -178,4 +178,9 @@ def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=Fal
         )
     else:
         S_ai = B2 = 1
-    return pitch_angle_diffusion_rate(x, i, a, all_species) * f_t / f_c / S_ai ** 1.5
+    return (
+        pitch_angle_diffusion_rate(x, index, a_states, all_species)
+        * f_t
+        / f_c
+        / S_ai ** 1.5
+    )
