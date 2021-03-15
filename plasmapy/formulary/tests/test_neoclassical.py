@@ -5,6 +5,7 @@ import pytest
 from plasmapy.formulary.neoclassical import (
     charge_weighting_factor,
     effective_momentum_relaxation_rate,
+    K_B_ai,
     L_friction_coefficient,
     M_matrix,
     M_script,
@@ -62,9 +63,11 @@ def test_L_friction_coefficient(num_regression):
     num_regression.check({"L": data.si.value.flatten()})
 
 
-def test_pitch_angle_diffusion_rate(num_regression):
+def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_surface):
     x = np.logspace(-6, 6, 5000)
     ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
+    k = K_B_ai(x, 1, carbon_states, all_species, flux_surface)
     num_regression.check(
-        {"x": x, "ν_D_ai": ν_D_ai.si.value}, tolerances={"ν_D_ai": {"rtol": 1e-4}}
+        {"x": x, "ν_D_ai": ν_D_ai.si.value, "K_B_ai": k.si.value},
+        tolerances={"ν_D_ai": {"rtol": 1e-4}, "K_B_ai": {"rtol": 1e-8}},
     )

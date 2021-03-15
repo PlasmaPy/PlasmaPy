@@ -166,3 +166,16 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
         / 4
         * sum(sum_items())
     )
+
+
+def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=False):
+    # eq. B1-B4, Houlberg_1997
+    f_t = flux_surface.trapped_fraction()
+    f_c = 1 - f_t
+    if orbit_squeezing:
+        raise NotImplementedError(
+            "TODO allow for non-zero, changing radial electric fields (orbit squeezing)"
+        )
+    else:
+        S_ai = B2 = 1
+    return pitch_angle_diffusion_rate(x, i, a, all_species) * f_t / f_c / S_ai ** 1.5
