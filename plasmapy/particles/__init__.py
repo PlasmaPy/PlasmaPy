@@ -39,7 +39,6 @@ from plasmapy.particles.serialization import (
     ParticleJSONDecoder,
 )
 from plasmapy.particles.special_particles import ParticleZoo
-from plasmapy.particles.species import Species
 from plasmapy.particles.symbols import (
     atomic_symbol,
     element_name,

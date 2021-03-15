@@ -5,7 +5,6 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
-import collections
 import numpy as np
 
 from numbers import Integral, Real
@@ -88,7 +87,7 @@ class IonizationStateCollection:
     ...     n0 = 1e15 * u.m ** -3,
     ...     abundances = {'H': 1, 'He': 0.08},
     ... )
-    >>> states.ionic_levels
+    >>> states.ionic_fractions
     {'H': array([0.5, 0.5]), 'He': array([0.95, 0.05, 0.  ])}
 
     The number densities are given by the ionic fractions multiplied by
@@ -107,7 +106,7 @@ class IonizationStateCollection:
     Item assignment will also work if you supply number densities.
 
     >>> states['He'] = [0.4, 0.6, 0.0] * u.m ** -3
-    >>> states.ionic_levels['He']
+    >>> states.ionic_fractions['He']
     array([0.4, 0.6, 0. ])
     >>> states.number_densities['He']
     <Quantity [0.4, 0.6, 0. ] 1 / m3>
@@ -171,7 +170,7 @@ class IonizationStateCollection:
             self.T_e = T_e
             self.n0 = n0
             self.tol = tol
-            self.ionic_levels = inputs
+            self.ionic_fractions = inputs
             if set_abundances:
                 self.abundances = abundances
                 self.log_abundances = log_abundances
@@ -205,7 +204,7 @@ class IonizationStateCollection:
             if int_charge is None:
                 return IonizationState(
                     particle=particle,
-                    ionic_levels=self.ionic_levels[particle],
+                    ionic_fractions=self.ionic_fractions[particle],
                     T_e=self._pars["T_e"],
                     n_elem=np.sum(self.number_densities[particle]),
                     tol=self.tol,
@@ -221,7 +220,7 @@ class IonizationStateCollection:
                     )
                 return IonicLevel(
                     ion=particle_symbol(particle, Z=int_charge),
-                    ionic_level=self.ionic_levels[particle][int_charge],
+                    ionic_fraction=self.ionic_fractions[particle][int_charge],
                     number_density=self.number_densities[particle][int_charge],
                 )
         except Exception as exc:
@@ -236,7 +235,7 @@ class IonizationStateCollection:
 
         try:
             particle = particle_symbol(key)
-            self.ionic_levels[key]
+            self.ionic_fractions[key]
         except (ParticleError, TypeError):
             raise KeyError(
                 f"{errmsg} because {repr(key)} is an invalid particle."
@@ -332,10 +331,10 @@ class IonizationStateCollection:
                 f"{errmsg} because the ionic fractions are not normalized to one."
             )
 
-        self._ionic_levels[particle][:] = new_fractions[:]
+        self._ionic_fractions[particle][:] = new_fractions[:]
 
     def __iter__(self):
-        yield from [self[key] for key in self.ionic_levels.keys()]
+        yield from [self[key] for key in self.ionic_fractions.keys()]
 
     def __eq__(self, other):
 
@@ -377,7 +376,7 @@ class IonizationStateCollection:
             if not this_equals_that:
                 return False
 
-        for attribute in ["ionic_levels", "number_densities"]:
+        for attribute in ["ionic_fractions", "number_densities"]:
 
             this_dict = eval(f"self.{attribute}")
             that_dict = eval(f"other.{attribute}")
@@ -401,7 +400,7 @@ class IonizationStateCollection:
         return True
 
     @property
-    def ionic_levels(self) -> Dict[str, np.array]:
+    def ionic_fractions(self) -> Dict[str, np.array]:
         """
         Return a `dict` containing the ionic fractions for each element
         and isotope.
@@ -411,10 +410,10 @@ class IonizationStateCollection:
         the ionic fractions for each ionization level corresponding to
         each element or isotope.
         """
-        return self._ionic_levels
+        return self._ionic_fractions
 
-    @ionic_levels.setter
-    def ionic_levels(self, inputs: Union[Dict, List, Tuple]):
+    @ionic_fractions.setter
+    def ionic_fractions(self, inputs: Union[Dict, List, Tuple]):
         """
         Set the ionic fractions.
 
@@ -422,7 +421,7 @@ class IonizationStateCollection:
         -----
         The ionic fractions are initialized during instantiation of
         `~plasmapy.particles.IonizationStateCollection`.  After this, the
-        only way to reset the ionic fractions via the ``ionic_levels``
+        only way to reset the ionic fractions via the ``ionic_fractions``
         attribute is via a `dict` with elements or isotopes that are a
         superset of the previous elements or isotopes.  However, you may
         use item assignment of the `~plasmapy.particles.IonizationState`
@@ -442,20 +441,20 @@ class IonizationStateCollection:
         """
 
         # A potential problem is that using item assignment on the
-        # ionic_levels attribute could cause the original attributes
+        # ionic_fractions attribute could cause the original attributes
         # to be overwritten without checks being performed.  We might
         # eventually want to create a new class or subclass of UserDict
         # that goes through these checks.  In the meantime, we should
-        # make it clear to users to set ionic_levels by using item
+        # make it clear to users to set ionic_fractions by using item
         # assignment on the IonizationStateCollection instance as a whole.  An
         # example of the problem is `s = IonizationStateCollection(["He"])` being
-        # followed by `s.ionic_levels["He"] = 0.3`.
+        # followed by `s.ionic_fractions["He"] = 0.3`.
 
-        if hasattr(self, "_ionic_levels"):
+        if hasattr(self, "_ionic_fractions"):
             if not isinstance(inputs, dict):
                 raise TypeError(
-                    "Can only reset ionic_levels with a dict if "
-                    "ionic_levels has been set already."
+                    "Can only reset ionic_fractions with a dict if "
+                    "ionic_fractions has been set already."
                 )
             old_particles = set(self.base_particles)
             new_particles = {particle_symbol(key) for key in inputs.keys()}
@@ -520,7 +519,7 @@ class IonizationStateCollection:
 
             _elements_and_isotopes = []
             _particle_instances = []
-            new_ionic_levels = {}
+            new_ionic_fractions = {}
 
             if inputs_have_quantities:
                 n_elems = {}
@@ -546,7 +545,9 @@ class IonizationStateCollection:
                     try:
                         number_densities = inputs[key].to(u.m ** -3)
                         n_elem = np.sum(number_densities)
-                        new_ionic_levels[new_key] = np.array(number_densities / n_elem)
+                        new_ionic_fractions[new_key] = np.array(
+                            number_densities / n_elem
+                        )
                         n_elems[key] = n_elem
                     except u.UnitConversionError as exc:
                         raise ParticleError("Units are not inverse volume.") from exc
@@ -554,10 +555,10 @@ class IonizationStateCollection:
                     isinstance(inputs[key], np.ndarray)
                     and inputs[key].dtype.kind == "f"
                 ):
-                    new_ionic_levels[particles[key].symbol] = inputs[key]
+                    new_ionic_fractions[particles[key].symbol] = inputs[key]
                 else:
                     try:
-                        new_ionic_levels[particles[key].symbol] = np.array(
+                        new_ionic_fractions[particles[key].symbol] = np.array(
                             inputs[key], dtype=float
                         )
                     except ValueError as exc:
@@ -566,7 +567,7 @@ class IonizationStateCollection:
                         ) from exc
 
             for key in _elements_and_isotopes:
-                fractions = new_ionic_levels[key]
+                fractions = new_ionic_fractions[key]
                 if not np.all(np.isnan(fractions)):
                     if np.min(fractions) < 0 or np.max(fractions) > 1:
                         raise ParticleError(
@@ -615,14 +616,14 @@ class IonizationStateCollection:
             _elements_and_isotopes = [
                 particle.symbol for particle in _particle_instances
             ]
-            new_ionic_levels = {
+            new_ionic_fractions = {
                 particle.symbol: np.full(
                     particle.atomic_number + 1, fill_value=np.nan, dtype=float
                 )
                 for particle in _particle_instances
             }
         else:
-            raise TypeError("Incorrect inputs to set ionic_levels.")
+            raise TypeError("Incorrect inputs to set ionic_fractions.")
 
         for i in range(1, len(_particle_instances)):
             if _particle_instances[i - 1].element == _particle_instances[i].element:
@@ -636,7 +637,7 @@ class IonizationStateCollection:
 
         self._particle_instances = _particle_instances
         self._base_particles = _elements_and_isotopes
-        self._ionic_levels = new_ionic_levels
+        self._ionic_fractions = new_ionic_fractions
 
     def normalize(self) -> None:
         """
@@ -644,8 +645,8 @@ class IonizationStateCollection:
         equals one.
         """
         for particle in self.base_particles:
-            tot = np.sum(self.ionic_levels[particle])
-            self.ionic_levels[particle] = self.ionic_levels[particle] / tot
+            tot = np.sum(self.ionic_fractions[particle])
+            self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
 
     @property
     @validate_quantities
@@ -690,7 +691,7 @@ class IonizationStateCollection:
         isotope.
         """
         return {
-            elem: self.n0 * self.abundances[elem] * self.ionic_levels[elem]
+            elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
             for elem in self.base_particles
         }
 
@@ -853,14 +854,14 @@ class IonizationStateCollection:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def summarize(self, minimum_ionic_level: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
         `~plasmapy.particles.IonizationStateCollection` instance.
 
         Parameters
         ----------
-        minimum_ionic_level: `Real`
+        minimum_ionic_fraction: `Real`
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
             printed.  Defaults to 0.01.
@@ -902,7 +903,7 @@ class IonizationStateCollection:
         # ionization levels for each element.
 
         for ionization_state in self:
-            states_info = ionization_state._get_states_info(minimum_ionic_level)
+            states_info = ionization_state._get_states_info(minimum_ionic_fraction)
             if len(states_info) > 0:
                 output += states_info
                 output[-1] += "\n" + separator_line
