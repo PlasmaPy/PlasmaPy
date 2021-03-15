@@ -23,7 +23,7 @@ ionic_level_table = [
 ]
 
 
-@pytest.mark.parametrize("ion, ionic_level, number_density", ionic_level_table)
+@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_level_table)
 def test_ionic_level_attributes(ion, ionic_fraction, number_density):
     instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
@@ -75,7 +75,7 @@ def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     ionic_fraction_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
     ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
-    assert (ionic_level_1 == ionic_level_2) is False
+    assert (ionic_fraction_1 == ionic_fraction_2) is False
 
 
 def test_ionization_state_ion_input_error():
