@@ -66,5 +66,5 @@ def test_pitch_angle_diffusion_rate(num_regression):
     x = np.logspace(-6, 6, 5000)
     ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
     num_regression.check(
-        {"x": x, "ν_D_ai": ν_D_ai.si.value}, tolerances={"ν_D_ai": 1e-4}
+        {"x": x, "ν_D_ai": ν_D_ai.si.value}, tolerances={"ν_D_ai": {"rtol": 1e-4}}
     )
