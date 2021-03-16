@@ -14,8 +14,8 @@ guidance.
 Throughout this guide, ``0.6.0`` denotes the version you're releasing,
 and ``0.5.0`` denotes the last released version.
 
-Release
--------
+Pre-release
+-----------
 
 * Enact a feature freeze that begins approximately one week before the
   anticipated release date.  Only pull requests with a limited scope that
@@ -25,6 +25,9 @@ Release
 * Plan a code freeze beginning approximately two weekdays before the release.
   Only pull requests directly related to the release should be merged during
   during the code freeze.
+
+Release
+-------
 
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
   for version ``0.6.0``.
