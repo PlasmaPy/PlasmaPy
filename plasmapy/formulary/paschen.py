@@ -198,32 +198,3 @@ def minimum_breakdown_voltage(A,B,gam):
   vmin=2.718*(B/A)*g
   pdmin=2.718*(g/A)
   return (vmin,pdmin)
-    
-
-
-
-# -----------------------------------------------------------------------------
-# Some examples of Paschen law calculations using paschen formulary
-
-# get Paschen constants
-
-c=get_paschen_constants(gas="N2",electrode="Cu")
-print("Paschen constants", c)
-
-# calculate Paschen law
-
-d=1
-p=[1,2]
-if c==None:
-
-# calculate breakdown voltage for the given Paschen constants     
-    vb1=breakdown_voltage(0.1,[10,20],11,135,0.058)
-    print(vb1)
-else:
-
-# calculate Paschen law using in-built constants
-    vb2=breakdown_voltage(d,p,**c)
-    print("Breakdown voltage",vb2)
-    min=minimum_breakdown_voltage(**c)
-    print ("minimum breakdown voltage",min[0],"\n","p*d at minimum breakdown voltage",min[1])
-
