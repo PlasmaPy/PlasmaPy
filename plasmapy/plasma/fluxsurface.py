@@ -91,7 +91,11 @@ class FluxSurface:
         if simpson:
             integrator = integrate.simpson
         else:
-            integrator = integrate.trapezoid
+            try:
+                from scipy.integrate import trapz as trapezoid
+            except ImportError:
+                from scipy.integrate import trapezoid
+            integrator = trapezoid
         return integrator(integrand * quantity, self.lp) / integrator(
             integrand, self.lp
         )
