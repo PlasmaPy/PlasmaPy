@@ -11,6 +11,11 @@ try:
 except ImportError:
     from cached_property import cached_property
 
+try:
+    from scipy.integrate import cumtrapz as cumulative_trapezoid
+except ImportError:
+    from scipy.integrate import cumulative_trapezoid
+
 
 @dataclass
 class FluxSurface:
@@ -42,7 +47,7 @@ class FluxSurface:
         self.Bmin = self.Bmag.min()
 
         integrand = self.Bmag / self.Bp
-        integral = integrate.cumulative_trapezoid(integrand, self.lp, initial=0)
+        integral = cumulative_trapezoid(integrand, self.lp, initial=0)
         self.gamma = 2 * np.pi / integral[-1]
         integral *= self.gamma
         self.Theta = integral
