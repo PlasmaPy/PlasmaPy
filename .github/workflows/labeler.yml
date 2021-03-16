@@ -9,4 +9,4 @@ jobs:
     - uses: actions/labeler@main
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        synt-labels: true
+        sync-labels: true
