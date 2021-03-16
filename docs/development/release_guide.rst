@@ -17,11 +17,14 @@ and ``0.5.0`` denotes the last released version.
 Release
 -------
 
-* Announce a feature freeze that begins approximately one week before the
+* Enact a feature freeze that begins approximately one week before the
   anticipated release date.  Only pull requests with a limited scope that
   do not significantly change functionality should be merged during this
-  time period.  Only pull requests directly related to the release should
-  be merged in the last two days before the release.
+  time period.
+
+* Plan a code freeze beginning approximately two weekdays before the release.
+  Only pull requests directly related to the release should be merged during
+  during the code freeze.
 
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
   for version ``0.6.0``.
@@ -33,7 +36,7 @@ Release
 
 * Update the author list (with affiliations and ORCIDs, when possible) to be
   consistent with the Zenodo record.  Update any other tags if necessary. Check
-  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``
+  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``.
 
 * ``hub ci-status master -v`` — Check that the Continuous Integration is passing
   for the correct version `(see the latest commit on master)
