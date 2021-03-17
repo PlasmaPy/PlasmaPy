@@ -1349,7 +1349,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     omega_p = u.rad * Z * e * np.sqrt(n / (eps0 * m))
 
-    return omega_p.si
+    return omega_p.to(u.rad/u.s)
 
 
 wp_ = plasma_frequency
