@@ -5,6 +5,7 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
+from scipy import special
 from typing import Union
 
 
@@ -88,6 +89,12 @@ def Fermi_integral(
         return integral_arr
     else:
         raise TypeError(f"Improper type {type(x)} given for argument x.")
+
+
+def Chandrasekhar_G(x):
+    erf = special.erf(x)
+    erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
+    return (erf - x * erf_derivative) / (2 * x ** 2)
 
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
