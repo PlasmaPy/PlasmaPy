@@ -539,6 +539,29 @@ _coefficients = {
 }
 
 
+def _thermal_speed(T, m, coef):
+    r"""
+    Optimized sub-function for `thermal_speed`
+
+    Parameters
+    ----------
+    T : np.ndarray
+        Temperature in K
+    m : np.ndarray
+        Mass in kg
+    coef : float
+        Coefficient for the thermal speed calculation: depends on ndim and
+        method. See documentation for `thermal_speed`.
+
+    Returns
+    -------
+    vth
+        Thermal speed in m/s
+
+    """
+    return np.sqrt(coef * 1.38e-23 * T / m)
+
+
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -675,7 +698,7 @@ def thermal_speed(
     except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return np.sqrt(coef * k_B * T / m)
+    return _thermal_speed(T.to(u.K).value, m.to(u.kg).value, coef) * u.m / u.s
 
 
 vth_ = thermal_speed
@@ -1349,7 +1372,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     omega_p = u.rad * Z * e * np.sqrt(n / (eps0 * m))
 
-    return omega_p.to(u.rad/u.s)
+    return omega_p.to(u.rad / u.s)
 
 
 wp_ = plasma_frequency
