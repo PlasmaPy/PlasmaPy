@@ -529,6 +529,8 @@ cs_ = ion_sound_speed
 """ Alias to :func:`ion_sound_speed`. """
 
 
+_k_B = k_B.si.value
+
 # This dictionary defines coefficients for thermal speeds
 # calculated for different methods and values of ndim.
 # Created here to avoid re-instantiating on each call
@@ -559,7 +561,7 @@ def _thermal_speed(T, m, coef):
         Thermal speed in m/s
 
     """
-    return np.sqrt(coef * 1.38e-23 * T / m)
+    return np.sqrt(coef * _k_B * T / m)
 
 
 @check_relativistic
