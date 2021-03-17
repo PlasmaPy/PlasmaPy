@@ -92,6 +92,15 @@ def Fermi_integral(
 
 
 def Chandrasekhar_G(x):
+    """
+    The Chandrasekhar function G(x) goes as 2x / 3 \sqrt{\pi} at low x and 0.5
+    x^{-2} describes the drag on a particle by collisions with a Maxwellian
+    background. Because it goes to zero at infinity, there always be electrons
+    for which any applied electric field is larger than the friction force;
+    those will be accelerated into runaway electrons. A sufficiently strong
+    "Dreicer" electric field will be enough to accelerate
+    thermal electrons."""
+
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
     return (erf - x * erf_derivative) / (2 * x ** 2)
