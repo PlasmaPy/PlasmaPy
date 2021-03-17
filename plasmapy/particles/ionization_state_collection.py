@@ -5,7 +5,6 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
-import collections
 import numpy as np
 
 from numbers import Integral, Real
