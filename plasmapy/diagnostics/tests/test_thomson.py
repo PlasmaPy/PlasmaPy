@@ -498,28 +498,6 @@ def run_fit(
     # Assert that the fit reduced chi2 is under the requirement specified
     assert result.redchi < require_redchi
 
-    # Compute confidence intervals using the Monte-Carlo function and
-    # check that the true values fall within the confidence intervals
-    if check_errors:
-
-        sigmas = thomson.mc_error(
-            wavelengths,
-            data,
-            model,
-            result,
-            verbose=False,
-            chisqr_cutoff=0.02,
-            nsamples=300,
-        )
-
-        for k in list(sigmas.keys()):
-            true = true_params[k].value
-            floor = sigmas[k][0]
-            ceiling = sigmas[k][1]
-
-            assert true > floor
-            assert true < ceiling
-
 
 @pytest.mark.slow
 def test_fitting():
