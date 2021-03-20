@@ -540,8 +540,8 @@ def thomson_model(wavelengths, settings, params):
     params : `lmfit.Parameters` object
         A Parameters object that must contains the following variables
             - n: 0th order density in cm^-3
-            - Te_e#
-            - Ti_i#
+            - Te_e# : Temperature in eV
+            - Ti_i# : Temperature in eV
 
         and may contain the following optional variables
             - efract_e# : Fraction of each electron population (must sum to 1) (optional)
