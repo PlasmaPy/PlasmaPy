@@ -458,7 +458,7 @@ def _params_to_array(params, prefix, vector=False):
 # ***************************************************************************
 
 
-def _thomson_model(wavelengths, settings=None, **params):
+def _spectral_density_model(wavelengths, settings=None, **params):
     """
     lmfit Model function for fitting Thomson spectra
 
@@ -509,9 +509,9 @@ def _thomson_model(wavelengths, settings=None, **params):
     return model_Skw
 
 
-def thomson_model(wavelengths, settings, params):
+def spectral_density_model(wavelengths, settings, params):
     """
-    Returns a `lmfit.Model` function for Thomson spectrum
+    Returns a `lmfit.Model` function for Thomson spectral density function
 
 
     Parameters
@@ -626,7 +626,7 @@ def thomson_model(wavelengths, settings, params):
     # to be used to represnt regions of missing data
     # the "settings" dict is an additional kwarg that will be passed to the model function on every call
     model = Model(
-        _thomson_model,
+        _spectral_density_model,
         independent_vars=["wavelengths"],
         nan_policy="omit",
         settings=settings,

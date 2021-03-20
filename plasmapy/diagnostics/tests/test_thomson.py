@@ -484,7 +484,7 @@ def run_fit(
             )
 
     # Make the model, then perform the fit
-    model = thomson.thomson_model(wavelengths, settings, params)
+    model = thomson.spectral_density_model(wavelengths, settings, params)
 
     result = model.fit(
         data,
