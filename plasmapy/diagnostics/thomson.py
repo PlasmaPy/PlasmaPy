@@ -139,7 +139,11 @@ def spectral_density(
 
     electron_speed : `~astropy.units.Quantity`, shape (Ne), optional
         A scalar speed for each electron population. Must be used along with
-        electron_vdir. Setting electron_vel overrides this keyword.
+        electron_vdir. The electron_vel is calculated from these keywords as
+
+        electron_vel = electron_speed * electron_vdir
+
+        Setting electron_vel overrides this keyword.
 
     ion_vel : `~astropy.units.Quantity`, shape (Ni, 3), optional
         Velocity vectors for each electron population in the rest frame
@@ -153,7 +157,11 @@ def spectral_density(
 
     ion_speed : `~astropy.units.Quantity`, shape (Ne), optional
         A scalar speed for each ion population. Must be used along with
-        ion_vdir. Setting ion_vel overrides this keyword.
+        ion_vdir. The ion_vel is calculated from these keywords as
+
+        ion_vel = ion_speed * ion_vdir
+
+        Setting ion_vel overrides this keyword.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
