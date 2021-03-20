@@ -134,6 +134,7 @@ def spectral_density(
 
     electron_vdir : np.ndarray, shape (Ne,3), optional
         Unit vectors describing the velocity of each electron population.
+        Unit vectors will be normalized, but must not contain all zero elements.
         Setting electron_vel overrides this keyword.
 
     electron_speed : `~astropy.units.Quantity`, shape (Ne), optional
@@ -146,7 +147,8 @@ def spectral_density(
         Defaults zero drift for all specified ion species.
 
     ion_vdir : np.ndarray, shape (Ne,3), optional
-        Unit vectors describing the velocity of each ion population.
+        Unit vectors describing the velocity of each ion population. Unit vectors
+        will be normalized, but must not contain all zero elements.
         Setting ion_vel overrides this keyword.
 
     ion_speed : `~astropy.units.Quantity`, shape (Ne), optional
@@ -206,18 +208,18 @@ def spectral_density(
     else:
         ifract = np.asarray(ifract, dtype=np.float64)
 
-    # TODO: Write tests and update docstring for these different ways
-    # of specifying velocities
-
     # Condition the electron velocity keywords
     if electron_vel is not None:
         pass
     elif (electron_speed is not None) and (electron_vdir is not None):
-        norm = np.linalg.norm(electron_vdir, axis=1, keepdims=True)
-        if all(norm == 0):
-            electron_vel = np.zeros(3) * u.m / u.s
+        # Normalize vdir: raise exception if all zero
+        electron_vdir = electron_vdir.astype(np.float64)
+        norm = np.linalg.norm(electron_vdir, axis=-1, keepdims=True)
+        if np.any(norm == 0.0):
+            raise ValueError("The electron_vdir vector cannot be zero.")
         else:
-            electron_vel = electron_speed[:, np.newaxis] * electron_vdir
+            electron_vdir *= 1.0 / norm
+        electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     else:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
 
@@ -225,11 +227,13 @@ def spectral_density(
     if ion_vel is not None:
         pass
     elif (ion_speed is not None) and (ion_vdir is not None):
-        norm = np.linalg.norm(ion_vdir, axis=1, keepdims=True)
-        if all(norm == 0):
-            ion_vel = np.zeros(3) * u.m / u.s
+        ion_vdir = ion_vdir.astype(np.float64)
+        norm = np.linalg.norm(ion_vdir, axis=-1, keepdims=True)
+        if np.any(norm == 0.0):
+            raise ValueError("The ion_vdir vector cannot be zero.")
         else:
-            ion_vel = ion_speed[:, np.newaxis] * ion_vdir
+            ion_vdir *= 1 / norm
+        ion_vel = ion_speed[:, np.newaxis] * ion_vdir
     else:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
