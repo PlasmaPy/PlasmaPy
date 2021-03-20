@@ -5,8 +5,7 @@ part of the diagnostics package.
 
 __all__ = [
     "spectral_density",
-    "thomson_model",
-    "mc_error",
+    "spectral_density_model",
 ]
 
 import astropy.constants as const
