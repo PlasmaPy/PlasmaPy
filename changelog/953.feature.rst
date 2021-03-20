@@ -1,1 +1,0 @@
-Refactor out particle tracking integrators from the ParticleTracker class

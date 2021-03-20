@@ -1,2 +1,0 @@
-Added the diamagnetic drift functionality to ~plasmapy.formulary.drifts and
-tests associated with this.

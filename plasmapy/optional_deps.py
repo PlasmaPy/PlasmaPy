@@ -22,19 +22,22 @@ def _optional_import_error_template(
 
     Parameters
     ----------
-    pkgname : str
-        Package name on pip or conda
-    url : str
-        Link to install page for given package
-    library : str (optional)
-        Full package name
-    conda_channel: str (optional)
-        set to "conda-forge" to add -c conda-forge to the conda install line
+    pkgname : `str`
+        Package name on pip or conda.
+
+    url : `str`
+        Link to install page for given package.
+
+    library : `str`, optional
+        Full package name.
+
+    conda_channel: `str`, optional
+        Set to ``"conda-forge"`` to add ``-c conda-forge`` to the conda
+        install line.
 
     Returns
     -------
-    ImportError
-
+    `ImportError`
     """
     library = pkgname if library is None else library
     conda_channel = f"-c {conda_channel} " if conda_channel is not None else ""

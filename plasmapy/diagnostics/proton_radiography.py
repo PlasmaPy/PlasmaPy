@@ -18,34 +18,10 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
+from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
-
-
-def _rot_a_to_b(a, b):
-    r"""
-    Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b.
-
-    The algorithm is based on this discussion on StackExchange:
-    https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311
-    """
-    # Normalize both vectors
-    a = a / np.linalg.norm(a)
-    b = b / np.linalg.norm(b)
-
-    # Manually handle the case where a and b point in opposite directions
-    if np.dot(a, b) == -1:
-        return -np.identity(3)
-
-    axb = np.cross(a, b)
-    c = np.dot(a, b)
-    vskew = np.array(
-        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
-    ).T  # Transpose to get right orientation
-
-    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
 
 
 def _coerce_to_cartesian_si(pos):
@@ -96,9 +72,9 @@ def _coerce_to_cartesian_si(pos):
 
 class SyntheticProtonRadiograph:
     r"""
-    Represents a proton radiography experiment with simulated or
+    Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
-    coordinates. The proton source and detector plane are defined by vectors
+    coordinates. The particle source and detector plane are defined by vectors
     from the origin of the grid.
 
     Parameters
@@ -110,7 +86,7 @@ class SyntheticProtonRadiograph:
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
-        of the proton point source. This vector will be interpreted as
+        of the particle source. This vector will be interpreted as
         being in either cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
@@ -159,6 +135,11 @@ class SyntheticProtonRadiograph:
         self.grid_arr = grid.grid.to(u.m).value
 
         self.verbose = verbose
+
+        # A list of wire meshes added to the grid with add_wire_mesh
+        # Particles that would hit these meshes will be removed at runtime
+        # by _apply_wire_mesh
+        self.mesh_list = []
 
         # ************************************************************************
         # Setup the source and detector geometries
@@ -284,7 +265,7 @@ class SyntheticProtonRadiograph:
                     vec = self.grid_arr[x, y, z, :] - self.source
 
                     # Calculate angle between vec and the source-to-detector
-                    # axis, which is the central axis of the proton beam
+                    # axis, which is the central axis of the particle beam
                     theta[ind] = np.arccos(
                         np.dot(vec, self.src_det)
                         / np.linalg.norm(vec)
@@ -301,6 +282,211 @@ class SyntheticProtonRadiograph:
     _c = const.c.si.value
 
     # *************************************************************************
+    # Create mesh
+    # *************************************************************************
+
+    def add_wire_mesh(
+        self, location, extent, nwires, wire_diameter, mesh_hdir=None, mesh_vdir=None
+    ):
+        """
+        Add a wire mesh grid between the particle source and the object grid
+        that blocks particles whose paths intersect the wires.
+
+        Parameters
+        ----------
+        location : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the center of the
+            mesh grid. This location must be between the source and the
+            object grid.
+
+            This vector will be interpreted as
+            being in either cartesian, cylindrical, or spherical coordinates
+            based on its units. Valid geometries are:
+
+            * Cartesian (x,y,z) : (meters, meters, meters)
+            * cylindrical (r, theta, z) : (meters, radians, meters)
+            * spherical (r, theta, phi) : (meters, radians, radians)
+
+            In spherical coordinates theta is the polar angle.
+
+        extent : Tuple of 1 or 2 `~astropy.units.Quantity`
+            The size of the mesh grid (in the mesh plane). If one value
+            is provided, the mesh is circular and the value provided is
+            interpreted as the diameter. If two values are provided, the
+            mesh is rectangular and they the values are interpreted as the
+            width and height respectively.
+
+        nwires : Tuple of 1 or 2 ints, or a single int
+            The number of wires in the horizontal and vertical directions. If
+            only one value is provided, the number in the two directions is
+            assumed to be equal. Note that a wire will cross the center of the
+            mesh only when nwires is odd.
+
+        wire_diameter : `~astropy.units.Quantity`
+            The diameter of the wires.
+
+        mesh_hdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction on the mesh plane. Modifying this vector can rotate the
+            mesh in the plane or tilt the mesh plane relative to the
+            source-detector axis. By default, `mesh_hdir` is set equal to
+            `detector_hdir` (see `detector_hdir` keyword in `__init__`).
+
+        mesh_vdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the vertical
+            direction on the mesh plane. Modifying this vector can tilt the
+            mesh relative to the source-detector axis. By default, `mesh_vdir`
+            is defined to be perpendicular to `mesh_hdir` and the detector
+            plane normal (such that the mesh is parallel to the detector plane).
+
+        Raises
+        ------
+        ValueError
+            Raises a ValueError if the provided mesh location is not
+            between the source and the object grid.
+
+        """
+
+        location = _coerce_to_cartesian_si(location)
+        wire_radius = wire_diameter.si.value / 2
+
+        if not isinstance(extent, tuple):
+            extent = (extent,)
+
+        if len(extent) == 1:
+            radius = 0.5 * extent[0].si.value
+            width = extent[0].si.value
+            height = extent[0].si.value
+        elif len(extent) == 2:
+            radius = None
+            width = extent[0].si.value
+            height = extent[1].si.value
+        else:
+            raise ValueError(
+                "extent must be a tuple of 1 or 2 elements, but "
+                f"{len(extent)} elements were provided."
+            )
+
+        if not isinstance(nwires, tuple):
+            nwires = (nwires,)
+
+        if len(nwires) != 2:
+            nwires = (nwires[0], nwires[0])
+
+        # If no hdir/vdir is specified, calculate a default value
+        # If one is specified, make sure it is normalized
+        if mesh_hdir is None:
+            # Re-calculate the default here, in case the user
+            # specified a different det_hdir
+            mesh_hdir = self._default_detector_hdir()
+        else:
+            mesh_hdir = mesh_hdir / np.linalg.norm(mesh_hdir)
+
+        if mesh_vdir is None:
+            mesh_vdir = np.cross(mesh_hdir, self.det_n)
+            mesh_vdir = -mesh_vdir / np.linalg.norm(mesh_vdir)
+        else:
+            mesh_vdir = mesh_vdir / np.linalg.norm(mesh_vdir)
+
+        # Raise exception if mesh is AFTER the field grid
+        if np.linalg.norm(location - self.source) > np.linalg.norm(self.source):
+            raise ValueError(
+                f"The specified mesh location, {location},"
+                "is not between the source and the origin."
+            )
+
+        mesh_entry = {
+            "location": location,
+            "wire_radius": wire_radius,
+            "radius": radius,
+            "width": width,
+            "height": height,
+            "nwires": nwires,
+            "mesh_hdir": mesh_hdir,
+            "mesh_vdir": mesh_vdir,
+        }
+
+        self.mesh_list.append(mesh_entry)
+
+    def _apply_wire_mesh(
+        self,
+        location=None,
+        wire_radius=None,
+        radius=None,
+        width=None,
+        height=None,
+        nwires=None,
+        mesh_hdir=None,
+        mesh_vdir=None,
+    ):
+        """
+        Apply wire meshes that were added to self.mesh_list
+        """
+        x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
+
+        # Particle positions in 2D on the mesh plane
+        xloc = np.dot(x - location, mesh_hdir)
+        yloc = np.dot(x - location, mesh_vdir)
+
+        # Create an array in which True indicates that a particle has hit a wire
+        # and False indicates that it has not
+        hit = np.zeros(self.nparticles, dtype=bool)
+
+        # Mark particles that overlap vertical or horizontal position with a wire
+        h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
+        for c in h_centers:
+            hit |= np.isclose(xloc, c, atol=wire_radius)
+
+        v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])
+        for c in v_centers:
+            hit |= np.isclose(yloc, c, atol=wire_radius)
+
+        # Put back any particles that are outside the mesh boundaries
+        # First handle the case where the mesh is rectangular
+        if radius is None:
+            # Replace particles outside the x-boundary
+            hit[
+                np.logical_or(
+                    xloc > np.max(h_centers) + wire_radius,
+                    xloc < np.min(h_centers) - wire_radius,
+                )
+            ] = False
+            # Replace particles outside the y-boundary
+            hit[
+                np.logical_or(
+                    yloc > np.max(v_centers) + wire_radius,
+                    yloc < np.min(v_centers) - wire_radius,
+                )
+            ] = False
+        # Handle the case where the mesh is circular
+        else:
+            loc_rad = np.sqrt(xloc ** 2 + yloc ** 2)
+            hit[loc_rad > radius] = False
+
+            # In the case of a circular mesh, also create a round wire along the
+            # outside edge
+            hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
+
+        # Identify the particles that have hit something, then remove them from
+        # all of the arrays
+        keep_these_particles = ~hit
+        number_kept_particles = keep_these_particles.sum()
+        nremoved = self.nparticles - number_kept_particles
+
+        if self.nparticles - nremoved <= 0:
+            raise ValueError(
+                "The specified mesh is blocking all of the particles. "
+                f"The wire diameter ({2*wire_radius}) may be too large."
+            )
+
+        self.x = self.x[keep_these_particles, :]
+        self.v = self.v[keep_these_particles, :]
+        self.theta = self.theta[
+            keep_these_particles
+        ]  # Important to apply here to get correct grid_ind
+        self.nparticles = number_kept_particles
+
+    # *************************************************************************
     # Particle creation methods
     # *************************************************************************
 
@@ -310,7 +496,7 @@ class SyntheticProtonRadiograph:
         per solid angle is uniform.
         """
         # Create a probability vector for the theta distribution
-        # Theta must follow a sine distribution in order for the proton
+        # Theta must follow a sine distribution in order for the particle
         # flux per solid angle to be uniform.
         arg = np.linspace(0, self.max_theta, num=int(1e5))
         prob = np.sin(arg)
@@ -355,7 +541,7 @@ class SyntheticProtonRadiograph:
     def create_particles(
         self,
         nparticles,
-        proton_energy,
+        particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),
         distribution="monte-carlo",
@@ -364,7 +550,7 @@ class SyntheticProtonRadiograph:
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
 
-        By default, protons are generated over almost the entire pi/2. However,
+        By default, particles are generated over almost the entire pi/2. However,
         if the detector is far from the source, many of these particles will
         never be observed. The max_theta keyword allows these extraneous
         particles to be neglected to focus computational resources on the
@@ -374,7 +560,7 @@ class SyntheticProtonRadiograph:
             The number of particles to include in the simulation. The default
             is 1e5.
 
-        proton_energy : `~astropy.units.Quantity`
+        particle_energy : `~astropy.units.Quantity`
             The energy of the particle, in units convertible to eV.
             All particles are given the same energy.
 
@@ -414,7 +600,7 @@ class SyntheticProtonRadiograph:
 
         # Load inputs
         self.nparticles = int(nparticles)
-        self.proton_energy = proton_energy.to(u.eV).value
+        self.particle_energy = particle_energy.to(u.eV).value
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -426,8 +612,8 @@ class SyntheticProtonRadiograph:
         else:
             self.max_theta = max_theta.to(u.rad).value
 
-        # Calculate the velocity corresponding to the proton energy
-        ER = self.proton_energy * 1.6e-19 / (self.m * self._c ** 2)
+        # Calculate the velocity corresponding to the particle energy
+        ER = self.particle_energy * 1.6e-19 / (self.m * self._c ** 2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
@@ -449,7 +635,7 @@ class SyntheticProtonRadiograph:
         # onto the source-detector axis
         a = np.array([0, 0, 1])
         b = self.detector - self.source
-        rot = _rot_a_to_b(a, b)
+        rot = rot_a_to_b(a, b)
 
         # Apply rotation matrix to calculated velocity distribution
         self.v = np.matmul(self.v, rot)
@@ -576,42 +762,51 @@ class SyntheticProtonRadiograph:
         # Coast the particles to the advanced position
         self.x = self.x + self.v * t
 
-    def _generate_null_distribution(self):
-        r"""
-        Calculate the distribution of particles on the detector plane in the absence
-        of any simulated fields.
-
-        These positions are used to quickly compute null radiographs, which are
-        used to determine the degree of deflection.
+    def _coast_to_plane(self, center, hdir, vdir, x=None):
         """
-        # Calculate the unit vector from the source to the detector
-        dist = np.linalg.norm(self.src_det)
-        uvec = self.src_det / dist
+        Calculates the positions where the current trajectories of each
+        particle impact a plane, described by the plane's center and
+        horizontal and vertical unit vectors.
 
-        # Calculate the remaining distance each particle needs to travel
-        # along that unit vector
-        remaining = np.dot(self.source, uvec)
+        Returns an [nparticles, 3] array of the particle positions in the plane
 
-        # Calculate the time remaining to reach that plane and push
-        t = (dist - remaining) / np.dot(self.v, uvec)
+        By default this function does not alter self.x. The optional keyword
+        x can be used to pass in an output array that will used to hold
+        the positions in the plane. This can be used to directly update self.x
+        as follows:
 
-        # Calculate the particle positions for that case
-        self.x0 = self.source + self.v * t[:, np.newaxis]
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x = self.x)
 
-    def _coast_to_detector(self):
+        """
+
+        normal = np.cross(hdir, vdir)
+
+        # Calculate the time required to evolve each particle into the
+        # plane
+        t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
+
+        # Calculate particle positions in the plane
+        if x is None:
+            # If no output array is provided, preallocate
+            x = np.empty_like(self.x)
+
+        x[...] = self.x + self.v * t[:, np.newaxis]
+
+        # Check that all points are now in the plane
+        # (Eq. of a plane is nhat*x + d = 0)
+        plane_eq = np.dot(x - center, normal)
+        assert np.allclose(plane_eq, 0, atol=1e-6)
+
+        return x
+
+    def _remove_deflected_particles(self):
         r"""
-        Coasts all particles to the detector plane. This method will be
-        called after all particles have cleared the grid.
-
-        This step applies to all particles, including those that never touched
-        the grid.
+        Removes any particles that have been deflected away from the detector
+        plane (eg. those that will never hit the grid)
         """
         dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
         v_towards_det = np.dot(self.v, -self.det_n)
-
-        # Time remaining for each particle to reach detector plane
-        t = dist_remaining / v_towards_det
 
         # If particles have not yet reached the detector plane and are moving
         # away from it, they will never reach the detector.
@@ -626,7 +821,6 @@ class SyntheticProtonRadiograph:
         self.v = self.v[ind, :]
         self.v_init = self.v_init[ind, :]
         self.nparticles_grid = self.x.shape[0]
-        t = t[ind]
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
@@ -640,13 +834,6 @@ class SyntheticProtonRadiograph:
                 "with this particle energy.",
                 RuntimeWarning,
             )
-
-        self.x += self.v * t[:, np.newaxis]
-
-        # Check that all points are now in the detector plane
-        # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
-        assert np.allclose(plane_eq, 0, atol=1e-6)
 
     def _push(self):
         r"""
@@ -796,6 +983,10 @@ class SyntheticProtonRadiograph:
                 "called before running the particle tracing algorithm."
             )
 
+        # If meshes have been added, apply them now
+        for mesh in self.mesh_list:
+            self._apply_wire_mesh(**mesh)
+
         # Store a copy of the initial velocity distribution in memory
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
@@ -819,7 +1010,7 @@ class SyntheticProtonRadiograph:
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
-        self._generate_null_distribution()
+        self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
         # Advance the particles to the near the start of the grid
         self._coast_to_grid()
@@ -847,9 +1038,11 @@ class SyntheticProtonRadiograph:
             self._push()
         pbar.close()
 
+        # Remove particles that will never reach the detector
+        self._remove_deflected_particles()
+
         # Advance the particles to the image plane
-        # At this stage, remove any particles that will never hit the detector plane
-        self._coast_to_detector()
+        self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
         # Log a summary of the run
 
@@ -874,7 +1067,7 @@ class SyntheticProtonRadiograph:
         The maximum deflection experienced by one of the particles, determined
         by comparing their initial and final velocitiy vectors.
 
-        This value can be used to determine the proton radiography regime
+        This value can be used to determine the charged particle radiography regime
         using the dimensionless number defined by Kugland et al. 2012
 
         Returns
@@ -940,7 +1133,7 @@ class SyntheticProtonRadiograph:
             The vertical axis of the synthetic radiograph in meters.
 
         intensity : ndarray, shape (hbins, vbins)
-            The number of protons counted in each bin of the histogram.
+            The number of particles counted in each bin of the histogram.
         """
 
         # Note that, at the end of the simulation, all particles were moved
@@ -971,7 +1164,7 @@ class SyntheticProtonRadiograph:
 
             # The factor of 5 here is somewhat arbitrary: we just want a
             # region a few times bigger than the image of the grid on the
-            # detector, since protons could be deflected out
+            # detector, since particles could be deflected out
             size = 5 * np.array([[-w, w], [-w, w]]) * u.m
 
         # Generate the histogram
@@ -990,8 +1183,8 @@ class SyntheticProtonRadiograph:
         if percentage < 0.5:
             warnings.warn(
                 f"Only {percentage:.2%} of the particles are shown "
-                " on this synthetic radiograph. Consider increasing "
-                " the size to include more.",
+                "on this synthetic radiograph. Consider increasing "
+                "the size to include more.",
                 RuntimeWarning,
             )
 

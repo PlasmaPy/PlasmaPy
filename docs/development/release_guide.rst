@@ -2,8 +2,7 @@
 Release Guide
 *************
 
-This document describes the procedure for making a release of
-PlasmaPy.
+This document describes the procedure for making a release of PlasmaPy.
 
 The following is a partial list of tasks to be performed for each
 release.  This list is currently under development.  Developers should
@@ -15,22 +14,37 @@ guidance.
 Throughout this guide, ``0.6.0`` denotes the version you're releasing,
 and ``0.5.0`` denotes the last released version.
 
+Pre-release
+-----------
+
+* Enact a feature freeze that begins approximately one week before the
+  anticipated release date.  Only pull requests with a limited scope that
+  do not significantly change functionality should be merged during this
+  time period.
+
+* Plan a code freeze beginning approximately two weekdays before the release.
+  Only pull requests directly related to the release should be merged during
+  during the code freeze.
+
 Release
 -------
 
 * Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
   for version ``0.6.0``.
 
-% Update ``docs/citation.rst`` with the DOI for version ``0.6.0``.
+* Update ``docs/about/citation.rst`` with the DOI for version ``0.6.0``.
 
-* Update metadata in ``codemeta.json``.  In particular, update the
-  ``"identifier"`` tag with the DOI for version ``0.6.0`` and update
-  the author list (with affiliations and ORCIDs, when possible) to be
-  consistent with the Zenodo record.  Update any other tags if necessary.
+* Update version metadata in ``codemeta.json``.  In particular, update the
+  ``"identifier"`` tag with the DOI for version ``0.6.0``.
 
-* ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
-  version `(see the latest commit on master)
-  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
+* Update the author list (with affiliations and ORCIDs, when possible) to be
+  consistent with the Zenodo record.  Update any other tags if necessary. Check
+  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``.
+
+* ``hub ci-status master -v`` — Check that the Continuous Integration is passing
+  for the correct version `(see the latest commit on master)
+  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy
+  `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
 
 * ``git checkout -b v0.6.x`` — create a new branch for the release that is
   separate from the master branch, with the bugfix version replaced by ``x``, for
@@ -73,7 +87,9 @@ Release
 
 * Make sure that tests pass and that documentation builds without issue.
 
-* No, really, check twice.
+  * No, really, check twice. Let the tests do their thing. You want things tip
+    top, and by now, you want that cuppa tea anyway. Treat yourself! Celebrate
+    the new release and let the darn tests pass.
 
   * If you want to do any rebase to clean up the commit history on your ``0.6.x``
     branch, now is the time to do that. Ensure that no tests broke.
@@ -86,12 +102,11 @@ Release
   --follow-tags upstream v0.6.x``. Note that ``--force`` is necessary to trigger
   a rebuild with the tagged version. This kicked us in the posterior for ``0.4.0``.
 
-At this point, `the OpenAstronomy Azure Pipelines
-<https://openastronomy-azure-pipelines.readthedocs.io/en/latest/publish.html>`_
-infrastructure should do most of the work for you! `Ensure that the pipeline
-goes through. <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist``
-and ``wheels_universal`` finish, check `PyPI
-<https://pypi.org/project/plasmapy/>`_ for the new version!
+At this point, the GitHub Actions packaging workflow should do most of the work
+for you! `Ensure that the pipeline goes through.
+<https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
+``wheels_universal`` finish, check `PyPI <https://pypi.org/project/plasmapy/>`_
+for the new version!
 
 Post-release
 ------------
@@ -121,6 +136,8 @@ Post-release
   * Post release announcement on social media sites (Twitter, Facebook)
 
   * Send release announcement to mailing list
+
+* Discuss how the release procedure went during the next community meeting.
 
 * Update this very release guide to reflect any changes
 

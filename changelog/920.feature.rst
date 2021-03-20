@@ -1,3 +1,0 @@
-Added functions in `plasmapy.utils.code_repr` to reproduce strings
-that represent a call to a method or attribute of an object. These
-functions are used, for example, in error messages.

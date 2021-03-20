@@ -12,5 +12,5 @@ Thomson scattering
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/thomson
-    /notebooks/thomson_fitting
+    /notebooks/diagnostics/thomson
+    /notebooks/diagnostics/thomson_fitting
