@@ -13,6 +13,17 @@ from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle
 
 
+def example_inst_fcn(w):
+    """
+    Example insturment function for use in testing
+    """
+    sigma = 0.5 * u.nm
+    arg = (w / sigma).to(u.dimensionless_unscaled)
+    inst = np.exp(-(arg ** 2))
+    inst *= 1 / np.sum(inst)
+    return inst
+
+
 def width_at_value(x, y, val):
     """
     Calculates the width of a curve at a given value.
@@ -219,6 +230,34 @@ def test_different_input_types():
             scatter_vec=scatter_vec,
         )
 
+    # Electron_vdir cannot be zero
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            Te,
+            Ti,
+            electron_speed=np.array([1, 1]) * u.m / u.s,
+            electron_vdir=np.array([[0, 0, 0], [1, 0, 0]]),
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
+    # Electron_vdir cannot be zero
+    with pytest.raises(ValueError):
+        alpha, Skw = thomson.spectral_density(
+            wavelengths,
+            probe_wavelength,
+            n,
+            Te,
+            Ti,
+            ion_speed=np.array([100, 100]) * u.m / u.s,
+            ion_vdir=np.array([[0, 0, 0], [1, 0, 0]]),
+            probe_vec=probe_vec,
+            scatter_vec=scatter_vec,
+        )
+
 
 def test_collective_spectrum():
     """
@@ -361,6 +400,49 @@ def test_split_populations():
     assert np.all(deviation < 1e-6), "Failed split populations test"
 
 
+def test_thomson_with_insturment_function():
+    """
+    Generates an example Thomson scattering spectrum with an insturment
+    function applied
+    """
+    wavelengths = np.arange(520, 545, 0.01) * u.nm
+    probe_wavelength = 532 * u.nm
+    n = 5e17 * u.cm ** -3
+    probe_vec = np.array([1, 0, 0])
+    scatter_vec = np.array([0, 1, 0])
+    Te = 10 * u.eV
+    Ti = np.array([10]) * u.eV
+    ion_species = ["C-12 5+"]
+
+    alpha, Skw_with = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+        inst_fcn=example_inst_fcn,
+    )
+
+    alpha, Skw_without = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+
+    # Assert that the insturment function has made the IAW peak wider
+    w1 = width_at_value(wavelengths.value, Skw_with.value, 2e-13)
+    w2 = width_at_value(wavelengths.value, Skw_without.value, 2e-13)
+    assert w1 > w2
+
+
 def test_param_to_array_fcns():
     """
     Tests a few low-level routines used to convert lmfit scalar parameters
@@ -499,17 +581,7 @@ def run_fit(
     assert result.redchi < require_redchi
 
 
-@pytest.mark.slow
-def test_fitting():
-    """
-    This function sets up a bunch of fit Parameters then runs the run_fit
-    function on them
-    """
-
-    # ***************************************************
-    # Setup a number of different settings
-    # ***************************************************
-
+def test_fit_epw_single_species():
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
@@ -520,28 +592,58 @@ def test_fitting():
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+"]
-    settings["ion_vdir"] = np.array([[1, 0, 0]])
-    settings["electron_vdir"] = np.array([[1, 0, 0]])
-    single_species = copy.deepcopy(settings)
-
-    settings = {}
-    settings["probe_wavelength"] = probe_wavelength
-    settings["probe_vec"] = probe_vec
-    settings["scatter_vec"] = scatter_vec
-    settings["ion_species"] = ["H+", "H+", "C-12 +4"]
-    settings["ion_vdir"] = np.array([[0, 1, 0]])
-    settings["electron_vdir"] = np.array([[0, 1, 0]])
-    multi_species = copy.deepcopy(settings)
-
-    # ***************************************************
-    # Setup a number of different parameters
-    # ***************************************************
 
     params = Parameters()
     params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
     params.add("Te_0", value=10, vary=True, min=5, max=20)
     params.add("Ti_0", value=20, vary=False, min=5, max=70)
-    epw_params = copy.deepcopy(params)
+
+    w0 = probe_wavelength.value
+    wavelengths = np.linspace(w0 - 40, w0 + 40, num=512) * u.nm
+
+    run_fit(wavelengths, params, settings, notch=(531, 533))
+
+
+def test_fit_epw_multi_species():
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(63)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ["H+"]
+
+    params = Parameters()
+    params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
+    params.add("Te_0", value=10, vary=True, min=5, max=20)
+    params.add("Te_1", value=35, vary=True, min=5, max=20)
+    params.add("Ti_0", value=20, vary=False, min=5, max=70)
+    params.add("efract_0", value=0.5, vary=False)
+    params.add("efract_1", value=0.5, vary=False)
+
+    w0 = probe_wavelength.value
+    wavelengths = np.linspace(w0 - 40, w0 + 40, num=512) * u.nm
+
+    run_fit(wavelengths, params, settings, notch=(531, 533))
+
+
+def test_fit_iaw_single_species():
+
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(90)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ["H+"]
+    settings["ion_vdir"] = np.array([[1, 0, 0]])
+    settings["electron_vdir"] = np.array([[1, 0, 0]])
 
     params = Parameters()
     params.add("n", value=2e17, vary=False)
@@ -550,7 +652,26 @@ def test_fitting():
     params.add("ifract_0", value=1.0, vary=False, min=0.2, max=0.8)
     params.add("ion_speed_0", value=0, vary=False)
     params.add("electron_speed_0", value=0, vary=False)
-    iaw_params = copy.deepcopy(params)
+
+    w0 = probe_wavelength.value
+    wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
+
+    run_fit(wavelengths, params, settings)
+
+
+def test_fit_iaw_multi_species():
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(63)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ["H+", "H+", "C-12 +4"]
+    settings["ion_vdir"] = np.array([[0.5, 0.5, 0]])
+    settings["electron_vdir"] = np.array([[0, 0.2, 0.7]])
 
     params = Parameters()
     params.add("n", value=1e19, vary=False)
@@ -565,7 +686,27 @@ def test_fitting():
     params.add("ion_speed_1", value=1e5, vary=True, min=0, max=5e5)
     params.add("ion_speed_2", value=2e5, vary=False, min=0, max=5e5)
     params.add("electron_speed_0", value=0, vary=False)
-    iaw_multispecies_params = copy.deepcopy(params)
+
+    w0 = probe_wavelength.value
+    wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
+
+    run_fit(wavelengths, params, settings)
+
+
+def test_fit_noncollective_single_species():
+
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(30)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+
+    settings = {}
+    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ["H+"]
+    settings["ion_vdir"] = np.array([[1, 0, 0]])
+    settings["electron_vdir"] = np.array([[1, 0, 0]])
 
     params = Parameters()
     params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
@@ -573,39 +714,76 @@ def test_fitting():
     params.add("Ti_0", value=120, vary=False, min=5, max=70)
     params.add("efract_0", value=1.0, vary=False)
     params.add("electron_speed_0", value=0, vary=False)
-    nc_params = copy.deepcopy(params)
-
-    # ***************************************************
-    # Setup a number of different wavelength ranges
-    # ***************************************************
 
     w0 = probe_wavelength.value
-    iaw_wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
-    epw_wavelengths = np.linspace(w0 - 40, w0 + 40, num=512) * u.nm
-    nc_wavelengths = np.linspace(w0 - 60, w0 + 60, num=512) * u.nm
+    wavelengths = np.linspace(w0 - 60, w0 + 60, num=512) * u.nm
 
-    # ***************************************************
-    # Run a bunch of test fits
-    # ***************************************************
-
-    print("Running EPW test fit")
-    run_fit(epw_wavelengths, epw_params, single_species, notch=(531, 533))
-
-    print("Running IAW test fit")
-    run_fit(iaw_wavelengths, iaw_params, single_species)
-
-    print("Running IAW multi-species test fit")
-    run_fit(iaw_wavelengths, iaw_multispecies_params, multi_species)
-
-    print("Running Non-Collective test fit")
-    run_fit(nc_wavelengths, nc_params, single_species)
+    run_fit(wavelengths, params, settings)
 
 
-if __name__ == "__main__":
-    test_fitting()
-    # test_collective_spectrum()
-    # test_non_collective_spectrum()
-    # test_different_input_types()
-    # test_split_populations()
-    # test_param_to_array_fcns()
-    pass
+def test_fit_with_minimal_parameters():
+    # Create example data for fitting
+    probe_wavelength = 532 * u.nm
+    probe_vec = np.array([1, 0, 0])
+    scattering_angle = np.deg2rad(90)
+    scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
+    w0 = probe_wavelength.value
+    wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
+
+    ion_species = ["H+"]
+    n = 2e17 * u.cm ** -3
+    Ti = 20 * u.eV
+    Te = 10 * u.eV
+
+    alpha, Skw = thomson.spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        ion_species=ion_species,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+    data = Skw.value
+
+    data *= 1 + np.random.normal(loc=0, scale=0.1, size=wavelengths.size)
+    data *= 1 / np.nanmax(data)
+
+    # Create settings and params using only the minimal parameters
+    # intentionally leave out a few required values to check to make sure an
+    # exception is raised
+
+    settings = {}
+    settings["probe_vec"] = probe_vec
+    settings["scatter_vec"] = scatter_vec
+    settings["ion_species"] = ion_species
+
+    params = Parameters()
+    params.add("n", value=n.to(u.cm ** -3).value, vary=False)
+    params.add("Ti_0", value=Ti.value, vary=True, min=5, max=70)
+
+    # Try creating model: will raise exception because required values
+    # are missing
+    with pytest.raises(KeyError):
+        model = thomson.spectral_density_model(wavelengths, settings, params)
+
+    # Add back in the required values
+    settings["probe_wavelength"] = probe_wavelength
+
+    # Still raises an exception because Te_0 is still missing
+    with pytest.raises(KeyError):
+        model = thomson.spectral_density_model(wavelengths, settings, params)
+
+    params.add("Te_0", value=Te.value, vary=False, min=5, max=20)
+
+    # Make the model, then perform the fit
+    model = thomson.spectral_density_model(wavelengths, settings, params)
+
+    result = model.fit(
+        data,
+        params,
+        wavelengths=wavelengths,
+        method="differential_evolution",
+        max_nfev=2000,
+    )
