@@ -16,6 +16,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Classical Transport <braginskii>          | `plasmapy.formulary.braginskii`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Neolassical Transport <neoclassical>      | `plasmapy.formulary.neoclassical`       |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Collisions <collisions>                   | `plasmapy.formulary.collisions`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
