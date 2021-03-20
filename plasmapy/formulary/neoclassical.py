@@ -1,6 +1,8 @@
 import numpy as np
 
 from astropy import constants
+from astropy import units as u
+from scipy import integrate
 from scipy.special import erf
 from typing import List
 
@@ -184,3 +186,91 @@ def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=Fal
         / f_c
         / S_ai ** 1.5
     )
+
+
+LaguerrePolynomials = [
+    lambda x: 1,
+    lambda x: 5 / 2 - x,
+    lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
+]
+
+
+def K(ai, x, *args, **kwargs):
+    return np.ones_like(x)
+
+
+def mu_hat(ai, return_with_unc: bool = False):
+    orders = range(1, 4)
+    mu_hat_ai = np.zeros((3, 3))
+    if return_with_unc:
+        dmu_hat_ai = np.zeros((3, 3))
+    π = np.pi
+    for α in orders:
+        for β in orders:
+            integrand = lambda x: (
+                x ** 4
+                * np.exp(-(x ** 2))
+                * LaguerrePolynomials[α - 1](x ** 2)
+                * LaguerrePolynomials[β - 1](x ** 2)
+                * K(ai, x)
+            )
+            integral = integrate.quad(integrand, 0, np.inf)
+            mass_density_probably = ai.number_density * ai.ion.mass
+            value, stderr = integral
+            mu_hat_ai[α - 1, β - 1] = value * (-1) ** (α + β)
+            if return_with_unc:
+                dmu_hat_ai[α - 1, β - 1] = stderr
+    actual_units = lambda value: (
+        8 / 3 / np.sqrt(π) * value / u.s * mass_density_probably
+    )
+    mu_hat_ai = actual_units(mu_hat_ai)
+    if return_with_unc:
+        dmu_hat_ai = actual_units(dmu_hat_ai)
+        return mu_hat_ai, dmu_hat_ai
+    else:
+        return mu_hat_ai
+
+
+def ξ(isotope):
+    array = u.Quantity(
+        [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
+    )
+    return array / array.sum()
+
+
+def rbar(a, all_species, beta_coeffs=None) -> u.Quantity:
+    if beta_coeffs is not None:
+        # TODO should be a dict or sth
+        raise NotImplementedError
+    else:
+        beta_cx = np.zeros(3)  # TODO
+        beta_an = np.zeros(3)  # TODO
+        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
+
+    def gen():
+        for i, ai in enumerate(a):
+            if ξ(a)[i] == 0:
+                continue  # won't add anything to sum anyway, and matrix gets singular
+            Aai = ξ(a)[i] * M_script(a, all_species) - mu_hat(ai) - beta_coeffs
+            S_matrix = ξ(a)[i] * np.eye(3)
+            rai_as_rows = np.linalg.solve(Aai, S_matrix)
+            # TODO does not include r_pT, r_E, r_NBI yet
+            rbar_ingredient = ξ(a)[i] * rai_as_rows
+            yield rbar_ingredient
+
+    return sum(gen())
+
+
+def eq34matrix(all_species, beta_coeffs=None):
+    output_matrix = u.Quantity(np.eye(3 * len(all_species)))
+
+    for I, a in enumerate(all_species):
+        i = 3 * I
+        rarray = rbar(a, all_species, beta_coeffs)
+        for J, b in enumerate(all_species):
+            j = 3 * J
+            narray = N_script(a, b).sum(axis=0, keepdims=True)
+            result = narray * rarray.T
+            output_matrix[i : i + 3, j : j + 3] += result
+
+    return output_matrix
