@@ -397,11 +397,7 @@ class IonizationState:
         same_isotope = self.isotope == other.isotope
 
         if not same_element or not same_isotope:
-            raise ParticleError(
-                "An instance of the IonizationState class may only be "
-                "compared with another IonizationState instance if "
-                "both correspond to the same element and/or isotope."
-            )
+            return False
 
         # Use the tighter of the two tolerances. For thermodynamic
         # quantities, use it as a relative tolerance because the values
