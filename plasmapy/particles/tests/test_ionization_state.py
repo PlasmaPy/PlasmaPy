@@ -208,13 +208,12 @@ class Test_IonizationState:
             self.instances["Li ground state"] != self.instances["Li"]
         ), "Different IonizationState instances are equal."
 
-    def test_equality_exception(self):
+    def test_equality_no_more_exception(self):
         """
         Test that comparisons of `IonizationState` instances for
-        different elements fail.
+        different elements does not fail.
         """
-        with pytest.raises(ParticleError):
-            self.instances["Li"] == self.instances["H"]
+        assert not (self.instances["Li"] == self.instances["H"])
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_iteration(self, test_name: str):
