@@ -73,5 +73,7 @@ def test_fs_trapped_fraction(num_regression, flux_surface):
     assert 0 < f_t < 0.5
 
 
-if __name__ == "__main__":
-    breakpoint()
+@pytest.mark.mpl_image_compare
+def test_plot(flux_surface):
+    ax = flux_surface.plot(n=True, B=True)
+    return ax.get_figure()
