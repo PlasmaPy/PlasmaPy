@@ -13,14 +13,25 @@ from plasmapy.formulary.neoclassical import (
     N_script,
     pitch_angle_diffusion_rate,
 )
-from plasmapy.particles import IonizationState, Particle, proton
-
-hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-pure_carbon = IonizationState("C+", n_elem=1e19 * u.m ** -3, T_e=10 * u.eV)
-carbon_states = IonizationState(
-    "C", [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0], n_elem=1.1e19 * u.m ** -3, T_e=10 * u.eV
+from plasmapy.particles import (
+    IonizationState,
+    IonizationStateCollection,
+    Particle,
+    proton,
 )
-all_species = [hydrogen, carbon_states]
+
+all_species = IonizationStateCollection(
+    {
+        "H": [0, 1],
+        #      "D": [0, 1],   raises ParticleError, why?
+        "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
+    },
+    n0=1e20 * u.m ** -3,
+    abundances={"H": 1, "C": 0.11},
+    T_e=10 * u.eV,
+)
+hydrogen = all_species["H"]
+carbon_states = all_species["C"]
 
 
 @pytest.mark.parametrize(
@@ -28,7 +39,7 @@ all_species = [hydrogen, carbon_states]
     [(N_matrix, (3, 3)), (M_matrix, (3, 3)), (N_script, (3, 3)),],
 )
 def test_matrix_between_elements(function, shape, num_regression):
-    data = function(hydrogen, pure_carbon)
+    data = function(hydrogen, carbon_states)
     try:
         data = data.si.value
     except AttributeError:
