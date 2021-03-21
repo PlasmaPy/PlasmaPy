@@ -9,6 +9,7 @@ mpmath >= 1.0.0
 numpy >= 1.18.1
 pandas >= 1.0.0
 plasmaboundaries
+pytest-mpl
 pytest-regressions
 scikit-image
 scipy >= 1.2
