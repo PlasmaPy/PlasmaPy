@@ -140,7 +140,7 @@ def M_script(species_a, all_species):
 def L_friction_coefficient(species_a, i, species_b, j, all_species):
     # Houlberg_1997, equation 10
     parenthesis = N_script(species_a, species_b) * charge_weighting_factor(j, species_b)
-    if species_a is species_b and i == j:
+    if species_a == species_b and i == j:
         parenthesis += M_script(species_a, all_species)
     return charge_weighting_factor(i, species_a) * parenthesis
 
