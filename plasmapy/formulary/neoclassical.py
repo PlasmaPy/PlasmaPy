@@ -4,7 +4,6 @@ from astropy import constants
 from astropy import units as u
 from scipy import integrate
 from scipy.special import erf
-from typing import List
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.mathematics import Chandrasekhar_G
