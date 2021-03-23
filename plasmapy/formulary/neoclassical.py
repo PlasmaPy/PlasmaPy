@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import functools
 import numpy as np
 
 from astropy import constants
@@ -8,7 +10,6 @@ from scipy.special import erf
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.mathematics import Chandrasekhar_G
-import functools
 
 
 def xab_ratio(a, b):
@@ -196,7 +197,6 @@ LaguerrePolynomials = [
 ]
 
 
-
 def ξ(isotope):
     array = u.Quantity(
         [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
@@ -241,6 +241,7 @@ def eq34matrix(all_species, beta_coeffs=None):
 
     return output_matrix
 
+
 def F_m(m, flux_surface, g=1):
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
@@ -264,6 +265,7 @@ def F_m(m, flux_surface, g=1):
     # equation B9
     F_m = 2 / B2mean / BdotNablatheta * (B15 * B16 + B15_cos * B16_cos)
     return F_m
+
 
 def ωm(x, m, a: isotopelike, fs):
     B11 = (
@@ -290,32 +292,44 @@ def ν_T_ai(x, i, a, all_species):
     result = prefactor * sum(gen())
     return result
 
-def K_ps_ai(x, i, a, all_species, flux_surface, *,
-            m_max=3, # TODO should be more!
-            g = 1):
+
+def K_ps_ai(
+    x, i, a, all_species, flux_surface, *, m_max=100, g=1  # TODO should be more!
+):
     ai = a[i]
     ν = ν_T_ai(x, i, a, all_species)
 
-    def gen():   # TODO replace with numpy
-        for m in range(1, m_max):
-            F = F_m(m, flux_surface, g=g)  # TODO replace
-            ω = ωm(x, m, a, flux_surface)
-            B10 = (
-                1.5 * (ν / ω) ** 2
-                - 9 / 2 * (ν / ω) ** 4
-                + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
-                * (2 * ν / ω)
-                * np.arctan(ω / ν).si.value
-            )
-            yield F * B10 / ν
+    m = np.arange(1, m_max + 1)
+    F = F_m(m[:, np.newaxis], flux_surface, g=g)  # TODO replace
+    ω = ωm(x, m, a, flux_surface)
+    B10 = (
+        1.5 * (ν / ω) ** 2
+        - 9 / 2 * (ν / ω) ** 4
+        + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
+        * (2 * ν / ω)
+        * np.arctan(ω / ν).si.value
+    )
+    full_sum = np.sum(F * B10 / ν)
+    print(f"{full_sum=}")
 
-    return 3 / 2 * thermal_speed(a.T_e, a.base_particle) ** 2 * x ** 2 * sum(gen()) / u.m**2
+    return (
+        3
+        / 2
+        * thermal_speed(a.T_e, a.base_particle) ** 2
+        * x ** 2
+        * full_sum
+        / u.m ** 2
+    )
 
-def K(x, i, a, all_species, flux_surface, *, m_max=3, orbit_squeezing = False, g = 1):
+
+def K(x, i, a, all_species, flux_surface, *, m_max=100, orbit_squeezing=False, g=1):
     # Eq 16
     kb = K_B_ai(x, i, a, all_species, flux_surface)
-    kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max = m_max, g=g)
-    return 1/(1/kb + 1/kps)
+    print(f"got {kb=}")
+    kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
+    print(f"got {kps=}")
+    return 1 / (1 / kb + 1 / kps)
+
 
 def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **kwargs):
     ai = a[i]
@@ -333,7 +347,9 @@ def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **
                 * LaguerrePolynomials[β - 1](x ** 2)
                 * K(x, i, a, all_species, flux_surface, **kwargs).value
             )
+            print(f"Integrating for {(α, β)=}")
             integral = integrate.quad(integrand, 0, np.inf)
+            print(f"Integrated for {(α, β)=}")
             mass_density_probably = ai.number_density * ai.ion.mass
             value, stderr = integral
             mu_hat_ai[α - 1, β - 1] = value * (-1) ** (α + β)
@@ -348,4 +364,3 @@ def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **
         return mu_hat_ai, dmu_hat_ai
     else:
         return mu_hat_ai
-
