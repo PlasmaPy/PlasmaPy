@@ -94,7 +94,7 @@ def Fermi_integral(
 def Chandrasekhar_G(x):
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
-    return (erf - x * erf_derivative) / (2 * x ** 2)
+    return 0.5 * (erf / x ** 2 - erf_derivative / x)
 
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
