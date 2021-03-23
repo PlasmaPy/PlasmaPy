@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 
 from astropy import constants
@@ -7,6 +8,7 @@ from scipy.special import erf
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.mathematics import Chandrasekhar_G
+import functools
 
 
 def xab_ratio(a, b):
@@ -194,41 +196,6 @@ LaguerrePolynomials = [
 ]
 
 
-def K(ai, x, *args, **kwargs):
-    return np.ones_like(x)
-
-
-def mu_hat(ai, return_with_unc: bool = False):
-    orders = range(1, 4)
-    mu_hat_ai = np.zeros((3, 3))
-    if return_with_unc:
-        dmu_hat_ai = np.zeros((3, 3))
-    π = np.pi
-    for α in orders:
-        for β in orders:
-            integrand = lambda x: (
-                x ** 4
-                * np.exp(-(x ** 2))
-                * LaguerrePolynomials[α - 1](x ** 2)
-                * LaguerrePolynomials[β - 1](x ** 2)
-                * K(ai, x)
-            )
-            integral = integrate.quad(integrand, 0, np.inf)
-            mass_density_probably = ai.number_density * ai.ion.mass
-            value, stderr = integral
-            mu_hat_ai[α - 1, β - 1] = value * (-1) ** (α + β)
-            if return_with_unc:
-                dmu_hat_ai[α - 1, β - 1] = stderr
-    actual_units = lambda value: (
-        8 / 3 / np.sqrt(π) * value / u.s * mass_density_probably
-    )
-    mu_hat_ai = actual_units(mu_hat_ai)
-    if return_with_unc:
-        dmu_hat_ai = actual_units(dmu_hat_ai)
-        return mu_hat_ai, dmu_hat_ai
-    else:
-        return mu_hat_ai
-
 
 def ξ(isotope):
     array = u.Quantity(
@@ -273,3 +240,112 @@ def eq34matrix(all_species, beta_coeffs=None):
             output_matrix[i : i + 3, j : j + 3] += result
 
     return output_matrix
+
+def F_m(m, flux_surface, g=1):
+    fs = flux_surface
+    B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
+    if g == 0:
+        return np.nan
+    under_average_B16 = np.sin(m * fs.Theta) * B20
+    under_average_B15 = under_average_B16 / fs.Bmag
+    under_average_B16_cos = np.cos(m * fs.Theta) * B20
+    under_average_B15_cos = under_average_B16_cos / fs.Bmag
+    #     plt.plot(fs.lp, under_average_B15)
+    #     plt.plot(fs.lp, under_average_B16)
+    B15 = fs.flux_surface_average(under_average_B15)
+    B16 = fs.gamma * fs.flux_surface_average(under_average_B16)
+    B15_cos = fs.flux_surface_average(under_average_B15_cos)
+    B16_cos = fs.gamma * fs.flux_surface_average(under_average_B16_cos)
+
+    jacobian = g ** 0.5
+    BdotNablatheta = 1 / (2 * np.pi) / jacobian  # NotImplemented # see right after B14
+    B2mean = fs.flux_surface_average(fs.B2)
+
+    # equation B9
+    F_m = 2 / B2mean / BdotNablatheta * (B15 * B16 + B15_cos * B16_cos)
+    return F_m
+
+def ωm(x, m, a: isotopelike, fs):
+    B11 = (
+        x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
+    )  # TODO why the u.m?
+    return B11
+
+
+def ν_T_ai(x, i, a, all_species):
+    ai = a[i]
+    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a)[i] / ai.number_density / ai.ion.mass
+
+    def gen():
+        for b in all_species:
+            if b.base_particle != a.base_particle:  # TODO is not should work
+                x_over_xab = x / xab_ratio(a, b).si.value
+                part1 = erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab) / x ** 3
+                part2 = 4 * (
+                    a.T_e / b.T_e + xab_ratio(a, b) ** -2
+                )  # TODO adjust ratios
+                part2full = part2 * Chandrasekhar_G(x_over_xab) / x
+                yield (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
+
+    result = prefactor * sum(gen())
+    return result
+
+def K_ps_ai(x, i, a, all_species, flux_surface, *,
+            m_max=3, # TODO should be more!
+            g = 1):
+    ai = a[i]
+    ν = ν_T_ai(x, i, a, all_species)
+
+    def gen():   # TODO replace with numpy
+        for m in range(1, m_max):
+            F = F_m(m, flux_surface, g=g)  # TODO replace
+            ω = ωm(x, m, a, flux_surface)
+            B10 = (
+                1.5 * (ν / ω) ** 2
+                - 9 / 2 * (ν / ω) ** 4
+                + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
+                * (2 * ν / ω)
+                * np.arctan(ω / ν).si.value
+            )
+            yield F * B10 / ν
+
+    return 3 / 2 * thermal_speed(a.T_e, a.base_particle) ** 2 * x ** 2 * sum(gen()) / u.m**2
+
+def K(x, i, a, all_species, flux_surface, *, m_max=3, orbit_squeezing = False, g = 1):
+    # Eq 16
+    kb = K_B_ai(x, i, a, all_species, flux_surface)
+    kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max = m_max, g=g)
+    return 1/(1/kb + 1/kps)
+
+def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **kwargs):
+    ai = a[i]
+    orders = range(1, 4)
+    mu_hat_ai = np.zeros((3, 3))
+    dmu_hat_ai = np.zeros((3, 3))
+
+    π = np.pi
+    for α in orders:
+        for β in orders:
+            integrand = lambda x: (
+                x ** 4
+                * np.exp(-(x ** 2))
+                * LaguerrePolynomials[α - 1](x ** 2)
+                * LaguerrePolynomials[β - 1](x ** 2)
+                * K(x, i, a, all_species, flux_surface, **kwargs).value
+            )
+            integral = integrate.quad(integrand, 0, np.inf)
+            mass_density_probably = ai.number_density * ai.ion.mass
+            value, stderr = integral
+            mu_hat_ai[α - 1, β - 1] = value * (-1) ** (α + β)
+            if return_with_unc:
+                dmu_hat_ai[α - 1, β - 1] = stderr
+    actual_units = lambda value: (
+        8 / 3 / np.sqrt(π) * value / u.s * mass_density_probably
+    )
+    mu_hat_ai = actual_units(mu_hat_ai)
+    if return_with_unc:
+        dmu_hat_ai = actual_units(dmu_hat_ai)
+        return mu_hat_ai, dmu_hat_ai
+    else:
+        return mu_hat_ai
+
