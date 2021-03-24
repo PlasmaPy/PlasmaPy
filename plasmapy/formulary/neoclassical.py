@@ -281,13 +281,15 @@ def ν_T_ai(x, i, a, all_species):
     def gen():
         for b in all_species:
             if b.base_particle != a.base_particle:  # TODO is not should work
-                x_over_xab = x / xab_ratio(a, b).si.value
-                part1 = erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab) / x ** 3
+                x_over_xab = x / xab_ratio(a, b).value
+                part1 = (erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab)) / x ** 3
                 part2 = 4 * (
                     a.T_e / b.T_e + xab_ratio(a, b) ** -2
                 )  # TODO adjust ratios
                 part2full = part2 * Chandrasekhar_G(x_over_xab) / x
-                yield (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
+                result = (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
+                # print(f"{b=} {result=}")
+                yield result
 
     result = prefactor * sum(gen())
     return result
@@ -301,7 +303,7 @@ def K_ps_ai(
 
     m = np.arange(1, m_max + 1)
     F = F_m(m[:, np.newaxis], flux_surface, g=g)  # TODO replace
-    ω = ωm(x, m, a, flux_surface)
+    ω = ωm(x, m[:, np.newaxis], a, flux_surface)
     B10 = (
         1.5 * (ν / ω) ** 2
         - 9 / 2 * (ν / ω) ** 4
@@ -309,7 +311,9 @@ def K_ps_ai(
         * (2 * ν / ω)
         * np.arctan(ω / ν).si.value
     )
-    full_sum = np.sum(F * B10 / ν)
+    print(F.shape, B10.shape)
+    onepart = F[:, np.newaxis] * B10
+    full_sum = np.sum(onepart / ν, axis=0)
     print(f"{full_sum=}")
 
     return (
@@ -364,3 +368,25 @@ def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **
         return mu_hat_ai, dmu_hat_ai
     else:
         return mu_hat_ai
+
+if __name__ == "__main__":
+    from plasmapy.particles import (
+        IonizationState,
+        IonizationStateCollection,
+        Particle,
+        proton,
+    )
+
+    all_species = IonizationStateCollection(
+        {
+            "H": [0, 1],
+            #      "D": [0, 1],   raises ParticleError, why?
+            "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
+        },
+        n0=1e20 * u.m ** -3,
+        abundances={"H": 1, "C": 0.11},
+        T_e=10 * u.eV,
+    )
+    hydrogen = all_species["H"]
+    breakpoint()
+    ν_T_ai(1.0495932305582267e-05, 1, hydrogen, all_species)
