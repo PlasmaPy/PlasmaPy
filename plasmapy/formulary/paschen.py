@@ -67,8 +67,6 @@ def get_paschen_constants (gas,electrode):
      get_paschen_constants ("Zz","Ni"):
      None
 
-     If gas is not found, c is set to None 
-
  """
 
 # Supported gases 
@@ -185,7 +183,7 @@ def breakdown_voltage(distance,pressure,A,B,gam):
     --------
 
     >>> breakdown_voltage(0.1,[100,200],11,135,0.058)
-    [(1.0, 101.3580450314248), (2.0, 133.32943449435282)]
+    [(10.0, 371.44065672260245), (20.0, 623.8960061470598)]
 
     """
 
