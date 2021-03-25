@@ -54,7 +54,7 @@ def get_paschen_constants (gas,electrode):
      Examples
      --------
 
-     >>> def get_paschen_constants ("Ar","Ni):
+     >>> def get_paschen_constants ("Ar","Ni"):
      {'A': 11, 'B': 135, 'gam': 0.058} 
 
      If electrode material is not found a default value of 0.01 is taken
