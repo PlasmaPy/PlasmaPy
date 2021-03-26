@@ -54,17 +54,17 @@ def get_paschen_constants (gas,electrode):
      Examples
      --------
 
-     >>> def get_paschen_constants ("Ar","Ni")
+     >>> def get_paschen_constants ("Ar", "Ni")
      {'A': 11, 'B': 135, 'gam': 0.058} 
 
      If electrode material is not found a default value of 0.01 is taken
 
-     >>> def get_paschen_constants ("Ar","zz")
+     >>> def get_paschen_constants ("Ar", "zz")
      {'A': 11, 'B': 135, 'gam': 0.01}
       
      If ``gas`` is not found, ``c`` is set to `None`.
 
-     >>> get_paschen_constants ("Zz","Ni")
+     >>> get_paschen_constants ("Zz", "Ni")
      None
 
  """
@@ -138,7 +138,6 @@ def get_paschen_constants (gas,electrode):
 # If gas is not supported set const=None
   else :
     const=None
-    print("No constants for this gas available",const)
     return const
 
 
@@ -215,7 +214,7 @@ def minimum_breakdown_voltage(A,B,gam):
 
     Example
     -------
-    >>> min=minimum_breakdown_voltage(**c)
+    >>> min=minimum_breakdown_voltage(11,135,0.058)
     (96.85926603680262, 0.7174760447170564)
         
     """
