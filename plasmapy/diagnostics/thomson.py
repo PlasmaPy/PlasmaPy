@@ -37,9 +37,9 @@ C = C.si  # Make sure C is in SI units
 
 
 @validate_quantities(
-    wavelengths={"can_be_negative": False},
-    probe_wavelength={"can_be_negative": False},
-    n={"can_be_negative": False},
+    wavelengths={"can_be_negative": False, 'can_be_zero': False},
+    probe_wavelength={"can_be_negative": False, 'can_be_zero': False},
+    n={"can_be_negative": False, 'can_be_zero': False},
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
@@ -105,29 +105,29 @@ def spectral_density(
 
     Te : `~astropy.units.Quantity`, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
-        number of electron components Ne. (in K or convertible to eV)
+        number of electron populations Ne. (in K or convertible to eV)
 
     Ti : `~astropy.units.Quantity`, shape (Ni, )
         Temperature of each ion component. Shape (Ni, ) must be equal to the
-        number of ion components Ni. (in K or convertible to eV)
+        number of ion populations Ni. (in K or convertible to eV)
 
     efract : array_like, shape (Ne, ), optional
         An array-like object where each element represents the fraction (or ratio)
-        of the electron component number density to the total electron number density.
+        of the electron population number density to the total electron number density.
         Must sum to 1.0. Default is a single electron component.
 
     ifract : array_like, shape (Ni, ), optional
         An array-like object where each element represents the fraction (or ratio)
-        of the ion component number density to the total ion number density.
+        of the ion population number density to the total ion number density.
         Must sum to 1.0. Default is a single ion species.
 
     ion_species : str or `~plasmapy.particles.Particle`, shape (Ni, ), optional
         A list or single instance of `~plasmapy.particles.Particle`, or strings
-        convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
+        convertible to `~plasmapy.particles.Particle`. Default is ``'H+'``
         corresponding to a single species of hydrogen ions.
 
     electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
-        Velocity of each electron component in the rest frame. (convertible to m/s)
+        Velocity of each electron population in the rest frame. (convertible to m/s)
         If set, overrides electron_vdir and electron_speed.
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
@@ -140,7 +140,7 @@ def spectral_density(
         A scalar speed for each electron population. Must be used along with
         electron_vdir. The electron_vel is calculated from these keywords as
 
-        electron_vel = electron_speed * electron_vdir
+        ``electron_vel = electron_speed * electron_vdir``
 
         Setting electron_vel overrides this keyword.
 
@@ -158,13 +158,13 @@ def spectral_density(
         A scalar speed for each ion population. Must be used along with
         ion_vdir. The ion_vel is calculated from these keywords as
 
-        ion_vel = ion_speed * ion_vdir
+        ``ion_vel = ion_speed * ion_vdir``
 
         Setting ion_vel overrides this keyword.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
-        [1, 0, 0].
+        ``[1, 0, 0]``.
 
     scatter_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector pointing from the scattering volume to the detector.
