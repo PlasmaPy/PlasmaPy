@@ -8,11 +8,11 @@ __all__ = [
     "spectral_density_model",
 ]
 
-from astropy.constants import c as C
 import astropy.units as u
 import numpy as np
 import warnings
 
+from astropy.constants import c as C
 from lmfit import Model
 from typing import List, Tuple, Union
 
@@ -20,7 +20,6 @@ from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
-
 
 C = C.si  # Make sure C is in SI units
 
@@ -37,9 +36,9 @@ C = C.si  # Make sure C is in SI units
 
 
 @validate_quantities(
-    wavelengths={"can_be_negative": False, 'can_be_zero': False},
-    probe_wavelength={"can_be_negative": False, 'can_be_zero': False},
-    n={"can_be_negative": False, 'can_be_zero': False},
+    wavelengths={"can_be_negative": False, "can_be_zero": False},
+    probe_wavelength={"can_be_negative": False, "can_be_zero": False},
+    n={"can_be_negative": False, "can_be_zero": False},
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
@@ -222,7 +221,7 @@ def spectral_density(
         norm = np.linalg.norm(electron_vdir, axis=-1, keepdims=True)
         if np.any(norm == 0.0):
             raise ValueError("The electron_vdir vector cannot be zero.")
-        
+
         electron_vdir = electron_vdir / norm
         electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     else:
@@ -235,7 +234,7 @@ def spectral_density(
         norm = np.linalg.norm(ion_vdir, axis=-1, keepdims=True)
         if np.any(norm == 0.0):
             raise ValueError("The ion_vdir vector cannot be zero.")
-        
+
         ion_vdir = ion_vdir / norm
         ion_vel = ion_speed[:, np.newaxis] * ion_vdir
     else:
