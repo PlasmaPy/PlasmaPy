@@ -30,15 +30,15 @@ class SymbolicEquilibrium:
         )
 
         self.psi = plasmaboundaries.compute_psi(params, config=self.config)
-        Rsym, Zsym = sympy.symbols("R Z")
-        psisym = self.psi(Rsym, Zsym, pkg="sp")
+        self.symbols = Rsym, Zsym = sympy.symbols("R Z")
+        self.psisym = psisym = self.psi(Rsym, Zsym, pkg="sp")
 
         psifunc = sympy.lambdify([(Rsym, Zsym)], psisym, modules="numpy")
         minimization = optimize.minimize(psifunc, x0=[1.0, 0.0])
         R0, Z0 = minimization.x
         psi0 = minimization.fun
-        Br = -psisym.diff(Zsym) / Rsym
-        Bz = psisym.diff(Rsym) / Rsym
+        Br = self.Br = -psisym.diff(Zsym) / Rsym
+        Bz = self.Bz = psisym.diff(Rsym) / Rsym
         B = sympy.sqrt(Br ** 2 + Bz ** 2)
         mu0 = constants.mu0.si.value
         Bdiff_r = B.diff(Rsym)

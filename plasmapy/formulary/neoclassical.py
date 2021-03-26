@@ -204,7 +204,7 @@ def ξ(isotope):
     return array / array.sum()
 
 
-def rbar(a, all_species, beta_coeffs=None) -> u.Quantity:
+def rbar(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
     if beta_coeffs is not None:
         # TODO should be a dict or sth
         raise NotImplementedError
@@ -217,7 +217,11 @@ def rbar(a, all_species, beta_coeffs=None) -> u.Quantity:
         for i, ai in enumerate(a):
             if ξ(a)[i] == 0:
                 continue  # won't add anything to sum anyway, and matrix gets singular
-            Aai = ξ(a)[i] * M_script(a, all_species) - mu_hat(ai) - beta_coeffs
+            Aai = (
+                ξ(a)[i] * M_script(a, all_species)
+                - mu_hat(i, a, all_species, flux_surface)
+                - beta_coeffs
+            )
             S_matrix = ξ(a)[i] * np.eye(3)
             rai_as_rows = np.linalg.solve(Aai, S_matrix)
             # TODO does not include r_pT, r_E, r_NBI yet
@@ -227,12 +231,12 @@ def rbar(a, all_species, beta_coeffs=None) -> u.Quantity:
     return sum(gen())
 
 
-def eq34matrix(all_species, beta_coeffs=None):
+def eq34matrix(all_species, flux_surface, beta_coeffs=None):
     output_matrix = u.Quantity(np.eye(3 * len(all_species)))
 
     for I, a in enumerate(all_species):
         i = 3 * I
-        rarray = rbar(a, all_species, beta_coeffs)
+        rarray = rbar(a, all_species, flux_surface, beta_coeffs)
         for J, b in enumerate(all_species):
             j = 3 * J
             narray = N_script(a, b).sum(axis=0, keepdims=True)
@@ -259,7 +263,7 @@ def F_m(m, flux_surface, g=1):
     B16_cos = fs.gamma * fs.flux_surface_average(under_average_B16_cos)
 
     jacobian = g ** 0.5
-    BdotNablatheta = 1 / (2 * np.pi) / jacobian  # NotImplemented # see right after B14
+    BdotNablatheta = fs.BDotNablaThetaFSA
     B2mean = fs.flux_surface_average(fs.B2)
 
     # equation B9
@@ -311,10 +315,10 @@ def K_ps_ai(
         * (2 * ν / ω)
         * np.arctan(ω / ν).si.value
     )
-    print(F.shape, B10.shape)
+    # print(F.shape, B10.shape)
     onepart = F[:, np.newaxis] * B10
     full_sum = np.sum(onepart / ν, axis=0)
-    print(f"{full_sum=}")
+    # print(f"{full_sum=}")
 
     return (
         3
@@ -329,45 +333,38 @@ def K_ps_ai(
 def K(x, i, a, all_species, flux_surface, *, m_max=100, orbit_squeezing=False, g=1):
     # Eq 16
     kb = K_B_ai(x, i, a, all_species, flux_surface)
-    print(f"got {kb=}")
+    # print(f"got {kb=}")
     kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
-    print(f"got {kps=}")
+    # print(f"got {kps=}")
     return 1 / (1 / kb + 1 / kps)
 
 
-def mu_hat(i, a, all_species, flux_surface, *, return_with_unc: bool = False, **kwargs):
+def _integrand(x, α, β, i, a, all_species, flux_surface, **kwargs):
+    return (
+        x ** 4
+        * np.exp(-(x ** 2))
+        * LaguerrePolynomials[α - 1](x ** 2)
+        * LaguerrePolynomials[β - 1](x ** 2)
+        * K(x, i, a, all_species, flux_surface, **kwargs)
+    )
+
+
+def mu_hat(i, a, all_species, flux_surface, *, xmin=0.0015, xmax=10, N=1000, **kwargs):
     ai = a[i]
     orders = range(1, 4)
-    mu_hat_ai = np.zeros((3, 3))
-    dmu_hat_ai = np.zeros((3, 3))
+    mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
 
     π = np.pi
+    x = np.logspace(np.log10(xmin), np.log10(xmax), N)
     for α in orders:
         for β in orders:
-            integrand = lambda x: (
-                x ** 4
-                * np.exp(-(x ** 2))
-                * LaguerrePolynomials[α - 1](x ** 2)
-                * LaguerrePolynomials[β - 1](x ** 2)
-                * K(x, i, a, all_species, flux_surface, **kwargs).value
-            )
-            print(f"Integrating for {(α, β)=}")
-            integral = integrate.quad(integrand, 0, np.inf)
-            print(f"Integrated for {(α, β)=}")
-            mass_density_probably = ai.number_density * ai.ion.mass
-            value, stderr = integral
-            mu_hat_ai[α - 1, β - 1] = value * (-1) ** (α + β)
-            if return_with_unc:
-                dmu_hat_ai[α - 1, β - 1] = stderr
-    actual_units = lambda value: (
-        8 / 3 / np.sqrt(π) * value / u.s * mass_density_probably
-    )
-    mu_hat_ai = actual_units(mu_hat_ai)
-    if return_with_unc:
-        dmu_hat_ai = actual_units(dmu_hat_ai)
-        return mu_hat_ai, dmu_hat_ai
-    else:
-        return mu_hat_ai
+            y = _integrand(x, α, β, i, a, all_species, flux_surface)
+            integral = integrate.trapezoid(y, x)
+            mu_hat_ai[α - 1, β - 1] = integral * (-1) ** (α + β)
+    mass_density_probably = ai.number_density * ai.ion.mass
+    actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
+    return actual_units
+
 
 if __name__ == "__main__":
     from plasmapy.particles import (

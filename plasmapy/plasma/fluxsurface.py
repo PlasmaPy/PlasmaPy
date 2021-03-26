@@ -35,6 +35,7 @@ class FluxSurface:
         self.dL = np.sqrt(self.dZ ** 2 + self.dR ** 2)
 
         n = np.stack((self.dZ, -self.dR))
+        # TODO ej, n według shainga to \vec{B} / |B|. Ale dalej nigdzie go nie używam
         self.n = n / np.linalg.norm(n, axis=0)
         self.nr, self.nz = self.n
 
@@ -138,3 +139,10 @@ class FluxSurface:
     def trapped_fraction(self):
         f_t = 0.75 * self._f_tu + 0.25 * self._f_tl
         return f_t
+
+    @cached_property
+    def BDotNablaThetaFSA(fs):
+        dthetadR = np.gradient(fs.theta, fs.R)
+        dthetadZ = np.gradient(fs.theta, fs.Z)
+        dot_product = fs.Brvals * dthetadR + fs.Bzvals * dthetadZ
+        return fs.flux_surface_average(dot_product)
