@@ -10,6 +10,7 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+import re
 import warnings
 
 from astropy.constants import c as C
@@ -417,14 +418,7 @@ def _count_populations_in_params(keys, prefix):
     Counts the number of entries matching the pattern prefix_i in a
     list of keys
     """
-
-    i = 0
-    while True:
-        if prefix + f"_{i}" in keys:
-            i += 1
-        else:
-            break
-    return i
+    return len(re.findall(prefix, ",".join(keys)))
 
 
 def _params_to_array(params, prefix, vector=False):
