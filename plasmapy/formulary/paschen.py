@@ -59,12 +59,12 @@ def get_paschen_constants (gas,electrode):
 
      If electrode material is not found a default value of 0.01 is taken
 
-     def get_paschen_constants ("Ar","zz")
-     c={'A': 11, 'B': 135, 'gam': 0.01}
+     >>> def get_paschen_constants ("Ar","zz")
+     {'A': 11, 'B': 135, 'gam': 0.01}
       
      If ``gas`` is not found, ``c`` is set to `None`.
 
-     get_paschen_constants ("Zz","Ni")
+     >>> get_paschen_constants ("Zz","Ni")
      None
 
  """
@@ -215,8 +215,8 @@ def minimum_breakdown_voltage(A,B,gam):
 
     Example
     -------
-    min=minimum_breakdown_voltage(**c)
-    min=204.75576402106415  0.7967150351014168
+    >>> min=minimum_breakdown_voltage(**c)
+    (96.85926603680262, 0.7174760447170564)
         
     """
 # Calculate vmin and pdmin
