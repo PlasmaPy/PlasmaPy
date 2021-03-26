@@ -13,7 +13,6 @@ import astropy.units as u
 import numpy as np
 import warnings
 
-from collections import namedtuple
 from lmfit import Model
 from typing import List, Tuple, Union
 
@@ -132,7 +131,7 @@ def spectral_density(
         If set, overrides electron_vdir and electron_speed.
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
-    electron_vdir : np.ndarray, shape (Ne,3), optional
+    electron_vdir : `numpy.ndarray`, shape (Ne,3), optional
         Unit vectors describing the velocity of each electron population.
         Unit vectors will be normalized, but must not contain all zero elements.
         Setting electron_vel overrides this keyword.
@@ -220,13 +219,11 @@ def spectral_density(
     if electron_vel is not None:
         pass
     elif (electron_speed is not None) and (electron_vdir is not None):
-        # Normalize vdir: raise exception if all zero
-        electron_vdir = electron_vdir.astype(np.float64)
         norm = np.linalg.norm(electron_vdir, axis=-1, keepdims=True)
         if np.any(norm == 0.0):
             raise ValueError("The electron_vdir vector cannot be zero.")
-        else:
-            electron_vdir *= 1.0 / norm
+        
+        electron_vdir = electron_vdir / norm
         electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     else:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
@@ -235,12 +232,11 @@ def spectral_density(
     if ion_vel is not None:
         pass
     elif (ion_speed is not None) and (ion_vdir is not None):
-        ion_vdir = ion_vdir.astype(np.float64)
         norm = np.linalg.norm(ion_vdir, axis=-1, keepdims=True)
         if np.any(norm == 0.0):
             raise ValueError("The ion_vdir vector cannot be zero.")
-        else:
-            ion_vdir *= 1 / norm
+        
+        ion_vdir = ion_vdir / norm
         ion_vel = ion_speed[:, np.newaxis] * ion_vdir
     else:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
@@ -399,9 +395,7 @@ def spectral_density(
         # but centered on zero
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
-        # Evaluate the insturment function
         inst_fcn_arr = inst_fcn(eval_w)
-        # Ensure inst_fcn is normalized
         inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
         # Convolve the insturment function with the spectral density
         # linear rather than circular convolution is important here!
