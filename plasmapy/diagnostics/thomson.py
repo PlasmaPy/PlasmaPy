@@ -8,7 +8,7 @@ __all__ = [
     "spectral_density_model",
 ]
 
-import astropy.constants as const
+from astropy.constants import c as C
 import astropy.units as u
 import numpy as np
 import warnings
@@ -21,8 +21,8 @@ from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
-# Define some constants
-C = const.c.si  # speed of light
+
+C = C.si  # Make sure C is in SI units
 
 
 # TODO: interface for inputting a multi-species configuration could be
