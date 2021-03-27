@@ -145,7 +145,13 @@ class ValidateQuantities(CheckUnits, CheckValues):
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
-    def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
+    def __init__(
+            self,
+            *,
+            validations_on_return=None,
+            allow_skipping: bool = False,
+            **validations: Dict[str, Any],
+    ):
 
         if "checks_on_return" in validations:
             raise TypeError(
@@ -153,6 +159,13 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 f"use 'validations_on_return' to set validations "
                 f"on the return variable"
             )
+
+        if not isinstance(allow_skipping, bool):
+            raise TypeError(
+                f"Got type {type(allow_skipping)} for keyword 'allow_skipping',"
+                f" expected boolean."
+            )
+        self.allow_skipping = allow_skipping
 
         self._validations = validations
 
