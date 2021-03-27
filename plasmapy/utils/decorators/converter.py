@@ -91,7 +91,7 @@ def angular_freq_to_hz(fn):
     # raise exception if fn uses the 'to_hz' kwarg
     fsig = inspect.signature(fn)
     if "to_hz" in fsig.parameters:
-        raise ValueError(
+        raise TypeError(
             f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."
             f" Keyword reserved for decorator functionality."
         )
