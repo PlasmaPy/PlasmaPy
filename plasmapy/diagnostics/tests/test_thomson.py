@@ -124,29 +124,6 @@ def gen_non_collective_spectrum():
     return alpha, wavelengths, Skw
 
 
-def gen_collective_epw_spectrum():
-    """
-    Generates an example EPW-only spectrum
-    """
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    Te = 10 * u.eV
-
-    alpha, Skw = thomson.spectral_density_epw(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
-
-    return alpha, wavelengths, Skw
-
-
 def test_different_input_types():
 
     # Define some constants
@@ -273,13 +250,7 @@ def test_collective_spectrum():
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
-    # Check that the widths of the ion and electron features match expectations
-    assert np.isclose(i_width, 0.1599, 1e-3), (
-        "Collective case ion feature "
-        f"width is {i_width}"
-        "instead of expected 0.1599"
-    )
-
+    # Check that the widths match expectations
     assert np.isclose(e_width, 17.7899, 1e-3), (
         "Collective case electron "
         f"feature width is {e_width} "

@@ -304,12 +304,8 @@ def spectral_density(
     zbar = np.sum(ifract * ion_z)
 
     # Compute electron and ion densities
-    # np.nan_to_num and warning filter catch nan's generated when
-    # efract or ifract == 0 (when calculating EPW or IAW spectra separately)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", RuntimeWarning)
-        ne = np.nan_to_num(efract * n, nan=0)
-        ni = np.nan_to_num(ifract * n / zbar, nan=0)  # ne/zbar = sum(ni)
+    ne = efract * n
+    ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency(n=n, particle="e-")
