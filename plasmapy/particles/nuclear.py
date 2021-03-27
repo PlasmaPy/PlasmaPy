@@ -91,7 +91,8 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     Returns
     -------
     mass_energy: `~astropy.units.Quantity`
-        The mass energy of the particle (or in the case of ) in units of joules.
+        The mass energy of the particle (or, in the case of an isotope,
+        its nuclide) in units of joules.
 
     Raises
     ------
@@ -106,7 +107,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Examples
     --------
-
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
     """
@@ -167,10 +167,8 @@ def nuclear_reaction_energy(*args, **kwargs):
     Examples
     --------
     >>> from astropy import units as u
-
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
-
     >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
@@ -179,7 +177,6 @@ def nuclear_reaction_energy(*args, **kwargs):
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.3665870 MeV>
-
     >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343e-13 J>
     """

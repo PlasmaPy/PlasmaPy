@@ -133,7 +133,7 @@ ints_and_roman_numerals = [
     (198, "CXCVIII"),
     (199, "CXCIX"),
     (200, "CC"),
-    (np.int(9), "IX"),
+    (9, "IX"),
     (np.int16(10), "X"),
     (np.int32(11), "XI"),
     (np.int64(14), "XIV"),

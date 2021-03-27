@@ -9,9 +9,9 @@ PlasmaPy Documentation
 .. nbgallery::
    :hidden:
 
-   notebooks/physics
+   notebooks/diagnostics/proton_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
-   notebooks/thomson
+   notebooks/diagnostics/thomson
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo

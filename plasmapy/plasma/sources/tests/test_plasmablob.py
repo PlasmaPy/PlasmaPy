@@ -200,17 +200,16 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e15 * u.cm ** -3
         Z = 2.5
         particle = "p"
-        blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
+        with pytest.warns(
+            CouplingWarning, match="you might have strong coupling effects"
+        ):
+            blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
-        # expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
-        expect_regime = f"Weakly coupled regime: Gamma = {blob.coupling()}."
+            # expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
+            expect_regime = f"Weakly coupled regime: Gamma = {blob.coupling()}."
 
-        with pytest.warns(CouplingWarning):
             regime, _ = blob.regimes()
-        testTrue = regime == expect_regime
-
-        errStr = f"Regime should be {expect_regime}, but got {regime} instead."
-        assert testTrue, errStr
+        assert regime == expect_regime
 
     def test_thermal_kinetic_energy_dominant(self):
         r"""

@@ -9,7 +9,7 @@ from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
-    IonicFraction,
+    IonicLevel,
     IonizationState,
     IonizationStateCollection,
     mass_number,
@@ -217,13 +217,10 @@ class TestIonizationStateCollection:
         if isinstance(inputs, dict):
             input_keys = list(tests[test_name]["inputs"].keys())
 
-            input_keys = sorted(
-                input_keys,
-                key=lambda k: (
-                    atomic_number(k),
-                    mass_number(k) if Particle(k).isotope else 0,
-                ),
-            )
+            def sort_key(k):
+                return atomic_number(k), mass_number(k) if Particle(k).isotope else 0
+
+            input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys):
                 expected = tests[test_name]["inputs"][input_key]
@@ -652,7 +649,7 @@ class TestIonizationStateCollectionAttributes:
         particle = indices[0]
         integer_charge = indices[1]
 
-        assert isinstance(result, IonicFraction)
+        assert isinstance(result, IonicLevel)
         assert result.integer_charge == integer_charge
 
         expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
@@ -905,3 +902,15 @@ def test_number_density_assignment():
     instance = IonizationStateCollection(["H", "He"])
     number_densities = [2, 3, 5] * u.m ** -3
     instance["He"] = number_densities
+
+
+def test_iteration_with_nested_iterator():
+    ionization_states = IonizationStateCollection(["H", "He"])
+
+    i = 0
+    for ionization_state1 in ionization_states:
+        assert isinstance(ionization_state1, IonizationState)
+        for ionization_state2 in ionization_states:
+            assert isinstance(ionization_state2, IonizationState)
+            i += 1
+    assert i == 4

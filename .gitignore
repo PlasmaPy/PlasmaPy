@@ -132,3 +132,5 @@ auto_examples
 
 # Version file
 plasmapy/version.py
+tags
+docs/notebooks/*.md

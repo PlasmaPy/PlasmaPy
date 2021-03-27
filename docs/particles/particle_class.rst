@@ -44,8 +44,10 @@ imported directly from the atomic subpackage.
 >>> from plasmapy.particles import proton, electron
 
 The `~plasmapy.particles.Particle` objects that may be imported
-directly are: ``proton``, ``electron``, ``neutron``, ``positron``,
-``deuteron``, ``triton``, and ``alpha``.
+directly are: `~plasmapy.particles.proton`,
+`~plasmapy.particles.electron`, `~plasmapy.particles.neutron`,
+`~plasmapy.particles.positron`, `~plasmapy.particles.deuteron`,
+`~plasmapy.particles.triton`, and `~plasmapy.particles.alpha`.
 
 .. _particle-class-properties:
 

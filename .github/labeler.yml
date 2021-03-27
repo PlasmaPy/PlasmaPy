@@ -1,0 +1,17 @@
+Diagnostics: plasmapy/diagnostics/**/*
+
+Formulary: plasmapy/formulary/**/*
+
+Mathematics: plasmapy/formulary/mathematics.py
+
+parameters.quantum: plasmapy/formulary/quantum.py
+
+Particles: plasmapy/particles/**/*
+
+Documentation: docs/**/*
+
+Plasma class: plasmapy/plasma/**/*
+
+simulations: plasmapy/simulations/**/*
+
+Utilities: plasmapy/utils/**/*
