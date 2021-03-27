@@ -682,7 +682,10 @@ def thermal_speed(
             f"of {list(coef.keys())}."
         )
 
-    return np.sqrt(coef * k_B * T / m)
+    speed = (k_B * T / m).value
+    speed = np.sqrt(coef * speed) * u.m / u.s
+
+    return speed
 
 
 vth_ = thermal_speed
