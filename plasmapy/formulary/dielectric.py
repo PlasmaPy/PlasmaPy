@@ -213,6 +213,18 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return RotatingTensorElements(L, R, P)
 
 
+
+
+def fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp):
+    # scattering parameter alpha.
+    # explicitly removing factor of sqrt(2) to be consistent with Froula
+    alpha = np.sqrt(2) * wp / (kWave * vTh)
+    # The dimensionless phase velocity of the propagating EM wave.
+    zeta = omega / (kWave * vTh)
+    chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta)
+    return chi
+
+
 @validate_quantities(
     kWave={"none_shall_pass": True}, validations_on_return={"can_be_complex": True}
 )
@@ -310,10 +322,6 @@ def permittivity_1D_Maxwellian(
     vTh = parameters.thermal_speed(T=T, particle=particle, method="most_probable")
     # plasma frequency
     wp = parameters.plasma_frequency(n=n, particle=particle, z_mean=z_mean)
-    # scattering parameter alpha.
-    # explicitly removing factor of sqrt(2) to be consistent with Froula
-    alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
-    # The dimensionless phase velocity of the propagating EM wave.
-    zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
-    chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
-    return chi
+    
+    return fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp)
+
