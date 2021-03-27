@@ -669,11 +669,17 @@ def thermal_speed(
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError(
+            f"Got unsupported value for argument 'ndim' ({ndim}), expect one of "
+            f"{list(_coefficients.keys())}."
+        )
     try:
         coef = coef[method]
     except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        raise ValueError(
+            f"Got unsupported value for argument 'method' ({method}), expected one "
+            f"of {list(coef.keys())}."
+        )
 
     return np.sqrt(coef * k_B * T / m)
 
