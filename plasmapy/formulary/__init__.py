@@ -15,9 +15,9 @@ from .ionization import *
 from .magnetostatics import *
 from .mathematics import *
 from .parameters import *
+from .paschen import *
 from .quantum import *
 from .relativity import *
-from .paschen import *
 
 # auto populate __all__
 for obj_name in list(globals()):
