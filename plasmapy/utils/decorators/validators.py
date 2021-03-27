@@ -151,13 +151,13 @@ class ValidateQuantities(CheckUnits, CheckValues):
     ----------------
     skip_validations : bool
         (Default `False`)  When setting `True` NO value or unit validations will
-        be performed on input arguments or returned objects by 
+        be performed on input arguments or returned objects by
         `~plasmapy.utils.decorators.validators.validate_quantities`.
 
         .. warning::
            This keyword was added to help speed up formulary calculations
            when the calculations have to be repeatedly performed.  Use with caution
-           since objects are no longer validated and atypical behavior (with 
+           since objects are no longer validated and atypical behavior (with
            respect to ``skip_validations==True``) can occur.
     """
 
