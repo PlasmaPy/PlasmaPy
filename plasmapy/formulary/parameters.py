@@ -543,6 +543,7 @@ _coefficients = {
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     mass={"can_be_negative": False, "can_be_nan": True},
+    allow_skipping=True,
 )
 @particles.particle_input
 def thermal_speed(
