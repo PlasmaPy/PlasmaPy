@@ -250,7 +250,13 @@ def test_collective_spectrum():
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
-    # Check that the widths match expectations
+    # Check that the widths of the ion and electron features match expectations
+    assert np.isclose(i_width, 0.1599, 1e-3), (
+        "Collective case ion feature "
+        f"width is {i_width}"
+        "instead of expected 0.1599"
+    )
+
     assert np.isclose(e_width, 17.7899, 1e-3), (
         "Collective case electron "
         f"feature width is {e_width} "
