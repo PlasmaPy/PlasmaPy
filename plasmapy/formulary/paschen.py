@@ -252,8 +252,8 @@ def minimum_breakdown_voltage(A, B, gam):
     r"""
     Calculate the minimum breakdown voltage and the corresponding pd value from the Paschen law
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     A:     floating
     B:     floating
     gam:   floating
