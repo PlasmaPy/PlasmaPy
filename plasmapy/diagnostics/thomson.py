@@ -13,16 +13,19 @@ import numpy as np
 import re
 import warnings
 
-from astropy.constants import c as C
+import astropy.constants as const
 from lmfit import Model
 from typing import List, Tuple, Union
 
-from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
+from plasmapy.formulary.dielectric import fast_permittivity_1D_Maxwellian
+from plasmapy.formulary.parameters import fast_plasma_frequency, fast_thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
-C = C.si  # Make sure C is in SI units
+_c = const.c.si.value  # Make sure C is in SI units
+_e = const.e.si.value
+_m_p = const.m_p.si.value
+_m_e = const.m_e.si.value
 
 
 # TODO: interface for inputting a multi-species configuration could be
@@ -34,6 +37,140 @@ C = C.si  # Make sure C is in SI units
 # TODO: If we can make this object pickle-able then we can set
 # workers=-1 as a kw to differential_evolution to parallelize execution for fitting!
 # The probem is a lambda function used in the Particle class...
+
+
+
+
+
+
+def fast_spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        efract: np.ndarray = None,
+        ifract: np.ndarray = None,
+        ion_z = 1,
+        ion_mu =1,
+        ion_vel=None,
+        electron_vel = None,
+        probe_vec=np.array([1, 0, 0]),
+        scatter_vec=np.array([0, 1, 0]),
+        inst_fcn_arr = None,
+        ):
+    
+    if electron_vel is None:
+        electron_vel = np.zeros([efract.size, 3])
+        
+    if ion_vel is None:
+        ion_vel = np.zeros([ifract.size, 3])
+        
+    scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
+    
+    # Calculate plasma parameters
+    vTe = fast_thermal_speed(Te, _m_e)
+    vTi = fast_thermal_speed(Ti, _m_p * ion_mu)
+    zbar = np.sum(ifract * ion_z)
+
+    # Compute electron and ion densities
+    ne = efract * n
+    ni = ifract * n / zbar  # ne/zbar = sum(ni)
+
+    # wpe is calculated for the entire plasma (all electron populations combined)
+    wpe = fast_plasma_frequency(n, 1, _m_e)
+    
+    # Convert wavelengths to angular frequencies (electromagnetic waves, so
+    # phase speed is c)
+    ws = 2 * np.pi * _c / wavelengths
+    wl = 2 * np.pi * _c / probe_wavelength
+    
+    # Compute the frequency shift (required by energy conservation)
+    w = ws - wl
+      
+    # Compute the wavenumbers in the plasma
+    # See Sheffield Sec. 1.8.1 and Eqs. 5.4.1 and 5.4.2
+    ks = np.sqrt(ws** 2 - wpe** 2) / _c
+    kl = np.sqrt(wl** 2 - wpe** 2) / _c
+    
+
+    # Compute the wavenumber shift (required by momentum conservation)\
+    # Eq. 1.7.10 in Sheffield
+    k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
+    # Normal vector along k
+    k_vec = scatter_vec - probe_vec
+
+    # Compute Doppler-shifted frequencies for both the ions and electrons
+    # Matmul is simultaneously conducting dot product over all wavelengths
+    # and ion components
+    w_e = w - np.matmul(electron_vel, np.outer(k, k_vec).T)
+    w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
+
+    # Compute the scattering parameter alpha
+    # expressed here using the fact that v_th/w_p = root(2) * Debye length
+    alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
+    
+    # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
+    xe = np.outer(1 / vTe, 1 / k) * w_e
+    xi = np.outer(1 / vTi, 1 / k) * w_i
+
+    # Calculate the susceptibilities
+    chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
+    for i, fract in enumerate(efract):
+        wpe = fast_plasma_frequency(ne[i], -1, _m_e)
+        chiE[i, :] = fast_permittivity_1D_Maxwellian(w_e[i, :], k, vTe[i], wpe)
+    
+    # Treatment of multiple species is an extension of the discussion in
+    # Sheffield Sec. 5.1
+    chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
+    for i, fract in enumerate(ifract):
+        wpi = fast_plasma_frequency(ni[i], ion_z[i], ion_mu[i]*_m_p)
+        chiI[i, :] = fast_permittivity_1D_Maxwellian(
+            w_i[i, :], k, vTi[i], wpi)
+
+    # Calculate the longitudinal dielectric function
+    epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
+    
+    econtr = np.zeros([efract.size, w.size], dtype=np.complex128)
+    for m in range(efract.size):
+        econtr[m, :] = efract[m] * (
+            2
+            * np.sqrt(np.pi)
+            / k
+            / vTe[m]
+            * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
+            * np.exp(-xe[m, :] ** 2)
+        )
+
+    icontr = np.zeros([ifract.size, w.size], dtype=np.complex128)
+    for m in range(ifract.size):
+        icontr[m, :] = ifract[m] * (
+            2
+            * np.sqrt(np.pi)
+            * ion_z[m]
+            / k
+            / vTi[m]
+            * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
+            * np.exp(-xi[m, :] ** 2)
+        )
+
+    # Recast as real: imaginary part is already zero
+    Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
+
+    # Apply an insturment function if one is provided
+    if inst_fcn_arr is not None:
+        Skw = np.convolve(Skw, inst_fcn_arr, mode="same")
+
+    return np.mean(alpha), Skw
+
+    
+
+
+
+
+
+
+
 
 
 @validate_quantities(
@@ -292,119 +429,47 @@ def spectral_density(
 
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
-    scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
-
-    # Calculate plasma parameters
-    vTe = thermal_speed(Te, particle="e-")
-    vTi, ion_z = [], []
-    for T, ion in zip(Ti, ion_species):
-        vTi.append(thermal_speed(T, particle=ion).value)
-        ion_z.append(ion.integer_charge * u.dimensionless_unscaled)
-    vTi = vTi * vTe.unit
-    zbar = np.sum(ifract * ion_z)
-
-    # Compute electron and ion densities
-    # np.nan_to_num and warning filter catch nan's generated when
-    # efract or ifract == 0 (when calculating EPW or IAW spectra separately)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", RuntimeWarning)
-        ne = np.nan_to_num(efract * n, nan=0)
-        ni = np.nan_to_num(ifract * n / zbar, nan=0)  # ne/zbar = sum(ni)
-
-    # wpe is calculated for the entire plasma (all electron populations combined)
-    wpe = plasma_frequency(n=n, particle="e-")
-
-    # Convert wavelengths to angular frequencies (electromagnetic waves, so
-    # phase speed is c)
-    ws = (2 * np.pi * u.rad * C / wavelengths).to(u.rad / u.s)
-    wl = (2 * np.pi * u.rad * C / probe_wavelength).to(u.rad / u.s)
-
-    # Compute the frequency shift (required by energy conservation)
-    w = ws - wl
-
-    # Compute the wavenumbers in the plasma
-    # See Sheffield Sec. 1.8.1 and Eqs. 5.4.1 and 5.4.2
-    ks = np.sqrt(ws ** 2 - wpe ** 2) / C
-    kl = np.sqrt(wl ** 2 - wpe ** 2) / C
-
-    # Compute the wavenumber shift (required by momentum conservation)\
-    # Eq. 1.7.10 in Sheffield
-    k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
-    # Normal vector along k
-    k_vec = (scatter_vec - probe_vec) * u.dimensionless_unscaled
-
-    # Compute Doppler-shifted frequencies for both the ions and electrons
-    # Matmul is simultaneously conducting dot product over all wavelengths
-    # and ion components
-    w_e = w - np.matmul(electron_vel, np.outer(k, k_vec).T)
-    w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
-
-    # Compute the scattering parameter alpha
-    # expressed here using the fact that v_th/w_p = root(2) * Debye length
-    alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
-
-    # Calculate the normalized phase velocities (Sec. 3.4.2 in Sheffield)
-    xe = (np.outer(1 / vTe, 1 / k) * w_e).to(u.dimensionless_unscaled)
-    xi = (np.outer(1 / vTi, 1 / k) * w_i).to(u.dimensionless_unscaled)
-
-    # Calculate the susceptibilities
-    chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, fract in enumerate(efract):
-        chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
-
-    # Treatment of multiple species is an extension of the discussion in
-    # Sheffield Sec. 5.1
-    chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
-    for i, ion in enumerate(ion_species):
-        chiI[i, :] = permittivity_1D_Maxwellian(
-            w_i[i, :], k, Ti[i], ni[i], ion, z_mean=ion_z[i]
+    
+    ion_z, ion_mu = [], []
+    for ion in ion_species:
+        ion_z.append(ion.integer_charge)
+        ion_mu.append(ion.atomic_number)
+        
+    ion_z = np.array(ion_z)
+    ion_mu = np.array(ion_mu)
+        
+        
+    # TODO: Create inst fcn array from inst_fcn
+    inst_fcn_arr = None
+    
+    
+    alpha, Skw = fast_spectral_density(
+        wavelengths.to(u.m).value,
+        probe_wavelength.to(u.m).value,
+        n.to(u.m**-3).value,
+        Te.to(u.K).value,
+        Ti.to(u.K).value,
+        efract=efract,
+        ifract=ifract,
+        ion_z = ion_z,
+        ion_mu = ion_mu,
+        ion_vel=ion_vel.to(u.m / u.s).value,
+        electron_vel = electron_vel.to(u.m / u.s).value,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+        inst_fcn_arr = inst_fcn_arr,
         )
+    
+    return alpha, Skw * u.s / u.rad
+    
+    
+    
+    
 
-    # Calculate the longitudinal dielectric function
-    epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
+    
 
-    econtr = np.zeros([efract.size, w.size], dtype=np.complex128) * u.s / u.rad
-    for m in range(efract.size):
-        econtr[m, :] = efract[m] * (
-            2
-            * np.sqrt(np.pi)
-            / k
-            / vTe[m]
-            * np.power(np.abs(1 - np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xe[m, :] ** 2)
-        )
+    
 
-    icontr = np.zeros([ifract.size, w.size], dtype=np.complex128) * u.s / u.rad
-    for m in range(ifract.size):
-        icontr[m, :] = ifract[m] * (
-            2
-            * np.sqrt(np.pi)
-            * ion_z[m]
-            / k
-            / vTi[m]
-            * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
-            * np.exp(-xi[m, :] ** 2)
-        )
-
-    # Recast as real: imaginary part is already zero
-    Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
-
-    # Apply an insturment function if one is provided
-    if inst_fcn is not None and callable(inst_fcn):
-        # Create an array of wavelengths of the same size as wavelengths
-        # but centered on zero
-        wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
-        eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
-        inst_fcn_arr = inst_fcn(eval_w)
-        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
-        # Convolve the insturment function with the spectral density
-        # linear rather than circular convolution is important here!
-
-        # TODO: Is numpy, scipy.signal, or astropy the best convolution
-        # function here??
-        Skw = np.convolve(Skw.value, inst_fcn_arr.value, mode="same") * Skw.unit
-
-    return np.mean(alpha), Skw
 
 
 # ***************************************************************************

@@ -541,7 +541,7 @@ _coefficients = {
 
 _k_B = k_B.si.value
 
-def fast_thermal_speed(T, m, ndim, method):
+def fast_thermal_speed(T, m, ndim=3, method='most_probable'):
     coeff = _coefficients[ndim][method]
     return np.sqrt(coeff * _k_B * T / m)
 
