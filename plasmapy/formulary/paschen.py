@@ -203,8 +203,8 @@ def breakdown_voltage(distance, pressure, A, B, gam):
                          𝑉=𝐵𝑝𝑑/𝑙𝑛(𝐴𝑝𝑑/𝑙𝑛(1+1/𝛾))
 
 
-    Parameter
-    ---------
+    Parameters
+    ----------
 
     distance:  floating
     electrode distance
