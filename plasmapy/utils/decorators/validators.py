@@ -162,11 +162,11 @@ class ValidateQuantities(CheckUnits, CheckValues):
     """
 
     def __init__(
-            self,
-            *,
-            validations_on_return=None,
-            allow_skipping: bool = False,
-            **validations: Dict[str, Any],
+        self,
+        *,
+        validations_on_return=None,
+        allow_skipping: bool = False,
+        **validations: Dict[str, Any],
     ):
 
         if "checks_on_return" in validations:

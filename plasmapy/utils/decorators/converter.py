@@ -98,16 +98,12 @@ def angular_freq_to_hz(fn):
 
     # make new signature for fn
     new_param = inspect.Parameter(
-        "to_hz",
-        inspect.Parameter.KEYWORD_ONLY,
-        default=False,
-        annotation=bool,
+        "to_hz", inspect.Parameter.KEYWORD_ONLY, default=False, annotation=bool,
     )
     new_sig = OrderedDict(fsig.parameters)
     new_sig.update({"to_hz": new_param})
     new_sig = inspect.Signature(
-        parameters=tuple(new_sig.values()),
-        return_annotation=fsig.return_annotation,
+        parameters=tuple(new_sig.values()), return_annotation=fsig.return_annotation,
     )
     fn.__signature__ = new_sig
 
