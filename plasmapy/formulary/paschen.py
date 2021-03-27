@@ -168,35 +168,26 @@ def get_paschen_constants(gas, electrode):
     rese = electrode in materials
 
     # If the gas is supported get the constants A and B
-    print(resg, rese)
-    if resg == True:
-        print(gas)
+    if resg:
         A = paschen_constants[gas][0]
         B = paschen_constants[gas][1]
-        print(A, B)
 
         #   Get the townsend_gamma coefficient for the the gas/electrode combination
-        if rese == True:
+        if rese:
             gam = townsend_gamma[gas]
-            print(gam)
             gn = gam[electrode]
-            print(gn)
             #       Test if townsend_gamma exists for the demanded gas/electrode configuration
             #       If not a default townsend_gamma value of 0.01 is taken
 
             if gn is None:
                 gn = 0.01
-                print("default")
-                print(gn)
         else:
 
             #       If the electrode material is not supportes set townsend_gamma to default = 0.01
             gn = 0.01
-            print("default")
 
         #   Create output dir {const}
         const = {"A": A, "B": B, "gam": gn}
-        print(const)
         return const
 
     # If gas is not supported set const=None
