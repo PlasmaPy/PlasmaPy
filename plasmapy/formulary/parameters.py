@@ -60,6 +60,8 @@ from plasmapy.utils.decorators import (
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
+k_B_si_unitless = k_B.value
+
 
 def _grab_charge(ion: Particle, z_mean=None):
     """
@@ -679,24 +681,18 @@ def _thermal_speed(
 
 
 class _ThermalSpeed:
+    coefficients = {
+        1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
+        2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
+        3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
+    }
 
     def __init__(self):
         ...
 
     @staticmethod
-    def unitless(T, mass, method="most_probable", ndim=3):
-        # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-        try:
-            coef = _coefficients[ndim]
-        except KeyError:
-            raise ValueError(
-                "{ndim} is not a supported value for ndim in thermal_speed")
-        try:
-            coef = coef[method]
-        except KeyError:
-            raise ValueError("Method {method} not supported in thermal_speed")
-
-        return np.sqrt(coef * k_B.value * T / mass)
+    def unitless(T, mass, coef):
+        return np.sqrt(coef * k_B_si_unitless * T / mass)
 
     @check_relativistic
     @validate_quantities(
@@ -715,7 +711,18 @@ class _ThermalSpeed:
         if mass is None:
             mass = particles.particle_mass(particle)
 
-        speed = self.unitless(T=T.value, mass=mass.value, method=method, ndim=ndim)
+            # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+            try:
+                coef = self.coefficients[ndim]
+            except KeyError:
+                raise ValueError(
+                    "{ndim} is not a supported value for ndim in thermal_speed")
+            try:
+                coef = coef[method]
+            except KeyError:
+                raise ValueError("Method {method} not supported in thermal_speed")
+
+        speed = self.unitless(T=T.value, mass=mass.value, coef=coef)
         return speed * u.m / u.s
 
 
