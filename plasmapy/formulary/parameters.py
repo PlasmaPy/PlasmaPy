@@ -550,7 +550,7 @@ def thermal_speed(
     T: u.K,
     particle: Particle,
     method="most_probable",
-    mass: u.kg = np.nan * u.kg,
+    mass: u.kg = None,
     ndim=3,
 ) -> u.m / u.s:
     r"""
@@ -664,7 +664,7 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
     """
-    m = mass if np.isfinite(mass) else particles.particle_mass(particle)
+    m = mass if mass is not None else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     try:
