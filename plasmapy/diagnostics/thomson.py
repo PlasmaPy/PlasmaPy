@@ -93,7 +93,6 @@ def fast_spectral_density(
     ks = np.sqrt(ws** 2 - wpe** 2) / _c
     kl = np.sqrt(wl** 2 - wpe** 2) / _c
     
-
     # Compute the wavenumber shift (required by momentum conservation)\
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
@@ -105,6 +104,9 @@ def fast_spectral_density(
     # and ion components
     w_e = w - np.matmul(electron_vel, np.outer(k, k_vec).T)
     w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
+    
+    print(vTi)
+    print(np.mean(w_i))
 
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
@@ -117,7 +119,7 @@ def fast_spectral_density(
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
-        wpe = fast_plasma_frequency(ne[i], -1, _m_e)
+        wpe = fast_plasma_frequency(ne[i], 1, _m_e)
         chiE[i, :] = fast_permittivity_1D_Maxwellian(w_e[i, :], k, vTe[i], wpe)
     
     # Treatment of multiple species is an extension of the discussion in
@@ -439,8 +441,16 @@ def spectral_density(
     ion_mu = np.array(ion_mu)
         
         
-    # TODO: Create inst fcn array from inst_fcn
-    inst_fcn_arr = None
+    # Create inst fcn array from inst_fcn
+    if inst_fcn is not None and callable(inst_fcn):
+        # Create an array of wavelengths of the same size as wavelengths
+        # but centered on zero
+        wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
+        eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
+        inst_fcn_arr = inst_fcn(eval_w)
+        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
+    else:
+        inst_fcn_arr = None
     
     
     alpha, Skw = fast_spectral_density(
