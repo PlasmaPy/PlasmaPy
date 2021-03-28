@@ -545,7 +545,7 @@ _coefficients = {
     mass={"can_be_negative": False, "can_be_nan": True},
 )
 @particles.particle_input
-def thermal_speed(
+def _thermal_speed(
     T: u.K,
     particle: Particle,
     method="most_probable",
@@ -678,6 +678,48 @@ def thermal_speed(
     return np.sqrt(coef * k_B * T / m)
 
 
+class _ThermalSpeed:
+
+    def __init__(self):
+        ...
+
+    @staticmethod
+    def unitless(T, mass, method="most_probable", ndim=3):
+        # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+        try:
+            coef = _coefficients[ndim]
+        except KeyError:
+            raise ValueError(
+                "{ndim} is not a supported value for ndim in thermal_speed")
+        try:
+            coef = coef[method]
+        except KeyError:
+            raise ValueError("Method {method} not supported in thermal_speed")
+
+        return np.sqrt(coef * k_B.value * T / mass)
+
+    @check_relativistic
+    @validate_quantities(
+        T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+        mass={"can_be_negative": False, "can_be_nan": True},
+    )
+    @particles.particle_input
+    def __call__(
+        self,
+        T: u.K,
+        particle: Particle,
+        method="most_probable",
+        mass: u.kg = None,
+        ndim=3,
+    ) -> u.m / u.s:
+        if mass is None:
+            mass = particles.particle_mass(particle)
+
+        speed = self.unitless(T=T.value, mass=mass.value, method=method, ndim=ndim)
+        return speed * u.m / u.s
+
+
+thermal_speed = _ThermalSpeed()
 vth_ = thermal_speed
 """ Alias to :func:`thermal_speed`. """
 
