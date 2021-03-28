@@ -66,11 +66,6 @@ def fast_spectral_density(
     if ion_vel is None:
         ion_vel = np.zeros([ifract.size, 3])
         
-    print(Ti)
-    print(f"{n:.2e} m^-3")
-    print(f"{Te[0]:.2e} K")
-    print(f"{Ti[0]:.2e} K")
-        
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     
     # Calculate plasma parameters
@@ -110,9 +105,6 @@ def fast_spectral_density(
     w_e = w - np.matmul(electron_vel, np.outer(k, k_vec).T)
     w_i = w - np.matmul(ion_vel, np.outer(k, k_vec).T)
     
-    print(vTi)
-    print(np.mean(w_i))
-
     # Compute the scattering parameter alpha
     # expressed here using the fact that v_th/w_p = root(2) * Debye length
     alpha = np.sqrt(2) * wpe / np.outer(k, vTe)
@@ -440,7 +432,7 @@ def spectral_density(
     ion_z, ion_mu = [], []
     for ion in ion_species:
         ion_z.append(ion.integer_charge)
-        ion_mu.append(ion.atomic_number)
+        ion_mu.append(ion.mass_number)
         
     ion_z = np.array(ion_z)
     ion_mu = np.array(ion_mu)
@@ -536,6 +528,24 @@ def _params_to_array(params, prefix, vector=False):
 # ***************************************************************************
 
 
+def fast_spectral_density(
+        wavelengths,
+        probe_wavelength,
+        n,
+        Te,
+        Ti,
+        efract: np.ndarray = np.array([1.0]),
+        ifract: np.ndarray = np.array([1.0]),
+        ion_z = np.array([1]),
+        ion_mu = np.array([1]),
+        ion_vel=None,
+        electron_vel = None,
+        probe_vec=np.array([1, 0, 0]),
+        scatter_vec=np.array([0, 1, 0]),
+        inst_fcn_arr = None,
+        ):
+
+
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
     lmfit Model function for fitting Thomson spectra
@@ -545,7 +555,8 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     """
 
     # LOAD FROM SETTINGS
-    ion_species = settings["ion_species"]
+    ion_z = settings["ion_z"]
+    ion_mu = settings["ion_mu"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     electron_vdir = settings["electron_vdir"]
@@ -554,15 +565,19 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     inst_fcn = settings["inst_fcn"]
 
     # LOAD FROM PARAMS
-    n = params["n"] * u.cm ** -3
-    Te = _params_to_array(params, "Te") * u.eV
-    Ti = _params_to_array(params, "Ti") * u.eV
+    n = params["n"] 
+    Te = _params_to_array(params, "Te")
+    Ti = _params_to_array(params, "Ti")
     efract = _params_to_array(params, "efract")
     ifract = _params_to_array(params, "ifract")
-    electron_speed = _params_to_array(params, "electron_speed") * u.m / u.s
-    ion_speed = _params_to_array(params, "ion_speed") * u.m / u.s
+    electron_speed = _params_to_array(params, "electron_speed")
+    ion_speed = _params_to_array(params, "ion_speed")
+    
+    electron_vel = electron_speed * electron_vdir
+    ion_vel = ion_speed * ion_vdir
+    
 
-    alpha, model_Skw = spectral_density(
+    alpha, model_Skw = fast_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -571,17 +586,13 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         ion_species=ion_species,
         efract=efract,
         ifract=ifract,
-        electron_vdir=electron_vdir,
-        electron_speed=electron_speed,
-        ion_vdir=ion_vdir,
-        ion_speed=ion_speed,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        inst_fcn=inst_fcn,
+        inst_fcn_arr=inst_fcn_arr,
     )
 
-    # Strip units and normalize
-    model_Skw = model_Skw.to(u.s / u.rad).value
     model_Skw *= 1 / np.max(model_Skw)
 
     return model_Skw
@@ -653,6 +664,15 @@ def spectral_density_model(wavelengths, settings, params):
     for k in req_params:
         if k not in pkeys:
             raise KeyError(f"{k} was not provided in parameters, but is required.")
+            
+    # Create arrays of ion Z and mu from particles given
+    ion_z, ion_mu = [], []
+    for ion in settings['ion_species']:
+        particle = Particle(ion)
+        ion_z.append(particle.integer_charge)
+        ion_mu.append(particle.mass_number)
+    settings['ion_z'] = np.array(ion_z)
+    settings['ion_mu'] = np.array(ion_mu)
 
     # Fill any missing settings
     if "electron_vdir" not in skeys:
@@ -662,7 +682,15 @@ def spectral_density_model(wavelengths, settings, params):
         settings["ion_vdir"] = None
 
     if "inst_fcn" not in skeys:
-        settings["inst_fcn"] = None
+        settings["inst_fcn_arr"] = None
+    else:
+        # Create inst fcn array from inst_fcn
+        wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
+        eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
+        inst_fcn_arr = inst_fcn(eval_w)
+        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
+        settings["inst_fcn_arr"]  = inst_fcn_arr
+
 
     # Fill any missing required parameters
     if "efract_0" not in pkeys:
