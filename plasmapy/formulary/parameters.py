@@ -47,6 +47,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c, e, eps0, k_B, mu0
+from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -690,6 +691,7 @@ class _ThermalSpeed:
 
 
     @staticmethod
+    @njit
     def unitless(T, mass, coef):
         """A docstring for unitless."""
         return np.sqrt(coef * k_B_si_unitless * T / mass)
