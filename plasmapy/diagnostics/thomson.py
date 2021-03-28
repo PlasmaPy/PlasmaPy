@@ -52,7 +52,7 @@ def fast_spectral_density(
         efract: np.ndarray = np.array([1.0]),
         ifract: np.ndarray = np.array([1.0]),
         ion_z = np.array([1]),
-        ion_mu =np.array([1]),
+        ion_mu = np.array([1]),
         ion_vel=None,
         electron_vel = None,
         probe_vec=np.array([1, 0, 0]),
@@ -65,6 +65,11 @@ def fast_spectral_density(
         
     if ion_vel is None:
         ion_vel = np.zeros([ifract.size, 3])
+        
+    print(Ti)
+    print(f"{n:.2e} m^-3")
+    print(f"{Te[0]:.2e} K")
+    print(f"{Ti[0]:.2e} K")
         
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     

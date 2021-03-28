@@ -42,7 +42,7 @@ def gen_collective_spectrum():
     probe_vec = np.array([1, 0, 0])
     scatter_vec = np.array([0, 1, 0])
     Te = 10 * u.eV
-    Ti = np.array([10]) * u.eV
+    Ti = 10 * u.eV
     ion_species = ["C-12 5+"]
 
     alpha, Skw = thomson.spectral_density(
