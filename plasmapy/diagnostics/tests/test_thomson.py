@@ -499,21 +499,21 @@ def run_fit(
     probe_wavelength = settings["probe_wavelength"]
 
     # LOAD FROM PARAMS
-    n = params["n"] * u.cm ** -3
-    Te = thomson._params_to_array(params, "Te") * u.eV
-    Ti = thomson._params_to_array(params, "Ti") * u.eV
+    n = params["n"] 
+    Te = thomson._params_to_array(params, "Te") 
+    Ti = thomson._params_to_array(params, "Ti") 
     efract = thomson._params_to_array(params, "efract")
     ifract = thomson._params_to_array(params, "ifract")
-    electron_speed = thomson._params_to_array(params, "electron_speed") * u.m / u.s
-    ion_speed = thomson._params_to_array(params, "ion_speed") * u.m / u.s
+    electron_speed = thomson._params_to_array(params, "electron_speed")
+    ion_speed = thomson._params_to_array(params, "ion_speed")
 
     # Create the synthetic data
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
-        n,
-        Te,
-        Ti,
+        n * u.m**-3,
+        Te * u.K,
+        Ti * u.K,
         ifract=ifract,
         efract=efract,
         ion_species=ion_species,
@@ -525,11 +525,10 @@ def run_fit(
         electron_speed=electron_speed,
     )
 
-    data = Skw.value
-
+    data = Skw
     if notch is not None:
-        x0 = np.argmin(np.abs(wavelengths.value - notch[0]))
-        x1 = np.argmin(np.abs(wavelengths.value - notch[1]))
+        x0 = np.argmin(np.abs(wavelengths*1e9 - notch[0]))
+        x1 = np.argmin(np.abs(wavelengths*1e9 - notch[1]))
         data[x0:x1] = np.nan
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
@@ -769,5 +768,6 @@ def test_fit_with_minimal_parameters():
 
 if __name__ == '__main__':
     # test_different_input_types()
-    #test_non_collective_spectrum()
-    test_collective_spectrum()
+    # test_non_collective_spectrum()
+    # test_collective_spectrum()
+    test_fit_epw_single_species()

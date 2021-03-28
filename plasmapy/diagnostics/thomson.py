@@ -528,24 +528,6 @@ def _params_to_array(params, prefix, vector=False):
 # ***************************************************************************
 
 
-def fast_spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        efract: np.ndarray = np.array([1.0]),
-        ifract: np.ndarray = np.array([1.0]),
-        ion_z = np.array([1]),
-        ion_mu = np.array([1]),
-        ion_vel=None,
-        electron_vel = None,
-        probe_vec=np.array([1, 0, 0]),
-        scatter_vec=np.array([0, 1, 0]),
-        inst_fcn_arr = None,
-        ):
-
-
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
     lmfit Model function for fitting Thomson spectra
