@@ -686,12 +686,12 @@ class _ThermalSpeed:
         2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
         3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
     }
+    """A docstring for coefficients."""
 
-    def __init__(self):
-        ...
 
     @staticmethod
     def unitless(T, mass, coef):
+        """A docstring for unitless."""
         return np.sqrt(coef * k_B_si_unitless * T / mass)
 
     @check_relativistic
@@ -708,6 +708,7 @@ class _ThermalSpeed:
         mass: u.kg = None,
         ndim=3,
     ) -> u.m / u.s:
+        """A docstring for the __call__"""
         if mass is None:
             mass = particles.particle_mass(particle)
 
