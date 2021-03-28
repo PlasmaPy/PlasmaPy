@@ -250,13 +250,17 @@ def test_collective_spectrum():
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
     
     # Check that the widths of the ion and electron features match expectations
-    
+    assert np.isclose(i_width, 0.1599, 1e-3), (
+        "Collective case ion feature "
+        f"width is {i_width}"
+        "instead of expected 0.1599"
+    )
+
     assert np.isclose(e_width, 17.7899, 1e-3), (
         "Collective case electron "
         f"feature width is {e_width} "
         "instead of expected 17.7899"
     )
-
 
     
 
@@ -764,6 +768,6 @@ def test_fit_with_minimal_parameters():
 
 
 if __name__ == '__main__':
-    test_different_input_types()
-    test_non_collective_spectrum()
+    # test_different_input_types()
+    #test_non_collective_spectrum()
     test_collective_spectrum()
