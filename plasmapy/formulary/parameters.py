@@ -689,7 +689,6 @@ class _ThermalSpeed:
     }
     """A docstring for coefficients."""
 
-
     @staticmethod
     @njit
     def unitless(T, mass, coef):
@@ -714,16 +713,16 @@ class _ThermalSpeed:
         if mass is None:
             mass = particles.particle_mass(particle)
 
-            # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-            try:
-                coef = self.coefficients[ndim]
-            except KeyError:
-                raise ValueError(
-                    "{ndim} is not a supported value for ndim in thermal_speed")
-            try:
-                coef = coef[method]
-            except KeyError:
-                raise ValueError("Method {method} not supported in thermal_speed")
+        # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
+        try:
+            coef = self.coefficients[ndim]
+        except KeyError:
+            raise ValueError(
+                "{ndim} is not a supported value for ndim in thermal_speed")
+        try:
+            coef = coef[method]
+        except KeyError:
+            raise ValueError("Method {method} not supported in thermal_speed")
 
         speed = self.unitless(T=T.value, mass=mass.value, coef=coef)
         return speed * u.m / u.s
