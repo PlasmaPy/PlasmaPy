@@ -682,10 +682,17 @@ def thermal_speed(
             f"of {list(coef.keys())}."
         )
 
-    speed = (k_B * T / m).value
-    speed = np.sqrt(coef * speed) * u.m / u.s
+    # strip units for performance
+    ll = [T, m]
+    for ii, val in enumerate(ll):
+        try:
+            ll[ii] = val.value
+        except AttributeError:
+            pass
+    T, m = ll
 
-    return speed
+    speed = np.sqrt(coef * k_B.value * T / m)
+    return speed * u.m / u.s
 
 
 vth_ = thermal_speed
