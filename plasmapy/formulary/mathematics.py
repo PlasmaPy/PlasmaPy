@@ -108,9 +108,15 @@ def Chandrasekhar_G(x: float):
     Notes
     -----
 
-    The Chandrasekhar function goes as :math:`2x / 3 \sqrt{π}` at :math:`x \to 0`
-    and :math:`0.5 x^{-2}` at :math:`x \to \infty`. It describes the drag on a
-    particle by collisions with a Maxwellian background.
+    The Chandrasekhar function is defined as:
+
+    .. math::
+        G(x) = \frac{\Phi(x) - x * \Phi'(x)}{2x^2}
+
+    Where :math:`\Phi(x)` is the Gauss error function. G goes as :math:`2x /
+    3 \sqrt{π}` at :math:`x \to 0` and :math:`0.5 x^{-2}` at :math:`x \to
+    \infty`. It describes the drag on a particle by collisions with a
+    Maxwellian background.
 
     Since it goes to zero at infinity, for any applied electric field you can
     always find electrons for which the field is larger than the friction.
