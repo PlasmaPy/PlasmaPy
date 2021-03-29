@@ -21,3 +21,22 @@ def pytest_configure(config):
             "or exclusively executed with 'pytest -m slow'."
         ),
     )
+
+
+import pytest
+
+from plasmapy.plasma.symbolicequilibrium import SymbolicEquilibrium
+
+
+@pytest.fixture(scope="module")
+def equilibrium():
+    import plasmaboundaries
+
+    params = plasmaboundaries.ITER.copy()
+    equilibrium = SymbolicEquilibrium(**params, B0=5.2, config="single-null")
+    return equilibrium
+
+
+@pytest.fixture(scope="module")
+def flux_surface(equilibrium, psi_value=-0.01):
+    return equilibrium.get_flux_surface(psi_value)
