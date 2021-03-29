@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plasmaboundaries
 import sympy
+import warnings
 
 from astropy import constants
 from astropy import units as u
@@ -22,6 +23,10 @@ class SymbolicEquilibrium:
     B0: float
 
     def __post_init__(self):
+        if self.triangularity > 0.841:
+            warnings.warn(
+                "You might get a non-convex plasma with a triangularity above 0.841."
+            )
         params = dict(
             aspect_ratio=self.aspect_ratio,
             A=self.A,
