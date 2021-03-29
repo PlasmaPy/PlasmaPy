@@ -135,6 +135,7 @@ def Chandrasekhar_G(x: float):
     ----------
     - Collisional Transport in Magnetized Plasmas"
     Per Helander & Dieter J. Sigmar, 2005
+
     """
 
     erf = special.erf(x)
