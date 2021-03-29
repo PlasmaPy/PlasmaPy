@@ -133,7 +133,7 @@ def Chandrasekhar_G(x: float):
 
     References
     ----------
-    - Collisional Transport in Magnetized Plasmas"
+    Collisional Transport in Magnetized Plasmas",
     Per Helander & Dieter J. Sigmar, 2005
 
     """
