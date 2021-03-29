@@ -204,7 +204,6 @@ LaguerrePolynomials = [
 
 def rbar(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
     if beta_coeffs is not None:
-        # TODO should be a dict or sth
         raise NotImplementedError
     else:
         beta_cx = np.zeros(3)  # TODO
@@ -222,7 +221,7 @@ def rbar(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
             )
             S_matrix = ξ(a)[i] * np.eye(3)
             rai_as_rows = np.linalg.solve(Aai, S_matrix)
-            # TODO does not include r_pT, r_E, r_NBI yet
+            # TODO does not include r_pT, r_E, r_NBI yet. Should it?
             rbar_ingredient = ξ(a)[i] * rai_as_rows
             yield rbar_ingredient
 
@@ -287,7 +286,7 @@ def ν_T_ai(x, i, a, all_species):
                 part1 = (erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab)) / x ** 3
                 part2 = 4 * (
                     a.T_e / b.T_e + xab_ratio(a, b) ** -2
-                )  # TODO adjust ratios
+                )  # TODO double check this ratio
                 part2full = part2 * Chandrasekhar_G(x_over_xab) / x
                 result = (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
                 # print(f"{b=} {result=}")
@@ -298,7 +297,7 @@ def ν_T_ai(x, i, a, all_species):
 
 
 def K_ps_ai(
-    x, i, a, all_species, flux_surface, *, m_max=100, g=1  # TODO should be more!
+    x, i, a, all_species, flux_surface, *, m_max=100, g=1  # TODO get from m_max
 ):
     ai = a[i]
     ν = ν_T_ai(x, i, a, all_species)
