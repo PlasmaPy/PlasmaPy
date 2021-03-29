@@ -119,6 +119,13 @@ def charge_weighting_factor(i, a_states):
     return ai.number_density * ai.integer_charge ** 2 / denominator
 
 
+def ξ(isotope):
+    array = u.Quantity(
+        [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
+    )
+    return array / array.sum()
+
+
 def N_script(species_a, species_b):
     N = N_matrix(species_a, species_b)
     # Equation A2b
@@ -153,9 +160,7 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
 
     def sum_items():
         for b in all_species:
-            xab = xab_ratio(
-                a_states, b
-            )  # TODO should be over all other species, not ionization states
+            xab = xab_ratio(a_states, b)
             numerator = erf(x / xab) - Chandrasekhar_G(x / xab)
             denominator = x ** 3
             fraction = numerator / denominator
@@ -195,13 +200,6 @@ LaguerrePolynomials = [
     lambda x: 5 / 2 - x,
     lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
 ]
-
-
-def ξ(isotope):
-    array = u.Quantity(
-        [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
-    )
-    return array / array.sum()
 
 
 def rbar(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
