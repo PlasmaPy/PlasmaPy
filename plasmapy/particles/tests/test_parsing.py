@@ -1,5 +1,6 @@
 import pytest
 
+from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
@@ -374,3 +375,8 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )
+
+
+def test_Queen():
+    Queen = "Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass)"
+    assert Particle("Freddie").element_name.capitalize() in Queen

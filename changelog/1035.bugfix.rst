@@ -1,4 +1,0 @@
-Fixed a few bugs in `proton_radiography.SyntheticProtonRadiograph`:
-- The `max_deflection` property now works properly even when particles are deflected from the grid.
-- The adaptive timestep function now works when particles are provided using `load_particles`
-- Adaptive dt now calculates the cyclotron period using the provided particle charge and mass (previously assumed protons).

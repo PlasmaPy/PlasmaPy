@@ -1,7 +1,0 @@
-Create `plasmapy.particles.ParticleList` as a list-like collection for
-instances of `plasmapy.particles.Particle` and
-`plasmapy.particles.CustomParticle`.  Adding `~plasmapy.particles.Particle`
-and/or `~plasmapy.particles.CustomParticle` instances will now create a
-`~plasmapy.particles.ParticleList`.  The greater than (``>``) operator may
-now be used between `Particle` and/or `ParticleList` instances to get the
-nuclear reaction energy.
