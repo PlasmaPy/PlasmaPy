@@ -1,0 +1,2 @@
+Add pydocstyle to continuous integration, to
+hopefully make writing prettier docstrings easier.
