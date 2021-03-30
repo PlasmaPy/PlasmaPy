@@ -4,7 +4,6 @@ Useful error messages for optional dependencies that aren't found.
 __all__ = [
     "h5py_import_error",
     "lmfit_import_error",
-    "mpl_import_error",
     "mpmath_import_error",
 ]
 
