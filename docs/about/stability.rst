@@ -91,27 +91,35 @@ PlasmaPy's planned and existing subpackages are:
         </tr>
         <tr>
             <td>
-                plasmapy.particles
+                plasmapy.analysis
             </td>
             <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
-                This package is being actively developed and expanded,
-                and there may be backward incompatible changes to the API.
+                This subpackage is currently under development.
             </td>
         </tr>
         <tr>
             <td>
-                plasmapy.classes
+                plasmapy.diagnostics
             </td>
             <td align='center'>
                 <span class="dev"></span>
             </td>
             <td>
-                The plan for PlasmaPy's base classes is being planned in
-                PLEP 7, which is in the process of being written.  The
-                existing functionality is unstable.
+                This subpackage is currently under development.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                plasmapy.dispersion
+            </td>
+            <td align='center'>
+                <span class="dev"></span>
+            </td>
+            <td>
+                This subpackage is currently under development.
             </td>
         </tr>
         <tr>
@@ -122,7 +130,51 @@ PlasmaPy's planned and existing subpackages are:
                 <span class="dev"></span>
             </td>
             <td>
-                The <tt class="docutils literal"><span class="pre">formulary</span></tt> subpackage should now be reasonably stable, with possible additions rather than removals now being in scope.
+                The API of this subpackage is likely to change in future releases.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                plasmapy.particles
+            </td>
+            <td align='center'>
+                <span class="dev"></span>
+            </td>
+            <td>
+                The API of this subpackage is likely to change in future releases.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                plasmapy.plasma
+            </td>
+            <td align='center'>
+                <span class="dev"></span>
+            </td>
+            <td>
+                This subpackage is currently under development.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                plasmapy.simulation
+            </td>
+            <td align='center'>
+                <span class="dev"></span>
+            </td>
+            <td>
+                This subpackage is currently under development.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                plasmapy.tests.helpers
+            </td>
+            <td align='center'>
+                <span class="dev"></span>
+            </td>
+            <td>
+                This subpackage is currently under development.
             </td>
         </tr>
         <tr>
@@ -133,10 +185,7 @@ PlasmaPy's planned and existing subpackages are:
                 <span class="dev"></span>
             </td>
             <td>
-                The
-                <tt class="docutils literal"><span class="pre">utils</span></tt>
-                subpackage may undergo significant reorganization with potentially
-                major changes to the API.
+                This subpackage is currently under development.
             </td>
         </tr>
     </table>

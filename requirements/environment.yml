@@ -12,12 +12,15 @@ dependencies:
   - h5py
   - matplotlib
   - mpmath
+  - pandas
   - pillow
-  - colorama
+  - pip
+  - xarray
   - pip:
     - numpydoc
     - pytest
     - lmfit
+    - pygments>=2.4.1
     - sphinx>2
     - sphinx-gallery
     - sphinx-automodapi

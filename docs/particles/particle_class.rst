@@ -1,17 +1,18 @@
 .. _particle-class:
 
-Particle Class
-**************
+`~plasmapy.particles.Particle` Class
+************************************
 
 The `~plasmapy.particles.Particle` class provides an object-oriented
-interface for particle information.
+interface to access and represent particle information.
 
-Creating a Particle Instance
-============================
+.. _particle-class-instantiation:
 
-The simplest way to create an instance of the
-`~plasmapy.particles.Particle` class is to pass it a `str` representing a
-particle.
+Creating a `~plasmapy.particles.Particle` object
+================================================
+
+The simplest way to create a `~plasmapy.particles.Particle` object
+is to pass it a `str` representing a particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
@@ -37,20 +38,24 @@ keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used `~plasmapy.particles.Particle` instances may be
+The most frequently used `~plasmapy.particles.Particle` objects may be
 imported directly from the atomic subpackage.
 
 >>> from plasmapy.particles import proton, electron
 
-The `~plasmapy.particles.Particle` instances that may be imported
-directly are: ``proton``, ``electron``, ``neutron``, ``positron``,
-``deuteron``, ``triton``, and ``alpha``.
+The `~plasmapy.particles.Particle` objects that may be imported
+directly are: `~plasmapy.particles.proton`,
+`~plasmapy.particles.electron`, `~plasmapy.particles.neutron`,
+`~plasmapy.particles.positron`, `~plasmapy.particles.deuteron`,
+`~plasmapy.particles.triton`, and `~plasmapy.particles.alpha`.
 
-Accessing Particle Properties
+.. _particle-class-properties:
+
+Accessing particle properties
 =============================
 
 The properties of each particle may be accessed using the attributes of
-the `~plasmapy.particles.Particle` instance.
+the corresponding `~plasmapy.particles.Particle` object.
 
 >>> proton.atomic_number
 1
@@ -72,12 +77,12 @@ SI units.
 <Quantity 0.49225958 GeV>
 
 Strings representing particles may be accessed using the
-`~plasmapy.particles.Particle.particle`,
+`~plasmapy.particles.Particle.symbol`,
 `~plasmapy.particles.Particle.element`,
 `~plasmapy.particles.Particle.isotope`, and
 `~plasmapy.particles.Particle.ionic_symbol` attributes.
 
->>> antimuon.particle
+>>> antimuon.symbol
 'mu+'
 >>> triton.element
 'H'
@@ -131,14 +136,14 @@ particle.  Valid categories include: ``'actinide'``, ``'alkali metal'``,
 ``'post-transition metal'``, ``'proton'``, ``'stable'``,
 ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
 
-.. _particle-class-conditionals:
+.. _particle-class-conditionals-equality:
 
-Conditionals and Equality Properties
+Conditionals and equality properties
 ====================================
 
 Equality between particles may be tested either between two
-`~plasmapy.particles.Particle` instances, or between a
-`~plasmapy.particles.Particle` instance and a `str`.
+`~plasmapy.particles.Particle` objects, or between a
+`~plasmapy.particles.Particle` object and a `str`.
 
 >>> Particle('H-1') == Particle('protium 1+')
 False
@@ -176,13 +181,13 @@ categories.
 
 .. _particle-class-antiparticles:
 
-Returning Antiparticles
+Returning antiparticles
 =======================
 
 The antiparticle of an elementary particle or antiparticle may be found
-by either using Python's unary invert operator (~) or the
+by either using Python's unary invert operator (``~``) or the
 `~plasmapy.particles.Particle.antiparticle` attribute of a
-`~plasmapy.particles.Particle` instance.
+`~plasmapy.particles.Particle` object.
 
 >>> ~electron
 Particle("e+")

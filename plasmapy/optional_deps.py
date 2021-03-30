@@ -1,4 +1,13 @@
-""" Useful error messages for optional dependencies that aren't found. """
+"""
+Useful error messages for optional dependencies that aren't found.
+"""
+__all__ = [
+    "h5py_import_error",
+    "lmfit_import_error",
+    "mpl_import_error",
+    "mpmath_import_error",
+]
+
 from typing import Optional
 
 
@@ -13,19 +22,22 @@ def _optional_import_error_template(
 
     Parameters
     ----------
-    pkgname : str
-        Package name on pip or conda
-    url : str
-        Link to install page for given package
-    library : str (optional)
-        Full package name
-    conda_channel: str (optional)
-        set to "conda-forge" to add -c conda-forge to the conda install line
+    pkgname : `str`
+        Package name on pip or conda.
+
+    url : `str`
+        Link to install page for given package.
+
+    library : `str`, optional
+        Full package name.
+
+    conda_channel: `str`, optional
+        Set to ``"conda-forge"`` to add ``-c conda-forge`` to the conda
+        install line.
 
     Returns
     -------
-    ImportError
-
+    `ImportError`
     """
     library = pkgname if library is None else library
     conda_channel = f"-c {conda_channel} " if conda_channel is not None else ""
@@ -34,28 +46,31 @@ def _optional_import_error_template(
     {library} could not be found. Try either
 
         conda install {conda_channel}{pkgname}
-        
+
     on Anaconda environments or
-        
+
         pip install {pkgname}
 
     in general. In case of trouble refer to
-    
-        {url} 
-    
+
+        {url}
+
     (link active as of 2018.10.31 - please report dead links on GitHub!)"""
 
     return ImportError(template)
 
 
+#: Import error message for `h5py`.
 h5py_import_error = _optional_import_error_template(
     "h5py", "http://docs.h5py.org/en/latest/build.html"
 )
 
+#: Import error message for `mpmath`.
 mpmath_import_error = _optional_import_error_template(
     "mpmath", "http://mpmath.org/doc/current/setup.html#download-and-installation"
 )
 
+#: Import error message for `lmfit`.
 lmfit_import_error = _optional_import_error_template(
     "lmfit", "https://lmfit.github.io/lmfit-py/installation.html"
 )

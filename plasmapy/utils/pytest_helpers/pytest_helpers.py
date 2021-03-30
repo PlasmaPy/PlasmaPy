@@ -1,55 +1,36 @@
-"""Test helper utilities."""
-import functools
-import pytest
-import inspect
-import collections
-from typing import Any, Callable, Dict
-import numpy as np
-import astropy.units as u
-import astropy.constants as const
-import astropy.tests.helper as astrohelper
-import colorama
-import warnings
-from plasmapy.utils.exceptions import PlasmaPyWarning
-
-from plasmapy.utils.error_messages import (
-    call_string,
-    _represent_result,
-    _exc_str
-)
-
-from plasmapy.utils.pytest_helpers.exceptions import (
-    InvalidTestError,
-    UnexpectedResultError,
-    UnexpectedExceptionError,
-    InconsistentTypeError,
-    MissingExceptionError,
-    MissingWarningError,
-)
-
-# These colors/styles are used to highlight certain parts of the error
-# messages in consistent ways.
-
-_bold = colorama.Style.BRIGHT
-_magenta = colorama.Fore.MAGENTA
-_blue = colorama.Fore.BLUE
-_cyan = colorama.Fore.CYAN
-_red = colorama.Fore.RED
-
-_exception_color = f"{_magenta}{_bold}"
-_type_color = f"{_magenta}{_bold}"
-_func_color = f"{_cyan}{_bold}"
-_result_color = f"{_blue}{_bold}"
-_message_color = f"{_red}{_bold}"
+"""Utilities to help with testing."""
 
 __all__ = [
+    "assert_can_handle_nparray",
     "run_test",
     "run_test_equivalent_calls",
-    "assert_can_handle_nparray",
 ]
 
+import astropy.constants as const
+import astropy.tests.helper as astrohelper
+import astropy.units as u
+import collections
+import functools
+import inspect
+import numpy as np
+import pytest
+import warnings
 
-def _process_input(wrapped_function: Callable):
+from typing import Any, Callable, Dict
+
+from plasmapy.tests.helpers.exceptions import (
+    InvalidTestError,
+    MissingExceptionFail,
+    MissingWarningFail,
+    TypeMismatchFail,
+    UnexpectedExceptionFail,
+    UnexpectedResultFail,
+)
+from plasmapy.utils.code_repr import _name_with_article, _object_name, call_string
+from plasmapy.utils.exceptions import PlasmaPyWarning
+
+
+def _process_input(wrapped_function: Callable):  # coverage: ignore
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -57,19 +38,26 @@ def _process_input(wrapped_function: Callable):
     it assumes that `kwargs` is an empty `dict` and that the expected
     result/outcome is the last item.
     """
+
     def decorator(wrapped_function: Callable):
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
         def wrapper(*args, **kwargs):
             arguments = wrapped_signature.bind(*args, **kwargs).arguments
-            if len(args) == 1 and len(kwargs) == 0 and isinstance(args[0], (list, tuple)):
+            if (
+                len(args) == 1
+                and len(kwargs) == 0
+                and isinstance(args[0], (list, tuple))
+            ):
                 inputs = args[0]
                 if len(inputs) not in (3, 4):
                     raise RuntimeError(f"{args} is an invalid input to run_test.")
-                new_kwargs = {'func': inputs[0], 'args': inputs[1]}
-                new_kwargs['kwargs'] = inputs[2] if len(inputs) == 4 else {}
-                new_kwargs['expected_outcome'] = inputs[3] if len(inputs) == 4 else inputs[2]
+                new_kwargs = {"func": inputs[0], "args": inputs[1]}
+                new_kwargs["kwargs"] = inputs[2] if len(inputs) == 4 else {}
+                new_kwargs["expected_outcome"] = (
+                    inputs[3] if len(inputs) == 4 else inputs[2]
+                )
             else:
                 new_kwargs = {argname: argval for argname, argval in arguments.items()}
             return wrapped_function(**new_kwargs)
@@ -81,13 +69,13 @@ def _process_input(wrapped_function: Callable):
 
 @_process_input
 def run_test(
-        func,
-        args: Any = (),
-        kwargs: Dict = {},
-        expected_outcome: Any = None,
-        rtol: float = 0.0,
-        atol: float = 0.0,
-        ):
+    func,
+    args: Any = (),
+    kwargs: Dict = None,
+    expected_outcome: Any = None,
+    rtol: float = 0.0,
+    atol: float = 0.0,
+):  # coverage: ignore
     """
     Test that a function or class returns the expected result, raises
     the expected exception, or issues an expected warning for the
@@ -127,22 +115,22 @@ def run_test(
 
     Raises
     ------
-    UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
         If the test returns a result that is different from the expected
         result.
 
-    InconsistentTypeError
+    ~plasmapy.tests.helpers.exceptions.TypeMismatchFail
         If the actual result is of a different type than the expected
         result.
 
-    UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
         If an exception occurs when no exception or a different
         exception is expected.
 
-    MissingExceptionError
+    ~plasmapy.tests.helpers.exceptions.MissingExceptionFail
         If no exception is raised when an exception is expected.
 
-    MissingWarningError
+    ~plasmapy.tests.helpers.exceptions.MissingWarningFail
         An expected warning is not issued.
 
     ~astropy.units.UnitsError
@@ -227,17 +215,22 @@ def run_test(
 
     """
 
+    if kwargs is None:
+        kwargs = {}
+
     if not isinstance(args, tuple):
         args = (args,)
 
     if not callable(func):
-        raise InvalidTestError(f"The argument func = {func} to run_test must be callable.")
+        raise InvalidTestError(
+            f"The argument func = {func} to run_test must be callable."
+        )
 
     # By including the function call that is run during a test in error
     # messages, we can make it easier to reproduce the error in an
     # interactive session.
 
-    call_str = call_string(func, args, kwargs, color=_func_color, return_color=_message_color)
+    call_str = call_string(func, args, kwargs)
 
     # There are many possibilities for expected outcomes that we must
     # keep track of, including exceptions being raised and warnings
@@ -249,23 +242,25 @@ def run_test(
         subclass_of_Exception = issubclass(expected_outcome, Exception)
         subclass_of_Warning = issubclass(expected_outcome, Warning)
         if subclass_of_Warning:
-            expected['warning'] = expected_outcome
+            expected["warning"] = expected_outcome
         elif subclass_of_Exception and not subclass_of_Warning:
-            expected['exception'] = expected_outcome
+            expected["exception"] = expected_outcome
 
     # If a warning is issued, then there may also be an expected result.
 
     if isinstance(expected_outcome, tuple):
         length_not_two = len(expected_outcome) != 2
         is_not_class = not inspect.isclass(expected_outcome[1])
-        is_not_warning = True if is_not_class else not issubclass(expected_outcome[1], Warning)
+        is_not_warning = (
+            True if is_not_class else not issubclass(expected_outcome[1], Warning)
+        )
         if length_not_two or is_not_warning:
             raise InvalidTestError("Invalid expected outcome in run_test.")
-        expected['result'] = expected_outcome[0]
-        expected['warning'] = expected_outcome[1]
+        expected["result"] = expected_outcome[0]
+        expected["warning"] = expected_outcome[1]
 
-    if expected['exception'] is None and expected['warning'] is None:
-        expected['result'] = expected_outcome
+    if expected["exception"] is None and expected["warning"] is None:
+        expected["result"] = expected_outcome
 
     # First we go through all of the possibilities for when an exception
     # is expected to be raised.  If no exception is raised, then we want
@@ -275,9 +270,9 @@ def run_test(
     # but this makes it easier to break down what the error messages
     # should be.
 
-    if expected['exception']:
+    if expected["exception"]:
 
-        expected_exception = expected['exception']
+        expected_exception = expected["exception"]
 
         try:
             result = func(*args, **kwargs)
@@ -286,107 +281,114 @@ def run_test(
             if resulting_exception.__name__ == expected_exception.__name__:
                 return None
             else:
-                raise UnexpectedExceptionError(
+                raise UnexpectedExceptionFail(
                     f"The command {call_str} did not specifically raise "
-                    f"{_exc_str(expected_exception)} as expected, but "
-                    f"instead raised {_exc_str(resulting_exception)} "
-                    f"which is a subclass of the expected exception.")
+                    f"{_name_with_article(expected_exception)} as expected, but "
+                    f"instead raised {_name_with_article(resulting_exception)} "
+                    f"which is a subclass of the expected exception."
+                )
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
-            raise UnexpectedExceptionError(
+            raise UnexpectedExceptionFail(
                 f"The command {call_str} did not raise "
-                f"{_exc_str(expected_exception)} as expected, "
-                f"but instead raised {_exc_str(unexpected_exception)}."
+                f"{_name_with_article(expected_exception)} as expected, "
+                f"but instead raised {_name_with_article(unexpected_exception)}."
             ) from exc_unexpected_exception
         else:
-            raise MissingExceptionError(
+            raise MissingExceptionFail(
                 f"The command {call_str} did not raise "
-                f"{_exc_str(expected_exception)} as expected, but instead "
-                f"returned {_represent_result(result)}.")
+                f"{_name_with_article(expected_exception)} as expected, but instead "
+                f"returned {_object_name(result)}."
+            )
 
     try:
-        with pytest.warns(expected['warning']):
+        with pytest.warns(expected["warning"]):
             result = func(*args, **kwargs)
     except pytest.raises.Exception as missing_warning:
-        raise MissingWarningError(
+        raise MissingWarningFail(
             f"The command {call_str} should issue "
-            f"{_exc_str(expected['warning'])}, but instead returned "
-            f"{_represent_result(result)}."
+            f"{_name_with_article(expected['warning'])}, but instead returned "
+            f"{_object_name(result)}."
         ) from missing_warning
     except Exception as exception_no_warning:
-        raise UnexpectedExceptionError(
+        raise UnexpectedExceptionFail(
             f"The command {call_str} unexpectedly raised "
-            f"{_exc_str(exception_no_warning.__reduce__()[0])} "
+            f"{_name_with_article(exception_no_warning.__reduce__()[0])} "
             f"instead of returning the expected value of "
-            f"{_represent_result(expected['result'])}."
+            f"{_object_name(expected['result'])}."
         ) from exception_no_warning
 
-    if isinstance(expected['result'], u.UnitBase):
+    if isinstance(expected["result"], u.UnitBase):
 
         if isinstance(result, u.UnitBase):
-            if result != expected['result']:
+            if result != expected["result"]:
                 raise u.UnitsError(
                     f"The command {call_str} returned "
-                    f"{_represent_result(result)} instead of the expected "
-                    f"value of {_represent_result(expected['result'])}.")
+                    f"{_object_name(result)} instead of the expected "
+                    f"value of {_object_name(expected['result'])}."
+                )
             return None
 
         if not isinstance(result, (u.Quantity, const.Constant, const.EMConstant)):
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_represent_result(result)} instead of a quantity or "
+                f"{_object_name(result)} instead of a quantity or "
                 f"constant with units of "
-                f"{_represent_result(expected['result'])}.")
+                f"{_object_name(expected['result'])}."
+            )
 
-        if result.unit != expected['result']:
+        if result.unit != expected["result"]:
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_represent_result(result)}, which has units of "
+                f"{_object_name(result)}, which has units of "
                 f"{result.unit} instead of the expected units of "
-                f"{_represent_result(expected['result'])}.")
+                f"{_object_name(expected['result'])}."
+            )
 
         return None
 
-    if isinstance(expected['result'], (u.Quantity, const.Constant, const.EMConstant)):
-        if not result.unit == expected['result'].unit:
+    if isinstance(expected["result"], (u.Quantity, const.Constant, const.EMConstant)):
+        if not result.unit == expected["result"].unit:
             raise u.UnitsError(
                 f"The command {call_str} returned "
-                f"{_represent_result(result)} which has different units "
+                f"{_object_name(result)} which has different units "
                 f"than the expected result of "
-                f"{_represent_result(expected['result'])}.")
+                f"{_object_name(expected['result'])}."
+            )
 
-        if np.allclose(result.value, expected['result'].value):
+        if np.allclose(result.value, expected["result"].value):
             return None
 
-    if expected['result'] is None:
+    if expected["result"] is None:
         return None
 
-    if type(result) != type(expected['result']):
-        raise InconsistentTypeError(
+    if type(result) != type(expected["result"]):
+        raise TypeMismatchFail(
             f"The command {call_str} returned "
-            f"{_represent_result(result)} which has type "
-            f"{_represent_result(type(result), color=_type_color)}, "
+            f"{_object_name(result)} which has type "
+            f"{_object_name(type(result))}, "
             f"instead of the expected value of "
-            f"{_represent_result(expected['result'])} which has type "
-            f"{_represent_result(type(expected['result']), color=_type_color)}."
+            f"{_object_name(expected['result'])} which has type "
+            f"{_object_name(type(expected['result']))}."
         )
 
     try:
-        if result == expected['result']:
+        if result == expected["result"]:
             return None
     except Exception as exc_equality:  # coverage: ignore
         raise TypeError(
-            f"The equality of {_represent_result(result)} and "
-            f"{_represent_result(expected['result'])} "
-            f"cannot be evaluated.") from exc_equality
+            f"The equality of {_object_name(result)} and "
+            f"{_object_name(expected['result'])} "
+            f"cannot be evaluated."
+        ) from exc_equality
 
     try:
-        different_length = len(result) != len(expected['result'])
+        different_length = len(result) != len(expected["result"])
     except Exception:
         different_length = False
 
     try:
-        all_close = np.allclose(expected['result'], result, rtol=rtol, atol=atol)
+        all_close = np.allclose(expected["result"], result, rtol=rtol, atol=atol)
         if all_close and not different_length:
             return None
     except Exception:
@@ -394,8 +396,8 @@ def run_test(
 
     errmsg = (
         f"The command {call_str} returned "
-        f"{_represent_result(result)} instead of the expected "
-        f"value of {_represent_result(expected['result'])}."
+        f"{_object_name(result)} instead of the expected "
+        f"value of {_object_name(expected['result'])}."
     )
 
     if atol or rtol:
@@ -408,7 +410,7 @@ def run_test(
             errmsg += f"rtol = {rtol}"
     errmsg += "."
 
-    raise UnexpectedResultError(errmsg)
+    raise UnexpectedResultFail(errmsg)
 
 
 def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
@@ -429,16 +431,16 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     Raises
     ------
-    ~plasmapy.utils.UnexpectedResultError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedResultFail
         If not all of the results are equivalent, or not all of the
         results are of the same type and `require_same_type` evaluates
         to `True`.
 
-    ~plasmapy.utils.UnexpectedExceptionError
+    ~plasmapy.tests.helpers.exceptions.UnexpectedExceptionFail
         If an exception is raised whilst attempting to run one of the
         test cases.
 
-    ~plasmapy.utils.InvalidTestError
+    ~plasmapy.tests.helpers.exceptions.InvalidTestError
         If there is an error associated with the inputs or the test is
         set up incorrectly.
 
@@ -510,8 +512,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     # Make sure everything is a list to allow f(*args)
 
-    test_inputs = [test_input if isinstance(test_input, (list, tuple)) else [test_input]
-                  for test_input in test_inputs]
+    test_inputs = [
+        test_input if isinstance(test_input, (list, tuple)) else [test_input]
+        for test_input in test_inputs
+    ]
 
     # Construct a list of dicts, of which each dict contains the
     # function, positional arguments, and keyword arguments for each
@@ -522,30 +526,34 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     for inputs in test_inputs:
         test_case = {}
 
-        test_case['function'] = func if func else inputs[0]
-        test_case['args'] = inputs[0] if func else inputs[1]
+        test_case["function"] = func if func else inputs[0]
+        test_case["args"] = inputs[0] if func else inputs[1]
 
-        if not isinstance(test_case['args'], (list, tuple)):
-            test_case['args'] = [test_case['args']]
+        if not isinstance(test_case["args"], (list, tuple)):
+            test_case["args"] = [test_case["args"]]
 
         if func:
-            test_case['kwargs'] = inputs[1] if len(inputs) == 2 else {}
+            test_case["kwargs"] = inputs[1] if len(inputs) == 2 else {}
         else:
-            test_case['kwargs'] = inputs[2] if len(inputs) == 3 else {}
+            test_case["kwargs"] = inputs[2] if len(inputs) == 3 else {}
 
         try:
-            test_case['call string'] = call_string(
-                test_case['function'], test_case['args'], test_case['kwargs'])
+            test_case["call string"] = call_string(
+                test_case["function"], test_case["args"], test_case["kwargs"]
+            )
         except Exception:
-            test_case['call string'] = (
+            test_case["call string"] = (
                 f"function = {test_case['function']}, "
                 f"args = {test_case['args']}, and "
-                f"kwargs = {test_case['kwargs']}")
+                f"kwargs = {test_case['kwargs']}"
+            )
 
         test_cases.append(test_case)
 
     if len(test_cases) < 2:
-        raise InvalidTestError("At least two tests are needed for run_test_equivalent_calls")
+        raise InvalidTestError(
+            "At least two tests are needed for run_test_equivalent_calls"
+        )
 
     # Check to make sure that each function is callable, each set of
     # args is a list or tuple, and each set of kwargs is a dict.  Make
@@ -554,11 +562,11 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     bad_inputs_errmsg = ""
 
     for test_case in test_cases:
-        if not callable(test_case['function']):
+        if not callable(test_case["function"]):
             bad_inputs_errmsg += f"\n{test_case['function']} is not callable "
-        if not isinstance(test_case['args'], (tuple, list)):
+        if not isinstance(test_case["args"], (tuple, list)):
             bad_inputs_errmsg += f"\n{test_case['args']} is not a list or tuple "
-        if not isinstance(test_case['kwargs'], dict):
+        if not isinstance(test_case["kwargs"], dict):
             bad_inputs_errmsg += f"\n{test_case['kwargs']} is not a dict "
 
     if bad_inputs_errmsg:
@@ -568,23 +576,28 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
     for test_case in test_cases:
         try:
-            f, args, kwargs = test_case['function'], test_case['args'], test_case['kwargs']
-            test_case['result'] = f(*args, **kwargs)
-            test_case['type'] = type(test_case['result'])
+            f, args, kwargs = (
+                test_case["function"],
+                test_case["args"],
+                test_case["kwargs"],
+            )
+            test_case["result"] = f(*args, **kwargs)
+            test_case["type"] = type(test_case["result"])
         except Exception as exc:
-            raise UnexpectedExceptionError(
-                f"Unable to evaluate {test_case['call string']}.")
+            raise UnexpectedExceptionFail(
+                f"Unable to evaluate {test_case['call string']}."
+            )
 
     # Make sure that all of the results evaluate as equal to the first
     # result.
 
-    results = [test_case['result'] for test_case in test_cases]
-    types = [test_case['type'] for test_case in test_cases]
+    results = [test_case["result"] for test_case in test_cases]
+    types = [test_case["type"] for test_case in test_cases]
 
     try:
         equals_first_result = [result == results[0] for result in results]
     except Exception as exc:  # coverage: ignore
-        raise UnexpectedExceptionError(
+        raise UnexpectedExceptionFail(
             f"Unable to determine equality properties of results."
         ) from exc
 
@@ -603,13 +616,15 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         for test_case in test_cases:
             errmsg += (
                 f"\n  {test_case['call string']} yielded {test_case['result']} "
-                f"of type {test_case['type']}")
+                f"of type {test_case['type']}"
+            )
 
-        raise UnexpectedResultError(errmsg)
+        raise UnexpectedResultFail(errmsg)
 
 
-def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_nans=[],
-                              kwargs={}):
+def assert_can_handle_nparray(
+    function_to_test, insert_some_nans=None, insert_all_nans=None, kwargs=None,
+):
     """
     Test for ability to handle numpy array quantities.
 
@@ -626,22 +641,22 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
         `["coulomb_log"]`
         `["characteristic_length"]`
 
-    insert_some_nans: list
+    insert_some_nans: `list`
         List of argument names in which to insert some np.nan values.
         These must be arguments that will be tested as vectors as listed
         above.
 
-    insert_all_nans: list
+    insert_all_nans: `list`
         List of argument names to fill entirely with np.nan values.
 
-    kwargs: dict
+    kwargs: `dict`
         Arguments to pass directly to the function in under test, in the
         normal kwargs python dictionary format.
 
     Raises
     ------
-    ~ValueError
-        If this function cannot interpret a parameter of function_to_test,
+    ValueError
+        If this function cannot interpret a parameter of function_to_test.
 
     Examples
     --------
@@ -650,25 +665,37 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """
-    def _prepare_input(param_name, param_default, insert_some_nans, insert_all_nans, kwargs):
+
+    if insert_some_nans is None:
+        insert_some_nans = []
+
+    if insert_all_nans is None:
+        insert_all_nans = []
+
+    if kwargs is None:
+        kwargs = {}
+
+    def _prepare_input(
+        param_name, param_default, insert_some_nans, insert_all_nans, kwargs
+    ):
         """
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
         """
         # first things first: let any passed in kwarg right through (VIP access)
         if param_name in kwargs.keys():
-            return (kwargs[param_name], ) * 4
+            return (kwargs[param_name],) * 4
 
         # else, if it's a recognized variable name, give it a reasonable unit and magnitude
         elif param_name in ["particle", "ion_particle", "ion"]:
             if not (param_default is inspect._empty or param_default is None):
-                return (param_default, ) * 4
+                return (param_default,) * 4
             else:
-                return ("p", ) * 4
+                return ("p",) * 4
         elif param_name == "particles" or param_name == "species":
             if not (param_default is inspect._empty):
-                return (param_default, ) * 4
+                return (param_default,) * 4
             else:
-                return (("e", "p"), ) * 4
+                return (("e", "p"),) * 4
         elif param_name in ["T", "T_i", "T_e", "temperature"]:
             unit = u.eV
             magnitude = 1.0
@@ -693,7 +720,7 @@ def assert_can_handle_nparray(function_to_test, insert_some_nans=[], insert_all_
 
         # else, last resort, if it has a default argument, go with that:
         elif not (param_default is inspect._empty):
-            return (param_default, ) * 4
+            return (param_default,) * 4
 
         else:
             raise ValueError(f"Unrecognized function input: {param_name}")

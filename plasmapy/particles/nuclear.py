@@ -1,15 +1,14 @@
 """Functions that are related to nuclear reactions."""
-
-import re
-from typing import List, Union, Optional
-from astropy import units as u
-
-from plasmapy.particles.exceptions import AtomicError, InvalidParticleError
-
-from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_input import particle_input
-
 __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
+
+import astropy.units as u
+import re
+
+from typing import List, Optional, Union
+
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
+from plasmapy.particles.particle_class import Particle
 
 
 @particle_input(any_of={"isotope", "baryon"})
@@ -37,10 +36,10 @@ def nuclear_binding_energy(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the inputs do not correspond to a valid particle.
 
-    `~plasmapy.utils.AtomicError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
     `TypeError`
@@ -48,11 +47,11 @@ def nuclear_binding_energy(
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_reaction_energy` : Return the change in
+    nuclear_reaction_energy : Return the change in
         binding energy during nuclear fusion or fission reactions.
 
-    `~plasmapy.particles.mass_energy` : Return the mass energy of a
-        nucleon or particle.
+    ~plasmapy.particles.nuclear.mass_energy : Return the mass energy of
+        a nucleon or particle.
 
     Examples
     --------
@@ -68,7 +67,6 @@ def nuclear_binding_energy(
     >>> after = nuclear_binding_energy("alpha")
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
     <Quantity 17.589 MeV>
-
     """
     return particle.binding_energy.to(u.J)
 
@@ -93,22 +91,24 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     Returns
     -------
     mass_energy: `~astropy.units.Quantity`
-        The mass energy of the particle (or in the case of ) in units of joules.
+        The mass energy of the particle (or, in the case of an isotope,
+        its nuclide) in units of joules.
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the inputs do not correspond to a valid particle.
 
-    `~plasmapy.utils.AtomicError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If the inputs do not correspond to a valid isotope or nucleon.
 
     `TypeError`
         If the inputs are not of the correct types.
 
+    Examples
+    --------
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
-
     """
     return particle.mass_energy
 
@@ -144,7 +144,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Raises
     ------
-    `AtomicError`:
+    `ParticleError`:
         If the reaction is not valid, there is insufficient
         information to determine an isotope, the baryon number is
         not conserved, or the charge is not conserved.
@@ -155,8 +155,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     See Also
     --------
-    `~plasmapy.particles.nuclear_binding_energy` : finds the binding energy
-        of an isotope
+    nuclear_binding_energy : finds the binding energy of an isotope
 
     Notes
     -----
@@ -168,10 +167,8 @@ def nuclear_reaction_energy(*args, **kwargs):
     Examples
     --------
     >>> from astropy import units as u
-
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
-
     >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
@@ -180,10 +177,8 @@ def nuclear_reaction_energy(*args, **kwargs):
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.3665870 MeV>
-
     >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343e-13 J>
-
     """
 
     # TODO: Allow for neutrinos, under the assumption that they have no mass.
@@ -231,15 +226,15 @@ def nuclear_reaction_energy(*args, **kwargs):
                 try:
                     particle = Particle(item)
                 except (InvalidParticleError) as exc:
-                    raise AtomicError(errmsg) from exc
+                    raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise AtomicError(errmsg)
+                    raise ParticleError(errmsg)
 
                 [particles.append(particle) for i in range(multiplier)]
 
             except Exception:
-                raise AtomicError(
+                raise ParticleError(
                     f"{original_item} is not a valid reactant or "
                     "product in a nuclear reaction."
                 ) from None
@@ -293,7 +288,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     reactants_products_are_inputs = kwargs and not args and len(kwargs) == 2
 
     if reaction_string_is_input == reactants_products_are_inputs:
-        raise AtomicError(input_err_msg)
+        raise ParticleError(input_err_msg)
 
     if reaction_string_is_input:
 
@@ -302,7 +297,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         if not isinstance(reaction, str):
             raise TypeError(input_err_msg)
         elif "->" not in reaction:
-            raise AtomicError(
+            raise ParticleError(
                 f"The reaction '{reaction}' is missing a '->'"
                 " or '-->' between the reactants and products."
             )
@@ -314,7 +309,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             reactants = process_particles_list(LHS_list)
             products = process_particles_list(RHS_list)
         except Exception as ex:
-            raise AtomicError(f"{reaction} is not a valid nuclear reaction.") from ex
+            raise ParticleError(f"{reaction} is not a valid nuclear reaction.") from ex
 
     elif reactants_products_are_inputs:
 
@@ -324,16 +319,16 @@ def nuclear_reaction_energy(*args, **kwargs):
         except TypeError as t:
             raise TypeError(input_err_msg) from t
         except Exception as e:
-            raise AtomicError(errmsg) from e
+            raise ParticleError(errmsg) from e
 
     if total_baryon_number(reactants) != total_baryon_number(products):
-        raise AtomicError(
+        raise ParticleError(
             "The baryon number is not conserved for "
             f"reactants = {reactants} and products = {products}."
         )
 
     if total_charge(reactants) != total_charge(products):
-        raise AtomicError(
+        raise ParticleError(
             "Total charge is not conserved for reactants = "
             f"{reactants} and products = {products}."
         )

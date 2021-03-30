@@ -1,22 +1,32 @@
-"""Functionality to parse representations of particles into standard form."""
+"""
+Functionality to parse representations of particles into standard form.
 
+.. attention::
+    This module is not part of PlasmaPy's public API.
+
+"""
+__all__ = []
+
+import numpy as np
 import re
 import warnings
-from typing import (Union, Dict, Optional)
+
 from numbers import Integral
-import numpy as np
+from typing import Dict, Union
 
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
     _element_names_to_symbols,
-    _Elements)
-
-from plasmapy.particles.isotopes import _Isotopes
+    _elements,
+)
+from plasmapy.particles.exceptions import (
+    InvalidElementError,
+    InvalidParticleError,
+    ParticleWarning,
+)
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.special_particles import _Particles, ParticleZoo
-
-from plasmapy.utils import roman, call_string
-
-from plasmapy.particles.exceptions import InvalidElementError, InvalidParticleError, AtomicWarning
+from plasmapy.utils import roman
 
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
@@ -33,33 +43,53 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_insensitive_aliases = {}
 
     for symbol in Particles.keys():
-        name = Particles[symbol]['name']
+        name = Particles[symbol]["name"]
         case_insensitive_aliases[name.lower()] = symbol
 
     case_sensitive_aliases_for_a_symbol = [
-        (['beta-', 'e'], 'e-'),
-        (['beta+'], 'e+'),
-        (['p', 'H-1+', 'H-1 1+', 'H-1 +1', 'H-1 II'], 'p+'),
-        (['n-1'], 'n'),
-        (['H-2'], 'D'),
-        (['H-2+', 'H-2 1+', 'H-2 +1', 'D+', 'D II'], 'D 1+'),
-        (['H-3+', 'H-3 1+', 'H-3 +1', 'T+', 'T II'], 'T 1+'),
+        (["beta-", "β-", "β⁻", "e", "e⁻"], "e-"),
+        (["beta+", "β+", "β⁺", "e⁺"], "e+"),
+        (["p", "p⁺", "H-1+", "H-1 1+", "H-1 +1", "H-1 II"], "p+"),
+        (["n-1", "n⁰"], "n"),
+        (["H-2"], "D"),
+        (["H-2+", "H-2 1+", "H-2 +1", "D+", "D II"], "D 1+"),
+        (["H-3+", "H-3 1+", "H-3 +1", "T+", "T II"], "T 1+"),
+        (["α"], "He-4 2+"),
+        (["τ", "τ-", "τ⁻"], "tau-"),
+        (["τ+", "τ⁺"], "tau+"),
+        (["μ-", "μ⁻"], "mu-"),
+        (["μ+", "μ⁺"], "mu+"),
+        (["ν_e"], "nu_e"),
+        (["ν_μ"], "nu_mu"),
+        (["ν_τ"], "nu_tau"),
     ]
 
     case_insensitive_aliases_for_a_symbol = [
-        (['antielectron', 'anti_electron'], 'e+'),
-        (['antipositron', 'anti_positron'], 'e-'),
-        (['muon-'], 'mu-'),
-        (['muon+'], 'mu+'),
-        (['tau particle'], 'tau-'),
-        (['protium'], 'H-1'),
-        (['protium+', 'protium 1+', 'protium +1', 'hydrogen-1+',
-          'hydrogen-1 1+', 'hydrogen-1 +1'], 'p+'),
-        (['deuterium', 'hydrogen-2'], 'D'),
-        (['deuteron', 'deuterium+', 'deuterium 1+', 'deuterium +1'], 'D 1+'),
-        (['tritium', 'hydrogen-3'], 'T'),
-        (['triton', 'tritium+', 'tritium 1+', 'tritium +1'], 'T 1+'),
-        (['alpha'], 'He-4 2+'),
+        (["antielectron", "anti_electron"], "e+"),
+        (["antipositron", "anti_positron"], "e-"),
+        (["muon-"], "mu-"),
+        (["muon+"], "mu+"),
+        (["tau particle"], "tau-"),
+        (["protium"], "H-1"),
+        (
+            [
+                "protium+",
+                "protium 1+",
+                "protium +1",
+                "hydrogen-1+",
+                "hydrogen-1 1+",
+                "hydrogen-1 +1",
+            ],
+            "p+",
+        ),
+        (["deuterium", "hydrogen-2"], "D"),
+        (["deuteron", "deuterium+", "deuterium 1+", "deuterium +1"], "D 1+"),
+        (["tritium", "hydrogen-3"], "T"),
+        (["triton", "tritium+", "tritium 1+", "tritium +1"], "T 1+"),
+        (["diproton"], "He-2 2+"),
+        (["helion"], "He-3 2+"),
+        (["alpha"], "He-4 2+"),
+        (["Freddie"], "Hg"),
     ]
 
     for aliases, symbol in case_sensitive_aliases_for_a_symbol:
@@ -73,9 +103,9 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     alias_keys = list(case_insensitive_aliases.keys())
 
     for alias in alias_keys:
-        if 'anti' in alias and 'anti-' not in alias:
+        if "anti" in alias and "anti-" not in alias:
             symbol = case_insensitive_aliases[alias].lower()
-            new_alias = alias.replace('anti', 'anti-')
+            new_alias = alias.replace("anti", "anti-")
             case_insensitive_aliases[new_alias] = symbol
 
     return case_sensitive_aliases, case_insensitive_aliases
@@ -94,8 +124,10 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     """
     if not isinstance(alias, str):
         symbol = alias
-    elif (alias in _case_sensitive_aliases.values() or
-          alias in _case_insensitive_aliases.values()):
+    elif (
+        alias in _case_sensitive_aliases.values()
+        or alias in _case_insensitive_aliases.values()
+    ):
         symbol = alias
     elif alias in _case_sensitive_aliases.keys():
         symbol = _case_sensitive_aliases[alias]
@@ -109,7 +141,7 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     """
     Return an appropriate error message for an
-    `~plasmapy.utils.InvalidParticleError`.
+    `~plasmapy.particles.exceptions.InvalidParticleError`.
     """
     errmsg = f"The argument {repr(argument)} "
     if mass_numb is not None or Z is not None:
@@ -125,9 +157,8 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
 
 
 def _parse_and_check_atomic_input(
-        argument: Union[str, Integral],
-        mass_numb: Integral = None,
-        Z: Integral = None):
+    argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
+):
     """
     Parse information about a particle into a dictionary of standard
     symbols, and check the validity of the particle.
@@ -159,28 +190,26 @@ def _parse_and_check_atomic_input(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the arguments do not correspond to a valid particle or
         antiparticle.
 
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the particle is valid but does not correspond to an element,
         ion, or isotope.
 
     `TypeError`
         If the argument or any of the keyword arguments is not of the
         correct type.
-
     """
 
     def _atomic_number_to_symbol(atomic_numb: Integral):
         """
         Return the atomic symbol associated with an integer
         representing an atomic number, or raises an
-        `~plasmapy.utils.InvalidParticleError` if the atomic number does
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-
         if atomic_numb in _atomic_numbers_to_symbols.keys():
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
@@ -192,51 +221,51 @@ def _parse_and_check_atomic_input(
         Return a `tuple` containing a `str` that should represent an
         element or isotope, and either an `int` representing the
         charge or `None` if no charge information is provided.  Raise
-        an `~plasmapy.utils.InvalidParticleError` if charge information
+        an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
         is inputted incorrectly.
         """
 
-        invalid_charge_errmsg = (f"Invalid charge information in the particle string '{arg}'.")
+        invalid_charge_errmsg = (
+            f"Invalid charge information in the particle string '{arg}'."
+        )
 
-        if arg.count(' ') == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
-            isotope_info, charge_info = arg.split(' ')
+        if arg.count(" ") == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
+            isotope_info, charge_info = arg.split(" ")
 
-            sign_indicator_only_on_one_end = (
-                charge_info.endswith(('-', '+')) ^
-                charge_info.startswith(('-', '+')))
+            sign_indicator_only_on_one_end = charge_info.endswith(
+                ("-", "+")
+            ) ^ charge_info.startswith(("-", "+"))
 
             just_one_sign_indicator = (
-                (charge_info.count('-') == 1 and
-                 charge_info.count('+') == 0) or
-                (charge_info.count('-') == 0 and
-                 charge_info.count('+') == 1))
+                charge_info.count("-") == 1 and charge_info.count("+") == 0
+            ) or (charge_info.count("-") == 0 and charge_info.count("+") == 1)
 
             if not sign_indicator_only_on_one_end and just_one_sign_indicator:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
 
-            charge_str = charge_info.strip('+-')
+            charge_str = charge_info.strip("+-")
 
             try:
                 if roman.is_roman_numeral(charge_info):
                     Z_from_arg = roman.from_roman(charge_info) - 1
-                elif '-' in charge_info:
-                    Z_from_arg = - int(charge_str)
-                elif '+' in charge_info:
+                elif "-" in charge_info:
+                    Z_from_arg = -int(charge_str)
+                elif "+" in charge_info:
                     Z_from_arg = int(charge_str)
                 else:
                     raise InvalidParticleError(invalid_charge_errmsg) from None
             except ValueError:
                 raise InvalidParticleError(invalid_charge_errmsg) from None
 
-        elif arg.endswith(('-', '+')):  # Cases like 'H-' and 'Pb-209+++'
+        elif arg.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
             char = arg[-1]
             match = re.match(f"[{char}]*", arg[::-1])
             Z_from_arg = match.span()[1]
-            isotope_info = arg[0:len(arg) - match.span()[1]]
+            isotope_info = arg[0 : len(arg) - match.span()[1]]
 
-            if char == '-':
+            if char == "-":
                 Z_from_arg = -Z_from_arg
-            if isotope_info.endswith(('-', '+')):
+            if isotope_info.endswith(("-", "+")):
                 raise InvalidParticleError(invalid_charge_errmsg) from None
         else:
             isotope_info = arg
@@ -250,29 +279,29 @@ def _parse_and_check_atomic_input(
         Return a tuple containing a string that should represent
         an element, and either an integer representing the mass
         number or None if no mass number is available.  Raises an
-        `~plasmapy.utils.InvalidParticleError` if the mass number
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the mass number
         information is inputted incorrectly.
         """
 
-        if isotope_info == 'D':
-            element_info, mass_numb = 'H', 2
-        elif isotope_info == 'T':
-            element_info = 'H'
+        if isotope_info == "D":
+            element_info, mass_numb = "H", 2
+        elif isotope_info == "T":
+            element_info = "H"
             mass_numb = 3
-        elif isotope_info == 'p':
-            element_info = 'H'
+        elif isotope_info == "p":
+            element_info = "H"
             mass_numb = 1
-        elif '-' not in isotope_info:
+        elif "-" not in isotope_info:
             element_info = isotope_info
             mass_numb = None
-        elif isotope_info.count('-') == 1:
-            element_info, mass_numb_str = isotope_info.split('-')
+        elif isotope_info.count("-") == 1:
+            element_info, mass_numb_str = isotope_info.split("-")
             try:
                 mass_numb = int(mass_numb_str)
             except ValueError:
                 raise InvalidParticleError(
-                    f"Invalid mass number in isotope string "
-                    f"'{isotope_info}'.") from None
+                    f"Invalid mass number in isotope string '{isotope_info}'."
+                ) from None
 
         return element_info, mass_numb
 
@@ -281,7 +310,6 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-
         if element_info.lower() in _element_names_to_symbols.keys():
             element = _element_names_to_symbols[element_info.lower()]
         elif element_info in _atomic_numbers_to_symbols.values():
@@ -289,8 +317,8 @@ def _parse_and_check_atomic_input(
         else:
             raise InvalidParticleError(
                 f"The string '{element_info}' does not correspond to "
-                f"a valid element.")
-
+                f"a valid element."
+            )
         return element
 
     def _reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
@@ -298,29 +326,32 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
         or `None` if no mass number information is available.  Raises an
-        `~plasmapy.utils.InvalidParticleError` for isotopes that have
+        `~plasmapy.particles.exceptions.InvalidParticleError` for isotopes that have
         not yet been discovered.
         """
 
         if mass_numb is not None:
             isotope = f"{element}-{mass_numb}"
 
-            if isotope == 'H-2':
-                isotope = 'D'
-            elif isotope == 'H-3':
-                isotope = 'T'
+            if isotope == "H-2":
+                isotope = "D"
+            elif isotope == "H-3":
+                isotope = "T"
 
-            if isotope not in _Isotopes.keys():
+            if isotope not in _isotopes.keys():
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
-                    f"a valid isotope.")
+                    f"a valid isotope."
+                )
 
         else:
             isotope = None
 
         return isotope
 
-    def _reconstruct_ion_symbol(element: str, isotope: Integral = None, Z: Integral = None):
+    def _reconstruct_ion_symbol(
+        element: str, isotope: Integral = None, Z: Integral = None
+    ):
         """
         Receive a `str` representing an atomic symbol and/or a
         string representing an isotope, and an `int` representing the
@@ -330,9 +361,9 @@ def _parse_and_check_atomic_input(
 
         if Z is not None:
             if Z < 0:
-                sign = '-'
+                sign = "-"
             else:
-                sign = '+'
+                sign = "+"
 
             if isotope is None:
                 base = element
@@ -343,8 +374,8 @@ def _parse_and_check_atomic_input(
         else:
             ion = None
 
-        if ion == 'H-1 1+':
-            ion = 'p+'
+        if ion == "H-1 1+":
+            ion = "p+"
 
         return ion
 
@@ -353,11 +384,12 @@ def _parse_and_check_atomic_input(
 
     arg = _dealias_particle_aliases(argument)
 
-    if arg in ParticleZoo.everything - {'p+'}:
+    if arg in ParticleZoo.everything - {"p+"}:
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError(
                 f"The keywords mass_numb and Z should not be specified "
-                f"for particle '{argument}', which is a special particle.")
+                f"for particle '{argument}', which is a special particle."
+            )
         else:
             raise InvalidElementError(f"{argument} is not a valid element.")
 
@@ -370,8 +402,7 @@ def _parse_and_check_atomic_input(
         mass_numb_from_arg = None
     elif isinstance(arg, str):
         isotope_info, Z_from_arg = _extract_charge(arg)
-        element_info, mass_numb_from_arg = \
-            _extract_mass_number(isotope_info)
+        element_info, mass_numb_from_arg = _extract_mass_number(isotope_info)
         element = _get_element(element_info)
 
     if mass_numb is not None and mass_numb_from_arg is not None:
@@ -379,11 +410,14 @@ def _parse_and_check_atomic_input(
             raise InvalidParticleError(
                 "The mass number extracted from the particle string "
                 f"'{argument}' is inconsistent with the keyword mass_numb = "
-                f"{mass_numb}.")
+                f"{mass_numb}."
+            )
         else:
-            warnings.warn("Redundant mass number information for particle "
-                          f"'{argument}' with mass_numb = {mass_numb}.",
-                          AtomicWarning)
+            warnings.warn(
+                "Redundant mass number information for particle "
+                f"'{argument}' with mass_numb = {mass_numb}.",
+                ParticleWarning,
+            )
 
     if mass_numb_from_arg is not None:
         mass_numb = mass_numb_from_arg
@@ -392,23 +426,31 @@ def _parse_and_check_atomic_input(
         if Z != Z_from_arg:
             raise InvalidParticleError(
                 "The integer charge extracted from the particle string "
-                f"'{argument}' is inconsistent with the keyword Z = {Z}.")
+                f"'{argument}' is inconsistent with the keyword Z = {Z}."
+            )
         else:
-            warnings.warn("Redundant charge information for particle "
-                          f"'{argument}' with Z = {Z}.", AtomicWarning)
+            warnings.warn(
+                "Redundant charge information for particle "
+                f"'{argument}' with Z = {Z}.",
+                ParticleWarning,
+            )
 
     if Z_from_arg is not None:
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _Elements[element]['atomic number']:
+        if Z > _elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The integer charge Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {_Elements[element]['atomic number']}.")
+                f"of {element}, which is {_elements[element]['atomic number']}."
+            )
         elif Z <= -3:
-            warnings.warn(f"Particle '{argument}' has an integer charge "
-                          f"of Z = {Z}, which is unlikely to occur in "
-                          f"nature.", AtomicWarning)
+            warnings.warn(
+                f"Particle '{argument}' has an integer charge "
+                f"of Z = {Z}, which is unlikely to occur in "
+                f"nature.",
+                ParticleWarning,
+            )
 
     isotope = _reconstruct_isotope_symbol(element, mass_numb)
     ion = _reconstruct_ion_symbol(element, isotope, Z)
@@ -421,29 +463,12 @@ def _parse_and_check_atomic_input(
         symbol = element
 
     nomenclature_dict = {
-        'particle': symbol,
-        'element': element,
-        'isotope': isotope,
-        'ion': ion,
-        'mass number': mass_numb,
-        'integer charge': Z,
+        "symbol": symbol,
+        "element": element,
+        "isotope": isotope,
+        "ion": ion,
+        "mass number": mass_numb,
+        "integer charge": Z,
     }
 
     return nomenclature_dict
-
-
-def _particle_call_string(arg: Union[str, Integral], kwargs: Optional[Dict] = None) -> str:
-    """
-    Return a `str` that recreates the call to create a particular
-    `~plasmapy.particles.Particle` instance from the input.
-    """
-    if kwargs is None:
-        kwargs = {}
-
-    return call_string(Particle, arg, kwargs)
-
-#    if kwargs != {}:
-#        keyword_string = ", " + str(kwargs).strip(r"}{'").replace("'", "").replace(":", " =")
-#    else:
-#        keyword_string = ""
-#    return f"Particle({repr(arg)}{keyword_string})"

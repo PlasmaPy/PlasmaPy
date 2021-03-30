@@ -3,15 +3,15 @@ Various decorators to validate input/output arguments to functions.
 """
 __all__ = ["validate_quantities", "ValidateQuantities"]
 
+import astropy.units as u
 import functools
 import inspect
 import warnings
 
-from astropy import units as u
-from plasmapy.utils.decorators.checks import CheckValues, CheckUnits
-from plasmapy.utils.decorators.helpers import preserve_signature
-from plasmapy.utils.exceptions import ImplicitUnitConversionWarning
 from typing import Any, Dict
+
+from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
+from plasmapy.utils.decorators.helpers import preserve_signature
 
 
 class ValidateQuantities(CheckUnits, CheckValues):
@@ -57,6 +57,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
@@ -365,15 +366,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
             and not arg_validations["pass_equivalent_units"]
         ):
 
-            if not arg.unit.is_equivalent(unit, equivalencies=None):
-                # non-standard conversion
-                warnings.warn(
-                    ImplicitUnitConversionWarning(
-                        f"{err_msg} has a non-standard unit conversion..."
-                        f"converting {arg.unit} to {unit}"
-                    )
-                )
-
             arg = arg.to(unit, equivalencies=equiv)
         elif err is not None:
             raise err
@@ -438,6 +430,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes

@@ -32,7 +32,7 @@ Overview
 Pull requests that create or change functionality must include tests
 and documentation before being merged.
 
-PlasmaPy uses **`pytest <https://docs.pytest.org>`_** for software
+PlasmaPy uses `pytest <https://docs.pytest.org>`_ for software
 testing.  The test suite may be run locally or automatically via pull
 requests on `GitHub <https://github.com/>`_.  PlasmaPy undergoes
 continuous integration testing of the code base by `Travis CI

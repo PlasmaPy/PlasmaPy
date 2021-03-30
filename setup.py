@@ -1,8 +1,13 @@
 #!/usr/bin/env python
-from itertools import chain
+# https://github.com/pypa/pip/issues/7953#issuecomment-645133255
+import site
+import sys
 
+from itertools import chain
 from setuptools import setup
 from setuptools.config import read_configuration
+
+site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
 ################################################################################
 # Programmatically generate some extras combos.

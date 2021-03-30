@@ -77,6 +77,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+notebooks_for_proto
 
 # pyenv
 .python-version
@@ -100,6 +101,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# VS code project settings
+.vscode
 
 # mkdocs documentation
 /site
@@ -128,3 +132,5 @@ auto_examples
 
 # Version file
 plasmapy/version.py
+tags
+docs/notebooks/*.md

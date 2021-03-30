@@ -1,14 +1,16 @@
 """
-Create a dictionary containing basic information for isotopes and
-neutrons.
-"""
+Module for loading isotope data from :file:`plasmapy/particles/data/isotopes.json`.
 
+.. attention::
+    This module is not part of PlasmaPy's public API.
+"""
+__all__ = []
+
+import astropy.units as u
 import json
 import pkgutil
-import astropy.units as u
 
-
-# this code was used to create the JSON file as per vn-ki on Riot:
+# this code was used to create the JSON file as per vn-ki on Matrix:
 # https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org/
 #    $1554667515670438wIKlP:matrix.org?via=matrix.org&via=cadair.com
 #
@@ -23,11 +25,14 @@ import astropy.units as u
 
 
 def _isotope_obj_hook(obj):
+    """Provide an `object_hook` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
 
 
-_Isotopes = json.loads(
-    pkgutil.get_data("plasmapy", "data/isotopes.json"), object_hook=_isotope_obj_hook
+#: Dictionary of isotope data.
+_isotopes = json.loads(
+    pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
+    object_hook=_isotope_obj_hook,
 )

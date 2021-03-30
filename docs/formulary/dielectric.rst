@@ -9,7 +9,7 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
 .. automodapi:: plasmapy.formulary.dielectric
    :no-heading:
 
-.. topic:: Examples:
+.. nbgallery::
+    :caption: Examples
 
-   * :ref:`sphx_glr_auto_examples_plot_cold_plasma_tensor_elements.py`
-
+    /notebooks/cold_plasma_tensor_elements

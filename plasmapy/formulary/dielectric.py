@@ -9,9 +9,9 @@ import numpy as np
 
 from astropy import units as u
 from collections import namedtuple
-from numpy import pi
+
+from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.formulary import parameters
-from plasmapy.formulary.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.utils.decorators import validate_quantities
 
 r"""
@@ -27,63 +27,64 @@ RotatingTensorElements = namedtuple(
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
-    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Magnetized cold plasma dielectric permittivity tensor elements.
 
-    Elements (S, D, P) are given in the "Stix" frame, ie. with B // z.
+    Elements (S, D, P) are given in the "Stix" frame, i.e. with
+    :math:`B ∥ \hat{z}`\ .
 
-    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+    The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : list of str
-        List of the plasma particle species
-        e.g.: ['e', 'D+'] or ['e', 'D+', 'He+'].
+    species : `list` of `str`
+        List of the plasma particle species,
+        e.g.: ``['e', 'D+']`` or ``['e', 'D+', 'He+']``.
 
-    n : list of ~astropy.units.Quantity
+    n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter
         The order of the species densities should follow species.
 
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         Electromagnetic wave frequency in rad/s.
 
     Returns
     -------
-    sum : ~astropy.units.Quantity
+    sum : `~astropy.units.Quantity`
         S ("Sum") dielectric tensor element.
 
-    difference : ~astropy.units.Quantity
+    difference : `~astropy.units.Quantity`
         D ("Difference") dielectric tensor element.
 
-    plasma : ~astropy.units.Quantity
+    plasma : `~astropy.units.Quantity`
         P ("Plasma") dielectric tensor element.
 
     Notes
     -----
     The dielectric permittivity tensor is expressed in the Stix frame with
-    the :math:`\exp(-i \omega t)` time-harmonic convention as
-    :math:`\varepsilon = \varepsilon_0 A`, with :math:`A` being
+    the :math:`\exp(-i ω t)` time-harmonic convention as
+    :math:`ε = ε_0 A`, with :math:`A` being
 
     .. math::
 
-        \varepsilon = \varepsilon_0 \left(\begin{matrix}  S & -i D & 0 \\
+        ε = ε_0 \left(\begin{matrix}  S & -i D & 0 \\
                               +i D & S & 0 \\
                               0 & 0 & P \end{matrix}\right)
 
     where:
 
     .. math::
-        S = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+        S = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2 - Ω_{c,s}^2}
 
-        D = \sum_s \frac{\Omega_{c,s}}{\omega}
-            \frac{\omega_{p,s}^2}{\omega^2 - \Omega_{c,s}^2}
+        D = \sum_s \frac{Ω_{c,s}}{ω}
+            \frac{ω_{p,s}^2}{ω^2 - Ω_{c,s}^2}
 
-        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+        P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
-    where :math:`\omega_{p,s}` is the plasma frequency and
-    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    where :math:`ω_{p,s}` is the plasma frequency and
+    :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
     References
@@ -114,48 +115,48 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
         omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
-        S += -omega_p ** 2 / (omega ** 2 - omega_c ** 2)
+        S += -(omega_p ** 2) / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
-        P += -omega_p ** 2 / omega ** 2
+        P += -(omega_p ** 2) / omega ** 2
     return StixTensorElements(S, D, P)
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     r"""
-    Magnetized Cold Plasma Dielectric Permittivity Tensor Elements.
+    Magnetized cold plasma dielectric permittivity tensor elements.
 
-    Elements (L, R, P) are given in the "rotating" basis, ie. in the basis
+    Elements (L, R, P) are given in the "rotating" basis, i.e. in the basis
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`,
-    where the tensor is diagonal and with B // z.
+    where the tensor is diagonal and with :math:`B ∥ z`\ .
 
-    The :math:`\exp(-i \omega t)` time-harmonic convention is assumed.
+    The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
     Parameters
     ----------
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : list of str
-        The plasma particle species (e.g.: `['e', 'D+']` or
-        `['e', 'D+', 'He+']`.
+    species : `list` of `str`
+        The plasma particle species (e.g.: ``['e', 'D+']`` or
+        ``['e', 'D+', 'He+']``.
 
-    n : list of ~astropy.units.Quantity
+    n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter.
         The order of the species densities should follow species.
 
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         Electromagnetic wave frequency in rad/s.
 
     Returns
     -------
-    left : ~astropy.units.Quantity
+    left : `~astropy.units.Quantity`
         L ("Left") Left-handed circularly polarization tensor element.
 
-    right : ~astropy.units.Quantity
+    right : `~astropy.units.Quantity`
         R ("Right") Right-handed circularly polarization tensor element.
 
-    plasma : ~astropy.units.Quantity
+    plasma : `~astropy.units.Quantity`
         P ("Plasma") dielectric tensor element.
 
     Notes
@@ -167,15 +168,15 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     .. math::
         L = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega\left(\omega - \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω - Ω_{c,s}\right)}
 
         R = 1 - \sum_s
-                \frac{\omega_{p,s}^2}{\omega\left(\omega + \Omega_{c,s}\right)}
+                \frac{ω_{p,s}^2}{ω\left(ω + Ω_{c,s}\right)}
 
-        P = 1 - \sum_s \frac{\omega_{p,s}^2}{\omega^2}
+        P = 1 - \sum_s \frac{ω_{p,s}^2}{ω^2}
 
-    where :math:`\omega_{p,s}` is the plasma frequency and
-    :math:`\Omega_{c,s}` is the signed version of the cyclotron frequency
+    where :math:`ω_{p,s}` is the plasma frequency and
+    :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
 
     References
@@ -206,9 +207,9 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
         omega_p = parameters.plasma_frequency(n=n_s, particle=s)
 
-        L += -omega_p ** 2 / (omega * (omega - omega_c))
-        R += -omega_p ** 2 / (omega * (omega + omega_c))
-        P += -omega_p ** 2 / omega ** 2
+        L += -(omega_p ** 2) / (omega * (omega - omega_c))
+        R += -(omega_p ** 2) / (omega * (omega + omega_c))
+        P += -(omega_p ** 2) / omega ** 2
     return RotatingTensorElements(L, R, P)
 
 
@@ -224,41 +225,42 @@ def permittivity_1D_Maxwellian(
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    The classical dielectric permittivity for a 1D Maxwellian plasma. This
-    function can calculate both the ion and electron permittivities. No
-    additional effects are considered (e.g. magnetic fields, relativistic
-    effects, strongly coupled regime, etc.)
+    Compute the classical dielectric permittivity for a 1D Maxwellian plasma.
+
+    This function can calculate both the ion and electron permittivities.
+    No additional effects are considered (e.g. magnetic fields, relativistic
+    effects, strongly coupled regime, etc.).
 
     Parameters
     ----------
-    omega : ~astropy.units.Quantity
+    omega : `~astropy.units.Quantity`
         The frequency in rad/s of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : ~astropy.units.Quantity
+    kWave : `~astropy.units.Quantity`
         The corresponding wavenumber, in rad/m, of the electromagnetic wave
         propagating through the plasma. This is often modulated by the
         dispersion of the plasma or by relativistic effects. See em_wave.py
         for ways to calculate this.
 
-    T : ~astropy.units.Quantity
-        The plasma temperature - this can be either the electron or the ion
+    T : `~astropy.units.Quantity`
+        The plasma temperature — this can be either the electron or the ion
         temperature, but should be consistent with density and particle.
 
-    n : ~astropy.units.Quantity
-        The plasma density - this can be either the electron or the ion
+    n : `~astropy.units.Quantity`
+        The plasma density — this can be either the electron or the ion
         density, but should be consistent with temperature and particle.
 
-    particle : str
+    particle : `str`
         The plasma particle species.
 
-    z_mean : str
+    z_mean : `str`
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 
     Returns
     -------
-    chi : ~astropy.units.Quantity
+    chi : `~astropy.units.Quantity`
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
@@ -268,26 +270,26 @@ def permittivity_1D_Maxwellian(
     by the following equations [1]_
 
     .. math::
-        \chi_e(k, \omega) = - \frac{\alpha_e^2}{2} Z'(x_e)
+        χ_e(k, ω) = - \frac{α_e^2}{2} Z'(x_e)
 
-        \chi_i(k, \omega) = - \frac{\alpha_i^2}{2}\frac{Z}{} Z'(x_i)
+        χ_i(k, ω) = - \frac{α_i^2}{2}\frac{Z}{} Z'(x_i)
 
-        \alpha = \frac{\omega_p}{k v_{Th}}
+        α = \frac{ω_p}{k v_{Th}}
 
-        x = \frac{\omega}{k v_{Th}}
+        x = \frac{ω}{k v_{Th}}
 
-    :math:`chi_e` and :math:`chi_i` are the electron and ion permittivities
+    :math:`χ_e` and :math:`χ_i` are the electron and ion permittivities,
     respectively. :math:`Z'` is the derivative of the plasma dispersion
-    function. :math:`\alpha` is the scattering parameter which delineates
+    function. :math:`α` is the scattering parameter which delineates
     the difference between the collective and non-collective Thomson
     scattering regimes. :math:`x` is the dimensionless phase velocity
-    of the EM wave propagating through the plasma.
+    of the electromagnetic wave propagating through the plasma.
 
     References
     ----------
     .. [1] J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
        Plasma scattering of electromagnetic radiation: theory and measurement
-       techniques. Chapter 5 Pg 106 (Academic press, 2010).
+       techniques. Chapter 5 Pg 106 (Academic Press, 2010).
 
     Example
     -------

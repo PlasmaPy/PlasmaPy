@@ -5,8 +5,8 @@ Authors and Credits
 PlasmaPy Coordinating Committee
 ===============================
 
-* Drew Leonard
-* Nick Murphy
+* Erik Everson
+* Nicholas Murphy
 * Tulasi Parashar
 * Dominik Stańczak
 
@@ -27,8 +27,10 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Justin Bergeron <https://github.com/Justin-Bergeron>`__
 * `Ludovico Bessi <https://github.com/ludoro>`__
 * `BH4 <https://github.com/BH4>`__
+* `Khalil Bryant <https://github.com/KhalilBryant>`__
 * `Sean Carroll <https://github.com/seanwilliamcarroll>`__
 * `Sean Chambers <https://github.com/schambers>`__
+* `Ankur Chattopadhyay <https://github.com/chttrjeankr>`__
 * `Apoorv Choubey <https://github.com/apooravc>`__
 * `cclauss <https://github.com/cclauss>`__
 * `Jacob Deal <https://github.com/Jac0bDeal>`__
@@ -42,6 +44,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
 * `Colby Haggerty <https://github.com/colbych>`__
+* `Peter Heuer <https://github.com/pheuer>`__ (`0000-0001-5050-6606 <https://orcid.org/0000-0001-5050-6606>`__)
 * `Julien Hillairet <https://github.com/jhillairet>`__ (`0000-0002-1073-6383 <https://orcid.org/0000-0002-1073-6383>`__)
 * `Poh Zi How <https://github.com/pohzipohzi>`__
 * `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
@@ -66,27 +69,38 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Roberto Díaz Pérez <https://github.com/RobertTnf>`__
 * `Jakub Polak <https://github.com/Ishinomori>`__
 * `Raajit Raj <https://github.com/raajitr>`__
+* `Vishwas Rajashekar <https://github.com/DarkAEther>`__ (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
 * `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
 * `Chengcai Shen <https://github.com/ionizationcalc>`__ (`0000-0002-9258-4490 <https://orcid.org/0000-0002-9258-4490>`__)
 * `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
 * `Angad Singh <https://github.com/singha95>`__
 * `Ankit Singh <https://github.com/Griffintaur>`__
-* `Brigitta Sipocz <http://github.com/bsipocz>`__
+* `Brigitta Sipőcz <http://github.com/bsipocz>`__
 * `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
 * `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
 * `Antoine Tavant <https://github.com/antoinelpp>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Thomas Varnish <https://github.com/tvarnish>`__
+* `Anthony Vo <https://github.com/anthony-vo>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
+* `Cody Skinner <https://github.com/wskinner74>`__
+* `Ramiz Qudsi <https://github.com/ahmadryan>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
+* `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
+* `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
+* `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
+* `David Drozdov <https://github.com/davemus>`__
+* `Dhawal Modi <https://github.com/Dhawal-Modi>`__
+
+
 
 This list contains contributors to PlasmaPy's core package and vision
 statement, including a few people who do not show up as `PlasmaPy
 contributors on GitHub
-<https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__. If you
-made a contribution that was merged and your name is missing from the
-list, your information is incorrect, or you do not wish to be listed,
-then please submit a pull request or email ``namurphy@cfa.harvard.edu``.
+<https://github.com/PlasmaPy/PlasmaPy/graphs/contributors>`__.  If you made
+a contribution to PlasmaPy that was merged and your name is missing from the
+list, your information is incorrect, or you do not wish to be listed, then
+please submit a pull request.
 
 Other Credits
 =============
@@ -94,7 +108,8 @@ Other Credits
 The PlasmaPy Community thanks the SunPy and Astropy communities for
 inspiring this project in the first place, providing much helpful
 advice, and showing examples of how to build a community-wide open
-source scientific software package.
+source scientific software package.  The PlasmaPy Community also thanks
+the Python in Heliophysics Community.
 
 Acknowledgements
 ================
@@ -103,14 +118,15 @@ Early development on PlasmaPy was partially supported by the U.S.
 Department of Energy through grant DE-SC0016363 that was funded
 through the NSF-DOE Partnership on Basic Plasma Science and
 Engineering; a Scholarly Studies grant awarded by the Smithsonian
-Institution; and Google Summer of Code.  PlasmaPy is being developed
-with support from the U.S. National Science Foundation through
-grants 1931388, 1931393, 1931429, and 1931435 that were awarded
+Institution; Google Summer of Code; and NASA Heliophysics Data
+Environment Enhancements (HDEE) grant 80NSSC20K0174.  PlasmaPy is
+being developed with support from the U.S. National Science Foundation
+through grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
 <http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
-Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program and
-NASA Heliophysics Data Environment Enhancements (HDEE) grant 80NSSC20K0174.
-Any opinions, findings, and conclusions or recommendations expressed
+Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
+
+All opinions, findings, conclusions, and recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of any of the funding agencies or organizations that
 have supported PlasmaPy development.

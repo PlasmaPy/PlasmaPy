@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.particles.special_particles import ParticleZoo, _Particles
+from plasmapy.particles.special_particles import _Particles, ParticleZoo
 
 particle_antiparticle_pairs = [
     ("e-", "e+"),
@@ -50,9 +50,7 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
     if particle not in ["e-", "n"]:
         assert _Particles[particle]["name"] == _Particles[antiparticle]["name"].replace(
             "anti", ""
-        ), (
-            f"{particle} and {antiparticle} do not have same name except for 'anti'."
-        )
+        ), f"{particle} and {antiparticle} do not have same name except for 'anti'."
 
 
 required_keys = [

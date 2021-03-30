@@ -5,7 +5,10 @@ try:
 except ImportError:
     pass
 else:
-    matplotlib.use("Agg")
+    import os
+
+    if "PLASMAPY_PLOT_TESTS" not in os.environ:
+        matplotlib.use("Agg")
 
 # coverage : ignore
 def pytest_configure(config):

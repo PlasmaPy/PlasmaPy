@@ -1,0 +1,55 @@
+/* -----------------------------------------------------------------------------
+ * RTD Overrides
+ */
+
+/* Style for toctree in a table */
+td .toctree-wrapper ul {
+    margin-bottom: 0 !important;
+    line-height: 18px !important;
+    list-style: none !important;
+    font-size: 16px;
+}
+
+td .toctree-wrapper ul li {
+    list-style: none !important;
+    margin-left: 0 !important;
+}
+
+/* Unordered list nested in ordered list */
+.section li ul {
+    margin-bottom: 12px !important;
+}
+
+/* -----------------------------------------------------------------------------
+ * RTD layout styling additions
+ */
+
+/* Style for module/index links in sidebar below the search field. */
+div.pkgnav {
+    text-align: center;
+    font-size: 1em;
+    color: white;
+    margin-top: 12px;
+}
+
+div.pkgnav ul {
+    /*margin: 3px 0px;*/
+    list-style: none;
+}
+
+div.pkgnav ul li {
+    display: inline;
+}
+
+div.pkgnav ul li a {
+    margin: 0;
+    /*padding: 0 5px 0 5px;*/
+    /*line-height: 1.75em;*/
+    color: #f9f9f0;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+div.pkgnav ul li a:hover {
+    color: white;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}

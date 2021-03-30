@@ -65,7 +65,7 @@ familiar with git by going through these tutorials or a `Software
 Carpentry <https://software-carpentry.org/>`_ workshop prior to making
 code contributions. Do note that you can usually find help in the
 `PlasmaPy Matrix
-chatroom <https://riot.im/app/#/room/#plasmapy:matrix.org>`_.
+chatroom <https://app.element.io/#/room/#plasmapy:matrix.org>`_.
 
 For actual guidelines for working on PlasmaPy, please see our
 :ref:`plasmapy-development-guide`.

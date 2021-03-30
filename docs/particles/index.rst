@@ -23,6 +23,7 @@ Submodules
    particle_class
    functional
    nuclear
+   ionization_states
    decorators
 
 See Also
@@ -38,3 +39,5 @@ Reference/API
 .. automodapi:: plasmapy.particles
    :no-heading:
    :no-main-docstr:
+   :inherited-members:
+   :include-all-objects:

@@ -1,31 +1,35 @@
-"""Functions to calculate classical transport coefficients.
+r"""
+Functions to calculate classical transport coefficients.
 
-.. topic:: Examples:
+.. nbgallery::
 
-   * :ref:`sphx_glr_auto_examples_plot_braginskii.py`
+    /notebooks/formulary/braginskii
 
 Introduction
 ============
 
-Classical transport theory is derived by using kinetic theory to close the
-plasma two-fluid (electron and ion fluid) equations in the collisional limit.
-The first complete model in this form was done by S. I. Braginskii [1]_.
+Classical transport theory is derived by using kinetic theory to close
+the plasma two-fluid (electron and ion fluid) equations in the
+collisional limit. The first complete model in this form was done by
+S. I. Braginskii [1]_.
 
 This module uses fitting functions from literature ([1]_, [2]_, [3]_, [4]_,
-[5]_ and the next section) to calculate the transport coefficients, which are
-the resistivity, thermoelectric conductivity, thermal conductivity, and
-viscosity.
+[5]_ and the next section) to calculate the transport coefficients, which
+are the resistivity, thermoelectric conductivity, thermal conductivity,
+and viscosity.
 
 Keep in mind the following assumptions under which the transport equations
 are derived:
 
 1. The plasma is fully ionized, only consisting of ions and electrons.
    Neutral atoms are neglected.
-2. Turbulent transport does not dominate
+2. Turbulent transport does not dominate.
 3. The velocity distribution is close to Maxwellian. This implies:
-    i. Collisional mean free path << gradient scale length along field
-    ii. Gyroradius << gradient scale length perpendicular to field
-4. The plasma is highly collisional: collisional frequency >> gyrofrequency
+
+    a) Collisional mean free path ≪ gradient scale length along field.
+    b) Gyroradius ≪ gradient scale length perpendicular to field.
+
+4. The plasma is highly collisional: collisional frequency ≫ gyrofrequency.
 
 When classical transport is not valid, e.g. due to the presence of strong
 gradients or turbulent transport, the transport is significantly increased
@@ -60,8 +64,7 @@ in the Functions section).
 
 .. warning::
 
-    Please note that as PlasmaPy is a very new package, this API should not be
-    considered stable yet.
+    The API for this package is not yet stable.
 
 Classical transport models
 ==========================
@@ -74,7 +77,7 @@ Braginskii [1]_
 The original Braginskii treatment as presented in the highly cited review
 paper from 1965. Coefficients are found from expansion of the kinetic
 equation in Laguerre polynomials, truncated at the second term in their
-series expansion (k = 2). This theory allows for arbitrary Hall parameter
+series expansion (\ :math:`k = 2`\ ). This theory allows for arbitrary Hall parameter
 and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
 gas completely stripped of electrons, and the stationary ion approximation).
 
@@ -99,12 +102,12 @@ Ji-Held [5]_
 
 This is a modern treatment of the classical transport problem that has been
 carried out with laudable care. It allows for arbitrary hall parameter and
-arbitrary Z for all coefficients. Similar to the Epperlein-Haines model,
+arbitrary :math:`Z` for all coefficients. Similar to the Epperlein-Haines model,
 it corrects some known inaccuracies in the original Braginskii results,
-notably the asymptotic behavior of alpha-cross and beta_perp as Hall ->
+notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 +infinity. It also studies effects of electron collisions in the ion
 terms, which all other treatments have not. To neglect electron-electron
-collisions, leave mu = 0. To consider them, specify mu and theta.
+collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 
 References
 ==========
@@ -135,15 +138,16 @@ import numpy as np
 import warnings
 
 from astropy import units as u
-from astropy.constants.si import e, m_e, k_B
+from astropy.constants.si import e, k_B, m_e
+
 from plasmapy import particles, utils
-from plasmapy.particles.atomic import _is_electron
-from plasmapy.formulary.parameters import Hall_parameter, _grab_charge
 from plasmapy.formulary.collisions import (
+    Coulomb_logarithm,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
-    Coulomb_logarithm,
 )
+from plasmapy.formulary.parameters import _grab_charge, Hall_parameter
+from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
 
@@ -162,19 +166,19 @@ class ClassicalTransport:
 
     Parameters
     ----------
-    T_e : ~astropy.units.Quantity
-        Electron temperature in units of temperature or energy per particle
+    T_e : `~astropy.units.Quantity`
+        Electron temperature in units of temperature or energy per particle.
 
-    n_e : ~astropy.units.Quantity
+    n_e : `~astropy.units.Quantity`
         The electron number density in units convertible to per cubic meter.
 
-    T_i : ~astropy.units.Quantity
-        Ion temperature in units of temperature or energy per particle
+    T_i : `~astropy.units.Quantity`
+        Ion temperature in units of temperature or energy per particle.
 
-    n_i : ~astropy.units.Quantity
+    n_i : `~astropy.units.Quantity`
         The ion number density in units convertible to per cubic meter.
 
-    ion : string
+    ion : `str`
         Representation of the ion species (e.g., 'p' for protons,
         'e' for electrons, 'D+' for deuterium, or 'He-4 +1' for singly
         ionized helium-4). If no charge state information is provided,
@@ -188,11 +192,11 @@ class ClassicalTransport:
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 
-    B : ~astropy.units.Quantity, optional
+    B : `~astropy.units.Quantity`, optional
         The magnetic field strength in units convertible to tesla. Defaults
         to zero.
 
-    model: string
+    model: `str`
         Indication of whose formulation from literature to use. Allowed values are:
 
         * 'Braginskii',
@@ -202,62 +206,72 @@ class ClassicalTransport:
 
         See refs [1]_, [2]_, [3]_, [4]_ and [5]_.
 
-    field_orientation : string, defaults to `parallel`
-        Either of 'parallel', 'par', 'perpendicular', 'perp', 'cross', or
-        'all', indicating the cardinal orientation of the magnetic field with
-        respect to the transport direction of interest. Note that 'perp' refers
+    field_orientation : `str`, defaults to ``'parallel'``
+        Either of ``'parallel'``, ``'par'``, ``'perpendicular'``, ``'perp'``, ``'cross'``, or
+        ``'all'``, indicating the cardinal orientation of the magnetic field with
+        respect to the transport direction of interest. Note that ``'perp'`` refers
         to transport perpendicular to the field direction (in the direction of
-        the temperature gradient), while 'cross' refers to the direction
+        the temperature gradient), while ``'cross'`` refers to the direction
         perpendicular to B and the gradient of temperature
-        (:math:`B \times \nabla(T)`). The option 'all' will return a Numpy array
-        of all three, `np.array((par, perp, cross))`. Does not apply to viscosities.
+        (:math:`B × ∇T`\ ). The option ``'all'`` will return a `numpy.array`
+        of all three, ``np.array((par, perp, cross))``. Does not apply to viscosities.
 
-    coulomb_log_ei: float or dimensionless `~astropy.units.Quantity`, optional
+    coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
-    V_ei: ~astropy.units.Quantity, optional
+    V_ei : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to `Coulomb_logarithm`
        function, not otherwise used.  If not provided, thermal velocity is
-       assumed: :math:`\mu V^2 \sim 2 k_B T` where `mu` is the reduced mass.
+       assumed: :math:`μ V^2 \sim 2 k_B T` where :math:`μ` is the reduced mass.
 
-    coulomb_log_ii: float or dimensionless `~astropy.units.Quantity`, optional
+    coulomb_log_ii : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
         `Coulomb_logarithm` will be used. Useful for comparing calculations.
 
-    V_ii: ~astropy.units.Quantity, optional
-
+    V_ii : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
        `Coulomb_logarithm` function, not otherwise used. If not provided,
-       thermal velocity is assumed: :math:`\mu V^2 \sim 2 k_B T`
-       where `mu` is the reduced mass.
+       thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
+       where :math`μ` is the reduced mass.
 
-    hall_e: float or dimensionless `~astropy.units.Quantity`, optional
+    hall_e : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing calculations.
 
-    hall_i: float or dimensionless `~astropy.units.Quantity`, optional
+    hall_i : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
         `None`, `Hall_parameter` will be used. Useful for comparing
         calculations.
 
-    mu: optional, float or dimensionless `astropy.units.Quantity`
+    mu : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
         on the ion transport coefficients. Defaults to zero, thus
         disabling these effects.
 
-    theta: optional, float or dimensionless `~astropy.units.Quantity`
+    theta : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
-        on the ion transport coefficients. Defaults to T_e / T_i. Only
-        has effect if mu is non-zero.
+        on the ion transport coefficients. Defaults to :math:`T_e / T_i`\ .
+        Only has effect if ``mu`` is non-zero.
+
+    coulomb_log_method : `str`, optional
+        The method by which to compute the Coulomb logarithm.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Raises
     ------
-    ValueError
+    `ValueError`
         On incorrect or unknown values of arguments.
-    plasmapy.utils.PhysicsError
+
+    `~plasmapy.utils.exceptions.PhysicsError`
         If input or calculated values for Coulomb logarithms are nonphysical.
 
     Examples
@@ -335,9 +349,7 @@ class ClassicalTransport:
         valid_fields = ["parallel", "par", "perpendicular", "perp", "cross", "all"]
         is_valid_field = self.field_orientation in valid_fields
         if not is_valid_field:
-            raise ValueError(
-                f"Unknown field orientation " f"'{self.field_orientation}'"
-            )
+            raise ValueError(f"Unknown field orientation '{self.field_orientation}'")
 
         # values and units have already been checked by decorator
         self.T_e = T_e
@@ -351,7 +363,7 @@ class ClassicalTransport:
                 self.m_i = particles.particle_mass(ion)
             except Exception:
                 raise ValueError(
-                    f"Unable to find mass of particle: " f"{ion} in ClassicalTransport"
+                    f"Unable to find mass of particle: {ion} in ClassicalTransport"
                 )
         else:
             self.m_i = m_i
@@ -448,18 +460,28 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def resistivity(self) -> u.Ohm * u.m:
-        """
+        r"""
         Calculate the resistivity.
+
+        The resistivity (:math:`α`) of a plasma is defined by
+
+        .. math::
+            α = \frac{\hat{α}}{n_e e^2 \frac{τ_e}{m_e}}
+
+        where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
+        :math:`n_e` is the electron number density of the plasma,
+        :math:`e` is Euler's number,
+        :math:`τ_e` is the fundamental electron collision period of the plasma,
+        and :math:`m_e` is the mass of an electron.
 
         Notes
         -----
-
         The resistivity here is defined similarly to solid conductors, and thus
         represents the classical plasmas' property to resist the flow of
-        electrical current. The result is in units of ohm * m, so if you
+        electrical current. The result is in units of ohm meters, so if you
         assume where the current is flowing in the plasma (length and
         cross-sectional area), you could calculate a DC resistance of the
-        plasma in ohms as resistivity * length / cross-sectional area.
+        plasma in ohms as resistivity × length / cross-sectional area.
 
         Experimentalists with plasma discharges may observe different V = IR
         Ohm's law behavior than suggested by the resistance calculated here,
@@ -468,7 +490,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         """
         alpha_hat = _nondim_resistivity(
@@ -483,8 +505,11 @@ class ClassicalTransport:
 
     @property
     def thermoelectric_conductivity(self):
-        """
+        r"""
         Calculate the thermoelectric conductivity.
+
+        .. todo::
+            The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
 
         Notes
         -----
@@ -492,7 +517,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
         """
         beta_hat = _nondim_te_conductivity(
@@ -503,8 +528,20 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
-        """
+        r"""
         Calculate the thermal conductivity for ions.
+
+        The ion thermal conductivity (:math:`κ`) of a plasma is defined by
+
+        .. math::
+            κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
+
+        where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
+        :math:`n_i` is the ion number density of the plasma,
+        :math:`k_B` is the Boltzmann constant,
+        :math:`T_i` is the ion temperature of the plasma,
+        :math:`τ_i` is the fundamental ion collision period of the plasma,
+        and :math:`m_i` is the mass of an ion of the plasma.
 
         Notes
         -----
@@ -512,16 +549,16 @@ class ClassicalTransport:
         defined similarly to other materials. The result is a conductivity in
         units of W / m / K, so if you assume you know where the heat is flowing
         (temperature gradient, cross-sectional area) you can calculate the
-        energy transport in Watts as conductivity * cross-sectional area *
+        energy transport in watts as conductivity × cross-sectional area ×
         temperature gradient. In lab plasmas, typically the energy is flowing
         out of your high-temperature plasma to something else, like the walls
         of your device, and you are sad about this.
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_thermal_conductivity
 
@@ -544,8 +581,20 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
-        """
+        r"""
         Calculate the thermal conductivity for electrons.
+
+        The electron thermal conductivity (:math:`κ`) of a plasma is defined by
+
+        .. math::
+            κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
+
+        where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
+        :math:`n_e` is the electron number density of the plasma,
+        :math:`k_B` is the Boltzmann constant,
+        :math:`T_e` is the electron temperature of the plasma,
+        :math:`τ_e` is the fundamental electron collision period of the plasma,
+        and :math:`m_e` is the mass of an electron.
 
         Notes
         -----
@@ -572,9 +621,9 @@ class ClassicalTransport:
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_thermal_conductivity
 
@@ -597,22 +646,25 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_viscosity(self) -> u.Pa * u.s:
-        """
+        r"""
         Calculate the ion viscosity.
+
+        .. todo::
+            The ion viscosity (:math:`\eta`) of a plasma is defined by...
 
         Notes
         -----
         This is the dynamic viscosity that you find for ions in the classical
         plasma, similar to the viscosity of air or water or honey. The big
-        effect is the T^5/2 dependence, so as classical plasmas get hotter they
+        effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
         become dramatically more viscous. The ion viscosity typically dominates
         over the electron viscosity.
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         electron_viscosity
 
@@ -642,22 +694,25 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_viscosity(self) -> u.Pa * u.s:
-        """
+        r"""
         Calculate the electron viscosity.
+
+        .. todo::
+            The electron viscosity (:math:`\eta`) of a plasma is defined by...
 
         Notes
         -----
         This is the dynamic viscosity that you find for electrons in the
         classical plasma, similar to the viscosity of air or water or honey.
-        The big effect is the T^5/2 dependence, so as classical plasmas get
+        The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
         hotter they become dramatically more viscous. The ion viscosity
         typically dominates over the electron viscosity.
 
         Returns
         -------
-        astropy.units.quantity.Quantity
+        `~astropy.units.quantity.Quantity`
 
-        See also
+        See Also
         --------
         ion_viscosity
 
@@ -744,18 +799,29 @@ def resistivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Ohm * u.m:
-    """
+    r"""
     Calculate the resistivity.
+
+    The resistivity (:math:`α`) of a plasma is defined by
+
+    .. math::
+
+        α = \frac{\hat{α}}{n_e e^2 \frac{τ_e}{m_e}}
+
+    where :math:`\hat{α}` is the non-dimensional resistivity of the plasma,
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`e` is Euler's number,
+    :math:`τ_e` is the fundamental electron collision period of the plasma,
+    and :math:`m_e` is the mass of an electron.
 
     Notes
     -----
-
     The resistivity here is defined similarly to solid conductors, and thus
     represents the classical plasmas' property to resist the flow of
-    electrical current. The result is in units of ohm * m, so if you
+    electrical current. The result is in units of ohm meters, so if you
     assume where the current is flowing in the plasma (length and
     cross-sectional area), you could calculate a DC resistance of the
-    plasma in ohms as resistivity * length / cross-sectional area.
+    plasma in ohms as resistivity × length / cross-sectional area.
 
     Experimentalists with plasma discharges may observe different V = IR
     Ohm's law behavior than suggested by the resistance calculated here,
@@ -764,7 +830,7 @@ def resistivity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
     """
     ct = ClassicalTransport(
@@ -801,7 +867,12 @@ def thermoelectric_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ):
-    """Calculate the thermoelectric conductivity."""
+    r"""
+    Calculate the thermoelectric conductivity.
+
+    .. todo::
+        The thermoelectric conductivity (:math:`\hat{β}`) of a plasma is defined by...
+    """
     ct = ClassicalTransport(
         T_e,
         n_e,
@@ -836,8 +907,21 @@ def ion_thermal_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.W / u.m / u.K:
-    """
+    r"""
     Calculate the thermal conductivity for ions.
+
+    The ion thermal conductivity (:math:`κ`) of a plasma is defined by
+
+    .. math::
+
+        κ = \hat{κ} \frac{n_i k_B^2 T_i τ_i}{m_i}
+
+    where :math:`\hat{κ}` is the non-dimensional ion thermal conductivity of the plasma,
+    :math:`n_i` is the ion number density of the plasma,
+    :math:`k_B` is the Boltzmann constant,
+    :math:`T_i` is the ion temperature of the plasma,
+    :math:`τ_i` is the fundamental ion collision period of the plasma,
+    and :math:`m_i` is the mass of an ion of the plasma.
 
     Notes
     -----
@@ -845,16 +929,16 @@ def ion_thermal_conductivity(
     defined similarly to other materials. The result is a conductivity in units
     of W / m / K, so if you assume you know where the heat is flowing
     (temperature gradient, cross-sectional area) you can calculate the energy
-    transport in Watts as conductivity * cross-sectional area * temperature
-    gradient. In lab plasmas, typically the energy is flowing out of your
+    transport in watts as conductivity × cross-sectional area × temperature
+    gradient. In laboratory plasmas, typically the energy is flowing out of your
     high-temperature plasma to something else, like the walls of your device,
     and you are sad about this.
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_thermal_conductivity
 
@@ -893,8 +977,21 @@ def electron_thermal_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.W / u.m / u.K:
-    """
+    r"""
     Calculate the thermal conductivity for electrons.
+
+    The electron thermal conductivity (:math:`κ`) of a plasma is defined by
+
+    .. math::
+
+        κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
+
+    where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
+    :math:`n_e` is the electron number density of the plasma,
+    :math:`k_B` is the Boltzmann constant,
+    :math:`T_e` is the electron temperature of the plasma,
+    :math:`τ_e` is the fundamental electron collision period of the plasma,
+    and :math:`m_e` is the mass of an electron.
 
     Notes
     -----
@@ -921,9 +1018,9 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_thermal_conductivity
 
@@ -962,22 +1059,25 @@ def ion_viscosity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Pa * u.s:
-    """
+    r"""
     Calculate the ion viscosity.
+
+    .. todo::
+        The ion viscosity (:math:`\eta`) of a plasma is defined by...
 
     Notes
     -----
     This is the dynamic viscosity that you find for ions in the classical
     plasma, similar to the viscosity of air or water or honey. The big
-    effect is the T^5/2 dependence, so as classical plasmas get hotter they
+    effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
     become dramatically more viscous. The ion viscosity typically dominates
     over the electron viscosity.
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     electron_viscosity
 
@@ -1016,22 +1116,25 @@ def electron_viscosity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Pa * u.s:
-    """
+    r"""
     Calculate the electron viscosity.
+
+    .. todo::
+        The electron viscosity (:math:`\eta`) of a plasma is defined by...
 
     Notes
     -----
     This is the dynamic viscosity that you find for electrons in the
     classical plasma, similar to the viscosity of air or water or honey.
-    The big effect is the T^5/2 dependence, so as classical plasmas get
+    The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
     hotter they become dramatically more viscous. The ion viscosity
     typically dominates over the electron viscosity.
 
     Returns
     -------
-    astropy.units.quantity.Quantity
+    `~astropy.units.quantity.Quantity`
 
-    See also
+    See Also
     --------
     ion_viscosity
 
@@ -1057,7 +1160,8 @@ def electron_viscosity(
 def _nondim_thermal_conductivity(
     hall, Z, particle, model, field_orientation, mu=None, theta=None
 ):
-    """Calculate dimensionless classical thermal conductivity coefficients.
+    """
+    Calculate dimensionless classical thermal conductivity coefficients.
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified and which
@@ -1092,7 +1196,8 @@ def _nondim_thermal_conductivity(
 
 
 def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, theta=None):
-    """Calculate dimensionless classical viscosity coefficients.
+    """
+    Calculate dimensionless classical viscosity coefficients.
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified and which
@@ -1121,7 +1226,8 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
 
 
 def _nondim_resistivity(hall, Z, particle, model, field_orientation):
-    """Calculate dimensionless classical resistivity coefficients.
+    """
+    Calculate dimensionless classical resistivity coefficients.
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
@@ -1138,7 +1244,8 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
 
 
 def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
-    """Calculate dimensionless classical thermoelectric coefficients.
+    """
+    Calculate dimensionless classical thermoelectric coefficients.
 
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
@@ -1182,7 +1289,8 @@ def _check_Z(allowed_Z, Z):
 
 
 def _get_spitzer_harm_coeffs(Z):
-    """Return numerical coefficients from Spitzer-Harm '53.
+    """
+    Return numerical coefficients from Spitzer-Harm '53.
 
     Table III, Spitzer and Harm, Phys. Rev. Vol 89, 5, 1953
     """
@@ -1196,7 +1304,8 @@ def _get_spitzer_harm_coeffs(Z):
 
 
 def _nondim_tc_e_spitzer(Z):
-    """Dimensionless electron thermal conductivity - Spitzer.
+    """
+    Dimensionless electron thermal conductivity — Spitzer.
 
     This result is for parallel field or unmagnetized plasma only.
     """
@@ -1207,11 +1316,11 @@ def _nondim_tc_e_spitzer(Z):
 
 def _nondim_resist_spitzer(Z, field_orientation):
     """
-    Dimensionless resistivity - Spitzer.
+    Dimensionless resistivity — Spitzer.
 
     These are results for both parallel-field / unmagnetized plasmas as well
     as perpendicular-field / strongly magnetized plasma. Summary description
-    in Physics of Fully Ionized Gases, Spitzer
+    in Physics of Fully Ionized Gases, Spitzer.
     """
     alpha_perp = 1
     if field_orientation == "perpendicular" or field_orientation == "perp":
@@ -1228,7 +1337,8 @@ def _nondim_resist_spitzer(Z, field_orientation):
 
 
 def _nondim_tec_spitzer(Z):
-    """Dimensionless thermoelectric conductivity - Spitzer.
+    """
+    Dimensionless thermoelectric conductivity — Spitzer.
 
     This result is for parallel field or unmagnetized plasma only.
     """
@@ -1239,7 +1349,8 @@ def _nondim_tec_spitzer(Z):
 
 
 def _nondim_tc_e_braginskii(hall, Z, field_orientation):
-    """Dimensionless electron thermal conductivity - Braginskii.
+    """
+    Dimensionless electron thermal conductivity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1287,7 +1398,8 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tc_i_braginskii(hall, field_orientation):
-    """Dimensionless ion thermal conductivity - Braginskii.
+    """
+    Dimensionless ion thermal conductivity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1336,7 +1448,8 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
 
 
 def _nondim_visc_e_braginskii(hall, Z):
-    """Dimensionless electron viscosity - Braginskii.
+    """
+    Dimensionless electron viscosity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1372,7 +1485,8 @@ def _nondim_visc_e_braginskii(hall, Z):
 
 
 def _nondim_visc_i_braginskii(hall):
-    """Dimensionless ion viscosity - Braginskii.
+    """
+    Dimensionless ion viscosity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1407,7 +1521,8 @@ def _nondim_visc_i_braginskii(hall):
 
 
 def _nondim_resist_braginskii(hall, Z, field_orientation):
-    """Dimensionless resistivity - Braginskii.
+    """
+    Dimensionless resistivity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1460,7 +1575,8 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tec_braginskii(hall, Z, field_orientation):
-    """Dimensionless thermoelectric conductivity - Braginskii.
+    """
+    Dimensionless thermoelectric conductivity — Braginskii.
 
     Braginskii, S. I. "Transport processes in a plasma." Reviews of plasma
     physics 1 (1965): 205.
@@ -1513,7 +1629,8 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 
 
 def _nondim_tc_e_ji_held(hall, Z, field_orientation):
-    """Dimensionless electron thermal conductivity - Ji-Held.
+    """
+    Dimensionless electron thermal conductivity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1639,7 +1756,8 @@ def _nondim_tc_e_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_resist_ji_held(hall, Z, field_orientation):
-    """Dimensionless resistivity - Ji-Held.
+    """
+    Dimensionless resistivity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1733,7 +1851,8 @@ def _nondim_resist_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_tec_ji_held(hall, Z, field_orientation):
-    """Dimensionless thermoelectric conductivity - Ji-Held.
+    """
+    Dimensionless thermoelectric conductivity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1839,7 +1958,8 @@ def _nondim_tec_ji_held(hall, Z, field_orientation):
 
 
 def _nondim_visc_e_ji_held(hall, Z):
-    """Dimensionless electron viscosity - Ji-Held.
+    """
+    Dimensionless electron viscosity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -1940,7 +2060,8 @@ def _nondim_visc_e_ji_held(hall, Z):
 
 
 def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
-    """Dimensionless ion thermal conductivity - Ji-Held.
+    """
+    Dimensionless ion thermal conductivity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):
@@ -2029,7 +2150,8 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
 
 
 def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
-    """Dimensionless ion viscosity - Ji-Held.
+    """
+    Dimensionless ion viscosity — Ji-Held.
 
     Ji, Jeong-Young, and Eric D. Held. "Closure and transport theory for
     high-collisionality electron-ion plasmas." Physics of Plasmas 20.4 (2013):

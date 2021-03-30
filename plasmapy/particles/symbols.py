@@ -2,14 +2,19 @@
 Functions that deal with string representations of atomic symbols
 and numbers.
 """
-
-from typing import Optional
+__all__ = [
+    "atomic_symbol",
+    "element_name",
+    "ionic_symbol",
+    "isotope_symbol",
+    "particle_symbol",
+]
 
 from numbers import Integral
+from typing import Optional
 
+from .decorators import particle_input
 from .particle_class import Particle
-from .particle_input import particle_input
-
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
@@ -19,14 +24,6 @@ from .particle_input import particle_input
 # respectively.  The Particle class constructor will raise an
 # InvalidParticleError if the input does not correspond to a valid
 # particle.
-
-__all__ = [
-    "atomic_symbol",
-    "isotope_symbol",
-    "ionic_symbol",
-    "particle_input",
-    "element_name",
-]
 
 
 @particle_input
@@ -47,10 +44,10 @@ def atomic_symbol(element: Particle) -> str:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -58,7 +55,10 @@ def atomic_symbol(element: Particle) -> str:
 
     See Also
     --------
-    element_name, isotope_symbol, ionic_symbol, particle_symbol
+    element_name
+    isotope_symbol
+    ionic_symbol
+    particle_symbol
 
     Notes
     -----
@@ -92,7 +92,6 @@ def atomic_symbol(element: Particle) -> str:
     'N'
     >>> atomic_symbol('P'), atomic_symbol('p')  # Phosphorus, proton
     ('P', 'H')
-
     """
     return element.element
 
@@ -120,10 +119,10 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Raises
     ------
-    `~plasmapy.utils.InvalidIsotopeError`
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`
         If the argument is a valid particle but not a valid isotope.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle
         or contradictory information is provided.
 
@@ -132,12 +131,14 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Warns
     -----
-    `~plasmapy.utils.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If redundant isotope information is provided.
 
     See Also
     --------
-    atomic_symbol, ionic_symbol, particle_symbol
+    atomic_symbol
+    ionic_symbol
+    particle_symbol
 
     Examples
     --------
@@ -151,7 +152,6 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
     'C-13'
     >>> isotope_symbol('alpha')
     'He-4'
-
     """
     return isotope.isotope
 
@@ -183,11 +183,11 @@ def ionic_symbol(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidIonError`
+    `~plasmapy.particles.exceptions.InvalidIonError`
         If the arguments correspond to a valid particle but not a valid
         ion or neutral charged particle.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If arguments do not correspond to a valid particle or
         contradictory information is provided.
 
@@ -198,12 +198,14 @@ def ionic_symbol(
 
     Warns
     -----
-    `~plasmapy.utils.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If redundant mass number or charge information is provided.
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, particle_symbol
+    atomic_symbol
+    isotope_symbol
+    particle_symbol
 
     Examples
     --------
@@ -217,7 +219,6 @@ def ionic_symbol(
     'D 1+'
     >>> ionic_symbol('H-1', Z=0)
     'H-1 0+'
-
     """
 
     return particle.ionic_symbol
@@ -252,7 +253,7 @@ def particle_symbol(
 
     Raises
     ------
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If arguments do not correspond to a valid particle or
         contradictory information is provided.
 
@@ -263,12 +264,14 @@ def particle_symbol(
 
     Warns
     -----
-    `~plasmapy.utils.AtomicWarning`
+    `~plasmapy.particles.exceptions.ParticleWarning`
         If redundant mass number or charge information is provided.
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, ionic_symbol
+    atomic_symbol
+    isotope_symbol
+    ionic_symbol
 
     Examples
     --------
@@ -280,9 +283,8 @@ def particle_symbol(
     'He-4 2+'
     >>> particle_symbol('H-1', Z=-1)
     'H-1 1-'
-
     """
-    return particle.particle
+    return particle.symbol
 
 
 @particle_input
@@ -303,10 +305,10 @@ def element_name(element: Particle) -> str:
 
     Raises
     ------
-    `~plasmapy.utils.InvalidElementError`
+    `~plasmapy.particles.exceptions.InvalidElementError`
         If the argument is a valid particle but not a valid element.
 
-    `~plasmapy.utils.InvalidParticleError`
+    `~plasmapy.particles.exceptions.InvalidParticleError`
         If the argument does not correspond to a valid particle.
 
     `TypeError`
@@ -314,7 +316,10 @@ def element_name(element: Particle) -> str:
 
     See Also
     --------
-    atomic_symbol, isotope_symbol, ionic_symbol, particle_symbol
+    atomic_symbol
+    isotope_symbol
+    ionic_symbol
+    particle_symbol
 
     Examples
     --------
@@ -328,6 +333,5 @@ def element_name(element: Particle) -> str:
     'molybdenum'
     >>> element_name("C-12")
     'carbon'
-
     """
     return element.element_name

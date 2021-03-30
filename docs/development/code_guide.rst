@@ -7,30 +7,67 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.6 and
+Code written for PlasmaPy must be compatible with Python 3.7 and
 later.
 
 Coding Style
 ============
 
+TL;DR: use pre-commit
+---------------------
+
+PlasmaPy has a configuration for the `pre-commit framework
+<https://pre-commit.com/>`_ that takes care of style mostly automatically.
+Install it with `pip install pre-commit`, then use `pre-commit install` within
+the repository.
+
+This will cause pre-commit to download the right versions of linters we use,
+then run an automated style checking suite on every commit.  Do note that this
+works better with a `git add`, then `git commit` workflow than a `git commit
+-a` workflow — that way, you can check via `git diff` what the automated
+changes actually did.
+
+Note that the "Style linters / pre-commit (pull_request)" part of our
+Continuous Integration system can and will (metaphorically) shout at you if it
+finds you didn't apply the linters. Also note that the linters' output may vary
+with version, so, rather than apply `black` and `isort` manually, let
+pre-commit do the version management for you instead!
+
+Our pre-commit suite can be found in `.pre-commit-config.yaml
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/.pre-commit-config.yaml>`_.
+It includes
+
+* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package
+* `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
+  to example notebooks as well.
+* a few tools for `requirements.txt`, `.yml` files and the like.
+
+PlasmaPy Code Style Guide, codified
+-----------------------------------
+
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
   <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
-  * The PEP 8 Speaks integration on GitHub will comment when there are
-    any departures from the PEP 8 style guide.
-
-  * PEP 8 compliance may be checked locally using
-    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
-
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 99 characters.
+    PlasmaPy is 88 characters.
 
   * Docstrings and comments should generally be limited to
-    72 characters.
+    about 72 characters.
 
-* Follow the existing coding style within a subpackage.
+* During code development, use
+  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package and `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+
+* Follow the existing coding style within a subpackage.  This includes,
+  for example, variable naming conventions.
 
 * Use standard abbreviations for imported packages when possible, such
   as ``import numpy as np``, ``import matplotlib as mpl``, ``import
@@ -42,32 +79,17 @@ Coding Style
   functionality should be put into a separate file.
 
 * Use absolute imports, such as
-  ``from plasmapy.mathematics import Fermi_integral``,
-  rather than relative imports such as
-  ``from ..mathematics import Fermi_integral``.
+  ``from plasmapy.particles import Particle``, rather than relative
+  imports such as ``from ..particles import Particle``.
 
-* For multiline imports, instead of using ``\`` to break lines, wrap the
-  imported names in ``()`` parentheses and use consistent whitespace.
+* Use ``Optional[type]`` for type hinted keyword arguments with a
+  default value of ``None``.
 
-* Use ``Optional[type]`` for type hinted keyword arguments with a default value of
-  ``None``.
+* There should be at least one pun per 1284 lines of code.
 
-* There should be at most one pun per 1284 lines of code.
+* Avoid using `lambda` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
 
-pre-commit hooks
-----------------
-
-PlasmaPy has a configuration for `pre-commit` that takes care of style mostly
-automatically. Install it with `pip install pre-commit`, then use `pre-commit
-install` within the repository.
-
-This will cause git to run an automated style checking suite, mostly composed
-of `flake8` and `black`, on every commit. Do note that this works better with
-a `git add`, then `git commit` workflow than a `git commit -a` workflow - that
-way, you can check via `git diff` what the automated changes actually did.
-
-Note that `flake8` does not change your files automatically (help in setting
-that up, if possible, most welcome!).
 
 Branches, commits, and pull requests
 ====================================
@@ -307,3 +329,51 @@ However, ``dimensionless_angles`` does work when dividing a velocity
 by an angular frequency to get a length scale:
 
 >>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
+
+.. _example_notebooks:
+
+Examples
+========
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
+
+Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
+of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+takes care of executing them at documentation build time and including them
+in the documentation.
+
+Please note that it is necessary to store notebooks with their outputs stripped
+(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+
+1. helps with versioning the notebooks, as binary image data is not stored in
+   the notebook
+2. signals `nbsphinx` that it should execute the notebook.
+
+.. note::
+
+  In the future, verifying and running this step may be automated via a GitHub bot.
+  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
+
+If you have an example notebook that includes packages unavailable in the
+documentation building environment (e.g., `bokeh`) or runs some heavy
+computation that should not be executed on every commit, *keep the outputs in
+the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
+`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+
+Benchmarks
+==========
+
+
+.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
+.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
+.. _asv: https://github.com/airspeed-velocity/asv
+.. _asv-docs: https://asv.readthedocs.io/en/stable/
+
+PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
+functionalities.  This is meant to protect the package from performance
+regressions. The benchmarks can be viewed at `benchmarks`_. They're
+generated from results located in `benchmarks-repo`_. Detailed
+instructions on writing such benchmarks can be found at `asv-docs`_.
+Up-to-date instructions on running the benchmark suite will be located in
+the README file of `benchmarks-repo`_.
