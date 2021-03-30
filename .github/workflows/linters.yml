@@ -20,20 +20,8 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-python@v2
     - name: Install requirements
-      run: pip install flake8
+      run: pip install flake8 pydocstyle
     - name: Print debug info
       run: flake8 --bug-report
     - name: Run flake8
       run: flake8 . --count --show-source --statistics
-  pydocstyle:
-    name: pydocstyle
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-python@v2
-    - name: Install requirements
-      run: pip install pydocstyle
-    - name: Pydocstyle version info (for debug)
-      run: pydocstyle --version
-    - name: Run pydocstyle
-      run: pydocstyle . --count
