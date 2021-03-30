@@ -1,10 +1,15 @@
 # these are dependencies required to build package documentaiton
 # ought to mirror 'docs' under options.extras_require in config.cfg
 -r extras.txt
+ipykernel
+ipywidgets
+nbsphinx
 numpydoc
 pillow
-sphinx <= 2.4.4
-sphinx-automodapi
+sphinx >= 2.4.4
+sphinx-automodapi >= 0.13
+sphinx-changelog
+sphinx-copybutton
 sphinx-gallery
 sphinx_rtd_theme
 towncrier
