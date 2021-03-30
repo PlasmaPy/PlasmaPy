@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-python@v2
     - name: Install requirements
-      run: pip install flake8 pydocstyle flake8-rst-docstrings
+      run: pip install flake8 pydocstyle flake8-rst-docstrings pygments
     - name: Print debug info
       run: flake8 --bug-report
     - name: Run flake8
