@@ -3,13 +3,12 @@ import inspect
 import io
 import json
 import numpy as np
-import os
-import pickle
 import pytest
 
 from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
+from itertools import groupby
 
 from plasmapy.particles import json_load_particle, json_loads_particle
 from plasmapy.particles.atomic import known_isotopes
@@ -33,7 +32,6 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
-from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
 test_Particle_table = [
@@ -540,10 +538,18 @@ equivalent_particles_table = [
 ]
 
 
+def all_equal(iterable):
+    """Helper function lifted from https://stackoverflow.com/a/3844832/4417567 :)"""
+    g = groupby(iterable)
+    return next(g, True) and not next(g, False)
+
+
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)
 def test_Particle_equivalent_cases(equivalent_particles):
-    """Test that all instances of a list of particles are equivalent."""
-    run_test_equivalent_calls(Particle, *equivalent_particles)
+    hopefully_equivalent_calls = (
+        Particle(argument) for argument in equivalent_particles
+    )
+    assert all_equal(hopefully_equivalent_calls)
 
 
 # arg, kwargs, attribute, exception

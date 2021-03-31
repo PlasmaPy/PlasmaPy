@@ -11,16 +11,19 @@ from plasmapy.particles.nuclear import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
-from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
-
-test_nuclear_equivalent_calls_table = [
-    [nuclear_binding_energy, ["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
-]
 
 
-@pytest.mark.parametrize("test_inputs", test_nuclear_equivalent_calls_table)
-def test_nuclear_equivalent_calls(test_inputs):
-    run_test_equivalent_calls(test_inputs)
+def test_nuclear_equivalent_calls():
+    test_inputs = [["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
+    results = u.Quantity(
+        [
+            nuclear_binding_energy(argument, **kwargs)
+            for (argument, kwargs) in test_inputs
+        ]
+    )
+    # if these are all equivalent, they're equal to the mean
+    mean_result = results.mean()
+    assert_quantity_allclose(results, mean_result, rtol=0, atol=0 * u.J)
 
 
 def test_nuclear_binding_energy_D_T():
