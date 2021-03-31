@@ -14,7 +14,6 @@ from plasmapy.particles import (
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
-from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
@@ -556,15 +555,14 @@ tests_for_exceptions = (
 )
 
 
-@pytest.mark.parametrize("test_name", "test_arg_and_exception", tests_for_exceptions)
-def test_IonizationState_exceptions(test_name, test_arg_and_exception):
+@pytest.mark.parametrize(["test_name", "inputs", "expected_exception"], tests_for_exceptions)
+def test_IonizationState_exceptions(test_name, inputs, expected_exception):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState`.
     """
-    inputs, expected_exception = test_arg_and_exception
     with pytest.raises(expected_exception):
-        IonizationState(inputs)
+        IonizationState(**inputs)
 
 expected_properties = {
     "T_e": 5000.0 * u.K,
