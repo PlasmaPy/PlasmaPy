@@ -5,27 +5,18 @@ __all__ = [
     "run_test_equivalent_calls",
 ]
 
-import astropy.constants as const
 import astropy.tests.helper as astrohelper
 import astropy.units as u
-import collections
-import functools
 import inspect
 import numpy as np
-import pytest
 import warnings
-
-from typing import Any, Callable, Dict
 
 from plasmapy.tests.helpers.exceptions import (
     InvalidTestError,
-    MissingExceptionFail,
-    MissingWarningFail,
-    TypeMismatchFail,
     UnexpectedExceptionFail,
     UnexpectedResultFail,
 )
-from plasmapy.utils.code_repr import _name_with_article, _object_name, call_string
+from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
