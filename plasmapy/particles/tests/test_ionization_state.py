@@ -556,18 +556,15 @@ tests_for_exceptions = (
 )
 
 
-@pytest.mark.parametrize("test", tests_for_exceptions.keys())
-def test_IonizationState_exceptions(test):
+@pytest.mark.parametrize("test_name", "test_arg_and_exception", tests_for_exceptions)
+def test_IonizationState_exceptions(test_name, test_arg_and_exception):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState`.
     """
-    run_test(
-        IonizationState,
-        kwargs=tests_for_exceptions[test].inputs,
-        expected_outcome=tests_for_exceptions[test].expected_exception,
-    )
-
+    inputs, expected_exception = test_arg_and_exception
+    with pytest.raises(expected_exception):
+        IonizationState(inputs)
 
 expected_properties = {
     "T_e": 5000.0 * u.K,
