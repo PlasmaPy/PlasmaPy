@@ -13,8 +13,6 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.utils.pytest_helpers import run_test
-
 from ..atomic import (
     _is_electron,
     atomic_number,
@@ -400,112 +398,6 @@ class TestInvalidPeriodicElement:
     def test_periodic_table_group(self):
         with pytest.raises(TypeError):
             periodic_table_group(("B", "Ti", "Ge"))
-
-
-# The tables above do not include the function to be tested in order to
-# avoid cluttering up the code.  The following block of code prepends
-# the correct function to each list containing args, kwargs, and the
-# expected outcome prior to being passed through to run_test.
-
-
-tables_and_functions = [
-    (atomic_symbol, atomic_symbol_table),
-    (isotope_symbol, isotope_symbol_table),
-    (atomic_number, atomic_number_table),
-    (mass_number, mass_number_table),
-    (element_name, element_name_table),
-    (standard_atomic_weight, standard_atomic_weight_table),
-    (is_stable, is_stable_table),
-    (particle_mass, particle_mass_table),
-    (integer_charge, integer_charge_table),
-    (electric_charge, electric_charge_table),
-    (half_life, half_life_table),
-]
-
-all_tests = []
-
-for func, table in tables_and_functions:
-    for inputs in table:
-        inputs.insert(0, func)
-        if len(inputs) == 3:
-            inputs.insert(2, {})
-    all_tests += table
-
-# Set up tests for a variety of atomic functions to make sure that bad
-# inputs lead to the expected errors.
-
-atomic_TypeError_funcs_table = [
-    atomic_symbol,
-    isotope_symbol,
-    atomic_number,
-    is_stable,
-    half_life,
-    mass_number,
-    element_name,
-    standard_atomic_weight,
-    nuclear_binding_energy,
-    nuclear_reaction_energy,
-]
-
-atomic_TypeError_badargs = [1.1, {"cats": "bats"}, 1 + 1j]
-
-atomic_ParticleErrors_funcs_table = [
-    atomic_symbol,
-    isotope_symbol,
-    atomic_number,
-    is_stable,
-    half_life,
-    mass_number,
-    element_name,
-    standard_atomic_weight,
-    particle_mass,
-    known_isotopes,
-    stable_isotopes,
-    common_isotopes,
-    isotopic_abundance,
-    integer_charge,
-    electric_charge,
-]
-
-atomic_ParticleError_badargs = [
-    -1,
-    119,
-    "grumblemuffins",
-    "H-0",
-    "Og-294b",
-    "H-9343610",
-    "Fe 2+4",
-    "Fe+24",
-    "Fe +59",
-    "C++++++++++++++++",
-    "C-++++",
-    "h",
-    "d",
-    "he",
-    "au",
-    "alpha 1+",
-    "alpha-4",
-]
-
-metatable = [
-    (atomic_TypeError_funcs_table, atomic_TypeError_badargs, TypeError),
-    (
-        atomic_ParticleErrors_funcs_table,
-        atomic_ParticleError_badargs,
-        InvalidParticleError,
-    ),
-]
-
-for funcs, badargs, error in metatable:
-    for func in funcs:
-        for badarg in badargs:
-            all_tests += [[func, badarg, error]]
-
-
-@pytest.mark.parametrize("inputs", all_tests)
-def test_atomic_functions(inputs):
-    print(inputs)
-    run_test(inputs)
 
 
 # Next we have tests that do not fall nicely into equality comparisons.

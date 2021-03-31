@@ -17,7 +17,6 @@ from plasmapy.particles import (
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
-from plasmapy.utils.pytest_helpers import run_test
 
 
 def check_abundances_consistency(
@@ -738,75 +737,6 @@ class TestIonizationStateCollectionAttributes:
         assert self.instance.base_particles == list(
             self.instance.ionic_fractions.keys()
         )
-
-
-IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
-
-tests_for_exceptions = {
-    "wrong type": IE({"inputs": None}, ParticleError),
-    "not normalized": IE(
-        {"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, ParticleError
-    ),
-    "negative ionfrac": IE({"inputs": {"H": [-0.1, 1.1]}}, ParticleError),
-    "ion": IE({"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}}, ParticleError),
-    "repeat elements": IE(
-        {"inputs": {"H": [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, ParticleError
-    ),
-    "isotope of element": IE(
-        {"inputs": {"H": [0.1, 0.9], "D": [0.2, 0.8]}}, ParticleError
-    ),
-    "negative abundance": IE(
-        {
-            "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
-            "abundances": {"H": 1, "He": -0.1},
-        },
-        ParticleError,
-    ),
-    "imaginary abundance": IE(
-        {
-            "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
-            "abundances": {"H": 1, "He": 0.1j},
-        },
-        ParticleError,
-    ),
-    "wrong density units": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
-            "abundances": {"H": 1, "He": 0.1},
-        },
-        ParticleError,
-    ),
-    "abundance redundance": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
-            "abundances": {"H": 1, "He": 0.1},
-        },
-        ParticleError,
-    ),
-    "abundance contradiction": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
-            "abundances": {"H": 1, "He": 0.11},
-        },
-        ParticleError,
-    ),
-    "kappa too small": IE({"inputs": ["H"], "kappa": 1.499999}, ParticleError),
-    "negative n": IE({"inputs": ["H"], "n0": -1 * u.cm ** -3}, ParticleError),
-    "negative T_e": IE({"inputs": ["H-1"], "T_e": -1 * u.K}, ParticleError),
-}
-
-
-@pytest.mark.parametrize("test_name", tests_for_exceptions.keys())
-def test_exceptions_upon_instantiation(test_name):
-    """
-    Test that appropriate exceptions are raised for inappropriate inputs
-    to IonizationStateCollection when first instantiated.
-    """
-    run_test(
-        IonizationStateCollection,
-        kwargs=tests_for_exceptions[test_name].inputs,
-        expected_outcome=tests_for_exceptions[test_name].expected_exception,
-    )
 
 
 class TestIonizationStateCollectionDensityEqualities:
