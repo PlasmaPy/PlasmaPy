@@ -498,7 +498,6 @@ def test_IonizationState_base_particles_from_ion_input(ion):
         )
 
 
-IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
 tests_for_exceptions = (
     ("too few nstates", {"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
     (
