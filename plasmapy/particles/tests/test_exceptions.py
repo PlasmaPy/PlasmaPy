@@ -1,7 +1,7 @@
+import itertools
 import numpy as np
 import pytest
 
-import itertools
 from astropy import units as u
 
 from plasmapy.particles import (
@@ -11,19 +11,7 @@ from plasmapy.particles import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
-
-from plasmapy.particles.exceptions import (
-    ChargeError,
-    InvalidElementError,
-    InvalidIsotopeError,
-    InvalidParticleError,
-    MissingParticleDataError,
-    ParticleError,
-    ParticleWarning,
-)
-
 from plasmapy.particles.atomic import (
-    _is_electron,
     atomic_number,
     common_isotopes,
     electric_charge,
@@ -34,15 +22,18 @@ from plasmapy.particles.atomic import (
     known_isotopes,
     mass_number,
     particle_mass,
-    periodic_table_block,
-    periodic_table_category,
-    periodic_table_group,
-    periodic_table_period,
-    reduced_mass,
     stable_isotopes,
     standard_atomic_weight,
 )
-from plasmapy.particles.isotopes import _isotopes
+from plasmapy.particles.exceptions import (
+    ChargeError,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingParticleDataError,
+    ParticleError,
+    ParticleWarning,
+)
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
 
@@ -491,8 +482,6 @@ tests_from_atomic = [
 ]
 
 
-
-
 # from test_atomic.py
 
 
@@ -560,12 +549,23 @@ atomic_ParticleError_badargs = [
     "alpha-4",
 ]
 
-particle_error_tests = [(function, [bad_argument], {}, pytest.raises(InvalidParticleError)) for function, bad_argument in itertools.product(atomic_ParticleErrors_funcs_table, atomic_ParticleError_badargs)]
-type_error_tests = [(function, [bad_argument], {}, pytest.raises(TypeError)) for function, bad_argument in itertools.product(atomic_TypeError_funcs_table, atomic_TypeError_badargs)]
+particle_error_tests = [
+    (function, [bad_argument], {}, pytest.raises(InvalidParticleError))
+    for function, bad_argument in itertools.product(
+        atomic_ParticleErrors_funcs_table, atomic_ParticleError_badargs
+    )
+]
+type_error_tests = [
+    (function, [bad_argument], {}, pytest.raises(TypeError))
+    for function, bad_argument in itertools.product(
+        atomic_TypeError_funcs_table, atomic_TypeError_badargs
+    )
+]
+
 
 @pytest.mark.parametrize(
     ["tested_object", "args", "kwargs", "expectation"],
-    tests_from_nuclear + tests_from_atomic +particle_error_tests + type_error_tests,
+    tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
 def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
     """
