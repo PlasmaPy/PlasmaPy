@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+import itertools
 from astropy import units as u
 
 from plasmapy.particles import (
@@ -11,7 +12,6 @@ from plasmapy.particles import (
     nuclear_reaction_energy,
 )
 
-# IonizationState
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -22,7 +22,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 
-from ..atomic import (
+from plasmapy.particles.atomic import (
     _is_electron,
     atomic_number,
     common_isotopes,
@@ -42,9 +42,9 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..isotopes import _isotopes
-from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
-from ..symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.particles.isotopes import _isotopes
+from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
+from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
 
 tests_for_exceptions_IonizationState = [
     (
@@ -127,8 +127,6 @@ tests_for_exceptions_IonizationState = [
     ),
 ]
 
-
-# IonizationStateCollection
 
 tests_for_exceptions_IonizationStateCollection = [
     ("wrong type", IonizationStateCollection, [], {"inputs": None}, ParticleError),
@@ -493,17 +491,6 @@ tests_from_atomic = [
 ]
 
 
-@pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expectation"],
-    tests_from_nuclear + tests_from_atomic,
-)
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
-    """
-    Test that appropriate exceptions are raised for inappropriate inputs
-    to `IonizationState`.
-    """
-    with expectation:
-        tested_object(*args, **kwargs)
 
 
 # from test_atomic.py
@@ -515,101 +502,75 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
 # expected outcome prior to being passed through to run_test.
 
 
-# tables_and_functions = [
-#     (atomic_symbol, atomic_symbol_table),
-#     (isotope_symbol, isotope_symbol_table),
-#     (atomic_number, atomic_number_table),
-#     (mass_number, mass_number_table),
-#     (element_name, element_name_table),
-#     (standard_atomic_weight, standard_atomic_weight_table),
-#     (is_stable, is_stable_table),
-#     (particle_mass, particle_mass_table),
-#     (integer_charge, integer_charge_table),
-#     (electric_charge, electric_charge_table),
-#     (half_life, half_life_table),
-# ]
+all_tests = []
 
-# all_tests = []
+# Set up tests for a variety of atomic functions to make sure that bad
+# inputs lead to the expected errors.
 
-# for func, table in tables_and_functions:
-#     for inputs in table:
-#         inputs.insert(0, func)
-#         if len(inputs) == 3:
-#             inputs.insert(2, {})
-#     all_tests += table
+atomic_TypeError_funcs_table = [
+    atomic_symbol,
+    isotope_symbol,
+    atomic_number,
+    is_stable,
+    half_life,
+    mass_number,
+    element_name,
+    standard_atomic_weight,
+    nuclear_binding_energy,
+    nuclear_reaction_energy,
+]
 
-# # Set up tests for a variety of atomic functions to make sure that bad
-# # inputs lead to the expected errors.
+atomic_TypeError_badargs = [1.1, {"cats": "bats"}, 1 + 1j]
 
-# atomic_TypeError_funcs_table = [
-#     atomic_symbol,
-#     isotope_symbol,
-#     atomic_number,
-#     is_stable,
-#     half_life,
-#     mass_number,
-#     element_name,
-#     standard_atomic_weight,
-#     nuclear_binding_energy,
-#     nuclear_reaction_energy,
-# ]
+atomic_ParticleErrors_funcs_table = [
+    atomic_symbol,
+    isotope_symbol,
+    atomic_number,
+    is_stable,
+    half_life,
+    mass_number,
+    element_name,
+    standard_atomic_weight,
+    particle_mass,
+    known_isotopes,
+    stable_isotopes,
+    common_isotopes,
+    isotopic_abundance,
+    integer_charge,
+    electric_charge,
+]
 
-# atomic_TypeError_badargs = [1.1, {"cats": "bats"}, 1 + 1j]
+atomic_ParticleError_badargs = [
+    -1,
+    119,
+    "grumblemuffins",
+    "H-0",
+    "Og-294b",
+    "H-9343610",
+    "Fe 2+4",
+    "Fe+24",
+    "Fe +59",
+    "C++++++++++++++++",
+    "C-++++",
+    "h",
+    "d",
+    "he",
+    "au",
+    "alpha 1+",
+    "alpha-4",
+]
 
-# atomic_ParticleErrors_funcs_table = [
-#     atomic_symbol,
-#     isotope_symbol,
-#     atomic_number,
-#     is_stable,
-#     half_life,
-#     mass_number,
-#     element_name,
-#     standard_atomic_weight,
-#     particle_mass,
-#     known_isotopes,
-#     stable_isotopes,
-#     common_isotopes,
-#     isotopic_abundance,
-#     integer_charge,
-#     electric_charge,
-# ]
+particle_error_tests = [(function, [bad_argument], {}, pytest.raises(InvalidParticleError)) for function, bad_argument in itertools.product(atomic_ParticleErrors_funcs_table, atomic_ParticleError_badargs)]
+type_error_tests = [(function, [bad_argument], {}, pytest.raises(TypeError)) for function, bad_argument in itertools.product(atomic_TypeError_funcs_table, atomic_TypeError_badargs)]
 
-# atomic_ParticleError_badargs = [
-#     -1,
-#     119,
-#     "grumblemuffins",
-#     "H-0",
-#     "Og-294b",
-#     "H-9343610",
-#     "Fe 2+4",
-#     "Fe+24",
-#     "Fe +59",
-#     "C++++++++++++++++",
-#     "C-++++",
-#     "h",
-#     "d",
-#     "he",
-#     "au",
-#     "alpha 1+",
-#     "alpha-4",
-# ]
-
-# metatable = [
-#     (atomic_TypeError_funcs_table, atomic_TypeError_badargs, TypeError),
-#     (
-#         atomic_ParticleErrors_funcs_table,
-#         atomic_ParticleError_badargs,
-#         InvalidParticleError,
-#     ),
-# ]
-
-# for funcs, badargs, error in metatable:
-#     for func in funcs:
-#         for badarg in badargs:
-#             all_tests += [[func, badarg, error]]
-
-
-# @pytest.mark.parametrize("inputs", all_tests)
-# def test_atomic_functions(inputs):
-#     print(inputs)
-#     run_test(inputs)
+@pytest.mark.parametrize(
+    ["tested_object", "args", "kwargs", "expectation"],
+    tests_from_nuclear + tests_from_atomic +particle_error_tests + type_error_tests,
+)
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
+    """
+    Test that appropriate exceptions are raised for inappropriate inputs
+    to `IonizationState`.
+    """
+    with expectation:
+        tested_object(*args, **kwargs)
