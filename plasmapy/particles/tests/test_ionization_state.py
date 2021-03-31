@@ -497,7 +497,6 @@ def test_IonizationState_base_particles_from_ion_input(ion):
         )
 
 
-
 expected_properties = {
     "T_e": 5000.0 * u.K,
     "tol": 2e-14,

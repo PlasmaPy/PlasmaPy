@@ -105,6 +105,7 @@ def test_nuclear_reaction_energy():
     actual = nuclear_reaction_energy(reactants=reactants, products=products)
     assert u.isclose(actual, expected, rtol=1e-3)
 
+
 table_of_nuclear_tests = [
     [nuclear_binding_energy, ["p"], {}, 0 * u.J],
     [nuclear_binding_energy, ["n"], {}, 0 * u.J],
@@ -117,7 +118,8 @@ table_of_nuclear_tests = [
 ]
 
 
-@pytest.mark.parametrize(["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests)
+@pytest.mark.parametrize(
+    ["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests
+)
 def test_nuclear_table(tested_object, args, kwargs, expected_value):
-    assert_quantity_allclose(tested_object(*args, **kwargs), expected_value, rtol=1e-3) 
-
+    assert_quantity_allclose(tested_object(*args, **kwargs), expected_value, rtol=1e-3)
