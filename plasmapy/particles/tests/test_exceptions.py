@@ -244,11 +244,20 @@ def test_named_tests_for_exceptions(
 ):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
-    to `IonizationState`.
+    to `IonizationState` or `IonizationStateCollection`
     """
     print(test_name)  # TODO find better ways for this
-    with pytest.raises(expected_exception):
+    with pytest.raises(expected_exception) as exc_info:
         tested_object(*args, **kwargs)
+
+    assert expected_exception == exc_info.type
+
+    # TODO tbh given how ugly this is I don't think we should even be doing this check
+    if hasattr(exc_info, "expected_warning"):
+        for expected_warning, recorded_warning in zip(
+            exc_info.expected_warning, exc_info.list
+        ):
+            assert expected_warning == recorded_warning.category
 
 
 tests_from_nuclear = [
@@ -558,5 +567,15 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expectation):
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState`.
     """
-    with expectation:
+    with expectation as exc_info:
         tested_object(*args, **kwargs)
+
+    if hasattr(expectation, "expected_exception"):
+        assert type(expectation.expected_exception()) == exc_info.type
+
+    # TODO tbh given how ugly this is I don't think we should even be doing this check
+    if hasattr(expectation, "expected_warning"):
+        for expected_warning, recorded_warning in zip(
+            exc_info.expected_warning, exc_info.list
+        ):
+            assert expected_warning == recorded_warning.category
