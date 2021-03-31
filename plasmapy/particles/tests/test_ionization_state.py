@@ -452,8 +452,6 @@ class Test_IonizationState:
         assert result_from_charge == result_from_symbol
 
 
-
-
 ions = ["Fe 6+", "p", "He-4 0+", "triton", "alpha", "Ne +0"]
 
 
@@ -467,12 +465,14 @@ def test_IonizationState_ionfracs_from_ion_input(ion):
     expected_ionic_fractions = np.zeros(ion_particle.atomic_number + 1)
     expected_ionic_fractions[ion_particle.integer_charge] = 1.0
 
-    np.testing.assert_allclose(expected_ionic_fractions, actual_ionic_fractions, atol=1e-16,
-                               err_msg=
-            f"The returned ionic fraction for IonizationState({repr(ion)}) "
-            f"should have entirely been in the Z = {ion_particle.integer_charge} "
-            f"level."
-        )
+    np.testing.assert_allclose(
+        expected_ionic_fractions,
+        actual_ionic_fractions,
+        atol=1e-16,
+        err_msg=f"The returned ionic fraction for IonizationState({repr(ion)}) "
+        f"should have entirely been in the Z = {ion_particle.integer_charge} "
+        f"level.",
+    )
 
 
 @pytest.mark.parametrize("ion", ions)
@@ -499,28 +499,40 @@ def test_IonizationState_base_particles_from_ion_input(ion):
 
 
 IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
-tests_for_exceptions = {
-    "too few nstates": IE({"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
-    "too many nstates": IE(
-        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]}, ParticleError
+tests_for_exceptions = (
+    ("too few nstates", {"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
+    (
+        "too many nstates",
+        {"particle": "H", "ionic_fractions": [1, 0, 0, 0]},
+        ParticleError,
     ),
-    "ionic fraction < 0": IE(
-        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]}, ParticleError
+    (
+        "ionic fraction < 0",
+        {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]},
+        ParticleError,
     ),
-    "ionic fraction > 1": IE(
-        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]}, ParticleError
+    (
+        "ionic fraction > 1",
+        {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]},
+        ParticleError,
     ),
-    "invalid ionic fraction": IE(
-        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]}, ParticleError
+    (
+        "invalid ionic fraction",
+        {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]},
+        ParticleError,
     ),
-    "bad n_elem units": IE(
+    (
+        "bad n_elem units",
         {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
         u.UnitTypeError,
     ),
-    "bad T_e units": IE(
-        {"particle": "H", "ionic_fractions": [0, 1], "T_e": 1 * u.m}, u.UnitTypeError
+    (
+        "bad T_e units",
+        {"particle": "H", "ionic_fractions": [0, 1], "T_e": 1 * u.m},
+        u.UnitTypeError,
     ),
-    "negative n_elem": IE(
+    (
+        "negative n_elem",
         {
             "particle": "He",
             "ionic_fractions": [1.0, 0.0, 0.0],
@@ -528,11 +540,13 @@ tests_for_exceptions = {
         },
         ParticleError,
     ),
-    "negative T_e": IE(
+    (
+        "negative T_e",
         {"particle": "He", "ionic_fractions": [1.0, 0.0, 0.0], "T_e": -1 * u.K},
         ParticleError,
     ),
-    "redundant ndens": IE(
+    (
+        "redundant ndens",
         {
             "particle": "H",
             "ionic_fractions": np.array([3, 4]) * u.m ** -3,
@@ -540,7 +554,9 @@ tests_for_exceptions = {
         },
         ParticleError,
     ),
-}
+)
+
+
 @pytest.mark.parametrize("test", tests_for_exceptions.keys())
 def test_IonizationState_exceptions(test):
     """
