@@ -3,6 +3,7 @@ import pytest
 
 from astropy import constants as const
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
 from plasmapy.particles.nuclear import (
@@ -10,91 +11,19 @@ from plasmapy.particles.nuclear import (
     nuclear_binding_energy,
     nuclear_reaction_energy,
 )
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
-
-test_nuclear_table = [
-    [nuclear_binding_energy, "p", {}, 0 * u.J],
-    [nuclear_binding_energy, "n", {}, 0 * u.J],
-    [nuclear_binding_energy, "p", {}, 0 * u.J],
-    [nuclear_binding_energy, "H", {}, ParticleError],
-    [nuclear_binding_energy, "He-99", {}, InvalidParticleError],
-    [nuclear_binding_energy, "He", {"mass_numb": 99}, InvalidParticleError],
-    [nuclear_binding_energy, 3.1415926535j, {}, TypeError],
-    [mass_energy, "e-", {}, (const.m_e * const.c ** 2).to(u.J)],
-    [mass_energy, "p+", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "H-1", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "H-1 0+", {}, (const.m_p * const.c ** 2).to(u.J)],
-    [mass_energy, "n", {}, (const.m_n * const.c ** 2).to(u.J)],
-    [nuclear_reaction_energy, (), {"reactants": ["n"], "products": 3}, TypeError],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["n"], "products": ["He-4"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["h"], "products": ["H-1"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["e-", "n"], "products": ["p+"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["e+", "n"], "products": ["p-"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["ksdf"], "products": ["H-3"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["H"], "products": ["H-1"]},
-        ParticleError,
-    ],
-    [
-        nuclear_reaction_energy,
-        (),
-        {"reactants": ["p"], "products": ["n", "n", "e-"]},
-        ParticleError,
-    ],
-    [nuclear_reaction_energy, "H + H --> H", {}, ParticleError],
-    [nuclear_reaction_energy, "H + H", {}, ParticleError],
-    [nuclear_reaction_energy, 1, {}, TypeError],
-    [nuclear_reaction_energy, "H-1 + H-1 --> H-1", {}, ParticleError],
-    [nuclear_reaction_energy, "p --> n", {}, ParticleError],
-    [
-        nuclear_reaction_energy,
-        "p --> p",
-        {"reactants": "p", "products": "p"},
-        ParticleError,
-    ],
-]
 
 
-@pytest.mark.parametrize("test_inputs", test_nuclear_table)
-def test_nuclear(test_inputs):
-    run_test(*test_inputs, rtol=1e-3)
-
-
-test_nuclear_equivalent_calls_table = [
-    [nuclear_binding_energy, ["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
-]
-
-
-@pytest.mark.parametrize("test_inputs", test_nuclear_equivalent_calls_table)
-def test_nuclear_equivalent_calls(test_inputs):
-    run_test_equivalent_calls(test_inputs)
+def test_nuclear_equivalent_calls():
+    test_inputs = [["He-4", {}], ["alpha", {}], ["He", {"mass_numb": 4}]]
+    results = u.Quantity(
+        [
+            nuclear_binding_energy(argument, **kwargs)
+            for (argument, kwargs) in test_inputs
+        ]
+    )
+    # if these are all equivalent, they're equal to the mean
+    mean_result = results.mean()
+    assert_quantity_allclose(results, mean_result, rtol=0, atol=0 * u.J)
 
 
 def test_nuclear_binding_energy_D_T():
@@ -178,3 +107,22 @@ def test_nuclear_reaction_energy():
     expected = 17.6 * u.MeV
     actual = nuclear_reaction_energy(reactants=reactants, products=products)
     assert u.isclose(actual, expected, rtol=1e-3)
+
+
+table_of_nuclear_tests = [
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["n"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [mass_energy, ["e-"], {}, (const.m_e * const.c ** 2).to(u.J)],
+    [mass_energy, ["p+"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["H-1"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["H-1 0+"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["n"], {}, (const.m_n * const.c ** 2).to(u.J)],
+]
+
+
+@pytest.mark.parametrize(
+    ["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests
+)
+def test_nuclear_table(tested_object, args, kwargs, expected_value):
+    assert_quantity_allclose(tested_object(*args, **kwargs), expected_value, rtol=1e-3)
