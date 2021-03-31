@@ -482,20 +482,6 @@ tests_from_atomic = [
 ]
 
 
-# from test_atomic.py
-
-
-# The tables above do not include the function to be tested in order to
-# avoid cluttering up the code.  The following block of code prepends
-# the correct function to each list containing args, kwargs, and the
-# expected outcome prior to being passed through to run_test.
-
-
-all_tests = []
-
-# Set up tests for a variety of atomic functions to make sure that bad
-# inputs lead to the expected errors.
-
 atomic_TypeError_funcs_table = [
     atomic_symbol,
     isotope_symbol,
