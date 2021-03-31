@@ -511,11 +511,11 @@ def test_IonizationState_ionfracs_from_ion_input(ion):
     expected_ionic_fractions = np.zeros(ion_particle.atomic_number + 1)
     expected_ionic_fractions[ion_particle.integer_charge] = 1.0
 
-    if not np.allclose(expected_ionic_fractions, actual_ionic_fractions, atol=1e-16):
-        pytest.fail(
+    np.testing.assert_allclose(expected_ionic_fractions, actual_ionic_fractions, atol=1e-16,
+                               err_msg=
             f"The returned ionic fraction for IonizationState({repr(ion)}) "
             f"should have entirely been in the Z = {ion_particle.integer_charge} "
-            f"level, but was instead: {ionization_state.ionic_fractions}."
+            f"level."
         )
 
 
