@@ -232,7 +232,7 @@ table_functions_args_kwargs_output = [
 
 
 @pytest.mark.parametrize(
-    "tested_function args kwargs expected_output".split(),
+    "tested_function, args, kwargs, expected_output",
     table_functions_args_kwargs_output,
 )
 def test_functions_and_values(tested_function, args, kwargs, expected_output):

@@ -3,8 +3,6 @@ import pytest
 
 import plasmapy.utils.roman as roman
 
-from plasmapy.utils.pytest_helpers import run_test
-
 ints_and_roman_numerals = [
     (1, "I"),
     (2, "II"),
@@ -139,17 +137,16 @@ ints_and_roman_numerals = [
     (np.int64(14), "XIV"),
 ]
 
-toRoman_exceptions_table = [
-    ("X", TypeError),
-    (-1, roman.OutOfRangeError),
-    (0, roman.OutOfRangeError),
-    (5000, roman.OutOfRangeError),
-]
-
-fromRoman_exceptions_table = [
-    ("asdfasd", roman.InvalidRomanNumeralError),
-    (1, TypeError),
-    ("xi", roman.InvalidRomanNumeralError),
+exceptions_table = [
+    (roman.to_roman, "X", TypeError),
+    (roman.to_roman, -1, roman.OutOfRangeError),
+    (roman.to_roman, 0, roman.OutOfRangeError),
+    (roman.to_roman, 5000, roman.OutOfRangeError),
+    (roman.from_roman, "asdfasd", roman.InvalidRomanNumeralError),
+    (roman.from_roman, 1, TypeError),
+    (roman.from_roman, "xi", roman.InvalidRomanNumeralError),
+    (roman.is_roman_numeral, 1, TypeError),  # TODO: tbh I would just return False here?
+    (roman.is_roman_numeral, ("I", "II"), TypeError),
 ]
 
 
@@ -157,50 +154,32 @@ fromRoman_exceptions_table = [
 def test_to_roman(integer, roman_numeral):
     """
     Test that `~plasmapy.utils.roman.to_roman` correctly converts
-    integers to Roman numerals.
+    integers to Roman numerals, and that the inverse is true as well.
     """
-    run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
+    assert roman.to_roman(integer) == roman_numeral
+    assert roman.from_roman(roman_numeral) == int(integer)
 
 
-@pytest.mark.parametrize("integer, roman_numeral", ints_and_roman_numerals)
-def test_from_roman(integer, roman_numeral):
+@pytest.mark.parametrize("function, argument, expected_exception", exceptions_table)
+def test_to_roman_exceptions(function, argument, expected_exception):
     """
-    Test that `~plasmapy.utils.roman.from_roman` correctly converts
-    Roman numerals to integers.
-    """
-    run_test(func=roman.from_roman, args=roman_numeral, expected_outcome=int(integer))
-
-
-@pytest.mark.parametrize("input, expected_exception", toRoman_exceptions_table)
-def test_to_roman_exceptions(input, expected_exception):
-    """
-    Test that `~plasmapy.utils.roman.to_roman` raises the correct
+    Test that `~plasmapy.utils.roman` functions raise the correct
     exceptions when necessary.
     """
-    run_test(func=roman.to_roman, args=input, expected_outcome=expected_exception)
-
-
-@pytest.mark.parametrize("input, expected_exception", fromRoman_exceptions_table)
-def test_from_roman_exceptions(input, expected_exception):
-    """
-    Test that `~plasmapy.utils.roman.from_roman` raises the correct
-    exceptions when necessary.
-    """
-    run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)
+    with pytest.raises(expected_exception):
+        function(argument)
 
 
 test_is_roman_numeral_table = [
     ("I", True),
     ("i", False),
     ("CLXXXVIII", True),
-    (1, TypeError),
     ("khjfda", False),
     ("VIIII", False),
     ("IXX", False),
-    (("I", "II"), TypeError),
 ]
 
 
-@pytest.mark.parametrize("input, expected", test_is_roman_numeral_table)
-def test_is_roman_numeral(input, expected):
-    run_test(func=roman.is_roman_numeral, args=input, expected_outcome=expected)
+@pytest.mark.parametrize("argument, expected", test_is_roman_numeral_table)
+def test_is_roman_numeral(argument, expected):
+    assert roman.is_roman_numeral(argument) == expected
