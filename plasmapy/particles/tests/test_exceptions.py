@@ -4,6 +4,38 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError, In
 from plasmapy.particles import IonizationState, IonizationStateCollection, atomic_symbol, nuclear_binding_energy, nuclear_reaction_energy
 import pytest 
 # IonizationState
+from plasmapy.particles.exceptions import (
+    ChargeError,
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingParticleDataError,
+    ParticleError,
+    ParticleWarning,
+)
+from ..atomic import (
+    _is_electron,
+    atomic_number,
+    common_isotopes,
+    electric_charge,
+    half_life,
+    integer_charge,
+    is_stable,
+    isotopic_abundance,
+    known_isotopes,
+    mass_number,
+    particle_mass,
+    periodic_table_block,
+    periodic_table_category,
+    periodic_table_group,
+    periodic_table_period,
+    reduced_mass,
+    stable_isotopes,
+    standard_atomic_weight,
+)
+from ..isotopes import _isotopes
+from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
+from ..symbols import atomic_symbol, element_name, isotope_symbol
 
 tests_for_exceptions_IonizationState = [
     ("too few nstates", IonizationState, [], {"particle": "H", "ionic_fractions": [1.0]}, ParticleError),
@@ -218,8 +250,8 @@ tests_from_nuclear = [
     ],
     [
         nuclear_reaction_energy,
-     [],
-        {"reaction":"p --> p","reactants": "p", "products": "p"},
+        ["p --> p"],
+        {"reactants": "p", "products": "p"},
         ParticleError,
     ],
     [nuclear_binding_energy, ["H"], {}, ParticleError],
@@ -249,6 +281,99 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected_exceptio
     with pytest.raises(expected_exception):
         tested_object(*args, **kwargs)
 
+
+single_arg_only_test = [
+    [atomic_symbol, "H-0", InvalidParticleError],
+    [atomic_symbol, 3.14159, TypeError],
+    [atomic_symbol, "Og-294b", InvalidParticleError],
+    [atomic_symbol, "H-934361079326356530741942970523610389", InvalidParticleError],
+    [atomic_symbol, "Fe 2+4", InvalidParticleError],
+    [atomic_symbol, "Fe+24", InvalidParticleError],
+    [atomic_symbol, "Fe +59", InvalidParticleError],
+    [atomic_symbol, "C++++++++++++++++", InvalidParticleError],
+    [atomic_symbol, "C-++++", InvalidParticleError],
+    [atomic_symbol, "neutron", InvalidElementError],
+    [atomic_symbol, "n", InvalidElementError],
+    [atomic_symbol, "n-1", InvalidElementError],
+    [atomic_symbol, "h", InvalidParticleError],
+    [atomic_symbol, "d", InvalidParticleError],
+    [atomic_symbol, "he", InvalidParticleError],
+    [atomic_symbol, "au", InvalidParticleError],
+    [atomic_symbol, "p-", InvalidElementError],
+    [atomic_symbol, 0, InvalidParticleError],
+    [atomic_symbol, 119, InvalidParticleError],
+    [atomic_symbol, "antiproton", InvalidElementError],
+    [atomic_number, "H-3934", InvalidParticleError],
+    [atomic_number, "C-12b", InvalidParticleError],
+    [atomic_number, -1.5, TypeError],
+    [atomic_number, "n", InvalidElementError],
+    [atomic_number, "n-1", InvalidElementError],
+    [atomic_number, "neutron", InvalidElementError],
+    [atomic_number, "Neutron", InvalidElementError],
+    [atomic_number, "d", InvalidParticleError],
+    [atomic_number, "t", InvalidParticleError],
+    [atomic_number, "s-36", InvalidParticleError],
+    [mass_number, "H-359", InvalidParticleError],
+    [mass_number, "C-12b", InvalidParticleError],
+    [mass_number, -1.5, TypeError],
+    [mass_number, "N-13+-+-", InvalidParticleError],
+    [mass_number, "h-3", InvalidParticleError],
+    [mass_number, "n", InvalidIsotopeError],
+    [mass_number, "n-1", InvalidIsotopeError],
+    [element_name, "vegancupcakes", InvalidParticleError],
+    [element_name, "C-+-", InvalidParticleError],
+    [element_name, 1.24, TypeError],
+    [element_name, "n", InvalidElementError],
+    [element_name, "neutron", InvalidElementError],
+    [element_name, 0, InvalidParticleError],
+    [element_name, "H++", InvalidParticleError],
+    [element_name, "t", InvalidParticleError],
+    [element_name, "pb", InvalidParticleError],
+    [element_name, "d", InvalidParticleError],
+    [element_name, "h-3", InvalidParticleError],
+    [element_name, "Pb-9", InvalidParticleError],
+    [element_name, "H 2+", InvalidParticleError],
+    [standard_atomic_weight, "H-1", ParticleError],
+    [standard_atomic_weight, "help i'm trapped in a unit test", InvalidParticleError],
+    [standard_atomic_weight, 1.1, TypeError],
+    [standard_atomic_weight, "n", InvalidElementError],
+    [standard_atomic_weight, "p", ParticleError],
+    [standard_atomic_weight, "alpha", ParticleError],
+    [standard_atomic_weight, "deuteron", ParticleError],
+    [standard_atomic_weight, "tritium", ParticleError],
+    [standard_atomic_weight, "Au+", ParticleError],
+    [standard_atomic_weight, "Fe -2", ParticleError],
+    [standard_atomic_weight, "Og 2+", ParticleError],
+    [standard_atomic_weight, "h", InvalidParticleError],
+    [standard_atomic_weight, "fe", InvalidParticleError],
+    [electric_charge, "badinput", InvalidParticleError],
+    [electric_charge, "h+", InvalidParticleError],
+    [electric_charge, "Au 81+", InvalidParticleError],
+    [electric_charge, "Au 81-", ParticleWarning],
+    [electric_charge, "H---", ParticleWarning],
+    [integer_charge, "fads", InvalidParticleError],
+    [integer_charge, "H++", InvalidParticleError],
+    [integer_charge, "h+", InvalidParticleError],
+    [integer_charge, "fe 1+", InvalidParticleError],
+    [integer_charge, "d+", InvalidParticleError],
+    [integer_charge, "Fe 29+", InvalidParticleError],
+    [integer_charge, "H-1", ChargeError],
+    [integer_charge, "H---", ParticleWarning],
+    [integer_charge, "Fe -26", ParticleWarning],
+    [integer_charge, "Og 10-", ParticleWarning],
+]
+@pytest.mark.parametrize(["tested_object", "arg", "expected_exception"], single_arg_only_test)
+def test_single_arg_exceptions(tested_object, arg, expected_exception):
+    """
+    Test that appropriate exceptions are raised for inappropriate inputs
+    to `IonizationState`.
+    """
+    if issubclass(expected_exception, Warning):
+        with pytest.warns(expected_exception):
+            tested_object(arg)
+    elif issubclass(expected_exception, Exception):
+        with pytest.raises(expected_exception):
+            tested_object(arg)
 
 # from test_atomic.py
 
@@ -361,20 +486,5 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected_exceptio
 #     run_test(inputs)
 
 
-# # from test_nuclear.py
-# test_nuclear_table = [
-#     [nuclear_binding_energy, "p", {}, 0 * u.J],
-#     [nuclear_binding_energy, "n", {}, 0 * u.J],
-#     [nuclear_binding_energy, "p", {}, 0 * u.J],
-#     [mass_energy, "e-", {}, (const.m_e * const.c ** 2).to(u.J)],
-#     [mass_energy, "p+", {}, (const.m_p * const.c ** 2).to(u.J)],
-#     [mass_energy, "H-1", {}, (const.m_p * const.c ** 2).to(u.J)],
-#     [mass_energy, "H-1 0+", {}, (const.m_p * const.c ** 2).to(u.J)],
-#     [mass_energy, "n", {}, (const.m_n * const.c ** 2).to(u.J)],
-# ]
 
-
-# @pytest.mark.parametrize("test_inputs", test_nuclear_table)
-# def test_nuclear(test_inputs):
-#     run_test(*test_inputs, rtol=1e-3)
 

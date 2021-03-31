@@ -3,6 +3,7 @@ import pytest
 
 from astropy import constants as const
 from astropy import units as u
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
 from plasmapy.particles.nuclear import (
@@ -103,3 +104,20 @@ def test_nuclear_reaction_energy():
     expected = 17.6 * u.MeV
     actual = nuclear_reaction_energy(reactants=reactants, products=products)
     assert u.isclose(actual, expected, rtol=1e-3)
+
+table_of_nuclear_tests = [
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["n"], {}, 0 * u.J],
+    [nuclear_binding_energy, ["p"], {}, 0 * u.J],
+    [mass_energy, ["e-"], {}, (const.m_e * const.c ** 2).to(u.J)],
+    [mass_energy, ["p+"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["H-1"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["H-1 0+"], {}, (const.m_p * const.c ** 2).to(u.J)],
+    [mass_energy, ["n"], {}, (const.m_n * const.c ** 2).to(u.J)],
+]
+
+
+@pytest.mark.parametrize(["tested_object", "args", "kwargs", "expected_value"], table_of_nuclear_tests)
+def test_nuclear_table(tested_object, args, kwargs, expected_value):
+    assert_quantity_allclose(tested_object(*args, **kwargs), expected_value, rtol=1e-3) 
+
