@@ -14,7 +14,7 @@ from plasmapy.tests.helpers import (
 )
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyError, PlasmaPyWarning
-from plasmapy.utils.pytest_helpers import run_test, run_test_equivalent_calls
+from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 
 def generic_function(*args, **kwargs):
@@ -181,21 +181,6 @@ def func(x, raise_exception=False, issue_warning=False):
     elif issue_warning:
         warnings.warn("", UserWarning)
     return x
-
-
-inputs_table = [
-    (func, 1, 1),
-    (func, (2,), {}, 2),
-    (func, 3, {"raise_exception": True}, ValueError),
-    (func, 4, {"issue_warning": True}, UserWarning),
-    (func, 5, {"issue_warning": True}, (5, UserWarning)),
-]
-
-
-@pytest.mark.parametrize("inputs", inputs_table)
-def test_func(inputs):
-    """Test cases originally put in the docstring."""
-    run_test(inputs)
 
 
 # TODO: organize this in a namedtuple to improve readability?
