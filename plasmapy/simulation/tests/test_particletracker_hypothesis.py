@@ -6,11 +6,13 @@ try:
 except ImportError:
     pytestmark = pytest.mark.skip("Optional hypothesis test")
 else:
+    import numpy as np
+
     from astropy import units as u
+
+    from plasmapy.formulary.parameters import gyrofrequency
     from plasmapy.plasma.sources import AnalyticalFields
     from plasmapy.simulation import ParticleTracker
-    from plasmapy.formulary.parameters import gyrofrequency
-    import numpy as np
 
     def magnetic_field(r):
         return u.Quantity([4, 0, 0], u.T)

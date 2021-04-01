@@ -2,20 +2,20 @@
 
 __all__ = ["ParticleTracker", "ParticleTrackerAccessor"]
 
-import pathlib
-import warnings
-
 import numpy as np
+import pathlib
 import tqdm.auto
+import warnings
 import xarray
+
 from astropy import units as u
+from typing import Iterable, Union
 
 from plasmapy import formulary, particles
-from plasmapy.plasma import BasePlasma
 from plasmapy.particles import particle_input
+from plasmapy.plasma import BasePlasma
 from plasmapy.utils.decorators import validate_quantities
 
-from typing import Union, Iterable
 from . import particle_integrators
 
 
@@ -48,8 +48,9 @@ class ParticleTrackerAccessor:
 
     def plot_trajectories(self, *args, **kwargs):  # coverage: ignore
         r"""Draws trajectory history."""
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
@@ -74,8 +75,9 @@ class ParticleTrackerAccessor:
             Enable plotting of position component x, y, z for each of these
             letters included in `plot`.
         """
-        from astropy.visualization import quantity_support
         import matplotlib.pyplot as plt
+
+        from astropy.visualization import quantity_support
         from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
@@ -231,7 +233,7 @@ class ParticleTrackerAccessor:
             fig.write_frame()
         fig.close()
         if notebook_display:
-            from IPython.display import Video, display
+            from IPython.display import display, Video
 
             display(Video(str(filename), embed=True))
 

@@ -1,13 +1,14 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+
 from astropy import units as u
 from astropy.tests.helper import assert_quantity_allclose
 from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 
 from plasmapy import formulary
-from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.plasma.sources import AnalyticalFields
+from plasmapy.simulation.particletracker import ParticleTracker
 from plasmapy.utils.exceptions import PhysicsError
 
 
@@ -219,6 +220,7 @@ def test_particle_exb_drift(integrator_name):
         assert np.isclose(
             expected_drift_velocity, fit_velocity, atol=1e-3
         ), "x velocity doesn't agree with expected drift velocity!"
+
 
 if __name__ == "__main__":
     import pytest

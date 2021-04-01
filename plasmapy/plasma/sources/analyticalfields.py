@@ -6,10 +6,11 @@ varying as known functions of position.
 __all__ = ["AnalyticalFields"]
 
 import astropy.units as u
+import numpy as np
 
 from typing import Callable
+
 from plasmapy.plasma.plasma_base import GenericPlasma
-import numpy as np
 
 _volt_over_meter = u.V / u.m  # for performance reasons
 
