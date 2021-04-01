@@ -278,7 +278,7 @@ class ParticleTracker:
     _all_integrators = dict(**integrators, **_wip_integrators)
 
     @particle_input
-    @validate_quantities(dt=u.s)
+    @validate_quantities
     def __init__(
         self,
         plasma,
@@ -354,6 +354,11 @@ class ParticleTracker:
 
         _total_time = total_time.si.value
         _time = 0.0
+        actual_timesteps = _total_time // _dt
+        if snapshot_steps == None:
+            snapshot_steps = 1
+        else:
+            snapshot_steps = min([snapshot_steps, actual_timesteps])
         _snapshot_timestep = _total_time / snapshot_steps
         next_snapshot_update_time = _time + _snapshot_timestep
         _times = [_time]
@@ -386,12 +391,14 @@ class ParticleTracker:
                 potential_history = [self.plasma.potentials.copy()]
             else:
                 potential_history = None
+
             if progressbar:
                 pbar = tqdm.auto.tqdm(
                     total=snapshot_steps,
                     bar_format="{l_bar}{bar}| [{elapsed}<{remaining}, "
                     "{rate_fmt}{postfix}]",
                 )
+
             while _time < _total_time:
                 _time += _dt
                 i += 1
@@ -399,7 +406,6 @@ class ParticleTracker:
                 e = self.plasma._interpolate_E(_x)
                 integrator(_x, _v, b, e, _q, _m, _dt)
 
-                # TODO should be a list of dicts, probably)
                 if _time > next_snapshot_update_time:
                     next_snapshot_update_time += _snapshot_timestep
                     _position_history.append(_x.copy())
