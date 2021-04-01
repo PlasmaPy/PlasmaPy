@@ -10,8 +10,8 @@ jobs:
       - uses: actions/stale@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-pr-message: 'This PR is stale because it has been open for a year with no activity. Remove stale label or comment or this will be closed in 14 days.'
-          close-pr-message: 'This PR was closed because it has been stalled for a year with no activity.'
+          stale-pr-message: 'This pull request will be closed in 14 days due to a year of inactivity unless the stale label or comment is removed.''
+          close-pr-message: 'This pull request was closed because it has had no activity for the past year.'
           days-before-pr-stale: 365
           days-before-pr-close: 15
           # never close issues
