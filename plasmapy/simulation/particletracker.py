@@ -21,6 +21,7 @@ from . import particle_integrators
 
 @xarray.register_dataset_accessor("particletracker")
 class ParticleTrackerAccessor:
+    # TODO turn these into functions
     """Custom accessor for PlasmaPy particle simulations."""
 
     def __init__(self, xarray_obj: xarray.Dataset):
