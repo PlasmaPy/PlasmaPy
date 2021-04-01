@@ -1,5 +1,5 @@
 # these are dependencies required to build package documentaiton
-# ought to mirror 'docs' under options.extras_require in config.cfg
+# ought to mirror 'docs' under options.extras_require in setup.cfg
 -r extras.txt
 ipykernel
 ipywidgets
