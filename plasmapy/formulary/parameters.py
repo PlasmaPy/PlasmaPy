@@ -696,8 +696,9 @@ class _ThermalSpeed:
         return self._coefficients
 
     @staticmethod
+    @preserve_signature
     @njit
-    def unitless(T, mass, coef):
+    def lite(T, mass, coef):
         """A docstring for unitless."""
         return np.sqrt(coef * k_B_si_unitless * T / mass)
 
