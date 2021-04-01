@@ -58,6 +58,8 @@ from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
+    preserve_signature,
+    modify_docstring,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
