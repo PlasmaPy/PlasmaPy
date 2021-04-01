@@ -741,7 +741,7 @@ class _ThermalSpeed:
         except KeyError:
             raise ValueError("Method {method} not supported in thermal_speed")
 
-        speed = self.unitless(T=T.value, mass=mass.value, coef=coef)
+        speed = self.lite(T=T.value, mass=mass.value, coef=coef)
         return speed * u.m / u.s
 
 
