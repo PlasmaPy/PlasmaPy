@@ -1,0 +1,41 @@
+name: Greetings
+
+on:
+- pull_request_target
+# - issues
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        # issue-message: 'not currently posting messages for first interaction via issue'
+        pr-message: >+
+          Thanks for opening your first PR to PlasmaPy!
+
+          Someone should get around to looking into this PR soon. In the meantime,
+          there are a few things you could do:
+
+          * the "Checks" tab at the bottom of the pull request page runs our
+          test suite. Don't worry if something broke! We break stuff all the
+          time. Eventually, we'll want to get tests on this PR to pass before
+          merging it, though, so if you want to play detective (it's fun, try
+          it), you can start looking through any failing tests' logs and seeing
+          why they did. Of course, feel free to ask for help if you're having
+          trouble (we do that all the time, as well).
+
+          * if you'd like some real time help, the easiest way to do so is to
+          reach out to us at our [Matrix chat room, through the Element
+          client](https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org?via=matrix.org&via=openastronomy.org&via=gitter.im).
+          Otherwise, we've got [a development
+          guide](https://docs.plasmapy.org/en/latest/development/index.html)
+          you might find helpful.
+
+          * We try to be the best community we possibly can be. As part of that
+          effort, we have a [Code of
+          Conduct](https://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html)
+          that all contributors should follow.
+
+          And once more, thanks a ton and welcome to the community!
