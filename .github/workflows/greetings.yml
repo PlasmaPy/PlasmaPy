@@ -18,7 +18,7 @@ jobs:
           Someone should get around to looking into this PR soon. In the meantime,
           there are a few things you could do:
 
-          * the "Checks" tab at the bottom of the pull request page runs our
+          * The "Checks" tab at the bottom of the pull request page runs our
           test suite. Don't worry if something broke! We break stuff all the
           time. Eventually, we'll want to get tests on this PR to pass before
           merging it, though, so if you want to play detective (it's fun, try
@@ -26,7 +26,7 @@ jobs:
           why they did. Of course, feel free to ask for help if you're having
           trouble (we do that all the time, as well).
 
-          * if you'd like some real time help, the easiest way to do so is to
+          * If you'd like some real time help, the easiest way to do so is to
           reach out to us at our [Matrix chat room, through the Element
           client](https://matrix.to/#/!hkWCiyhQyxiYJlUtKF:matrix.org?via=matrix.org&via=openastronomy.org&via=gitter.im).
           Otherwise, we've got [a development
