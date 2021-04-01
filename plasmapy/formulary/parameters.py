@@ -684,12 +684,16 @@ def _thermal_speed(
 
 
 class _ThermalSpeed:
-    coefficients = {
+    _coefficients = {
         1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
         2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
         3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
     }
-    """A docstring for coefficients."""
+
+    @property
+    def coefficients(self):
+        """A docstring for coefficients."""
+        return self._coefficients
 
     @staticmethod
     @njit
