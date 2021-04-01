@@ -716,7 +716,17 @@ class _ThermalSpeed:
         mass: u.kg = None,
         ndim=3,
     ) -> u.m / u.s:
-        """A docstring for the __call__"""
+        """
+        This is the docstring defined in `_ThermalSpeed.__call__`.  It is inherited
+        by the function `thermal_speed` and thus would be written as if it's
+        the docstring for `thermal_speed` while in the `_ThermalSpeed` class.
+
+        Examples
+        --------
+
+        >>> thermal_speed(...)
+        >>> thermal_speed.lite(...)
+        """
         if mass is None:
             mass = particles.particle_mass(particle)
 
