@@ -1928,6 +1928,4 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
 
 DB_ = Bohm_diffusion
-""" Alias to :func:`Bohm_diffusion`. """
-
-from .aliases import parameters as aliases
+""" Alias to :func:`~plasmapy.formulary.parameters.Bohm_diffusion`. """
