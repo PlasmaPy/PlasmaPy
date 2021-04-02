@@ -17,12 +17,12 @@ def _generate_namespace(_name_, func_condition, mod_name_replacer):
 
 _generate_aliases = functools.partial(
     _generate_namespace,
-    condition=lambda name: not name.startswith("_") and name.endswith("_"),
+    func_condition=lambda name: not name.startswith("_") and name.endswith("_"),
     mod_name_replacer=lambda modname: modname.replace(".aliases", ""),
 )
 
 _generate_lite_versions = functools.partial(
     _generate_namespace,
-    condition=lambda name: name.endswith("lite"),
+    func_condition=lambda name: name.endswith("lite"),
     mod_name_replacer=lambda modname: modname.replace(".lite", ""),
 )
