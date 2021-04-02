@@ -60,8 +60,8 @@ from plasmapy.utils.decorators import (
     add_lite,
     angular_freq_to_hz,
     check_relativistic,
-    validate_quantities,
     preserve_signature,
+    validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -574,11 +574,7 @@ def thermal_speed_lite(T, mass, coeff):
 )
 @particles.particle_input
 def thermal_speed(
-    T: u.K,
-    particle: Particle,
-    method="most_probable",
-    mass: u.kg = None,
-    ndim=3,
+    T: u.K, particle: Particle, method="most_probable", mass: u.kg = None, ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
@@ -700,8 +696,7 @@ def thermal_speed(
     try:
         coeff = thermal_speed_coefficients[ndim]
     except KeyError:
-        raise ValueError(
-            "{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
     try:
         coeff = coeff[method]
     except KeyError:

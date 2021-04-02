@@ -155,10 +155,10 @@ def add_lite(flite, attrs=None, scope=None):
         raise ValueError(
             f"If 'attrs' are being bound to the decorate function, then 'scope'"
             f" needs to be defined and contain the objects to be bound.  "
-            f"Setting 'scope=globals()' will typically suffice.")
+            f"Setting 'scope=globals()' will typically suffice."
+        )
 
     def decorator(f):
-
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
@@ -167,12 +167,14 @@ def add_lite(flite, attrs=None, scope=None):
 
         setattr(wrapper, "lite", flite)
 
-        wrapper_doc += "\n\n" + inspect.cleandoc(f"""
-        .. note:: To increase usability of `{f.__name__}` several attributes/functions
-           are manually bound to this function.
-
-           - `{f.__name__}.lite` <--> `~{flite.__module__}.{flite.__name__}`
-        """)
+        wrapper_doc += "\n\n" + inspect.cleandoc(
+            f"""
+            .. note:: To increase usability of `{f.__name__}` several 
+               attributes/functions are manually bound to this function.
+    
+               - `{f.__name__}.lite` <--> `~{flite.__module__}.{flite.__name__}`
+            """
+        )
 
         for bound_name, attr_name in attrs:
             attr = scope[attr_name]
