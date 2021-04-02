@@ -1,7 +1,7 @@
 """
 Miscellaneous decorators for various package uses.
 """
-__all__ = ["modify_docstring", "preserve_signature"]
+__all__ = ["add_lite", "modify_docstring", "preserve_signature"]
 
 import functools
 import inspect
