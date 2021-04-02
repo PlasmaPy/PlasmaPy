@@ -26,6 +26,8 @@ from plasmapy.utils.decorators.checks import (
 )
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 from plasmapy.utils.decorators.helpers import (
-    add_lite, modify_docstring, preserve_signature,
+    add_lite,
+    modify_docstring,
+    preserve_signature,
 )
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities

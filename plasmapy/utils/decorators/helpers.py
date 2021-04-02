@@ -169,9 +169,9 @@ def add_lite(flite, attrs=None, scope=None):
 
         wrapper_doc += "\n\n" + inspect.cleandoc(
             f"""
-            .. note:: To increase usability of `{f.__name__}` several 
+            .. note:: To increase usability of `{f.__name__}` several
                attributes/functions are manually bound to this function.
-    
+
                - `{f.__name__}.lite` <--> `~{flite.__module__}.{flite.__name__}`
             """
         )
