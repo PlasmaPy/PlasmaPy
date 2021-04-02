@@ -55,11 +55,11 @@ from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
+    add_lite,
     angular_freq_to_hz,
     check_relativistic,
     validate_quantities,
     preserve_signature,
-    modify_docstring,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
