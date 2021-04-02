@@ -14,6 +14,7 @@ Plasma parameters (`plasmapy.formulary.parameters`)
 =======
 Aliases
 =======
+
 These are not star-imported when you do `from plasmapy.formulary.parameters import *` by default;
 you can do that through `from plasmapy.formulary.aliases.parameters import *`.
 
