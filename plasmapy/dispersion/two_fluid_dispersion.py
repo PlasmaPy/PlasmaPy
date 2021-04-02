@@ -41,8 +41,6 @@ def two_fluid_dispersion_solution(
     field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
 
-    **Aliases:** `tfds_`
-
     Parameters
     ----------
     B : `~astropy.units.Quantity`
@@ -346,7 +344,3 @@ def two_fluid_dispersion_solution(
             )
 
     return omega
-
-
-tfds_ = two_fluid_dispersion_solution
-""" Alias to :func:`two_fluid_dispersion_solution`. """
