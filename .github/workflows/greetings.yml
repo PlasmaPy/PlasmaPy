@@ -15,8 +15,11 @@ jobs:
         pr-message: >+
           Thanks for opening your first PR to PlasmaPy!
 
-          Someone should get around to looking into this PR soon. In the meantime,
-          there are a few things you could do:
+          Someone should get around to looking into this PR soon. Once they do, it
+          will have to pass through code review - this includes fixing bugs, edge cases,
+          simplifying or optimizing the implementation.
+          
+          In the meantime, there are a few things you could do:
 
           * The "Checks" tab at the bottom of the pull request page runs our
           test suite. Don't worry if something broke! We break stuff all the
