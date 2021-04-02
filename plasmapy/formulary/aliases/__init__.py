@@ -1,4 +1,3 @@
-from .collisions import *
 from .dimensionless import *
 from .drifts import *
 from .ionization import *

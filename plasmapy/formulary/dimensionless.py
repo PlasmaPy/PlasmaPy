@@ -12,9 +12,7 @@ __all__ = [
     "beta",
     "Mag_Reynolds",
     "quantum_theta",
-    "Re_",
     "Reynolds_number",
-    "Rm_",
 ]
 
 from astropy import constants

@@ -4,9 +4,6 @@ __all__ = [
     "diamagnetic_drift",
     "ExB_drift",
     "force_drift",
-    "vd_",
-    "veb_",
-    "vfd_",
 ]
 
 import astropy.units as u
