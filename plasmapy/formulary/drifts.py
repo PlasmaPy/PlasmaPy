@@ -17,7 +17,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
     r"""
     Calculate the diamagnetic fluid perpendicular drift.
 
-    **Aliases:** `vd_`
+    **Aliases:** `~plasmapy.formulary.aliases.drifts.vd_`
 
     Parameters
     ----------
@@ -68,7 +68,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
 
 vd_ = diamagnetic_drift
-""" Alias to :func:`diamagnetic_drift`. """
+""" Alias to :func:`~plasmapy.formulary.drifts.diamagnetic_drift`. """
 
 
 @validate_quantities
@@ -76,7 +76,7 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
     r"""
     Calculate the "electric cross magnetic" particle drift.
 
-    **Aliases:** `veb_`
+    **Aliases:** `~plasmapy.formulary.aliases.drifts.veb_`
 
     Parameters
     ----------
@@ -125,7 +125,7 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
 
 veb_ = ExB_drift
-""" Alias to :func:`ExB_drift`. """
+""" Alias to :func:`~plasmapy.formulary.drifts.ExB_drift`. """
 
 
 @validate_quantities
@@ -133,7 +133,7 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
     r"""
     Calculate the general force drift for a particle in a magnetic field.
 
-    **Aliases:** `vfd_`
+    **Aliases:** `~plasmapy.formulary.aliases.drifts.vfd_`
 
     Parameters
     ----------
@@ -183,4 +183,4 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
 
 vfd_ = force_drift
-""" Alias to :func:`force_drift`. """
+""" Alias to :func:`~plasmapy.formulary.drifts.force_drift`. """

@@ -43,7 +43,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     Lorentz factor, :math:`m` is the mass of the particle, and
     :math:`V` is the velocity of the particle.
 
-    **Aliases:** `lambdaDB_`
+    **Aliases:** `~plasmapy.formulary.aliases.quantum.lambdaDB_`
 
     Parameters
     ----------
@@ -132,7 +132,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
 
 lambdaDB_ = deBroglie_wavelength
-""" Alias to :func:`deBroglie_wavelength`. """
+""" Alias to :func:`~plasmapy.formulary.quantum.deBroglie_wavelength`. """
 
 
 @validate_quantities(
@@ -143,7 +143,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
     r"""
     Calculate the thermal de Broglie wavelength for electrons.
 
-    **Aliases:** `lambdaDB_th_`
+    **Aliases:** `~plasmapy.formulary.aliases.quantum.lambdaDB_th_`
 
     Parameters
     ----------
@@ -191,7 +191,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
 
 lambdaDB_th_ = thermal_deBroglie_wavelength
-""" Alias to :func:`thermal_deBroglie_wavelength`. """
+""" Alias to :func:`~plasmapy.formulary.quantum.thermal_deBroglie_wavelength`. """
 
 
 @validate_quantities(
@@ -201,7 +201,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     r"""
     Calculate the kinetic energy in a degenerate electron gas.
 
-    **Aliases:** `Ef_`
+    **Aliases:** `~plasmapy.formulary.aliases.quantum.Ef_`
 
     Parameters
     ----------
@@ -258,7 +258,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
 
 Ef_ = Fermi_energy
-""" Alias to :func:`Fermi_energy`. """
+""" Alias to :func:`~plasmapy.formulary.quantum.Fermi_energy`. """
 
 
 @validate_quantities(

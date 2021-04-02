@@ -152,7 +152,7 @@ def Reynolds_number(
 
         Re = \frac{ρ U L}{μ}
 
-    **Aliases:** `Re_`
+    **Aliases:** `~plasmapy.formulary.aliases.parameters.Re_`
 
     Parameters
     ----------
@@ -212,7 +212,7 @@ def Reynolds_number(
 
 
 Re_ = Reynolds_number
-""" Alias to :func:`Reynolds_number`. """
+""" Alias to :func:`~plasmapy.formulary.dimensionless.Reynolds_number`. """
 
 
 @validate_quantities(U={"can_be_negative": True})
@@ -231,7 +231,7 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     where :math:`η = \frac{1}{μ_0 σ}`
     and :math:`μ_0` is the permeability of free space.
 
-    **Aliases:** `Rm_`
+    **Aliases:** `~plasmapy.formulary.aliases.parameters.Rm_`
 
     Parameters
     ----------
@@ -286,4 +286,4 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
 
 Rm_ = Mag_Reynolds
-""" Alias to :func:`Mag_Reynolds`. """
+""" Alias to :func:`~plasmapy.formulary.dimensionless.Mag_Reynolds`. """

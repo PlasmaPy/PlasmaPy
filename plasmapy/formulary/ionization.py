@@ -37,7 +37,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     :math:`a_0` is the Bohr radius, and
     :math:`E_H` is the ionization energy of Hydrogen
 
-    **Aliases:** `Z_bal_`
+    **Aliases:** `~plasmapy.formulary.aliases.parameters.Z_bal_`
 
     Parameters
     ----------
