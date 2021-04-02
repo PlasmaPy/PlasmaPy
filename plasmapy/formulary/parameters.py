@@ -535,6 +535,7 @@ def ion_sound_speed(
 cs_ = ion_sound_speed
 """ Alias to :func:`ion_sound_speed`. """
 
+# -----                                                             thermal_speed  -----
 
 # This dictionary defines coefficients for thermal speeds
 # calculated for different methods and values of ndim.
@@ -560,6 +561,12 @@ def thermal_speed_lite(T, mass, coeff):
     """
     return np.sqrt(coeff * k_B_si_unitless * T / mass)
 
+
+@add_lite(
+    thermal_speed_lite,
+    attrs=[("coefficients", "thermal_speed_coefficients")],
+    scope=globals(),
+)
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -577,7 +584,9 @@ def thermal_speed(
     Return the most probable speed for a particle within a Maxwellian
     distribution.
 
-    **Aliases:** `vth_`
+    **Aliases:** `~plasmapy.formulary.parameters.vth_`
+
+    **Lightwieght Version:** `~plasmapy.formulary.parameters.thermal_speed_lite`
 
     Parameters
     ----------
@@ -703,7 +712,9 @@ def thermal_speed(
 
 
 vth_ = thermal_speed
-""" Alias to :func:`thermal_speed`. """
+""" Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+
+# -----                                                          thermal_pressure  -----
 
 
 @validate_quantities(
