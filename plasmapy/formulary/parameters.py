@@ -30,6 +30,8 @@ __all__ = [
     "rhoc_",
     "thermal_pressure",
     "thermal_speed",
+    "thermal_speed_coefficients",
+    "thermal_speed_lite",
     "ub_",
     "upper_hybrid_frequency",
     "va_",
