@@ -564,11 +564,11 @@ def thermal_speed_lite(T, mass, coeff):
     mass={"can_be_negative": False, "can_be_nan": True},
 )
 @particles.particle_input
-def _thermal_speed(
+def thermal_speed(
     T: u.K,
     particle: Particle,
     method="most_probable",
-    mass: u.kg = np.nan * u.kg,
+    mass: u.kg = None,
     ndim=3,
 ) -> u.m / u.s:
     r"""
@@ -682,84 +682,24 @@ def _thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
     """
-    m = mass if np.isfinite(mass) else particles.particle_mass(particle)
+    if mass is None:
+        mass = particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     try:
-        coef = _coefficients[ndim]
+        coeff = thermal_speed_coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError(
+            "{ndim} is not a supported value for ndim in thermal_speed")
     try:
-        coef = coef[method]
+        coeff = coeff[method]
     except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return np.sqrt(coef * k_B * T / m)
+    speed = thermal_speed_lite(T=T.value, mass=mass.value, coeff=coeff)
+    return speed * u.m / u.s
 
 
-class _ThermalSpeed:
-    _coefficients = {
-        1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
-        2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
-        3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
-    }
-
-    @property
-    def coefficients(self):
-        """A docstring for coefficients."""
-        return self._coefficients
-
-    @staticmethod
-    @preserve_signature
-    @njit
-    def lite(T, mass, coef):
-        """A docstring for unitless."""
-        return np.sqrt(coef * k_B_si_unitless * T / mass)
-
-    @check_relativistic
-    @validate_quantities(
-        T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-        mass={"can_be_negative": False, "can_be_nan": True},
-    )
-    @particles.particle_input
-    def __call__(
-        self,
-        T: u.K,
-        particle: Particle,
-        method="most_probable",
-        mass: u.kg = None,
-        ndim=3,
-    ) -> u.m / u.s:
-        """
-        This is the docstring defined in `_ThermalSpeed.__call__`.  It is inherited
-        by the function `thermal_speed` and thus would be written as if it's
-        the docstring for `thermal_speed` while in the `_ThermalSpeed` class.
-
-        Examples
-        --------
-
-        >>> thermal_speed(...)
-        >>> thermal_speed.lite(...)
-        """
-        if mass is None:
-            mass = particles.particle_mass(particle)
-
-        # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-        try:
-            coef = self.coefficients[ndim]
-        except KeyError:
-            raise ValueError(
-                "{ndim} is not a supported value for ndim in thermal_speed")
-        try:
-            coef = coef[method]
-        except KeyError:
-            raise ValueError("Method {method} not supported in thermal_speed")
-
-        speed = self.lite(T=T.value, mass=mass.value, coef=coef)
-        return speed * u.m / u.s
-
-
-thermal_speed = _ThermalSpeed()
 vth_ = thermal_speed
 """ Alias to :func:`thermal_speed`. """
 
