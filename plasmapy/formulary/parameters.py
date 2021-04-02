@@ -549,6 +549,14 @@ Dictionary of various coefficients used in calculating the
 """
 
 
+@preserve_signature
+@njit
+def thermal_speed_lite(T, mass, coeff):
+    """
+    A lite weight version of `thermal_speed` intended for computational used
+    and, thus, does not do any argument validation/conditioning.
+    """
+    return np.sqrt(coeff * k_B_si_unitless * T / mass)
 
 @check_relativistic
 @validate_quantities(
