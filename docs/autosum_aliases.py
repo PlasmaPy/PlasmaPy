@@ -5,7 +5,6 @@ import os
 import re
 import sys
 
-from docutils.parsers.rst.directives import flag
 from sphinx.application import Sphinx
 from sphinx.ext.autosummary import Autosummary
 from sphinx.util import logging
