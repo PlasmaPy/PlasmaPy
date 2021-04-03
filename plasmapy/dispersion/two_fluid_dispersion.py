@@ -1,4 +1,4 @@
-__all__ = ["two_fluid_dispersion_solution", "tfds_"]
+__all__ = ["two_fluid_dispersion_solution"]
 
 import astropy.units as u
 import numpy as np
