@@ -263,5 +263,11 @@ nbsphinx_prolog = r"""
 
 
 def setup(app: Sphinx) -> None:
+
+    # from . import autosum_aliases
+
+    # app.setup_extension(autosum_aliases.__name__)
+    app.setup_extension("autosum_aliases")
+
     app.add_config_value("revision", "", True)
     app.add_stylesheet("rtd_theme_overrides.css")
