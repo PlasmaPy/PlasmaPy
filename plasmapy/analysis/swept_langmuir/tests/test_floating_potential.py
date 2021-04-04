@@ -12,6 +12,7 @@ from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as _sl
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     find_floating_potential,
+    find_vf_,
     FloatingPotentialResults,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
@@ -50,6 +51,10 @@ class TestFindFloatingPotential:
     _linear_current = np.linspace(-3.1, 4.1, 70)
     _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
     _exp_current = -1.3 + 2.2 * np.exp(_voltage)
+
+    def test_alias(self):
+        """Test the associated alias(es) is(are) defined correctly."""
+        assert find_vf_ is find_floating_potential
 
     def test_call_of_check_sweep(self):
         """
