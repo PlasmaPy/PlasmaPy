@@ -1,4 +1,3 @@
-Remove aliases: `tfds` to `~plasmapy.dispersion.two_fluid_dispersion_solution`
-and `find_vf_` to `~plasmapy.analysis.swept_langmuir.find_floating_potential`,
+Remove alias: `tfds` to `~plasmapy.dispersion.two_fluid_dispersion_solution`,
 with the reasoning behind the removal outlined in `#1101
 <https://github.com/PlasmaPy/PlasmaPy/pull/1101#issue-608337879>`_
