@@ -1,5 +1,5 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
-__all__ = ["find_floating_potential"]
+__all__ = ["find_floating_potential", "find_vf_"]
 
 import numbers
 import numpy as np
@@ -29,6 +29,8 @@ def find_floating_potential(
     (IV) curve obtained from a swept Langmuir probe.  The floating potential is
     the probe bias where the collected current equals zero :math:`I = 0`.  (For
     additional details see the **Notes** section below.)
+
+    **Aliases:** `find_vf_`
 
     Parameters
     ----------
@@ -292,3 +294,7 @@ def find_floating_potential(
     rtn.update({"rsq": fit_func.rsq, "indices": slice(istart, istop + 1)})
 
     return FloatingPotentialResults(**rtn)
+
+
+find_vf_ = find_floating_potential
+"""Alias to :func:`find_floating_potential`."""
