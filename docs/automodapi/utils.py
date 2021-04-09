@@ -1,4 +1,4 @@
-__all__ = ["find_mod_objs"]
+__all__ = ["automod_groupings", "find_mod_objs"]
 
 import inspect
 import sys
