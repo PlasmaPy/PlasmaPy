@@ -1,7 +1,9 @@
 import os
 import re
 
+from jinja2 import TemplateNotFound
 from sphinx.application import Sphinx
+from sphinx.builders import Builder
 from sphinx.ext.autodoc.mock import mock
 from sphinx.ext.autosummary import (
     Autosummary,
@@ -17,7 +19,9 @@ from sphinx.ext.autosummary.generate import (
 from sphinx.locale import __
 from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Union
+
+from . import templates_dir
 
 from .utils import find_mod_objs, automod_groupings
 
@@ -30,6 +34,33 @@ def option_str_list(argument):
         raise ValueError("argument required but none supplied")
     else:
         return [s.strip() for s in argument.split(",")]
+
+
+class AutomodsummRenderer(AutosummaryRenderer):
+    def __init__(self, app: Union[Builder, Sphinx], template_dir: str = None) -> None:
+
+        asumm_path = templates_dir
+        relpath = os.path.relpath(asumm_path, start=app.srcdir)
+        app.config.templates_path.append(relpath)
+        super().__init__(app, template_dir)
+
+    def render(self, template_name: str, context: Dict) -> str:
+        """Render a template file."""
+        if not template_name.endswith(".rst"):
+            # if does not have '.rst' then objtype likely given for template_name
+            template_name += ".rst"
+
+        template = None
+        for name in [template_name, "base.rst"]:
+            for _path in ["", "automodapi/", "autosummary/"]:
+                try:
+                    template = self.env.get_template(_path + name)
+                    return template.render(context)
+                except TemplateNotFound:
+                    pass
+
+        if template is None:
+            raise TemplateNotFound
 
 
 class AutomodsummOptions:
@@ -282,7 +313,7 @@ class GenDocsFromAutomodsumm:
                 os.path.join(base_path, filename) for filename in source_filenames
             ]
 
-        template = AutosummaryRenderer(app)
+        template = AutomodsummRenderer(app)
 
         # read
         items = self.find_in_files(source_filenames)
@@ -320,6 +351,23 @@ class GenDocsFromAutomodsumm:
             context = {}
             if app:
                 context.update(app.config.autosummary_context)
+
+
+            # doc = get_documenter(app, obj, parent)
+            # ns = {}
+            # ns.update(app.config.autosummary_context)
+            # ns.update({
+            #     "fullname": name,
+            #     "module": modname,
+            #     "objname": qualname,
+            #     "name": qualname.rsplit(".", 1)[-1],
+            #     "objtype": doc.objtype,
+            #     "underline": len(name) * "=",
+            # })
+            # self.logger.info(
+            #     f"[Automodsumm2] templates \n{template.render(doc.objtype, ns)}"
+            #     # f"[Automodsumm2] templates {ns}"
+            # )
 
             content = generate_autosummary_content(
                 name,
@@ -458,13 +506,14 @@ class GenDocsFromAutomodsumm:
 
 
 def setup_autosummary(app: Sphinx):
-    import sphinx_automodapi
+    # import sphinx_automodapi
 
     app.setup_extension("sphinx.ext.autosummary")
 
-    app.config.templates_path.append(
-        os.path.join(sphinx_automodapi.__path__[0], "templates")
-    )
+    # app.config.templates_path.append(
+    #     os.path.join(sphinx_automodapi.__path__[0], "templates")
+    # )
+
     # app.setup_extension(autodoc_enhancements.__name__)
     # app.setup_extension("sphinx.ext.inheritance_diagram")
 
