@@ -505,7 +505,7 @@ class GenDocsFromAutomodsumm:
         return documented
 
 
-def setup_autosummary(app: Sphinx):
+def setup(app: Sphinx):
     # import sphinx_automodapi
 
     app.setup_extension("sphinx.ext.autosummary")
