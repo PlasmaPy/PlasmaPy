@@ -33,16 +33,8 @@ from plasmapy import __version__ as release
 
 autosummary_generate = True
 automod_custom_groups = {
-    "aliases": {
-        "title": "Aliases",
-        "descr": "",
-        "dunder": "__aliases__",
-    },
-    "lite-functions": {
-        "title": "Lite Functions",
-        "descr": "",
-        "dunder": "__flites__",
-    }
+    "aliases": {"title": "Aliases", "descr": "", "dunder": "__aliases__",},
+    "lite-functions": {"title": "Lite Functions", "descr": "", "dunder": "__flites__",},
 }
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -283,7 +275,7 @@ def setup(app: Sphinx) -> None:
     #
     # setup_automodsumm(app)
 
-    from automodapi import setup as setup_automodapi
+    from .automodapi import setup as setup_automodapi
 
     setup_automodapi(app)
 
