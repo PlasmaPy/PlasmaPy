@@ -31,6 +31,20 @@ from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
 
+autosummary_generate = True
+automod_custom_groups = {
+    "aliases": {
+        "title": "Aliases",
+        "descr": "",
+        "dunder": "__aliases__",
+    },
+    "lite-functions": {
+        "title": "Lite Functions",
+        "descr": "",
+        "dunder": "__flites__",
+    }
+}
+
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
@@ -265,10 +279,13 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
 
-    import autosum_aliases
+    # from automodapi.automodsumm import setup as setup_automodsumm
+    #
+    # setup_automodsumm(app)
 
-    app.setup_extension(autosum_aliases.__name__)
-    # app.setup_extension("autosum_aliases")
+    from automodapi import setup as setup_automodapi
+
+    setup_automodapi(app)
 
     app.add_config_value("revision", "", True)
     app.add_stylesheet("rtd_theme_overrides.css")
