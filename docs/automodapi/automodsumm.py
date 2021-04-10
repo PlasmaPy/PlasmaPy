@@ -75,11 +75,11 @@ class AutomodsummOptions:
     def __init__(self, app: Sphinx, modname: str, options: Dict[str, Any], _warn: Callable = None):
         self.app = app
         self.modname = modname
-        self.options = options
+        self.options = options.copy()
         self.warn = _warn if _warn is not None else self.logger.warning
 
     @property
-    def mod_objs(self):
+    def mod_objs(self) -> Dict[str, Dict[str, Any]]:
         return find_mod_objs(self.modname, app=self.app)
 
     @property
@@ -92,7 +92,109 @@ class AutomodsummOptions:
     def custom_groups_defs(self):
         return self.app.config.automod_custom_groups
 
+    @property
+    def mod_objs_option_filtered(self) -> Dict[str, Dict[str, Any]]:
+        try:
+            mod_objs = self.mod_objs
+        except ImportError:
+            mod_objs = {}
+            self.warn(f"Could not import module {self.modname}")
+
+        # define groupings to include
+        allowed_args = self.groupings | {"all"}
+        do_groups = self.groupings
+        if "groups" in self.options:
+            opt_args = set(self.options["groups"])
+
+            unknown_args = opt_args - allowed_args
+            if len(unknown_args) > 0:
+                self.warn(
+                    f"Option 'groups' has unrecognized arguments "
+                    f"{unknown_args}. Ignoring."
+                )
+                opt_args = opt_args - unknown_args
+
+            if "all" not in opt_args:
+                do_groups = opt_args
+
+        # exclude groupings
+        if "exclude-groups" not in self.options:
+            if "groups" not in self.options:
+                opt_args = {"modules"}
+            else:
+                opt_args = set()
+        else:
+            opt_args = set(self.options["exclude-groups"])
+
+        unknown_args = opt_args - allowed_args
+        if len(unknown_args) > 0:
+            self.warn(
+                f"Option 'exclude-groups' has unrecognized arguments "
+                f"{unknown_args}. Ignoring."
+            )
+            opt_args = opt_args - unknown_args
+        elif "all" in opt_args:
+            self.warn(
+                f"Arguments of 'groups' and 'exclude-groups' results in "
+                f"no content."
+            )
+            return {}
+
+        do_groups = do_groups - opt_args
+
+        # remove excluded groups
+        for group in list(mod_objs):
+            if group not in do_groups:
+                del mod_objs[group]
+
+        # objects to skip
+        skip_names = set()
+        if "skip" in self.options:
+            skip_names = set(self.options["skip"])
+
+        # filter out skipped objects
+        for group in list(mod_objs.keys()):
+
+            names = mod_objs[group]["names"]
+            qualnames = mod_objs[group]["qualnames"]
+            objs = mod_objs[group]["objs"]
+
+            names_filtered = []
+            qualnames_filtered = []
+            objs_filtered = []
+
+            for name, qualname, obj in zip(names, qualnames, objs):
+                if not (name in skip_names or qualname in skip_names):
+                    names_filtered.append(name)
+                    qualnames_filtered.append(qualname)
+                    objs_filtered.append(obj)
+
+            if len(names) == 0:
+                del mod_objs[group]
+                continue
+
+            mod_objs[group] = {
+                "names": names_filtered,
+                "qualnames": qualnames_filtered,
+                "objs": objs_filtered,
+            }
+        return mod_objs
+
     def generate_obj_list(self) -> List[str]:
+
+        mod_objs = self.mod_objs_option_filtered
+
+        if not bool(mod_objs):
+            return []
+
+        # gather content
+        content = []
+        for group in mod_objs:
+            content.extend(mod_objs[group]["qualnames"])
+
+        return sorted(content)
+
+    def generate_obj_list_old(self) -> List[str]:
         try:
             mod_objs = self.mod_objs
         except ImportError:
