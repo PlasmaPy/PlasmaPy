@@ -119,6 +119,7 @@ exclude_patterns = [
     ".DS_Store",
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
+    "automodapi",
 ]
 
 
