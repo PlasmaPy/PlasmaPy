@@ -22,7 +22,6 @@ from sphinx.util.osutil import ensuredir
 from typing import Any, Callable, Dict, List, Union
 
 from . import templates_dir
-
 from .utils import find_mod_objs, automod_groupings
 
 
@@ -316,7 +315,7 @@ class GenDocsFromAutomodsumm:
         "automodsumm": re.compile(
             r"^\n?(\s*)\.\.\s+automodsumm2::\s*(\S+)\s*(?:\n|$)"
         ),
-        "automodapi": re.compile(r"^\n?(\s*)\.\.\s+automodapi::\s*(\S+)\s*(?:\n|$)"),
+        "automodapi": re.compile(r"^\n?(\s*)\.\.\s+automodapi2::\s*(\S+)\s*(?:\n|$)"),
         "option": re.compile(r"^\n?(\s+):(\S*):\s*(\S.*|)\s*(?:\n|$)"),
         "currentmodule": re.compile(
             r"^\s*\.\.\s+(|\S+:)(current)?module::\s*([a-zA-Z0-9_.]+)\s*$"
@@ -454,7 +453,6 @@ class GenDocsFromAutomodsumm:
             if app:
                 context.update(app.config.autosummary_context)
 
-
             # doc = get_documenter(app, obj, parent)
             # ns = {}
             # ns.update(app.config.autosummary_context)
@@ -533,49 +531,68 @@ class GenDocsFromAutomodsumm:
 
         Find out what items appear in automodsumm:: directives in the given lines.
         """
+
+        from .automodapi import AutomodapiOptions
+
         documented = []  # type: List[AutosummaryEntry]
 
         current_module = None
         modname = ""
 
         base_indent = ""
-        default_options = {
-            "recursive": False,
-            "toctree": None,
-            "template": None,
-        }  # type: Dict[str, Any]
-        options = default_options.copy()
+        options = {}  # type: Dict[str, Any]
 
-        in_automodsumm = False
+        _option_cls = None
+
+        in_automod_directive = False
         gather_objs = False
 
         for line in lines:
             # looking for option `   :option: option_args`
-            if in_automodsumm:
+            if in_automod_directive:
                 match = self._re["option"].search(line)
                 if match is not None:
                     option_name = match.group(2)
                     option_args = match.group(3)
                     try:
                         option_args = \
-                            AutomodsummOptions.option_spec[option_name](option_args)
-                    except KeyError:
+                            _option_cls.option_spec[option_name](option_args)
+                        options[option_name] = option_args
+                    except (KeyError, TypeError):
                         pass
-                    options[option_name] = option_args
                 else:
                     # done reading options
-                    in_automodsumm = False
+                    in_automod_directive = False
                     gather_objs = True
 
             # looking for `.. automodsumm:: <modname>`
             match = self._re["automodsumm"].search(line)
             if match is not None:
-                in_automodsumm = True
+
+                self.logger.info("[Automodsumm]  !!! found automodsumm2 !!!!")
+
+                in_automod_directive = True
                 base_indent = match.group(1)
                 modname = match.group(2)
                 if current_module is not None \
                         and not modname.startswith(f"{current_module}."):
                     modname = f"{current_module}.{modname}"
+                _option_cls = AutomodsummOptions
+                continue
+
+            # looking for `.. automodapi:: <modname>`
+            match = self._re["automodapi"].search(line)
+            if match is not None:
+
+                self.logger.info("[Automodsumm]  !!! found automodapi2 !!!!")
+
+                in_automod_directive = True
+                base_indent = match.group(1)
+                modname = match.group(2)
+                if current_module is not None \
+                        and not modname.startswith(f"{current_module}."):
+                    modname = f"{current_module}.{modname}"
+                _option_cls = AutomodapiOptions
                 continue
 
             # looking for `.. py:currentmodule:: <current_module>`
@@ -586,23 +603,30 @@ class GenDocsFromAutomodsumm:
 
             # gather objects and update documented list
             if gather_objs:
-                process_options = AutomodsummOptions(
+                process_options = _option_cls(
                     self.app, modname, options, _warn=self.logger.warning,
                 )
-                self.logger.info(f"Processing {modname} with options {options}")
+                options = process_options.options
+                options["toctree"] = options.get("toctree", None)
+                options["template"] = options.get("template", None)
+                options["recursive"] = options.get("recursive", False)
+
                 obj_list = process_options.generate_obj_list()
+
                 for name in obj_list:
                     documented.append(
                         AutosummaryEntry(
-                            name,
-                            options["toctree"],
-                            options["template"],
-                            options["recursive"],
+                            name=name,
+                            path=options["toctree"],
+                            template=options["template"],
+                            recursive=options["recursive"],
                         )
                     )
 
-                options = default_options.copy()
+                # reset for next search
+                options = {}
                 gather_objs = False
+                _option_cls = None
 
         return documented
 
