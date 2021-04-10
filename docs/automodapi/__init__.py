@@ -1,5 +1,5 @@
 # The code here was adapted from v0.14.0.dev0 of sphinx_automodapi
-__all__ = ["package_dir"]
+__all__ = ["package_dir", "templates_dir"]
 
 import os
 
@@ -10,12 +10,9 @@ package_dir = os.path.abspath(os.path.dirname(__file__))
 templates_dir = os.path.join(package_dir, "templates")
 
 
-from .automodapi import setup_automodapi
-from .automodsumm import setup_autosummary
-
-
 def setup(app: Sphinx):
-    setup_automodapi(app)
-    # setup_autosummary(app)
+    from .automodapi import setup as setup_automodapi
 
-    return {"parallel_read_safe": True, "parallel_write_safe": True}
+    rtn = setup_automodapi(app)
+
+    return rtn
