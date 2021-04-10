@@ -4,13 +4,7 @@
 Plasma parameters (`plasmapy.formulary.parameters`)
 ***************************************************
 
-.. automodapi:: plasmapy.formulary.parameters
-   :no-heading:
-
-Aliases
--------
-
-.. autosum_aliases:: plasmapy.formulary.parameters
+.. automodapi2:: plasmapy.formulary.parameters
 
 
 .. nbgallery::
