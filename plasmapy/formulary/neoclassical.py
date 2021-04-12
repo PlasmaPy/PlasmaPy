@@ -138,6 +138,7 @@ def M_script(species_a, all_species):
     def gener():
         for species_b in all_species:
             if species_b is not species_a:  # direct comparison glitches out
+                # TODO am I sure this if is necessary here?
                 yield M_matrix(
                     species_a, species_b
                 ) * effective_momentum_relaxation_rate(species_a, species_b)
