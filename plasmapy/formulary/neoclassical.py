@@ -369,7 +369,6 @@ if __name__ == "__main__":
         T_e=10 * u.eV,
     )
     hydrogen = all_species["H"]
-    breakpoint()
     ν_T_ai(1.0495932305582267e-05, 1, hydrogen, all_species)
 
 def rbar_sources(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
@@ -381,8 +380,6 @@ def rbar_sources(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
         beta_cx = np.zeros(3)  # TODO
         beta_an = np.zeros(3)  # TODO
         beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
-    pressures = (a.number_densities * constants.k_B * a.T_e).to(u.Pa)
-
     num_charge_states = len(a.integer_charges)
     temperatures = u.Quantity([a.T_e] * num_charge_states)
 
@@ -442,6 +439,7 @@ def get_flows(
     beta_coeffs = None,
 ):
     fs = flux_surface
+    # rbar_sources ABSOLUTELY needs a bloody rework to do stuff simultaneously
     rhs = np.concatenate([rbar_sources(a, all_species, fs, beta_coeffs = beta_coeffs) for a in all_species]).si
     if beta_coeffs is not None:
         # TODO should be a dict or sth
@@ -456,13 +454,7 @@ def get_flows(
     
     outputs = {}
     for I, a in enumerate(all_species):
-        pressures = (a.number_densities * constants.k_B * a.T_e).to(u.Pa)
-
-        num_charge_states = len(a.integer_charges)
-        temperatures = u.Quantity([a.T_e] * num_charge_states)
-        # but not this, this is dervied
         # use Eq31 to get charge state flows from isotopic flows
-
         def gen():
             i = 3 * I
             for J, b in enumerate(all_species):
@@ -477,7 +469,7 @@ def get_flows(
         for i, ai in enumerate(a):
             μ = mu_hat(i, a, all_species, fs)
             Aai = xi[i] * M - μ - beta_coeffs
-            S_ai = xi[i] * np.eye(3) * Λ.reshape(1, -1)  # TODO np.diag(Δ)?
+            S_ai = xi[i] * np.diag(Λ)  # TODO np.diag(Δ)?
             rai_as_rows = np.linalg.solve(Aai, S_ai)
             order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value # TODO fix units
 

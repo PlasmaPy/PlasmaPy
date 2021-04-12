@@ -117,7 +117,6 @@ def test_K_ps_ai(x, flux_surface):
 def test_get_flows(
     flux_surface
 ):
-    breakpoint()
     result = get_flows(
         all_species,
         flux_surface,
@@ -130,6 +129,5 @@ def test_get_flows(
             "C 1+": -10 * u.K / u.m,
         }
     )
-    breakpoint()
     for r in result.values():
         assert np.isfinite(r).all()
