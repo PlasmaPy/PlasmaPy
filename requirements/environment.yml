@@ -17,6 +17,7 @@ dependencies:
   - pip
   - xarray
   - pip:
+    - docutils < 0.17
     - numpydoc
     - pytest
     - lmfit

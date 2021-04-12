@@ -4,7 +4,7 @@
 ipykernel
 ipywidgets
 nbsphinx
-
+docutils < 0.17
 numpydoc
 pillow
 pygments >= 2.4.1
