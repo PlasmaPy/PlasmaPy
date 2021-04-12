@@ -3,7 +3,7 @@ import hypothesis
 import numpy as np
 import pytest
 
-from hypothesis import example, given, settings
+from hypothesis import example, given
 from hypothesis import strategies as st
 
 from plasmapy.formulary.neoclassical import (
@@ -11,7 +11,6 @@ from plasmapy.formulary.neoclassical import (
     effective_momentum_relaxation_rate,
     K_B_ai,
     K_ps_ai,
-    L_friction_coefficient,
     M_matrix,
     M_script,
     N_matrix,
@@ -19,12 +18,7 @@ from plasmapy.formulary.neoclassical import (
     pitch_angle_diffusion_rate,
     ν_T_ai,
 )
-from plasmapy.particles import (
-    IonizationState,
-    IonizationStateCollection,
-    Particle,
-    proton,
-)
+from plasmapy.particles import IonizationStateCollection
 
 all_species = IonizationStateCollection(
     {
