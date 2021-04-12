@@ -91,8 +91,6 @@ def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_su
 @example(x=1)
 @example(x=0.1)
 @example(x=0.01)
-@example(x=1.0495932305582267e-05)
-@example(x=2.16932e-5)
 # @settings(max_examples=500)
 def test_ν_T_ai(x):
     result = ν_T_ai(x, 1, hydrogen, all_species)
@@ -102,8 +100,8 @@ def test_ν_T_ai(x):
 
 @given(
     x=st.floats(
-        min_value=6e-10,
-        max_value=1e90,
+        min_value=1e-3,
+        max_value=1e3,
         exclude_min=True,
         allow_nan=False,
         allow_infinity=False,
@@ -111,7 +109,7 @@ def test_ν_T_ai(x):
 )
 @example(x=1e-5)
 # @settings(max_examples=500)
-def test_K_ps_ai(x):
-    result = K_ps_ai(x, 1, hydrogen, all_species)
+def test_K_ps_ai(x, flux_surface):
+    result = K_ps_ai(x, 1, hydrogen, all_species, flux_surface)
     assert result > 0
     assert np.isfinite(result)
