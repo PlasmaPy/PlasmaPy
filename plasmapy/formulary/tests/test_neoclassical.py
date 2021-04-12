@@ -7,7 +7,6 @@ from hypothesis import example, given
 from hypothesis import strategies as st
 
 from plasmapy.formulary.neoclassical import (
-    charge_weighting_factor,
     effective_momentum_relaxation_rate,
     K_B_ai,
     K_ps_ai,
@@ -63,12 +62,6 @@ def test_number_between_ionization_states(function, num_regression):
     num_regression.check({function.__name__: data.si.value})
 
 
-def test_weighted_ionization_factor(num_regression):
-    data = charge_weighting_factor(1, carbon_states)
-    num_regression.check({"xi": data.si.value})
-    assert data == 1 - charge_weighting_factor(2, carbon_states)
-
-
 def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_surface):
     x = np.logspace(-3, 6, 5000)
     ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
@@ -81,8 +74,8 @@ def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_su
 
 @given(
     x=st.floats(
-        min_value=6e-10,
-        max_value=1e90,
+        min_value=1e-3,
+        max_value=1e3,
         exclude_min=True,
         allow_nan=False,
         allow_infinity=False,

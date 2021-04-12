@@ -106,18 +106,6 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
     return sum(contributions())
 
 
-def charge_weighting_factor(i, a_states):
-    """Charge weighting factor; Houlberg_1997, eq.11
-
-    TODO Is this not acctually Z_eff, or some contribution to it? Should that not be a method of IonizationState?
-    """
-    ai = a_states[i]
-    denominator = sum(
-        state.number_density * state.integer_charge ** 2 for state in a_states
-    )
-    return ai.number_density * ai.integer_charge ** 2 / denominator
-
-
 def ξ(isotope):
     array = u.Quantity(
         [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
@@ -159,7 +147,7 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
             yield result
 
     return (
-        charge_weighting_factor(index, a_states)
+        ξ(a_states)[index]
         / (ai.number_density * ai.ion.mass)
         * 3
         * np.sqrt(np.pi)
