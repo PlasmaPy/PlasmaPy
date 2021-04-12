@@ -86,7 +86,7 @@ def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_su
 @example(x=1)
 @example(x=0.1)
 @example(x=0.01)
-# @settings(max_examples=500)
+@settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_ν_T_ai(x):
     result = ν_T_ai(x, 1, hydrogen, all_species)
     assert result > 0
