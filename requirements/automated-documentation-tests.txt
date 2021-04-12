@@ -1,6 +1,7 @@
 -r requirements.txt
 
 # doc pkgs
+docutils < 0.17
 ipykernel
 ipywidgets
 nbsphinx
