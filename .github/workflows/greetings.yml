@@ -18,7 +18,7 @@ jobs:
           Someone should get around to looking into this PR soon. Once they do, it
           will have to pass through code review - this includes fixing bugs, edge cases,
           simplifying or optimizing the implementation.
-          
+
           In the meantime, there are a few things you could do:
 
           * The "Checks" tab at the bottom of the pull request page runs our
