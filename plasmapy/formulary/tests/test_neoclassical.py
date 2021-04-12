@@ -102,7 +102,6 @@ def test_ν_T_ai(x):
         allow_infinity=False,
     )
 )
-@example(x=1e-5)
 @example(x=270.08574852208653)
 @example(x=684.765468434412)
 @settings(deadline=datetime.timedelta(milliseconds=1000))
