@@ -10,7 +10,11 @@ from collections import OrderedDict
 from docutils.statemachine import StringList
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
-from sphinx.deprecation import RemovedInSphinx50Warning
+try:
+    from sphinx.deprecation import RemovedInSphinx50Warning
+except ImportError:
+    class RemovedInSphinx50Warning(PendingDeprecationWarning):
+        pass
 from sphinx.ext.autodoc import (
     ModuleDocumenter,
     bool_option,
