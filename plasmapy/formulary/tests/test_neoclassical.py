@@ -3,12 +3,14 @@ import datetime
 import hypothesis
 import numpy as np
 import pytest
+
 from astropy.tests.helper import assert_quantity_allclose
 from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from plasmapy.formulary.neoclassical import (
     effective_momentum_relaxation_rate,
+    get_flows,
     K_B_ai,
     K_ps_ai,
     M_matrix,
@@ -17,7 +19,6 @@ from plasmapy.formulary.neoclassical import (
     N_script,
     pitch_angle_diffusion_rate,
     ν_T_ai,
-    get_flows,
 )
 from plasmapy.particles import IonizationStateCollection
 
@@ -113,21 +114,15 @@ def test_K_ps_ai(x, flux_surface):
     assert_quantity_allclose(result, second_result)
 
 
-
-def test_get_flows(
-    flux_surface
-):
+def test_get_flows(flux_surface):
     result = get_flows(
         all_species,
         flux_surface,
-        density_gradient = {
+        density_gradient={
             "H 1+": 1e18 * u.m ** -3 / u.m,
             "C 1+": 1e18 * u.m ** -3 / u.m,
         },
-        temperature_gradient = {
-            "H 1+": -10 * u.K / u.m,
-            "C 1+": -10 * u.K / u.m,
-        }
+        temperature_gradient={"H 1+": -10 * u.K / u.m, "C 1+": -10 * u.K / u.m,},
     )
     for r in result.values():
         assert np.isfinite(r).all()

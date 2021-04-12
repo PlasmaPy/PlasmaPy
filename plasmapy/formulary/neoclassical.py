@@ -371,6 +371,7 @@ if __name__ == "__main__":
     hydrogen = all_species["H"]
     ν_T_ai(1.0495932305582267e-05, 1, hydrogen, all_species)
 
+
 def rbar_sources(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
     fs = flux_surface
     if beta_coeffs is not None:
@@ -430,17 +431,20 @@ def rbar_sources(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
 
     return sum(gen())
 
+
 def get_flows(
     # TODO make these inputs
     all_species,
     flux_surface,
     density_gradient,
     temperature_gradient,
-    beta_coeffs = None,
+    beta_coeffs=None,
 ):
     fs = flux_surface
     # rbar_sources ABSOLUTELY needs a bloody rework to do stuff simultaneously
-    rhs = np.concatenate([rbar_sources(a, all_species, fs, beta_coeffs = beta_coeffs) for a in all_species]).si
+    rhs = np.concatenate(
+        [rbar_sources(a, all_species, fs, beta_coeffs=beta_coeffs) for a in all_species]
+    ).si
     if beta_coeffs is not None:
         # TODO should be a dict or sth
         raise NotImplementedError
@@ -451,7 +455,7 @@ def get_flows(
 
     lhs = eq34matrix(all_species, fs)
     ubar = np.linalg.solve(lhs, rhs)
-    
+
     outputs = {}
     for I, a in enumerate(all_species):
         # use Eq31 to get charge state flows from isotopic flows
@@ -471,12 +475,13 @@ def get_flows(
             Aai = xi[i] * M - μ - beta_coeffs
             S_ai = xi[i] * np.diag(Λ)  # TODO np.diag(Δ)?
             rai_as_rows = np.linalg.solve(Aai, S_ai)
-            order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value # TODO fix units
-
+            order_flow_sum = (
+                (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
+            )  # TODO fix units
 
             temperature = ai.T_i
             density = a.number_densities[i]  # TODO cleanup
-            ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m**-4)
+            ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m ** -4)
             T_grad = temperature_gradient.get(ai.ionic_symbol, 0 * u.K / u.m)
             pressure_gradient = constants.k_B * (
                 temperature * ne_grad + density * T_grad
@@ -495,7 +500,9 @@ def get_flows(
                 )
             ).si
             Spt = np.append(Spt, 0)
-            rpt_row = np.linalg.solve(Aai, Spt).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
-            flows = order_flow_sum + rpt_row #Eq31
+            rpt_row = np.linalg.solve(
+                Aai, Spt
+            ).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
+            flows = order_flow_sum + rpt_row  # Eq31
             outputs[ai.ionic_symbol] = flows
     return outputs
