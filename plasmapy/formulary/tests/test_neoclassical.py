@@ -18,6 +18,7 @@ from plasmapy.formulary.neoclassical import (
     N_script,
     pitch_angle_diffusion_rate,
     ν_T_ai,
+    get_flows,
 )
 from plasmapy.particles import IonizationStateCollection
 
@@ -111,3 +112,18 @@ def test_K_ps_ai(x, flux_surface):
     assert np.isfinite(result)
     second_result = K_ps_ai(x, 1, hydrogen, all_species, flux_surface)
     assert_quantity_allclose(result, second_result)
+
+
+
+def test_get_flows(
+    flux_surface
+):
+    num_charge_states = len(hydrogen.integer_charges)
+    result = get_flows(
+        hydrogen,
+        all_species,
+        flux_surface,
+        density_gradient = u.Quantity(num_charge_states * [1e18 * u.m ** -3 / u.m]),
+        temperature_gradient = u.Quantity(num_charge_states * [10 * u.K / u.m]),
+    )
+    assert np.isfinite(result).all()

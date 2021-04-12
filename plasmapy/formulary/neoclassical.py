@@ -1,23 +1,7 @@
 from __future__ import annotations
 
 __all__ = [
-    "xab_ratio",
-    "M_matrix",
-    "N_matrix",
-    "effective_momentum_relaxation_rate",
-    "ξ",
-    "N_script",
-    "M_script",
-    "pitch_angle_diffusion_rate",
-    "K_B_ai",
-    "rbar",
-    "eq34matrix",
-    "F_m",
-    "ωm",
-    "ν_T_ai",
-    "K_ps_ai",
-    "K",
-    "mu_hat",
+    "get_flows",
 ]
 
 
@@ -384,3 +368,133 @@ if __name__ == "__main__":
     hydrogen = all_species["H"]
     breakpoint()
     ν_T_ai(1.0495932305582267e-05, 1, hydrogen, all_species)
+
+def rbar_sources(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
+    fs = flux_surface
+    if beta_coeffs is not None:
+        # TODO should be a dict or sth
+        raise NotImplementedError
+    else:
+        beta_cx = np.zeros(3)  # TODO
+        beta_an = np.zeros(3)  # TODO
+        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
+    pressures = (a.number_densities * constants.k_B * a.T_e).to(u.Pa)
+
+    num_charge_states = len(a.integer_charges)
+    temperatures = u.Quantity([a.T_e] * num_charge_states)
+
+    # TODO make these inputs
+    density_gradient = u.Quantity(num_charge_states * [1e18 * u.m ** -3 / u.m])
+    temperature_gradient = u.Quantity(num_charge_states * [10 * u.K / u.m])
+
+    # but not this, this is dervied
+    pressure_gradient = constants.k_B * (
+        temperatures * density_gradient + a.number_densities * temperature_gradient
+    )
+
+    def gen():
+        for i, ai in enumerate(a):
+            if ξ(a)[i] == 0:
+                continue  # won't add anything to sum anyway, and matrix gets singular
+            Aai = (
+                ξ(a)[i] * M_script(a, all_species)
+                - mu_hat(i, a, all_species, flux_surface)
+                - beta_coeffs
+            )
+            μ = mu_hat(i, a, all_species, fs)
+            Spt = (
+                fs.Fhat
+                / ai.ion.charge
+                / ai.number_density
+                * u.Quantity(
+                    [
+                        pressure_gradient[i] * μ[0, 0]
+                        + a.number_densities[i]
+                        * constants.k_B
+                        * temperature_gradient[i]
+                        * μ[0, 1],
+                        pressure_gradient[i] * μ[1, 0]
+                        + a.number_densities[i]
+                        * constants.k_B
+                        * temperature_gradient[i]
+                        * μ[1, 1],
+                    ]
+                )
+            ).si
+            Spt = np.append(Spt, 0)
+            S_matrix = Spt
+            rai_as_rows = np.linalg.solve(Aai, S_matrix)
+            # TODO does not include r_pT, r_E, r_NBI yet
+            rbar_ingredient = ξ(a)[i] * rai_as_rows
+            yield rbar_ingredient
+
+    return sum(gen())
+
+def get_flows(
+    # TODO make these inputs
+    a,
+    all_species,
+    flux_surface,
+    density_gradient,
+    temperature_gradient,
+    beta_coeffs = None,
+):
+    fs = flux_surface
+    rhs = np.concatenate([rbar_sources(a, all_species, fs, beta_coeffs = beta_coeffs) for a in all_species]).si
+    if beta_coeffs is not None:
+        # TODO should be a dict or sth
+        raise NotImplementedError
+    else:
+        beta_cx = np.zeros(3)  # TODO
+        beta_an = np.zeros(3)  # TODO
+        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
+    original_rhs = np.concatenate([rbar(a, all_species, fs) for a in all_species])
+    lhs = eq34matrix(all_species, fs)
+    ubar = np.linalg.solve(lhs, rhs)
+    
+    pressures = (a.number_densities * constants.k_B * a.T_e).to(u.Pa)
+
+    num_charge_states = len(a.integer_charges)
+    temperatures = u.Quantity([a.T_e] * num_charge_states)
+    # but not this, this is dervied
+    pressure_gradient = constants.k_B * (
+        temperatures * density_gradient + a.number_densities * temperature_gradient
+    )
+    # use Eq31 to get charge state flows from isotopic flows
+    outputs = {}
+    for I, a in enumerate(all_species):
+
+        def gen():
+            i = 3 * I
+            for J, b in enumerate(all_species):
+                j = 3 * J
+                ubar_b = ubar[j : j + 3]
+                yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
+
+        Λ = -sum(gen())
+        for i, ai in enumerate(a):
+            Aai = ξ(a)[i] * M_script(a, all_species) - mu_hat(i, a, all_species, fs) - beta_coeffs
+            S_ai = ξ(a)[i] * np.eye(3) * Λ.reshape(1, -1)
+            rai_as_rows = np.linalg.solve(Aai, S_ai)
+            order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value # TODO fix units
+
+
+            μ = mu_hat(i, a, all_species, fs)
+            Spt = (
+                fs.Fhat
+                / ai.ion.charge
+                / ai.number_density
+                * u.Quantity(
+                    [
+                        pressure_gradient[i] * μ[0, 0]
+                        + a.number_densities[i] * constants.k_B * temperature_gradient[i] * μ[0, 1],
+                        pressure_gradient[i] * μ[1, 0]
+                        + a.number_densities[i] * constants.k_B * temperature_gradient[i] * μ[1, 1],
+                    ]
+                )
+            ).si
+            Spt = np.append(Spt, 0)
+            rpt_row = np.linalg.solve(Aai, Spt).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
+            flows = order_flow_sum + rpt_row #Eq31
+            outputs[ai.ionic_symbol] = flows
+    return outputs
