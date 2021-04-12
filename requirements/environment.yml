@@ -21,7 +21,7 @@ dependencies:
     - pytest
     - lmfit
     - pygments>=2.4.1
-    - sphinx>2
+    - sphinx>=2.4.4, <=3.5.2
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme
