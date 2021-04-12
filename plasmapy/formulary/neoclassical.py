@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ == [
+__all__ = [
     "xab_ratio",
     "M_matrix",
     "N_matrix",
@@ -19,6 +19,7 @@ __all__ == [
     "K",
     "mu_hat",
 ]
+
 
 import numpy as np
 
