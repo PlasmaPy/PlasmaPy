@@ -3,7 +3,6 @@ import datetime
 import hypothesis
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 from hypothesis import example, given, settings
 from hypothesis import strategies as st
@@ -118,12 +117,19 @@ def test_K_ps_ai(x, flux_surface):
 def test_get_flows(
     flux_surface
 ):
-    num_charge_states = len(hydrogen.integer_charges)
+    breakpoint()
     result = get_flows(
-        hydrogen,
         all_species,
         flux_surface,
-        density_gradient = u.Quantity(num_charge_states * [1e18 * u.m ** -3 / u.m]),
-        temperature_gradient = u.Quantity(num_charge_states * [10 * u.K / u.m]),
+        density_gradient = {
+            "H 1+": 1e18 * u.m ** -3 / u.m,
+            "C 1+": 1e18 * u.m ** -3 / u.m,
+        },
+        temperature_gradient = {
+            "H 1+": -10 * u.K / u.m,
+            "C 1+": -10 * u.K / u.m,
+        }
     )
-    assert np.isfinite(result).all()
+    breakpoint()
+    for r in result.values():
+        assert np.isfinite(r).all()
