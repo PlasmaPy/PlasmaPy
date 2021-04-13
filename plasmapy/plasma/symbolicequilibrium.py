@@ -81,7 +81,7 @@ class SymbolicEquilibrium:
         CS = ax.contourf(R, Z, PSI, levels=levels, vmax=vmax)
         ax.contour(R, Z, PSI, levels=[0], colors="black")  # display the separatrix
 
-        plt.colorbar(CS, label="Magnetic flux $\Psi$")
+        plt.colorbar(CS, label=r"Magnetic flux $\Psi$")
         ax.set_xlabel("Radius $R/R_0$")
         ax.set_ylabel("Height $z/R_0$")
         ax.set_aspect("equal")
@@ -126,7 +126,7 @@ class SymbolicEquilibrium:
                     R, Z, PSI, levels=[0], colors="black"
                 )  # display the separatrix
 
-                plt.colorbar(CS, label="Magnetic flux $\Psi$")
+                plt.colorbar(CS, label=r"Magnetic flux $\Psi$")
                 plt.xlabel("Radius $R/R_0$")
                 plt.ylabel("Height $z/R_0$")
                 plt.gca().set_aspect("equal")
