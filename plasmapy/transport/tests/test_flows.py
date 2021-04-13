@@ -9,7 +9,7 @@ from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from plasmapy.particles import IonizationStateCollection
-from plasmapy.transport.flows import get_flows
+from plasmapy.transport.flows import FlowCalculator
 
 all_species = IonizationStateCollection(
     {
@@ -26,9 +26,8 @@ carbon_states = all_species["C"]
 
 
 def test_get_flows(flux_surface):
-    result = get_flows(
-        all_species,
-        flux_surface,
+    fc = FlowCalculator(all_species, flux_surface,)
+    result = fc.get_flows(
         density_gradient={
             "H 1+": 1e18 * u.m ** -3 / u.m,
             "C 1+": 1e18 * u.m ** -3 / u.m,

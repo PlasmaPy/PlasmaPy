@@ -14,6 +14,11 @@ from astropy import units as u
 
 from plasmapy.formulary.neoclassical import M_script, mu_hat, N_script, ξ
 
+try:
+    from functools import cached_property
+except ImportError:
+    from cached_property import cached_property
+
 
 def S_pt(ai, μ, fs, density_gradient, temperature_gradient):
     # TODO gradients should be attached to ai
@@ -37,156 +42,142 @@ def S_pt(ai, μ, fs, density_gradient, temperature_gradient):
     return Spt
 
 
-def rbar(a, all_species, flux_surface, beta_coeffs=None) -> u.Quantity:
-    if beta_coeffs is not None:
-        raise NotImplementedError
-    else:
-        beta_cx = np.zeros(3)  # TODO
-        beta_an = np.zeros(3)  # TODO
-        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
+class FlowCalculator:
+    def __init__(
+        self, all_species, flux_surface,
+    ):
+        self.all_species = all_species
+        self.flux_surface = flux_surface
 
-    def gen():
-        for i, ai in enumerate(a):
-            if ξ(a)[i] == 0:
-                continue  # won't add anything to sum anyway, and matrix gets singular
-            Aai = (
-                ξ(a)[i] * M_script(a, all_species)
-                - mu_hat(i, a, all_species, flux_surface)
-                - beta_coeffs
-            )
-            S_matrix = ξ(a)[i] * np.eye(3)
-            rai_as_rows = np.linalg.solve(Aai, S_matrix)
-            # TODO does not include r_pT, r_E, r_NBI yet. Should it?
-            rbar_ingredient = ξ(a)[i] * rai_as_rows
-            yield rbar_ingredient
+    @cached_property
+    def μ(self):  # this would be better as a cached method... depending on ai
+        results = {}
+        for a in self.all_species:
+            xi = ξ(a)
+            for i, ai in enumerate(a):
+                if i == 0 or xi[i] == 0:
+                    continue
+                results[ai.ionic_symbol] = mu_hat(
+                    i, a, self.all_species, self.flux_surface
+                )
+        return results
 
-    return sum(gen())
-
-
-def rbar_sources(
-    all_species, flux_surface, density_gradient, temperature_gradient, beta_coeffs=None
-) -> u.Quantity:
-    fs = flux_surface
-    if beta_coeffs is not None:
-        # TODO should be a dict or sth
-        raise NotImplementedError
-    else:
-        beta_cx = np.zeros(3)  # TODO
-        beta_an = np.zeros(3)  # TODO
-        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
-
-    results = []
-    for a in all_species:
+    def rbar(self, a, beta_coeffs=None) -> u.Quantity:
+        if beta_coeffs is not None:
+            raise NotImplementedError
+        else:
+            beta_cx = np.zeros(3)  # TODO
+            beta_an = np.zeros(3)  # TODO
+            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
 
         def gen():
             for i, ai in enumerate(a):
                 if ξ(a)[i] == 0:
                     continue  # won't add anything to sum anyway, and matrix gets singular
-                μ = mu_hat(i, a, all_species, fs)
-                Aai = ξ(a)[i] * M_script(a, all_species) - μ - beta_coeffs
-                Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
-                rai_as_rows = np.linalg.solve(Aai, Spt)
-                # TODO does not include r_pT, r_E, r_NBI yet
+                μ = self.μ[ai.ionic_symbol]
+                Aai = ξ(a)[i] * M_script(a, self.all_species) - μ - beta_coeffs
+                S_matrix = ξ(a)[i] * np.eye(3)
+                rai_as_rows = np.linalg.solve(Aai, S_matrix)
+                # TODO does not include r_pT, r_E, r_NBI yet. Should it?
                 rbar_ingredient = ξ(a)[i] * rai_as_rows
                 yield rbar_ingredient
 
-        results.append(sum(gen()))
-    return np.concatenate(results).si
+        return sum(gen())
 
+    def rbar_sources(
+        self, density_gradient, temperature_gradient, beta_coeffs=None
+    ) -> u.Quantity:
+        fs = self.flux_surface
+        if beta_coeffs is not None:
+            # TODO should be a dict or sth
+            raise NotImplementedError
+        else:
+            beta_cx = np.zeros(3)  # TODO
+            beta_an = np.zeros(3)  # TODO
+            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
 
-def eq34matrix(all_species, flux_surface, beta_coeffs=None):
-    output_matrix = u.Quantity(np.eye(3 * len(all_species)))
+        results = []
+        for a in self.all_species:
 
-    for I, a in enumerate(all_species):
-        i = 3 * I
-        # this is probably how rbar should work!
-        # original_rhs = np.concatenate([rbar(a, all_species, fs) for a in all_species])
+            def gen():
+                for i, ai in enumerate(a):
+                    if ξ(a)[i] == 0:
+                        continue  # won't add anything to sum anyway, and matrix gets singular
+                    μ = self.μ[ai.ionic_symbol]
+                    Aai = ξ(a)[i] * M_script(a, self.all_species) - μ - beta_coeffs
+                    Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
+                    rai_as_rows = np.linalg.solve(Aai, Spt)
+                    # TODO does not include r_pT, r_E, r_NBI yet
+                    rbar_ingredient = ξ(a)[i] * rai_as_rows
+                    yield rbar_ingredient
 
-        rarray = rbar(a, all_species, flux_surface, beta_coeffs)
-        for J, b in enumerate(all_species):
-            j = 3 * J
-            narray = N_script(a, b).sum(axis=0, keepdims=True)
-            result = narray * rarray.T
-            output_matrix[i : i + 3, j : j + 3] += result
+            results.append(sum(gen()))
+        return np.concatenate(results).si
 
-    return output_matrix
-
-
-def get_flows(
-    # TODO make these inputs
-    all_species,
-    flux_surface,
-    density_gradient,
-    temperature_gradient,
-    beta_coeffs=None,
-):
-    fs = flux_surface
-    rhs = rbar_sources(
-        all_species, fs, density_gradient, temperature_gradient, beta_coeffs=beta_coeffs
-    )
-    if beta_coeffs is not None:
-        # TODO should be a dict or sth
-        raise NotImplementedError
-    else:
-        beta_cx = np.zeros(3)  # TODO
-        beta_an = np.zeros(3)  # TODO
-        beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
-
-    lhs = eq34matrix(all_species, fs)
-    ubar = np.linalg.solve(lhs, rhs)
-
-    outputs = {}
-    for I, a in enumerate(all_species):
-        # use Eq31 to get charge state flows from isotopic flows
-        def gen():
-            i = 3 * I
-            for J, b in enumerate(all_species):
-                j = 3 * J
-                ubar_b = ubar[j : j + 3]
-                yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
-
-        Λ = -sum(gen())
-        M = M_script(a, all_species)
-        xi = ξ(a)
-        for i, ai in enumerate(a):
-            if i == 0 or xi[i] == 0:
-                continue
-            μ = mu_hat(i, a, all_species, fs)
-            Aai = xi[i] * M - μ - beta_coeffs
-            S_ai = xi[i] * np.diag(Λ)
-            rai_as_rows = np.linalg.solve(Aai, S_ai)
-            order_flow_sum = (
-                (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
-            )  # TODO fix units
-
-            Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
-            rpt_row = np.linalg.solve(
-                Aai, Spt
-            ).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
-            flows = order_flow_sum + rpt_row  # Eq31
-            outputs[ai.ionic_symbol] = flows
-    return outputs
-
-
-class FlowCalculator:
-    def __init__(
+    def get_flows(
         self,
-        all_species,
-        flux_surface,
         density_gradient,
         temperature_gradient,
+        # TBH could probably pass profile shapes here, instead...
         beta_coeffs=None,
     ):
-        self.all_species = all_species
-        self.flux_surface = flux_surface
-        self.density_gradient = density_gradient
-        self.temperature_gradient = temperature_gradient
-        self.beta_coeffs = beta_coeffs
+        fs = self.flux_surface
+        rhs = self.rbar_sources(
+            density_gradient, temperature_gradient, beta_coeffs=beta_coeffs
+        )
+        if beta_coeffs is not None:
+            # TODO should be a dict or sth
+            raise NotImplementedError
+        else:
+            beta_cx = np.zeros(3)  # TODO
+            beta_an = np.zeros(3)  # TODO
+            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
 
+        lhs = self.eq34matrix()
+        ubar = np.linalg.solve(lhs, rhs)
 
-def get_fluxes(flows, all_species):
-    raise NotImplementedError
+        outputs = {}
+        for I, a in enumerate(self.all_species):
+            # use Eq31 to get charge state flows from isotopic flows
+            def gen():
+                i = 3 * I
+                for J, b in enumerate(self.all_species):
+                    j = 3 * J
+                    ubar_b = ubar[j : j + 3]
+                    yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
 
+            Λ = -sum(gen())
+            M = M_script(a, self.all_species)
+            xi = ξ(a)
+            for i, ai in enumerate(a):
+                if i == 0 or xi[i] == 0:
+                    continue
+                μ = self.μ[ai.ionic_symbol]
+                Aai = xi[i] * M - μ - beta_coeffs
+                S_ai = xi[i] * np.diag(Λ)
+                rai_as_rows = np.linalg.solve(Aai, S_ai)
+                order_flow_sum = (
+                    (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
+                )  # TODO fix units
 
-def linear_transport_coefficients(fluxes, all_species):
-    raise NotImplementedError
+                Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
+                rpt_row = np.linalg.solve(
+                    Aai, Spt
+                ).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
+                flows = order_flow_sum + rpt_row  # Eq31
+                outputs[ai.ionic_symbol] = flows
+        return outputs
+
+    def eq34matrix(self, beta_coeffs=None):
+        output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
+
+        for I, a in enumerate(self.all_species):
+            i = 3 * I
+            rarray = self.rbar(a, beta_coeffs)
+            for J, b in enumerate(self.all_species):
+                j = 3 * J
+                narray = N_script(a, b).sum(axis=0, keepdims=True)
+                result = narray * rarray.T
+                output_matrix[i : i + 3, j : j + 3] += result
+
+        return output_matrix
