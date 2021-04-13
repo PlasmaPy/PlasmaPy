@@ -15,24 +15,6 @@ from astropy import units as u
 from plasmapy.formulary.neoclassical import M_script, mu_hat, N_script, ξ
 
 
-def eq34matrix(all_species, flux_surface, beta_coeffs=None):
-    output_matrix = u.Quantity(np.eye(3 * len(all_species)))
-
-    for I, a in enumerate(all_species):
-        i = 3 * I
-        # this is probably how rbar should work!
-        # original_rhs = np.concatenate([rbar(a, all_species, fs) for a in all_species])
-
-        rarray = rbar(a, all_species, flux_surface, beta_coeffs)
-        for J, b in enumerate(all_species):
-            j = 3 * J
-            narray = N_script(a, b).sum(axis=0, keepdims=True)
-            result = narray * rarray.T
-            output_matrix[i : i + 3, j : j + 3] += result
-
-    return output_matrix
-
-
 def S_pt(ai, μ, fs, density_gradient, temperature_gradient):
     # TODO gradients should be attached to ai
     ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m ** -4)
@@ -110,6 +92,24 @@ def rbar_sources(
 
         results.append(sum(gen()))
     return np.concatenate(results).si
+
+
+def eq34matrix(all_species, flux_surface, beta_coeffs=None):
+    output_matrix = u.Quantity(np.eye(3 * len(all_species)))
+
+    for I, a in enumerate(all_species):
+        i = 3 * I
+        # this is probably how rbar should work!
+        # original_rhs = np.concatenate([rbar(a, all_species, fs) for a in all_species])
+
+        rarray = rbar(a, all_species, flux_surface, beta_coeffs)
+        for J, b in enumerate(all_species):
+            j = 3 * J
+            narray = N_script(a, b).sum(axis=0, keepdims=True)
+            result = narray * rarray.T
+            output_matrix[i : i + 3, j : j + 3] += result
+
+    return output_matrix
 
 
 def get_flows(
