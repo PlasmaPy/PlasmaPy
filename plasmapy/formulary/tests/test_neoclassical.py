@@ -10,7 +10,6 @@ from hypothesis import strategies as st
 
 from plasmapy.formulary.neoclassical import (
     effective_momentum_relaxation_rate,
-    get_flows,
     K_B_ai,
     K_ps_ai,
     M_matrix,
@@ -123,17 +122,3 @@ def test_indexing():
 def test_mu(flux_surface):
     μ = mu_hat(1, hydrogen, all_species, flux_surface)
     assert np.isfinite(μ).all()
-
-
-def test_get_flows(flux_surface):
-    result = get_flows(
-        all_species,
-        flux_surface,
-        density_gradient={
-            "H 1+": 1e18 * u.m ** -3 / u.m,
-            "C 1+": 1e18 * u.m ** -3 / u.m,
-        },
-        temperature_gradient={"H 1+": -10 * u.K / u.m, "C 1+": -10 * u.K / u.m,},
-    )
-    for r in result.values():
-        assert np.isfinite(r).all()
