@@ -43,6 +43,7 @@ package for plasma physics currently under development.
    ad/index
    Dispersion <dispersion/index>
    Formulary <formulary/index>
+   Transport <transport/index>
    Particles <particles/index>
    Simulation <simulation/index>
    Plasma Objects <plasma/index>
