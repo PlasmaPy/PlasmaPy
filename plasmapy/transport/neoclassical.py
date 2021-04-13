@@ -5,9 +5,12 @@ import numpy as np
 from astropy import constants
 from astropy import units as u
 from scipy.special import erf
+from typing import Union
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.mathematics import Chandrasekhar_G
+from plasmapy.particles import IonizationState, IonizationStateCollection
+from plasmapy.plasma.fluxsurface import FluxSurface
 
 try:
     from scipy.integrate import trapz as trapezoid
@@ -15,11 +18,11 @@ except ImportError:
     from scipy.integrate import trapezoid
 
 
-def xab_ratio(a, b):
+def xab_ratio(a: IonizationState, b: IonizationState):
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
 
 
-def M_matrix(species_a, species_b):
+def M_matrix(species_a: IonizationState, species_b: IonizationState):
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
     temperature_ratio = a.T_e / b.T_e
@@ -40,7 +43,7 @@ def M_matrix(species_a, species_b):
     return M
 
 
-def N_matrix(species_a, species_b):
+def N_matrix(species_a: IonizationState, species_b: IonizationState):
     """equations A6a through A6f, Houlberg_1997"""
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
@@ -72,7 +75,9 @@ CL = lambda a, b: Coulomb_logarithm(
 )
 
 
-def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
+def effective_momentum_relaxation_rate(
+    charge_states_a: IonizationState, charge_states_b: IonizationState
+):
     def contributions():
         CL = lambda ai, bj: Coulomb_logarithm(
             charge_states_b.T_e,
@@ -110,21 +115,21 @@ def effective_momentum_relaxation_rate(charge_states_a, charge_states_b):
     return sum(contributions())
 
 
-def ξ(isotope):
+def ξ(isotope: IonizationState):
     array = u.Quantity(
         [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
     )
     return array / array.sum()
 
 
-def N_script(species_a, species_b):
+def N_script(species_a: IonizationState, species_b: IonizationState):
     N = N_matrix(species_a, species_b)
     # Equation A2b
     N_script = effective_momentum_relaxation_rate(species_a, species_b) * N
     return N_script
 
 
-def M_script(species_a, all_species):
+def M_script(species_a: IonizationState, all_species: IonizationStateCollection):
     # Equation A2a
     def gener():
         for species_b in all_species:
@@ -137,7 +142,12 @@ def M_script(species_a, all_species):
     return sum(gener())
 
 
-def pitch_angle_diffusion_rate(x, index, a_states, all_species):
+def pitch_angle_diffusion_rate(
+    x: np.ndarray,
+    index: int,
+    a_states: IonizationState,
+    all_species: IonizationStateCollection,
+):
     # Houlberg_1997, equation B4b,
     ai = a_states[index]  # TODO I wouldn't need to carry the index around, if...
     xi = ξ(a_states)[index]
@@ -162,7 +172,15 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
     return result
 
 
-def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=False):
+def K_B_ai(
+    x: np.ndarray,
+    index: int,
+    a_states: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    *,
+    orbit_squeezing=False
+):
     # eq. B1-B4, Houlberg_1997
     f_t = flux_surface.trapped_fraction()
     f_c = 1 - f_t
@@ -183,7 +201,7 @@ LaguerrePolynomials = [
 ]
 
 
-def F_m(m, flux_surface, g=1):
+def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface, g=1):
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
     if g == 0:
@@ -199,6 +217,7 @@ def F_m(m, flux_surface, g=1):
     B15_cos = fs.flux_surface_average(under_average_B15_cos)
     B16_cos = fs.gamma * fs.flux_surface_average(under_average_B16_cos)
 
+    # TODO fix these through the power of diffgeom
     jacobian = g ** 0.5
     BdotNablatheta = fs.BDotNablaThetaFSA
     B2mean = fs.flux_surface_average(fs.B2)
@@ -208,14 +227,16 @@ def F_m(m, flux_surface, g=1):
     return F_m
 
 
-def ωm(x, m, a: isotopelike, fs):
+def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSurface):
     B11 = (
         x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
     )  # TODO why the u.m?
     return B11
 
 
-def ν_T_ai(x, i, a, all_species):
+def ν_T_ai(
+    x: np.ndarray, i: int, a: IonizationState, all_species: IonizationStateCollection
+):
     ai = a[i]
     prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a)[i] / ai.number_density / ai.ion.mass
 
@@ -237,9 +258,15 @@ def ν_T_ai(x, i, a, all_species):
 
 
 def K_ps_ai(
-    x, i, a, all_species, flux_surface, *, m_max=100, g=1  # TODO get from m_max
+    x: np.ndarray,
+    i: int,
+    a: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    *,
+    m_max=100,
+    g=1  # TODO get from m_max
 ):
-    ai = a[i]
     ν = ν_T_ai(x, i, a, all_species)
 
     m = np.arange(1, m_max + 1)
@@ -267,16 +294,35 @@ def K_ps_ai(
     )
 
 
-def K(x, i, a, all_species, flux_surface, *, m_max=100, orbit_squeezing=False, g=1):
+def K(
+    x: np.ndarray,
+    i: int,
+    a: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    *,
+    m_max=100,
+    orbit_squeezing=False,
+    g=1
+):
     # Eq 16
-    kb = K_B_ai(x, i, a, all_species, flux_surface)
+    kb = K_B_ai(x, i, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
     # print(f"got {kb=}")
     kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
     # print(f"got {kps=}")
     return 1 / (1 / kb + 1 / kps)
 
 
-def _integrand(x, α, β, i, a, all_species, flux_surface, **kwargs):
+def _integrand(
+    x: np.ndarray,
+    α: int,
+    β: int,
+    i: int,
+    a: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    **kwargs
+):
     laguerreterm1 = LaguerrePolynomials[α - 1](x ** 2)
     laguerreterm2 = LaguerrePolynomials[β - 1](x ** 2)
     kterm = K(x, i, a, all_species, flux_surface, **kwargs)
@@ -285,7 +331,17 @@ def _integrand(x, α, β, i, a, all_species, flux_surface, **kwargs):
     return result
 
 
-def mu_hat(i, a, all_species, flux_surface, *, xmin=0.0015, xmax=10, N=1000, **kwargs):
+def mu_hat(
+    i: int,
+    a: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    *,
+    xmin=0.0015,
+    xmax=10,
+    N=1000,
+    **kwargs
+):
     # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
     ai = a[i]
     orders = range(1, 4)
