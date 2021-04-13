@@ -146,6 +146,7 @@ def M_script(species_a, all_species):
 def pitch_angle_diffusion_rate(x, index, a_states, all_species):
     # Houlberg_1997, equation B4b,
     ai = a_states[index]  # TODO I wouldn't need to carry the index around, if...
+    xi = ξ(a_states)[index]
 
     def sum_items():
         for b in all_species:
@@ -156,14 +157,15 @@ def pitch_angle_diffusion_rate(x, index, a_states, all_species):
             result = fraction * effective_momentum_relaxation_rate(a_states, b)
             yield result
 
-    return (
-        ξ(a_states)[index]
+    result = (
+        xi
         / (ai.number_density * ai.ion.mass)
         * 3
         * np.sqrt(np.pi)
         / 4
         * sum(sum_items())
     )
+    return result
 
 
 def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=False):
@@ -176,12 +178,8 @@ def K_B_ai(x, index, a_states, all_species, flux_surface, *, orbit_squeezing=Fal
         )
     else:
         S_ai = B2 = 1
-    return (
-        pitch_angle_diffusion_rate(x, index, a_states, all_species)
-        * f_t
-        / f_c
-        / S_ai ** 1.5
-    )
+    padr = pitch_angle_diffusion_rate(x, index, a_states, all_species)
+    return padr * f_t / f_c / S_ai ** 1.5
 
 
 LaguerrePolynomials = [
@@ -329,13 +327,12 @@ def K(x, i, a, all_species, flux_surface, *, m_max=100, orbit_squeezing=False, g
 
 
 def _integrand(x, α, β, i, a, all_species, flux_surface, **kwargs):
-    return (
-        x ** 4
-        * np.exp(-(x ** 2))
-        * LaguerrePolynomials[α - 1](x ** 2)
-        * LaguerrePolynomials[β - 1](x ** 2)
-        * K(x, i, a, all_species, flux_surface, **kwargs)
-    )
+    laguerreterm1 = LaguerrePolynomials[α - 1](x ** 2)
+    laguerreterm2 = LaguerrePolynomials[β - 1](x ** 2)
+    kterm = K(x, i, a, all_species, flux_surface, **kwargs)
+    xterm = x ** 4 * np.exp(-(x ** 2))
+    result = laguerreterm1 * laguerreterm2 * kterm * xterm
+    return result
 
 
 def mu_hat(i, a, all_species, flux_surface, *, xmin=0.0015, xmax=10, N=1000, **kwargs):

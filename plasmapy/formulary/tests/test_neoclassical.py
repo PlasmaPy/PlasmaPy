@@ -15,6 +15,7 @@ from plasmapy.formulary.neoclassical import (
     K_ps_ai,
     M_matrix,
     M_script,
+    mu_hat,
     N_matrix,
     N_script,
     pitch_angle_diffusion_rate,
@@ -112,6 +113,15 @@ def test_K_ps_ai(x, flux_surface):
     assert np.isfinite(result)
     second_result = K_ps_ai(x, 1, hydrogen, all_species, flux_surface)
     assert_quantity_allclose(result, second_result)
+
+
+def test_indexing():
+    hydrogen[1:]
+
+
+def test_mu(flux_surface):
+    μ = mu_hat(1, hydrogen, all_species, flux_surface)
+    assert np.isfinite(μ).all()
 
 
 def test_get_flows(flux_surface):
