@@ -473,7 +473,7 @@ def get_flows(
         xi = ξ(a)
         # TODO need to rework how mu_hat works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
         for i, ai in enumerate(a):
-            if i == 0:
+            if i == 0 or xi[i] == 0:
                 continue
             μ = mu_hat(i, a, all_species, fs)
             Aai = xi[i] * M - μ - beta_coeffs
