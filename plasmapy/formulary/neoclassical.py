@@ -2,6 +2,8 @@ from __future__ import annotations
 
 __all__ = [
     "get_flows",
+    "get_fluxes",
+    "linear_transport_coefficients",
 ]
 
 
@@ -510,3 +512,11 @@ def get_flows(
             flows = order_flow_sum + rpt_row  # Eq31
             outputs[ai.ionic_symbol] = flows
     return outputs
+
+
+def get_fluxes(flows, all_species):
+    raise NotImplementedError
+
+
+def linear_transport_coefficients(fluxes, all_species):
+    raise NotImplementedError
