@@ -1,0 +1,1 @@
+Fixed a minor error in the ExB drift notebook.

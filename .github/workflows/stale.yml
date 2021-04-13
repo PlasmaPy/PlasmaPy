@@ -1,0 +1,18 @@
+name: 'Close stale issues and PR'
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-pr-message: 'This pull request will be closed in 14 days due to a year of inactivity unless the stale label or comment is removed.'
+          close-pr-message: 'This pull request was closed because it has had no activity for the past year.'
+          days-before-pr-stale: 365
+          days-before-pr-close: 15
+          # never close issues
+          days-before-close: -1
