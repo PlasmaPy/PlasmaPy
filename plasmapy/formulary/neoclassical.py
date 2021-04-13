@@ -338,6 +338,7 @@ def _integrand(x, α, β, i, a, all_species, flux_surface, **kwargs):
 
 
 def mu_hat(i, a, all_species, flux_surface, *, xmin=0.0015, xmax=10, N=1000, **kwargs):
+    # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
     ai = a[i]
     orders = range(1, 4)
     mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
@@ -352,28 +353,6 @@ def mu_hat(i, a, all_species, flux_surface, *, xmin=0.0015, xmax=10, N=1000, **k
     mass_density_probably = ai.number_density * ai.ion.mass
     actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
     return actual_units
-
-
-if __name__ == "__main__":
-    from plasmapy.particles import (
-        IonizationState,
-        IonizationStateCollection,
-        Particle,
-        proton,
-    )
-
-    all_species = IonizationStateCollection(
-        {
-            "H": [0, 1],
-            #      "D": [0, 1],   raises ParticleError, why?
-            "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
-        },
-        n0=1e20 * u.m ** -3,
-        abundances={"H": 1, "C": 0.11},
-        T_e=10 * u.eV,
-    )
-    hydrogen = all_species["H"]
-    ν_T_ai(1.0495932305582267e-05, 1, hydrogen, all_species)
 
 
 def rbar_sources(
@@ -395,12 +374,8 @@ def rbar_sources(
             for i, ai in enumerate(a):
                 if ξ(a)[i] == 0:
                     continue  # won't add anything to sum anyway, and matrix gets singular
-                Aai = (
-                    ξ(a)[i] * M_script(a, all_species)
-                    - mu_hat(i, a, all_species, flux_surface)
-                    - beta_coeffs
-                )
                 μ = mu_hat(i, a, all_species, fs)
+                Aai = ξ(a)[i] * M_script(a, all_species) - μ - beta_coeffs
                 Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
                 rai_as_rows = np.linalg.solve(Aai, Spt)
                 # TODO does not include r_pT, r_E, r_NBI yet
@@ -447,7 +422,6 @@ def get_flows(
         Λ = -sum(gen())
         M = M_script(a, all_species)
         xi = ξ(a)
-        # TODO need to rework how mu_hat works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
         for i, ai in enumerate(a):
             if i == 0 or xi[i] == 0:
                 continue
