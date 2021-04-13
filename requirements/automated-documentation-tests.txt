@@ -1,6 +1,6 @@
 # requirments for documentation
 -r requirements.txt
-docutils < 0.17
+docutils < 0.18
 ipykernel
 ipywidgets
 nbsphinx
