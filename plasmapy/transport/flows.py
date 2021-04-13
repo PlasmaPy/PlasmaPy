@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 __all__ = [
-    "get_flows",
-    "get_fluxes",
-    "linear_transport_coefficients",
+    "FlowCalculator",
 ]
 
 

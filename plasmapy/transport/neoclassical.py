@@ -1,12 +1,5 @@
 from __future__ import annotations
 
-__all__ = [
-    "get_flows",
-    "get_fluxes",
-    "linear_transport_coefficients",
-]
-
-
 import numpy as np
 
 from astropy import constants
