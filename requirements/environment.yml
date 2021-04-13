@@ -26,3 +26,4 @@ dependencies:
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme
+    - pytest-regressions
