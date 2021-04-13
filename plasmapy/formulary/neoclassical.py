@@ -402,8 +402,7 @@ def rbar_sources(
                 )
                 μ = mu_hat(i, a, all_species, fs)
                 Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
-                S_matrix = Spt
-                rai_as_rows = np.linalg.solve(Aai, S_matrix)
+                rai_as_rows = np.linalg.solve(Aai, Spt)
                 # TODO does not include r_pT, r_E, r_NBI yet
                 rbar_ingredient = ξ(a)[i] * rai_as_rows
                 yield rbar_ingredient
