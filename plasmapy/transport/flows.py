@@ -12,7 +12,7 @@ import numpy as np
 from astropy import constants
 from astropy import units as u
 
-from plasmapy.formulary.neoclassical import M_script, mu_hat, N_script, ξ
+from .neoclassical import M_script, mu_hat, N_script, ξ
 
 try:
     from functools import cached_property

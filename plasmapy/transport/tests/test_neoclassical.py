@@ -8,7 +8,8 @@ from astropy.tests.helper import assert_quantity_allclose
 from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
-from plasmapy.formulary.neoclassical import (
+from plasmapy.particles import IonizationStateCollection
+from plasmapy.transport.neoclassical import (
     effective_momentum_relaxation_rate,
     K_B_ai,
     K_ps_ai,
@@ -20,7 +21,6 @@ from plasmapy.formulary.neoclassical import (
     pitch_angle_diffusion_rate,
     ν_T_ai,
 )
-from plasmapy.particles import IonizationStateCollection
 
 all_species = IonizationStateCollection(
     {
