@@ -172,9 +172,7 @@ class FlowCalculator:
             Λ = -sum(gen())
             M = M_script(a, self.all_species)
             xi = ξ(a)
-            for i, ai in enumerate(a):
-                if i == 0 or xi[i] == 0:
-                    continue
+            for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
                 μ = self.μ[sym]
                 Aai = self.Aai[sym]
@@ -184,13 +182,22 @@ class FlowCalculator:
                     (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
                 )  # TODO fix units
 
-                Spt = self.S_pt[sym]
-                rpt_row = np.linalg.solve(
-                    Aai, Spt
-                ).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
-                flows = order_flow_sum + rpt_row  # Eq31
+                r_pt = self.r_pt[sym]
+                flows = order_flow_sum + r_pt  # Eq31
                 outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
+
+    @cached_property
+    def r_pt(self):
+        results = {}
+        for a in self.all_species:
+            for i, ai in enumerate(self.contributing_states(a)):
+                sym = ai.ionic_symbol
+                Aai = self.Aai[sym]
+                Spt = self.S_pt[sym]
+                r_pt = np.linalg.solve(Aai, Spt).si
+                results[sym] = r_pt
+        return results
 
     @staticmethod
     def contributing_states(a):
@@ -324,3 +331,15 @@ class FlowCalculator:
                 flux = self.fluxes[ai].heat_flux
                 results[sym] = -flux / self.temperature_gradient[sym]
         return results
+
+    @cached_property
+    def bootstrap_current(self):
+        def gen():
+            for a in self.all_species:
+                for i, ai in enumerate(self.contributing_states(a)):
+                    sym = ai.ionic_symbol
+                    yield ai.charge * ai.number_density * self.r_pt[sym][
+                        0
+                    ]  # eq 37, second term
+
+        return sum(gen())
