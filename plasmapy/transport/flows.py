@@ -9,6 +9,7 @@ import numpy as np
 
 from astropy import constants
 from astropy import units as u
+from collections import defaultdict
 
 from .neoclassical import M_script, mu_hat, N_script, ξ
 
@@ -18,10 +19,8 @@ except ImportError:
     from cached_property import cached_property
 
 
-def S_pt(ai, μ, fs, density_gradient, temperature_gradient):
+def S_pt(ai, μ, fs, ne_grad, T_grad):
     # TODO gradients should be attached to ai
-    ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m ** -4)
-    T_grad = temperature_gradient.get(ai.ionic_symbol, 0 * u.K / u.m)
     pressure_gradient = constants.k_B * (ai.T_i * ne_grad + ai.number_density * T_grad)
     Spt = (
         fs.Fhat
@@ -42,38 +41,69 @@ def S_pt(ai, μ, fs, density_gradient, temperature_gradient):
 
 class FlowCalculator:
     def __init__(
-        self, all_species, flux_surface,
+        self, all_species, flux_surface, density_gradient, temperature_gradient,
     ):
         self.all_species = all_species
         self.flux_surface = flux_surface
+        self.density_gradient = defaultdict(lambda: 0 * u.m ** -4, **density_gradient)
+        self.temperature_gradient = defaultdict(
+            lambda: 0 * u.K / u.m, **temperature_gradient
+        )
 
-    @cached_property
-    def μ(self):  # this would be better as a cached method... depending on ai
-        results = {}
+        self.S_pt = {}
+        self.μ = {}
+        self.Aai = {}
+        self.thermodynamic_forces = {}
+        self.pressure_gradient = {}
+
         for a in self.all_species:
             xi = ξ(a)
             for i, ai in enumerate(a):
+                sym = ai.ionic_symbol
                 if i == 0 or xi[i] == 0:
                     continue
-                results[ai.ionic_symbol] = mu_hat(
-                    i, a, self.all_species, self.flux_surface
+                self.pressure_gradient[sym] = constants.k_B * (
+                    ai.T_i * self.density_gradient[sym]
+                    + ai.number_density * self.temperature_gradient[sym]
                 )
-        return results
+                self.μ[sym] = mu_hat(i, a, self.all_species, self.flux_surface)
+                self.S_pt[sym] = S_pt(
+                    ai,
+                    self.μ[ai.ionic_symbol],
+                    self.flux_surface,
+                    self.density_gradient[ai.ionic_symbol],
+                    self.temperature_gradient[ai.ionic_symbol],
+                )
+                self.Aai[sym] = xi[i] * M_script(a, self.all_species) - self.μ[sym]
+                # --- TD forces eq21
+                Fhat = self.flux_surface.Fhat
+                thermodynamic_forces = u.Quantity(
+                    [
+                        # Eq21
+                        Fhat
+                        / ai.ion.charge
+                        / ai.number_density
+                        * self.pressure_gradient[sym],
+                        Fhat
+                        / ai.ion.charge
+                        * constants.k_B
+                        * self.temperature_gradient[sym],
+                    ]
+                )
 
-    def rbar(self, a, beta_coeffs=None) -> u.Quantity:
-        if beta_coeffs is not None:
-            raise NotImplementedError
-        else:
-            beta_cx = np.zeros(3)  # TODO
-            beta_an = np.zeros(3)  # TODO
-            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
+                thermodynamic_forces = np.append(
+                    thermodynamic_forces, 0
+                )  # because units
+                self.thermodynamic_forces[sym] = thermodynamic_forces
 
+    def rbar(self, a) -> u.Quantity:
         def gen():
             for i, ai in enumerate(a):
                 if ξ(a)[i] == 0:
                     continue  # won't add anything to sum anyway, and matrix gets singular
-                μ = self.μ[ai.ionic_symbol]
-                Aai = ξ(a)[i] * M_script(a, self.all_species) - μ - beta_coeffs
+                sym = ai.ionic_symbol
+                μ = self.μ[sym]
+                Aai = self.Aai[sym]
                 S_matrix = ξ(a)[i] * np.eye(3)
                 rai_as_rows = np.linalg.solve(Aai, S_matrix)
                 # TODO does not include r_pT, r_E, r_NBI yet. Should it?
@@ -82,17 +112,9 @@ class FlowCalculator:
 
         return sum(gen())
 
-    def rbar_sources(
-        self, density_gradient, temperature_gradient, beta_coeffs=None
-    ) -> u.Quantity:
+    @cached_property
+    def rbar_sources(self) -> u.Quantity:
         fs = self.flux_surface
-        if beta_coeffs is not None:
-            # TODO should be a dict or sth
-            raise NotImplementedError
-        else:
-            beta_cx = np.zeros(3)  # TODO
-            beta_an = np.zeros(3)  # TODO
-            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
 
         results = []
         for a in self.all_species:
@@ -101,9 +123,10 @@ class FlowCalculator:
                 for i, ai in enumerate(a):
                     if ξ(a)[i] == 0:
                         continue  # won't add anything to sum anyway, and matrix gets singular
-                    μ = self.μ[ai.ionic_symbol]
-                    Aai = ξ(a)[i] * M_script(a, self.all_species) - μ - beta_coeffs
-                    Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
+                    sym = ai.ionic_symbol
+                    μ = self.μ[sym]
+                    Aai = self.Aai[sym]
+                    Spt = self.S_pt[sym]
                     rai_as_rows = np.linalg.solve(Aai, Spt)
                     # TODO does not include r_pT, r_E, r_NBI yet
                     rbar_ingredient = ξ(a)[i] * rai_as_rows
@@ -112,25 +135,13 @@ class FlowCalculator:
             results.append(sum(gen()))
         return np.concatenate(results).si
 
-    def get_flows(
+    @cached_property
+    def flows(
         self,
-        density_gradient,
-        temperature_gradient,
         # TBH could probably pass profile shapes here, instead...
-        beta_coeffs=None,
     ):
         fs = self.flux_surface
-        rhs = self.rbar_sources(
-            density_gradient, temperature_gradient, beta_coeffs=beta_coeffs
-        )
-        if beta_coeffs is not None:
-            # TODO should be a dict or sth
-            raise NotImplementedError
-        else:
-            beta_cx = np.zeros(3)  # TODO
-            beta_an = np.zeros(3)  # TODO
-            beta_coeffs = np.diag(beta_cx + beta_an) * u.kg / u.m ** 3 / u.s
-
+        rhs = self.rbar_sources
         lhs = self.eq34matrix()
         ubar = np.linalg.solve(lhs, rhs)
 
@@ -150,28 +161,29 @@ class FlowCalculator:
             for i, ai in enumerate(a):
                 if i == 0 or xi[i] == 0:
                     continue
-                μ = self.μ[ai.ionic_symbol]
-                Aai = xi[i] * M - μ - beta_coeffs
+                sym = ai.ionic_symbol
+                μ = self.μ[sym]
+                Aai = self.Aai[sym]
                 S_ai = xi[i] * np.diag(Λ)
                 rai_as_rows = np.linalg.solve(Aai, S_ai)
                 order_flow_sum = (
                     (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
                 )  # TODO fix units
 
-                Spt = S_pt(ai, μ, fs, density_gradient, temperature_gradient)
+                Spt = self.S_pt[sym]
                 rpt_row = np.linalg.solve(
                     Aai, Spt
                 ).si.value  # TODO units are wrong here too; but I think the mechanics should just about work
                 flows = order_flow_sum + rpt_row  # Eq31
-                outputs[ai.ionic_symbol] = flows
+                outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
 
-    def eq34matrix(self, beta_coeffs=None):
+    def eq34matrix(self):
         output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
 
         for I, a in enumerate(self.all_species):
             i = 3 * I
-            rarray = self.rbar(a, beta_coeffs)
+            rarray = self.rbar(a)
             for J, b in enumerate(self.all_species):
                 j = 3 * J
                 narray = N_script(a, b).sum(axis=0, keepdims=True)
@@ -180,48 +192,29 @@ class FlowCalculator:
 
         return output_matrix
 
-    def get_fluxes(
-        self, flows, density_gradient, temperature_gradient,
-    ):
+    @cached_property
+    def fluxes(self):
         fs = self.flux_surface
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
         Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
         Fhat = self.flux_surface.Fhat
+        results = {}
         for a in self.all_species:
             for i, ai in enumerate(a):
-                if ai.ionic_symbol not in flows:
+                if ai.ionic_symbol not in self.flows:
                     continue
-                u_velocity = flows[ai.ionic_symbol]
-
-                # TODO I duplicate these a bunch of times. That's terrible.
-                ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m ** -4)
-                T_grad = temperature_gradient.get(ai.ionic_symbol, 0 * u.K / u.m)
-                pressure_gradient = constants.k_B * (
-                    ai.T_i * ne_grad + ai.number_density * T_grad
-                )
-
-                # --- TD forces eq21
-                thermodynamic_forces = u.Quantity(
-                    [
-                        # Eq21
-                        Fhat / ai.ion.charge / ai.number_density * pressure_gradient[i],
-                        Fhat / ai.ion.charge * constants.k_B * temperature_gradient[i],
-                    ]
-                )
-
-                thermodynamic_forces = np.append(
-                    thermodynamic_forces, 0
-                )  # because units
+                sym = ai.ionic_symbol
+                u_velocity = self.flows[sym]
 
                 # ---
-                u_θ = (u_velocity + thermodynamic_forces) / B2fsav
-                μ = self.μ[ai.ionic_symbol]
+                u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
+                μ = self.μ[sym]
                 Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
                 # TODO verify unit; does not look right
                 q_BP = -(
                     fs.Fhat
                     * constants.k_B
-                    * temperatures[i]
+                    * ai.T_i
                     / ai.ion.charge
                     * (μ[1, :] * u_θ).sum()
                 ).si
@@ -234,12 +227,12 @@ class FlowCalculator:
                     / B2fsav
                     * (1 - B2fsav * Binv2fsav)
                 )
-                sum(
-                    (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
-                        axis=0
-                    )
-                    * N_script(a, b)[0]
-                    for b in all_species
-                ) + (
-                    M_script(a, all_species)[0, :] * list(thermodynamic_forces(a))[i]
-                ).si
+                # sum(
+                #     (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
+                #         axis=0
+                #     )
+                #     * N_script(a, b)[0]
+                #     for b in self.all_species
+                # ) + (
+                #     M_script(a, self.all_species)[0, :] * list(thermodynamic_forces(a))[i]
+                # ).si
