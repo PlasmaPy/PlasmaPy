@@ -5,6 +5,7 @@ __all__ = [
 ]
 
 
+import functools
 import numpy as np
 
 from astropy import constants
@@ -191,6 +192,31 @@ class FlowCalculator:
                 outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
 
+    @staticmethod
+    def contributing_states(a):
+        xi = ξ(a)
+        for i, ai in enumerate(a):
+            if xi[i] == 0:
+                continue
+            yield ai
+
+    @functools.lru_cache
+    def funnymatrix(self, a_symbol):
+        a = self.all_species[a_symbol]  # TODO workaround while they're unhashable
+        M = M_script(a, self.all_species)
+        outputs = {}
+        for ai in self.contributing_states(a):
+            sym = ai.ionic_symbol
+            S = self.S_pt[sym]
+            output = S * M
+            for b in self.all_species:
+                N = N_script(a, b)
+                xi = ξ(b)
+                for j, bj in enumerate(self.contributing_states(b)):
+                    output += xi[j] * N * self.S_pt[bj.ionic_symbol]
+            outputs[sym] = output
+        return outputs
+
     @cached_property
     def _fluxes_BP(self):
         Fhat = self.flux_surface.Fhat
@@ -224,20 +250,27 @@ class FlowCalculator:
 
     @cached_property
     def _fluxes_PS(self):
-        Fhat = self.flux_surface.Fhat
+        fs = self.flux_surface
+        Fhat = fs.Fhat
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
         results = {}
         fs = self.flux_surface
         for a in self.all_species:
-            m = M_script(a, all_species)
             xi = ξ(a)
-            for ai in a:
+            silly = self.funnymatrix(a.base_particle)
+            for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
                 if sym not in self.flows:
                     continue
                 u_velocity = self.flows[sym]
-                Γ_PS_prefactor = (
+                prefactor = (
                     -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
+                Γ_PS = prefactor * silly[0].sum()
+                q_PS = prefactor * k * ai.T_i * silly[1].sum()
+                results[sym] = Fluxes(Γ_PS, q_PS)
+        return results
 
     @cached_property
     def _fluxes_CL(self):
@@ -264,11 +297,10 @@ class FlowCalculator:
                 if sym not in self.flows:
                     continue
                 Γ_BP, q_BP = self._fluxes_BP[sym]
-                # Γ_PS, q_PS = self._fluxes_PS[sym]
+                Γ_PS, q_PS = self._fluxes_PS[sym]
                 # Γ_CL, q_CL = self._fluxes_CL[sym]
                 results[sym] = Fluxes(
-                    Γ_BP  # +
-                    # Γ_PS +
+                    Γ_BP + Γ_PS  # +
                     # Γ_CL
                     ,
                     q_BP  # +
