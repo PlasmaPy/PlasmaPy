@@ -9,7 +9,9 @@ import numpy as np
 
 from astropy import constants
 from astropy import units as u
-from collections import defaultdict
+from collections import defaultdict, namedtuple
+
+Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 from .neoclassical import M_script, mu_hat, N_script, ξ
 
@@ -136,10 +138,7 @@ class FlowCalculator:
         return np.concatenate(results).si
 
     @cached_property
-    def flows(
-        self,
-        # TBH could probably pass profile shapes here, instead...
-    ):
+    def flows(self) -> dict:
         fs = self.flux_surface
         rhs = self.rbar_sources
         lhs = self.eq34matrix()
@@ -193,20 +192,22 @@ class FlowCalculator:
         return output_matrix
 
     @cached_property
-    def fluxes(self):
+    def _fluxes_BP(self):
+        Fhat = self.flux_surface.Fhat
         fs = self.flux_surface
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
-        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
-        Fhat = self.flux_surface.Fhat
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(a):
-                if ai.ionic_symbol not in self.flows:
-                    continue
+            for (
+                ai
+            ) in (
+                a
+            ):  # this could be rfactored out by iterating over self.flows, instead, given a way to access ionizationstate back from ioniclevel
                 sym = ai.ionic_symbol
+                if sym not in self.flows:
+                    continue
                 u_velocity = self.flows[sym]
 
-                # ---
                 u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
                 μ = self.μ[sym]
                 Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
@@ -218,21 +219,82 @@ class FlowCalculator:
                     / ai.ion.charge
                     * (μ[1, :] * u_θ).sum()
                 ).si
+                results[sym] = Fluxes(Γ_BP, q_BP)
+        return results
 
-                # ----
-                Γ_PS = (
-                    -fs.Fhat
-                    / ai.ion.charge
-                    * ξ(a)[i]
-                    / B2fsav
-                    * (1 - B2fsav * Binv2fsav)
+    @cached_property
+    def _fluxes_PS(self):
+        Fhat = self.flux_surface.Fhat
+        results = {}
+        fs = self.flux_surface
+        for a in self.all_species:
+            m = M_script(a, all_species)
+            xi = ξ(a)
+            for ai in a:
+                sym = ai.ionic_symbol
+                if sym not in self.flows:
+                    continue
+                u_velocity = self.flows[sym]
+                Γ_PS_prefactor = (
+                    -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
-                # sum(
-                #     (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
-                #         axis=0
-                #     )
-                #     * N_script(a, b)[0]
-                #     for b in self.all_species
-                # ) + (
-                #     M_script(a, self.all_species)[0, :] * list(thermodynamic_forces(a))[i]
-                # ).si
+
+    @cached_property
+    def _fluxes_CL(self):
+        fs = self.flux_surface
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
+        results = {}
+        Fhat = self.flux_surface.Fhat
+        FSA = NotImplemented
+        results = {}
+        for a in self.all_species:
+            xi = ξ(a)
+            for i, ai in enumerate(a):
+                if ai.ionic_symbol not in self.flows:
+                    continue
+                prefactor = 1 / Fhat * xi[i] / ai.charge * FSA
+
+    @cached_property
+    def fluxes(self):
+        results = {}
+        for a in self.all_species:
+            for i, ai in enumerate(a):
+                sym = ai.ionic_symbol
+                if sym not in self.flows:
+                    continue
+                Γ_BP, q_BP = self._fluxes_BP[sym]
+                # Γ_PS, q_PS = self._fluxes_PS[sym]
+                # Γ_CL, q_CL = self._fluxes_CL[sym]
+                results[sym] = Fluxes(
+                    Γ_BP  # +
+                    # Γ_PS +
+                    # Γ_CL
+                    ,
+                    q_BP  # +
+                    # q_PS +
+                    # q_CL
+                )
+        return results
+
+        # u_velocity = self.flows[sym]
+        # μ = self.μ[sym]
+        # u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
+
+        # # ----
+        # Γ_PS = (
+        #     -fs.Fhat
+        #     / ai.ion.charge
+        #     * ξ(a)[i]
+        #     / B2fsav
+        #     * (1 - B2fsav * Binv2fsav)
+        # )
+        # sum(
+        #     (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
+        #         axis=0
+        #     )
+        #     * N_script(a, b)[0]
+        #     for b in self.all_species
+        # ) + (
+        #     M_script(a, self.all_species)[0, :] * list(thermodynamic_forces(a))[i]
+        # ).si

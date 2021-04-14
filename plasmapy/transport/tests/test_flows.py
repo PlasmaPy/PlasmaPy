@@ -30,11 +30,25 @@ temperature_gradient = {
 }
 
 
-def test_get_flows(flux_surface):
+@pytest.fixture(scope="module")
+def fc(flux_surface):
     fc = FlowCalculator(
         all_species, flux_surface, density_gradient, temperature_gradient
     )
+    return fc
+
+
+def test_get_flows(fc, num_regression):
     for ion, r in fc.flows.items():
         assert np.isfinite(r).all(), ion
-    for ion, r in fc.fluxes.items():
-        assert np.isfinite(r).all(), ion
+    num_regression.check({key: value.si.value for key, value in fc.flows.items()})
+
+
+def test_fluxes(fc, num_regression):
+    d = {}
+    for ion, (Γ, q) in fc.fluxes.items():
+        assert np.isfinite(Γ).all(), ion
+        assert np.isfinite(q).all(), ion
+        d[f"Γ_{ion}"] = Γ.si.value
+        d[f"q_{ion}"] = q.si.value
+    num_regression.check(d)
