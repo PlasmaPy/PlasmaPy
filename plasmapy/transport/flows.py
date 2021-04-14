@@ -302,3 +302,25 @@ class FlowCalculator:
                 Γ_CL, q_CL = self._fluxes_CL[sym]
                 results[sym] = Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
         return results
+
+    @cached_property
+    def diffusion_coefficient(self):
+        results = {}
+        for a in self.all_species:
+            for i, ai in enumerate(self.contributing_states(a)):
+                sym = ai.ionic_symbol
+                flux = self.fluxes[ai].particle_flux
+                results[sym] = (
+                    -flux / self.density_gradient[sym]
+                )  # Eq48 TODO this is a partial adaptation
+        return results
+
+    @cached_property
+    def thermal_conductivity(self):
+        results = {}
+        for a in self.all_species:
+            for i, ai in enumerate(self.contributing_states(a)):
+                sym = ai.ionic_symbol
+                flux = self.fluxes[ai].heat_flux
+                results[sym] = -flux / self.temperature_gradient[sym]
+        return results
