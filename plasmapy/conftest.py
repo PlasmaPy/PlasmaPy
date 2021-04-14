@@ -43,13 +43,3 @@ def equilibrium():
 @pytest.fixture(scope="module")
 def flux_surface(equilibrium, psi_value=-0.01):
     return equilibrium.get_flux_surface(psi_value)
-
-
-import os
-
-from hypothesis import settings, Verbosity
-
-settings.register_profile("ci", max_examples=1000)
-settings.register_profile("dev", max_examples=10)
-settings.register_profile("debug", max_examples=10, verbosity=Verbosity.verbose)
-settings.load_profile(os.getenv(u"HYPOTHESIS_PROFILE", "default"))
