@@ -625,6 +625,11 @@ def test_IonizationState_ion_temperature_persistence(instance):
     assert instance[0].T_i - instance.T_e == (1 * u.K)
 
 
+@pytest.mark.xfail(reason="Not currently supposed")
+def test_slicing(instance):
+    instance[1:]
+
+
 def test_nans():
     """
     Test that when no ionic fractions or temperature are inputted,

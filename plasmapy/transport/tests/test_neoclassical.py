@@ -114,11 +114,6 @@ def test_K_ps_ai(x, flux_surface):
     assert_quantity_allclose(result, second_result)
 
 
-@pytest.mark.xfail
-def test_indexing():
-    hydrogen[1:]
-
-
 def test_mu(flux_surface):
     μ = mu_hat(1, hydrogen, all_species, flux_surface)
     assert np.isfinite(μ).all()
