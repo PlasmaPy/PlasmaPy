@@ -12,14 +12,14 @@ from astropy import constants
 from astropy import units as u
 from collections import defaultdict, namedtuple
 
-Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
-
 from .neoclassical import M_script, mu_hat, N_script, ξ
 
 try:
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
+
+Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 
 def S_pt(ai, μ, fs, ne_grad, T_grad):
@@ -42,6 +42,10 @@ def S_pt(ai, μ, fs, ne_grad, T_grad):
 
 
 class FlowCalculator:
+    """
+    This does, in fact, do most things for my thesis.
+    """
+
     def __init__(
         self, all_species, flux_surface, density_gradient, temperature_gradient,
     ):
@@ -154,10 +158,9 @@ class FlowCalculator:
         ubar = np.linalg.solve(lhs, rhs)
 
         outputs = {}
-        for I, a in enumerate(self.all_species):
+        for a in self.all_species:
             # use Eq31 to get charge state flows from isotopic flows
             def gen():
-                i = 3 * I
                 for J, b in enumerate(self.all_species):
                     j = 3 * J
                     ubar_b = ubar[j : j + 3]
@@ -258,7 +261,6 @@ class FlowCalculator:
             silly = self.funnymatrix(a.base_particle)
             for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
-                u_velocity = self.flows[sym]
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
