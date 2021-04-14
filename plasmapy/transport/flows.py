@@ -245,7 +245,7 @@ class FlowCalculator:
                     / ai.ion.charge
                     * (μ[1, :] * u_θ).sum()
                 ).si
-                results[sym] = Fluxes(Γ_BP, q_BP)
+                results[sym] = Fluxes(Γ_BP.si, q_BP.si)
         return results
 
     @cached_property
@@ -267,9 +267,9 @@ class FlowCalculator:
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
-                Γ_PS = prefactor * silly[0].sum()
-                q_PS = prefactor * k * ai.T_i * silly[1].sum()
-                results[sym] = Fluxes(Γ_PS, q_PS)
+                Γ_PS = prefactor * silly[sym][0].sum()
+                q_PS = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
+                results[sym] = Fluxes(Γ_PS.si, q_PS.si)
         return results
 
     @cached_property
