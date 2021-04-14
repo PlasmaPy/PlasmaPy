@@ -71,11 +71,38 @@ class AutomodsummOptions:
     }
     logger = logger
 
-    def __init__(self, app: Sphinx, modname: str, options: Dict[str, Any], _warn: Callable = None):
+    def __init__(
+            self,
+            app: Sphinx,
+            modname: str,
+            options: Dict[str, Any],
+            docname: str = None,
+            _warn: Callable = None
+    ):
         self.app = app
         self.modname = modname
         self.options = options.copy()
+        self.docname = docname
         self.warn = _warn if _warn is not None else self.logger.warning
+
+        self.review_toctree_option()
+
+    def review_toctree_option(self):
+        if "toctree" in self.options:
+            toctree_path = self.options["toctree"]
+        else:
+            toctree_path = self.app.config.automodapi_toctreedirnm
+
+        if self.docname is None:
+            # doc_path = app.srcdir
+            doc_path = self.app.confdir
+        else:
+            # doc_path = os.path.dirname(os.path.join(app.srcdir, docname))
+            doc_path = os.path.dirname(os.path.join(self.app.confdir, self.docname))
+
+        toctree_path = os.path.relpath(toctree_path, doc_path).replace(os.sep, "/")
+        self.options["toctree"] = toctree_path
+
 
     @property
     def mod_objs(self) -> Dict[str, Dict[str, Any]]:
