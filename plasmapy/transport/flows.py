@@ -206,7 +206,6 @@ class FlowCalculator:
                 continue
             yield ai
 
-    @functools.lru_cache
     def funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]  # TODO workaround while they're unhashable
         M = M_script(a, self.all_species)
