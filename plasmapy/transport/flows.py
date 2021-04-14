@@ -23,7 +23,6 @@ except ImportError:
 
 
 def S_pt(ai, μ, fs, ne_grad, T_grad):
-    # TODO gradients should be attached to ai
     pressure_gradient = constants.k_B * (ai.T_i * ne_grad + ai.number_density * T_grad)
     Spt = (
         fs.Fhat
@@ -131,7 +130,7 @@ class FlowCalculator:
                     Aai = self.Aai[sym]
                     Spt = self.S_pt[sym]
                     rai_as_rows = np.linalg.solve(Aai, Spt)
-                    # TODO does not include r_pT, r_E, r_NBI yet
+                    # TODO use self.r_pt?
                     rbar_ingredient = ξ(a)[i] * rai_as_rows
                     yield rbar_ingredient
 
@@ -183,7 +182,7 @@ class FlowCalculator:
                 )  # TODO fix units
 
                 r_pt = self.r_pt[sym]
-                flows = order_flow_sum + r_pt  # Eq31
+                flows = order_flow_sum + r_pt.value  # Eq31
                 outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
 
@@ -268,8 +267,6 @@ class FlowCalculator:
             silly = self.funnymatrix(a.base_particle)
             for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
-                if sym not in self.flows:
-                    continue
                 u_velocity = self.flows[sym]
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
@@ -282,17 +279,15 @@ class FlowCalculator:
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
-        GradRho2 = fs.GradRho ** 2
-        Binv2fsav = fs.flux_surface_average(GradRho2 / fs.B2) / u.T ** 2 / u.m
+        FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2 / u.m
         Fhat = self.flux_surface.Fhat
-        FSA = NotImplemented
         results = {}
         for a in self.all_species:
             xi = ξ(a)
-            for i, ai in enumerate(a):
-                if ai.ionic_symbol not in self.flows:
-                    continue
-                prefactor = 1 / Fhat * xi[i] / ai.charge * FSA
+            silly = self.funnymatrix(a.base_particle)
+            for i, ai in enumerate(self.contributing_states(a)):
+                sym = ai.ionic_symbol
+                prefactor = 1 / Fhat * xi[i] / ai.ion.charge * FSA
                 Γ_CL = prefactor * silly[sym][0].sum()
                 q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
                 results[sym] = Fluxes(Γ_CL.si, q_CL.si)
@@ -338,7 +333,7 @@ class FlowCalculator:
             for a in self.all_species:
                 for i, ai in enumerate(self.contributing_states(a)):
                     sym = ai.ionic_symbol
-                    yield ai.charge * ai.number_density * self.r_pt[sym][
+                    yield ai.ion.charge * ai.number_density * self.r_pt[sym][
                         0
                     ]  # eq 37, second term
 

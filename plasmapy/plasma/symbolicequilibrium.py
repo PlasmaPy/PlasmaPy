@@ -8,7 +8,7 @@ from astropy import constants
 from astropy import units as u
 from collections import namedtuple
 from dataclasses import dataclass
-from scipy import optimize
+from scipy import interpolate, optimize
 from skimage import measure
 
 grid_and_psi = namedtuple("GridAndPsi", ["R", "Z", "psi"])
@@ -105,7 +105,6 @@ class SymbolicEquilibrium:
         rminmaxstep=(0.6, 1.4, 0.01),
         zminmaxstep=(-0.6, 0.6, 0.01),
         RZPSI=None,
-        GradRho=None,
     ):
         if RZPSI is not None:
             R, Z, PSI = RZPSI
@@ -141,6 +140,15 @@ class SymbolicEquilibrium:
         Bprimervals = self.Brdifffunc(Rcontour, Zcontour)
         Bprimezvals = self.Bzdifffunc(Rcontour, Zcontour)
         Bphivals = self.Bphifunc(Rcontour, Zcontour)
+        ρ = PSI / PSI.min()
+        # TODO this might actually be wrong; check gradient in cylindrical
+        ρprime_r = np.gradient(ρ, R[0], axis=1)
+        ρprime_z = np.gradient(ρ, Z[:, 0], axis=0)
+
+        ρprime2 = ρprime_z ** 2 + ρprime_r ** 2
+        interpolator = interpolate.RectBivariateSpline(Z[:, 0], R[0], ρprime2)
+
+        interpolated_GradRho2 = interpolator(Zcontour, Rcontour, grid=False)
         fs = FluxSurface(
             Rcontour,
             Zcontour,
@@ -150,7 +158,7 @@ class SymbolicEquilibrium:
             Bphivals,
             Bprimervals,
             Bprimezvals,
-            GradRho,
+            interpolated_GradRho2,
         )
         return fs
 
@@ -165,12 +173,9 @@ class SymbolicEquilibrium:
         zmin, zmax, zstep = zminmaxstep
         R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
 
-        grad_psi = np.gradient(
-            psi_values
-        )  # TODO yeah bloody damn well sure this is not it!
-        for psi, dpsi in zip(psi_values, grad_psi):
+        for psi in psi_values:
             yield self.get_flux_surface(
-                psi, RZPSI=(R, Z, PSI), GradRho=dpsi,
+                psi, RZPSI=(R, Z, PSI),
             )
 
 
