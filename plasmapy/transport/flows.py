@@ -275,9 +275,8 @@ class FlowCalculator:
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
-        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
-        results = {}
+        GradRho2 = NotImplemented
+        Binv2fsav = fs.flux_surface_average(GradRho2 / fs.B2) / u.T ** 2 / u.m
         Fhat = self.flux_surface.Fhat
         FSA = NotImplemented
         results = {}
@@ -287,46 +286,19 @@ class FlowCalculator:
                 if ai.ionic_symbol not in self.flows:
                     continue
                 prefactor = 1 / Fhat * xi[i] / ai.charge * FSA
+                Γ_CL = prefactor * silly[sym][0].sum()
+                q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
+                results[sym] = Fluxes(Γ_CL.si, q_CL.si)
+        return results
 
     @cached_property
     def fluxes(self):
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(a):
+            for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
-                if sym not in self.flows:
-                    continue
                 Γ_BP, q_BP = self._fluxes_BP[sym]
                 Γ_PS, q_PS = self._fluxes_PS[sym]
-                # Γ_CL, q_CL = self._fluxes_CL[sym]
-                results[sym] = Fluxes(
-                    Γ_BP + Γ_PS  # +
-                    # Γ_CL
-                    ,
-                    q_BP  # +
-                    # q_PS +
-                    # q_CL
-                )
+                Γ_CL, q_CL = self._fluxes_CL[sym]
+                results[sym] = Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
         return results
-
-        # u_velocity = self.flows[sym]
-        # μ = self.μ[sym]
-        # u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
-
-        # # ----
-        # Γ_PS = (
-        #     -fs.Fhat
-        #     / ai.ion.charge
-        #     * ξ(a)[i]
-        #     / B2fsav
-        #     * (1 - B2fsav * Binv2fsav)
-        # )
-        # sum(
-        #     (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
-        #         axis=0
-        #     )
-        #     * N_script(a, b)[0]
-        #     for b in self.all_species
-        # ) + (
-        #     M_script(a, self.all_species)[0, :] * list(thermodynamic_forces(a))[i]
-        # ).si

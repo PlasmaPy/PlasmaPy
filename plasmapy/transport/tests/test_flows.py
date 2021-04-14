@@ -49,7 +49,7 @@ def test_fluxes_partial(fc, num_regression):
     for key, fluxes in [
         ("BP", fc._fluxes_BP),
         ("PS", fc._fluxes_PS),
-        # ("CL", fc._fluxes_CL),
+        ("CL", fc._fluxes_CL),
     ]:
         for ion, (Γ, q) in fluxes.items():
             assert np.isfinite(Γ).all(), ion
