@@ -13,8 +13,9 @@ except ImportError:
 
 try:
     from scipy.integrate import cumtrapz as cumulative_trapezoid
+    from scipy.integrate import trapz as trapezoid
 except ImportError:
-    from scipy.integrate import cumulative_trapezoid
+    from scipy.integrate import cumulative_trapezoid, trapezoid
 
 
 @dataclass
@@ -143,7 +144,9 @@ class FluxSurface:
 
     @cached_property
     def BDotNablaThetaFSA(fs):
-        dthetadR = np.gradient(fs.theta, fs.R)
-        dthetadZ = np.gradient(fs.theta, fs.Z)
-        dot_product = fs.Brvals * dthetadR + fs.Bzvals * dthetadZ
-        return fs.flux_surface_average(dot_product)
+        # Eq B14
+        psiprime = trapezoid(fs.Bphivals, fs.lp)
+        # TODO fix this through the power of diffgeom
+        jacobian = 1  # TODO the Jacobian of the transformation from cylindrical coordinates to flux coordi nates
+        BdotNablaTheta = psiprime / (2 * np.pi * np.sqrt(jacobian))
+        return fs.flux_surface_average(BdotNablaTheta)

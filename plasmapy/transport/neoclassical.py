@@ -8,6 +8,7 @@ from scipy.special import erf
 from typing import Union
 
 from plasmapy.formulary import thermal_speed
+from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.mathematics import Chandrasekhar_G
 from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.plasma.fluxsurface import FluxSurface
@@ -25,7 +26,6 @@ def xab_ratio(a: IonizationState, b: IonizationState):
 def M_matrix(species_a: IonizationState, species_b: IonizationState):
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.T_e / b.T_e
     mass_ratio = a._particle.mass / b._particle.mass
     """equations A5a through A5f, Houlberg_1997"""
     M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
@@ -65,8 +65,6 @@ def N_matrix(species_a: IonizationState, species_b: IonizationState):
     N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
     return N
 
-
-from plasmapy.formulary.collisions import Coulomb_logarithm
 
 CL = lambda a, b: Coulomb_logarithm(
     b.T_e,
@@ -189,7 +187,7 @@ def K_B_ai(
             "TODO allow for non-zero, changing radial electric fields (orbit squeezing)"
         )
     else:
-        S_ai = B2 = 1
+        S_ai = 1  # Equation B2
     padr = pitch_angle_diffusion_rate(x, index, a_states, all_species)
     return padr * f_t / f_c / S_ai ** 1.5
 
@@ -217,13 +215,10 @@ def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface, g=1):
     B15_cos = fs.flux_surface_average(under_average_B15_cos)
     B16_cos = fs.gamma * fs.flux_surface_average(under_average_B16_cos)
 
-    # TODO fix these through the power of diffgeom
-    jacobian = g ** 0.5
-    BdotNablatheta = fs.BDotNablaThetaFSA
     B2mean = fs.flux_surface_average(fs.B2)
 
     # equation B9
-    F_m = 2 / B2mean / BdotNablatheta * (B15 * B16 + B15_cos * B16_cos)
+    F_m = 2 / B2mean / fs.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
     return F_m
 
 

@@ -104,7 +104,6 @@ class FlowCalculator:
                 if ξ(a)[i] == 0:
                     continue  # won't add anything to sum anyway, and matrix gets singular
                 sym = ai.ionic_symbol
-                μ = self.μ[sym]
                 Aai = self.Aai[sym]
                 S_matrix = ξ(a)[i] * np.eye(3)
                 rai_as_rows = np.linalg.solve(Aai, S_matrix)
@@ -116,8 +115,6 @@ class FlowCalculator:
 
     @cached_property
     def rbar_sources(self) -> u.Quantity:
-        fs = self.flux_surface
-
         results = []
         for a in self.all_species:
 
@@ -126,7 +123,6 @@ class FlowCalculator:
                     if ξ(a)[i] == 0:
                         continue  # won't add anything to sum anyway, and matrix gets singular
                     sym = ai.ionic_symbol
-                    μ = self.μ[sym]
                     Aai = self.Aai[sym]
                     Spt = self.S_pt[sym]
                     rai_as_rows = np.linalg.solve(Aai, Spt)
@@ -153,7 +149,6 @@ class FlowCalculator:
 
     @cached_property
     def flows(self) -> dict:
-        fs = self.flux_surface
         rhs = self.rbar_sources
         lhs = self.eq34matrix()
         ubar = np.linalg.solve(lhs, rhs)
@@ -169,11 +164,9 @@ class FlowCalculator:
                     yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
 
             Λ = -sum(gen())
-            M = M_script(a, self.all_species)
             xi = ξ(a)
             for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
-                μ = self.μ[sym]
                 Aai = self.Aai[sym]
                 S_ai = xi[i] * np.diag(Λ)
                 rai_as_rows = np.linalg.solve(Aai, S_ai)
@@ -256,7 +249,6 @@ class FlowCalculator:
     @cached_property
     def _fluxes_PS(self):
         fs = self.flux_surface
-        Fhat = fs.Fhat
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
         Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
         results = {}
