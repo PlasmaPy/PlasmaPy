@@ -55,30 +55,22 @@ class AutomodapiOptions(AutomodsummOptions):
     option_spec = _option_spec
     logger = logger
 
-    def __init__(self, app: Sphinx, modname: str, options: Dict[str, Any],
-                 _warn: Callable = None, docname: str = None):
-        super().__init__(app, modname, options, _warn)
+    def __init__(
+            self,
+            app: Sphinx,
+            modname: str,
+            options: Dict[str, Any],
+            docname: str = None,
+            _warn: Callable = None,
+    ):
+        super().__init__(app, modname, options, docname=docname, _warn=_warn)
 
-        # review 'toctree' options
-        toctree_path = None
+    def review_toctree_option(self):
         if "no-toctree" in self.options and self.options["no-toctree"]:
             if "toctree" in self.options:
                 del self.options["toctree"]
-        elif "toctree" in self.options:
-            toctree_path = self.options["toctree"]
-        else:
-            toctree_path = self.app.config.automodapi_toctreedirnm
-        if toctree_path is not None:
-            toctree_path = os.path.join(app.srcdir, toctree_path)
-            # docname = getattr(app.env, "docname", None)
-            if docname is None:
-                doc_path = app.srcdir
-            else:
-                doc_path = os.path.dirname(os.path.join(app.srcdir, docname))
 
-            toctree_path = os.path.relpath(toctree_path, doc_path).replace(os.sep, "/")
-            self.logger.info(f"!!! toctree {toctree_path}")
-            self.options["toctree"] = toctree_path
+        super().review_toctree_option()
 
     @property
     def options_for_automodsumm(self):
