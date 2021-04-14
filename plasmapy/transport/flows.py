@@ -275,7 +275,7 @@ class FlowCalculator:
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
-        GradRho2 = NotImplemented
+        GradRho2 = fs.GradRho ** 2
         Binv2fsav = fs.flux_surface_average(GradRho2 / fs.B2) / u.T ** 2 / u.m
         Fhat = self.flux_surface.Fhat
         FSA = NotImplemented

@@ -1,3 +1,4 @@
+import functools
 import matplotlib.pyplot as plt
 import numpy as np
 import plasmaboundaries
@@ -5,9 +6,12 @@ import sympy
 
 from astropy import constants
 from astropy import units as u
+from collections import namedtuple
 from dataclasses import dataclass
 from scipy import optimize
 from skimage import measure
+
+grid_and_psi = namedtuple("GridAndPsi", ["R", "Z", "psi"])
 
 from plasmapy.plasma.fluxsurface import FluxSurface
 
@@ -61,13 +65,8 @@ class SymbolicEquilibrium:
         # ).simplify() == 0  # due to toroidal symmetry
         # TODO change to close to 0 evaluated on grid
 
-    def plot(
-        self,
-        rminmaxstep=(0.6, 1.4, 0.01),
-        zminmaxstep=(-0.6, 0.6, 0.01),
-        savepath=None,
-        vmax=0,
-    ):
+    # @functools.lru_cache # TODO get this to work somehow
+    def get_grid_and_psi(self, rminmaxstep, zminmaxstep):
         rmin, rmax, rstep = rminmaxstep
         zmin, zmax, zstep = zminmaxstep
 
@@ -75,6 +74,16 @@ class SymbolicEquilibrium:
         z = np.arange(zmin, zmax, step=zstep)
         R, Z = np.meshgrid(r, z)
         PSI = self.psi(R, Z)  # compute magnetic flux
+        return grid_and_psi(R, Z, PSI)
+
+    def plot(
+        self,
+        rminmaxstep=(0.6, 1.4, 0.01),
+        zminmaxstep=(-0.6, 0.6, 0.01),
+        savepath=None,
+        vmax=0,
+    ):
+        R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
 
         levels = np.sort(np.linspace(PSI.min(), 0, num=25))
         fig, ax = plt.subplots()
@@ -90,49 +99,31 @@ class SymbolicEquilibrium:
         return ax
 
     def get_flux_surface(
-        self, psi_value, rminmaxstep=(0.6, 1.4, 0.01), zminmaxstep=(-0.6, 0.6, 0.01),
+        self,
+        psi_value,
+        *,
+        rminmaxstep=(0.6, 1.4, 0.01),
+        zminmaxstep=(-0.6, 0.6, 0.01),
+        RZPSI=None,
+        GradRho=None,
     ):
-        rmin, rmax, rstep = rminmaxstep
-        zmin, zmax, zstep = zminmaxstep
+        if RZPSI is not None:
+            R, Z, PSI = RZPSI
+            rmax = R.max()
+            rmin = R.min()
+            zmax = Z.max()
+            zmin = Z.min()
+        else:
+            rmin, rmax, rstep = rminmaxstep
+            zmin, zmax, zstep = zminmaxstep
+            R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
 
-        r = np.arange(rmin, rmax, step=rstep)
-        z = np.arange(zmin, zmax, step=zstep)
-        R, Z = np.meshgrid(r, z)
-        PSI = self.psi(R, Z)  # compute magnetic flux
         contours = measure.find_contours(PSI, psi_value, positive_orientation="high")
-        if len(contours) != 1:
-            if len(contours) > 1:
-                for contour in contours:
-                    RcontourArrayUnits, ZcontourArrayUnits = (
-                        contour[:, 1],
-                        contour[:, 0],
-                    )
-
-                    Zcontour = ZcontourArrayUnits / PSI.shape[0] * (zmax - zmin) + zmin
-                    Rcontour = RcontourArrayUnits / PSI.shape[1] * (rmax - rmin) + rmin
-                    plt.plot(Rcontour, Zcontour)
-
-                rmin, rmax, rstep = rminmaxstep
-                zmin, zmax, zstep = zminmaxstep
-
-                r = np.arange(rmin, rmax, step=rstep)
-                z = np.arange(zmin, zmax, step=zstep)
-                R, Z = np.meshgrid(r, z)
-                PSI = self.psi(R, Z)  # compute magnetic flux
-
-                levels = np.linspace(PSI.min(), 0, num=25)
-                CS = plt.contourf(R, Z, PSI, levels=levels, vmax=0)
-                plt.contour(
-                    R, Z, PSI, levels=[0], colors="black"
-                )  # display the separatrix
-
-                plt.colorbar(CS, label=r"Magnetic flux $\Psi$")
-                plt.xlabel("Radius $R/R_0$")
-                plt.ylabel("Height $z/R_0$")
-                plt.gca().set_aspect("equal")
-                plt.show()
+        if len(contours) == 0:
+            raise ValueError(f"Could not find contour for psi = {psi_value}")
+        elif len(contours) > 1:
             raise ValueError(
-                f"Could not find contour for psi = {psi_value} (len(contours)={len(contours)})"
+                f"Found multiple ({len(contours)})contours for psi = {psi_value}"
             )
 
         contour = contours[0]
@@ -159,8 +150,28 @@ class SymbolicEquilibrium:
             Bphivals,
             Bprimervals,
             Bprimezvals,
+            GradRho,
         )
         return fs
+
+    def get_multiple_flux_surfaces(
+        self,
+        psi_values,
+        *,
+        rminmaxstep=(0.6, 1.4, 0.01),
+        zminmaxstep=(-0.6, 0.6, 0.01),
+    ):
+        rmin, rmax, rstep = rminmaxstep
+        zmin, zmax, zstep = zminmaxstep
+        R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
+
+        grad_psi = np.gradient(
+            psi_values
+        )  # TODO yeah bloody damn well sure this is not it!
+        for psi, dpsi in zip(psi_values, grad_psi):
+            yield self.get_flux_surface(
+                psi, RZPSI=(R, Z, PSI), GradRho=dpsi,
+            )
 
 
 if __name__ == "__main__":

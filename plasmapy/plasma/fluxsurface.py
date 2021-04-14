@@ -27,6 +27,7 @@ class FluxSurface:
     Bphivals: np.ndarray
     Bprimervals: np.ndarray
     Bprimezvals: np.ndarray
+    GradRho: float = None
 
     def __post_init__(self):
         self.Bvectors = np.stack((self.Brvals, self.Bzvals))
