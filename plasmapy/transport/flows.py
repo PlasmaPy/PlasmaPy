@@ -137,6 +137,20 @@ class FlowCalculator:
             results.append(sum(gen()))
         return np.concatenate(results).si
 
+    def eq34matrix(self):
+        output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
+
+        for I, a in enumerate(self.all_species):
+            i = 3 * I
+            rarray = self.rbar(a)
+            for J, b in enumerate(self.all_species):
+                j = 3 * J
+                narray = N_script(a, b).sum(axis=0, keepdims=True)
+                result = narray * rarray.T
+                output_matrix[i : i + 3, j : j + 3] += result
+
+        return output_matrix
+
     @cached_property
     def flows(self) -> dict:
         fs = self.flux_surface
@@ -176,20 +190,6 @@ class FlowCalculator:
                 flows = order_flow_sum + rpt_row  # Eq31
                 outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
-
-    def eq34matrix(self):
-        output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
-
-        for I, a in enumerate(self.all_species):
-            i = 3 * I
-            rarray = self.rbar(a)
-            for J, b in enumerate(self.all_species):
-                j = 3 * J
-                narray = N_script(a, b).sum(axis=0, keepdims=True)
-                result = narray * rarray.T
-                output_matrix[i : i + 3, j : j + 3] += result
-
-        return output_matrix
 
     @cached_property
     def _fluxes_BP(self):
