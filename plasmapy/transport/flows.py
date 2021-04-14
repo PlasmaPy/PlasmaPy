@@ -179,3 +179,67 @@ class FlowCalculator:
                 output_matrix[i : i + 3, j : j + 3] += result
 
         return output_matrix
+
+    def get_fluxes(
+        self, flows, density_gradient, temperature_gradient,
+    ):
+        fs = self.flux_surface
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
+        Fhat = self.flux_surface.Fhat
+        for a in self.all_species:
+            for i, ai in enumerate(a):
+                if ai.ionic_symbol not in flows:
+                    continue
+                u_velocity = flows[ai.ionic_symbol]
+
+                # TODO I duplicate these a bunch of times. That's terrible.
+                ne_grad = density_gradient.get(ai.ionic_symbol, 0 * u.m ** -4)
+                T_grad = temperature_gradient.get(ai.ionic_symbol, 0 * u.K / u.m)
+                pressure_gradient = constants.k_B * (
+                    ai.T_i * ne_grad + ai.number_density * T_grad
+                )
+
+                # --- TD forces eq21
+                thermodynamic_forces = u.Quantity(
+                    [
+                        # Eq21
+                        Fhat / ai.ion.charge / ai.number_density * pressure_gradient[i],
+                        Fhat / ai.ion.charge * constants.k_B * temperature_gradient[i],
+                    ]
+                )
+
+                thermodynamic_forces = np.append(
+                    thermodynamic_forces, 0
+                )  # because units
+
+                # ---
+                u_θ = (u_velocity + thermodynamic_forces) / B2fsav
+                μ = self.μ[ai.ionic_symbol]
+                Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
+                # TODO verify unit; does not look right
+                q_BP = -(
+                    fs.Fhat
+                    * constants.k_B
+                    * temperatures[i]
+                    / ai.ion.charge
+                    * (μ[1, :] * u_θ).sum()
+                ).si
+
+                # ----
+                Γ_PS = (
+                    -fs.Fhat
+                    / ai.ion.charge
+                    * ξ(a)[i]
+                    / B2fsav
+                    * (1 - B2fsav * Binv2fsav)
+                )
+                sum(
+                    (ξ(b)[:, np.newaxis] * np.array(list(thermodynamic_forces(b)))).sum(
+                        axis=0
+                    )
+                    * N_script(a, b)[0]
+                    for b in all_species
+                ) + (
+                    M_script(a, all_species)[0, :] * list(thermodynamic_forces(a))[i]
+                ).si
