@@ -12,6 +12,12 @@ PlasmaPy Documentation
    notebooks/diagnostics/proton_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
+   notebooks/analysis/swept_langmuir/find_floating_potential
+   notebooks/diagnostics/proton_radiography_particle_tracing_wire_mesh
+   notebooks/formulary/thermal_bremsstrahlung
+   notebooks/plasma/grids_nonuniform
+   notebooks/ExB_drift
+   notebooks/simulation/particle_stepper
 
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
