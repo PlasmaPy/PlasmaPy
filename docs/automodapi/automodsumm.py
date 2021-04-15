@@ -1,6 +1,7 @@
 import os
 import re
 
+from importlib import import_module
 from jinja2 import TemplateNotFound
 from sphinx.application import Sphinx
 from sphinx.builders import Builder
@@ -92,6 +93,14 @@ class AutomodsummOptions:
         }  # type: Dict[str, Union[str, None]]
 
         self.condition_options()
+
+    @property
+    def pkg_or_module(self):
+        mod = import_module(self.modname)
+        if mod.__package__ == mod.__name__:
+            return "pkg"
+        else:
+            return "module"
 
     def condition_options(self):
         self.condition_toctree_option()
