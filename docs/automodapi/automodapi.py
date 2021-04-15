@@ -155,9 +155,9 @@ class ModAPIDocumenter(ModuleDocumenter):
         custom_group_info = self.env.app.config.automod_custom_groups
 
         group_names = set(self._grouping_info) | set(custom_group_info)
-        remainder = group_names - set(group_order)
+        remainder = list(group_names - set(group_order))
         if len(remainder) > 0:
-            group_order += tuple(remainder)
+            group_order += tuple(sorted(remainder))
 
         _grouping_info = OrderedDict()
         for name in group_order:
