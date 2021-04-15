@@ -1,3 +1,4 @@
+import re
 import sys
 import warnings
 
@@ -36,7 +37,7 @@ _option_spec = option_spec = {
     "skip": option_str_list,
     "no-heading": bool_option,
     "members": lambda x: None,
-    # "header-underline": lambda x: "-^",
+    "heading-chars": directives.unchanged,
     "toctree": directives.unchanged,
     "no-toctree": bool_option,
     "no-main-docstr": bool_option,
@@ -57,6 +58,10 @@ class AutomodapiOptions(AutomodsummOptions):
     ):
         super().__init__(app, modname, options, docname=docname, _warn=_warn)
 
+    def condition_options(self):
+        super().condition_options()
+        self.condition_heading_chars_option()
+
     def condition_toctree_option(self):
         if "no-toctree" in self.options and self.options["no-toctree"]:
             if "toctree" in self.options:
@@ -65,6 +70,17 @@ class AutomodapiOptions(AutomodsummOptions):
             self.options["toctree"] = self.app.config.automodapi_toctreedirnm
 
         super().condition_toctree_option()
+
+    def condition_heading_chars_option(self):
+        non_alphanumerics = re.compile("[^0-9a-zA-Z]]+")
+        heading_chars = self.options.get("heading-chars", None)
+        if (
+            heading_chars is None
+            or heading_chars == ""
+            or len(heading_chars) < 2
+            or non_alphanumerics.fullmatch(heading_chars) is None
+        ):
+            self.options["heading-chars"] = "-^"
 
     @property
     def options_for_automodsumm(self):
@@ -178,6 +194,9 @@ class ModAPIDocumenter(ModuleDocumenter):
         )
         asumm_options = option_processor.options_for_automodsumm
         mod_objs = option_processor.mod_objs_option_filtered
+        heading_chars = option_processor.options["heading-chars"]
+        heading_char = heading_chars[0]
+        heading_chars = heading_chars[1:]
 
         # scan thru default groups first
         for group, info in self.grouping_info.items():
@@ -186,7 +205,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 
             title = info["title"]
 
-            underline = "-" * len(title)
+            underline = heading_char * len(title)
 
             # sub-heading
             lines.extend(
