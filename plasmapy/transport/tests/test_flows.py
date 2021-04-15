@@ -59,6 +59,32 @@ def test_fluxes_partial(fc, num_regression):
     num_regression.check(d_partial)
 
 
+@pytest.mark.xfail(reason="units are off in fluxes")
+def test_diffusion_coefficient(fc, num_regression):
+    d = {}
+    for ion, D in fc.diffusion_coefficient.items():
+        assert np.isfinite(D).all(), ion
+        d[ion] = D.si.value
+    num_regression.check(d)
+
+
+@pytest.mark.xfail(reason="units are off in fluxes")
+def test_thermal_coefficient(fc, num_regression):
+    d = {}
+    for ion, χ in fc.thermal_conductivity.items():
+        assert np.isfinite(χ).all(), ion
+        d[ion] = χ.si.value
+    num_regression.check(d)
+
+
+def test_bootstrap_current(fc, num_regression):
+    d = {}
+    for ion, Ib in fc.bootstrap_current.items():
+        assert np.isfinite(χ).all(), ion
+        d[ion] = Ib.si.value
+    num_regression.check(d)
+
+
 @pytest.mark.xfail(reason="units are off")
 def test_fluxes(fc, num_regression):
     d = {}
