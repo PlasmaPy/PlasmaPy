@@ -162,7 +162,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 
         return _grouping_info
 
-    def generate_automodsumm_lines(self, modname):
+    def generate_more_content(self, modname):
         app = self.env.app
         include_inheritance_diagram = app.config.automodapi_inheritance_diagram
         inheritance_groups = app.config.automodapi_groups_with_inheritance_diagrams
@@ -313,18 +313,10 @@ class ModAPIDocumenter(ModuleDocumenter):
         # functions and classes of internal submodules.
         real_modname = real_modname or self.get_real_modname()  # type: str
 
-        # toctreestr = ':toctree: '
-        # api_dir = os.path.join(app.srcdir, app.config.automodapi_toctreedirnm)
-        # if docname is None:
-        #     doc_path = app.srcdir
-        # else:
-        #     doc_path = os.path.dirname(os.path.join(app.srcdir, docname))
-        # toctreestr += os.path.relpath(api_dir, doc_path).replace(os.sep, '/')
-
         # Generate the automodsumm content as 'more_content'
         more_content = StringList()
-        automodsumm_lines = self.generate_automodsumm_lines(modname=real_modname)
-        for line in automodsumm_lines:
+        more_lines = self.generate_more_content(modname=real_modname)
+        for line in more_lines:
             more_content.append(line, source=docname)
 
         # generate
