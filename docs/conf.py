@@ -26,7 +26,6 @@ from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
 sys.path.insert(0, os.path.abspath(".."))
-sys.path.insert(0, os.path.abspath("."))
 
 from plasmapy import __version__ as release
 
