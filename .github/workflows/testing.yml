@@ -85,6 +85,8 @@ jobs:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
       run: python -m pip install --upgrade tox codecov
+    - name: Emergency test
+      run: env
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
