@@ -3,8 +3,6 @@ import numpy as np
 
 from astropy import constants
 from dataclasses import dataclass
-from scipy import integrate
-from typing import Callable
 
 try:
     from functools import cached_property
@@ -83,20 +81,13 @@ class FluxSurface:
             ax.legend()
         return ax
 
-    def flux_surface_average(self, quantity, simpson=False):
-        # TODO test the <B dot ... > = 0 property
+    def flux_surface_average(self, quantity):
         integrand = 1 / self.Bp
-        if simpson:
-            integrator = integrate.simpson
-        else:
-            try:
-                from scipy.integrate import trapz as trapezoid
-            except ImportError:
-                from scipy.integrate import trapezoid
-            integrator = trapezoid
-        return integrator(integrand * quantity, self.lp) / integrator(
-            integrand, self.lp
-        )
+        try:
+            from scipy.integrate import trapz as trapezoid
+        except ImportError:
+            from scipy.integrate import trapezoid
+        return trapezoid(integrand * quantity, self.lp) / trapezoid(integrand, self.lp)
 
     @cached_property
     def theta(self):
