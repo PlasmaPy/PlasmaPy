@@ -85,25 +85,35 @@ class AutomodsummOptions:
         self.docname = docname
         self.warn = _warn if _warn is not None else self.logger.warning
 
-        self.review_toctree_option()
+        self.toctree = {
+            "original": None,
+            "rel_to_doc": None,
+            "abspath": None,
+        }  # type: Dict[str, Union[str, None]]
 
-    def review_toctree_option(self):
+        self.condition_options()
+
+    def condition_options(self):
+        self.condition_toctree_option()
+
+    def condition_toctree_option(self):
         if "toctree" not in self.options:
             return
-
-        toctree_path = os.path.abspath(
-            os.path.join(self.app.confdir, self.options["toctree"]),
-        )
-        self.options["toctree-abspath"] = toctree_path
 
         if self.docname is None:
             doc_path = self.app.confdir
         else:
             doc_path = os.path.dirname(os.path.join(self.app.srcdir, self.docname))
 
-        self.options["toctree"] = os.path.relpath(
-            toctree_path, doc_path
+        self.toctree["original"] = self.options["toctree"]
+        self.toctree["abspath"] = os.path.abspath(
+            os.path.join(self.app.confdir, self.options["toctree"]),
+        )
+        self.toctree["rel_to_doc"] = os.path.relpath(
+            self.toctree["abspath"], doc_path
         ).replace(os.sep, "/")
+
+        self.options["toctree"] = self.toctree["rel_to_doc"]
 
     @property
     def mod_objs(self) -> Dict[str, Dict[str, Any]]:
@@ -643,10 +653,11 @@ class GenDocsFromAutomodsumm:
                     docname=filename,
                     _warn=self.logger.warning,
                 )
-                options = process_options.options
-                options["toctree"] = options.get("toctree-abspath", None)
-                options["template"] = options.get("template", None)
-                options["recursive"] = options.get("recursive", False)
+                options = {
+                    "toctree": process_options.toctree["abspath"],
+                    "template": process_options.options.get("template", None),
+                    "recursive": process_options.options.get("recursive", False),
+                }
 
                 obj_list = process_options.generate_obj_list()
 

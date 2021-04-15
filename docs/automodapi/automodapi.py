@@ -63,17 +63,16 @@ class AutomodapiOptions(AutomodsummOptions):
             docname: str = None,
             _warn: Callable = None,
     ):
-        self.original_toctree = None
         super().__init__(app, modname, options, docname=docname, _warn=_warn)
 
-    def review_toctree_option(self):
+    def condition_toctree_option(self):
         if "no-toctree" in self.options and self.options["no-toctree"]:
             if "toctree" in self.options:
                 del self.options["toctree"]
         elif "toctree" not in self.options:
             self.options["toctree"] = self.app.config.automodapi_toctreedirnm
-        self.original_toctree = self.options.get("toctree", None)
-        super().review_toctree_option()
+
+        super().condition_toctree_option()
 
     @property
     def options_for_automodsumm(self):
@@ -86,11 +85,11 @@ class AutomodapiOptions(AutomodsummOptions):
                 if isinstance(val, list):
                     val = ", ".join(val)
 
-                if name == "toctree" and self.original_toctree is not None:
+                if name == "toctree" and self.toctree["original"] is not None:
                     # automodsumm requires path relative to the confdir but
                     # Automodsumm.review_toctree_option generates the path relative
                     # to the file location
-                    options[name] = self.original_toctree
+                    options[name] = self.toctree["original"]
                 else:
                     options[name] = val
 
