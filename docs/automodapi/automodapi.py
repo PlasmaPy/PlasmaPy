@@ -33,6 +33,7 @@ _option_spec = option_spec = {
     **ModuleDocumenter.option_spec,
     "groups": option_str_list,
     "exclude-groups": option_str_list,
+    # "group-order": option_str_list,
     # "merge-groups": bool_option,
     "skip": option_str_list,
     "include-heading": bool_option,
