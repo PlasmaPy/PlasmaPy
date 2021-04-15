@@ -140,14 +140,12 @@ class FlowCalculator:
     def eq34matrix(self):
         output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
 
-        for I, a in enumerate(self.all_species):
-            i = 3 * I
+        for i, a in enumerate(self.all_species):
             rarray = self.rbar(a)
-            for J, b in enumerate(self.all_species):
-                j = 3 * J
+            for j, b in enumerate(self.all_species):
                 narray = N_script(a, b).sum(axis=0, keepdims=True)
                 result = narray * rarray.T
-                output_matrix[i : i + 3, j : j + 3] += result
+                output_matrix[3 * i : 3 * i + 3, 3 * j : 3 * j + 3] += result
 
         return output_matrix
 
@@ -161,9 +159,8 @@ class FlowCalculator:
         for a in self.all_species:
             # use Eq31 to get charge state flows from isotopic flows
             def gen():
-                for J, b in enumerate(self.all_species):
-                    j = 3 * J
-                    ubar_b = ubar[j : j + 3]
+                for j, b in enumerate(self.all_species):
+                    ubar_b = ubar[3 * j : 3 * j + 3]
                     yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
 
             Λ = -sum(gen())

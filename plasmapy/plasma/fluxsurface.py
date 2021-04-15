@@ -20,6 +20,8 @@ except ImportError:
 
 @dataclass
 class FluxSurface:
+    """Represents a single flux surface out of a magnetic equilibrium, experimental or otherwise."""
+
     R: np.ndarray
     Z: np.ndarray
     psi: float
@@ -61,7 +63,7 @@ class FluxSurface:
             * np.pi
             / constants.mu0
         )  # FS average because this is supposed to be constant on the flux surface
-        psiprime = 1  # TODO if rho \equiv psi, this should work?
+        self.psiprime = trapezoid(self.Bphivals, self.lp)
         self.Fhat = constants.mu0 * F
 
     def plot(self, ax=None, n=False, B=False, legend=True, **kwargs):
@@ -132,7 +134,7 @@ class FluxSurface:
     @cached_property
     def _f_tl(self):
         # Houlberg_1997, equations B5-B7
-        h, hmean, h2mean = self._h, self._hmean, self._h2mean
+        h, h2mean = self._h, self._h2mean
         f_tl = 1 - h2mean * self.flux_surface_average(
             h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2)
         )
@@ -143,10 +145,9 @@ class FluxSurface:
         return f_t
 
     @cached_property
-    def BDotNablaThetaFSA(fs):
+    def BDotNablaThetaFSA(self):
         # Eq B14
-        psiprime = trapezoid(fs.Bphivals, fs.lp)
         # TODO fix this through the power of diffgeom
-        jacobian = 1  # TODO the Jacobian of the transformation from cylindrical coordinates to flux coordi nates
-        BdotNablaTheta = psiprime / (2 * np.pi * np.sqrt(jacobian))
-        return fs.flux_surface_average(BdotNablaTheta)
+        jacobian = 1  # TODO the Jacobian of the transformation from cylindrical coordinates to flux coordinates
+        BdotNablaTheta = self.psiprime / (2 * np.pi * np.sqrt(jacobian))
+        return self.flux_surface_average(BdotNablaTheta)
