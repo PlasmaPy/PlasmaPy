@@ -314,7 +314,7 @@ class Automodsumm(Autosummary):
 
         self.logger.info(f"[automodsumm] Collecting content for '{modname}'.")
         option_processor = AutomodsummOptions(
-            app, modname, self.options, _warn=self.warn,
+            app, modname, self.options, docname=app.env.docname, _warn=self.warn,
         )
         content = option_processor.generate_obj_list()
         for ii, modname in enumerate(content):
@@ -630,7 +630,11 @@ class GenDocsFromAutomodsumm:
             # gather objects and update documented list
             if gather_objs:
                 process_options = _option_cls(
-                    self.app, modname, options, _warn=self.logger.warning,
+                    self.app,
+                    modname,
+                    options,
+                    docname=filename,
+                    _warn=self.logger.warning,
                 )
                 options = process_options.options
                 options["toctree"] = options.get("toctree", None)
