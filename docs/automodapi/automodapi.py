@@ -277,7 +277,6 @@ class ModAPIDocumenter(ModuleDocumenter):
         imported from. If *all_members* is True, document all members.
         """
 
-        app = self.env.app
         docname = self.env.docname
         if not docname.endswith(".rst"):
             docname += ".rst"
