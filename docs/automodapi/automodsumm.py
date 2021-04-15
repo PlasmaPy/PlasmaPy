@@ -88,21 +88,22 @@ class AutomodsummOptions:
         self.review_toctree_option()
 
     def review_toctree_option(self):
-        if "toctree" in self.options:
-            toctree_path = self.options["toctree"]
-        else:
-            toctree_path = self.app.config.automodapi_toctreedirnm
+        if "toctree" not in self.options:
+            return
+
+        toctree_path = os.path.abspath(
+            os.path.join(self.app.confdir, self.options["toctree"]),
+        )
+        self.options["toctree-abspath"] = toctree_path
 
         if self.docname is None:
-            # doc_path = app.srcdir
             doc_path = self.app.confdir
         else:
-            # doc_path = os.path.dirname(os.path.join(app.srcdir, docname))
-            doc_path = os.path.dirname(os.path.join(self.app.confdir, self.docname))
+            doc_path = os.path.dirname(os.path.join(self.app.srcdir, self.docname))
 
-        toctree_path = os.path.relpath(toctree_path, doc_path).replace(os.sep, "/")
-        self.options["toctree"] = toctree_path
-
+        self.options["toctree"] = os.path.relpath(
+            toctree_path, doc_path
+        ).replace(os.sep, "/")
 
     @property
     def mod_objs(self) -> Dict[str, Dict[str, Any]]:
@@ -316,6 +317,12 @@ class Automodsumm(Autosummary):
         option_processor = AutomodsummOptions(
             app, modname, self.options, docname=app.env.docname, _warn=self.warn,
         )
+
+        # update toctree with relative path to file (not confdir)
+        if "toctree" in self.options:
+            self.options["toctree"] = option_processor.options["toctree"]
+
+        # define additional content
         content = option_processor.generate_obj_list()
         for ii, modname in enumerate(content):
             if not modname.startswith("~"):
@@ -637,7 +644,7 @@ class GenDocsFromAutomodsumm:
                     _warn=self.logger.warning,
                 )
                 options = process_options.options
-                options["toctree"] = options.get("toctree", None)
+                options["toctree"] = options.get("toctree-abspath", None)
                 options["template"] = options.get("template", None)
                 options["recursive"] = options.get("recursive", False)
 
