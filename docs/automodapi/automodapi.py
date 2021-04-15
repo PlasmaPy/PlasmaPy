@@ -35,7 +35,7 @@ _option_spec = option_spec = {
     "exclude-groups": option_str_list,
     # "merge-groups": bool_option,
     "skip": option_str_list,
-    "no-heading": bool_option,
+    "include-heading": bool_option,
     "members": lambda x: None,
     "heading-chars": directives.unchanged,
     "toctree": directives.unchanged,
@@ -61,6 +61,7 @@ class AutomodapiOptions(AutomodsummOptions):
     def condition_options(self):
         super().condition_options()
         self.condition_heading_chars_option()
+        self.condition_include_heading_option()
 
     def condition_toctree_option(self):
         if "no-toctree" in self.options and self.options["no-toctree"]:
@@ -81,6 +82,10 @@ class AutomodapiOptions(AutomodsummOptions):
             or non_alphanumerics.fullmatch(heading_chars) is None
         ):
             self.options["heading-chars"] = "-^"
+
+    def condition_include_heading_option(self):
+        if "include-heading" not in self.options:
+            self.options["include-heading"] = False
 
     @property
     def options_for_automodsumm(self):
@@ -126,6 +131,13 @@ class ModAPIDocumenter(ModuleDocumenter):
     )
 
     _templates = {
+        "mod-heading": "\n".join(
+            [
+                "{modname} {pkg_or_mod}",
+                "{underline}",
+                "",
+            ],
+        ),
         "heading": "\n".join(
             [
                 "{title}",
@@ -194,9 +206,11 @@ class ModAPIDocumenter(ModuleDocumenter):
         )
         asumm_options = option_processor.options_for_automodsumm
         mod_objs = option_processor.mod_objs_option_filtered
-        heading_chars = option_processor.options["heading-chars"]
-        heading_char = heading_chars[0]
-        heading_chars = heading_chars[1:]
+        heading_char = (
+            option_processor.options["heading-chars"][1]
+            if option_processor.options["include-heading"]
+            else option_processor.options["heading-chars"][0]
+        )
 
         # scan thru default groups first
         for group, info in self.grouping_info.items():
@@ -242,6 +256,35 @@ class ModAPIDocumenter(ModuleDocumenter):
                 lines.append("")
 
         return lines
+
+    def generate_heading(self, modname):
+        app = self.env.app
+        sourcename = self.get_sourcename()
+
+        option_processor = AutomodapiOptions(
+            app,
+            modname,
+            self.options,
+            _warn=self.logger.warning,
+            docname=self.env.docname,
+        )
+        if not option_processor.options["include-heading"]:
+            return
+
+        if option_processor.pkg_or_module == "pkg":
+            pkg_or_mod = "Package"
+        else:
+            pkg_or_mod = "Module"
+
+        heading_char = option_processor.options["heading-chars"][0]
+        underline = heading_char * (len(modname) + 1 + len(pkg_or_mod))
+
+        heading_lines = self._templates["mod-heading"].format(
+            modname=modname, pkg_or_mod=pkg_or_mod, underline=underline
+        ).splitlines()
+
+        for line in heading_lines:
+            self.add_line(line, source=sourcename)
 
     def add_content(
             self, more_content: Optional[StringList], no_docstring: bool = False
@@ -332,7 +375,10 @@ class ModAPIDocumenter(ModuleDocumenter):
         # functions and classes of internal submodules.
         real_modname = real_modname or self.get_real_modname()  # type: str
 
-        # Generate the automodsumm content as 'more_content'
+        # Generate heading
+        self.generate_heading(modname=real_modname)
+
+        # Generate the 'more_content' (automodsumm and inheritance diagrams)
         more_content = StringList()
         more_lines = self.generate_more_content(modname=real_modname)
         for line in more_lines:
