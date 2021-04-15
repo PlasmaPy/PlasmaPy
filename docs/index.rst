@@ -6,6 +6,17 @@
 PlasmaPy Documentation
 ######################
 
+.. image:: _static/graphic-circular.png
+   :alt: PlasmaPy logo
+   :align: right
+   :scale: 80%
+
+
+`PlasmaPy <http://www.plasmapy.org/>`_ is an open source
+community-developed core `Python <https://www.python.org/>`_ 3.7+
+package for plasma physics currently under development.
+
+
 .. nbgallery::
    :hidden:
 
@@ -18,16 +29,6 @@ PlasmaPy Documentation
    notebooks/plasma/grids_nonuniform
    notebooks/ExB_drift
    notebooks/simulation/particle_stepper
-
-.. image:: _static/graphic-circular.png
-   :alt: PlasmaPy logo
-   :align: right
-   :scale: 80%
-
-
-`PlasmaPy <http://www.plasmapy.org/>`_ is an open source
-community-developed core `Python <https://www.python.org/>`_ 3.7+
-package for plasma physics currently under development.
 
 
 .. toctree::
