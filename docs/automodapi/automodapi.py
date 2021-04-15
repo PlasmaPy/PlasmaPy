@@ -132,15 +132,25 @@ class ModAPIDocumenter(ModuleDocumenter):
             ],
         ),
         "options": "   :{option}: {opt_args}",
+        "inheritance-diagram": "\n".join(
+            [
+                ".. inheritance-diagram:: {cls_list}",
+                "   :private-bases:",
+                "   :parts: 1",
+            ],
+        )
     }
 
     def generate_automodsumm_lines(self, modname):
+        app = self.env.app
+        custom_group_defs = app.config.automod_custom_groups
+        include_inheritance_diagram = app.config.automodapi_inheritance_diagram
+        inheritance_groups = app.config.automodapi_groups_with_inheritance_diagrams
+
         lines = []
 
-        custom_group_defs = self.env.app.config.automod_custom_groups
-
         option_processor = AutomodapiOptions(
-            self.env.app,
+            app,
             modname,
             self.options,
             _warn=self.logger.warning,
@@ -166,26 +176,39 @@ class ModAPIDocumenter(ModuleDocumenter):
 
             underline = "-" * len(title)
 
+            # sub-heading
             lines.extend(
                 self._templates["heading"].format(
                     title=title, underline=underline
                 ).splitlines()
             )
             lines.append("")
+
+            # add automodsumm directive
             lines.extend(
                 self._templates["automodsumm"].format(
                     modname=modname, group=group
                 ).splitlines()
             )
 
+            # add options for automodsumm directive
             for name, val in asumm_options.items():
                 lines.extend(
                     self._templates["options"].format(
                         option=name, opt_args=val,
                     ).splitlines()
                 )
-
             lines.append("")
+
+            # add inheritance-diagram
+            if group in inheritance_groups and include_inheritance_diagram:
+                cls_list = " ".join(mod_objs[group]["qualnames"])
+                lines.extend(
+                    self._templates["inheritance-diagram"].format(
+                        cls_list=cls_list
+                    ).splitlines()
+                )
+                lines.append("")
 
         return lines
 
@@ -315,5 +338,11 @@ def setup(app: Sphinx):
         app.add_config_value("automodapi_toctreedirnm", "api", True)
     # app.add_config_value("automodapi_writereprocessed", False, True)
     # app.add_config_value("automod_custom_groups", dict(), True)
+
+    app.add_config_value(
+        "automodapi_groups_with_inheritance_diagrams",
+        ["classes", "exceptions", "warnings"],
+        True,
+    )
 
     return rtn
