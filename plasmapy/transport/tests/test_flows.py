@@ -65,6 +65,7 @@ def test_diffusion_coefficient(fc, num_regression):
     for ion, D in fc.diffusion_coefficient.items():
         assert np.isfinite(D).all(), ion
         d[ion] = D.si.value
+        assert D.unit.physical_type == "diffusion coefficient"
     num_regression.check(d)
 
 
@@ -74,15 +75,17 @@ def test_thermal_coefficient(fc, num_regression):
     for ion, χ in fc.thermal_conductivity.items():
         assert np.isfinite(χ).all(), ion
         d[ion] = χ.si.value
+        assert χ.unit.physical_type == "heat conductivity"
     num_regression.check(d)
 
 
+@pytest.mark.xfail(reason="Units are off; need a tesla in the denominator")
 def test_bootstrap_current(fc, num_regression):
-    d = {}
-    for ion, Ib in fc.bootstrap_current.items():
-        assert np.isfinite(χ).all(), ion
-        d[ion] = Ib.si.value
+    Ib = fc.bootstrap_current
+    assert np.isfinite(Ib).all(), ion
+    d = {"bootstrap current": Ib.si.value}
     num_regression.check(d)
+    assert Ib.unit.physical_type == "electric current density"
 
 
 @pytest.mark.xfail(reason="units are off")
