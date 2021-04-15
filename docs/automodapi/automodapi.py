@@ -41,6 +41,8 @@ _option_spec = option_spec = {
     "toctree": directives.unchanged,
     "no-toctree": bool_option,
     "no-main-docstr": bool_option,
+    "inheritance-diagram": bool_option,
+    "no-inheritance-diagram": bool_option,
 }  # type: Dict[str, Callable]
 
 
@@ -62,6 +64,7 @@ class AutomodapiOptions(AutomodsummOptions):
         super().condition_options()
         self.condition_heading_chars_option()
         self.condition_include_heading_option()
+        self.condition_inheritance_diagram_option()
 
     def condition_toctree_option(self):
         if "no-toctree" in self.options and self.options["no-toctree"]:
@@ -86,6 +89,16 @@ class AutomodapiOptions(AutomodsummOptions):
     def condition_include_heading_option(self):
         if "include-heading" not in self.options:
             self.options["include-heading"] = False
+
+    def condition_inheritance_diagram_option(self):
+        if "no-inheritance-diagram" in self.options:
+            self.options["inheritance-diagram"] = False
+            del self.options["no-inheritance-diagram"]
+        elif "inheritance-diagram" in self.options:
+            self.options["inheritance-diagram"] = False
+        else:
+            self.options["inheritance-diagram"] = \
+                self.app.config.automodapi_inheritance_diagram
 
     @property
     def options_for_automodsumm(self):
@@ -192,7 +205,6 @@ class ModAPIDocumenter(ModuleDocumenter):
 
     def generate_more_content(self, modname):
         app = self.env.app
-        include_inheritance_diagram = app.config.automodapi_inheritance_diagram
         inheritance_groups = app.config.automodapi_groups_with_inheritance_diagrams
 
         lines = []
@@ -211,6 +223,7 @@ class ModAPIDocumenter(ModuleDocumenter):
             if option_processor.options["include-heading"]
             else option_processor.options["heading-chars"][0]
         )
+        include_inheritance_diagram = option_processor.options["inheritance-diagram"]
 
         # scan thru default groups first
         for group, info in self.grouping_info.items():
