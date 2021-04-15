@@ -16,6 +16,8 @@ PlasmaPy Documentation
 community-developed core `Python <https://www.python.org/>`_ 3.7+
 package for plasma physics currently under development.
 
+Example highlights
+------------------
 
 .. nbgallery::
    :hidden:
