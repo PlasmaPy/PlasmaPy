@@ -359,7 +359,6 @@ def setup(app: Sphinx):
     if not hasattr(app.config, "automodapi_toctreedirnm"):
         app.add_config_value("automodapi_toctreedirnm", "api", True)
     # app.add_config_value("automodapi_writereprocessed", False, True)
-    # app.add_config_value("automod_custom_groups", dict(), True)
 
     app.add_config_value(
         "automodapi_group_order",
