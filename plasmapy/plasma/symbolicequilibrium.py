@@ -11,13 +11,18 @@ from dataclasses import dataclass
 from scipy import interpolate, optimize
 from skimage import measure
 
-grid_and_psi = namedtuple("GridAndPsi", ["R", "Z", "psi"])
-
 from plasmapy.plasma.fluxsurface import FluxSurface
+
+grid_and_psi = namedtuple("GridAndPsi", ["R", "Z", "psi"])
 
 
 @dataclass
 class SymbolicEquilibrium:
+    """
+    Analytical solution of the GS equation (Cerfon, Freidberg),
+    based on plasmaboundaries package
+    """
+
     aspect_ratio: float
     A: float
     elongation: float
@@ -48,7 +53,7 @@ class SymbolicEquilibrium:
         Bdiff_r = B.diff(Rsym)
         Bdiff_z = B.diff(Zsym)
 
-        psym = (-(psi0 ** 2) / (mu0 * R0 ** 4) * (1 - self.A) * psisym).simplify()
+        self.psym = (-(psi0 ** 2) / (mu0 * R0 ** 4) * (1 - self.A) * psisym).simplify()
         self.Bphi2 = (
             R0 ** 2
             / Rsym ** 2
@@ -133,7 +138,7 @@ class SymbolicEquilibrium:
 
         dZ = np.gradient(Zcontour)
         dR = np.gradient(Rcontour)
-        dL = np.sqrt(dZ ** 2 + dR ** 2)
+        self.dL = np.sqrt(dZ ** 2 + dR ** 2)
 
         Brvals = self.Brfunc(Rcontour, Zcontour)
         Bzvals = self.Bzfunc(Rcontour, Zcontour)
