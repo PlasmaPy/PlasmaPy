@@ -289,4 +289,4 @@ def setup(app: Sphinx) -> None:
     setup_automodapi(app)
 
     app.add_config_value("revision", "", True)
-    app.add_stylesheet("rtd_theme_overrides.css")
+    app.add_css_file("rtd_theme_overrides.css")
