@@ -293,7 +293,6 @@ class AutomodsummOptions:
 class Automodsumm(Autosummary):
     required_arguments = 1
     optional_arguments = 0
-    final_argument_whitespace = False
     has_content = False
     option_spec = AutomodsummOptions.option_spec.copy()
 
