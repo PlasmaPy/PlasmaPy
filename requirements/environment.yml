@@ -27,6 +27,7 @@ dependencies:
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme
+    - towncrier >= 19.2.0
     - pytest-regressions
     - hypothesis
     - plasmaboundaries
