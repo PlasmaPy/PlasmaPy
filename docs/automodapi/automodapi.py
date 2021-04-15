@@ -1,8 +1,3 @@
-
-import inspect
-import io
-import os
-import re
 import sys
 import warnings
 
@@ -18,15 +13,12 @@ except ImportError:
 from sphinx.ext.autodoc import (
     ModuleDocumenter,
     bool_option,
-    members_set_option,
-    members_option,
 )
 from sphinx.locale import __
 from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Optional
 
 from .automodsumm import option_str_list, AutomodsummOptions
-from .utils import find_mod_objs
 
 if sys.version_info >= (3, 0):
     text_type = str
