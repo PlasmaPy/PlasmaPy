@@ -16,7 +16,7 @@ from sphinx.ext.autodoc import (
 )
 from sphinx.locale import __
 from sphinx.util import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from .automodsumm import option_str_list, AutomodsummOptions
 
@@ -93,21 +93,21 @@ class ModAPIDocumenter(ModuleDocumenter):
     directivetype = "module"
     titles_allowed = True
     content_indent = ""
-
-    _automod_option_spec_names = set(ModuleDocumenter.option_spec)
+    logger = logger
     option_spec = _option_spec
 
-    grouping_info = OrderedDict(
+    _automod_option_spec_names = set(ModuleDocumenter.option_spec)
+
+    _grouping_info = OrderedDict(
         {
             "modules": {"title": "Sub-Packages & Modules"},
             "classes": {"title": "Classes"},
             "exceptions": {"title": "Exceptions"},
             "warnings": {"title": "Warnings"},
             "functions": {"title": "Functions"},
+            "variables": {"title": "Variables & Attributes"},
         },
     )
-
-    logger = logger
 
     _templates = {
         "heading": "\n".join(
@@ -132,9 +132,38 @@ class ModAPIDocumenter(ModuleDocumenter):
         )
     }
 
+    @property
+    def grouping_info(self) -> Dict[str, Dict[str, Union[str, None]]]:
+
+        group_order = tuple(self.env.app.config.automodapi_group_order)
+        custom_group_info = self.env.app.config.automod_custom_groups
+
+        group_names = set(self._grouping_info) | set(custom_group_info)
+        remainder = group_names - set(group_order)
+        if len(remainder) > 0:
+            group_order += tuple(remainder)
+
+        _grouping_info = OrderedDict()
+        for name in group_order:
+            if name in self._grouping_info:
+                _info = self._grouping_info[name]
+            else:
+                _info = custom_group_info[name]
+
+            _grouping_info.update(
+                {
+                    name: {
+                        "title": _info.get("title", None),
+                        "descr": _info.get("descr", None),
+                        "dunder": _info.get("dunder", None),
+                    },
+                },
+            )
+
+        return _grouping_info
+
     def generate_automodsumm_lines(self, modname):
         app = self.env.app
-        custom_group_defs = app.config.automod_custom_groups
         include_inheritance_diagram = app.config.automodapi_inheritance_diagram
         inheritance_groups = app.config.automodapi_groups_with_inheritance_diagrams
 
@@ -150,20 +179,12 @@ class ModAPIDocumenter(ModuleDocumenter):
         asumm_options = option_processor.options_for_automodsumm
         mod_objs = option_processor.mod_objs_option_filtered
 
-        groups = set(mod_objs)
-        default_groups = set(self.grouping_info)
-        custom_groups = groups - default_groups
-        group_order = tuple(self.grouping_info) + tuple(sorted(list(custom_groups)))
-
         # scan thru default groups first
-        for group in group_order:
-            if group not in groups:
+        for group, info in self.grouping_info.items():
+            if group not in mod_objs:
                 continue
 
-            try:
-                title = self.grouping_info[group]["title"]
-            except KeyError:
-                title = custom_group_defs[group]["title"]
+            title = info["title"]
 
             underline = "-" * len(title)
 
@@ -329,6 +350,11 @@ def setup(app: Sphinx):
     # app.add_config_value("automodapi_writereprocessed", False, True)
     # app.add_config_value("automod_custom_groups", dict(), True)
 
+    app.add_config_value(
+        "automodapi_group_order",
+        ("modules", "classes", "exceptions", "warnings", "functions", "variables"),
+        True,
+    )
     app.add_config_value(
         "automodapi_groups_with_inheritance_diagrams",
         ["classes", "exceptions", "warnings"],
