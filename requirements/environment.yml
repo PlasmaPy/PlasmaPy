@@ -27,3 +27,4 @@ dependencies:
     - sphinx-automodapi
     - sphinx_rtd_theme
     - pytest-regressions
+    - towncrier>=19.2.0
