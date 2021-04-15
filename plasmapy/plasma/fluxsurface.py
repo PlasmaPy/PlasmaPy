@@ -66,7 +66,9 @@ class FluxSurface:
         self.psiprime = trapezoid(self.Bphivals, self.lp)
         self.Fhat = constants.mu0 * F
 
-    def plot(self, ax=None, n=False, B=False, legend=True, **kwargs):
+    def plot(
+        self, ax=None, n=False, B=False, legend=True, **kwargs
+    ):  # coverage: ignore
         if ax is None:
             fig, ax = plt.subplots()
             ax.set_aspect("equal")
@@ -79,15 +81,6 @@ class FluxSurface:
             ax.quiver(self.R, self.Z, self.nr, self.nz, **kwargs)
         if legend:
             ax.legend()
-        return ax
-
-    def plot_psi(self, ax=None):
-        if ax is None:
-            fig, ax = plt.subplots()
-            ax.set_xlabel("L")
-            ax.set_ylabel(r"$\psi$")
-        ax.plot(self.lp, self.psi(self.R, self.Z))
-        ax.axhline(self.psi)
         return ax
 
     def flux_surface_average(self, quantity, simpson=False):

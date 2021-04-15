@@ -87,7 +87,7 @@ class SymbolicEquilibrium:
         zminmaxstep=(-0.6, 0.6, 0.01),
         savepath=None,
         vmax=0,
-    ):
+    ):  # coverage: ignore
         R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
 
         levels = np.sort(np.linspace(PSI.min(), 0, num=25))
