@@ -284,6 +284,8 @@ class ModAPIDocumenter(ModuleDocumenter):
         if not option_processor.options["include-heading"]:
             return
 
+        modname = re.escape(modname)
+
         if option_processor.pkg_or_module == "pkg":
             pkg_or_mod = "Package"
         else:
@@ -293,7 +295,7 @@ class ModAPIDocumenter(ModuleDocumenter):
         underline = heading_char * (len(modname) + 1 + len(pkg_or_mod))
 
         heading_lines = self._templates["mod-heading"].format(
-            modname=modname, pkg_or_mod=pkg_or_mod, underline=underline
+            modname=modname, pkg_or_mod=pkg_or_mod, underline=underline,
         ).splitlines()
 
         for line in heading_lines:
