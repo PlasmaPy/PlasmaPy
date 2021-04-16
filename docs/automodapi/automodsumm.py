@@ -226,86 +226,29 @@ class AutomodsummOptions:
             }
         return mod_objs
 
-    def generate_obj_list(self) -> List[str]:
+    def generate_obj_list(self, exclude_modules: bool = False) -> List[str]:
 
         mod_objs = self.mod_objs_option_filtered
 
         if not bool(mod_objs):
             return []
 
-        # gather content
         content = []
+        if not exclude_modules:
+            for group in mod_objs:
+                content.extend(mod_objs[group]["qualnames"])
+
+            return sorted(content)
+
+        # excluded content
+        qualnames = []
+        objs = []
         for group in mod_objs:
-            content.extend(mod_objs[group]["qualnames"])
-
-        return sorted(content)
-
-    def generate_obj_list_old(self) -> List[str]:
-        try:
-            mod_objs = self.mod_objs
-        except ImportError:
-            mod_objs = {}
-            self.warn(f"Could not import module {self.modname}")
-
-        # define groupings to include
-        allowed_args = self.groupings | {"all"}
-        do_groups = self.groupings
-        if "groups" in self.options:
-            opt_args = set(self.options["groups"])
-
-            unknown_args = opt_args - allowed_args
-            if len(unknown_args) > 0:
-                self.warn(
-                    f"Option 'groups' has unrecognized arguments "
-                    f"{unknown_args}. Ignoring."
-                )
-                opt_args = opt_args - unknown_args
-
-            if "all" not in opt_args:
-                do_groups = opt_args
-
-        # exclude groupings
-        if "exclude-groups" not in self.options:
-            if "groups" not in self.options:
-                opt_args = {"modules"}
-            else:
-                opt_args = set()
-        else:
-            opt_args = set(self.options["exclude-groups"])
-
-        unknown_args = opt_args - allowed_args
-        if len(unknown_args) > 0:
-            self.warn(
-                f"Option 'exclude-groups' has unrecognized arguments "
-                f"{unknown_args}. Ignoring."
-            )
-            opt_args = opt_args - unknown_args
-        elif "all" in opt_args:
-            self.warn(
-                f"Arguments of 'groups' and 'exclude-groups' results in "
-                f"no content."
-            )
-            content = []
-            return content
-
-        do_groups = do_groups - opt_args
-
-        # objects to skip
-        skip_names = set()
-        if "skip" in self.options:
-            skip_names = set(self.options["skip"])
-
-        # gather content
-        content = []
-        for group in do_groups:
-            try:
-                for name, qualname in zip(
-                        mod_objs[group]["names"], mod_objs[group]["qualnames"]
-                ):
-                    if not (name in skip_names or qualname in skip_names):
-                        content.append(qualname)
-            except KeyError:
-                pass
+            qualnames.extend(mod_objs[group]["qualnames"])
+            objs.extend(mod_objs[group]["objs"])
+        for qualname, obj in zip(qualnames, objs):
+            if not inspect.ismodule(obj):
+                content.append(qualname)
 
         return sorted(content)
 
