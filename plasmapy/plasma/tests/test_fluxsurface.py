@@ -78,11 +78,3 @@ def test_fs_trapped_fraction(num_regression, flux_surface):
 def test_plot(flux_surface):
     ax = flux_surface.plot(n=True, B=True)
     return ax.get_figure()
-
-
-@pytest.mark.skip
-@pytest.mark.xfail(reason="currently does not implement self.psi")
-@pytest.mark.mpl_image_compare
-def test_plot_psi(flux_surface):
-    ax = flux_surface.plot_psi()
-    return ax.get_figure()

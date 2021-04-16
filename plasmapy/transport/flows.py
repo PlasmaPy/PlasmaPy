@@ -104,9 +104,7 @@ class FlowCalculator:
 
     def rbar(self, a) -> u.Quantity:
         def gen():
-            for i, ai in enumerate(a):
-                if ξ(a)[i] == 0:
-                    continue  # won't add anything to sum anyway, and matrix gets singular
+            for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]
                 S_matrix = ξ(a)[i] * np.eye(3)
@@ -123,9 +121,7 @@ class FlowCalculator:
         for a in self.all_species:
 
             def gen():
-                for i, ai in enumerate(a):
-                    if ξ(a)[i] == 0:
-                        continue  # won't add anything to sum anyway, and matrix gets singular
+                for i, ai in enumerate(self.contributing_states(a)):
                     sym = ai.ionic_symbol
                     Aai = self.Aai[sym]
                     Spt = self.S_pt[sym]
@@ -150,7 +146,19 @@ class FlowCalculator:
         return output_matrix
 
     @cached_property
-    def flows(self) -> dict:
+    def r_pt(self):
+        results = {}
+        for a in self.all_species:
+            for i, ai in enumerate(self.contributing_states(a)):
+                sym = ai.ionic_symbol
+                Aai = self.Aai[sym]
+                Spt = self.S_pt[sym]
+                r_pt = np.linalg.solve(Aai, Spt).si
+                results[sym] = r_pt
+        return results
+
+    @cached_property
+    def Λ(self) -> dict:
         rhs = self.rbar_sources
         lhs = self.eq34matrix()
         ubar = np.linalg.solve(lhs, rhs)
@@ -163,7 +171,14 @@ class FlowCalculator:
                     ubar_b = ubar[3 * j : 3 * j + 3]
                     yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
 
-            Λ = -sum(gen())
+            outputs[a.base_particle] = -sum(gen())
+        return outputs
+
+    @cached_property
+    def flows(self) -> dict:
+        outputs = {}
+        for a in self.all_species:
+            Λ = self.Λ[a.base_particle]
             xi = ξ(a)
             for i, ai in enumerate(self.contributing_states(a)):
                 sym = ai.ionic_symbol
@@ -178,18 +193,6 @@ class FlowCalculator:
                 flows = order_flow_sum + r_pt.value  # Eq31
                 outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
         return outputs
-
-    @cached_property
-    def r_pt(self):
-        results = {}
-        for a in self.all_species:
-            for i, ai in enumerate(self.contributing_states(a)):
-                sym = ai.ionic_symbol
-                Aai = self.Aai[sym]
-                Spt = self.S_pt[sym]
-                r_pt = np.linalg.solve(Aai, Spt).si
-                results[sym] = r_pt
-        return results
 
     @staticmethod
     def contributing_states(a):
@@ -268,8 +271,10 @@ class FlowCalculator:
 
     @cached_property
     def _fluxes_CL(self):
+        # breakpoint()
         fs = self.flux_surface
         FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2 / u.m
+        # TODO if FSA does not drop units, the above line is completely wrong
         Fhat = self.flux_surface.Fhat
         results = {}
         for a in self.all_species:
