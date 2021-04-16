@@ -39,6 +39,8 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
     __import__(modname)
     mod = sys.modules[modname]
 
+    pkg_name = modname.split(".")[0]
+
     # define what to search
     pkg_names = {name for name in mod.__dict__.keys() if not name.startswith("_")}
     if hasattr(mod, "__all__"):
@@ -55,10 +57,12 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
         obj = getattr(mod, name)
 
         if inspect.ismodule(obj):
-            if obj.__spec__.parent == modname:
+            if obj.__package__.split(".")[-1] == "tests":
+                pkg_names.remove(name)
+            elif obj.__package__.split(".")[0] == pkg_name:
                 names_of_modules.append(name)
             else:
-                # in case __all__ was not defined, eliminate non-local modules
+                # in case __all__ was not defined, eliminate all 3rd party modules
                 pkg_names.remove(name)
     mod_objs.update({"modules": {"names": []}})
     if len(names_of_modules) > 0:
@@ -135,6 +139,13 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
                     # this is a py file
                     qualname = f"{obj.__package__}.{name}"
 
+            elif not (inspect.isroutine(obj) or inspect.isclass(obj)):
+                # so locally defined variables are still documented as being in modname
+                # and not where the class/func was defined
+                # TODO: there should be a better way of doing this...like checking
+                #       if the object was imported into the namespace or just defined
+                #       there
+                qualname = f"{modname}.{name}"
             elif hasattr(obj, "__module__"):
                 qualname = f"{obj.__module__}.{name}"
             else:
