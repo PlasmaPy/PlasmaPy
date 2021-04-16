@@ -1,3 +1,4 @@
+import astropy
 import astropy.units as u
 import datetime
 import hypothesis
@@ -59,7 +60,9 @@ def test_fluxes_partial(fc, num_regression):
     num_regression.check(d_partial)
 
 
-@pytest.mark.xfail(reason="units are off in fluxes")
+@pytest.mark.xfail(
+    raises=astropy.units.core.UnitConversionError, reason="units are off in fluxes"
+)
 def test_diffusion_coefficient(fc, num_regression):
     d = {}
     for ion, D in fc.diffusion_coefficient.items():
@@ -69,7 +72,9 @@ def test_diffusion_coefficient(fc, num_regression):
     num_regression.check(d)
 
 
-@pytest.mark.xfail(reason="units are off in fluxes")
+@pytest.mark.xfail(
+    raises=astropy.units.core.UnitConversionError, reason="units are off in fluxes"
+)
 def test_thermal_coefficient(fc, num_regression):
     d = {}
     for ion, χ in fc.thermal_conductivity.items():
@@ -79,16 +84,19 @@ def test_thermal_coefficient(fc, num_regression):
     num_regression.check(d)
 
 
-@pytest.mark.xfail(reason="Units are off; need a tesla in the denominator")
+@pytest.mark.xfail(
+    raises=astropy.units.core.UnitsError,
+    reason="Units are off; need a tesla in the denominator",
+)
 def test_bootstrap_current(fc, num_regression):
     Ib = fc.bootstrap_current
-    assert np.isfinite(Ib).all(), ion
-    d = {"bootstrap current": Ib.si.value}
-    num_regression.check(d)
-    assert Ib.unit.physical_type == "electric current density"
+    assert np.isfinite(Ib), ion
+    assert_quantity_allclose(Ib, -0.007 * u.MA / u.m ** 2)
 
 
-@pytest.mark.xfail(reason="units are off")
+@pytest.mark.xfail(
+    raises=astropy.units.core.UnitConversionError, reason="units are off"
+)
 def test_fluxes(fc, num_regression):
     d = {}
     for ion, (Γ, q) in fc.fluxes.items():

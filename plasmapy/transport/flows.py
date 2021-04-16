@@ -64,10 +64,9 @@ class FlowCalculator:
 
         for a in self.all_species:
             xi = ξ(a)
-            for i, ai in enumerate(a):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
-                if i == 0 or xi[i] == 0:
-                    continue
                 self.pressure_gradient[sym] = constants.k_B * (
                     ai.T_i * self.density_gradient[sym]
                     + ai.number_density * self.temperature_gradient[sym]
@@ -104,7 +103,8 @@ class FlowCalculator:
 
     def rbar(self, a) -> u.Quantity:
         def gen():
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]
                 S_matrix = ξ(a)[i] * np.eye(3)
@@ -121,7 +121,8 @@ class FlowCalculator:
         for a in self.all_species:
 
             def gen():
-                for i, ai in enumerate(self.contributing_states(a)):
+                for ai in self.contributing_states(a):
+                    i = ai.integer_charge
                     sym = ai.ionic_symbol
                     Aai = self.Aai[sym]
                     Spt = self.S_pt[sym]
@@ -149,7 +150,8 @@ class FlowCalculator:
     def r_pt(self):
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]
                 Spt = self.S_pt[sym]
@@ -180,7 +182,8 @@ class FlowCalculator:
         for a in self.all_species:
             Λ = self.Λ[a.base_particle]
             xi = ξ(a)
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]
                 S_ai = xi[i] * np.diag(Λ)
@@ -213,7 +216,8 @@ class FlowCalculator:
             for b in self.all_species:
                 N = N_script(a, b)
                 xi = ξ(b)
-                for j, bj in enumerate(self.contributing_states(b)):
+                for bj in self.contributing_states(b):
+                    j = bj.integer_charge
                     output += xi[j] * N * self.S_pt[bj.ionic_symbol]
             outputs[sym] = output
         return outputs
@@ -259,7 +263,8 @@ class FlowCalculator:
         for a in self.all_species:
             xi = ξ(a)
             silly = self.funnymatrix(a.base_particle)
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi[i] / B2fsav * (1 - B2fsav * Binv2fsav)
@@ -280,7 +285,8 @@ class FlowCalculator:
         for a in self.all_species:
             xi = ξ(a)
             silly = self.funnymatrix(a.base_particle)
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
+                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 prefactor = 1 / Fhat * xi[i] / ai.ion.charge * FSA
                 Γ_CL = prefactor * silly[sym][0].sum()
@@ -292,7 +298,7 @@ class FlowCalculator:
     def fluxes(self):
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 Γ_BP, q_BP = self._fluxes_BP[sym]
                 Γ_PS, q_PS = self._fluxes_PS[sym]
@@ -304,9 +310,9 @@ class FlowCalculator:
     def diffusion_coefficient(self):
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
-                flux = self.fluxes[ai].particle_flux
+                flux = self.fluxes[sym].particle_flux
                 results[sym] = (
                     -flux / self.density_gradient[sym]
                 )  # Eq48 TODO this is a partial adaptation
@@ -316,7 +322,7 @@ class FlowCalculator:
     def thermal_conductivity(self):
         results = {}
         for a in self.all_species:
-            for i, ai in enumerate(self.contributing_states(a)):
+            for ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 flux = self.fluxes[ai].heat_flux
                 results[sym] = -flux / self.temperature_gradient[sym]
@@ -326,7 +332,8 @@ class FlowCalculator:
     def bootstrap_current(self):
         def gen():
             for a in self.all_species:
-                for i, ai in enumerate(self.contributing_states(a)):
+                for ai in self.contributing_states(a):
+                    i = ai.integer_charge
                     sym = ai.ionic_symbol
                     yield ai.ion.charge * ai.number_density * self.r_pt[sym][
                         0

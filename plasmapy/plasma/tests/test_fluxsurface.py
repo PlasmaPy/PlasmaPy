@@ -26,7 +26,6 @@ def contour_shaped_array(draw, elements):
     return c_shaped_array
 
 
-@pytest.mark.xfail(reason="This does not actually seem true")
 @given(
     build=contour_shaped_array(
         floats(-1e10, 1e10, allow_nan=False, allow_infinity=False)
@@ -55,7 +54,8 @@ def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
     assert abs(flux_surface.flux_surface_average(mode)) < 0.1
 
 
-# @pytest.mark.xfail(reason="This is only really true for periodic functions IIRC")
+# @pytest.mark.xfail(raises=AssertionError,
+#                    reason="This is only really true for periodic functions IIRC")
 # @given(
 #     array=arrays(
 #         float, (flux_surface.R.size, 2), elements=floats(allow_nan=False, allow_infinity=False)
@@ -66,7 +66,7 @@ def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
 #     assert abs(flux_surface.flux_surface_average(under_average)) < 0.01
 
 
-@pytest.mark.xfail(reason="Currently negative")
+@pytest.mark.xfail(raises=AssertionError, reason="Currently negative")
 def test_fs_trapped_fraction(num_regression, flux_surface):
     f_t = flux_surface.trapped_fraction()
     num_regression.check({"f_t": f_t})
