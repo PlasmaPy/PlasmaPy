@@ -43,17 +43,23 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
     pkg_names = {name for name in mod.__dict__.keys() if not name.startswith("_")}
     if hasattr(mod, "__all__"):
         all_names = set(mod.__all__)
+        names_to_search = all_names
     else:
-        all_names = pkg_names
-    names_to_search = all_names
+        all_names = None
+        names_to_search = pkg_names
+    # names_to_search = all_names
 
     # find local modules first
     names_of_modules = []
-    for name in pkg_names:
+    for name in list(pkg_names):
         obj = getattr(mod, name)
 
-        if inspect.ismodule(obj) and obj.__spec__.parent == modname:
-            names_of_modules.append(name)
+        if inspect.ismodule(obj):
+            if obj.__spec__.parent == modname:
+                names_of_modules.append(name)
+            else:
+                # in case __all__ was not defined, eliminate non-local modules
+                pkg_names.remove(name)
     mod_objs.update({"modules": {"names": []}})
     if len(names_of_modules) > 0:
         names_of_modules = set(names_of_modules)
