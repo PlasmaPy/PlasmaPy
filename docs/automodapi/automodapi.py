@@ -34,6 +34,7 @@ _option_spec = option_spec = {
     **ModuleDocumenter.option_spec,
     "groups": option_str_list,
     "exclude-groups": option_str_list,
+    "no-groups": bool_option,
     # "group-order": option_str_list,
     # "merge-groups": bool_option,
     "skip": option_str_list,
@@ -101,6 +102,16 @@ class AutomodapiOptions(AutomodsummOptions):
         else:
             self.options["inheritance-diagram"] = \
                 self.app.config.automodapi_inheritance_diagram
+
+    def condition_group_options(self):
+        if "no-groups" in self.options and self.options["no-groups"]:
+            self.options["groups"] = []
+            if "exclude-groups" in self.options:
+                del self.options["exclude-groups"]
+
+            return
+
+        super().condition_group_options()
 
     @property
     def options_for_automodsumm(self):
