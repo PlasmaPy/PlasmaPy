@@ -1,8 +1,8 @@
 __all__ = ["automod_groupings", "find_mod_objs"]
 
 import inspect
-import sys
 
+from importlib import import_module
 from sphinx.application import Sphinx
 
 
@@ -20,11 +20,10 @@ def automod_groupings(app: Sphinx):
     return default_groupings, custom_groups
 
 
-def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
+def find_mod_objs(modname: str, app: Sphinx = None):
     if app is not None:
         if isinstance(app, Sphinx):
             cgroups_def = app.config.automod_custom_groups
-            # dgroups, cgroups = automodapi_groupings(app)
         else:
             # assuming dict for testing
             cgroups_def = app
@@ -34,39 +33,70 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
         cgroups_def = {}
         cgroups = set()
 
-    mod_objs = {}
-
-    __import__(modname)
-    mod = sys.modules[modname]
-
+    mod = import_module(modname)
     pkg_name = modname.split(".")[0]
 
     # define what to search
     pkg_names = {name for name in mod.__dict__.keys() if not name.startswith("_")}
     if hasattr(mod, "__all__"):
-        all_names = set(mod.__all__)
-        names_to_search = all_names
+        no_all = False
+        names_to_search = set(mod.__all__)
     else:
-        all_names = None
+        no_all = True
         names_to_search = pkg_names
-    # names_to_search = all_names
+
+    # filter pkg_names
+    for name in pkg_names.copy():
+        obj = getattr(mod, name)
+
+        if not no_all and name in names_to_search:
+            continue
+
+        ismod = inspect.ismodule(obj)
+        ispkg = ismod and obj.__package__ == obj.__name__
+
+        # remove test folders
+        if ispkg and obj.__package__.split(".")[-1] == "tests":
+            pkg_names.remove(name)
+            continue
+
+        # remove 3rd party objects
+        if ismod and obj.__package__.split(".")[0] != pkg_name:
+            pkg_names.remove(name)
+            continue
+        elif (
+            not ismod
+            and hasattr(obj, "__module__")
+            and obj.__module__.split(".")[0] != pkg_name
+        ):
+            # Note: this will miss ufuncs like numpy.sqrt since they do not have
+            #       a __module__ property
+            pkg_names.remove(name)
+            continue
+
+        # remove non direct sub-pkgs and mods of modname
+        if ismod:
+            if not obj.__name__.startswith(modname):
+                pkg_names.remove(name)
+                continue
+            else:
+                nm = obj.__name__[len(modname):].split(".")
+                nm.remove("")
+                if len(nm) != 1:
+                    pkg_names.remove(name)
+                    continue
 
     # find local modules first
-    names_of_modules = []
-    for name in list(pkg_names):
+    names_of_modules = set()
+    for name in pkg_names.copy():
         obj = getattr(mod, name)
 
         if inspect.ismodule(obj):
-            if obj.__package__.split(".")[-1] == "tests":
-                pkg_names.remove(name)
-            elif obj.__package__.split(".")[0] == pkg_name:
-                names_of_modules.append(name)
-            else:
-                # in case __all__ was not defined, eliminate all 3rd party modules
-                pkg_names.remove(name)
-    mod_objs.update({"modules": {"names": []}})
+            names_of_modules.add(name)
+
+    mod_objs = {"modules": {"names": []}}
     if len(names_of_modules) > 0:
-        names_of_modules = set(names_of_modules)
+        names_of_modules = names_of_modules
         mod_objs["modules"]["names"] = list(names_of_modules)
         names_to_search = names_to_search - names_of_modules
 
@@ -94,6 +124,7 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
     )
     for name in names_to_search:
         obj = getattr(mod, name)
+
         if inspect.isroutine(obj):
             # is a user-defined or built-in function
             mod_objs["functions"]["names"].append(name)
@@ -131,33 +162,43 @@ def find_mod_objs(modname: str, only_locals=False, app: Sphinx = None):
             #        is done, then the 'qualname' ends with 'f2' and not 'func'.
             #
             obj = getattr(mod, name)
-            if inspect.ismodule(obj):
-                if obj.__package__ == obj.__name__:
-                    # this is a directory
-                    qualname = ".".join(obj.__package__.split(".")[:-1] + [name])
-                else:
-                    # this is a py file
-                    qualname = f"{obj.__package__}.{name}"
 
-            elif not (inspect.isroutine(obj) or inspect.isclass(obj)):
-                # so locally defined variables are still documented as being in modname
-                # and not where the class/func was defined
-                # TODO: there should be a better way of doing this...like checking
-                #       if the object was imported into the namespace or just defined
-                #       there
-                qualname = f"{modname}.{name}"
-            elif hasattr(obj, "__module__"):
-                qualname = f"{obj.__module__}.{name}"
-            else:
-                qualname = f"{modname}.{name}"
+            ismod = inspect.ismodule(obj)
+            ispkg = ismod and obj.__package__ == obj.__name__
 
-            if only_locals:
-                allowed = modname
-                if isinstance(only_locals, (tuple, list)):
-                    allowed = tuple(only_locals)
-                if not qualname.startswith(allowed):
-                    del mod_objs[obj_type]["names"][name]
+            if not ismod and no_all:
+                # only allow local objects to be collected
+                # - at this point modules & pkgs should have already been
+                #   filtered for direct sub-modules and pkgs
+                if not hasattr(obj, "__module__"):
+                    # this would be a locally defined variable like
+                    # plasmapy.__citation__
+                    pass
+                elif obj.__module__ != modname:
+                    mod_objs[obj_type]["names"].remove(name)
                     continue
+
+            if ismod:
+                obj_renamed = obj.__name__.split(".")[-1] != name
+            elif not hasattr(obj, "__name__"):
+                obj_renamed = False
+            else:
+                obj_renamed = obj.__name__ != name
+
+            if ismod and obj_renamed:
+                qualname = f"{obj.__package__}.{name}"
+            elif ismod and not obj_renamed:
+                qualname = obj.__name__
+            elif obj_renamed or not hasattr(obj, "__module__"):
+                # can not tell if the object was renamed in modname or in
+                # obj.__module__, so assumed it happened in modname
+                qualname = f"{modname}.{name}"
+            elif obj.__module__.split(".")[0] != pkg_name:
+                # this will catch scenarios like typing alias definitions where
+                # __module__ == typing even when defined locally
+                qualname = f"{modname}.{name}"
+            else:
+                qualname = f"{obj.__module__}.{name}"
 
             mod_objs[obj_type]["qualnames"].append(qualname)
             mod_objs[obj_type]["objs"].append(obj)
