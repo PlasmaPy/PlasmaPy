@@ -22,8 +22,9 @@ from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Callable, Dict, List, Union
 
-from .utils import find_mod_objs, automod_groupings, templates_dir
-
+from .utils import (
+    default_grouping_info, find_mod_objs, templates_dir, get_custom_grouping_info,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ class AutomodsummOptions:
         "exclude-groups": option_str_list,
         "skip": option_str_list,
     }
+    _default_grouping_info = default_grouping_info.copy()
     logger = logger
 
     def __init__(
@@ -128,14 +130,24 @@ class AutomodsummOptions:
         return find_mod_objs(self.modname, app=self.app)
 
     @property
-    def groupings(self):
-        dgroups, cgroups = automod_groupings(self.app)
-
-        return dgroups | cgroups
+    def groupings(self) -> set:
+        return set(self.grouping_info)
 
     @property
-    def custom_groups_defs(self):
-        return self.app.config.automod_custom_groups
+    def default_grouping_info(self) -> Dict[str, Dict[str, str]]:
+        return self._default_grouping_info.copy()
+
+    @property
+    def custom_grouping_info(self) -> Dict[str, Dict[str, str]]:
+        return get_custom_grouping_info(self.app)
+
+    @property
+    def grouping_info(self) -> Dict[str, Dict[str, str]]:
+        grouping_info = self.default_grouping_info
+        grouping_info.update(
+            self.custom_grouping_info
+        )
+        return grouping_info
 
     @property
     def mod_objs_option_filtered(self) -> Dict[str, Dict[str, Any]]:

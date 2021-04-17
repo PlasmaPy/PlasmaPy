@@ -1,24 +1,36 @@
-__all__ = ["automod_groupings", "find_mod_objs"]
+__all__ = [
+    "default_grouping_info",
+    "find_mod_objs",
+    "get_custom_grouping_info",
+    "package_dir",
+    "templates_dir",
+]
 
 import inspect
 import os
 
+from collections import OrderedDict
 from importlib import import_module
 from sphinx.application import Sphinx
 
 package_dir = os.path.abspath(os.path.dirname(__file__))
 templates_dir = os.path.join(package_dir, "templates")
 
-def automod_groupings(app: Sphinx):
-    default_groupings = {
-        "modules",
-        "classes",
-        "exceptions",
-        "warnings",
-        "functions",
-        "variables",
-    }
-    custom_groups = set(app.config.automod_custom_groups)
+default_grouping_info = OrderedDict(
+    {
+        "modules": {"title": "Sub-Packages & Modules"},
+        "classes": {"title": "Classes"},
+        "exceptions": {"title": "Exceptions"},
+        "warnings": {"title": "Warnings"},
+        "functions": {"title": "Functions"},
+        "variables": {"title": "Variables & Attributes"},
+    },
+)
+"""
+Dictionary containing information related to the default object groupings used
+by the `automodapi` and `automodsumm` directives.
+"""
+
 
 def get_custom_grouping_info(app: Sphinx):
     try:

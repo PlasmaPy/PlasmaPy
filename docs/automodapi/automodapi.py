@@ -20,6 +20,7 @@ from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from .automodsumm import option_str_list, AutomodsummOptions
+from .utils import default_grouping_info
 
 if sys.version_info >= (3, 0):
     text_type = str
@@ -133,16 +134,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 
     _automod_option_spec_names = set(ModuleDocumenter.option_spec)
 
-    _grouping_info = OrderedDict(
-        {
-            "modules": {"title": "Sub-Packages & Modules"},
-            "classes": {"title": "Classes"},
-            "exceptions": {"title": "Exceptions"},
-            "warnings": {"title": "Warnings"},
-            "functions": {"title": "Functions"},
-            "variables": {"title": "Variables & Attributes"},
-        },
-    )
+    _grouping_info = default_grouping_info
 
     _templates = {
         "mod-heading": "\n".join(
