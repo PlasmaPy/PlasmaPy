@@ -1,5 +1,6 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
 __all__ = ["find_floating_potential", "find_vf_"]
+__aliases__ = ["find_vf_"]
 
 import numbers
 import numpy as np
