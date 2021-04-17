@@ -66,6 +66,7 @@ which the data match its plasma data structure.
 .. automodapi:: plasmapy.plasma
    :noindex:
    :no-main-docstr:
+   :exclude-groups: modules, variables
 
 .. _plasma-sources:
 
@@ -91,6 +92,8 @@ particle, :attr:`PlasmaBlob.particle`.
 This feature is currently under development.
 
 .. automodapi:: plasmapy.plasma.sources
+   :exclude-groups: modules
+   :skip: HDF5Reader
 
 Writing a new Plasma subclass
 -----------------------------
