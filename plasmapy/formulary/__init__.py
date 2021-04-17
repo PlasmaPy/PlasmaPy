@@ -37,3 +37,6 @@ for modname in (
     except (KeyError, AttributeError):
         pass
 __aliases__.sort()
+
+# cleanup namespace
+del modname, obj, obj_name
