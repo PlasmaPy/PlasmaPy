@@ -1,10 +1,13 @@
 __all__ = ["automod_groupings", "find_mod_objs"]
 
 import inspect
+import os
 
 from importlib import import_module
 from sphinx.application import Sphinx
 
+package_dir = os.path.abspath(os.path.dirname(__file__))
+templates_dir = os.path.join(package_dir, "templates")
 
 def automod_groupings(app: Sphinx):
     default_groupings = {

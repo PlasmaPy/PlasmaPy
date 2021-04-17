@@ -22,8 +22,7 @@ from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Callable, Dict, List, Union
 
-from . import templates_dir
-from .utils import find_mod_objs, automod_groupings
+from .utils import find_mod_objs, automod_groupings, templates_dir
 
 
 logger = logging.getLogger(__name__)
