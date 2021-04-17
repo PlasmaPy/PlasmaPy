@@ -403,10 +403,9 @@ def setup(app: Sphinx):
     from .automodsumm import setup as setup_automodsumm
     rtn = setup_automodsumm(app)
 
-    app.add_autodocumenter(ModAPIDocumenter)
+    app.setup_extension("sphinx.ext.inheritance_diagram")
 
-    # process_automodapi = Automodapi()
-    # app.connect("source-read", process_automodapi)
+    app.add_autodocumenter(ModAPIDocumenter)
 
     if not hasattr(app.config, "automodapi_inheritance_diagram"):
         app.add_config_value("automodapi_inheritance_diagram", True, True)
