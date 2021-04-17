@@ -101,7 +101,7 @@ def find_mod_objs(modname: str, app: Sphinx = None):
                 pkg_names.remove(name)
                 continue
             else:
-                nm = obj.__name__[len(modname):].split(".")
+                nm = obj.__name__[len(modname) :].split(".")
                 nm.remove("")
                 if len(nm) != 1:
                     pkg_names.remove(name)
@@ -165,12 +165,7 @@ def find_mod_objs(modname: str, app: Sphinx = None):
             del mod_objs[obj_type]
             continue
 
-        mod_objs[obj_type].update(
-            {
-               "qualnames": [],
-               "objs": [],
-            },
-        )
+        mod_objs[obj_type].update({"qualnames": [], "objs": []})
         for name in list(mod_objs[obj_type]["names"]):
             # Note:  The 'qualname' is always constructed with 'name' so when
             #        something like
@@ -185,7 +180,7 @@ def find_mod_objs(modname: str, app: Sphinx = None):
             obj = getattr(mod, name)
 
             ismod = inspect.ismodule(obj)
-            ispkg = ismod and obj.__package__ == obj.__name__
+            # ispkg = ismod and obj.__package__ == obj.__name__
 
             if not ismod and no_all:
                 # only allow local objects to be collected

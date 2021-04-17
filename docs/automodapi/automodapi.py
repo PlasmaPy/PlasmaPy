@@ -6,11 +6,15 @@ from collections import OrderedDict
 from docutils.statemachine import StringList
 from docutils.parsers.rst import directives
 from sphinx.application import Sphinx
+
 try:
     from sphinx.deprecation import RemovedInSphinx50Warning
 except ImportError:
+
     class RemovedInSphinx50Warning(PendingDeprecationWarning):
         pass
+
+
 from sphinx.ext.autodoc import (
     ModuleDocumenter,
     bool_option,
@@ -54,12 +58,12 @@ class AutomodapiOptions(AutomodsummOptions):
     logger = logger
 
     def __init__(
-            self,
-            app: Sphinx,
-            modname: str,
-            options: Dict[str, Any],
-            docname: str = None,
-            _warn: Callable = None,
+        self,
+        app: Sphinx,
+        modname: str,
+        options: Dict[str, Any],
+        docname: str = None,
+        _warn: Callable = None,
     ):
         super().__init__(app, modname, options, docname=docname, _warn=_warn)
 
@@ -100,8 +104,9 @@ class AutomodapiOptions(AutomodsummOptions):
         elif "inheritance-diagram" in self.options:
             self.options["inheritance-diagram"] = False
         else:
-            self.options["inheritance-diagram"] = \
-                self.app.config.automodapi_inheritance_diagram
+            self.options[
+                "inheritance-diagram"
+            ] = self.app.config.automodapi_inheritance_diagram
 
     def condition_group_options(self):
         if "no-groups" in self.options and self.options["no-groups"]:
@@ -148,25 +153,9 @@ class ModAPIDocumenter(ModuleDocumenter):
     _grouping_info = default_grouping_info
 
     _templates = {
-        "mod-heading": "\n".join(
-            [
-                "{modname} {pkg_or_mod}",
-                "{underline}",
-                "",
-            ],
-        ),
-        "heading": "\n".join(
-            [
-                "{title}",
-                "{underline}",
-            ],
-        ),
-        "automodsumm": "\n".join(
-            [
-                ".. automodsumm:: {modname}",
-                "   :groups: {group}",
-            ],
-        ),
+        "mod-heading": "\n".join(["{modname} {pkg_or_mod}", "{underline}", ""]),
+        "heading": "\n".join(["{title}", "{underline}"]),
+        "automodsumm": "\n".join([".. automodsumm:: {modname}", "   :groups: {group}"]),
         "options": "   :{option}: {opt_args}",
         "inheritance-diagram": "\n".join(
             [
@@ -174,7 +163,7 @@ class ModAPIDocumenter(ModuleDocumenter):
                 "   :private-bases:",
                 "   :parts: 1",
             ],
-        )
+        ),
     }
 
     @property
@@ -240,17 +229,17 @@ class ModAPIDocumenter(ModuleDocumenter):
 
             # sub-heading
             lines.extend(
-                self._templates["heading"].format(
-                    title=title, underline=underline
-                ).splitlines()
+                self._templates["heading"]
+                .format(title=title, underline=underline)
+                .splitlines()
             )
             lines.append("")
 
             # add automodsumm directive
             lines.extend(
-                self._templates["automodsumm"].format(
-                    modname=modname, group=group
-                ).splitlines()
+                self._templates["automodsumm"]
+                .format(modname=modname, group=group)
+                .splitlines()
             )
 
             # add options for automodsumm directive
@@ -259,9 +248,9 @@ class ModAPIDocumenter(ModuleDocumenter):
                     continue
 
                 lines.extend(
-                    self._templates["options"].format(
-                        option=name, opt_args=val,
-                    ).splitlines()
+                    self._templates["options"]
+                    .format(option=name, opt_args=val)
+                    .splitlines()
                 )
             lines.append("")
 
@@ -269,9 +258,9 @@ class ModAPIDocumenter(ModuleDocumenter):
             if group in inheritance_groups and include_inheritance_diagram:
                 cls_list = " ".join(mod_objs[group]["qualnames"])
                 lines.extend(
-                    self._templates["inheritance-diagram"].format(
-                        cls_list=cls_list
-                    ).splitlines()
+                    self._templates["inheritance-diagram"]
+                    .format(cls_list=cls_list)
+                    .splitlines()
                 )
                 lines.append("")
 
@@ -301,15 +290,17 @@ class ModAPIDocumenter(ModuleDocumenter):
         heading_char = option_processor.options["heading-chars"][0]
         underline = heading_char * (len(modname) + 1 + len(pkg_or_mod))
 
-        heading_lines = self._templates["mod-heading"].format(
-            modname=modname, pkg_or_mod=pkg_or_mod, underline=underline,
-        ).splitlines()
+        heading_lines = (
+            self._templates["mod-heading"]
+            .format(modname=modname, pkg_or_mod=pkg_or_mod, underline=underline)
+            .splitlines()
+        )
 
         for line in heading_lines:
             self.add_line(line, source=sourcename)
 
     def add_content(
-            self, more_content: Optional[StringList], no_docstring: bool = False
+        self, more_content: Optional[StringList], no_docstring: bool = False
     ) -> None:
         """Add content from docstrings, attribute documentation and user."""
         if no_docstring:
@@ -317,7 +308,7 @@ class ModAPIDocumenter(ModuleDocumenter):
                 "The 'no_docstring' argument to %s.add_content() is deprecated."
                 % self.__class__.__name__,
                 RemovedInSphinx50Warning,
-                stacklevel=2
+                stacklevel=2,
             )
 
         no_docstring = self.options.get("no-main-docstr", False)
@@ -327,7 +318,7 @@ class ModAPIDocumenter(ModuleDocumenter):
         if self.analyzer:
             attr_docs = self.analyzer.find_attr_docs()
             if self.objpath:
-                key = ('.'.join(self.objpath[:-1]), self.objpath[-1])
+                key = (".".join(self.objpath[:-1]), self.objpath[-1])
                 if key in attr_docs:
                     no_docstring = True
                     # make a copy of docstring for attributes to avoid cache
@@ -358,11 +349,11 @@ class ModAPIDocumenter(ModuleDocumenter):
                 self.add_line(line, src[0], src[1])
 
     def generate(
-            self,
-            more_content: Optional[StringList] = None,
-            real_modname: str = None,
-            check_module: bool = False,
-            all_members: bool = False,
+        self,
+        more_content: Optional[StringList] = None,
+        real_modname: str = None,
+        check_module: bool = False,
+        all_members: bool = False,
     ) -> None:
         """Generate reST for the object given by *self.name*, and possibly for
         its members.
@@ -380,10 +371,13 @@ class ModAPIDocumenter(ModuleDocumenter):
         if not self.parse_name():
             # need a module to import
             logger.warning(
-                __('don\'t know which module to import for autodocumenting '
-                   '%r (try placing a "module" or "currentmodule" directive '
-                   'in the document, or giving an explicit module name)') %
-                self.name, type='autodoc')
+                __(
+                    f"don't know which module to import for autodocumenting "
+                    f"{self.name} (try placing a 'module' or 'currentmodule' "
+                    f"directive in the document, or giving an explicit module name)"
+                ),
+                type="autodoc",
+            )
             return
 
         # now, import the module and get object to document
@@ -407,14 +401,17 @@ class ModAPIDocumenter(ModuleDocumenter):
             more_content.append(line, source=docname)
 
         # generate
-        super().generate(more_content=more_content,
-                         real_modname=real_modname,
-                         check_module=check_module,
-                         all_members=all_members)
+        super().generate(
+            more_content=more_content,
+            real_modname=real_modname,
+            check_module=check_module,
+            all_members=all_members,
+        )
 
 
 def setup(app: Sphinx):
     from .automodsumm import setup as setup_automodsumm
+
     rtn = setup_automodsumm(app)
 
     app.setup_extension("sphinx.ext.inheritance_diagram")

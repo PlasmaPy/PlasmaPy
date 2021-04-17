@@ -23,7 +23,10 @@ from sphinx.util.osutil import ensuredir
 from typing import Any, Callable, Dict, List, Union
 
 from .utils import (
-    default_grouping_info, find_mod_objs, templates_dir, get_custom_grouping_info,
+    default_grouping_info,
+    find_mod_objs,
+    get_custom_grouping_info,
+    templates_dir,
 )
 
 logger = logging.getLogger(__name__)
@@ -74,12 +77,12 @@ class AutomodsummOptions:
     logger = logger
 
     def __init__(
-            self,
-            app: Sphinx,
-            modname: str,
-            options: Dict[str, Any],
-            docname: str = None,
-            _warn: Callable = None
+        self,
+        app: Sphinx,
+        modname: str,
+        options: Dict[str, Any],
+        docname: str = None,
+        _warn: Callable = None,
     ):
         self.app = app
         self.modname = modname
@@ -161,8 +164,7 @@ class AutomodsummOptions:
             opt_args = opt_args - unknown_args
         elif "all" in opt_args:
             self.warn(
-                f"Arguments of 'groups' and 'exclude-groups' results in "
-                f"no content."
+                f"Arguments of 'groups' and 'exclude-groups' results in no content."
             )
             self.options["groups"] = []
             return
@@ -189,9 +191,7 @@ class AutomodsummOptions:
     @property
     def grouping_info(self) -> Dict[str, Dict[str, str]]:
         grouping_info = self.default_grouping_info
-        grouping_info.update(
-            self.custom_grouping_info
-        )
+        grouping_info.update(self.custom_grouping_info)
         return grouping_info
 
     @property
@@ -278,8 +278,8 @@ class Automodsumm(Autosummary):
         # for some reason, even though ``currentmodule`` is substituted in,
         # sphinx doesn't necessarily recognize this fact.  So we just force
         # it internally, and that seems to fix things
-        env.temp_data['py:module'] = modname
-        env.ref_context['py:module'] = modname
+        env.temp_data["py:module"] = modname
+        env.ref_context["py:module"] = modname
 
         nodelist = []
 
@@ -309,20 +309,19 @@ class Automodsumm(Autosummary):
 
     def get_items(self, names):
         try:
-            self.bridge.genopt['imported-members'] = True
+            self.bridge.genopt["imported-members"] = True
         except AttributeError:  # Sphinx < 4.0
-            self.genopt['imported-members'] = True
+            self.genopt["imported-members"] = True
         return Autosummary.get_items(self, names)
 
 
 class GenDocsFromAutomodsumm:
     """Needed so stub file are automatically generated."""
+
     option_spec = AutomodsummOptions.option_spec.copy()
 
     _re = {
-        "automodsumm": re.compile(
-            r"^\n?(\s*)\.\.\s+automodsumm::\s*(\S+)\s*(?:\n|$)"
-        ),
+        "automodsumm": re.compile(r"^\n?(\s*)\.\.\s+automodsumm::\s*(\S+)\s*(?:\n|$)"),
         "automodapi": re.compile(r"^\n?(\s*)\.\.\s+automodapi::\s*(\S+)\s*(?:\n|$)"),
         "option": re.compile(r"^\n?(\s+):(\S*):\s*(\S.*|)\s*(?:\n|$)"),
         "currentmodule": re.compile(
@@ -345,20 +344,24 @@ class GenDocsFromAutomodsumm:
 
         if genfiles is True:
             env = app.builder.env
-            genfiles = [env.doc2path(x, base=None) for x in env.found_docs
-                        if os.path.isfile(env.doc2path(x))]
+            genfiles = [
+                env.doc2path(x, base=None)
+                for x in env.found_docs
+                if os.path.isfile(env.doc2path(x))
+            ]
         elif genfiles is False:
             pass
         else:
             ext = list(app.config.source_suffix)
-            genfiles = [genfile + (ext[0] if not genfile.endswith(tuple(ext)) else '')
-                        for genfile in genfiles]
+            genfiles = [
+                genfile + (ext[0] if not genfile.endswith(tuple(ext)) else "")
+                for genfile in genfiles
+            ]
 
             for entry in genfiles[:]:
                 if not os.path.isfile(os.path.join(app.srcdir, entry)):
                     self.logger.warning(
-                        __('automodsumm_generate: file not found: %s'),
-                        entry,
+                        __(f"automodsumm_generate: file not found: {entry}")
                     )
                     genfiles.remove(entry)
 
@@ -368,8 +371,10 @@ class GenDocsFromAutomodsumm:
         suffix = get_rst_suffix(app)
         if suffix is None:
             self.logger.warning(
-                __('automodsumm generates .rst files internally. '
-                   'But your source_suffix does not contain .rst. Skipped.')
+                __(
+                    "automodsumm generates .rst files internally. "
+                    "But your source_suffix does not contain .rst. Skipped."
+                )
             )
             return
 
@@ -390,14 +395,14 @@ class GenDocsFromAutomodsumm:
         return find_mod_objs(modname, app=self.app)
 
     def generate_docs(
-            self,
-            source_filenames: List[str],
-            output_dir: str = None,
-            suffix: str = '.rst',
-            base_path: str = None,
-            imported_members: bool = False,
-            overwrite: bool = True,
-            encoding: str = 'utf-8'
+        self,
+        source_filenames: List[str],
+        output_dir: str = None,
+        suffix: str = ".rst",
+        base_path: str = None,
+        imported_members: bool = False,
+        overwrite: bool = True,
+        encoding: str = "utf-8",
     ) -> None:
         """
         This code was adapted from
@@ -409,12 +414,12 @@ class GenDocsFromAutomodsumm:
         _warn = self.logger.warning
 
         showed_sources = list(sorted(source_filenames))
-        _info(__(
-            f"[automodsumm] generating stub files for {len(showed_sources)} sources"
-        ))
+        _info(
+            __(f"[automodsumm] generating stub files for {len(showed_sources)} sources")
+        )
 
         if output_dir:
-            _info(__('[automodsumm] writing to %s') % output_dir)
+            _info(__(f"[automodsumm] writing to {output_dir}"))
 
         if base_path is not None:
             source_filenames = [
@@ -453,7 +458,7 @@ class GenDocsFromAutomodsumm:
                     name, obj, parent, modname = import_ivar_by_name(entry.name)
                     qualname = name.replace(modname + ".", "")
                 except ImportError:
-                    _warn(__('[automodsumm] failed to import %r: %s') % (entry.name, e))
+                    _warn(__(f"[automodsumm] failed to import {entry.name}: {e}"))
                     continue
 
             context = {}
@@ -482,11 +487,11 @@ class GenDocsFromAutomodsumm:
                 if content == old_content:
                     continue
                 elif overwrite:  # content has changed
-                    with open(filename, 'w', encoding=encoding) as f:
+                    with open(filename, "w", encoding=encoding) as f:
                         f.write(content)
                     new_files.append(filename)
             else:
-                with open(filename, 'w', encoding=encoding) as f:
+                with open(filename, "w", encoding=encoding) as f:
                     f.write(content)
                 new_files.append(filename)
 
@@ -509,13 +514,13 @@ class GenDocsFromAutomodsumm:
         """
         documented = []  # type: List[AutosummaryEntry]
         for filename in filenames:
-            with open(filename, encoding='utf-8', errors='ignore') as f:
+            with open(filename, encoding="utf-8", errors="ignore") as f:
                 lines = f.read().splitlines()
                 documented.extend(self.find_in_lines(lines, filename=filename))
         return documented
 
     def find_in_lines(
-            self, lines: List[str], filename: str = None,
+        self, lines: List[str], filename: str = None,
     ) -> List[AutosummaryEntry]:
         """
         Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
@@ -541,10 +546,8 @@ class GenDocsFromAutomodsumm:
         nlines = len(lines)
 
         for ii, line in enumerate(lines):
-            if ii == nlines-1:
+            if ii == nlines - 1:
                 last_line = True
-
-            # self.logger.info(f"{in_automod_directive}, {line}")
 
             # looking for option `   :option: option_args`
             if in_automod_directive:
@@ -553,8 +556,7 @@ class GenDocsFromAutomodsumm:
                     option_name = match.group(2)
                     option_args = match.group(3)
                     try:
-                        option_args = \
-                            _option_cls.option_spec[option_name](option_args)
+                        option_args = _option_cls.option_spec[option_name](option_args)
                         options[option_name] = option_args
                     except (KeyError, TypeError):
                         pass
