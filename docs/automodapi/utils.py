@@ -195,7 +195,8 @@ def find_mod_objs(modname: str, app: Sphinx = None):
                     # this would be a locally defined variable like
                     # plasmapy.__citation__
                     pass
-                elif obj.__module__ != modname:
+                elif not obj.__module__.startswith(pkg_name):
+                    # object not from package being documented
                     mod_objs[obj_type]["names"].remove(name)
                     continue
 
