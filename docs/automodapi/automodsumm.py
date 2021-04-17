@@ -409,7 +409,9 @@ class GenDocsFromAutomodsumm:
         _warn = self.logger.warning
 
         showed_sources = list(sorted(source_filenames))
-        _info(__(f"[automodsumm] generating stub files for {len(showed_sources)} sources"))
+        _info(__(
+            f"[automodsumm] generating stub files for {len(showed_sources)} sources"
+        ))
 
         if output_dir:
             _info(__('[automodsumm] writing to %s') % output_dir)
@@ -513,7 +515,7 @@ class GenDocsFromAutomodsumm:
         return documented
 
     def find_in_lines(
-            self, lines: List[str], module: str = None, filename: str = None,
+            self, lines: List[str], filename: str = None,
     ) -> List[AutosummaryEntry]:
         """
         Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
@@ -528,7 +530,6 @@ class GenDocsFromAutomodsumm:
         current_module = None
         modname = ""
 
-        base_indent = ""
         options = {}  # type: Dict[str, Any]
 
         _option_cls = None
@@ -574,7 +575,7 @@ class GenDocsFromAutomodsumm:
             match = self._re["automodsumm"].search(line)
             if match is not None:
                 in_automod_directive = True
-                base_indent = match.group(1)
+                # base_indent = match.group(1)
                 modname = match.group(2)
 
                 if current_module is None or modname == current_module:
@@ -595,7 +596,7 @@ class GenDocsFromAutomodsumm:
             match = self._re["automodapi"].search(line)
             if match is not None:
                 in_automod_directive = True
-                base_indent = match.group(1)
+                # base_indent = match.group(1)
                 modname = match.group(2)
 
                 if current_module is None or modname == current_module:

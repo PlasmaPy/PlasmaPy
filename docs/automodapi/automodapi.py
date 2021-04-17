@@ -17,7 +17,7 @@ from sphinx.ext.autodoc import (
 )
 from sphinx.locale import __
 from sphinx.util import logging
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 from .automodsumm import option_str_list, AutomodsummOptions
 from .utils import default_grouping_info
