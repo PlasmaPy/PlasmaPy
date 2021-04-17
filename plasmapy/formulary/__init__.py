@@ -27,9 +27,18 @@ __all__.sort()
 
 # auto populate __aliases__
 for modname in (
-    "braginskii", "collisions", "dielectric", "dimensionless", "distribution",
-    "drifts", "ionization", "magnetostatics", "mathematics", "parameters",
-    "quantum", "relativity",
+    "braginskii",
+    "collisions",
+    "dielectric",
+    "dimensionless",
+    "distribution",
+    "drifts",
+    "ionization",
+    "magnetostatics",
+    "mathematics",
+    "parameters",
+    "quantum",
+    "relativity",
 ):
     try:
         obj = globals()[modname]

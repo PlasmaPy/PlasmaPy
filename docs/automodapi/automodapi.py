@@ -3,8 +3,8 @@ import sys
 import warnings
 
 from collections import OrderedDict
-from docutils.statemachine import StringList
 from docutils.parsers.rst import directives
+from docutils.statemachine import StringList
 from sphinx.application import Sphinx
 
 try:
@@ -15,15 +15,12 @@ except ImportError:
         pass
 
 
-from sphinx.ext.autodoc import (
-    ModuleDocumenter,
-    bool_option,
-)
+from sphinx.ext.autodoc import bool_option, ModuleDocumenter
 from sphinx.locale import __
 from sphinx.util import logging
 from typing import Any, Callable, Dict, Optional, Union
 
-from .automodsumm import option_str_list, AutomodsummOptions
+from .automodsumm import AutomodsummOptions, option_str_list
 from .utils import default_grouping_info
 
 if sys.version_info >= (3, 0):

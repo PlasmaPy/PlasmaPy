@@ -4,4 +4,3 @@
 
 .. automodapi:: {{ fullname }}
    :noindex:
-

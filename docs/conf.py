@@ -34,11 +34,7 @@ from plasmapy import __version__ as release
 
 autosummary_generate = True
 automod_custom_groups = {
-    "aliases": {
-        "title": "Aliases",
-        "descr": "",
-        "dunder": "__aliases__",
-    },
+    "aliases": {"title": "Aliases", "descr": "", "dunder": "__aliases__",},
 }
 
 # If your documentation needs a minimal Sphinx version, state it here.

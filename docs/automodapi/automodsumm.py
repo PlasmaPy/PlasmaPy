@@ -13,8 +13,8 @@ from sphinx.ext.autosummary import (
     import_ivar_by_name,
 )
 from sphinx.ext.autosummary.generate import (
-    AutosummaryRenderer,
     AutosummaryEntry,
+    AutosummaryRenderer,
     generate_autosummary_content,
 )
 from sphinx.locale import __
