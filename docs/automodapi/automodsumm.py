@@ -409,10 +409,7 @@ class GenDocsFromAutomodsumm:
         _warn = self.logger.warning
 
         showed_sources = list(sorted(source_filenames))
-        if len(showed_sources) > 20:
-            showed_sources = showed_sources[:10] + ['...'] + showed_sources[-10:]
-        _info(__('[automodsumm] generating autosummary for: %s') %
-              ', '.join(showed_sources))
+        _info(__(f"[automodsumm] generating stub files for {len(showed_sources)} sources"))
 
         if output_dir:
             _info(__('[automodsumm] writing to %s') % output_dir)
