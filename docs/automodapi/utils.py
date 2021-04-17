@@ -17,7 +17,13 @@ def automod_groupings(app: Sphinx):
     }
     custom_groups = set(app.config.automod_custom_groups)
 
-    return default_groupings, custom_groups
+def get_custom_grouping_info(app: Sphinx):
+    try:
+        _info = app.config.automod_custom_groups
+    except AttributeError:
+        _info = {}
+
+    return _info
 
 
 def find_mod_objs(modname: str, app: Sphinx = None):
