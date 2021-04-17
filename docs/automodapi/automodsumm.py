@@ -252,22 +252,13 @@ class AutomodsummOptions:
         if not bool(mod_objs):
             return []
 
+        gather_groups = set(mod_objs.keys())
+        if exclude_modules:
+            gather_groups.discard("modules")
+
         content = []
-        if not exclude_modules:
-            for group in mod_objs:
-                content.extend(mod_objs[group]["qualnames"])
-
-            return sorted(content)
-
-        # excluded content
-        qualnames = []
-        objs = []
-        for group in mod_objs:
-            qualnames.extend(mod_objs[group]["qualnames"])
-            objs.extend(mod_objs[group]["objs"])
-        for qualname, obj in zip(qualnames, objs):
-            if not inspect.ismodule(obj):
-                content.append(qualname)
+        for group in gather_groups:
+            content.extend(mod_objs[group]["qualnames"])
 
         return sorted(content)
 
