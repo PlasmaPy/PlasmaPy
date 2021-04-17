@@ -272,8 +272,6 @@ class Automodsumm(Autosummary):
     logger = logger
 
     def run(self):
-        # env = self.state.document.settings.env
-        app = self.env.app
         env = self.env
         modname = self.arguments[0]
 
@@ -285,17 +283,12 @@ class Automodsumm(Autosummary):
 
         nodelist = []
 
-        self.logger.info(f"[automodsumm] Collecting content for '{modname}'.")
-        option_processor = AutomodsummOptions(
-            app, modname, self.options, docname=app.env.docname, _warn=self.warn,
-        )
-
         # update toctree with relative path to file (not confdir)
         if "toctree" in self.options:
-            self.options["toctree"] = option_processor.options["toctree"]
+            self.options["toctree"] = self.option_processor().options["toctree"]
 
         # define additional content
-        content = option_processor.generate_obj_list()
+        content = self.option_processor().generate_obj_list()
         for ii, modname in enumerate(content):
             if not modname.startswith("~"):
                 content[ii] = "~" + modname
@@ -303,6 +296,16 @@ class Automodsumm(Autosummary):
 
         nodelist.extend(Autosummary.run(self))
         return nodelist
+
+    def option_processor(self):
+        processor = AutomodsummOptions(
+            app=self.env.app,
+            modname=self.arguments[0],
+            options=self.options,
+            docname=self.env.docname,
+            _warn=self.warn,
+        )
+        return processor
 
     def get_items(self, names):
         try:
