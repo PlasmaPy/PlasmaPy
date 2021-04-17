@@ -202,47 +202,10 @@ class AutomodsummOptions:
             mod_objs = {}
             self.warn(f"Could not import module {self.modname}")
 
-        # define groupings to include
-        allowed_args = self.groupings | {"all"}
-        do_groups = self.groupings
-        if "groups" in self.options:
-            opt_args = set(self.options["groups"])
+        do_groups = set(self.options["groups"])
 
-            unknown_args = opt_args - allowed_args
-            if len(unknown_args) > 0:
-                self.warn(
-                    f"Option 'groups' has unrecognized arguments "
-                    f"{unknown_args}. Ignoring."
-                )
-                opt_args = opt_args - unknown_args
-
-            if "all" not in opt_args:
-                do_groups = opt_args
-
-        # exclude groupings
-        if "exclude-groups" not in self.options:
-            if "groups" not in self.options:
-                opt_args = {"modules"}
-            else:
-                opt_args = set()
-        else:
-            opt_args = set(self.options["exclude-groups"])
-
-        unknown_args = opt_args - allowed_args
-        if len(unknown_args) > 0:
-            self.warn(
-                f"Option 'exclude-groups' has unrecognized arguments "
-                f"{unknown_args}. Ignoring."
-            )
-            opt_args = opt_args - unknown_args
-        elif "all" in opt_args:
-            self.warn(
-                f"Arguments of 'groups' and 'exclude-groups' results in "
-                f"no content."
-            )
+        if len(do_groups) == 0:
             return {}
-
-        do_groups = do_groups - opt_args
 
         # remove excluded groups
         for group in list(mod_objs):
