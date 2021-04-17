@@ -42,7 +42,6 @@ __aliases__ = [
     "wlh_",
     "wuh_",
 ]
-__flites__ = ["thermal_speed_lite"]
 
 import astropy.units as u
 import numbers
@@ -63,10 +62,9 @@ from plasmapy.utils.decorators import (
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
-__all__ += __aliases__ + __flites__
+__all__ += __aliases__
 __all__.sort()
 __aliases__.sort()
-__flites__.sort()
 
 
 def _grab_charge(ion: Particle, z_mean=None):
@@ -685,8 +683,6 @@ def thermal_speed(
 
     return np.sqrt(coef * k_B * T / m)
 
-thermal_speed_lite = thermal_speed
-""" A lite-weight version of :func:`thermal_speed`. """
 
 vth_ = thermal_speed
 """ Alias to :func:`thermal_speed`. """

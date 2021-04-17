@@ -39,11 +39,6 @@ automod_custom_groups = {
         "descr": "",
         "dunder": "__aliases__",
     },
-    "lite-functions": {
-        "title": "Lite Functions",
-        "descr": "",
-        "dunder": "__flites__",
-    }
 }
 
 # If your documentation needs a minimal Sphinx version, state it here.
