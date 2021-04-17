@@ -105,6 +105,7 @@ class AutomodsummOptions:
 
     def condition_options(self):
         self.condition_toctree_option()
+        self.condition_group_options()
 
     def condition_toctree_option(self):
         if "toctree" not in self.options:
@@ -124,6 +125,50 @@ class AutomodsummOptions:
         ).replace(os.sep, "/")
 
         self.options["toctree"] = self.toctree["rel_to_doc"]
+
+    def condition_group_options(self):
+        allowed_args = self.groupings | {"all"}
+        do_groups = self.groupings.copy()  # defaulting to all groups
+
+        # groups option
+        if "groups" in self.options:
+            opt_args = set(self.options["groups"])
+
+            unknown_args = opt_args - allowed_args
+            if len(unknown_args) > 0:
+                self.warn(
+                    f"Option 'groups' has unrecognized arguments "
+                    f"{unknown_args}. Ignoring."
+                )
+                opt_args = opt_args - unknown_args
+
+            if "all" not in opt_args:
+                do_groups = opt_args
+
+        # exclude groupings
+        if "exclude-groups" in self.options:
+            opt_args = set(self.options["exclude-groups"])
+            del self.options["exclude-groups"]
+        else:
+            opt_args = set()
+
+        unknown_args = opt_args - allowed_args
+        if len(unknown_args) > 0:
+            self.warn(
+                f"Option 'exclude-groups' has unrecognized arguments "
+                f"{unknown_args}. Ignoring."
+            )
+            opt_args = opt_args - unknown_args
+        elif "all" in opt_args:
+            self.warn(
+                f"Arguments of 'groups' and 'exclude-groups' results in "
+                f"no content."
+            )
+            self.options["groups"] = []
+            return
+
+        do_groups = do_groups - opt_args
+        self.options["groups"] = list(do_groups)
 
     @property
     def mod_objs(self) -> Dict[str, Dict[str, Any]]:
