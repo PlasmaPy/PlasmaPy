@@ -92,6 +92,7 @@ particle, :attr:`PlasmaBlob.particle`.
 This feature is currently under development.
 
 .. automodapi:: plasmapy.plasma.sources
+   :noindex:
    :exclude-groups: modules
    :skip: HDF5Reader
 
