@@ -64,8 +64,8 @@ the `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory
 which the data match its plasma data structure.
 
 .. automodapi:: plasmapy.plasma
-    :no-main-docstr:
-    :no-heading:
+   :noindex:
+   :no-main-docstr:
 
 .. _plasma-sources:
 
@@ -91,7 +91,6 @@ particle, :attr:`PlasmaBlob.particle`.
 This feature is currently under development.
 
 .. automodapi:: plasmapy.plasma.sources
-   :no-heading:
 
 Writing a new Plasma subclass
 -----------------------------
@@ -153,19 +152,7 @@ method.
 API
 ---
 
-Sub-Packages & Modules
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. autosummary::
-
-   ~plasmapy.plasma.exceptions
-   ~plasmapy.plasma.grids
-   ~plasmapy.plasma.plasma_base
-   ~plasmapy.plasma.plasma_factory
-   ~plasmapy.plasma.sources
-
 .. automodapi:: plasmapy.plasma
+   :noindex:
    :no-main-docstr:
-   :no-heading:
-   :include-all-objects:
-   :headings: "^-"
+   :heading-chars: "^~"

@@ -60,7 +60,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "nbsphinx",
     "sphinx_copybutton",
@@ -279,10 +278,6 @@ nbsphinx_prolog = r"""
 
 
 def setup(app: Sphinx) -> None:
-
-    # from automodapi.automodsumm import setup as setup_automodsumm
-    #
-    # setup_automodsumm(app)
 
     from automodapi import setup as setup_automodapi
 

@@ -24,10 +24,17 @@ Functionality contained in `~plasmapy.utils` includes:
    and `~plasmapy.utils.decorators.check_relativistic`.
  * Helper utilities for importing and testing packages.
 
-Reference/API
-=============
+API
+===
 
 .. automodapi:: plasmapy.utils.decorators
-.. automodapi2:: plasmapy.utils.exceptions
+   :include-heading:
+
+.. automodapi:: plasmapy.utils.exceptions
+   :include-heading:
+
 .. automodapi:: plasmapy.utils.code_repr
+   :include-heading:
+
 .. automodapi:: plasmapy.utils.pytest_helpers
+   :include-heading:

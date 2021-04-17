@@ -4,8 +4,7 @@
 Plasma parameters (`plasmapy.formulary.parameters`)
 ***************************************************
 
-.. automodapi2:: plasmapy.formulary.parameters
-
+.. automodapi:: plasmapy.formulary.parameters
 
 .. nbgallery::
     :caption: Examples
