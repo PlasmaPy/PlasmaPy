@@ -244,6 +244,9 @@ class ModAPIDocumenter(ModuleDocumenter):
 
             # add options for automodsumm directive
             for name, val in asumm_options.items():
+                if name == "toctree" and group == "modules":
+                    continue
+
                 lines.extend(
                     self._templates["options"].format(
                         option=name, opt_args=val,
