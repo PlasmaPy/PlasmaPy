@@ -536,7 +536,15 @@ class GenDocsFromAutomodsumm:
         in_automod_directive = False
         gather_objs = False
 
-        for line in lines:
+        last_line = False
+        nlines = len(lines)
+
+        for ii, line in enumerate(lines):
+            if ii == nlines-1:
+                last_line = True
+
+            # self.logger.info(f"{in_automod_directive}, {line}")
+
             # looking for option `   :option: option_args`
             if in_automod_directive:
                 match = self._re["option"].search(line)
@@ -554,35 +562,54 @@ class GenDocsFromAutomodsumm:
                     in_automod_directive = False
                     gather_objs = True
 
+                if last_line:
+                    # end of lines reached
+                    in_automod_directive = False
+                    gather_objs = True
+
+                if in_automod_directive:
+                    continue
+
             # looking for `.. automodsumm:: <modname>`
             match = self._re["automodsumm"].search(line)
             if match is not None:
-
-                self.logger.info("[Automodsumm]  !!! found automodsumm2 !!!!")
-
                 in_automod_directive = True
                 base_indent = match.group(1)
                 modname = match.group(2)
-                if current_module is not None \
-                        and not modname.startswith(f"{current_module}."):
+
+                if current_module is None or modname == current_module:
+                    pass
+                elif not modname.startswith(f"{current_module}."):
                     modname = f"{current_module}.{modname}"
                 _option_cls = AutomodsummOptions
-                continue
+                self.logger.info(f"[automodsumm] {modname}")
+
+                if last_line:
+                    # end of lines reached
+                    in_automod_directive = False
+                    gather_objs = True
+                else:
+                    continue
 
             # looking for `.. automodapi:: <modname>`
             match = self._re["automodapi"].search(line)
             if match is not None:
-
-                self.logger.info("[Automodsumm]  !!! found automodapi2 !!!!")
-
                 in_automod_directive = True
                 base_indent = match.group(1)
                 modname = match.group(2)
-                if current_module is not None \
-                        and not modname.startswith(f"{current_module}."):
+
+                if current_module is None or modname == current_module:
+                    pass
+                elif not modname.startswith(f"{current_module}."):
                     modname = f"{current_module}.{modname}"
                 _option_cls = AutomodapiOptions
-                continue
+
+                if last_line:
+                    # end of lines reached
+                    in_automod_directive = False
+                    gather_objs = True
+                else:
+                    continue
 
             # looking for `.. py:currentmodule:: <current_module>`
             match = self._re["currentmodule"].search(line)
@@ -605,7 +632,10 @@ class GenDocsFromAutomodsumm:
                     "recursive": process_options.options.get("recursive", False),
                 }
 
-                obj_list = process_options.generate_obj_list()
+                exclude_modules = not self.app.config.automod_generate_module_stub_files
+                obj_list = process_options.generate_obj_list(
+                    exclude_modules=exclude_modules
+                )
 
                 for name in obj_list:
                     documented.append(
@@ -616,6 +646,11 @@ class GenDocsFromAutomodsumm:
                             recursive=options["recursive"],
                         )
                     )
+
+                self.logger.info(
+                    f"[automodsumm stub file gen] collected {len(obj_list)} "
+                    f"object(s) in '{modname}'"
+                )
 
                 # reset for next search
                 options = {}
