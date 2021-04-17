@@ -321,9 +321,9 @@ class GenDocsFromAutomodsumm:
 
     _re = {
         "automodsumm": re.compile(
-            r"^\n?(\s*)\.\.\s+automodsumm2::\s*(\S+)\s*(?:\n|$)"
+            r"^\n?(\s*)\.\.\s+automodsumm::\s*(\S+)\s*(?:\n|$)"
         ),
-        "automodapi": re.compile(r"^\n?(\s*)\.\.\s+automodapi2::\s*(\S+)\s*(?:\n|$)"),
+        "automodapi": re.compile(r"^\n?(\s*)\.\.\s+automodapi::\s*(\S+)\s*(?:\n|$)"),
         "option": re.compile(r"^\n?(\s+):(\S*):\s*(\S.*|)\s*(?:\n|$)"),
         "currentmodule": re.compile(
             r"^\s*\.\.\s+(|\S+:)(current)?module::\s*([a-zA-Z0-9_.]+)\s*$"
@@ -645,19 +645,10 @@ class GenDocsFromAutomodsumm:
 
 
 def setup(app: Sphinx):
-    # import sphinx_automodapi
 
     app.setup_extension("sphinx.ext.autosummary")
 
-    # app.config.templates_path.append(
-    #     os.path.join(sphinx_automodapi.__path__[0], "templates")
-    # )
-
-    # app.setup_extension(autodoc_enhancements.__name__)
-    # app.setup_extension("sphinx.ext.inheritance_diagram")
-
-    # app.add_directive("automod-diagram", Automoddiagram)
-    app.add_directive("automodsumm2", Automodsumm)
+    app.add_directive("automodsumm", Automodsumm)
 
     gendocs_from_automodsumm = GenDocsFromAutomodsumm()
     app.connect("builder-inited", gendocs_from_automodsumm)

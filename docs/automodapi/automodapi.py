@@ -125,7 +125,7 @@ class AutomodapiOptions(AutomodsummOptions):
 
 
 class ModAPIDocumenter(ModuleDocumenter):
-    objtype = "modapi2"
+    objtype = "modapi"
     directivetype = "module"
     titles_allowed = True
     content_indent = ""
@@ -152,7 +152,7 @@ class ModAPIDocumenter(ModuleDocumenter):
         ),
         "automodsumm": "\n".join(
             [
-                ".. automodsumm2:: {modname}",
+                ".. automodsumm:: {modname}",
                 "   :groups: {group}",
             ],
         ),
