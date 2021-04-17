@@ -637,23 +637,7 @@ def setup(app: Sphinx):
     gendocs_from_automodsumm = GenDocsFromAutomodsumm()
     app.connect("builder-inited", gendocs_from_automodsumm)
 
-    # app.add_config_value("automodsumm_writereprocessed", False, True)
-    # app.add_config_value("automodsumm_inherited_members", False, "env")
-
-    automod_custom_groups = {
-        "aliases": {
-            "title": "Aliases",
-            "descr": "",
-            "dunder": "__aliases__",
-            "option_name": "aliases",
-        },
-        "lite-functions": {
-            "title": "Lite Functions",
-            "descr": "",
-            "dunder": "__flites__",
-            "option_name": "lite-funcs",
-        }
-    }
-    app.add_config_value("automod_custom_groups", automod_custom_groups, True)
+    app.add_config_value("automod_custom_groups", dict(), True)
+    app.add_config_value("automod_generate_module_stub_files", False, True)
 
     return {"parallel_read_safe": True, "parallel_write_safe": True}
