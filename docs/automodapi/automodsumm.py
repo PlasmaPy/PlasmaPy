@@ -461,22 +461,6 @@ class GenDocsFromAutomodsumm:
             if app:
                 context.update(app.config.autosummary_context)
 
-            # doc = get_documenter(app, obj, parent)
-            # ns = {}
-            # ns.update(app.config.autosummary_context)
-            # ns.update({
-            #     "fullname": name,
-            #     "module": modname,
-            #     "objname": qualname,
-            #     "name": qualname.rsplit(".", 1)[-1],
-            #     "objtype": doc.objtype,
-            #     "underline": len(name) * "=",
-            # })
-            # self.logger.info(
-            #     f"[Automodsumm2] templates \n{template.render(doc.objtype, ns)}"
-            #     # f"[Automodsumm2] templates {ns}"
-            # )
-
             content = generate_autosummary_content(
                 name,
                 obj,
