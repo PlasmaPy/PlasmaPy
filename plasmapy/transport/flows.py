@@ -150,7 +150,6 @@ class FlowCalculator:
         results = {}
         for a in self.all_species:
             for ai in self.contributing_states(a):
-                i = ai.integer_charge
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]
                 Spt = self.S_pt[sym]
@@ -332,7 +331,6 @@ class FlowCalculator:
         def gen():
             for a in self.all_species:
                 for ai in self.contributing_states(a):
-                    i = ai.integer_charge
                     sym = ai.ionic_symbol
                     yield ai.ion.charge * ai.number_density * self.r_pt[sym][
                         0
