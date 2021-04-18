@@ -1,3 +1,6 @@
+"""automodapi docstring"""
+__all__ = ["AutomodapiOptions", "ModuleDocumenter", "setup"]
+
 import re
 import sys
 import warnings
@@ -31,7 +34,7 @@ else:
 logger = logging.getLogger(__name__)
 
 
-_option_spec = option_spec = {
+_option_spec = {
     **ModuleDocumenter.option_spec,
     "groups": option_str_list,
     "exclude-groups": option_str_list,

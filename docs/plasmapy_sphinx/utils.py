@@ -220,4 +220,15 @@ def find_mod_objs(modname: str, app: Sphinx = None):
             mod_objs[obj_type]["qualnames"].append(qualname)
             mod_objs[obj_type]["objs"].append(obj)
 
+        # sort lists
+        names = sorted(mod_objs[obj_type]["names"].copy())
+        qualnames = []
+        objs = []
+        for name in names:
+            index = mod_objs[obj_type]["names"].index(name)
+            qualnames.append(mod_objs[obj_type]["qualnames"][index])
+            objs.append(mod_objs[obj_type]["objs"][index])
+
+        mod_objs[obj_type] = {"names": names, "qualnames": qualnames, "objs": objs}
+
     return mod_objs

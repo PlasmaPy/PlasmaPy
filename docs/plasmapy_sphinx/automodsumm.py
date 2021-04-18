@@ -1,3 +1,13 @@
+"""`automodsumm` docstring"""
+__all__ = [
+    "Automodsumm",
+    "AutomodsummOptions",
+    "AutomodsummRenderer",
+    "GenDocsFromAutomodsumm",
+    "option_str_list",
+    "setup",
+]
+
 import os
 import re
 
@@ -510,7 +520,7 @@ class GenDocsFromAutomodsumm:
         """
         Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_files`.
 
-        Find out what items are documented in source/*.rst.
+        Find out what items are documented in `source/*.rst`.
         """
         documented = []  # type: List[AutosummaryEntry]
         for filename in filenames:
@@ -651,7 +661,7 @@ class GenDocsFromAutomodsumm:
                     )
 
                 self.logger.info(
-                    f"[automodsumm stub file gen] collected {len(obj_list)} "
+                    f"[automodsumm stub file gen] collected {len(obj_list):4d} "
                     f"object(s) in '{modname}'"
                 )
 

@@ -124,7 +124,7 @@ exclude_patterns = [
     ".DS_Store",
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
-    "automodapi",
+    "plasmapy_sphinx",
 ]
 
 
@@ -270,7 +270,7 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
 
-    from automodapi import setup as setup_automodapi
+    from plasmapy_sphinx import setup as setup_automodapi
 
     setup_automodapi(app)
 
