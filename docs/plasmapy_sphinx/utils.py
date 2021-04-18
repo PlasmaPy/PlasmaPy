@@ -1,3 +1,7 @@
+"""
+A utility package containing functions and variables to support development of
+the core functionality in `plasmapy_sphinx`.
+"""
 __all__ = [
     "default_grouping_info",
     "find_mod_objs",
@@ -12,9 +16,13 @@ import os
 from collections import OrderedDict
 from importlib import import_module
 from sphinx.application import Sphinx
+from typing import Dict
 
 package_dir = os.path.abspath(os.path.dirname(__file__))
+"""Absolute path to the `plasmapy_sphinx` package directory."""
+
 templates_dir = os.path.join(package_dir, "templates")
+"""Absolute path to the `plasmapy_sphinx` templates directory."""
 
 default_grouping_info = OrderedDict(
     {
@@ -25,10 +33,10 @@ default_grouping_info = OrderedDict(
         "functions": {"title": "Functions"},
         "variables": {"title": "Variables & Attributes"},
     },
-)
+)  # type: Dict[str, Dict[str, str]]
 """
-Dictionary containing information related to the default object groupings used
-by the `automodapi` and `automodsumm` directives.
+Dictionary containing information related to the default object groups used
+by the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives.
 """
 
 
