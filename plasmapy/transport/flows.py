@@ -5,7 +5,6 @@ __all__ = [
 ]
 
 
-import functools
 import numpy as np
 
 from astropy import constants
