@@ -114,8 +114,10 @@ class FlowCalculator:
 
         return sum(gen())
 
-    @cached_property
-    def rbar_sources(self) -> u.Quantity:
+    def _rbar_sources(self) -> u.Quantity:
+        r"""Assemble the right hand side of equation 34.
+        """
+
         results = []
         for a in self.all_species:
 
@@ -123,17 +125,13 @@ class FlowCalculator:
                 for ai in self.contributing_states(a):
                     i = ai.integer_charge
                     sym = ai.ionic_symbol
-                    Aai = self.Aai[sym]
-                    Spt = self.S_pt[sym]
-                    rai_as_rows = np.linalg.solve(Aai, Spt)
-                    # TODO use self.r_pt?
-                    rbar_ingredient = ξ(a)[i] * rai_as_rows
-                    yield rbar_ingredient
+                    yield ξ(a)[i] * self.r_pt[sym]
+                    # this would also be where you'd put r_E, r_NBI, if you had them
 
             results.append(sum(gen()))
         return np.concatenate(results).si
 
-    def eq34matrix(self):
+    def _eq34matrix(self):
         output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
 
         for i, a in enumerate(self.all_species):
@@ -159,8 +157,9 @@ class FlowCalculator:
 
     @cached_property
     def Λ(self) -> dict:
-        rhs = self.rbar_sources
-        lhs = self.eq34matrix()
+        # solve equation 34
+        rhs = self._rbar_sources()
+        lhs = self._eq34matrix()
         ubar = np.linalg.solve(lhs, rhs)
 
         outputs = {}
@@ -178,21 +177,23 @@ class FlowCalculator:
     def flows(self) -> dict:
         outputs = {}
         for a in self.all_species:
-            Λ = self.Λ[a.base_particle]
+            Λ = self.Λ[a.base_particle]  # N T / m3
             xi = ξ(a)
             for ai in self.contributing_states(a):
                 i = ai.integer_charge
                 sym = ai.ionic_symbol
-                Aai = self.Aai[sym]
-                S_ai = xi[i] * np.diag(Λ)
-                rai_as_rows = np.linalg.solve(Aai, S_ai)
-                order_flow_sum = (
-                    (Λ.reshape(-1, 1) * rai_as_rows).sum(axis=0).si.value
-                )  # TODO fix units
+                Aai = self.Aai[sym]  # kg  / (m3 s)
+                S_ai = xi[i] * np.diag(Λ)  # N T / m3
+                rai_as_rows = np.linalg.solve(Aai, S_ai)  # V / m
 
-                r_pt = self.r_pt[sym]
-                flows = order_flow_sum + r_pt.value  # Eq31
-                outputs[ai.ionic_symbol] = flows * u.V / u.m  # TODO fix units
+                order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(
+                    axis=0
+                )  # Eq ...     # kg 3 / (A2 m s7)
+                # exceeds expectations by N T / m3
+
+                r_pt = self.r_pt[sym]  # V/m
+                flows = order_flow_sum + r_pt  # Eq31
+                outputs[ai.ionic_symbol] = flows
         return outputs
 
     @staticmethod
