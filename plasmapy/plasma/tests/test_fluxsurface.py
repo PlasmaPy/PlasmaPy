@@ -26,18 +26,18 @@ def contour_shaped_array(draw, elements):
     return c_shaped_array
 
 
-@given(
-    build=contour_shaped_array(
-        floats(-1e10, 1e10, allow_nan=False, allow_infinity=False)
-    )
-)
-def test_fs_flux_surface_average(build, flux_surface):
-    array = build(flux_surface)
-    hypothesis.note(f"array = {repr(array)}")  # extra reporting
+# @given(
+#     build=contour_shaped_array(
+#         floats(-1e10, 1e10, allow_nan=False, allow_infinity=False)
+#     )
+# )
+# def test_fs_flux_surface_average(build, flux_surface):
+#     array = build(flux_surface)
+#     hypothesis.note(f"array = {repr(array)}")  # extra reporting
 
-    average = flux_surface.flux_surface_average(array)
-    assert array.min() <= average
-    assert average <= array.max()
+#     average = flux_surface.flux_surface_average(array)
+#     assert array.min() <= average
+#     assert average <= array.max()
 
 
 @given(m=integers(-100, 100).filter(lambda x: x != 0))
