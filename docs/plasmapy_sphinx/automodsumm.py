@@ -1,4 +1,41 @@
-"""`automodsumm` docstring"""
+"""
+`automodsumm` docstring
+
+Sphinx Directives
+-----------------
+
+.. rst:directive:: automodsumm
+
+Sphinx Configuration Value
+--------------------------
+
+A configuration value is a variable that conbe defined in `conf.py` to configure
+the default behave of related `sphinx` directives.  The configuration values
+below relate to the behavior of the :rst:dir:`automodsumm` directive.
+
+.. confval:: automod_custom_groups
+
+    :type: `Dict[str, Dict[str, str]]`
+    :default: {}
+
+.. confval:: automod_generate_module_stub_files
+
+    (Default `False`)  By default :rst:dir:`automodsumm` will not generated stub files
+    for the ``"modules"`` group, even when the `sphinx` configuration value
+    `autosummary_generate
+    <https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html?
+    highlight=autosummary_generate#confval-autosummary_generate>`_
+    is set `True`.  Setting this config variable to `True` will tell
+    :rst:dir:`automodsumm` to generate stub files for the ``"modules"`` group.
+
+.. confval:: autosummary_generate
+
+    Same as the `autosummary` configuration value `autosummary_generate
+    <https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html?
+    highlight=autosummary_generate#confval-autosummary_generate>`_, since the
+    :rst:dir:`automodsumm` directive is a wrapper on the `sphinx` directive
+    `autosummary`.
+"""
 __all__ = [
     "Automodsumm",
     "AutomodsummOptions",
