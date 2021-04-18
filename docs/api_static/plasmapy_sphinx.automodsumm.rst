@@ -6,3 +6,11 @@
 .. currentmodule:: plasmapy_sphinx.automodsumm
 
 .. automodapi:: plasmapy_sphinx.automodsumm
+   :no-groups:
+
+API
+---
+
+.. automodapi:: plasmapy_sphinx.automodsumm
+   :noindex:
+   :no-main-docstr:
