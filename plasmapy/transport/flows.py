@@ -120,12 +120,13 @@ class FlowCalculator:
 
         results = []
         for a in self.all_species:
+            xi = ξ(a)
 
             def gen():
                 for ai in self.contributing_states(a):
                     i = ai.integer_charge
                     sym = ai.ionic_symbol
-                    yield ξ(a)[i] * self.r_pt[sym]
+                    yield xi[i] * self.r_pt[sym]
                     # this would also be where you'd put r_E, r_NBI, if you had them
 
             results.append(sum(gen()))
