@@ -3,7 +3,7 @@ This `sphinx` extension package was highly influenced by
 `Astropy's sphinx_automodapi
 <https://sphinx-automodapi.readthedocs.io/en/latest/index.html>`_
 package. In fact,
-the :rst::dir:`automodapi` and :rst:dir:`automodsumm` directives defined in
+the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives defined in
 this package are an adaption/evolutions of the `sphinx_automodapi.automodapi`
 and the `sphinx_automodapi.automodsumm` directives.
 """
