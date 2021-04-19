@@ -13,7 +13,7 @@ class Test_diamagnetic_drift:
 
     def test_isothermal_plasma(self):
         r"""
-            Cylindrical & isothermal plasma in Fig 3.4 of Chen.
+        Cylindrical & isothermal plasma in Fig 3.4 of Chen.
         """
         T = 10 * u.eV
         B = u.Quantity([0, 0, 100], unit=u.nT)

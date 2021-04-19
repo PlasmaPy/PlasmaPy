@@ -65,11 +65,15 @@ class IonicLevel:
                 return False
 
             ionic_fraction_within_tolerance = np.isclose(
-                self.ionic_fraction, other.ionic_fraction, rtol=1e-15,
+                self.ionic_fraction,
+                other.ionic_fraction,
+                rtol=1e-15,
             )
 
             number_density_within_tolerance = u.isclose(
-                self.number_density, other.number_density, rtol=1e-15,
+                self.number_density,
+                other.number_density,
+                rtol=1e-15,
             )
 
             return all(

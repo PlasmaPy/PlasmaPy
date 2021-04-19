@@ -6,7 +6,9 @@ import numpy as np
 
 
 def check_sweep(
-    voltage: np.ndarray, current: np.ndarray, strip_units: bool = True,
+    voltage: np.ndarray,
+    current: np.ndarray,
+    strip_units: bool = True,
 ) -> (np.ndarray, np.ndarray):
     """
     Function for checking that the voltage and current arrays are properly
