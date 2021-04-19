@@ -645,7 +645,10 @@ class SyntheticProtonRadiograph:
 
     @particles.particle_input
     def load_particles(
-        self, x, v, particle: Particle = Particle("p+"),
+        self,
+        x,
+        v,
+        particle: Particle = Particle("p+"),
     ):
         r"""
         Load arrays of particle positions and velocities
@@ -854,11 +857,25 @@ class SyntheticProtonRadiograph:
         # loop. Any speed improvements will have to come from here.
         if self.field_weighting == "volume averaged":
             Ex, Ey, Ez, Bx, By, Bz = self.grid.volume_averaged_interpolator(
-                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z", persistent=True,
+                pos,
+                "E_x",
+                "E_y",
+                "E_z",
+                "B_x",
+                "B_y",
+                "B_z",
+                persistent=True,
             )
         elif self.field_weighting == "nearest neighbor":
             Ex, Ey, Ez, Bx, By, Bz = self.grid.nearest_neighbor_interpolator(
-                pos, "E_x", "E_y", "E_z", "B_x", "B_y", "B_z", persistent=True,
+                pos,
+                "E_x",
+                "E_y",
+                "E_z",
+                "B_x",
+                "B_y",
+                "B_z",
+                persistent=True,
             )
 
         # Create arrays of E and B as required by push algorithm
@@ -919,7 +936,9 @@ class SyntheticProtonRadiograph:
             return False
 
     def run(
-        self, dt=None, field_weighting="volume averaged",
+        self,
+        dt=None,
+        field_weighting="volume averaged",
     ):
         r"""
         Runs a particle-tracing simulation.
