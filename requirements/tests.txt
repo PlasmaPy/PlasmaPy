@@ -2,3 +2,4 @@
 # ought to mirror 'tests' under options.extras_require in setup.cfg
 -r extras.txt
 pytest >= 5.1
+pytest-regressions
