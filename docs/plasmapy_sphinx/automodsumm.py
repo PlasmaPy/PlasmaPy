@@ -108,6 +108,19 @@ def option_str_list(argument):
 
 
 class AutomodsummRenderer(AutosummaryRenderer):
+    """
+    A helper class for retrieving and rendering :rst:dir:`automodsumm` templates
+    when writing stub files.
+
+    Parameters
+    ----------
+
+    app : `sphinx.application.Sphinx`
+        Instance of the `sphinx` application.
+
+    template_dir : str
+        Path to a specified template directory.
+    """
     def __init__(self, app: Union[Builder, Sphinx], template_dir: str = None) -> None:
 
         asumm_path = templates_dir
@@ -116,7 +129,20 @@ class AutomodsummRenderer(AutosummaryRenderer):
         super().__init__(app, template_dir)
 
     def render(self, template_name: str, context: Dict) -> str:
-        """Render a template file."""
+        """
+        Render a template file.  The render will first search for the template in
+        the path specified by the sphinx configuration value :confval:`templates_path`,
+        then the `~plasmapy_sphinx.templates_dir, and finally the
+        :rst:dir:`autosummary` templates directory.
+
+        Parameters
+        ----------
+        template_name : str
+            Name of the template file.
+
+        context: dict
+            Dictionary of values to be rendered (inserted) into the template.
+        """
         if not template_name.endswith(".rst"):
             # if does not have '.rst' then objtype likely given for template_name
             template_name += ".rst"
