@@ -1,6 +1,7 @@
-# these are dependencies required to build package documentaiton
+# these are dependencies required to build package documentation
 # ought to mirror 'docs' under options.extras_require in setup.cfg
 -r extras.txt
+docutils < 0.17
 ipykernel
 ipywidgets
 nbsphinx
@@ -12,4 +13,4 @@ sphinx-changelog
 sphinx-copybutton
 sphinx-gallery
 sphinx_rtd_theme
-towncrier
+towncrier >= 19.2.0
