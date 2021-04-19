@@ -1,5 +1,6 @@
 """
-`automodsumm` docstring
+This module contains the functionaly used to define the :rst:dir:`automodusmm`
+directive, its supporting configuration values, and the stub file writer.
 
 Sphinx Directives
 -----------------
