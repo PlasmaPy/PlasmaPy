@@ -16,7 +16,7 @@ import os
 from collections import OrderedDict
 from importlib import import_module
 from sphinx.application import Sphinx
-from typing import Dict
+from typing import Any, Dict
 
 package_dir = os.path.abspath(os.path.dirname(__file__))
 """Absolute path to the `plasmapy_sphinx` package directory."""
@@ -33,14 +33,19 @@ default_grouping_info = OrderedDict(
         "functions": {"title": "Functions"},
         "variables": {"title": "Variables & Attributes"},
     },
-)  # type: Dict[str, Dict[str, str]]
+)
 """
 Dictionary containing information related to the default object groups used
-by the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives.
+by the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives.  Can be
+extend using the configuration value :confval:`automod_custom_groups`.
 """
 
 
 def get_custom_grouping_info(app: Sphinx):
+    """
+    Retrieve the custom groups dictionary defined by the configuration value
+    :confval:`automod_custom_groups`.
+    """
     try:
         _info = app.config.automod_custom_groups
     except AttributeError:
@@ -49,10 +54,91 @@ def get_custom_grouping_info(app: Sphinx):
     return _info
 
 
-def find_mod_objs(modname: str, app: Sphinx = None):
+def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]:
+    """
+    Inspect the module ``modname`` for all the contained objects, sort for the
+    object type (module, function, class, etc.), and return a dictionary containing
+    object names, fully qualified names, and instances.
+
+    Parameters
+    ----------
+    modname : str
+        Name of the module (e.g. ``"plasmapy_sphinx.uitls'``) to be inspect.
+
+    app : `~sphinx.application.Sphinx`
+        Instance of the `Sphinx` application.
+
+    Returns
+    -------
+    mod_objs : Dict[str, Dict[str, List[Any]]]
+
+        A dictionary containing names, qualified names, and objects instances of all
+        the objects in ``modname`` sorted by their respective group (module, class,
+        function, etc.)
+
+        The first key of the dictionary represents the object type (modules, classes,
+        functions, etc.).  The second key is either ``"names"`` (list of all object
+        short names), ``"qualnames"`` (list of all object qualified names), and
+        ``"objs"`` (list of object instances).
+
+    Examples
+    --------
+
+    >>> find_mod_objs("plasmapy_sphinx.utils")
+    {
+        'functions': {
+            'names': ['find_mod_objs', 'get_custom_grouping_info'],
+            'qualnames': [
+                'docs.plasmapy_sphinx.utils.find_mod_objs',
+                'docs.plasmapy_sphinx.utils.get_custom_grouping_info',
+            ],
+            'objs': [
+                <function docs.plasmapy_sphinx.utils.find_mod_objs>,
+                <function docs.plasmapy_sphinx.utils.get_custom_grouping_info>,
+            ]
+        },
+        'variables': {
+            'names': ['default_grouping_info', 'package_dir', 'templates_dir'],
+            'qualnames': [
+                'docs.plasmapy_sphinx.utils.default_grouping_info',
+                'docs.plasmapy_sphinx.utils.package_dir',
+                'docs.plasmapy_sphinx.utils.templates_dir',
+            ],
+            'objs': [
+                OrderedDict(...),
+                "/.../plasmapy_sphinx",
+                "/.../plasmapy_sphinx/templates",
+            ]
+        }
+    }
+
+
+    Notes
+    -----
+
+    If the module contains the ``__all__`` dunder, then the routine groups the
+    objects specified in the dunder; otherwise, it will search the module's `globals`,
+    minus any private or special members.  The routing will then group the
+    module objects in the following order...
+
+    1. Group any imported modules or packages.
+
+        - Regardless of if ``__all__`` is defined, the routine will first search
+          the module's `globals` for any imported modules or packages.
+        - Any 3rd party modules are excluded unless specified in ``__all__``.
+        - Any non-direct sub-modules are excluded unless specified in ``__all__``.
+
+    2. Custom groups defined by :confval:`automod_custom_groups` are then collected.
+
+    3. The remaining objects are grouped into the default groupds defined by
+       :attr:`default_grouping_info`.
+
+
+
+    """
     if app is not None:
         if isinstance(app, Sphinx):
-            cgroups_def = app.config.automod_custom_groups
+            cgroups_def = get_custom_grouping_info(app)
         else:
             # assuming dict for testing
             cgroups_def = app
