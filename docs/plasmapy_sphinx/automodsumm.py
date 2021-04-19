@@ -97,6 +97,10 @@ logger = logging.getLogger(__name__)
 
 
 def option_str_list(argument):
+    """
+    An option validator for parsing a comma-separated option argument.  Similar to
+    the validators found in `docutils.parsers.rst.directives`.
+    """
     if argument is None:
         raise ValueError("argument required but none supplied")
     else:
