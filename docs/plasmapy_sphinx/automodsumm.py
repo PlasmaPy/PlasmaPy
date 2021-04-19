@@ -15,8 +15,24 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
 .. confval:: automod_custom_groups
 
-    :type: `Dict[str, Dict[str, str]]`
-    :default: {}
+    A `sphinx` configuration value used to define custom groups used to sort module
+    objects by :rst:dir`automodapi` and :rst:dir:`automodsumm`.  An example custom
+    group definition looks like
+
+    .. code-block:: python
+
+        automod_custom_group = {
+            "aliases": {
+                "title": "Aliases",
+                "dunder": "__aliases__",
+            }
+        }
+
+    where the top-level key (``"aliases"``) is the group name used in the
+    :rst:dir:`automodsumm` ``:groups:`` option, ``"title"`` defines the title
+    text of the group heading, and ``"dunder"`` defines the dunder variable
+    (like ``__all__``) in the module the specifies which module objects belong
+    to the custom group.
 
 .. confval:: automod_generate_module_stub_files
 
