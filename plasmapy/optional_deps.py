@@ -4,7 +4,6 @@ Useful error messages for optional dependencies that aren't found.
 __all__ = [
     "h5py_import_error",
     "lmfit_import_error",
-    "mpl_import_error",
     "mpmath_import_error",
 ]
 
@@ -63,11 +62,6 @@ def _optional_import_error_template(
 #: Import error message for `h5py`.
 h5py_import_error = _optional_import_error_template(
     "h5py", "http://docs.h5py.org/en/latest/build.html"
-)
-
-#: Import error message for `matplotlib`.
-mpl_import_error = _optional_import_error_template(
-    "matplotlib", "https://matplotlib.org/users/installing.html"
 )
 
 #: Import error message for `mpmath`.
