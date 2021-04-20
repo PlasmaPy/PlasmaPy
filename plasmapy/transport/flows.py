@@ -125,7 +125,7 @@ class FlowCalculator:
     def _eq34matrix(self):
         output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
 
-        for i, a in enumerate(self.all_species):
+        for a in self.all_species:
             rarray = self._rbar(a)
             for j, b in enumerate(self.all_species):
                 narray = N_script(a, b).sum(axis=0, keepdims=True)
