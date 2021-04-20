@@ -8,9 +8,13 @@ updates:
     - "StanczakDominik"
     assignees:
     - "StanczakDominik"
+    schedule:
+      interval: "daily"
   - package-ecosystem: "github-actions"
     directory: "/"
     reviewers:
     - "StanczakDominik"
     assignees:
     - "StanczakDominik"
+    schedule:
+      interval: "daily"
