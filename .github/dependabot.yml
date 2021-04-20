@@ -1,0 +1,16 @@
+# as per https://docs.github.com/en/code-security/supply-chain-security/enabling-and-disabling-version-updates
+#
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    reviewers:
+    - "StanczakDominik"
+    assignees:
+    - "StanczakDominik"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    reviewers:
+    - "StanczakDominik"
+    assignees:
+    - "StanczakDominik"
