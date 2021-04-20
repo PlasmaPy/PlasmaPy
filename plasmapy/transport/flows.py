@@ -166,14 +166,19 @@ class FlowCalculator:
         return outputs
 
     @cached_property
-    def _flows(self) -> dict:
-        """used by fluxes_BP"""
+    def _charge_state_flows(self) -> dict:
+        """used by fluxes_BP
+
+        uses equation 31 to reconstruct charge state flows from the isotopic flows
+
+        """
         outputs = {}
         for a in self.all_species:
             Λ = self.Λ[a.base_particle]  # N T / m3
             for xi, ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 Aai = self.Aai[sym]  # kg  / (m3 s)
+
                 S_ai = xi * np.diag(Λ)  # N T / m3
                 rai_as_rows = np.linalg.solve(Aai, S_ai)  # V / m
 
@@ -222,11 +227,11 @@ class FlowCalculator:
                 ai
             ) in (
                 a
-            ):  # this could be rfactored out by iterating over self._flows, instead, given a way to access ionizationstate back from ioniclevel
+            ):  # this could be rfactored out by iterating over self._charge_state_flows, instead, given a way to access ionizationstate back from ioniclevel
                 sym = ai.ionic_symbol
-                if sym not in self._flows:
+                if sym not in self._charge_state_flows:
                     continue
-                u_velocity = self._flows[sym]
+                u_velocity = self._charge_state_flows[sym]
 
                 u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
                 μ = self.μ[sym]
@@ -263,7 +268,6 @@ class FlowCalculator:
 
     @cached_property
     def _fluxes_CL(self):
-        # breakpoint()
         fs = self.flux_surface
         FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2 / u.m
         # TODO if FSA does not drop units, the above line is completely wrong
