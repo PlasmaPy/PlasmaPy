@@ -417,7 +417,10 @@ class Particle(AbstractPhysicalParticle):
     """
 
     def __init__(
-        self, argument: ParticleLike, mass_numb: Integral = None, Z: Integral = None,
+        self,
+        argument: ParticleLike,
+        mass_numb: Integral = None,
+        Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private

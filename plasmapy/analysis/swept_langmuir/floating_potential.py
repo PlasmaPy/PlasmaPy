@@ -13,7 +13,8 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults", ("vf", "vf_err", "rsq", "func", "islands", "indices"),
+    "FloatingPotentialResults",
+    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
 
 
