@@ -34,7 +34,11 @@ from plasmapy import __version__ as release
 
 autosummary_generate = True
 automod_custom_groups = {
-    "aliases": {"title": "Aliases", "descr": "", "dunder": "__aliases__",},
+    "aliases": {
+        "title": "Aliases",
+        "descr": "",
+        "dunder": "__aliases__",
+    },
 }
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -66,7 +70,8 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "sphinx_automodapi": (
-        "https://sphinx-automodapi.readthedocs.io/en/latest/", None,
+        "https://sphinx-automodapi.readthedocs.io/en/latest/",
+        None,
     ),
 }
 
@@ -272,11 +277,10 @@ nbsphinx_prolog = r"""
 
 
 def setup(app: Sphinx) -> None:
+    from plasmapy_sphinx import setup as setup_automodapi
     from sphinx.domains.python import PyField
     from sphinx.locale import _
     from sphinx.util.docfields import Field
-
-    from plasmapy_sphinx import setup as setup_automodapi
 
     setup_automodapi(app)
 
@@ -297,7 +301,7 @@ def setup(app: Sphinx) -> None:
                 label=_("Type"),
                 has_arg=False,
                 names=("type",),
-                bodyrolename="class"
+                bodyrolename="class",
             ),
             Field(
                 "default",
@@ -305,5 +309,5 @@ def setup(app: Sphinx) -> None:
                 has_arg=False,
                 names=("default",),
             ),
-        ]
+        ],
     )
