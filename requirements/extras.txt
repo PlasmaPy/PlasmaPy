@@ -3,5 +3,7 @@
 h5py
 lmfit
 mpmath
+plasmaboundaries
 pytest >= 5.1
+scikit-image
 setuptools_scm
