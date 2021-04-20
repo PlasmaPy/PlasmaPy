@@ -71,7 +71,7 @@ class AbstractClassicalTransportCoefficients(ABC):
             raise ValueError("Keywords n, B, and particle must be provided to "
                              "calculate alpha_para")
             
-        return self.norm_alpha_para(self.chi, self.Z) * self.alpha_normalization
+        return self.norm_alpha_para() * self.alpha_normalization
 
     def norm_alpha_perp(self):
         raise NotImplementedError
@@ -81,7 +81,7 @@ class AbstractClassicalTransportCoefficients(ABC):
             raise ValueError("Keywords n, B, and particle must be provided to "
                              "calculate alpha_perp")
             
-        return self.norm_alpha_perp(self.chi, self.Z) * self.alpha_normalization
+        return self.norm_alpha_perp() * self.alpha_normalization
 
     def norm_alpha_cross(self):
         raise NotImplementedError
@@ -90,16 +90,60 @@ class AbstractClassicalTransportCoefficients(ABC):
         if self.alpha_normalization is None:
                     raise ValueError("Keywords n, B, and particle must be provided to "
                                      "calculate alpha_cross")
-        return self.norm_alpha_cross(self.chi, self.Z) * self.alpha_normalization
+        return self.norm_alpha_cross() * self.alpha_normalization
     
     
     # **********************************************************************
     # Thermoelectric Coefficient (beta)
     # **********************************************************************
+    def norm_beta_para(self):
+        raise NotImplementedError
+        
+    def beta_para(self):
+        return self.norm_beta_para() * self.beta_normalization
+
+    def norm_beta_perp(self):
+        raise NotImplementedError
+        
+    def beta_perp(self):
+        return self.norm_beta_perp() * self.beta_normalization
+
+    def norm_beta_cross(self):
+        raise NotImplementedError
+        
+    def beta_cross(self):
+        return self.norm_beta_cross() * self.beta_normalization
     
     
     # **********************************************************************
     # Thermal Conductivity (kappa)
     # **********************************************************************
-    
+    def norm_kappa_para(self):
+        raise NotImplementedError
+        
+    def kappa_para(self):
+        if self.kappa_normalization is None:
+            raise ValueError("Keywords n, B, T, and particle must be provided to "
+                             "calculate kappa_para")
+            
+        return self.norm_kappa_para() * self.kappa_normalization
+
+    def norm_kappa_perp(self):
+        raise NotImplementedError
+        
+    def kappa_perp(self):
+        if self.kappa_normalization is None:
+            raise ValueError("Keywords n, B, T, and particle must be provided to "
+                             "calculate kappa_perp")
+            
+        return self.norm_kappa_perp() * self.kappa_normalization
+
+    def norm_kappa_cross(self):
+        raise NotImplementedError
+        
+    def kappa_cross(self):
+        if self.kappa_normalization is None:
+                    raise ValueError("Keywords n, B, T, and particle must be provided to "
+                                     "calculate kappa_cross")
+        return self.norm_kappa_cross() * self.kappa_normalization
     
