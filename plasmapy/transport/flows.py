@@ -46,7 +46,11 @@ class FlowCalculator:
     """
 
     def __init__(
-        self, all_species, flux_surface, density_gradient, temperature_gradient,
+        self,
+        all_species,
+        flux_surface,
+        density_gradient,
+        temperature_gradient,
     ):
         self.all_species = all_species
         self.flux_surface = flux_surface
@@ -111,8 +115,7 @@ class FlowCalculator:
         return sum(gen())
 
     def _rbar_sources(self) -> u.Quantity:
-        r"""Assemble the right hand side of equation 34.
-        """
+        r"""Assemble the right hand side of equation 34."""
 
         results = []
         for a in self.all_species:
@@ -210,7 +213,6 @@ class FlowCalculator:
             output = S * M
             for b in self.all_species:
                 N = N_script(a, b)
-                xi = ξ(b)
                 for xj, bj in self.contributing_states(b):
                     output += xj * N * self.S_pt[bj.ionic_symbol]
             outputs[sym] = output
