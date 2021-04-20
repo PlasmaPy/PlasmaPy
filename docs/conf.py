@@ -284,7 +284,7 @@ def setup(app: Sphinx) -> None:
     app.add_css_file("rtd_theme_overrides.css")
 
     # this was taken from the sphinx and sphinx_rtd_theme conf.py files and creates
-    # the doucmenting direcive `.. confval::` and role `:confval:` for documenting
+    # the documenting directive `.. confval::` and role `:confval:` for documenting
     # sphinx configuration variables
     app.add_object_type(
         "confval",
