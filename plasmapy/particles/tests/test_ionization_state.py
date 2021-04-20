@@ -741,3 +741,8 @@ def test_iteration_with_nested_iterator():
         for fraction2 in hydrogen:
             i += 1
     assert i == 4
+
+
+@pytest.mark.xfail
+def test_electrons_can_be_put_into_ionization_state():
+    electrons = hydrogen = IonizationState("e-", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
