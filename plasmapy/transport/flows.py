@@ -166,7 +166,8 @@ class FlowCalculator:
         return outputs
 
     @cached_property
-    def flows(self) -> dict:
+    def _flows(self) -> dict:
+        """used by fluxes_BP"""
         outputs = {}
         for a in self.all_species:
             Λ = self.Λ[a.base_particle]  # N T / m3
@@ -221,11 +222,11 @@ class FlowCalculator:
                 ai
             ) in (
                 a
-            ):  # this could be rfactored out by iterating over self.flows, instead, given a way to access ionizationstate back from ioniclevel
+            ):  # this could be rfactored out by iterating over self._flows, instead, given a way to access ionizationstate back from ioniclevel
                 sym = ai.ionic_symbol
-                if sym not in self.flows:
+                if sym not in self._flows:
                     continue
-                u_velocity = self.flows[sym]
+                u_velocity = self._flows[sym]
 
                 u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
                 μ = self.μ[sym]
