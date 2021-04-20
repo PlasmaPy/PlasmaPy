@@ -130,7 +130,7 @@ class EpperleinHainesCoefficents(AbstractClassicalTransportCoefficients):
         .. _`10.1063/1.865901`: https://aip.scitation.org/doi/10.1063/1.865901
     
         """
-        i = _find_nearest(Z)
+        i = _find_nearest(self.Z)
         return α0[i]*np.ones(self.chi.size)
 
 
@@ -182,12 +182,9 @@ if __name__ == '__main__':
     chi = np.linspace(-2, 2, num=100)
     chi = 10**chi
 
-    
     # Instantiate the object
     coef1 = EpperleinHainesCoefficents(chi, 1)
     coef2 = EpperleinHainesCoefficents(chi, np.inf)
-    
-   
 
     fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10,10), sharex=True)
     
