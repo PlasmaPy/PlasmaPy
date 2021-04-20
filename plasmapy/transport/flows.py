@@ -117,7 +117,8 @@ class FlowCalculator:
         results = []
         for a in self.all_species:
             parts = (
-                xi * self.r_pt[ai.ionic_symbol] for xi, ai in self.contributing_states
+                xi * self.r_pt[ai.ionic_symbol]
+                for xi, ai in self.contributing_states(a)
             )
             results.append(sum(parts))
         return np.concatenate(results).si
