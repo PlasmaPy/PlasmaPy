@@ -100,7 +100,7 @@ class FlowCalculator:
                 )  # because units
                 self.thermodynamic_forces[sym] = thermodynamic_forces
 
-    def rbar(self, a) -> u.Quantity:
+    def _rbar(self, a) -> u.Quantity:
         def gen():
             for ai in self.contributing_states(a):
                 i = ai.integer_charge
@@ -108,7 +108,6 @@ class FlowCalculator:
                 Aai = self.Aai[sym]
                 S_matrix = ξ(a)[i] * np.eye(3)
                 rai_as_rows = np.linalg.solve(Aai, S_matrix)
-                # TODO does not include r_pT, r_E, r_NBI yet. Should it?
                 rbar_ingredient = ξ(a)[i] * rai_as_rows
                 yield rbar_ingredient
 
@@ -136,7 +135,7 @@ class FlowCalculator:
         output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
 
         for i, a in enumerate(self.all_species):
-            rarray = self.rbar(a)
+            rarray = self._rbar(a)
             for j, b in enumerate(self.all_species):
                 narray = N_script(a, b).sum(axis=0, keepdims=True)
                 result = narray * rarray.T
