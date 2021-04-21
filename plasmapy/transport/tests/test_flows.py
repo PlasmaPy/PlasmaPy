@@ -13,7 +13,10 @@ from plasmapy.particles import IonizationStateCollection
 from plasmapy.transport.flows import FlowCalculator
 
 all_species = IonizationStateCollection(
-    {"H": [0, 1], "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],},
+    {
+        "H": [0, 1],
+        "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
+    },
     n0=1e20 * u.m ** -3,
     abundances={"H": 1, "C": 0.11},
     T_e=10 * u.eV,
@@ -31,7 +34,7 @@ temperature_gradient = {
 }
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def fc(flux_surface):
     fc = FlowCalculator(
         all_species, flux_surface, density_gradient, temperature_gradient
@@ -46,9 +49,9 @@ def test_get_flows(fc, num_regression):
     num_regression.check({key: value.si.value for key, value in fc.flows.items()})
 
 
-@pytest.mark.parametrize("key", [
-    pytest.param("BP", marks=pytest.mark.xfail),
-    "CL", "PS"])
+@pytest.mark.parametrize(
+    "key", [pytest.param("BP", marks=pytest.mark.xfail), "CL", "PS"]
+)
 def test_fluxes_partial(fc, key, num_regression):
     fluxes = getattr(fc, f"_fluxes_{key}")
     d_partial = {}
