@@ -204,7 +204,7 @@ class FlowCalculator:
             yield xi[i], ai
 
     def funnymatrix(self, a_symbol):
-        a = self.all_species[a_symbol]  # TODO workaround while they're unhashable
+        a = self.all_species[a_symbol]
         M = M_script(a, self.all_species)
         outputs = {}
         for _, ai in self.contributing_states(a):
