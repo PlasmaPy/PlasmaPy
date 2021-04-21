@@ -281,12 +281,11 @@ class Test_IonizationState:
             errmsg = " ".join(errors)
             pytest.fail(errmsg)
 
-    def test_slicing_error(self):
+    def test_slicing(self):
         """
-        Test that an IonizationState instance cannot be sliced.
+        Test that an IonizationState instance not be sliced.
         """
-        with pytest.raises(TypeError):
-            self.instances["Li"][1:3]
+        self.instances["Li"][1:3]
 
     @pytest.mark.parametrize("index", [-1, 4, "Li"])
     def test_indexing_error(self, index):
@@ -625,7 +624,6 @@ def test_IonizationState_ion_temperature_persistence(instance):
     assert instance[0].T_i - instance.T_e == (1 * u.K)
 
 
-@pytest.mark.xfail(reason="Not currently supposed")
 def test_slicing(instance):
     instance[1:]
 

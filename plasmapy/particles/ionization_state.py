@@ -320,14 +320,22 @@ class IonizationState:
     def __getitem__(self, value) -> IonicLevel:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
-            raise TypeError("IonizationState instances cannot be sliced.")
+            return [
+                IonicLevel(
+                    ion=Particle(self.base_particle, Z=val),
+                    ionic_fraction=self.ionic_fractions[val],
+                    number_density=self.number_densities[val],
+                    T_i=self.T_e,  # TODO
+                )
+                for val in range(0, self._particle.atomic_number + 1)
+            ]
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
             result = IonicLevel(
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
-                T_i=self.T_e,
+                T_i=self.T_e,  # TODO
             )
         else:
             if not isinstance(value, Particle):
