@@ -9,28 +9,7 @@ __all__ = [
 import astropy.units as u
 import numpy as np
 
-
-def _rot_a_to_b(a, b):
-    r"""
-    Calculates the 3D rotation matrix that will rotate vector a to be aligned
-    with vector b.
-    """
-    # Normalize both vectors
-    a = a / np.linalg.norm(a)
-    b = b / np.linalg.norm(b)
-
-    # Manually handle the case where a and b point in opposite directions
-    if np.dot(a, b) == -1:
-        return -np.identity(3)
-
-    axb = np.cross(a, b)
-    c = np.dot(a, b)
-    vskew = np.array(
-        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
-    ).T  # Transpose to get right orientation
-
-    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)
-
+from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
 
 
 class LineIntegratedDiagnostic:
@@ -50,67 +29,8 @@ class LineIntegratedDiagnostic:
 
         self.verbose = verbose
 
-        # Auto-detect source and detector geometry based on units
-        geo_units = [x.unit for x in source]
-        if geo_units[2].is_equivalent(u.rad):
-            geometry = 'spherical'
-        elif geo_units[1].is_equivalent(u.rad):
-            geometry = 'cylindrical'
-        else:
-            geometry = 'cartesian'
-
-        # Convert geometrical inputs between coordinates systems
-        if geometry == "cartesian":
-            x, y, z = source
-
-            self.source = np.zeros(3)
-            self.source[0] = x.to(u.m).value
-            self.source[1] = y.to(u.m).value
-            self.source[2] = z.to(u.m).value
-
-            x, y, z = detector
-            self.detector = np.zeros(3)
-            self.detector[0] = x.to(u.m).value
-            self.detector[1] = y.to(u.m).value
-            self.detector[2] = z.to(u.m).value
-
-        elif geometry == "cylindrical":
-            r, t, z = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.source = np.zeros(3)
-            self.source[0] = (r * np.cos(t)).to(u.m).value
-            self.source[1] = (r * np.sin(t)).to(u.m).value
-            self.source[2] = z.to(u.m).value
-
-            r, t, z = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            z = z.to(u.m)
-            self.detector = np.zeros(3)
-            self.detector[0] = (r * np.cos(t)).to(u.m).value
-            self.detector[1] = (r * np.sin(t)).to(u.m).value
-            self.detector[2] = z.to(u.m).value
-
-        elif geometry == "spherical":
-            r, t, p = source
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.source = np.zeros(3)
-            self.source[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
-            self.source[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
-            self.source[2] = (r * np.cos(t)).to(u.m).value
-
-            r, t, p = detector
-            r = r.to(u.m)
-            t = t.to(u.rad).value
-            p = p.to(u.rad).value
-            self.detector = np.zeros(3)
-            self.detector[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
-            self.detector[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
-            self.detector[2] = (r * np.cos(t)).to(u.m).value
+        self.source = _coerce_to_cartesian_si(source)
+        self.detector = _coerce_to_cartesian_si(detector)
 
         self._log(f"Source: {self.source} m")
         self._log(f"Detector: {self.detector} m")
@@ -137,14 +57,9 @@ class LineIntegratedDiagnostic:
         self._create_detector_plane()
 
 
-
     def _log(self, msg):
         if self.verbose:
             print(msg)
-
-    # ************************************************************************
-    # Methods used by both integration and particle tracing methods
-    # ************************************************************************
 
     def _create_detector_plane(self):
         r"""
@@ -173,17 +88,11 @@ class LineIntegratedDiagnostic:
         self.det_vax = ny # Unit vector for vax, detector vertical axis
 
 
-
-
-    # ************************************************************************
-    # Integration Method (linear approximation)
-    # ************************************************************************
-
-
     def line_integral(self, size=np.array([[-1,1],[-1,1]])*u.cm, bins=[50,50], collimated=True,
                     num=100):
         """
-        Analagous to run
+        Calculates the line-integral tof the integrand function through the
+        grid.
 
         1) Create detector grid from size and bin keywords
 
