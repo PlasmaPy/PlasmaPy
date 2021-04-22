@@ -27,14 +27,14 @@ directive, its supporting configuration values, and the stub file writer.
 
         .. code-block:: rst
 
-            .. automdsumm:: plasmapy_sphinx.automodapi
+            .. automodsumm:: plasmapy_sphinx.automodapi
                 :toctree: DIRNAME
 
         This will signal `sphinx-autogen` to generate stub files for the objects in
         the table and place them in the directory named by ``DIRNAME``.  This behavior
         respects the configuration value :confval:`autosummary_generate`.
         Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
-        that falls into the **moduels** group (see the
+        that falls into the **modules** group (see the
         :rst:dir:`automodsumm:groups` option below), unless
         :confval:`automod_generate_module_stub_files` is set ``True``.
 
@@ -42,12 +42,12 @@ directive, its supporting configuration values, and the stub file writer.
 
         When a module is inspected all the found objects are categorized into
         groups.  The first group collected is **modules**, followed by any custom
-        group defined in :confval:`autood_custom_groups`, and, finally, the
-        standard groups of **classes**, **exceptions**, **warngins**, **functions**,
+        group defined in :confval:`automod_custom_groups`, and, finally, the
+        standard groups of **classes**, **exceptions**, **warnings**, **functions**,
         and **variables** (or all the rest).  By default, **all** groups will
         be included in the generated table.
 
-        Using the `plasmapy_sphinx.autmodsumm` module as an example, the
+        Using the `plasmapy_sphinx.automodsumm` module as an example, the
         :ref:`module's API <automodsumm-api>` shows it is made of classes
         and functions.  So the following yields,
 
@@ -108,7 +108,7 @@ directive, its supporting configuration values, and the stub file writer.
 Sphinx Configuration Values
 ---------------------------
 
-A configuration value is a variable that conbe defined in `conf.py` to configure
+A configuration value is a variable that con be defined in `conf.py` to configure
 the default behave of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
