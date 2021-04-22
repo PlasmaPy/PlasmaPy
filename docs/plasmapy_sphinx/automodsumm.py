@@ -240,7 +240,9 @@ class AutomodsummRenderer(AutosummaryRenderer):
         Render a template file.  The render will first search for the template in
         the path specified by the sphinx configuration value :confval:`templates_path`,
         then the `~plasmapy_sphinx.templates_dir, and finally the
-        :rst:dir:`autosummary` templates directory.
+        :rst:dir:`autosummary` templates directory.  Upon finding the template,
+        the values from the ``context`` dictionary will inserted into the
+        template and returned.
 
         Parameters
         ----------
