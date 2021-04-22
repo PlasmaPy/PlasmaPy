@@ -195,17 +195,16 @@ class LineIntegratedDiagnostic:
 
         # If a single integrand is returned, put it in a list
         if not isinstance(integrands, tuple):
-            integrands = [
+            integrands = (
                 integrands,
-            ]
-
-        # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
-        for i in range(len(integrands)):
-            integrands[i] = np.reshape(integrands[i], (nx, ny, nz))
-
+            )
+            
         # Integrate
         integral = []
         for integrand in integrands:
+             # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
+            integrand = np.reshape(integrand, (nx, ny, nz))
+            # Integrate
             integral.append(np.trapz(integrand, axis=2) * (ds * u.m))
 
         return (xax * u.m, yax * u.m, *integral)
