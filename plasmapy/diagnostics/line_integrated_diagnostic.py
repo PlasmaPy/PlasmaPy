@@ -8,12 +8,12 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
+from typing import Union
 
 from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
 
 
 class LineIntegratedDiagnostic:
-
 
     def __init__(self, grid : u.m,
                  source,
@@ -25,7 +25,7 @@ class LineIntegratedDiagnostic:
         self.grid = grid
         # self.grid_arr is the grid positions in si. This is created here
         # so that it isn't continously called later
-        self.grid_arr = grid.grid
+        self.grid_arr = grid.grid.to(u.m).value
 
         self.verbose = verbose
 
@@ -92,39 +92,47 @@ class LineIntegratedDiagnostic:
                     num=100):
         """
         Calculates the line-integral tof the integrand function through the
-        grid.
+        provided grid. This is accomplished through the following steps:
 
-        1) Create detector grid from size and bin keywords
+        1) Create an array of points in the detector plane using the detector
+        location and the size and bins keywords.
 
         2) For each cell of detector grid, create an array of points of
-        separation ds from there to the source point (or, for collimated, the source plane).
+        separation ds from there to the source point (or, when collimated=True, 
+                                                      the source plane).
 
-        3) Evaluate the integrand at each position in the 3D grid
+        3) Evaluate the integrand function at each point.
 
-        4) Integrate along the line-integrated dimension
+        4) Integrate along the line-integrated dimension to obtain the
+        line-integrated quantity in the detector plane.
 
         Parameters
         ----------
         size : `u.Quantity` array of shape [2,2]
             The bounds of the detector region. The default is [[-1,1],[-1,1]] cm.
+            
         bins : integer ndarray array of shape [2,2]
             Number of bins in each direction of the detector region. The
             default is [50,50].
+            
         collimated : Boolean, optional
             If True, the source will be assumed to be collimated. If False,
             a point source will be used. The default is True (collimated).
+            
         num : int, optional
             Number of integration points along the line (within the grid region).
             The default is 100.
 
         Returns
         -------
-        xax : TYPE
-            DESCRIPTION.
-        yax : TYPE
-            DESCRIPTION.
-        integral : TYPE
-            DESCRIPTION.
+        xax : `~u.Quantity` array (Nh,)
+            The horizontal axis of the detector plane
+            
+        yax : `~u.Quantity` array of shape (Nv,)
+            The vertical axis of the detector plane
+            
+        integral : `~u.Quantity` array or list of arrays of shape (Nh, Ny)
+           The line-integrated values in the detector plane.
 
         """
 
@@ -136,8 +144,7 @@ class LineIntegratedDiagnostic:
         # Shift those points in space to be in the detector plane
         det_pts = np.outer(x_offset,self.det_hax) + np.outer(y_offset,self.det_vax) + self.detector
         det_pts = np.reshape(det_pts, [bins[0], bins[1],3])
-
-
+        
         # Create 2D grids of source points
         if collimated:
             src_pts = det_pts - self.src_det_vec
@@ -168,18 +175,28 @@ class LineIntegratedDiagnostic:
         mi = np.outer(det_pts - src_pts, i)
         mi = np.reshape(mi, [bins[0], bins[1], 3, num] )
 
-
         b = np.outer(src_pts, np.ones(num))
         b = np.reshape(b, [bins[0], bins[1], 3, num])
 
-        pts = mi+b
+        pts = (mi+b) * u.m 
         pts = np.moveaxis(pts, 2, 3)
 
+        # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
+        # of points (nx*ny*nz, 3) as required by the grids interpolators
+        nx,ny,nz,ndim = pts.shape
+        pts = np.reshape(pts, (nx*ny*nz, ndim))
+        
         # Evaluate the integrands
         integrands = self.integrand(pts)
 
+        # If a single integrand is returned, put it in a list
         if not isinstance(integrands, tuple):
             integrands = [integrands,]
+            
+        # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
+        for i in range(len(integrands)):
+            integrands[i] = np.reshape(integrands[i] , (nx,ny,nz))
+            
 
         # Integrate
         integral = []
@@ -200,11 +217,17 @@ class LineIntegratedDiagnostic:
         Parameters
         ----------
 
-        pts: np.array (bins[0], bins[1], num ,3)
-            Positions (in si units) at which the integrand will be
-            evaluated. The third axis is the one over which the integrands
-            will subsequently be integrated
-
+        pts: `~u.Quantity` (nx*ny*nz, 3)
+            Positions at which the integrand will be
+            evaluated.
+            
+        Returns
+        -------
+        
+        arr: `~u.Quantity`(nx*ny*nz) or list of same
+            Integrand value at each of the points provided. Some integrand
+            functions may return multiple arrays of interpolated values as
+            a list, each of which will then be integrated separately.
         """
         raise NotImplementedError("The integrand method must be implemented"
                              " for this diagnostic.")
@@ -215,32 +238,57 @@ class LineIntegratedDiagnostic:
 
 
 
-
-if __name__ == '__main__':
-
-
+class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
     """
-    class TestIntegrator(LineIntegratedDiagnostic):
-        def _integrand(self):
-            return self.integration_pts[...,0], self.integration_pts[...,1]
-
-    # Make a little grid
-    ax = np.linspace(-1,1,3)*u.mm
-    xarr, yarr, zarr = np.meshgrid(ax,ax,ax, indexing='ij')
-    grid = CartesianGrid(xarr, yarr, zarr)
-
-    source = (0*u.mm,  -3*u.mm, 0*u.mm)
-    detector = ( 0*u.mm, 5*u.mm,  0*u.mm)
-
-
-    obj = TestIntegrator(grid, source, detector)
-
-    hax, vax, integral, _ = obj.evaluate_integral(size=np.array([[-1,1],[-1,1]])*u.mm, bins=[2,2],
-                          collimated=False, num=10)
-
+    Line-integrates a scalar quantity
     """
+    
+    def __init__(self, grid : u.m,
+                 source,
+                 detector,
+                 quantities : Union[str, list, tuple],
+                 verbose=True,
+                 ):
+        
+        # Validate the quantities input
+        if isinstance(quantities, str):
+            quantities = [quantities,]
+        
+        for quantity in quantities:
+            if quantity not in grid.quantities:
+                raise ValueError(f"quantity {quantity} is not defined on the "
+                                 "provided grid.")
+        
+        self.quantities = quantities
+        
+        # Continue with the rest of the parent class init
+        super().__init__(grid, source, detector, verbose=verbose)
+        
+    def integrand(self, pts):
+        """
+        Returns the scalar value of the quantity or quantities specified
+        at each point.
+    
+        Parameters
+        ----------
 
+        pts: `~u.Quantity` (nx*ny*nz, 3)
+            Positions at which the integrand will be
+            evaluated.
+            
+        Returns
+        -------
+        
+        arr: `~u.Quantity`(nx*ny*nz) or list of same
+            Integrand value at each of the points provided. Some integrand
+            functions may return multiple arrays of interpolated values as
+            a list, each of which will then be integrated separately.
 
+        """
+        arr = self.grid.volume_averaged_interpolator(pts, *self.quantities)
+        return arr
+        
+        
 
 
 
