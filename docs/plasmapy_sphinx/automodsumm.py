@@ -1,9 +1,6 @@
 """
-This module contains the functionality used to define the :rst:dir:`automodusmm`
+This module contains the functionality used to define the :rst:dir:`automodsumm`
 directive, its supporting configuration values, and the stub file writer.
-
-Sphinx Directives
------------------
 
 .. rst:directive:: automodsumm
 
