@@ -270,14 +270,28 @@ class AutomodsummRenderer(AutosummaryRenderer):
 
 
 class AutomodsummOptions:
+    """
+    Class for advanced conditioning and manipulation of option arguments for
+    `plasmapy_sphinx.automodsum.Automodsumm`.
+    """
     option_spec = {
         **Autosummary.option_spec,
         "groups": option_str_list,
         "exclude-groups": option_str_list,
         "skip": option_str_list,
     }
+    """
+    Mapping of option names to validator functions. (see 
+    :attr:`docutils.parsers.rst.Directive.option_spec`)
+    """
+
     _default_grouping_info = default_grouping_info.copy()
+
     logger = logger
+    """
+    Instance of the `~sphinx.util.logging.SphinxLoggerAdapter` for report during
+    builds.
+    """
 
     def __init__(
         self,
@@ -287,11 +301,34 @@ class AutomodsummOptions:
         docname: str = None,
         _warn: Callable = None,
     ):
-        self.app = app
-        self.modname = modname
-        self.options = options.copy()
-        self.docname = docname
-        self.warn = _warn if _warn is not None else self.logger.warning
+        """
+        Parameters
+        ----------
+        app : `~sphinx.application.Sphinx`
+            Instance of the sphinx application.
+
+        modname : `str`
+            Name of the module given in the :rst:dir:`automodsumm` directive.  This
+            is the module to be inspected and have it's objects grouped.
+
+        options : Dict[str, Any]
+            Dictionary of options given for the :rst:dir:`automodsumm` directive
+            declaration.
+
+        docname : str
+            Name of the document/file where the :rst:dir:`automodsumm` direction
+            was declared.
+
+        _warn : Callable
+            Instance of a `sphinx.util.logging.SphinxLoggerAdapter.warning` for
+            reporting warning level messages during a build.
+        """
+
+        self._app = app
+        self._modname = modname
+        self._options = options.copy()
+        self._docname = docname
+        self._warn = _warn if _warn is not None else self.logger.warning
 
         self.toctree = {
             "original": None,
@@ -302,7 +339,39 @@ class AutomodsummOptions:
         self.condition_options()
 
     @property
-    def pkg_or_module(self):
+    def app(self) -> Sphinx:
+        """Instance of the sphinx application."""
+        return self._app
+
+    @property
+    def modname(self) -> str:
+        """Name of the module given to :rst:dir:`automodsumm`."""
+        return self._modname
+
+    @property
+    def options(self) -> Dict[str, Any]:
+        """Copy of the options given to :rst:dir:`automodsumm`."""
+        return self._options
+
+    @property
+    def docname(self) -> str:
+        """Name of the document where :rst:dir:`automodsumm` was declared."""
+        return self._docname
+
+    @property
+    def warn(self) -> Callable:
+        """
+        Instance of a `sphinx.util.logging.SphinxLoggerAdapter.warning` for
+        reporting warning level messages during a build.
+        """
+        return self._warn
+
+    @property
+    def pkg_or_module(self) -> str:
+        """
+        Is module specified by :attr:`modname` a package or module (i.e. `.py` file).
+        Return ``"pkg"`` for a package and ``"module"`` for a `.py` file.
+        """
         mod = import_module(self.modname)
         if mod.__package__ == mod.__name__:
             return "pkg"
@@ -310,10 +379,17 @@ class AutomodsummOptions:
             return "module"
 
     def condition_options(self):
+        """
+        Method for doing any additional conditioning of option arguments.
+        Called during class instantiation."""
         self.condition_toctree_option()
         self.condition_group_options()
 
     def condition_toctree_option(self):
+        """
+        Additional conditioning of the option argument ``toctree``. (See
+        :rst:dir:`automodsumm:toctree` for additional details.)
+        """
         if "toctree" not in self.options:
             return
 
@@ -333,6 +409,11 @@ class AutomodsummOptions:
         self.options["toctree"] = self.toctree["rel_to_doc"]
 
     def condition_group_options(self):
+        """
+        Additional conditioning of the option arguments ``groups`` and
+        ``exclude-groups``.  (See :rst:dir:`automodsumm:groups` and
+        :rst:dir:`automodsumm:exclude-groups` for additional details.)
+        """
         allowed_args = self.groupings | {"all"}
         do_groups = self.groupings.copy()  # defaulting to all groups
 
@@ -377,28 +458,58 @@ class AutomodsummOptions:
 
     @property
     def mod_objs(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Dictionary of the grouped objects found in the module named by :attr:`modname`.
+
+        See Also
+        --------
+        plasmapy_sphinx.utils.find_mod_objs
+        """
         return find_mod_objs(self.modname, app=self.app)
 
     @property
     def groupings(self) -> set:
+        """Set of all the grouping names."""
         return set(self.grouping_info)
 
     @property
     def default_grouping_info(self) -> Dict[str, Dict[str, str]]:
+        """
+        Dictionary of the default group information.
+
+        See Also
+        --------
+        plasmapy_sphinx.utils.default_grouping_info
+        """
         return self._default_grouping_info.copy()
 
     @property
     def custom_grouping_info(self) -> Dict[str, Dict[str, str]]:
+        """
+        Dictionary of the custom group info.
+
+        See Also
+        --------
+        plasmapy_sphinx.utils.get_custom_grouping_info
+        """
         return get_custom_grouping_info(self.app)
 
     @property
     def grouping_info(self) -> Dict[str, Dict[str, str]]:
+        """
+        The combined grouping info of :attr:`default_grouping_info` and
+        :attr:`custom_grouping_info`
+        """
         grouping_info = self.default_grouping_info
         grouping_info.update(self.custom_grouping_info)
         return grouping_info
 
     @property
     def mod_objs_option_filtered(self) -> Dict[str, Dict[str, Any]]:
+        """
+        A filtered version of :attr:`mod_objs` according to the specifications
+        given in :attr:`options` (i.e. those given to :rst:dir:`automodsumm`).
+        """
         try:
             mod_objs = self.mod_objs
         except ImportError:
@@ -449,6 +560,17 @@ class AutomodsummOptions:
         return mod_objs
 
     def generate_obj_list(self, exclude_modules: bool = False) -> List[str]:
+        """
+        Take :attr:`mod_objs_option_filtered` and generated a list of the fully
+        qualified objects names names.  The list is sorted based on the casefolded
+        short names of the objects.
+
+        Parameters
+        ----------
+        exclude_modules : bool
+            (Default `False`) Set `True` to exclude the qualified names related to
+            objects sorted in the **modules** group.
+        """
 
         mod_objs = self.mod_objs_option_filtered
 
