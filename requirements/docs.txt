@@ -1,5 +1,6 @@
-# requirments for documentation
--r requirements.txt
+# these are dependencies required to build package documentation
+# ought to mirror 'docs' under options.extras_require in setup.cfg
+-r extras.txt
 docutils < 0.17
 ipykernel
 ipywidgets
@@ -7,8 +8,6 @@ nbsphinx
 numpydoc
 pillow
 pygments >= 2.4.1
-pytest
-setuptools-scm
 sphinx >= 2.4.4
 sphinx-automodapi >= 0.13
 sphinx-changelog

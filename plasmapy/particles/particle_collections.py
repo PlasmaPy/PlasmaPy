@@ -253,7 +253,9 @@ class ParticleList(collections.UserList):
         of the nucleus only.
         """
         return self._get_particle_attribute(
-            "mass_energy", unit=u.J, default=np.nan * u.J,
+            "mass_energy",
+            unit=u.J,
+            default=np.nan * u.J,
         )
 
     def sort(self, key: Callable = None, reverse: bool = False):
