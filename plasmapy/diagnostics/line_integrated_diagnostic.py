@@ -3,23 +3,25 @@ Defines the LineIntegratedDiagnostic base class
 """
 
 __all__ = [
-        "LineIntegratedDiagnostic",
-        ]
+    "LineIntegratedDiagnostic",
+]
 
 import astropy.units as u
 import numpy as np
+
 from typing import Union
 
 from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
 
 
 class LineIntegratedDiagnostic:
-
-    def __init__(self, grid : u.m,
-                 source,
-                 detector,
-                 verbose=True,
-                 ):
+    def __init__(
+        self,
+        grid: u.m,
+        source,
+        detector,
+        verbose=True,
+    ):
 
         # self.grid is the grid object
         self.grid = grid
@@ -37,25 +39,18 @@ class LineIntegratedDiagnostic:
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
-        self.src_n = self.source / np.linalg.norm(
-            self.source
-        )
-        self.det_n = -self.detector / np.linalg.norm(
-            self.detector
-        )
+        self.src_n = self.source / np.linalg.norm(self.source)
+        self.det_n = -self.detector / np.linalg.norm(self.detector)
         # Vector directly from source to detector
         self.src_det_vec = self.detector - self.source
 
         # Experiment axis is the unit vector from the source to the detector
-        self.src_det_n = self.src_det_vec / np.linalg.norm(
-            self.src_det_vec
-        )
+        self.src_det_n = self.src_det_vec / np.linalg.norm(self.src_det_vec)
 
-        self.mag = 1 + np.linalg.norm(self.detector)/np.linalg.norm(self.source)
+        self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
 
         # Create unit vectors that define the detector plane
         self._create_detector_plane()
-
 
     def _log(self, msg):
         if self.verbose:
@@ -79,17 +74,21 @@ class LineIntegratedDiagnostic:
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
         nx = nx / np.linalg.norm(nx)
-        self.det_hax = nx # Unit vector for hax, detector horizontal axis
+        self.det_hax = nx  # Unit vector for hax, detector horizontal axis
 
         # Define the detector vertical axis as being orthogonal to the
         # detector axis and the horizontal axis
         ny = np.cross(nx, self.det_n)
         ny = -ny / np.linalg.norm(ny)
-        self.det_vax = ny # Unit vector for vax, detector vertical axis
+        self.det_vax = ny  # Unit vector for vax, detector vertical axis
 
-
-    def line_integral(self, size=np.array([[-1,1],[-1,1]])*u.cm, bins=[50,50], collimated=True,
-                    num=100):
+    def line_integral(
+        self,
+        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
+        bins=[50, 50],
+        collimated=True,
+        num=100,
+    ):
         """
         Calculates the line-integral tof the integrand function through the
         provided grid. This is accomplished through the following steps:
@@ -137,74 +136,79 @@ class LineIntegratedDiagnostic:
         """
 
         # Create arrays of detector grid points
-        xax = np.linspace(size[0][0].to(u.m).value, size[0][1].to(u.m).value, num=int(bins[0]))
-        yax = np.linspace(size[1][0].to(u.m).value, size[1][1].to(u.m).value, num=int(bins[1]))
-        x_offset, y_offset = np.meshgrid(xax, yax, indexing='ij')
+        xax = np.linspace(
+            size[0][0].to(u.m).value, size[0][1].to(u.m).value, num=int(bins[0])
+        )
+        yax = np.linspace(
+            size[1][0].to(u.m).value, size[1][1].to(u.m).value, num=int(bins[1])
+        )
+        x_offset, y_offset = np.meshgrid(xax, yax, indexing="ij")
 
         # Shift those points in space to be in the detector plane
-        det_pts = np.outer(x_offset,self.det_hax) + np.outer(y_offset,self.det_vax) + self.detector
-        det_pts = np.reshape(det_pts, [bins[0], bins[1],3])
+        det_pts = (
+            np.outer(x_offset, self.det_hax)
+            + np.outer(y_offset, self.det_vax)
+            + self.detector
+        )
+        det_pts = np.reshape(det_pts, [bins[0], bins[1], 3])
 
         # Create 2D grids of source points
         if collimated:
             src_pts = det_pts - self.src_det_vec
         else:
             # If not collimated, assume a point source
-            src_pts = np.outer( np.ones([bins[0], bins[1]]), self.source)
+            src_pts = np.outer(np.ones([bins[0], bins[1]]), self.source)
             src_pts = np.reshape(src_pts, (bins[0], bins[1], 3))
-
 
         # Determine where the grid begins and ends as fractions of the
         # source-to-detector vector
         source_to_det = np.linalg.norm(self.src_det_vec)
-        source_to_grid = np.min(np.linalg.norm(self.grid_arr -
-                                               self.source, axis=3))
-        grid_to_det = np.min(np.linalg.norm(self.grid_arr -
-                                               self.detector, axis=3))
+        source_to_grid = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
+        grid_to_det = np.min(np.linalg.norm(self.grid_arr - self.detector, axis=3))
 
         # Paramter for parameteric equation
-        start = source_to_grid/source_to_det
-        stop = 1 - grid_to_det/source_to_det
+        start = source_to_grid / source_to_det
+        stop = 1 - grid_to_det / source_to_det
         i = np.linspace(start, stop, num=num)
-        ds = (stop-start)*source_to_det/num
+        ds = (stop - start) * source_to_det / num
 
         # Create an array of points along lines between points in src_pts
         # and det_pts of the equation m*i + b where
         # m = det_pts - src_pts
         # Integrating along the lines corresponds to summation along ax=2
         mi = np.outer(det_pts - src_pts, i)
-        mi = np.reshape(mi, [bins[0], bins[1], 3, num] )
+        mi = np.reshape(mi, [bins[0], bins[1], 3, num])
 
         b = np.outer(src_pts, np.ones(num))
         b = np.reshape(b, [bins[0], bins[1], 3, num])
 
-        pts = (mi+b) * u.m
+        pts = (mi + b) * u.m
         pts = np.moveaxis(pts, 2, 3)
 
         # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
         # of points (nx*ny*nz, 3) as required by the grids interpolators
-        nx,ny,nz,ndim = pts.shape
-        pts = np.reshape(pts, (nx*ny*nz, ndim))
+        nx, ny, nz, ndim = pts.shape
+        pts = np.reshape(pts, (nx * ny * nz, ndim))
 
         # Evaluate the integrands
         integrands = self.integrand(pts)
 
         # If a single integrand is returned, put it in a list
         if not isinstance(integrands, tuple):
-            integrands = [integrands,]
+            integrands = [
+                integrands,
+            ]
 
         # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
         for i in range(len(integrands)):
-            integrands[i] = np.reshape(integrands[i] , (nx,ny,nz))
-
+            integrands[i] = np.reshape(integrands[i], (nx, ny, nz))
 
         # Integrate
         integral = []
         for integrand in integrands:
-            integral.append(np.trapz(integrand, axis=2)*(ds*u.m))
+            integral.append(np.trapz(integrand, axis=2) * (ds * u.m))
 
-        return (xax*u.m, yax*u.m, *integral)
-
+        return (xax * u.m, yax * u.m, *integral)
 
     def integrand(self, pts):
         """
@@ -229,13 +233,9 @@ class LineIntegratedDiagnostic:
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
         """
-        raise NotImplementedError("The integrand method must be implemented"
-                             " for this diagnostic.")
-
-
-
-
-
+        raise NotImplementedError(
+            "The integrand method must be implemented" " for this diagnostic."
+        )
 
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
@@ -243,21 +243,26 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
     Line-integrates a scalar quantity
     """
 
-    def __init__(self, grid : u.m,
-                 source,
-                 detector,
-                 quantities : Union[str, list, tuple],
-                 verbose=True,
-                 ):
+    def __init__(
+        self,
+        grid: u.m,
+        source,
+        detector,
+        quantities: Union[str, list, tuple],
+        verbose=True,
+    ):
 
         # Validate the quantities input
         if isinstance(quantities, str):
-            quantities = [quantities,]
+            quantities = [
+                quantities,
+            ]
 
         for quantity in quantities:
             if quantity not in grid.quantities:
-                raise ValueError(f"quantity {quantity} is not defined on the "
-                                 "provided grid.")
+                raise ValueError(
+                    f"quantity {quantity} is not defined on the " "provided grid."
+                )
 
         self.quantities = quantities
 
@@ -287,7 +292,6 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         """
         arr = self.grid.volume_averaged_interpolator(pts, *self.quantities)
         return arr
-
 
 
 # TODO: implement optical interferometry as an example
