@@ -230,6 +230,7 @@ class AutomodsummRenderer(AutosummaryRenderer):
     template_dir : str
         Path to a specified template directory.
     """
+
     def __init__(self, app: Union[Builder, Sphinx], template_dir: str = None) -> None:
 
         asumm_path = templates_dir
@@ -723,7 +724,9 @@ class GenDocsFromAutomodsumm:
         return documented
 
     def find_in_lines(
-        self, lines: List[str], filename: str = None,
+        self,
+        lines: List[str],
+        filename: str = None,
     ) -> List[AutosummaryEntry]:
         """
         Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.

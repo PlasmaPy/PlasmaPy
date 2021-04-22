@@ -34,7 +34,9 @@ class AbstractFitFunction(ABC):
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         """
         Parameters
@@ -799,7 +801,9 @@ class ExponentialPlusLinear(AbstractFitFunction):
     _param_names = ("a", "alpha", "m", "b")
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         self._exponential = Exponential()
         self._linear = Linear()
@@ -937,7 +941,9 @@ class ExponentialPlusOffset(AbstractFitFunction):
     _param_names = ("a", "alpha", "b")
 
     def __init__(
-        self, params: Tuple[float, ...] = None, param_errors: Tuple[float, ...] = None,
+        self,
+        params: Tuple[float, ...] = None,
+        param_errors: Tuple[float, ...] = None,
     ):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
