@@ -68,6 +68,7 @@ intersphinx_mapping = {
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/", None,
     ),
+    "spihnx": ("https://www.sphinx-doc.org/en/master/", None)
 }
 
 autoclass_content = "both"
