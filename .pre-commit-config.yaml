@@ -1,3 +1,5 @@
+ci:
+  autofix_prs: false
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.1.0
@@ -10,7 +12,7 @@ repos:
     -   id: check-ast
     -   id: requirements-txt-fixer
 -   repo: https://github.com/timothycrosley/isort
-    rev: 5.2.2
+    rev: 5.7.0
     hooks:
     -   id: isort
         name: isort
@@ -22,3 +24,12 @@ repos:
     rev: 19.10b0
     hooks:
     -   id: black
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 0.6.0
+  hooks:
+    - id: nbqa-black
+      additional_dependencies: [black==19.10b0]
+      args: [--nbqa-mutate]
+    - id: nbqa-isort
+      additional_dependencies: [isort==5.7.0]
+      args: [--nbqa-mutate]

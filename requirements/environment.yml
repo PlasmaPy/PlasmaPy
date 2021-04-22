@@ -14,10 +14,10 @@ dependencies:
   - mpmath
   - pandas
   - pillow
-  - colorama
   - pip
   - xarray
   - pip:
+    - docutils < 0.17
     - numpydoc
     - pytest
     - lmfit
@@ -26,3 +26,5 @@ dependencies:
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme
+    - towncrier >= 19.2.0
+    - pytest-regressions

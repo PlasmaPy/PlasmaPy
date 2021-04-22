@@ -170,3 +170,11 @@ def test_nuclear_reaction_energy_kwargs(reactants, products, expectedMeV, tol):
     energy = nuclear_reaction_energy(reactants=reactants, products=products).si
     expected = (expectedMeV * u.MeV).si
     assert np.isclose(expected.value, energy.value, atol=tol)
+
+
+def test_nuclear_reaction_energy():
+    reactants = ["D", "T"]
+    products = ["alpha", "n"]
+    expected = 17.6 * u.MeV
+    actual = nuclear_reaction_energy(reactants=reactants, products=products)
+    assert u.isclose(actual, expected, rtol=1e-3)

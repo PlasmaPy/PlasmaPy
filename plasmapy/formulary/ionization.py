@@ -1,6 +1,5 @@
-"""
-This module gathers functions relating to ionization states and the properties thereof.
-"""
+"""Functions related to ionization states and the properties thereof."""
+
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 
 import astropy.units as u
@@ -16,6 +15,9 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
+    Return the average ionization state of ions in a plasma assuming that
+    the numbers of ions in each state are equal.
+
     Z_bal is the estimate average ionization level of a plasma in thermal equilibrium
     that balances the number density of ions in two different ionization states.
     Z_bal is derived from the Saha equation with the assumptions that
@@ -29,7 +31,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
     .. math::
 
         Z\_bal = \sqrt{\frac{k_B T_e}{E_H}} \sqrt{\ln{\frac{1}{4 n a_{0}^3}
-        (\frac{k_B T_e}{\pi E_H})^{3/2}}} - \frac{1}{2}
+        (\frac{k_B T_e}{π E_H})^{3/2}}} - \frac{1}{2}
 
     Where :math:`k_B` is the Boltzmann constant,
     :math:`a_0` is the Bohr radius, and
@@ -52,12 +54,12 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Raises
     ------
-    TypeError
-        The `T_e` or `n` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+    `TypeError`
+        If either of ``T_e`` or ``n`` is not a `~astropy.units.Quantity`
+        and cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `T_e` or `n` not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If either of ``T_e`` or ``n`` is not in appropriate units.
 
     Examples
     --------
@@ -73,9 +75,9 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
     Returns
     -------
-    Z: `~astropy.units.Quantity`
+    Z : `~astropy.units.Quantity`
         The average ionization state of the ions in the plasma
-        assuming that the number of ions in each state are equal.
+        assuming that the numbers of ions in each state are equal.
 
     """
     E_H = 1 * u.Ry
@@ -96,34 +98,41 @@ Z_bal_ = ionization_balance
 )
 def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unscaled:
     r"""
-    The Saha equation, derived in statistical mechanics, gives an approximation of
-    the ratio of population of ions in two different ionization states in a plasma.
-    This approximation applies to plasmas in thermodynamic equilibrium where ionization
-    and recombination of ions with electrons are balanced.
+    Return the ratio of populations of two ionization states.
+
+    The Saha equation, derived in statistical mechanics, gives an
+    approximation of the ratio of population of ions in two different
+    ionization states in a plasma. This approximation applies to plasmas
+    in thermodynamic equilibrium where ionization and recombination of
+    ions with electrons are balanced.
 
     .. math::
-        \frac{N_j}{N_k} = \frac{1}{n_e} \frac{g_j}{4 g_k a_0^{3}} \left( \frac{k_B T_e}{\pi E_H} \right)^{\frac{3}{2}}
-         \exp\left( \frac{-E_{jk}}{k_B T_e} \right)
+        \frac{N_j}{N_k} = \frac{1}{n_e} \frac{g_j}{4 g_k a_0^{3}} \left(
+                              \frac{k_B T_e}{π E_H}
+                          \right)^{\frac{3}{2}}
+                          \exp\left( \frac{-E_{jk}}{k_B T_e} \right)
 
-    Where :math:`k_B` is the Boltzmann constant,
-    :math:`a_0` is the Bohr radius,
-    :math:`E_H` is the ionization energy of Hydrogen,
-    :math:`N_j` and :math:`N_k` are the population of ions in the j and k states respectively.
-    This function is equivalent to Eq. 3.47 in `Drake`_.
+    Where :math:`k_B` is the Boltzmann constant, :math:`a_0` is the Bohr
+    radius, :math:`E_H` is the ionization energy of hydrogen, :math:`N_j`
+    and :math:`N_k` are the population of ions in the :math:`j` and
+    :math:`k` states respectively. This function is equivalent to Eq.
+    3.47 in `Drake`_.
 
     Parameters
     ----------
     T_e : `~astropy.units.Quantity`
-        The electron temperature.
+        The electron temperature in units of temperature or thermal
+        energy per particle.
 
     g_j : `int`
-        The degeneracy of the 'j'th ionization state.
+        The degeneracy of ionization state :math:`j`\ .
 
     g_k : `int`
-        The degeneracy of the 'k'th ionization state.
+        The degeneracy of ionization state :math:`k`\ .
 
     E_jk : `~astropy.units.Quantity`
-        The energy difference between ionization states j and k.
+        The energy difference between ionization states :math:`j` and
+        :math:`k`\ .
 
     n_e : `~astropy.units.Quantity`
         The electron number density of the plasma.
@@ -135,17 +144,18 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     Raises
     ------
-    TypeError
-        The `T_e`, `E_jk`, or `n_e` is not a `~astropy.units.Quantity` and cannot be
-        converted into a ~astropy.units.Quantity.
+    `TypeError`
+        If any of ``T_e``, ``E_jk``, or ``n_e`` is not a `~astropy.units.Quantity`
+        and cannot be converted into a `~astropy.units.Quantity`.
 
-    ~astropy.units.UnitConversionError
-        If the `T_e`, `E_jk`, or `n` not in appropriate units.
+    `~astropy.units.UnitConversionError`
+        If any of ``T_e``, ``E_jk``, or ``n`` is not in appropriate units.
 
     Returns
     -------
-    ratio: `~astropy.units.Quantity`
-        The ratio of population of ions in ionization state j to state k.
+    ratio : `~astropy.units.Quantity`
+        The ratio of population of ions in ionization state :math:`j` to
+        state :math:`k`\ .
 
     Examples
     --------
@@ -164,9 +174,10 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
 
     Notes
     -----
-    For reference to this function and for more information regarding the Saha equation,
-    see chapter 3 of R Paul Drake's book, "High-Energy-Density Physics: Foundation of
-    Inertial Fusion and Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
+    For reference to this function and for more information regarding
+    the Saha equation, see chapter 3 of R. Paul Drake's book,
+    "High-Energy-Density Physics: Foundation of Inertial Fusion and
+    Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
 
     .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
     .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
