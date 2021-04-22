@@ -133,8 +133,6 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
     3. The remaining objects are grouped into the default groupds defined by
        :attr:`default_grouping_info`.
 
-
-
     """
     if app is not None:
         if isinstance(app, Sphinx):
