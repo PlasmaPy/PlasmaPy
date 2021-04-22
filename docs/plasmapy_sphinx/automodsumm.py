@@ -459,11 +459,18 @@ class AutomodsummOptions:
         if exclude_modules:
             gather_groups.discard("modules")
 
-        content = []
+        names = []
+        qualnames = []
         for group in gather_groups:
-            content.extend(mod_objs[group]["qualnames"])
+            names.extend(mod_objs[group]["names"])
+            qualnames.extend(mod_objs[group]["qualnames"])
 
-        return sorted(content)
+        content = [
+            qualname for name, qualname in
+            sorted(zip(names, qualnames), key=lambda x: str.casefold(x[0]))
+        ]
+
+        return content
 
 
 class Automodsumm(Autosummary):
