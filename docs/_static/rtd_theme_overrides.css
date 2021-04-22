@@ -29,7 +29,8 @@ div.graphviz {
  * Remove bottom margin for the autosummary table in a directive:option::
  * section
  */
-.rst-content dl.rst table p, .rst-content dl.std table p {
+.rst-content dl.rst table p, .rst-content dl.std table p,
+.rst-content dl.py table p {
     margin-bottom: 0 !important;
 }
 
