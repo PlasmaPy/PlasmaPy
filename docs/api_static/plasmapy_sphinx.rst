@@ -6,3 +6,4 @@
 .. currentmodule:: plasmapy_sphinx
 
 .. automodapi:: plasmapy_sphinx
+   :heading-chars: ^~
