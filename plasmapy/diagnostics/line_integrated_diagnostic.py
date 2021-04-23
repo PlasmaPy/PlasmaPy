@@ -328,6 +328,8 @@ class Interferometer(LineIntegrateScalarQuantities):
         phase_shift = phase_shift.to(u.dimensionless_unscaled).value
 
         if interference:
+            # Thanks to helpful stack exchange answer for this compact expression
+            # https://stackoverflow.com/a/15927914
             phase_shift = (phase_shift + np.pi) % (2 * np.pi) - np.pi
 
         return hax, vax, phase_shift
