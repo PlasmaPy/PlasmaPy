@@ -179,8 +179,6 @@ import re
 
 from importlib import import_module
 from jinja2 import TemplateNotFound
-from sphinx.application import Sphinx
-from sphinx.builders import Builder
 from sphinx.ext.autodoc.mock import mock
 from sphinx.ext.autosummary import (
     Autosummary,
@@ -196,7 +194,7 @@ from sphinx.ext.autosummary.generate import (
 from sphinx.locale import __
 from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 from .utils import (
     default_grouping_info,
@@ -206,6 +204,16 @@ from .utils import (
 )
 
 logger = logging.getLogger(__name__)
+
+if False:
+    # noqa
+    # for annotation, does not need real import
+    from docutils.nodes import Node
+    from docutils.statemachine import StringList
+    from sphinx.application import Sphinx
+    from sphinx.builders import Builder
+    from sphinx.config import Config
+    from sphinx.environment import BuildEnvironment
 
 
 def option_str_list(argument):
@@ -301,7 +309,7 @@ class AutomodsummOptions:
 
     def __init__(
         self,
-        app: Sphinx,
+        app: "Sphinx",
         modname: str,
         options: Dict[str, Any],
         docname: str = None,
@@ -345,7 +353,7 @@ class AutomodsummOptions:
         self.condition_options()
 
     @property
-    def app(self) -> Sphinx:
+    def app(self) -> "Sphinx":
         """Instance of the sphinx application."""
         return self._app
 
@@ -602,12 +610,18 @@ class AutomodsummOptions:
 
 
 class Automodsumm(Autosummary):
+    """The class that defines the :rst:dir:`automodsumm` directive."""
     required_arguments = 1
     optional_arguments = 0
     has_content = False
     option_spec = AutomodsummOptions.option_spec.copy()
 
     def run(self):
+        """
+        This method is called whenever the :rst:dir:`automodsumm` directive is found
+        in a document.  It is used to do any further manipulation of the directive,
+        its options, and its content to get the desired rendered outcome.
+        """
         env = self.env
         modname = self.arguments[0]
 
@@ -634,6 +648,10 @@ class Automodsumm(Autosummary):
         return nodelist
 
     def option_processor(self):
+        """
+        Instance of `~plasmapy_sphinx.automodsumm.Automodsumm` so further processing
+        (beyond :attr:`option_spec`) of directive options can be performed.
+        """
         processor = AutomodsummOptions(
             app=self.env.app,
             modname=self.arguments[0],
@@ -649,6 +667,64 @@ class Automodsumm(Autosummary):
         except AttributeError:  # Sphinx < 4.0
             self.genopt["imported-members"] = True
         return Autosummary.get_items(self, names)
+
+    @property
+    def genopt(self):
+        """.. deprecated:: Sphinx 2.0.0"""
+        return super().genopt
+
+    @property
+    def env(self) -> "BuildEnvironment":
+        """Reference to the :class:`~sphinx.environment.BuildEnvironment` object."""
+        return super().env
+
+    @property
+    def config(self) -> "Config":
+        """Reference to the :class:`~sphinx.config.Config` object."""
+        return super().config
+
+    @property
+    def result(self) -> "StringList":
+        """
+        A `docutils.statemachine.StringList` representing the lines of the
+        directive.
+        """
+        return super().result
+
+    @property
+    def warnings(self) -> List["Node"]:
+        """.. deprecated:: Sphinx 2.0.0"""
+        return super().warnings
+
+    def debug(self, message):
+        """``level=0`` :meth:`directive_error`"""
+        return super().debug(message)
+
+    def info(self, message):
+        """``level=1`` :meth:`directive_error`"""
+        return super().info(message)
+
+    def warning(self, message):
+        """``level=2`` :meth:`directive_error`"""
+        return super().warning(message)
+
+    def error(self, message):
+        """``level=3`` :meth:`directive_error`"""
+        return super().error(message)
+
+    def severe(self, message):
+        """``level=4`` :meth:`directive_error`"""
+        return super().severe(message)
+
+    def warn(self, msg: str) -> None:
+        """.. deprecated:: Sphinx 2.0.0"""
+        super(Automodsumm, self).warn(msg)
+
+    def import_by_name(
+        self, name: str, prefixes: List[str]
+    ) -> Tuple[str, Any, Any, str]:
+        """See :func:`sphinx.ext.autosummary.import_by_name`"""
+        return super(Automodsumm, self).import_by_name(name, prefixes)
 
 
 class GenDocsFromAutomodsumm:
