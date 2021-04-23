@@ -16,6 +16,9 @@ from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
 
 
 class LineIntegratedDiagnostic:
+    """
+    An abstract line integrated diagnostic
+    """
     def __init__(
         self,
         grid: u.m,
@@ -199,7 +202,7 @@ class LineIntegratedDiagnostic:
             integrands = (
                 integrands,
             )
-            
+
         # Integrate
         integral = []
         for integrand in integrands:
@@ -297,31 +300,31 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
 class Interferometer(LineIntegrateScalarQuantities):
     def __init__(self, grid, source, detector, verbose=False):
         super().__init__(grid, source, detector, quantities='n_e', verbose=verbose)
-    
-    def Interferogram(self, 
-                      probe_freq : u.Hz, 
+
+    def Interferogram(self,
+                      probe_freq : u.Hz,
                       size=np.array([[-1, 1], [-1, 1]]) * u.cm,
                       bins=[50, 50],
                       collimated=True,
                       num=100,
                       interference = False,
                       ):
-    
+
         # TODO: implement an actual critical density function for PlasmaPy
         # Critical density in cm^-3
         n_c = (const.eps0.si*const.m_e/const.e.si**2)*(2*np.pi)**2*probe_freq**2
         n_c = n_c.to(u.cm**-3)
-       
-        hax, vax, int_ne = self.line_integral(size=size, 
-                                    bins=bins, 
+
+        hax, vax, int_ne = self.line_integral(size=size,
+                                    bins=bins,
                                     collimated=collimated,
                                     num=num)
-        
+
         phase_shift = (-np.pi*probe_freq / (const.c.si * n_c))*int_ne
-        
+
         phase_shift = phase_shift.to(u.dimensionless_unscaled).value
-        
+
         if interference:
             phase_shift = (phase_shift  + np.pi) % (2 * np.pi) - np.pi
-        
+
         return hax, vax, phase_shift

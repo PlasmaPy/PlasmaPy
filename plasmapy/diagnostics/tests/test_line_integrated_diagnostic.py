@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from plasmapy.diagnostics.line_integrated_diagnostic import (
-    LineIntegrateScalarQuantities, Interferometer,
+    Interferometer,
+    LineIntegrateScalarQuantities,
 )
 from plasmapy.plasma.grids import CartesianGrid
 
@@ -33,13 +34,12 @@ def test_constant_cylinder():
     )
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
-    integral = integral.to(u.kg/u.m**2).value
-    
+    integral = integral.to(u.kg / u.m ** 2).value
 
     line = np.mean(integral, axis=1)
 
-    theory = np.where(np.abs(hax) < 0.999, 2*np.sqrt(np.abs(1 - hax**2))*1e-3, 0)
-    
+    theory = np.where(np.abs(hax) < 0.999, 2 * np.sqrt(np.abs(1 - hax ** 2)) * 1e-3, 0)
+
     """
     plt.plot(hax, line)
     plt.plot(hax, theory)
@@ -88,36 +88,35 @@ def test_constant_box():
     """
 
     assert np.allclose(line, theory, atol=2e-4)
-    
-    
-    
+
+
 def test_interferogram_sphere():
     ax = np.linspace(-2, 2, num=200) * u.mm
     xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-    r = np.sqrt(xarr**2 + yarr**2 + zarr**2)
-    
+    r = np.sqrt(xarr ** 2 + yarr ** 2 + zarr ** 2)
+
     n_e = np.where(r < 1 * u.mm, 1, 0) * 3e19 / u.cm ** 3
-    
+
     grid = CartesianGrid(xarr, yarr, zarr)
     grid.add_quantities(n_e=n_e)
-    
+
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
     obj = Interferometer(grid, source, detector, verbose=False)
-    
+
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    bins = [350,350]
-    
-    hax, vax, phase = obj.Interferogram(1.14e15*u.Hz, size=size, bins=bins, num=100,
-                                        interference=True)
-    
+    bins = [350, 350]
+
+    hax, vax, phase = obj.Interferogram(
+        1.14e15 * u.Hz, size=size, bins=bins, num=100, interference=True
+    )
 
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
-    
+
     fig, ax = plt.subplots()
-    ax.pcolormesh(hax, vax, phase.T, cmap='binary', shading='auto')
-    ax.set_aspect('equal')
+    ax.pcolormesh(hax, vax, phase.T, cmap="binary", shading="auto")
+    ax.set_aspect("equal")
     ax.set_xlim(-1.2, 1.2)
     ax.set_ylim(-1.2, 1.2)
     ax.set_xlabel("x (mm)")
@@ -125,9 +124,7 @@ def test_interferogram_sphere():
     plt.show()
 
 
-    
-
 if __name__ == "__main__":
-    #test_constant_cylinder()
-    #test_constant_box()
+    # test_constant_cylinder()
+    # test_constant_box()
     test_interferogram_sphere()
