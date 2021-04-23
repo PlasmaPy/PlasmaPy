@@ -743,10 +743,10 @@ class GenDocsFromAutomodsumm:
         ),
     }
 
-    app = None  # type: Sphinx
+    app = None  # type: "Sphinx"
     logger = logger
 
-    def __call__(self, app: Sphinx):
+    def __call__(self, app: "Sphinx"):
         """
         This routine is adapted from
         :func:`sphinx.ext.autosummary.process_generate_options` to scan through
@@ -1079,7 +1079,7 @@ class GenDocsFromAutomodsumm:
         return documented
 
 
-def setup(app: Sphinx):
+def setup(app: "Sphinx"):
 
     app.setup_extension("sphinx.ext.autosummary")
 
