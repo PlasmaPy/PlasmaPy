@@ -242,7 +242,9 @@ class AutomodsummRenderer(AutosummaryRenderer):
         Path to a specified template directory.
     """
 
-    def __init__(self, app: Union[Builder, Sphinx], template_dir: str = None) -> None:
+    def __init__(
+        self, app: Union["Builder", "Sphinx"], template_dir: str = None,
+    ) -> None:
 
         asumm_path = templates_dir
         relpath = os.path.relpath(asumm_path, start=app.srcdir)
