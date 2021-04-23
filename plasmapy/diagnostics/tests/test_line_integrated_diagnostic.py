@@ -23,7 +23,7 @@ def test_constant_cylinder():
 
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
-    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho")
+    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=False)
 
     # Test that line-integrating with collimated = False yields
 
@@ -33,20 +33,20 @@ def test_constant_cylinder():
     )
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
+    integral = integral.to(u.kg/u.m**2).value
+    
 
     line = np.mean(integral, axis=1)
-    line *= 1 / np.max(line)
 
-    # TODO: Actually show that this integral should be sqrt(cos(x)) ??
-    theory = np.where(np.abs(hax) < 1, np.sqrt(np.abs(np.cos(hax * np.pi / 2))), 0)
-
+    theory = np.where(np.abs(hax) < 0.999, 2*np.sqrt(np.abs(1 - hax**2))*1e-3, 0)
+    
     """
     plt.plot(hax, line)
     plt.plot(hax, theory)
     plt.show()
     """
 
-    assert np.allclose(line, theory, atol=0.1)
+    assert np.allclose(line, theory, atol=2e-4)
 
 
 def test_constant_box():
@@ -63,7 +63,7 @@ def test_constant_box():
 
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
-    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho")
+    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=False)
 
     # Test that line-integrating with collimated = False yields
 
@@ -87,9 +87,9 @@ def test_constant_box():
     plt.show()
     """
 
-    assert np.allclose(line, theory, rtol=0.05)
+    assert np.allclose(line, theory, atol=2e-4)
 
 
 if __name__ == "__main__":
-    # test_constant_cylinder()
+    test_constant_cylinder()
     test_constant_box()
