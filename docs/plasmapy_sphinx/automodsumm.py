@@ -607,8 +607,6 @@ class Automodsumm(Autosummary):
     has_content = False
     option_spec = AutomodsummOptions.option_spec.copy()
 
-    logger = logger
-
     def run(self):
         env = self.env
         modname = self.arguments[0]
