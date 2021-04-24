@@ -3,7 +3,7 @@ __all__ = [
     "AbstractInterpolatedCoefficients",
 ]
 
-
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import os
@@ -16,6 +16,8 @@ from plasmapy import particles
 from plasmapy.formulary.parameters import gyrofrequency
 from plasmapy.particles import Particle
 
+
+m_e = const.m_e.si
 
 class AbstractClassicalTransportCoefficients(ABC):
     r"""
@@ -31,8 +33,10 @@ class AbstractClassicalTransportCoefficients(ABC):
         chi,
         Z,
         B: u.T = None,
-        n: u.m ** -3 = None,
-        T: u.K = None,
+        ne: u.m ** -3 = None,
+        ni: u.m ** -3 = None,
+        Te: u.K = None,
+        Ti: u.K = None,
         particle: Particle = "",
     ):
 
@@ -40,8 +44,10 @@ class AbstractClassicalTransportCoefficients(ABC):
         self.Z = Z
 
         self.B = B
-        self.n = n
-        self.T = T
+        self.ne = ne
+        self.ni = ni
+        self.Te = Te
+        self.Ti = Ti
         self.particle = particle
 
         try:
@@ -57,7 +63,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         # quantity
         try:
             self.alpha_normalization = (
-                self.particle.mass * self.n / self.ei_collision_period
+                self.particle.mass * self.n_e / self.ei_collision_period
             )
         except (TypeError, AttributeError):
             self.alpha_normalization = None
@@ -66,7 +72,7 @@ class AbstractClassicalTransportCoefficients(ABC):
 
         try:
             self.kappa_normalization = (
-                self.n * self.T * self.ei_collision_period / self.particle.mass
+                self.n_e * self.T_e * self.ei_collision_period / m_e
             )
         except (TypeError, AttributeError):
             self.kappa_normalization = None
@@ -80,7 +86,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     def alpha_para(self):
         if self.alpha_normalization is None:
             raise ValueError(
-                "Keywords n, B, and particle must be provided to "
+                "Keywords ne and B must be provided to "
                 "calculate alpha_para"
             )
 
@@ -92,7 +98,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     def alpha_perp(self):
         if self.alpha_normalization is None:
             raise ValueError(
-                "Keywords n, B, and particle must be provided to "
+                "Keywords ne and B must be provided to "
                 "calculate alpha_perp"
             )
 
@@ -104,7 +110,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     def alpha_cross(self):
         if self.alpha_normalization is None:
             raise ValueError(
-                "Keywords n, B, and particle must be provided to "
+                "Keywords ne and B must be provided to "
                 "calculate alpha_cross"
             )
         return self.norm_alpha_cross() * self.alpha_normalization
@@ -131,42 +137,50 @@ class AbstractClassicalTransportCoefficients(ABC):
         return self.norm_beta_cross() * self.beta_normalization
 
     # **********************************************************************
-    # Thermal Conductivity (kappa)
+    # Electron Thermal Conductivity (kappa_e)
     # **********************************************************************
-    def norm_kappa_para(self):
+    def norm_kappa_e_para(self):
         raise NotImplementedError
 
-    def kappa_para(self):
-        if self.kappa_normalization is None:
+    def kappa_e_para(self):
+        if self.kappa_e_normalization is None:
             raise ValueError(
-                "Keywords n, B, T, and particle must be provided to "
-                "calculate kappa_para"
+                "Keywords ne, Te, and B must be provided to "
+                "calculate kappa_e_para"
             )
 
-        return self.norm_kappa_para() * self.kappa_normalization
+        return self.norm_kappa_e_para() * self.kappa_normalization
 
     def norm_kappa_perp(self):
         raise NotImplementedError
 
-    def kappa_perp(self):
-        if self.kappa_normalization is None:
+    def kappa_e_perp(self):
+        if self.kappa_e_normalization is None:
             raise ValueError(
-                "Keywords n, B, T, and particle must be provided to "
-                "calculate kappa_perp"
+                "Keywords ne, Te, and B must be provided to "
+                "calculate kappa_perp_e"
             )
 
-        return self.norm_kappa_perp() * self.kappa_normalization
+        return self.norm_kappa_e_perp() * self.kappa_e_normalization
 
-    def norm_kappa_cross(self):
+    def norm_kappa_e_cross(self):
         raise NotImplementedError
 
-    def kappa_cross(self):
-        if self.kappa_normalization is None:
+    def kappa_e_cross(self):
+        if self.kappa_e_normalization is None:
             raise ValueError(
-                "Keywords n, B, T, and particle must be provided to "
-                "calculate kappa_cross"
+                "Keywords ne, Te, and B must be provided to "
+                "calculate kappa_e_cross"
             )
-        return self.norm_kappa_cross() * self.kappa_normalization
+        return self.norm_kappa_e_cross() * self.kappa_e_normalization
+    
+    
+    # **********************************************************************
+    # Ion Thermal Conductivity (kappa_e)
+    # **********************************************************************
+    
+    # TODO: To implement these, need to figure out how to handle tau_i. 
+    # Can't just calculate it from chi...
 
 
 class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
@@ -194,6 +208,8 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
             "kappa_cross",
         ]
 
+        # Create an interpolator for each of the data tables
+        # (All of the interpolators use the same chi and Z)
         self.interpolators = {}
         for coef in coefficients:
             self.interpolators[coef] = interp2d(
