@@ -2,15 +2,14 @@
 
 .. _plasmapy-documentation:
 
-######################
-PlasmaPy Documentation
-######################
-
 .. image:: _static/graphic-circular.png
    :alt: PlasmaPy logo
    :align: right
-   :scale: 80%
+   :scale: 40%
 
+######################
+PlasmaPy Documentation
+######################
 
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.7+
