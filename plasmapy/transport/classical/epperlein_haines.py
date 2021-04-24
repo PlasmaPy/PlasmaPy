@@ -23,10 +23,10 @@ from plasmapy.transport.classical.base import (
     AbstractInterpolatedCoefficients,
 )
 
+# Get the absolute path to the data files
+data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 # Load the table of coefficients
-c = np.load(
-    os.path.join(".", "data", "epperlein_haines", "polynomial_fit_coefficients.npz")
-)
+c = np.load(os.path.join(data_dir, "epperlein_haines_polynomial_fit_coefficients.npz"))
 
 
 def _find_nearest(Z):
@@ -170,8 +170,8 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
 
 class EpperleinHainesInterpolated(AbstractInterpolatedCoefficients):
     @property
-    def _data_directory(self):
-        return os.path.join(".", "data", "epperlein_haines")
+    def _data_file(self):
+        return os.path.join(data_dir, "epperlein_haines_data.npz")
 
 
 if __name__ == "__main__":

@@ -175,13 +175,13 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
     """
 
     @property
-    def _data_directory(self):
+    def _data_file(self):
         return None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        file = np.load(os.path.join(self._data_directory, "data.npz"))
+        file = np.load(self._data_file)
         coefficients = [
             "alpha_para",
             "alpha_perp",
