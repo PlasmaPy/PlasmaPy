@@ -9,7 +9,6 @@ from .anomalous import *
 from .classical import *
 from .neoclassical import *
 
-
 # auto populate __all__
 for obj_name in list(globals()):
     if not (obj_name.startswith("__") or obj_name.endswith("__")):

@@ -8,7 +8,6 @@ __all__ = []
 from .base import *
 from .epperlein_haines import *
 
-
 # auto populate __all__
 for obj_name in list(globals()):
     if not (obj_name.startswith("__") or obj_name.endswith("__")):
