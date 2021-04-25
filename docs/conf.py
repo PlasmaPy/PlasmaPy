@@ -279,36 +279,10 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     from plasmapy_sphinx import setup as setup_automodapi
-    from sphinx.domains.python import PyField
-    from sphinx.locale import _
-    from sphinx.util.docfields import Field
+    from plasmapy_sphinx.extras import setup as setup_extras
 
     setup_automodapi(app)
+    setup_extras(app)
 
     app.add_config_value("revision", "", True)
     app.add_css_file("rtd_theme_overrides.css")
-
-    # this was taken from the sphinx and sphinx_rtd_theme conf.py files and creates
-    # the documenting directive `.. confval::` and role `:confval:` for documenting
-    # sphinx configuration variables
-    app.add_object_type(
-        "confval",
-        "confval",
-        objname="configuration value",
-        indextemplate="pair: %s; configuration value",
-        doc_field_types=[
-            PyField(
-                "type",
-                label=_("Type"),
-                has_arg=False,
-                names=("type",),
-                bodyrolename="class",
-            ),
-            Field(
-                "default",
-                label=_("Default"),
-                has_arg=False,
-                names=("default",),
-            ),
-        ],
-    )
