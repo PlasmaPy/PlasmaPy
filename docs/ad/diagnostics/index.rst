@@ -13,6 +13,7 @@
    :maxdepth: 1
    :caption: Sub-Packages and Modules
 
+   line_integrated_diagnostic
    proton_radiography
    Swept Langmuir (will be deprecated) <langmuir>
    thomson
