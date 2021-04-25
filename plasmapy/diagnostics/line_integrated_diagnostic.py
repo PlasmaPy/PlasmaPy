@@ -1,9 +1,11 @@
 """
-Defines the LineIntegratedDiagnostic base class
+Defines the LineIntegratedDiagnostic base class and subclasses
 """
 
 __all__ = [
     "LineIntegratedDiagnostic",
+    "LineIntegrateScalarQuantities",
+    "Interferometer",
 ]
 
 import astropy.constants as const
