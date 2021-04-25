@@ -6,7 +6,7 @@ Line Integrated Diagnostics
 
 .. currentmodule:: plasmapy.diagnostics.line_integrated_diagnostics
 
-.. automodapi:: plasmapy.diagnostics.diagnostics.line_integrated_diagnostics
+.. automodapi:: plasmapy.diagnostics.line_integrated_diagnostics
    :no-heading:
 
 |
