@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -712,7 +712,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _Isotopes[isotope].get("half-life", None)
+        half_life = _isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -1344,3 +1344,20 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
         f"expected_repr = {expected_repr['__init__']}.\n\n"
         f"json_repr: {test_dict['__init__']}"
     )
+
+
+def test_particle_is_category_valid_categories():
+    """Test the location where valid categories may be accessed."""
+    assert hasattr(Particle.is_category, "valid_categories")
+    some_valid_categories = {
+        "lepton",
+        "fermion",
+        "matter",
+        "nonmetal",
+        "electron",
+        "ion",
+        "isotope",
+        "charged",
+        "uncharged",
+    }
+    assert some_valid_categories.issubset(Particle.is_category.valid_categories)

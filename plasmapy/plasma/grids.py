@@ -49,6 +49,7 @@ class AbstractGrid(ABC):
 
         # Initialize some variables
         self._interpolator = None
+        self._is_uniform = None
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
@@ -111,6 +112,70 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
+    def require_quantities(self, req_quantities, replace_with_zeros=False):
+        r"""
+        Checks to make sure that a list of required quantities are present.
+        Optionally, can create missing quantities and fill them with
+        an array of zeros.
+
+        Parameters
+        ----------
+        req_quantities : list of str
+            A list of quantity keys that are required
+
+        replace_with_zeros : boolean, optional
+            If true, missing quantities will be replaced with an array
+            of zeros. If false, an exception will be raised instead.
+            The default is False.
+
+        Raises
+        ------
+        KeyError
+            If `replace_with_zeros` is False and a required quantity is missing,
+            raises a KeyError.
+
+        KeyError
+            If `replace_with_zeros` is True but the quantity is not in the
+            list of recognized quantities, raises a KeyError. This is because
+            in this case the units for the quantity are unknown, so an array
+            of zeros cannot be constructed.
+
+        Returns
+        -------
+        None.
+
+        """
+        for rq in req_quantities:
+
+            # Error check that grid contains E and B variables required
+            if rq not in self.quantities:
+
+                # If missing, warn user and then replace with an array of zeros
+                if replace_with_zeros:
+                    warnings.warn(
+                        f"{rq} is not specified for the provided grid."
+                        "This quantity will be assumed to be zero.",
+                        RuntimeWarning,
+                    )
+
+                    if rq in self.recognized_quantities.keys():
+                        unit = self.recognized_quantities[rq].unit
+                    else:
+                        raise KeyError(
+                            f"{rq} is not a recognized key, and "
+                            "so cannot be automatically assumed "
+                            "to be zero."
+                        )
+
+                    arg = {rq: np.zeros(self.shape) * unit}
+                    self.add_quantities(**arg)
+
+                else:
+                    raise KeyError(
+                        f"{rq} is not specified for the provided "
+                        "grid but is required."
+                    )
+
     # *************************************************************************
     # Fundamental properties of the grid
     # *************************************************************************
@@ -168,8 +233,29 @@ class AbstractGrid(ABC):
         return s
 
     def __getitem__(self, key):
+        """
+        Given a key, return the corresponding array as an `astropy.Quantity`
 
-        return self.ds[key]
+        Returning with copy=False means that the array returned is a direct
+        reference to the underlying DataArray, so changes made will be reflected
+        in the underlying DataArray.
+        """
+        return u.Quantity(self.ds[key].data, self.ds[key].attrs["unit"], copy=False)
+
+    @property
+    def is_uniform(self) -> bool:
+        """
+        A boolean value reflecting whether or not the grid points are
+        uniformly spaced.
+        """
+
+        if self._is_uniform is None:  # coverage: ignore
+            raise ValueError(
+                "The `is_uniform` attribute is not accessible "
+                "before a grid has been loaded."
+            )
+
+        return self._is_uniform
 
     @property
     def shape(self):
@@ -432,7 +518,7 @@ class AbstractGrid(ABC):
                 f"pts2 = {pts2.shape}."
             )
 
-        self.is_uniform = _detect_is_uniform_grid(pts0, pts1, pts2)
+        self._is_uniform = _detect_is_uniform_grid(pts0, pts1, pts2)
 
         # Create dataset
         self.ds = xr.Dataset()
@@ -498,11 +584,17 @@ class AbstractGrid(ABC):
                 )
 
             if self.is_uniform:
-                axes = ["ax0", "ax1", "ax2"]
+                dims = ["ax0", "ax1", "ax2"]
+                coords = {
+                    "ax0": self.ds.coords["ax0"],
+                    "ax1": self.ds.coords["ax1"],
+                    "ax2": self.ds.coords["ax2"],
+                }
             # If grid is non-uniform, flatten quantity
             else:
                 quantity = quantity.flatten()
-                axes = ["ax"]
+                dims = ["ax"]
+                coords = {"ax": self.ds.coords["ax"]}
 
             if quantity.shape != self.shape:
                 raise ValueError(
@@ -510,7 +602,9 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
-            data = xr.DataArray(quantity, dims=axes, attrs={"unit": quantity.unit})
+            data = xr.DataArray(
+                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+            )
             self.ds[key] = data
 
     @property
@@ -612,7 +706,9 @@ class AbstractGrid(ABC):
 
         # Load into the dataset using the _load_grid function
         self._load_grid(
-            pts0 * units[0], pts1 * units[1], pts2 * units[2],
+            pts0 * units[0],
+            pts1 * units[1],
+            pts2 * units[2],
         )
 
     def _make_mesh(self, start, stop, num, **kwargs):
@@ -1118,11 +1214,22 @@ class CartesianGrid(AbstractGrid):
             return tuple(output)
 
 
-class NonUniformCartesianGrid(CartesianGrid):
+class NonUniformCartesianGrid(AbstractGrid):
     r"""
     A Cartesian grid in which the _make_mesh method produces a non-uniformly
     spaced grid.
     """
+
+    def _validate(self):
+        # Check that all units are lengths
+        for i in range(3):
+            try:
+                self.units[i].to(u.m)
+            except u.UnitConversionError:
+                raise ValueError(
+                    "Units of grid are not valid for a Cartesian "
+                    f"grid: {self.units}."
+                )
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""

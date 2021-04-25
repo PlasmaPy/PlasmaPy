@@ -44,20 +44,22 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
     "sphinx_automodapi.automodapi",
     "sphinx_automodapi.smart_resolver",
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx_changelog",
 ]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
-    "pandas": ("http://pandas.pydata.org/pandas-docs/stable/", None),
-    "astropy": ("http://docs.astropy.org/en/stable/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "astropy": ("https://docs.astropy.org/en/stable/", None),
 }
 
 autoclass_content = "both"
@@ -111,7 +113,13 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "notebooks/langmuir_samples",
+    "**.ipynb_checkpoints",
+]
 
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
@@ -218,7 +226,9 @@ html_favicon = "./_static/icon.ico"
 # -- NBSphinx options
 
 nbsphinx_thumbnails = {
-    "notebooks/*": "_images/graphic-circular.png",
+    "notebooks/*": "_static/graphic-circular.png",
+    "notebooks/*/*": "_static/graphic-circular.png",
+    "notebooks/diagnostics/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
     "notebooks/plasma/grids_cartesian": "_static/notebook_images/uniform_grid_thumbnail.png",
     "notebooks/plasma/grids_nonuniform": "_static/notebook_images/nonuniform_grid_thumbnail.png",
 }

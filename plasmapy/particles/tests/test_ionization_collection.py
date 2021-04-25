@@ -9,7 +9,7 @@ from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
-    IonicFraction,
+    IonicLevel,
     IonizationState,
     IonizationStateCollection,
     mass_number,
@@ -649,7 +649,7 @@ class TestIonizationStateCollectionAttributes:
         particle = indices[0]
         integer_charge = indices[1]
 
-        assert isinstance(result, IonicFraction)
+        assert isinstance(result, IonicLevel)
         assert result.integer_charge == integer_charge
 
         expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]

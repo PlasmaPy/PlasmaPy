@@ -1,0 +1,8 @@
+# all dependencies required to build, run, test, and document plasmapy
+# * look to the specific requirements/*.txt for specific needs
+# * this will mimic `pip install plasmapy[developer]` (excluding plasmapy)
+-r requirements/build.txt
+-r requirements/install.txt
+-r requirements/tests.txt
+-r requirements/docs.txt
+-r requirements/extras.txt

@@ -1,3 +1,0 @@
-Fixed a bug that prevented nested iterations of a single
-`~plasmapy.particles.IonizationState` or
-`~plasmapy.particles.IonizationStateCollection` instance.

@@ -25,9 +25,19 @@ import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
 from scipy.optimize import curve_fit
+from warnings import warn
 
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
+
+
+def _langmuir_futurewarning() -> None:
+    warn(
+        "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
+        "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
+        "2021.  The plasmapy.analysis package was released in v0.5.0.",
+        FutureWarning,
+    )
 
 
 def _fit_func_lin(x, x0, y0, c0):
@@ -72,6 +82,8 @@ class Characteristic:
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
     def __init__(self, bias: u.V, current: u.A):
+        _langmuir_futurewarning()
+
         self.bias = bias
         self.current = current
         self.get_unique_bias(True)
@@ -182,12 +194,7 @@ class Characteristic:
 
     def plot(self):  # coverage: ignore
         r"""Plot the characteristic in matplotlib."""
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()
@@ -284,6 +291,8 @@ def swept_probe_analysis(
     for OML theory hold.
 
     """
+    _langmuir_futurewarning()
+
     # Instantiate gas using the Particle class
     gas = Particle(argument=gas_argument)
 
@@ -349,12 +358,7 @@ def swept_probe_analysis(
     )
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             fig, (ax1, ax2) = plt.subplots(2, 1)
@@ -467,6 +471,8 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -517,6 +523,8 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -554,6 +562,8 @@ def get_electron_saturation_current(probe_characteristic):
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -588,6 +598,8 @@ def get_ion_saturation_current(probe_characteristic):
     saturate.
 
     """
+
+    _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
@@ -653,6 +665,8 @@ def get_ion_density_LM(
 
     """
 
+    _langmuir_futurewarning()
+
     # Calculate the acoustic (Bohm) velocity
     c_s = np.sqrt(T_e / gas)
 
@@ -713,6 +727,8 @@ def get_electron_density_LM(
 
     """
 
+    _langmuir_futurewarning()
+
     # Calculate the thermal electron velocity
     v_th = np.sqrt(8 * T_e / (np.pi * const.m_e))
 
@@ -752,6 +768,8 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     accuracy can be made when the electron temperature is supplied.
 
     """
+
+    _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
@@ -806,6 +824,8 @@ def extract_ion_section(probe_characteristic):
     bounded by the floating potential on the right hand side.
 
     """
+
+    _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
@@ -875,6 +895,8 @@ def get_electron_temperature(
         \textrm{log} \left(I_e \right ) \propto \frac{1}{T_e}.
 
     """
+
+    _langmuir_futurewarning()
 
     if not isinstance(exponential_section, Characteristic):
         raise TypeError(
@@ -947,12 +969,7 @@ def get_electron_temperature(
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()
@@ -1038,6 +1055,8 @@ def extrapolate_electron_current(
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -1061,12 +1080,7 @@ def extrapolate_electron_current(
     )
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()
@@ -1125,6 +1139,8 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
         T_{e,red} = T_c \left( 1 - f_h \right) + T_h f_h
 
     """
+
+    _langmuir_futurewarning()
 
     # Return the electron temperature itself if it is not bi-Maxwellian
     # in the first place.
@@ -1188,6 +1204,8 @@ def get_ion_density_OML(
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -1217,12 +1235,7 @@ def get_ion_density_OML(
     )
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()
@@ -1273,6 +1286,8 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -1290,12 +1305,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()
@@ -1355,6 +1365,8 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     """
 
+    _langmuir_futurewarning()
+
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             f"For 'probe_characteristic' expected type "
@@ -1389,12 +1401,7 @@ def get_EEDF(probe_characteristic, visualize=False):
     probability = probability / integral
 
     if visualize:  # coverage: ignore
-        try:
-            import matplotlib.pyplot as plt
-        except (ImportError, ModuleNotFoundError) as e:
-            from plasmapy.optional_deps import mpl_import_error
-
-            raise mpl_import_error from e
+        import matplotlib.pyplot as plt
 
         with quantity_support():
             plt.figure()

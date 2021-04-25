@@ -5,11 +5,9 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-from contextlib import ExitStack as does_not_raise
+from contextlib import nullcontext as does_not_raise
 
 import plasmapy.analysis.fit_functions as ffuncs
-
-# ^ ExitStack can be replaced with nullcontext when we require >= python 3.7
 
 
 class TestAbstractFitFunction:
@@ -54,7 +52,8 @@ class TestAbstractFitFunction:
             assert isinstance(getattr(self.ff_class, name), property)
 
     @pytest.mark.parametrize(
-        "name", ["__str__", "func", "func_err", "latex_str"],
+        "name",
+        ["__str__", "func", "func_err", "latex_str"],
     )
     def test_abstractmethods(self, name):
         """Test for required abstract methods."""
@@ -403,7 +402,9 @@ class BaseFFTests(ABC):
         assert ff_obj.curve_fit_results is not None
         assert np.isclose(ff_obj.rsq, 1.0)
         assert np.allclose(
-            ff_obj.param_errors, tuple([0] * len(ff_obj.param_names)), atol=1.5e-8,
+            ff_obj.param_errors,
+            tuple([0] * len(ff_obj.param_names)),
+            atol=1.5e-8,
         )
         assert np.allclose(ff_obj.params, self._test_params)
 

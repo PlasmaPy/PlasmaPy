@@ -12,6 +12,7 @@
    :maxdepth: 1
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
+   Swept Langmuir <swept_langmuir>
 
 Notebooks
 ---------
@@ -33,6 +34,7 @@ Sub-Packages & Modules
 .. autosummary::
 
    fit_functions
+   swept_langmuir
 
 .. automodapi:: plasmapy.analysis
    :no-main-docstr:

@@ -5,7 +5,6 @@ isotopes.
 __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
-import collections
 import numpy as np
 
 from numbers import Integral, Real
@@ -17,7 +16,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
@@ -75,7 +74,7 @@ class IonizationStateCollection:
 
     See Also
     --------
-    ~plasmapy.particles.ionization_state.IonicFraction
+    ~plasmapy.particles.ionization_state.IonicLevel
     ~plasmapy.particles.ionization_state.IonizationState
 
     Examples
@@ -187,7 +186,7 @@ class IonizationStateCollection:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> Union[IonizationState, IonicFraction]:
+    def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
 
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
@@ -219,7 +218,7 @@ class IonizationStateCollection:
                     raise ChargeError(
                         f"{int_charge} is not a valid charge for {particle}."
                     )
-                return IonicFraction(
+                return IonicLevel(
                     ion=particle_symbol(particle, Z=int_charge),
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     number_density=self.number_densities[particle][int_charge],
@@ -298,7 +297,7 @@ class IonizationStateCollection:
                     )
 
         try:
-            new_fractions = np.array(value, dtype=np.float64)
+            new_fractions = np.array(value, dtype=float)
         except Exception as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
@@ -410,7 +409,6 @@ class IonizationStateCollection:
         isotope.  The values will be `~numpy.ndarray` objects containing
         the ionic fractions for each ionization level corresponding to
         each element or isotope.
-
         """
         return self._ionic_fractions
 
@@ -561,7 +559,7 @@ class IonizationStateCollection:
                 else:
                     try:
                         new_ionic_fractions[particles[key].symbol] = np.array(
-                            inputs[key], dtype=np.float
+                            inputs[key], dtype=float
                         )
                     except ValueError as exc:
                         raise ParticleError(
@@ -600,7 +598,7 @@ class IonizationStateCollection:
 
                 new_abundances = {}
                 for key in _elements_and_isotopes:
-                    new_abundances[key] = np.float(n_elems[key] / self.n0)
+                    new_abundances[key] = float(n_elems[key] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
@@ -620,7 +618,7 @@ class IonizationStateCollection:
             ]
             new_ionic_fractions = {
                 particle.symbol: np.full(
-                    particle.atomic_number + 1, fill_value=np.nan, dtype=np.float64
+                    particle.atomic_number + 1, fill_value=np.nan, dtype=float
                 )
                 for particle in _particle_instances
             }
@@ -773,9 +771,7 @@ class IonizationStateCollection:
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
-        """
-        Set the base 10 logarithm of the relative abundances.
-        """
+        """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
                 new_abundances_input = {}
@@ -786,13 +782,14 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
         """Return the electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(equivalencies=u.temperature_energy())
+    @validate_quantities(
+        electron_temperature=dict(equivalencies=u.temperature_energy())
+    )
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
@@ -849,9 +846,7 @@ class IonizationStateCollection:
 
     @tol.setter
     def tol(self, atol: Real):
-        """
-        Set the absolute tolerance for comparisons.
-        """
+        """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
