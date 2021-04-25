@@ -300,14 +300,14 @@ class Interferometer(LineIntegrateScalarQuantities):
     def __init__(self, grid, source, detector, verbose=False):
         super().__init__(grid, source, detector, quantities="n_e", verbose=verbose)
 
-    def Interferogram(
+    def interferogram(
         self,
         probe_freq: u.Hz,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
         bins=[50, 50],
         collimated=True,
         num=100,
-        interference=False,
+        unwrapped=True,
     ):
 
         # TODO: implement an actual critical density function for PlasmaPy
@@ -327,7 +327,7 @@ class Interferometer(LineIntegrateScalarQuantities):
 
         phase_shift = phase_shift.to(u.dimensionless_unscaled).value
 
-        if interference:
+        if not unwrapped:
             # Thanks to helpful stack exchange answer for this compact expression
             # https://stackoverflow.com/a/15927914
             phase_shift = (phase_shift + np.pi) % (2 * np.pi) - np.pi

@@ -107,7 +107,7 @@ def test_interferogram_sphere():
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     bins = [350, 350]
 
-    hax, vax, phase = obj.Interferogram(
+    hax, vax, phase = obj.interferogram(
         1.14e15 * u.Hz, size=size, bins=bins, num=100, interference=True
     )
 
