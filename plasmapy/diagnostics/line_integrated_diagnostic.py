@@ -72,7 +72,6 @@ class LineIntegratedDiagnostic:
         x-axis. THe vertical axis is then chosen to be orthogonal and
         right-handed with respect to the horizontal axis and the
         source-detector axis.
-
         """
         # Create 2D grids of detector points
         # Define plane  horizontal axis
@@ -114,7 +113,7 @@ class LineIntegratedDiagnostic:
 
         Parameters
         ----------
-        size : `u.Quantity` array of shape [2,2]
+        size : `~astropy.units.Quantity` array of shape [2,2]
             The bounds of the detector region. The default is [[-1,1],[-1,1]] cm.
 
         bins : integer ndarray array of shape [2,2]
@@ -131,13 +130,13 @@ class LineIntegratedDiagnostic:
 
         Returns
         -------
-        xax : `~u.Quantity` array (Nh,)
+        xax : `~astropy.units.Quantity` array (Nh,)
             The horizontal axis of the detector plane
 
-        yax : `~u.Quantity` array of shape (Nv,)
+        yax : `~astropy.units.Quantity` array of shape (Nv,)
             The vertical axis of the detector plane
 
-        integral : `~u.Quantity` array or list of arrays of shape (Nh, Ny)
+        integral : `~astropy.units.Quantity` array or list of arrays of shape (Nh, Ny)
            The line-integrated values in the detector plane.
 
         """
@@ -225,14 +224,14 @@ class LineIntegratedDiagnostic:
         Parameters
         ----------
 
-        pts: `~u.Quantity` (nx*ny*nz, 3)
+        pts: `~astropy.units.Quantity` (nx*ny*nz, 3)
             Positions at which the integrand will be
             evaluated.
 
         Returns
         -------
 
-        arr: `~u.Quantity`(nx*ny*nz) or list of same
+        arr: `~astropy.units.Quantity`(nx*ny*nz) or list of same
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
@@ -243,7 +242,7 @@ class LineIntegratedDiagnostic:
 
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
-    """
+    r"""
     Line-integrates a scalar quantity
     """
 
@@ -274,21 +273,20 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         super().__init__(grid, source, detector, verbose=verbose)
 
     def integrand(self, pts):
-        """
+        r"""
         Returns the scalar value of the quantity or quantities specified
         at each point.
 
         Parameters
         ----------
 
-        pts: `~u.Quantity` (nx*ny*nz, 3)
-            Positions at which the integrand will be
-            evaluated.
+        pts: `~astropy.units.Quantity` (nx*ny*nz, 3)
+            Positions at which the integrand will be evaluated.
 
         Returns
         -------
 
-        arr: `~u.Quantity`(nx*ny*nz) or list of same
+        arr: `~astropy.units.Quantity`(nx*ny*nz) or list of same
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
