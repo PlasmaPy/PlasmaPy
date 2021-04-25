@@ -108,23 +108,15 @@ def test_interferogram_sphere():
     bins = [350, 350]
 
     hax, vax, phase = obj.interferogram(
-        1.14e15 * u.Hz, size=size, bins=bins, num=100, interference=True
+        1.14e15 * u.Hz,
+        size=size,
+        bins=bins,
+        num=100,
+        unwrapped=False,
     )
-
-    hax = hax.to(u.mm).value
-    vax = vax.to(u.mm).value
-
-    fig, ax = plt.subplots()
-    ax.pcolormesh(hax, vax, phase.T, cmap="binary", shading="auto")
-    ax.set_aspect("equal")
-    ax.set_xlim(-1.2, 1.2)
-    ax.set_ylim(-1.2, 1.2)
-    ax.set_xlabel("x (mm)")
-    ax.set_ylabel("y (mm)")
-    plt.show()
 
 
 if __name__ == "__main__":
-    # test_constant_cylinder()
-    # test_constant_box()
+    test_constant_cylinder()
+    test_constant_box()
     test_interferogram_sphere()
