@@ -1078,6 +1078,15 @@ class GenDocsFromAutomodsumm:
 
         return documented
 
+    @staticmethod
+    def always_doc__call__(app: "Sphinx", what, name: str, obj, skip, options):
+        if what != "method":
+            return
+
+        if name == "__call__":
+            return False
+        return
+
 
 def setup(app: "Sphinx"):
 
@@ -1087,6 +1096,7 @@ def setup(app: "Sphinx"):
 
     gendocs_from_automodsumm = GenDocsFromAutomodsumm()
     app.connect("builder-inited", gendocs_from_automodsumm)
+    app.connect("autodoc-skip-member", gendocs_from_automodsumm.always_doc__call__)
 
     app.add_config_value("automod_custom_groups", dict(), True)
     app.add_config_value("automod_generate_module_stub_files", False, True)
