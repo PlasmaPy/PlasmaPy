@@ -154,7 +154,7 @@ def test_particle_list_extended_with_particle_list(various_particles):
 
 
 def test_particle_list_insert(various_particles):
-    """Test insertion of particle-like objects into """
+    """Test insertion of particle-like objects into"""
     various_particles.insert(0, "tau neutrino")
     assert various_particles[0] == "tau neutrino"
     assert _everything_is_particle_or_custom_particle(various_particles)
