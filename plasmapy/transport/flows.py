@@ -41,7 +41,6 @@ class FlowCalculator:
     This does, in fact, do most things for my thesis.
     """
 
-    @profile
     def __init__(
         self,
         all_species,
@@ -82,7 +81,7 @@ class FlowCalculator:
             pressure_gradient_over_n_i = constants.k_B * (T_i * density_gradient / n_i + temperature_gradient)
             # we divide by n_i, which can be zero, leadning to inf, so to correct that...
             pressure_gradient_over_n_i[np.isinf(pressure_gradient_over_n_i)] = 0
-            μ = u.Quantity([mu_hat(i, a, self.all_species, self.flux_surface, N=mu_N) for i in a.integer_charges]) # TODO rework to work on arrays
+            μ = mu_hat(a, self.all_species, self.flux_surface, N=mu_N)
             
             Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
             # --- TD forces eq21

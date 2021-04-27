@@ -115,5 +115,5 @@ def test_K_ps_ai(x, flux_surface):
 
 
 def test_mu(flux_surface):
-    μ = mu_hat(1, hydrogen, all_species, flux_surface)
+    μ = mu_hat(hydrogen, all_species, flux_surface)[1]
     assert np.isfinite(μ).all()

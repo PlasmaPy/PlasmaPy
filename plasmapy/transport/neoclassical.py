@@ -18,10 +18,8 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
-
 def xab_ratio(a: IonizationState, b: IonizationState):
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
-
 
 def M_matrix(species_a: IonizationState, species_b: IonizationState):
     a, b = species_a, species_b
@@ -41,7 +39,6 @@ def M_matrix(species_a: IonizationState, species_b: IonizationState):
     ) ** (9 / 2)
     M = np.array([[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]])
     return M
-
 
 def N_matrix(species_a: IonizationState, species_b: IonizationState):
     """equations A6a through A6f, Houlberg_1997"""
@@ -71,7 +68,6 @@ CL = lambda a, b: Coulomb_logarithm(
     b.n_elem,
     (a.base_particle, b.base_particle),  # simplifying assumption after A4
 )
-
 
 def effective_momentum_relaxation_rate(
     charge_states_a: IonizationState, charge_states_b: IonizationState
@@ -193,7 +189,7 @@ def K_B_ai(
 
 
 LaguerrePolynomials = [
-    lambda x: 1,
+    lambda x: np.ones_like(x),
     lambda x: 5 / 2 - x,
     lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
 ]
@@ -222,7 +218,6 @@ def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface, g=1):
     return F_m
 
 
-@profile
 def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSurface):
     B11 = (
         x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
@@ -230,7 +225,6 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     return B11
 
 
-@profile
 def ν_T_ai(
     x: np.ndarray, i: int, a: IonizationState, all_species: IonizationStateCollection
 ):
@@ -254,7 +248,6 @@ def ν_T_ai(
     return result
 
 
-@profile
 def K_ps_ai(
     x: np.ndarray,
     i: int,
@@ -292,7 +285,6 @@ def K_ps_ai(
     )
 
 
-@profile
 def K(
     x: np.ndarray,
     i: int,
@@ -312,28 +304,7 @@ def K(
     return 1 / (1 / kb + 1 / kps)
 
 
-@profile
-def _integrand(
-    x: np.ndarray,
-    α: int,
-    β: int,
-    i: int,
-    a: IonizationState,
-    all_species: IonizationStateCollection,
-    flux_surface: FluxSurface,
-    **kwargs
-):
-    laguerreterm1 = LaguerrePolynomials[α - 1](x ** 2)
-    laguerreterm2 = LaguerrePolynomials[β - 1](x ** 2)
-    kterm = K(x, i, a, all_species, flux_surface, **kwargs)
-    xterm = x ** 4 * np.exp(-(x ** 2))
-    result = laguerreterm1 * laguerreterm2 * kterm * xterm
-    return result
-
-
-@profile
 def mu_hat(
-    i: int,
     a: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
@@ -345,45 +316,20 @@ def mu_hat(
 ):
     if N is None:
         N = 1000
-    # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
-    ai = a[i]
-    # if a.number_densities[i] == 0:
-    #     return u.Quantity(np.zeros((3, 3)), "kg / (m3 s)")
-    orders = range(1, 4)
-    mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
-
+    orders = np.arange(1, 4)
     π = np.pi
     x = np.logspace(np.log10(xmin), np.log10(xmax), N)
-    for α in orders:
-        for β in orders:
-            y = _integrand(x, α, β, i, a, all_species, flux_surface)
-            integral = trapezoid(y, x)
-            mu_hat_ai[α - 1, β - 1] = integral * (-1) ** (α + β)
-    mass_density_probably = ai.number_density * ai.ion.mass
-    actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
-    return actual_units
-
-def mu_hat_reworked(
-    a: IonizationState,
-    all_species: IonizationStateCollection,
-    flux_surface: FluxSurface,
-    *,
-    xmin=0.0015,
-    xmax=10,
-    N=1000,
-    **kwargs
-):
-    # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
-    orders = range(1, 4)
-    mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
-
-    π = np.pi
-    x = np.logspace(np.log10(xmin), np.log10(xmax), N)
-    for α in orders:
-        for β in orders:
-            y = _integrand(x, α, β, i, a, all_species, flux_surface)
-            integral = trapezoid(y, x)
-            mu_hat_ai[α - 1, β - 1] = integral * (-1) ** (α + β)
-    mass_density_probably = ai.number_density * ai.ion.mass
-    actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
+    
+    α = orders
+    β = orders
+    len_a = len(a.number_densities)
+    signs = (-1) * (α[:, None] + β[None, :])
+    laguerres = np.vstack([LaguerrePolynomials[o-1](x ** 2) for o in orders])
+    kterm = u.Quantity([K(x, i, a, all_species, flux_surface, **kwargs) for i, _ in enumerate(a)]).reshape(len_a, N, 1, 1) # TODO
+    xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
+    y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
+    integral = trapezoid(y, x, axis=1)
+    mu_hat_ai = integral * signs[None, ...]
+    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
     return actual_units
