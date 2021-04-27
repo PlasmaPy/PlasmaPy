@@ -730,9 +730,12 @@ class Automodsumm(Autosummary):
 
 
 class GenDocsFromAutomodsumm:
-    """Needed so stub file are automatically generated."""
-
-    option_spec = AutomodsummOptions.option_spec.copy()
+    """
+    Class used for stub file generation from :rst:dir:`automodapi` and
+    :rst:dir:`automodsumm`.  An instance of the class is connected to the Sphinx
+    event :event:`builder-inited`, which is emitted when the builder object is
+    created.
+    """
 
     _re = {
         "automodsumm": re.compile(r"^\n?(\s*)\.\.\s+automodsumm::\s*(\S+)\s*(?:\n|$)"),
@@ -742,16 +745,32 @@ class GenDocsFromAutomodsumm:
             r"^\s*\.\.\s+(|\S+:)(current)?module::\s*([a-zA-Z0-9_.]+)\s*$"
         ),
     }
+    """
+    Dictionary of regular expressions used for string matching a read document
+    and identify key directives.
+    """
 
     app = None  # type: "Sphinx"
+    """Instance of the Sphinx application."""
+
     logger = logger
+    """
+    Instance of the `~sphinx.util.logging.SphinxLoggerAdapter` for report during
+    builds.
+    """
 
     def __call__(self, app: "Sphinx"):
         """
         This routine is adapted from
         :func:`sphinx.ext.autosummary.process_generate_options` to scan through
-        the source files, check for the `automodsumm` directive, and auto
-        generate any associated stub files.
+        the source files, check for the :rst:dir:`automodsumm` and
+        :rst:dir:`automodapi` directives, and auto generate any associated
+        stub files.
+
+        Parameters
+        ----------
+        app :  `~sphinx.application.Sphinx`
+            Instance of the Sphinx application.
         """
         self.app = app
         genfiles = app.config.autosummary_generate
@@ -792,8 +811,6 @@ class GenDocsFromAutomodsumm:
             )
             return
 
-        # from sphinx.ext.autosummary.generate import generate_autosummary_docs
-
         imported_members = app.config.autosummary_imported_members
         with mock(app.config.autosummary_mock_imports):
             self.generate_docs(
@@ -804,9 +821,6 @@ class GenDocsFromAutomodsumm:
                 overwrite=app.config.autosummary_generate_overwrite,
                 encoding=app.config.source_encoding,
             )
-
-    def find_mod_objs(self, modname: str):
-        return find_mod_objs(modname, app=self.app)
 
     def generate_docs(
         self,
@@ -819,8 +833,38 @@ class GenDocsFromAutomodsumm:
         encoding: str = "utf-8",
     ) -> None:
         """
-        This code was adapted from
-        :func:`sphinx.ext.autosummary.generate.generate_autosummary_docs`.
+        Generate and write stub files for objects defind in the :rst:dir:`automodapi`
+        and :rst:dir:`autmodsumm` directives.
+
+        Parameters
+        ----------
+        source_filenames : List[str]
+            A list of all filenames for with the :rst:dir:`automodapi` and
+            :rst:dir:`automodsumm` directives will be searched for.
+
+        output_dir : str
+            Directory for which the stub files will be written to.
+
+        suffix : str
+            (Default ``".rst"``) Suffix given to the written stub files.
+
+        base_path : str
+            The common base path for the filenames listed in ``source_filenames``.
+            This is typically the source directory of the Sphinx application.
+
+        imported_members : bool
+            (Default `False`) Set `True` to include imported members in the
+            stub file documentation for *module" object types.
+
+        overwrite : bool
+            (Default `True`)  Will cause existing stub files to be overwritten.
+
+        encoding : str
+            (Default: ``"utf-8"``) Encoding for the written stub files.
+
+
+        .. note::  This code was adapted from
+                   :func:`sphinx.ext.autosummary.generate.generate_autosummary_docs`.
         """
         app = self.app
 
@@ -922,9 +966,13 @@ class GenDocsFromAutomodsumm:
 
     def find_in_files(self, filenames: List[str]) -> List[AutosummaryEntry]:
         """
-        Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_files`.
+        Search files for the :rst:dir:`automodapi` and :rst:dr:`automodsumm`
+        directies and generate a
 
         Find out what items are documented in `source/*.rst`.
+
+        .. note:: Adapted from
+                  :func:`sphinx.ext.autosummary.generate.find_autosummary_in_files`.
         """
         documented = []  # type: List[AutosummaryEntry]
         for filename in filenames:
@@ -1079,7 +1127,14 @@ class GenDocsFromAutomodsumm:
         return documented
 
     @staticmethod
-    def always_doc__call__(app: "Sphinx", what, name: str, obj, skip, options):
+    def event_handler__autodoc_skip_member(
+            app: "Sphinx", what: str, name: str, obj: Any, skip: bool, options: dict
+    ):
+        """
+        Event handler for the Sphinx event :event:`autodoc-skip-member`.  This
+        handler ensures the ``__call__`` method is documented if defined by the
+        associated class.
+        """
         if what != "method":
             return
 
