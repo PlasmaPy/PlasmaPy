@@ -12,12 +12,13 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
+from abc import ABC, abstractmethod
 from typing import Union
 
 from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
 
 
-class LineIntegratedDiagnostic:
+class LineIntegratedDiagnostic(ABC):
     """
     An abstract line integrated diagnostic
     """
@@ -191,10 +192,7 @@ class LineIntegratedDiagnostic:
         pts = (mi + b) * u.m
         pts = np.moveaxis(pts, 2, 3)
 
-        # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
-        # of points (nx*ny*nz, 3) as required by the grids interpolators
-        nx, ny, nz, ndim = pts.shape
-        pts = np.reshape(pts, (nx * ny * nz, ndim))
+        
 
         # Evaluate the integrands
         integrands = self.integrand(pts)
@@ -206,13 +204,12 @@ class LineIntegratedDiagnostic:
         # Integrate
         integral = []
         for integrand in integrands:
-            # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
-            integrand = np.reshape(integrand, (nx, ny, nz))
             # Integrate
             integral.append(np.trapz(integrand, axis=2) * (ds * u.m))
 
         return (xax * u.m, yax * u.m, *integral)
 
+    @abstractmethod
     def integrand(self, pts):
         """
         Returns the integrand at a particular position.
@@ -236,10 +233,7 @@ class LineIntegratedDiagnostic:
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
         """
-        raise NotImplementedError(
-            "The integrand method must be implemented" " for this diagnostic."
-        )
-
+        ...
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
     r"""
@@ -292,8 +286,17 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
             a list, each of which will then be integrated separately.
 
         """
-        arr = self.grid.volume_averaged_interpolator(pts, *self.quantities)
-        return arr
+        # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
+        # of points (nx*ny*nz, 3) as required by the grids interpolators
+        nx, ny, nz, ndim = pts.shape
+        pts = np.reshape(pts, (nx * ny * nz, ndim))
+        
+        integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
+        
+        # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
+        integrand = np.reshape(integrand, (nx, ny, nz))
+        
+        return integrand
 
 
 class Interferometer(LineIntegrateScalarQuantities):
