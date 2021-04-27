@@ -22,10 +22,9 @@ def test_abstract_line_integrated_diagnostic():
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
-    # Test that you can't calculate a line integral on the abstract base class
-    obj = LineIntegratedDiagnostic(grid, source, detector)
-    with pytest.raises(NotImplementedError):
-        obj.line_integral()
+    # Test that you can't instantiate the base class
+    with pytest.raises(TypeError):
+        obj = LineIntegratedDiagnostic(grid, source, detector)
 
 
 def test_integrate_scalar_quantities():
@@ -191,9 +190,9 @@ def test_interferogram_sphere():
 
 if __name__ == "__main__":
     pass
-    # test_abstract_line_integrated_diagnostic()
-    # test_integrate_scalar_quantities()
-    # test_constant_cylinder()
-    # test_non_collimated()
-    # test_constant_box()
-    # test_interferogram_sphere()
+    test_abstract_line_integrated_diagnostic()
+    test_integrate_scalar_quantities()
+    test_constant_cylinder()
+    test_non_collimated()
+    test_constant_box()
+    test_interferogram_sphere()

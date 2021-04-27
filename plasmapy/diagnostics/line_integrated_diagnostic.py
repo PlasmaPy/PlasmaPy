@@ -15,8 +15,6 @@ import numpy as np
 from abc import ABC, abstractmethod
 from typing import Union
 
-from plasmapy.diagnostics.proton_radiography import _coerce_to_cartesian_si
-
 
 class LineIntegratedDiagnostic(ABC):
     """
@@ -28,66 +26,120 @@ class LineIntegratedDiagnostic(ABC):
         grid: u.m,
         source,
         detector,
+        detector_hdir=None,
         verbose=True,
     ):
 
         # self.grid is the grid object
         self.grid = grid
+
         # self.grid_arr is the grid positions in si. This is created here
         # so that it isn't continously called later
         self.grid_arr = grid.grid.to(u.m).value
 
         self.verbose = verbose
 
-        self.source = _coerce_to_cartesian_si(source)
-        self.detector = _coerce_to_cartesian_si(detector)
-
+        self.source = self._coerce_to_cartesian_si(source)
+        self.detector = self._coerce_to_cartesian_si(detector)
         self._log(f"Source: {self.source} m")
         self._log(f"Detector: {self.detector} m")
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
-        self.src_n = self.source / np.linalg.norm(self.source)
+        self.src_n = -self.source / np.linalg.norm(self.source)
         self.det_n = -self.detector / np.linalg.norm(self.detector)
         # Vector directly from source to detector
-        self.src_det_vec = self.detector - self.source
+        self.src_det = self.detector - self.source
 
         # Experiment axis is the unit vector from the source to the detector
-        self.src_det_n = self.src_det_vec / np.linalg.norm(self.src_det_vec)
+        self.src_det_n = self.src_det / np.linalg.norm(self.src_det)
 
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
+        self._log(f"Magnification: {self.mag}")
 
-        # Create unit vectors that define the detector plane
-        self._create_detector_plane()
+        # Check that source-detector vector actually passes through the grid
+        if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
+            raise ValueError(
+                "The vector between the source and the detector "
+                "does not intersect the grid provided!"
+            )
+
+        # ************************************************************************
+        # Define the detector plane
+        # ************************************************************************
+
+        # Load or calculate the detector hdir
+        if detector_hdir is not None:
+            self.det_hdir = detector_hdir / np.linalg.norm(detector_hdir)
+        else:
+            self.det_hdir = self._default_detector_hdir()
+
+        # Calculate the detector vdir
+        ny = np.cross(self.det_hdir, self.det_n)
+        self.det_vdir = -ny / np.linalg.norm(ny)
 
     def _log(self, msg):
         if self.verbose:
             print(msg)
 
-    def _create_detector_plane(self):
-        r"""
-        Defines the horizontal and vertical axes of the detector plane. The
-        horizontal axis is defined as being perpendicular to both the
-        source-detector axis and the z-axis. In the case where the pos vector
-        is aligned with the z-axis, this is automatically chosen to be the
-        x-axis. THe vertical axis is then chosen to be orthogonal and
-        right-handed with respect to the horizontal axis and the
-        source-detector axis.
+    def _coerce_to_cartesian_si(self, pos):
         """
-        # Create 2D grids of detector points
+        Takes a tuple of `astropy.unit.Quantity` values representing a position
+        in space in either Cartesian, cylindrical, or spherical coordinates, and
+        returns a numpy array representing the same point in Cartesian
+        coordinates and units of meters.
+        """
+        # Auto-detect geometry based on units
+        geo_units = [x.unit for x in pos]
+        if geo_units[2].is_equivalent(u.rad):
+            geometry = "spherical"
+        elif geo_units[1].is_equivalent(u.rad):
+            geometry = "cylindrical"
+        else:
+            geometry = "cartesian"
+
+        # Convert geometrical inputs between coordinates systems
+        pos_out = np.zeros(3)
+        if geometry == "cartesian":
+            x, y, z = pos
+            pos_out[0] = x.to(u.m).value
+            pos_out[1] = y.to(u.m).value
+            pos_out[2] = z.to(u.m).value
+
+        elif geometry == "cylindrical":
+            r, t, z = pos
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            z = z.to(u.m)
+            pos_out[0] = (r * np.cos(t)).to(u.m).value
+            pos_out[1] = (r * np.sin(t)).to(u.m).value
+            pos_out[2] = z.to(u.m).value
+
+        elif geometry == "spherical":
+            r, t, p = pos
+            r = r.to(u.m)
+            t = t.to(u.rad).value
+            p = p.to(u.rad).value
+
+            pos_out[0] = (r * np.sin(t) * np.cos(p)).to(u.m).value
+            pos_out[1] = (r * np.sin(t) * np.sin(p)).to(u.m).value
+            pos_out[2] = (r * np.cos(t)).to(u.m).value
+
+        return pos_out
+
+    def _default_detector_hdir(self):
+        """
+        Calculates the default horizontal unit vector for the detector plane
+        (see __init__ description for details)
+        """
+        # Create unit vectors that define the detector plane
         # Define plane  horizontal axis
         if np.allclose(np.abs(self.det_n), np.array([0, 0, 1])):
             nx = np.array([1, 0, 0])
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
         nx = nx / np.linalg.norm(nx)
-        self.det_hax = nx  # Unit vector for hax, detector horizontal axis
-
-        # Define the detector vertical axis as being orthogonal to the
-        # detector axis and the horizontal axis
-        ny = np.cross(nx, self.det_n)
-        ny = -ny / np.linalg.norm(ny)
-        self.det_vax = ny  # Unit vector for vax, detector vertical axis
+        return nx
 
     def line_integral(
         self,
@@ -153,15 +205,15 @@ class LineIntegratedDiagnostic(ABC):
 
         # Shift those points in space to be in the detector plane
         det_pts = (
-            np.outer(x_offset, self.det_hax)
-            + np.outer(y_offset, self.det_vax)
+            np.outer(x_offset, self.det_hdir)
+            + np.outer(y_offset, self.det_vdir)
             + self.detector
         )
         det_pts = np.reshape(det_pts, [bins[0], bins[1], 3])
 
         # Create 2D grids of source points
         if collimated:
-            src_pts = det_pts - self.src_det_vec
+            src_pts = det_pts - self.src_det
         else:
             # If not collimated, assume a point source
             src_pts = np.outer(np.ones([bins[0], bins[1]]), self.source)
@@ -169,7 +221,7 @@ class LineIntegratedDiagnostic(ABC):
 
         # Determine where the grid begins and ends as fractions of the
         # source-to-detector vector
-        source_to_det = np.linalg.norm(self.src_det_vec)
+        source_to_det = np.linalg.norm(self.src_det)
         source_to_grid = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
         grid_to_det = np.min(np.linalg.norm(self.grid_arr - self.detector, axis=3))
 
@@ -191,8 +243,6 @@ class LineIntegratedDiagnostic(ABC):
 
         pts = (mi + b) * u.m
         pts = np.moveaxis(pts, 2, 3)
-
-        
 
         # Evaluate the integrands
         integrands = self.integrand(pts)
@@ -234,6 +284,7 @@ class LineIntegratedDiagnostic(ABC):
             a list, each of which will then be integrated separately.
         """
         ...
+
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
     r"""
@@ -290,12 +341,12 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         # of points (nx*ny*nz, 3) as required by the grids interpolators
         nx, ny, nz, ndim = pts.shape
         pts = np.reshape(pts, (nx * ny * nz, ndim))
-        
+
         integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
-        
+
         # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
         integrand = np.reshape(integrand, (nx, ny, nz))
-        
+
         return integrand
 
 
