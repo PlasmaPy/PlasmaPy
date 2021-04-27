@@ -135,14 +135,14 @@ class Test__characteristic_errors:
 
 @pytest.fixture
 def characteristic():
-    r""" "Create a dummy characteristic with random values"""
+    r"""Create a dummy characteristic with random values"""
 
     return langmuir.Characteristic(bias_arr, current_arr)
 
 
 @pytest.fixture
 def characteristic_simulated():
-    r""" "Create a simulated probe characteristic (provisional)"""
+    r"""Create a simulated probe characteristic (provisional)"""
 
     T_e_sim = 1 * u.eV
     n_e_sim = 1e18 * u.m ** -3
