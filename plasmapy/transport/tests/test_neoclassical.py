@@ -38,7 +38,11 @@ carbon_states = all_species["C"]
 
 @pytest.mark.parametrize(
     ["function", "shape"],
-    [(N_matrix, (3, 3)), (M_matrix, (3, 3)), (N_script, (3, 3)),],
+    [
+        (N_matrix, (3, 3)),
+        (M_matrix, (3, 3)),
+        (N_script, (3, 3)),
+    ],
 )
 def test_matrix_between_elements(function, shape, num_regression):
     data = function(hydrogen, carbon_states)
@@ -51,7 +55,10 @@ def test_matrix_between_elements(function, shape, num_regression):
 
 
 @pytest.mark.parametrize(
-    ["function", "shape"], [(M_script, (3, 3)),],
+    ["function", "shape"],
+    [
+        (M_script, (3, 3)),
+    ],
 )
 def test_matrix_between_element_and_all_species(function, shape, num_regression):
     data = function(hydrogen, all_species)
@@ -59,7 +66,12 @@ def test_matrix_between_element_and_all_species(function, shape, num_regression)
     num_regression.check({function.__name__: data.si.value.flatten()})
 
 
-@pytest.mark.parametrize("function", [effective_momentum_relaxation_rate,])
+@pytest.mark.parametrize(
+    "function",
+    [
+        effective_momentum_relaxation_rate,
+    ],
+)
 def test_number_between_ionization_states(function, num_regression):
     data = function(hydrogen, carbon_states)
     num_regression.check({function.__name__: data.si.value})

@@ -18,8 +18,10 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
+
 def xab_ratio(a: IonizationState, b: IonizationState):
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
+
 
 def M_matrix(species_a: IonizationState, species_b: IonizationState):
     a, b = species_a, species_b
@@ -39,6 +41,7 @@ def M_matrix(species_a: IonizationState, species_b: IonizationState):
     ) ** (9 / 2)
     M = np.array([[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]])
     return M
+
 
 def N_matrix(species_a: IonizationState, species_b: IonizationState):
     """equations A6a through A6f, Houlberg_1997"""
@@ -68,6 +71,7 @@ CL = lambda a, b: Coulomb_logarithm(
     b.n_elem,
     (a.base_particle, b.base_particle),  # simplifying assumption after A4
 )
+
 
 def effective_momentum_relaxation_rate(
     charge_states_a: IonizationState, charge_states_b: IonizationState
@@ -319,17 +323,23 @@ def mu_hat(
     orders = np.arange(1, 4)
     π = np.pi
     x = np.logspace(np.log10(xmin), np.log10(xmax), N)
-    
+
     α = orders
     β = orders
     len_a = len(a.number_densities)
     signs = (-1) * (α[:, None] + β[None, :])
-    laguerres = np.vstack([LaguerrePolynomials[o-1](x ** 2) for o in orders])
-    kterm = u.Quantity([K(x, i, a, all_species, flux_surface, **kwargs) for i, _ in enumerate(a)]).reshape(len_a, N, 1, 1) # TODO
+    laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
+    kterm = u.Quantity(
+        [K(x, i, a, all_species, flux_surface, **kwargs) for i, _ in enumerate(a)]
+    ).reshape(
+        len_a, N, 1, 1
+    )  # TODO
     xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
     y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
     integral = trapezoid(y, x, axis=1)
     mu_hat_ai = integral * signs[None, ...]
     mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
-    actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
+    actual_units = (
+        (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
+    )
     return actual_units

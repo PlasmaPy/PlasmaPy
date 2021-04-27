@@ -34,11 +34,14 @@ temperature_gradient = {
 }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def fc(flux_surface):
     fc = FlowCalculator(
-        all_species, flux_surface, density_gradient, temperature_gradient,
-        mu_N = 1000,
+        all_species,
+        flux_surface,
+        density_gradient,
+        temperature_gradient,
+        mu_N=1000,
     )
     return fc
 
@@ -48,15 +51,18 @@ def test_get_flows(fc, num_regression):
         if "0" in ion:
             continue
         assert np.isfinite(r).all(), ion
-    num_regression.check({key: value.si.value for key, value in fc._charge_state_flows.items()})
+    num_regression.check(
+        {key: value.si.value for key, value in fc._charge_state_flows.items()}
+    )
 
 
 @pytest.mark.parametrize(
-    "key", [
+    "key",
+    [
         "BP",
         pytest.param("CL", marks=pytest.mark.xfail(raises=u.UnitConversionError)),
         pytest.param("PS", marks=pytest.mark.xfail(raises=u.UnitConversionError)),
-    ]
+    ],
 )
 def test_fluxes_partial(fc, key, num_regression):
     fluxes = getattr(fc, f"_fluxes_{key}")
@@ -71,9 +77,7 @@ def test_fluxes_partial(fc, key, num_regression):
     num_regression.check(d_partial)
 
 
-@pytest.mark.xfail(
-    raises=u.UnitConversionError, reason="units are off in flows"
-)
+@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in flows")
 def test_diffusion_coefficient(fc, num_regression):
     d = {}
     for ion, D in fc.diffusion_coefficient.items():
@@ -83,9 +87,7 @@ def test_diffusion_coefficient(fc, num_regression):
     num_regression.check(d)
 
 
-@pytest.mark.xfail(
-    raises=u.UnitConversionError, reason="units are off in flows"
-)
+@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in flows")
 def test_thermal_coefficient(fc, num_regression):
     d = {}
     for ion, χ in fc.thermal_conductivity.items():
@@ -107,9 +109,7 @@ def test_bootstrap_current(fc, num_regression):
     assert_quantity_allclose(Ib, -0.007 * u.MA / u.m ** 2)
 
 
-@pytest.mark.xfail(
-    raises=u.UnitConversionError, reason="units are off"
-)
+@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off")
 def test_fluxes(fc, num_regression):
     d = {}
     for ion, (Γ, q) in fc.fluxes.items():

@@ -15,6 +15,7 @@ try:
 except ImportError:
     from scipy.integrate import cumulative_trapezoid, trapezoid
 
+
 @dataclass
 class FluxSurface:
     """Represents a single flux surface out of a magnetic equilibrium, experimental or otherwise."""

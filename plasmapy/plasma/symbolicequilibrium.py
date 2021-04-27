@@ -180,7 +180,8 @@ class SymbolicEquilibrium:
 
         for psi in psi_values:
             yield self.get_flux_surface(
-                psi, RZPSI=(R, Z, PSI),
+                psi,
+                RZPSI=(R, Z, PSI),
             )
 
 
