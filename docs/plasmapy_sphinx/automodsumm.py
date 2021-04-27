@@ -168,7 +168,6 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
 __all__ = [
     "Automodsumm",
     "AutomodsummOptions",
-    "AutomodsummRenderer",
     "GenDocsFromAutomodsumm",
     "option_str_list",
     "setup",
@@ -178,7 +177,6 @@ import os
 import re
 
 from importlib import import_module
-from jinja2 import TemplateNotFound
 from sphinx.ext.autodoc.mock import mock
 from sphinx.ext.autosummary import (
     Autosummary,
@@ -188,7 +186,6 @@ from sphinx.ext.autosummary import (
 )
 from sphinx.ext.autosummary.generate import (
     AutosummaryEntry,
-    AutosummaryRenderer,
     generate_autosummary_content,
 )
 from sphinx.locale import __
@@ -196,11 +193,11 @@ from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Callable, Dict, List, Tuple, Union
 
+from .generate import AutomodsummRenderer
 from .utils import (
     default_grouping_info,
     find_mod_objs,
     get_custom_grouping_info,
-    templates_dir,
 )
 
 logger = logging.getLogger(__name__)
@@ -211,7 +208,6 @@ if False:
     from docutils.nodes import Node
     from docutils.statemachine import StringList
     from sphinx.application import Sphinx
-    from sphinx.builders import Builder
     from sphinx.config import Config
     from sphinx.environment import BuildEnvironment
 
@@ -225,64 +221,6 @@ def option_str_list(argument):
         raise ValueError("argument required but none supplied")
     else:
         return [s.strip() for s in argument.split(",")]
-
-
-class AutomodsummRenderer(AutosummaryRenderer):
-    """
-    A helper class for retrieving and rendering :rst:dir:`automodsumm` templates
-    when writing stub files.
-
-    Parameters
-    ----------
-
-    app : `sphinx.application.Sphinx`
-        Instance of the `sphinx` application.
-
-    template_dir : str
-        Path to a specified template directory.
-    """
-
-    def __init__(
-        self, app: Union["Builder", "Sphinx"], template_dir: str = None,
-    ) -> None:
-
-        asumm_path = templates_dir
-        relpath = os.path.relpath(asumm_path, start=app.srcdir)
-        app.config.templates_path.append(relpath)
-        super().__init__(app, template_dir)
-
-    def render(self, template_name: str, context: Dict) -> str:
-        """
-        Render a template file.  The render will first search for the template in
-        the path specified by the sphinx configuration value :confval:`templates_path`,
-        then the `~plasmapy_sphinx.templates_dir, and finally the
-        :rst:dir:`autosummary` templates directory.  Upon finding the template,
-        the values from the ``context`` dictionary will inserted into the
-        template and returned.
-
-        Parameters
-        ----------
-        template_name : str
-            Name of the template file.
-
-        context: dict
-            Dictionary of values to be rendered (inserted) into the template.
-        """
-        if not template_name.endswith(".rst"):
-            # if does not have '.rst' then objtype likely given for template_name
-            template_name += ".rst"
-
-        template = None
-        for name in [template_name, "base.rst"]:
-            for _path in ["", "automodapi/", "autosummary/"]:
-                try:
-                    template = self.env.get_template(_path + name)
-                    return template.render(context)
-                except TemplateNotFound:
-                    pass
-
-        if template is None:
-            raise TemplateNotFound
 
 
 class AutomodsummOptions:
