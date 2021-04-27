@@ -141,7 +141,7 @@ class LineIntegratedDiagnostic(ABC):
         nx = nx / np.linalg.norm(nx)
         return nx
 
-    def line_integral(
+    def _line_integral(
         self,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
         bins=[50, 50],
@@ -245,7 +245,7 @@ class LineIntegratedDiagnostic(ABC):
         pts = np.moveaxis(pts, 2, 3)
 
         # Evaluate the integrands
-        integrands = self.integrand(pts)
+        integrands = self._integrand(pts)
 
         # If a single integrand is returned, put it in a list
         if not isinstance(integrands, tuple):
@@ -260,7 +260,7 @@ class LineIntegratedDiagnostic(ABC):
         return (xax * u.m, yax * u.m, *integral)
 
     @abstractmethod
-    def integrand(self, pts):
+    def _integrand(self, pts):
         """
         Returns the integrand at a particular position.
 
@@ -282,6 +282,17 @@ class LineIntegratedDiagnostic(ABC):
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
+        """
+        ...
+        
+    @abstractmethod
+    def integrate(self):
+        """
+        Runs the line-integration routine
+
+        This method is over-written by subclasses to reflect actual
+        diagnostic physics, and can pull plasma parameter information from
+        the parameters dict provided.
         """
         ...
 
@@ -317,7 +328,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         # Continue with the rest of the parent class init
         super().__init__(grid, source, detector, verbose=verbose)
 
-    def integrand(self, pts):
+    def _integrand(self, pts):
         r"""
         Returns the scalar value of the quantity or quantities specified
         at each point.
@@ -348,13 +359,23 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         integrand = np.reshape(integrand, (nx, ny, nz))
 
         return integrand
+    
+    def integrate(
+        self,
+        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
+        bins=[50, 50],
+        collimated=True,
+        num=100,
+        ):
+         return self._line_integral(size=size, bins=bins,
+                                    collimated=collimated, num=num)
 
 
 class Interferometer(LineIntegrateScalarQuantities):
     def __init__(self, grid, source, detector, verbose=False):
         super().__init__(grid, source, detector, quantities="n_e", verbose=verbose)
 
-    def interferogram(
+    def integrate(
         self,
         probe_freq: u.Hz,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
@@ -373,7 +394,7 @@ class Interferometer(LineIntegrateScalarQuantities):
         )
         n_c = n_c.to(u.cm ** -3)
 
-        hax, vax, int_ne = self.line_integral(
+        hax, vax, int_ne = self._line_integral(
             size=size, bins=bins, collimated=collimated, num=num
         )
 

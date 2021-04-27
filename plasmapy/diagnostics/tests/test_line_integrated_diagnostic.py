@@ -58,7 +58,7 @@ def test_constant_cylinder():
     # Test that line-integrating with collimated = False yields
 
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    hax, vax, integral = obj.line_integral(
+    hax, vax, integral = obj._line_integral(
         size=size, bins=[100, 100], collimated=True, num=100
     )
     hax = hax.to(u.mm).value
@@ -97,7 +97,7 @@ def test_non_collimated():
     # Run the same test but with a point source (not collimated)
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.mm
-    hax, vax, integral = obj.line_integral(
+    hax, vax, integral = obj._line_integral(
         size=size, bins=[100, 100], collimated=False, num=100
     )
 
@@ -140,7 +140,7 @@ def test_constant_box():
     # Test that line-integrating with collimated = False yields
 
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    hax, vax, integral = obj.line_integral(
+    hax, vax, integral = obj._line_integral(
         size=size, bins=[100, 100], collimated=True, num=100
     )
     hax = hax.to(u.mm).value
@@ -179,7 +179,7 @@ def test_interferogram_sphere():
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     bins = [350, 350]
 
-    hax, vax, phase = obj.interferogram(
+    hax, vax, phase = obj.integrate(
         1.14e15 * u.Hz,
         size=size,
         bins=bins,
