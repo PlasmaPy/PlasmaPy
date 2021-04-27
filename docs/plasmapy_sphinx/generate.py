@@ -20,11 +20,10 @@ from sphinx.ext.autosummary.generate import (
     generate_autosummary_content,
 )
 from sphinx.locale import __
+from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Dict, List, Union
 
-from .automodapi import AutomodapiOptions
-from .automodsumm import AutomodsummOptions
 from .utils import templates_dir
 
 if False:
@@ -41,6 +40,23 @@ class AutomodsummEntry(AutosummaryEntry):
     """
     A typed version of `~collections.namedtuple` representing an stub file
     entry for :rst:dir:`automodsumm`.
+
+    Parameters
+    ----------
+    name : `str`
+        The objects fully qualified name of the object for which the stub file
+        will be generated.
+
+    path : `str`
+        Absolute file path to the toctree directory.  This is where the stub
+        file will be placed.
+
+    recursive : `bool`
+        Specifies if stub file for modules and and sub-packages should be
+        generated.
+
+    template : `str`
+        Name of the template file to be used in generating the stub file.
     """
 
 
@@ -72,7 +88,7 @@ class AutomodsummRenderer(AutosummaryRenderer):
         """
         Render a template file.  The render will first search for the template in
         the path specified by the sphinx configuration value :confval:`templates_path`,
-        then the `~plasmapy_sphinx.templates_dir, and finally the
+        then the `~plasmapy_sphinx.utils.templates_dir`, and finally the
         :rst:dir:`autosummary` templates directory.  Upon finding the template,
         the values from the ``context`` dictionary will inserted into the
         template and returned.
@@ -206,33 +222,34 @@ class GenDocsFromAutomodsumm:
         encoding: str = "utf-8",
     ) -> None:
         """
-        Generate and write stub files for objects defind in the :rst:dir:`automodapi`
-        and :rst:dir:`autmodsumm` directives.
+        Generate and write stub files for objects defined in the :rst:dir:`automodapi`
+        and :rst:dir:`automodsumm` directives.
 
         Parameters
         ----------
+
         source_filenames : List[str]
             A list of all filenames for with the :rst:dir:`automodapi` and
             :rst:dir:`automodsumm` directives will be searched for.
 
-        output_dir : str
+        output_dir : `str`
             Directory for which the stub files will be written to.
 
-        suffix : str
+        suffix : `str`
             (Default ``".rst"``) Suffix given to the written stub files.
 
-        base_path : str
+        base_path : `str`
             The common base path for the filenames listed in ``source_filenames``.
             This is typically the source directory of the Sphinx application.
 
-        imported_members : bool
+        imported_members : `bool`
             (Default `False`) Set `True` to include imported members in the
-            stub file documentation for *module" object types.
+            stub file documentation for *module* object types.
 
-        overwrite : bool
+        overwrite : `bool`
             (Default `True`)  Will cause existing stub files to be overwritten.
 
-        encoding : str
+        encoding : `str`
             (Default: ``"utf-8"``) Encoding for the written stub files.
 
 
@@ -337,9 +354,9 @@ class GenDocsFromAutomodsumm:
                 overwrite=overwrite,
             )
 
-    def find_in_files(self, filenames: List[str]) -> List[AutosummaryEntry]:
+    def find_in_files(self, filenames: List[str]) -> List[AutomodsummEntry]:
         """
-        Search files for the :rst:dir:`automodapi` and :rst:dr:`automodsumm`
+        Search files for the :rst:dir:`automodapi` and :rst:dir:`automodsumm`
         directies and generate a
 
         Find out what items are documented in `source/*.rst`.
@@ -347,7 +364,7 @@ class GenDocsFromAutomodsumm:
         .. note:: Adapted from
                   :func:`sphinx.ext.autosummary.generate.find_autosummary_in_files`.
         """
-        documented = []  # type: List[AutosummaryEntry]
+        documented = []  # type: List[AutomodsummEntry]
         for filename in filenames:
             with open(filename, encoding="utf-8", errors="ignore") as f:
                 lines = f.read().splitlines()
@@ -358,16 +375,17 @@ class GenDocsFromAutomodsumm:
         self,
         lines: List[str],
         filename: str = None,
-    ) -> List[AutosummaryEntry]:
+    ) -> List[AutomodsummEntry]:
         """
         Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
 
         Find out what items appear in automodsumm:: directives in the given lines.
         """
 
-        # from .automodapi import AutomodapiOptions
+        from .automodapi import AutomodapiOptions
+        from .automodsumm import AutomodsummOptions
 
-        documented = []  # type: List[AutosummaryEntry]
+        documented = []  # type: List[AutomodsummEntry]
 
         current_module = None
         modname = ""
@@ -479,7 +497,7 @@ class GenDocsFromAutomodsumm:
 
                 for name in obj_list:
                     documented.append(
-                        AutosummaryEntry(
+                        AutomodsummEntry(
                             name=name,
                             path=options["toctree"],
                             template=options["template"],
@@ -502,7 +520,7 @@ class GenDocsFromAutomodsumm:
     @staticmethod
     def event_handler__autodoc_skip_member(
             app: "Sphinx", what: str, name: str, obj: Any, skip: bool, options: dict
-    ):
+    ):  # noqa
         """
         Event handler for the Sphinx event :event:`autodoc-skip-member`.  This
         handler ensures the ``__call__`` method is documented if defined by the
