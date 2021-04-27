@@ -95,6 +95,7 @@ class FlowCalculator:
                 self.r_pt[sym] = r_pt[i]
                 self.S_pt[sym] = S_pt[i]
                 self.thermodynamic_forces[sym] = thermodynamic_forces[i]
+                self.μ[sym] = μ[i]
 
 
 
