@@ -1206,7 +1206,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def atomic_number(self) -> Integral:
         """
-        Return the number of protons in an element, isotope, or ion.
+        The number of protons in an element, isotope, or ion.
 
         Raises
         ------
@@ -1249,7 +1249,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def neutron_number(self) -> Integral:
         """
-        Return the number of neutrons in an isotope or nucleon.
+        The number of neutrons in an isotope or nucleon.
 
         This attribute will return the number of neutrons in an isotope,
         or ``1`` for a neutron.
@@ -1363,8 +1363,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def lepton_number(self) -> Integral:
         """
-        Return ``1`` for leptons, ``-1`` for antileptons, and ``0``
-        otherwise.
+        ``1`` for leptons, ``-1`` for antileptons, and ``0`` otherwise.
 
         This attribute returns the number of leptons minus the number of
         antileptons, excluding bound electrons in an atom or ion.
@@ -1425,7 +1424,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def spin(self) -> Real:
         """
-        Return the spin of the particle.
+        The intrinsic spin of the particle.
 
         If the spin is unavailable, then a
         `~plasmapy.particles.exceptions.MissingParticleDataError` will be raised.
@@ -1474,7 +1473,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def categories(self) -> Set[str]:
         """
-        Return the particle's categories.
+        The particle's categories.
 
         Examples
         --------
@@ -1622,8 +1621,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def is_electron(self) -> bool:
         """
-        Return `True` if the particle is an electron, and `False`
-        otherwise.
+        `True` if the particle is an electron, and `False` otherwise.
 
         Examples
         --------
@@ -1638,7 +1636,7 @@ class Particle(AbstractPhysicalParticle):
     @property
     def is_ion(self) -> bool:
         """
-        Return `True` if the particle is an ion, and `False` otherwise.
+        `True` if the particle is an ion, and `False` otherwise.
 
         Examples
         --------
@@ -2110,7 +2108,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     @property
     def charge(self) -> u.C:
-        """Return the custom particle's electric charge in coulombs."""
+        """The custom particle's electric charge in coulombs."""
         return self._charge
 
     @charge.setter
@@ -2154,7 +2152,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     @property
     def mass(self) -> u.kg:
-        """Return the custom particle's mass."""
+        """The custom particle's mass."""
         return self._mass
 
     @mass.setter
