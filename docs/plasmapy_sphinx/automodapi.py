@@ -19,9 +19,9 @@ A configuration value is a variable that con be defined in ``conf.py`` to config
 the default behave of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
-.. confval:: automodapi_inheritance_diagram
+.. confval:: automodapi_include_inheritance_diagram
 
-.. confval:: automodapi_toctreedirnm
+.. confval:: automodapi_default_toctree_dir
 
 .. confval:: automodapi_group_order
 
@@ -107,7 +107,7 @@ class AutomodapiOptions(AutomodsummOptions):
             if "toctree" in self.options:
                 del self.options["toctree"]
         elif "toctree" not in self.options:
-            self.options["toctree"] = self.app.config.automodapi_toctreedirnm
+            self.options["toctree"] = self.app.config.automodapi_default_toctree_dir
 
         super().condition_toctree_option()
 
@@ -135,7 +135,7 @@ class AutomodapiOptions(AutomodsummOptions):
         else:
             self.options[
                 "inheritance-diagram"
-            ] = self.app.config.automodapi_inheritance_diagram
+            ] = self.app.config.automodapi_include_inheritance_diagram
 
     def condition_group_options(self):
         if "no-groups" in self.options and self.options["no-groups"]:
@@ -447,11 +447,8 @@ def setup(app: Sphinx):
 
     app.add_autodocumenter(ModAPIDocumenter)
 
-    if not hasattr(app.config, "automodapi_inheritance_diagram"):
-        app.add_config_value("automodapi_inheritance_diagram", True, True)
-    if not hasattr(app.config, "automodapi_toctreedirnm"):
-        app.add_config_value("automodapi_toctreedirnm", "api", True)
-
+    app.add_config_value("automodapi_include_inheritance_diagram", True, True)
+    app.add_config_value("automodapi_default_toctree_dir", "api", True)
     app.add_config_value(
         "automodapi_group_order",
         ("modules", "classes", "exceptions", "warnings", "functions", "variables"),
