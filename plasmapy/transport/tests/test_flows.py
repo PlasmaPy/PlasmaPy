@@ -42,7 +42,6 @@ def fc(flux_surface):
     return fc
 
 
-@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in _charge_state_flows")
 def test_get_flows(fc, num_regression):
     for ion, r in fc._charge_state_flows.items():
         if "0" in ion:
@@ -53,7 +52,7 @@ def test_get_flows(fc, num_regression):
 
 @pytest.mark.parametrize(
     "key", [
-        pytest.param("BP", marks=pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in _charge_state_flows")),
+        "BP",
         "CL",
         "PS",
     ]

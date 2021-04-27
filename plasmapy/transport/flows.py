@@ -97,9 +97,6 @@ class FlowCalculator:
                 self.thermodynamic_forces[sym] = thermodynamic_forces[i]
                 self.μ[sym] = μ[i]
 
-
-
-
         lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")  # TODO verify
         for i, a in enumerate(all_species):
             rarray = rbar_flows_list[i]
