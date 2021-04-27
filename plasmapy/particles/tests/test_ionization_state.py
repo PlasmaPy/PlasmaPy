@@ -283,7 +283,7 @@ class Test_IonizationState:
 
     def test_slicing(self):
         """
-        Test that an IonizationState instance not be sliced.
+        Test that an IonizationState instance can be sliced.
         """
         self.instances["Li"][1:3]
 
