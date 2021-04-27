@@ -1,6 +1,6 @@
 """
 This module contains the functionality used to define the :rst:dir:`automodsumm`
-directive, its supporting configuration values, and the stub file writer.
+directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 
 .. contents:: Content
    :local:
@@ -114,7 +114,7 @@ directive, its supporting configuration values, and the stub file writer.
 `automodsumm` Configuration Values
 ----------------------------------
 
-A configuration value is a variable that con be defined in `conf.py` to configure
+A configuration value is a variable that con be defined in ``conf.py`` to configure
 the default behave of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
