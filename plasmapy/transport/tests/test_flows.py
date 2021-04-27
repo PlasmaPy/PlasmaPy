@@ -25,12 +25,12 @@ hydrogen = all_species["H"]
 carbon_states = all_species["C"]
 
 density_gradient = {
-    "H 1+": 1e18 * u.m ** -3 / u.m,
-    "C 1+": 1e18 * u.m ** -3 / u.m,
+    "H": np.ones(2) * 1e18 * u.m ** -3 / u.m,
+    "C": np.ones(7) * 1e18 * u.m ** -3 / u.m,
 }
 temperature_gradient = {
-    "H 1+": -10 * u.K / u.m,
-    "C 1+": -10 * u.K / u.m,
+    "H": np.ones(2) * -10 * u.K / u.m,
+    "C": np.ones(7) * -10 * u.K / u.m,
 }
 
 

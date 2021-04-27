@@ -21,24 +21,6 @@ except ImportError:
 Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 
-def S_pt(ai, μ, fs, ne_grad, T_grad):
-    pressure_gradient = constants.k_B * (ai.T_i * ne_grad + ai.number_density * T_grad)
-    Spt = (
-        fs.Fhat
-        / ai.ion.charge
-        / ai.number_density
-        * u.Quantity(
-            [
-                pressure_gradient * μ[0, 0]
-                + ai.number_density * constants.k_B * T_grad * μ[0, 1],
-                pressure_gradient * μ[1, 0]
-                + ai.number_density * constants.k_B * T_grad * μ[1, 1],
-            ]
-        )
-    ).si
-    Spt = np.append(Spt, 0)
-    return Spt
-
 
 class FlowCalculator:
     """
@@ -53,154 +35,91 @@ class FlowCalculator:
         temperature_gradient,
     ):
         self.all_species = all_species
-        self.flux_surface = flux_surface
-        self.density_gradient = defaultdict(lambda: 0 * u.m ** -4, **density_gradient)
-        self.temperature_gradient = defaultdict(
-            lambda: 0 * u.K / u.m, **temperature_gradient
-        )
+        self.flux_surface = fs = flux_surface
+        self.density_gradient = density_gradient
+        self.temperature_gradient = temperature_gradient
+        self.M_script_matrices = {}
+        self.N_script_matrices = {}
 
         self.S_pt = {}
         self.μ = {}
         self.Aai = {}
         self.thermodynamic_forces = {}
         self.pressure_gradient = {}
+        self.ξ = {}
 
+        r_flows_list = []
+        r_sources_list = []
+        rbar_flows_list  = []
+        rbar_sources_list = []
+        self.r_pt = {}
+        S_pt_list = []
         for a in self.all_species:
-            for xi, ai in self.contributing_states(a):
-                i = ai.integer_charge
+            sym = a.base_particle
+            charges = a.integer_charges * constants.e.si
+            n_charge_states = len(a.integer_charges)
+            xi = ξ(a)
+            T_i = u.Quantity([ai.T_i for ai in a]) # TODO should be an attribute of a
+            n_i = a.number_densities
+            density_gradient = self.density_gradient.get(sym, np.zeros(n_charge_states) * (u.m**-4))
+            temperature_gradient = self.temperature_gradient.get(sym, np.zeros(n_charge_states) * (u.K / u.m))
+            pressure_gradient = constants.k_B * (T_i * density_gradient + a.number_densities * temperature_gradient)
+            μ = u.Quantity([mu_hat(i, a, self.all_species, self.flux_surface) for i in a.integer_charges]) # TODO rework to work on arrays
+            
+            Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
+            # --- TD forces eq21
+            thermodynamic_forces = (fs.Fhat / charges * u.Quantity([pressure_gradient / n_i,
+                                                                    constants.k_B * temperature_gradient,
+                                                                    np.zeros(n_charge_states) * (u.J / u.m)])).T
+            CHARGE_STATE_AXIS = 0
+            BETA_AXIS = 2
+            S_pt_new = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(axis=BETA_AXIS)
+            S_pt_list.append(S_pt_new)
+            r_pt = np.linalg.solve(Aai, S_pt_new)
+            # TODO r_E itd
+            r_sources = r_pt + 0
+            r_sources_list.append(r_sources)
+            rbar_sources = (xi[:, np.newaxis] * r_sources).nansum(axis=CHARGE_STATE_AXIS)
+            rbar_sources_list.append(rbar_sources)
+            S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3))
+            r_flows = np.linalg.solve(Aai, S_flows)
+            r_flows_list.append(r_flows)
+            rbar_flows = (xi[:, np.newaxis, np.newaxis] * r_flows).nansum(axis=CHARGE_STATE_AXIS)
+            rbar_flows_list.append(rbar_flows)
+            for i, ai in enumerate(a):
                 sym = ai.ionic_symbol
-                self.pressure_gradient[sym] = constants.k_B * (
-                    ai.T_i * self.density_gradient[sym]
-                    + ai.number_density * self.temperature_gradient[sym]
-                )
-                self.μ[sym] = mu_hat(i, a, self.all_species, self.flux_surface)
-                self.S_pt[sym] = S_pt(
-                    ai,
-                    self.μ[ai.ionic_symbol],
-                    self.flux_surface,
-                    self.density_gradient[ai.ionic_symbol],
-                    self.temperature_gradient[ai.ionic_symbol],
-                )
-                self.Aai[sym] = xi * M_script(a, self.all_species) - self.μ[sym]
-                # --- TD forces eq21
-                Fhat = self.flux_surface.Fhat
-                thermodynamic_forces = u.Quantity(
-                    [
-                        # Eq21
-                        Fhat
-                        / ai.ion.charge
-                        / ai.number_density
-                        * self.pressure_gradient[sym],
-                        Fhat
-                        / ai.ion.charge
-                        * constants.k_B
-                        * self.temperature_gradient[sym],
-                    ]
-                )
+                self.density_gradient[sym] = density_gradient[i]
+                self.temperature_gradient[sym] = temperature_gradient[i]
+                self.r_pt[sym] = r_pt[i]
 
-                thermodynamic_forces = np.append(
-                    thermodynamic_forces, 0
-                )  # because units
-                self.thermodynamic_forces[sym] = thermodynamic_forces
 
-    def _rbar(self, a) -> u.Quantity:
-        def gen():
-            for xi, ai in self.contributing_states(a):
-                Aai = self.Aai[ai.ionic_symbol]
-                S_matrix = xi * np.eye(3)
-                rai_as_rows = np.linalg.solve(Aai, S_matrix)
-                rbar_ingredient = xi * rai_as_rows
-                yield rbar_ingredient
 
-        return sum(gen())
-
-    def _rbar_sources(self) -> u.Quantity:
-        r"""Assemble the right hand side of equation 34."""
-
-        results = []
-        for a in self.all_species:
-            parts = (
-                xi * self.r_pt[ai.ionic_symbol]
-                for xi, ai in self.contributing_states(a)
-            )
-            results.append(sum(parts))
-        return np.concatenate(results).si
-
-    def _eq34matrix(self):
-        output_matrix = u.Quantity(np.eye(3 * len(self.all_species)))
-
-        for i, a in enumerate(self.all_species):
-            rarray = self._rbar(a)
+        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")  # TODO verify
+        for i, a in enumerate(all_species):
+            rarray = rbar_sources_list[i]
             for j, b in enumerate(self.all_species):
-                narray = N_script(a, b).sum(axis=0, keepdims=True)
+                narray = self.N_script(a, b).sum(axis=0, keepdims=True)
                 result = narray * rarray.T
-                output_matrix[3 * i : 3 * i + 3, 3 * j : 3 * j + 3] += result
+                lhs[3 * i : 3 * i + 3, 3 * j : 3 * j + 3] += result
+        rhs = u.Quantity(rbar_sources_list)
+        ubar = np.linalg.solve(lhs, rhs.ravel())
 
-        return output_matrix
-
-    @cached_property
-    def r_pt(self):
-        results = {}
-        for a in self.all_species:
-            for _, ai in self.contributing_states(a):
-                sym = ai.ionic_symbol
-                Aai = self.Aai[sym]
-                Spt = self.S_pt[sym]
-                r_pt = np.linalg.solve(Aai, Spt).si
-                results[sym] = r_pt
-        return results
-
-
-    @cached_property
-    def _isotopic_flows(self):
-        """Solves equation 34, Houlberg_1997"""
-        rhs = self._rbar_sources()
-        lhs = self._eq34matrix()
-        ubar = np.linalg.solve(lhs, rhs)
-        return ubar
-
-    @cached_property
-    def Λ(self) -> dict:
-        outputs = {}
-        for a in self.all_species:
-            # use Eq31 to get charge state flows from isotopic flows
+        self._charge_state_flows = {}
+        for r_flows, r_sources, a in zip(r_flows_list,
+                                         r_sources_list,
+                                         self.all_species):
             def gen():
                 for j, b in enumerate(self.all_species):
-                    ubar_b = self._isotopic_flows[3 * j : 3 * j + 3]
-                    yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
+                    ubar_b = ubar[3 * j : 3 * j + 3]
+                    yield (self.N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
+            Λ = -sum(gen())
 
-            outputs[a.base_particle] = -sum(gen())
-        return outputs
+            # TODO units are wrong between the two here
+            self_consistent_u = np.sum(Λ[np.newaxis, :, np.newaxis] * r_flows, axis=2)
+            u_velocity = self_consistent_u + r_sources
 
-    @cached_property
-    def _charge_state_flows(self) -> dict:
-        """used by fluxes_BP
-
-        uses equation 31 to reconstruct charge state flows from the isotopic flows
-
-        """
-        outputs = {}
-        # TODO this needs a complete freaking rewrite from scratch
-        for a in self.all_species:
-            Λ = self.Λ[a.base_particle]  # N T / m3
-            for xi, ai in self.contributing_states(a):
-                sym = ai.ionic_symbol
-                Aai = self.Aai[sym]  # kg  / (m3 s)
-
-                S_ai = xi * np.diag(Λ)  # N T / m3
-
-                breakpoint()
-                rai_as_rows = np.linalg.solve(Aai, S_ai)  # V / m
-
-                order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(
-                    axis=0
-                )  # Eq ...     # kg 3 / (A2 m s7)
-                # exceeds expectations by N T / m3
-
-                r_pt = self.r_pt[sym]  # V/m
-                flows = order_flow_sum + r_pt  # Eq31
-                outputs[ai.ionic_symbol] = flows
-        return outputs
+            for i, ai in enumerate(a):
+                self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
 
     @staticmethod
     def contributing_states(a):
@@ -210,9 +129,21 @@ class FlowCalculator:
                 continue
             yield xi[i], ai
 
+    def M_script(self, a):
+        sym = a.base_particle
+        if sym not in self.M_script_matrices:
+            self.M_script_matrices[sym] = M_script(a, self.all_species)
+        return self.M_script_matrices[sym]
+
+    def N_script(self, a, b):
+        sym_tuple = a.base_particle, b.base_particle
+        if sym_tuple not in self.N_script_matrices:
+            self.N_script_matrices[sym_tuple] = N_script(a, b)
+        return self.N_script_matrices[sym_tuple]
+
     def funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]
-        M = M_script(a, self.all_species)
+        M = self.M_script(a)
         outputs = {}
         for _, ai in self.contributing_states(a):
             sym = ai.ionic_symbol
