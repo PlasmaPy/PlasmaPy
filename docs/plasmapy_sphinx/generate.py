@@ -357,9 +357,15 @@ class GenDocsFromAutomodsumm:
     def find_in_files(self, filenames: List[str]) -> List[AutomodsummEntry]:
         """
         Search files for the :rst:dir:`automodapi` and :rst:dir:`automodsumm`
-        directies and generate a
+        directives and generate a list of
+        `plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        files need to be generated.
 
-        Find out what items are documented in `source/*.rst`.
+        Parameters
+        ----------
+        filenames : List[str]
+            List of filenames to be searched.
+
 
         .. note:: Adapted from
                   :func:`sphinx.ext.autosummary.generate.find_autosummary_in_files`.
@@ -377,9 +383,22 @@ class GenDocsFromAutomodsumm:
         filename: str = None,
     ) -> List[AutomodsummEntry]:
         """
-        Adapted from :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
+        Search a list of strings for the :rst:dir:`automodapi` and
+        :rst:dir:`automodsumm` directives and generate a list of
+        `plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        files need to be generated.
 
-        Find out what items appear in automodsumm:: directives in the given lines.
+        Parameters
+        ----------
+        lines : List[str]
+            List of strings to be searched.
+
+        filename : str
+            The file from which ``lines`` came from.
+
+
+        .. note:: Adapted from
+                  :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
         """
 
         from .automodapi import AutomodapiOptions
