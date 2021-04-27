@@ -414,7 +414,7 @@ class GenDocsFromAutomodsumm:
 
         _option_cls = None
 
-        in_automod_directive = False
+        in_automodapi_directive = False
         gather_objs = False
 
         last_line = False
@@ -425,7 +425,7 @@ class GenDocsFromAutomodsumm:
                 last_line = True
 
             # looking for option `   :option: option_args`
-            if in_automod_directive:
+            if in_automodapi_directive:
                 match = self._re["option"].search(line)
                 if match is not None:
                     option_name = match.group(2)
@@ -437,21 +437,21 @@ class GenDocsFromAutomodsumm:
                         pass
                 else:
                     # done reading options
-                    in_automod_directive = False
+                    in_automodapi_directive = False
                     gather_objs = True
 
                 if last_line:
                     # end of lines reached
-                    in_automod_directive = False
+                    in_automodapi_directive = False
                     gather_objs = True
 
-                if in_automod_directive:
+                if in_automodapi_directive:
                     continue
 
             # looking for `.. automodsumm:: <modname>`
             match = self._re["automodsumm"].search(line)
             if match is not None:
-                in_automod_directive = True
+                in_automodapi_directive = True
                 # base_indent = match.group(1)
                 modname = match.group(2)
 
@@ -464,7 +464,7 @@ class GenDocsFromAutomodsumm:
 
                 if last_line:
                     # end of lines reached
-                    in_automod_directive = False
+                    in_automodapi_directive = False
                     gather_objs = True
                 else:
                     continue
@@ -472,7 +472,7 @@ class GenDocsFromAutomodsumm:
             # looking for `.. automodapi:: <modname>`
             match = self._re["automodapi"].search(line)
             if match is not None:
-                in_automod_directive = True
+                in_automodapi_directive = True
                 # base_indent = match.group(1)
                 modname = match.group(2)
 
@@ -484,7 +484,7 @@ class GenDocsFromAutomodsumm:
 
                 if last_line:
                     # end of lines reached
-                    in_automod_directive = False
+                    in_automodapi_directive = False
                     gather_objs = True
                 else:
                     continue
@@ -510,7 +510,7 @@ class GenDocsFromAutomodsumm:
                     "recursive": process_options.options.get("recursive", False),
                 }
 
-                exclude_modules = not self.app.config.automod_generate_module_stub_files
+                exclude_modules = not self.app.config.automodapi_generate_module_stub_files
                 obj_list = process_options.generate_obj_list(
                     exclude_modules=exclude_modules
                 )

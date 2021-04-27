@@ -42,13 +42,13 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
         that falls into the **modules** group (see the
         :rst:dir:`automodsumm:groups` option below), unless
-        :confval:`automod_generate_module_stub_files` is set ``True``.
+        :confval:`automodapi_generate_module_stub_files` is set ``True``.
 
     .. rst:directive:option:: groups
 
         When a module is inspected all the found objects are categorized into
         groups.  The first group collected is **modules**, followed by any custom
-        group defined in :confval:`automod_custom_groups`, and, finally, the
+        group defined in :confval:`automodapi_custom_groups`, and, finally, the
         standard groups of **classes**, **exceptions**, **warnings**, **functions**,
         and **variables** (or all the rest).  By default, **all** groups will
         be included in the generated table.
@@ -118,7 +118,7 @@ A configuration value is a variable that con be defined in ``conf.py`` to config
 the default behave of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
-.. confval:: automod_custom_groups
+.. confval:: automodapi_custom_groups
 
     A `sphinx` configuration value used to define custom groups which are used by
     :rst:dir:`automodapi` and :rst:dir:`automodsumm` when sorting the discovered
@@ -126,7 +126,7 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
     .. code-block:: python
 
-        automod_custom_group = {
+        automodapi_custom_group = {
             "aliases": {
                 "title": "Aliases",
                 "dunder": "__aliases__",
@@ -149,7 +149,7 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
     .. automodsumm:: plasmapy.formulary.parameters
            :groups: aliases
 
-.. confval:: automod_generate_module_stub_files
+.. confval:: automodapi_generate_module_stub_files
 
     (Default `False`)  By default :rst:dir:`automodsumm` will not generated stub files
     for the **modules** group, even when the `sphinx` configuration value
@@ -667,7 +667,7 @@ def setup(app: "Sphinx"):
         gendocs_from_automodsumm.event_handler__autodoc_skip_member,
     )
 
-    app.add_config_value("automod_custom_groups", dict(), True)
-    app.add_config_value("automod_generate_module_stub_files", False, True)
+    app.add_config_value("automodapi_custom_groups", dict(), True)
+    app.add_config_value("automodapi_generate_module_stub_files", False, True)
 
     return {"parallel_read_safe": True, "parallel_write_safe": True}

@@ -1,4 +1,33 @@
-"""automodapi docstring"""
+"""
+This module contains the functionality used to define the :rst:dir:`automodapi`
+directive and its :ref:`supporting configuration values <automodapi-confvals>`.
+
+.. contents:: Content
+    :local:
+
+`automodapi` Directive
+----------------------
+
+.. rst:directive:: automodapi
+
+.. _automodapi-confvals:
+
+`automodapi` Configuration Values
+---------------------------------
+
+A configuration value is a variable that con be defined in ``conf.py`` to configure
+the default behave of related `sphinx` directives.  The configuration values
+below relate to the behavior of the :rst:dir:`automodsumm` directive.
+
+.. confval:: automodapi_inheritance_diagram
+
+.. confval:: automodapi_toctreedirnm
+
+.. confval:: automodapi_group_order
+
+.. confval:: automodapi_groups_with_inheritance_diagrams
+
+"""
 __all__ = ["AutomodapiOptions", "ModuleDocumenter", "setup"]
 
 import re
@@ -148,7 +177,7 @@ class ModAPIDocumenter(ModuleDocumenter):
     logger = logger
     option_spec = _option_spec
 
-    _automod_option_spec_names = set(ModuleDocumenter.option_spec)
+    _automodapi_option_spec_names = set(ModuleDocumenter.option_spec)
 
     _grouping_info = default_grouping_info
 
@@ -170,7 +199,7 @@ class ModAPIDocumenter(ModuleDocumenter):
     def grouping_info(self) -> Dict[str, Dict[str, Union[str, None]]]:
 
         group_order = tuple(self.env.app.config.automodapi_group_order)
-        custom_group_info = self.env.app.config.automod_custom_groups
+        custom_group_info = self.env.app.config.automodapi_custom_groups
 
         group_names = set(self._grouping_info) | set(custom_group_info)
         remainder = list(group_names - set(group_order))
@@ -422,7 +451,6 @@ def setup(app: Sphinx):
         app.add_config_value("automodapi_inheritance_diagram", True, True)
     if not hasattr(app.config, "automodapi_toctreedirnm"):
         app.add_config_value("automodapi_toctreedirnm", "api", True)
-    # app.add_config_value("automodapi_writereprocessed", False, True)
 
     app.add_config_value(
         "automodapi_group_order",

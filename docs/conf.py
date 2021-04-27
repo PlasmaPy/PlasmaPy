@@ -33,7 +33,7 @@ from plasmapy import __version__ as release
 # -- General configuration ------------------------------------------------
 
 autosummary_generate = True
-automod_custom_groups = {
+automodapi_custom_groups = {
     "aliases": {
         "title": "Aliases",
         "descr": "",

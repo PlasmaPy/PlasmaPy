@@ -37,17 +37,17 @@ default_grouping_info = OrderedDict(
 """
 Dictionary containing information related to the default object groups used
 by the :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives.  Can be
-extend using the configuration value :confval:`automod_custom_groups`.
+extend using the configuration value :confval:`automodapi_custom_groups`.
 """
 
 
 def get_custom_grouping_info(app: Sphinx):
     """
     Retrieve the custom groups dictionary defined by the configuration value
-    :confval:`automod_custom_groups`.
+    :confval:`automodapi_custom_groups`.
     """
     try:
-        _info = app.config.automod_custom_groups
+        _info = app.config.automodapi_custom_groups
     except AttributeError:
         _info = {}
 
@@ -128,7 +128,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
         - Any 3rd party modules are excluded unless specified in ``__all__``.
         - Any non-direct sub-modules are excluded unless specified in ``__all__``.
 
-    2. Custom groups defined by :confval:`automod_custom_groups` are then collected.
+    2. Custom groups defined by :confval:`automodapi_custom_groups` are then collected.
 
     3. The remaining objects are grouped into the default groupds defined by
        :attr:`default_grouping_info`.
