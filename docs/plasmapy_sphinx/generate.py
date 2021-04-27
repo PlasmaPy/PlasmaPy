@@ -150,9 +150,7 @@ class GenDocsFromAutomodsumm:
 
     def __call__(self, app: "Sphinx"):
         """
-        This routine is adapted from
-        :func:`sphinx.ext.autosummary.process_generate_options` to scan through
-        the source files, check for the :rst:dir:`automodsumm` and
+        Scan through source files, check for the :rst:dir:`automodsumm` and
         :rst:dir:`automodapi` directives, and auto generate any associated
         stub files.
 
@@ -160,6 +158,9 @@ class GenDocsFromAutomodsumm:
         ----------
         app :  `~sphinx.application.Sphinx`
             Instance of the Sphinx application.
+
+
+        .. note:: Adapted from :func:`sphinx.ext.autosummary.process_generate_options`.
         """
         self.app = app
         genfiles = app.config.autosummary_generate
@@ -253,7 +254,7 @@ class GenDocsFromAutomodsumm:
             (Default: ``"utf-8"``) Encoding for the written stub files.
 
 
-        .. note::  This code was adapted from
+        .. note::  Adapted from
                    :func:`sphinx.ext.autosummary.generate.generate_autosummary_docs`.
         """
         app = self.app
@@ -358,7 +359,7 @@ class GenDocsFromAutomodsumm:
         """
         Search files for the :rst:dir:`automodapi` and :rst:dir:`automodsumm`
         directives and generate a list of
-        `plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
@@ -385,7 +386,7 @@ class GenDocsFromAutomodsumm:
         """
         Search a list of strings for the :rst:dir:`automodapi` and
         :rst:dir:`automodsumm` directives and generate a list of
-        `plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
