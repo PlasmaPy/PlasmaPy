@@ -114,7 +114,7 @@ class AbstractGrid(ABC):
 
     def require_quantities(self, req_quantities, replace_with_zeros=False):
         r"""
-        Checks to make sure that a list of required quantities are present.
+        Check to make sure that a list of required quantities are present.
         Optionally, can create missing quantities and fill them with
         an array of zeros.
 
@@ -139,11 +139,6 @@ class AbstractGrid(ABC):
             `~astropy.units.Quantity` is not in the list of recognized
             quantities. This is because in this case the units for the
             quantity are unknown, so an array of zeros cannot be constructed.
-
-        Returns
-        -------
-        `None`
-
         """
         for rq in req_quantities:
 
@@ -321,8 +316,8 @@ class AbstractGrid(ABC):
         return self.grids[2]
 
     @property
-    def units(self):
-        r"""Returns a `list` of the units of each dimension."""
+    def units(self) -> list:
+        r"""A `list` of the units of each dimension."""
         return self.ds.attrs["axis_units"]
 
     @property
@@ -502,11 +497,6 @@ class AbstractGrid(ABC):
 
         **kwargs: `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Quantities defined on the grid.
-
-        Returns
-        -------
-        None.
-
         """
 
         # Validate input
@@ -555,11 +545,6 @@ class AbstractGrid(ABC):
         key, array pairs as keyword arguments
             The key will be used as the dataset key, while the array holds the
             quantity.
-
-        Returns
-        -------
-        None.
-
         """
 
         for key in kwargs.keys():
@@ -646,11 +631,6 @@ class AbstractGrid(ABC):
         **kwargs: Additional arguments
             Any additional arguments will be passed directly to
             `numpy.linspace`.
-
-        Returns
-        -------
-        `None`
-
         """
 
         # If array of quantities are given instead of a list, convert
@@ -775,9 +755,10 @@ class AbstractGrid(ABC):
 
     def vector_intersects(self, p1, p2):
         r"""
-        Returns `True` if the vector from ``p1`` to ``p2`` intersects
-        the grid. Otherwise, returns False. This is a standard ray-box
-        intersection algorithm.
+        `True` if the vector from ``p1`` to ``p2`` intersects the grid,
+        and `False` otherwise.
+
+        This is a standard ray-box intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
         # Caclulate the minimum and maximum of each
