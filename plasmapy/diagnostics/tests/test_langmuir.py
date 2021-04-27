@@ -172,7 +172,7 @@ def characteristic_simulated():
 
 
 def shuffle_characteristic(characteristic):
-    r""" "Shuffle a given characteristic"""
+    r"""Shuffle a given characteristic"""
 
     _shuffle = sorted(
         np.arange(len(characteristic.bias)), key=lambda k: np.random.random()
