@@ -24,10 +24,10 @@ class TestPickling:
         [
             CustomParticle(mass=1 * u.kg, charge=1 * u.C),
             DimensionlessParticle(mass=5, charge=5),
-            pytest.param(Particle("p+")),
-            pytest.param(IonicLevel("p+", 0.1, 1e9 * u.m ** -3)),
-            pytest.param(IonizationState("H", [0.5, 0.5])),
-            pytest.param(IonizationStateCollection({"H": [0.5, 0.5]})),
+            Particle("p+"),
+            IonicLevel("p+", 0.1, 1e9 * u.m ** -3),
+            IonizationState("H", [0.5, 0.5]),
+            IonizationStateCollection({"H": [0.5, 0.5]}),
         ],
     )
     def test_pickling(self, instance, tmp_path):
