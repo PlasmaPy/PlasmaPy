@@ -150,19 +150,23 @@ class FlowCalculator:
                 results[sym] = r_pt
         return results
 
+
     @cached_property
-    def Λ(self) -> dict:
-        # solve equation 34
+    def _isotopic_flows(self):
+        """Solves equation 34, Houlberg_1997"""
         rhs = self._rbar_sources()
         lhs = self._eq34matrix()
         ubar = np.linalg.solve(lhs, rhs)
+        return ubar
 
+    @cached_property
+    def Λ(self) -> dict:
         outputs = {}
         for a in self.all_species:
             # use Eq31 to get charge state flows from isotopic flows
             def gen():
                 for j, b in enumerate(self.all_species):
-                    ubar_b = ubar[3 * j : 3 * j + 3]
+                    ubar_b = self._isotopic_flows[3 * j : 3 * j + 3]
                     yield (N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
 
             outputs[a.base_particle] = -sum(gen())
@@ -176,6 +180,7 @@ class FlowCalculator:
 
         """
         outputs = {}
+        # TODO this needs a complete freaking rewrite from scratch
         for a in self.all_species:
             Λ = self.Λ[a.base_particle]  # N T / m3
             for xi, ai in self.contributing_states(a):
@@ -183,6 +188,8 @@ class FlowCalculator:
                 Aai = self.Aai[sym]  # kg  / (m3 s)
 
                 S_ai = xi * np.diag(Λ)  # N T / m3
+
+                breakpoint()
                 rai_as_rows = np.linalg.solve(Aai, S_ai)  # V / m
 
                 order_flow_sum = (Λ.reshape(-1, 1) * rai_as_rows).sum(

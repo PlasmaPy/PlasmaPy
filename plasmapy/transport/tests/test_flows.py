@@ -34,7 +34,7 @@ temperature_gradient = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def fc(flux_surface):
     fc = FlowCalculator(
         all_species, flux_surface, density_gradient, temperature_gradient
@@ -42,15 +42,19 @@ def fc(flux_surface):
     return fc
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in _charge_state_flows")
 def test_get_flows(fc, num_regression):
-    for ion, r in fc.flows.items():
+    for ion, r in fc._charge_state_flows.items():
         assert np.isfinite(r).all(), ion
     num_regression.check({key: value.si.value for key, value in fc.flows.items()})
 
 
 @pytest.mark.parametrize(
-    "key", [pytest.param("BP", marks=pytest.mark.xfail), "CL", "PS"]
+    "key", [
+        pytest.param("BP", marks=pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in _charge_state_flows")),
+        "CL",
+        "PS",
+    ]
 )
 def test_fluxes_partial(fc, key, num_regression):
     fluxes = getattr(fc, f"_fluxes_{key}")
@@ -64,7 +68,7 @@ def test_fluxes_partial(fc, key, num_regression):
 
 
 @pytest.mark.xfail(
-    raises=astropy.units.core.UnitConversionError, reason="units are off in fluxes"
+    raises=u.UnitConversionError, reason="units are off in flows"
 )
 def test_diffusion_coefficient(fc, num_regression):
     d = {}
@@ -76,7 +80,7 @@ def test_diffusion_coefficient(fc, num_regression):
 
 
 @pytest.mark.xfail(
-    raises=astropy.units.core.UnitConversionError, reason="units are off in fluxes"
+    raises=u.UnitConversionError, reason="units are off in flows"
 )
 def test_thermal_coefficient(fc, num_regression):
     d = {}
@@ -88,7 +92,7 @@ def test_thermal_coefficient(fc, num_regression):
 
 
 @pytest.mark.xfail(
-    raises=astropy.units.core.UnitsError,
+    raises=u.UnitsError,
     reason="Units are off; need a tesla in the denominator",
 )
 def test_bootstrap_current(fc, num_regression):
@@ -98,7 +102,7 @@ def test_bootstrap_current(fc, num_regression):
 
 
 @pytest.mark.xfail(
-    raises=astropy.units.core.UnitConversionError, reason="units are off"
+    raises=u.UnitConversionError, reason="units are off"
 )
 def test_fluxes(fc, num_regression):
     d = {}
