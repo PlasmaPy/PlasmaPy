@@ -1144,6 +1144,7 @@ class GenDocsFromAutomodsumm:
 
 
 def setup(app: "Sphinx"):
+    """Sphinx ``setup()`` function for the :rst:dir:`automodsumm` functionality."""
 
     app.setup_extension("sphinx.ext.autosummary")
 
@@ -1151,7 +1152,10 @@ def setup(app: "Sphinx"):
 
     gendocs_from_automodsumm = GenDocsFromAutomodsumm()
     app.connect("builder-inited", gendocs_from_automodsumm)
-    app.connect("autodoc-skip-member", gendocs_from_automodsumm.always_doc__call__)
+    app.connect(
+        "autodoc-skip-member",
+        gendocs_from_automodsumm.event_handler__autodoc_skip_member,
+    )
 
     app.add_config_value("automod_custom_groups", dict(), True)
     app.add_config_value("automod_generate_module_stub_files", False, True)
