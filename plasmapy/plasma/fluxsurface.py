@@ -15,7 +15,6 @@ try:
 except ImportError:
     from scipy.integrate import cumulative_trapezoid, trapezoid
 
-
 @dataclass
 class FluxSurface:
     """Represents a single flux surface out of a magnetic equilibrium, experimental or otherwise."""
@@ -81,13 +80,12 @@ class FluxSurface:
             ax.legend()
         return ax
 
+    @cached_property
+    def _fsa_denominator(self):
+        return trapezoid(1 / self.Bp, self.lp)
+
     def flux_surface_average(self, quantity):
-        integrand = 1 / self.Bp
-        try:
-            from scipy.integrate import trapz as trapezoid
-        except ImportError:
-            from scipy.integrate import trapezoid
-        return trapezoid(integrand * quantity, self.lp) / trapezoid(integrand, self.lp)
+        return trapezoid(quantity / self.Bp, self.lp) / self._fsa_denominator
 
     @cached_property
     def theta(self):

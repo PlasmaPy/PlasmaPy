@@ -169,10 +169,10 @@ class FlowCalculator:
             S = self.S_pt[sym]
             output = S * M
             for b in self.all_species:
-                N = N_script(a, b)
+                N = self.N_script(a, b)
                 for xj, bj in self.contributing_states(b):
                     output += xj * N * self.S_pt[bj.ionic_symbol]
-            outputs[sym] = output
+            outputs[sym] = output.sum(axis=1)
         return outputs
 
     @cached_property
@@ -220,8 +220,8 @@ class FlowCalculator:
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
-                Γ_PS = prefactor * silly[sym][0].sum()
-                q_PS = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
+                Γ_PS = prefactor * silly[sym][0]  # overlarge by s/m5
+                q_PS = prefactor * constants.k_B * ai.T_i * silly[sym][1] # overlarge by μ.unit
                 results[sym] = Fluxes(Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit))
         return results
 
@@ -237,9 +237,10 @@ class FlowCalculator:
             for xi, ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 prefactor = FSA / Fhat * xi / ai.ion.charge
-                Γ_CL = prefactor * silly[sym][0].sum()
-                q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
+                Γ_CL = prefactor * silly[sym][0]
+                q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1]
                 results[sym] = Fluxes(Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit))
+        # TODO both are overlarge by Unit("kg / (m4 s)")
         return results
 
     @cached_property
