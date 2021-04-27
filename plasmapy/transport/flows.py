@@ -63,25 +63,27 @@ class FlowCalculator:
             n_i = a.number_densities
             density_gradient = self.density_gradient.get(sym, np.zeros(n_charge_states) * (u.m**-4))
             temperature_gradient = self.temperature_gradient.get(sym, np.zeros(n_charge_states) * (u.K / u.m))
-            pressure_gradient = constants.k_B * (T_i * density_gradient + a.number_densities * temperature_gradient)
+            pressure_gradient_over_n_i = constants.k_B * (T_i * density_gradient / n_i + temperature_gradient)
+            # we divide by n_i, which can be zero, leadning to inf, so to correct that...
+            pressure_gradient_over_n_i[np.isinf(pressure_gradient_over_n_i)] = 0
             μ = u.Quantity([mu_hat(i, a, self.all_species, self.flux_surface) for i in a.integer_charges]) # TODO rework to work on arrays
             
             Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
             # --- TD forces eq21
-            thermodynamic_forces = (fs.Fhat / charges * u.Quantity([pressure_gradient / n_i,
+            thermodynamic_forces = (fs.Fhat / charges * u.Quantity([pressure_gradient_over_n_i,
                                                                     constants.k_B * temperature_gradient,
                                                                     np.zeros(n_charge_states) * (u.J / u.m)])).T
             CHARGE_STATE_AXIS = 0
             BETA_AXIS = 2
-            S_pt_new = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(axis=BETA_AXIS)
-            S_pt_list.append(S_pt_new)
-            r_pt = np.linalg.solve(Aai, S_pt_new)
+            S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(axis=BETA_AXIS)
+            S_pt_list.append(S_pt)
+            r_pt = np.linalg.solve(Aai, S_pt)
             # TODO r_E itd
             r_sources = r_pt + 0
             r_sources_list.append(r_sources)
             rbar_sources = (xi[:, np.newaxis] * r_sources).nansum(axis=CHARGE_STATE_AXIS)
             rbar_sources_list.append(rbar_sources)
-            S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3))
+            S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
             r_flows = np.linalg.solve(Aai, S_flows)
             r_flows_list.append(r_flows)
             rbar_flows = (xi[:, np.newaxis, np.newaxis] * r_flows).nansum(axis=CHARGE_STATE_AXIS)
@@ -91,12 +93,15 @@ class FlowCalculator:
                 self.density_gradient[sym] = density_gradient[i]
                 self.temperature_gradient[sym] = temperature_gradient[i]
                 self.r_pt[sym] = r_pt[i]
+                self.S_pt[sym] = S_pt[i]
+                self.thermodynamic_forces[sym] = thermodynamic_forces[i]
+
 
 
 
         lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")  # TODO verify
         for i, a in enumerate(all_species):
-            rarray = rbar_sources_list[i]
+            rarray = rbar_flows_list[i]
             for j, b in enumerate(self.all_species):
                 narray = self.N_script(a, b).sum(axis=0, keepdims=True)
                 result = narray * rarray.T
@@ -119,7 +124,8 @@ class FlowCalculator:
             u_velocity = self_consistent_u + r_sources
 
             for i, ai in enumerate(a):
-                self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
+                if np.isfinite(u_velocity[i]).all():
+                    self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
 
     @staticmethod
     def contributing_states(a):

@@ -45,8 +45,10 @@ def fc(flux_surface):
 @pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in _charge_state_flows")
 def test_get_flows(fc, num_regression):
     for ion, r in fc._charge_state_flows.items():
+        if "0" in ion:
+            continue
         assert np.isfinite(r).all(), ion
-    num_regression.check({key: value.si.value for key, value in fc.flows.items()})
+    num_regression.check({key: value.si.value for key, value in fc._charge_state_flows.items()})
 
 
 @pytest.mark.parametrize(
@@ -60,6 +62,8 @@ def test_fluxes_partial(fc, key, num_regression):
     fluxes = getattr(fc, f"_fluxes_{key}")
     d_partial = {}
     for ion, (Γ, q) in fluxes.items():
+        if "0" in ion:
+            continue
         assert np.isfinite(Γ).all(), ion
         assert np.isfinite(q).all(), ion
         d_partial[f"Γ_{key}_{ion}"] = Γ.si.value
@@ -85,6 +89,8 @@ def test_diffusion_coefficient(fc, num_regression):
 def test_thermal_coefficient(fc, num_regression):
     d = {}
     for ion, χ in fc.thermal_conductivity.items():
+        if "0" in ion:
+            continue
         assert np.isfinite(χ).all(), ion
         d[ion] = χ.si.value
         assert χ.unit.physical_type == "heat conductivity"
@@ -107,6 +113,8 @@ def test_bootstrap_current(fc, num_regression):
 def test_fluxes(fc, num_regression):
     d = {}
     for ion, (Γ, q) in fc.fluxes.items():
+        if "0" in ion:
+            continue
         assert np.isfinite(Γ).all(), ion
         assert np.isfinite(q).all(), ion
         d[f"Γ_{ion}"] = Γ.si.value

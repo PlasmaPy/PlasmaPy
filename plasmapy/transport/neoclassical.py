@@ -352,3 +352,31 @@ def mu_hat(
     mass_density_probably = ai.number_density * ai.ion.mass
     actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
     return actual_units
+
+def mu_hat_reworked(
+    a: IonizationState,
+    all_species: IonizationStateCollection,
+    flux_surface: FluxSurface,
+    *,
+    xmin=0.0015,
+    xmax=10,
+    N=1000,
+    **kwargs
+):
+    # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
+    ai = a[i]
+    if a.number_densities[i] == 0:
+        return u.Quantity(np.zeros((3, 3)), "kg / (m3 s)")
+    orders = range(1, 4)
+    mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
+
+    π = np.pi
+    x = np.logspace(np.log10(xmin), np.log10(xmax), N)
+    for α in orders:
+        for β in orders:
+            y = _integrand(x, α, β, i, a, all_species, flux_surface)
+            integral = trapezoid(y, x)
+            mu_hat_ai[α - 1, β - 1] = integral * (-1) ** (α + β)
+    mass_density_probably = ai.number_density * ai.ion.mass
+    actual_units = 8 / 3 / np.sqrt(π) * mu_hat_ai * mass_density_probably
+    return actual_units
