@@ -17,22 +17,38 @@ try:
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
+particle_flux_unit = u.m**-2 / u.s
+heat_flux_unit = u.J * particle_flux_unit
+from plasmapy.utils.decorators import validate_quantities
+from dataclasses import dataclass
+
+# @dataclass(order=True)
+# class Fluxes:
+#     particle_flux: u.Quantity
+#     heat_flux: u.Quantity
+
+#     @validate_quantities
+#     def __init__(self, particle_flux: particle_flux_unit,
+#                        heat_flux: heat_flux_unit,
+#                  ):
+#         self.particle_flux = particle_flux
+#         self.heat_flux = heat_flux
 
 Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
-
-
 
 class FlowCalculator:
     """
     This does, in fact, do most things for my thesis.
     """
 
+    @profile
     def __init__(
         self,
         all_species,
         flux_surface,
         density_gradient,
         temperature_gradient,
+        mu_N = None
     ):
         self.all_species = all_species
         self.flux_surface = fs = flux_surface
@@ -66,7 +82,7 @@ class FlowCalculator:
             pressure_gradient_over_n_i = constants.k_B * (T_i * density_gradient / n_i + temperature_gradient)
             # we divide by n_i, which can be zero, leadning to inf, so to correct that...
             pressure_gradient_over_n_i[np.isinf(pressure_gradient_over_n_i)] = 0
-            μ = u.Quantity([mu_hat(i, a, self.all_species, self.flux_surface) for i in a.integer_charges]) # TODO rework to work on arrays
+            μ = u.Quantity([mu_hat(i, a, self.all_species, self.flux_surface, N=mu_N) for i in a.integer_charges]) # TODO rework to work on arrays
             
             Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
             # --- TD forces eq21
@@ -188,7 +204,7 @@ class FlowCalculator:
                     / ai.ion.charge
                     * (μ[1, :] * u_θ).sum()
                 ).si
-                results[sym] = Fluxes(Γ_BP.si, q_BP.si)
+                results[sym] = Fluxes(Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit))
         return results
 
     @cached_property
@@ -207,14 +223,14 @@ class FlowCalculator:
                 )
                 Γ_PS = prefactor * silly[sym][0].sum()
                 q_PS = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
-                results[sym] = Fluxes(Γ_PS.si, q_PS.si)
+                results[sym] = Fluxes(Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit))
         return results
 
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
         FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2 / u.m
-        # TODO if FSA does not drop units, the above line is completely wrong
+        # TODO FSA does not drop units; B2 and the others are unitless
         Fhat = self.flux_surface.Fhat
         results = {}
         for a in self.all_species:
@@ -224,7 +240,7 @@ class FlowCalculator:
                 prefactor = FSA / Fhat * xi / ai.ion.charge
                 Γ_CL = prefactor * silly[sym][0].sum()
                 q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1].sum()
-                results[sym] = Fluxes(Γ_CL.si, q_CL.si)
+                results[sym] = Fluxes(Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit))
         return results
 
     @cached_property
@@ -272,3 +288,5 @@ class FlowCalculator:
                     ]  # eq 37, second term
 
         return sum(gen())
+
+

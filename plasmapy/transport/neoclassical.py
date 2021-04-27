@@ -222,6 +222,7 @@ def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface, g=1):
     return F_m
 
 
+@profile
 def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSurface):
     B11 = (
         x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
@@ -229,6 +230,7 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     return B11
 
 
+@profile
 def ν_T_ai(
     x: np.ndarray, i: int, a: IonizationState, all_species: IonizationStateCollection
 ):
@@ -252,6 +254,7 @@ def ν_T_ai(
     return result
 
 
+@profile
 def K_ps_ai(
     x: np.ndarray,
     i: int,
@@ -289,6 +292,7 @@ def K_ps_ai(
     )
 
 
+@profile
 def K(
     x: np.ndarray,
     i: int,
@@ -308,6 +312,7 @@ def K(
     return 1 / (1 / kb + 1 / kps)
 
 
+@profile
 def _integrand(
     x: np.ndarray,
     α: int,
@@ -326,6 +331,7 @@ def _integrand(
     return result
 
 
+@profile
 def mu_hat(
     i: int,
     a: IonizationState,
@@ -337,8 +343,12 @@ def mu_hat(
     N=1000,
     **kwargs
 ):
+    if N is None:
+        N = 1000
     # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
     ai = a[i]
+    # if a.number_densities[i] == 0:
+    #     return u.Quantity(np.zeros((3, 3)), "kg / (m3 s)")
     orders = range(1, 4)
     mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
 
@@ -364,9 +374,6 @@ def mu_hat_reworked(
     **kwargs
 ):
     # TODO need to rework how this works... needs to be calculated for all i, earlier, otherwise - plenty of duplication
-    ai = a[i]
-    if a.number_densities[i] == 0:
-        return u.Quantity(np.zeros((3, 3)), "kg / (m3 s)")
     orders = range(1, 4)
     mu_hat_ai = u.Quantity(np.zeros((3, 3)), 1 / u.s)
 
