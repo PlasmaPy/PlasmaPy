@@ -23,6 +23,10 @@ except ImportError:
 #         return func
 
 
+def ionizationstate_mass_densities(a: IonizationState):
+    return a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+
+
 def xab_ratio(a: IonizationState, b: IonizationState):
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
 
@@ -135,7 +139,7 @@ def M_script(species_a: IonizationState, all_species: IonizationStateCollection)
     # Equation A2a
     def gener():
         for species_b in all_species:
-            if species_b is not species_a:  # direct comparison glitches out
+            if species_b is not species_a:
                 # TODO am I sure this if is necessary here?
                 yield M_matrix(
                     species_a, species_b
@@ -144,7 +148,7 @@ def M_script(species_a: IonizationState, all_species: IonizationStateCollection)
     return sum(gener())
 
 
-#profile
+# profile
 def pitch_angle_diffusion_rate(
     x: np.ndarray,
     a: IonizationState,
@@ -163,7 +167,7 @@ def pitch_angle_diffusion_rate(
             result = fraction * effective_momentum_relaxation_rate(a, b)
             yield result
 
-    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    mass_density_probably = ionizationstate_mass_densities(a)
     result = (
         xi[:, np.newaxis]
         / mass_density_probably[:, np.newaxis]
@@ -175,7 +179,7 @@ def pitch_angle_diffusion_rate(
     return result
 
 
-#profile
+# profile
 def K_B_ai(
     x: np.ndarray,
     a_states: IonizationState,
@@ -234,9 +238,9 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     return B11
 
 
-#profile
+# profile
 def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateCollection):
-    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    mass_density_probably = ionizationstate_mass_densities(a)
     prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density_probably
 
     def gen():
@@ -256,7 +260,7 @@ def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateColle
     return result
 
 
-#profile
+# profile
 def K_ps_ai(
     x: np.ndarray,
     a: IonizationState,
@@ -292,7 +296,7 @@ def K_ps_ai(
     )
 
 
-#profile
+# profile
 def K(
     x: np.ndarray,
     a: IonizationState,
@@ -311,7 +315,7 @@ def K(
     return 1 / (1 / kb + 1 / kps)
 
 
-#profile
+# profile
 def mu_hat(
     a: IonizationState,
     all_species: IonizationStateCollection,
@@ -339,7 +343,7 @@ def mu_hat(
     y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
     integral = trapezoid(y, x, axis=1)
     mu_hat_ai = integral * signs[None, ...]
-    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    mass_density_probably = ionizationstate_mass_densities(a)
     actual_units = (
         (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
     )
