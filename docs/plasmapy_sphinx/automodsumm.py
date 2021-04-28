@@ -518,7 +518,7 @@ class AutomodsummOptions:
                     qualnames_filtered.append(qualname)
                     objs_filtered.append(obj)
 
-            if len(names) == 0:
+            if len(names_filtered) == 0:
                 del mod_objs[group]
                 continue
 
