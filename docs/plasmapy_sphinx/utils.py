@@ -234,7 +234,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
             "functions": {"names": []},
             "variables": {"names": []},
         }
-    )
+    )  # type: Dict[str, Dict[str, Any]]
     for name in names_to_search:
         obj = getattr(mod, name)
 
