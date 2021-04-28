@@ -1,7 +1,7 @@
 import hypothesis
 import numpy as np
 
-from hypothesis import given, settings
+from hypothesis import given
 from hypothesis import strategies as st
 
 from plasmapy.formulary.mathematics import Chandrasekhar_G
@@ -13,7 +13,6 @@ from plasmapy.formulary.mathematics import Chandrasekhar_G
         allow_infinity=False,
     )
 )
-@settings(max_examples=500)
 def test_Chandrasekhar_with_hypothesis(x):
     result = Chandrasekhar_G(x)
     assert abs(result) < 0.21399915915288345  # maximum bound found via scipy optimize
