@@ -145,12 +145,7 @@ class Test_IonizationState:
         """
         Test that each IonizationState test case can be instantiated.
         """
-        try:
-            self.instances[test_name] = IonizationState(**test_cases[test_name])
-        except Exception:
-            pytest.fail(
-                f"Unable to create IonizationState instance for test case {test_name}."
-            )
+        self.instances[test_name] = IonizationState(**test_cases[test_name])
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_integer_charges(self, test_name):
