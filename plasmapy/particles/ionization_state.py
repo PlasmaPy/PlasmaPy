@@ -326,9 +326,9 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=val),
                     ionic_fraction=self.ionic_fractions[val],
                     number_density=self.number_densities[val],
-                    T_i=self.T_e,  # TODO
+                    T_i=self.T_i[val],  # TODO
                 )
-                for val in range(0, self._number_particles)
+                for val in range(0, self._number_particles)[value]
             ]
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
@@ -336,7 +336,7 @@ class IonizationState:
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
-                T_i=self.T_e,  # TODO
+                T_i=self.T_i[val],  # TODO
             )
         else:
             if not isinstance(value, Particle):
@@ -357,7 +357,7 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
                     number_density=self.number_densities[Z],
-                    T_i=self.T_e,
+                    T_i=self.T_i[Z],
                 )
             else:
                 if not same_element or not same_isotope:
@@ -598,6 +598,39 @@ class IonizationState:
             if value < 0 * u.K:
                 raise ParticleError("T_e cannot be negative.")
         self._T_e = value
+
+    @property
+    def T_i(self) -> u.K:
+        """Return the electron temperature."""
+        if self._T_i is None:
+            return self.T_e
+        return self._T_e.to(u.K, equivalencies=u.temperature_energy())
+
+    @T_i.setter
+    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
+    def T_i(self, value: u.K):
+        """Set the electron temperature."""
+        try:
+            value = value.to(u.K, equivalencies=u.temperature_energy())
+        except (AttributeError, u.UnitsError, u.UnitConversionError):
+            raise ParticleError("Invalid temperature.") from None
+        else:
+            if (value < 0 * u.K).any():
+                raise ParticleError("T_i cannot be negative.")
+
+        if value.size == 1:
+            self._T_i = u.Quantity([value] * self._number_particles)
+        elif value.size == self._number_particles:
+            self.T_i = value
+        else:
+            error_str = (
+                "T_i must be set with either one common temperature"
+                f" for all ions, or a set of {self._number_particles} of them. "
+            )
+
+            if value.size == 5 and self._number_particles != 5:
+                error_str += " For {self.base_particle}, five is right out."
+            raise ParticleError(error_str)
 
     @property
     def kappa(self) -> np.real:
