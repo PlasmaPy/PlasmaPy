@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
-from plasmapy.diagnostics.line_integrated_diagnostic import (
+from plasmapy.diagnostics.path_integrated_diagnostic import (
     Interferometer,
+    PathIntegratedDiagnostic,
     LineIntegratedDiagnostic,
     LineIntegrateScalarQuantities,
 )
@@ -189,10 +190,11 @@ def test_interferogram_sphere():
 
 
 if __name__ == "__main__":
-    pass
+    
     test_abstract_line_integrated_diagnostic()
     test_integrate_scalar_quantities()
     test_constant_cylinder()
     test_non_collimated()
     test_constant_box()
     test_interferogram_sphere()
+    pass

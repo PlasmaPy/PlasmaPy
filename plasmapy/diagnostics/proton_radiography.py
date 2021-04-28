@@ -18,14 +18,14 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
-from plasmapy.diagnostics.line_integrated_diagnostic import LineIntegratedDiagnostic
+from plasmapy.diagnostics.line_integrated_diagnostic import PathIntegratedDiagnostic
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-class SyntheticProtonRadiograph(LineIntegratedDiagnostic):
+class SyntheticProtonRadiograph(PathIntegratedDiagnostic):
     r"""
     Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
@@ -1112,55 +1112,3 @@ class SyntheticProtonRadiograph(LineIntegratedDiagnostic):
             intensity = -np.log10(intensity / I0)
 
         return h * u.m, v * u.m, intensity
-
-    def _integrand(self, pts):
-        """
-        Returns the line-integral of the E and B field components transverse
-        to the source-detector axis as components along the detector
-        horizontal and vertical axes
-        """
-        # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
-        # of points (nx*ny*nz, 3) as required by the grids interpolators
-        nx, ny, nz, ndim = pts.shape
-        pts = np.reshape(pts, (nx * ny * nz, ndim))
-
-        # Interpolate field quantites of interest
-        Ex, Ey, Ez, Bx, By, Bz= self.grid.volume_averaged_interpolator(pts, 'E_x', 'E_y', 'E_z','B_x', 'B_y', 'B_z' )
-
-        E = np.zeros([nx,ny,nz,3])*u.V/u.m
-        E[...,0] = np.reshape(Ex, (nx,ny,nz))
-        E[...,1] = np.reshape(Ey, (nx,ny,nz))
-        E[...,2] = np.reshape(Ez, (nx,ny,nz))
-
-        B = np.zeros([nx,ny,nz,3])*u.T
-        B[...,0] = np.reshape(Bx, (nx,ny,nz))
-        B[...,1] = np.reshape(By, (nx,ny,nz))
-        B[...,2] = np.reshape(Bz, (nx,ny,nz))
-
-        Ehax = np.dot(E, self.det_hax)
-        Evax = np.dot(E, self.det_vax)
-        Bhax = np.dot(B, self.det_hax)
-        Bvax = np.dot(B, self.det_vax)
-
-        # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
-        Ehax = np.reshape(Ehax, (nx, ny, nz))
-        Evax = np.reshape(Evax, (nx, ny, nz))
-        Bhax = np.reshape(Bhax, (nx, ny, nz))
-        Bvax = np.reshape(Bvax, (nx, ny, nz))
-
-        return Ehax, Evax, Bhax, Bvax
-    
-    @particles.particle_input
-    def integrate(
-        self,
-        probe_freq: u.Hz,
-        particle_energy: u.eV,
-        particle: Particle,  
-        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
-        bins=[50, 50],
-        num=100,
-        unwrapped=True,
-    ):
-        hax, vax, int_Ehax, int_Evax, int_Bhax, int_Bvax = self._line_integral(
-            size=size, bins=bins, collimated=False, num=num
-        )

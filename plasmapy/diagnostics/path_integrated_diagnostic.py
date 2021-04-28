@@ -3,6 +3,7 @@ Defines the LineIntegratedDiagnostic base class and subclasses
 """
 
 __all__ = [
+    "PathIntegratedDiagnostic",
     "LineIntegratedDiagnostic",
     "LineIntegrateScalarQuantities",
     "Interferometer",
@@ -16,9 +17,9 @@ from abc import ABC, abstractmethod
 from typing import Union
 
 
-class LineIntegratedDiagnostic(ABC):
+class PathIntegratedDiagnostic(ABC):
     """
-    An abstract line integrated diagnostic
+    An abstract path integrated diagnostic
     """
 
     def __init__(
@@ -140,6 +141,9 @@ class LineIntegratedDiagnostic(ABC):
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
         nx = nx / np.linalg.norm(nx)
         return nx
+
+
+class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
 
     def _line_integral(
         self,
@@ -298,7 +302,7 @@ class LineIntegratedDiagnostic(ABC):
 
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
-    r"""
+    """
     Line-integrates a scalar quantity
     """
 
