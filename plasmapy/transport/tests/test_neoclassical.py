@@ -118,10 +118,10 @@ def test_ν_T_ai(x):
 @example(x=684.765468434412)
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_K_ps_ai(x, flux_surface):
-    result = K_ps_ai(x, 1, hydrogen, all_species, flux_surface)
+    result = K_ps_ai(x, hydrogen, all_species, flux_surface)[1]
     assert result > 0
     assert np.isfinite(result)
-    second_result = K_ps_ai(x, 1, hydrogen, all_species, flux_surface)
+    second_result = K_ps_ai(x, hydrogen, all_species, flux_surface)[1]
     assert_quantity_allclose(result, second_result)
 
 
