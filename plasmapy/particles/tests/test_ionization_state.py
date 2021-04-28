@@ -213,17 +213,11 @@ class Test_IonizationState:
     @pytest.mark.parametrize("test_name", test_names)
     def test_iteration(self, test_name: str):
         """Test that `IonizationState` instances iterate impeccably."""
-        try:
-            states = [state for state in self.instances[test_name]]
-        except Exception:
-            pytest.fail(f"Unable to perform iteration for {test_name}.")
+        states = [state for state in self.instances[test_name]]
 
-        try:
-            integer_charges = [state.integer_charge for state in states]
-            ionic_fractions = np.array([state.ionic_fraction for state in states])
-            ionic_symbols = [state.ionic_symbol for state in states]
-        except Exception:
-            pytest.fail(f"An attribute may be misnamed or missing ({test_name}).")
+        integer_charges = [state.integer_charge for state in states]
+        ionic_fractions = np.array([state.ionic_fraction for state in states])
+        ionic_symbols = [state.ionic_symbol for state in states]
 
         try:
             base_symbol = isotope_symbol(ionic_symbols[0])
@@ -275,12 +269,6 @@ class Test_IonizationState:
             )
             errmsg = " ".join(errors)
             pytest.fail(errmsg)
-
-    def test_slicing(self):
-        """
-        Test that an IonizationState instance can be sliced.
-        """
-        self.instances["Li"][1:3]
 
     @pytest.mark.parametrize("index", [-1, 4, "Li"])
     def test_indexing_error(self, index):

@@ -252,7 +252,14 @@ class IonizationState:
 
     # TODO: Add in functionality to find equilibrium ionization states.
 
-    @validate_quantities(T_e={"unit": u.K, "equivalencies": u.temperature_energy()})
+    @validate_quantities(
+        T_e={"unit": u.K, "equivalencies": u.temperature_energy()},
+        T_i={
+            "unit": u.K,
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+        },
+    )
     @particle_input(require="element")
     def __init__(
         self,
@@ -260,6 +267,7 @@ class IonizationState:
         ionic_fractions=None,
         *,
         T_e: u.K = np.nan * u.K,
+        T_i: u.K = None,
         kappa: Real = np.inf,
         n_elem: u.m ** -3 = np.nan * u.m ** -3,
         tol: Union[float, int] = 1e-15,
@@ -285,6 +293,7 @@ class IonizationState:
         try:
             self.tol = tol
             self.T_e = T_e
+            self.T_i = T_i
             self.kappa = kappa
 
             if (
@@ -336,7 +345,7 @@ class IonizationState:
                 ion=Particle(self.base_particle, Z=value),
                 ionic_fraction=self.ionic_fractions[value],
                 number_density=self.number_densities[value],
-                T_i=self.T_i[val],  # TODO
+                T_i=self.T_i[value],
             )
         else:
             if not isinstance(value, Particle):
@@ -604,12 +613,18 @@ class IonizationState:
         """Return the electron temperature."""
         if self._T_i is None:
             return self.T_e
-        return self._T_e.to(u.K, equivalencies=u.temperature_energy())
+        return self._T_i.to(u.K, equivalencies=u.temperature_energy())
 
     @T_i.setter
-    @validate_quantities(value=dict(equivalencies=u.temperature_energy()))
+    @validate_quantities(
+        value=dict(equivalencies=u.temperature_energy(), none_shall_pass=True)
+    )
     def T_i(self, value: u.K):
         """Set the electron temperature."""
+        if value is None:
+            self._T_i = np.repeat(self._T_e, self._number_particles)
+            return
+
         try:
             value = value.to(u.K, equivalencies=u.temperature_energy())
         except (AttributeError, u.UnitsError, u.UnitConversionError):
@@ -619,9 +634,9 @@ class IonizationState:
                 raise ParticleError("T_i cannot be negative.")
 
         if value.size == 1:
-            self._T_i = u.Quantity([value] * self._number_particles)
+            self._T_i = np.repeat(value, self._number_particles)
         elif value.size == self._number_particles:
-            self.T_i = value
+            self._T_i = value
         else:
             error_str = (
                 "T_i must be set with either one common temperature"
