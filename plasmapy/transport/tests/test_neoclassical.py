@@ -25,7 +25,6 @@ from plasmapy.transport.neoclassical import (
 all_species = IonizationStateCollection(
     {
         "H": [0, 1],
-        #      "D": [0, 1],   raises ParticleError, why?
         "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
     },
     n0=1e20 * u.m ** -3,
@@ -78,7 +77,7 @@ def test_number_between_ionization_states(function, num_regression):
 
 
 def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_surface):
-    x = np.logspace(-3, 6, 5000)
+    x = np.logspace(-3, 6, 50)
     ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
     k = K_B_ai(x, 1, carbon_states, all_species, flux_surface)
     num_regression.check(
@@ -126,6 +125,6 @@ def test_K_ps_ai(x, flux_surface):
     assert_quantity_allclose(result, second_result)
 
 
-def test_mu(flux_surface):
-    μ = mu_hat(hydrogen, all_species, flux_surface)[1]
-    assert np.isfinite(μ).all()
+def test_mu(flux_surface, num_regression):
+    μ = mu_hat(hydrogen, all_species, flux_surface)
+    num_regression.check({"mu": μ.si.value.flatten()})
