@@ -25,33 +25,31 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
     The behavior of :rst:dir:`automodsumm` can additionally be set with the
     :ref:`configuration values described below <automodsumm-confvals>`.
 
-    .. rst:directive:option:: toctree
-
-        If you want the :rst:dir:`automodsumm` table to serve as a :rst:dir:`toctree`,
-        then specify this option with a directory path ``DIRNAME`` with respect to
-        the location of your `conf.py` file.
-
-        .. code-block:: rst
-
-            .. automodsumm:: plasmapy_sphinx.automodapi
-                :toctree: DIRNAME
-
-        This will signal `sphinx-autogen` to generate stub files for the objects in
-        the table and place them in the directory named by ``DIRNAME``.  This behavior
-        respects the configuration value :confval:`autosummary_generate`.
-        Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
-        that falls into the **modules** group (see the
-        :rst:dir:`automodsumm:groups` option below), unless
-        :confval:`automodapi_generate_module_stub_files` is set ``True``.
-
     .. rst:directive:option:: groups
 
-        When a module is inspected all the found objects are categorized into
-        groups.  The first group collected is **modules**, followed by any custom
-        group defined in :confval:`automodapi_custom_groups`, and, finally, the
-        standard groups of **classes**, **exceptions**, **warnings**, **functions**,
-        and **variables** (or all the rest).  By default, **all** groups will
-        be included in the generated table.
+        When a module is inspected all the identified objects are categorized into
+        groups.  The built-in groups are:
+
+        +----------------+------------------------------------------------------------+
+        | **modules**    | Direct sub-packages and modules                            |
+        +----------------+------------------------------------------------------------+
+        | **classes**    | Python classes (excluding **exceptions** and **warnings**) |
+        +----------------+------------------------------------------------------------+
+        | **exceptions** | Classes that inherit from `BaseException`. (excluding      |
+        |                | **warnings**)                                              |
+        +----------------+------------------------------------------------------------+
+        | **warnings**   | Classes that inherit from `Warning`                        |
+        +----------------+------------------------------------------------------------+
+        | **functions**  | Objects that satisfy :func:`inspect.isroutine`             |
+        +----------------+------------------------------------------------------------+
+        | **variables**  | All other objects                                          |
+        +----------------+------------------------------------------------------------+
+
+        In addition to the built-in, groups defined in
+        :confval:`automodapi_custom_groups` will be categorized.  When objects are
+        collected and grouped the **modules** will be done first, followed by any
+        custom group, and, finally, the built-in groups.  By default, **all** groups
+        will be included in the generated table.
 
         Using the `plasmapy_sphinx.automodsumm` module as an example, the
         :ref:`module's API <automodsumm-api>` shows it is made of classes
@@ -60,6 +58,11 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         .. code-block:: rst
 
             .. automodsumm:: plasmapy_sphinx.automodsumm
+
+            or
+
+            .. automodsumm:: plasmapy_sphinx.automodsumm
+               :groups: all
 
         .. automodsumm:: plasmapy_sphinx.automodsumm
 
@@ -73,8 +76,13 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         .. automodsumm:: plasmapy_sphinx.automodsumm
            :groups: classes
 
-        If you want ot include multiple groups, then specify all groups as a
+        If you want to include multiple groups, then specify all groups as a
         comma separated list.
+
+        .. code-block:: rst
+
+            .. automodsumm:: plasmapy_sphinx.automodsumm
+               :groups: classes, functions
 
     .. rst:directive:option:: exclude-groups
 
@@ -108,6 +116,25 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         .. automodsumm:: plasmapy_sphinx.automodsumm
            :groups: classes
            :skip: AutomodsummRenderer, GenDocsFromAutomodsumm
+
+    .. rst:directive:option:: toctree
+
+        If you want the :rst:dir:`automodsumm` table to serve as a :rst:dir:`toctree`,
+        then specify this option with a directory path ``DIRNAME`` with respect to
+        the location of your `conf.py` file.
+
+        .. code-block:: rst
+
+            .. automodsumm:: plasmapy_sphinx.automodapi
+                :toctree: DIRNAME
+
+        This will signal `sphinx-autogen` to generate stub files for the objects in
+        the table and place them in the directory named by ``DIRNAME``.  This behavior
+        respects the configuration value :confval:`autosummary_generate`.
+        Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
+        that falls into the **modules** group (see the
+        :rst:dir:`automodsumm:groups` option below), unless
+        :confval:`automodapi_generate_module_stub_files` is set ``True``.
 
 .. _automodsumm-confvals:
 
