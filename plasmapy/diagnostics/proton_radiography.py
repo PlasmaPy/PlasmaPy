@@ -18,7 +18,7 @@ import warnings
 from tqdm import tqdm
 
 from plasmapy import particles
-from plasmapy.diagnostics.line_integrated_diagnostic import PathIntegratedDiagnostic
+from plasmapy.diagnostics.path_integrated_diagnostic import PathIntegratedDiagnostic
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
