@@ -100,6 +100,7 @@ def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_su
 @example(x=0.01)
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_ν_T_ai(x):
+    x = np.array([x])
     result = ν_T_ai(x, hydrogen, all_species)[1]
     assert result > 0
     assert np.isfinite(result)
@@ -118,10 +119,11 @@ def test_ν_T_ai(x):
 @example(x=684.765468434412)
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_K_ps_ai(x, flux_surface):
-    result = K_ps_ai(x, hydrogen, all_species, flux_surface)[1]
-    assert result > 0
-    assert np.isfinite(result)
-    second_result = K_ps_ai(x, hydrogen, all_species, flux_surface)[1]
+    x = np.array([x])
+    result = K_ps_ai(x, hydrogen, all_species, flux_surface)
+    assert (result[1:] > 0).all()
+    assert np.isfinite(result[1:]).all()
+    second_result = K_ps_ai(x, hydrogen, all_species, flux_surface)
     assert_quantity_allclose(result, second_result)
 
 

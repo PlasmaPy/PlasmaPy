@@ -158,7 +158,8 @@ def pitch_angle_diffusion_rate(
     def sum_items():
         for b in all_species:
             xab = xab_ratio(a, b)
-            numerator = erf(x / xab) - Chandrasekhar_G(x / xab)
+            x_over_xab = (x / xab).value
+            numerator = erf(x_over_xab) - Chandrasekhar_G(x_over_xab)
             fraction = numerator / denominator
             result = fraction * effective_momentum_relaxation_rate(a, b)
             yield result
@@ -242,7 +243,7 @@ def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateColle
     def gen():
         for b in all_species:
             if b.base_particle != a.base_particle:  # TODO is not should work
-                x_over_xab = x / xab_ratio(a, b).value
+                x_over_xab = (x / xab_ratio(a, b)).value
                 part1 = (erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab)) / x ** 3
                 part2 = 4 * (
                     a.T_e / b.T_e + xab_ratio(a, b) ** -2
