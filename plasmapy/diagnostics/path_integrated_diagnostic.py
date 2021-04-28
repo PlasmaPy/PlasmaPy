@@ -290,7 +290,7 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         ...
         
     @abstractmethod
-    def integrate(self):
+    def evaluate(self):
         """
         Runs the line-integration routine
 
@@ -364,7 +364,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
 
         return integrand
     
-    def integrate(
+    def evaluate(
         self,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
         bins=[50, 50],
@@ -379,7 +379,7 @@ class Interferometer(LineIntegrateScalarQuantities):
     def __init__(self, grid, source, detector, verbose=False):
         super().__init__(grid, source, detector, quantities="n_e", verbose=verbose)
 
-    def integrate(
+    def evaluate(
         self,
         probe_freq: u.Hz,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,

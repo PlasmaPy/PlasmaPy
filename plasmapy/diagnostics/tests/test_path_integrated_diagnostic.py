@@ -180,7 +180,7 @@ def test_interferogram_sphere():
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     bins = [350, 350]
 
-    hax, vax, phase = obj.integrate(
+    hax, vax, phase = obj.evaluate(
         1.14e15 * u.Hz,
         size=size,
         bins=bins,
