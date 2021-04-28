@@ -682,6 +682,9 @@ class IonizationState:
         """Return the atomic number of the element."""
         return self._particle.atomic_number
 
+    def __len__(self):
+        return self._number_particles
+
     @property
     def _particle_instances(self) -> List[Particle]:
         """
