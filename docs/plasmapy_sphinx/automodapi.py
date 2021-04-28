@@ -16,16 +16,37 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 ---------------------------------
 
 A configuration value is a variable that con be defined in ``conf.py`` to configure
-the default behave of related `sphinx` directives.  The configuration values
-below relate to the behavior of the :rst:dir:`automodsumm` directive.
-
-.. confval:: automodapi_include_inheritance_diagram
+the default behavior of related `sphinx` directives.  The configuration values
+below relate to the behavior of the :rst:dir:`automodapi` directive.
 
 .. confval:: automodapi_default_toctree_dir
 
+    (Default ``"api"``)  The default directory name, with respect to ``conf.py``,
+    for :rst:dir:`automodapi` to write stub files to.  This is the default
+    value for :rst:dir:`automodapi:toctree`.
+
 .. confval:: automodapi_group_order
 
+    (Default ``("modules", "classes", "exceptions", "warnings", "functions",
+    "variables")``)  A tuple defining the order :rst:dir:`automodapi` should
+    display the collected groups.  If :rst:dir:`automodapi` identifies groups
+    that are not identified here (e.g. unlisted custom groups), then those
+    groups will be displayed alphabetically after the groups defined in
+    :confval:`automodapi_group_order`.  *This configuration value should be
+    defined if custom groups are defined by* :confval:`automodapi_custom_groups` *.*
+
 .. confval:: automodapi_groups_with_inheritance_diagrams
+
+    (Default ``["classes", "exceptions", "warnings"]``) A list defining which
+    groups should have inheritance diagrams associated with them when displayed
+    by :rst:dir:`automodapi`.
+
+.. confval:: automodapi_include_inheritance_diagram
+
+    (Default `True`) Controls if :rst:dir:`automodapi` will by default generated
+    inheritance diagrams (see directive :rst:dir:`inheritance-diagram`) for a
+    given group.  The groups that should get inheritance diagrams are defined by
+    the configuration value :confval:`automodapi_groups_with_inheritance_diagrams`.
 
 """
 __all__ = ["AutomodapiOptions", "ModuleDocumenter", "setup"]
