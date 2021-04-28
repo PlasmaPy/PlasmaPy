@@ -115,12 +115,12 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 ----------------------------------
 
 A configuration value is a variable that con be defined in ``conf.py`` to configure
-the default behave of related `sphinx` directives.  The configuration values
+the default behavior of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
 .. confval:: automodapi_custom_groups
 
-    A `sphinx` configuration value used to define custom groups which are used by
+    Configuration value used to define custom groups which are used by
     :rst:dir:`automodapi` and :rst:dir:`automodsumm` when sorting the discovered
     objects of an inspected module.  An example custom group definition looks like
 
@@ -135,11 +135,14 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
 
     where the top-level key (``"aliases"``) is the group name used in the
     :rst:dir:`automodsumm:groups` option, ``"title"`` defines the title
-    text of the group heading, and ``"dunder"`` defines the dunder variable
-    (like ``__all__``) in the module.  This dunder variable is then used to
-    specify which module objects belong to the custom group.  Using
-    `plasmapy.formulary.parameters` as an example, the **aliases** group can
-    not be collected and displayed like
+    text of the group heading used by :rst:dir:`automodapi`, and ``"dunder"``
+    defines the name of a dunder variable (similar ``__all__``) in the module.
+    This dunder variable is defined at the top of the module being documented
+    and defines a list of object names just like ``__all__``.  The
+    :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives will used this
+    defined dunder to identify the objects associated with the custom group.
+    Using `plasmapy.formulary.parameters` as an example, the **aliases** group
+    can now be collected and displayed like
 
     .. code-block:: rst
 
