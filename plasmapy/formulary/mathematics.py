@@ -2,14 +2,14 @@
 
 __all__ = ["Fermi_integral", "Chandrasekhar_G", "rot_a_to_b"]
 
+import numba
+import numba_scipy
 import numbers
 import numpy as np
 
+from numba import float64, vectorize
 from scipy import special
 from typing import Union
-import numba
-import numba_scipy
-from numba import vectorize, float64
 
 
 def Fermi_integral(
@@ -94,9 +94,11 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
-@vectorize([
-    float64(float64),
-])
+@vectorize(
+    [
+        float64(float64),
+    ]
+)
 def Chandrasekhar_G(x: float):
     r"""
     Calculate the Chandrasekhar G function used in transport theory.
