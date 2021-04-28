@@ -213,7 +213,7 @@ _option_spec = {
     # "merge-groups": bool_option,
     "skip": option_str_list,
     "include-heading": bool_option,
-    "members": lambda x: None,
+    # "members": lambda x: None,
     "heading-chars": directives.unchanged,
     "toctree": directives.unchanged,
     "no-toctree": bool_option,
@@ -221,6 +221,11 @@ _option_spec = {
     "inheritance-diagram": bool_option,
     "no-inheritance-diagram": bool_option,
 }  # type: Dict[str, Callable]
+for name in list(_option_spec):
+    if "member" in name:
+        del _option_spec[name]
+del _option_spec["ignore-module-all"]
+del name
 
 
 class AutomodapiOptions(AutomodsummOptions):
