@@ -100,7 +100,7 @@ def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_su
 @example(x=0.01)
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_ν_T_ai(x):
-    result = ν_T_ai(x, 1, hydrogen, all_species)
+    result = ν_T_ai(x, hydrogen, all_species)[1]
     assert result > 0
     assert np.isfinite(result)
 

@@ -23,9 +23,11 @@ from dataclasses import dataclass
 
 from plasmapy.utils.decorators import validate_quantities
 
-# if 'profile' not in globals():
-#     def profile(func):
-#         return func
+if "profile" not in globals():
+
+    def profile(func):
+        return func
+
 
 # @dataclass(order=True)
 # class Fluxes:
@@ -235,6 +237,29 @@ class FlowCalculator:
                 ).si
                 results[sym] = Fluxes(
                     Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit)
+                )
+        return results
+
+    @cached_property
+    def _fluxes_PS(self):
+        fs = self.flux_surface
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
+        results = {}
+        fs = self.flux_surface
+        for a in self.all_species:
+            silly = self.funnymatrix(a.base_particle)
+            for xi, ai in self.contributing_states(a):
+                sym = ai.ionic_symbol
+                prefactor = (
+                    -fs.Fhat / ai.ion.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
+                )
+                Γ_PS = prefactor * silly[sym][0]  # overlarge by s/m5
+                q_PS = (
+                    prefactor * constants.k_B * ai.T_i * silly[sym][1]
+                )  # overlarge by μ.unit
+                results[sym] = Fluxes(
+                    Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit)
                 )
         return results
 

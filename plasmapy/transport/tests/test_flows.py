@@ -12,9 +12,11 @@ from hypothesis import strategies as st
 from plasmapy.particles import IonizationStateCollection
 from plasmapy.transport.flows import FlowCalculator
 
-# if 'profile' not in globals():
-#     def profile(func):
-#         return func
+if "profile" not in globals():
+
+    def profile(func):
+        return func
+
 
 all_species = IonizationStateCollection(
     {

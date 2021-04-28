@@ -18,9 +18,10 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
-# if 'profile' not in globals():
-#     def profile(func):
-#         return func
+if "profile" not in globals():
+
+    def profile(func):
+        return func
 
 
 def xab_ratio(a: IonizationState, b: IonizationState):
@@ -234,11 +235,9 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
 
 
 @profile
-def ν_T_ai(
-    x: np.ndarray, i: int, a: IonizationState, all_species: IonizationStateCollection
-):
-    ai = a[i]
-    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a)[i] / ai.number_density / ai.ion.mass
+def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateCollection):
+    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density_probably
 
     def gen():
         for b in all_species:
@@ -253,14 +252,13 @@ def ν_T_ai(
                 # print(f"{b=} {result=}")
                 yield result
 
-    result = prefactor * sum(gen())
+    result = prefactor[:, np.newaxis] * sum(gen())[np.newaxis, :]
     return result
 
 
 @profile
 def K_ps_ai(
     x: np.ndarray,
-    i: int,
     a: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
@@ -268,11 +266,11 @@ def K_ps_ai(
     m_max=100,
     g=1  # TODO get from m_max
 ):
-    ν = ν_T_ai(x, i, a, all_species)
+    ν = ν_T_ai(x, a, all_species)[:, np.newaxis, :]
 
     m = np.arange(1, m_max + 1)
     F = F_m(m[:, np.newaxis], flux_surface, g=g)  # TODO replace
-    ω = ωm(x, m[:, np.newaxis], a, flux_surface)
+    ω = ωm(x, m[:, np.newaxis], a, flux_surface)[np.newaxis, ...]
     B10 = (
         1.5 * (ν / ω) ** 2
         - 9 / 2 * (ν / ω) ** 4
@@ -280,15 +278,14 @@ def K_ps_ai(
         * (2 * ν / ω)
         * np.arctan(ω / ν).si.value
     )
-    # print(F.shape, B10.shape)
     onepart = F[:, np.newaxis] * B10
-    full_sum = np.sum(onepart / ν, axis=0)
-    # print(f"{full_sum=}")
+    full_sum = np.sum(onepart / ν, axis=1)
 
     return (
         3
         / 2
-        * thermal_speed(a.T_e, a.base_particle) ** 2
+        * thermal_speed(a.T_e, a.base_particle)
+        ** 2  # TODO replace T_e with T_i in the fullness of time
         * x ** 2
         * full_sum
         / u.m ** 2
@@ -309,12 +306,7 @@ def K(
     # Eq 16
     kb = K_B_ai(x, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
     # print(f"got {kb=}")
-    kps = u.Quantity(
-        [
-            K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
-            for i in a.integer_charges
-        ]
-    )
+    kps = K_ps_ai(x, a, all_species, flux_surface, m_max=m_max, g=g)
     # print(f"got {kps=}")
     return 1 / (1 / kb + 1 / kps)
 
