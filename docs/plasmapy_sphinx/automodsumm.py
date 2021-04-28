@@ -45,7 +45,7 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         | **variables**  | All other objects                                          |
         +----------------+------------------------------------------------------------+
 
-        In addition to the built-in, groups defined in
+        In addition to the built-in groups, groups defined in
         :confval:`automodapi_custom_groups` will be categorized.  When objects are
         collected and grouped the **modules** will be done first, followed by any
         custom group, and, finally, the built-in groups.  By default, **all** groups
