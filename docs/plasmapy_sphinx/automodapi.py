@@ -97,7 +97,7 @@ _option_spec = {
     "heading-chars": directives.unchanged,
     "toctree": directives.unchanged,
     "no-toctree": bool_option,
-    "no-main-docstr": bool_option,
+    "no-main-docstring": bool_option,
     "inheritance-diagram": bool_option,
     "no-inheritance-diagram": bool_option,
 }  # type: Dict[str, Callable]
@@ -361,7 +361,7 @@ class ModAPIDocumenter(ModuleDocumenter):
                 stacklevel=2,
             )
 
-        no_docstring = self.options.get("no-main-docstr", False)
+        no_docstring = self.options.get("no-main-docstring", False)
 
         # set sourcename and add content from attribute documentation
         sourcename = self.get_sourcename()
