@@ -19,4 +19,4 @@ API
 
 .. automodapi:: plasmapy.simulation
    :noindex:
-   :no-main-docstr:
+   :no-main-docstring:

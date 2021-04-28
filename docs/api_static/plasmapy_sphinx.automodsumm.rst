@@ -15,4 +15,4 @@ API
 
 .. automodapi:: plasmapy_sphinx.automodsumm
    :noindex:
-   :no-main-docstr:
+   :no-main-docstring:

@@ -21,5 +21,5 @@ API
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
    :noindex:
-   :no-main-docstr:
+   :no-main-docstring:
    :heading-chars: ^~

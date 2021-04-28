@@ -24,4 +24,4 @@ API
 ===
 
 .. automodapi:: plasmapy.simulation.particletracker
-   :no-main-docstr:
+   :no-main-docstring:
