@@ -144,7 +144,7 @@ def M_script(species_a: IonizationState, all_species: IonizationStateCollection)
     return sum(gener())
 
 
-@profile
+#profile
 def pitch_angle_diffusion_rate(
     x: np.ndarray,
     a: IonizationState,
@@ -175,7 +175,7 @@ def pitch_angle_diffusion_rate(
     return result
 
 
-@profile
+#profile
 def K_B_ai(
     x: np.ndarray,
     a_states: IonizationState,
@@ -234,7 +234,7 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     return B11
 
 
-@profile
+#profile
 def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateCollection):
     mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
     prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density_probably
@@ -256,7 +256,7 @@ def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateColle
     return result
 
 
-@profile
+#profile
 def K_ps_ai(
     x: np.ndarray,
     a: IonizationState,
@@ -292,7 +292,7 @@ def K_ps_ai(
     )
 
 
-@profile
+#profile
 def K(
     x: np.ndarray,
     a: IonizationState,
@@ -311,7 +311,7 @@ def K(
     return 1 / (1 / kb + 1 / kps)
 
 
-@profile
+#profile
 def mu_hat(
     a: IonizationState,
     all_species: IonizationStateCollection,

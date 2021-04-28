@@ -39,7 +39,7 @@ temperature_gradient = {
 }
 
 
-@profile
+#profile
 @pytest.fixture(scope="module")
 def fc(flux_surface):
     fc = FlowCalculator(
@@ -52,7 +52,7 @@ def fc(flux_surface):
     return fc
 
 
-@profile
+#profile
 def test_get_flows(fc, num_regression):
     for ion, r in fc._charge_state_flows.items():
         if "0" in ion:

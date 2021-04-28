@@ -48,7 +48,7 @@ class FlowCalculator:
     This does, in fact, do most things for my thesis.
     """
 
-    @profile
+    #profile
     def __init__(
         self,
         all_species,
@@ -176,21 +176,21 @@ class FlowCalculator:
                 continue
             yield xi[i], ai
 
-    @profile
+    #profile
     def M_script(self, a):
         sym = a.base_particle
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
-    @profile
+    #profile
     def N_script(self, a, b):
         sym_tuple = a.base_particle, b.base_particle
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
         return self.N_script_matrices[sym_tuple]
 
-    @profile
+    #profile
     def funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]
         M = self.M_script(a)
