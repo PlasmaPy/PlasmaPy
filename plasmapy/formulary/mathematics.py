@@ -7,6 +7,9 @@ import numpy as np
 
 from scipy import special
 from typing import Union
+import numba
+import numba_scipy
+from numba import vectorize, float64
 
 
 def Fermi_integral(
@@ -91,6 +94,9 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
+@vectorize([
+    float64(float64),
+])
 def Chandrasekhar_G(x: float):
     r"""
     Calculate the Chandrasekhar G function used in transport theory.
@@ -144,6 +150,8 @@ def Chandrasekhar_G(x: float):
 
     """
 
+    if abs(x) < np.finfo(np.float64).eps:
+        return 2 * x / 3 / np.sqrt(np.pi)
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
     return 0.5 * (erf / x ** 2 - erf_derivative / x)
