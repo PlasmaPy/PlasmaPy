@@ -9,7 +9,6 @@ from plasmapy.formulary.mathematics import Chandrasekhar_G
 
 @given(
     x=st.floats(
-        max_value=1e90,
         allow_nan=False,
         allow_infinity=False,
     )
