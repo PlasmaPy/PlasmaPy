@@ -152,6 +152,8 @@ def Chandrasekhar_G(x: float):
 
     if abs(x) < np.finfo(np.float64).eps:
         return 2 * x / 3 / np.sqrt(np.pi)
+    elif abs(x) > np.finfo(np.float64).max:
+        return 1 / (2 * x ** 2) 
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
     return 0.5 * (erf / x ** 2 - erf_derivative / x)
