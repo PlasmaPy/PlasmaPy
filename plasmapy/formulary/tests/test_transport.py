@@ -179,7 +179,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
-        """output should be Quantity with units of Pa s """
+        """output should be Quantity with units of Pa s"""
         testTrue = self.ct.ion_viscosity.unit == u.Pa * u.s
         errStr = (
             f"Ion viscosity units should be {u.Pa * u.s} "

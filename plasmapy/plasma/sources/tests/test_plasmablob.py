@@ -297,7 +297,7 @@ class Test_PlasmaBlobRegimes:
 class Test_PlasmaBlob:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_e = 5 * 11e3 * u.K
         self.n_e = 1e23 * u.cm ** -3
         self.Z = 2.5
@@ -318,7 +318,7 @@ class Test_PlasmaBlob:
             )
 
     def test_electron_temperature(self):
-        """Testing if we get the same electron temperature we put in """
+        """Testing if we get the same electron temperature we put in"""
         testTrue = self.T_e == self.blob.electron_temperature
         errStr = (
             f"Input electron temperature {self.T_e} should be equal to "
@@ -328,7 +328,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_electron_density(self):
-        """Testing if we get the same electron density we put in """
+        """Testing if we get the same electron density we put in"""
         testTrue = self.n_e == self.blob.electron_density
         errStr = (
             f"Input electron density {self.n_e} should be equal to "
@@ -338,7 +338,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_ionization(self):
-        """Testing if we get the same ionization we put in """
+        """Testing if we get the same ionization we put in"""
         testTrue = self.Z == self.blob.ionization
         errStr = (
             f"Input ionization {self.Z} should be equal to "
@@ -348,7 +348,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_composition(self):
-        """Testing if we get the same composition (particle) we put in """
+        """Testing if we get the same composition (particle) we put in"""
         testTrue = self.particle == self.blob.composition
         errStr = (
             f"Input particle {self.particle} should be equal to "
