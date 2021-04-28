@@ -259,7 +259,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r""" Shape of the grid"""
+        r"""Shape of the grid"""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
         else:
