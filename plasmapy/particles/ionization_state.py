@@ -265,10 +265,11 @@ class IonizationState:
         tol: Union[float, int] = 1e-15,
     ):
         """Initialize an `~plasmapy.particles.IonizationState` instance."""
+        self._number_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
             if ionic_fractions is None:
-                ionic_fractions = np.zeros(particle.atomic_number + 1)
+                ionic_fractions = np.zeros(self._number_particles)
                 ionic_fractions[particle.integer_charge] = 1.0
                 particle = Particle(
                     particle.isotope if particle.isotope else particle.element
@@ -327,7 +328,7 @@ class IonizationState:
                     number_density=self.number_densities[val],
                     T_i=self.T_e,  # TODO
                 )
-                for val in range(0, self._particle.atomic_number + 1)
+                for val in range(0, self._number_particles)
             ]
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
