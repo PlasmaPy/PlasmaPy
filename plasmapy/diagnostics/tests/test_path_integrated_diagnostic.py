@@ -5,9 +5,9 @@ import pytest
 
 from plasmapy.diagnostics.path_integrated_diagnostic import (
     Interferometer,
-    PathIntegratedDiagnostic,
     LineIntegratedDiagnostic,
     LineIntegrateScalarQuantities,
+    PathIntegratedDiagnostic,
 )
 from plasmapy.plasma.grids import CartesianGrid
 
@@ -190,7 +190,7 @@ def test_interferogram_sphere():
 
 
 if __name__ == "__main__":
-    
+
     test_abstract_line_integrated_diagnostic()
     test_integrate_scalar_quantities()
     test_constant_cylinder()

@@ -144,7 +144,6 @@ class PathIntegratedDiagnostic(ABC):
 
 
 class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
-
     def _line_integral(
         self,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
@@ -288,7 +287,7 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
             a list, each of which will then be integrated separately.
         """
         ...
-        
+
     @abstractmethod
     def evaluate(self):
         """
@@ -363,16 +362,15 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         integrand = np.reshape(integrand, (nx, ny, nz))
 
         return integrand
-    
+
     def evaluate(
         self,
         size=np.array([[-1, 1], [-1, 1]]) * u.cm,
         bins=[50, 50],
         collimated=True,
         num=100,
-        ):
-         return self._line_integral(size=size, bins=bins,
-                                    collimated=collimated, num=num)
+    ):
+        return self._line_integral(size=size, bins=bins, collimated=collimated, num=num)
 
 
 class Interferometer(LineIntegrateScalarQuantities):
