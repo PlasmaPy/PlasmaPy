@@ -18,6 +18,10 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
+# if 'profile' not in globals():
+#     def profile(func):
+#         return func
+
 
 def xab_ratio(a: IonizationState, b: IonizationState):
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
@@ -140,39 +144,39 @@ def M_script(species_a: IonizationState, all_species: IonizationStateCollection)
     return sum(gener())
 
 
+@profile
 def pitch_angle_diffusion_rate(
     x: np.ndarray,
-    index: int,
-    a_states: IonizationState,
+    a: IonizationState,
     all_species: IonizationStateCollection,
 ):
     # Houlberg_1997, equation B4b,
-    ai = a_states[index]  # TODO I wouldn't need to carry the index around, if...
-    xi = ξ(a_states)[index]
+    xi = ξ(a)
+    denominator = x ** 3
 
     def sum_items():
         for b in all_species:
-            xab = xab_ratio(a_states, b)
+            xab = xab_ratio(a, b)
             numerator = erf(x / xab) - Chandrasekhar_G(x / xab)
-            denominator = x ** 3
             fraction = numerator / denominator
-            result = fraction * effective_momentum_relaxation_rate(a_states, b)
+            result = fraction * effective_momentum_relaxation_rate(a, b)
             yield result
 
+    mass_density_probably = a.number_densities * u.Quantity([ai.ion.mass for ai in a])
     result = (
-        xi
-        / (ai.number_density * ai.ion.mass)
+        xi[:, np.newaxis]
+        / mass_density_probably[:, np.newaxis]
         * 3
         * np.sqrt(np.pi)
         / 4
-        * sum(sum_items())
+        * sum(sum_items())[np.newaxis, :]
     )
     return result
 
 
+@profile
 def K_B_ai(
     x: np.ndarray,
-    index: int,
     a_states: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
@@ -188,7 +192,7 @@ def K_B_ai(
         )
     else:
         S_ai = 1  # Equation B2
-    padr = pitch_angle_diffusion_rate(x, index, a_states, all_species)
+    padr = pitch_angle_diffusion_rate(x, a_states, all_species)
     return padr * f_t / f_c / S_ai ** 1.5
 
 
@@ -229,6 +233,7 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     return B11
 
 
+@profile
 def ν_T_ai(
     x: np.ndarray, i: int, a: IonizationState, all_species: IonizationStateCollection
 ):
@@ -252,6 +257,7 @@ def ν_T_ai(
     return result
 
 
+@profile
 def K_ps_ai(
     x: np.ndarray,
     i: int,
@@ -289,9 +295,9 @@ def K_ps_ai(
     )
 
 
+@profile
 def K(
     x: np.ndarray,
-    i: int,
     a: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
@@ -301,13 +307,19 @@ def K(
     g=1
 ):
     # Eq 16
-    kb = K_B_ai(x, i, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
+    kb = K_B_ai(x, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
     # print(f"got {kb=}")
-    kps = K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
+    kps = u.Quantity(
+        [
+            K_ps_ai(x, i, a, all_species, flux_surface, m_max=m_max, g=g)
+            for i in a.integer_charges
+        ]
+    )
     # print(f"got {kps=}")
     return 1 / (1 / kb + 1 / kps)
 
 
+@profile
 def mu_hat(
     a: IonizationState,
     all_species: IonizationStateCollection,
@@ -329,11 +341,8 @@ def mu_hat(
     len_a = len(a.number_densities)
     signs = (-1) * (α[:, None] + β[None, :])
     laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
-    kterm = u.Quantity(
-        [K(x, i, a, all_species, flux_surface, **kwargs) for i, _ in enumerate(a)]
-    ).reshape(
-        len_a, N, 1, 1
-    )  # TODO
+    kterm = K(x, a, all_species, flux_surface, **kwargs)
+    kterm = kterm.reshape(len_a, N, 1, 1)  # TODO
     xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
     y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
     integral = trapezoid(y, x, axis=1)

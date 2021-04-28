@@ -23,6 +23,10 @@ from dataclasses import dataclass
 
 from plasmapy.utils.decorators import validate_quantities
 
+# if 'profile' not in globals():
+#     def profile(func):
+#         return func
+
 # @dataclass(order=True)
 # class Fluxes:
 #     particle_flux: u.Quantity
@@ -43,6 +47,7 @@ class FlowCalculator:
     This does, in fact, do most things for my thesis.
     """
 
+    @profile
     def __init__(
         self,
         all_species,
@@ -170,18 +175,21 @@ class FlowCalculator:
                 continue
             yield xi[i], ai
 
+    @profile
     def M_script(self, a):
         sym = a.base_particle
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
+    @profile
     def N_script(self, a, b):
         sym_tuple = a.base_particle, b.base_particle
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
         return self.N_script_matrices[sym_tuple]
 
+    @profile
     def funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]
         M = self.M_script(a)
@@ -227,29 +235,6 @@ class FlowCalculator:
                 ).si
                 results[sym] = Fluxes(
                     Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit)
-                )
-        return results
-
-    @cached_property
-    def _fluxes_PS(self):
-        fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
-        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
-        results = {}
-        fs = self.flux_surface
-        for a in self.all_species:
-            silly = self.funnymatrix(a.base_particle)
-            for xi, ai in self.contributing_states(a):
-                sym = ai.ionic_symbol
-                prefactor = (
-                    -fs.Fhat / ai.ion.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
-                )
-                Γ_PS = prefactor * silly[sym][0]  # overlarge by s/m5
-                q_PS = (
-                    prefactor * constants.k_B * ai.T_i * silly[sym][1]
-                )  # overlarge by μ.unit
-                results[sym] = Fluxes(
-                    Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit)
                 )
         return results
 

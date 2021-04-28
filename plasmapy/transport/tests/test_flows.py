@@ -12,6 +12,10 @@ from hypothesis import strategies as st
 from plasmapy.particles import IonizationStateCollection
 from plasmapy.transport.flows import FlowCalculator
 
+# if 'profile' not in globals():
+#     def profile(func):
+#         return func
+
 all_species = IonizationStateCollection(
     {
         "H": [0, 1],
@@ -34,6 +38,7 @@ temperature_gradient = {
 }
 
 
+@profile
 @pytest.fixture(scope="module")
 def fc(flux_surface):
     fc = FlowCalculator(
@@ -46,6 +51,7 @@ def fc(flux_surface):
     return fc
 
 
+@profile
 def test_get_flows(fc, num_regression):
     for ion, r in fc._charge_state_flows.items():
         if "0" in ion:
@@ -120,3 +126,8 @@ def test_fluxes(fc, num_regression):
         d[f"Γ_{ion}"] = Γ.si.value
         d[f"q_{ion}"] = q.si.value
     num_regression.check(d)
+
+
+import pytest
+
+pytest.main([__file__, "-k", "test_get_flows"])

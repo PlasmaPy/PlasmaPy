@@ -78,8 +78,8 @@ def test_number_between_ionization_states(function, num_regression):
 
 def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_surface):
     x = np.logspace(-3, 6, 50)
-    ν_D_ai = pitch_angle_diffusion_rate(x, 1, carbon_states, all_species)
-    k = K_B_ai(x, 1, carbon_states, all_species, flux_surface)
+    ν_D_ai = pitch_angle_diffusion_rate(x, carbon_states, all_species)[1]
+    k = K_B_ai(x, carbon_states, all_species, flux_surface)[1]
     num_regression.check(
         {"x": x, "ν_D_ai": ν_D_ai.si.value, "K_B_ai": k.si.value},
         tolerances={"ν_D_ai": {"rtol": 1e-4}, "K_B_ai": {"rtol": 1e-4}},
