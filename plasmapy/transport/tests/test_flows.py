@@ -12,10 +12,9 @@ from hypothesis import strategies as st
 from plasmapy.particles import IonizationStateCollection
 from plasmapy.transport.flows import FlowCalculator
 
-if "profile" not in globals():
-
-    def profile(func):
-        return func
+# if "profile" not in globals():
+#     def profile(func):
+#         return func
 
 
 all_species = IonizationStateCollection(
@@ -128,8 +127,3 @@ def test_fluxes(fc, num_regression):
         d[f"Γ_{ion}"] = Γ.si.value
         d[f"q_{ion}"] = q.si.value
     num_regression.check(d)
-
-
-import pytest
-
-pytest.main([__file__, "-k", "test_get_flows"])

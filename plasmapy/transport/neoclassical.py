@@ -18,10 +18,9 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
-if "profile" not in globals():
-
-    def profile(func):
-        return func
+# if "profile" not in globals():
+#     def profile(func):
+#         return func
 
 
 def xab_ratio(a: IonizationState, b: IonizationState):

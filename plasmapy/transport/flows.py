@@ -23,10 +23,9 @@ from dataclasses import dataclass
 
 from plasmapy.utils.decorators import validate_quantities
 
-if "profile" not in globals():
-
-    def profile(func):
-        return func
+# if "profile" not in globals():
+#     def profile(func):
+#         return func
 
 
 # @dataclass(order=True)
