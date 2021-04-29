@@ -363,6 +363,7 @@ class AutomodapiOptions(AutomodsummOptions):
     Class for advanced conditioning and manipulation of option arguments of
     `plasmapy_sphinx.automodapi.ModAPIDocumenter`.
     """
+
     option_spec = _option_spec
     logger = logger
 
@@ -549,7 +550,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 
         return _grouping_info
 
-    def generate_more_content(self, modname : str) -> List[str]:
+    def generate_more_content(self, modname: str) -> List[str]:
         """
         Generate the "more content" associate with the :rst:dir:`automodsumm` tables
         and inheritance diagrams.
