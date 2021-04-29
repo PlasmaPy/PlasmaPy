@@ -359,18 +359,12 @@ del name
 
 
 class AutomodapiOptions(AutomodsummOptions):
+    """
+    Class for advanced conditioning and manipulation of option arguments of
+    `plasmapy_sphinx.automodapi.ModAPIDocumenter`.
+    """
     option_spec = _option_spec
     logger = logger
-
-    def __init__(
-        self,
-        app: Sphinx,
-        modname: str,
-        options: Dict[str, Any],
-        docname: str = None,
-        _warn: Callable = None,
-    ):
-        super().__init__(app, modname, options, docname=docname, _warn=_warn)
 
     def condition_options(self):
         super().condition_options()
@@ -379,6 +373,11 @@ class AutomodapiOptions(AutomodsummOptions):
         self.condition_inheritance_diagram_option()
 
     def condition_toctree_option(self):
+        """
+        Additional conditioning of the ``:toctree:`` option. (See options
+        :rst:dir:`automodapi:toctree` and :rst:dir:`automodapi:no-toctree`
+        for additional details.)
+        """
         if "no-toctree" in self.options and self.options["no-toctree"]:
             if "toctree" in self.options:
                 del self.options["toctree"]
@@ -388,6 +387,10 @@ class AutomodapiOptions(AutomodsummOptions):
         super().condition_toctree_option()
 
     def condition_heading_chars_option(self):
+        """
+        Additional conditioning of the ``:heading-chars:`` option. (See option
+        :rst:dir:`automodapi:heading-chars` for additional details.)
+        """
         non_alphanumerics = re.compile("[^0-9a-zA-Z]]+")
         heading_chars = self.options.get("heading-chars", None)
         if (
@@ -399,10 +402,19 @@ class AutomodapiOptions(AutomodsummOptions):
             self.options["heading-chars"] = "-^"
 
     def condition_include_heading_option(self):
+        """
+        Additional conditioning of the ``:include-heading:`` option. (See option
+        :rst:dir:`automodapi:include-heading` for additional details.)
+        """
         if "include-heading" not in self.options:
             self.options["include-heading"] = False
 
     def condition_inheritance_diagram_option(self):
+        """
+        Additional conditioning of the ``:inheritance-diagram:`` option. (See options
+        :rst:dir:`automodapi:inheritance-diagram` and
+        :rst:dir:`automodapi:no-inheritance-diagram` for additional details.)
+        """
         if "no-inheritance-diagram" in self.options:
             self.options["inheritance-diagram"] = False
             del self.options["no-inheritance-diagram"]
@@ -414,6 +426,11 @@ class AutomodapiOptions(AutomodsummOptions):
             ] = self.app.config.automodapi_include_inheritance_diagram
 
     def condition_group_options(self):
+        """
+        Additional conditioning of the grouping options. (See options
+        :rst:dir:`automodapi:groups`, :rst:dir:`automodapi:exclude-groups`, and
+        :rst:dir:`automodapi:no-groups` for additional details.)
+        """
         if "no-groups" in self.options and self.options["no-groups"]:
             self.options["groups"] = []
             if "exclude-groups" in self.options:
@@ -424,7 +441,11 @@ class AutomodapiOptions(AutomodsummOptions):
         super().condition_group_options()
 
     @property
-    def options_for_automodsumm(self):
+    def options_for_automodsumm(self) -> Dict[str, Any]:
+        """
+        A dictionary of options suitable for :rst:dir:`automodsumm` based on the
+        options given to :rst:dir:`automodapi`, and excluding the group options.
+        """
         options = {}
 
         asumm_opts = list(AutomodsummOptions.option_spec)
