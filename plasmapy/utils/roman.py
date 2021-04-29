@@ -119,7 +119,7 @@ def from_roman(s: str) -> Integral:
     Returns
     -------
     result : `int`
-        The integer corresponding to the Roman numeral.
+        The positive integer corresponding to the Roman numeral.
 
     Raises
     ------

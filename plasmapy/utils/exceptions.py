@@ -1,4 +1,5 @@
 """Exceptions and warnings specific to PlasmaPy."""
+
 __all__ = [
     "PlasmaPyError",
     "PhysicsError",
@@ -11,8 +12,6 @@ __all__ = [
     "PhysicsWarning",
     "RelativityWarning",
 ]
-
-from astropy.units import UnitsWarning
 
 # ------------------------------------------------------------------------------
 #   Exceptions
@@ -39,7 +38,7 @@ class PhysicsError(PlasmaPyError, ValueError):
 
 
 class RomanError(PlasmaPyError):
-    """A base exception for errors from `~plasmapy.utils.roman`."""
+    """A base exception for errors from `plasmapy.utils.roman`."""
 
     pass
 
@@ -85,9 +84,8 @@ class PlasmaPyWarning(Warning):
     All PlasmaPy custom warnings should inherit from this class and be
     defined in this module.
 
-    Warnings should be issued using `~warnings.warn`, which will not break
+    Warnings should be issued using `warnings.warn`, which will not break
     execution if unhandled.
-
     """
 
     pass
@@ -113,7 +111,8 @@ class RelativityWarning(PhysicsWarning):
 
 class CouplingWarning(PhysicsWarning):
     """
-    A warning for functions that rely on a particular coupling regime to be valid.
+    A warning for functions that rely on a particular coupling regime to
+    be valid.
     """
 
     pass

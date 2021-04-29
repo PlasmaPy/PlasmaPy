@@ -38,10 +38,10 @@ class ParticleTracker:
         and macroparticles.
 
     dt : `astropy.units.Quantity`
-        Duration of timestep
+        Duration of timestep.
 
     nt : `int`
-        Number of timesteps
+        Number of timesteps.
 
     Attributes
     ----------
