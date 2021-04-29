@@ -643,7 +643,7 @@ class IonizationState:
 
     @property
     def Z_mean(self) -> np.float64:
-        """The mean integer charge"""
+        """The mean integer charge."""
         if np.nan in self.ionic_fractions:
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "

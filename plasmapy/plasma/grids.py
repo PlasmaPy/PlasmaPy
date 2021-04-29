@@ -120,7 +120,7 @@ class AbstractGrid(ABC):
         Parameters
         ----------
         req_quantities : `list` of `str`
-            A list of quantity keys that are required
+            A list of quantity keys that are required.
 
         replace_with_zeros : `bool`, optional
             If true, missing quantities will be replaced with an array
@@ -280,7 +280,7 @@ class AbstractGrid(ABC):
     @property
     def grid(self):
         r"""
-        A single grid of vertex positions of shape (N0, N1, N2, 3)
+        A single grid of vertex positions of shape (N0, N1, N2, 3).
 
         Only defined for grids for which the ``unit`` property is defined.
         """
@@ -359,7 +359,7 @@ class AbstractGrid(ABC):
     @property
     def ax0(self):
         r"""
-        First axis of the grid, only valid for uniform grids
+        First axis of the grid. Only valid for uniform grids.
 
         Raises
         ------
@@ -377,7 +377,7 @@ class AbstractGrid(ABC):
     @property
     def ax1(self):
         r"""
-        Second axis of the grid, only valid for uniform grids.
+        Second axis of the grid. Only valid for uniform grids.
 
         Raises
         ------
@@ -394,7 +394,7 @@ class AbstractGrid(ABC):
     @property
     def ax2(self):
         r"""
-        Third axis of the grid, only valid for uniform grids.
+        Third axis of the grid. Only valid for uniform grids.
 
         Raises
         ------
@@ -411,7 +411,7 @@ class AbstractGrid(ABC):
     @property
     def dax0(self):
         r"""
-        Grid step size along axis :attr:`ax0`, only valid for uniform grids.
+        Grid step size along axis :attr:`ax0`. Only valid for uniform grids.
 
         Raises
         ------
@@ -429,7 +429,7 @@ class AbstractGrid(ABC):
     @property
     def dax1(self):
         r"""
-        Grid step size along axis :attr:`ax1`, only valid for uniform grids.
+        Grid step size along axis :attr:`ax1`. Only valid for uniform grids.
 
         Raises
         ------
@@ -447,7 +447,7 @@ class AbstractGrid(ABC):
     @property
     def dax2(self):
         r"""
-        Grid step size along axis :attr:`ax2`, only valid for uniform grids.
+        Grid step size along axis :attr:`ax2`. Only valid for uniform grids.
 
         Raises
         ------
@@ -693,7 +693,7 @@ class AbstractGrid(ABC):
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
-        so it can be re-implemented to make non-uniformly spaced meshes
+        so it can be re-implemented to make non-uniformly spaced meshes.
         """
         # Construct the axis arrays
         ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
@@ -877,7 +877,7 @@ class AbstractGrid(ABC):
     def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity]):
         r"""
         Interpolate the nearest grid indices to a position using a
-        nearest-neighbor interpolator
+        nearest-neighbor interpolator.
 
         Parameters
         ----------
@@ -938,12 +938,12 @@ class AbstractGrid(ABC):
             Strings that correspond to DataArrays in the dataset
 
         persistent : `bool`
-            If `True`, the interpolator will assume the grid and its contents have not
-            changed since the last interpolation. This substantially speeds up the
-            interpolation when many interpolations are performed on the same grid
-            in a loop. ``persistent`` overrides to `False` if the arguments list has
-            changed since the last call.
-
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
         """
         # pos is validated in interpolate_indices
 
@@ -1036,12 +1036,12 @@ class AbstractGrid(ABC):
             Strings that correspond to DataArrays in the dataset
 
         persistent : `bool`
-            If `True`, the interpolator will assume the grid and its contents have not
-            changed since the last interpolation. This substantially speeds up the
-            interpolation when many interpolations are performed on the same grid
-            in a loop. ``persistent`` overrides to `False` if the arguments list has
-            changed since the last call.
-
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
         """
 
         raise NotImplementedError(
@@ -1195,12 +1195,12 @@ class CartesianGrid(AbstractGrid):
 
 class NonUniformCartesianGrid(AbstractGrid):
     r"""
-    A Cartesian grid in which the ``_make_mesh`` method produces a non-uniformly
-    spaced grid.
+    A Cartesian grid in which the ``_make_mesh`` method produces a
+    non-uniformly spaced grid.
     """
 
     def _validate(self):
-        # Check that all units are lengths
+        """Check that all units are lengths."""
         for i in range(3):
             try:
                 self.units[i].to(u.m)
@@ -1212,8 +1212,8 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
-        Creates mesh as part of ``_make_grid()``. Separated into its own function
-        so it can be re-implemented to make non-uniform grids.
+        Creates mesh as part of ``_make_grid()``. Separated into its own
+        function so it can be re-implemented to make non-uniform grids.
         """
         # Construct the axis arrays
         ax0 = np.sort(np.random.uniform(low=start[0], high=stop[0], size=num[0]))
