@@ -736,6 +736,8 @@ class ModAPIDocumenter(ModuleDocumenter):
 
 
 def setup(app: Sphinx):
+    """Sphinx ``setup()`` function for the :rst:dir:`automodapi` functionality."""
+
     from .automodsumm import setup as setup_automodsumm
 
     rtn = setup_automodsumm(app)
