@@ -76,7 +76,9 @@ class AutomodsummRenderer(AutosummaryRenderer):
     """
 
     def __init__(
-        self, app: Union["Builder", "Sphinx"], template_dir: str = None,
+        self,
+        app: Union["Builder", "Sphinx"],
+        template_dir: str = None,
     ) -> None:
 
         asumm_path = templates_dir
@@ -510,7 +512,9 @@ class GenDocsFromAutomodsumm:
                     "recursive": process_options.options.get("recursive", False),
                 }
 
-                exclude_modules = not self.app.config.automodapi_generate_module_stub_files
+                exclude_modules = (
+                    not self.app.config.automodapi_generate_module_stub_files
+                )
                 obj_list = process_options.generate_obj_list(
                     exclude_modules=exclude_modules
                 )
@@ -539,7 +543,7 @@ class GenDocsFromAutomodsumm:
 
     @staticmethod
     def event_handler__autodoc_skip_member(
-            app: "Sphinx", what: str, name: str, obj: Any, skip: bool, options: dict
+        app: "Sphinx", what: str, name: str, obj: Any, skip: bool, options: dict
     ):  # noqa
         """
         Event handler for the Sphinx event :event:`autodoc-skip-member`.  This

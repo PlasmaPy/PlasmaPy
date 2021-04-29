@@ -40,7 +40,7 @@ def parse_event(env, sig, signode):
     signode : sphinx.addnodes.desc_signature
         A `docutils` Node for the object signatures.
     """
-    event_sig_re = re.compile(r'([a-zA-Z-]+)\s*\((.*)\)')
+    event_sig_re = re.compile(r"([a-zA-Z-]+)\s*\((.*)\)")
 
     m = event_sig_re.match(sig)
     if not m:
@@ -49,7 +49,7 @@ def parse_event(env, sig, signode):
     name, args = m.groups()
     signode += addnodes.desc_name(name, name)
     plist = addnodes.desc_parameterlist()
-    for arg in args.split(','):
+    for arg in args.split(","):
         arg = arg.strip()
         plist += addnodes.desc_parameter(arg, arg)
     signode += plist
@@ -100,7 +100,10 @@ def setup(app: Sphinx):
         parse_node=parse_event,
         doc_field_types=[
             GroupedField(
-                "parameter", label="Parameters", names=("param",), can_collapse=True,
+                "parameter",
+                label="Parameters",
+                names=("param",),
+                can_collapse=True,
             )
         ],
     )
