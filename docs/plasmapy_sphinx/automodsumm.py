@@ -242,6 +242,7 @@ class AutomodsummOptions:
     Class for advanced conditioning and manipulation of option arguments for
     `plasmapy_sphinx.automodsum.Automodsumm`.
     """
+
     option_spec = {
         **Autosummary.option_spec,
         "groups": option_str_list,
@@ -249,7 +250,7 @@ class AutomodsummOptions:
         "skip": option_str_list,
     }
     """
-    Mapping of option names to validator functions. (see 
+    Mapping of option names to validator functions. (see
     :attr:`docutils.parsers.rst.Directive.option_spec`)
     """
 
@@ -556,8 +557,10 @@ class AutomodsummOptions:
             qualnames.extend(mod_objs[group]["qualnames"])
 
         content = [
-            qualname for name, qualname in
-            sorted(zip(names, qualnames), key=lambda x: str.casefold(x[0]))
+            qualname
+            for name, qualname in sorted(
+                zip(names, qualnames), key=lambda x: str.casefold(x[0])
+            )
         ]
 
         return content
@@ -565,6 +568,7 @@ class AutomodsummOptions:
 
 class Automodsumm(Autosummary):
     """The class that defines the :rst:dir:`automodsumm` directive."""
+
     required_arguments = 1
     optional_arguments = 0
     has_content = False
