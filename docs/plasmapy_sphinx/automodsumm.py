@@ -208,11 +208,7 @@ from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Tuple, Union
 
 from .generate import GenDocsFromAutomodsumm
-from .utils import (
-    default_grouping_info,
-    find_mod_objs,
-    get_custom_grouping_info,
-)
+from .utils import default_grouping_info, find_mod_objs, get_custom_grouping_info
 
 if False:
     # noqa

@@ -9,11 +9,7 @@ import re
 
 from jinja2 import TemplateNotFound
 from sphinx.ext.autodoc.mock import mock
-from sphinx.ext.autosummary import (
-    get_rst_suffix,
-    import_by_name,
-    import_ivar_by_name,
-)
+from sphinx.ext.autosummary import get_rst_suffix, import_by_name, import_ivar_by_name
 from sphinx.ext.autosummary.generate import (
     AutosummaryEntry,
     AutosummaryRenderer,
