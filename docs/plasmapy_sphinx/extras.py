@@ -1,5 +1,5 @@
 """
-This module contains extra (optional) sphinx setup parameters that are not need
+This module contains extra (optional) Sphinx setup parameters that are not needed
 to run the `plasmapy_sphinx` extension but are useful for documenting.  See
 `plasmapy_sphinx.extras.setup` for further details.
 """
@@ -15,7 +15,7 @@ from sphinx.util.docfields import Field, GroupedField
 
 def parse_event(env, sig, signode):
     """
-    Used to setup the ``event`` directive and role for documenting Sphinx events.
+    Used to set up the ``event`` directive and role for documenting Sphinx events.
     Taken from the ``conf.py`` file of `Sphinx's documentation
     <https://github.com/sphinx-doc/sphinx/blob/
     8653ceca0021f6ac6ff0aac6c26e2a455c6d4b21/doc/conf.py#L123-L138>`_.
@@ -59,7 +59,7 @@ def parse_event(env, sig, signode):
 def setup(app: Sphinx):
     """
     A `sphinx` ``setup()`` function for the extension package `plasmapy_sphinx`
-    to setup convenient, but optional, functionality.  This adds:
+    to set up convenient, but optional, functionality.  This adds:
 
     1. ``confval`` standard directive and role for documenting and cross-linking
        Sphinx configuration values.
