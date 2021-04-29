@@ -6,16 +6,13 @@ Ionization state data structures
 The ionization state (or charge state) of a plasma refers to the
 fraction of an element that is at each ionization level.  For example,
 the ionization state of a pure helium plasma could be 5%
-He\ :sup:`0+`\ ,
-94% He\ :sup:`1+`,
-and 1% He\ :sup:`2+`\ .
+He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 
 The ionization state of a single element
 ========================================
 
-We may use the `~plasmapy.particles.IonizationState` class
-to represent the ionization state of a single element, such as for this
-example.
+We may use the `~plasmapy.particles.IonizationState` class to represent
+the ionization state of a single element, such as for this example.
 
 >>> from plasmapy.particles import IonizationState
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
