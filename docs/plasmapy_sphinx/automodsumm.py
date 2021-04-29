@@ -530,7 +530,7 @@ class AutomodsummOptions:
     def generate_obj_list(self, exclude_modules: bool = False) -> List[str]:
         """
         Take :attr:`mod_objs_option_filtered` and generated a list of the fully
-        qualified objects names names.  The list is sorted based on the casefolded
+        qualified object names.  The list is sorted based on the casefolded
         short names of the objects.
 
         Parameters
