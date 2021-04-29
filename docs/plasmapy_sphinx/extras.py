@@ -1,6 +1,6 @@
 """
 This module contains extra (optional) Sphinx setup parameters that are not needed
-to run the `plasmapy_sphinx` extension, but provide useful functionality for
+to run the `plasmapy_sphinx` extension, but provides useful functionality for
 writing documentation.  See `plasmapy_sphinx.extras.setup` for further details.
 """
 
