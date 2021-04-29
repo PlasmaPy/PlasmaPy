@@ -65,4 +65,5 @@ multi_line_output = 3
 use_parentheses = true
 include_trailing_comma = true
 force_alphabetical_sort_within_sections = true
+honor_noqa = true
 lines_between_types = 1
