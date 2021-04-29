@@ -63,7 +63,7 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
     Parameters
     ----------
     modname : str
-        Name of the module (e.g. ``"plasmapy_sphinx.uitls'``) to be inspect.
+        Name of the module (e.g. ``"plasmapy_sphinx.utils'``) to be inspect.
 
     app : `~sphinx.application.Sphinx`
         Instance of the `Sphinx` application.
