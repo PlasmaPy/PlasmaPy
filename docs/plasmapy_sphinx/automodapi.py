@@ -476,8 +476,8 @@ class ModAPIDocumenter(ModuleDocumenter):
 
     _automodapi_option_spec_names = set(ModuleDocumenter.option_spec)
 
-    _grouping_info = default_grouping_info
-
+    # Templates used for generated the additional content associated with the
+    # directive (e.g. the automodsumm tables)
     _templates = {
         "mod-heading": "\n".join(["{modname} {pkg_or_mod}", "{underline}", ""]),
         "heading": "\n".join(["{title}", "{underline}"]),
@@ -498,15 +498,15 @@ class ModAPIDocumenter(ModuleDocumenter):
         group_order = tuple(self.env.app.config.automodapi_group_order)
         custom_group_info = self.env.app.config.automodapi_custom_groups
 
-        group_names = set(self._grouping_info) | set(custom_group_info)
+        group_names = set(default_grouping_info) | set(custom_group_info)
         remainder = list(group_names - set(group_order))
         if len(remainder) > 0:
             group_order += tuple(sorted(remainder))
 
         _grouping_info = OrderedDict()
         for name in group_order:
-            if name in self._grouping_info:
-                _info = self._grouping_info[name]
+            if name in default_grouping_info:
+                _info = default_grouping_info[name]
             else:
                 _info = custom_group_info[name]
 
