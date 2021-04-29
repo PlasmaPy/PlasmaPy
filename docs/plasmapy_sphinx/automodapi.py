@@ -119,20 +119,20 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
         This option allows you to skip (exclude) selected objects from the
         generated tables.  The argument is given as a comma separated list of
         the object's short name.  Continuing with the example from above, lets
-        skip `~plasmapy_sphinx.automodapi.ModuleDocumenter` and
+        skip `~plasmapy_sphinx.automodapi.ModAPIDocumenter` and
         `~plasmapy_sphinx.automodapi.setup` from the tables.
 
         .. code-block:: rst
 
             .. automodapi:: plasmapy_sphinx.automodapi
                :no-main-docstrings:
-               :skip: ModuleDocumenter, setup
+               :skip: ModAPIDocumenter, setup
 
         .. automodapi:: plasmapy_sphinx.automodapi
            :noindex:
            :no-toctree:
            :no-main-docstring:
-           :skip: ModuleDocumenter, setup
+           :skip: ModAPIDocumenter, setup
 
     .. rst:directive:option:: noindex
 
@@ -299,7 +299,7 @@ below relate to the behavior of the :rst:dir:`automodapi` directive.
     the configuration value :confval:`automodapi_groups_with_inheritance_diagrams`.
 
 """
-__all__ = ["AutomodapiOptions", "ModuleDocumenter", "setup"]
+__all__ = ["AutomodapiOptions", "ModAPIDocumenter", "setup"]
 
 import re
 import sys
