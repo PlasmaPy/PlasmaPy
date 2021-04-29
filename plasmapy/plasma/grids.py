@@ -40,9 +40,9 @@ def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
 
 class AbstractGrid(ABC):
     r"""
-    Abstract grid represents a 3D grid of positions. The grid is stored as an
-    np.ndarray, while the units associated with each dimension are stored
-    separately.
+    Abstract grid represents a 3D grid of positions. The grid is stored
+    as an `~numpy.ndarray`, while the units associated with each
+    dimension are stored separately.
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
@@ -69,8 +69,7 @@ class AbstractGrid(ABC):
     def _validate(self):
         r"""
         Checks to make sure that the grid parameters are
-        consistent with the coordinate system and units selected
-
+        consistent with the coordinate system and units selected.
         """
         return True
 
@@ -264,7 +263,7 @@ class AbstractGrid(ABC):
     def grids(self):
         r"""
         Three grids of vertex positions (in each coordinate), each having
-        shape (N0, N1, N2)
+        shape (N0, N1, N2).
         """
         if self.is_uniform:
             pts0, pts1, pts2 = np.meshgrid(self.ax0, self.ax1, self.ax2, indexing="ij")
@@ -378,7 +377,7 @@ class AbstractGrid(ABC):
     @property
     def ax1(self):
         r"""
-        Second axis of the grid, only valid for uniform grids
+        Second axis of the grid, only valid for uniform grids.
 
         Raises
         ------
@@ -488,7 +487,7 @@ class AbstractGrid(ABC):
         self, pts0: u.Quantity, pts1: u.Quantity, pts2: u.Quantity, **kwargs
     ):
         r"""
-        Initialize the grid object from a user-supplied grid
+        Initialize the grid object from a user-supplied grid.
 
         Parameters
         ----------
@@ -538,7 +537,7 @@ class AbstractGrid(ABC):
 
     def add_quantities(self, **kwargs):
         r"""
-        Adds a quantity to the dataset as a new DataArray
+        Adds a quantity to the dataset as a new DataArray.
 
         Parameters
         ----------
@@ -595,8 +594,8 @@ class AbstractGrid(ABC):
     @property
     def quantities(self):
         r"""
-        A list of the keys corresponding to the quantities currently defined on
-        the grid.
+        A list of the keys corresponding to the quantities currently
+        defined on the grid.
         """
         return list(self.ds.data_vars)
 
@@ -615,11 +614,11 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        start : number (u.Quantity) or array of three of the same
+        start : number (`~astropy.units.Quantity`) or array of three of the same
             Starting values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        stop : number (u.Quantity) or array of three of the same
+        stop : number (`~astropy.units..Quantity`) or array of three of the same
             End values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
@@ -793,7 +792,7 @@ class AbstractGrid(ABC):
 
     @cached_property
     def _interp_quantities(self):
-        r"""Create a dimensionless array of quantites to be interpolated."""
+        r"""Create a dimensionless array of quantities to be interpolated."""
         nargs = len(self._interp_args)
         # Load the arrays to be interpolated from and their units
         if self.is_uniform:
@@ -862,7 +861,7 @@ class AbstractGrid(ABC):
         Initializes a nearest-neighbor interpolator that returns the nearest
         grid indices for a given position (given in SI units).
 
-        This function works on unstructured (non-uniform) data/
+        This function works on unstructured (non-uniform) data.
         """
 
         # Make an array of point positions
@@ -892,7 +891,7 @@ class AbstractGrid(ABC):
         -------
         i : `~numpy.ndarray`, shape (n,3)
             An array of indices corresponding to the positions such that
-            ``i[n,:] = ix,iy,iz`` such that ``grid[ix,iy,iz,:]`` ∼ pos[n,:]
+            ``i[n,:] = ix,iy,iz`` such that ``grid[ix,iy,iz,:]`` ∼ ``pos[n,:]``
 
         """
         # Condition pos
@@ -931,8 +930,9 @@ class AbstractGrid(ABC):
         ----------
         pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
             An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If an np.ndarray
-            is provided, units will be assumed to match those of the grid.
+            corresponds to the three dimensions of the grid. If an
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
 
         *args : `str`
             Strings that correspond to DataArrays in the dataset
