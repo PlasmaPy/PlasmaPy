@@ -19,25 +19,25 @@ def boris_push(x, v, B, E, q, m, dt):
     Parameters
     ----------
     x : `~numpy.ndarray`
-        particle position at full timestep, in SI (meter) units.
+        Particle position at full timestep, in SI (meter) units.
 
     v : `~numpy.ndarray`
-        particle velocity at half timestep, in SI (meter/second) units.
+        Particle velocity at half timestep, in SI (meter/second) units.
 
     B : `~numpy.ndarray`
-        magnetic field at full timestep, in SI (tesla) units.
+        Magnetic field at full timestep, in SI (tesla) units.
 
     E : `float`
-        electric field at full timestep, in SI (V/m) units.
+        Electric field at full timestep, in SI (V/m) units.
 
     q : `float`
-        particle charge, in SI (coulomb) units.
+        Particle charge, in SI (coulomb) units.
 
     m : `float`
-        particle mass, in SI (kg) units.
+        Particle mass, in SI (kg) units.
 
     dt : `float`
-        timestep, in SI (second) units.
+        Timestep, in SI (second) units.
 
     Notes
     ----------
