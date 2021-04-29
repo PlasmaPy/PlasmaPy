@@ -301,6 +301,7 @@ below relate to the behavior of the :rst:dir:`automodapi` directive.
 """
 __all__ = ["AutomodapiOptions", "ModAPIDocumenter", "setup"]
 
+import inspect
 import re
 import sys
 import warnings
@@ -514,13 +515,13 @@ class ModAPIDocumenter(ModuleDocumenter):
         **classes**, etc.  The value associated with the primary key is a
         dictionary with the following keys:
 
-        +--------+------------------------------------------------------------+
-        | title  | Title used to head the :rst:dir:`automodsumm` table.       |
-        +--------+------------------------------------------------------------+
-        | descr  | Brief description to follow the title.                     |
-        +--------+------------------------------------------------------------+
-        | dunder | Name of the dunder variable used to define a custom group. |
-        +--------+------------------------------------------------------------+
+        +-------------+------------------------------------------------------------+
+        | title       | Title used to head the :rst:dir:`automodsumm` table.       |
+        +-------------+------------------------------------------------------------+
+        | description | Brief description to follow the title.                     |
+        +-------------+------------------------------------------------------------+
+        | dunder      | Name of the dunder variable used to define a custom group. |
+        +-------------+------------------------------------------------------------+
         """
 
         group_order = tuple(self.env.app.config.automodapi_group_order)
@@ -542,7 +543,7 @@ class ModAPIDocumenter(ModuleDocumenter):
                 {
                     name: {
                         "title": _info.get("title", None),
-                        "descr": _info.get("descr", None),
+                        "description": _info.get("description", None),
                         "dunder": _info.get("dunder", None),
                     },
                 },
@@ -593,6 +594,7 @@ class ModAPIDocumenter(ModuleDocumenter):
                 continue
 
             title = info["title"]
+            description = info["description"]  # type: str
 
             underline = heading_char * len(title)
 
@@ -603,6 +605,13 @@ class ModAPIDocumenter(ModuleDocumenter):
                 .splitlines()
             )
             lines.append("")
+
+            # add group description
+            if description is not None:
+                description = inspect.cleandoc(description)
+                descr_list = description.split("\n")
+                lines.extend(descr_list)
+                lines.append("")
 
             # add automodsumm directive
             lines.extend(

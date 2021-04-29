@@ -154,20 +154,23 @@ below relate to the behavior of the :rst:dir:`automodsumm` directive.
         automodapi_custom_group = {
             "aliases": {
                 "title": "Aliases",
+                "description": "Aliases are ...",
                 "dunder": "__aliases__",
             }
         }
 
     where the top-level key (``"aliases"``) is the group name used in the
     :rst:dir:`automodsumm:groups` option, ``"title"`` defines the title
-    text of the group heading used by :rst:dir:`automodapi`, and ``"dunder"``
-    defines the name of a dunder variable (similar ``__all__``) in the module.
-    This dunder variable is defined at the top of the module being documented
-    and defines a list of object names just like ``__all__``.  The
-    :rst:dir:`automodapi` and :rst:dir:`automodsumm` directives will used this
-    defined dunder to identify the objects associated with the custom group.
-    Using `plasmapy.formulary.parameters` as an example, the **aliases** group
-    can now be collected and displayed like
+    text of the group heading used by :rst:dir:`automodapi`, ``"description"``
+    defines a brief description that will be placed after the title (item is
+    optional and can be omitted) and ``"dunder"`` defines the name of a dunder
+    variable (similar ``__all__``) in the module.  This dunder variable is
+    defined at the top of the module being documented and defines a list of
+    object names just like ``__all__``.  The :rst:dir:`automodapi` and
+    :rst:dir:`automodsumm` directives will used this defined dunder to identify
+    the objects associated with the custom group.  Using
+    `plasmapy.formulary.parameters` as an example, the **aliases** group can
+    now be collected and displayed like
 
     .. code-block:: rst
 
