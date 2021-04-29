@@ -105,7 +105,7 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         generated table.  The argument is given as a comma separated list of
         the object's short name.  Continuing with the example from above, lets
         skip `~plasmapy_sphinx.automodsumm.AutomodsummOptions` and
-        `~plasmapy_sphinx.automodsumm.setup`from the table.
+        `~plasmapy_sphinx.automodsumm.setup` from the table.
 
         .. code-block:: rst
 
