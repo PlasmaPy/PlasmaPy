@@ -351,11 +351,11 @@ _option_spec = {
     "inheritance-diagram": bool_option,
     "no-inheritance-diagram": bool_option,
 }  # type: Dict[str, Callable]
-for name in list(_option_spec):
-    if "member" in name:
-        del _option_spec[name]
+for option_name in list(_option_spec):
+    if "member" in option_name:
+        del _option_spec[option_name]
 del _option_spec["ignore-module-all"]
-del name
+del option_name
 
 
 class AutomodapiOptions(AutomodsummOptions):
