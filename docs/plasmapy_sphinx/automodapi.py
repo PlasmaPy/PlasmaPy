@@ -321,7 +321,7 @@ except ImportError:
 from sphinx.ext.autodoc import bool_option, ModuleDocumenter
 from sphinx.locale import __
 from sphinx.util import logging
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from .automodsumm import AutomodsummOptions, option_str_list
 from .utils import default_grouping_info
@@ -467,14 +467,27 @@ class AutomodapiOptions(AutomodsummOptions):
 
 
 class ModAPIDocumenter(ModuleDocumenter):
+    """
+    The class tht defines the `~sphinx.ext.autodoc` directive :rst:dir:`automodapi`.
+    """
+
     objtype = "modapi"
+    """Defines the *auto* directive name.  In this case ``automodapi``."""
+
     directivetype = "module"
+    """Defines the generated directive name. In this case ``.. :py:module::``."""
+
     titles_allowed = True
     content_indent = ""
-    logger = logger
-    option_spec = _option_spec
 
-    _automodapi_option_spec_names = set(ModuleDocumenter.option_spec)
+    logger = logger
+    """
+    Instance of the `~sphinx.util.logging.SphinxLoggerAdapter` for report during
+    builds.
+    """
+
+    option_spec = _option_spec
+    """Mapping of option names to validator functions."""
 
     # Templates used for generated the additional content associated with the
     # directive (e.g. the automodsumm tables)
@@ -494,6 +507,20 @@ class ModAPIDocumenter(ModuleDocumenter):
 
     @property
     def grouping_info(self) -> Dict[str, Dict[str, Union[str, None]]]:
+        """
+        Dictionary of :rst:dir:`automodapi` and :rst:dir:`automodsumm` group
+        information.  The primary key is the group name, e.g. **modules**,
+        **classes**, etc.  The value associated with the primary key is a
+        dictionary with the following keys:
+
+        +--------+------------------------------------------------------------+
+        | title  | Title used to head the :rst:dir:`automodsumm` table.       |
+        +--------+------------------------------------------------------------+
+        | descr  | Brief description to follow the title.                     |
+        +--------+------------------------------------------------------------+
+        | dunder | Name of the dunder variable used to define a custom group. |
+        +--------+------------------------------------------------------------+
+        """
 
         group_order = tuple(self.env.app.config.automodapi_group_order)
         custom_group_info = self.env.app.config.automodapi_custom_groups
@@ -522,7 +549,22 @@ class ModAPIDocumenter(ModuleDocumenter):
 
         return _grouping_info
 
-    def generate_more_content(self, modname):
+    def generate_more_content(self, modname : str) -> List[str]:
+        """
+        Generate the "more content" associate with the :rst:dir:`automodsumm` tables
+        and inheritance diagrams.
+
+        Parameters
+        ----------
+        modname : str
+            Name of the module being documented (i.e. that given to
+            :rst:dir:`automodapi`).
+
+        Returns
+        -------
+        List[str]
+            A list of strings to be added the to the directive's content.
+        """
         app = self.env.app
         inheritance_groups = app.config.automodapi_groups_with_inheritance_diagrams
 
@@ -592,7 +634,18 @@ class ModAPIDocumenter(ModuleDocumenter):
 
         return lines
 
-    def generate_heading(self, modname):
+    def generate_heading(self, modname: str) -> None:
+        """
+        Generate and place a heading at the top of the directive's content.  If
+        ``modname`` is a package then the title will be ``<modname> Package``;
+        and if a module (``.py`` file) then the title will be ``<modname> Module``.
+
+        Parameters
+        ----------
+        modname : str
+            Name of the module being documented (i.e. that given to
+            :rst:dir:`automodapi`).
+        """
         app = self.env.app
         sourcename = self.get_sourcename()
 
@@ -681,7 +734,8 @@ class ModAPIDocumenter(ModuleDocumenter):
         check_module: bool = False,
         all_members: bool = False,
     ) -> None:
-        """Generate reST for the object given by *self.name*, and possibly for
+        """
+        Generate reST for the object given by *self.name*, and possibly for
         its members.
 
         If *more_content* is given, include that content. If *real_modname* is
