@@ -42,11 +42,11 @@ def parse_event(env, sig, signode):
     """
     event_sig_re = re.compile(r"([a-zA-Z-]+)\s*\((.*)\)")
 
-    m = event_sig_re.match(sig)
-    if not m:
+    match = event_sig_re.match(sig)
+    if not match:
         signode += addnodes.desc_name(sig, sig)
         return sig
-    name, args = m.groups()
+    name, args = match.groups()
     signode += addnodes.desc_name(name, name)
     plist = addnodes.desc_parameterlist()
     for arg in args.split(","):
