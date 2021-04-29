@@ -36,7 +36,14 @@ autosummary_generate = True
 automodapi_custom_groups = {
     "aliases": {
         "title": "Aliases",
-        "descr": "",
+        "description": (
+            "PlasmaPy provides short-named (alias) versions of the most "
+            "common plasma functionality.  These aliases are only given to "
+            "functionality where there is a common lexicon in the community, "
+            "for example `~plasmapy.formulary.parameters.plasma_frequency` "
+            " has the alias `~plasmapy.formulary.parameters.wp_`.  All aliases "
+            "in PlasmaPy are denoted with a trailing underscore ``_``."
+        ),
         "dunder": "__aliases__",
     },
 }
