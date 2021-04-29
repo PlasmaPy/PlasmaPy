@@ -212,8 +212,8 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
                :toctree: DIRNAME
 
         If ``:toctree:`` is not set, then ``DIRNAME`` will default to what is set
-        by :confval:`automodapi_default_toctree_dir`.  If no :rst:dir:`toctree` is desired,
-        then use option :rst:dir:`automodapi:no-toctree`.
+        by :confval:`automodapi_default_toctree_dir`.  If no :rst:dir:`toctree`
+        is desired, then use option :rst:dir:`automodapi:no-toctree`.
 
     .. rst:directive:option:: no-toctree
 
