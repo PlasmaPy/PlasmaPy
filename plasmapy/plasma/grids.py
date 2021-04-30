@@ -971,7 +971,7 @@ class AbstractGrid(ABC):
         # must be np.ndarray or u.Quantity arrays of same shape as grid
         for arg in args:
 
-            if not arg in self.quantities:
+            if arg not in self.quantities:
                 raise KeyError(
                     "Quantity arguments must correspond to "
                     "DataArrays in the DataSet. "
@@ -1101,7 +1101,7 @@ class CartesianGrid(AbstractGrid):
         # must be np.ndarray or u.Quantity arrays of same shape as grid
         for arg in args:
 
-            if not arg in self.quantities:
+            if arg not in self.quantities:
                 raise KeyError(
                     "Quantity arguments must correspond to "
                     "DataArrays in the DataSet. "
@@ -1184,7 +1184,7 @@ class CartesianGrid(AbstractGrid):
                     valid = (
                         (x >= 0) & (x < n0) & (y >= 0) & (y < n1) & (z >= 0) & (z < n2)
                     )
-                    out = np.where(valid == False)
+                    out = np.where(not valid)
 
                     # Distance from grid vertex to particle position
                     grid_pos = np.array([ax0[x], ax1[y], ax2[z]])
