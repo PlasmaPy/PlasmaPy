@@ -74,8 +74,8 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
                :no-main-docstring:
                :groups: all
 
-        Ignore the ``:no-main-docstring:`` for now, its behavior is described below
-        in the :rst:dir:`automodapi:no-main-docstring` section.  Now, if you
+        The behavior of ``:no-main-docstring:`` is described below
+        in the :rst:dir:`automodapi:no-main-docstring` section.  If you
         only want to display only **classes**, then the following can be done.
 
         .. code-block:: rst
@@ -118,7 +118,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         This option allows you to skip (exclude) selected objects from the
         generated tables.  The argument is given as a comma separated list of
-        the object's short name.  Continuing with the example from above, lets
+        the object's short name.  Continuing with the example from above, let's
         skip `~plasmapy_sphinx.automodapi.ModAPIDocumenter` and
         `~plasmapy_sphinx.automodapi.setup` from the tables.
 
@@ -265,7 +265,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 `automodapi` Configuration Values
 ---------------------------------
 
-A configuration value is a variable that con be defined in ``conf.py`` to configure
+A configuration value is a variable that can be defined in ``conf.py`` to configure
 the default behavior of related `sphinx` directives.  The configuration values
 below relate to the behavior of the :rst:dir:`automodapi` directive.
 
