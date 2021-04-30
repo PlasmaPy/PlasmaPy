@@ -20,8 +20,8 @@ Functionality contained in `~plasmapy.utils` includes:
    `~plasmapy.utils.exceptions.PhysicsError`.
  * Decorators we use for reusable physical `~astropy.units.Quantity`
    computation and checking, such as
-   `~plasmapy.utils.decorators.validate_quantities`
-   and `~plasmapy.utils.decorators.check_relativistic`.
+   `~plasmapy.utils.decorators.validators.validate_quantities`
+   and `~plasmapy.utils.decorators.checks.check_relativistic`.
  * Helper utilities for importing and testing packages.
 
 API
