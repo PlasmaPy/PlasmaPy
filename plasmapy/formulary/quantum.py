@@ -14,6 +14,7 @@ __all__ = [
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
 ]
+__aliases__ = ["Ef_"]
 
 import astropy.units as u
 import numpy as np

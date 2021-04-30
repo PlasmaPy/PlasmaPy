@@ -22,9 +22,10 @@ dependencies:
     - pytest
     - lmfit
     - pygments>=2.4.1
-    - sphinx>2
+    - sphinx>=3.2.0
     - sphinx-gallery
     - sphinx-automodapi
     - sphinx_rtd_theme
     - towncrier >= 19.2.0
     - pytest-regressions
+    - towncrier>=19.2.0

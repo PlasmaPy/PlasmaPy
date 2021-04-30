@@ -3,10 +3,6 @@
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
-    "betaH_",
-    "cs_",
-    "cwp_",
-    "DB_",
     "Debye_length",
     "Debye_number",
     "gyrofrequency",
@@ -20,20 +16,26 @@ __all__ = [
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
+    "plasma_frequency",
+    "thermal_pressure",
+    "thermal_speed",
+    "thermal_speed_coefficients",
+    "thermal_speed_lite",
+    "upper_hybrid_frequency",
+]
+__aliases__ = [
+    "betaH_",
+    "cs_",
+    "cwp_",
+    "DB_",
     "nD_",
     "oc_",
-    "plasma_frequency",
     "pmag_",
     "pth_",
     "rc_",
     "rho_",
     "rhoc_",
-    "thermal_pressure",
-    "thermal_speed",
-    "thermal_speed_coefficients",
-    "thermal_speed_lite",
     "ub_",
-    "upper_hybrid_frequency",
     "va_",
     "vth_",
     "vth_kappa_",
@@ -64,6 +66,10 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
+
+__all__ += __aliases__
+__all__.sort()
+__aliases__.sort()
 
 k_B_si_unitless = k_B.value
 
@@ -574,7 +580,11 @@ def thermal_speed_lite(T, mass, coeff):
 )
 @particles.particle_input
 def thermal_speed(
-    T: u.K, particle: Particle, method="most_probable", mass: u.kg = None, ndim=3,
+    T: u.K,
+    particle: Particle,
+    method="most_probable",
+    mass: u.kg = None,
+    ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
