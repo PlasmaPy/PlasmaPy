@@ -711,9 +711,9 @@ class IonizationStateCollection:
             self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
-                f"The abundances attribute must be a dict with "
-                f"elements or isotopes as keys and real numbers "
-                f"representing relative abundances as values."
+                "The abundances attribute must be a dict with "
+                "elements or isotopes as keys and real numbers "
+                "representing relative abundances as values."
             )
         else:
             old_keys = abundances_dict.keys()

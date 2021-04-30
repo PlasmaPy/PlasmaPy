@@ -188,7 +188,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.
 
-    errmsg = f"Invalid nuclear reaction."
+    errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
         unformatted_particles_list: List[Union[str, Particle]]
