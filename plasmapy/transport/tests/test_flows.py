@@ -39,7 +39,7 @@ temperature_gradient = {
 }
 
 
-#profile
+# profile
 @pytest.fixture(scope="module")
 def fc(flux_surface):
     fc = FlowCalculator(
@@ -52,7 +52,7 @@ def fc(flux_surface):
     return fc
 
 
-#profile
+# profile
 def test_get_flows(fc, num_regression):
     for ion, r in fc._charge_state_flows.items():
         if "0" in ion:
@@ -67,8 +67,8 @@ def test_get_flows(fc, num_regression):
     "key",
     [
         "BP",
-        pytest.param("CL", marks=pytest.mark.xfail(raises=u.UnitConversionError)),
-        pytest.param("PS", marks=pytest.mark.xfail(raises=u.UnitConversionError)),
+        "CL",
+        "PS",
     ],
 )
 def test_fluxes_partial(fc, key, num_regression):
@@ -84,17 +84,15 @@ def test_fluxes_partial(fc, key, num_regression):
     num_regression.check(d_partial)
 
 
-@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in flows")
 def test_diffusion_coefficient(fc, num_regression):
     d = {}
     for ion, D in fc.diffusion_coefficient.items():
         assert np.isfinite(D).all(), ion
         d[ion] = D.si.value
-        assert D.unit.physical_type == "diffusion coefficient"
+        assert D.unit.si == (u.m ** 2 / u.s)
     num_regression.check(d)
 
 
-@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off in flows")
 def test_thermal_coefficient(fc, num_regression):
     d = {}
     for ion, χ in fc.thermal_conductivity.items():
@@ -102,21 +100,25 @@ def test_thermal_coefficient(fc, num_regression):
             continue
         assert np.isfinite(χ).all(), ion
         d[ion] = χ.si.value
-        assert χ.unit.physical_type == "heat conductivity"
+        assert χ.si.unit == u.Unit("W / (K m)")
     num_regression.check(d)
 
 
 @pytest.mark.xfail(
     raises=u.UnitsError,
-    reason="Units are off; need a tesla in the denominator",
+    reason="need a tesla in the denominator",
 )
 def test_bootstrap_current(fc, num_regression):
     Ib = fc.bootstrap_current
     assert np.isfinite(Ib), ion
-    assert_quantity_allclose(Ib, -0.007 * u.MA / u.m ** 2)
+    current_density_unit = u.MA / u.m ** 2
+
+    # if this crashes, we have replaced the current issue that Ib is actually <B * I_b> with another one
+    (Ib.unit / u.T).to(current_density_unit)
+
+    assert_quantity_allclose(Ib, -0.007 * current_density_unit)
 
 
-@pytest.mark.xfail(raises=u.UnitConversionError, reason="units are off")
 def test_fluxes(fc, num_regression):
     d = {}
     for ion, (Γ, q) in fc.fluxes.items():

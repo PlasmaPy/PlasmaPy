@@ -48,7 +48,7 @@ class FlowCalculator:
     This does, in fact, do most things for my thesis.
     """
 
-    #profile
+    # profile
     def __init__(
         self,
         all_species,
@@ -99,7 +99,7 @@ class FlowCalculator:
 
             Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
             # --- TD forces eq21
-            thermodynamic_forces = (
+            S_pt_θ = thermodynamic_forces = (
                 fs.Fhat
                 / charges
                 * u.Quantity(
@@ -160,10 +160,10 @@ class FlowCalculator:
 
             Λ = -sum(gen())
 
-            # TODO units are wrong between the two here
             self_consistent_u = np.sum(Λ[np.newaxis, :, np.newaxis] * r_flows, axis=2)
             u_velocity = self_consistent_u + r_sources
 
+            # TODO contributing states, maybe?
             for i, ai in enumerate(a):
                 if np.isfinite(u_velocity[i]).all():
                     self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
@@ -176,33 +176,35 @@ class FlowCalculator:
                 continue
             yield xi[i], ai
 
-    #profile
+    # profile
     def M_script(self, a):
         sym = a.base_particle
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
-    #profile
+    # profile
     def N_script(self, a, b):
         sym_tuple = a.base_particle, b.base_particle
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
         return self.N_script_matrices[sym_tuple]
 
-    #profile
+    # profile
     def funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]
         M = self.M_script(a)
         outputs = {}
         for _, ai in self.contributing_states(a):
             sym = ai.ionic_symbol
-            S = self.S_pt[sym]
+            S = self.thermodynamic_forces[
+                sym
+            ]  # TODO should be S_sources, really, here and in the other loop
             output = S * M
             for b in self.all_species:
                 N = self.N_script(a, b)
                 for xj, bj in self.contributing_states(b):
-                    output += xj * N * self.S_pt[bj.ionic_symbol]
+                    output += xj * N * self.thermodynamic_forces[bj.ionic_symbol]
             outputs[sym] = output.sum(axis=1)
         return outputs
 
@@ -265,7 +267,8 @@ class FlowCalculator:
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
-        FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2 / u.m
+        FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2
+        # TODO fs.rho is [m]; fs.GradRho2 is actually [fs.gradRho]^2, gradRho is [1]
         # TODO FSA does not drop units; B2 and the others are unitless
         Fhat = self.flux_surface.Fhat
         results = {}
@@ -312,7 +315,7 @@ class FlowCalculator:
         for a in self.all_species:
             for _, ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
-                flux = self.fluxes[ai].heat_flux
+                flux = self.fluxes[sym].heat_flux
                 results[sym] = -flux / self.temperature_gradient[sym]
         return results
 
@@ -322,8 +325,8 @@ class FlowCalculator:
             for a in self.all_species:
                 for _, ai in self.contributing_states(a):
                     sym = ai.ionic_symbol
-                    yield ai.ion.charge * ai.number_density * self.r_pt[sym][
-                        0
-                    ]  # eq 37, second term
+                    u_velocity = self._charge_state_flows[sym][0]
+                    yield ai.ion.charge * ai.number_density * u_velocity
+                    # eq 37, second term
 
         return sum(gen())
