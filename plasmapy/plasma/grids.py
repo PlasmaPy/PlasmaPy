@@ -259,7 +259,7 @@ class AbstractGrid(ABC):
 
     @property
     def shape(self):
-        r""" Shape of the grid"""
+        r"""Shape of the grid"""
         if self.is_uniform:
             return (self.ax0.size, self.ax1.size, self.ax2.size)
         else:
@@ -706,7 +706,9 @@ class AbstractGrid(ABC):
 
         # Load into the dataset using the _load_grid function
         self._load_grid(
-            pts0 * units[0], pts1 * units[1], pts2 * units[2],
+            pts0 * units[0],
+            pts1 * units[1],
+            pts2 * units[2],
         )
 
     def _make_mesh(self, start, stop, num, **kwargs):

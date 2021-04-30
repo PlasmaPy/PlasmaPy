@@ -1,4 +1,4 @@
-__all__ = ["two_fluid_dispersion_solution", "tfds_"]
+__all__ = ["two_fluid_dispersion_solution"]
 
 import astropy.units as u
 import numpy as np
@@ -40,8 +40,6 @@ def two_fluid_dispersion_solution(
     assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
     field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
-
-    **Aliases:** `tfds_`
 
     Parameters
     ----------
@@ -346,7 +344,3 @@ def two_fluid_dispersion_solution(
             )
 
     return omega
-
-
-tfds_ = two_fluid_dispersion_solution
-""" Alias to :func:`two_fluid_dispersion_solution`. """
