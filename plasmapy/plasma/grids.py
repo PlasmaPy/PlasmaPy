@@ -136,8 +136,8 @@ class AbstractGrid(ABC):
         KeyError
             If ``replace_with_zeros`` is `True` but the
             `~astropy.units.Quantity` is not in the list of recognized
-            quantities. This is because in this case the units for the
-            quantity are unknown, so an array of zeros cannot be constructed.
+            quantities. In this case the units for the quantity are unknown,
+            so an array of zeros cannot be constructed.
         """
         for rq in req_quantities:
 
