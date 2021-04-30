@@ -12,41 +12,41 @@ The ionization state of a single element
 ========================================
 
 We may use the `~plasmapy.particles.IonizationState` class to represent
-the ionization state of a single element, such as for this example.
+the ionization state of a single element, for example:
 
 >>> from plasmapy.particles import IonizationState
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
 
 The ionization state for helium may be accessed using the
-`~plasmapy.particles.IonizationState.ionic_fractions` attribute.
+`~plasmapy.particles.ionization_state.IonizationState.ionic_fractions` attribute.
 These ionic fractions correspond to the
-`~plasmapy.particles.IonizationState.integer_charges` attribute.
+`~plasmapy.particles.ionization_state.IonizationState.integer_charges` attribute.
 
 >>> ionization_state.ionic_fractions
 array([0.05, 0.94, 0.01])
 >>> ionization_state.integer_charges
 array([0, 1, 2])
 
-The `~plasmapy.particles.IonizationState.Z_mean` attribute returns
+The `~plasmapy.particles.ionization_state.IonizationState.Z_mean` attribute returns
 the mean integer charge averaged over all particles in that element.
 
 >>> ionization_state.Z_mean
 0.96
 
-The `~plasmapy.particles.IonizationState.Z_rms` attribute returns
+The `~plasmapy.particles.ionization_state.IonizationState.Z_rms` attribute returns
 the root mean square integer charge.
 
 >>> ionization_state.Z_rms
 0.9899...
 
-The `~plasmapy.particles.IonizationState.Z_most_abundant` attribute
+The `~plasmapy.particles.ionization_state.IonizationState.Z_most_abundant` attribute
 returns a `list` of the most abundant ion(s).  The `list` may contain
 more than one integer charge in case of a tie.
 
 >>> ionization_state.Z_most_abundant
 [1]
 
-The `~plasmapy.particles.IonizationState.summarize` method prints out
+The `~plasmapy.particles.ionization_state.IonizationState.summarize` method prints out
 the ionic fraction for the ions with an abundance of at least 1%.
 
 >>> ionization_state.summarize()
@@ -65,13 +65,13 @@ The number density of the element may be specified through the
 ...     "He", [0.05, 0.94, 0.01], n_elem = 1e19 * u.m ** -3,
 ... )
 
-The `~plasmapy.particles.IonizationState.n_e` attribute provides
+The `~plasmapy.particles.ionization_state.IonizationState.n_e` attribute provides
 the electron number density as a `~astropy.units.Quantity`.
 
 >>> ionization_state.n_e
 <Quantity 9.6e+18 1 / m3>
 
-The `~plasmapy.particles.IonizationState.number_densities`
+The `~plasmapy.particles.ionization_state.IonizationState.number_densities`
 attribute provides the number density of each ion or neutral.
 
 >>> ionization_state.number_densities

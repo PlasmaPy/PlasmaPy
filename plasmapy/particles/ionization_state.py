@@ -638,7 +638,7 @@ class IonizationState:
 
     @property
     def integer_charges(self) -> np.ndarray:
-        """An array with the integer charges."""
+        """An array of the integer charges."""
         return np.arange(0, self.atomic_number + 1, dtype=int)
 
     @property
