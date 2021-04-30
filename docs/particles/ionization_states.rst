@@ -119,9 +119,9 @@ The ionic fractions will be stored as a `dict`.
 
 The number density for each element is the product of the number
 density scaling factor
-`~plasmapy.particles.IonizationStateCollection.n0` with that
+`~plasmapy.particles.ionization_state.IonizationStateCollection.n0` with that
 element's abundance.  The number density for each ion is the
-product of `~plasmapy.particles.IonizationStateCollection.n0`, the
+product of `~plasmapy.particles.ionization_state.IonizationStateCollection.n0`, the
 corresponding element's abundance, and the ionic fraction.
 
 >>> states.n0
@@ -151,7 +151,7 @@ corresponding element's abundance, and the ionic fraction.
 >>> states.number_densities["H"]
 <Quantity [5.00e+17, 4.95e+19] 1 / m3>
 
-The `~plasmapy.particles.IonizationStateCollection.summarize`
+The `~plasmapy.particles.ionization_state.IonizationStateCollection.summarize`
 method may also be used to summarize the ionization states.
 
 >>> states.summarize()
