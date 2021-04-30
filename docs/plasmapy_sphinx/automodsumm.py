@@ -30,20 +30,20 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         When a module is inspected all the identified objects are categorized into
         groups.  The built-in groups are:
 
-        +----------------+------------------------------------------------------------+
-        | **modules**    | Direct sub-packages and modules                            |
-        +----------------+------------------------------------------------------------+
-        | **classes**    | Python classes (excluding **exceptions** and **warnings**) |
-        +----------------+------------------------------------------------------------+
-        | **exceptions** | Classes that inherit from `BaseException`. (excluding      |
-        |                | **warnings**)                                              |
-        +----------------+------------------------------------------------------------+
-        | **warnings**   | Classes that inherit from `Warning`                        |
-        +----------------+------------------------------------------------------------+
-        | **functions**  | Objects that satisfy :func:`inspect.isroutine`             |
-        +----------------+------------------------------------------------------------+
-        | **variables**  | All other objects                                          |
-        +----------------+------------------------------------------------------------+
+        +----------------+-------------------------------------------------------------+
+        | **modules**    | Direct sub-packages and modules.                            |
+        +----------------+-------------------------------------------------------------+
+        | **classes**    | Python classes. (excluding **exceptions** and **warnings**) |
+        +----------------+-------------------------------------------------------------+
+        | **exceptions** | Classes that inherit from `BaseException`. (excluding       |
+        |                | **warnings**)                                               |
+        +----------------+-------------------------------------------------------------+
+        | **warnings**   | Classes that inherit from `Warning`.                        |
+        +----------------+-------------------------------------------------------------+
+        | **functions**  | Objects that satisfy :func:`inspect.isroutine`.             |
+        +----------------+-------------------------------------------------------------+
+        | **variables**  | All other objects.                                          |
+        +----------------+-------------------------------------------------------------+
 
         In addition to the built-in groups, groups defined in
         :confval:`automodapi_custom_groups` will be categorized.  When objects are
