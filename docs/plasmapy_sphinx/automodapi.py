@@ -173,7 +173,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
     .. rst:directive:option:: heading-chars
 
         (Default ``-^``) A two character string specifying the underline characters
-        used for the heading created by :rst:dir:`automodapi`.
+        used for the heading created by :rst:dir:`automodapi`.  The following code
 
         .. code-block:: rst
 
@@ -181,7 +181,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
                :include-heading:
                :heading-chars: ^~
 
-        Would generate reStructuredText equivalent to
+        would generate reStructuredText equivalent to
 
         .. code-block:: rst
 
