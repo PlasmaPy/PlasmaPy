@@ -13,7 +13,7 @@ Defined Directives
 A directive (`ref
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 #rst-directives>`_) is a generic block of explicit markup.  Along with roles, it
-is one of the extension mechanisms of reST and, thus, Sphinx,
+is one of the extension mechanisms of reST and, thus, Sphinx.
 
 - :rst:dir:`automodapi`
 - :rst:dir:`automodsumm`
@@ -21,8 +21,9 @@ is one of the extension mechanisms of reST and, thus, Sphinx,
 Defined Configuration Values
 ----------------------------
 
-Configuration values are variables that can be defined in the your `conf.py`
-that controls the default behavior of the functionality defined by `plasmapy_sphinx`.
+Configuration values are variables that can be defined in the `conf.py` file
+to control the default behavior of the functionality defined by
+`plasmapy_sphinx`.
 
 - :ref:`Values for automodapi <automodapi-confvals>`
 - :ref:`Values for automodsumm <automodsumm-confvals>`
