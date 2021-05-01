@@ -50,10 +50,58 @@ def validate_object(properties=[]):
 
 class AbstractClassicalTransportCoefficients(ABC):
     r"""
-    An abstract class representing classical transport coefficients.
-
-    Subclasses representing different classical transport models re-implement
+    An abstract class representing classical transport coefficients. Subclasses
+    representing different classical transport models re-implement
     the transport cofficient methods of this abstract class.
+
+    The class can be initialized with one of two sets of keywords, allowing
+    it to calcualte the dimensionless/normalized forms of the transport
+    coefficients or the dimensional forms. If sets are provided, the dimensionless
+    set takes precidence.
+
+    Parameters (dimensionless)
+    --------------------------
+
+    chi_e : `numpy.ndarray` (N,)
+        The electron Hall parameter
+
+    chi_i : `numpy.ndarray` (N,)
+        The ion Hall parameter
+
+    Z : float
+        The plasma mean ionization
+
+    Parameters (dimensional)
+    --------------------------
+
+    particle : `~plasmapy.particles.Particle` instance or str
+        The ion species
+
+    B : `~astropy.units.Quantity`
+        Magnetic field strength in units convertable to Tesla.
+
+    ne : `~astropy.units.Quantity`
+        Electron number density, in units convertable to cm^-3.
+
+    ni : `~astropy.units.Quantity`
+        Ion number density, in units convertable to cm^-3.
+
+    Te : `~astropy.units.Quantity`
+        Electron temperature, in units convertable to eV.
+
+    Ti : `~astropy.units.Quantity`
+        Ion temperature, in units convertable to eV.
+
+    e_collision_freq : `~astropy.units.Quantity`
+        The fundamental electron collision frequency, in units convertable
+        to Hz. If not provided, this will be calculated using
+        `~plasmapy.formulary.collisions.fundamental_electron_collision_freq()`
+
+    i_collision_freq : `~astropy.units.Quantity`
+        The fundamental ion collision frequency, in units convertable
+        to Hz. If not provided, this will be calculated using
+        `~plasmapy.formulary.collisions.fundamental_ion_collision_freq()`
+
     """
 
     @particles.particle_input(none_shall_pass=True)
@@ -71,6 +119,10 @@ class AbstractClassicalTransportCoefficients(ABC):
         e_collision_freq=None,
         i_collision_freq=None,
     ):
+
+        # The __init__ method calls one of two constructors based on which
+        # keywords are provided.
+        # The normalized/dimensionless keywords take precidence
 
         if Z is not None:
             self._constructor_normalized(chi_e, chi_i, Z)
@@ -276,6 +328,18 @@ class AbstractClassicalTransportCoefficients(ABC):
             )
         return self.norm_kappa_i_cross() * self.kappa_i_normalization
 
+    # **********************************************************************
+    # Electron Viscosity (pi_e)
+    # **********************************************************************
+
+    # TODO: implement electron viscosity
+
+    # **********************************************************************
+    # Electron Viscosity (pi_i)
+    # **********************************************************************
+
+    # TODO: implement ion viscosity
+
 
 class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
     """
@@ -291,7 +355,9 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
         super().__init__(*args, **kwargs)
 
         file = np.load(self._data_file)
-        coefficients = [
+
+        # Coefficients whose fits depend on chi_e
+        e_coefficients = [
             "alpha_para",
             "alpha_perp",
             "alpha_cross",
@@ -303,18 +369,30 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
             "kappa_e_cross",
         ]
 
+        # Coefficients whose fits depend on chi_i
+        i_coefficients = [
+            "kappa_i_para",
+            "kappa_i_perp",
+            "kappa_i_cross",
+        ]
+
         # Create an interpolator for each of the data tables
-        # (All of the interpolators use the same chi and Z)
+        # using either the chi_e or chi_i tables as appropriate for that coefficient
+        # (All of the interpolators use the same Z)
         self.interpolators = {}
-        for coef in coefficients:
-            self.interpolators[coef] = interp2d(
-                file["Z"],
-                file["chi_e"],
-                file[coef],
-                kind="cubic",
-                bounds_error=False,
-                fill_value=None,
-            )
+        for parameter, coefficients in zip(
+            ["chi_e", "chi_i"], [e_coefficients, i_coefficients]
+        ):
+            for coef in coefficients:
+                if coef in list(file.keys()):
+                    self.interpolators[coef] = interp2d(
+                        file["Z"],
+                        file[parameter],
+                        file[coef],
+                        kind="cubic",
+                        bounds_error=False,
+                        fill_value=None,
+                    )
 
     def norm_alpha_para(self):
         return self.interpolators["alpha_para"](self.Z, self.chi_e)
@@ -334,14 +412,23 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
     def norm_beta_cross(self):
         return self.interpolators["beta_cross"](self.Z, self.chi_e)
 
-    def norm_kappa_para(self):
+    def norm_kappa_e_para(self):
         return self.interpolators["kappa_e_para"](self.Z, self.chi_e)
 
-    def norm_kappa_perp(self):
+    def norm_kappa_e_perp(self):
         return self.interpolators["kappa_e_perp"](self.Z, self.chi_e)
 
-    def norm_kappa_cross(self):
+    def norm_kappa_e_cross(self):
         return self.interpolators["kappa_e_cross"](self.Z, self.chi_e)
+
+    def norm_kappa_i_para(self):
+        return self.interpolators["kappa_i_para"](self.Z, self.chi_i)
+
+    def norm_kappa_i_perp(self):
+        return self.interpolators["kappa_i_perp"](self.Z, self.chi_i)
+
+    def norm_kappa_i_cross(self):
+        return self.interpolators["kappa_i_cross"](self.Z, self.chi_i)
 
 
 if __name__ == "__main__":
