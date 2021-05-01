@@ -563,13 +563,19 @@ Dictionary of various coefficients used in calculating the
 @njit
 def thermal_speed_lite(T, mass, coeff):
     """
-    A lite weight version of `thermal_speed` intended for computational used
-    and, thus, does not do any argument validation/conditioning.
+    A lite weight version of `~plasmapy.formulary.parameters.thermal_speed`
+    intended for computational used and, thus, does not do any argument
+    validation/conditioning.
     """
     return np.sqrt(coeff * k_B_si_unitless * T / mass)
 
 
-@add_lite(
+# @add_lite(
+#     thermal_speed_lite,
+#     attrs=[("coefficients", "thermal_speed_coefficients")],
+#     scope=globals(),
+# )
+@mark_litefunc(
     thermal_speed_lite,
     attrs=[("coefficients", "thermal_speed_coefficients")],
     scope=globals(),
