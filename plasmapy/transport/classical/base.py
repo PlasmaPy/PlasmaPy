@@ -201,101 +201,121 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
     # Resistivity (alpha)
     # **********************************************************************
+    @property
     def norm_alpha_para(self):
         raise NotImplementedError
 
+    @property
     def alpha_para(self):
         if self.alpha_normalization is None:
             raise ValueError(
                 "Keywords ne and B must be provided to " "calculate alpha_para"
             )
 
-        return self.norm_alpha_para() * self.alpha_normalization
+        return self.norm_alpha_para * self.alpha_normalization
 
+    @property
     def norm_alpha_perp(self):
         raise NotImplementedError
 
+    @property
     def alpha_perp(self):
         if self.alpha_normalization is None:
             raise ValueError(
                 "Keywords ne and B must be provided to " "calculate alpha_perp"
             )
 
-        return self.norm_alpha_perp() * self.alpha_normalization
+        return self.norm_alpha_perp * self.alpha_normalization
 
+    @property
     def norm_alpha_cross(self):
         raise NotImplementedError
 
+    @property
     def alpha_cross(self):
         if self.alpha_normalization is None:
             raise ValueError(
                 "Keywords ne and B must be provided to " "calculate alpha_cross"
             )
-        return self.norm_alpha_cross() * self.alpha_normalization
+        return self.norm_alpha_cross * self.alpha_normalization
 
     # **********************************************************************
     # Thermoelectric Coefficient (beta)
     # **********************************************************************
+    @property
     def norm_beta_para(self):
         raise NotImplementedError
 
+    @property
     def beta_para(self):
-        return self.norm_beta_para() * self.beta_normalization
+        return self.norm_beta_para * self.beta_normalization
 
+    @property
     def norm_beta_perp(self):
         raise NotImplementedError
 
+    @property
     def beta_perp(self):
-        return self.norm_beta_perp() * self.beta_normalization
+        return self.norm_beta_perp * self.beta_normalization
 
+    @property
     def norm_beta_cross(self):
         raise NotImplementedError
 
+    @property
     def beta_cross(self):
-        return self.norm_beta_cross() * self.beta_normalization
+        return self.norm_beta_cross * self.beta_normalization
 
     # **********************************************************************
     # Electron Thermal Conductivity (kappa_e)
     # **********************************************************************
+    @property
     def norm_kappa_e_para(self):
         raise NotImplementedError
 
+    @property
     def kappa_e_para(self):
         if self.kappa_e_normalization is None:
             raise ValueError(
                 "Keywords ne, Te, and B must be provided to " "calculate kappa_e_para"
             )
 
-        return self.norm_kappa_e_para() * self.kappa_e_normalization
+        return self.norm_kappa_e_para * self.kappa_e_normalization
 
+    @property
     def norm_kappa_e_perp(self):
         raise NotImplementedError
 
+    @property
     def kappa_e_perp(self):
         if self.kappa_e_normalization is None:
             raise ValueError(
                 "Keywords ne, Te, and B must be provided to " "calculate kappa_perp_e"
             )
 
-        return self.norm_kappa_e_perp() * self.kappa_e_normalization
+        return self.norm_kappa_e_perp * self.kappa_e_normalization
 
+    @property
     def norm_kappa_e_cross(self):
         raise NotImplementedError
 
+    @property
     def kappa_e_cross(self):
         if self.kappa_e_normalization is None:
             raise ValueError(
                 "Keywords ne, Te, and B must be provided to " "calculate kappa_e_cross"
             )
-        return self.norm_kappa_e_cross() * self.kappa_e_normalization
+        return self.norm_kappa_e_cross * self.kappa_e_normalization
 
     # **********************************************************************
     # Ion Thermal Conductivity (kappa_i)
     # **********************************************************************
 
+    @property
     def norm_kappa_i_para(self):
         raise NotImplementedError
 
+    @property
     def kappa_i_para(self):
         if self.kappa_i_normalization is None:
             raise ValueError(
@@ -303,11 +323,13 @@ class AbstractClassicalTransportCoefficients(ABC):
                 "calculate kappa_i_para"
             )
 
-        return self.norm_kappa_i_para() * self.kappa_i_normalization
+        return self.norm_kappa_i_para * self.kappa_i_normalization
 
+    @property
     def norm_kappa_i_perp(self):
         raise NotImplementedError
 
+    @property
     def kappa_i_perp(self):
         if self.kappa_i_normalization is None:
             raise ValueError(
@@ -315,18 +337,20 @@ class AbstractClassicalTransportCoefficients(ABC):
                 "calculate kappa_i_perp"
             )
 
-        return self.norm_kappa_i_perp() * self.kappa_i_normalization
+        return self.norm_kappa_i_perp * self.kappa_i_normalization
 
+    @property
     def norm_kappa_i_cross(self):
         raise NotImplementedError
 
+    @property
     def kappa_i_cross(self):
         if self.kappa_i_normalization is None:
             raise ValueError(
                 "Keywords particle, B, ni, and Ti must be provided to "
                 "calculate kappa_i_cross"
             )
-        return self.norm_kappa_i_cross() * self.kappa_i_normalization
+        return self.norm_kappa_i_cross * self.kappa_i_normalization
 
     # **********************************************************************
     # Electron Viscosity (pi_e)
@@ -339,6 +363,50 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
 
     # TODO: implement ion viscosity
+
+    # **********************************************************************
+    # Resistive Velocity (delta_e)
+    # "Symmetric" coefficent formulism of Sadler and Davies
+    # **********************************************************************
+
+    def norm_delta_e_perp(self):
+
+        return self.norm_alpha_cross / self.chi_e
+
+    def delta_e_perp(self):
+        if self.alpha_normalization is None:
+            raise ValueError(
+                "Keywords ne and B must be provided to " "calculate delta_e_perp"
+            )
+
+        return self.norm_delta_e_perp * self.alpha_normalization
+
+    def norm_delta_e_cross(self):
+        return (self.norm_alpha_perp - self.norm_alpha_para) / self.chi_e
+
+    def delta_e_cross(self):
+        if self.alpha_normalization is None:
+            raise ValueError(
+                "Keywords ne and B must be provided to " "calculate delta_e_cross"
+            )
+        return self.norm_delta_e_cross * self.alpha_normalization
+
+    # **********************************************************************
+    # Nernst Coefficient (gamma_e)
+    # "Symmetric" coefficent formulism of Sadler and Davies
+    # **********************************************************************
+
+    def norm_gamma_e_perp(self):
+        return self.norm_beta_cross / self.chi_e
+
+    def gamma_e_perp(self):
+        return self.norm_gamma_e_perp * self.beta_normalization
+
+    def norm_gamma_e_cross(self):
+        return (self.norm_beta_para - self.norm_beta_perp) / self.chi_e
+
+    def gamma_e_cross(self):
+        return self.norm_gamma_e_cross * self.beta_normalization
 
 
 class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
