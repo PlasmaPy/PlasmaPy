@@ -21,6 +21,7 @@ import warnings
 from plasmapy.transport.classical.base import (
     AbstractClassicalTransportCoefficients,
     AbstractInterpolatedCoefficients,
+    validate_object,
 )
 
 # Get the absolute path to the data files
@@ -60,6 +61,7 @@ def _find_nearest(Z):
 
 
 class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
+    @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_para(self):
         """
         Calculates the normalized alpha_para coefficient in terms of the
@@ -91,78 +93,86 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
 
         """
         i = _find_nearest(self.Z)
-        return c["alpha0"][i] * np.ones(self.chi.size)
+        return c["alpha0"][i] * np.ones(self.chi_e.size)
 
+    @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_perp(self):
         i = _find_nearest(self.Z)
-        return 1 - (c["alpha1p"][i] * self.chi + c["alpha0p"][i]) / (
-            self.chi ** 2 + c["a1p"][i] * self.chi + c["a0p"][i]
+        return 1 - (c["alpha1p"][i] * self.chi_e + c["alpha0p"][i]) / (
+            self.chi_e ** 2 + c["a1p"][i] * self.chi_e + c["a0p"][i]
         )
 
+    @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_cross(self):
         i = _find_nearest(self.Z)
         return (
-            self.chi
-            * (c["alpha1pp"][i] * self.chi + c["alpha0pp"][i])
+            self.chi_e
+            * (c["alpha1pp"][i] * self.chi_e + c["alpha0pp"][i])
             / (
-                self.chi ** 3
-                + c["a2pp"][i] * self.chi ** 2
-                + c["a1pp"][i] * self.chi
+                self.chi_e ** 3
+                + c["a2pp"][i] * self.chi_e ** 2
+                + c["a1pp"][i] * self.chi_e
                 + c["a0pp"][i]
             )
             ** (8 / 9)
         )
 
+    @validate_object(properties=["chi_e", "Z"])
     def norm_beta_para(self):
         i = _find_nearest(self.Z)
-        return c["beta0"][i] * np.ones(self.chi.size)
+        return c["beta0"][i] * np.ones(self.chi_e.size)
 
+    @validate_object(properties=["chi_e", "Z"])
     def norm_beta_perp(self):
         i = _find_nearest(self.Z)
-        return (c["beta1p"][i] * self.chi + c["beta0p"][i]) / (
-            self.chi ** 3
-            + c["b2p"][i] * self.chi ** 2
-            + c["b1p"][i] * self.chi
+        return (c["beta1p"][i] * self.chi_e + c["beta0p"][i]) / (
+            self.chi_e ** 3
+            + c["b2p"][i] * self.chi_e ** 2
+            + c["b1p"][i] * self.chi_e
             + c["b0p"][i]
         ) ** (8 / 9)
 
     # TODO: Note that this function doesn't match the EH paper Fig. 1 in the
     # chi -> inf side. The coefficients and polynomial are right...
     # this might be a mistake in the EH tables?
+    @validate_object(properties=["chi_e", "Z"])
     def norm_beta_cross(self):
         i = _find_nearest(self.Z)
         return (
-            self.chi
-            * (c["beta1pp"][i] * self.chi + c["beta0pp"][i])
+            self.chi_e
+            * (c["beta1pp"][i] * self.chi_e + c["beta0pp"][i])
             / (
-                self.chi ** 3 * c["b2pp"][i] * self.chi ** 2
-                + c["b1pp"][i] * self.chi
+                self.chi_e ** 3 * c["b2pp"][i] * self.chi_e ** 2
+                + c["b1pp"][i] * self.chi_e
                 + c["b0pp"][i]
             )
         )
 
-    def norm_kappa_para(self):
+    @validate_object(properties=["chi_e", "Z"])
+    def norm_kappa_e_para(self):
         i = _find_nearest(self.Z)
-        return c["gamma0"][i] * np.ones(self.chi.size)
+        return c["gamma0"][i] * np.ones(self.chi_e.size)
 
-    def norm_kappa_perp(self):
+    @validate_object(properties=["chi_e", "Z"])
+    def norm_kappa_e_perp(self):
         i = _find_nearest(self.Z)
-        return (c["gamma1p"][i] * self.chi + c["gamma0p"][i]) / (
-            self.chi ** 3
-            + c["c2p"][i] * self.chi ** 2
-            + c["c1p"][i] * self.chi
+        return (c["gamma1p"][i] * self.chi_e + c["gamma0p"][i]) / (
+            self.chi_e ** 3
+            + c["c2p"][i] * self.chi_e ** 2
+            + c["c1p"][i] * self.chi_e
             + c["c0p"][i]
         )
 
-    def norm_kappa_cross(self):
+    @validate_object(properties=["chi_e", "Z"])
+    def norm_kappa_e_cross(self):
         i = _find_nearest(self.Z)
         return (
-            self.chi
-            * (c["gamma1pp"][i] * self.chi + c["gamma0pp"][i])
+            self.chi_e
+            * (c["gamma1pp"][i] * self.chi_e + c["gamma0pp"][i])
             / (
-                self.chi ** 3
-                + c["c2pp"][i] * self.chi ** 2
-                + c["c1pp"][i] * self.chi
+                self.chi_e ** 3
+                + c["c2pp"][i] * self.chi_e ** 2
+                + c["c1pp"][i] * self.chi_e
                 + c["c0pp"][i]
             )
         )
@@ -178,10 +188,11 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
+    """
     chi = np.linspace(-2, 2, num=50)
     chi = 10 ** chi
 
-    coef = EpperleinHainesInterpolated(chi, 5)
+    coef = EpperleinHainesInterpolated(chi_e=chi, Z=5)
 
     data = coef.norm_alpha_perp()
 
@@ -194,15 +205,15 @@ if __name__ == "__main__":
 
     """
     chi = np.linspace(-2, 2, num=100)
-    chi = 10**chi
+    chi = 10 ** chi
 
     # Instantiate the object
-    coef1 = EpperleinHainesPolynomialFit(chi, 1)
-    coef2 = EpperleinHainesPolynomialFit(chi, np.inf)
+    coef1 = EpperleinHainesPolynomialFit(chi_e=chi, Z=1)
+    coef2 = EpperleinHainesPolynomialFit(chi_e=chi, Z=np.inf)
 
-    fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10,10), sharex=True)
+    fig, axarr = plt.subplots(nrows=3, ncols=2, figsize=(10, 10), sharex=True)
 
-    for i in range (3):
+    for i in range(3):
         for j in range(2):
             ax = axarr[i][j]
             ax.set_xscale("log")
@@ -213,40 +224,38 @@ if __name__ == "__main__":
     axarr[-1][1].set_xlabel("$\\chi$")
 
     ax = axarr[0][0]
-    ax.set_title('$\\alpha_\\perp$')
+    ax.set_title("$\\alpha_\\perp$")
     ax.set_ylim(0.2, 1)
     ax.plot(chi, coef1.norm_alpha_perp(), label="Z=1")
-    ax.plot(chi, coef2.norm_alpha_perp(),  label="Z=Infinite")
+    ax.plot(chi, coef2.norm_alpha_perp(), label="Z=Infinite")
     ax.legend()
 
     ax = axarr[1][0]
-    ax.set_title('$\\alpha_\\wedge$')
+    ax.set_title("$\\alpha_\\wedge$")
     ax.set_ylim(0.01, 1)
     ax.plot(chi, coef1.norm_alpha_cross())
     ax.plot(chi, coef2.norm_alpha_cross())
 
     ax = axarr[2][0]
-    ax.set_title('$\\beta_\\perp$')
+    ax.set_title("$\\beta_\\perp$")
     ax.set_ylim(0.001, 10)
     ax.plot(chi, coef1.norm_beta_perp())
     ax.plot(chi, coef2.norm_beta_perp())
 
-
     ax = axarr[0][1]
-    ax.set_title('$\\beta_\\wedge$')
+    ax.set_title("$\\beta_\\wedge$")
     ax.set_ylim(0.01, 1)
     ax.plot(chi, coef1.norm_beta_cross())
     ax.plot(chi, coef2.norm_beta_cross())
 
     ax = axarr[1][1]
-    ax.set_title('$\\kappa_\\perp$')
+    ax.set_title("$\\kappa_\\perp$")
     ax.set_ylim(0.001, 100)
-    ax.plot(chi, coef1.norm_kappa_perp())
-    ax.plot(chi, coef2.norm_kappa_perp())
+    ax.plot(chi, coef1.norm_kappa_e_perp())
+    ax.plot(chi, coef2.norm_kappa_e_perp())
 
     ax = axarr[2][1]
-    ax.set_title('$\\kappa_\\wedge$')
+    ax.set_title("$\\kappa_\\wedge$")
     ax.set_ylim(0.01, 10)
-    ax.plot(chi, coef1.norm_kappa_cross())
-    ax.plot(chi, coef2.norm_kappa_cross())
-    """
+    ax.plot(chi, coef1.norm_kappa_e_cross())
+    ax.plot(chi, coef2.norm_kappa_e_cross())
