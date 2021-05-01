@@ -3,7 +3,12 @@ import sys
 from docutils.statemachine import StringList
 from plasmapy.utils.decorators.helpers import LiteFuncTuple
 from sphinx.application import Sphinx
-from sphinx.ext.autodoc import DataDocumenter, FunctionDocumenter
+from sphinx.ext.autodoc import (
+    DataDocumenter,
+    FunctionDocumenter,
+    ModuleLevelDocumenter,
+)
+
 from sphinx.locale import __
 from sphinx.util import logging
 from typing import Any, Optional
@@ -16,10 +21,19 @@ else:
 logger = logging.getLogger(__name__)
 
 
+class LiteDataDocumenter(DataDocumenter):
+    objtype = "litedata"
+    directivetype = "data"
+    priority = DataDocumenter.priority - 10
+    option_spec = dict(ModuleLevelDocumenter.option_spec)
+
+
 class LiteFuncDocumenter(FunctionDocumenter):
     objtype = "litefunc"
     directivetype = "function"
     logger = logger
+
+    priority = 10 + FunctionDocumenter.priority
 
     _templates = {
         "note": "\n".join(
@@ -42,7 +56,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
             ".. rubric:: Bound Attributes",
             "",
         ],
-        "autodata": ".. autodata:: {item}",
+        "autodata": ".. autolitedata:: {item}",
     }
 
     @classmethod
@@ -178,4 +192,5 @@ class LiteFuncDocumenter(FunctionDocumenter):
 
 
 def setup(app: Sphinx):
+    app.add_autodocumenter(LiteDataDocumenter)
     app.add_autodocumenter(LiteFuncDocumenter)
