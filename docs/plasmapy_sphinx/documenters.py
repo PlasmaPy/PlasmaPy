@@ -51,15 +51,15 @@ class LiteFuncDocumenter(FunctionDocumenter):
     ) -> bool:
         rtn = super().can_document_member(member, membername, isattr, parent)
 
-        is_litefunc = hasattr(member, "__litefunc__")
-        if not is_litefunc:
+        has_litefunc = hasattr(member, "__has_litefunc__")
+        if not has_litefunc:
             return False
 
-        return rtn and is_litefunc
+        return rtn and has_litefunc
 
     @property
-    def is_litefunc(self):
-        return hasattr(self.object, "__litefunc__")
+    def has_litefunc(self):
+        return hasattr(self.object, "__has_litefunc__")
 
     @property
     def is_alias(self):
@@ -69,16 +69,14 @@ class LiteFuncDocumenter(FunctionDocumenter):
             return False
 
     @property
-    def __litefunc__(self) -> LiteFuncTuple:
-        return self.object.__litefunc__
+    def __has_litefunc__(self) -> LiteFuncTuple:
+        return self.object.__has_litefunc__
 
     def generate_more_content(self):
-        app = self.env.app
-
-        if not self.is_litefunc or self.is_alias:
+        if not self.has_litefunc or self.is_alias:
             return []
 
-        bound_attrs = list(self.__litefunc__.bound_attrs)
+        bound_attrs = list(self.__has_litefunc__.bound_attrs)
         if len(bound_attrs) == 0:
             return []
 
@@ -154,7 +152,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
             f"          name = {self.name}\n"
             f"  real_modname = {real_modname}\n"
             f"        object = {self.object}\n"
-            f"    lite func? = {self.is_litefunc}\n"
+            f"    lite func? = {self.has_litefunc}\n"
             f"         alias = {self.is_alias}\n"
             f"        module = {self.module}."
         )

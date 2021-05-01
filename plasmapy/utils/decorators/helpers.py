@@ -246,7 +246,7 @@ def mark_litefunc(flite, attrs=None, scope=None):
 
         setattr(
             wrapper,
-            "__litefunc__",
+            "__has_litefunc__",
             LiteFuncTuple(parent=True, bound_attrs=bound_names)
         )
 
