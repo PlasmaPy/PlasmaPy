@@ -233,7 +233,7 @@ def two_fluid_dispersion_solution(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
     if not (ion.is_ion or ion.is_category("element")):
-        raise ValueError(f"The particle passed for 'ion' must be an ion or element.")
+        raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
     if z_mean is None:
@@ -274,7 +274,7 @@ def two_fluid_dispersion_solution(
             f" got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError(f"Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' can not be a or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
