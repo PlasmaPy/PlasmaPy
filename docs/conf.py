@@ -292,11 +292,10 @@ nbsphinx_prolog = r"""
 
 
 def setup(app: Sphinx) -> None:
-    from plasmapy_sphinx import setup as setup_automodapi
-    from plasmapy_sphinx.extras import setup as setup_extras
-
-    setup_automodapi(app)
-    setup_extras(app)
+    from plasmapy_sphinx.plasmapy_setup import setup as setup_for_plasmapy
+    rtn = setup_for_plasmapy(app)
 
     app.add_config_value("revision", "", True)
     app.add_css_file("rtd_theme_overrides.css")
+
+    return rtn
