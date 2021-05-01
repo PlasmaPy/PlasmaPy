@@ -100,6 +100,10 @@ class LiteFuncDocumenter(FunctionDocumenter):
             )
 
         lines.append("")
+
+        if "noindex" in self.options and self.options["noindex"]:
+            return lines
+
         lines.extend(self._templates["autodata_heading"])
 
         for bname in bound_attrs:
