@@ -1,10 +1,12 @@
 """
 Miscellaneous decorators for various package uses.
 """
-__all__ = ["add_lite", "modify_docstring", "preserve_signature"]
+__all__ = ["add_lite", "mark_litefunc", "modify_docstring", "preserve_signature"]
 
 import functools
 import inspect
+
+from collections import namedtuple
 
 
 def modify_docstring(func=None, prepend: str = None, append: str = None):
@@ -190,3 +192,65 @@ def add_lite(flite, attrs=None, scope=None):
         return wrapper
 
     return decorator
+
+
+LiteFuncTuple = namedtuple(
+    "LiteFuncTuple", ("parent", "bound_attrs"), defaults=(False, None),
+)
+
+
+def mark_litefunc(flite, attrs=None, scope=None):
+    """
+    Decorator to bind lightweight "lite" versions of formulary functions to the full
+    formulary function.
+    """
+    if attrs is None:
+        attrs = []
+    elif scope is None:
+        raise ValueError(
+            f"If 'attrs' are being bound to the decorate function, then 'scope'"
+            f" needs to be defined and contain the objects to be bound.  "
+            f"Setting 'scope=globals()' will typically suffice."
+        )
+
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            return f(*args, **kwargs)
+
+        # wrapper_doc = inspect.cleandoc(getattr(wrapper, "__doc__", """"""))
+
+        setattr(wrapper, "lite", flite)
+        bound_names = ["lite"]
+
+        # wrapper_doc += "\n\n" + inspect.cleandoc(
+        #     f"""
+        #     .. note:: To increase usability of `{f.__name__}` several
+        #        attributes/functions are manually bound to this function.
+        #
+        #        - `{f.__name__}.lite` <--> `~{flite.__module__}.{flite.__name__}`
+        #     """
+        # )
+
+        for bound_name, attr_name in attrs:
+            attr = scope[attr_name]
+
+            setattr(wrapper, bound_name, attr)
+            bound_names.append(bound_name)
+
+            # wrapper_doc += (
+            #     f"\n   - `{f.__name__}.{bound_name}` <--> `~{f.__module__}.{attr_name}`"
+            # )
+
+        # wrapper.__doc__ = wrapper_doc
+
+        setattr(
+            wrapper,
+            "__litefunc__",
+            LiteFuncTuple(parent=True, bound_attrs=bound_names)
+        )
+
+        return wrapper
+
+    return decorator
+

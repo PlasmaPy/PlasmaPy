@@ -60,6 +60,7 @@ from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     add_lite,
+    mark_litefunc,
     angular_freq_to_hz,
     check_relativistic,
     preserve_signature,
