@@ -74,6 +74,11 @@ jobs:
             python: 3.8
             toxenv: build_docs
 
+          - name: Linters
+            os: ubuntu-latest
+            python: 3.8
+            toxenv: linters
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
