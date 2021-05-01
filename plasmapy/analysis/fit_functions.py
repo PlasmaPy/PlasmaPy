@@ -485,7 +485,7 @@ class Linear(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return "m x + b"
+        return r"m x + b"
 
     def func(self, x, m, b):
         """
