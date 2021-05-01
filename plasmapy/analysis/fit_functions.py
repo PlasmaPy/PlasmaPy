@@ -485,7 +485,7 @@ class Linear(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"m x + b"
+        return "m x + b"
 
     def func(self, x, m, b):
         """
@@ -674,7 +674,7 @@ class Exponential(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x)"
+        return r"a \, \exp(\alpha x)"
 
     def func(self, x, a, alpha):
         """
@@ -953,7 +953,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x) + b"
+        return r"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:

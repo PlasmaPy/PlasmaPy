@@ -1,3 +1,3 @@
 Enabled some flake8 checks that were being ignored
 Fixed majority of those flake8 errors that popped up after removal in various files
-Error code not fixed in all files being thrown: F541
+Readded error codes W605, RST210 to ignored list under flake8 checks in setup.cfg

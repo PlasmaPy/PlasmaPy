@@ -1184,7 +1184,7 @@ class CartesianGrid(AbstractGrid):
                     valid = (
                         (x >= 0) & (x < n0) & (y >= 0) & (y < n1) & (z >= 0) & (z < n2)
                     )
-                    out = np.where(not valid)
+                    out = np.where(~valid)
 
                     # Distance from grid vertex to particle position
                     grid_pos = np.array([ax0[x], ax1[y], ax2[z]])

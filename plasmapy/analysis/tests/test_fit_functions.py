@@ -418,7 +418,7 @@ class TestFFExponential(BaseFFTests):
     _test_params = (5.0, 1.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("a", "alpha")
-    _test_latex_str = fr"a \, \exp(\alpha x)"
+    _test_latex_str = r"a \, \exp(\alpha x)"
     _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
@@ -460,7 +460,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test_params = (2.0, 1.0, 5.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "m", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + m x + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + m x + b"
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
@@ -508,7 +508,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test_params = (2.0, 1.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + b"
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
@@ -556,7 +556,7 @@ class TestFFLinear(BaseFFTests):
     _test_params = (5.0, 4.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("m", "b")
-    _test_latex_str = fr"m x + b"
+    _test_latex_str = r"m x + b"
     _test__str__ = "f(x) = m x + b"
 
     @staticmethod
