@@ -160,7 +160,7 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
 
         2) For each cell of detector grid, create an array of points of
         separation ds from there to the source point (or, when collimated=True,
-                                                      the source plane).
+        the source plane).
 
         3) Evaluate the integrand function at each point.
 
