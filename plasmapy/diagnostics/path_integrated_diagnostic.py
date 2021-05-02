@@ -152,7 +152,7 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         num=100,
     ):
         """
-        Calculates the line-integral tof the integrand function through the
+        Calculates the line-integral of the integrand function through the
         provided grid. This is accomplished through the following steps:
 
         1) Create an array of points in the detector plane using the detector
