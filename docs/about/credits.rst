@@ -91,7 +91,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
 * `David Drozdov <https://github.com/davemus>`__
 * `Dhawal Modi <https://github.com/Dhawal-Modi>`__
-
+* `Armando Salcido <https://github.com/aksalcido>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision

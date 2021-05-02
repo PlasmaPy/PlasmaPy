@@ -1190,7 +1190,7 @@ class Particle(AbstractPhysicalParticle):
 
         if not self.isotope:
             raise InvalidIsotopeError(
-                f"The nuclear binding energy may only be calculated for nucleons and isotopes."
+                "The nuclear binding energy may only be calculated for nucleons and isotopes."
             )
 
         number_of_protons = self.atomic_number
