@@ -9,7 +9,7 @@ from plasmapy.diagnostics.path_integrated_diagnostic import (
     LineIntegrateScalarQuantities,
     PathIntegratedDiagnostic,
 )
-from plasmapy.plasma.grids import CartesianGrid
+from plasmapy.plasma.grids import CartesianGrid, NonUniformCartesianGrid
 
 
 @pytest.fixture
@@ -19,6 +19,18 @@ def grid():
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
     field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
     grid = CartesianGrid(xarr, yarr, zarr)
+    grid.add_quantities(rho=field)
+    return grid
+
+
+@pytest.fixture
+def nonuniform_cartesian_grid():
+    # Make this grid intentionally narrow in Z so the line-integral has
+    # lots of particles per xy bin
+    grid = NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=(300, 300, 10))
+    xarr, yarr, zarr = grid.grids
+    radius = np.sqrt(xarr ** 2 + yarr ** 2)
+    field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
     grid.add_quantities(rho=field)
     return grid
 
@@ -41,13 +53,17 @@ def test_integrate_scalar_quantities(grid):
         obj = LineIntegrateScalarQuantities(grid, source, detector, "B_x")
 
 
-def test_constant_cylinder(grid):
+@pytest.mark.parametrize("gridname", ["grid", "nonuniform_cartesian_grid"])
+def test_constant_cylinder(gridname, request):
+    # Load the grid fixture
+    grid = request.getfixturevalue(gridname)
+
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
+
     obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=True)
 
     # Test that line-integrating with collimated = False yields
-
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     hax, vax, integral = obj._line_integral(
         size=size, bins=[100, 100], collimated=True, num=100
@@ -58,14 +74,19 @@ def test_constant_cylinder(grid):
 
     line = np.mean(integral, axis=1)
 
-    theory = np.where(np.abs(hax) < 0.999, 2 * np.sqrt(np.abs(1 - hax ** 2)) * 1e-3, 0)
-
     """
+    theory = np.where(np.abs(hax) < 0.999, 2 * np.sqrt(np.abs(1 - hax ** 2)) * 1e-3, 0)
     plt.plot(hax, line)
     plt.plot(hax, theory)
     plt.show()
     """
-    assert np.allclose(line, theory, atol=2e-4)
+
+    height = np.max(line)
+    wi = np.argmax(np.where(line > 0.00025, 1, 0))
+    halfwidth = np.abs(hax[wi])
+
+    assert np.isclose(height, 0.002, atol=0.001)
+    assert np.isclose(halfwidth, 1, atol=0.1)
 
 
 def test_non_collimated(grid):
@@ -161,13 +182,10 @@ def test_interferogram_sphere(grid):
         unwrapped=False,
     )
 
-
-if __name__ == "__main__":
-
-    test_abstract_line_integrated_diagnostic()
-    test_integrate_scalar_quantities()
-    test_constant_cylinder()
-    test_non_collimated()
-    test_constant_box()
-    test_interferogram_sphere()
-    pass
+    hax, vax, phase = obj.evaluate(
+        1.14e15 * u.Hz,
+        size=size,
+        bins=bins,
+        num=100,
+        unwrapped=True,
+    )

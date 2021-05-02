@@ -24,7 +24,7 @@ class PathIntegratedDiagnostic(ABC):
 
     def __init__(
         self,
-        grid: u.m,
+        grid,
         source,
         detector,
         detector_hdir=None,
@@ -225,8 +225,8 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         # Determine where the grid begins and ends as fractions of the
         # source-to-detector vector
         source_to_det = np.linalg.norm(self.src_det)
-        source_to_grid = np.min(np.linalg.norm(self.grid_arr - self.source, axis=3))
-        grid_to_det = np.min(np.linalg.norm(self.grid_arr - self.detector, axis=3))
+        source_to_grid = np.min(np.linalg.norm(self.grid_arr - self.source, axis=-1))
+        grid_to_det = np.min(np.linalg.norm(self.grid_arr - self.detector, axis=-1))
 
         # Paramter for parameteric equation
         start = source_to_grid / source_to_det
@@ -307,7 +307,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
 
     def __init__(
         self,
-        grid: u.m,
+        grid,
         source,
         detector,
         quantities: Union[str, list, tuple],
@@ -356,7 +356,13 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         nx, ny, nz, ndim = pts.shape
         pts = np.reshape(pts, (nx * ny * nz, ndim))
 
-        integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
+        # If volume_averaged_interpolator not defined for this grid
+        # (eg. for non-uniform grids)
+        # use the nearest neighbor interpolator instead
+        try:
+            integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
+        except NotImplementedError:
+            integrand = self.grid.nearest_neighbor_interpolator(pts, *self.quantities)
 
         # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
         integrand = np.reshape(integrand, (nx, ny, nz))
