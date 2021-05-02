@@ -27,7 +27,7 @@ def grid():
 def nonuniform_cartesian_grid():
     # Make this grid intentionally narrow in Z so the line-integral has
     # lots of particles per xy bin
-    grid = NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=(300, 300, 10))
+    grid = NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=(100, 100, 10))
     xarr, yarr, zarr = grid.grids
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
     field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
