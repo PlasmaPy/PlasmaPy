@@ -281,7 +281,7 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         Returns
         -------
 
-        arr: `~astropy.units.Quantity`(nx*ny*nz) or list of same
+        arr: `~astropy.units.Quantity` (nx*ny*nz) or list of same
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
@@ -345,7 +345,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         Returns
         -------
 
-        arr: `~astropy.units.Quantity`(nx*ny*nz) or list of same
+        arr: `~astropy.units.Quantity` (nx*ny*nz) or list of same
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
