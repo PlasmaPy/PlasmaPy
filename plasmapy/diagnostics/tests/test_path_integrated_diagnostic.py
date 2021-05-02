@@ -82,11 +82,11 @@ def test_constant_cylinder(gridname, request):
     """
 
     height = np.max(line)
-    wi = np.argmax(np.where(line > 0.00025, 1, 0))
+    wi = np.argmax(np.where(line > 0.00010, 1, 0))
     halfwidth = np.abs(hax[wi])
 
-    assert np.isclose(height, 0.002, atol=0.001)
-    assert np.isclose(halfwidth, 1, atol=0.1)
+    assert np.isclose(height, 0.002, atol=0.01)
+    assert np.isclose(halfwidth, 1, atol=0.25)
 
 
 def test_non_collimated(grid):
