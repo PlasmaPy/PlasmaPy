@@ -12,14 +12,18 @@ from plasmapy.diagnostics.path_integrated_diagnostic import (
 from plasmapy.plasma.grids import CartesianGrid
 
 
-def test_abstract_line_integrated_diagnostic():
+@pytest.fixture
+def grid():
     ax = np.linspace(-2, 2, num=200) * u.mm
     xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
     field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
     grid = CartesianGrid(xarr, yarr, zarr)
     grid.add_quantities(rho=field)
+    return grid
 
+
+def test_abstract_line_integrated_diagnostic(grid):
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
@@ -28,14 +32,7 @@ def test_abstract_line_integrated_diagnostic():
         obj = LineIntegratedDiagnostic(grid, source, detector)
 
 
-def test_integrate_scalar_quantities():
-    ax = np.linspace(-2, 2, num=200) * u.mm
-    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-    radius = np.sqrt(xarr ** 2 + yarr ** 2)
-    field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
-    grid = CartesianGrid(xarr, yarr, zarr)
-    grid.add_quantities(rho=field)
-
+def test_integrate_scalar_quantities(grid):
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
@@ -44,14 +41,7 @@ def test_integrate_scalar_quantities():
         obj = LineIntegrateScalarQuantities(grid, source, detector, "B_x")
 
 
-def test_constant_cylinder():
-    ax = np.linspace(-2, 2, num=200) * u.mm
-    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-    radius = np.sqrt(xarr ** 2 + yarr ** 2)
-    field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
-    grid = CartesianGrid(xarr, yarr, zarr)
-    grid.add_quantities(rho=field)
-
+def test_constant_cylinder(grid):
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
     obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=True)
@@ -78,19 +68,11 @@ def test_constant_cylinder():
     assert np.allclose(line, theory, atol=2e-4)
 
 
-def test_non_collimated():
+def test_non_collimated(grid):
     """
     Tests line-integration with a point source by checking that the
     width of the feature scales with the magnification.
     """
-
-    ax = np.linspace(-2, 2, num=200) * u.mm
-    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-    radius = np.sqrt(xarr ** 2 + yarr ** 2)
-    field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
-    grid = CartesianGrid(xarr, yarr, zarr)
-    grid.add_quantities(rho=field)
-
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 10 * u.mm, 0 * u.mm)
     obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=False)
@@ -122,16 +104,11 @@ def test_non_collimated():
     assert np.allclose(line, theory, atol=5e-4)
 
 
-def test_constant_box():
-    ax = np.linspace(-2, 2, num=200) * u.mm
-    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-
-    t1 = np.where(np.abs(xarr) < 1 * u.mm, 1, 0)
-    t2 = np.where(np.abs(zarr) < 1 * u.mm, 1, 0)
-
+def test_constant_box(grid):
+    x, y, z = grid.grid.T
+    t1 = np.where(np.abs(x) < 1 * u.mm, 1, 0)
+    t2 = np.where(np.abs(z) < 1 * u.mm, 1, 0)
     field = np.where(t1 * t2 != 0, 1, 0) * u.kg / u.m ** 3
-
-    grid = CartesianGrid(xarr, yarr, zarr)
     grid.add_quantities(rho=field)
 
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
@@ -163,14 +140,10 @@ def test_constant_box():
     assert np.allclose(line, theory, atol=2e-4)
 
 
-def test_interferogram_sphere():
-    ax = np.linspace(-2, 2, num=200) * u.mm
-    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
-    r = np.sqrt(xarr ** 2 + yarr ** 2 + zarr ** 2)
-
+def test_interferogram_sphere(grid):
+    x, y, z = grid.grid.T
+    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     n_e = np.where(r < 1 * u.mm, 1, 0) * 3e19 / u.cm ** 3
-
-    grid = CartesianGrid(xarr, yarr, zarr)
     grid.add_quantities(n_e=n_e)
 
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
