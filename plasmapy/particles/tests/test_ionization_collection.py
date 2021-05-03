@@ -914,3 +914,8 @@ def test_iteration_with_nested_iterator():
             assert isinstance(ionization_state2, IonizationState)
             i += 1
     assert i == 4
+
+
+@pytest.mark.xfail()
+def test_hydrogen_deuterium():
+    instance = IonizationStateCollection(["H", "D"])

@@ -145,12 +145,7 @@ class Test_IonizationState:
         """
         Test that each IonizationState test case can be instantiated.
         """
-        try:
-            self.instances[test_name] = IonizationState(**test_cases[test_name])
-        except Exception:
-            pytest.fail(
-                f"Unable to create IonizationState instance for test case {test_name}."
-            )
+        self.instances[test_name] = IonizationState(**test_cases[test_name])
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_integer_charges(self, test_name):
@@ -208,28 +203,21 @@ class Test_IonizationState:
             self.instances["Li ground state"] != self.instances["Li"]
         ), "Different IonizationState instances are equal."
 
-    def test_equality_exception(self):
+    def test_equality_no_more_exception(self):
         """
         Test that comparisons of `IonizationState` instances for
-        different elements fail.
+        different elements does not fail.
         """
-        with pytest.raises(ParticleError):
-            self.instances["Li"] == self.instances["H"]
+        assert not (self.instances["Li"] == self.instances["H"])
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_iteration(self, test_name: str):
         """Test that `IonizationState` instances iterate impeccably."""
-        try:
-            states = [state for state in self.instances[test_name]]
-        except Exception:
-            pytest.fail(f"Unable to perform iteration for {test_name}.")
+        states = [state for state in self.instances[test_name]]
 
-        try:
-            integer_charges = [state.integer_charge for state in states]
-            ionic_fractions = np.array([state.ionic_fraction for state in states])
-            ionic_symbols = [state.ionic_symbol for state in states]
-        except Exception:
-            pytest.fail(f"An attribute may be misnamed or missing ({test_name}).")
+        integer_charges = [state.integer_charge for state in states]
+        ionic_fractions = np.array([state.ionic_fraction for state in states])
+        ionic_symbols = [state.ionic_symbol for state in states]
 
         try:
             base_symbol = isotope_symbol(ionic_symbols[0])
@@ -281,13 +269,6 @@ class Test_IonizationState:
             )
             errmsg = " ".join(errors)
             pytest.fail(errmsg)
-
-    def test_slicing_error(self):
-        """
-        Test that an IonizationState instance cannot be sliced.
-        """
-        with pytest.raises(TypeError):
-            self.instances["Li"][1:3]
 
     @pytest.mark.parametrize("index", [-1, 4, "Li"])
     def test_indexing_error(self, index):
@@ -613,6 +594,23 @@ def test_IonizationState_methods(instance):
     assert str(instance) == "<IonizationState instance for He-4>"
 
 
+def test_IonizationState_ion_temperatures(instance):
+    for ionic_level in instance:
+        assert instance.T_e == ionic_level.T_i
+
+
+@pytest.mark.xfail(
+    reason="IonizationState currently does not store IonicLevels, but generates them on the fly!"
+)
+def test_IonizationState_ion_temperature_persistence(instance):
+    instance[0].T_i += 1 * u.K
+    assert instance[0].T_i - instance.T_e == (1 * u.K)
+
+
+def test_slicing(instance):
+    instance[1:]
+
+
 def test_nans():
     """
     Test that when no ionic fractions or temperature are inputted,
@@ -724,3 +722,14 @@ def test_iteration_with_nested_iterator():
         for fraction2 in hydrogen:
             i += 1
     assert i == 4
+
+
+@pytest.mark.xfail
+def test_electrons_can_be_put_into_ionization_state():
+    electrons = hydrogen = IonizationState("e-", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+
+
+def test_ionization_state_is_another():
+    hydrogen = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    deuterium = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    assert hydrogen is not deuterium

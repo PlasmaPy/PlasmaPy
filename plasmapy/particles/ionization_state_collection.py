@@ -180,6 +180,9 @@ class IonizationStateCollection:
                 "Unable to create IonizationStateCollection object."
             ) from exc
 
+    def __len__(self) -> int:
+        return len(self._base_particles)
+
     def __str__(self) -> str:
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
