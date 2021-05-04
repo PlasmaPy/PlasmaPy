@@ -15,8 +15,8 @@ from typing import List, Optional, Union
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     ChargeError,
-    InvalidParticleError,
     ParticleError,
+    InvalidParticleError,
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
