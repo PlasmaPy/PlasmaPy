@@ -617,21 +617,17 @@ class IonizationState:
 
     @T_i.setter
     @validate_quantities(
-        value=dict(equivalencies=u.temperature_energy(), none_shall_pass=True)
+        value=dict(
+            equivalencies=u.temperature_energy(),
+            none_shall_pass=True,
+            can_be_negative=False,
+        )
     )
     def T_i(self, value: u.K):
         """Set the ion temperature."""
         if value is None:
             self._T_i = np.repeat(self._T_e, self._number_particles)
             return
-
-        try:
-            value = value.to(u.K, equivalencies=u.temperature_energy())
-        except (AttributeError, u.UnitsError, u.UnitConversionError):
-            raise ParticleError("Invalid temperature.") from None
-        else:
-            if (value < 0 * u.K).any():
-                raise ParticleError("T_i cannot be negative.")
 
         if value.size == 1:
             self._T_i = np.repeat(value, self._number_particles)
