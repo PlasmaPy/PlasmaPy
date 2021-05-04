@@ -22,6 +22,9 @@ def test_Chandrasekhar_with_hypothesis(x):
     result = Chandrasekhar_G(x)
     assert abs(result) < 0.21399915915288345  # maximum bound found via scipy optimize
     assert np.isfinite(result)
+    
+    symmetric_result = Chandrasekhar_g(-x)   # antisymmetric function
+    assert result == -symmetric_result
 
 
 def test_Chandrasekhar_regression(num_regression):
