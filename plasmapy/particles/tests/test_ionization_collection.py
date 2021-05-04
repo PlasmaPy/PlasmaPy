@@ -904,6 +904,11 @@ def test_number_density_assignment():
     instance["He"] = number_densities
 
 
+def test_len():
+    ionization_states = IonizationStateCollection(["H", "He"])
+    assert len(ionization_states) == 2
+
+
 def test_iteration_with_nested_iterator():
     ionization_states = IonizationStateCollection(["H", "He"])
 
