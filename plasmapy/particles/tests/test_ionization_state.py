@@ -724,11 +724,6 @@ def test_iteration_with_nested_iterator():
     assert i == 4
 
 
-@pytest.mark.xfail
-def test_electrons_can_be_put_into_ionization_state():
-    electrons = hydrogen = IonizationState("e-", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-
-
 def test_ionization_state_is_another():
     hydrogen = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
     deuterium = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
