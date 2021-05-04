@@ -5,6 +5,8 @@ import os
 import pickle
 import pytest
 
+from astropy.tests.helper import assert_quantity_allclose
+
 from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
@@ -619,6 +621,12 @@ def test_IonizationState_ion_temperature_persistence(instance):
 )
 def test_set_T_i(instance, T_i):
     instance.T_i = T_i
+
+
+def test_default_T_i_is_T_e(instance):
+    T_i = instance.T_i
+    assert_quantity_allclose(T_i, instance.T_e)
+    assert len(T_i) == 3
 
 
 @pytest.mark.parametrize(
