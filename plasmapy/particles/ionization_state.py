@@ -606,14 +606,17 @@ class IonizationState:
         self._T_e = value
 
     @property
+    @validate_quantities(
+        validations_on_return=dict(
+            equivalencies=u.temperature_energy(),
+        )
+    )
     def T_i(self) -> u.K:
         """
         The ion temperature. If the ion temperature has not been provided,
         then this attribute will provide the electron temperature.
         """
-        if self._T_i is None:
-            return self.T_e
-        return self._T_i.to(u.K, equivalencies=u.temperature_energy())
+        return self._T_i
 
     @T_i.setter
     @validate_quantities(
