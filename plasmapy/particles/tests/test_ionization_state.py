@@ -607,8 +607,48 @@ def test_IonizationState_ion_temperature_persistence(instance):
     assert instance[0].T_i - instance.T_e == (1 * u.K)
 
 
+@pytest.mark.parametrize(
+    "T_i",
+    [
+        10 * u.eV,
+        1000 * u.K,
+        None,
+        u.Quantity([1, 1, 10], u.eV),
+        u.Quantity([1000, 1000, 10000], u.K),
+    ],
+)
+def test_set_T_i(instance, T_i):
+    instance.T_i = T_i
+
+
+@pytest.mark.parametrize(
+    ["T_i", "expectation"],
+    [
+        (10 * u.m, pytest.raises(u.UnitTypeError)),
+        (
+            u.Quantity([1, 1], u.eV),
+            pytest.raises(
+                ParticleError,
+                match="common temperature for all ions, or a set of 3 of them",
+            ),
+        ),
+        (
+            u.Quantity([1] * 5, u.eV),
+            pytest.raises(ParticleError, match="five is right out"),
+        ),
+    ],
+)
+def test_set_T_i_with_errors(instance, T_i, expectation):
+    with expectation:
+        instance.T_i = T_i
+
+
 def test_slicing(instance):
     instance[1:]
+
+
+def test_len(instance):
+    assert len(instance) == 3
 
 
 def test_nans():
