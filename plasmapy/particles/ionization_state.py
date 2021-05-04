@@ -170,10 +170,7 @@ class IonicLevel:
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
     def T_i(self, T: u.K):
-        if T is None:
-            self._T_i = np.nan * u.K
-        else:
-            self._T_i = T
+        self._T_i = np.nan * u.K if T is None else T
 
 
 class IonizationState:
@@ -610,7 +607,10 @@ class IonizationState:
 
     @property
     def T_i(self) -> u.K:
-        """Return the electron temperature."""
+        """
+        The ion temperature. If the ion temperature has not been provided,
+        then this attribute will provide the electron temperature.
+        """
         if self._T_i is None:
             return self.T_e
         return self._T_i.to(u.K, equivalencies=u.temperature_energy())
@@ -620,7 +620,7 @@ class IonizationState:
         value=dict(equivalencies=u.temperature_energy(), none_shall_pass=True)
     )
     def T_i(self, value: u.K):
-        """Set the electron temperature."""
+        """Set the ion temperature."""
         if value is None:
             self._T_i = np.repeat(self._T_e, self._number_particles)
             return
