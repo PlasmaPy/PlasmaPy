@@ -20,7 +20,7 @@ from plasmapy.formulary.mathematics import Chandrasekhar_G
 @example(x=3.761264e-20)
 def test_Chandrasekhar_with_hypothesis(x):
     result = Chandrasekhar_G(x)
-    assert abs(result) < 0.21399915915288345  # maximum bound found via scipy optimize
+    assert abs(result) <= 0.21399915915288345  # maximum bound found via scipy optimize
     assert np.isfinite(result)
     
     symmetric_result = Chandrasekhar_G(-x)   # antisymmetric function
