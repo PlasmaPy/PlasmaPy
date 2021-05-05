@@ -2,9 +2,12 @@
 
 __all__ = ["Fermi_integral", "Chandrasekhar_G", "rot_a_to_b"]
 
+import numba
+import numba_scipy
 import numbers
 import numpy as np
 
+from numba import float64, vectorize
 from scipy import special
 from typing import Union
 
@@ -91,6 +94,11 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
+@vectorize(
+    [
+        float64(float64),
+    ]
+)
 def Chandrasekhar_G(x: float):
     r"""
     Calculate the Chandrasekhar G function used in transport theory.
@@ -131,7 +139,7 @@ def Chandrasekhar_G(x: float):
     >>> Chandrasekhar_G(1)
     0.21379664776456
     >>> Chandrasekhar_G(1e-6)
-    3.7608262858090935e-07
+    3.7602148950099945e-07
     >>> Chandrasekhar_G(1e6)
     5e-13
     >>> Chandrasekhar_G(-1)
@@ -144,9 +152,13 @@ def Chandrasekhar_G(x: float):
 
     """
 
+    if 100 * abs(x) < np.finfo(np.float64).eps:
+        return 2 * x / 3 / np.sqrt(np.pi)
+    elif abs(x) > np.finfo(np.float64).max:
+        return 1 / (2 * x ** 2)
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
-    return (erf - x * erf_derivative) / (2 * x ** 2)
+    return 0.5 * (erf / x ** 2 - erf_derivative / x)
 
 
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
