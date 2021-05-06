@@ -1,7 +1,7 @@
 """
 Miscellaneous decorators for various package uses.
 """
-__all__ = ["add_lite", "mark_as_lite_func", "modify_docstring", "preserve_signature"]
+__all__ = ["add_lite", "mark_has_lite_func", "modify_docstring", "preserve_signature"]
 
 import functools
 import inspect
@@ -201,7 +201,7 @@ LiteFuncTupleEntry = namedtuple("LiteFuncTupleEntry", ("name", "origin"))
 _litefunc_registry = {}
 
 
-def mark_as_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
+def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
     """
     Decorator to bind lightweight "lite" versions of formulary functions to the full
     formulary function.

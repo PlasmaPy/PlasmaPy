@@ -60,7 +60,7 @@ from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
     add_lite,
-    mark_litefunc,
+    mark_has_lite_func,
     angular_freq_to_hz,
     check_relativistic,
     preserve_signature,
@@ -575,7 +575,7 @@ def thermal_speed_lite(T, mass, coeff):
 #     attrs=[("coefficients", "thermal_speed_coefficients")],
 #     scope=globals(),
 # )
-@mark_litefunc(
+@mark_has_lite_func(
     thermal_speed_lite,
     attrs=[("coefficients", "thermal_speed_coefficients")],
     scope=globals(),
