@@ -2,7 +2,6 @@
 A module to contain various decorators used to build readable and useful code.
 """
 __all__ = [
-    "add_lite",
     "angular_freq_to_hz",
     "check_relativistic",
     "check_values",
@@ -27,7 +26,6 @@ from plasmapy.utils.decorators.checks import (
 )
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 from plasmapy.utils.decorators.helpers import (
-    add_lite,
     mark_has_lite_func,
     modify_docstring,
     preserve_signature,
