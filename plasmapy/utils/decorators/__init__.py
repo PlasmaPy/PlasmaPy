@@ -7,7 +7,7 @@ __all__ = [
     "check_relativistic",
     "check_values",
     "check_units",
-    "mark_litefunc",
+    "mark_as_lite_func",
     "modify_docstring",
     "preserve_signature",
     "validate_quantities",
@@ -28,7 +28,7 @@ from plasmapy.utils.decorators.checks import (
 from plasmapy.utils.decorators.converter import angular_freq_to_hz
 from plasmapy.utils.decorators.helpers import (
     add_lite,
-    mark_litefunc,
+    mark_as_lite_func,
     modify_docstring,
     preserve_signature,
 )
