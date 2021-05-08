@@ -5,6 +5,7 @@ Tests for proton radiography functions
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+import os
 import pytest
 import warnings
 
@@ -489,6 +490,9 @@ def test_synthetic_radiograph():
 
 
 def test_saving_output(tmp_path):
+
+    path = os.path.join(tmp_path, "temp.npz")
+
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
@@ -500,12 +504,12 @@ def test_saving_output(tmp_path):
     res1 = sim.output
 
     # Save result
-    sim.save_result(tmp_path)
+    sim.save_result(path)
 
     # Load result
-    res2 = dict(np.load(tmp_path, "r", allow_pickle=True))
+    res2 = dict(np.load(path, "r", allow_pickle=True))
 
-    assert res1["x"] == res2["x"]
+    assert np.all(res1["x"] == res2["x"])
 
 
 def test_gaussian_sphere_analytical_comparison():
