@@ -463,13 +463,12 @@ def test_synthetic_radiograph():
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
-    
-    
+
     # Verify exception raised if we try to make a synthetic radiograph before
     # running
     with pytest.raises(ValueError):
         h, v, i = prad.synthetic_radiograph(sim)
-    
+
     sim.run(field_weighting="nearest neighbor")
 
     size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
@@ -480,13 +479,13 @@ def test_synthetic_radiograph():
 
     # Test optical density
     h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
-    
+
     # Test running from dictionary input
     h, v, i = prad.synthetic_radiograph(sim.output)
-    
+
     # Verify exception if something other than sim or dict is given as argument
     with pytest.raises(ValueError):
-        h, v, i = prad.synthetic_radiograph(np.ones(5))  
+        h, v, i = prad.synthetic_radiograph(np.ones(5))
 
 
 def test_gaussian_sphere_analytical_comparison():
