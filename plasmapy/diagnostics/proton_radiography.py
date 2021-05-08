@@ -161,6 +161,16 @@ class SyntheticProtonRadiograph:
         # Magnification
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
         self._log(f"Magnification: {self.mag}")
+        
+        # Calculate the size of the grid imaged onto the detector
+        # (used for auto-choosing the size keyword when making histograms)
+        self.grid_size_on_detector = self.mag * np.max(
+                [
+                    np.max(np.abs(self.grid.pts0.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts1.to(u.m).value)),
+                    np.max(np.abs(self.grid.pts2.to(u.m).value)),
+                ]
+            )
 
         # Check that source-detector vector actually passes through the grid
         if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
@@ -1062,6 +1072,10 @@ class SyntheticProtonRadiograph:
 
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
+        
+        # Store the particle positions in the detector plane in a dictionary
+        # that can be easily exported or saved
+        self._store_result()
 
         # Log a summary of the run
 
@@ -1079,7 +1093,39 @@ class SyntheticProtonRadiograph:
             "detector plane: "
             f"{self.fract_deflected*100}%"
         )
+        
+        return self.output
+    
+    
+    def _store_result(self):
+        # Determine locations of points in the detector plane using unit
+        # vectors
+        xloc = np.dot(self.x - self.detector, self.det_hdir)
+        yloc = np.dot(self.x - self.detector, self.det_vdir)
+        
+        x0loc = np.dot(self.x0 - self.detector, self.det_hdir)
+        y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
+        
+        # Store output values in a dictionary
+        self.output = {}
+        self.output['source'] = self.source
+        self.output['detector'] = self.detector
+        self.output['mag'] = self.mag
+        self.output['nparticles'] = self.nparticles
+        self.output['grid_size_on_detector'] =  self.grid_size_on_detector
+        self.output['max_deflection'] = self.max_deflection
 
+        self.output['x'] = xloc
+        self.output['y'] = yloc
+        self.output['x0'] = x0loc
+        self.output['y0'] = y0loc
+        
+    def save_result(self, path):
+        """
+        Save the output dictionary into a `numpy.npz` file for later plotting
+        """
+        np.savez(path, **self.output)
+        
     @property
     def max_deflection(self):
         """
@@ -1107,118 +1153,133 @@ class SyntheticProtonRadiograph:
 
         return max_deflection * u.rad
 
-    # *************************************************************************
-    # Synthetic diagnostic methods (creating output)
-    # *************************************************************************
 
-    def synthetic_radiograph(
-        self, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
+# *************************************************************************
+# Synthetic diagnostic methods (creating output)
+# *************************************************************************
+    
+def synthetic_radiograph(
+    obj, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
     ):
-        r"""
-        Calculate a "synthetic radiograph" (particle count histogram in the
-        image plane).
+    r"""
+    Calculate a "synthetic radiograph" (particle count histogram in the
+    image plane).
 
-        Parameters
-        ----------
-        size : `~astropy.units.Quantity`, shape (2,2)
-            The size of the detector array, specified as the minimum
-            and maximum values included in both the horizontal and vertical
-            directions in the detector plane coordinates. Shape is
-            [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
+    Parameters
+    ----------
+    
+    obj: dict or SyntheticProtonRadiograph
+        Either a SyntheticProtonRadiograph object that has been run, 
+        or an output dictionary created by running SyntheticProtonRadiograph
+    
+    size : `~astropy.units.Quantity`, shape (2,2)
+        The size of the detector array, specified as the minimum
+        and maximum values included in both the horizontal and vertical
+        directions in the detector plane coordinates. Shape is
+        [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
 
-        bins : array of integers, shape (2)
-            The number of bins in each direction in the format [hbins, vbins].
-            The default is [200,200].
+    bins : array of integers, shape (2)
+        The number of bins in each direction in the format [hbins, vbins].
+        The default is [200,200].
 
-        ignore_grid: bool
-            If True, returns the intensity in the image plane in the absence
-            of simulated fields.
+    ignore_grid: bool
+        If True, returns the intensity in the image plane in the absence
+        of simulated fields.
 
-        optical_density: bool
-            If True, return the optical density rather than the intensity
+    optical_density: bool
+        If True, return the optical density rather than the intensity
 
-            .. math::
-                OD = -log_{10}(Intensity/I_0)
+        .. math::
+            OD = -log_{10}(Intensity/I_0)
 
-            where I_O is the intensity on the detector plane in the absence of
-            simulated fields. Default is False.
+        where I_O is the intensity on the detector plane in the absence of
+        simulated fields. Default is False.
 
-        Returns
-        -------
-        hax : `~astropy.units.Quantity` array shape (hbins,)
-            The horizontal axis of the synthetic radiograph in meters.
+    Returns
+    -------
+    hax : `~astropy.units.Quantity` array shape (hbins,)
+        The horizontal axis of the synthetic radiograph in meters.
 
-        vax : `~astropy.units.Quantity` array shape (vbins, )
-            The vertical axis of the synthetic radiograph in meters.
+    vax : `~astropy.units.Quantity` array shape (vbins, )
+        The vertical axis of the synthetic radiograph in meters.
 
-        intensity : ndarray, shape (hbins, vbins)
-            The number of particles counted in each bin of the histogram.
-        """
-
-        # Note that, at the end of the simulation, all particles were moved
-        # into the image plane.
-
-        # If ignore_grid is True, use the predicted positions in the absence of
-        # simulated fields
-        if ignore_grid:
-            x = self.x0
+    intensity : ndarray, shape (hbins, vbins)
+        The number of particles counted in each bin of the histogram.
+    """
+    
+    
+    if isinstance(obj, SyntheticProtonRadiograph):
+        
+        if hasattr(obj, 'output'):
+           d = obj.output 
         else:
-            x = self.x
+            raise ValueError("The SyntheticProtonRadiograph object must be run "
+                             "using the run() method before a synthetic_radiograph "
+                             "can be created.")
+        
+    # Check if dictioanry-like (dict or npz file)
+    elif isinstance(obj, dict):
+        d = obj
+    else:
+        raise ValueError("The first argument of synthetic_radiograph must be " 
+                         "either a SyntheticProtonRadiograph or an "
+                         "output dictionary from SyntheticProtonRadiograph")
 
-        # Determine locations of points in the detector plane using unit
-        # vectors
-        xloc = np.dot(x - self.detector, self.det_hdir)
-        yloc = np.dot(x - self.detector, self.det_vdir)
+    # Note that, at the end of the simulation, all particles were moved
+    # into the image plane.
 
-        if size is None:
-            # If a detector size is not given, choose lengths based on the
-            # dimensions of the grid
-            w = self.mag * np.max(
-                [
-                    np.max(np.abs(self.grid.pts0.to(u.m).value)),
-                    np.max(np.abs(self.grid.pts1.to(u.m).value)),
-                    np.max(np.abs(self.grid.pts2.to(u.m).value)),
-                ]
-            )
+    # If ignore_grid is True, use the predicted positions in the absence of
+    # simulated fields
+    if ignore_grid:
+        xloc = d['x0']
+        yloc = d['y0']
+    else:
+        xloc = d['x']
+        yloc = d['y']
 
-            # The factor of 5 here is somewhat arbitrary: we just want a
-            # region a few times bigger than the image of the grid on the
-            # detector, since particles could be deflected out
-            size = 5 * np.array([[-w, w], [-w, w]]) * u.m
+    if size is None:
+        # If a detector size is not given, choose lengths based on the
+        # dimensions of the grid
+        w = d['grid_size_on_detector']
 
-        # Generate the histogram
-        intensity, h, v = np.histogram2d(
-            xloc, yloc, range=size.to(u.m).value, bins=bins
+        # The factor of 5 here is somewhat arbitrary: we just want a
+        # region a few times bigger than the image of the grid on the
+        # detector, since particles could be deflected out
+        size = 5 * np.array([[-w, w], [-w, w]]) * u.m
+
+    # Generate the histogram
+    intensity, h, v = np.histogram2d(
+        xloc, yloc, range=size.to(u.m).value, bins=bins
+    )
+
+    # h, v are the bin edges: compute the centers to produce arrays
+    # of the right length (then trim off the extra point)
+    h = ((h + np.roll(h, -1)) / 2)[0:-1]
+    v = ((v + np.roll(v, -1)) / 2)[0:-1]
+
+    # Throw a warning if < 50% of the particles are included on the
+    # histogram
+    percentage = np.sum(intensity) / d['nparticles']
+    if percentage < 0.5:
+        warnings.warn(
+            f"Only {percentage:.2%} of the particles are shown "
+            "on this synthetic radiograph. Consider increasing "
+            "the size to include more.",
+            RuntimeWarning,
         )
 
-        # h, v are the bin edges: compute the centers to produce arrays
-        # of the right length (then trim off the extra point)
-        h = ((h + np.roll(h, -1)) / 2)[0:-1]
-        v = ((v + np.roll(v, -1)) / 2)[0:-1]
+    if optical_density:
+        # Generate the null radiograph
+        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
 
-        # Throw a warning if < 50% of the particles are included on the
-        # histogram
-        percentage = np.sum(intensity) / self.nparticles
-        if percentage < 0.5:
-            warnings.warn(
-                f"Only {percentage:.2%} of the particles are shown "
-                "on this synthetic radiograph. Consider increasing "
-                "the size to include more.",
-                RuntimeWarning,
-            )
+        # Calculate I0 as the mean of the non-zero values in the null
+        # histogram. Zeros are just outside of the illuminate area.
+        I0 = np.mean(I0[I0 != 0])
 
-        if optical_density:
-            # Generate the null radiograph
-            x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, ignore_grid=True)
+        # Overwrite any zeros in intensity to avoid log10(0)
+        intensity[intensity == 0] = 1
 
-            # Calculate I0 as the mean of the non-zero values in the null
-            # histogram. Zeros are just outside of the illuminate area.
-            I0 = np.mean(I0[I0 != 0])
+        # Calculate the optical_density
+        intensity = -np.log10(intensity / I0)
 
-            # Overwrite any zeros in intensity to avoid log10(0)
-            intensity[intensity == 0] = 1
-
-            # Calculate the optical_density
-            intensity = -np.log10(intensity / I0)
-
-        return h * u.m, v * u.m, intensity
+    return h * u.m, v * u.m, intensity
