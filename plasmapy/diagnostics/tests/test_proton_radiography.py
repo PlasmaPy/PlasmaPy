@@ -486,6 +486,31 @@ def test_synthetic_radiograph():
     # Verify exception if something other than sim or dict is given as argument
     with pytest.raises(ValueError):
         h, v, i = prad.synthetic_radiograph(np.ones(5))
+        
+        
+def test_saving_output(tmp_path):
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.run(field_weighting="nearest neighbor")
+    
+    res1 = sim.output
+    
+    # Save result
+    sim.save_result(tmp_path)
+
+    # Load result
+    res2 = dict(np.load(tmp_path, 'r', allow_pickle=True))    
+    
+    assert res1['x'] == res2['x']
+    
+    
+        
+        
+        
 
 
 def test_gaussian_sphere_analytical_comparison():
