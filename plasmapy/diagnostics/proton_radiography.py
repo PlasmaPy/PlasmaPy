@@ -7,6 +7,7 @@ original fields (under some set of assumptions).
 
 __all__ = [
     "SyntheticProtonRadiograph",
+    "synthetic_radiograph",
 ]
 
 import astropy.constants as const
