@@ -289,8 +289,8 @@ def particle_input(
                     expected_params = len(annotated_argnames)
                     if expected_params > 1:
                         raise TypeError(
-                            f"Put in [Particle] as the annotation to "
-                            f"accept arbitrary number of Particle arguments."
+                            "Put in [Particle] as the annotation to "
+                            "accept arbitrary number of Particle arguments."
                         )
                 else:
                     annotated_argnames = (annotations[argname],)

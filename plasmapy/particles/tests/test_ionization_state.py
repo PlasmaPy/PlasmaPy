@@ -5,6 +5,8 @@ import os
 import pickle
 import pytest
 
+from astropy.tests.helper import assert_quantity_allclose
+
 from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
@@ -607,8 +609,54 @@ def test_IonizationState_ion_temperature_persistence(instance):
     assert instance[0].T_i - instance.T_e == (1 * u.K)
 
 
+@pytest.mark.parametrize(
+    "T_i",
+    [
+        10 * u.eV,
+        1000 * u.K,
+        None,
+        u.Quantity([1, 1, 10], u.eV),
+        u.Quantity([1000, 1000, 10000], u.K),
+    ],
+)
+def test_set_T_i(instance, T_i):
+    instance.T_i = T_i
+
+
+def test_default_T_i_is_T_e(instance):
+    T_i = instance.T_i
+    assert_quantity_allclose(T_i, instance.T_e)
+    assert len(T_i) == 3
+
+
+@pytest.mark.parametrize(
+    ["T_i", "expectation"],
+    [
+        (10 * u.m, pytest.raises(u.UnitTypeError)),
+        (
+            u.Quantity([1, 1], u.eV),
+            pytest.raises(
+                ParticleError,
+                match="common temperature for all ions, or a set of 3 of them",
+            ),
+        ),
+        (
+            u.Quantity([1] * 5, u.eV),
+            pytest.raises(ParticleError, match="five is right out"),
+        ),
+    ],
+)
+def test_set_T_i_with_errors(instance, T_i, expectation):
+    with expectation:
+        instance.T_i = T_i
+
+
 def test_slicing(instance):
     instance[1:]
+
+
+def test_len(instance):
+    assert len(instance) == 3
 
 
 def test_nans():
@@ -623,8 +671,8 @@ def test_nans():
         len(instance.ionic_fractions) == nstates
     ), f"Incorrect number of ionization states for {element}"
     assert np.all([np.isnan(instance.ionic_fractions)]), (
-        f"The ionic fractions for IonizationState are not defaulting "
-        f"to numpy.nan when not set by user."
+        "The ionic fractions for IonizationState are not defaulting "
+        "to numpy.nan when not set by user."
     )
 
 

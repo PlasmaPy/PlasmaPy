@@ -38,7 +38,7 @@ def check_abundances_consistency(
         abundance_from_log_abundances = 10 ** log_abundances[element]
         assert np.isclose(
             abundance_from_abundances, abundance_from_log_abundances
-        ), f"Mismatch between abundances and log_abundances."
+        ), "Mismatch between abundances and log_abundances."
 
 
 def has_attribute(attribute, tests_dict):
@@ -141,10 +141,10 @@ class TestIonizationStateCollection:
         """Test that __eq__ is not extremely broken."""
         a = IonizationStateCollection(**tests[test_name])
         b = IonizationStateCollection(**tests[test_name])
-        assert a == a, f"IonizationStateCollection instance does not equal itself."
+        assert a == a, "IonizationStateCollection instance does not equal itself."
         assert (
             a == b
-        ), f"IonizationStateCollection instance does not equal identical instance."
+        ), "IonizationStateCollection instance does not equal identical instance."
 
     @pytest.mark.parametrize(
         "test_name",
@@ -902,6 +902,11 @@ def test_number_density_assignment():
     instance = IonizationStateCollection(["H", "He"])
     number_densities = [2, 3, 5] * u.m ** -3
     instance["He"] = number_densities
+
+
+def test_len():
+    ionization_states = IonizationStateCollection(["H", "He"])
+    assert len(ionization_states) == 2
 
 
 def test_iteration_with_nested_iterator():

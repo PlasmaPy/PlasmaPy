@@ -325,8 +325,8 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    f"Argument x needs to be an array_like object of integers "
-                    f"or floats."
+                    "Argument x needs to be an array_like object of integers "
+                    "or floats."
                 )
 
             x = x.squeeze()
@@ -481,11 +481,11 @@ class Linear(AbstractFitFunction):
     _param_names = ("m", "b")
 
     def __str__(self):
-        return f"f(x) = m x + b"
+        return "f(x) = m x + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"m x + b"
+        return r"m x + b"
 
     def func(self, x, m, b):
         """
@@ -596,7 +596,7 @@ class Linear(AbstractFitFunction):
 
         if m == 0.0:
             warn(
-                f"Slope of Linear fit function is zero so no finite root exists. ",
+                "Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
             )
             return _RootResults(np.nan, np.nan)
@@ -670,11 +670,11 @@ class Exponential(AbstractFitFunction):
     _param_names = ("a", "alpha")
 
     def __str__(self):
-        return f"f(x) = a exp(alpha x)"
+        return "f(x) = a exp(alpha x)"
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x)"
+        return r"a \, \exp(\alpha x)"
 
     def func(self, x, a, alpha):
         """
@@ -949,11 +949,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
         super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        return f"f(x) = a exp(alpha x) + b"
+        return "f(x) = a exp(alpha x) + b"
 
     @property
     def latex_str(self) -> str:
-        return fr"a \, \exp(\alpha x) + b"
+        return r"a \, \exp(\alpha x) + b"
 
     @AbstractFitFunction.params.setter
     def params(self, val) -> None:

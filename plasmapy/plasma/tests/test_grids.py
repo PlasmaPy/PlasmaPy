@@ -133,7 +133,7 @@ def test_CartesianGrid():
     unit = grid.units
 
     # Grid should be uniform
-    assert grid.is_uniform == True
+    assert grid.is_uniform
 
     # Test initializing with a provided grid and a quantity
     q = np.zeros(grid.shape)
@@ -162,13 +162,13 @@ def test_grid_methods():
     # Test vector_intersects
     # This vector passes through the grid
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm
-    assert grid.vector_intersects(p1, p2) == True
+    assert grid.vector_intersects(p1, p2)
     # Test going backwards yields the same result
-    assert grid.vector_intersects(p2, p1) == True
+    assert grid.vector_intersects(p2, p1)
     # This one doesn't
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm
-    assert grid.vector_intersects(p1, p2) == False
-    assert grid.vector_intersects(p2, p1) == False
+    assert not grid.vector_intersects(p1, p2)
+    assert not grid.vector_intersects(p2, p1)
 
     # ************ NON-UNIFORM CARTESIAN ****************************
 
@@ -314,7 +314,7 @@ def test_NonUniformCartesianGrid():
     print(grid)
 
     # Grid should be non-uniform
-    assert grid.is_uniform == False
+    assert not grid.is_uniform
 
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3

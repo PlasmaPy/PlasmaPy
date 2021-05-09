@@ -141,7 +141,7 @@ class IonicLevel:
                 raise TypeError(f"Invalid ionic fraction: {ionfrac}")
             else:
                 if out_of_range:
-                    raise ValueError(f"The ionic fraction must be between 0 and 1.")
+                    raise ValueError("The ionic fraction must be between 0 and 1.")
                 else:
                     self._ionic_fraction = ionfrac
 
@@ -170,10 +170,7 @@ class IonicLevel:
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
     def T_i(self, T: u.K):
-        if T is None:
-            self._T_i = np.nan * u.K
-        else:
-            self._T_i = T
+        self._T_i = np.nan * u.K if T is None else T
 
 
 class IonizationState:
@@ -609,6 +606,11 @@ class IonizationState:
         self._T_e = value
 
     @property
+    @validate_quantities(
+        validations_on_return=dict(
+            equivalencies=u.temperature_energy(),
+        )
+    )
     def T_i(self) -> u.K:
         """Return the electron temperature."""
         if self._T_i is None:
@@ -632,6 +634,47 @@ class IonizationState:
         else:
             if (value < 0 * u.K).any():
                 raise ParticleError("T_i cannot be negative.")
+
+        if value.size == 1:
+            self._T_i = np.repeat(value, self._number_particles)
+        elif value.size == self._number_particles:
+            self._T_i = value
+        else:
+            error_str = (
+                "T_i must be set with either one common temperature"
+                f" for all ions, or a set of {self._number_particles} of them. "
+            )
+
+            if value.size == 5 and self._number_particles != 5:
+                error_str += " For {self.base_particle}, five is right out."
+            raise ParticleError(error_str)
+
+    @property
+    @validate_quantities(
+        validations_on_return=dict(
+            equivalencies=u.temperature_energy(),
+        )
+    )
+    def T_i(self) -> u.K:
+        """
+        The ion temperature. If the ion temperature has not been provided,
+        then this attribute will provide the electron temperature.
+        """
+        return self._T_i
+
+    @T_i.setter
+    @validate_quantities(
+        value=dict(
+            equivalencies=u.temperature_energy(),
+            none_shall_pass=True,
+            can_be_negative=False,
+        )
+    )
+    def T_i(self, value: u.K):
+        """Set the ion temperature."""
+        if value is None:
+            self._T_i = np.repeat(self._T_e, self._number_particles)
+            return
 
         if value.size == 1:
             self._T_i = np.repeat(value, self._number_particles)

@@ -6,9 +6,9 @@ import astropy.units as u
 import collections
 import numpy as np
 
-from typing import *
+from typing import Callable, Iterable, List, Union
 
-from plasmapy.particles.exceptions import *
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
