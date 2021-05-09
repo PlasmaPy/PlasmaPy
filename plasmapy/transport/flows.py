@@ -82,7 +82,7 @@ class FlowCalculator:
             charges = a.integer_charges * constants.e.si
             n_charge_states = len(a.integer_charges)
             xi = ξ(a)
-            T_i = u.Quantity([ai.T_i for ai in a])  # TODO should be an attribute of a
+            T_i = a.T_i
             n_i = a.number_densities
             density_gradient = self.density_gradient.get(
                 sym, np.zeros(n_charge_states) * (u.m ** -4)
@@ -112,7 +112,9 @@ class FlowCalculator:
             ).T
             CHARGE_STATE_AXIS = 0
             BETA_AXIS = 2
-            S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(axis=BETA_AXIS)
+            S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
+                axis=BETA_AXIS
+            )  # Equation 29
             S_pt_list.append(S_pt)
             r_pt = np.linalg.solve(Aai, S_pt)
             # TODO r_E itd
@@ -138,7 +140,7 @@ class FlowCalculator:
                 self.thermodynamic_forces[sym] = thermodynamic_forces[i]
                 self.μ[sym] = μ[i]
 
-        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")  # TODO verify
+        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")
         for i, a in enumerate(all_species):
             rarray = rbar_flows_list[i]
             for j, b in enumerate(self.all_species):
@@ -163,7 +165,6 @@ class FlowCalculator:
             self_consistent_u = np.sum(Λ[np.newaxis, :, np.newaxis] * r_flows, axis=2)
             u_velocity = self_consistent_u + r_sources
 
-            # TODO contributing states, maybe?
             for i, ai in enumerate(a):
                 if np.isfinite(u_velocity[i]).all():
                     self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
@@ -197,10 +198,7 @@ class FlowCalculator:
         outputs = {}
         for _, ai in self.contributing_states(a):
             sym = ai.ionic_symbol
-            S = self.thermodynamic_forces[
-                sym
-            ]  # TODO should be S_sources, really, here and in the other loop
-            output = S * M
+            output = self.thermodynamic_forces[sym] * M
             for b in self.all_species:
                 N = self.N_script(a, b)
                 for xj, bj in self.contributing_states(b):
@@ -228,7 +226,6 @@ class FlowCalculator:
                 u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
                 μ = self.μ[sym]
                 Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
-                # TODO verify unit; does not look right
                 q_BP = -(
                     fs.Fhat
                     * constants.k_B
@@ -282,7 +279,6 @@ class FlowCalculator:
                 results[sym] = Fluxes(
                     Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit)
                 )
-        # TODO both are overlarge by Unit("kg / (m4 s)")
         return results
 
     @cached_property
