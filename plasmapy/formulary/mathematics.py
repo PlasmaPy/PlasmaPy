@@ -94,6 +94,9 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
+_UPPER_BOUND = np.sqrt(np.finfo(np.float64).max)
+
+
 @vectorize(
     [
         float64(float64),
@@ -152,9 +155,11 @@ def Chandrasekhar_G(x: float):
 
     """
 
-    if 100 * abs(x) < np.finfo(np.float64).eps:
+    if abs(x) < 100 * np.finfo(np.float64).eps:
         return 2 * x / 3 / np.sqrt(np.pi)
-    elif abs(x) > np.finfo(np.float64).max:
+    elif abs(x) >= _UPPER_BOUND:
+        return 0
+    elif abs(x) >= np.finfo(np.float32).max:
         return 1 / (2 * x ** 2)
     erf = special.erf(x)
     erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)

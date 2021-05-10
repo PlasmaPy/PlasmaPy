@@ -16,10 +16,12 @@ from plasmapy.formulary.mathematics import Chandrasekhar_G
 @example(x=np.finfo(np.float64).eps)
 @example(x=np.finfo(np.float64).max)
 @example(x=np.finfo(np.float64).min)
+@example(x=3.4694469519536216e-17)
 @example(x=0)
 @example(x=3.761264e-20)
 def test_Chandrasekhar_with_hypothesis(x):
-    result = Chandrasekhar_G(x)
+    with np.errstate():
+        result = Chandrasekhar_G(x)
     assert abs(result) < 0.21399915915288345  # maximum bound found via scipy optimize
     assert np.isfinite(result)
 
