@@ -165,7 +165,7 @@ class SyntheticProtonRadiograph:
 
         # Calculate the size of the grid imaged onto the detector
         # (used for auto-choosing the size keyword when making histograms)
-        self.grid_size_on_detector = self.mag * np.max(
+        self.grid_scale_length = np.max(
             [
                 np.max(np.abs(self.grid.pts0.to(u.m).value)),
                 np.max(np.abs(self.grid.pts1.to(u.m).value)),
@@ -1112,7 +1112,7 @@ class SyntheticProtonRadiograph:
         self.output["detector"] = self.detector
         self.output["mag"] = self.mag
         self.output["nparticles"] = self.nparticles
-        self.output["grid_size_on_detector"] = self.grid_size_on_detector
+        self.output["grid_scale_length"] = self.grid_scale_length
         self.output["max_deflection"] = self.max_deflection
 
         self.output["x"] = xloc
@@ -1252,7 +1252,7 @@ def synthetic_radiograph(
     if size is None:
         # If a detector size is not given, choose lengths based on the
         # dimensions of the grid
-        w = d["grid_size_on_detector"]
+        w = d["grid_scale_length"]*d['mag']
 
         # The factor of 5 here is somewhat arbitrary: we just want a
         # region a few times bigger than the image of the grid on the
