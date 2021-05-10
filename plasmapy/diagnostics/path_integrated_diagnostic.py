@@ -18,10 +18,6 @@ from typing import Union
 
 
 class PathIntegratedDiagnostic(ABC):
-    """
-    An abstract path integrated diagnostic
-    """
-
     def __init__(
         self,
         grid,
@@ -30,6 +26,52 @@ class PathIntegratedDiagnostic(ABC):
         detector_hdir=None,
         verbose=True,
     ):
+        """
+        An abstract class representing a path-integrated diagnostic described
+        by a source, grid (object), and detector plane. This abstract class
+        contains methods common to this problem geometry.
+
+        Parameters
+        ----------
+
+        grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
+            A Grid object containing scalar quantities.
+
+        source : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the location
+            of the particle source. This vector will be interpreted as
+            being in either cartesian, cylindrical, or spherical coordinates
+            based on its units. Valid geometries are:
+
+            * Cartesian (x,y,z) : (meters, meters, meters)
+            * cylindrical (r, theta, z) : (meters, radians, meters)
+            * spherical (r, theta, phi) : (meters, radians, radians)
+
+            In spherical coordinates theta is the polar angle.
+
+        detector : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the center
+            of the detector plane. The vector from the source point to this
+            point defines the normal vector of the detector plane. This vector
+            can also be specified in cartesian, cylindrical, or spherical
+            coordinates (see the `source` keyword).
+
+        detector_hdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction on the detector plane. By default, the horizontal axis in the
+            detector plane is defined to be perpendicular to both the
+            source-to-detector vector and the z-axis (unless the source-to-detector axis
+            is parallel to the z axis, in which case the horizontal axis is the x-axis).
+
+            The detector vertical axis is then defined
+            to be orthogonal to both the source-to-detector vector and the
+            detector horizontal axis.
+
+        verbose : bool, optional
+            If true, updates on the status of the program will be printed
+            into the standard output while running.
+
+        """
 
         # self.grid is the grid object
         self.grid = grid
@@ -58,6 +100,16 @@ class PathIntegratedDiagnostic(ABC):
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
         self._log(f"Magnification: {self.mag}")
 
+        # Calculate the scale of the grid
+        # (used for auto-choosing the size keyword when making histogram images)
+        self.grid_scale_length = np.max(
+            [
+                np.max(np.abs(self.grid.pts0.to(u.m).value)),
+                np.max(np.abs(self.grid.pts1.to(u.m).value)),
+                np.max(np.abs(self.grid.pts2.to(u.m).value)),
+            ]
+        )
+
         # Check that source-detector vector actually passes through the grid
         if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
             raise ValueError(
@@ -85,7 +137,7 @@ class PathIntegratedDiagnostic(ABC):
 
     def _coerce_to_cartesian_si(self, pos):
         """
-        Takes a tuple of `astropy.unit.Quantity` values representing a position
+        Takes a tuple of `~astropy.unit.Quantity` values representing a position
         in space in either Cartesian, cylindrical, or spherical coordinates, and
         returns a numpy array representing the same point in Cartesian
         coordinates and units of meters.
@@ -146,10 +198,10 @@ class PathIntegratedDiagnostic(ABC):
 class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
     def _line_integral(
         self,
-        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
-        bins=[50, 50],
+        num,
+        size=None,
+        bins=[200, 200],
         collimated=True,
-        num=100,
     ):
         """
         Calculates the line-integral of the integrand function through the
@@ -169,20 +221,21 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
 
         Parameters
         ----------
-        size : `~astropy.units.Quantity` array of shape [2,2]
-            The bounds of the detector region. The default is [[-1,1],[-1,1]] cm.
+        num : int
+            Number of integration points along the line (within the grid region).
 
-        bins : integer ndarray array of shape [2,2]
+        size : `~astropy.units.Quantity` array of shape [2,2], optional
+            The bounds of the detector region. By default the size will be
+            chosen to be slightly larger than the image of the grid on the
+            detector plane.
+
+        bins : list of two ints, [N,], optional
             Number of bins in each direction of the detector region. The
-            default is [50,50].
+            default is [200, 200].
 
         collimated : Boolean, optional
             If True, the source will be assumed to be collimated. If False,
             a point source will be used. The default is True (collimated).
-
-        num : int, optional
-            Number of integration points along the line (within the grid region).
-            The default is 100.
 
         Returns
         -------
@@ -192,10 +245,19 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         yax : `~astropy.units.Quantity` array of shape (Nv,)
             The vertical axis of the detector plane
 
-        integral : `~astropy.units.Quantity` array or list of arrays of shape (Nh, Ny)
+        integral : `~astropy.units.Quantity` array
            The line-integrated values in the detector plane.
 
+        *integral : `~astropy.units.Quantity` array
+            If multiple quantities are specified, multiple integral arrays
+            will be returned.
+
         """
+
+        if size is None:
+            w = self.mag * self.grid_scale_length
+            # Factor of 1.5 provides border on image
+            size = 1.5 * np.array([[-w, w], [-w, w]]) * u.m
 
         # Create arrays of detector grid points
         xax = np.linspace(
@@ -291,20 +353,16 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
     @abstractmethod
     def evaluate(self):
         """
-        Runs the line-integration routine
+        Runs the line-integration routine, then performs some calculation
+        on top of the result to return a synthetic diagnostic image.
 
         This method is over-written by subclasses to reflect actual
-        diagnostic physics, and can pull plasma parameter information from
-        the parameters dict provided.
+        diagnostic physics.
         """
         ...
 
 
 class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
-    """
-    Line-integrates a scalar quantity
-    """
-
     def __init__(
         self,
         grid,
@@ -313,6 +371,52 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         quantities: Union[str, list, tuple],
         verbose=True,
     ):
+
+        """
+        A subclass of LineIntegratedDiagnostic that integrates one or more
+        scalar quantities on the grid provided.
+
+        Parameters
+        ----------
+
+        grid : `~plasmapy.plasma.grids.AbstractGrid` or subclass thereof
+            A Grid object containing scalar quantities.
+
+        source : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the location
+            of the particle source. This vector will be interpreted as
+            being in either cartesian, cylindrical, or spherical coordinates
+            based on its units. Valid geometries are:
+
+            * Cartesian (x,y,z) : (meters, meters, meters)
+            * cylindrical (r, theta, z) : (meters, radians, meters)
+            * spherical (r, theta, phi) : (meters, radians, radians)
+
+            In spherical coordinates theta is the polar angle.
+
+        detector : `~astropy.units.Quantity`, shape (3)
+            A vector pointing from the origin of the grid to the center
+            of the detector plane. The vector from the source point to this
+            point defines the normal vector of the detector plane. This vector
+            can also be specified in cartesian, cylindrical, or spherical
+            coordinates (see the `source` keyword).
+
+        detector_hdir : `numpy.ndarray`, shape (3), optional
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction on the detector plane. By default, the horizontal axis in the
+            detector plane is defined to be perpendicular to both the
+            source-to-detector vector and the z-axis (unless the source-to-detector axis
+            is parallel to the z axis, in which case the horizontal axis is the x-axis).
+
+            The detector vertical axis is then defined
+            to be orthogonal to both the source-to-detector vector and the
+            detector horizontal axis.
+
+        verbose : bool, optional
+            If true, updates on the status of the program will be printed
+            into the standard output while running.
+
+        """
 
         # Validate the quantities input
         if isinstance(quantities, str):
@@ -371,12 +475,61 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
 
     def evaluate(
         self,
-        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
-        bins=[50, 50],
+        num,
+        size=None,
+        bins=[200, 200],
         collimated=True,
-        num=100,
     ):
-        return self._line_integral(size=size, bins=bins, collimated=collimated, num=num)
+
+        """
+        Evaluates the line integral through the
+        provided grid. This is accomplished through the following steps:
+
+        1) Create an array of points in the detector plane using the detector
+        location and the size and bins keywords.
+
+        2) For each cell of detector grid, create an array of points of
+        separation ds from there to the source point (or, when collimated=True,
+        the source plane).
+
+        3) Evaluate the integrand function at each point.
+
+        4) Integrate along the line-integrated dimension to obtain the
+        line-integrated quantity in the detector plane.
+
+        Parameters
+        ----------
+        num : int
+            Number of integration points along the line (within the grid region).
+
+        size : `~astropy.units.Quantity` array of shape [2,2], optional
+            The bounds of the detector region. By default the size will be
+            chosen to be slightly larger than the image of the grid on the
+            detector plane.
+
+        bins : list of two ints, [N,], optional
+            Number of bins in each direction of the detector region. The
+            default is [200, 200].
+
+        collimated : Boolean, optional
+            If True, the source will be assumed to be collimated. If False,
+            a point source will be used. The default is True (collimated).
+
+        Returns
+        -------
+        xax : `~astropy.units.Quantity` array (Nh,)
+            The horizontal axis of the detector plane
+
+        yax : `~astropy.units.Quantity` array of shape (Nv,)
+            The vertical axis of the detector plane
+
+        integral : `~astropy.units.Quantity` array or list of arrays of shape (Nh, Ny)
+           The line-integrated values in the detector plane.
+
+        """
+        return self._line_integral(
+            num, size=size, bins=bins, collimated=collimated, num=num
+        )
 
 
 class Interferometer(LineIntegrateScalarQuantities):
@@ -386,12 +539,65 @@ class Interferometer(LineIntegrateScalarQuantities):
     def evaluate(
         self,
         probe_freq: u.Hz,
-        size=np.array([[-1, 1], [-1, 1]]) * u.cm,
-        bins=[50, 50],
+        num,
+        size=None,
+        bins=[200, 200],
         collimated=True,
-        num=100,
         unwrapped=True,
     ):
+        """
+        Creates an interferogram by calculating the line integral through
+        the electron number density :math:`n_e` provided on the grid. The phase shift
+        is
+
+        .. math:: \Delta \phi = -\frac{\omega_{probe}}{2 c n_c} \int n_e dl
+
+        where :math:`\omega_{probe}` is the probe beam frequency, :math:`c`
+        is the speed of light, :math:`\int n_e dl` is the line-integrated
+        electron density, and :math:`n_c` is the critical density
+
+        .. math:: n_c = \frac{\epsilon_0 m_e}{e^2} \omega_{probe}^2
+
+        Parameters
+        ----------
+        probe_freq : `~astropy.units.Quantity`
+            Angular frequency of the probe beam, in units convertable to Hz.
+
+        num : int
+            Number of integration points along the line (within the grid region).
+
+        size : `~astropy.units.Quantity` array of shape [2,2], optional
+            The bounds of the detector region. By default the size will be
+            chosen to be slightly larger than the image of the grid on the
+            detector plane.
+
+        bins : list of two ints, [N,], optional
+            Number of bins in each direction of the detector region. The
+            default is [200, 200].
+
+        collimated : bool, optional
+            If True, the source will be assumed to be collimated. If False,
+            a point source will be used. The default is True (collimated).
+
+        unwrapped : bool, optional
+            If True, the total phase shift will be returned (without
+            :math:`\pi/2` discontinuities). If False, the phase shift with
+            :math:`\pi/2` discontinuities (the value measured experimentally)
+            will be returned. the default is True (unwrapped).
+
+
+        Returns
+        -------
+        hax : `~astropy.units.Quantity` array (Nh,)
+            The horizontal axis of the detector plane
+
+        vax : `~astropy.units.Quantity` array of shape (Nv,)
+            The vertical axis of the detector plane
+
+        phase_shift : `~astropy.units.Quantity` array or list of arrays of shape (Nh, Ny)
+           The phase shift measured in the detector plane.
+
+        """
 
         # TODO: implement an actual critical density function for PlasmaPy
         # Critical density in cm^-3

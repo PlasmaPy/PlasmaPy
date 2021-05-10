@@ -66,7 +66,7 @@ def test_constant_cylinder(gridname, request):
     # Test that line-integrating with collimated = False yields
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     hax, vax, integral = obj._line_integral(
-        size=size, bins=[100, 100], collimated=True, num=100
+        100, size=size, bins=[100, 100], collimated=True
     )
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
@@ -102,7 +102,7 @@ def test_non_collimated(grid):
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.mm
     hax, vax, integral = obj._line_integral(
-        size=size, bins=[100, 100], collimated=False, num=100
+        100, size=size, bins=[100, 100], collimated=False
     )
 
     # Scaling hax/mag gives hax in the object plane
@@ -140,7 +140,7 @@ def test_constant_box(grid):
 
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
     hax, vax, integral = obj._line_integral(
-        size=size, bins=[100, 100], collimated=True, num=100
+        100, size=size, bins=[100, 100], collimated=True
     )
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
@@ -176,16 +176,16 @@ def test_interferogram_sphere(grid):
 
     hax, vax, phase = obj.evaluate(
         1.14e15 * u.Hz,
+        100,
         size=size,
         bins=bins,
-        num=100,
         unwrapped=False,
     )
 
     hax, vax, phase = obj.evaluate(
         1.14e15 * u.Hz,
+        100,
         size=size,
         bins=bins,
-        num=100,
         unwrapped=True,
     )
