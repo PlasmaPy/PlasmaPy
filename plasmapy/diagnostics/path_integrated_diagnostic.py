@@ -528,7 +528,10 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
 
         """
         return self._line_integral(
-            num, size=size, bins=bins, collimated=collimated, num=num
+            num,
+            size=size,
+            bins=bins,
+            collimated=collimated,
         )
 
 

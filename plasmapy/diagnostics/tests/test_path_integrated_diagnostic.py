@@ -48,9 +48,12 @@ def test_integrate_scalar_quantities(grid):
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
-    # Test that you can't calculate a line integral on the abstract base class
+    # Erorr should be raised if quantity requested is not defined on the grid
     with pytest.raises(ValueError):
         obj = LineIntegrateScalarQuantities(grid, source, detector, "B_x")
+
+    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho")
+    h, v, i = obj.evaluate(25)
 
 
 @pytest.mark.parametrize("gridname", ["grid", "nonuniform_cartesian_grid"])
@@ -64,10 +67,7 @@ def test_constant_cylinder(gridname, request):
     obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=True)
 
     # Test that line-integrating with collimated = False yields
-    size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    hax, vax, integral = obj._line_integral(
-        100, size=size, bins=[100, 100], collimated=True
-    )
+    hax, vax, integral = obj._line_integral(100, bins=[100, 100], collimated=True)
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
     integral = integral.to(u.kg / u.m ** 2).value
