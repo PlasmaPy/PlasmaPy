@@ -19,8 +19,7 @@ except ImportError:
     from cached_property import cached_property
 particle_flux_unit = u.m ** -2 / u.s
 heat_flux_unit = u.J * particle_flux_unit
-from dataclasses import dataclass
-
+from plasmapy.particles.exceptions import InvalidElementError
 from plasmapy.utils.decorators import validate_quantities
 
 # if "profile" not in globals():
@@ -32,14 +31,6 @@ from plasmapy.utils.decorators import validate_quantities
 # class Fluxes:
 #     particle_flux: u.Quantity
 #     heat_flux: u.Quantity
-
-#     @validate_quantities
-#     def __init__(self, particle_flux: particle_flux_unit,
-#                        heat_flux: heat_flux_unit,
-#                  ):
-#         self.particle_flux = particle_flux
-#         self.heat_flux = heat_flux
-
 Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 
@@ -47,6 +38,41 @@ class FlowCalculator:
     """
     This does, in fact, do most things for my thesis.
     """
+
+    @classmethod
+    def from_xarray_surface(cls, dataset, flux_surface):
+        from plasmapy.particles import IonizationStateCollection, Particle
+
+        arrays = {}
+        data_vars = ["n", "gradn", "T", "gradT"]
+        for particle, a in dataset.groupby("particle"):
+            particle = Particle(particle)
+            try:
+                if particle.element not in arrays:
+                    n_states = particle.atomic_number + 1
+                    zeros = np.zeros(n_states)
+                    arrays[particle.element] = {
+                        dv: u.Quantity(zeros, dataset.attrs[f"{dv} unit"])
+                        for dv in data_vars
+                    }
+                for dv in data_vars:
+                    arrays[particle.element][dv][particle.integer_charge] = (
+                        a[dv].item() * dataset.attrs[f"{dv} unit"]
+                    )
+            except InvalidElementError as e:
+                print(f"{particle} is not currently handled: {e}")
+
+        all_species = IonizationStateCollection(
+            {particle: arrays[particle]["n"] for particle in arrays},
+            T_e=dataset.T.sel(particle="e-").item() * dataset.attrs["T unit"],
+        )
+        # TODO add temperature!
+        density_gradient = {particle: arrays[particle]["gradn"] for particle in arrays}
+        temperature_gradient = {
+            particle: arrays[particle]["gradT"] for particle in arrays
+        }
+
+        return cls(all_species, flux_surface, density_gradient, temperature_gradient)
 
     # profile
     def __init__(
@@ -60,7 +86,14 @@ class FlowCalculator:
         self.all_species = all_species
         self.flux_surface = fs = flux_surface
         self.density_gradient = density_gradient
-        self.temperature_gradient = temperature_gradient
+        self.temperature_gradient = {
+            particle: (u.m * temperature_gradient[particle]).to(
+                u.K, equivalencies=u.temperature_energy()
+            )
+            / u.m
+            for particle in temperature_gradient
+        }
+
         self.M_script_matrices = {}
         self.N_script_matrices = {}
 
@@ -177,6 +210,11 @@ class FlowCalculator:
                 continue
             yield xi[i], ai
 
+    def all_contributing_states_symbols(self):
+        for a in self.all_species:
+            for _, ai in self.contributing_states(a):
+                yield ai.ionic_symbol
+
     # profile
     def M_script(self, a):
         sym = a.base_particle
@@ -292,6 +330,65 @@ class FlowCalculator:
                 Γ_CL, q_CL = self._fluxes_CL[sym]
                 results[sym] = Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
         return results
+
+    def to_dataset(self):
+        import xarray
+
+        return xarray.Dataset(
+            {
+                "total_particle_flux": (
+                    "particle",
+                    u.Quantity([flux.particle_flux for flux in self.fluxes.values()]),
+                ),
+                "total_heat_flux": (
+                    "particle",
+                    u.Quantity([flux.heat_flux for flux in self.fluxes.values()]),
+                ),
+                "BP_particle_flux": (
+                    "particle",
+                    u.Quantity(
+                        [flux.particle_flux for flux in self._fluxes_BP.values()]
+                    ),
+                ),
+                "BP_heat_flux": (
+                    "particle",
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_BP.values()]),
+                ),
+                "CL_particle_flux": (
+                    "particle",
+                    u.Quantity(
+                        [flux.particle_flux for flux in self._fluxes_CL.values()]
+                    ),
+                ),
+                "CL_heat_flux": (
+                    "particle",
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_CL.values()]),
+                ),
+                "PS_particle_flux": (
+                    "particle",
+                    u.Quantity(
+                        [flux.particle_flux for flux in self._fluxes_PS.values()]
+                    ),
+                ),
+                "PS_heat_flux": (
+                    "particle",
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_PS.values()]),
+                ),
+                "diffusion_coefficient": (
+                    "particle",
+                    u.Quantity(list(self.diffusion_coefficient.values())),
+                ),
+                "thermal_conductivity": (
+                    "particle",
+                    u.Quantity(list(self.thermal_conductivity.values())),
+                ),
+                "bootstrap_current": self.bootstrap_current,
+            },
+            {
+                "particle": list(self.all_contributing_states_symbols()),
+                "psi": self.flux_surface.psi,
+            },
+        )
 
     @cached_property
     def diffusion_coefficient(self):
