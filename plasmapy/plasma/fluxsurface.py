@@ -31,18 +31,21 @@ class FluxSurface:
     GradRho2: np.ndarray
 
     def __post_init__(self):
+        self.centroid = np.array([np.mean(self.R), np.mean(self.Z)])
         self.Bvectors = np.stack((self.Brvals, self.Bzvals))
         self.dZ = np.gradient(self.Z)
         self.dR = np.gradient(self.R)
         self.dL = np.sqrt(self.dZ ** 2 + self.dR ** 2)
+        self.lp = np.cumsum(self.dL)
+        self.Lp = np.sum(self.dL)
+
+        self.toroid_area = self.centroid[0] * 2 * np.pi * self.Lp
 
         n = np.stack((self.dZ, -self.dR))
         # TODO ej, n według shainga to \vec{B} / |B|. Ale dalej nigdzie go nie używam
         self.n = n / np.linalg.norm(n, axis=0)
         self.nr, self.nz = self.n
 
-        self.lp = np.cumsum(self.dL)
-        self.Lp = np.sum(self.dL)
         self.Bp = np.linalg.norm(self.Bvectors, axis=0)
         self.B2 = self.Bp ** 2 + self.Bphivals ** 2
         self.Bmag = np.sqrt(self.B2)
