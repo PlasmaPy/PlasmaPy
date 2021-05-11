@@ -33,7 +33,7 @@ but element names and many aliases are not.
 An `int` may be used as the first positional argument to
 `~plasmapy.particles.Particle` to represent an atomic number.  For isotopes
 and ions, the mass number may be represented with the ``mass_numb``
-keyword and the integer charge may be represented with the ``Z``
+keyword and the charge number may be represented with the ``Z``
 keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
@@ -59,7 +59,727 @@ the corresponding `~plasmapy.particles.Particle` object.
 
 >>> proton.atomic_number
 1
->>> electron.integer_charge
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
+-1
+>>> triton.mass_number
+3
+
+Some of these properties are returned as a
+
+>>> proton.atomic_number
+1
+>>> electron.charge_number
 -1
 >>> triton.mass_number
 3

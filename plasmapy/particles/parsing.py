@@ -151,7 +151,7 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     if mass_numb is not None and Z is not None:
         errmsg += "and "
     if Z is not None:
-        errmsg += f"integer charge Z = {repr(Z)} "
+        errmsg += f"charge number Z = {repr(Z)} "
     errmsg += "does not correspond to a valid particle."
     return errmsg
 
@@ -174,7 +174,7 @@ def _parse_and_check_atomic_input(
         The mass number of an isotope.
 
     Z : `int`, optional
-        The integer charge of an ion.
+        The charge number of an ion.
 
     Returns
     -------
@@ -185,7 +185,7 @@ def _parse_and_check_atomic_input(
         the atomic symbol, ``'isotope'`` corresponds to the isotope
         symbol, ``'ion'`` corresponds to the ion symbol, ``'mass_numb'``
         corresponds to the mass number, and ``'Z'`` corresponds to the
-        integer charge.  The corresponding items will be given by `None`
+        charge number.  The corresponding items will be given by `None`
         if the necessary information is not provided.
 
     Raises
@@ -355,7 +355,7 @@ def _parse_and_check_atomic_input(
         """
         Receive a `str` representing an atomic symbol and/or a
         string representing an isotope, and an `int` representing the
-        integer charge.  Return a `str` representing the ion symbol,
+        charge number.  Return a `str` representing the ion symbol,
         or `None` if no charge information is available.
         """
 
@@ -425,7 +425,7 @@ def _parse_and_check_atomic_input(
     if Z is not None and Z_from_arg is not None:
         if Z != Z_from_arg:
             raise InvalidParticleError(
-                "The integer charge extracted from the particle string "
+                "The charge number extracted from the particle string "
                 f"'{argument}' is inconsistent with the keyword Z = {Z}."
             )
         else:
@@ -441,12 +441,12 @@ def _parse_and_check_atomic_input(
     if isinstance(Z, Integral):
         if Z > _elements[element]["atomic number"]:
             raise InvalidParticleError(
-                f"The integer charge Z = {Z} cannot exceed the atomic number "
+                f"The charge number Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is {_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(
-                f"Particle '{argument}' has an integer charge "
+                f"Particle '{argument}' has an charge number "
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
                 ParticleWarning,
@@ -468,7 +468,7 @@ def _parse_and_check_atomic_input(
         "isotope": isotope,
         "ion": ion,
         "mass number": mass_numb,
-        "integer charge": Z,
+        "charge number": Z,
     }
 
     return nomenclature_dict

@@ -650,7 +650,7 @@ class TestIonizationStateCollectionAttributes:
         integer_charge = indices[1]
 
         assert isinstance(result, IonicLevel)
-        assert result.integer_charge == integer_charge
+        assert result.charge_number == integer_charge
 
         expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
 

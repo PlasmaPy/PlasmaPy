@@ -52,7 +52,7 @@ class IonicLevel:
     >>> alpha_fraction = IonicLevel("alpha", ionic_fraction=0.31)
     >>> alpha_fraction.ionic_symbol
     'He-4 2+'
-    >>> alpha_fraction.integer_charge
+    >>> alpha_fraction.charge_number
     2
     >>> alpha_fraction.ionic_fraction
     0.31
@@ -109,9 +109,9 @@ class IonicLevel:
         return self.ion.ionic_symbol
 
     @property
-    def integer_charge(self) -> Integral:
-        """The integer charge of the ion."""
-        return self.ion.integer_charge
+    def charge_number(self) -> Integral:
+        """The charge number of the ion."""
+        return self.ion.charge_number
 
     @property
     def ionic_fraction(self) -> Real:
@@ -173,7 +173,7 @@ class IonizationState:
 
     ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
         The ionization fractions of an element, where the indices
-        correspond to integer charge.  This argument should contain the
+        correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
         absolute tolerance of ``tol`` if dimensionless.  Alternatively,
         this argument may be a `~astropy.units.Quantity` that represents
@@ -252,7 +252,7 @@ class IonizationState:
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
             if ionic_fractions is None:
                 ionic_fractions = np.zeros(particle.atomic_number + 1)
-                ionic_fractions[particle.integer_charge] = 1.0
+                ionic_fractions[particle.charge_number] = 1.0
                 particle = Particle(
                     particle.isotope if particle.isotope else particle.element
                 )
@@ -317,7 +317,7 @@ class IonizationState:
                     value = Particle(value)
                 except InvalidParticleError as exc:
                     raise InvalidParticleError(
-                        f"{value} is not a valid integer charge or particle."
+                        f"{value} is not a valid charge number or particle."
                     ) from exc
 
             same_element = value.element == self.element
@@ -325,7 +325,7 @@ class IonizationState:
             has_charge_info = value.is_category(any_of=["charged", "uncharged"])
 
             if same_element and same_isotope and has_charge_info:
-                Z = value.integer_charge
+                Z = value.charge_number
                 result = IonicLevel(
                     ion=Particle(self.base_particle, Z=Z),
                     ionic_fraction=self.ionic_fractions[Z],
@@ -335,7 +335,7 @@ class IonizationState:
                 if not same_element or not same_isotope:
                     raise ParticleError("Inconsistent element or isotope.")
                 elif not has_charge_info:
-                    raise ChargeError("No integer charge provided.")
+                    raise ChargeError("No charge number provided.")
         return result
 
     def __setitem__(self, key, value):
@@ -428,7 +428,7 @@ class IonizationState:
     def ionic_fractions(self) -> np.ndarray:
         """
         Return the ionic fractions, where the index corresponds to
-        the integer charge.
+        the charge number.
 
         Examples
         --------
@@ -514,7 +514,7 @@ class IonizationState:
         Return the electron number density assuming a single species
         plasma.
         """
-        return np.sum(self._n_elem * self.ionic_fractions * self.integer_charges)
+        return np.sum(self._n_elem * self.ionic_fractions * self.charge_numbers)
 
     @property
     @validate_quantities
@@ -643,13 +643,13 @@ class IonizationState:
         return [particle.ionic_symbol for particle in self._particle_instances]
 
     @property
-    def integer_charges(self) -> np.ndarray:
-        """Return an array with the integer charges."""
+    def charge_numbers(self) -> np.ndarray:
+        """Return an array with the charge numbers."""
         return np.arange(0, self.atomic_number + 1, dtype=int)
 
     @property
     def Z_mean(self) -> np.float64:
-        """Return the mean integer charge"""
+        """Return the mean charge number."""
         if np.nan in self.ionic_fractions:
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
@@ -659,7 +659,7 @@ class IonizationState:
 
     @property
     def Z_rms(self) -> np.float64:
-        """Return the root mean square integer charge."""
+        """Return the root mean square for the charge number."""
         return np.sqrt(
             np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2)
         )
@@ -667,7 +667,7 @@ class IonizationState:
     @property
     def Z_most_abundant(self) -> List[Integral]:
         """
-        Return a `list` of the integer charges with the highest ionic
+        Return a `list` of the charge numbers with the highest ionic
         fractions.
 
         Examples
@@ -722,7 +722,7 @@ class IonizationState:
             if state.ionic_fraction >= minimum_ionic_fraction:
                 state_info = ""
                 symbol = state.ionic_symbol
-                if state.integer_charge < 10:
+                if state.charge_number < 10:
                     symbol = symbol[:-2] + " " + symbol[-2:]
                 fraction = "{:.3f}".format(state.ionic_fraction)
 

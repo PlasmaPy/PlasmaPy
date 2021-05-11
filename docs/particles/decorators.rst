@@ -49,8 +49,8 @@ may be used when the decorated function is called.
 .. code-block:: python
 
   @particle_input
-  def integer_charge(particle: Particle, Z: int = None, mass_numb: int = None) -> int:
-      return particle.integer_charge
+  def charge_number(particle: Particle, Z: int = None, mass_numb: int = None) -> int:
+      return particle.charge_number
 
 The above example includes optional type hint annotations for ``Z`` and
 ``mass_numb`` and the returned value.  The
@@ -87,7 +87,7 @@ associated with an element, isotope, or ion; respectively.
 
   @particle_input
   def number_of_bound_electrons(ion: Particle):
-      return ion.atomic_number - ion.integer_charge
+      return ion.atomic_number - ion.charge_number
 
 The keywords ``require``, ``any_of``, and ``exclude`` to the
 decorator allow further customization of the particle categories
@@ -99,12 +99,12 @@ allowed as inputs.  These keywords are used as in
   @particle_input(require='charged')
   def sign_of_charge(charged_particle: Particle):
       """Require a charged particle."""
-      return '+' if charged_particle.integer_charge > 0 else '-'
+      return '+' if charged_particle.charge_number > 0 else '-'
 
   @particle_input(any_of=['charged', 'uncharged'])
-  def integer_charge(particle: Particle) -> int:
+  def charge_number(particle: Particle) -> int:
       """Accept only particles with charge information."""
-      return particle.integer_charge
+      return particle.charge_number
 
   @particle_input(exclude={'antineutrino', 'neutrino'})
   def particle_mass(particle: Particle):

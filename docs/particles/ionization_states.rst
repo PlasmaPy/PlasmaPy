@@ -20,26 +20,40 @@ example.
 
 The ionization state for helium may be accessed using the
 ``ionic_fractions`` attribute.  These ionic fractions correspond to the
-``integer_charges`` attribute.
+``charge_numbers`` attribute.
 
 >>> ionization_state.ionic_fractions
 array([0.05, 0.94, 0.01])
->>> ionization_state.integer_charges
+>>> ionization_state.charge_numbers
 array([0, 1, 2])
 
-The ``Z_mean`` attribute returns the mean integer charge averaged
+The
+
+>>> ionization_state.ionic_fractions
+array([0.05, 0.94, 0.01])
+>>> ionization_state.charge_numbers
+array([0, 1, 2])
+
+The
+
+>>> ionization_state.ionic_fractions
+array([0.05, 0.94, 0.01])
+>>> ionization_state.charge_numbers
+array([0, 1, 2])
+
+The ``Z_mean`` attribute returns the mean charge number averaged
 over all particles in that element.
 
 >>> ionization_state.Z_mean
 0.96
 
-The ``Z_rms`` attribute returns the root mean square integer charge.
+The ``Z_rms`` attribute returns the root mean square charge number.
 
 >>> ionization_state.Z_rms
 0.9899...
 
 The ``Z_most_abundant`` attribute returns a `list` of the most abundant
-ion(s).  The `list` may contain more than one integer charge in case of
+ion(s).  The `list` may contain more than one charge number in case of
 a tie.
 
 >>> ionization_state.Z_most_abundant

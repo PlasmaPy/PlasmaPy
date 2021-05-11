@@ -247,7 +247,7 @@ class Particle(AbstractPhysicalParticle):
         The mass number of an isotope or nuclide.
 
     Z : `int`, optional
-        The integer charge of the particle.
+        The charge number of the particle.
 
     Raises
     ------
@@ -271,7 +271,7 @@ class Particle(AbstractPhysicalParticle):
 
     `~plasmapy.particles.exceptions.ChargeError`
         For when either the `~plasmapy.particles.Particle.charge` or
-        `~plasmapy.particles.Particle.integer_charge` attributes is
+        `~plasmapy.particles.Particle.charge_number` attributes is
         being accessed but the charge information for the particle is
         not available.
 
@@ -341,7 +341,7 @@ class Particle(AbstractPhysicalParticle):
 
     Many of the attributes provide physical properties of a particle.
 
-    >>> electron.integer_charge
+    >>> electron.charge_number
     -1
     >>> proton.spin
     0.5
@@ -516,7 +516,7 @@ class Particle(AbstractPhysicalParticle):
                 categories.add("element")
             if isotope:
                 categories.add("isotope")
-            if self.element and self._attributes["integer charge"]:
+            if self.element and self._attributes["charge number"]:
                 categories.add("ion")
 
             # Element properties
@@ -560,14 +560,14 @@ class Particle(AbstractPhysicalParticle):
 
             categories.add(Element["category"])
 
-        if attributes["integer charge"] == 1:
+        if attributes["charge number"] == 1:
             attributes["charge"] = const.e.si
-        elif attributes["integer charge"] is not None:
-            attributes["charge"] = attributes["integer charge"] * const.e.si
+        elif attributes["charge number"] is not None:
+            attributes["charge"] = attributes["charge number"] * const.e.si
 
-        if attributes["integer charge"]:
+        if attributes["charge number"]:
             categories.add("charged")
-        elif attributes["integer charge"] == 0:
+        elif attributes["charge number"] == 0:
             categories.add("uncharged")
 
         if attributes["half-life"] is not None:
@@ -853,7 +853,7 @@ class Particle(AbstractPhysicalParticle):
         Roman numeral notation).
 
         If the particle is not an ion or neutral atom, return `None`.
-        The roman numeral represents one plus the integer charge. Raise
+        The roman numeral represents one plus the charge number. Raise
         `ChargeError` if no charge has been specified and
         `~plasmapy.utils.roman.roman.OutOfRangeError` if the charge is
         negative.
@@ -869,14 +869,14 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self._attributes["element"]:
             return None
-        if self._attributes["integer charge"] is None:
+        if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        if self._attributes["integer charge"] < 0:
+        if self._attributes["charge number"] < 0:
             raise roman.OutOfRangeError("Cannot convert negative charges to Roman.")
 
         symbol = self.isotope if self.isotope else self.element
-        integer_charge = self._attributes["integer charge"]
-        roman_charge = roman.to_roman(integer_charge + 1)
+        charge_number = self._attributes["charge number"]
+        roman_charge = roman.to_roman(charge_number + 1)
         return f"{symbol} {roman_charge}"
 
     @property
@@ -937,7 +937,7 @@ class Particle(AbstractPhysicalParticle):
         return isotope_name
 
     @property
-    def integer_charge(self) -> Integral:
+    def charge_number(self) -> Integral:
         """
         The particle's electrical charge in units of the elementary charge.
 
@@ -949,12 +949,12 @@ class Particle(AbstractPhysicalParticle):
         Examples
         --------
         >>> muon = Particle('mu-')
-        >>> muon.integer_charge
+        >>> muon.charge_number
         -1
         """
-        if self._attributes["integer charge"] is None:
+        if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        return self._attributes["integer charge"]
+        return self._attributes["charge number"]
 
     @property
     def charge(self) -> u.C:
@@ -974,7 +974,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if self._attributes["charge"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        if self._attributes["integer charge"] == 1:
+        if self._attributes["charge number"] == 1:
             return const.e.si
 
         return self._attributes["charge"]
@@ -1023,7 +1023,7 @@ class Particle(AbstractPhysicalParticle):
 
         If the particle is an ion, then this attribute will return the
         mass of the element or isotope (as just described) minus the
-        product of the integer charge and the electron mass.
+        product of the charge number and the electron mass.
 
         For special particles, this attribute will return the standard
         value for the particle's mass.
@@ -1061,7 +1061,7 @@ class Particle(AbstractPhysicalParticle):
                     f"The mass of ion '{self.ionic_symbol}' is not available."
                 )
 
-            mass = base_mass - self.integer_charge * const.m_e
+            mass = base_mass - self.charge_number * const.m_e
 
             return mass.to(u.kg)
 
@@ -1298,7 +1298,7 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "e-":
             return 1
         elif self.ionic_symbol:
-            return self.atomic_number - self.integer_charge
+            return self.atomic_number - self.charge_number
         else:  # coverage: ignore
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
@@ -1721,7 +1721,7 @@ class Particle(AbstractPhysicalParticle):
             raise ChargeError(
                 f"Cannot ionize {self.symbol} because its charge " f"is not specified."
             )
-        if self.integer_charge == self.atomic_number:
+        if self.charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
@@ -1732,12 +1732,12 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope if self.isotope else self.element
-        new_integer_charge = self.integer_charge + n
+        new_charge_number = self.charge_number + n
 
         if inplace:
-            self.__init__(base_particle, Z=new_integer_charge)
+            self.__init__(base_particle, Z=new_charge_number)
         else:
-            return Particle(base_particle, Z=new_integer_charge)
+            return Particle(base_particle, Z=new_charge_number)
 
     def recombine(self, n: Integral = 1, inplace=False):
         """
@@ -1811,12 +1811,12 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope if self.isotope else self.element
-        new_integer_charge = self.integer_charge - n
+        new_charge_number = self.charge_number - n
 
         if inplace:
-            self.__init__(base_particle, Z=new_integer_charge)
+            self.__init__(base_particle, Z=new_charge_number)
         else:
-            return Particle(base_particle, Z=new_integer_charge)
+            return Particle(base_particle, Z=new_charge_number)
 
 
 Particle.is_category.valid_categories = _valid_categories
@@ -2279,7 +2279,7 @@ instances, are particle-like.
     isotope (e.g., ``"Fe++"`` for Fe\ :sup:`2+`\ ).
 
     Ions can also be represented using Roman numeral notation, where the Roman
-    numeral indicates the integer charge plus one (e.g., ``"H I"`` represents
+    numeral indicates the charge number plus one (e.g., ``"H I"`` represents
     H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
 
     D\ :sup:`1+` can also be represented by ``"deuteron"``, T\ :sup:`1+` can

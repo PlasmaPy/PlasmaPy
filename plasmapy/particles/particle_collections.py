@@ -231,12 +231,12 @@ class ParticleList(collections.UserList):
         self.data.insert(index, particle)
 
     @property
-    def integer_charge(self) -> np.array:
+    def charge_number(self) -> np.array:
         """
         An array of the quantized charges of the particles, as
         multiples of the elementary charge.
         """
-        return np.array(self._get_particle_attribute("integer_charge", default=np.nan))
+        return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
     def mass(self) -> u.kg:

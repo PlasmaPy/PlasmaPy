@@ -18,10 +18,10 @@ from plasmapy.utils.pytest_helpers import run_test
 from ..atomic import (
     _is_electron,
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
-    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -335,7 +335,7 @@ is_stable_table = [
     [("B",), InvalidIsotopeError],
 ]
 
-integer_charge_table = [
+charge_number_table = [
     ["H+", 1],
     ["D +1", 1],
     ["tritium 1+", 1],
@@ -417,7 +417,7 @@ tables_and_functions = [
     (standard_atomic_weight, standard_atomic_weight_table),
     (is_stable, is_stable_table),
     (particle_mass, particle_mass_table),
-    (integer_charge, integer_charge_table),
+    (charge_number, charge_number_table),
     (electric_charge, electric_charge_table),
     (half_life, half_life_table),
 ]
@@ -463,7 +463,7 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    integer_charge,
+    charge_number,
     electric_charge,
 ]
 
