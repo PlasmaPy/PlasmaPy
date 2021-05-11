@@ -131,9 +131,12 @@ class FluxSurface:
         return f_t
 
     @cached_property
+    def sqrt_jacobian(self):
+        sqrt_jacobian = self.toroid_area / 4 / np.pi**2
+        return sqrt_jacobian
+
+    @cached_property
     def BDotNablaThetaFSA(self):
         # Eq B14
-        # TODO fix this through the power of diffgeom
-        jacobian = 1  # TODO the Jacobian of the transformation from cylindrical coordinates to flux coordinates
-        BdotNablaTheta = self.psiprime / (2 * np.pi * np.sqrt(jacobian))
+        BdotNablaTheta = self.psiprime / (2 * np.pi * self.sqrt_jacobian)
         return self.flux_surface_average(BdotNablaTheta)
