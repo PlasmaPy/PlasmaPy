@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.utils.deprecation import deprecated
+from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 

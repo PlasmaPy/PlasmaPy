@@ -23,7 +23,6 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataWarning,
     ParticleError,
     ParticleWarning,
-    PlasmaPyFutureWarning,
 )
 from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
@@ -34,6 +33,7 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
