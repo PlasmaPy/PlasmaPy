@@ -48,6 +48,7 @@ from plasmapy.particles.special_particles import (
     ParticleZoo,
 )
 from plasmapy.utils import roman
+from plasmapy.utils.decorators import deprecated
 
 _classification_categories = {
     "lepton",
@@ -955,6 +956,26 @@ class Particle(AbstractPhysicalParticle):
         if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
         return self._attributes["charge number"]
+
+    @property
+    @deprecated(
+        since="0.7.0",
+        name="integer_charge",
+        message=(
+            "The integer_charge attribute of Particle has been "
+            "deprecated since version 0.7.0 and will be removed in "
+            "a future release.  Use charge_number instead."
+        ),
+    )
+    def integer_charge(self) -> Integral:
+        """
+        The particle's electrical charge in units of the elementary charge.
+
+        Deprecated since version 0.7.0.  Use
+        `~plasmapy.particles.particle_class.Particle.charge_number`
+        instead.
+        """
+        return self.charge_number
 
     @property
     def charge(self) -> u.C:

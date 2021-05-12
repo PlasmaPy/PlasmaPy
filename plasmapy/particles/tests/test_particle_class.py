@@ -23,6 +23,7 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataWarning,
     ParticleError,
     ParticleWarning,
+    PlasmaPyFutureWarning,
 )
 from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
@@ -1361,3 +1362,8 @@ def test_particle_is_category_valid_categories():
         "uncharged",
     }
     assert some_valid_categories.issubset(Particle.is_category.valid_categories)
+
+
+def test_deprecated_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert Particle("e-").integer_charge == -1
