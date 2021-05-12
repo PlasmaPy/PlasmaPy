@@ -49,6 +49,7 @@ from plasmapy.particles.special_particles import (
 )
 from plasmapy.utils import roman
 from plasmapy.utils.decorators import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _classification_categories = {
     "lepton",
@@ -966,6 +967,7 @@ class Particle(AbstractPhysicalParticle):
             "deprecated since version 0.7.0 and will be removed in "
             "a future release.  Use charge_number instead."
         ),
+        warning_type=PlasmaPyFutureWarning,
     )
     def integer_charge(self) -> Integral:
         """
