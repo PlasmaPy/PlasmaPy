@@ -72,7 +72,7 @@ class FlowCalculator:
             particle: arrays[particle]["gradT"] for particle in arrays
         }
 
-        return cls(all_species, flux_surface, density_gradient, temperature_gradient)
+        return cls(all_species, flux_surface, density_gradient, temperature_gradient, dataset_input = dataset)
 
     # profile
     def __init__(
@@ -81,7 +81,9 @@ class FlowCalculator:
         flux_surface,
         density_gradient,
         temperature_gradient,
+        *,
         mu_N=None,
+        dataset_input = None
     ):
         self.all_species = all_species
         self.flux_surface = fs = flux_surface
@@ -93,6 +95,7 @@ class FlowCalculator:
             / u.m
             for particle in temperature_gradient
         }
+        self._dataset_input = dataset_input
 
         self.M_script_matrices = {}
         self.N_script_matrices = {}
@@ -334,7 +337,7 @@ class FlowCalculator:
     def to_dataset(self):
         import xarray
 
-        return xarray.Dataset(
+        result = xarray.Dataset(
             {
                 "total_particle_flux": (
                     "particle",
@@ -389,6 +392,11 @@ class FlowCalculator:
                 "psi": self.flux_surface.psi,
             },
         )
+
+        if self._dataset_input is not None:
+            return xarray.merge([result, self._dataset_input])
+        else:
+            return result
 
     @cached_property
     def diffusion_coefficient(self):

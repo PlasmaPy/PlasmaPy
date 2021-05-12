@@ -132,6 +132,7 @@ class FluxSurface:
 
     @cached_property
     def sqrt_jacobian(self):
+        # as per http://fusionwiki.ciemat.es/fusionwiki/index.php?title=Flux_coordinates&oldid=4501
         sqrt_jacobian = self.toroid_area / 4 / np.pi**2
         return sqrt_jacobian
 
