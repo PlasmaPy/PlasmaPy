@@ -13,7 +13,7 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-import sys, os, h5py
+import sys
 import warnings
 
 from tqdm import tqdm
@@ -612,7 +612,6 @@ class SyntheticProtonRadiograph:
         # Load inputs
         self.nparticles = int(nparticles)
         self.particle_energy = particle_energy.to(u.eV).value
-        self.particle=particle
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -692,7 +691,6 @@ class SyntheticProtonRadiograph:
 
 
         """
-        self.particle = particle
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -707,10 +705,6 @@ class SyntheticProtonRadiograph:
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
-        
-        # Compute the particle energies (stored in output for reference)
-        γ = 1/(np.sqrt(1 - np.linalg.norm(self.v, axis=-1)**2/self._c**2))
-        self.particle_energy = (γ-1)*self.m*self._c**2
 
         self.theta = np.arccos(
             np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1)
@@ -724,9 +718,6 @@ class SyntheticProtonRadiograph:
                 " of the provided velocity vectors.",
                 RuntimeWarning,
             )
-            
-    # TODO: Implement a load_pradformat_particles() method that loads particles
-    # from a pradformat HDF5 file.
 
     # *************************************************************************
     # Run/push loop methods
@@ -1107,11 +1098,6 @@ class SyntheticProtonRadiograph:
         return self.output
 
     def _store_result(self):
-        """
-        Calculates the 2D positions of the particles in the detector plane
-        
-        Stores the results of the run in an output dictionary
-        """
         # Determine locations of points in the detector plane using unit
         # vectors
         xloc = np.dot(self.x - self.detector, self.det_hdir)
@@ -1133,57 +1119,20 @@ class SyntheticProtonRadiograph:
         self.output["y"] = yloc
         self.output["x0"] = x0loc
         self.output["y0"] = y0loc
-        
-        
-    def save_result(self, path, format='npz'):
+
+    def save_result(self, path):
         """
         Save the output dictionary containing the final particle positions in
-        the detector plane for later analysis.
-        
-        Files can be saved as '~numpy.npz' files or `HDF5` files conforming to
-        the pradformat ParticleList2D convention.
+        the detector plane into a `numpy.npz` file for later analysis.
 
         Parameters
         ----------
 
         path : str or `os.path`
             The path to save the output file.
-            
-        format : str, optional
-            The save format to be used. Valid options are 'npz' or 'pradformat'.
-            The default is 'npz.'
 
         """
-        if not isinstance(path, os.path):
-            path = os.path(path)
-           
-        _, ext = os.path.splitext(path)
-        
-        format_exts = {'npz':'.npz', 'pradformat':'.hdf5'}
-        if ext != format_exts[format]:
-            raise ValueError(f"{format} file must have extension {format_exts[format]} "
-                             f", but path provided has extension {ext}.")
-            
-        if type == 'npz':
-            np.savez(path, **self.output)
-                
-        elif type == 'pradformat':
-            with h5py.File(path, 'w') as f:
-                f['x'] = self.output["x"]
-                f['y'] = self.output["y"]
-                f['energy'] = self.particle_energy
-                # The following are not required by PradFormat but are used
-                # by synthetic_radiograph to create null source profile
-                # radiographs
-                f['x0'] = self.output["x0"]
-                f['y0'] = self.output["y0"]
-                
-                f.attrs['spec_name'] = str(self.particle)
-                f.attrs['object_type'] = "particles_2D"
-                f.attrs['particles_type'] = "list"
-
-
-        
+        np.savez(path, **self.output)
 
     @property
     def max_deflection(self):
@@ -1217,7 +1166,6 @@ class SyntheticProtonRadiograph:
 # Synthetic diagnostic methods (creating output)
 # *************************************************************************
 
-# TODO: support loading from HDF5 pradformat file too
 
 def synthetic_radiograph(
     obj, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
