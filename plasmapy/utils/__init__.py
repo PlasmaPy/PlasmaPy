@@ -19,7 +19,6 @@ from plasmapy.utils import (
     code_repr,
     datatype_factory_base,
     decorators,
-    deprecation,
     exceptions,
     roman,
 )
