@@ -207,12 +207,15 @@ LaguerrePolynomials = [
     lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
 ]
 
-
-def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface, g=1):
+def B17(flux_surface):
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
-    if g == 0:
-        return np.nan
+    under_average_B17 = (B20 / fs.Bmag)**2
+    return fs.flux_surface_average(under_average_B17) / fs.flux_surface_average(fs.B2)
+
+def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface):
+    fs = flux_surface
+    B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
     under_average_B16 = np.sin(m * fs.Theta) * B20
     under_average_B15 = under_average_B16 / fs.Bmag
     under_average_B16_cos = np.cos(m * fs.Theta) * B20
@@ -268,12 +271,12 @@ def K_ps_ai(
     flux_surface: FluxSurface,
     *,
     m_max=100,
-    g=1  # TODO get from m_max
 ):
     ν = ν_T_ai(x, a, all_species)[:, np.newaxis, :]
 
+
     m = np.arange(1, m_max + 1)
-    F = F_m(m[:, np.newaxis], flux_surface, g=g)  # TODO replace
+    F = F_m(m[:, np.newaxis], flux_surface)
     ω = ωm(x, m[:, np.newaxis], a, flux_surface)[np.newaxis, ...]
     B10 = (
         1.5 * (ν / ω) ** 2
@@ -305,12 +308,11 @@ def K(
     *,
     m_max=100,
     orbit_squeezing=False,
-    g=1
 ):
     # Eq 16
     kb = K_B_ai(x, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
     # print(f"got {kb=}")
-    kps = K_ps_ai(x, a, all_species, flux_surface, m_max=m_max, g=g)
+    kps = K_ps_ai(x, a, all_species, flux_surface, m_max=m_max)
     # print(f"got {kps=}")
     return 1 / (1 / kb + 1 / kps)
 
