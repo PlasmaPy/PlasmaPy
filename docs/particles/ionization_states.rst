@@ -5,8 +5,8 @@ Ionization state data structures
 
 The ionization state (or charge state) of a plasma refers to the
 fraction of an element that is at each ionization level.  For example,
-the ionization state of a pure helium plasma could be 5% He⁰⁺, 94% He¹⁺,
-and 1% He²⁺.
+the ionization state of a pure helium plasma could be
+5% He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 
 The ionization state of a single element
 ========================================
@@ -119,26 +119,6 @@ The ionic fractions will be stored as a `dict`.
 The number density for each element is the product of the number
 density scaling factor ``n0`` with that element's abundance.
 The number density for each ion is the product of ``n0``, the
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
 corresponding element's abundance, and the ionic fraction.
 
 >>> states.n
