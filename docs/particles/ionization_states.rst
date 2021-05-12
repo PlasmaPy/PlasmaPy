@@ -27,20 +27,6 @@ array([0.05, 0.94, 0.01])
 >>> ionization_state.charge_numbers
 array([0, 1, 2])
 
-The
-
->>> ionization_state.ionic_fractions
-array([0.05, 0.94, 0.01])
->>> ionization_state.charge_numbers
-array([0, 1, 2])
-
-The
-
->>> ionization_state.ionic_fractions
-array([0.05, 0.94, 0.01])
->>> ionization_state.charge_numbers
-array([0, 1, 2])
-
 The ``Z_mean`` attribute returns the mean charge number averaged
 over all particles in that element.
 
