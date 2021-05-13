@@ -1107,18 +1107,18 @@ class SyntheticProtonRadiograph:
         y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
 
         # Store output values in a dictionary
-        self.output = {}
-        self.output["source"] = self.source
-        self.output["detector"] = self.detector
-        self.output["mag"] = self.mag
-        self.output["nparticles"] = self.nparticles
-        self.output["grid_scale_length"] = self.grid_scale_length
-        self.output["max_deflection"] = self.max_deflection
-
-        self.output["x"] = xloc
-        self.output["y"] = yloc
-        self.output["x0"] = x0loc
-        self.output["y0"] = y0loc
+        self.output = dict(
+            source=self.source,
+            detector=self.detector,
+            mag=self.mag,
+            nparticles=self.nparticles,
+            grid_scale_length=self.grid_scale_length,
+            max_deflection=self.max_deflection,
+            x=xloc,
+            y=yloc,
+            x0=x0loc,
+            y0=y0loc,
+        )
 
     def save_result(self, path):
         """
