@@ -1252,7 +1252,7 @@ def synthetic_radiograph(
     if size is None:
         # If a detector size is not given, choose lengths based on the
         # dimensions of the grid
-        w = d["grid_scale_length"]*d['mag']
+        w = d["grid_scale_length"] * d["mag"]
 
         # The factor of 5 here is somewhat arbitrary: we just want a
         # region a few times bigger than the image of the grid on the
