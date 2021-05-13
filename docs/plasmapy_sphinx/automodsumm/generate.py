@@ -105,7 +105,7 @@ class AutomodsummRenderer(AutosummaryRenderer):
 
         template = None
         for name in [template_name, "base.rst"]:
-            for _path in ["", "automodapi/", "autosummary/"]:
+            for _path in ["", "automodsumm/", "autosummary/"]:
                 try:
                     template = self.env.get_template(_path + name)
                     return template.render(context)
