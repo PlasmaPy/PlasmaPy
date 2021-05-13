@@ -35,7 +35,8 @@ API
 
 from sphinx.application import Sphinx
 
-from . import automodapi, automodsumm, extras, utils
+from . import automodsumm, extras, utils
+from .autodoc import automodapi
 
 
 def setup(app: Sphinx):

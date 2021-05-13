@@ -400,7 +400,7 @@ class GenDocsFromAutomodsumm:
                   :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
         """
 
-        from .automodapi import AutomodapiOptions
+        from .autodoc.automodapi import AutomodapiOptions
         from .automodsumm import AutomodsummOptions
 
         documented = []  # type: List[AutomodsummEntry]

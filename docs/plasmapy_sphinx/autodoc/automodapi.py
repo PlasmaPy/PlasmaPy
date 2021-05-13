@@ -324,8 +324,8 @@ from sphinx.locale import __
 from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from .automodsumm import AutomodsummOptions, option_str_list
-from .utils import default_grouping_info
+from ..automodsumm import AutomodsummOptions, option_str_list
+from ..utils import default_grouping_info
 
 if sys.version_info >= (3, 0):
     text_type = str
@@ -802,7 +802,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 def setup(app: Sphinx):
     """Sphinx ``setup()`` function for the :rst:dir:`automodapi` functionality."""
 
-    from .automodsumm import setup as setup_automodsumm
+    from ..automodsumm import setup as setup_automodsumm
 
     rtn = setup_automodsumm(app)
 
