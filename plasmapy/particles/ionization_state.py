@@ -167,9 +167,9 @@ class IonizationState:
     Parameters
     ----------
     particle: `~plasmapy.particles.particle_class.ParticleLike`
-        A `str` or `~plasmapy.particles.Particle` instance representing
-        an element, isotope, or ion; or an integer representing the
-        atomic number of an element.
+        A `str` or `~plasmapy.particles.particle_class.Particle` instance
+        representing an element, isotope, or ion; or an integer representing
+        the atomic number of an element.
 
     ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
         The ionization fractions of an element, where the indices
@@ -193,7 +193,7 @@ class IonizationState:
 
     Raises
     ------
-    `~plasmapy.particles.exceptions..ParticleError`
+    `~plasmapy.particles.exceptions.ParticleError`
         If the ionic fractions are not normalized or contain invalid
         values, or if number density information is provided through
         both ``ionic_fractions`` and ``n_elem``.
@@ -247,7 +247,10 @@ class IonizationState:
         n_elem: u.m ** -3 = np.nan * u.m ** -3,
         tol: Union[float, int] = 1e-15,
     ):
-        """Initialize an `~plasmapy.particles.IonizationState` instance."""
+        """
+        Initialize an `~plasmapy.particles.ionization_state.IonizationState`
+        instance.
+        """
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
             if ionic_fractions is None:
@@ -358,7 +361,7 @@ class IonizationState:
         Raises
         ------
         `TypeError`
-            If ``other`` is not an `~plasmapy.particles.IonizationState`
+            If ``other`` is not an `~plasmapy.particles.ionization_state.IonizationState`
             instance.
 
         `ParticleError`
@@ -630,7 +633,7 @@ class IonizationState:
     @property
     def _particle_instances(self) -> List[Particle]:
         """
-        Return a list of the `~plasmapy.particles.Particle` class
+        Return a list of the `~plasmapy.particles.particle_class.Particle` class
         instances corresponding to each ion.
         """
         return [
@@ -739,7 +742,7 @@ class IonizationState:
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
-        `~plasmapy.particles.IonizationState` instance.
+        `~plasmapy.particles.ionization_state.IonizationState` instance.
 
         Parameters
         ----------
