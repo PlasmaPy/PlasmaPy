@@ -6,15 +6,12 @@ gases and warm dense matter.
 __all__ = [
     "chemical_potential",
     "deBroglie_wavelength",
-    "Ef_",
     "Fermi_energy",
-    "lambdaDB_",
-    "lambdaDB_th_",
     "Thomas_Fermi_length",
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
 ]
-__aliases__ = ["Ef_"]
+__aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
@@ -26,6 +23,8 @@ from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ += __aliases__
 
 
 # TODO: Use @check_relativistic and @particle_input

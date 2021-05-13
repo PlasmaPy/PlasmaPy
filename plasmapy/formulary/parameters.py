@@ -11,7 +11,6 @@ __all__ = [
     "inertial_length",
     "ion_sound_speed",
     "kappa_thermal_speed",
-    "lambdaD_",
     "lower_hybrid_frequency",
     "magnetic_energy_density",
     "magnetic_pressure",
@@ -26,6 +25,7 @@ __aliases__ = [
     "cs_",
     "cwp_",
     "DB_",
+    "lambdaD_",
     "nD_",
     "oc_",
     "pmag_",
@@ -63,8 +63,6 @@ from plasmapy.utils.decorators import (
 from plasmapy.utils.exceptions import PhysicsWarning
 
 __all__ += __aliases__
-__all__.sort()
-__aliases__.sort()
 
 
 def _grab_charge(ion: Particle, z_mean=None):
