@@ -62,7 +62,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "sphinx_automodapi.smart_resolver",
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
