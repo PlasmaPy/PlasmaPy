@@ -1,5 +1,6 @@
 ci:
   autofix_prs: false
+  autoupdate_schedule: "quarterly"
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
@@ -21,11 +22,11 @@ repos:
         language: python
         types: [python]
 -   repo: https://github.com/psf/black
-    rev: 21.4b0
+    rev: 21.4b2
     hooks:
     -   id: black
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 0.7.0
+  rev: 0.8.0
   hooks:
     - id: nbqa-black
       additional_dependencies: [black==19.10b0]
