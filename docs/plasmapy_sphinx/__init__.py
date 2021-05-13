@@ -35,7 +35,7 @@ API
 
 from sphinx.application import Sphinx
 
-from . import automodsumm, extras, utils
+from . import core, extras, utils
 from .autodoc import automodapi
 
 

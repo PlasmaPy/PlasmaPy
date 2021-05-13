@@ -401,7 +401,7 @@ class GenDocsFromAutomodsumm:
         """
 
         from .autodoc.automodapi import AutomodapiOptions
-        from .automodsumm import AutomodsummOptions
+        from .core import AutomodsummOptions
 
         documented = []  # type: List[AutomodsummEntry]
 
