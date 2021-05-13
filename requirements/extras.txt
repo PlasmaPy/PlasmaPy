@@ -3,5 +3,7 @@
 h5py
 lmfit
 mpmath
+numba
+numba-scipy
 pytest >= 5.1
 setuptools_scm

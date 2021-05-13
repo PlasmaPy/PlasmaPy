@@ -139,7 +139,7 @@ class IonicLevel:
                 raise TypeError(f"Invalid ionic fraction: {ionfrac}")
             else:
                 if out_of_range:
-                    raise ValueError(f"The ionic fraction must be between 0 and 1.")
+                    raise ValueError("The ionic fraction must be between 0 and 1.")
                 else:
                     self._ionic_fraction = ionfrac
 
