@@ -470,7 +470,7 @@ class AutomodapiOptions(AutomodsummOptions):
 
 class ModAPIDocumenter(ModuleDocumenter):
     """
-    The class tht defines the `~sphinx.ext.autodoc` directive :rst:dir:`automodapi`.
+    The class that defines the `~sphinx.ext.autodoc` directive :rst:dir:`automodapi`.
     """
 
     objtype = "modapi"
