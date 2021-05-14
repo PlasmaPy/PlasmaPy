@@ -35,13 +35,11 @@ API
 
 from sphinx.application import Sphinx
 
-from . import extras, utils
-from .automodsumm import core
-from .autodoc import automodapi
+from . import autodoc, automodsumm, extras, utils
 
 
 def setup(app: Sphinx):
     """The `sphinx` ``setup()`` function for the `plasmapy_sphinx` extension."""
 
-    rtn = automodapi.setup(app)
+    rtn = autodoc.setup(app)
     return rtn

@@ -1,6 +1,6 @@
 :orphan:
 
-`plasmapy_sphinx`: A PlasmaPy version of `sphinx_automodapi`
+`plasmapy_sphinx`: The Sphinx extension package for PlasmaPy
 ============================================================
 
 .. currentmodule:: plasmapy_sphinx

@@ -123,7 +123,7 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodapi
+            .. automodsumm:: plasmapy_sphinx.autodoc.automodapi
                 :toctree: DIRNAME
 
         This will signal `sphinx-autogen` to generate stub files for the objects in
