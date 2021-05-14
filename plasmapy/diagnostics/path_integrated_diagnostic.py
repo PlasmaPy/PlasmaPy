@@ -553,13 +553,13 @@ class Interferometer(LineIntegrateScalarQuantities):
         the electron number density :math:`n_e` provided on the grid. The phase shift
         is
 
-        .. math:: \Delta \phi = -\frac{\omega_{probe}}{2 c n_c} \int n_e dl
+        .. math:: \\Delta \\phi = -\\frac{\omega_{probe}}{2 c n_c} \\int n_e dl
 
         where :math:`\omega_{probe}` is the probe beam frequency, :math:`c`
         is the speed of light, :math:`\int n_e dl` is the line-integrated
         electron density, and :math:`n_c` is the critical density
 
-        .. math:: n_c = \frac{\epsilon_0 m_e}{e^2} \omega_{probe}^2
+        .. math:: n_c = \\frac{\\epsilon_0 m_e}{e^2} \\omega_{probe}^2
 
         Parameters
         ----------
