@@ -335,7 +335,7 @@ class IonizationState:
                     ion=Particle(self.base_particle, Z=val),
                     ionic_fraction=self.ionic_fractions[val],
                     number_density=self.number_densities[val],
-                    T_i=self.T_i[val],  # TODO
+                    T_i=self.T_i[val],
                 )
                 for val in range(0, self._number_particles)[value]
             ]
@@ -783,7 +783,7 @@ class IonizationState:
     def _get_states_info(self, minimum_ionic_fraction=0.01) -> List[str]:
         """
         Return a `list` containing the ion symbol, ionic fraction, and
-        (if available) the number density for that ion.
+        (if available) the number density and temperature for that ion.
 
         Parameters
         ----------
@@ -806,6 +806,10 @@ class IonizationState:
                 if np.isfinite(self.n_elem):
                     value = "{:.2e}".format(state.number_density.si.value)
                     state_info += f"    n_i = {value} m**-3"
+
+                if np.isfinite(state.T_i):
+                    value = "{:.2e}".format(state.T_i.si.value)
+                    state_info += f"    T_i = {value} K"
 
                 states_info.append(state_info)
 
@@ -835,8 +839,8 @@ class IonizationState:
         >>> He_states.summarize()
         IonizationState instance for He with Z_mean = 0.06
         ----------------------------------------------------------------
-        He  0+: 0.941    n_i = 5.18e+19 m**-3
-        He  1+: 0.058    n_i = 3.20e+18 m**-3
+        He  0+: 0.941    n_i = 5.18e+19 m**-3    T_i = 5.34e+00 K
+        He  1+: 0.058    n_i = 3.20e+18 m**-3    T_i = 5.34e+00 K
         ----------------------------------------------------------------
         n_elem = 5.51e+19 m**-3
         n_e = 3.31e+18 m**-3
