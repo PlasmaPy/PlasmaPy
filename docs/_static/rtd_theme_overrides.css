@@ -20,6 +20,20 @@ td .toctree-wrapper ul li {
     margin-bottom: 12px !important;
 }
 
+/* Add margin-bottom to inheritance diagrams */
+div.graphviz {
+    margin-bottom: 24px !important;
+}
+
+/*
+ * Remove bottom margin for the autosummary table in a directive:option::
+ * section
+ */
+.rst-content dl.rst table p, .rst-content dl.std table p,
+.rst-content dl.py table p {
+    margin-bottom: 0 !important;
+}
+
 /* -----------------------------------------------------------------------------
  * RTD layout styling additions
  */
