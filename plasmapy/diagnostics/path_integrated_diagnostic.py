@@ -486,16 +486,16 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         provided grid. This is accomplished through the following steps:
 
         1) Create an array of points in the detector plane using the detector
-            location and the size and bins keywords.
+           location and the size and bins keywords.
 
         2) For each cell of detector grid, create an array of points of
-            separation ds from there to the source point (or,
-            when collimated=True, the source plane).
+           separation ds from there to the source point (or,
+           when collimated=True, the source plane).
 
         3) Evaluate the integrand function at each point.
 
         4) Integrate along the line-integrated dimension to obtain the
-            line-integrated quantity in the detector plane.
+           line-integrated quantity in the detector plane.
 
         Parameters
         ----------
