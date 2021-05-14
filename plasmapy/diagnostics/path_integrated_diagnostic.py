@@ -480,7 +480,6 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         bins=[200, 200],
         collimated=True,
     ):
-
         r"""
         Evaluates the line integral through the
         provided grid. This is accomplished through the following steps:
