@@ -7,9 +7,6 @@ Path Integrated Diagnostics
 .. currentmodule:: plasmapy.diagnostics.path_integrated_diagnostic
 
 .. automodapi:: plasmapy.diagnostics.path_integrated_diagnostic
-   :no-heading:
-
-|
 
 .. nbgallery::
     :caption: Examples
