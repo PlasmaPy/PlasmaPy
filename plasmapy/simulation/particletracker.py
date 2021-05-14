@@ -191,11 +191,23 @@ class ParticleTracker:
 
         if init:
             self.integrator(
-                self.x.copy(), self.v, b, e, self.q, self.m, -0.5 * self.dt,
+                self.x.copy(),
+                self.v,
+                b,
+                e,
+                self.q,
+                self.m,
+                -0.5 * self.dt,
             )  # we don't want to change position here
         else:
             self.integrator(
-                self.x, self.v, b, e, self.q, self.m, self.dt,
+                self.x,
+                self.v,
+                b,
+                e,
+                self.q,
+                self.m,
+                self.dt,
             )
 
     def run(self):

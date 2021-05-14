@@ -1,0 +1,11 @@
+# these are dependencies required to use the package
+# ought to mirror 'install_requires' under 'options' in setup.cfg
+astropy >= 4.0
+cached-property >= 1.5.2
+matplotlib >= 3.2
+numpy >= 1.18.1
+pandas >= 1.0.0
+scipy >= 1.2
+setuptools >= 41.2
+tqdm >= 4.56.0
+xarray >= 0.14.0

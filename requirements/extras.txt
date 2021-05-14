@@ -1,0 +1,9 @@
+# these are "extra" dependencies to run advanced package features
+# ought to mirror 'extras' under options.extras_require in setup.cfg
+h5py
+lmfit
+mpmath
+numba
+numba-scipy
+pytest >= 5.1
+setuptools_scm

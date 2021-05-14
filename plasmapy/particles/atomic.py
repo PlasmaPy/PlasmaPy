@@ -887,7 +887,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 particle = Particle(particle)
             return particle.mass.to(u.kg)
         except u.UnitConversionError as exc1:
-            raise u.UnitConversionError(f"Incorrect units in reduced_mass.") from exc1
+            raise u.UnitConversionError("Incorrect units in reduced_mass.") from exc1
         except MissingParticleDataError:
             raise MissingParticleDataError(
                 f"Unable to find the reduced mass because the mass of "

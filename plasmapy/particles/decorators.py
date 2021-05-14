@@ -2,7 +2,7 @@
 Module used to define the framework needed for the `particle_input` decorator.
 The decorator takes string and/or integer representations of particles
 as arguments and passes through the corresponding instance of the
-`~plasmapy.particles.Particle` class.
+`~plasmapy.particles.particle_class.Particle` class.
 """
 __all__ = ["particle_input"]
 
@@ -81,11 +81,11 @@ def particle_input(
 ) -> Any:
     """
     Convert arguments to methods and functions to
-    `~plasmapy.particles.Particle` objects.
+    `~plasmapy.particles.particle_class.Particle` objects.
 
     Take positional and keyword arguments that are annotated with
-    `~plasmapy.particles.Particle`, and pass through the
-    `~plasmapy.particles.Particle` object corresponding to those arguments
+    `~plasmapy.particles.particle_class.Particle`, and pass through the
+    `~plasmapy.particles.particle_class.Particle` object corresponding to those arguments
     to the decorated function or method.
 
     Optionally, raise an exception if the particle does not satisfy the
@@ -127,18 +127,18 @@ def particle_input(
     `~plasmapy.particles.exceptions.InvalidIonError` if the particle
     does not correspond to an element, isotope, or ion, respectively.
 
-    If exactly one argument is annotated with `~plasmapy.particles.Particle`,
-    then the keywords ``Z`` and ``mass_numb`` may be used to specify the
-    integer charge and/or mass number of an ion or isotope.  However,
-    the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
-    in order to enable this functionality.
+    If exactly one argument is annotated with
+    `~plasmapy.particles.particle_class.Particle`, then the keywords ``Z`` and
+    ``mass_numb`` may be used to specify the integer charge and/or mass number
+    of an ion or isotope.  However, the decorated function must allow ``Z``
+    and/or ``mass_numb`` as keywords in order to enable this functionality.
 
     Raises
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.particles.Particle`; or if ``Z`` or ``mass_numb`` is
-        not an `int`.
+        or `~plasmapy.particles.particle_class.Particle`; or if ``Z`` or
+        ``mass_numb`` is not an `int`.
 
     `ValueError`
         If the number of input elements in a collection do not match the
@@ -289,8 +289,8 @@ def particle_input(
                     expected_params = len(annotated_argnames)
                     if expected_params > 1:
                         raise TypeError(
-                            f"Put in [Particle] as the annotation to "
-                            f"accept arbitrary number of Particle arguments."
+                            "Put in [Particle] as the annotation to "
+                            "accept arbitrary number of Particle arguments."
                         )
                 else:
                     annotated_argnames = (annotations[argname],)

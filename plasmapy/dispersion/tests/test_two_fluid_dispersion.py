@@ -5,10 +5,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.two_fluid_dispersion import (
-    tfds_,
-    two_fluid_dispersion_solution,
-)
+from plasmapy.dispersion.two_fluid_dispersion import two_fluid_dispersion_solution
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
@@ -32,10 +29,6 @@ class TestTwoFluidDispersionSolution:
         "T_i": 10 * u.eV,
         "k": (2 * np.pi * u.rad) / (0.56547 * u.m),
     }
-
-    def test_alias(self):
-        """Test the associated alias is defined correctly."""
-        assert tfds_ is two_fluid_dispersion_solution
 
     @pytest.mark.parametrize(
         "kwargs, _error",

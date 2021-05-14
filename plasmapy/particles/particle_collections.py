@@ -6,9 +6,9 @@ import astropy.units as u
 import collections
 import numpy as np
 
-from typing import *
+from typing import Callable, Iterable, List, Union
 
-from plasmapy.particles.exceptions import *
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -253,7 +253,9 @@ class ParticleList(collections.UserList):
         of the nucleus only.
         """
         return self._get_particle_attribute(
-            "mass_energy", unit=u.J, default=np.nan * u.J,
+            "mass_energy",
+            unit=u.J,
+            default=np.nan * u.J,
         )
 
     def sort(self, key: Callable = None, reverse: bool = False):

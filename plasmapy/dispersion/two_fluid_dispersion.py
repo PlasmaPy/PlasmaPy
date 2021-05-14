@@ -1,4 +1,4 @@
-__all__ = ["two_fluid_dispersion_solution", "tfds_"]
+__all__ = ["two_fluid_dispersion_solution"]
 
 import astropy.units as u
 import numpy as np
@@ -40,8 +40,6 @@ def two_fluid_dispersion_solution(
     assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
     field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
-
-    **Aliases:** `tfds_`
 
     Parameters
     ----------
@@ -235,7 +233,7 @@ def two_fluid_dispersion_solution(
                 f"For argument 'ion' expected type {Particle} but got {type(ion)}."
             )
     if not (ion.is_ion or ion.is_category("element")):
-        raise ValueError(f"The particle passed for 'ion' must be an ion or element.")
+        raise ValueError("The particle passed for 'ion' must be an ion or element.")
 
     # validate z_mean
     if z_mean is None:
@@ -276,7 +274,7 @@ def two_fluid_dispersion_solution(
             f" got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError(f"Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' can not be a or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
@@ -346,7 +344,3 @@ def two_fluid_dispersion_solution(
             )
 
     return omega
-
-
-tfds_ = two_fluid_dispersion_solution
-""" Alias to :func:`two_fluid_dispersion_solution`. """

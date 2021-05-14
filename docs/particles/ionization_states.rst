@@ -12,7 +12,8 @@ The ionization state of a single element
 ========================================
 
 We may use the `~plasmapy.particles.IonizationState` class to represent
-the ionization state of a single element, for example:
+the ionization state of a single element, such as for this
+example.
 
 >>> from plasmapy.particles import IonizationState
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
@@ -80,15 +81,16 @@ attribute provides the number density of each ion or neutral.
 Ionization states for multiple elements
 =======================================
 
-The `~plasmapy.particles.IonizationStateCollection` class may be used to
-represent the ionization state for multiple elements. This can be used,
-for example, to describe the various impurities in a fusion plasma or
-the charge state distributions of different elements in the solar wind.
+The `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+class may be used to represent the ionization state for multiple elements. This
+can be used, for example, to describe the various impurities in a fusion plasma
+or the charge state distributions of different elements in the solar wind.
 
 >>> from plasmapy.particles import IonizationStateCollection
 
-The minimal input to `~plasmapy.particles.IonizationStateCollection` is a `list`
-of the elements or isotopes to represent.  Integers in the `list` will
+The minimal input to
+`~plasmapy.particles.ionization_state_collection.IonizationStateCollection` is
+a `list` of the elements or isotopes to represent.  Integers in the `list` will
 be treated as atomic numbers.
 
 >>> states = IonizationStateCollection(["H", 2])
@@ -97,8 +99,8 @@ To set the ionic fractions for hydrogen, we may do item assignment.
 
 >>> states["H"] = [0.9, 0.1]
 
-We may use indexing to retrieve an `~plasmapy.particles.IonizationState`
-instance for an element.
+We may use indexing to retrieve an
+`~plasmapy.particles.ionization_state.IonizationState` instance for an element.
 
 >>> states["H"]
 <IonizationState instance for H>

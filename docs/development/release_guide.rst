@@ -2,8 +2,7 @@
 Release Guide
 *************
 
-This document describes the procedure for making a release of
-PlasmaPy.
+This document describes the procedure for making a release of PlasmaPy.
 
 The following is a partial list of tasks to be performed for each
 release.  This list is currently under development.  Developers should
@@ -14,6 +13,18 @@ guidance.
 
 Throughout this guide, ``0.6.0`` denotes the version you're releasing,
 and ``0.5.0`` denotes the last released version.
+
+Pre-release
+-----------
+
+* Enact a feature freeze that begins approximately one week before the
+  anticipated release date.  Only pull requests with a limited scope that
+  do not significantly change functionality should be merged during this
+  time period.
+
+* Plan a code freeze beginning approximately two weekdays before the release.
+  Only pull requests directly related to the release should be merged during
+  during the code freeze.
 
 Release
 -------
@@ -28,11 +39,12 @@ Release
 
 * Update the author list (with affiliations and ORCIDs, when possible) to be
   consistent with the Zenodo record.  Update any other tags if necessary. Check
-  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``
+  ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``.
 
-* ``hub ci-status master -v`` — Check that the Continuous Integration is passing for the correct
-  version `(see the latest commit on master)
-  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
+* ``hub ci-status master -v`` — Check that the Continuous Integration is passing
+  for the correct version `(see the latest commit on master)
+  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy
+  `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
 
 * ``git checkout -b v0.6.x`` — create a new branch for the release that is
   separate from the master branch, with the bugfix version replaced by ``x``, for
@@ -124,6 +136,8 @@ Post-release
   * Post release announcement on social media sites (Twitter, Facebook)
 
   * Send release announcement to mailing list
+
+* Discuss how the release procedure went during the next community meeting.
 
 * Update this very release guide to reflect any changes
 

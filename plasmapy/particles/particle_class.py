@@ -417,7 +417,10 @@ class Particle(AbstractPhysicalParticle):
     """
 
     def __init__(
-        self, argument: ParticleLike, mass_numb: Integral = None, Z: Integral = None,
+        self,
+        argument: ParticleLike,
+        mass_numb: Integral = None,
+        Z: Integral = None,
     ):
         """
         Instantiate a `~plasmapy.particles.Particle` object and set private
@@ -1187,7 +1190,7 @@ class Particle(AbstractPhysicalParticle):
 
         if not self.isotope:
             raise InvalidIsotopeError(
-                f"The nuclear binding energy may only be calculated for nucleons and isotopes."
+                "The nuclear binding energy may only be calculated for nucleons and isotopes."
             )
 
         number_of_protons = self.atomic_number

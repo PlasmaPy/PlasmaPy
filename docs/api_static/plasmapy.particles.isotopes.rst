@@ -6,5 +6,3 @@
 .. currentmodule:: plasmapy.particles.isotopes
 
 .. automodapi::  plasmapy.particles.isotopes
-   :include-all-objects:
-   :no-heading:

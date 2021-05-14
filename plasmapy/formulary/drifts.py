@@ -8,6 +8,7 @@ __all__ = [
     "veb_",
     "vfd_",
 ]
+__aliases__ = ["vd_", "veb_", "vfd_"]
 
 import astropy.units as u
 import numpy as np

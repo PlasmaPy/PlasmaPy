@@ -357,7 +357,8 @@ def test_ion_sound_speed():
 
     # Test that function call without keyword argument works correctly
     assert np.isclose(
-        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value, 218816.06086407552,
+        ion_sound_speed(1.831 * u.MK, 1.3232 * u.MK, "p").value,
+        218816.06086407552,
     )
 
     assert np.isclose(
@@ -637,7 +638,7 @@ def test_thermal_pressure():
 class Test_kappa_thermal_speed(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_e = 5 * u.eV
         self.kappaInvalid = 3 / 2
         self.kappa = 4
