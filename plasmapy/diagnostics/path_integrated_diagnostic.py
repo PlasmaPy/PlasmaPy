@@ -481,20 +481,20 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         collimated=True,
     ):
 
-        """
+        r"""
         Evaluates the line integral through the
         provided grid. This is accomplished through the following steps:
 
-        1) Create an array of points in the detector plane using the detector
+        1. Create an array of points in the detector plane using the detector
            location and the size and bins keywords.
 
-        2) For each cell of detector grid, create an array of points of
+        2. For each cell of detector grid, create an array of points of
            separation ds from there to the source point (or,
            when collimated=True, the source plane).
 
-        3) Evaluate the integrand function at each point.
+        3. Evaluate the integrand function at each point.
 
-        4) Integrate along the line-integrated dimension to obtain the
+        4. Integrate along the line-integrated dimension to obtain the
            line-integrated quantity in the detector plane.
 
         Parameters
@@ -548,7 +548,7 @@ class Interferometer(LineIntegrateScalarQuantities):
         collimated=True,
         unwrapped=True,
     ):
-        """
+        r"""
         Creates an interferogram by calculating the line integral through
         the electron number density :math:`n_e` provided on the grid. The phase shift
         is
