@@ -101,11 +101,12 @@ API
 
 from sphinx.application import Sphinx
 
-from . import autodoc, automodsumm, extras, utils
+from . import autodoc, automodsumm, directives, extras, utils
 
 
 def setup(app: Sphinx):
     """The `sphinx` ``setup()`` function for the `plasmapy_sphinx` extension."""
 
+    directives.setup(app)
     rtn = autodoc.setup(app)
     return rtn

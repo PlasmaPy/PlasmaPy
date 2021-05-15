@@ -8,8 +8,6 @@ import re
 
 from sphinx import addnodes
 from sphinx.application import Sphinx
-from sphinx.domains.python import PyField
-from sphinx.locale import _
 from sphinx.util.docfields import Field, GroupedField
 
 
@@ -66,30 +64,6 @@ def setup(app: Sphinx):
     2. ``event`` standard directive and role for documenting and cross-linking
        Sphinx events.
     """
-    # this was taken from the sphinx and sphinx_rtd_theme conf.py files and creates
-    # the documenting directive `.. confval::` and role `:confval:` for documenting
-    # sphinx configuration variables
-    app.add_object_type(
-        "confval",
-        "confval",
-        objname="configuration value",
-        indextemplate="pair: %s; configuration value",
-        doc_field_types=[
-            PyField(
-                "type",
-                label=_("Type"),
-                has_arg=False,
-                names=("type",),
-                bodyrolename="class",
-            ),
-            Field(
-                "default",
-                label=_("Default"),
-                has_arg=False,
-                names=("default",),
-            ),
-        ],
-    )
 
     # this was taken from the sphinx conf.py file and creates the documenting
     # directive `.. confval::` and role `:confval:` for documenting sphinx events
