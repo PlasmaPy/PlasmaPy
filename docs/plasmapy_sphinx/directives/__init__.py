@@ -1,20 +1,22 @@
 """
-This sub-package defines `directives
+This sub-package defines
+`directives
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html>`_
-``.. directive::`` and `roles
+and
+`roles
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html>`_
-``:rolename:`content``` that do not fall under the scopes of `~plasmapy_sphinx.autodoc`
-or `~plasmapy_sphinx.automodsumm`.  If a directive that has an associated role, then
-that role is used for cross-referencing the declared item.  For example,
-``:meth:`Foo.bar``` is a cross-referencing role to link bake to where
+that do not fall under the scopes of `~plasmapy_sphinx.autodoc` or
+`~plasmapy_sphinx.automodsumm`.  If a directive that has an associated role,
+then that role is used for cross-referencing the declared item.  For example,
+``:meth:`Foo.bar``` is a cross-referencing role to link back to where
 ``.. automethod:: Foo.bar`` was declared.
 
-+--------------------+----------------+--------------------------------------------+
-| Directive          | Role           | Description                                |
-+====================+================+============================================+
-| :rst:dir:`confval` | ``:confval:``  | For declaring and referencing Sphinx       |
-|                    |                | configuration values.                      |
-+--------------------+----------------+--------------------------------------------+
++-------------------------+-----------------------+------------------------------------+
+| Directive               | Role                  | Description                        |
++=========================+=======================+====================================+
+| | :rst:dir:`confval`    | | :rst:role:`confval` | For declaring and referencing      |
+| | ``.. confval:: name`` | | ``:confval:`name``` | Sphinx configuration values.       |
++-------------------------+-----------------------+------------------------------------+
 
 """
 from sphinx.application import Sphinx
