@@ -7,11 +7,13 @@ of the `sphinx` and `sphinx_rtd_theme` packages.
 
 .. rst:directive:: .. confval:: name
 
-    A directive used for documenting `Sphinx configuration values
-    <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_.  While
-    this directive is not provide by Sphinx, it is used by Sphinx and, thus,
-    cross-linking is provide through the :confval:`intersphinx_mapping`
-    configuration value with the `sphinx.ext.intersphinx` extension.
+    | A directive used for documenting `Sphinx configuration values
+      <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_.  While
+      this directive is not provide by Sphinx, it is used by Sphinx and, thus,
+      cross-linking is provide through the :confval:`intersphinx_mapping`
+      configuration value with the `sphinx.ext.intersphinx` extension.
+
+    .. rubric:: Optional Fields
 
     .. rst:directive:option:: type
        :type: string
@@ -33,7 +35,7 @@ of the `sphinx` and `sphinx_rtd_theme` packages.
         .. confval:: dummy_value
 
            :type: `bool`
-           :default: True
+           :default: `True`
 
            This is an example documentation for the configuration value
            ``dummy_value``.
