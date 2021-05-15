@@ -34,6 +34,11 @@ div.graphviz {
     margin-bottom: 0 !important;
 }
 
+/* Remove excess bottom margin for table headings */
+table.docutils thead p {
+    margin-bottom: 0;
+}
+
 /* -----------------------------------------------------------------------------
  * RTD layout styling additions
  */
