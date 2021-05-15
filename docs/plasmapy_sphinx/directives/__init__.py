@@ -17,11 +17,14 @@ then that role is used for cross-referencing the declared item.  For example,
 | | :rst:dir:`confval`    | | :rst:role:`confval` | For declaring and referencing      |
 | | ``.. confval:: name`` | | ``:confval:`name``` | Sphinx configuration values.       |
 +-------------------------+-----------------------+------------------------------------+
+| | :rst:dir:`event`      | | :rst:role:`event`   | For declaring and referencing      |
+| | ``.. event:: name``   | | ``:event:`name```   | Sphinx events.                     |
++-------------------------+-----------------------+------------------------------------+
 
 """
 from sphinx.application import Sphinx
 
-from . import confval
+from . import confval, event
 
 
 def setup(app: Sphinx) -> None:
@@ -30,3 +33,4 @@ def setup(app: Sphinx) -> None:
     `plasmapy_sphinx.directives`.
     """
     confval.setup(app)
+    event.setup(app)

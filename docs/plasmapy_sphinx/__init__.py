@@ -101,7 +101,7 @@ API
 
 from sphinx.application import Sphinx
 
-from . import autodoc, automodsumm, directives, extras, utils
+from . import autodoc, automodsumm, directives, utils
 
 
 def setup(app: Sphinx):

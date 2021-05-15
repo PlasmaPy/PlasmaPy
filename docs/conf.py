@@ -68,7 +68,6 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
     "plasmapy_sphinx",
-    "plasmapy_sphinx.extras"
 ]
 
 intersphinx_mapping = {
