@@ -107,6 +107,9 @@ from . import autodoc, automodsumm, directives, utils
 def setup(app: Sphinx):
     """The `sphinx` ``setup()`` function for the `plasmapy_sphinx` extension."""
 
+    # Note: automodsum is setup by autodoc.setup since it is needed for
+    # autodoc.automodapi
+
     directives.setup(app)
     rtn = autodoc.setup(app)
     return rtn
