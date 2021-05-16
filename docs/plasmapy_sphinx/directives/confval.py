@@ -58,6 +58,9 @@ of the `sphinx` and `sphinx_rtd_theme` packages.
     a link to Sphinx's ``intersphinx_mapping`` configuration value goes like
     ``:confval:`intersphinx_mapping``` -> :confval:`intersphinx_mapping`.
 
+    *Linking to external packages is made possible when using*
+    `sphinx.ext.intersphinx`.
+
 """
 from sphinx.application import Sphinx
 from sphinx.domains.python import PyField
