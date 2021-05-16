@@ -9,9 +9,62 @@ processing.  New functionality can be connected to an event with
 `sphinx.application.Sphinx.connect` and new events can be created using
 `sphinx.application.Sphinx.add_event`.
 
+The code contained in this module was taken and adapted from the ``conf.py`` file
+of `Sphinx's documentation
+<https://github.com/sphinx-doc/sphinx/blob/
+8653ceca0021f6ac6ff0aac6c26e2a455c6d4b21/doc/conf.py#L123-L138>`_.
+
 .. rst:directive:: .. event:: name (signature)
 
+    A directive used for documenting Sphinx events.  While this directive is not
+    provided by Sphinx, it is usd by Sphinx and, thus, cross-linking is provided
+    through the :confval:`intersphinx_mapping` configuration value with the
+    `sphinx.ext.intersphinx` extension.
+
+    The directive is used like...
+
+    .. code-block:: rst
+
+       .. event:: name (signature)
+
+          Event documentation.
+
+    | where ``name`` is the event name and ``signature`` represents what the
+      connected function's signature should look like.
+
+    .. rubric:: Example
+
+    The following example illustrates how to document the ``dummy-event`` event.
+
+    .. code-block:: rst
+
+       .. event:: dummy-event (app, node)
+
+          :param app: Instance of the Sphinx applications.
+          :param node: The pending node to be resolved.
+
+          This is just a dummy event for demonstration purposes.
+
+    The code renders like...
+
+    .. event:: dummy-event (app, node)
+
+       :param app: Instance of the Sphinx applications.
+       :param node: The pending node to be resolved.
+
+       This is just a dummy event for demonstration purposes.
+
+
 .. rst:role:: event
+
+   This role is provided for easy cross-linking to an event's definition.  For
+   example, doing ``:event:`dummy-event``` will cross-link to the
+   ``dummy-event`` definition like :event:`dummy-event`.  Or, a link to
+   Sphinx's ``builder-inited`` configuration value goes like
+   ``:event:`builder-inited``` -> :event:`builder-inited`.
+
+   *Linking to external packages is made possible when using*
+   `sphinx.ext.intersphinx`.
 
 """
 
