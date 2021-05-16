@@ -52,7 +52,7 @@ of the `sphinx` and `sphinx_rtd_theme` packages.
 
 .. rst:role:: confval
 
-    This role is provided for easy cross-linking to the directives a directives
+    This role is provided for easy cross-linking to a configuration value's
     definition.  For example, doing ``:confval:`dummy_value``` will cross-link
     to the ``dummy_value`` configuration value like :confval:`dummy_value`.  Or,
     a link to Sphinx's ``intersphinx_mapping`` configuration value goes like
