@@ -1,0 +1,13 @@
+In `plasmapy.particles`, objects named after the term "integer charge"
+have been deprecated in favor of objects named after the term "charge
+number".
+
+The `~plasmapy.particles.particle_class.Particle.integer_charge`
+attribute of `~plasmapy.particles.particle_class.Particle` has been
+deprecated in favor of
+`~plasmapy.particles.particle_class.Particle.charge_number`.
+
+The `~plasmapy.particles.
+
+
+In `plasmapy.particles`, variable names involving "integer charge
