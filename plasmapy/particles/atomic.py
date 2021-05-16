@@ -37,6 +37,8 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
+from plasmapy.utils.decorators.deprecation import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__.sort()
 
@@ -350,6 +352,23 @@ def charge_number(particle: Particle) -> Integral:
     2
     """
     return particle.charge_number
+
+
+@deprecated(
+    since="0.7.0",
+    warning_type=PlasmaPyFutureWarning,
+    message=(
+        "integer_charge has been deprecated since version 0.7.0 and will "
+        "be removed in a future release.  Use charge_number instead."
+    ),
+)
+@particle_input(any_of={"charged", "uncharged"})
+def integer_charge(particle: Particle):
+    """
+    Return the charge number of the particle. Deprecated since version
+    0.7.0.  Use `~plasmapy.particle.atomic.charge_number` instead.
+    """
+    return charge_number(particle)
 
 
 @particle_input(any_of={"charged", "uncharged"})
