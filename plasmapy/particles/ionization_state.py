@@ -20,6 +20,8 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators.deprecation import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _number_density_errmsg = (
     "Number densities must be Quantity objects with units of inverse volume."
@@ -112,6 +114,20 @@ class IonicLevel:
     def charge_number(self) -> Integral:
         """The charge number of the ion."""
         return self.ion.charge_number
+
+    @property
+    @deprecated(
+        since="0.7.0",
+        name="integer_charge",
+        message=(
+            "The integer_charge attribute of IonicLevel has been "
+            "deprecated since version 0.7.0 and will be removed in "
+            "a future release.  Use charge_number instead."
+        ),
+        warning_type=PlasmaPyFutureWarning,
+    )
+    def integer_charge(self) -> Integral:
+        return self.charge_number
 
     @property
     def ionic_fraction(self) -> Real:
@@ -649,6 +665,20 @@ class IonizationState:
     def charge_numbers(self) -> np.ndarray:
         """Return an array with the charge numbers."""
         return np.arange(0, self.atomic_number + 1, dtype=int)
+
+    @property
+    @deprecated(
+        since="0.7.0",
+        name="integer_charges",
+        message=(
+            "The integer_charges attribute of IonizationState has been "
+            "deprecated since version 0.7.0 and will be removed in "
+            "a future release.  Use charge_numbers instead."
+        ),
+        warning_type=PlasmaPyFutureWarning,
+    )
+    def integer_charges(self) -> np.ndarray:
+        return self.charge_numbers
 
     @property
     def Z_mean(self) -> np.float64:
