@@ -102,7 +102,7 @@ def parse_event(env, sig, signode):
     signode : sphinx.addnodes.desc_signature
         A `docutils` Node for the object signatures.
     """
-    event_sig_re = re.compile(r"([a-zA-Z-]+)\s*\((.*)\)")
+    event_sig_re = re.compile(r"([a-zA-Z-_]+)\s*\((.*)\)")
 
     match = event_sig_re.match(sig)
     if not match:
