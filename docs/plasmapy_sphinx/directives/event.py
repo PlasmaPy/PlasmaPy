@@ -60,8 +60,8 @@ of `Sphinx's documentation
    This role is provided for easy cross-linking to an event's definition.  For
    example, doing ``:event:`dummy-event``` will cross-link to the
    ``dummy-event`` definition like :event:`dummy-event`.  Or, a link to
-   Sphinx's ``builder-inited`` configuration value goes like
-   ``:event:`builder-inited``` -> :event:`builder-inited`.
+   Sphinx's ``builder-inited`` event goes like ``:event:`builder-inited``` ->
+   :event:`builder-inited`.
 
    *Linking to external packages is made possible when using*
    `sphinx.ext.intersphinx`.

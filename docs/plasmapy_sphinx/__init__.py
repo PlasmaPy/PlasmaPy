@@ -18,7 +18,7 @@ a future date.
 Setup
 -----
 
-To enable of of `plasmapy_sphinx`'s functionality it needs to be added to the
+To enable `plasmapy_sphinx`'s functionality it needs to be added to the
 :confval:`extensions` configuration value in your ``conf.py`` file.
 
 .. code-block::

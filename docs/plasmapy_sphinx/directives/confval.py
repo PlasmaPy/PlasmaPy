@@ -1,7 +1,7 @@
 """
 Functionality for declaring and cross-referencing Sphinx configuration values.
-Configuration values are variables that can be defined in the `conf.py` file to
-control the default behavior for Sphinx and extension packages like
+Configuration values are variables that can be defined in the ``conf.py`` file
+to control the default behavior for Sphinx and extension packages like
 `plasmapy_sphinx`.  This code was taken and adapted from the ``conf.py`` files
 of the `sphinx` and `sphinx_rtd_theme` packages.
 
