@@ -130,9 +130,9 @@ class AbstractParticle(ABC):
         A dictionary representation of the particle object that is JSON
         friendly (i.e. convertible to a JSON object).
 
-        The dictionary should maintain the following format so
-        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded
-        the resulting JSON object.
+        The dictionary should maintain the following format so that
+        `~plasmapy.particles.serialization.ParticleJSONDecoder` knows
+        how to decode the resulting JSON object.
 
         .. code-block:: python
 
@@ -300,16 +300,16 @@ class Particle(AbstractPhysicalParticle):
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `~plasmapy.particles.Particle.symbol` attribute returns the
-    particle's symbol in the standard form.
+    The `~plasmapy.particles.particle_class.Particle.symbol` attribute
+    returns the particle's symbol in the standard form.
 
     >>> positron.symbol
     'e+'
 
-    The `~plasmapy.particles.Particle.element`,
-    `~plasmapy.particles.Particle.isotope`, and
-    `~plasmapy.particles.Particle.ionic_symbol` attributes provide
-    the symbols for each of these different types of particles.
+    The `~plasmapy.particles.particle_class.Particle.element`,
+    `~plasmapy.particles.particle_class.Particle.isotope`, and
+    `~plasmapy.particles.particle_class.Particle.ionic_symbol` attributes
+    provide the symbols for each of these different types of particles.
 
     >>> proton.element
     'H'
@@ -318,8 +318,8 @@ class Particle(AbstractPhysicalParticle):
     >>> deuteron.ionic_symbol
     'D 1+'
 
-    The `~plasmapy.particles.Particle.ionic_symbol` attribute works for
-    neutral atoms if charge information is available.
+    The `~plasmapy.particles.particle_class.Particle.ionic_symbol`
+    attribute works for neutral atoms if charge information is available.
 
     >>> deuterium = Particle("D", Z=0)
     >>> deuterium.ionic_symbol
@@ -331,8 +331,9 @@ class Particle(AbstractPhysicalParticle):
     >>> positron.element is None
     True
 
-    The attributes of a `~plasmapy.particles.Particle` instance may be used
-    to test whether or not a particle is an element, isotope, or ion.
+    The attributes of a `~plasmapy.particles.particle_class.Particle`
+    instance may be used to test whether or not a particle is an
+    element, isotope, or ion.
 
     >>> True if positron.element else False
     False
@@ -364,15 +365,15 @@ class Particle(AbstractPhysicalParticle):
     >>> alpha.neutron_number
     2
 
-    If a `~plasmapy.particles.Particle` instance represents an elementary
-    particle, then the unary `~` (invert) operator may be used to
-    return the particle's antiparticle.
+    If a `~plasmapy.particles.particle_class.Particle` instance
+    represents an elementary particle, then the unary ``~`` (invert)
+    operator may be used to return the particle's antiparticle.
 
     >>> ~positron
     Particle("e-")
 
-    A `~plasmapy.particles.Particle` instance may be used as the first
-    argument to `~plasmapy.particles.Particle`.
+    A `~plasmapy.particles.particle_class.Particle` instance may be used
+    as the first argument to `~plasmapy.particles.particle_class.Particle`.
 
     >>> iron = Particle('Fe')
     >>> iron == Particle(iron)
@@ -380,9 +381,9 @@ class Particle(AbstractPhysicalParticle):
     >>> Particle(iron, mass_numb=56, Z=6)
     Particle("Fe-56 6+")
 
-    If the previously constructed `~plasmapy.particles.Particle` instance
-    represents an element, then the ``Z`` and ``mass_numb`` arguments
-    may be used to specify an ion or isotope.
+    If the previously constructed `~plasmapy.particles.particle_class.Particle`
+    instance represents an element, then the ``Z`` and ``mass_numb``
+    arguments may be used to specify an ion or isotope.
 
     >>> iron = Particle('Fe')
     >>> Particle(iron, Z=1)
@@ -390,13 +391,16 @@ class Particle(AbstractPhysicalParticle):
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
 
-    Adding particles together will create a `~plasmapy.particles.ParticleList`,
+    Adding particles together will create a
+    `~plasmapy.particles.particle_collections.ParticleList`,
     which is a list-like collection of particles.
 
     >>> proton + 2 * electron
     ParticleList(['p+', 'e-', 'e-'])
 
-    The ``>`` operator can be used with `Particle` and/or `ParticleList`
+    The ``>`` operator can be used with
+    `~plasmapy.particles.particle_class.Particle` and/or
+    `~plasmapy.particles.particle_collections.ParticleList`
     objects to return the nuclear reaction energy.
 
     >>> deuteron + triton > alpha + neutron
@@ -425,8 +429,8 @@ class Particle(AbstractPhysicalParticle):
         Z: Integral = None,
     ):
         """
-        Instantiate a `~plasmapy.particles.Particle` object and set private
-        attributes.
+        Instantiate a `~plasmapy.particles.particle_class.Particle`
+        object and set private attributes.
         """
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
@@ -603,9 +607,10 @@ class Particle(AbstractPhysicalParticle):
         Determine if two objects correspond to the same particle.
 
         This method will return `True` if ``other`` is an identical
-        `~plasmapy.particles.Particle` instance or a `str` representing the
-        same particle, and return `False` if ``other`` is a different
-        `~plasmapy.particles.Particle` or a `str` representing a different
+        `~plasmapy.particles.particle_class.Particle` instance or a
+        `str` representing the same particle, and return `False` if
+        ``other`` is a different
+        `~plasmapy.particles.particle_class.Particle` or a `str` representing a different
         particle.
 
         If ``other`` is not a `str` or `~plasmapy.particles.Particle`
@@ -2303,7 +2308,7 @@ instances, are particle-like.
 
     Ions can also be represented using Roman numeral notation, where the Roman
     numeral indicates the charge number plus one (e.g., ``"H I"`` represents
-    H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
+    H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`\ ).
 
     D\ :sup:`1+` can also be represented by ``"deuteron"``, T\ :sup:`1+` can
     be represented by ``"triton"``, and :sup:`4`\ He\ :sup:`2+` can be
