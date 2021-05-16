@@ -13,6 +13,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 from ..atomic import (
@@ -22,6 +23,7 @@ from ..atomic import (
     common_isotopes,
     electric_charge,
     half_life,
+    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,
@@ -781,3 +783,8 @@ str_electron_table = [
 @pytest.mark.parametrize("particle, electron", str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
+
+
+def test_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert integer_charge("Fe 20+") == 20
