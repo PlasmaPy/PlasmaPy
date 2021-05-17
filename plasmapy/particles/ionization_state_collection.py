@@ -816,7 +816,7 @@ class IonizationStateCollection:
     @kappa.setter
     def kappa(self, value: Real):
         """
-        Set the κ parameter for a kappa distribution function for
+        Set the kappa parameter for a kappa distribution function for
         electrons.  The value must be between ``1.5`` and `~numpy.inf`.
         """
         kappa_errmsg = "kappa must be a real number greater than 1.5"

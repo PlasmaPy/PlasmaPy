@@ -11,7 +11,7 @@ He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 The ionization state of a single element
 ========================================
 
-We may use the `~plasmapy.particles.IonizationState` class to represent
+We may use the `~plasmapy.particles.ionization_state.IonizationState` class to represent
 the ionization state of a single element, such as for this
 example.
 
