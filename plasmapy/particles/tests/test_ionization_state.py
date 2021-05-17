@@ -8,6 +8,7 @@ import pytest
 from plasmapy.particles import (
     atomic_number,
     atomic_symbol,
+    charge_number,
     isotope_symbol,
     Particle,
     particle_symbol,
@@ -25,7 +26,7 @@ ionic_fraction_table = [
 
 
 @pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
-def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
+def test_ionic_level_attributes(ion, ionic_fraction, number_density):
 
     instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
@@ -41,13 +42,19 @@ def test_ionic_fraction_attributes(ion, ionic_fraction, number_density):
     assert Particle(ion) == Particle(instance.ionic_symbol)
     assert u.isclose(instance.ionic_fraction, ionic_fraction, equal_nan=True)
     assert u.isclose(instance.number_density, number_density, equal_nan=True)
+    assert instance.charge_number == charge_number(ion)
+
+    # TODO: remove when IonicLevel.integer_charge is removed
+    with pytest.warns(PlasmaPyFutureWarning):
+        integer_charge = instance.integer_charge
+    assert integer_charge == charge_number(ion)
 
 
 @pytest.mark.parametrize(
     "invalid_fraction, expected_exception",
     [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError)],
 )
-def test_ionic_fraction_invalid_inputs(invalid_fraction, expected_exception):
+def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
     """
     Test that IonicLevel raises exceptions when the ionic fraction
     is out of the interval [0,1] or otherwise invalid.
@@ -169,6 +176,7 @@ class Test_IonizationState:
         Test that `IonizationState.integer_charges` instance has the
         correct charge numbers and issues a future warning.
         """
+        # TODO: remove when IonizationState.integer_charge is removed
         instance = self.instances[test_name]
         expected_charge_numbers = np.arange(instance.atomic_number + 1)
         with pytest.warns(PlasmaPyFutureWarning):
