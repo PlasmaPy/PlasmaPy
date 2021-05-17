@@ -658,12 +658,12 @@ class IonizationState:
 
     @property
     def ionic_symbols(self) -> List[str]:
-        """Return the ionic symbols for all charge states."""
+        """The ionic symbols for all charge states."""
         return [particle.ionic_symbol for particle in self._particle_instances]
 
     @property
     def charge_numbers(self) -> np.ndarray:
-        """Return an array with the charge numbers."""
+        """An array of the charge numbers."""
         return np.arange(0, self.atomic_number + 1, dtype=int)
 
     @property
@@ -678,6 +678,14 @@ class IonizationState:
         warning_type=PlasmaPyFutureWarning,
     )
     def integer_charges(self) -> np.ndarray:
+        """
+        An array of the charge numbers.
+
+        .. deprecated:: 0.6.0
+            `Particle.particle` has been deprecated and will be removed in
+            a subsequent release of PlasmaPy.  Use `Particle.symbol`
+            instead.
+        """
         return self.charge_numbers
 
     @property
