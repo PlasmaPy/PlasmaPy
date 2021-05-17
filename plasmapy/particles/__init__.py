@@ -11,6 +11,7 @@ from plasmapy.particles.atomic import (
     common_isotopes,
     electric_charge,
     half_life,
+    integer_charge,
     is_stable,
     isotopic_abundance,
     known_isotopes,

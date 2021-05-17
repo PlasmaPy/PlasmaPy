@@ -8,6 +8,7 @@ __all__ = [
     "isotopic_abundance",
     "charge_number",
     "electric_charge",
+    "integer_charge",
     "is_stable",
     "half_life",
     "known_isotopes",
