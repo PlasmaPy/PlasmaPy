@@ -119,21 +119,33 @@ class FluxSurface:
 
     @cached_property
     def _f_tl(self):
-        # Houlberg_1997, equations B5-B7
+        # lin-liu1995, equation 7
         h, h2mean = self._h, self._h2mean
-        f_tl = 1 - h2mean * self.flux_surface_average(
-            h ** -2 * (1 - (1 - h) ** 0.5) * (1 + h / 2)
-        )
+        innermost_left = np.sqrt(1 - h)
+        innermost_right = 1 + 1 / 2 * h
+        square_bracket = 1 - innermost_left * innermost_right
+        integrand = h ** -2 * square_bracket
+        f_tl = 1 - h2mean * self.flux_surface_average(integrand)
         return f_tl
 
     def trapped_fraction(self):
         f_t = 0.75 * self._f_tu + 0.25 * self._f_tl
         return f_t
 
+    def trapped_fraction_analytical(self, N_integration_points=1000):
+        h = self._h
+        Lambda = np.linspace(0, 1, N_integration_points)
+        integrand = np.sqrt(1 - Lambda[:, np.newaxis] * h[np.newaxis, :])
+        FSA = self.flux_surface_average(integrand)
+        integrand2 = Lambda / FSA
+        the_integral = trapezoid(integrand2, Lambda)
+        estimated_trapped_fraction = 1 - 3 / 4 * self._h2mean * the_integral
+        return estimated_trapped_fraction
+
     @cached_property
     def sqrt_jacobian(self):
         # as per http://fusionwiki.ciemat.es/fusionwiki/index.php?title=Flux_coordinates&oldid=4501
-        sqrt_jacobian = self.toroid_area / 4 / np.pi**2
+        sqrt_jacobian = self.toroid_area / 4 / np.pi ** 2
         return sqrt_jacobian
 
     @cached_property
