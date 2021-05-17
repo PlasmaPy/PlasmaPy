@@ -365,10 +365,7 @@ def charge_number(particle: Particle) -> Integral:
 )
 @particle_input(any_of={"charged", "uncharged"})
 def integer_charge(particle: Particle):
-    """
-    Return the charge number of the particle. Deprecated since version
-    0.7.0.  Use `~plasmapy.particle.atomic.charge_number` instead.
-    """
+    """Return the charge number of the particle."""
     return charge_number(particle)
 
 
