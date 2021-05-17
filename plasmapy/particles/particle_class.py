@@ -975,13 +975,7 @@ class Particle(AbstractPhysicalParticle):
         warning_type=PlasmaPyFutureWarning,
     )
     def integer_charge(self) -> Integral:
-        """
-        The particle's electrical charge in units of the elementary charge.
-
-        Deprecated since version 0.7.0.  Use
-        `~plasmapy.particles.particle_class.Particle.charge_number`
-        instead.
-        """
+        """The particle's electrical charge in units of the elementary charge."""
         return self.charge_number
 
     @property

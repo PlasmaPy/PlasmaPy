@@ -127,6 +127,7 @@ class IonicLevel:
         warning_type=PlasmaPyFutureWarning,
     )
     def integer_charge(self) -> Integral:
+        """The charge number of the ion."""
         return self.charge_number
 
     @property
@@ -678,14 +679,7 @@ class IonizationState:
         warning_type=PlasmaPyFutureWarning,
     )
     def integer_charges(self) -> np.ndarray:
-        """
-        An array of the charge numbers.
-
-        .. deprecated:: 0.6.0
-            `Particle.particle` has been deprecated and will be removed in
-            a subsequent release of PlasmaPy.  Use `Particle.symbol`
-            instead.
-        """
+        """An array of the charge numbers."""
         return self.charge_numbers
 
     @property
