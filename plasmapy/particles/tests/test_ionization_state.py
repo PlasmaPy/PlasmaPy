@@ -14,6 +14,7 @@ from plasmapy.particles import (
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
@@ -161,6 +162,18 @@ class Test_IonizationState:
         instance = self.instances[test_name]
         expected_charge_numbers = np.arange(instance.atomic_number + 1)
         assert np.allclose(instance.charge_numbers, expected_charge_numbers)
+
+    @pytest.mark.parametrize("test_name", test_names)
+    def test_integer_charges(self, test_name):
+        """
+        Test that `IonizationState.integer_charges` instance has the
+        correct charge numbers and issues a future warning.
+        """
+        instance = self.instances[test_name]
+        expected_charge_numbers = np.arange(instance.atomic_number + 1)
+        with pytest.warns(PlasmaPyFutureWarning):
+            actual_integer_charges = instance.integer_charges
+        assert np.allclose(actual_integer_charges, expected_charge_numbers)
 
     @pytest.mark.parametrize(
         "test_name",
