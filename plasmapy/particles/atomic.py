@@ -325,7 +325,7 @@ def charge_number(particle: Particle) -> Integral:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.AtomicWarning`
-        If the input represents an ion with an charge number that is
+        If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
 
@@ -395,7 +395,7 @@ def electric_charge(particle: Particle) -> u.C:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.ParticleWarning`
-        If the input represents an ion with an charge number that is
+        If the input represents an ion with a charge number that is
         below ``-3``.
 
     Notes
