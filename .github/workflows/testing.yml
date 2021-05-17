@@ -81,11 +81,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.3.4
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2.2.2
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -97,7 +97,7 @@ jobs:
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v1.5.0
       with:
         file: ./coverage.xml
   build-n-publish:
@@ -105,13 +105,13 @@ jobs:
     runs-on: ubuntu-18.04
     needs: tests
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2.3.4
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2.2.2
       with:
         python-version: 3.7
     - name: Install requirements
