@@ -3,10 +3,6 @@
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
-    "betaH_",
-    "cs_",
-    "cwp_",
-    "DB_",
     "Debye_length",
     "Debye_number",
     "gyrofrequency",
@@ -15,23 +11,29 @@ __all__ = [
     "inertial_length",
     "ion_sound_speed",
     "kappa_thermal_speed",
-    "lambdaD_",
     "lower_hybrid_frequency",
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
+    "plasma_frequency",
+    "thermal_pressure",
+    "thermal_speed",
+    "upper_hybrid_frequency",
+]
+__aliases__ = [
+    "betaH_",
+    "cs_",
+    "cwp_",
+    "DB_",
+    "lambdaD_",
     "nD_",
     "oc_",
-    "plasma_frequency",
     "pmag_",
     "pth_",
     "rc_",
     "rho_",
     "rhoc_",
-    "thermal_pressure",
-    "thermal_speed",
     "ub_",
-    "upper_hybrid_frequency",
     "va_",
     "vth_",
     "vth_kappa_",
@@ -59,6 +61,8 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
+
+__all__ += __aliases__
 
 
 def _grab_charge(ion: Particle, z_mean=None):
@@ -95,7 +99,7 @@ def _grab_charge(ion: Particle, z_mean=None):
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def mass_density(
-    density: [u.m ** -3, u.kg / (u.m ** 3)],
+    density: (u.m ** -3, u.kg / (u.m ** 3)),
     particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
@@ -201,7 +205,7 @@ rho_ = mass_density
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
-    density: [u.m ** -3, u.kg / u.m ** 3],
+    density: (u.m ** -3, u.kg / u.m ** 3),
     ion: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:

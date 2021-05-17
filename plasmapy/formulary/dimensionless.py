@@ -16,6 +16,7 @@ __all__ = [
     "Reynolds_number",
     "Rm_",
 ]
+__aliases__ = ["Re_", "Rm_"]
 
 from astropy import constants
 from astropy import units as u
