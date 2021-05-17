@@ -173,7 +173,7 @@ class Test_IonizationState:
     @pytest.mark.parametrize("test_name", test_names)
     def test_integer_charges(self, test_name):
         """
-        Test that `IonizationState.integer_charges` instance has the
+        Test that `IonizationState.integer_charges` has the
         correct charge numbers and issues a future warning.
         """
         # TODO: remove when IonizationState.integer_charge is removed
@@ -423,8 +423,8 @@ class Test_IonizationState:
         instance = self.instances[test_name]
         particle_name = instance.base_particle
 
-        charge_numnbers = np.arange(instance.atomic_number + 1)
-        symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numnbers]
+        charge_numbers = np.arange(instance.atomic_number + 1)
+        symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
         particles = instance._particle_instances
 
         errors = []
@@ -435,7 +435,7 @@ class Test_IonizationState:
         # these objects, we compare the string representations instead
         # (see Astropy issue #7901 on GitHub).
 
-        for keys in zip(charge_numnbers, symbols, particles):
+        for keys in zip(charge_numbers, symbols, particles):
 
             set_of_str_values = {str(instance[key]) for key in keys}
             if len(set_of_str_values) != 1:
