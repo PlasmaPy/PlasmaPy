@@ -969,8 +969,8 @@ class Particle(AbstractPhysicalParticle):
         name="integer_charge",
         message=(
             "The integer_charge attribute of Particle has been "
-            "deprecated since version 0.7.0 and will be removed in "
-            "a future release.  Use charge_number instead."
+            "deprecated and will be removed in a future release.  Use "
+            "charge_number instead."
         ),
         warning_type=PlasmaPyFutureWarning,
     )

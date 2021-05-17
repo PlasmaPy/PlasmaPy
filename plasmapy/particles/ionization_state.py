@@ -121,8 +121,8 @@ class IonicLevel:
         name="integer_charge",
         message=(
             "The integer_charge attribute of IonicLevel has been "
-            "deprecated since version 0.7.0 and will be removed in "
-            "a future release.  Use charge_number instead."
+            "deprecated and will be removed in a future release.  Use "
+            "charge_number instead."
         ),
         warning_type=PlasmaPyFutureWarning,
     )
@@ -673,8 +673,8 @@ class IonizationState:
         name="integer_charges",
         message=(
             "The integer_charges attribute of IonizationState has been "
-            "deprecated since version 0.7.0 and will be removed in "
-            "a future release.  Use charge_numbers instead."
+            "deprecated and will be removed in a future release.  Use "
+            "charge_numbers instead."
         ),
         warning_type=PlasmaPyFutureWarning,
     )

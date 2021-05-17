@@ -359,8 +359,8 @@ def charge_number(particle: Particle) -> Integral:
     since="0.7.0",
     warning_type=PlasmaPyFutureWarning,
     message=(
-        "integer_charge has been deprecated since version 0.7.0 and will "
-        "be removed in a future release.  Use charge_number instead."
+        "integer_charge has been deprecated and will be removed in a "
+        "future release.  Use charge_number instead."
     ),
 )
 @particle_input(any_of={"charged", "uncharged"})
