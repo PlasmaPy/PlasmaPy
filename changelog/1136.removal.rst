@@ -5,8 +5,12 @@ attribute of `~plasmapy.particles.particle_class.Particle` has been
 deprecated in favor of
 `~plasmapy.particles.particle_class.Particle.charge_number`.
 The `~plasmapy.particles.ionization_state.IonicFraction.integer_charge`
-attribute has been deprecated in favor of
+attribute of
+`~plasmapy.particles.ionization_state.IonicFraction`
+has been deprecated in favor of
 `~plasmapy.particles.ionization_state.IonicFraction.charge_number`.
 The `~plasmapy.particles.ionization_state.IonizationState.integer_charges`
-attribute has been deprecated in favor of
+attribute of
+`~plasmapy.particles.ionization_state.IonizationState`
+has been deprecated in favor of
 `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`.
