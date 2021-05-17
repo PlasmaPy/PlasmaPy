@@ -1,7 +1,7 @@
 :orphan:
 
 `plasmapy.utils.decorators.deprecation`
-=====================================
+=======================================
 
 .. currentmodule:: plasmapy.utils.decorators.deprecation
 
