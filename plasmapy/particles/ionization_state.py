@@ -188,8 +188,9 @@ class IonizationState:
         ions.
 
     tol: `float` or integer, keyword-only, optional
-        The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to ``1e-15``.
+        The absolute tolerance used by `~numpy.isclose` and similar
+        functions when testing normalizations and making comparisons.
+        Defaults to ``1e-15``.
 
     Raises
     ------
@@ -691,7 +692,14 @@ class IonizationState:
 
     @property
     def tol(self) -> Real:
-        """The absolute tolerance for comparisons."""
+        """
+        The absolute tolerance for comparisons.
+
+        This attribute is used as the ``atol`` parameter in
+        `numpy.isclose`, `numpy.allclose`,
+        `astropy.units.isclose`, and `astropy.units.allclose`
+        when testing normalizations and making comparisons.
+        """
         return self._tol
 
     @tol.setter
