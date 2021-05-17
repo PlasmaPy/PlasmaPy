@@ -44,14 +44,14 @@ def contour_shaped_array(draw, elements):
 def test_fs_flux_surface_sine_modes(m: int, flux_surface):
     mode = np.sin(flux_surface.Theta * m)
     mode /= np.linalg.norm(mode, ord=2)
-    assert abs(flux_surface.flux_surface_average(mode)) < 0.1
+    assert abs(flux_surface.flux_surface_average(mode)) < 0.01
 
 
 @given(m=integers(1, 100))
 def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
     mode = np.cos(flux_surface.Theta * m)
     mode /= np.linalg.norm(mode, ord=2)
-    assert abs(flux_surface.flux_surface_average(mode)) < 0.1
+    assert abs(flux_surface.flux_surface_average(mode)) < 0.01
 
 
 # @pytest.mark.xfail(raises=AssertionError,
@@ -66,11 +66,10 @@ def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
 #     assert abs(flux_surface.flux_surface_average(under_average)) < 0.01
 
 
-@pytest.mark.xfail(raises=AssertionError, reason="Currently negative")
 def test_fs_trapped_fraction(num_regression, flux_surface):
     f_t = flux_surface.trapped_fraction()
     num_regression.check({"f_t": f_t})
-    assert 0 < f_t < 0.5
+    assert 0 < f_t < 1
 
 
 @pytest.mark.skip

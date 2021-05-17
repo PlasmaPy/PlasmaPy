@@ -40,6 +40,7 @@ def equilibrium():
     return equilibrium
 
 
-@pytest.fixture(scope="module")
-def flux_surface(equilibrium, psi_value=-0.01):
+@pytest.fixture(scope="module", params=[-0.01, -0.02])
+def flux_surface(request, equilibrium):
+    psi_value = request.param
     return equilibrium.get_flux_surface(psi_value)
