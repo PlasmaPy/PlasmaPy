@@ -446,7 +446,7 @@ def _parse_and_check_atomic_input(
             )
         elif Z <= -3:
             warnings.warn(
-                f"Particle '{argument}' has an charge number "
+                f"Particle '{argument}' has a charge number "
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
                 ParticleWarning,
