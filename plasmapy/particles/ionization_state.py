@@ -290,11 +290,11 @@ class IonizationState:
         Initialize an `~plasmapy.particles.ionization_state.IonizationState`
         instance.
         """
-        self._number_particles = particle.atomic_number + 1
+        self._number_of_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
             if ionic_fractions is None:
-                ionic_fractions = np.zeros(self._number_particles)
+                ionic_fractions = np.zeros(self._number_of_particles)
                 ionic_fractions[particle.charge_number] = 1.0
                 particle = Particle(
                     particle.isotope if particle.isotope else particle.element
@@ -354,7 +354,7 @@ class IonizationState:
                     number_density=self.number_densities[val],
                     T_i=self.T_i[val],
                 )
-                for val in range(0, self._number_particles)[value]
+                for val in range(0, self._number_of_particles)[value]
             ]
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
@@ -649,20 +649,20 @@ class IonizationState:
     def T_i(self, value: u.K):
         """Set the ion temperature."""
         if value is None:
-            self._T_i = np.repeat(self._T_e, self._number_particles)
+            self._T_i = np.repeat(self._T_e, self._number_of_particles)
             return
 
         if value.size == 1:
-            self._T_i = np.repeat(value, self._number_particles)
-        elif value.size == self._number_particles:
+            self._T_i = np.repeat(value, self._number_of_particles)
+        elif value.size == self._number_of_particles:
             self._T_i = value
         else:
             error_str = (
                 "T_i must be set with either one common temperature"
-                f" for all ions, or a set of {self._number_particles} of them. "
+                f" for all ions, or a set of {self._number_of_particles} of them. "
             )
 
-            if value.size == 5 and self._number_particles != 5:
+            if value.size == 5 and self._number_of_particles != 5:
                 error_str += " For {self.base_particle}, five is right out."
             raise ParticleError(error_str)
 
@@ -717,7 +717,7 @@ class IonizationState:
         return self._particle.atomic_number
 
     def __len__(self):
-        return self._number_particles
+        return self._number_of_particles
 
     @property
     def _particle_instances(self) -> List[Particle]:
