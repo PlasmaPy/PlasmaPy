@@ -99,7 +99,7 @@ def _grab_charge(ion: Particle, z_mean=None):
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def mass_density(
-    density: [u.m ** -3, u.kg / (u.m ** 3)],
+    density: (u.m ** -3, u.kg / (u.m ** 3)),
     particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
@@ -205,7 +205,7 @@ rho_ = mass_density
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
-    density: [u.m ** -3, u.kg / u.m ** 3],
+    density: (u.m ** -3, u.kg / u.m ** 3),
     ion: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
