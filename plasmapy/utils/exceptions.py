@@ -9,6 +9,8 @@ __all__ = [
     "PlasmaPyWarning",
     "CouplingWarning",
     "PhysicsWarning",
+    "PlasmaPyDeprecationWarning",
+    "PlasmaPyFutureWarning",
     "RelativityWarning",
 ]
 
@@ -114,6 +116,24 @@ class RelativityWarning(PhysicsWarning):
 class CouplingWarning(PhysicsWarning):
     """
     A warning for functions that rely on a particular coupling regime to be valid.
+    """
+
+    pass
+
+
+class PlasmaPyDeprecationWarning(PlasmaPyWarning, DeprecationWarning):
+    """
+    A warning for deprecated features when the warning is intended for
+    other Python developers.
+    """
+
+    pass
+
+
+class PlasmaPyFutureWarning(PlasmaPyWarning, FutureWarning):
+    """
+    A warning for deprecated features when the warning is intended for
+    end users of PlasmaPy.
     """
 
     pass

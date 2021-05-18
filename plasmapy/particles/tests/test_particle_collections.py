@@ -21,7 +21,7 @@ dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
 attributes = [
     "charge",
     "half_life",
-    "integer_charge",
+    "charge_number",
     "mass",
     "mass_energy",
 ]

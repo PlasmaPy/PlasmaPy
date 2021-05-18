@@ -186,7 +186,7 @@ prepended with `test_` (e.g., ``test_atomic.py``).  Tests may also be
 In order for pytest to find tests in classes, the class name should
 start with ``Test`` and the methods to be run as tests should start with
 ``test_``.  For example, ``test_particle_class.py`` could define the
-``TestParticle`` class containing the method ``test_integer_charge``.
+``TestParticle`` class containing the method ``test_charge_number``.
 
 .. _testing-guidelines-writing-tests-asserts:
 
