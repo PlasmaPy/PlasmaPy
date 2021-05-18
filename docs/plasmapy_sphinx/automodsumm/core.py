@@ -119,7 +119,7 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 
         If you want the :rst:dir:`automodsumm` table to serve as a :rst:dir:`toctree`,
         then specify this option with a directory path ``DIRNAME`` with respect to
-        the location of your `conf.py` file.
+        the location of your ``conf.py`` file.
 
         .. code-block:: rst
 
