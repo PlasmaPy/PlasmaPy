@@ -830,17 +830,17 @@ class IonizationState:
                 state_info = ""
                 symbol = state.ionic_symbol
                 if state.charge_number < 10:
-                    symbol = symbol[:-2] + " " + symbol[-2:]
-                fraction = "{:.3f}".format(state.ionic_fraction)
+                    symbol = f"{symbol[:-2]} {symbol[-2:]}"
+                fraction = f"{state.ionic_fraction:.3f}"
 
                 state_info += f"{symbol}: {fraction}"
 
                 if np.isfinite(self.n_elem):
-                    value = "{:.2e}".format(state.number_density.si.value)
+                    value = f"{state.number_density.si.value:.2e}"
                     state_info += f"    n_i = {value} m**-3"
 
                 if np.isfinite(state.T_i):
-                    value = "{:.2e}".format(state.T_i.si.value)
+                    value = f"{state.T_i.si.value:.2e}"
                     state_info += f"    T_i = {value} K"
 
                 states_info.append(state_info)
