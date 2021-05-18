@@ -126,13 +126,15 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
             .. automodsumm:: plasmapy_sphinx.autodoc.automodapi
                 :toctree: DIRNAME
 
-        This will signal `sphinx-autogen` to generate stub files for the objects in
-        the table and place them in the directory named by ``DIRNAME``.  This behavior
-        respects the configuration value :confval:`autosummary_generate`.
-        Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
-        that falls into the **modules** group (see the
-        :rst:dir:`automodsumm:groups` option below), unless
-        :confval:`automodapi_generate_module_stub_files` is set ``True``.
+        This will signal `sphinx-autogen
+        <https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html>`_
+        to generate stub files for the objects in the table and place them in
+        the directory named by ``DIRNAME``.  This behavior respects the
+        configuration value :confval:`autosummary_generate`.  Additionally,
+        :rst:dir:`automodsumm` will not generate stub files for entry that
+        falls into the **modules** group (see the :rst:dir:`automodsumm:groups`
+        option below), unless :confval:`automodapi_generate_module_stub_files`
+        is set ``True``.
 
 .. _automodsumm-confvals:
 
