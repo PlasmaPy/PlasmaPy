@@ -34,19 +34,31 @@ def validate_object(properties=[]):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
+            missing = []
+            
             for p in properties:
-                if getattr(self, p) is None:
-                    raise ValueError(
-                        f"{self.__class__.__name__}.{func.__name__}() "
-                        f"cannot be calculated when the attribute {p} "
-                        "is None."
+                if (getattr(self, p) is None):
+                    missing.append(p)
+
+            if len(missing) > 0:
+                raise ValueError(
+                    f"Keywords {properties} must be provided to calculate "
+                    f"{self.__class__.__name__}.{func.__name__}(), but "
+                    f"the following keywords were not provided {missing}."
                     )
-            return func(self, *args, **kwargs)
+            else:
+                return func(self, *args, **kwargs)
 
         return wrapper
 
     return decorator
 
+
+
+# This format string is used for cleaner NotImplemented errors for
+# coefficients that are not included in a particular model
+not_implemented = ("The {0} property is not implemented in {1}. "
+                   "The {0} coefficient may not be defined as part of this model.")
 
 class AbstractClassicalTransportCoefficients(ABC):
     r"""
@@ -119,31 +131,51 @@ class AbstractClassicalTransportCoefficients(ABC):
         e_collision_freq=None,
         i_collision_freq=None,
     ):
-
-        # The __init__ method calls one of two constructors based on which
-        # keywords are provided.
-        # The normalized/dimensionless keywords take precidence
-
-        if Z is not None:
-            self._constructor_normalized(chi_e, chi_i, Z)
-
-        else:
-            self._constructor_dimensional(
-                particle=particle,
-                B=B,
-                ne=ne,
-                ni=ni,
-                Te=Te,
-                Ti=Ti,
-                e_collision_freq=e_collision_freq,
-                i_collision_freq=i_collision_freq,
-            )
-
-    def _constructor_normalized(self, chi_e, chi_i, Z):
+        
         self.chi_e = chi_e
         self.chi_i = chi_i
         self.Z = Z
+        self.particle = particle
+        self.B = B
+        self.ne = ne
+        self.ni = ni
+        self.Te = Te
+        self.Ti = Ti
+        self.e_collision_freq = e_collision_freq
+        self.i_collision_freq = i_collision_freq
 
+        
+
+        
+        
+    
+        # Ensure that only one set of keywords is being used
+        # This code block checks to ensure that one of the sets of
+        # keywords is all None, and raises an exception otherwise
+        dim = [self.particle, self.B, self.ne, self.ni, 
+                               self.Te, self.Ti, self.e_collision_freq, 
+                               self.i_collision_freq]
+        nodim = [self.chi_e, self.chi_i, self.Z]
+        dim_none = all([v is None for v in dim])
+        nodim_none = all([v is None for v in nodim])
+        
+        if not dim_none and not nodim_none:
+            raise ValueError("The dimensionless keywords [chi_e, chi_i, Z] and "
+                             "dimensional keywords (all others) are mutually "
+                             "exlusive because, in the dimensional case, "
+                             "chi and Z are calculated from the other parameters. "
+                             "Use one or the other!")
+        
+    
+        # The __init__ method calls one of two constructors based on which
+        # keywords are provided.
+        if Z is not None:
+            self._constructor_normalized()
+
+        else:
+            self._constructor_dimensional()
+
+    def _constructor_normalized(self):
         # Set the normalization coefficients to None, since the required
         # plasma parameters were not provided. This will cause the
         # dimensional coefficent functions to raise an error
@@ -151,92 +183,79 @@ class AbstractClassicalTransportCoefficients(ABC):
         self.beta_normalization = None
         self.kappa_e_normalization = None
         self.kappa_i_normalization = None
+        self.eta_e_normalization = None
+        self.eta_i_normalization = None
 
-    def _constructor_dimensional(
-        self,
-        particle,
-        B,
-        ne=None,
-        ni=None,
-        Te=None,
-        Ti=None,
-        e_collision_freq=None,
-        i_collision_freq=None,
-    ):
-
+    def _constructor_dimensional(self):
         # Normalizations are defined such that multiplying the dimensionless
         # quantity by the normalization constant will return the dimensional
         # quantity
 
-        self.Z = particle.integer_charge
+        self.Z = self.particle.integer_charge
+    
+        if all(v is not None for v in [self.ne, self.Te]):
 
-        if all(v is not None for v in [ne, Te]):
+            if self.e_collision_freq is None:
+                self.e_collision_freq = fundamental_electron_collision_freq(self.Te, self.ne, self.particle)
+            wce = gyrofrequency(self.B, "e-")
 
-            if e_collision_freq is None:
-                e_collision_freq = fundamental_electron_collision_freq(Te, ne, particle)
-            wce = gyrofrequency(B, "e-")
-
-            self.chi_e = wce / e_collision_freq
-            self.alpha_normalization = particle.mass * ne * e_collision_freq
+            self.chi_e = wce / self.e_collision_freq
+            self.alpha_normalization = self.particle.mass * self.ne * self.e_collision_freq
             self.beta_normalization = 1.0
-            self.kappa_e_normalization = ne * Te / e_collision_freq / m_e
+            self.kappa_e_normalization = self.ne * self.Te / self.e_collision_freq / m_e
+            self.eta_e_normalization = self.ne * self.Te / self.e_collision_freq
         else:
             self.chi_e = None
             self.alpha_normalization = None
             self.beta_normalization = None
             self.kappa_e_normalization = None
+            self.eta_e_normalization = None
 
-        if all(v is not None for v in [ni, Ti]):
+        if all(v is not None for v in [self.ni, self.Ti]):
 
-            if i_collision_freq is None:
-                i_collision_freq = fundamental_ion_collision_freq(Ti, ni, particle)
-            wci = gyrofrequency(B, particle)
+            if self.i_collision_freq is None:
+                self.i_collision_freq = fundamental_ion_collision_freq(self.Ti, self.ni, self.particle)
+            wci = gyrofrequency(self.B, self.particle)
 
-            self.chi_i = wci / i_collision_freq
-            self.kappa_i_normalization = ni * Ti / i_collision_freq / particle.mass
+            self.chi_i = wci / self.i_collision_freq
+            self.kappa_i_normalization = self.ni * self.Ti / self.i_collision_freq / self.particle.mass
+            self.eta_i_normalization = self.ni * self.Ti / self.i_collision_freq
         else:
             self.chi_i = None
             self.kappa_i_normalization = None
+            self.eta_i_normalization = None
 
     # **********************************************************************
     # Resistivity (alpha)
     # **********************************************************************
     @property
     def norm_alpha_para(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("alpha_para",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def alpha_para(self):
-        if self.alpha_normalization is None:
-            raise ValueError(
-                "Keywords ne and B must be provided to " "calculate alpha_para"
-            )
-
         return self.norm_alpha_para * self.alpha_normalization
 
     @property
     def norm_alpha_perp(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("alpha_perp",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def alpha_perp(self):
-        if self.alpha_normalization is None:
-            raise ValueError(
-                "Keywords ne and B must be provided to " "calculate alpha_perp"
-            )
-
         return self.norm_alpha_perp * self.alpha_normalization
 
     @property
     def norm_alpha_cross(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("alpha_cross",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def alpha_cross(self):
-        if self.alpha_normalization is None:
-            raise ValueError(
-                "Keywords ne and B must be provided to " "calculate alpha_cross"
-            )
         return self.norm_alpha_cross * self.alpha_normalization
 
     # **********************************************************************
@@ -244,7 +263,8 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
     @property
     def norm_beta_para(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("beta_para",
+                                                         self.__class__.__name__))
 
     @property
     def beta_para(self):
@@ -252,7 +272,8 @@ class AbstractClassicalTransportCoefficients(ABC):
 
     @property
     def norm_beta_perp(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("beta_perp",
+                                                         self.__class__.__name__))
 
     @property
     def beta_perp(self):
@@ -260,7 +281,8 @@ class AbstractClassicalTransportCoefficients(ABC):
 
     @property
     def norm_beta_cross(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("beta_cross",
+                                                         self.__class__.__name__))
 
     @property
     def beta_cross(self):
@@ -271,40 +293,32 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
     @property
     def norm_kappa_e_para(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_e_para",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def kappa_e_para(self):
-        if self.kappa_e_normalization is None:
-            raise ValueError(
-                "Keywords ne, Te, and B must be provided to " "calculate kappa_e_para"
-            )
-
         return self.norm_kappa_e_para * self.kappa_e_normalization
 
     @property
     def norm_kappa_e_perp(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_e_perp",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def kappa_e_perp(self):
-        if self.kappa_e_normalization is None:
-            raise ValueError(
-                "Keywords ne, Te, and B must be provided to " "calculate kappa_perp_e"
-            )
-
         return self.norm_kappa_e_perp * self.kappa_e_normalization
 
     @property
     def norm_kappa_e_cross(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_e_cross",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
     def kappa_e_cross(self):
-        if self.kappa_e_normalization is None:
-            raise ValueError(
-                "Keywords ne, Te, and B must be provided to " "calculate kappa_e_cross"
-            )
         return self.norm_kappa_e_cross * self.kappa_e_normalization
 
     # **********************************************************************
@@ -313,62 +327,67 @@ class AbstractClassicalTransportCoefficients(ABC):
 
     @property
     def norm_kappa_i_para(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_i_para",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ni', 'Ti', 'B', 'particle'])
     def kappa_i_para(self):
-        if self.kappa_i_normalization is None:
-            raise ValueError(
-                "Keywords particle, B, ni, and Ti must be provided to "
-                "calculate kappa_i_para"
-            )
-
         return self.norm_kappa_i_para * self.kappa_i_normalization
 
     @property
     def norm_kappa_i_perp(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_i_perp",
+                                                         self.__class__.__name__))
 
     @property
+    @validate_object(properties=['ni', 'Ti', 'B', 'particle'])
     def kappa_i_perp(self):
-        if self.kappa_i_normalization is None:
-            raise ValueError(
-                "Keywords particle, B, ni, and Ti must be provided to "
-                "calculate kappa_i_perp"
-            )
-
         return self.norm_kappa_i_perp * self.kappa_i_normalization
 
     @property
     def norm_kappa_i_cross(self):
-        raise NotImplementedError
+        raise NotImplementedError(not_implemented.format("kappa_i_cross",
+                                                         self.__class__.__name__))
 
     @property
-    def kappa_i_cross(self):
-        if self.kappa_i_normalization is None:
-            raise ValueError(
-                "Keywords particle, B, ni, and Ti must be provided to "
-                "calculate kappa_i_cross"
-            )
+    @validate_object(properties=['ni', 'Ti', 'B', 'particle'])
+    def kappa_i_cross(self):   
         return self.norm_kappa_i_cross * self.kappa_i_normalization
 
     # **********************************************************************
-    # Electron Viscosity (pi_e)
+    # Electron Viscosity (eta_e)
+    # Note: returns an array [eta0, eta1, eta2, eta3, eta4]
     # **********************************************************************
-
-    # TODO: implement electron viscosity
+    @property
+    def norm_eta_e(self):
+        raise NotImplementedError(not_implemented.format("eta_e",
+                                                         self.__class__.__name__))
+        
+    @property
+    @validate_object(properties=['ne', 'Te', 'B', 'particle'])
+    def eta_e(self):
+        return self.norm_eta_e * self.eta_e_normalization
+    
 
     # **********************************************************************
-    # Electron Viscosity (pi_i)
+    # Ion Viscosity (eta_i)
+    # Note: returns an array [eta0, eta1, eta2, eta3, eta4]
     # **********************************************************************
-
-    # TODO: implement ion viscosity
+    @property
+    def norm_eta_i(self):
+        raise NotImplementedError(not_implemented.format("eta_i",
+                                                         self.__class__.__name__))
+        
+    @property
+    @validate_object(properties=['ni', 'Ti', 'B', 'particle'])
+    def eta_i(self):
+        return self.norm_eta_i * self.eta_i_normalization
 
     # **********************************************************************
     # Resistive Velocity (delta_e)
     # "Symmetric" coefficent formulism of Sadler and Davies
     # **********************************************************************
-
     def norm_delta_e_perp(self):
 
         return self.norm_alpha_cross / self.chi_e
@@ -435,6 +454,11 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
             "kappa_e_para",
             "kappa_e_perp",
             "kappa_e_cross",
+            "eta0_e",
+            "eta1_e",
+            "eta2_e",
+            "eta3_e",
+            "eta4_e",
         ]
 
         # Coefficients whose fits depend on chi_i
@@ -442,6 +466,11 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
             "kappa_i_para",
             "kappa_i_perp",
             "kappa_i_cross",
+            "eta0_i",
+            "eta1_i",
+            "eta2_i",
+            "eta3_i",
+            "eta4_i",
         ]
 
         # Create an interpolator for each of the data tables
@@ -461,43 +490,93 @@ class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):
                         bounds_error=False,
                         fill_value=None,
                     )
-
+    @property
     def norm_alpha_para(self):
         return self.interpolators["alpha_para"](self.Z, self.chi_e)
-
+    
+    @property
     def norm_alpha_perp(self):
         return self.interpolators["alpha_perp"](self.Z, self.chi_e)
-
+    
+    @property
     def norm_alpha_cross(self):
         return self.interpolators["alpha_cross"](self.Z, self.chi_e)
 
+    @property
     def norm_beta_para(self):
         return self.interpolators["beta_para"](self.Z, self.chi_e)
-
+   
+    @property
     def norm_beta_perp(self):
         return self.interpolators["beta_perp"](self.Z, self.chi_e)
 
+    @property
     def norm_beta_cross(self):
         return self.interpolators["beta_cross"](self.Z, self.chi_e)
-
+    
+    @property
     def norm_kappa_e_para(self):
         return self.interpolators["kappa_e_para"](self.Z, self.chi_e)
-
+    
+    @property
     def norm_kappa_e_perp(self):
         return self.interpolators["kappa_e_perp"](self.Z, self.chi_e)
 
+    @property
     def norm_kappa_e_cross(self):
         return self.interpolators["kappa_e_cross"](self.Z, self.chi_e)
-
+    
+    @property
     def norm_kappa_i_para(self):
         return self.interpolators["kappa_i_para"](self.Z, self.chi_i)
 
+    @property
     def norm_kappa_i_perp(self):
         return self.interpolators["kappa_i_perp"](self.Z, self.chi_i)
-
+    
+    @property
     def norm_kappa_i_cross(self):
         return self.interpolators["kappa_i_cross"](self.Z, self.chi_i)
+    
+    @property
+    def norm_eta_e(self):
+        """
+        
+        Returns
+        -------
+        coef : `numpy.ndarray` (5,)
+            The five electron viscosity coefficients:
+                 eta0, eta1, eta2, eta3, eta4.
+        """
+        
+        coef = []
+        names = ['eta0_e', 'eta1_e', 'eta2_e', 'eta3_e', 'eta4_e']
+        for c in names:
+            coef.append(self.interpolators[c](self.Z, self.chi_e))
+        return coef
+    
+    @property
+    def norm_eta_i(self):
+        """
+        
+        Returns
+        -------
+        coef : `numpy.ndarray` (5,)
+            The five ion viscosity coefficients:
+                 eta0, eta1, eta2, eta3, eta4.
+        """
+        
+        coef = []
+        names = ['eta0_i', 'eta1_i', 'eta2_i', 'eta3_i', 'eta4_i']
+        for c in names:
+            coef.append(self.interpolators[c](self.Z, self.chi_i))
+        return coef
 
 
 if __name__ == "__main__":
-    pass
+    chi = np.linspace(-2, 2, num=50)
+    chi = 10 ** chi
+    x = AbstractClassicalTransportCoefficients(chi_e = chi, Z=1)
+    print(x.norm_alpha_para)
+
+    

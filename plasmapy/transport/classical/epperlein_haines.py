@@ -61,6 +61,8 @@ def _find_nearest(Z):
 
 
 class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
+    
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_para(self):
         """
@@ -95,6 +97,7 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
         i = _find_nearest(self.Z)
         return c["alpha0"][i] * np.ones(self.chi_e.size)
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_perp(self):
         i = _find_nearest(self.Z)
@@ -102,6 +105,7 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
             self.chi_e ** 2 + c["a1p"][i] * self.chi_e + c["a0p"][i]
         )
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_alpha_cross(self):
         i = _find_nearest(self.Z)
@@ -117,11 +121,13 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
             ** (8 / 9)
         )
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_beta_para(self):
         i = _find_nearest(self.Z)
         return c["beta0"][i] * np.ones(self.chi_e.size)
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_beta_perp(self):
         i = _find_nearest(self.Z)
@@ -135,6 +141,7 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
     # TODO: Note that this function doesn't match the EH paper Fig. 1 in the
     # chi -> inf side. The coefficients and polynomial are right...
     # this might be a mistake in the EH tables?
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_beta_cross(self):
         i = _find_nearest(self.Z)
@@ -148,11 +155,13 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
             )
         )
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_kappa_e_para(self):
         i = _find_nearest(self.Z)
         return c["gamma0"][i] * np.ones(self.chi_e.size)
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_kappa_e_perp(self):
         i = _find_nearest(self.Z)
@@ -163,6 +172,7 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
             + c["c0p"][i]
         )
 
+    @property
     @validate_object(properties=["chi_e", "Z"])
     def norm_kappa_e_cross(self):
         i = _find_nearest(self.Z)
@@ -203,6 +213,8 @@ if __name__ == "__main__":
     ax.set_xscale("log")
     ax.plot(chi, data)
 
+    """
+    
     """
     chi = np.linspace(-2, 2, num=100)
     chi = 10 ** chi
@@ -259,3 +271,14 @@ if __name__ == "__main__":
     ax.set_ylim(0.01, 10)
     ax.plot(chi, coef1.norm_kappa_e_cross())
     ax.plot(chi, coef2.norm_kappa_e_cross())
+    """
+    
+    
+    import astropy.units as u
+    chi = np.linspace(-2, 2, num=50)
+    chi = 10 ** chi
+    coef = EpperleinHainesPolynomialFit(chi_e=chi, ne=1e19*u.cm**-3, B=10*u.T, particle='H+', Te=1*u.eV)
+    
+    print(type(coef.norm_alpha_para))
+    print(coef.norm_alpha_para)
+    
