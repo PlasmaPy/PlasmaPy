@@ -647,12 +647,12 @@ class TestIonizationStateCollectionAttributes:
         result = instance[indices]
 
         particle = indices[0]
-        integer_charge = indices[1]
+        charge_number = indices[1]
 
         assert isinstance(result, IonicLevel)
-        assert result.integer_charge == integer_charge
+        assert result.charge_number == charge_number
 
-        expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
+        expected_ionic_fraction = instance.ionic_fractions[particle][charge_number]
 
         assert np.any(
             [
@@ -661,7 +661,7 @@ class TestIonizationStateCollectionAttributes:
             ]
         )
 
-        assert result.ionic_symbol == particle_symbol(particle, Z=integer_charge)
+        assert result.ionic_symbol == particle_symbol(particle, Z=charge_number)
 
     def test_setting_n(self):
         try:

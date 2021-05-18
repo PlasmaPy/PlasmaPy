@@ -173,7 +173,7 @@ def ionic_symbol(
         The mass number of the ion or neutral atom.
 
     Z: `int` or `str`, optional
-        The integer charge of the ion or neutral atom.
+        The charge number of the ion or neutral atom.
 
     Returns
     -------
@@ -241,7 +241,7 @@ def particle_symbol(
         The mass number of an isotope.
 
     Z: `int` or `str`, optional
-        The integer charge of an ion.
+        The charge number of an ion.
 
     Returns
     -------

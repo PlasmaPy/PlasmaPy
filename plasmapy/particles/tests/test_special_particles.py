@@ -35,7 +35,7 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
     if particle in ["e-", "mu-", "tau-"] or "nu" in particle:
         identical_keys.append("generation")
 
-    opposite_keys = ["integer charge", "lepton number", "baryon number"]
+    opposite_keys = ["charge number", "lepton number", "baryon number"]
 
     for key in identical_keys:
         assert (
@@ -59,7 +59,7 @@ required_keys = [
     "class",
     "lepton number",
     "baryon number",
-    "integer charge",
+    "charge number",
     "half-life",
     "mass",
     "antimatter",

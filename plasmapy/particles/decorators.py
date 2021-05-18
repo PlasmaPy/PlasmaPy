@@ -42,7 +42,7 @@ def _particle_errmsg(
     if mass_numb is not None and Z is not None:
         errmsg += "and "
     if Z is not None:
-        errmsg += f"integer charge Z = {repr(Z)} "
+        errmsg += f"charge number Z = {repr(Z)} "
     errmsg += "does not correspond to a valid particle."
     return errmsg
 
@@ -470,13 +470,13 @@ def particle_input(
         # Some functions require that particles be charged, or
         # at least that particles have charge information.
 
-        _integer_charge = particle._attributes["integer charge"]
+        _charge_number = particle._attributes["charge number"]
 
         must_be_charged = "charged" in require
         must_have_charge_info = set(any_of) == {"charged", "uncharged"}
 
-        uncharged = _integer_charge == 0
-        lacks_charge_info = _integer_charge is None
+        uncharged = _charge_number == 0
+        lacks_charge_info = _charge_number is None
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"A charged particle is required for {funcname}.")
