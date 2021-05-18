@@ -357,7 +357,7 @@ class GenDocsFromAutomodsumm:
         """
         Search files for the :rst:dir:`automodapi` and :rst:dir:`automodsumm`
         directives and generate a list of
-        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.automodsumm.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
@@ -384,7 +384,7 @@ class GenDocsFromAutomodsumm:
         """
         Search a list of strings for the :rst:dir:`automodapi` and
         :rst:dir:`automodsumm` directives and generate a list of
-        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.automodsumm.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
