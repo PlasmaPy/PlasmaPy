@@ -31,10 +31,10 @@ case-sensitive, but element names and many aliases are not.
 >>> hydride = Particle('H-')
 
 An `int` may be used as the first positional argument to
-`~plasmapy.particles.particle_class.Particle` to represent an atomic number.
-For isotopes and ions, the mass number may be represented with the ``mass_numb``
-keyword and the integer charge may be represented with the ``Z``
-keyword.
+`~plasmapy.particles.particle_class.Particle` to represent an atomic
+number.  For isotopes and ions, the mass number may be represented with
+the ``mass_numb`` keyword and the integer charge may be represented
+with the ``Z`` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
@@ -59,7 +59,7 @@ the corresponding `~plasmapy.particles.particle_class.Particle` object.
 
 >>> proton.atomic_number
 1
->>> electron.integer_charge
+>>> electron.charge_number
 -1
 >>> triton.mass_number
 3

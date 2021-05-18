@@ -48,6 +48,8 @@ from plasmapy.particles.special_particles import (
     ParticleZoo,
 )
 from plasmapy.utils import roman
+from plasmapy.utils.decorators import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 _classification_categories = {
     "lepton",
@@ -128,9 +130,9 @@ class AbstractParticle(ABC):
         A dictionary representation of the particle object that is JSON
         friendly (i.e. convertible to a JSON object).
 
-        The dictionary should maintain the following format so
-        `~plasmapy.particles.ParticleJSONDecoder` knows how to decoded
-        the resulting JSON object.
+        The dictionary should maintain the following format so that
+        `~plasmapy.particles.serialization.ParticleJSONDecoder` knows
+        how to decode the resulting JSON object.
 
         .. code-block:: python
 
@@ -247,7 +249,7 @@ class Particle(AbstractPhysicalParticle):
         The mass number of an isotope or nuclide.
 
     Z : `int`, optional
-        The integer charge of the particle.
+        The charge number of the particle.
 
     Raises
     ------
@@ -271,7 +273,7 @@ class Particle(AbstractPhysicalParticle):
 
     `~plasmapy.particles.exceptions.ChargeError`
         For when either the `~plasmapy.particles.Particle.charge` or
-        `~plasmapy.particles.Particle.integer_charge` attributes is
+        `~plasmapy.particles.Particle.charge_number` attributes is
         being accessed but the charge information for the particle is
         not available.
 
@@ -298,16 +300,16 @@ class Particle(AbstractPhysicalParticle):
     >>> positron = Particle('positron')
     >>> hydrogen = Particle(1)  # atomic number
 
-    The `~plasmapy.particles.Particle.symbol` attribute returns the
-    particle's symbol in the standard form.
+    The `~plasmapy.particles.particle_class.Particle.symbol` attribute
+    returns the particle's symbol in the standard form.
 
     >>> positron.symbol
     'e+'
 
-    The `~plasmapy.particles.Particle.element`,
-    `~plasmapy.particles.Particle.isotope`, and
-    `~plasmapy.particles.Particle.ionic_symbol` attributes provide
-    the symbols for each of these different types of particles.
+    The `~plasmapy.particles.particle_class.Particle.element`,
+    `~plasmapy.particles.particle_class.Particle.isotope`, and
+    `~plasmapy.particles.particle_class.Particle.ionic_symbol` attributes
+    provide the symbols for each of these different types of particles.
 
     >>> proton.element
     'H'
@@ -316,8 +318,8 @@ class Particle(AbstractPhysicalParticle):
     >>> deuteron.ionic_symbol
     'D 1+'
 
-    The `~plasmapy.particles.Particle.ionic_symbol` attribute works for
-    neutral atoms if charge information is available.
+    The `~plasmapy.particles.particle_class.Particle.ionic_symbol`
+    attribute works for neutral atoms if charge information is available.
 
     >>> deuterium = Particle("D", Z=0)
     >>> deuterium.ionic_symbol
@@ -329,8 +331,9 @@ class Particle(AbstractPhysicalParticle):
     >>> positron.element is None
     True
 
-    The attributes of a `~plasmapy.particles.Particle` instance may be used
-    to test whether or not a particle is an element, isotope, or ion.
+    The attributes of a `~plasmapy.particles.particle_class.Particle`
+    instance may be used to test whether or not a particle is an
+    element, isotope, or ion.
 
     >>> True if positron.element else False
     False
@@ -341,7 +344,7 @@ class Particle(AbstractPhysicalParticle):
 
     Many of the attributes provide physical properties of a particle.
 
-    >>> electron.integer_charge
+    >>> electron.charge_number
     -1
     >>> proton.spin
     0.5
@@ -362,15 +365,15 @@ class Particle(AbstractPhysicalParticle):
     >>> alpha.neutron_number
     2
 
-    If a `~plasmapy.particles.Particle` instance represents an elementary
-    particle, then the unary `~` (invert) operator may be used to
-    return the particle's antiparticle.
+    If a `~plasmapy.particles.particle_class.Particle` instance
+    represents an elementary particle, then the unary ``~`` (invert)
+    operator may be used to return the particle's antiparticle.
 
     >>> ~positron
     Particle("e-")
 
-    A `~plasmapy.particles.Particle` instance may be used as the first
-    argument to `~plasmapy.particles.Particle`.
+    A `~plasmapy.particles.particle_class.Particle` instance may be used
+    as the first argument to `~plasmapy.particles.particle_class.Particle`.
 
     >>> iron = Particle('Fe')
     >>> iron == Particle(iron)
@@ -378,9 +381,9 @@ class Particle(AbstractPhysicalParticle):
     >>> Particle(iron, mass_numb=56, Z=6)
     Particle("Fe-56 6+")
 
-    If the previously constructed `~plasmapy.particles.Particle` instance
-    represents an element, then the ``Z`` and ``mass_numb`` arguments
-    may be used to specify an ion or isotope.
+    If the previously constructed `~plasmapy.particles.particle_class.Particle`
+    instance represents an element, then the ``Z`` and ``mass_numb``
+    arguments may be used to specify an ion or isotope.
 
     >>> iron = Particle('Fe')
     >>> Particle(iron, Z=1)
@@ -388,13 +391,16 @@ class Particle(AbstractPhysicalParticle):
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
 
-    Adding particles together will create a `~plasmapy.particles.ParticleList`,
+    Adding particles together will create a
+    `~plasmapy.particles.particle_collections.ParticleList`,
     which is a list-like collection of particles.
 
     >>> proton + 2 * electron
     ParticleList(['p+', 'e-', 'e-'])
 
-    The ``>`` operator can be used with `Particle` and/or `ParticleList`
+    The ``>`` operator can be used with
+    `~plasmapy.particles.particle_class.Particle` and/or
+    `~plasmapy.particles.particle_collections.ParticleList`
     objects to return the nuclear reaction energy.
 
     >>> deuteron + triton > alpha + neutron
@@ -423,8 +429,8 @@ class Particle(AbstractPhysicalParticle):
         Z: Integral = None,
     ):
         """
-        Instantiate a `~plasmapy.particles.Particle` object and set private
-        attributes.
+        Instantiate a `~plasmapy.particles.particle_class.Particle`
+        object and set private attributes.
         """
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
@@ -516,7 +522,7 @@ class Particle(AbstractPhysicalParticle):
                 categories.add("element")
             if isotope:
                 categories.add("isotope")
-            if self.element and self._attributes["integer charge"]:
+            if self.element and self._attributes["charge number"]:
                 categories.add("ion")
 
             # Element properties
@@ -560,14 +566,14 @@ class Particle(AbstractPhysicalParticle):
 
             categories.add(Element["category"])
 
-        if attributes["integer charge"] == 1:
+        if attributes["charge number"] == 1:
             attributes["charge"] = const.e.si
-        elif attributes["integer charge"] is not None:
-            attributes["charge"] = attributes["integer charge"] * const.e.si
+        elif attributes["charge number"] is not None:
+            attributes["charge"] = attributes["charge number"] * const.e.si
 
-        if attributes["integer charge"]:
+        if attributes["charge number"]:
             categories.add("charged")
-        elif attributes["integer charge"] == 0:
+        elif attributes["charge number"] == 0:
             categories.add("uncharged")
 
         if attributes["half-life"] is not None:
@@ -601,9 +607,10 @@ class Particle(AbstractPhysicalParticle):
         Determine if two objects correspond to the same particle.
 
         This method will return `True` if ``other`` is an identical
-        `~plasmapy.particles.Particle` instance or a `str` representing the
-        same particle, and return `False` if ``other`` is a different
-        `~plasmapy.particles.Particle` or a `str` representing a different
+        `~plasmapy.particles.particle_class.Particle` instance or a
+        `str` representing the same particle, and return `False` if
+        ``other`` is a different
+        `~plasmapy.particles.particle_class.Particle` or a `str` representing a different
         particle.
 
         If ``other`` is not a `str` or `~plasmapy.particles.Particle`
@@ -853,7 +860,7 @@ class Particle(AbstractPhysicalParticle):
         Roman numeral notation).
 
         If the particle is not an ion or neutral atom, return `None`.
-        The roman numeral represents one plus the integer charge. Raise
+        The roman numeral represents one plus the charge number. Raise
         `ChargeError` if no charge has been specified and
         `~plasmapy.utils.roman.roman.OutOfRangeError` if the charge is
         negative.
@@ -869,14 +876,14 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self._attributes["element"]:
             return None
-        if self._attributes["integer charge"] is None:
+        if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        if self._attributes["integer charge"] < 0:
+        if self._attributes["charge number"] < 0:
             raise roman.OutOfRangeError("Cannot convert negative charges to Roman.")
 
         symbol = self.isotope if self.isotope else self.element
-        integer_charge = self._attributes["integer charge"]
-        roman_charge = roman.to_roman(integer_charge + 1)
+        charge_number = self._attributes["charge number"]
+        roman_charge = roman.to_roman(charge_number + 1)
         return f"{symbol} {roman_charge}"
 
     @property
@@ -937,7 +944,7 @@ class Particle(AbstractPhysicalParticle):
         return isotope_name
 
     @property
-    def integer_charge(self) -> Integral:
+    def charge_number(self) -> Integral:
         """
         The particle's electrical charge in units of the elementary charge.
 
@@ -949,12 +956,27 @@ class Particle(AbstractPhysicalParticle):
         Examples
         --------
         >>> muon = Particle('mu-')
-        >>> muon.integer_charge
+        >>> muon.charge_number
         -1
         """
-        if self._attributes["integer charge"] is None:
+        if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        return self._attributes["integer charge"]
+        return self._attributes["charge number"]
+
+    @property
+    @deprecated(
+        since="0.7.0",
+        name="integer_charge",
+        message=(
+            "The integer_charge attribute of Particle has been "
+            "deprecated and will be removed in a future release.  Use "
+            "charge_number instead."
+        ),
+        warning_type=PlasmaPyFutureWarning,
+    )
+    def integer_charge(self) -> Integral:
+        """The particle's electrical charge in units of the elementary charge."""
+        return self.charge_number
 
     @property
     def charge(self) -> u.C:
@@ -974,7 +996,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if self._attributes["charge"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
-        if self._attributes["integer charge"] == 1:
+        if self._attributes["charge number"] == 1:
             return const.e.si
 
         return self._attributes["charge"]
@@ -1023,7 +1045,7 @@ class Particle(AbstractPhysicalParticle):
 
         If the particle is an ion, then this attribute will return the
         mass of the element or isotope (as just described) minus the
-        product of the integer charge and the electron mass.
+        product of the charge number and the electron mass.
 
         For special particles, this attribute will return the standard
         value for the particle's mass.
@@ -1061,7 +1083,7 @@ class Particle(AbstractPhysicalParticle):
                     f"The mass of ion '{self.ionic_symbol}' is not available."
                 )
 
-            mass = base_mass - self.integer_charge * const.m_e
+            mass = base_mass - self.charge_number * const.m_e
 
             return mass.to(u.kg)
 
@@ -1298,7 +1320,7 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "e-":
             return 1
         elif self.ionic_symbol:
-            return self.atomic_number - self.integer_charge
+            return self.atomic_number - self.charge_number
         else:  # coverage: ignore
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
@@ -1721,7 +1743,7 @@ class Particle(AbstractPhysicalParticle):
             raise ChargeError(
                 f"Cannot ionize {self.symbol} because its charge " f"is not specified."
             )
-        if self.integer_charge == self.atomic_number:
+        if self.charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
@@ -1732,12 +1754,12 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope if self.isotope else self.element
-        new_integer_charge = self.integer_charge + n
+        new_charge_number = self.charge_number + n
 
         if inplace:
-            self.__init__(base_particle, Z=new_integer_charge)
+            self.__init__(base_particle, Z=new_charge_number)
         else:
-            return Particle(base_particle, Z=new_integer_charge)
+            return Particle(base_particle, Z=new_charge_number)
 
     def recombine(self, n: Integral = 1, inplace=False):
         """
@@ -1811,12 +1833,12 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope if self.isotope else self.element
-        new_integer_charge = self.integer_charge - n
+        new_charge_number = self.charge_number - n
 
         if inplace:
-            self.__init__(base_particle, Z=new_integer_charge)
+            self.__init__(base_particle, Z=new_charge_number)
         else:
-            return Particle(base_particle, Z=new_integer_charge)
+            return Particle(base_particle, Z=new_charge_number)
 
 
 Particle.is_category.valid_categories = _valid_categories
@@ -2279,8 +2301,8 @@ instances, are particle-like.
     isotope (e.g., ``"Fe++"`` for Fe\ :sup:`2+`\ ).
 
     Ions can also be represented using Roman numeral notation, where the Roman
-    numeral indicates the integer charge plus one (e.g., ``"H I"`` represents
-    H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`).
+    numeral indicates the charge number plus one (e.g., ``"H I"`` represents
+    H\ :sup:`0+` and ``"He-4 II"`` represents :sup:`4`\ He\ :sup:`1+`\ ).
 
     D\ :sup:`1+` can also be represented by ``"deuteron"``, T\ :sup:`1+` can
     be represented by ``"triton"``, and :sup:`4`\ He\ :sup:`2+` can be

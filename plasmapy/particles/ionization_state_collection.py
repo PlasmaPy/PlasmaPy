@@ -180,6 +180,9 @@ class IonizationStateCollection:
                 "Unable to create IonizationStateCollection object."
             ) from exc
 
+    def __len__(self) -> int:
+        return len(self._base_particles)
+
     def __str__(self) -> str:
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
@@ -660,8 +663,8 @@ class IonizationStateCollection:
         for elem in self.base_particles:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
-            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
-            n_e += np.sum(number_densities[elem] * integer_charges)
+            charge_numbers = np.linspace(0, atomic_numb, number_of_ionization_states)
+            n_e += np.sum(number_densities[elem] * charge_numbers)
         return n_e
 
     @property
@@ -878,11 +881,11 @@ class IonizationStateCollection:
         >>> states.summarize()
         IonizationStateCollection instance for: H, He
         ----------------------------------------------------------------
-        H  0+: 0.100    n_i = 3.00e+14 m**-3
-        H  1+: 0.900    n_i = 2.70e+15 m**-3
+        H  0+: 0.100    n_i = 3.00e+14 m**-3    T_i = 1.20e+04 K
+        H  1+: 0.900    n_i = 2.70e+15 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
-        He  0+: 0.950    n_i = 2.85e+14 m**-3
-        He  1+: 0.050    n_i = 1.50e+13 m**-3
+        He  0+: 0.950    n_i = 2.85e+14 m**-3    T_i = 1.20e+04 K
+        He  1+: 0.050    n_i = 1.50e+13 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
         n_e = 2.71e+15 m**-3
         T_e = 1.20e+04 K
