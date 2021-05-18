@@ -1,3 +1,5 @@
+"""Decorators to mark objects that are deprecated."""
+
 __all__ = ["deprecated"]
 
 import inspect
@@ -23,7 +25,7 @@ new_default = asig.parameters["warning_type"].replace(
 new_sig = dict(asig.parameters)
 new_sig["warning_type"] = new_default
 new_sig = inspect.Signature(
-    parameters=tuple(new_sig.values()), return_annotation=asig.return_annotation,
+    parameters=tuple(new_sig.values()),
+    return_annotation=asig.return_annotation,
 )
 deprecated.__signature__ = new_sig
-"""
