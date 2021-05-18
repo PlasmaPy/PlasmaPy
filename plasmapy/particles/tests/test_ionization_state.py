@@ -793,7 +793,8 @@ def test_iteration_with_nested_iterator():
     assert i == 4
 
 
-def test_ionization_state_is_another():
-    hydrogen = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-    deuterium = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-    assert hydrogen is not deuterium
+def test_ionization_state_inequality_and_identity():
+    deuterium_states = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    tritium_states = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
+    assert deuterium_states is not tritium_states
+    assert deuterium_states != tritium_states
