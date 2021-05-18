@@ -15,6 +15,11 @@ for items listed in :rst:dir:`automodsumm` tables.
 Defined Directives
 ------------------
 
+A directive (`ref
+<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+#rst-directives>`_) is a generic block of explicit markup.  Along with roles, it
+is one of the extension mechanisms of reST and, thus, Sphinx.
+
 +--------------------------------+-----------------------------------------------------+
 | Directive                      | Description                                         |
 +================================+=====================================================+
@@ -25,6 +30,10 @@ Defined Directives
 
 Defined Configuration Values
 ----------------------------
+
+Configuration values are variables that can be defined in the ``conf.py`` file
+to control the default behavior Sphinx and Sphinx extension packages like
+`plasmapy_sphinx`.
 
 +--------------------------------------------------+-----------------------------------+
 | Configuration Value                              | Description                       |
@@ -42,6 +51,12 @@ Defined Configuration Values
 
 Connected Sphinx Events
 -----------------------
+
+`Sphinx events
+<https://www.sphinx-doc.org/en/master/extdev/appapi.html#sphinx-core-events>`_
+occur at specific points in the Sphinx build that "pauses" the build process,
+signals connected functionality to do additional processing, and then continues
+with the processed results.
 
 +------------------------------+-----------------------------------------------+
 | Event                        | Connected                                     |
