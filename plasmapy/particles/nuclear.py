@@ -253,7 +253,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     def total_charge(particles: List[Particle]) -> int:
         """
-        Find the total integer charge in a list of nuclides
+        Find the total charge number in a list of nuclides
         (excluding bound electrons) and other particles.
         """
         total_charge = 0
@@ -261,7 +261,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             if particle.isotope:
                 total_charge += particle.atomic_number
             elif not particle.element:
-                total_charge += particle.integer_charge
+                total_charge += particle.charge_number
         return total_charge
 
     def add_mass_energy(particles: List[Particle]) -> u.Quantity:

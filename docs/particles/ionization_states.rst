@@ -5,8 +5,8 @@ Ionization state data structures
 
 The ionization state (or charge state) of a plasma refers to the
 fraction of an element that is at each ionization level.  For example,
-the ionization state of a pure helium plasma could be 5% He⁰⁺, 94% He¹⁺,
-and 1% He²⁺.
+the ionization state of a pure helium plasma could be
+5% He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 
 The ionization state of a single element
 ========================================
@@ -20,26 +20,26 @@ example.
 
 The ionization state for helium may be accessed using the
 ``ionic_fractions`` attribute.  These ionic fractions correspond to the
-``integer_charges`` attribute.
+``charge_numbers`` attribute.
 
 >>> ionization_state.ionic_fractions
 array([0.05, 0.94, 0.01])
->>> ionization_state.integer_charges
+>>> ionization_state.charge_numbers
 array([0, 1, 2])
 
-The ``Z_mean`` attribute returns the mean integer charge averaged
+The ``Z_mean`` attribute returns the mean charge number averaged
 over all particles in that element.
 
 >>> ionization_state.Z_mean
 0.96
 
-The ``Z_rms`` attribute returns the root mean square integer charge.
+The ``Z_rms`` attribute returns the root mean square charge number.
 
 >>> ionization_state.Z_rms
 0.9899...
 
 The ``Z_most_abundant`` attribute returns a `list` of the most abundant
-ion(s).  The `list` may contain more than one integer charge in case of
+ion(s).  The `list` may contain more than one charge number in case of
 a tie.
 
 >>> ionization_state.Z_most_abundant
@@ -120,26 +120,6 @@ The ionic fractions will be stored as a `dict`.
 The number density for each element is the product of the number
 density scaling factor ``n0`` with that element's abundance.
 The number density for each ion is the product of ``n0``, the
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
 corresponding element's abundance, and the ionic fraction.
 
 >>> states.n

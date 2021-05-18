@@ -233,7 +233,7 @@ def spectral_density(
     vTi, ion_z = [], []
     for T, ion in zip(Ti, ion_species):
         vTi.append(thermal_speed(T, particle=ion).value)
-        ion_z.append(ion.integer_charge * u.dimensionless_unscaled)
+        ion_z.append(ion.charge_number * u.dimensionless_unscaled)
     vTi = vTi * vTe.unit
     zbar = np.sum(ifract * ion_z)
     ne = efract * n
