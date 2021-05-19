@@ -56,7 +56,7 @@ class FlowCalculator:
                         for dv in data_vars
                     }
                 for dv in data_vars:
-                    arrays[particle.element][dv][particle.integer_charge] = (
+                    arrays[particle.element][dv][particle.charge_number] = (
                         a[dv].item() * dataset.attrs[f"{dv} unit"]
                     )
             except InvalidElementError as e:
@@ -72,7 +72,13 @@ class FlowCalculator:
             particle: arrays[particle]["gradT"] for particle in arrays
         }
 
-        return cls(all_species, flux_surface, density_gradient, temperature_gradient, dataset_input = dataset)
+        return cls(
+            all_species,
+            flux_surface,
+            density_gradient,
+            temperature_gradient,
+            dataset_input=dataset,
+        )
 
     # profile
     def __init__(
@@ -83,7 +89,7 @@ class FlowCalculator:
         temperature_gradient,
         *,
         mu_N=None,
-        dataset_input = None
+        dataset_input=None,
     ):
         self.all_species = all_species
         self.flux_surface = fs = flux_surface
@@ -115,8 +121,8 @@ class FlowCalculator:
         S_pt_list = []
         for a in self.all_species:
             sym = a.base_particle
-            charges = a.integer_charges * constants.e.si
-            n_charge_states = len(a.integer_charges)
+            charges = a.charge_numbers * constants.e.si
+            n_charge_states = len(charges)
             xi = ξ(a)
             T_i = a.T_i
             n_i = a.number_densities

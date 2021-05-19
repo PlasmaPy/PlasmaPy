@@ -123,7 +123,7 @@ def effective_momentum_relaxation_rate(
 
 def ξ(isotope: IonizationState):
     array = u.Quantity(
-        [ai.number_density * ai.ion.integer_charge ** 2 for ai in isotope]
+        [ai.number_density * ai.ion.charge_number ** 2 for ai in isotope]
     )
     return array / array.sum()
 
@@ -186,7 +186,7 @@ def K_B_ai(
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
     *,
-    orbit_squeezing=False
+    orbit_squeezing=False,
 ):
     # eq. B1-B4, Houlberg_1997
     f_t = flux_surface.trapped_fraction()
@@ -207,11 +207,13 @@ LaguerrePolynomials = [
     lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
 ]
 
+
 def B17(flux_surface):
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
-    under_average_B17 = (B20 / fs.Bmag)**2
+    under_average_B17 = (B20 / fs.Bmag) ** 2
     return fs.flux_surface_average(under_average_B17) / fs.flux_surface_average(fs.B2)
+
 
 def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface):
     fs = flux_surface
@@ -274,7 +276,6 @@ def K_ps_ai(
 ):
     ν = ν_T_ai(x, a, all_species)[:, np.newaxis, :]
 
-
     m = np.arange(1, m_max + 1)
     F = F_m(m[:, np.newaxis], flux_surface)
     ω = ωm(x, m[:, np.newaxis], a, flux_surface)[np.newaxis, ...]
@@ -326,7 +327,7 @@ def mu_hat(
     xmin=0.0015,
     xmax=10,
     N=1000,
-    **kwargs
+    **kwargs,
 ):
     if N is None:
         N = 1000
