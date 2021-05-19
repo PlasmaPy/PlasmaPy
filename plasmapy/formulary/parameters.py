@@ -18,6 +18,7 @@ __all__ = [
     "plasma_frequency",
     "thermal_pressure",
     "thermal_speed",
+    "thermal_speed_coefficients",
     "upper_hybrid_frequency",
 ]
 __aliases__ = [
@@ -42,6 +43,7 @@ __aliases__ = [
     "wlh_",
     "wuh_",
 ]
+__lite_funcs__ = ["thermal_speed_lite"]
 
 import astropy.units as u
 import numbers
@@ -49,6 +51,7 @@ import numpy as np
 import warnings
 
 from astropy.constants.si import c, e, eps0, k_B, mu0
+from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -56,13 +59,17 @@ from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
+    mark_has_lite_func,
     angular_freq_to_hz,
     check_relativistic,
+    preserve_signature,
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
-__all__ += __aliases__
+__all__ += __aliases__ + __lite_funcs__
+
+k_B_si_unitless = k_B.value
 
 
 def _grab_charge(ion: Particle, z_mean=None):
@@ -532,17 +539,39 @@ def ion_sound_speed(
 cs_ = ion_sound_speed
 """ Alias to :func:`ion_sound_speed`. """
 
+# -----                                                             thermal_speed  -----
 
 # This dictionary defines coefficients for thermal speeds
 # calculated for different methods and values of ndim.
 # Created here to avoid re-instantiating on each call
-_coefficients = {
+#
+thermal_speed_coefficients = {
     1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
     2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
     3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
 }
+"""
+Dictionary of various coefficients used in calculating the
+`~plasmapy.formulary.parameters.thermal_speed`.
+"""
 
 
+@preserve_signature
+@njit
+def thermal_speed_lite(T, mass, coeff):
+    """
+    A lite weight version of `~plasmapy.formulary.parameters.thermal_speed`
+    intended for computational used and, thus, does not do any argument
+    validation/conditioning.
+    """
+    return np.sqrt(coeff * k_B_si_unitless * T / mass)
+
+
+@mark_has_lite_func(
+    thermal_speed_lite,
+    attrs=[("coefficients", "thermal_speed_coefficients")],
+    scope=globals(),
+)
 @check_relativistic
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
@@ -553,14 +582,16 @@ def thermal_speed(
     T: u.K,
     particle: Particle,
     method="most_probable",
-    mass: u.kg = np.nan * u.kg,
+    mass: u.kg = None,
     ndim=3,
 ) -> u.m / u.s:
     r"""
     Return the most probable speed for a particle within a Maxwellian
     distribution.
 
-    **Aliases:** `vth_`
+    **Aliases:** `~plasmapy.formulary.parameters.vth_`
+
+    **Lite Version:** `~plasmapy.formulary.parameters.thermal_speed_lite`
 
     Parameters
     ----------
@@ -667,23 +698,27 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
     """
-    m = mass if np.isfinite(mass) else particles.particle_mass(particle)
+    if mass is None:
+        mass = particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     try:
-        coef = _coefficients[ndim]
+        coeff = thermal_speed_coefficients[ndim]
     except KeyError:
         raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
     try:
-        coef = coef[method]
+        coeff = coeff[method]
     except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return np.sqrt(coef * k_B * T / m)
+    speed = thermal_speed_lite(T=T.value, mass=mass.value, coeff=coeff)
+    return speed * u.m / u.s
 
 
 vth_ = thermal_speed
-""" Alias to :func:`thermal_speed`. """
+""" Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+
+# -----                                                          thermal_pressure  -----
 
 
 @validate_quantities(
