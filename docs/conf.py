@@ -123,6 +123,7 @@ intersphinx_mapping = {
         None,
     ),
     "spihnx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 
 autoclass_content = "both"
