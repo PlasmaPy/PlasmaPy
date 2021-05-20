@@ -6,8 +6,9 @@ __all__ = [
     "standard_atomic_weight",
     "particle_mass",
     "isotopic_abundance",
-    "integer_charge",
+    "charge_number",
     "electric_charge",
+    "integer_charge",
     "is_stable",
     "half_life",
     "known_isotopes",
@@ -37,6 +38,8 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
+from plasmapy.utils.decorators.deprecation import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__.sort()
 
@@ -299,8 +302,8 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def integer_charge(particle: Particle) -> Integral:
-    """Return the integer charge of a particle.
+def charge_number(particle: Particle) -> Integral:
+    """Return the charge number of a particle.
 
     Parameters
     ----------
@@ -322,17 +325,17 @@ def integer_charge(particle: Particle) -> Integral:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.AtomicWarning`
-        If the input represents an ion with an integer charge that is
+        If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
 
     Notes
     -----
-    This function supports two formats for integer charge information.
+    This function supports two formats for charge number information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the integer
-    charge information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the charge
+    number information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at
@@ -340,16 +343,30 @@ def integer_charge(particle: Particle) -> Integral:
 
     Examples
     --------
-    >>> integer_charge('Fe-56 2+')
+    >>> charge_number('Fe-56 2+')
     2
-    >>> integer_charge('He -2')
+    >>> charge_number('He -2')
     -2
-    >>> integer_charge('H+')
+    >>> charge_number('H+')
     1
-    >>> integer_charge('N-14++')
+    >>> charge_number('N-14++')
     2
     """
-    return particle.integer_charge
+    return particle.charge_number
+
+
+@deprecated(
+    since="0.7.0",
+    warning_type=PlasmaPyFutureWarning,
+    message=(
+        "integer_charge has been deprecated and will be removed in a "
+        "future release.  Use charge_number instead."
+    ),
+)
+@particle_input(any_of={"charged", "uncharged"})
+def integer_charge(particle: Particle):
+    """Return the charge number of the particle."""
+    return charge_number(particle)
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -378,16 +395,16 @@ def electric_charge(particle: Particle) -> u.C:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.ParticleWarning`
-        If the input represents an ion with an integer charge that is
+        If the input represents an ion with a charge number that is
         below ``-3``.
 
     Notes
     -----
-    This function supports two formats for integer charge information.
+    This function supports two formats for charge number information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the integer
-    charge information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the charge
+    number information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at

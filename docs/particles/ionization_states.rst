@@ -11,38 +11,40 @@ He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 The ionization state of a single element
 ========================================
 
-We may use the `~plasmapy.particles.ionization_state.IonizationState` class to represent
-the ionization state of a single element, such as for this
-example.
+We may use the `~plasmapy.particles.ionization_state.IonizationState`
+class to represent the ionization state of a single element, such as
+for this example.
 
 >>> from plasmapy.particles import IonizationState
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
 
-The ionization state for helium may be accessed using the
-`~plasmapy.particles.ionization_state.IonizationState.ionic_fractions` attribute.
-These ionic fractions correspond to the
-`~plasmapy.particles.ionization_state.IonizationState.integer_charges` attribute.
+Ionization state information for helium may be accessed using the
+`~plasmapy.particles.ionization_state.IonizationState.ionic_fractions`
+attribute.  These ionic fractions correspond to the
+`~plasmapy.particles.ionization_state.IonizationState.charge_numbers`
+attribute.
 
 >>> ionization_state.ionic_fractions
 array([0.05, 0.94, 0.01])
->>> ionization_state.integer_charges
+>>> ionization_state.charge_numbers
 array([0, 1, 2])
 
-The `~plasmapy.particles.ionization_state.IonizationState.Z_mean` attribute returns
-the mean integer charge averaged over all particles in that element.
+The `~plasmapy.particles.ionization_state.IonizationState.Z_mean`
+attribute returns the mean charge number averaged over all particles
+in that element.
 
 >>> ionization_state.Z_mean
 0.96
 
-The `~plasmapy.particles.ionization_state.IonizationState.Z_rms` attribute returns
-the root mean square integer charge.
+The `~plasmapy.particles.ionization_state.IonizationState.Z_rms`
+attribute returns the root mean square charge number.
 
 >>> ionization_state.Z_rms
 0.9899...
 
 The `~plasmapy.particles.ionization_state.IonizationState.Z_most_abundant` attribute
 returns a `list` of the most abundant ion(s).  The `list` may contain
-more than one integer charge in case of a tie.
+more than one charge number in case of a tie.
 
 >>> ionization_state.Z_most_abundant
 [1]
@@ -89,9 +91,9 @@ or the charge state distributions of different elements in the solar wind.
 >>> from plasmapy.particles import IonizationStateCollection
 
 The minimal input to
-`~plasmapy.particles.ionization_state_collection.IonizationStateCollection` is
-a `list` of the elements or isotopes to represent.  Integers in the `list` will
-be treated as atomic numbers.
+`~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
+is a `list` of the elements or isotopes to represent.  Integers in the
+`list` will be treated as atomic numbers.
 
 >>> states = IonizationStateCollection(["H", 2])
 
@@ -100,7 +102,8 @@ To set the ionic fractions for hydrogen, we may do item assignment.
 >>> states["H"] = [0.9, 0.1]
 
 We may use indexing to retrieve an
-`~plasmapy.particles.ionization_state.IonizationState` instance for an element.
+`~plasmapy.particles.ionization_state.IonizationState` instance for an
+element.
 
 >>> states["H"]
 <IonizationState instance for H>
@@ -121,30 +124,10 @@ The ionic fractions will be stored as a `dict`.
 
 The number density for each element is the product of the number
 density scaling factor
-`~plasmapy.particles.ionization_state.IonizationStateCollection.n0` with that
-element's abundance.  The number density for each ion is the
-product of `~plasmapy.particles.ionization_state.IonizationStateCollection.n0`, the
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
-corresponding element's abundance, and the ionic fraction.
-
->>> states.n0
-<Quantity 5.e+19 1 / m3>
->>> states.abundances
-{'H': 1.0, 'He': 0.08}
->>> states.number_densities["H"]
-<Quantity [5.00e+17, 4.95e+19] 1 / m3>
-
-The
-corresponding element's abundance, and the ionic fraction.
+`~plasmapy.particles.ionization_state.IonizationStateCollection.n0` with
+that element's abundance.  The number density for each ion is the
+product of `~plasmapy.particles.ionization_state.IonizationStateCollection.n0`,
+the corresponding element's abundance, and the ionic fraction.
 
 >>> states.n
 <Quantity 5.e+19 1 / m3>
