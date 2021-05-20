@@ -40,4 +40,3 @@
 .. _Python: https://www.python.org/
 .. _SciPy: https://www.scipy.org/
 .. _virtualenv: https://pypi.org/project/virtualenv
-.. _pytest: https://pytest.org/en/latest/index.html
