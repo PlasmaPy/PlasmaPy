@@ -8,8 +8,6 @@
 .. automodapi:: plasmapy_sphinx.automodsumm
    :no-groups:
 
-.. _automodsumm-api:
-
 API
 ---
 
