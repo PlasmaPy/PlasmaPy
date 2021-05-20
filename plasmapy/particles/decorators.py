@@ -421,8 +421,9 @@ def particle_input(
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
         """
-        Convert the argument to a `~plasmapy.particles.particle_class.Particle` object
-        if it is not already one.
+        Convert the argument to a
+        `~plasmapy.particles.particle_class.Particle` object if it is
+        not already one.
         """
 
         if not already_particle:

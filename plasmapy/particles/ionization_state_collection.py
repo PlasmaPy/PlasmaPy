@@ -687,8 +687,8 @@ class IonizationStateCollection:
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
         """
-        A `dict` containing the number densities for the elements and/or isotopes
-        composing the collection.
+        A `dict` containing the number densities for the elements and/or
+        isotopes composing the collection.
         """
         return {
             elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]

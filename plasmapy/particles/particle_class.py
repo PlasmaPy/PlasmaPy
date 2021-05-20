@@ -700,8 +700,9 @@ class Particle(AbstractPhysicalParticle):
 
     def __hash__(self) -> int:
         """
-        Allow use of `hash` so that a `~plasmapy.particles.particle_class.Particle`
-        instance may be used as a key in a `dict`.
+        Allow use of `hash` so that a
+        `~plasmapy.particles.particle_class.Particle` instance may be
+        used as a key in a `dict`.
         """
         return hash(self.__repr__())
 
@@ -2263,12 +2264,14 @@ ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
 ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
-`~plasmapy.particles.particle_class.Particle` or `CustomParticle`, or cast into one.
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
 When used as a type hint annotation, `ParticleLike` indicates that an
 argument should represent a physical particle. Particle-like objects
-can include strings, integers, or instances of the `~plasmapy.particles.particle_class.Particle` or
-`CustomParticle` classes.
+can include strings, integers, or instances of the
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle` classes.
 
 Notes
 -----
