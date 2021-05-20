@@ -1,0 +1,2 @@
+Added common substitutions for classes and links that can be used in
+docs.
