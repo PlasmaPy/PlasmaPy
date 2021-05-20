@@ -67,6 +67,7 @@ extensions = [
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "plasmapy_sphinx",
 ]
 
 intersphinx_mapping = {
@@ -291,11 +292,5 @@ nbsphinx_prolog = r"""
 
 
 def setup(app: Sphinx) -> None:
-    from plasmapy_sphinx import setup as setup_automodapi
-    from plasmapy_sphinx.extras import setup as setup_extras
-
-    setup_automodapi(app)
-    setup_extras(app)
-
     app.add_config_value("revision", "", True)
     app.add_css_file("rtd_theme_overrides.css")

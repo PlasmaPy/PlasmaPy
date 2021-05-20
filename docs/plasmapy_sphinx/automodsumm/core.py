@@ -51,29 +51,29 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         custom group, and, finally, the built-in groups.  By default, **all** groups
         will be included in the generated table.
 
-        Using the `plasmapy_sphinx.automodsumm` module as an example, the
+        Using the `plasmapy_sphinx.automodsumm.core` module as an example, the
         :ref:`module's API <automodsumm-api>` shows it is made of classes
         and functions.  So the following yields,
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
 
             or
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
                :groups: all
 
-        .. automodsumm:: plasmapy_sphinx.automodsumm
+        .. automodsumm:: plasmapy_sphinx.automodsumm.core
 
         However, if you only want to collect classes then one could do
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
                :groups: classes
 
-        .. automodsumm:: plasmapy_sphinx.automodsumm
+        .. automodsumm:: plasmapy_sphinx.automodsumm.core
            :groups: classes
 
         If you want to include multiple groups, then specify all groups as a
@@ -81,7 +81,7 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
                :groups: classes, functions
 
     .. rst:directive:option:: exclude-groups
@@ -93,10 +93,10 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
                :exclude-groups: functions
 
-        .. automodsumm:: plasmapy_sphinx.automodsumm
+        .. automodsumm:: plasmapy_sphinx.automodsumm.core
            :exclude-groups: functions
 
     .. rst:directive:option:: skip
@@ -104,35 +104,37 @@ directive and its :ref:`supporting configuration values <automodsumm-confvals>`.
         This option allows you to skip (exclude) selected objects from the
         generated table.  The argument is given as a comma separated list of
         the object's short name.  Continuing with the example from above, lets
-        skip `~plasmapy_sphinx.automodsumm.AutomodsummOptions` and
-        `~plasmapy_sphinx.automodsumm.setup` from the table.
+        skip `~plasmapy_sphinx.automodsumm.core.AutomodsummOptions` and
+        `~plasmapy_sphinx.automodsumm.core.setup` from the table.
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodsumm
+            .. automodsumm:: plasmapy_sphinx.automodsumm.core
                :skip: AutomodsummOptions, setup
 
-        .. automodsumm:: plasmapy_sphinx.automodsumm
+        .. automodsumm:: plasmapy_sphinx.automodsumm.core
            :skip: AutomodsummOptions, setup
 
     .. rst:directive:option:: toctree
 
         If you want the :rst:dir:`automodsumm` table to serve as a :rst:dir:`toctree`,
         then specify this option with a directory path ``DIRNAME`` with respect to
-        the location of your `conf.py` file.
+        the location of your ``conf.py`` file.
 
         .. code-block:: rst
 
-            .. automodsumm:: plasmapy_sphinx.automodapi
+            .. automodsumm:: plasmapy_sphinx.autodoc.automodapi
                 :toctree: DIRNAME
 
-        This will signal `sphinx-autogen` to generate stub files for the objects in
-        the table and place them in the directory named by ``DIRNAME``.  This behavior
-        respects the configuration value :confval:`autosummary_generate`.
-        Additionally, :rst:dir:`automodsumm` will not generate stub files for entry
-        that falls into the **modules** group (see the
-        :rst:dir:`automodsumm:groups` option below), unless
-        :confval:`automodapi_generate_module_stub_files` is set ``True``.
+        This will signal `sphinx-autogen
+        <https://www.sphinx-doc.org/en/master/man/sphinx-autogen.html>`_
+        to generate stub files for the objects in the table and place them in
+        the directory named by ``DIRNAME``.  This behavior respects the
+        configuration value :confval:`autosummary_generate`.  Additionally,
+        :rst:dir:`automodsumm` will not generate stub files for entry that
+        falls into the **modules** group (see the :rst:dir:`automodsumm:groups`
+        option below), unless :confval:`automodapi_generate_module_stub_files`
+        is set ``True``.
 
 .. _automodsumm-confvals:
 
@@ -210,8 +212,8 @@ from sphinx.ext.autosummary import Autosummary
 from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Tuple, Union
 
-from .generate import GenDocsFromAutomodsumm
-from .utils import default_grouping_info, find_mod_objs, get_custom_grouping_info
+from ..automodsumm.generate import GenDocsFromAutomodsumm
+from ..utils import default_grouping_info, find_mod_objs, get_custom_grouping_info
 
 if False:
     # noqa
@@ -239,7 +241,7 @@ def option_str_list(argument):
 class AutomodsummOptions:
     """
     Class for advanced conditioning and manipulation of option arguments for
-    `plasmapy_sphinx.automodsum.Automodsumm`.
+    `plasmapy_sphinx.automodsumm.core.Automodsumm`.
     """
 
     option_spec = {
@@ -606,7 +608,7 @@ class Automodsumm(Autosummary):
 
     def option_processor(self):
         """
-        Instance of `~plasmapy_sphinx.automodsumm.Automodsumm` so further processing
+        Instance of `~plasmapy_sphinx.automodsumm.core.Automodsumm` so further processing
         (beyond :attr:`option_spec`) of directive options can be performed.
         """
         processor = AutomodsummOptions(
