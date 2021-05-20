@@ -125,7 +125,7 @@ else:
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
-rst_epilog = []
+rst_epilog = ""
 with open("common_links.txt", "r") as cl:
     rst_epilog += cl.read()
 
