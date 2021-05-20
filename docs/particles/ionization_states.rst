@@ -42,15 +42,16 @@ attribute returns the root mean square charge number.
 >>> ionization_state.Z_rms
 0.9899...
 
-The `~plasmapy.particles.ionization_state.IonizationState.Z_most_abundant` attribute
-returns a `list` of the most abundant ion(s).  The `list` may contain
-more than one charge number in case of a tie.
+The `~plasmapy.particles.ionization_state.IonizationState.Z_most_abundant`
+attribute returns a `list` of the most abundant ion(s).  The `list` may
+contain more than one charge number in case of a tie.
 
 >>> ionization_state.Z_most_abundant
 [1]
 
-The `~plasmapy.particles.ionization_state.IonizationState.summarize` method prints out
-the ionic fraction for the ions with an abundance of at least 1%.
+The `~plasmapy.particles.ionization_state.IonizationState.summarize`
+method prints out the ionic fraction for the ions with an abundance of
+at least 1%.
 
 >>> ionization_state.summarize()
 IonizationState instance for He with Z_mean = 0.96
@@ -68,8 +69,8 @@ The number density of the element may be specified through the
 ...     "He", [0.05, 0.94, 0.01], n_elem = 1e19 * u.m ** -3,
 ... )
 
-The `~plasmapy.particles.ionization_state.IonizationState.n_e` attribute provides
-the electron number density as a `~astropy.units.Quantity`.
+The `~plasmapy.particles.ionization_state.IonizationState.n_e` attribute
+provides the electron number density as a `~astropy.units.Quantity`.
 
 >>> ionization_state.n_e
 <Quantity 9.6e+18 1 / m3>
@@ -84,9 +85,10 @@ Ionization states for multiple elements
 =======================================
 
 The `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-class may be used to represent the ionization state for multiple elements. This
-can be used, for example, to describe the various impurities in a fusion plasma
-or the charge state distributions of different elements in the solar wind.
+class may be used to represent the ionization state for multiple
+elements. This can be used, for example, to describe the various
+impurities in a fusion plasma or the charge state distributions of
+different elements in the solar wind.
 
 >>> from plasmapy.particles import IonizationStateCollection
 
