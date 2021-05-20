@@ -27,16 +27,18 @@
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
 .. -----------------
-.. Links to projects
+.. Links to Packages
 .. -----------------
 
 .. _Astropy: https://www.astropy.org/
 .. _`Astropy docs`: https://docs.astropy.org/
-.. _conda: https://conda.io/docs/
-.. _Matplotlib: https://matplotlib.org/
+.. _Conda: https://conda.io/docs/
+.. _git: https://git-scm.com/
+.. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
 .. _pip: https://pip.pypa.io
+.. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
 .. _SciPy: https://www.scipy.org/
 .. _virtualenv: https://pypi.org/project/virtualenv
