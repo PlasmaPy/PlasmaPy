@@ -721,7 +721,7 @@ class IonizationState:
     @property
     def _particle_instances(self) -> List[Particle]:
         """
-        A `list` of the `~plasmapy.particles.Particle` class
+        A `list` of the `~plasmapy.particles.particle_class.Particle` class
         instances corresponding to each ion.
         """
         return [
