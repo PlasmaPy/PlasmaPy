@@ -30,3 +30,7 @@ html-nonb: Makefile
 	@echo $(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -D nbsphinx_execute='never' $(O)
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html. Jupyter notebooks were skipped."
+
+html-nitpicky: Makefile
+	@echo "I am nitpicky and will tell you about all broken links.\n"
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) -n $(O)
