@@ -741,23 +741,6 @@ class Particle(AbstractPhysicalParticle):
         return particle_dictionary
 
     @property
-    def particle(self) -> str:
-        """
-        The symbol of the particle, atom, isotope, or ion.
-
-        .. deprecated:: 0.6.0
-            `Particle.particle` has been deprecated and will be removed in
-            a subsequent release of PlasmaPy.  Use `Particle.symbol`
-            instead.
-        """
-        warnings.warn(
-            "Particle.particle has been deprecated and will be removed in "
-            "a subsequent release. Use Particle.symbol instead.",
-            FutureWarning,
-        )
-        return self.symbol
-
-    @property
     def symbol(self) -> str:
         """
         The symbol of the particle, atom, isotope, or ion.
