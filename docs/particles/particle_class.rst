@@ -31,30 +31,30 @@ names and many aliases are not.
 >>> hydride = Particle('H-')
 
 An `int` may be used as the first positional argument to |Particle| to
-represent an atomic number.  For isotopes and ions, the mass number may
-be represented with the ``mass_numb`` keyword and the integer charge
-may be represented with the ``Z`` keyword.
+represent an atomic number.  For isotopes and ions, the mass number
+may be represented with the ``mass_numb`` keyword and the integer
+charge may be represented with the ``Z`` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used |Particle| objects
-may be imported directly from the atomic subpackage.
+The most frequently used |Particle| objects may be imported directly
+from the atomic subpackage.
 
 >>> from plasmapy.particles import proton, electron
 
 The |Particle| objects that may be imported directly are:
 `~plasmapy.particles.proton`, `~plasmapy.particles.electron`,
 `~plasmapy.particles.neutron`, `~plasmapy.particles.positron`,
-`~plasmapy.particles.deuteron`, `~plasmapy.particles.triton`,
-and `~plasmapy.particles.alpha`.
+`~plasmapy.particles.deuteron`, `~plasmapy.particles.triton`, and
+`~plasmapy.particles.alpha`.
 
 .. _particle-class-properties:
 
 Accessing particle properties
 =============================
 
-The properties of each particle may be accessed using the attributes of
-the corresponding |Particle| object.
+The properties of each particle may be accessed using the attributes
+of the corresponding |Particle| object.
 
 >>> proton.atomic_number
 1
@@ -94,8 +94,9 @@ Strings representing particles may be accessed using the
 Categories
 ==========
 
-The `~plasmapy.particles.particle_class.Particle.categories` attribute returns
-a `set` with the classification categories corresponding to the particle.
+The `~plasmapy.particles.particle_class.Particle.categories` attribute
+returns a `set` with the classification categories corresponding to
+the particle.
 
 >>> sorted(electron.categories)
 ['charged', 'electron', 'fermion', 'lepton', 'matter', 'stable']
@@ -122,13 +123,14 @@ False
 >>> alpha.is_category(exclude='lepton')
 True
 
-Calling the `~plasmapy.particles.particle_class.Particle.is_category` method
-with no arguments returns a set containing all of the valid categories for any
-particle.  Valid categories include: ``'actinide'``, ``'alkali metal'``,
-``'alkaline earth metal'``, ``'antibaryon'``, ``'antilepton'``,
-``'antimatter'``, ``'antineutrino'``, ``'baryon'``, ``'boson'``,
-``'charged'``, ``'electron'``, ``'element'``, ``'fermion'``,
-``'halogen'``, ``'ion'``, ``'isotope'``, ``'lanthanide'``, ``'lepton'``,
+Calling the `~plasmapy.particles.particle_class.Particle.is_category`
+method with no arguments returns a set containing all of the valid
+categories for any particle.  Valid categories include:
+``'actinide'``, ``'alkali metal'``, ``'alkaline earth metal'``,
+``'antibaryon'``, ``'antilepton'``, ``'antimatter'``,
+``'antineutrino'``, ``'baryon'``, ``'boson'``, ``'charged'``,
+``'electron'``, ``'element'``, ``'fermion'``, ``'halogen'``,
+``'ion'``, ``'isotope'``, ``'lanthanide'``, ``'lepton'``,
 ``'matter'``, ``'metal'``, ``'metalloid'``, ``'neutrino'``,
 ``'neutron'``, ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
 ``'post-transition metal'``, ``'proton'``, ``'stable'``,
@@ -148,8 +150,9 @@ False
 True
 
 The `~plasmapy.particles.particle_class.Particle.is_electron` and
-`~plasmapy.particles.particle_class.Particle.is_ion` attributes provide a quick way to
-check whether or not a particle is an electron or ion, respectively.
+`~plasmapy.particles.particle_class.Particle.is_ion` attributes
+provide a quick way to check whether or not a particle is an electron
+or ion, respectively.
 
 >>> electron.is_electron
 True
@@ -159,12 +162,12 @@ False
 True
 
 The `~plasmapy.particles.particle_class.Particle.element` and
-`~plasmapy.particles.particle_class.Particle.isotope` attributes return `None` when the
-particle does not correspond to an element or isotope.  Because
-non-empty strings evaluate to `True` and `None` evaluates to `False`
-when converted to a `bool`, these attributes may be used in conditional
-statements to test whether or not a particle is in one of these
-categories.
+`~plasmapy.particles.particle_class.Particle.isotope` attributes
+return `None` when the particle does not correspond to an element or
+isotope.  Because non-empty strings evaluate to `True` and `None`
+evaluates to `False` when converted to a `bool`, these attributes may
+be used in conditional statements to test whether or not a particle is
+in one of these categories.
 
 .. code-block:: python
 
@@ -181,10 +184,10 @@ categories.
 Returning antiparticles
 =======================
 
-The antiparticle of an elementary particle or antiparticle may be found
-by either using Python's unary invert operator (``~``) or the
-`~plasmapy.particles.particle_class.Particle.antiparticle` attribute of a
-|Particle| object.
+The antiparticle of an elementary particle or antiparticle may be
+found by either using Python's unary invert operator (``~``) or the
+`~plasmapy.particles.particle_class.Particle.antiparticle` attribute
+of a |Particle| object.
 
 >>> ~electron
 Particle("e+")
