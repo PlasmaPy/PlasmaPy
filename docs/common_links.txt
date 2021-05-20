@@ -1,0 +1,43 @@
+.. These are ReST substitutions and links that can be used throughout the docs
+.. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+.. Some of the links are in curly braces for ``.format`` substitutions.
+
+.. ---------------------
+.. PlasmaPy replacements
+.. ---------------------
+
+.. |CustomParticle| replace:: :class:`~plasmapy.particles.particle_class.CustomParticle`
+.. |DimensionlessParticle| replace:: :class:`~plasmapy.particles.particle_class.DimensionlessParticle`
+.. |Particle| replace:: :class:`~plasmapy.particles.particle_class.Particle`
+
+.. ------------------
+.. NumPy replacements
+.. ------------------
+
+.. |ndarray| replace:: :class:`numpy.ndarray`
+
+.. --------------------
+.. Astropy replacements
+.. --------------------
+
+.. |Time| replace:: :class:`~astropy.time.Time`
+.. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
+.. |PhysicalType| replace:: :class:`~astropy.units.PhysicalType`
+.. |Quantity| replace:: :class:`~astropy.units.Quantity`
+.. |Unit| replace:: :class:`~astropy.units.UnitBase`
+
+.. -----------------
+.. Links to projects
+.. -----------------
+
+.. _Astropy: https://www.astropy.org/
+.. _`Astropy docs`: https://docs.astropy.org/
+.. _conda: https://conda.io/docs/
+.. _Matplotlib: https://matplotlib.org/
+.. _NumPy: https://numpy.org/
+.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
+.. _pip: https://pip.pypa.io
+.. _Python: https://www.python.org/
+.. _SciPy: https://www.scipy.org/
+.. _virtualenv: https://pypi.org/project/virtualenv
+.. _pytest: https://pytest.org/en/latest/index.html
