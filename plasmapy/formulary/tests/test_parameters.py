@@ -37,6 +37,8 @@ from plasmapy.formulary.parameters import (
     rhoc_,
     thermal_pressure,
     thermal_speed,
+    thermal_speed_lite,
+    thermal_speed_coefficients,
     ub_,
     upper_hybrid_frequency,
     va_,
@@ -499,6 +501,46 @@ def test_ion_sound_speed():
     assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-6), errStr
 
     assert_can_handle_nparray(ion_sound_speed)
+
+
+class TestThermalSpeed:
+    """
+    Test class for functionality around calculating the thermal speed.  This
+    covers the functionality
+
+        - `~plasmapy.formulary.parameters.thermal_speed`
+        - `~plasmapy.formulary.parameters.thermal_speed_lite`
+        - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    """
+
+    @pytest.mark.parametrize("alias", [vth_])
+    def test_aliases(self, alias):
+        """Test alias is properly defined."""
+        assert alias is thermal_speed
+
+    @pytest.mark.parametrize(
+        "method, ndim, expected",
+        [
+            ("most_probable", 1, 0),
+            ("most_probable", 2, 1),
+            ("most_probable", 3, np.sqrt(2)),
+            ("rms", 1, 1),
+            ("rms", 2, np.sqrt(2)),
+            ("rms", 3, np.sqrt(3)),
+            ("mean_magnitude", 1, np.sqrt(2 / np.pi)),
+            ("mean_magnitude", 2, np.sqrt(np.pi / 2)),
+            ("mean_magnitude", 3, np.sqrt(8 / np.pi)),
+            ("nrl", 1, 1),
+            ("nrl", 2, 1),
+            ("nrl", 3, 1),
+        ]
+    )
+    def test_thermal_speed_coefficient_values(self, method, ndim, expected):
+        """Test values returned by thermal_speed_coefficients."""
+        assert np.isclose(
+            thermal_speed_coefficients(method=method, ndim=ndim), expected
+        )
+
 
 
 def test_thermal_speed():
@@ -1297,7 +1339,7 @@ def test_parameters_aliases():
     assert rho_ is mass_density
     assert va_ is Alfven_speed
     assert cs_ is ion_sound_speed
-    assert vth_ is thermal_speed
+    # assert vth_ is thermal_speed
     assert pth_ is thermal_pressure
     assert vth_kappa_ is kappa_thermal_speed
     assert betaH_ is Hall_parameter
