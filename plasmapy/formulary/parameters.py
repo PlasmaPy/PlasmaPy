@@ -821,6 +821,16 @@ def thermal_speed(
     <Quantity 674307... m / s>
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
+
+    For user convienece `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
+    and can be used as follows.
+
+    >>> from plasmapy.particles import Particle
+    >>> mass = Particle("p").mass.value
+    >>> coeff = thermal_speed.coefficients(method="most_probable", ndim=3)
+    >>> thermal_speed.lite(T=1e6, mass=mass, coeff=coeff)
+    128486...
     """
     if mass is None:
         mass = particles.particle_mass(particle)
