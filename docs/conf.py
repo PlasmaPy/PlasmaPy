@@ -143,6 +143,29 @@ exclude_patterns = [
     "plasmapy_sphinx",
 ]
 
+# Mappings to fully qualified paths (or correct ReST references) for the
+# aliases/shortcuts used when specifying the types of parameters.
+# Numpy provides some defaults
+# https://github.com/numpy/numpydoc/blob/b352cd7635f2ea7748722f410a31f937d92545cc/numpydoc/xref.py#L62-L94
+# so we only need to define Astropy-specific x-refs
+numpydoc_xref_aliases = {
+    # ultra-general
+    "-like": ":term:`-like`",
+    # python & adjacent
+    "file-like": ":term:`python:file-like object`",
+    "file": ":term:`python:file object`",
+    "iterator": ":term:`python:iterator`",
+    "path-like": ":term:`python:path-like object`",
+    "module": ":term:`python:module`",
+    "function": ":term:`python:function`",
+    # for numpy
+    "ints": ":class:`python:int`",
+    # for astropy
+    "unit-like": ":term:`astropy:unit-like`",
+    "quantity-like": ":term:`astropy:quantity-like`",
+    # for plasmapy
+    "particle-like": ":term:`particle-like`",
+}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
