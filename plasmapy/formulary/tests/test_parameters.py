@@ -533,13 +533,28 @@ class TestThermalSpeed:
             ("nrl", 1, 1),
             ("nrl", 2, 1),
             ("nrl", 3, 1),
-        ]
+        ],
     )
     def test_thermal_speed_coefficient_values(self, method, ndim, expected):
         """Test values returned by thermal_speed_coefficients."""
         assert np.isclose(
             thermal_speed_coefficients(method=method, ndim=ndim), expected
         )
+
+    @pytest.mark.parametrize(
+        "method, ndim, _raises",
+        [
+            ("most_probably", -1, ValueError),
+            ("most_probably", 4, ValueError),
+            ("most_probably", "not an int", ValueError),
+            ("wrong method", 3, ValueError),
+            (5, 1, ValueError),
+            ({"wrong": 1}, "wrong", TypeError),
+        ],
+    )
+    def test_thermal_speed_coefficients_raises(self, method, ndim, _raises):
+        with pytest.raises(_raises):
+            thermal_speed_coefficients(method=method, ndim=ndim)
 
 
 
