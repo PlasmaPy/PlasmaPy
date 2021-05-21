@@ -553,6 +553,7 @@ class TestThermalSpeed:
         ],
     )
     def test_thermal_speed_coefficients_raises(self, method, ndim, _raises):
+        """Test raise Exception cases for thermal_speed_coefficients."""
         with pytest.raises(_raises):
             thermal_speed_coefficients(method=method, ndim=ndim)
 
