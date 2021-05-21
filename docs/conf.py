@@ -141,6 +141,7 @@ exclude_patterns = [
     "plasmapy_sphinx",
 ]
 
+
 # Mappings to fully qualified paths (or correct ReST references) for the
 # aliases/shortcuts used when specifying the types of parameters.
 # Numpy provides some defaults
@@ -164,6 +165,8 @@ numpydoc_xref_aliases = {
     # for plasmapy
     "particle-like": ":term:`particle-like`",
 }
+
+numpydoc_xref_param_type = True
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
