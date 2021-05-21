@@ -512,6 +512,10 @@ class TestThermalSpeed:
         - `~plasmapy.formulary.parameters.thermal_speed_lite`
         - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
     """
+    _bound_attrs = [
+        ("lite", thermal_speed_lite),
+        ("coefficients", thermal_speed_coefficients),
+    ]
 
     @pytest.mark.parametrize("alias", [vth_])
     def test_aliases(self, alias):
@@ -557,6 +561,57 @@ class TestThermalSpeed:
         with pytest.raises(_raises):
             thermal_speed_coefficients(method=method, ndim=ndim)
 
+    def test_thermal_speed_lite(self):
+        ...
+
+    @pytest.mark.parametrize(
+        "inputs",
+        [
+            dict(T=5 * u.eV, particle=Particle("p"), method= "most_probable", ndim=3),
+            dict(T=3000 * u.K, particle=Particle("e"), method="nrl", ndim=2),
+            dict(
+                T=5000 * u.K, particle=Particle("He+"), method="mean_magnitude", ndim=1
+            ),
+            dict(T=1 * u.eV, particle=Particle("Ar+"), method="rms", ndim=3),
+        ],
+    )
+    def test_normal_vs_lite_values(self, inputs):
+        """
+        Test that thermal_speed and thermal_speed_lite calulate the same values
+        for the same inputs.
+        """
+        T_unitless = inputs["T"].to(u.K, equivalencies=u.temperature_energy()).value
+        m_unitless = inputs["particle"].mass.value
+
+        normal = thermal_speed(**inputs)
+        coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
+        lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
+        assert np.isclose(normal.value, lite)
+
+    @pytest.mark.parametrize(
+        "bound_name, bound_attr",
+        _bound_attrs,
+    )
+    def test_lite_function_binding(self, bound_name, bound_attr):
+        assert hasattr(thermal_speed, bound_name)
+        attr = getattr(thermal_speed, bound_name)
+        assert attr is bound_attr
+
+    def test_lite_function_marking(self):
+        """
+        Test thermal_speed is marked as having a Lite-Function and that its
+        __has_lite_func__ attribute is defined correctly.
+        """
+        assert hasattr(thermal_speed, "__has_lite_func__")
+        assert len(thermal_speed.__has_lite_func__) == len(self._bound_attrs)
+
+        bound_names, bound_qualnames = zip(*thermal_speed.__has_lite_func__)
+        for name, attr in self._bound_attrs:
+            assert name in bound_names
+
+            index = bound_names.index(name)
+            qualname = f"{attr.__module__}.{attr.__name__}"
+            assert qualname == bound_qualnames[index]
 
 
 def test_thermal_speed():
