@@ -702,7 +702,8 @@ def thermal_speed(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        The particle temperature in either kelvin or energy per particle
+        The temperature of the particle distribution, in units of kelvin or
+        energy.
 
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``"p"`` for protons,
@@ -716,8 +717,8 @@ def thermal_speed(
         ``"mean_magnitude"``, and ``"nrl"``.
 
     mass : `~astropy.units.Quantity`
-        Mass override.  If given, then ``mass`` will be used instead of the
-        mass value associated with ``particle``.
+        Mass override in units convertible to kg.  If given, then ``mass`` will
+        be used instead of the mass value associated with ``particle``.
 
     ndim : `int`
         (Default ``3``) Dimensionality (1D, 2D, 3D) of space in which to
@@ -764,7 +765,7 @@ def thermal_speed(
     where :math:`T` is the temperature associated with the distribution,
     :math:`m` is the particle's mass, and :math:`C_o` is a constant of
     proportionality determined by the method in which :math:`v_{th}` is
-    calculated and the dimentionality of the system (1D, 2D, 3D).  The
+    calculated and the dimensionality of the system (1D, 2D, 3D).  The
     :math:`C_o` used for the ``thermal_speed`` calculation is determined from
     the input arguments ``method`` and ``ndim``, and the values can be seen in
     the table below:
@@ -798,7 +799,7 @@ def thermal_speed(
         :math:`f(\mathbf{v})` is assumed to be 3D, but similar expressions can
         be given for 1D and 2D.
 
-        - **Most Probably** ``method = "most_probable"``
+        - **Most Probable** ``method = "most_probable"``
 
           This method expresses the thermal speed of the distribution by expressing
           it as the most probable speed a particle in the distribution may have.
@@ -816,9 +817,9 @@ def thermal_speed(
              g^{\prime}(v_{th}) = \left.\frac{dg}{dv}\right|_{v_{th}} = 0\\
              \implies v_{th} = \sqrt{\frac{2 k_B T}{m}}
 
-        - **Root Mean Squared** ``method = "rms"``
+        - **Root Mean Square** ``method = "rms"``
 
-          This method uses the root-mean squared to calculate an expression for
+          This method uses the root mean square to calculate an expression for
           the thermal speed of the particle distribution, which is given by
           defines the thermal speed as
 
@@ -840,11 +841,11 @@ def thermal_speed(
 
           The `NRL Plasma Formulary
           <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
-          uses the square of the Normal distribution's variance :math:`\sigma^2`
-          as the expression for thermal speed.
+          uses the square root of the Normal distribution's variance
+          :math:`\sigma^2` as the expression for thermal speed.
 
           .. math::
-             v_{th} = \sqrt{\frac{k_B T}{\pi m}}
+             v_{th} = \sqrt{\frac{k_B T}{m}}
 
     Examples
     --------
@@ -863,7 +864,7 @@ def thermal_speed(
     <Quantity 621251... m / s>
 
     For user convienece `~plasmapy.formulary.parameters.thermal_speed_coefficients`
-    `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
+    and `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
     and can be used as follows.
 
     >>> from plasmapy.particles import Particle
