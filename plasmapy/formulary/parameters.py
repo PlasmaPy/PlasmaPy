@@ -539,7 +539,14 @@ def ion_sound_speed(
 cs_ = ion_sound_speed
 """ Alias to :func:`ion_sound_speed`. """
 
+
 # -----                                                             thermal_speed  -----
+def thermal_speed_coefficients(method: str, ndim: int) -> float:
+    r"""
+    Get the appropriate coefficient for the thermal speed expression based on the
+    given ``method`` and ``ndim``.  (See the
+    `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
+    section for further details.)
 
 # This dictionary defines coefficients for thermal speeds
 # calculated for different methods and values of ndim.
@@ -564,7 +571,7 @@ def thermal_speed_lite(T, mass, coeff):
     intended for computational used and, thus, does not do any argument
     validation/conditioning.
     """
-    return np.sqrt(coeff * k_B_si_unitless * T / mass)
+    return coeff * np.sqrt(k_B_si_unitless * T / mass)
 
 
 @mark_has_lite_func(
@@ -600,15 +607,15 @@ def thermal_speed(
         The particle temperature in either kelvin or energy per particle
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
-        charge state information is provided, then the particles are
+        Representation of the particle species (e.g., ``"p"`` for protons,
+        ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly ionized helium-4).
+        If no charge state information is provided, then the particles are
         assumed to be singly charged.
 
     method : `str`, optional
         (Default ``"most_probable"``) Method to be used for calculating the
-        thermal speed. Valid values are ``'most_probable'``, ``'rms'``, and
-        ``'mean_magnitude'``.
+        thermal speed. Valid values are ``"most_probable"``, ``"rms"``,
+        ``"mean_magnitude"``, and ``"nrl"``.
 
     mass : `~astropy.units.Quantity`
         Mass override.  If given, then ``mass`` will be used instead of the
@@ -760,15 +767,7 @@ def thermal_speed(
     if mass is None:
         mass = particles.particle_mass(particle)
 
-    # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    try:
-        coeff = thermal_speed_coefficients[ndim]
-    except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
-    try:
-        coeff = coeff[method]
-    except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed")
+    coeff = thermal_speed_coefficients(method=method, ndim=ndim)
 
     speed = thermal_speed_lite(T=T.value, mass=mass.value, coeff=coeff)
     return speed * u.m / u.s
@@ -776,6 +775,7 @@ def thermal_speed(
 
 vth_ = thermal_speed
 """ Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+
 
 # -----                                                          thermal_pressure  -----
 
