@@ -656,6 +656,11 @@ def thermal_speed_lite(
         section in the `~plasmapy.formulary.parameters.thermal_speed`
         documentation.
 
+    Returns
+    -------
+    vth : `~numbers.Real`
+        Thermal speed of the Maxwellian distribution in units m/s.
+
     Examples
     --------
     >>> from plasmapy.particles import Particle
