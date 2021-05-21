@@ -548,19 +548,77 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
     section for further details.)
 
-# This dictionary defines coefficients for thermal speeds
-# calculated for different methods and values of ndim.
-# Created here to avoid re-instantiating on each call
-#
-thermal_speed_coefficients = {
-    1: {"most_probable": 0, "rms": 1, "mean_magnitude": 2 / np.pi},
-    2: {"most_probable": 1, "rms": 2, "mean_magnitude": np.pi / 2},
-    3: {"most_probable": 2, "rms": 3, "mean_magnitude": 8 / np.pi},
-}
-"""
-Dictionary of various coefficients used in calculating the
-`~plasmapy.formulary.parameters.thermal_speed`.
-"""
+    Parameters
+    ----------
+    method : `str`
+        Method to be used for calculating the thermal speed. Valid values are
+        ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``, and ``"nrl"``.
+
+    ndim : `int`
+        Dimensionality (1D, 2D, 3D) of space in which to calculate thermal
+        speed. Valid values are ``1``, ``2``, or ``3``.
+
+    Raises
+    ------
+    `ValueError`
+        If ``method`` or ``ndim`` are not a valid value.
+
+    Notes
+    -----
+
+    For a detailed explanation of the different coefficients used to calculate
+    the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
+    for  `~plasmapy.formulary.parameters.thermal_speed`.  The values retuned
+    follow the table
+
+    .. table:: Thermal speed :math:`v_{th}` coefficients.
+       :widths: 2 1 1 1 1
+       :width: 100%
+
+       +--------------+------------+---------------+---------------+---------------+
+       | ↓ **method** | **ndim** → | ``1``         | ``2``         | ``3``         |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"most_probable"``       | .. math::     | .. math::     | .. math::     |
+       |                           |    0          |    1          |    \sqrt{2}   |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"rms"``                 | .. math::     | .. math::     | .. math::     |
+       |                           |    1          |    \sqrt{2}   |    \sqrt{3}   |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"mean_magnitude"``      | .. math::     | .. math::     | .. math::     |
+       |                           |    \sqrt{2/π} |    \sqrt{π/2} |    \sqrt{8/π} |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"nrl"``                 | .. math::                                     |
+       |                           |    1                                          |
+       +--------------+------------+---------------+---------------+---------------+
+
+    Examples
+    --------
+    >>> thermal_speed_coefficients(method="most_probably", ndim=3)
+    1.414213...
+    """
+    _coefficients = {
+        (1, "most_probable"): 0,
+        (2, "most_probable"): 1,
+        (3, "most_probable"): np.sqrt(2),
+        (1, "rms"): 1,
+        (2, "rms"): np.sqrt(2),
+        (3, "rms"): np.sqrt(3),
+        (1, "mean_magnitude"): np.sqrt(2 / np.pi),
+        (2, "mean_magnitude"): np.sqrt(np.pi / 2),
+        (3, "mean_magnitude"): np.sqrt(8 / np.pi),
+        (1, "nrl"): 1,
+        (2, "nrl"): 1,
+        (3, "nrl"): 1,
+    }
+
+    try:
+        coeff = _coefficients[(ndim, method)]
+    except KeyError:
+        raise ValueError(
+            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
+        )
+
+    return coeff
 
 
 @preserve_signature
