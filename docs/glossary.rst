@@ -1,8 +1,8 @@
 .. currentmodule:: plasmapy
 
-*****************
-PlasmaPy Glossary
-*****************
+********
+Glossary
+********
 
 .. glossary::
 
