@@ -8,7 +8,8 @@ Glossary
 
    -like
       Used to indicate an `object` of that type or that can instantiate
-      that type.  For example,
+      that type.  For example, `"He 2+"` is particle-like because it
+      can be used to instantiate |Particle|.
 
    number
       Any numeric type.  This could include a `float`, `int`, or any of
