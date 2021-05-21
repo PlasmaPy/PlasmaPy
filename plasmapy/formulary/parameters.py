@@ -674,8 +674,7 @@ def thermal_speed_lite(
 
 @mark_has_lite_func(
     thermal_speed_lite,
-    attrs=[("coefficients", "thermal_speed_coefficients")],
-    scope=globals(),
+    attrs=[("coefficients", thermal_speed_coefficients)],
 )
 @check_relativistic
 @validate_quantities(

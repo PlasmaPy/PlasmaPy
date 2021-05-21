@@ -6,29 +6,29 @@ __all__ = ["mark_has_lite_func"]
 import functools
 import inspect
 
-from collections import namedtuple
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 from warnings import warn
 
-
-LiteFuncTupleEntry = namedtuple("LiteFuncTupleEntry", ("name", "origin"))
 
 _litefunc_registry = {}
 
 
-def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
+class LiteFuncList(list):
+    """
+    A list containing which attributions have been bound as part of the
+    "Lite-Function" functionality.  Each entry is a 2-element tuple where the
+    first element is the bound name and the second element is the fully
+    qualified name of the original object.
+    """
+
+
+def mark_has_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind lightweight "lite" versions of formulary functions to the full
     formulary function.
     """
     if attrs is None:
         attrs = []
-    elif scope is None:
-        raise ValueError(
-            f"If 'attrs' are being bound to the decorate function, then 'scope'"
-            f" needs to be defined and contain the objects to be bound.  "
-            f"Setting 'scope=globals()' will typically suffice."
-        )
 
     if not inspect.isfunction(flite) or inspect.isbuiltin(flite):
         raise ValueError(f"The lite-function passed is not a user-defined function.")
@@ -40,28 +40,16 @@ def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __has_litefuncs__ = []
-        attrs.append(("lite", ""))
-        for bound_name, attr_name in attrs:
-            # get object to bind
-            if bound_name == "lite":
-                attr = flite
-            else:
-                attr = scope[attr_name]
+        __has_lite_func__ = LiteFuncList()
+        attrs.append(("lite", flite))
+        for bound_name, attr in attrs:
 
             # skip objects that are not allowed
-            _warn = None
-            if inspect.isclass(attr):
-                _warn = "class"
-            elif inspect.ismodule(attr):
-                _warn = "module"
-            elif inspect.ismethod(attr):
-                _warn = "method"
-            if _warn is not None:
+            # - only allow functions
+            if not inspect.isfunction(attr):
                 warn(
-                    f"Can not bind {_warn} '{attr_name}' to function"
-                    f" '{wrapper.__name__}'.  Only functions and instances are "
-                    f"allowed. Skipping."
+                    f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
+                    f"  Only functions are allowed to be bound. Skipping."
                 )
                 continue
 
@@ -69,17 +57,9 @@ def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
             if hasattr(attr, "__module__"):
                 modname = attr.__module__
             else:
-                modname = wrapper.__module__
-
-            if hasattr(attr, "__name__"):
-                shortname = attr.__name__
-            else:
-                shortname = attr_name
-
-            origin = f"{modname}.{shortname}"
-            __has_litefuncs__.append(
-                LiteFuncTupleEntry(name=bound_name, origin=origin)
-            )
+                modname = wrapper.__module___
+            origin = f"{modname}.{attr.__name__}"
+            __has_lite_func__.append((bound_name, origin))
 
             # bind
             setattr(wrapper, bound_name, attr)
@@ -87,7 +67,6 @@ def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
             reg_entry = {
                 f"{parent_qualname}.{bound_name}" : {
                     "is_parent": False,
-                    "is_child": True,
                     "parent": parent_qualname,
                     "shortname": bound_name,
                     "origin": origin,
@@ -95,18 +74,17 @@ def mark_has_lite_func(flite, attrs: List[Tuple[str, str]] = None, scope=None):
             }
             _litefunc_registry.update(reg_entry)
 
-        if len(__has_litefuncs__) == 0:
+        if len(__has_lite_func__) == 0:
             raise ValueError(
                 f"Lite-function marking of '{wrapper.__name__}' resulting in NO"
                 f" attributes being bound."
             )
 
-        setattr(wrapper, "__has_litefunc__", __has_litefuncs__)
+        setattr(wrapper, "__has_lite_func__", __has_lite_func__)
 
         reg_entry = {
             f"{parent_qualname}": {
                 "is_parent": True,
-                "is_child": False,
                 "parent": None,
                 "shortname": parent_qualname.split(".")[-1],
                 "origin": parent_qualname,
