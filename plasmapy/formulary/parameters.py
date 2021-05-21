@@ -586,8 +586,9 @@ def thermal_speed(
     ndim=3,
 ) -> u.m / u.s:
     r"""
-    Return the most probable speed for a particle within a Maxwellian
-    distribution.
+    Calculate the speed of thermal motion for particles with a Maxwellian
+    distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
+    details.)
 
     **Aliases:** `~plasmapy.formulary.parameters.vth_`
 
@@ -598,29 +599,29 @@ def thermal_speed(
     T : `~astropy.units.Quantity`
         The particle temperature in either kelvin or energy per particle
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the particles are
         assumed to be singly charged.
 
     method : `str`, optional
-        Method to be used for calculating the thermal speed. Options are
-        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
+        (Default ``"most_probable"``) Method to be used for calculating the
+        thermal speed. Valid values are ``'most_probable'``, ``'rms'``, and
+        ``'mean_magnitude'``.
 
     mass : `~astropy.units.Quantity`
-        The particle's mass override. Defaults to `~np.nan` and if so, doesn't do
-        anything, but if set, overrides mass acquired from `particle`. Useful
-        with relative velocities of particles.
+        Mass override.  If given, then ``mass`` will be used instead of the
+        mass value associated with ``particle``.
 
     ndim : `int`
-        Dimensionality of space in which to calculate thermal velocity. Valid
-        values are 1, 2, or 3.
+        (Default ``3``) Dimensionality (1D, 2D, 3D) of space in which to
+        calculate thermal speed. Valid values are ``1``, ``2``, or ``3``.
 
     Returns
     -------
-    V : `~astropy.units.Quantity`
-        The particle's thermal speed.
+    vth : `~astropy.units.Quantity`
+        Thermal speed of the Maxwellian distribution.
 
     Raises
     ------
@@ -643,44 +644,102 @@ def thermal_speed(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+
+    .. _thermal-speed-notes:
+
     Notes
     -----
-    The particle thermal speed is given by:
+
+    There are multiple methods (or definitions) for calculating the thermal
+    speed, all of which give the expression
 
     .. math::
-        V_{th,i} = \sqrt{\frac{N k_B T_i}{m_i}}
+        v_{th} = C_o \sqrt{\frac{k_B T}{m}}
 
-    where the value of :math:`N` depends on the dimensionality and the
-    definition of :math:`v_{th}`: most probable, root-mean-square (RMS),
-    or mean magnitude. The value of :math:`N` in each case is
+    where :math:`T` is the temperature associated with the distribution,
+    :math:`m` is the particle's mass, and :math:`C_o` is a constant of
+    proportionality determined by the method in which :math:`v_{th}` is
+    calculated and the dimentionality of the system (1D, 2D, 3D).  The
+    :math:`C_o` used for the ``thermal_speed`` calculation is determined from
+    the input arguments ``method`` and ``ndim``, and the values can be seen in
+    the table below:
 
-    .. list-table:: Values of constant :math:`N`
-       :widths: 50, 25, 25, 25
-       :header-rows: 1
+    .. table:: Values for :math:`C_o`
+       :widths: 2 1 1 1 1
+       :width: 100%
 
-       * - Dim.
-         - Most-Probable
-         - RMS
-         - Mean-Magnitude
-       * - 1D
-         - 0
-         - 1
-         - :math:`2/π`
-       * - 2D
-         - 1
-         - 2
-         - :math:`π/2`
-       * - 3D
-         - 2
-         - 3
-         - :math:`8/π`
+       +--------------+------------+---------------+---------------+---------------+
+       | ↓ **method** | **ndim** → | ``1``         | ``2``         | ``3``         |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"most_probable"``       | .. math::     | .. math::     | .. math::     |
+       |                           |    0          |    1          |    \sqrt{2}   |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"rms"``                 | .. math::     | .. math::     | .. math::     |
+       |                           |    1          |    \sqrt{2}   |    \sqrt{3}   |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"mean_magnitude"``      | .. math::     | .. math::     | .. math::     |
+       |                           |    \sqrt{2/π} |    \sqrt{π/2} |    \sqrt{8/π} |
+       +--------------+------------+---------------+---------------+---------------+
+       | ``"nrl"``                 | .. math::                                     |
+       |                           |    1                                          |
+       +--------------+------------+---------------+---------------+---------------+
 
-    The definition of thermal velocity varies by
-    the square root of two depending on whether or not this velocity
-    absorbs that factor in the expression for a Maxwellian
-    distribution.  In particular, the expression given in the NRL
-    Plasma Formulary [1] is a square root of two smaller than the
-    result from this function.
+    The coefficents can be directly retrieved using
+    `~plasmapy.formulary.parameters.thermal_speed_coefficients`.
+
+        .. rubric:: The Methods
+
+        In the following discussion the Maxwellian distribution
+        :math:`f(\mathbf{v})` is assumed to be 3D, but similar expressions can
+        be given for 1D and 2D.
+
+        - **Most Probably** ``method = "most_probable"``
+
+          This method expresses the thermal speed of the distribution by expressing
+          it as the most probable speed a particle in the distribution may have.
+          To do this we first define another function :math:`g(v)` given by
+
+          .. math::
+             \int_{0}^{\infty} g(v) dv
+                = \int_{-\infty}^{\infty} f(\mathbf{v}) d^3\mathbf{v}
+                \quad \rightarrow \quad
+                g(v) = 4 \pi v^2 f(v)
+
+          then
+
+          .. math::
+             g^{\prime}(v_{th}) = \left.\frac{dg}{dv}\right|_{v_{th}} = 0\\
+             \implies v_{th} = \sqrt{\frac{2 k_B T}{m}}
+
+        - **Root Mean Squared** ``method = "rms"``
+
+          This method uses the root-mean squared to calculate an expression for
+          the thermal speed of the particle distribution, which is given by
+          defines the thermal speed as
+
+          .. math::
+             v_{th} = \left[\int v^2 f(\mathbf{v}) d^3 \mathbf{v}\right]^{1/2}
+                        = \sqrt{\frac{3 k_B T}{m}}
+
+        - **Mean Magnitude** ``method = "mean_magnitude"``
+
+          This method uses the mean speed of the particle distribution to
+          calcuate an expression for the thermal speed, which is given by
+
+          .. math::
+             v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
+                         = \sqrt{\frac{8 k_B T}{\pi m}}
+
+
+        - **NRL Formulary** ``method = "nrl"``
+
+          The `NRL Plasma Formulary
+          <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
+          uses the square of the Normal distribution's variance :math:`\sigma^2`
+          as the expression for thermal speed.
+
+          .. math::
+             v_{th} = \sqrt{\frac{k_B T}{\pi m}}
 
     Examples
     --------
