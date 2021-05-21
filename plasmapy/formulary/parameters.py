@@ -623,11 +623,46 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(T, mass, coeff):
-    """
-    A lite weight version of `~plasmapy.formulary.parameters.thermal_speed`
-    intended for computational used and, thus, does not do any argument
-    validation/conditioning.
+def thermal_speed_lite(
+    T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
+) -> numbers.Real:
+    r"""
+    The "Lite-Function" version of `~plasmapy.formulary.parameters.thermal_speed`.
+    Performs the same thermal speed calculations as
+    `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
+    computational use and, thus, has data conditioning safe-guards removed.
+
+    .. math::
+        v_{th} = C_o \sqrt{\frac{k_B T}{m}}
+
+    where :math:`T` is the temperature associated with the distribution,
+    :math:`m` is the particle's mass, and :math:`C_o` is a constant of
+    proportionality determined by the method in which :math:`v_{th}` is
+    calculated and the dimensionality of the system (1D, 2D, 3D).  For further
+    details see the :ref:`Notes <thermal-speed-notes>` section in the
+    `~plasmapy.formulary.parameters.thermal_speed` documentation.
+
+    Parameters
+    ----------
+    T : `~numbers.Real`
+        The temperature of the particle distribution, in units of kelvin.
+
+    mass : `~numbers.Real`
+        Mass of the particle in kg.
+
+    coeff : `~numbers.Real`
+        The coefficient :math:`C_o` associated with the method used for
+        calculating the thermal speed, see :ref:`Notes <thermal-speed-notes>`
+        section in the `~plasmapy.formulary.parameters.thermal_speed`
+        documentation.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import Particle
+    >>> mass = Particle("p").mass.value
+    >>> coeff = thermal_speed_coefficients(method="most_probable", ndim=3)
+    >>> thermal_speed_lite(T=1e6, mass=mass, coeff=coeff)
+    128486...
     """
     return coeff * np.sqrt(k_B_si_unitless * T / mass)
 
