@@ -543,8 +543,8 @@ cs_ = ion_sound_speed
 # -----                                                             thermal_speed  -----
 def thermal_speed_coefficients(method: str, ndim: int) -> float:
     r"""
-    Get the appropriate coefficient for the thermal speed expression based on the
-    given ``method`` and ``ndim``.  (See the
+    Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
+    based on the given ``method`` and ``ndim``.  (See the
     `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
     section for further details.)
 
@@ -568,8 +568,8 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     For a detailed explanation of the different coefficients used to calculate
     the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for  `~plasmapy.formulary.parameters.thermal_speed`.  The values retuned
-    follow the table
+    for  `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    values are listed the table
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
        :widths: 2 1 1 1 1
@@ -593,7 +593,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     Examples
     --------
-    >>> thermal_speed_coefficients(method="most_probably", ndim=3)
+    >>> thermal_speed_coefficients(method="most_probable", ndim=3)
     1.414213...
     """
     _coefficients = {
