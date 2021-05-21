@@ -240,7 +240,7 @@ class Particle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    argument : `ParticleLike`, excluding `CustomParticle` instances
+    argument : particle-like, excluding `CustomParticle` instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         `~plasmapy.particles.particle_class.Particle` instance.
