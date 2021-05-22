@@ -41,13 +41,13 @@ Release
   consistent with the Zenodo record.  Update any other tags if necessary. Check
   ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``.
 
-* ``hub ci-status master -v`` — Check that the Continuous Integration is passing
-  for the correct version `(see the latest commit on master)
-  <https://github.com/PlasmaPy/PlasmaPy/commits/master>`_. You can use the handy
+* ``hub ci-status main -v`` — Check that the Continuous Integration is passing
+  for the correct version `(see the latest commit on main)
+  <https://github.com/PlasmaPy/PlasmaPy/commits/main>`_. You can use the handy
   `hub <https://github.com/github/hub>`_ command line interface (CLI) tool.
 
 * ``git checkout -b v0.6.x`` — create a new branch for the release that is
-  separate from the master branch, with the bugfix version replaced by ``x``, for
+  separate from the main branch, with the bugfix version replaced by ``x``, for
   example, ``v0.6.x``. This is the branch for the entire series of releases — if
   you're releasing, say, ``0.6.1``, the main repository should already have a
   branch for that.
@@ -83,7 +83,7 @@ Release
 
 * Commit and push your changes up until now.
 
-* Open them up as a Pull Request from the ``0.6.x`` branch to the master branch.
+* Open them up as a Pull Request from the ``0.6.x`` branch to the main branch.
 
 * Make sure that tests pass and that documentation builds without issue.
 
@@ -111,7 +111,7 @@ for the new version!
 Post-release
 ------------
 
-* Merge the pull request from the version branch to master.
+* Merge the pull request from the version branch to main.
 
 * If necessary (for MINOR+ and not for BUGFIX versions) activate the new
   branch's version `on Read the Docs
