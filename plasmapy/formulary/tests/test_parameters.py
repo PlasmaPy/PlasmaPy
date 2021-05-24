@@ -523,6 +523,32 @@ class TestThermalSpeed:
         assert alias is thermal_speed
 
     @pytest.mark.parametrize(
+        "bound_name, bound_attr",
+        _bound_attrs,
+    )
+    def test_lite_function_binding(self, bound_name, bound_attr):
+        """Test expected attributes are bound correctly."""
+        assert hasattr(thermal_speed, bound_name)
+        attr = getattr(thermal_speed, bound_name)
+        assert attr is bound_attr
+
+    def test_lite_function_marking(self):
+        """
+        Test thermal_speed is marked as having a Lite-Function and that its
+        __has_lite_func__ attribute is defined correctly.
+        """
+        assert hasattr(thermal_speed, "__has_lite_func__")
+        assert len(thermal_speed.__has_lite_func__) == len(self._bound_attrs)
+
+        bound_names, bound_qualnames = zip(*thermal_speed.__has_lite_func__)
+        for name, attr in self._bound_attrs:
+            assert name in bound_names
+
+            index = bound_names.index(name)
+            qualname = f"{attr.__module__}.{attr.__name__}"
+            assert qualname == bound_qualnames[index]
+
+    @pytest.mark.parametrize(
         "method, ndim, expected",
         [
             ("most_probable", 1, 0),
@@ -587,31 +613,6 @@ class TestThermalSpeed:
         coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
         assert np.isclose(normal.value, lite)
-
-    @pytest.mark.parametrize(
-        "bound_name, bound_attr",
-        _bound_attrs,
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        assert hasattr(thermal_speed, bound_name)
-        attr = getattr(thermal_speed, bound_name)
-        assert attr is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test thermal_speed is marked as having a Lite-Function and that its
-        __has_lite_func__ attribute is defined correctly.
-        """
-        assert hasattr(thermal_speed, "__has_lite_func__")
-        assert len(thermal_speed.__has_lite_func__) == len(self._bound_attrs)
-
-        bound_names, bound_qualnames = zip(*thermal_speed.__has_lite_func__)
-        for name, attr in self._bound_attrs:
-            assert name in bound_names
-
-            index = bound_names.index(name)
-            qualname = f"{attr.__module__}.{attr.__name__}"
-            assert qualname == bound_qualnames[index]
 
 
 def test_thermal_speed():
