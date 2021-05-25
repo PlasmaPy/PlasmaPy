@@ -344,7 +344,7 @@ takes care of executing them at documentation build time and including them
 in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Cell -> All Output -> Clear" option). This accomplishes two goals:
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
