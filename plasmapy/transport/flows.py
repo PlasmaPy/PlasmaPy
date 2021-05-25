@@ -22,15 +22,6 @@ heat_flux_unit = u.J * particle_flux_unit
 from plasmapy.particles.exceptions import InvalidElementError
 from plasmapy.utils.decorators import validate_quantities
 
-# if "profile" not in globals():
-#     def profile(func):
-#         return func
-
-
-# @dataclass(order=True)
-# class Fluxes:
-#     particle_flux: u.Quantity
-#     heat_flux: u.Quantity
 Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 

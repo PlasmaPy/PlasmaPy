@@ -40,6 +40,8 @@ class FluxSurface:
         self.Lp = np.sum(self.dL)
 
         self.toroid_area = self.centroid[0] * 2 * np.pi * self.Lp
+        R0 = 1
+        self.Cp = self.Lp / R0
 
         n = np.stack((self.dZ, -self.dR))
         # TODO ej, n według shainga to \vec{B} / |B|. Ale dalej nigdzie go nie używam
