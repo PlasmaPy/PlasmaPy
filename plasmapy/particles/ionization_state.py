@@ -19,6 +19,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -307,6 +308,9 @@ class IonizationState:
                 )
 
         self._particle = particle
+        self._particle_list = ParticleList(
+            [Particle(particle, Z=i) for i in range(0, particle.atomic_number + 1)]
+        )
 
         try:
             self.tol = tol
@@ -711,6 +715,14 @@ class IonizationState:
         return self.isotope if self.isotope else self.element
 
     @property
+    def as_particle_list(self) -> ParticleList:
+        """
+        A `~plasmapy.particles.particle_collections.ParticleList` of
+        the ionic levels.  The index corresponds to the charge number.
+        """
+        return self._particle_list
+
+    @property
     def atomic_number(self) -> int:
         """The atomic number of the element."""
         return self._particle.atomic_number
@@ -719,24 +731,14 @@ class IonizationState:
         return self._number_of_particles
 
     @property
-    def _particle_instances(self) -> List[Particle]:
-        """
-        A `list` of the `~plasmapy.particles.particle_class.Particle` class
-        instances corresponding to each ion.
-        """
-        return [
-            Particle(self._particle.symbol, Z=i) for i in range(self.atomic_number + 1)
-        ]
-
-    @property
     def ionic_symbols(self) -> List[str]:
         """The ionic symbols for all charge states."""
-        return [particle.ionic_symbol for particle in self._particle_instances]
+        return self.as_particle_list.symbols
 
     @property
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
-        return np.arange(0, self.atomic_number + 1, dtype=int)
+        return self.as_particle_list.charge_number
 
     @property
     @deprecated(
