@@ -5,11 +5,9 @@ import numpy as np
 import pytest
 
 from abc import ABC, abstractmethod
-from contextlib import ExitStack as does_not_raise
+from contextlib import nullcontext as does_not_raise
 
 import plasmapy.analysis.fit_functions as ffuncs
-
-# ^ ExitStack can be replaced with nullcontext when we require >= python 3.7
 
 
 class TestAbstractFitFunction:
@@ -54,7 +52,8 @@ class TestAbstractFitFunction:
             assert isinstance(getattr(self.ff_class, name), property)
 
     @pytest.mark.parametrize(
-        "name", ["__str__", "func", "func_err", "latex_str"],
+        "name",
+        ["__str__", "func", "func_err", "latex_str"],
     )
     def test_abstractmethods(self, name):
         """Test for required abstract methods."""
@@ -403,7 +402,9 @@ class BaseFFTests(ABC):
         assert ff_obj.curve_fit_results is not None
         assert np.isclose(ff_obj.rsq, 1.0)
         assert np.allclose(
-            ff_obj.param_errors, tuple([0] * len(ff_obj.param_names)), atol=1.5e-8,
+            ff_obj.param_errors,
+            tuple([0] * len(ff_obj.param_names)),
+            atol=1.5e-8,
         )
         assert np.allclose(ff_obj.params, self._test_params)
 
@@ -417,8 +418,8 @@ class TestFFExponential(BaseFFTests):
     _test_params = (5.0, 1.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("a", "alpha")
-    _test_latex_str = fr"a \, \exp(\alpha x)"
-    _test__str__ = f"f(x) = a exp(alpha x)"
+    _test_latex_str = r"a \, \exp(\alpha x)"
+    _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
     def func(x, a, alpha):
@@ -459,8 +460,8 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test_params = (2.0, 1.0, 5.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "m", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + m x + b"
-    _test__str__ = f"f(x) = a exp(alpha x) + m x + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + m x + b"
+    _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
     def func(x, a, alpha, m, b):
@@ -507,8 +508,8 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test_params = (2.0, 1.0, -10.0)
     _test_param_errors = (0.1, 0.1, 0.1)
     _test_param_names = ("a", "alpha", "b")
-    _test_latex_str = fr"a \, \exp(\alpha x) + b"
-    _test__str__ = f"f(x) = a exp(alpha x) + b"
+    _test_latex_str = r"a \, \exp(\alpha x) + b"
+    _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
     def func(x, a, alpha, b):
@@ -555,8 +556,8 @@ class TestFFLinear(BaseFFTests):
     _test_params = (5.0, 4.0)
     _test_param_errors = (0.1, 0.1)
     _test_param_names = ("m", "b")
-    _test_latex_str = fr"m x + b"
-    _test__str__ = f"f(x) = m x + b"
+    _test_latex_str = r"m x + b"
+    _test__str__ = "f(x) = m x + b"
 
     @staticmethod
     def func(x, m, b):

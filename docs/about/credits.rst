@@ -89,6 +89,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
 * `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
 * `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
+* `David Drozdov <https://github.com/davemus>`__
+* `Dhawal Modi <https://github.com/Dhawal-Modi>`__
+* `Armando Salcido <https://github.com/aksalcido>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision
@@ -115,14 +118,15 @@ Early development on PlasmaPy was partially supported by the U.S.
 Department of Energy through grant DE-SC0016363 that was funded
 through the NSF-DOE Partnership on Basic Plasma Science and
 Engineering; a Scholarly Studies grant awarded by the Smithsonian
-Institution; and Google Summer of Code.  PlasmaPy is being developed
-with support from the U.S. National Science Foundation through
-grants 1931388, 1931393, 1931429, and 1931435 that were awarded
+Institution; Google Summer of Code; and NASA Heliophysics Data
+Environment Enhancements (HDEE) grant 80NSSC20K0174.  PlasmaPy is
+being developed with support from the U.S. National Science Foundation
+through grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
 <http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
-Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program and
-NASA Heliophysics Data Environment Enhancements (HDEE) grant 80NSSC20K0174.
-Any opinions, findings, and conclusions or recommendations expressed
+Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
+
+All opinions, findings, conclusions, and recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of any of the funding agencies or organizations that
 have supported PlasmaPy development.

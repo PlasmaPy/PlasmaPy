@@ -13,11 +13,13 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 from ..atomic import (
     _is_electron,
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -35,7 +37,7 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..isotopes import _Isotopes
+from ..isotopes import _isotopes
 from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from ..symbols import atomic_symbol, element_name, isotope_symbol
 
@@ -335,7 +337,7 @@ is_stable_table = [
     [("B",), InvalidIsotopeError],
 ]
 
-integer_charge_table = [
+charge_number_table = [
     ["H+", 1],
     ["D +1", 1],
     ["tritium 1+", 1],
@@ -417,7 +419,7 @@ tables_and_functions = [
     (standard_atomic_weight, standard_atomic_weight_table),
     (is_stable, is_stable_table),
     (particle_mass, particle_mass_table),
-    (integer_charge, integer_charge_table),
+    (charge_number, charge_number_table),
     (electric_charge, electric_charge_table),
     (half_life, half_life_table),
 ]
@@ -463,7 +465,7 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    integer_charge,
+    charge_number,
     electric_charge,
 ]
 
@@ -623,10 +625,10 @@ def test_half_life():
 def test_half_life_unstable_isotopes():
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
-    for isotope in _Isotopes.keys():
+    for isotope in _isotopes.keys():
         if (
-            "half_life" not in _Isotopes[isotope].keys()
-            and not _Isotopes[isotope].keys()
+            "half_life" not in _isotopes[isotope].keys()
+            and not _isotopes[isotope].keys()
         ):
             with pytest.raises(MissingParticleDataError):
 
@@ -781,3 +783,8 @@ str_electron_table = [
 @pytest.mark.parametrize("particle, electron", str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
+
+
+def test_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert integer_charge("Fe 20+") == 20

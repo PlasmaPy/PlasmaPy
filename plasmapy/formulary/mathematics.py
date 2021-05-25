@@ -1,14 +1,14 @@
-"""
-This module gathers highly theoretical mathematical formulas
-relevant to plasma physics. Usually, those are used somewhere else in
-the code but were deemed general enough for the mathematical apparatus
-to be abstracted from the main function interface.
-"""
-__all__ = ["Fermi_integral"]
+"""Mathematical formulas relevant to plasma physics."""
 
+__all__ = ["Fermi_integral", "Chandrasekhar_G", "rot_a_to_b"]
+
+import numba
+import numba_scipy
 import numbers
 import numpy as np
 
+from numba import float64, vectorize
+from scipy import special
 from typing import Union
 
 
@@ -20,23 +20,23 @@ def Fermi_integral(
 
     Parameters
     ----------
-    x : float, int, complex, or ~numpy.ndarray
+    x : `float`, `int`, `complex`, or `~numpy.ndarray`
         Argument of the Fermi-Dirac integral function.
 
-    j : float, int, complex, or ~numpy.ndarray
+    j : `float`, `int`, `complex`, or `~numpy.ndarray`
         Order/index of the Fermi-Dirac integral function.
 
     Returns
     -------
-    integral : float, complex, or ~numpy.ndarray
+    integral : `float`, `complex`, or `~numpy.ndarray`
         Complete Fermi-Dirac integral for given argument and order.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If the argument is invalid.
 
-    ~astropy.units.UnitsError
+    `~astropy.units.UnitsError`
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
@@ -50,7 +50,7 @@ def Fermi_integral(
     defined as:
 
     .. math::
-        F_j (x) = \frac{1}{\Gamma (j+1)} \int_0^{\infty} \frac{t^j}{\exp{(t-x)} + 1} dt
+        F_j (x) = \frac{1}{Γ(j+1)} \int_0^∞ \frac{t^j}{\exp{(t-x)} + 1} dt
 
     for :math:`j > 0`.
 
@@ -92,3 +92,156 @@ def Fermi_integral(
         return integral_arr
     else:
         raise TypeError(f"Improper type {type(x)} given for argument x.")
+
+
+@vectorize(
+    [
+        float64(float64),
+    ]
+)
+def Chandrasekhar_G(x: float):
+    r"""
+    Calculate the Chandrasekhar G function used in transport theory.
+
+    Parameters
+    ----------
+    x : `float` or `~numpy.ndarray`
+        Usually the ratio of a particle's velocity to its species' thermal
+        velocity.
+
+    Returns
+    -------
+    `float` or `numpy.ndarray`
+
+    Notes
+    -----
+
+    The Chandrasekhar function is defined as:
+
+    .. math::
+        G(x) = \frac{\Phi(x) - x * \Phi'(x)}{2x^2}
+
+    Where :math:`\Phi(x)` is the Gauss error function. G goes as :math:`2x /
+    3 \sqrt{π}` at :math:`x \to 0` and :math:`0.5 x^{-2}` at :math:`x \to
+    \infty`. It describes the drag on a particle by collisions with a
+    Maxwellian background.
+
+    Since it goes to zero at infinity, for any applied electric field you can
+    always find electrons for which the field is larger than the friction.
+    These electrons will then enter a feedback loop, accelerating endlessly (in
+    the non-relativistic limit) and becoming runaways.
+
+    Incidentally, if your field is barely strong enough to accelerate thermal
+    electrons to infinity, it's called the Dreicer electric field.
+
+    Examples
+    --------
+    >>> Chandrasekhar_G(1)
+    0.21379664776456
+    >>> Chandrasekhar_G(1e-6)
+    3.7602148950099945e-07
+    >>> Chandrasekhar_G(1e6)
+    5e-13
+    >>> Chandrasekhar_G(-1)
+    -0.21379664776456
+
+    References
+    ----------
+    Collisional Transport in Magnetized Plasmas,
+    Per Helander & Dieter J. Sigmar, 2005
+
+    """
+
+    if 100 * abs(x) < np.finfo(np.float64).eps:
+        return 2 * x / 3 / np.sqrt(np.pi)
+    elif abs(x) > np.finfo(np.float64).max:
+        return 1 / (2 * x ** 2)
+    erf = special.erf(x)
+    erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
+    return 0.5 * (erf / x ** 2 - erf_derivative / x)
+
+
+def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    r"""
+    Calculates the 3D rotation matrix that will rotate vector ``a`` to be aligned
+    with vector ``b``. The rotation matrix is calculated as follows. Let
+
+    .. math::
+        \vec v = \vec a \times \vec b
+
+    and let :math:`\theta` be the angle between :math:`\vec a`
+    and :math:`\vec b` such that the projection of :math:`\vec a` along
+    :math:`\vec b` is
+
+    .. math::
+        c = \vec a \cdot \vec b \cos\theta
+
+    Then the rotation matrix :math:`R` is
+
+    .. math::
+        R = I + v_x + v_x^2 \frac{1}{1 + c}
+
+
+    where :math:`I` is the identity matrix and :math:`v_x` is the
+    skew-symmetric cross-product matrix of :math:`v` defined as
+
+    .. math::
+        v_x = \begin{bmatrix}
+                0 & -v_3 & v_2 \\
+                v_3 & 0 & -v_1 \\
+                -v_2 & v_1 & 0
+            \end{bmatrix}
+
+    Note that this algorithm fails when :math:`1+c=0`, which occurs when :math:`a` and
+    :math:`b` are anti-parallel. However, since the correct rotation matrix
+    in this case is simply :math:`R=-I`, this function just handles this
+    special case explicitly.
+
+    This algorithm is based on
+    `this discussion <https://math.stackexchange.com/a/476311>`_ on StackExchange.
+
+    Parameters
+    ----------
+    a : `~numpy.ndarray`, shape (3,)
+        Vector to be rotated.  Should be a 1D, 3-element unit vector.  If ``a``
+        is not normalize, then it will be normalized.
+
+    b : `~numpy.ndarray`, shape (3,)
+        Vector representing the desired orientation after rotation.  Should be
+        a 1D, 3-element unit vector.  If ``b`` is not normalized, then it will
+        be.
+
+    Returns
+    -------
+    R : `~numpy.ndarray`, shape (3,3)
+        The rotation matrix that will rotate vector ``a`` onto vector ``b``.
+
+    """
+
+    # Normalize and validate both vectors
+
+    a = np.squeeze(a)
+    if a.shape != (3,):
+        raise ValueError(
+            f"Argument 'a' must have shape (3,) but input has shape {a.shape}."
+        )
+    a = a / np.linalg.norm(a)
+
+    b = np.squeeze(b)
+    if b.shape != (3,):
+        raise ValueError(
+            f"Argument 'b' must have shape (3,) but input has shape {b.shape}."
+        )
+    b = b / np.linalg.norm(b)
+
+    # Manually handle the case where a and b point in opposite directions
+    if np.dot(a, b) == -1:
+        return -np.identity(3)
+
+    axb = np.cross(a, b)
+    c = np.dot(a, b)
+    vskew = np.array(
+        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
+    ).T  # Transpose to get right orientation
+
+    return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)

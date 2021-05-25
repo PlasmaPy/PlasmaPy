@@ -64,9 +64,39 @@ def test_AbstractGrid():
     q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantities(B_x=q)
 
+    # Test setting a subset of a quantity array
+    grid["B_x"][0, 0, 0] = 21 * u.T
+    assert grid["B_x"][0, 0, 0] == 21 * u.T
+
     # Test accessing a quantity using __getitem__ or directly
     Bx = grid.ds["B_x"]
     Bx = grid["B_x"]
+    # Assert that the array returned is a u.Quantity
+    assert isinstance(Bx, u.Quantity)
+    # Assert that the array returned has the right shape
+    assert Bx.shape == grid.shape
+
+    # Test require_quantities
+    # Test with a key that is there
+    req_q = ["B_x"]
+    grid.require_quantities(req_q, replace_with_zeros=False)
+    req_q = ["B_x", "B_y"]
+    # Test with a key that is not there, but can be replaced
+    # Do not replace
+    with pytest.raises(KeyError):
+        grid.require_quantities(req_q, replace_with_zeros=False)
+    # Do replace
+    with pytest.warns(RuntimeWarning, match="This quantity will be assumed to be zero"):
+        grid.require_quantities(req_q, replace_with_zeros=True)
+    req_q = ["B_x", "B_y"]
+    # Test with a key that is not there, but cannot be replaced because
+    # it's not a recognized key
+    req_q = ["B_x", "not_a_recognized_key"]
+    with pytest.raises(KeyError):
+        with pytest.warns(
+            RuntimeWarning, match="This quantity will be assumed to be zero"
+        ):
+            grid.require_quantities(req_q, replace_with_zeros=True)
 
     # Test adding a quantity with wrong units
     q = np.random.randn(10, 10, 10) * u.kg
@@ -103,19 +133,23 @@ def test_CartesianGrid():
     unit = grid.units
 
     # Grid should be uniform
-    assert grid.is_uniform == True
+    assert grid.is_uniform
 
-    # Test initializing with a provided grid
-    grid2 = grids.CartesianGrid(grid.grids[0], grid.grids[1], grid.grids[2],)
+    # Test initializing with a provided grid and a quantity
+    q = np.zeros(grid.shape)
+    grid2 = grids.CartesianGrid(
+        grid.grids[0], grid.grids[1], grid.grids[2], test_quantity=q
+    )
 
-    # Units not all consistent
+    # Test that input with the wrong units will raise an exception
+    L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
+    L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(
-            [-1 * u.m, -1 * u.rad, -1 * u.m], [1 * u.m, 1 * u.rad, 1 * u.m]
-        )
+        grid = grids.CartesianGrid(L0, L1, num=10)
 
 
 def test_grid_methods():
+    # ************ UNIFORM CARTESIAN ****************************
     grid = grids.CartesianGrid(
         np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
     )
@@ -128,13 +162,21 @@ def test_grid_methods():
     # Test vector_intersects
     # This vector passes through the grid
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm
-    assert grid.vector_intersects(p1, p2) == True
+    assert grid.vector_intersects(p1, p2)
     # Test going backwards yields the same result
-    assert grid.vector_intersects(p2, p1) == True
+    assert grid.vector_intersects(p2, p1)
     # This one doesn't
     p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm
-    assert grid.vector_intersects(p1, p2) == False
-    assert grid.vector_intersects(p2, p1) == False
+    assert not grid.vector_intersects(p1, p2)
+    assert not grid.vector_intersects(p2, p1)
+
+    # ************ NON-UNIFORM CARTESIAN ****************************
+
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
+
+    pos = np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm
+    out = grid.on_grid(pos)
+    assert np.all(out == np.array([True, False]))
 
 
 def test_interpolate_indices():
@@ -147,6 +189,10 @@ def test_interpolate_indices():
     # Assert that nearest grid cell was found
     pout = grid.grid[int(i[0]), int(i[1]), int(i[2])]
     assert np.allclose(pos, pout, atol=0.1)
+
+    # One position, no units
+    pos = np.array([0.1, -0.3, 0])
+    i = grid.interpolate_indices(pos)[0]
 
     # Two positions
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
@@ -205,6 +251,9 @@ def test_nearest_neighbor_interpolator():
 
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+
+    print(grid.shape)
+
     grid.add_quantities(x=grid.grids[0], y=grid.grids[1])
 
     # One position
@@ -257,11 +306,15 @@ def test_NonUniformCartesianGrid():
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 
     pts0, pts1, pts2 = grid.grids
+
     shape = grid.shape
     units = grid.units
 
+    grid.add_quantities(x=pts0)
+    print(grid)
+
     # Grid should be non-uniform
-    assert grid.is_uniform == False
+    assert not grid.is_uniform
 
     # Test assigning a quantity
     q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
@@ -270,13 +323,40 @@ def test_NonUniformCartesianGrid():
     # Test grid resolution for non-uniform grids
     assert 0 < grid.grid_resolution < 2
 
+    # Test volume interpolator not implemented yet
+    pos = np.array([5, -0.3, 0]) * u.cm
+    with pytest.raises(NotImplementedError):
+        pout = grid.volume_averaged_interpolator(pos, "x")
+
+    # Test that many properties are unavailable
+    with pytest.raises(ValueError):
+        grid.ax0
+    with pytest.raises(ValueError):
+        grid.ax1
+    with pytest.raises(ValueError):
+        grid.ax2
+    with pytest.raises(ValueError):
+        grid.dax0
+    with pytest.raises(ValueError):
+        grid.dax1
+    with pytest.raises(ValueError):
+        grid.dax2
+
+    # Test that input with the wrong units will raise an exception
+    L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
+    L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
+    with pytest.raises(ValueError):
+        grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
+
 
 if __name__ == "__main__":
-    # test_AbstractGrid()
-    # test_CartesianGrid()
-    # test_grid_methods()
-    # test_interpolate_indices()
-    # test_nearest_neighbor_interpolator()
-    # test_volume_averaged_interpolator()
-    # test_NonUniformCartesianGrid()
+    """
+    test_AbstractGrid()
+    test_CartesianGrid()
+    test_grid_methods()
+    test_interpolate_indices()
+    test_nearest_neighbor_interpolator()
+    test_volume_averaged_interpolator()
+    test_NonUniformCartesianGrid()
+    """
     pass

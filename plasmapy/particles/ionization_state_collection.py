@@ -16,7 +16,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.ionization_state import IonicFraction, IonizationState
+from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
@@ -74,7 +74,7 @@ class IonizationStateCollection:
 
     See Also
     --------
-    ~plasmapy.particles.ionization_state.IonicFraction
+    ~plasmapy.particles.ionization_state.IonicLevel
     ~plasmapy.particles.ionization_state.IonizationState
 
     Examples
@@ -180,13 +180,16 @@ class IonizationStateCollection:
                 "Unable to create IonizationStateCollection object."
             ) from exc
 
+    def __len__(self) -> int:
+        return len(self._base_particles)
+
     def __str__(self) -> str:
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> Union[IonizationState, IonicFraction]:
+    def __getitem__(self, *values) -> Union[IonizationState, IonicLevel]:
 
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
@@ -218,7 +221,7 @@ class IonizationStateCollection:
                     raise ChargeError(
                         f"{int_charge} is not a valid charge for {particle}."
                     )
-                return IonicFraction(
+                return IonicLevel(
                     ion=particle_symbol(particle, Z=int_charge),
                     ionic_fraction=self.ionic_fractions[particle][int_charge],
                     number_density=self.number_densities[particle][int_charge],
@@ -297,7 +300,7 @@ class IonizationStateCollection:
                     )
 
         try:
-            new_fractions = np.array(value, dtype=np.float64)
+            new_fractions = np.array(value, dtype=float)
         except Exception as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
@@ -402,14 +405,13 @@ class IonizationStateCollection:
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
         """
-        Return a `dict` containing the ionic fractions for each element
-        and isotope.
+        A `dict` containing the ionic fractions for each element and
+        isotope.
 
         The keys of this `dict` are the symbols for each element or
         isotope.  The values will be `~numpy.ndarray` objects containing
         the ionic fractions for each ionization level corresponding to
         each element or isotope.
-
         """
         return self._ionic_fractions
 
@@ -560,7 +562,7 @@ class IonizationStateCollection:
                 else:
                     try:
                         new_ionic_fractions[particles[key].symbol] = np.array(
-                            inputs[key], dtype=np.float
+                            inputs[key], dtype=float
                         )
                     except ValueError as exc:
                         raise ParticleError(
@@ -599,7 +601,7 @@ class IonizationStateCollection:
 
                 new_abundances = {}
                 for key in _elements_and_isotopes:
-                    new_abundances[key] = np.float(n_elems[key] / self.n0)
+                    new_abundances[key] = float(n_elems[key] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
@@ -619,7 +621,7 @@ class IonizationStateCollection:
             ]
             new_ionic_fractions = {
                 particle.symbol: np.full(
-                    particle.atomic_number + 1, fill_value=np.nan, dtype=np.float64
+                    particle.atomic_number + 1, fill_value=np.nan, dtype=float
                 )
                 for particle in _particle_instances
             }
@@ -652,23 +654,20 @@ class IonizationStateCollection:
     @property
     @validate_quantities
     def n_e(self) -> u.m ** -3:
-        """
-        Return the electron number density under the assumption of
-        quasineutrality.
-        """
+        """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
         for elem in self.base_particles:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
-            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
-            n_e += np.sum(number_densities[elem] * integer_charges)
+            charge_numbers = np.linspace(0, atomic_numb, number_of_ionization_states)
+            n_e += np.sum(number_densities[elem] * charge_numbers)
         return n_e
 
     @property
     @validate_quantities
     def n0(self) -> u.m ** -3:
-        """Return the number density scaling factor."""
+        """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
@@ -688,8 +687,8 @@ class IonizationStateCollection:
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
         """
-        Return a `dict` containing the number densities for element or
-        isotope.
+        A `dict` containing the number densities for the elements and/or
+        isotopes composing the collection.
         """
         return {
             elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
@@ -698,7 +697,7 @@ class IonizationStateCollection:
 
     @property
     def abundances(self) -> Optional[Dict[ParticleLike, Real]]:
-        """Return the elemental abundances."""
+        """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
@@ -712,9 +711,9 @@ class IonizationStateCollection:
             self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
-                f"The abundances attribute must be a dict with "
-                f"elements or isotopes as keys and real numbers "
-                f"representing relative abundances as values."
+                "The abundances attribute must be a dict with "
+                "elements or isotopes as keys and real numbers "
+                "representing relative abundances as values."
             )
         else:
             old_keys = abundances_dict.keys()
@@ -761,9 +760,8 @@ class IonizationStateCollection:
     @property
     def log_abundances(self) -> Dict[str, Real]:
         """
-        Return a `dict` with atomic or isotope symbols as keys and the
-        base 10 logarithms of the relative abundances as the
-        corresponding values.
+        A `dict` with atomic or isotope symbols as keys and the base 10
+        logarithms of the relative abundances as the corresponding values.
         """
         log_abundances_dict = {}
         for key in self.abundances.keys():
@@ -772,9 +770,7 @@ class IonizationStateCollection:
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
-        """
-        Set the base 10 logarithm of the relative abundances.
-        """
+        """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
                 new_abundances_input = {}
@@ -785,13 +781,14 @@ class IonizationStateCollection:
                 raise ParticleError("Invalid log_abundances.") from None
 
     @property
-    @validate_quantities(equivalencies=u.temperature_energy())
     def T_e(self) -> u.K:
-        """Return the electron temperature."""
+        """The electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
-    @validate_quantities(equivalencies=u.temperature_energy())
+    @validate_quantities(
+        electron_temperature=dict(equivalencies=u.temperature_energy())
+    )
     def T_e(self, electron_temperature: u.K):
         """Set the electron temperature."""
         try:
@@ -809,8 +806,7 @@ class IonizationStateCollection:
     @property
     def kappa(self) -> np.real:
         """
-        Return the kappa parameter for a kappa distribution function
-        for electrons.
+        The κ parameter for a kappa distribution function for electrons.
 
         The value of ``kappa`` must be greater than ``1.5`` in order to
         have a valid distribution function.  If ``kappa`` equals
@@ -836,21 +832,19 @@ class IonizationStateCollection:
     @property
     def base_particles(self) -> List[str]:
         """
-        Return a list of the elements and isotopes whose ionization
-        states are being kept track of.
+        A `list` of the elements and isotopes whose ionization states
+        are being kept track of.
         """
         return self._base_particles
 
     @property
     def tol(self) -> np.real:
-        """Return the absolute tolerance for comparisons."""
+        """The absolute tolerance for comparisons."""
         return self._tol
 
     @tol.setter
     def tol(self, atol: Real):
-        """
-        Set the absolute tolerance for comparisons.
-        """
+        """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol <= 1.0:
@@ -899,11 +893,11 @@ class IonizationStateCollection:
         >>> states.summarize()
         IonizationStateCollection instance for: H, He
         ----------------------------------------------------------------
-        H  0+: 0.100    n_i = 3.00e+14 m**-3
-        H  1+: 0.900    n_i = 2.70e+15 m**-3
+        H  0+: 0.100    n_i = 3.00e+14 m**-3    T_i = 1.20e+04 K
+        H  1+: 0.900    n_i = 2.70e+15 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
-        He  0+: 0.950    n_i = 2.85e+14 m**-3
-        He  1+: 0.050    n_i = 1.50e+13 m**-3
+        He  0+: 0.950    n_i = 2.85e+14 m**-3    T_i = 1.20e+04 K
+        He  1+: 0.050    n_i = 1.50e+13 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
         n_e = 2.71e+15 m**-3
         T_e = 1.20e+04 K

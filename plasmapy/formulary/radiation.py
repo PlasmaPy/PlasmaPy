@@ -1,5 +1,6 @@
 """
-Defin_es the Radiation module as part of the Plasma Formulary
+Functions for calculating quantities associated with electromagnetic
+radiation.
 """
 
 __all__ = [
@@ -11,7 +12,6 @@ import astropy.units as u
 import numpy as np
 
 from scipy.special import exp1
-from typing import List, Tuple, Union
 
 from plasmapy.formulary.parameters import plasma_frequency
 from plasmapy.particles import Particle, particle_input
@@ -35,65 +35,62 @@ def thermal_bremsstrahlung(
     kmax: u.m = None,
 ) -> np.ndarray:
     r"""
-    Calculate the Bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`\hbar\omega \ll k_B*T_e`
+    Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
+    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`
 
     .. math::
-       \frac{dP}{d\omega} = \frac{8 \sqrt{2}}{3\sqrt{\pi}}
-       \bigg ( \frac{e^2}{4 \pi \epsilon_0} \bigg )^3
+       \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
+       \bigg ( \frac{e^2}{4 π ε_0} \bigg )^3
        \bigg ( m_e c^2 \bigg )^{-\frac{3}{2}}
-       \bigg ( 1 - \frac{\omega_{pe}^2}{\omega^2} \bigg )^\frac{1}{2}
+       \bigg ( 1 - \frac{ω_{pe}^2}{ω^2} \bigg )^\frac{1}{2}
        \frac{Z_i^2 n_i n_e}{\sqrt(k_B T_e)}
        E_1(y)
 
-    where E_1 is the exponential integral
+    where :math:`E_1` is the exponential integral
 
     .. math::
-        E_1 (y) = - \int_{-y}^\infty \frac{e^{-t}}{t}dt
+        E_1 (y) = - \int_{-y}^∞ \frac{e^{-t}}{t}dt
 
-    and y is the dimensionless argument
+    and :math:`y` is the dimensionless argument
 
     .. math::
-        y = \frac{1}{2} \frac{\omega^2 m_e}{k_{max}^2 k_B T_e}
+        y = \frac{1}{2} \frac{ω^2 m_e}{k_{max}^2 k_B T_e}
 
-    where   :math:`k_{max}` is a maximum wavenumber approximated here as
-    :math:`k_{max} = 1/\lambda_B` where  :math:`\lambda_B` is the electron
+    where :math:`k_{max}` is a maximum wavenumber approximated here as
+    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron
     de Broglie wavelength.
 
     Parameters
     ----------
-
     frequencies : `~astropy.units.Quantity`
         Array of frequencies over which the bremsstrahlung spectrum will be
-        calculated (convertable to Hz).
+        calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertable to m^-3)
+        Electron number density in the plasma (convertible to m\ :sup:`-3`\ ).
 
     T_e : `~astropy.units.Quantity`
-        Temperature of the electrons (in K or convertible to eV)
+        Temperature of the electrons (in K or convertible to eV).
 
-    n_i : `~astropy.units.Quantity` (optional)
-        Ion number density in the plasma (convertable to m^-3). Defaults
-        to the quasi-neutral conditon n_i=n_e/Z.
+    n_i : `~astropy.units.Quantity`, optional
+        Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
+        to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
 
-    ion : str or `~plasmapy.particles.Particle`, optional
+    ion : `str` or `~plasmapy.particles.Particle`, optional
         An instance of `~plasmapy.particles.Particle`, or a string
         convertible to `~plasmapy.particles.Particle`.
 
     kmax :  `~astropy.units.Quantity`
-        Cutoff wavenumber (convertable to u.rad/u.m). Defaults to the inverse
-        of the electron de Broglie wavelength.
+        Cutoff wavenumber (convertible to radians per meter). Defaults
+        to the inverse of the electron de Broglie wavelength.
 
     Returns
     -------
-
     spectrum : `~astropy.units.Quantity`
         Computed bremsstrahlung spectrum over the frequencies provided.
 
     Notes
     -----
-
     For details, see "Radiation Processes in Plasmas" by
     Bekefi. `ISBN 978\\-0471063506`_.
 
@@ -102,7 +99,7 @@ def thermal_bremsstrahlung(
 
     # Default n_i is n_e/Z:
     if n_i is None:
-        n_i = n_e / ion_species.integer_charge
+        n_i = n_e / ion_species.charge_number
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -143,7 +140,7 @@ def thermal_bremsstrahlung(
         / (const.m_e.si * const.c.si ** 2) ** 1.5
     )
 
-    Zi = ion_species.integer_charge
+    Zi = ion_species.charge_number
     c2 = (
         np.sqrt(1 - ω_pe ** 2 / ω ** 2)
         * Zi ** 2

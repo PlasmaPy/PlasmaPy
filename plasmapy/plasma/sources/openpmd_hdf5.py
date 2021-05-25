@@ -18,9 +18,7 @@ _UNITS = (u.meter, u.kilogram, u.second, u.ampere, u.Kelvin, u.mol, u.candela)
 
 
 def _fetch_units(openPMD_dims):
-    """
-    Converts a collection of OpenPMD dimensions to astropy.units.
-    """
+    """Converts a collection of OpenPMD dimensions to astropy.units."""
 
     units = u.dimensionless_unscaled
     for factor, unit in zip(openPMD_dims, _UNITS):
@@ -30,9 +28,7 @@ def _fetch_units(openPMD_dims):
 
 
 def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VERSION):
-    """
-    Checks if the passed version is supported or not.
-    """
+    """Checks if the passed version is supported or not."""
 
     parsed_version = StrictVersion(openPMD_version)
     outdated_version = StrictVersion(outdated)

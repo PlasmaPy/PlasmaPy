@@ -1,3 +1,5 @@
+:orphan:
+
 .. currentmodule:: plasmapy.simulation.particletracker
 
 ************************************************
@@ -16,11 +18,10 @@ future.
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/particle_stepper
+    /notebooks/simulation/particle_stepper
 
-Reference/API
-=============
+API
+===
 
 .. automodapi:: plasmapy.simulation.particletracker
-   :no-heading:
-   :no-main-docstr:
+   :no-main-docstring:

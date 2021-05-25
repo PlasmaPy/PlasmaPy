@@ -6,8 +6,9 @@ __all__ = [
     "standard_atomic_weight",
     "particle_mass",
     "isotopic_abundance",
-    "integer_charge",
+    "charge_number",
     "electric_charge",
+    "integer_charge",
     "is_stable",
     "half_life",
     "known_isotopes",
@@ -27,16 +28,18 @@ from numbers import Integral, Real
 from typing import Any, List, Optional, Union
 
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.elements import _Elements
+from plasmapy.particles.elements import _elements
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
     MissingParticleDataError,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
+from plasmapy.utils.decorators.deprecation import deprecated
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 __all__.sort()
 
@@ -48,9 +51,9 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: `str` or `~plasmapy.particles.Particle`
+    element: `str` or `~plasmapy.particles.particle_class.Particle`
         A string representing an element, isotope, or ion; or an
-        instance of the `~plasmapy.particles.Particle` class.
+        instance of the `~plasmapy.particles.particle_class.Particle` class.
 
     Returns
     -------
@@ -94,9 +97,9 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : `str` or `~plasmapy.particles.Particle`
+    isotope : `str` or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or a neutron; or an instance of
-        the `plasmapy.particles.Particle` class.
+        the `plasmapy.particles.particle_class.Particle` class.
 
     Returns
     -------
@@ -141,7 +144,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.Particle`
+    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
@@ -202,7 +205,7 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
@@ -299,8 +302,8 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def integer_charge(particle: Particle) -> Integral:
-    """Return the integer charge of a particle.
+def charge_number(particle: Particle) -> Integral:
+    """Return the charge number of a particle.
 
     Parameters
     ----------
@@ -322,17 +325,17 @@ def integer_charge(particle: Particle) -> Integral:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.AtomicWarning`
-        If the input represents an ion with an integer charge that is
+        If the input represents an ion with a charge number that is
         less than or equal to ``-3``, which is unlikely to occur in
         nature.
 
     Notes
     -----
-    This function supports two formats for integer charge information.
+    This function supports two formats for charge number information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the integer
-    charge information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the charge
+    number information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at
@@ -340,16 +343,30 @@ def integer_charge(particle: Particle) -> Integral:
 
     Examples
     --------
-    >>> integer_charge('Fe-56 2+')
+    >>> charge_number('Fe-56 2+')
     2
-    >>> integer_charge('He -2')
+    >>> charge_number('He -2')
     -2
-    >>> integer_charge('H+')
+    >>> charge_number('H+')
     1
-    >>> integer_charge('N-14++')
+    >>> charge_number('N-14++')
     2
     """
-    return particle.integer_charge
+    return particle.charge_number
+
+
+@deprecated(
+    since="0.7.0",
+    warning_type=PlasmaPyFutureWarning,
+    message=(
+        "integer_charge has been deprecated and will be removed in a "
+        "future release.  Use charge_number instead."
+    ),
+)
+@particle_input(any_of={"charged", "uncharged"})
+def integer_charge(particle: Particle):
+    """Return the charge number of the particle."""
+    return charge_number(particle)
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -378,16 +395,16 @@ def electric_charge(particle: Particle) -> u.C:
         If charge information for the particle is not available.
 
     `~plasmapy.particles.exceptions.ParticleWarning`
-        If the input represents an ion with an integer charge that is
+        If the input represents an ion with a charge number that is
         below ``-3``.
 
     Notes
     -----
-    This function supports two formats for integer charge information.
+    This function supports two formats for charge number information.
 
     The first format is a string that has information for the element
-    or isotope at the beginning, a space in between, and the integer
-    charge information in the form of an integer followed by a plus or
+    or isotope at the beginning, a space in between, and the charge
+    number information in the form of an integer followed by a plus or
     minus sign, or a plus or minus sign followed by an integer.
 
     The second format is a string containing element information at
@@ -414,7 +431,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
@@ -467,7 +484,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
@@ -573,7 +590,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
         isotopes = []
-        for isotope in _Isotopes.keys():
+        for isotope in _isotopes.keys():
             if element + "-" in isotope and isotope[0 : len(element)] == element:
                 isotopes.append(isotope)
         if element == "H":
@@ -599,7 +616,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, len(_Elements.keys()) + 1):
+        for atomic_numb in range(1, len(_elements.keys()) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list
@@ -683,11 +700,11 @@ def common_isotopes(
         isotopes = known_isotopes(argument)
 
         CommonIsotopes = [
-            isotope for isotope in isotopes if "abundance" in _Isotopes[isotope].keys()
+            isotope for isotope in isotopes if "abundance" in _isotopes[isotope].keys()
         ]
 
         isotopic_abundances = [
-            _Isotopes[isotope]["abundance"] for isotope in CommonIsotopes
+            _isotopes[isotope]["abundance"] for isotope in CommonIsotopes
         ]
 
         sorted_isotopes = [
@@ -801,7 +818,7 @@ def stable_isotopes(
         StableIsotopes = [
             isotope
             for isotope in KnownIsotopes
-            if _Isotopes[isotope]["stable"] == stable_only
+            if _isotopes[isotope]["stable"] == stable_only
         ]
         return StableIsotopes
 
@@ -830,11 +847,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.Particle`,
+    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.particle_class.Particle`,
     `~astropy.units.Quantity`, or `~astropy.constants.Constant`
 
         The test particle as represented by a string, an integer
-        representing atomic number, a `~plasmapy.particles.Particle`
+        representing atomic number, a `~plasmapy.particles.particle_class.Particle`
         object, or a `~astropy.units.Quantity` or
         `~astropy.constants.Constant` with units of mass.
 
@@ -857,8 +874,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `TypeError`
         If either argument is not a `str`, `int`,
-        `~plasmapy.particles.Particle`, `~astropy.units.Quantity`, or
-        `~astropy.constants.Constant`.
+        `~plasmapy.particles.particle_class.Particle`,
+        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
 
     Example
     -------
@@ -887,7 +904,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
                 particle = Particle(particle)
             return particle.mass.to(u.kg)
         except u.UnitConversionError as exc1:
-            raise u.UnitConversionError(f"Incorrect units in reduced_mass.") from exc1
+            raise u.UnitConversionError("Incorrect units in reduced_mass.") from exc1
         except MissingParticleDataError:
             raise MissingParticleDataError(
                 f"Unable to find the reduced mass because the mass of "
@@ -945,7 +962,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    period = _Elements[symbol]["period"]
+    period = _elements[symbol]["period"]
     return period
 
 
@@ -999,7 +1016,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    group = _Elements[symbol]["group"]
+    group = _elements[symbol]["group"]
     return group
 
 
@@ -1053,7 +1070,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    block = _Elements[symbol]["block"]
+    block = _elements[symbol]["block"]
     return block
 
 
@@ -1105,7 +1122,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    category = _Elements[symbol]["category"]
+    category = _elements[symbol]["category"]
     return category
 
 

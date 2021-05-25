@@ -598,7 +598,7 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
         equals_first_result = [result == results[0] for result in results]
     except Exception as exc:  # coverage: ignore
         raise UnexpectedExceptionFail(
-            f"Unable to determine equality properties of results."
+            "Unable to determine equality properties of results."
         ) from exc
 
     equals_first_type = [result_type == types[0] for result_type in types]
@@ -607,9 +607,9 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     not_all_same_type = not all(equals_first_type)
 
     if not_all_equal:
-        errmsg = f"The following tests did not all produce identical results:"
+        errmsg = "The following tests did not all produce identical results:"
     elif not_all_same_type and require_same_type:
-        errmsg = f"The following tests did not all produce results of the same type:"
+        errmsg = "The following tests did not all produce results of the same type:"
 
     if not_all_equal or (not_all_same_type and require_same_type):
 
@@ -623,7 +623,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
 
 
 def assert_can_handle_nparray(
-    function_to_test, insert_some_nans=None, insert_all_nans=None, kwargs=None,
+    function_to_test,
+    insert_some_nans=None,
+    insert_all_nans=None,
+    kwargs=None,
 ):
     """
     Test for ability to handle numpy array quantities.

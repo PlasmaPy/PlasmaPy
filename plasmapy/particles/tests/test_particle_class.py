@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -33,6 +33,7 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
@@ -49,7 +50,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "is_electron": False,
-            "integer_charge": 0,
+            "charge_number": 0,
             "atomic_number": InvalidElementError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": 1,
@@ -74,7 +75,7 @@ test_Particle_table = [
             "is_ion": True,
             "mass": m_p,
             "nuclide_mass": m_p,
-            "integer_charge": 1,
+            "charge_number": 1,
             "charge.value": e.si.value,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
@@ -112,7 +113,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_p,
-            "integer_charge": -1,
+            "charge_number": -1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -137,7 +138,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_e,
-            "integer_charge": -1,
+            "charge_number": -1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -166,7 +167,7 @@ test_Particle_table = [
             "mass": m_e,
             "mass_energy": (m_e * c ** 2).to("J"),
             "nuclide_mass": InvalidIsotopeError,
-            "integer_charge": 1,
+            "charge_number": 1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -196,7 +197,7 @@ test_Particle_table = [
             "roman_symbol": ChargeError,
             "is_ion": False,
             "charge": ChargeError,
-            "integer_charge": ChargeError,
+            "charge_number": ChargeError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": ParticleError,
             "lepton_number": 0,
@@ -220,7 +221,7 @@ test_Particle_table = [
             "ionic_symbol": "H 1-",
             "roman_symbol": roman.OutOfRangeError,
             "is_ion": True,
-            "integer_charge": -1,
+            "charge_number": -1,
             "mass_number": InvalidIsotopeError,
             "baryon_number": MissingParticleDataError,
             "lepton_number": 0,
@@ -244,7 +245,7 @@ test_Particle_table = [
             "roman_symbol": "H-1 I",
             "is_ion": False,
             "charge": 0 * u.C,
-            "integer_charge": 0,
+            "charge_number": 0,
             "mass_number": 1,
             "baryon_number": 1,
             "lepton_number": 0,
@@ -269,7 +270,7 @@ test_Particle_table = [
             "ionic_symbol": "D 1+",
             "roman_symbol": "D II",
             "is_ion": True,
-            "integer_charge": 1,
+            "charge_number": 1,
             "atomic_number": 1,
             "mass_number": 2,
             "baryon_number": 2,
@@ -293,7 +294,7 @@ test_Particle_table = [
             "ionic_symbol": "T 1+",
             "roman_symbol": "T II",
             "is_ion": True,
-            "integer_charge": 1,
+            "charge_number": 1,
             "atomic_number": 1,
             "mass_number": 3,
             "baryon_number": 3,
@@ -317,7 +318,7 @@ test_Particle_table = [
             "roman_symbol": "Fe-56 XVIII",
             "is_electron": False,
             "is_ion": True,
-            "integer_charge": 17,
+            "charge_number": 17,
             "atomic_number": 26,
             "mass_number": 56,
             "baryon_number": 56,
@@ -341,7 +342,7 @@ test_Particle_table = [
             "roman_symbol": "He-4 III",
             "mass_energy": 5.971919969131517e-10 * u.J,
             "is_ion": True,
-            "integer_charge": 2,
+            "charge_number": 2,
             "atomic_number": 2,
             "mass_number": 4,
             "baryon_number": 4,
@@ -372,7 +373,7 @@ test_Particle_table = [
             "ionic_symbol": None,
             "roman_symbol": ChargeError,
             "is_ion": False,
-            "integer_charge": ChargeError,
+            "charge_number": ChargeError,
             "atomic_number": 3,
             "mass_number": 7,
             "neutron_number": 4,
@@ -393,7 +394,7 @@ test_Particle_table = [
             "roman_symbol": "Cn-276 XXIII",
             "is_ion": True,
             "element_name": "copernicium",
-            "integer_charge": 22,
+            "charge_number": 22,
             "atomic_number": 112,
             "mass_number": 276,
             "neutron_number": 164,
@@ -412,7 +413,7 @@ test_Particle_table = [
             "ionic_symbol": None,
             "roman_symbol": None,
             "is_ion": False,
-            "integer_charge": -1,
+            "charge_number": -1,
             "atomic_number": InvalidElementError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": 0,
@@ -429,7 +430,7 @@ test_Particle_table = [
             "isotope_name": InvalidElementError,
             "mass": MissingParticleDataError,
             "mass_energy": MissingParticleDataError,
-            "integer_charge": 0,
+            "charge_number": 0,
             "mass_number": InvalidIsotopeError,
             "element_name": InvalidElementError,
             "baryon_number": 0,
@@ -566,7 +567,7 @@ test_Particle_error_table = [
     ("H", {"Z": 0}, ".mass_number", InvalidIsotopeError),
     ("neutron", {}, ".mass_number", InvalidIsotopeError),
     ("He", {"mass_numb": 4}, ".charge", ChargeError),
-    ("He", {"mass_numb": 4}, ".integer_charge", ChargeError),
+    ("He", {"mass_numb": 4}, ".charge_number", ChargeError),
     ("Fe", {}, ".spin", MissingParticleDataError),
     ("nu_e", {}, ".mass", MissingParticleDataError),
     ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
@@ -691,7 +692,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
 
         assert Isotope.isotope and not Isotope.ion, inputerrmsg
         assert Isotope.isotope == Ion.isotope, inputerrmsg
-        assert Ion.integer_charge == Ion.atomic_number, inputerrmsg
+        assert Ion.charge_number == Ion.atomic_number, inputerrmsg
 
         assert Isotope.nuclide_mass == Ion.mass, (
             f"The nuclide mass of {isotope} does not equal the mass of {ion} "
@@ -712,7 +713,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _Isotopes[isotope].get("half-life", None)
+        half_life = _isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -803,7 +804,7 @@ class Test_antiparticle_properties_inversion:
         Test that a particle and its antiparticle have the opposite
         charge.
         """
-        assert particle.integer_charge == -opposite.integer_charge, (
+        assert particle.charge_number == -opposite.charge_number, (
             f"The charges of {particle} and {opposite} are not "
             f"opposites, as expected of a particle/antiparticle pair."
         )
@@ -1344,3 +1345,25 @@ def test_particle_to_json_file(cls, kwargs, expected_repr):
         f"expected_repr = {expected_repr['__init__']}.\n\n"
         f"json_repr: {test_dict['__init__']}"
     )
+
+
+def test_particle_is_category_valid_categories():
+    """Test the location where valid categories may be accessed."""
+    assert hasattr(Particle.is_category, "valid_categories")
+    some_valid_categories = {
+        "lepton",
+        "fermion",
+        "matter",
+        "nonmetal",
+        "electron",
+        "ion",
+        "isotope",
+        "charged",
+        "uncharged",
+    }
+    assert some_valid_categories.issubset(Particle.is_category.valid_categories)
+
+
+def test_deprecated_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert Particle("e-").integer_charge == -1
