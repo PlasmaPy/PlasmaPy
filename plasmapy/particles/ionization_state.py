@@ -345,7 +345,7 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> IonicLevel:
+    def __getitem__(self, value) -> List[IonicLevel]:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             return [
