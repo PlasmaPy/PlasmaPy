@@ -763,14 +763,12 @@ class IonizationState:
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
             )
-        return np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1))
+        return np.sum(self.ionic_fractions * self.charge_numbers)
 
     @property
     def Z_rms(self) -> np.float64:
         """The root mean square charge number."""
-        return np.sqrt(
-            np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2)
-        )
+        return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers ** 2))
 
     @property
     def Z_most_abundant(self) -> List[Integral]:
