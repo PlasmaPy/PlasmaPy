@@ -230,7 +230,7 @@ class FlowCalculator:
         return self.N_script_matrices[sym_tuple]
 
     # profile
-    def funnymatrix(self, a_symbol):
+    def _funnymatrix(self, a_symbol):
         a = self.all_species[a_symbol]
         M = self.M_script(a)
         outputs = {}
@@ -284,7 +284,7 @@ class FlowCalculator:
         results = {}
         fs = self.flux_surface
         for a in self.all_species:
-            silly = self.funnymatrix(a.base_particle)
+            silly = self._funnymatrix(a.base_particle)
             for xi, ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 prefactor = (
@@ -308,7 +308,7 @@ class FlowCalculator:
         Fhat = self.flux_surface.Fhat
         results = {}
         for a in self.all_species:
-            silly = self.funnymatrix(a.base_particle)
+            silly = self._funnymatrix(a.base_particle)
             for xi, ai in self.contributing_states(a):
                 sym = ai.ionic_symbol
                 prefactor = FSA / Fhat * xi / ai.ion.charge
@@ -428,3 +428,36 @@ class FlowCalculator:
                     # eq 37, second term
 
         return sum(gen())
+
+    @cached_property
+    def local_flow_velocities(self):
+        fs = self.flux_surface
+        B_p = fs.B_p
+        B_t = fs.B_t
+        B = fs.Bmag
+        results = {}
+        for a in self.all_species:
+            u_p_ai = B_p * u_hat_theta_1_ai
+            u_t_ai = B_t * u_hat_theta_1_ai - S_theta_1_ai / B_t
+            u_parallel_ai = B * u_hat_theta_1_ai - S_theta_1_ai / B
+            u_perp_ai = B_p / B / B_t * S_theta_1_ai
+            results[a.ionic_symbol] = u_p_ai, u_t_ai, u_parallel_ai, u_perp_ai
+        return results
+
+    @cached_property
+    def local_heat_flux_components(self):
+        fs = self.flux_surface
+        B_p = fs.B_p
+        B_t = fs.B_t
+        B = fs.Bmag
+        results = {}
+        for a in self.all_species:
+            n_i = a.number_densities
+            T_i = a.T_i
+            p_ai = n_i * T_i
+            q_p_ai = 5 / 2 * p_ai * B_p * u_hat_theta_2_ai
+            q_t_ai = 5 / 2 * p_ai * (B_t * u_hat_theta_2_ai - S_theta_2_ai / B_t)
+            q_parallel_ai = 5 / 2 * p_ai * (B * u_hat_theta_2_ai - S_theta_2_ai / B)
+            q_perp_ai = 5 / 2 * p_ai * B_p / B / B_t * S_theta_2_ai
+            results[a.ionic_symbol] = q_p_ai, q_t_ai, q_parallel_ai, q_perp_ai
+        return results
