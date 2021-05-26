@@ -70,14 +70,31 @@ class FluxSurface:
         self.Fhat = constants.mu0 * F
 
     def plot(
-        self, ax=None, n=False, B=False, legend=True, **kwargs
+        self, ax=None, *, quantity = None, n=False, B=False, legend=True, colorbar = True, **kwargs
     ):  # coverage: ignore
         if ax is None:
             fig, ax = plt.subplots()
             ax.set_aspect("equal")
             ax.set_xlabel("Radius $R/R_0$")
             ax.set_ylabel("Height $z/R_0$")
-        ax.plot(self.R, self.Z, label=fr"$\psi = ${self.psi:.2f}")
+
+        if quantity is None:
+            ax.plot(self.R, self.Z, label=fr"$\psi = ${self.psi:.2f}")
+        else:
+            from matplotlib.collections import LineCollection
+            points = np.array([self.R, self.Z]).T.reshape(-1, 1, 2)
+            segments = np.concatenate([points[:-1], points[1:]], axis=1)
+
+            # Create a continuous norm to map from data points to colors
+            norm = plt.Normalize(quantity.min(), quantity.max())
+            lc = LineCollection(segments, cmap='plasma', norm=norm)
+            # Set the values used for colormapping
+            lc.set_array(quantity)
+            lc.set_linewidth(2)
+            line = ax.add_collection(lc)
+            if colorbar:
+                ax.get_figure().colorbar(line, ax=ax)
+
         if B:
             ax.quiver(self.R, self.Z, self.Brvals, self.Bzvals, **kwargs)
         if n:
