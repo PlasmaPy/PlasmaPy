@@ -129,3 +129,13 @@ def test_fluxes(fc, num_regression):
         d[f"Γ_{ion}"] = Γ.si.value
         d[f"q_{ion}"] = q.si.value
     num_regression.check(d)
+
+
+def test_particle_velocities_heat_fluxes(fc, num_regression):
+    d = {}
+    for ion, particle_velocities in fc.local_flow_velocities.items():
+        if "0" in ion:
+            continue
+        d[f"u_{ion}"] = particle_velocities.ravel().value
+        d[f"q_{ion}"] = fc.local_heat_flux_components[ion].ravel().value
+    num_regression.check(d)

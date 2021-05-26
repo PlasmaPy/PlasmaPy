@@ -22,6 +22,27 @@ except ImportError:
 #     def profile(func):
 #         return func
 
+__all__ = [
+    "contributing_states",
+    "mu_hat",
+    "K",
+    "K_ps_ai",
+    "ν_T_ai",
+    "ωm",
+    "F_m",
+    "B17",
+    "K_B_ai",
+    "pitch_angle_diffusion_rate",
+    "M_script",
+    "N_script",
+    "ξ",
+    "effective_momentum_relaxation_rate",
+    "N_matrix",
+    "M_matrix",
+    "xab_ratio",
+    "ionizationstate_mass_densities",
+]
+
 
 def ionizationstate_mass_densities(a: IonizationState):
     return a.number_densities * u.Quantity([ai.ion.mass for ai in a])
@@ -351,3 +372,11 @@ def mu_hat(
         (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
     )
     return actual_units
+
+
+def contributing_states(a):
+    xi = ξ(a)
+    for i, ai in enumerate(a):
+        if xi[i] == 0:
+            continue
+        yield xi[i], ai

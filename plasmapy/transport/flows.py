@@ -6,12 +6,17 @@ __all__ = [
 
 
 import numpy as np
+import typing
+import xarray
 
 from astropy import constants
 from astropy import units as u
 from collections import defaultdict, namedtuple
 
-from .neoclassical import M_script, mu_hat, N_script, ξ
+from plasmapy.particles import IonizationStateCollection, Particle
+from plasmapy.plasma.fluxsurface import FluxSurface
+
+from .neoclassical import contributing_states, M_script, mu_hat, N_script, ξ
 
 try:
     from functools import cached_property
@@ -31,8 +36,10 @@ class FlowCalculator:
     """
 
     @classmethod
-    def from_xarray_surface(cls, dataset, flux_surface):
-        from plasmapy.particles import IonizationStateCollection, Particle
+    def from_xarray_surface(cls, dataset: xarray.Dataset, flux_surface: FluxSurface):
+        """
+        Alternate constructor from an `xarray.Dataset` and an associated `~FluxSurface`.
+        """
 
         arrays = {}
         data_vars = ["n", "gradn", "T", "gradT"]
@@ -100,7 +107,10 @@ class FlowCalculator:
         self.S_pt = {}
         self.μ = {}
         self.Aai = {}
+
+        r"""$S_{\theta,\beta}^{ai}"""
         self.thermodynamic_forces = {}
+
         self.pressure_gradient = {}
         self.ξ = {}
 
@@ -202,28 +212,21 @@ class FlowCalculator:
                 if np.isfinite(u_velocity[i]).all():
                     self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
 
-    @staticmethod
-    def contributing_states(a):
-        xi = ξ(a)
-        for i, ai in enumerate(a):
-            if xi[i] == 0:
-                continue
-            yield xi[i], ai
-
-    def all_contributing_states_symbols(self):
+    def all_contributing_states_symbols(self) -> typing.Iterator[str]:
+        """Helper iterator over all charge levels of all isotopes in the calculation."""
         for a in self.all_species:
-            for _, ai in self.contributing_states(a):
+            for _, ai in contributing_states(a):
                 yield ai.ionic_symbol
 
-    # profile
-    def M_script(self, a):
+    def M_script(self, a: IonizationState) -> np.ndarray:
+        """Thin, cached wrapper on top of `~plasmapy.transport.neoclassical.M_script`."""
         sym = a.base_particle
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
-    # profile
-    def N_script(self, a, b):
+    def N_script(self, a: IonizationState, b: IonizationState) -> np.ndarray:
+        """Thin, cached wrapper on top of `~plasmapy.transport.neoclassical.N_script`."""
         sym_tuple = a.base_particle, b.base_particle
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
@@ -234,12 +237,12 @@ class FlowCalculator:
         a = self.all_species[a_symbol]
         M = self.M_script(a)
         outputs = {}
-        for _, ai in self.contributing_states(a):
+        for _, ai in contributing_states(a):
             sym = ai.ionic_symbol
             output = self.thermodynamic_forces[sym] * M
             for b in self.all_species:
                 N = self.N_script(a, b)
-                for xj, bj in self.contributing_states(b):
+                for xj, bj in contributing_states(b):
                     output += xj * N * self.thermodynamic_forces[bj.ionic_symbol]
             outputs[sym] = output.sum(axis=1)
         return outputs
@@ -259,9 +262,10 @@ class FlowCalculator:
                 sym = ai.ionic_symbol
                 if sym not in self._charge_state_flows:
                     continue
-                u_velocity = self._charge_state_flows[sym]
 
-                u_θ = (u_velocity + self.thermodynamic_forces[sym]) / B2fsav
+                u_θ = (
+                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
+                ) / B2fsav
                 μ = self.μ[sym]
                 Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
                 q_BP = -(
@@ -285,7 +289,7 @@ class FlowCalculator:
         fs = self.flux_surface
         for a in self.all_species:
             silly = self._funnymatrix(a.base_particle)
-            for xi, ai in self.contributing_states(a):
+            for xi, ai in contributing_states(a):
                 sym = ai.ionic_symbol
                 prefactor = (
                     -fs.Fhat / ai.ion.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
@@ -309,7 +313,7 @@ class FlowCalculator:
         results = {}
         for a in self.all_species:
             silly = self._funnymatrix(a.base_particle)
-            for xi, ai in self.contributing_states(a):
+            for xi, ai in contributing_states(a):
                 sym = ai.ionic_symbol
                 prefactor = FSA / Fhat * xi / ai.ion.charge
                 Γ_CL = prefactor * silly[sym][0]
@@ -323,7 +327,7 @@ class FlowCalculator:
     def fluxes(self):
         results = {}
         for a in self.all_species:
-            for _, ai in self.contributing_states(a):
+            for _, ai in contributing_states(a):
                 sym = ai.ionic_symbol
                 Γ_BP, q_BP = self._fluxes_BP[sym]
                 Γ_PS, q_PS = self._fluxes_PS[sym]
@@ -331,9 +335,18 @@ class FlowCalculator:
                 results[sym] = Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
         return results
 
-    def to_dataset(self):
-        import xarray
+    def to_dataset(self, *, with_input=True) -> xarray.Dataset:
+        r"""
+        Converts the outputs to `~xarray.Dataset`.
 
+        Parameters
+        ----------
+        with_input: bool (default: True)
+            if True and `self` was initialized with an xarray object through
+            `~self.from_xarray_surface`, return a dataset merged with the input
+            object. Otherwise, return just the calculation results.
+
+        """
         result = xarray.Dataset(
             {
                 "total_particle_flux": (
@@ -390,7 +403,7 @@ class FlowCalculator:
             },
         )
 
-        if self._dataset_input is not None:
+        if with_input and self._dataset_input is not None:
             return xarray.merge([result, self._dataset_input])
         else:
             return result
@@ -399,7 +412,7 @@ class FlowCalculator:
     def diffusion_coefficient(self):
         results = {}
         for a in self.all_species:
-            for _, ai in self.contributing_states(a):
+            for _, ai in contributing_states(a):
                 sym = ai.ionic_symbol
                 flux = self.fluxes[sym].particle_flux
                 results[sym] = (
@@ -411,7 +424,7 @@ class FlowCalculator:
     def thermal_conductivity(self):
         results = {}
         for a in self.all_species:
-            for _, ai in self.contributing_states(a):
+            for _, ai in contributing_states(a):
                 sym = ai.ionic_symbol
                 flux = self.fluxes[sym].heat_flux
                 results[sym] = -flux / self.temperature_gradient[sym]
@@ -421,7 +434,7 @@ class FlowCalculator:
     def bootstrap_current(self):
         def gen():
             for a in self.all_species:
-                for _, ai in self.contributing_states(a):
+                for _, ai in contributing_states(a):
                     sym = ai.ionic_symbol
                     u_velocity = self._charge_state_flows[sym][0]
                     yield ai.ion.charge * ai.number_density * u_velocity
@@ -432,32 +445,49 @@ class FlowCalculator:
     @cached_property
     def local_flow_velocities(self):
         fs = self.flux_surface
-        B_p = fs.B_p
-        B_t = fs.B_t
-        B = fs.Bmag
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        B_p = fs.Bp * u.T
+        B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
+        B = fs.Bmag * u.T
         results = {}
         for a in self.all_species:
-            u_p_ai = B_p * u_hat_theta_1_ai
-            u_t_ai = B_t * u_hat_theta_1_ai - S_theta_1_ai / B_t
-            u_parallel_ai = B * u_hat_theta_1_ai - S_theta_1_ai / B
-            u_perp_ai = B_p / B / B_t * S_theta_1_ai
-            results[a.ionic_symbol] = u_p_ai, u_t_ai, u_parallel_ai, u_perp_ai
+            for _, ai in contributing_states(a):
+                sym = ai.ionic_symbol
+                u_θ = (
+                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
+                ) / B2fsav
+                u_hat_theta_1_ai = u_θ[0]
+                S_theta_1_ai = self.thermodynamic_forces[sym][0]
+                u_p_ai = B_p * u_hat_theta_1_ai
+                u_t_ai = B_t * u_hat_theta_1_ai - S_theta_1_ai / B_t
+                u_parallel_ai = B * u_hat_theta_1_ai - S_theta_1_ai / B
+                u_perp_ai = B_p / B / B_t * S_theta_1_ai
+                results[sym] = u.Quantity([u_p_ai, u_t_ai, u_parallel_ai, u_perp_ai]).si
         return results
 
     @cached_property
     def local_heat_flux_components(self):
         fs = self.flux_surface
-        B_p = fs.B_p
-        B_t = fs.B_t
-        B = fs.Bmag
+        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        B_p = fs.Bp * u.T
+        B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
+        B = fs.Bmag * u.T
         results = {}
         for a in self.all_species:
             n_i = a.number_densities
             T_i = a.T_i
-            p_ai = n_i * T_i
-            q_p_ai = 5 / 2 * p_ai * B_p * u_hat_theta_2_ai
-            q_t_ai = 5 / 2 * p_ai * (B_t * u_hat_theta_2_ai - S_theta_2_ai / B_t)
-            q_parallel_ai = 5 / 2 * p_ai * (B * u_hat_theta_2_ai - S_theta_2_ai / B)
-            q_perp_ai = 5 / 2 * p_ai * B_p / B / B_t * S_theta_2_ai
-            results[a.ionic_symbol] = q_p_ai, q_t_ai, q_parallel_ai, q_perp_ai
+            p = n_i * T_i
+            for _, ai in contributing_states(a):
+                sym = ai.ionic_symbol
+                u_θ = (
+                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
+                ) / B2fsav
+                u_hat_theta_2_ai = u_θ[1]
+                S_theta_2_ai = self.thermodynamic_forces[sym][1]
+                p_ai = p[ai.charge_number]
+                q_p_ai = 5 / 2 * p_ai * B_p * u_hat_theta_2_ai
+                q_t_ai = 5 / 2 * p_ai * (B_t * u_hat_theta_2_ai - S_theta_2_ai / B_t)
+                q_parallel_ai = 5 / 2 * p_ai * (B * u_hat_theta_2_ai - S_theta_2_ai / B)
+                q_perp_ai = 5 / 2 * p_ai * B_p / B / B_t * S_theta_2_ai
+                results[sym] = u.Quantity([q_p_ai, q_t_ai, q_parallel_ai, q_perp_ai]).si
         return results

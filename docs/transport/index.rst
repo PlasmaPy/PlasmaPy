@@ -1,8 +1,13 @@
 .. _neoclassical:
 
 *****************************************************************
-Neoclassical transport theory (`plasmapy.formulary.neoclassical`)
+Neoclassical transport theory (`plasmapy.transport.neoclassical`)
 *****************************************************************
 
 .. automodapi:: plasmapy.transport.flows
-    :no-heading:
+   :no-inheritance-diagram:
+
+Helper functions
+================
+
+.. automodapi:: plasmapy.transport.neoclassical
