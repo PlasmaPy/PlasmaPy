@@ -19,38 +19,48 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list` like collection of `Particle` and/or `CustomParticle` objects.
+    A `list` like collection of
+    `~plasmapy.particles.particle_class.Particle` and/or
+    `~plasmapy.particles.particle_class.CustomParticle` objects.
 
     Parameters
     ----------
     particles : iterable
-        An iterable that provides a sequence of `ParticleLike` objects.
-        Objects that are not a `Particle` or `CustomParticle` instance
-        will be cast into a `Particle` instance.
+        An iterable that provides a sequence of
+        `~plasmapy.particles.particle_class.ParticleLike` objects.
+        Objects that are not a `~plasmapy.particles.particle_class.Particle`
+        or `~plasmapy.particles.particle_class.CustomParticle` instance
+        will be cast into a `~plasmapy.particles.particle_class.Particle`
+        instance.
 
     Raises
     ------
     `~plasmapy.particles.exceptions.InvalidParticleError`
-        If an object supplied to `ParticleList` is not `ParticleLike`.
+        If an object supplied to
+        `~plasmapy.particles.particle_collections.ParticleList` is not
+        `~plasmapy.particles.particle_class.ParticleLike`.
 
     TypeError
-        If a `DimensionlessParticle` is provided.
+        If a `~plasmapy.particles.particle_class.DimensionlessParticle`
+        is provided.
 
     Examples
     --------
-    A `ParticleList` can be created by calling it with a `list`, `tuple`,
-    or other iterable that provides `~plasmapy.particles.ParticleLike`
-    objects.
+    A `~plasmapy.particles.particle_collections.ParticleList` can be
+    created by calling it with a `list`, `tuple`, or other iterable that
+    provides `~plasmapy.particles.particle_class.ParticleLike` objects.
 
     >>> from plasmapy.particles import ParticleList
     >>> particle_list = ParticleList(["e-", "e+"])
     >>> particle_list[0]
     Particle("e-")
 
-    Attributes such as `~plasmapy.particles.ParticleList.mass`
-    and `~plasmapy.particles.ParticleList.charge` will return a
-    `~astropy.units.Quantity` array containing the values of the
-    corresponding attribute for each particle in the `ParticleList`.
+    Attributes such as
+    `~plasmapy.particles.particle_collections.ParticleList.mass`
+    and `~plasmapy.particles.particle_collections.ParticleList.charge`
+    will return a `~astropy.units.Quantity` array containing the values
+    of the corresponding attribute for each particle in the
+    `~plasmapy.particles.particle_collections.ParticleList`.
 
     >>> particle_list.mass
     <Quantity [9.1093...e-31, 9.1093...e-31] kg>
@@ -59,9 +69,11 @@ class ParticleList(collections.UserList):
     >>> particle_list.symbols
     ['e-', 'e+']
 
-    `ParticleList` instances can also be created through addition and
-    multiplication with `Particle`, `CustomParticle`, and `ParticleList`
-    instances.
+    `~plasmapy.particles.particle_collections.ParticleList` instances
+    can also be created through addition and
+    multiplication with `~plasmapy.particles.particle_class.Particle`,
+    `~plasmapy.particles.particle_class.CustomParticle`, and
+    `~plasmapy.particles.particle_collections.ParticleList` instances.
 
     >>> from plasmapy.particles import Particle, CustomParticle
     >>> import astropy.units as u
@@ -70,21 +82,27 @@ class ParticleList(collections.UserList):
     >>> 2 * proton + custom_particle
     ParticleList(['p+', 'p+', 'CustomParticle(mass=1e-26 kg, charge=6e-19 C)'])
 
-    These operations may also be performed using `ParticleLike` objects.
+    These operations may also be performed using
+    `~plasmapy.particles.particle_class.ParticleLike` objects.
 
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
-    Normal `list` methods may also be used on `ParticleList` objects.
-    When a `ParticleLike` object is appended to a `ParticleList`, that
-    object will be cast into a `Particle`.
+    Normal `list` methods may also be used on
+    `~plasmapy.particles.particle_collections.ParticleList` objects.
+    When a `~plasmapy.particles.particle_class.ParticleLike` object is
+    appended to a `~plasmapy.particles.particle_collections.ParticleList`,
+    that object will be cast into a
+    `~plasmapy.particles.particle_class.Particle`.
 
     >>> noble_gases = ParticleList(["He", "Ar", "Kr", "Xe", "Rn"])
     >>> noble_gases.append("Og")
     >>> noble_gases[-1]
     Particle("Og")
 
-    The ``>`` operator may be used with `Particle` and `ParticleList`
+    The ``>`` operator may be used with
+    `~plasmapy.particles.particle_class.Particle` and
+    `~plasmapy.particles.particle_collections.ParticleList`
     instances to access the nuclear reaction energy.
 
     >>> reactants = ParticleList(["deuterium", "tritium"])
@@ -99,8 +117,10 @@ class ParticleList(collections.UserList):
         particles: Iterable[ParticleLike],
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
-        Convert an iterable that provides `ParticleLike` objects into a
-        `list` containing `Particle` and `CustomParticle` instances.
+        Convert an iterable that provides
+        `~plasmapy.particles.particle_class.ParticleLike` objects into a
+        `list` containing `~plasmapy.particles.particle_class.Particle`
+        and `~plasmapy.particles.particle_class.CustomParticle` instances.
         """
         new_particles = []
         for obj in particles:
@@ -179,7 +199,10 @@ class ParticleList(collections.UserList):
         return values
 
     def append(self, particle: ParticleLike):
-        """Append a particle to the end of the `ParticleList`."""
+        """
+        Append a particle to the end of the
+        `~plasmapy.particles.particle_collections.ParticleList`.
+        """
         # TODO: use particle_input when it works with CustomParticle and ParticleLike
         if not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
@@ -197,16 +220,16 @@ class ParticleList(collections.UserList):
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
         A `list` containing the particles contained in the
-        `ParticleList` instance.
+        `~plasmapy.particles.particle_collections.ParticleList` instance.
 
-        The `~plasmapy.particles.ParticleList.data` attribute should not
-        be modified directly.
+        The `~plasmapy.particles.particle_collections.ParticleList.data`
+        attribute should not be modified directly.
         """
         return self._data
 
     def extend(self, iterable: Iterable[ParticleLike]):
         """
-        Extend the sequence by appending `ParticleLike` elements
+        Extend the sequence by appending `~plasmapy.particles.particle_class.ParticleLike` elements
         from ``iterable``.
         """
         if isinstance(iterable, ParticleList):
@@ -260,7 +283,8 @@ class ParticleList(collections.UserList):
 
     def sort(self, key: Callable = None, reverse: bool = False):
         """
-        Sort the `ParticleList` in-place.
+        Sort the `~plasmapy.particles.particle_collections.ParticleList`
+        in-place.
 
         For more information, refer to the documentation for `list.sort`.
         """
@@ -277,33 +301,49 @@ class ParticleList(collections.UserList):
 
 # Override the docstrings for the parent class
 
-ParticleList.clear.__doc__ = """Remove all items from the `ParticleList`."""
+ParticleList.clear.__doc__ = """
+Remove all items from the
+`~plasmapy.particles.particle_collections.ParticleList`.
+"""
 
-ParticleList.copy.__doc__ = """Return a shallow copy of the `ParticleList`."""
+ParticleList.copy.__doc__ = """
+Return a shallow copy of the
+`~plasmapy.particles.particle_collections.ParticleList`.
+"""
 
 ParticleList.count.__doc__ = """
 Return the number of occurrences of ``item``.  Here, ``item`` may be a
-`Particle`, `CustomParticle`, or `ParticleLike` representation of a particle.
+`~plasmapy.particles.particle_class.Particle`,
+`~plasmapy.particles.particle_class.CustomParticle`, or
+`~plasmapy.particles.particle_class.ParticleLike` representation of a
+particle.
 """
 
 ParticleList.extend.__doc__ = """
-Extend `ParticleList` by casting `ParticleLike` items from ``iterable``
-into `Particle` or `CustomParticle` instances.
+Extend `~plasmapy.particles.particle_collections.ParticleList` by casting
+`~plasmapy.particles.particle_class.ParticleLike` items from ``iterable`` into
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle` instances.
 """
 
 ParticleList.index.__doc__ = """
-Return first index of a `ParticleLike` value. Raise `ValueError` if
-the value is not present.
+Return first index of a `~plasmapy.particles.particle_class.ParticleLike`
+value. Raise `ValueError` if the value is not present.
 """
 
 ParticleList.pop.__doc__ = """
 Remove and return item at index (default last).  Raise `IndexError` if
-the `ParticleList` is empty or the index is out of range.
+the `~plasmapy.particles.particle_collections.ParticleList` is empty or
+the index is out of range.
 """
 
 ParticleList.remove.__doc__ = """
-Remove the first occurrence of a `ParticleLike` item.  Raise
+Remove the first occurrence of a
+`~plasmapy.particles.particle_class.ParticleLike` item.  Raise
 `ValueError` if the value is not present.
 """
 
-ParticleList.reverse.__doc__ = """Reverse the `ParticleList` in place."""
+ParticleList.reverse.__doc__ = """
+Reverse the `~plasmapy.particles.particle_collections.ParticleList` in
+place.
+"""

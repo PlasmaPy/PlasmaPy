@@ -396,10 +396,20 @@ class FlowCalculator:
                     u.Quantity(list(self.thermal_conductivity.values())),
                 ),
                 "bootstrap_current": self.bootstrap_current,
+                "local_heat_flux": (
+                    ("particle", "lp", "directions"),
+                    self.local_heat_flux_components.values(),
+                ),
+                "local_particle_velocities": (
+                    ("particle", "lp", "directions"),
+                    self.local_particle_velocities.values(),
+                ),
             },
             {
                 "particle": list(self.all_contributing_states_symbols()),
                 "psi": self.flux_surface.psi,
+                "directions": ["poloidal", "toroidal", "parallel", "perpendicular"],
+                "lp": self.flux_surface.lp,
             },
         )
 

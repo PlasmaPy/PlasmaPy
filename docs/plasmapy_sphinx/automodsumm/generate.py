@@ -20,7 +20,7 @@ from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Dict, List, Union
 
-from .utils import templates_dir
+from ..utils import templates_dir
 
 if False:
     # noqa
@@ -105,7 +105,7 @@ class AutomodsummRenderer(AutosummaryRenderer):
 
         template = None
         for name in [template_name, "base.rst"]:
-            for _path in ["", "automodapi/", "autosummary/"]:
+            for _path in ["", "automodsumm/", "autosummary/"]:
                 try:
                     template = self.env.get_template(_path + name)
                     return template.render(context)
@@ -357,7 +357,7 @@ class GenDocsFromAutomodsumm:
         """
         Search files for the :rst:dir:`automodapi` and :rst:dir:`automodsumm`
         directives and generate a list of
-        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.automodsumm.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
@@ -384,7 +384,7 @@ class GenDocsFromAutomodsumm:
         """
         Search a list of strings for the :rst:dir:`automodapi` and
         :rst:dir:`automodsumm` directives and generate a list of
-        `~plasmapy_sphinx.generate.AutomodsummEntry`'s indicating which stub
+        `~plasmapy_sphinx.automodsumm.generate.AutomodsummEntry`'s indicating which stub
         files need to be generated.
 
         Parameters
@@ -400,8 +400,8 @@ class GenDocsFromAutomodsumm:
                   :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
         """
 
-        from .automodapi import AutomodapiOptions
-        from .automodsumm import AutomodsummOptions
+        from ..autodoc.automodapi import AutomodapiOptions
+        from .core import AutomodsummOptions
 
         documented = []  # type: List[AutomodsummEntry]
 

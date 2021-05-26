@@ -33,3 +33,4 @@ dependencies:
     - pytest-regressions
     - hypothesis
     - plasmaboundaries
+    - notebook

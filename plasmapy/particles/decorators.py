@@ -85,8 +85,8 @@ def particle_input(
 
     Take positional and keyword arguments that are annotated with
     `~plasmapy.particles.particle_class.Particle`, and pass through the
-    `~plasmapy.particles.particle_class.Particle` object corresponding to those arguments
-    to the decorated function or method.
+    `~plasmapy.particles.particle_class.Particle` object corresponding
+    to those arguments to the decorated function or method.
 
     Optionally, raise an exception if the particle does not satisfy the
     specified categorical criteria.
@@ -98,18 +98,18 @@ def particle_input(
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        all of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        any of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        any of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     none_shall_pass : `bool`, optional
         If set to `True`, then the decorated argument may be set to
@@ -129,7 +129,7 @@ def particle_input(
 
     If exactly one argument is annotated with
     `~plasmapy.particles.particle_class.Particle`, then the keywords ``Z`` and
-    ``mass_numb`` may be used to specify the integer charge and/or mass number
+    ``mass_numb`` may be used to specify the charge number and/or mass number
     of an ion or isotope.  However, the decorated function must allow ``Z``
     and/or ``mass_numb`` as keywords in order to enable this functionality.
 
@@ -171,13 +171,13 @@ def particle_input(
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
         ``mass_numb`` are used as arguments; or if none of the arguments
-        have been annotated with `~plasmapy.particles.Particle`.
+        have been annotated with `~plasmapy.particles.particle_class.Particle`.
 
     Examples
     --------
     The following simple decorated function returns the
-    `~plasmapy.particles.Particle` object created from the function's
-    sole argument:
+    `~plasmapy.particles.particle_class.Particle` object created from
+    the function's sole argument:
 
     .. code-block:: python
 
@@ -189,7 +189,7 @@ def particle_input(
     This decorator may also be used to accept arguments using tuple
     annotation containing specific number of elements or using list
     annotation which accepts any number of elements in an iterable.
-    Returns a tuple of `~plasmapy.particles.Particle`:
+    Returns a tuple of `~plasmapy.particles.particle_class.Particle`:
 
     .. code-block:: python
 
@@ -421,8 +421,9 @@ def particle_input(
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
         """
-        Convert the argument to a `~plasmapy.particles.Particle` object
-        if it is not already one.
+        Convert the argument to a
+        `~plasmapy.particles.particle_class.Particle` object if it is
+        not already one.
         """
 
         if not already_particle:

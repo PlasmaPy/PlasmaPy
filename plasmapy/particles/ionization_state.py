@@ -3,7 +3,7 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
-__all__ = ["IonizationState", "IonicLevel"]
+__all__ = ["IonicLevel", "IonizationState"]
 
 import numpy as np
 import warnings
@@ -219,8 +219,9 @@ class IonizationState:
         ions.
 
     tol: `float` or integer, keyword-only, optional
-        The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to ``1e-15``.
+        The absolute tolerance used by `~numpy.isclose` and similar
+        functions when testing normalizations and making comparisons.
+        Defaults to ``1e-15``.
 
     Raises
     ------
@@ -476,8 +477,8 @@ class IonizationState:
     @property
     def ionic_fractions(self) -> np.ndarray:
         """
-        Return the ionic fractions, where the index corresponds to
-        the charge number.
+        The ionic fractions, where the index corresponds to the charge
+        number.
 
         Examples
         --------
@@ -535,8 +536,8 @@ class IonizationState:
 
     def _is_normalized(self, tol: Optional[Real] = None) -> bool:
         """
-        Return `True` if the sum of the ionization fractions is equal to
-        one within the allowed tolerance, and `False` otherwise.
+        `True` if the sum of the ionization fractions is equal to
+        ``1`` within the allowed tolerance, and `False` otherwise.
         """
         tol = tol if tol is not None else self.tol
         if not isinstance(tol, Real):
@@ -560,15 +561,14 @@ class IonizationState:
     @validate_quantities
     def n_e(self) -> u.m ** -3:
         """
-        Return the electron number density assuming a single species
-        plasma.
+        The electron number density assuming a single species plasma.
         """
         return np.sum(self._n_elem * self.ionic_fractions * self.charge_numbers)
 
     @property
     @validate_quantities
     def n_elem(self) -> u.m ** -3:
-        """Return the total number density of neutrals and all ions."""
+        """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m ** -3)
 
     @n_elem.setter
@@ -585,7 +585,7 @@ class IonizationState:
     @property
     @validate_quantities
     def number_densities(self) -> u.m ** -3:
-        """Return the number densities for each state."""
+        """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m ** -3)
         except Exception:
@@ -608,7 +608,7 @@ class IonizationState:
 
     @property
     def T_e(self) -> u.K:
-        """Return the electron temperature."""
+        """The electron temperature."""
         if self._T_e is None:
             raise ParticleError("No electron temperature has been specified.")
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
@@ -670,11 +670,10 @@ class IonizationState:
     @property
     def kappa(self) -> np.real:
         """
-        Return the kappa parameter for a kappa distribution function
-        for electrons.
+        The κ parameter for a kappa distribution function for electrons.
 
         The value of ``kappa`` must be greater than ``1.5`` in order to
-        have a valid distribution function.  If ``kappa`` equals
+        have a valid distribution function.  If ``kappa`` is
         `~numpy.inf`, then the distribution function reduces to a
         Maxwellian.
 
@@ -696,25 +695,25 @@ class IonizationState:
 
     @property
     def element(self) -> str:
-        """Return the atomic symbol of the element."""
+        """The atomic symbol of the element."""
         return self._particle.element
 
     @property
     def isotope(self) -> Optional[str]:
         """
-        Return the isotope symbol for an isotope, or `None` if the
-        particle is not an isotope.
+        The isotope symbol for an isotope, or `None` if the particle is
+        not an isotope.
         """
         return self._particle.isotope
 
     @property
     def base_particle(self) -> str:
-        """Return the symbol of the element or isotope."""
+        """The symbol of the element or isotope."""
         return self.isotope if self.isotope else self.element
 
     @property
     def atomic_number(self) -> int:
-        """Return the atomic number of the element."""
+        """The atomic number of the element."""
         return self._particle.atomic_number
 
     def __len__(self):
@@ -723,7 +722,7 @@ class IonizationState:
     @property
     def _particle_instances(self) -> List[Particle]:
         """
-        Return a list of the `~plasmapy.particles.particle_class.Particle` class
+        A `list` of the `~plasmapy.particles.particle_class.Particle` class
         instances corresponding to each ion.
         """
         return [
@@ -767,7 +766,7 @@ class IonizationState:
 
     @property
     def Z_rms(self) -> np.float64:
-        """Return the root mean square for the charge number."""
+        """The root mean square charge number."""
         return np.sqrt(
             np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2)
         )
@@ -775,8 +774,7 @@ class IonizationState:
     @property
     def Z_most_abundant(self) -> List[Integral]:
         """
-        Return a `list` of the charge numbers with the highest ionic
-        fractions.
+        A `list` of the charge numbers with the highest ionic fractions.
 
         Examples
         --------
@@ -786,7 +784,6 @@ class IonizationState:
         >>> Li = IonizationState('Li', [0.4, 0.4, 0.2, 0.0])
         >>> Li.Z_most_abundant
         [0, 1]
-
         """
         if np.any(np.isnan(self.ionic_fractions)):
             raise ParticleError(
@@ -800,7 +797,14 @@ class IonizationState:
 
     @property
     def tol(self) -> Real:
-        """Return the absolute tolerance for comparisons."""
+        """
+        The absolute tolerance for comparisons.
+
+        This attribute is used as the ``atol`` parameter in
+        `numpy.isclose`, `numpy.allclose`,
+        `astropy.units.isclose`, and `astropy.units.allclose`
+        when testing normalizations and making comparisons.
+        """
         return self._tol
 
     @tol.setter
