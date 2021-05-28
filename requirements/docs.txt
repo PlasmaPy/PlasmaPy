@@ -12,5 +12,6 @@ sphinx >= 3.2.0
 sphinx-changelog
 sphinx-copybutton
 sphinx-gallery
+sphinx-math-dollar
 sphinx_rtd_theme
 towncrier >= 19.2.0
