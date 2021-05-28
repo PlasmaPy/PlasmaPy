@@ -12,7 +12,7 @@
 .. |IonizationStateCollection| replace:: :class:`~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
 .. |Particle| replace:: :class:`~plasmapy.particles.particle_class.Particle`
 .. |particle_input| replace:: :func:`~plasmapy.particles.decorators.particle_input`
-.. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collection.ParticleList`
+.. |ParticleList| replace:: :class:`~plasmapy.particles.particle_collections.ParticleList`
 
 .. |ChargeError| replace:: :class:`~plasmapy.particles.exceptions.ChargeError`
 .. |InvalidElementError| replace:: :class:`~plasmapy.particles.exceptions.InvalidElementError`
