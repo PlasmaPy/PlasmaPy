@@ -212,17 +212,17 @@ def Alfven_speed(
     r"""
     Calculate the Alfvén speed.
 
-    The Alfvén speed :math:`V_A` is the typical propagation speed of magnetic
+    The Alfvén speed $V_A$ is the typical propagation speed of magnetic
     disturbances in a plasma, and is given by:
 
     .. math::
 
         V_A = \frac{B}{\sqrt{μ_0 ρ}}
 
-    where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
-    is the total mass density (:math:`n_i` is the ion number density,
-    :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass).
+    where $B$ is the magnetic field and $ρ = n_i m_i + n_e m_e$ is the
+    total mass density, $n_i$ is the ion number density, $n_e$ is the
+    electron number density, $m_i$ is the ion mass, and $m_e$ is the
+    electron mass.
 
     **Aliases:** `va_`
 
@@ -232,8 +232,8 @@ def Alfven_speed(
         The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
-        Either the ion number density :math:`n_i` in units convertible to
-        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        Either the ion number density $n_i$ in units convertible to
+        m\ :sup:`-3` or the total mass density $ρ$ in units
         convertible to kg / m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.Particle`, optional
@@ -246,14 +246,14 @@ def Alfven_speed(
     z_mean : `~numbers.Real`, optional
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  This is used in calculating the mass density
-        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
+        $ρ = n_i (m_i + Z_{mean} m_e)$.  ``z_mean`` is ignored if
         ``density`` is passed as a mass density and overrides any charge state
         info provided by ``ion``.
 
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units :math:`m/s`.
+        The Alfvén speed in units of meters per second.
 
     Raises
     ------
