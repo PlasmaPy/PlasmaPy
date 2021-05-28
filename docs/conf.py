@@ -146,6 +146,7 @@ exclude_patterns = [
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
     "plasmapy_sphinx",
+    "common_links.rst",
 ]
 
 
