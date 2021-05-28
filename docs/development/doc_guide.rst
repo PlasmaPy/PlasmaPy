@@ -2,10 +2,13 @@
 Documentation Guidelines
 ************************
 
-This document describes the documentation requirements and guidelines
-to be followed during the development of PlasmaPy and affiliated
-packages.  PlasmaPy's online documentation is hosted by
-`Read the Docs <https://readthedocs.org/>`_ and
+Documentation that is up-to-date and understandable is vital to the
+health of a software project.  This page describes the documentation
+requirements and guidelines to be followed during the development of
+PlasmaPy and affiliated packages.
+
+PlasmaPy's online documentation is hosted by `Read the Docs
+<https://readthedocs.org/>`_ and can be found online at:
 
 * Most recent stable release:
   `https://docs.plasmapy.org <https://docs.plasmapy.org>`_ or
@@ -27,8 +30,7 @@ source code file or when printed out using `help`, and also contains
 markup that allows the text to be transformed into `PlasmaPy's online
 documentation <https://www.plasampy.org>`_. ReST is the markup language
 used in docstrings and in the narrative documentation.  ReST files
-end in `.rst`.  Documentation enclosed in triple quotes (`""" ... """`)
-within `.py` is typically written in ReST.
+end in ``.rst``.
 
 This code block contains some ReST examples.
 
@@ -40,23 +42,23 @@ This code block contains some ReST examples.
 
   Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
 
-  Here is a new paragraph.
+  Heading 1
+  =========
 
-  Sub-section title
-  =================
-
-  Sub-sub-section title
-  ---------------------
+  Heading 1.1
+  -----------
 
   Here is a reference to `plasmapy.particles` that will write out the
   full namespace when Sphinx generates the documentation and generates
   the link.
 
+  If we put a tilde before the
+
   If we put a tilde before the reference, then only the
   name of the object will be shown.  Only the word "Particle" will show
   up if we write `~plasmapy.particles.particle_class.Particle`.
 
-  Sphinx can format Python code blocks if we specify the language.
+  Sphinx can format Python code blocks.
 
   .. code-block:: python
 
@@ -77,14 +79,14 @@ Markdown
 
 A few of PlasmaPy's files are written using `Markdown
 <https://www.markdownguide.org/>`_, such as README files and licenses
-from other packages.  These files end with `.md`.  Markdown is the
-default text for posts on `GitHub <https://github.com>`_.
-`GitHub Flavored Markdown <GitHub Flavored Markdown>`_ contains
+from other packages.  Markdown files end with `.md`.  Posts on GitHub
+are written in `GitHub Flavored Markdown
+<https://github.github.com/gfm/>`_.
 
 Sphinx
 ------
 
-.. add plasmapy-sphinx later
+`Sphinx <https://www.sphinx-doc.org>`_ is a software package
 
 Writing documentation
 =====================
@@ -92,15 +94,109 @@ Writing documentation
 Docstrings
 ----------
 
-The documentation for
+A docstring is a comment at the beginning of a function or another
+object that provides information on how to use that function.
+Docstrings begin with ``r"""`` (required when including backslashes,
+such as using LaTeX code in equations) or ``"""``, and end with
+``"""``.
 
 
+.. code-block:: python
 
-Style guidelines
-----------------
+  def subtract(a, b, *, switch_order=False):
+      r"""
+      Return the difference between two integers. ← state what function does in 1–2 lines
+
+      Add ∼1–3 sentences here for an extended summary of what the function
+      does.
+
+      Add ∼1–3 sentences here to clarify what the function does, if
+      necessary. This extended summary is a good place to briefly define
+      the quantity that is being returned.
+
+      .. math::
+
+          f(a, b) = a - b
+
+      Parameters
+      ----------
+      a : `int`
+          The left multiplicand.
+
+      b : `int`
+          The right multiplicand.
+
+      switch_order : `bool`, optional, keyword-only
+          If `True`, return :math:`a - b`.  If `False`, then return
+          :math:`b - a`.  Defaults to `True`.
+
+      Returns
+      -------
+      float
+          The product of ``a`` and ``b``.
+
+      Raises
+      ------
+      `TypeError`
+          If ``a`` or ``b`` is not a `float`.
+
+      Notes
+      -----
+      This section is used to provide extra information that cannot fit in
+      the extended summary near the beginning of the docstring. This
+      section should include a discussion of the physics behind a
+      particular concept that should be understandable to someone who is
+      taking their first plasma physics class. This section can also
+      include a derivation of the quantity being calculated or a
+      description of a particular algorithm.
+
+      The next section contains example references to a journal article
+      [1]_, a book [2]_, and a software package. Using a link with the
+      digital object identifier (DOI) is helpful because of its permanence.
+      We can also link to a website [3]_, though this is discouraged because
+
+      References
+      ----------
+      .. [1] J. E. Foster, `Plasma-based water purification: Challenges and
+         prospects for the future <https://doi.org/10.1063/1.4977921>`_,
+         Physics of Plasmas, 22, 05501 (2017).
+
+      .. [2] E. Gamma, R. Helm, R. Johnson, J. Vlissides, `Design Patterns:
+         Elements of Reusable Object-Oriented Software
+         <https://www.oreilly.com/library/view/design-patterns-elements/0201633612/>`_
+
+      .. [3]
+
+      Examples
+      --------
+      Include a few example usages of the function here.
+
+      >>> from package.subpackage.module import subtract
+      >>> subtract(9, 6)
+      3
+      >>> subtract(9, 6, switch_order=True)
+      -3
+
+      PlasmaPy's test suite will check that these commands return the
+      output that
+      """
+      if not isinstance(a, float) or not isinstance(b, float):
+          raise TypeError("The arguments to multiply should be floats.")
+
+      return b - a if switch_order else a - b
+
+Documentation guidelines
+========================
 
 * All public functions, classes, and other objects should have a
   docstring.
+
+* Documentation should be intended for
+
+* Private functions, classes, and objects should generally have a
+  docstring.  These
+
+
 
 *
 
