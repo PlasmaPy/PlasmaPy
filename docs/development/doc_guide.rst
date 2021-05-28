@@ -88,6 +88,25 @@ Sphinx
 
 `Sphinx <https://www.sphinx-doc.org>`_ is a software package
 
+
+
+PlasmaPy documentation is built with the following Sphinx extensions:
+
+* `sphinx.ext.autodoc`
+* `sphinx.ext.intersphinx`
+* `sphinx.ext.graphviz`
+* `sphinx.ext.mathjax`
+* `sphinx.ext.napoleon`
+* `sphinx.ext.todo`
+* `nbsphinx`
+* `sphinx_copybutton`
+* `sphinx_gallery.load_style`
+* `IPython.sphinxext.ipython_console_highlighting`
+* `sphinx_changelog`
+* `plasmapy_sphinx`
+
+
+
 Writing documentation
 =====================
 
