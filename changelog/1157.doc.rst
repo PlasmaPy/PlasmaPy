@@ -1,0 +1,3 @@
+Allowed in-line math in documentation to be enclosed within dollar signs
+by enabling the ``sphinx-math-dollar`` extension to Sphinx.  For example,
+this allows math to be written as `$x$` rather than ``` :math:`x` ```.
