@@ -11,7 +11,8 @@ packages.  PlasmaPy's online documentation is hosted by
   `https://docs.plasmapy.org <https://docs.plasmapy.org>`_ or
   `https://docs.plasmapy.org/en/stable/ <https://docs.plasmapy.org/en/stable/>`_
 
-* Latest version on GitHub: ``https://docs.plasmapy.org/en/latest/``
+* Latest version on GitHub:
+  `https://docs.plasmapy.org/en/latest/ <https://docs.plasmapy.org/en/latest/>`_
 
 Essentials
 ==========
@@ -27,7 +28,49 @@ markup that allows the text to be transformed into `PlasmaPy's online
 documentation <https://www.plasampy.org>`_. ReST is the markup language
 used in docstrings and in the narrative documentation.  ReST files
 end in `.rst`.  Documentation enclosed in triple quotes (`""" ... """`)
-within `.py` files is written in ReST.
+within `.py` is typically written in ReST.
+
+This code block contains some ReST examples.
+
+.. code-block:: rst
+
+  ==============
+  Document title
+  ==============
+
+  Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
+
+  Here is a new paragraph.
+
+  Sub-section title
+  =================
+
+  Sub-sub-section title
+  ---------------------
+
+  Here is a reference to `plasmapy.particles` that will write out the
+  full namespace when Sphinx generates the documentation and generates
+  the link.
+
+  If we put a tilde before the reference, then only the
+  name of the object will be shown.  Only the word "Particle" will show
+  up if we write `~plasmapy.particles.particle_class.Particle`.
+
+  Sphinx can format Python code blocks if we specify the language.
+
+  .. code-block:: python
+
+      def sample_function():
+          return 42
+
+  Math can be written in LaTeX.
+
+  .. math::
+
+      \alpha = \beta + \gamma
+
+  We can also use math in-line like :math:`x`, or use unicode characters
+  instead like :math:`π`.
 
 Markdown
 --------
@@ -40,7 +83,6 @@ default text for posts on `GitHub <https://github.com>`_.
 
 Sphinx
 ------
-
 
 .. add plasmapy-sphinx later
 
