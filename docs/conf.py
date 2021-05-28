@@ -18,12 +18,14 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
+import nbsphinx
 import os
 import sys
 
 from datetime import datetime
 from pkg_resources import parse_version
 from sphinx.application import Sphinx
+from sphinx_math_dollar import NODE_BLACKLIST
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("."))
@@ -149,6 +151,10 @@ exclude_patterns = [
 todo_include_todos = False
 
 default_role = "obj"
+
+math_dollar_node_blacklist = NODE_BLACKLIST + (nbsphinx.GalleryToc,)
+
+# math_dollar_debug = True
 
 # -- Options for HTML output ----------------------------------------------
 
