@@ -44,7 +44,7 @@ Installation with pip
 ---------------------
 
 To install the most recent release of PlasmaPy on `PyPI`_
-with `pip` into an existing Python environment
+with `pip`_ into an existing Python environment
 with both required and optional dependencies, run
 
 .. code:: bash
@@ -63,7 +63,7 @@ using certain specialized functionality.
 
 .. note::
 
-   In some systems, it may be necessary to use ``pip3`` instead of `pip`.
+   In some systems, it may be necessary to use ``pip3`` instead of ``pip``.
 
 Installation with conda
 -----------------------
