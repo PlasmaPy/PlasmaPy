@@ -63,7 +63,8 @@ Narrative Documentation
 Substitutions
 =============
 
-The `common_links.txt <https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.txt>`_
+The `common_links.rst
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.rst>`_
 file defines reStructuredText substitutions that can be used in
 PlasmaPy's documentation.
 

@@ -5,8 +5,8 @@ Decorators
 
 .. _particles-decorators-particle-input:
 
-Passing `~plasmapy.particles.Particle` objects to functions and methods
-=======================================================================
+Passing |Particle| objects to functions and methods
+===================================================
 
 When calculating plasma parameters, we frequently need to access the
 properties of the particles that make up that plasma. The
