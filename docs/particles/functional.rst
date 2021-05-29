@@ -37,7 +37,7 @@ The full symbol of the particle can be found using |particle_symbol|.
 Particle properties
 ===================
 
-The |atomic_number| and |mass_number|functions are analogous to the
+The |atomic_number| and |mass_number| functions are analogous to the
 corresponding attributes in the |Particle| class.
 
 >>> atomic_number('iron')
