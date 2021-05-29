@@ -3,8 +3,8 @@
 Functions
 *********
 
-In addition to the `~plasmapy.particles.Particle` class, the
-`~plasmapy.particles` subpackage has a functional interface.
+In addition to the |Particle| class, the `~plasmapy.particles`
+subpackage has a functional interface.
 
 .. _particles-func-symbols:
 
@@ -40,25 +40,26 @@ The full symbol of the particle can be found using
 Particle properties
 ===================
 
-The `~plasmapy.particles.atomic_number` and `~plasmapy.particles.mass_number`
-functions are analogous to the corresponding attributes in the
-`~plasmapy.particles.Particle` class.
+The `~plasmapy.particles.atomic.atomic_number` and
+`~plasmapy.particles.atomic.mass_number` functions are analogous to the
+corresponding attributes in the |Particle| class.
 
 >>> atomic_number('iron')
 26
 >>> mass_number('T+')
 3
 
-Charge information may be found using `~plasmapy.particles.charge_number`
-and `~plasmapy.particles.electric_charge`.
+Charge information may be found using
+`~plasmapy.particles.atomic.charge_number` and
+`~plasmapy.particles.atomic.electric_charge`.
 
 >>> charge_number('H-')
 -1
 >>> electric_charge('muon antineutrino')
 <Quantity 0. C>
 
-These functions will raise a `~plasmapy.particles.exceptions.ChargeError` for
-elements and isotopes that lack explicit charge information.
+These functions will raise a |ChargeError| for elements and isotopes
+that lack explicit charge information.
 
 >>> electric_charge('H')
 Traceback (most recent call last):
@@ -72,7 +73,7 @@ accessed using `~plasmapy.particles.standard_atomic_weight`.
 <Quantity 207.2 u>
 
 The mass of a particle may be accessed through the
-`~plasmapy.particles.particle_mass` function.
+`~plasmapy.particles.atomic.particle_mass` function.
 
 >>> particle_mass('deuteron')
 <Quantity 3.34358372e-27 kg>
@@ -83,7 +84,7 @@ Isotopes
 ========
 
 The relative isotopic abundance of each isotope in the terrestrial
-environment may be found using `~plasmapy.particles.isotopic_abundance`.
+environment may be found using `~plasmapy.particles.atomic.isotopic_abundance`.
 
 >>> isotopic_abundance('H-1')
 0.999885
@@ -97,13 +98,13 @@ can be found with `~plasmapy.particles.known_isotopes`.
 ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
 
 The isotopes of an element with a non-zero isotopic abundance may be
-found with `~plasmapy.particles.common_isotopes`.
+found with `~plasmapy.particles.atomic.common_isotopes`.
 
 >>> common_isotopes('Fe')
 ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
 
 All stable isotopes of an element may be found with
-`~plasmapy.particles.stable_isotopes`.
+`~plasmapy.particles.atomic.stable_isotopes`.
 
 >>> stable_isotopes('Pb')
 ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
@@ -113,29 +114,30 @@ All stable isotopes of an element may be found with
 Stability
 =========
 
-The `~plasmapy.particles.is_stable` function returns `True` for stable
-particles and `False` for unstable particles.
+The `~plasmapy.particles.atomic.is_stable` function returns `True` for
+stable particles and `False` for unstable particles.
 
 >>> is_stable('e-')
 True
 >>> is_stable('T')
 False
 
-The `~plasmapy.particles.half_life` function returns the particle's
-half-life as a `~astropy.units.Quantity` in units of seconds, if known.
+The `~plasmapy.particles.atomic.half_life` function returns
+the particle's half-life as a |Quantity| in units of seconds, if known.
 
 >>> half_life('n')
 <Quantity 881.5 s>
 
 For stable particles (or particles that have not been discovered to be
-unstable), `~plasmapy.particles.half_life` returns `~numpy.inf` seconds.
+unstable), `~plasmapy.particles.atomic.half_life` returns `~numpy.inf`
+seconds.
 
 >>> half_life('p+')
 <Quantity inf s>
 
 If the particle's half-life is not known to sufficient precision, then
-`~plasmapy.particles.half_life` returns a `str` with the estimated value
-while issuing a `~plasmapy.particles.exceptions.MissingParticleDataWarning`.
+`~plasmapy.particles.atomic.half_life` returns a `str` with the
+estimated value while issuing a |MissingParticleDataWarning|.
 
 Reduced mass
 ============
