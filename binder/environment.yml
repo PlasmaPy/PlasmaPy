@@ -1,4 +1,4 @@
-name: binderplasmapy
+name: plasmapy
 
 channels:
   - astropy
