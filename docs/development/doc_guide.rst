@@ -8,7 +8,7 @@ packages.
 
 Building documentation
 ======================
-Documentation is built from the master branch on every commit pushed
+Documentation is built from the main branch on every commit pushed
 to it.
 
 Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST) as its markup language. A primer on reST is available at this `webpage
