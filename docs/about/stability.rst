@@ -10,8 +10,8 @@ Stability of Subpackages
 This document summarizes the stability of PlasmaPy's subpackages so that
 users understand where they might expect changes in the future, and
 which subpackages they can safely use for production code.  Please note
-that backward compatibility is not guaranteed for the `0.*.*` series of
-development releases.  Starting with version `1.0.0`, the major version
+that backward compatibility is not guaranteed for the ``0.*.*`` series of
+development releases.  Starting with version ``1.0.0``, the major version
 number will be incremented when a release contains backward incompatible
 changes.
 
