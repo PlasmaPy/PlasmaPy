@@ -239,7 +239,7 @@ nbsphinx_thumbnails = {
 nbsphinx_prolog = r"""
 {% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
-{% set nb_where = env.config.revision if env.config.revision else 'master' %}
+{% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
 .. raw:: html
 
