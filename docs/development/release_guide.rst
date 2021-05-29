@@ -29,8 +29,7 @@ Pre-release
 Release
 -------
 
-* Reserve a digital object identifier (DOI) on `Zenodo <https://zenodo.org>`_
-  for version ``0.6.0``.
+* Reserve a digital object identifier (DOI) on `Zenodo`_ for version ``0.6.0``.
 
 * Update ``docs/about/citation.rst`` with the DOI for version ``0.6.0``.
 
@@ -105,8 +104,7 @@ Release
 At this point, the GitHub Actions packaging workflow should do most of the work
 for you! `Ensure that the pipeline goes through.
 <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
-``wheels_universal`` finish, check `PyPI <https://pypi.org/project/plasmapy/>`_
-for the new version!
+``wheels_universal`` finish, check `PyPI`_ for the new version!
 
 Post-release
 ------------
@@ -147,7 +145,7 @@ Compatibility with Prior Versions of Python, NumPy, and Astropy
 PlasmaPy releases will generally abide by the following standards,
 which are adapted from `NumPy Enhancement Proposal 29
 <https://numpy.org/neps/nep-0029-deprecation_policy.html>`_ for the
-support of old versions of Python, NumPy, and Astropy.
+support of old versions of `Python`_, `NumPy`_, and `Astropy`_.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
