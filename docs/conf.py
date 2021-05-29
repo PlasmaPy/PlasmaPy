@@ -167,9 +167,9 @@ mathjax_config = {
     },
 }
 
-math_dollar_node_blacklist = NODE_BLACKLIST + (nbsphinx.GalleryToc,)
+math_dollar_node_blacklist = NODE_BLACKLIST  # + ("nbsphinx.GalleryToc",)
 
-# math_dollar_debug = True
+math_dollar_debug = True
 
 # -- Options for HTML output ----------------------------------------------
 
