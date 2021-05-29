@@ -35,7 +35,9 @@
 .. NumPy replacements
 .. ------------------
 
-.. |ndarray| replace:: :class:`numpy.ndarray`
+.. |inf| replace:: `~numpy.inf`
+.. |nan| replace:: `~numpy.nan`
+.. |ndarray| replace:: :class:`~numpy.ndarray`
 
 .. --------------------
 .. Astropy replacements
