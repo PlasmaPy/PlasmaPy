@@ -12,9 +12,10 @@ Symbols and names
 =================
 
 Several functions in `~plasmapy.particles` return string representations
-of particles, including `~plasmapy.particles.atomic_symbol`,
-`~plasmapy.particles.isotope_symbol`, `~plasmapy.particles.ionic_symbol`,
-and `~plasmapy.particles.element_name`.
+of particles, including `~plasmapy.particles.atomic.atomic_symbol`,
+`~plasmapy.particles.atomic.isotope_symbol`,
+`~plasmapy.particles.atomic.ionic_symbol`,
+and `~plasmapy.particles.atomic.element_name`.
 
 >>> from plasmapy.particles import *
 >>> atomic_symbol('alpha')
