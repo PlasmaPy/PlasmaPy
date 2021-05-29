@@ -158,6 +158,15 @@ todo_include_todos = False
 
 default_role = "obj"
 
+# configurations needed for sphinx-ext-math
+
+mathjax_config = {
+    "tex2jax": {
+        "inlineMath": [["\\(", "\\)"]],
+        "displayMath": [["\\[", "\\]"]],
+    },
+}
+
 math_dollar_node_blacklist = NODE_BLACKLIST + (nbsphinx.GalleryToc,)
 
 # math_dollar_debug = True
