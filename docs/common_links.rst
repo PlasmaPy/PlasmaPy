@@ -25,6 +25,12 @@
 .. |ParticleWarning| replace:: :class:`~plasmapy.particles.exceptions.ParticleWarning`
 .. |UnexpectedParticleError| replace:: :class:`~plasmapy.particles.exceptions.UnexpectedParticleError`
 
+.. -------------------
+.. plasmapy.simulation
+.. -------------------
+
+.. |ParticleTracker| replace:: :class:`~plasmapy.simulation.particletracker.ParticleTracker`
+
 .. ------------------
 .. NumPy replacements
 .. ------------------
