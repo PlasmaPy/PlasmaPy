@@ -1,0 +1,3 @@
+Made minor corrections to variable namespaces and ReST formatting
+in docstrings and narrative documentation and added a ReST substitution
+for |ParticleTracker|.
