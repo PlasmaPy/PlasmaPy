@@ -141,22 +141,3 @@ The |reduced_mass| function is useful in cases of two-body collisions.
 <Quantity 9.10442514e-31 kg>
 >>> reduced_mass('D+', 'T+')
 <Quantity 2.00486597e-27 kg>
-
-.. |atomic_number| replace:: :func:`~plasmapy.particles.atomic.atomic_number`
-.. |atomic_symbol| replace:: :func:`~plasmapy.particles.atomic.atomic_symbol`
-.. |element_name| replace:: :func:`~plasmapy.particles.atomic.element_name`
-.. |half_life| replace:: :func:`~plasmapy.particles.atomic.half_life`
-.. |ionic_symbol| replace:: :func:`~plasmapy.particles.atomic.is_stable`
-.. |is_stable| replace:: :func:`~plasmapy.particles.atomic.is_stable`
-.. |isotope_symbol| replace:: :func:`~plasmapy.particles.atomic.isotope_symbol`
-.. |isotopic_abundance| replace:: :func:`~plasmapy.particles.atomic.isotopic_abundance`
-.. |mass_number| replace:: :func:`~plasmapy.particles.atomic.mass_number`
-.. |charge_number| replace:: :func:`~plasmapy.particles.atomic.charge_number`
-.. |electric_charge| replace:: :func:`~plasmapy.particles.atomic.electric_charge`
-.. |standard_atomic_weight| replace:: :func:`~plasmapy.particles.atomic.standard_atomic_weight`
-.. |particle_mass| replace:: :func:`~plasmapy.particles.atomic.particle_mass`
-.. |particle_symbol| replace:: :func:`~plasmapy.particles.atomic.particle_symbol`
-.. |known_isotopes| replace:: :func:`~plasmapy.particles.atomic.known_isotopes`
-.. |common_isotopes| replace:: :func:`~plasmapy.particles.atomic.common_isotopes`
-.. |reduced_mass| replace:: :func:`~plasmapy.particles.atomic.reduced_mass`
-.. |stable_isotopes| replace:: :func:`~plasmapy.particles.atomic.stable_isotopes`
