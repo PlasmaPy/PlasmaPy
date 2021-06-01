@@ -58,3 +58,9 @@
 .. _SciPy: https://www.scipy.org/
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Zenodo: https://zenodo.org
+
+.. ---------------
+.. Links to Papers
+.. ---------------
+
+.. |Houlberg_1997| replace:: Houlberg et al, 1997

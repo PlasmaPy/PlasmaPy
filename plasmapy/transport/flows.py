@@ -31,9 +31,7 @@ Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 
 class FlowCalculator:
-    """
-    This does, in fact, do most things for my thesis.
-    """
+    """ """
 
     @classmethod
     def from_xarray_surface(cls, dataset: xarray.Dataset, flux_surface: FluxSurface):

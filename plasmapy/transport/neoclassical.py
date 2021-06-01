@@ -1,3 +1,14 @@
+r"""This module implements helper functions from [1]_.
+
+.. [1] Houlberg et al, Bootstrap current and neoclassical transport in tokamaks of arbitrary collisionality and aspect ratio, 1997,
+   Physics of Plasmas 4, 3230 (1997); , JGR, 117, A12219, doi: `10.1063/1.872465
+   <https://aip.scitation.org/doi/10.1063/1.872465>`_.
+
+.. _houlberg-1997:
+This work is referenced in docstrings as `Houlberg_1997`.
+"""
+
+# TODO rename to Houlberg1997.py
 from __future__ import annotations
 
 import numpy as np
@@ -18,10 +29,6 @@ try:
 except ImportError:
     from scipy.integrate import trapezoid
 
-# if "profile" not in globals():
-#     def profile(func):
-#         return func
-
 __all__ = [
     "contributing_states",
     "mu_hat",
@@ -30,7 +37,7 @@ __all__ = [
     "ν_T_ai",
     "ωm",
     "F_m",
-    "B17",
+    "_B17",
     "K_B_ai",
     "pitch_angle_diffusion_rate",
     "M_script",
@@ -44,19 +51,51 @@ __all__ = [
 ]
 
 
-def ionizationstate_mass_densities(a: IonizationState):
+def ionizationstate_mass_densities(a: IonizationState) -> u.kg / u.m ** 3:
+    r"""Mass densities for each ionic level in an |IonizationState|.
+
+    Parameters
+    ----------
+    a : IonizationState
+        a
+
+    Returns
+    -------
+    u.kg/u.m**3
+
+    """
+
     return a.number_densities * u.Quantity([ai.ion.mass for ai in a])
 
 
-def xab_ratio(a: IonizationState, b: IonizationState):
+def xab_ratio(a: IonizationState, b: IonizationState) -> u.dimensionless_unscaled:
+    """Ratio of thermal speeds as defined by |Houlberg_1997|
+
+    Parameters
+    ----------
+    a : IonizationState
+    b : IonizationState
+
+    Returns
+    -------
+    u.dimensionless_unscaled
+
+    """
+
     return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
 
 
 def M_matrix(species_a: IonizationState, species_b: IonizationState):
+    """Test particle matrix - equation A5a through A5f from |Houlberg_1997|
+
+    Parameters
+    ----------
+    species_a : IonizationState
+    species_b : IonizationState
+    """
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
     mass_ratio = a._particle.mass / b._particle.mass
-    """equations A5a through A5f, Houlberg_1997"""
     M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
     M21 = M12
@@ -73,7 +112,13 @@ def M_matrix(species_a: IonizationState, species_b: IonizationState):
 
 
 def N_matrix(species_a: IonizationState, species_b: IonizationState):
-    """equations A6a through A6f, Houlberg_1997"""
+    """Test particle matrix - equation A6a through A6f from |Houlberg_1997|
+
+    Parameters
+    ----------
+    species_a : IonizationState
+    species_b : IonizationState
+    """
     a, b = species_a, species_b
     xab = xab_ratio(a, b)
     temperature_ratio = a.T_e / b.T_e
@@ -103,18 +148,26 @@ CL = lambda a, b: Coulomb_logarithm(
 
 
 def effective_momentum_relaxation_rate(
-    charge_states_a: IonizationState, charge_states_b: IonizationState
+    species_a: IonizationState, species_b: IonizationState
 ):
+    """Equations A3, A4 from |Houlberg_1997|
+
+    Parameters
+    ----------
+    species_a : IonizationState
+    species_b : IonizationState
+    """
+    # TODO could be refactored using numpy
     def contributions():
         CL = lambda ai, bj: Coulomb_logarithm(
-            charge_states_b.T_e,
-            charge_states_b.n_elem,
+            species_b.T_e,
+            species_b.n_elem,
             (ai.ion, bj.ion),  # simplifying assumption after A4
         )
-        for ai in charge_states_a:
+        for ai in species_a:
             if ai.ion.charge == 0:
                 continue
-            for bj in charge_states_b:
+            for bj in species_b:
                 if bj.ion.charge == 0:
                     continue
                 # Eq. A4, Houlberg_1997
@@ -133,7 +186,7 @@ def effective_momentum_relaxation_rate(
                     / (
                         (4 * np.pi * constants.eps0) ** 2
                         * ai.ion.mass ** 2
-                        * thermal_speed(charge_states_a.T_e, ai.ion) ** 3
+                        * thermal_speed(species_a.T_e, ai.ion) ** 3
                     )
                 ).si
 
@@ -143,6 +196,12 @@ def effective_momentum_relaxation_rate(
 
 
 def ξ(isotope: IonizationState):
+    """The charge state weighting factor - equation 11 from |Houlberg_1997|
+
+    Parameters
+    ----------
+    isotope : IonizationState
+    """
     array = u.Quantity(
         [ai.number_density * ai.ion.charge_number ** 2 for ai in isotope]
     )
@@ -150,6 +209,13 @@ def ξ(isotope: IonizationState):
 
 
 def N_script(species_a: IonizationState, species_b: IonizationState):
+    """Weighted field particle matrix - equation A2b from |Houlberg_1997|
+
+    Parameters
+    ----------
+    species_a : IonizationState
+    species_b : IonizationState
+    """
     N = N_matrix(species_a, species_b)
     # Equation A2b
     N_script = effective_momentum_relaxation_rate(species_a, species_b) * N
@@ -157,6 +223,13 @@ def N_script(species_a: IonizationState, species_b: IonizationState):
 
 
 def M_script(species_a: IonizationState, all_species: IonizationStateCollection):
+    """Weighted test particle matrix - equation A2a from |Houlberg_1997|
+
+    Parameters
+    ----------
+    species_a : IonizationState
+    all_species : IonizationStateCollection
+    """
     # Equation A2a
     def gener():
         for species_b in all_species:
@@ -169,17 +242,26 @@ def M_script(species_a: IonizationState, all_species: IonizationStateCollection)
     return sum(gener())
 
 
-# profile
 def pitch_angle_diffusion_rate(
     x: np.ndarray,
     a: IonizationState,
     all_species: IonizationStateCollection,
 ):
+    """The pitch angle diffusion rate, equation B4b from |Houlberg_1997|
+
+    Parameters
+    ----------
+    x : np.ndarray
+        distribution velocity relative to the thermal velocity.
+    a : IonizationState
+    all_species : IonizationStateCollection
+    """
     # Houlberg_1997, equation B4b,
     xi = ξ(a)
     denominator = x ** 3
 
     def sum_items():
+        """sum_items."""
         for b in all_species:
             xab = xab_ratio(a, b)
             x_over_xab = (x / xab).value
@@ -188,10 +270,10 @@ def pitch_angle_diffusion_rate(
             result = fraction * effective_momentum_relaxation_rate(a, b)
             yield result
 
-    mass_density_probably = ionizationstate_mass_densities(a)
+    mass_density = ionizationstate_mass_densities(a)
     result = (
         xi[:, np.newaxis]
-        / mass_density_probably[:, np.newaxis]
+        / mass_density[:, np.newaxis]
         * 3
         * np.sqrt(np.pi)
         / 4
@@ -200,15 +282,29 @@ def pitch_angle_diffusion_rate(
     return result
 
 
-# profile
 def K_B_ai(
     x: np.ndarray,
     a_states: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
     *,
-    orbit_squeezing=False,
+    orbit_squeezing: bool = False,
 ):
+    """Banana regime contribution to effective viscosity - eq. B1 from |Houlberg_1997|
+
+    Parameters
+    ----------
+    x : np.ndarray
+        x
+    a_states : IonizationState
+        a_states
+    all_species : IonizationStateCollection
+        all_species
+    flux_surface : FluxSurface
+        flux_surface
+    orbit_squeezing : bool (default `False`)
+        orbit_squeezing
+    """
     # eq. B1-B4, Houlberg_1997
     f_t = flux_surface.trapped_fraction()
     f_c = 1 - f_t
@@ -229,7 +325,18 @@ LaguerrePolynomials = [
 ]
 
 
-def B17(flux_surface):
+def _B17(flux_surface):
+    """Equation B17 from |Houlberg_1997|. Likely bugged!
+
+    Notes
+    -----
+    Eventually this should allow picking the right `m` in `K` below.
+
+    Parameters
+    ----------
+    flux_surface :
+        flux_surface
+    """
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
     under_average_B17 = (B20 / fs.Bmag) ** 2
@@ -237,14 +344,23 @@ def B17(flux_surface):
 
 
 def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface):
+    """Mode weights for the Pfirsch-Schlüter contribution.
+
+    Equation B9 from |Houlberg_1997|.
+
+    Parameters
+    ----------
+    m : Union[int, np.ndarray]
+        m
+    flux_surface : FluxSurface
+        flux_surface
+    """
     fs = flux_surface
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
     under_average_B16 = np.sin(m * fs.Theta) * B20
     under_average_B15 = under_average_B16 / fs.Bmag
     under_average_B16_cos = np.cos(m * fs.Theta) * B20
     under_average_B15_cos = under_average_B16_cos / fs.Bmag
-    #     plt.plot(fs.lp, under_average_B15)
-    #     plt.plot(fs.lp, under_average_B16)
     B15 = fs.flux_surface_average(under_average_B15)
     B16 = fs.gamma * fs.flux_surface_average(under_average_B16)
     B15_cos = fs.flux_surface_average(under_average_B15_cos)
@@ -252,24 +368,47 @@ def F_m(m: Union[int, np.ndarray], flux_surface: FluxSurface):
 
     B2mean = fs.flux_surface_average(fs.B2)
 
-    # equation B9
     F_m = 2 / B2mean / fs.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
     return F_m
 
 
 def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSurface):
+    """Equation B11 from |Houlberg_1997|.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        distribution velocity relative to the thermal velocity.
+    m : Union[int, np.ndarray]
+    a : IonizationState
+    fs : FluxSurface
+    """
+    """Equation B11 of Houlberg_1997."""
     B11 = (
         x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
     )  # TODO why the u.m?
     return B11
 
 
-# profile
 def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateCollection):
-    mass_density_probably = ionizationstate_mass_densities(a)
-    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density_probably
+    """Characteristic rate of anisotropy relaxation.
+
+    Equation B12 from |Houlberg_1997|.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        distribution velocity relative to the thermal velocity.
+    a : IonizationState
+        a
+    all_species : IonizationStateCollection
+        all_species
+    """
+    mass_density = ionizationstate_mass_densities(a)
+    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density
 
     def gen():
+        """gen."""
         for b in all_species:
             if b.base_particle != a.base_particle:  # TODO is not should work
                 x_over_xab = (x / xab_ratio(a, b)).value
@@ -279,14 +418,12 @@ def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateColle
                 )  # TODO double check this ratio
                 part2full = part2 * Chandrasekhar_G(x_over_xab) / x
                 result = (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
-                # print(f"{b=} {result=}")
                 yield result
 
     result = prefactor[:, np.newaxis] * sum(gen())[np.newaxis, :]
     return result
 
 
-# profile
 def K_ps_ai(
     x: np.ndarray,
     a: IonizationState,
@@ -295,6 +432,21 @@ def K_ps_ai(
     *,
     m_max=100,
 ):
+    """Pfirsch-Schlüter regime contribution to effective viscosity - eq. B8 from |Houlberg_1997|
+
+    Parameters
+    ----------
+    x : np.ndarray
+        x
+    a : IonizationState
+        a
+    all_species : IonizationStateCollection
+        all_species
+    flux_surface : FluxSurface
+        flux_surface
+    m_max :
+        m_max
+    """
     ν = ν_T_ai(x, a, all_species)[:, np.newaxis, :]
 
     m = np.arange(1, m_max + 1)
@@ -321,16 +473,36 @@ def K_ps_ai(
     )
 
 
-# profile
 def K(
     x: np.ndarray,
     a: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
     *,
-    m_max=100,
-    orbit_squeezing=False,
+    m_max: int = 100,
+    orbit_squeezing: bool = False,
 ):
+    """Total effective velocity-dependent viscosity with contributions from -
+    eq. 16 from |Houlberg_1997|
+
+    Notes
+    -----
+    This expression originally comes from
+    K. C. Shaing, C. T. Hsu, M. Yokoyama, and M. Wakatani, Phys. Plasmas
+    2, 349 (1995); and K. C. Shaing, M. Yokoyama, M. Wakatani, and C. T. Hsu,
+    ibid. 3, 965 (1996).
+
+    Parameters
+    ----------
+    x : np.ndarray
+        distribution velocity relative to the thermal velocity.
+    a : IonizationState
+    all_species : IonizationStateCollection
+    flux_surface : FluxSurface
+    m_max : int
+    orbit_squeezing : bool
+        orbit_squeezing
+    """
     # Eq 16
     kb = K_B_ai(x, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
     # print(f"got {kb=}")
@@ -339,17 +511,32 @@ def K(
     return 1 / (1 / kb + 1 / kps)
 
 
-# profile
 def mu_hat(
     a: IonizationState,
     all_species: IonizationStateCollection,
     flux_surface: FluxSurface,
     *,
-    xmin=0.0015,
-    xmax=10,
-    N=1000,
+    xmin: float = 0.0015,
+    xmax: float = 10,
+    N: int = 1000,
     **kwargs,
 ):
+    """Viscosity coefficients - equation 15 from |Houlberg_1997|.
+
+    Parameters
+    ----------
+    a : IonizationState
+    all_species : IonizationStateCollection
+    flux_surface : FluxSurface
+    xmin :
+        xmin
+    xmax :
+        xmax
+    N :
+        N
+    kwargs :
+        kwargs
+    """
     if N is None:
         N = 1000
     orders = np.arange(1, 4)
@@ -362,19 +549,26 @@ def mu_hat(
     signs = (-1) * (α[:, None] + β[None, :])
     laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
     kterm = K(x, a, all_species, flux_surface, **kwargs)
-    kterm = kterm.reshape(len_a, N, 1, 1)  # TODO
+    kterm = kterm.reshape(len_a, N, 1, 1)
     xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
     y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
     integral = trapezoid(y, x, axis=1)
     mu_hat_ai = integral * signs[None, ...]
-    mass_density_probably = ionizationstate_mass_densities(a)
-    actual_units = (
-        (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density_probably[:, None, None]
-    )
+    mass_density = ionizationstate_mass_densities(a)
+    actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density[:, None, None]
     return actual_units
 
 
-def contributing_states(a):
+def contributing_states(a: IonizationState):
+    """Helper iterator over |IonizationState|s.
+
+    Return a generator of tuples (`ξ(a)[i], a[i]`).
+
+    Parameters
+    ----------
+    a : IonizationState
+
+    """
     xi = ξ(a)
     for i, ai in enumerate(a):
         if xi[i] == 0:
