@@ -16,7 +16,7 @@ from collections import defaultdict, namedtuple
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 
-from .neoclassical import contributing_states, M_script, mu_hat, N_script, ξ
+from .Houlberg1997 import contributing_states, M_script, mu_hat, N_script, ξ
 
 try:
     from functools import cached_property
@@ -31,7 +31,31 @@ Fluxes = namedtuple("Fluxes", ["particle_flux", "heat_flux"])
 
 
 class FlowCalculator:
-    """ """
+    r"""Interface to neoclassical transport calculations.
+
+    Reimplements NCLASS from |Houlberg_1997|[1]_
+
+    References
+    ----------
+    .. [1] Houlberg et al, Bootstrap current and neoclassical transport in tokamaks of arbitrary collisionality and aspect ratio, 1997,
+       Physics of Plasmas 4, 3230 (1997); , JGR, 117, A12219, doi: `10.1063/1.872465
+       <https://aip.scitation.org/doi/10.1063/1.872465>`_.
+
+    Parameters
+    ----------
+    all_species : IonizationStateCollection
+        all_species
+    flux_surface : FluxSurface
+        flux_surface
+    density_gradient : dict
+        density_gradient
+    temperature_gradient : dict
+        temperature_gradient
+    mu_N : int
+        mu_N
+    dataset_input : xarray.Dataset
+        dataset_input
+    """
 
     @classmethod
     def from_xarray_surface(cls, dataset: xarray.Dataset, flux_surface: FluxSurface):
@@ -79,13 +103,13 @@ class FlowCalculator:
     # profile
     def __init__(
         self,
-        all_species,
-        flux_surface,
-        density_gradient,
-        temperature_gradient,
+        all_species: IonizationStateCollection,
+        flux_surface: FluxSurface,
+        density_gradient: dict,
+        temperature_gradient: dict,
         *,
-        mu_N=None,
-        dataset_input=None,
+        mu_N: int = None,
+        dataset_input: xarray.Dataset = None,
     ):
         self.all_species = all_species
         self.flux_surface = fs = flux_surface
@@ -217,14 +241,14 @@ class FlowCalculator:
                 yield ai.ionic_symbol
 
     def M_script(self, a: IonizationState) -> np.ndarray:
-        """Thin, cached wrapper on top of `~plasmapy.transport.neoclassical.M_script`."""
+        """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.M_script`."""
         sym = a.base_particle
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
     def N_script(self, a: IonizationState, b: IonizationState) -> np.ndarray:
-        """Thin, cached wrapper on top of `~plasmapy.transport.neoclassical.N_script`."""
+        """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.N_script`."""
         sym_tuple = a.base_particle, b.base_particle
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
@@ -440,7 +464,11 @@ class FlowCalculator:
         return results
 
     @cached_property
-    def bootstrap_current(self):
+    def bootstrap_current(self) -> u.J / u.m ** 2 / u.T:
+        """
+        Bootstrap current caused by the charge state flows.
+        """
+
         def gen():
             for a in self.all_species:
                 for _, ai in contributing_states(a):

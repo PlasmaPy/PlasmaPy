@@ -4,11 +4,9 @@ r"""This module implements helper functions from [1]_.
    Physics of Plasmas 4, 3230 (1997); , JGR, 117, A12219, doi: `10.1063/1.872465
    <https://aip.scitation.org/doi/10.1063/1.872465>`_.
 
-.. _houlberg-1997:
 This work is referenced in docstrings as `Houlberg_1997`.
 """
 
-# TODO rename to Houlberg1997.py
 from __future__ import annotations
 
 import numpy as np

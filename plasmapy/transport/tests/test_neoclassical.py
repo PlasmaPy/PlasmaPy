@@ -9,7 +9,7 @@ from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from plasmapy.particles import IonizationStateCollection
-from plasmapy.transport.neoclassical import (
+from plasmapy.transport.Houlberg1997 import (
     effective_momentum_relaxation_rate,
     K_B_ai,
     K_ps_ai,
