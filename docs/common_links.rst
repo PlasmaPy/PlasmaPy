@@ -41,13 +41,13 @@
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
-.. ----------------------------
-.. Links to the World Wide Web™
-.. ----------------------------
+.. --------
+.. Websites
+.. --------
 
 .. _Astropy: https://www.astropy.org/
 .. _`Astropy docs`: https://docs.astropy.org/
-.. _`common links`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
+.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/docs/
 .. _git: https://git-scm.com/
 .. _matplotlib: https://matplotlib.org/
