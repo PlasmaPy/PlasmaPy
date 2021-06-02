@@ -49,12 +49,13 @@
 .. _`Astropy docs`: https://docs.astropy.org/
 .. _Conda: https://conda.io/docs/
 .. _git: https://git-scm.com/
+.. _GitHub: https://github.com/
 .. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
-.. _pip: https://pip.pypa.io
+.. _pip: https://pip.pypa.io/
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
 .. _SciPy: https://www.scipy.org/
 .. _virtualenv: https://pypi.org/project/virtualenv
-.. _Zenodo: https://zenodo.org
+.. _Zenodo: https://zenodo.org/

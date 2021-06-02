@@ -30,21 +30,14 @@ Overview
 ========
 
 Pull requests that create or change functionality must include tests
-and documentation before being merged.
-
-PlasmaPy uses `pytest <https://docs.pytest.org>`_ for software
-testing.  The test suite may be run locally or automatically via pull
-requests on `GitHub <https://github.com/>`_.  PlasmaPy undergoes
-continuous integration testing of the code base by `Travis CI
-<https://travis-ci.org>`_ and `AppVeyor <https://www.appveyor.com>`_,
-including code examples in docstrings.  `Codecov <https://codecov.io>`_
-performs test coverage checks and shows whether or not each line of code
-is run during the test suite. `CircleCI <https://circleci.com/>`_ tests
-that the documentation can be successfully built.  The results of the
-documentation test builds are displayed using `Giles
-<https://github.com/apps/giles>`_.  PlasmaPy's test suite is
-automatically run whenever a pull request to the main repository is made
-or updated.
+and documentation before being merged. PlasmaPy uses `pytest`_ for
+software testing.  The test suite may be run locally or automatically
+via pull requests on `GitHub`_.  PlasmaPy undergoes continuous
+integration testing using `GitHub Actions`_ for both the test suite as
+well as test builds of the documentation. `Codecov`_ performs test
+coverage checks and shows whether or not each line of code is run
+during the test suite. PlasmaPy's test suite is automatically run
+whenever a pull request to the main repository is made or updated.
 
 .. _testing-guidelines-running-tests:
 
@@ -64,27 +57,20 @@ development branch to `PlasmaPy's GitHub repository
 when the pull request is created and every time your development branch
 is subsequently updated.
 
-`Travis CI <https://travis-ci.org>`_ and `AppVeyor
-<https://www.appveyor.com>`_ run code tests and check that code examples
-in docstrings produce the expected output.  Travis CI runs the tests in
-a Linux/MacOS environment whereas AppVeyor runs the tests in a Windows
-environment.
+`GitHub Actions`_ are set up to run code tests and check that code
+examples in docstrings produce the expected output, as well as to test
+build the documentation.
 
-The results from Travis CI are used to generate test coverage reports
-which are displayed by `Codecov <https://codecov.io>`_.  These reports
+The results from continuous integration testing are used to generate
+test coverage reports which are displayed by `Codecov`_.  These reports
 show which lines of code are covered by tests and which are not, and
 allow us to write targeted tests to fill in the gaps in test coverage.
 The results displayed by Codecov will be marked as passing when the code
 coverage is sufficiently high.
 
-`Circle CI <https://circleci.com>`_ performs a test build of the
-documentation in both HTML and LaTeX formats, and reports any errors
-that arise.
-
-If any inconsistencies with the `PEP 8 style guide
-<https://www.python.org/dev/peps/pep-0008/?>`_ are found, then
-`pep8speaks <https://pep8speaks.com/>`_ will comment on the pull request
-and update that comment as the pull request is updated.
+If any inconsistencies with the `PEP 8 style guide`_ are found, then
+automated code style checks will and update that comment as the pull
+request is updated.  (NEEDS UPDATING)
 
 .. _testing-guidelines-running-tests-command-line:
 
@@ -570,3 +556,8 @@ Footnotes
    in a system.  The way to fix bugs using TDD [test-driven development]
    is first write a failing test that represents the bug and then fix
    the bug and watch the failing test turn green.
+
+.. _Codecov: https://about.codecov.io/
+.. _`GitHub Actions`: https://github.com/features/actions
+.. _`PEP 8 style guide`: https://www.python.org/dev/peps/pep-0008
+.. _pytest: https://docs.pytest.org/
