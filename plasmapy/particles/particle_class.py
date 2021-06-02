@@ -2225,23 +2225,27 @@ ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
 ParticleLike.__doc__ = """
 An `object` is particle-like if it can be identified as an instance of
-`Particle` or `CustomParticle`, or cast into one.
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
-When used as a type hint annotation, `ParticleLike` indicates that an
+When used as a type hint annotation,
+`~plasmapy.particles.particle_class.ParticleLike` indicates that an
 argument should represent a physical particle. Particle-like objects
-can include strings, integers, or instances of the `Particle` or
-`CustomParticle` classes.
+can include strings, integers, or instances of the
+`~plasmapy.particles.particle_class.Particle` or
+`~plasmapy.particles.particle_class.CustomParticle` classes.
 
 Notes
 -----
 Real world particles are typically represented as instances of the
-`Particle` class in PlasmaPy.
+`~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
 
 >>> from plasmapy.particles import Particle
 >>> Particle("proton")
 Particle("p+")
 
-All `Particle` instances, and objects that can be cast into `Particle`
+All `~plasmapy.particles.particle_class.Particle` instances, and objects
+that can be cast into `~plasmapy.particles.particle_class.Particle`
 instances, are particle-like.
 
 * **Elements**
@@ -2305,14 +2309,15 @@ instances, are particle-like.
 
 See Also
 --------
-Particle
-CustomParticle
+~plasmapy.particles.particle_class.Particle
+~plasmapy.particles.particle_class.CustomParticle
 ~plasmapy.particles.decorators.particle_input
 
 Examples
 --------
-Using `ParticleLike` as a type hint annotation indicates that an
-argument or variable should represent a physical particle.
+Using `~plasmapy.particles.particle_class.ParticleLike` as a type hint
+annotation indicates that an argument or variable should represent a
+physical particle.
 
 >>> from plasmapy.particles import ParticleLike, Particle
 >>> def is_electron(particle: ParticleLike):
