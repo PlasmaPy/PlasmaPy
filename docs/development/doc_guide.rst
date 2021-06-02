@@ -75,28 +75,29 @@ This code block contains some ReST examples.
 Substitutions
 ~~~~~~~~~~~~~
 
-There are some functions and classes that show up numerous times in the
-documentation. Certain `common links`_ are defined in
-``docs/common_links.rst``.  Instead of having to write
-``~astropy.units.Quantity`` or
+Some functions and classes are referred to repeatedly throughout the
+documentation.  ReST allows us to `define substitutions
+<https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
+
+.. code-block:: rst
+
+    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
+
+PlasmaPy has certain common substitutions pre-defined so that they can
+be used throughout the documentation.  For example, instead of having
+to write ``~astropy.units.Quantity`` or
 ``~plasmapy.particles.particle_class.Particle``, we can write
-``|Quantity|`` and ``Particle``.
+``|Quantity|`` or ``Particle``.  For an up-to-date list of
+substitutions, please refer to the `docs/common_links.rst`_ file.
 
-Substitutions
-~~~~~~~~~~~~~
-
-The `common_links.rst
-<https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.rst>`_
-file defines reStructuredText substitutions that can be used in
-PlasmaPy's documentation.
-
-.. code-block:: RST
-
-    Instead of writing `~plasmapy.particles.particle_class.Particle`,
-    we can write |Particle|.
-
-Substitutions should be defined when they are used in multiple files.
-
+Because substitutions are performed when Sphinx builds the
+documentation, they will not be performed before `help` accesses the
+docstring of an `object`.  For example, when ``|Particle|`` is used in
+a docstring, `help` will show it as ``|Particle|`` rather than
+``~plasmapy.particles.particle_class.Particle``.  Consequently,
+substitutions should not be used in docstrings when it is important
+that users have quick access to the full path of the `object` (such as
+in the ``See Also`` section).
 
 Markdown
 --------
@@ -160,6 +161,11 @@ the ``-W`` flag to ``sphinx-build``
    The ``tox -e build_docs_no_examples`` command will build the documentation without
    executing the :ref:`example notebooks <example_notebooks>`. It will also
    pass with warnings.
+
+Configuration
+~~~~~~~~~~~~~
+
+The configuration for the documentation build are
 
 
 Read the Docs
