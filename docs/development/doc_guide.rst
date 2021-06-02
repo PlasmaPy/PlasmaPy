@@ -7,8 +7,8 @@ health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
-PlasmaPy's online documentation is hosted by `Read the Docs
-<https://readthedocs.org/>`_ and can be found online at:
+PlasmaPy's online documentation is hosted by `Read the Docs`_
+and can be found online at:
 
 * Most recent stable release:
   `https://docs.plasmapy.org <https://docs.plasmapy.org>`_ or
@@ -343,4 +343,4 @@ Narrative Documentation
 * Each subpackage must have narrative documentation describing its
   use.
 
-.. replace:: _`Read the Docs`: https://readthedocs.org/
+.. _`Read the Docs`: https://readthedocs.org/
