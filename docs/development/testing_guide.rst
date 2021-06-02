@@ -4,30 +4,33 @@
 Testing Guidelines
 ******************
 
-.. _testing-guidelines-motivation:
+Code contributions to PlasmaPy that create or change functionality must
+include tests and documentation before being merged.
 
-Motivation
-==========
+Tests are vital for software reliability and maintainability. Writing
+tests requires additional effort in the short term, but saves
+considerable time in the long term. Tests enable us to modify code and
+discover bugs as soon as we introduce them [1]_. When a new bug is
+discovered, adding a corresponding test greatly reduces the likelihood
+of that bug showing up in the future [2]_.
 
-Tests are vital for software reliability and maintainability.  Writing
-tests requires additional effort now, but saves considerable time in the
-long run.  Tests enable us to modify code and quickly discover when we
-introduce errors [1]_.  Tests also provide future contributors with
-examples of how functions and classes were originally intended to be
-used.
-
-Tests should be readable and maintainable.  Well-written tests are
+Tests should be readable and maintainable. Well-written tests are
 easier to understand and modify when the behavior of a function or
-method is changed.  Consequently, tests should be held to the same
+method is changed. Consequently, tests should be held to the same
 code quality standards as the rest of the package.
-
-When bugs are discovered, they should be turned into test cases to
-prevent the bug from emerging again in the future [2]_.
 
 .. _testing-guidelines-overview:
 
-Overview
-========
+Testing tools
+=============
+
+PlasmaPy uses `pytest`_ for software testing
+
+
+GitHub Actions
+--------------
+
+Most of the tests are run through GitHub Actions
 
 Pull requests that create or change functionality must include tests
 and documentation before being merged. PlasmaPy uses `pytest`_ for
@@ -142,13 +145,16 @@ maintainable, and robust tests.
   returns the expected results, issues the appropriate warnings, and
   raises the appropriate exceptions.
 
+* Each unit test should test one unit of behavior [3]_.
+
 * Bugs should be turned into test cases.
 
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, and as efficient as possible.
 
-* Slow tests can be annotated with ``@pytest.mark.slow`` when they cannot be made more efficient.
+* Slow tests can be decorated with `pytest.mark.slow` when they cannot
+  be made more efficient.
 
 .. _testing-guidelines-writing-tests-organization:
 
@@ -455,9 +461,9 @@ set up with parametrization as described above.
 Code Coverage
 =============
 
-PlasmaPy uses `Codecov <https://codecov.io>`_ to show what lines of code
+PlasmaPy uses `Codecov`_ to show what lines of code
 are covered by the test suite and which lines are not.  At the end of
-every Travis CI testing session, information on which lines were
+every testing session, information on which lines were
 executed is sent to Codecov.  Codecov comments on the pull request on
 GitHub with a coverage report.
 
@@ -556,6 +562,8 @@ Footnotes
    in a system.  The way to fix bugs using TDD [test-driven development]
    is first write a failing test that represents the bug and then fix
    the bug and watch the failing test turn green.
+
+.. [3]
 
 .. _Codecov: https://about.codecov.io/
 .. _`GitHub Actions`: https://github.com/features/actions
