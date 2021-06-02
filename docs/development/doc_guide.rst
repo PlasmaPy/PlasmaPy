@@ -75,9 +75,27 @@ This code block contains some ReST examples.
 Substitutions
 ~~~~~~~~~~~~~
 
-Some objects like |Quantity| and |Particle| show up numerous times in
-the documentation.
+There are some functions and classes that show up numerous times in the
+documentation. Certain `common links`_ are defined in
+``docs/common_links.rst``.  Instead of having to write
+``~astropy.units.Quantity`` or
+``~plasmapy.particles.particle_class.Particle``, we can write
+``|Quantity|`` and ``Particle``.
 
+Substitutions
+~~~~~~~~~~~~~
+
+The `common_links.rst
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.rst>`_
+file defines reStructuredText substitutions that can be used in
+PlasmaPy's documentation.
+
+.. code-block:: RST
+
+    Instead of writing `~plasmapy.particles.particle_class.Particle`,
+    we can write |Particle|.
+
+Substitutions should be defined when they are used in multiple files.
 
 
 Markdown
@@ -89,10 +107,13 @@ from other packages.  Markdown files end with `.md`.  Posts on GitHub
 are written in `GitHub Flavored Markdown
 <https://github.github.com/gfm/>`_.
 
-Sphinx
-======
+Building documentation
+======================
 
-`Sphinx <https://www.sphinx-doc.org>`_ is the software that we use
+Sphinx
+------
+
+`Sphinx <https://www.sphinx-doc.org>`_ is the software package that is used to
 
 
 
@@ -113,6 +134,38 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 
 
 
+
+Documentation is built from the main branch on every commit pushed
+to it.
+
+Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST)
+as its markup language. A primer on reST is available at this `webpage
+<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
+of Sphinx's website.
+
+Using sphinx within the project
+-------------------------------
+To build docs locally, either:
+
+* use `Tox <https://tox.readthedocs.io/en/latest/>`_ with ``tox -e build_docs`` from within the main PlasmaPy repository directory, or
+* enter the ``docs`` directory and run ``make html``.
+
+Afterwards, open ``docs/_build/html/index.html`` with your browser of choice.
+
+Do try to solve warnings in documentation when writing your code. To enforce this,
+The ``build_docs`` environment is set to fail on encountering any warnings via
+the ``-W`` flag to ``sphinx-build``
+
+.. note::
+   The ``tox -e build_docs_no_examples`` command will build the documentation without
+   executing the :ref:`example notebooks <example_notebooks>`. It will also
+   pass with warnings.
+
+
+Read the Docs
+-------------
+
+PlasmaPy's documentation is hosted on `Read the Docs`_.
 
 
 Writing documentation
@@ -239,35 +292,6 @@ When a pull request is submitted to
 
 .. Add picture of CI
 
-
-Building documentation
-======================
-Documentation is built from the main branch on every commit pushed
-to it.
-
-Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST)
-as its markup language. A primer on reST is available at this `webpage
-<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-of Sphinx's website.
-
-Using sphinx within the project
--------------------------------
-To build docs locally, either:
-
-* use `Tox <https://tox.readthedocs.io/en/latest/>`_ with ``tox -e build_docs`` from within the main PlasmaPy repository directory, or
-* enter the ``docs`` directory and run ``make html``.
-
-Afterwards, open ``docs/_build/html/index.html`` with your browser of choice.
-
-Do try to solve warnings in documentation when writing your code. To enforce this,
-The ``build_docs`` environment is set to fail on encountering any warnings via
-the ``-W`` flag to ``sphinx-build``
-
-.. note::
-   The ``tox -e build_docs_no_examples`` command will build the documentation without
-   executing the :ref:`example notebooks <example_notebooks>`. It will also
-   pass with warnings.
-
 Docstrings
 ==========
 
@@ -295,17 +319,4 @@ Narrative Documentation
 * Each subpackage must have narrative documentation describing its
   use.
 
-Substitutions
-=============
-
-The `common_links.rst
-<https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.rst>`_
-file defines reStructuredText substitutions that can be used in
-PlasmaPy's documentation.
-
-.. code-block:: RST
-
-    Instead of writing `~plasmapy.particles.particle_class.Particle`,
-    we can write |Particle|.
-
-Substitutions should be defined when they are used in multiple files.
+.. replace:: _`Read the Docs`: https://readthedocs.org/
