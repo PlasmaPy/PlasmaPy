@@ -3,7 +3,7 @@ Documentation guidelines
 ************************
 
 Documentation that is up-to-date and understandable is vital to the
-health of a software project.  This page describes the documentation
+health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
@@ -23,14 +23,13 @@ Markup languages
 ReStructuredText
 ----------------
 
-The documentation for PlasmaPy is written using `reStructuredText (ReST)
+PlasmaPy's documentation is written using the `reStructuredText (ReST)
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-as its markup language. ReST is human readable when viewed within a
-source code file or when printed out using `help`, and also contains
+markup language. ReST is human readable when viewed within a
+source code file or when printed out using `help`. ReST also contains
 markup that allows the text to be transformed into `PlasmaPy's online
-documentation <https://www.plasampy.org>`_. ReST is the markup language
-used in docstrings and in the narrative documentation.  ReST files
-end in ``.rst``.
+documentation <https://www.plasampy.org>`_. ReST files end in ``.rst``.
+Documentation contained within ``.py`` files are also written in ReST.
 
 This code block contains some ReST examples.
 
@@ -76,7 +75,7 @@ Substitutions
 ~~~~~~~~~~~~~
 
 Some functions and classes are referred to repeatedly throughout the
-documentation.  ReST allows us to `define substitutions
+documentation. ReST allows us to `define substitutions
 <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
 
 .. code-block:: rst
@@ -84,17 +83,17 @@ documentation.  ReST allows us to `define substitutions
     .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
 PlasmaPy has certain common substitutions pre-defined so that they can
-be used throughout the documentation.  For example, instead of having
-to write ``~astropy.units.Quantity`` or
-``~plasmapy.particles.particle_class.Particle``, we can write
-``|Quantity|`` or ``Particle``.  For an up-to-date list of
-substitutions, please refer to the `docs/common_links.rst`_ file.
+be used throughout the documentation. For example, we can write
+``|Quantity|`` instead of ``~astropy.units.Quantity`` and
+``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
+For an up-to-date list of substitutions, please refer to the
+`docs/common_links.rst`_ file.
 
 Because substitutions are performed when Sphinx builds the
 documentation, they will not be performed before `help` accesses the
-docstring of an `object`.  For example, when ``|Particle|`` is used in
+docstring of an `object`. For example, when ``|Particle|`` is used in
 a docstring, `help` will show it as ``|Particle|`` rather than
-``~plasmapy.particles.particle_class.Particle``.  Consequently,
+``~plasmapy.particles.particle_class.Particle``. Consequently,
 substitutions should not be used in docstrings when it is important
 that users have quick access to the full path of the `object` (such as
 in the ``See Also`` section).
@@ -104,9 +103,28 @@ Markdown
 
 A few of PlasmaPy's files are written using `Markdown
 <https://www.markdownguide.org/>`_, such as README files and licenses
-from other packages.  Markdown files end with `.md`.  Posts on GitHub
-are written in `GitHub Flavored Markdown
-<https://github.github.com/gfm/>`_.
+from other packages. Markdown is simpler than ReST, but more limited.
+Markdown files end with `.md`. Posts on GitHub are written in `GitHub
+Flavored Markdown <https://github.github.com/gfm/>`_.
+
+This block contains
+
+.. code-block:: markdown
+
+    # Header 1
+
+    ## Header 2
+
+    Here is a link to [PlasmaPy's documentation](https://docs.plasmapy.org).
+
+    We can put make text **bold** or *italic*.
+
+    We can write in-line code like `x = 1` or create a Python code block.
+
+    ```Python
+    y = 2
+    z = 3
+    ```
 
 Building documentation
 ======================
@@ -213,8 +231,8 @@ such as using LaTeX code in equations) or ``"""``, and end with
           The right multiplicand.
 
       switch_order : `bool`, optional, keyword-only
-          If `True`, return :math:`a - b`.  If `False`, then return
-          :math:`b - a`.  Defaults to `True`.
+          If `True`, return :math:`a - b`. If `False`, then return
+          :math:`b - a`. Defaults to `True`.
 
       Returns
       -------
@@ -280,7 +298,7 @@ Documentation guidelines
 * Documentation should be intended for
 
 * Private functions, classes, and objects should generally have a
-  docstring.  These
+  docstring. These
 
 
 
@@ -307,7 +325,7 @@ Docstrings
 
 * Docstrings must be raw string `literals
   <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_
-  if they contain backslashes.  A raw string literal is denoted by
+  if they contain backslashes. A raw string literal is denoted by
   having an ``r`` immediately precede quotes or triple quotes:
 
 .. code-block:: python
