@@ -1,5 +1,5 @@
 ************************
-Documentation Guidelines
+Documentation guidelines
 ************************
 
 Documentation that is up-to-date and understandable is vital to the
@@ -17,8 +17,8 @@ PlasmaPy's online documentation is hosted by `Read the Docs
 * Latest version on GitHub:
   `https://docs.plasmapy.org/en/latest/ <https://docs.plasmapy.org/en/latest/>`_
 
-Essentials
-==========
+Markup languages
+================
 
 ReStructuredText
 ----------------
@@ -48,15 +48,13 @@ This code block contains some ReST examples.
   Heading 1.1
   -----------
 
+  Heading 1.1.1
+  ~~~~~~~~~~~~~
+
   Here is a reference to `plasmapy.particles` that will write out the
   full namespace when Sphinx generates the documentation and generates
-  the link.
-
-  If we put a tilde before the
-
-  If we put a tilde before the reference, then only the
-  name of the object will be shown.  Only the word "Particle" will show
-  up if we write `~plasmapy.particles.particle_class.Particle`.
+  the link. Only the word "Particle" will show up if we include write
+  `~plasmapy.particles.particle_class.Particle`.
 
   Sphinx can format Python code blocks.
 
@@ -65,14 +63,22 @@ This code block contains some ReST examples.
       def sample_function():
           return 42
 
-  Math can be written in LaTeX.
+  Math can be written using LaTeX commands.
 
   .. math::
 
       \alpha = \beta + \gamma
 
-  We can also use math in-line like :math:`x`, or use unicode characters
-  instead like :math:`π`.
+  Math can be in-line, like :math:`x`. Using unicode characters
+  makes math like :math:`α + β + γ` easier to read.
+
+Substitutions
+~~~~~~~~~~~~~
+
+Some objects like |Quantity| and |Particle| show up numerous times in
+the documentation.
+
+
 
 Markdown
 --------
@@ -84,9 +90,9 @@ are written in `GitHub Flavored Markdown
 <https://github.github.com/gfm/>`_.
 
 Sphinx
-------
+======
 
-`Sphinx <https://www.sphinx-doc.org>`_ is a software package
+`Sphinx <https://www.sphinx-doc.org>`_ is the software that we use
 
 
 
@@ -104,6 +110,8 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 * `IPython.sphinxext.ipython_console_highlighting`
 * `sphinx_changelog`
 * `plasmapy_sphinx`
+
+
 
 
 
