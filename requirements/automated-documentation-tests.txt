@@ -10,7 +10,7 @@ pillow
 pygments >= 2.4.1
 pytest
 setuptools-scm
-sphinx == 3.2.0
+sphinx >= 2.4.4
 sphinx-automodapi >= 0.13
 sphinx-changelog
 sphinx-copybutton
