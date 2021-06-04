@@ -7,18 +7,71 @@ health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
-PlasmaPy's online documentation is hosted by `Read the Docs`_
-and can be found online at:
+`PlasmaPy's online documentation`_ is hosted by `Read the Docs`_ and is
+available at these locations.
 
-* Most recent stable release:
-  `https://docs.plasmapy.org <https://docs.plasmapy.org>`_ or
-  `https://docs.plasmapy.org/en/stable/ <https://docs.plasmapy.org/en/stable/>`_
+* The documentation corresponding to the most recent official release
+  is labelled ``stable`` and is found at
+  `https://docs.plasmapy.org/en/stable/
+  <https://docs.plasmapy.org/en/stable/>`_.
+  The link `https://docs.plasmapy.org/ <https://docs.plasmapy.org/>`_
+  redirects to ``stable``.
 
-* Latest version on GitHub:
-  `https://docs.plasmapy.org/en/latest/ <https://docs.plasmapy.org/en/latest/>`_
+* The documentation corresponding to the ``main`` branch on
+  `PlasmaPy's GitHub repository`_ is labelled ``latest`` and can be
+  found at `https://docs.plasmapy.org/en/latest/
+  <https://docs.plasmapy.org/en/latest/>`_.
 
-Markup languages
-================
+A preview of the documentation is generated every time a pull request
+is created or updated.  You can access this preview by scrolling down
+to the checks at the bottom of a pull request, and clicking on
+``Details`` next to ``docs/readthedocs.org:plasmapy``.
+
+Building documentation
+======================
+
+To install all dependencies required to develop PlasmaPy on your local
+computer, enter the top-level directory of the cloned repository and
+run
+
+.. code-block:: bash
+
+    pip install tox -r requirements.txt
+
+You can use `tox`_ to build the documentation from within the main
+PlasmaPy repository directory by running
+
+.. code-block:: bash
+
+    tox -e build_docs
+
+You can access the documentation landing page by opening
+``docs/_build/html/index.html`` with your browser of choice.
+
+The ``build_docs`` environment is set to fail on encountering any
+warnings via the ``-W`` flag to ``sphinx-build``.
+
+You can shorten the documentation build by running
+
+.. code-block:: bash
+
+    tox -e build_docs_no_examples
+
+in order to build the documentation without executing the
+:ref:`example notebooks <example_notebooks>`.  This command will also
+pass even if there are warnings.
+
+An alternative method for building the documentation without
+`tox`_ is to enter the ``docs/`` directory and run
+
+.. code-block:: bash
+
+    make html
+
+.. _tox:: https://tox.readthedocs.io/
+
+Documentation tools
+===================
 
 ReStructuredText
 ----------------
@@ -28,8 +81,8 @@ PlasmaPy's documentation is written using the `reStructuredText (ReST)
 markup language. ReST is human readable when viewed within a
 source code file or when printed out using `help`. ReST also contains
 markup that allows the text to be transformed into `PlasmaPy's online
-documentation <https://www.plasampy.org>`_. ReST files end in ``.rst``.
-Documentation contained within ``.py`` files are also written in ReST.
+documentation`_. ReST files end in ``.rst``. Documentation contained
+within ``.py`` files is written in ReST.
 
 This code block contains some ReST examples.
 
@@ -69,7 +122,7 @@ This code block contains some ReST examples.
       \alpha = \beta + \gamma
 
   Math can be in-line, like :math:`x`. Using unicode characters
-  makes math like :math:`α + β + γ` easier to read.
+  makes math like :math:`α + β + γ` easier to read in source code.
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -84,7 +137,7 @@ documentation. ReST allows us to `define substitutions
 
 PlasmaPy has certain common substitutions pre-defined so that they can
 be used throughout the documentation. For example, we can write
-``|Quantity|`` instead of ``~astropy.units.Quantity`` and
+``|Quantity|`` instead of ``~astropy.units.Quantity``, and
 ``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
 For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
@@ -126,15 +179,14 @@ This block contains
     z = 3
     ```
 
-Building documentation
-======================
-
 Sphinx
 ------
 
-`Sphinx <https://www.sphinx-doc.org>`_ is the software package that is used to
+`Sphinx <https://www.sphinx-doc.org/>`_ is the software used to generate
+`PlasmaPy's online documentation`_.
 
-
+Sphinx extensions
+~~~~~~~~~~~~~~~~~
 
 PlasmaPy documentation is built with the following Sphinx extensions:
 
@@ -152,8 +204,6 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 * `plasmapy_sphinx`
 
 
-
-
 Documentation is built from the main branch on every commit pushed
 to it.
 
@@ -164,21 +214,7 @@ of Sphinx's website.
 
 Using sphinx within the project
 -------------------------------
-To build docs locally, either:
 
-* use `Tox <https://tox.readthedocs.io/en/latest/>`_ with ``tox -e build_docs`` from within the main PlasmaPy repository directory, or
-* enter the ``docs`` directory and run ``make html``.
-
-Afterwards, open ``docs/_build/html/index.html`` with your browser of choice.
-
-Do try to solve warnings in documentation when writing your code. To enforce this,
-The ``build_docs`` environment is set to fail on encountering any warnings via
-the ``-W`` flag to ``sphinx-build``
-
-.. note::
-   The ``tox -e build_docs_no_examples`` command will build the documentation without
-   executing the :ref:`example notebooks <example_notebooks>`. It will also
-   pass with warnings.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -280,6 +316,10 @@ such as using LaTeX code in equations) or ``"""``, and end with
       3
       >>> subtract(9, 6, switch_order=True)
       -3
+
+      Here is an example where one line is too short.
+
+      >>>
 
       PlasmaPy's test suite will check that these commands return the
       output that
