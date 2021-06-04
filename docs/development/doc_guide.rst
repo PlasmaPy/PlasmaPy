@@ -124,33 +124,6 @@ This code block contains some ReST examples.
   Math can be in-line, like :math:`x`. Using unicode characters
   makes math like :math:`α + β + γ` easier to read in source code.
 
-Substitutions
-~~~~~~~~~~~~~
-
-Some functions and classes are referred to repeatedly throughout the
-documentation. ReST allows us to `define substitutions
-<https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
-
-.. code-block:: rst
-
-    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
-
-PlasmaPy has certain common substitutions pre-defined so that they can
-be used throughout the documentation. For example, we can write
-``|Quantity|`` instead of ``~astropy.units.Quantity``, and
-``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
-For an up-to-date list of substitutions, please refer to the
-`docs/common_links.rst`_ file.
-
-Because substitutions are performed when Sphinx builds the
-documentation, they will not be performed before `help` accesses the
-docstring of an `object`. For example, when ``|Particle|`` is used in
-a docstring, `help` will show it as ``|Particle|`` rather than
-``~plasmapy.particles.particle_class.Particle``. Consequently,
-substitutions should not be used in docstrings when it is important
-that users have quick access to the full path of the `object` (such as
-in the ``See Also`` section).
-
 Markdown
 --------
 
@@ -185,36 +158,90 @@ Sphinx
 `Sphinx <https://www.sphinx-doc.org/>`_ is the software used to generate
 `PlasmaPy's online documentation`_ from ReST files and Python docstrings.
 
-The ``docs/conf.py`` file contains
+Configuration
+~~~~~~~~~~~~~
+
+The ``docs/conf.py`` file contains the configuration information needed
+to customize Sphinx behavior.
+`Sphinx's documentation <https://www.sphinx-doc.org/>`_ lists the
+`configuration options
+<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_ that
+can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
 
 PlasmaPy documentation is built with the following Sphinx extensions:
 
-* `sphinx.ext.autodoc`
-* `sphinx.ext.intersphinx`
-* `sphinx.ext.graphviz`
-* `sphinx.ext.mathjax`
-* `sphinx.ext.napoleon`
-* `sphinx.ext.todo`
-* `nbsphinx`
-* `sphinx_copybutton`
-* `sphinx_gallery.load_style`
-* `IPython.sphinxext.ipython_console_highlighting`
-* `sphinx_changelog`
-* `plasmapy_sphinx`
+* `sphinx.ext.autodoc
+  <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
+  for including documentation from docstrings
+* `sphinx.ext.intersphinx
+  <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+  for linking to other projects' documentation
+* `sphinx.ext.graphviz
+  <https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html>`_
+  to allow `Graphviz <https://graphviz.org/>`_ graphs to be included
+* `sphinx.ext.mathjax
+  <https://www.sphinx-doc.org/en/master/usage/extensions/math.html#module-sphinx.ext.mathjax>`_
+  for math rendering with `MathJax <https://www.mathjax.org/>`_
+* `sphinx.ext.napoleon
+  <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`_
+  for allowing NumPy style docstrings
+* `sphinx.ext.todo
+  <https://www.sphinx-doc.org/en/master/usage/extensions/todo.html>`_ to support
+  ``todo`` directives
+* `nbsphinx <https://nbsphinx.readthedocs.io>`_ for including
+  `Jupyter`_ notebooks
+* `sphinx_copybutton <https://sphinx-copybutton.readthedocs.io>`_ to add
+  a "copy" button for code blocks
+* `sphinx_gallery.load_style
+  <https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles>`_
+  for using sphinx-gallery styles
+* IPython.sphinxext.ipython_console_highlighting
+* `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_
+  for rendering `towncrier`_ changelogs
+* `plasmapy_sphinx` for customizations created for use in PlasmaPy
 
-Configuration
+References to other packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+allows the automatic generation of links to the documentation of
+objects in other projects.  The mappings are defined in the
+``intersphinx_mapping`` dictionary in ``docs/conf.py``, and include
+Python, NumPy, SciPy, pandas, Astropy, Sphinx, and sphinx_automodapi.
+
+When we include ``` `astropy.units.Quantity` ``` in ReST documentation,
+it will show up as `astropy.units.Quantity` and link to the appropriate
+`object` in Astropy's documentation.
+
+Substitutions
 ~~~~~~~~~~~~~
 
-The configuration for the documentation build are
+Some functions and classes are referred to repeatedly throughout the
+documentation. ReST allows us to `define substitutions
+<https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
 
+.. code-block:: rst
 
-Read the Docs
--------------
+    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-PlasmaPy's documentation is hosted on `Read the Docs`_.
+PlasmaPy has certain common substitutions pre-defined so that they can
+be used throughout the documentation. For example, we can write
+``|Quantity|`` instead of ``~astropy.units.Quantity``, and
+``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
+For an up-to-date list of substitutions, please refer to the
+`docs/common_links.rst`_ file.
+
+Because substitutions are performed when Sphinx builds the
+documentation, they will not be performed before `help` accesses the
+docstring of an `object`. For example, when ``|Particle|`` is used in
+a docstring, `help` will show it as ``|Particle|`` rather than
+``~plasmapy.particles.particle_class.Particle``. Consequently,
+substitutions should not be used in docstrings when it is important
+that users have quick access to the full path of the `object` (such as
+in the ``See Also`` section).
 
 
 Writing documentation

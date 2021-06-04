@@ -50,6 +50,7 @@
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/docs/
 .. _git: https://git-scm.com/
+.. _Jupyter: https://jupyter.org/
 .. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
@@ -59,5 +60,6 @@
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
 .. _SciPy: https://www.scipy.org/
+.. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Zenodo: https://zenodo.org
