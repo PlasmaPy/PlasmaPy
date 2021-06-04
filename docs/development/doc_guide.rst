@@ -156,11 +156,11 @@ Markdown
 
 A few of PlasmaPy's files are written using `Markdown
 <https://www.markdownguide.org/>`_, such as README files and licenses
-from other packages. Markdown is simpler than ReST, but more limited.
-Markdown files end with `.md`. Posts on GitHub are written in `GitHub
-Flavored Markdown <https://github.github.com/gfm/>`_.
-
-This block contains
+from other packages. Markdown is simpler but more limited than ReST.
+Markdown files end with `.md`. Posts on GitHub are written in
+`GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
+The following code block contains a few common examples of Markdown
+formatting.
 
 .. code-block:: markdown
 
@@ -172,7 +172,7 @@ This block contains
 
     We can put make text **bold** or *italic*.
 
-    We can write in-line code like `x = 1` or create a Python code block.
+    We can write in-line code like `x = 1` or create a Python code block:
 
     ```Python
     y = 2
@@ -183,7 +183,9 @@ Sphinx
 ------
 
 `Sphinx <https://www.sphinx-doc.org/>`_ is the software used to generate
-`PlasmaPy's online documentation`_.
+`PlasmaPy's online documentation`_ from ReST files and Python docstrings.
+
+The ``docs/conf.py`` file contains
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
@@ -202,19 +204,6 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 * `IPython.sphinxext.ipython_console_highlighting`
 * `sphinx_changelog`
 * `plasmapy_sphinx`
-
-
-Documentation is built from the main branch on every commit pushed
-to it.
-
-Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST)
-as its markup language. A primer on reST is available at this `webpage
-<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-of Sphinx's website.
-
-Using sphinx within the project
--------------------------------
-
 
 Configuration
 ~~~~~~~~~~~~~
