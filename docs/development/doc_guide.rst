@@ -68,7 +68,7 @@ An alternative method for building the documentation without
 
     make html
 
-.. _tox:: https://tox.readthedocs.io/
+.. _tox: https://tox.readthedocs.io/
 
 Documentation tools
 ===================
