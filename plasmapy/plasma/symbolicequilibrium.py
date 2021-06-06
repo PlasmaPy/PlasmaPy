@@ -131,11 +131,16 @@ class SymbolicEquilibrium:
         if len(contours) == 0:
             raise ValueError(f"Could not find contour for psi = {psi_value}")
         elif len(contours) > 1:
-            raise ValueError(
-                f"Found multiple ({len(contours)})contours for psi = {psi_value}"
-            )
-
-        contour = contours[0]
+            # as per skimage docs:
+            # (The closed-ness of a contours can be tested by checking whether the beginning point is the same as the end point.)
+            for contour in contours:
+                contour_is_closed = (contour[0] == contour[-1]).all()
+                if contour_is_closed:
+                    break
+            else:
+                raise ValueError(f"Could not find closed contour for psi = {psi_value}")
+        else:
+            contour = contours[0]
         RcontourArrayUnits, ZcontourArrayUnits = contour[:, 1], contour[:, 0]
 
         Zcontour = ZcontourArrayUnits / PSI.shape[0] * (zmax - zmin) + zmin
@@ -151,7 +156,6 @@ class SymbolicEquilibrium:
         Bprimezvals = self.Bzdifffunc(Rcontour, Zcontour)
         Bphivals = self.Bphifunc(Rcontour, Zcontour)
         ρ = PSI / PSI.min()
-        # TODO this might actually be wrong; check gradient in cylindrical
         ρprime_r = np.gradient(ρ, R[0], axis=1)
         ρprime_z = np.gradient(ρ, Z[:, 0], axis=0)
 
@@ -172,22 +176,57 @@ class SymbolicEquilibrium:
         )
         return fs
 
-    def get_multiple_flux_surfaces(
+    def rho_to_psi(
         self,
-        psi_values,
-        *,
+        rho,
         rminmaxstep=(0.6, 1.4, 0.01),
         zminmaxstep=(-0.6, 0.6, 0.01),
     ):
+        R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
+        psi_max = 0
+        psi_min = PSI.min()
+        psi_span = psi_max - psi_min
+
+        psi_values = np.asarray(rho) * psi_span + psi_min
+        return psi_values
+
+    # TODO def psi_to_rho(self,
+    #                psi
+
+    def get_multiple_flux_surfaces(
+        self,
+        *,
+        psi_values=None,
+        rho_values=None,
+        rminmaxstep=(0.6, 1.4, 0.01),
+        zminmaxstep=(-0.6, 0.6, 0.01),
+        permissive=True,
+    ):
+        if psi_values is None and rho_values is None:
+            raise ValueError("psi_values and rho_values cannot both be None")
+        elif psi_values is not None and rho_values is not None:
+            raise ValueError("psi_values and rho_values cannot both be specified")
         rmin, rmax, rstep = rminmaxstep
         zmin, zmax, zstep = zminmaxstep
         R, Z, PSI = self.get_grid_and_psi(rminmaxstep, zminmaxstep)
 
+        if rho_values is not None:
+            psi_values = self.rho_to_psi(rho_values)
+
         for psi in psi_values:
-            yield self.get_flux_surface(
-                psi,
-                RZPSI=(R, Z, PSI),
-            )
+            try:
+                surface = self.get_flux_surface(
+                    psi,
+                    RZPSI=(R, Z, PSI),
+                )
+            except ValueError as e:
+                if permissive:
+                    print(psi, e)
+                    yield (psi, None)
+                else:
+                    raise
+
+            yield (psi, surface)
 
 
 if __name__ == "__main__":
