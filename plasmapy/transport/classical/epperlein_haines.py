@@ -9,81 +9,50 @@ __all__ = [
     "EpperleinHainesInterpolated",
 ]
 
-# TODO: allow options for returning transport coefficients in physical units
-# this will require more information about the plasma
-# look at sec. IIB in Ridgers2008 (pg 3) for relations: these likely hold for EH as well
-# EH equivalent is right at the end of section II (pg. 5). Looks the same.
-
 import numpy as np
 import os
-import warnings
 
 from plasmapy.transport.classical.base import (
-    AbstractClassicalTransportCoefficients,
+    AbstractPolynomialCoefficients,
     AbstractInterpolatedCoefficients,
     validate_object,
 )
 
+
 # Get the absolute path to the data files
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 # Load the table of coefficients
-c = np.load(os.path.join(data_dir, "epperlein_haines_polynomial_fit_coefficients.npz"))
+coeff_table = np.load(os.path.join(data_dir, "epperlein_haines_polynomial_fit_coefficients.npz"))
 
-
-def _find_nearest(Z):
-    """
-    Finds the nearest Z-value in the EH tables for a given Z. Prints a
-    warning if the Z found is not equal to the Z requested.
-
-    Parameters
-    ----------
-    Z : float
-        An integer charge
-
-    Returns
-    -------
-    i : int
-        The index of the closest Z in the EH tables
-
-    """
-    if Z == np.inf:
-        return -1
-
-    i = np.argmin(np.abs(c["Z"] - Z))
-    if c["Z"][i] != Z:
-        warnings.warn(
-            f"Value Z = {Z} is not in the Epperlein-Haines table. "
-            f"Using the nearest value, Z = {c['Z'][i]}. "
-            f"The values in the table are {c['Z']}.",
-            RuntimeWarning,
-        )
-    return i
-
-
-class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
+class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
+    @property
+    def _c(self):
+        return coeff_table
+        
+    
     @property
     def _norm_alpha_para(self):
-        i = _find_nearest(self.Z)
-        return c["alpha0"][i] * np.ones(self.chi_e.size)
+        i = self._find_nearest_Z(self.Z)
+        return self._c["alpha0"][i] * np.ones(self.chi_e.size)
 
     @property
     def _norm_alpha_perp(self):
-        i = _find_nearest(self.Z)
-        return 1 - (c["alpha1p"][i] * self.chi_e + c["alpha0p"][i]) / (
-            self.chi_e ** 2 + c["a1p"][i] * self.chi_e + c["a0p"][i]
+        i = self._find_nearest_Z(self.Z)
+        return 1 - (self._c["alpha1p"][i] * self.chi_e + self._c["alpha0p"][i]) / (
+            self.chi_e ** 2 + self._c["a1p"][i] * self.chi_e + self._c["a0p"][i]
         )
 
     @property
     def _norm_alpha_cross(self):
-        i = _find_nearest(self.Z)
+        i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (c["alpha1pp"][i] * self.chi_e + c["alpha0pp"][i])
+            * (self._c["alpha1pp"][i] * self.chi_e + self._c["alpha0pp"][i])
             / (
                 self.chi_e ** 3
-                + c["a2pp"][i] * self.chi_e ** 2
-                + c["a1pp"][i] * self.chi_e
-                + c["a0pp"][i]
+                + self._c["a2pp"][i] * self.chi_e ** 2
+                + self._c["a1pp"][i] * self.chi_e
+                + self._c["a0pp"][i]
             )
             ** (8 / 9)
         )
@@ -127,17 +96,17 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
 
     @property
     def _norm_beta_para(self):
-        i = _find_nearest(self.Z)
-        return c["beta0"][i] * np.ones(self.chi_e.size)
+        i = self._find_nearest_Z(self.Z)
+        return self._c["beta0"][i] * np.ones(self.chi_e.size)
 
     @property
     def _norm_beta_perp(self):
-        i = _find_nearest(self.Z)
-        return (c["beta1p"][i] * self.chi_e + c["beta0p"][i]) / (
+        i = self._find_nearest_Z(self.Z)
+        return (self._c["beta1p"][i] * self.chi_e + self._c["beta0p"][i]) / (
             self.chi_e ** 3
-            + c["b2p"][i] * self.chi_e ** 2
-            + c["b1p"][i] * self.chi_e
-            + c["b0p"][i]
+            + self._c["b2p"][i] * self.chi_e ** 2
+            + self._c["b1p"][i] * self.chi_e
+            + self._c["b0p"][i]
         ) ** (8 / 9)
 
     # TODO: Note that this function doesn't match the EH paper Fig. 1 in the
@@ -145,14 +114,14 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
     # this might be a mistake in the EH tables?
     @property
     def _norm_beta_cross(self):
-        i = _find_nearest(self.Z)
+        i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (c["beta1pp"][i] * self.chi_e + c["beta0pp"][i])
+            * (self._c["beta1pp"][i] * self.chi_e + self._c["beta0pp"][i])
             / (
-                self.chi_e ** 3 * c["b2pp"][i] * self.chi_e ** 2
-                + c["b1pp"][i] * self.chi_e
-                + c["b0pp"][i]
+                self.chi_e ** 3 * self._c["b2pp"][i] * self.chi_e ** 2
+                + self._c["b1pp"][i] * self.chi_e
+                + self._c["b0pp"][i]
             )
         )
 
@@ -195,30 +164,30 @@ class EpperleinHainesPolynomialFit(AbstractClassicalTransportCoefficients):
 
     @property
     def _norm_kappa_e_para(self):
-        i = _find_nearest(self.Z)
-        return c["gamma0"][i] * np.ones(self.chi_e.size)
+        i = self._find_nearest_Z(self.Z)
+        return self._c["gamma0"][i] * np.ones(self.chi_e.size)
 
     @property
     def _norm_kappa_e_perp(self):
-        i = _find_nearest(self.Z)
-        return (c["gamma1p"][i] * self.chi_e + c["gamma0p"][i]) / (
+        i = self._find_nearest_Z(self.Z)
+        return (self._c["gamma1p"][i] * self.chi_e + self._c["gamma0p"][i]) / (
             self.chi_e ** 3
-            + c["c2p"][i] * self.chi_e ** 2
-            + c["c1p"][i] * self.chi_e
-            + c["c0p"][i]
+            + self._c["c2p"][i] * self.chi_e ** 2
+            + self._c["c1p"][i] * self.chi_e
+            + self._c["c0p"][i]
         )
 
     @property
     def _norm_kappa_e_cross(self):
-        i = _find_nearest(self.Z)
+        i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (c["gamma1pp"][i] * self.chi_e + c["gamma0pp"][i])
+            * (self._c["gamma1pp"][i] * self.chi_e + self._c["gamma0pp"][i])
             / (
                 self.chi_e ** 3
-                + c["c2pp"][i] * self.chi_e ** 2
-                + c["c1pp"][i] * self.chi_e
-                + c["c0pp"][i]
+                + self._c["c2pp"][i] * self.chi_e ** 2
+                + self._c["c1pp"][i] * self.chi_e
+                + self._c["c0pp"][i]
             )
         )
 
