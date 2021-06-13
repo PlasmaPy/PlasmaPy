@@ -9,6 +9,7 @@ import astropy.constants as const
 import astropy.units as u
 import functools
 import numpy as np
+import warnings
 
 from abc import ABC, abstractmethod
 from scipy.interpolate import interp2d
@@ -20,7 +21,6 @@ from plasmapy.formulary.collisions import (
 )
 from plasmapy.formulary.parameters import gyrofrequency
 from plasmapy.particles import Particle
-import warnings
 
 m_e = const.m_e.si
 
@@ -382,10 +382,14 @@ class AbstractClassicalTransportCoefficients(ABC):
     @validate_object(properties=[])
     def gamma(self):
         return self.norm_gamma * self.beta_normalization
-    
-    
+
+
+# TODO: Should allow for each coefficient to have it's own Z and chi list, so they are
+# independent (maybe a default if one isn't specifically listed)
+# Braginskii only includes formulas for Z=1 for a few of the coefficients
+
+
 class AbstractPolynomialCoefficients(AbstractClassicalTransportCoefficients):
-    
     @property
     @abstractmethod
     def _c(self):
@@ -394,27 +398,26 @@ class AbstractPolynomialCoefficients(AbstractClassicalTransportCoefficients):
 
         """
         ...
-               
-    
+
     def _find_nearest_Z(self, Z):
         """
-        Finds the nearest Z-value to the given Z value in the coefficient tables. 
+        Finds the nearest Z-value to the given Z value in the coefficient tables.
         Prints a warning if the Z found is not equal to the Z requested.
-    
+
         Parameters
         ----------
         Z : float
             An integer charge
-    
+
         Returns
         -------
         i : int
             The index of the closest Z in the tables
-    
+
         """
         if Z == np.inf:
             return -1
-    
+
         i = np.argmin(np.abs(self._c["Z"] - Z))
         if self._c["Z"][i] != Z:
             warnings.warn(
@@ -424,7 +427,6 @@ class AbstractPolynomialCoefficients(AbstractClassicalTransportCoefficients):
                 RuntimeWarning,
             )
         return i
-    
 
 
 class AbstractInterpolatedCoefficients(AbstractClassicalTransportCoefficients):

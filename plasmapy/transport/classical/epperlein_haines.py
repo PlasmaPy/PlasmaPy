@@ -13,23 +13,24 @@ import numpy as np
 import os
 
 from plasmapy.transport.classical.base import (
-    AbstractPolynomialCoefficients,
     AbstractInterpolatedCoefficients,
+    AbstractPolynomialCoefficients,
     validate_object,
 )
-
 
 # Get the absolute path to the data files
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 # Load the table of coefficients
-coeff_table = np.load(os.path.join(data_dir, "epperlein_haines_polynomial_fit_coefficients.npz"))
+coeff_table = np.load(
+    os.path.join(data_dir, "epperlein_haines_polynomial_fit_coefficients.npz")
+)
+
 
 class EpperleinHainesPolynomialFit(AbstractPolynomialCoefficients):
     @property
     def _c(self):
         return coeff_table
-        
-    
+
     @property
     def _norm_alpha_para(self):
         i = self._find_nearest_Z(self.Z)
