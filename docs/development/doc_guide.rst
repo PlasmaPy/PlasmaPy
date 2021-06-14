@@ -54,7 +54,7 @@ on encountering any warnings via the ``-W`` flag to ``sphinx-build``.
 
 You can shorten the documentation build by running
 
-.. code-block:: console
+.. code-block:: bash
 
   tox -e build_docs_no_examples
 
@@ -62,14 +62,13 @@ in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.  This command will also
 pass even if there are warnings.
 
-An alternative method for building the documentation without
-`tox`_ is to enter the ``docs/`` directory and run
+If you have `make <https://www.gnu.org/software/make/>`_ installed,
+then the documentation may be build by entering the ``docs/`` directory
+and running
 
-.. code-block:: console
+.. code-block:: bash
 
   make html
-
-.. _tox: https://tox.readthedocs.io/
 
 Documentation tools
 ===================
@@ -85,8 +84,8 @@ markup that allows the text to be transformed into `PlasmaPy's online
 documentation`_. ReST files end in ``.rst``. Documentation contained
 within ``.py`` files is written in ReST.
 
-Examples
-~~~~~~~~
+ReStructuredText Examples
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of Sphinx that are commonly used in PlasmaPy.
 
