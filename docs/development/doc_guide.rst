@@ -48,7 +48,7 @@ PlasmaPy repository directory by running
 You can access the documentation landing page by opening
 ``docs/_build/html/index.html`` with your browser of choice.
 
-When editing documentation, please make sure to fix any warnings that
+When writing documentation, please make sure to fix any warnings that
 arise.  To enforce this, the ``build_docs`` environment is set to fail
 on encountering any warnings via the ``-W`` flag to ``sphinx-build``.
 
@@ -59,8 +59,8 @@ You can shorten the documentation build by running
   tox -e build_docs_no_examples
 
 in order to build the documentation without executing the
-:ref:`example notebooks <example_notebooks>`.  This command will also
-pass even if there are warnings.
+:ref:`example notebooks <example_notebooks>`.  This command will pass
+even if there are warnings.
 
 If you have `make <https://www.gnu.org/software/make/>`_ installed,
 then the documentation may be build by entering the ``docs/`` directory
@@ -87,7 +87,7 @@ within ``.py`` files is written in ReST.
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of Sphinx that are commonly used in PlasmaPy.
+Here we show some ReST that are commonly used in PlasmaPy.
 
 This is an example of including headings for the document title, sections,
 subsections, and so on.
@@ -107,7 +107,7 @@ subsections, and so on.
   Heading 3
   ~~~~~~~~~
 
-We can link to subpackages and code objects by enclosing them in back ticks.
+We can link to code objects by enclosing them in back ticks.
 
 .. code-block:: rst
 
@@ -116,11 +116,24 @@ We can link to subpackages and code objects by enclosing them in back ticks.
   the link. Only the word "Particle" will show up if we prepend a
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
-This linking will work for `python` as well as commonly used packages like
-`numpy`, `astropy`, and `scipy`.  The full list of `intersphinx
-<https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
-mappings are provided in the ``intersphinx_mapping`` variable defined in
-``docs/conf.py``.
+This linking will work for `python` commands as well as commonly used
+packages like `numpy`, `astropy`, `scipy`, and `pandas`.  The full list of
+`intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+mappings are defined in the ``intersphinx_mapping`` variable in
+` ``docs/conf.py`` <https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py>`_.
+
+Sphinx can format code blocks for Python and the Python console.
+
+  .. code-block:: rst
+    .. code-block:: python
+
+      def sample_function():
+          return 42
+
+    .. code-block:: pycon
+
+      >>> print(6 * 9)
+      54
 
 Here are some examples for linking to websites.
 
@@ -128,34 +141,21 @@ Here are some examples for linking to websites.
 
   Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
 
-  We can link to PlasmaPy's documentation_ on a separate line.
+  We can link to PlasmaPy's latest documentation_ or `Python's website`_.
 
   .. _documentation: https://docs.plasmapy.org/en/latest/
+  .. _`Python's documentation`: https://www.python.org/
 
+Math can be written using `LaTeX <https://www.latex-project.org/>`_ commands
 
-TESTING
-
-Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
-
-We can link to PlasmaPy's documentation_ on a separate line.
-
-.. _documentation: https://docs.plasmapy.org/en/latest/
-
-Sphinx can format Python code blocks.
-
-  .. code-block:: python
-
-      def sample_function():
-          return 42
-
-  Math can be written using LaTeX commands.
+.. code-block:: rst
 
   .. math::
 
-      \alpha = \beta + \gamma
+    \alpha = \beta + \gamma
 
-  Math can be in-line, like :math:`x`. Using unicode characters
-  makes math like :math:`α + β + γ` easier to read in source code.
+Math can be in-line, like `` :math:`x` ``. Using unicode characters
+makes math like `` :math:`α + β + γ` `` easier to read in source code.
 
 Markdown
 --------
@@ -170,15 +170,15 @@ formatting.
 
 .. code-block:: markdown
 
-    # Header 1
+  # Header 1
 
-    ## Header 2
+  ## Header 2
 
-    Here is a link to [PlasmaPy's documentation](https://docs.plasmapy.org).
+  Here is a link to [PlasmaPy's documentation](https://docs.plasmapy.org).
 
-    We can put make text **bold** or *italic*.
+  We can make text **bold** or *italic*.
 
-    We can write in-line code like `x = 1` or create a Python code block:
+  We can write in-line code like `x = 1` or create a Python code block:
 
     ```Python
     y = 2
@@ -243,7 +243,7 @@ References to other packages
 allows the automatic generation of links to the documentation of
 objects in other projects.  The mappings are defined in the
 ``intersphinx_mapping`` dictionary in ``docs/conf.py``, and include
-Python, NumPy, SciPy, pandas, Astropy, Sphinx, and sphinx_automodapi.
+`python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and `sphinx_automodapi`.
 
 When we include ``` `astropy.units.Quantity` ``` in ReST documentation,
 it will show up as `astropy.units.Quantity` and link to the appropriate
