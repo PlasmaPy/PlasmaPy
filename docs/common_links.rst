@@ -61,5 +61,6 @@
 .. _Python: https://www.python.org/
 .. _SciPy: https://www.scipy.org/
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
+.. _tox: https://tox.readthedocs.io/
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Zenodo: https://zenodo.org
