@@ -36,26 +36,27 @@ run
 
 .. code-block:: bash
 
-    pip install tox -r requirements.txt
+  pip install tox -r requirements.txt
 
 You can use `tox`_ to build the documentation from within the main
 PlasmaPy repository directory by running
 
 .. code-block:: bash
 
-    tox -e build_docs
+  tox -e build_docs
 
 You can access the documentation landing page by opening
 ``docs/_build/html/index.html`` with your browser of choice.
 
-The ``build_docs`` environment is set to fail on encountering any
-warnings via the ``-W`` flag to ``sphinx-build``.
+When editing documentation, please make sure to fix any warnings that
+arise.  To enforce this, the ``build_docs`` environment is set to fail
+on encountering any warnings via the ``-W`` flag to ``sphinx-build``.
 
 You can shorten the documentation build by running
 
-.. code-block:: bash
+.. code-block:: console
 
-    tox -e build_docs_no_examples
+  tox -e build_docs_no_examples
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.  This command will also
@@ -64,9 +65,9 @@ pass even if there are warnings.
 An alternative method for building the documentation without
 `tox`_ is to enter the ``docs/`` directory and run
 
-.. code-block:: bash
+.. code-block:: console
 
-    make html
+  make html
 
 .. _tox: https://tox.readthedocs.io/
 
@@ -84,7 +85,13 @@ markup that allows the text to be transformed into `PlasmaPy's online
 documentation`_. ReST files end in ``.rst``. Documentation contained
 within ``.py`` files is written in ReST.
 
-This code block contains some ReST examples.
+Examples
+~~~~~~~~
+
+Here we show some examples of Sphinx that are commonly used in PlasmaPy.
+
+This is an example of including headings for the document title, sections,
+subsections, and so on.
 
 .. code-block:: rst
 
@@ -92,23 +99,50 @@ This code block contains some ReST examples.
   Document title
   ==============
 
-  Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
-
   Heading 1
   =========
 
-  Heading 1.1
-  -----------
+  Heading 2
+  ---------
 
-  Heading 1.1.1
-  ~~~~~~~~~~~~~
+  Heading 3
+  ~~~~~~~~~
+
+We can link to subpackages and code objects by enclosing them in back ticks.
+
+.. code-block:: rst
 
   Here is a reference to `plasmapy.particles` that will write out the
   full namespace when Sphinx generates the documentation and generates
-  the link. Only the word "Particle" will show up if we include write
-  `~plasmapy.particles.particle_class.Particle`.
+  the link. Only the word "Particle" will show up if we prepend a
+  tilde like in `~plasmapy.particles.particle_class.Particle`.
 
-  Sphinx can format Python code blocks.
+This linking will work for `python` as well as commonly used packages like
+`numpy`, `astropy`, and `scipy`.  The full list of `intersphinx
+<https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+mappings are provided in the ``intersphinx_mapping`` variable defined in
+``docs/conf.py``.
+
+Here are some examples for linking to websites.
+
+.. code-block:: rst
+
+  Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
+
+  We can link to PlasmaPy's documentation_ on a separate line.
+
+  .. _documentation: https://docs.plasmapy.org/en/latest/
+
+
+TESTING
+
+Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
+
+We can link to PlasmaPy's documentation_ on a separate line.
+
+.. _documentation: https://docs.plasmapy.org/en/latest/
+
+Sphinx can format Python code blocks.
 
   .. code-block:: python
 
