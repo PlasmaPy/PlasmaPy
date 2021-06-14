@@ -17,6 +17,7 @@ from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidParticleError,
     ParticleError,
+    InvalidElementError,
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
@@ -275,7 +276,7 @@ class IonizationState:
             "none_shall_pass": True,
         },
     )
-    @particle_input(require="element")
+    @particle_input()
     def __init__(
         self,
         particle: Particle,
@@ -291,9 +292,11 @@ class IonizationState:
         Initialize an `~plasmapy.particles.ionization_state.IonizationState`
         instance.
         """
-        self._number_of_particles = particle.atomic_number + 1
+        try:
+            self._number_of_particles = particle.atomic_number + 1
+        except InvalidElementError:
+            self._number_of_particles = 1 # a hack for electrons
 
-        self._number_particles = particle.atomic_number + 1
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
             if ionic_fractions is None:
                 ionic_fractions = np.zeros(self._number_of_particles)
@@ -309,36 +312,30 @@ class IonizationState:
 
         self._particle = particle
 
-        try:
-            self.tol = tol
-            self.T_e = T_e
-            self.T_i = T_i
-            self.kappa = kappa
+        self.tol = tol
+        self.T_e = T_e
+        self.T_i = T_i
+        self.kappa = kappa
 
-            if (
-                not np.isnan(n_elem)
-                and isinstance(ionic_fractions, u.Quantity)
-                and ionic_fractions.si.unit == u.m ** -3
-            ):
-                raise ParticleError(
-                    "Cannot simultaneously provide number density "
-                    "through both n_elem and ionic_fractions."
-                )
-
-            self.n_elem = n_elem
-            self.ionic_fractions = ionic_fractions
-
-            if ionic_fractions is None and not np.isnan(self.T_e):
-                warnings.warn(
-                    "Collisional ionization equilibration has not yet "
-                    "been implemented in IonizationState; cannot set "
-                    "ionic fractions."
-                )
-
-        except Exception as exc:
+        if (
+            not np.isnan(n_elem)
+            and isinstance(ionic_fractions, u.Quantity)
+            and ionic_fractions.si.unit == u.m ** -3
+        ):
             raise ParticleError(
-                f"Unable to create IonizationState object for {particle.symbol}."
-            ) from exc
+                "Cannot simultaneously provide number density "
+                "through both n_elem and ionic_fractions."
+            )
+
+        self.n_elem = n_elem
+        self.ionic_fractions = ionic_fractions
+
+        if ionic_fractions is None and not np.isnan(self.T_e):
+            warnings.warn(
+                "Collisional ionization equilibration has not yet "
+                "been implemented in IonizationState; cannot set "
+                "ionic fractions."
+            )
 
     def __str__(self) -> str:
         return f"<IonizationState instance for {self.base_particle}>"
@@ -497,7 +494,7 @@ class IonizationState:
         """
         if fractions is None or np.all(np.isnan(fractions)):
             self._ionic_fractions = np.full(
-                self.atomic_number + 1, np.nan, dtype=np.float64
+                self._number_of_particles, np.nan, dtype=np.float64
             )
             return
 
@@ -505,7 +502,7 @@ class IonizationState:
             if np.min(fractions) < 0:
                 raise ParticleError("Cannot have negative ionic fractions.")
 
-            if len(fractions) != self.atomic_number + 1:
+            if len(fractions) != self._number_of_particles:
                 raise ParticleError(
                     "The length of ionic_fractions must be "
                     f"{self.atomic_number + 1}."
