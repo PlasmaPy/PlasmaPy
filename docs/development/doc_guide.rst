@@ -63,7 +63,7 @@ in order to build the documentation without executing the
 even if there are warnings.
 
 If you have `make <https://www.gnu.org/software/make/>`_ installed,
-then the documentation may be build by entering the ``docs/`` directory
+then you can build the documentation by entering the ``docs/`` directory
 and running
 
 .. code-block:: bash
@@ -87,7 +87,7 @@ within ``.py`` files is written in ReST.
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some ReST that are commonly used in PlasmaPy.
+Here we show some examples of ReST that are commonly used in PlasmaPy.
 
 This is an example of including headings for the document title, sections,
 subsections, and so on.
@@ -117,14 +117,15 @@ We can link to code objects by enclosing them in back ticks.
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`.  The full list of
+packages like `numpy`, `astropy`, `scipy`, and `pandas`. The full list of
 `intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
 mappings are defined in the ``intersphinx_mapping`` variable in
-` ``docs/conf.py`` <https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py>`_.
+`docs/conf.py`_.
 
 Sphinx can format code blocks for Python and the Python console.
 
   .. code-block:: rst
+
     .. code-block:: python
 
       def sample_function():
@@ -432,4 +433,5 @@ Narrative Documentation
 * Each subpackage must have narrative documentation describing its
   use.
 
+.. ``docs/conf.py``: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
