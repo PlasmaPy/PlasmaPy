@@ -408,9 +408,8 @@ any sections that are included should be in the order provided.
 
 .. code-block:: python
   :caption: Docstring template.
-  :dedent: 2
+  :dedent: 0
 
-  def f():
       r"""
       Return ...
 
