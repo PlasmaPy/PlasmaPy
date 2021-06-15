@@ -1,6 +1,6 @@
-*********************
-Writing Documentation
-*********************
+*******************
+Documentation Guide
+*******************
 
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
@@ -60,7 +60,8 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.
+even if there are warnings.  The `tox`_ command may also include the
+``--parallel`` flag to allow a parallel build.
 
 If you have `make <https://www.gnu.org/software/make/>`_ installed,
 then you can build the documentation by entering the ``docs/`` directory
@@ -69,6 +70,9 @@ and running
 .. code-block:: bash
 
    make html
+
+Including the ``-j n`` flag in the ``make`` command will enable a
+parallel build, where ``n`` is replaced with the number of processes.
 
 Documentation tools
 ===================
@@ -118,8 +122,7 @@ We can link to code objects by enclosing them in back ticks.
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`. The full list of
-`intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+packages like `numpy`, `astropy`, `scipy`, and `pandas`. `Intersphinx`_
 mappings are defined in the ``intersphinx_mapping`` variable in
 `docs/conf.py`_.
 
@@ -237,21 +240,22 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 * IPython.sphinxext.ipython_console_highlighting
 * `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_
   for rendering `towncrier`_ changelogs
-* `plasmapy_sphinx` for customizations created for use in PlasmaPy
+* `plasmapy_sphinx` for customizations created for use in PlasmaPy.
+  Note that `plasmapy_sphinx` is expected to be broken out into its own
+  package at a future date.
 
 References to other packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
-allows the automatic generation of links to the documentation of
-objects in other projects. The mappings are defined in the
-``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
+Intersphinx_ allows the automatic generation of links to the
+documentation of objects in other projects. The mappings are defined in
+the ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
 `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
 `sphinx_automodapi`.
 
-When we include ``|Quantity_full|`` in reST documentation,
-it will show up as `astropy.units.Quantity` and link to the appropriate
-`object` in Astropy's documentation.
+When we include |Quantity_full| in the documentation, it will show up
+as `astropy.units.Quantity` and link to the appropriate `object` in
+Astropy's documentation.
 
 .. |Quantity_full_path| replace:: ``astropy.units.Quantity``
 
@@ -577,9 +581,9 @@ Narrative documentation guidelines
 
 * When the narrative documentation does not reference a subpackage or
   module file, it is necessary to create a stub file in
-  ``docs/api_static`` for that particular subpackage or module file.
-  Here are the sample contents for a stub file for the
-  ``plasmapy.particles.atomic`` module.  This file would be located at
+  `docs/api_static`_ for that particular subpackage or module file.
+  Here are the sample contents for a stub file for
+  `plasmapy.particles.atomic``.  This file would be located at
   ``docs/api_static/plasmapy.particles.atomic.rst``.
 
   .. code-block:: rst
@@ -593,5 +597,7 @@ Narrative documentation guidelines
 
      .. automodapi::  plasmapy.particles.atomic
 
+.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _`Read the Docs`: https://readthedocs.org/
