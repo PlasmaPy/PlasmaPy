@@ -53,12 +53,13 @@
 .. _Jupyter: https://jupyter.org/
 .. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
-.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
+.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _pip: https://pip.pypa.io
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's online documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
+.. _`Python's documentation`: https://docs.python.org/
 .. _SciPy: https://www.scipy.org/
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
 .. _tox: https://tox.readthedocs.io/

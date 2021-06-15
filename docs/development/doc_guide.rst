@@ -1,6 +1,6 @@
-************************
-Documentation guidelines
-************************
+*********************
+Writing Documentation
+*********************
 
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
@@ -23,7 +23,7 @@ available at these locations.
   <https://docs.plasmapy.org/en/latest/>`_.
 
 A preview of the documentation is generated every time a pull request
-is created or updated.  You can access this preview by scrolling down
+is created or updated. You can access this preview by scrolling down
 to the checks at the bottom of a pull request, and clicking on
 ``Details`` next to ``docs/readthedocs.org:plasmapy``.
 
@@ -36,30 +36,30 @@ run
 
 .. code-block:: bash
 
-  pip install tox -r requirements.txt
+   pip install tox -r requirements.txt
 
 You can use `tox`_ to build the documentation from within the main
 PlasmaPy repository directory by running
 
 .. code-block:: bash
 
-  tox -e build_docs
+   tox -e build_docs
 
 You can access the documentation landing page by opening
 ``docs/_build/html/index.html`` with your browser of choice.
 
 When writing documentation, please make sure to fix any warnings that
-arise.  To enforce this, the ``build_docs`` environment is set to fail
+arise. To enforce this, the ``build_docs`` environment is set to fail
 on encountering any warnings via the ``-W`` flag to ``sphinx-build``.
 
 You can shorten the documentation build by running
 
 .. code-block:: bash
 
-  tox -e build_docs_no_examples
+   tox -e build_docs_no_examples
 
 in order to build the documentation without executing the
-:ref:`example notebooks <example_notebooks>`.  This command will pass
+:ref:`example notebooks <example_notebooks>`. This command will pass
 even if there are warnings.
 
 If you have `make <https://www.gnu.org/software/make/>`_ installed,
@@ -68,7 +68,7 @@ and running
 
 .. code-block:: bash
 
-  make html
+   make html
 
 Documentation tools
 ===================
@@ -76,36 +76,37 @@ Documentation tools
 ReStructuredText
 ----------------
 
-PlasmaPy's documentation is written using the `reStructuredText (ReST)
+PlasmaPy's documentation is written using the `reStructuredText (reST)
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-markup language. ReST is human readable when viewed within a
-source code file or when printed out using `help`. ReST also contains
+markup language. reST is human readable when viewed within a
+source code file or when printed out using `help`. reST also contains
 markup that allows the text to be transformed into `PlasmaPy's online
-documentation`_. ReST files end in ``.rst``. Documentation contained
-within ``.py`` files is written in ReST.
+documentation`_. reST files end in ``.rst``. Documentation contained
+within ``.py`` files is written in reST.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of ReST that are commonly used in PlasmaPy.
+Here we show some examples of reST that are commonly used in PlasmaPy.
 
-This is an example of including headings for the document title, sections,
-subsections, and so on.
+This is an example of including headings for the document title,
+sections, subsections, and so on. Note that the lines surrounding each
+heading are the same length as that heading.
 
 .. code-block:: rst
 
-  ==============
-  Document title
-  ==============
+   ==============
+   Document title
+   ==============
 
-  Heading 1
-  =========
+   Heading 1
+   =========
 
-  Heading 2
-  ---------
+   Heading 2
+   ---------
 
-  Heading 3
-  ~~~~~~~~~
+   Heading 3
+   ~~~~~~~~~
 
 We can link to code objects by enclosing them in back ticks.
 
@@ -124,38 +125,39 @@ mappings are defined in the ``intersphinx_mapping`` variable in
 
 Sphinx can format code blocks for Python and the Python console.
 
-  .. code-block:: rst
+   .. code-block:: rst
 
-    .. code-block:: python
+      .. code-block:: python
 
-      def sample_function():
-          return 42
+         def sample_function():
+             return 42
 
-    .. code-block:: pycon
+      .. code-block:: pycon
 
-      >>> print(6 * 9)
-      54
+         >>> print(6 * 9)
+         54
 
 Here are some examples for linking to websites.
 
 .. code-block:: rst
 
-  Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
+   Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
 
-  We can link to PlasmaPy's latest documentation_ or `Python's website`_.
+   We can link to PlasmaPy's latest documentation_ or `Python's website`_.
 
-  .. _documentation: https://docs.plasmapy.org/en/latest/
-  .. _`Python's documentation`: https://www.python.org/
+   .. _documentation: https://docs.plasmapy.org/en/latest/
+   .. _`Python's documentation`: https://www.python.org/
 
 Math can be written using `LaTeX <https://www.latex-project.org/>`_ commands
 
+
 .. code-block:: rst
 
-  .. math::
+   .. math::
 
-    \alpha = \beta + \gamma
+      \alpha = \beta + \gamma
 
-Math can be in-line, like `` :math:`x` ``. Using unicode characters
+Math can be in-line, like `` :math:`x` ``. Using Unicode characters
 makes math like `` :math:`α + β + γ` `` easier to read in source code.
 
 Markdown
@@ -163,7 +165,7 @@ Markdown
 
 A few of PlasmaPy's files are written using `Markdown
 <https://www.markdownguide.org/>`_, such as README files and licenses
-from other packages. Markdown is simpler but more limited than ReST.
+from other packages. Markdown is simpler but more limited than reST.
 Markdown files end with `.md`. Posts on GitHub are written in
 `GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
 The following code block contains a few common examples of Markdown
@@ -171,31 +173,31 @@ formatting.
 
 .. code-block:: markdown
 
-  # Header 1
+   # Header 1
 
-  ## Header 2
+   ## Header 2
 
-  Here is a link to [PlasmaPy's documentation](https://docs.plasmapy.org).
+   Here is a link to [PlasmaPy's documentation](https://docs.plasmapy.org).
 
-  We can make text **bold** or *italic*.
+   We can make text **bold** or *italic*.
 
-  We can write in-line code like `x = 1` or create a Python code block:
+   We can write in-line code like `x = 1` or create a Python code block:
 
-    ```Python
-    y = 2
-    z = 3
-    ```
+   ```Python
+   y = 2
+   z = 3
+   ```
 
 Sphinx
 ------
 
 `Sphinx <https://www.sphinx-doc.org/>`_ is the software used to generate
-`PlasmaPy's online documentation`_ from ReST files and Python docstrings.
+`PlasmaPy's online documentation`_ from reST files and Python docstrings.
 
 Configuration
 ~~~~~~~~~~~~~
 
-The ``docs/conf.py`` file contains the configuration information needed
+The `docs/conf.py`_ file contains the configuration information needed
 to customize Sphinx behavior.
 `Sphinx's documentation <https://www.sphinx-doc.org/>`_ lists the
 `configuration options
@@ -242,11 +244,11 @@ References to other packages
 
 `Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
 allows the automatic generation of links to the documentation of
-objects in other projects.  The mappings are defined in the
-``intersphinx_mapping`` dictionary in ``docs/conf.py``, and include
+objects in other projects. The mappings are defined in the
+``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
 `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and `sphinx_automodapi`.
 
-When we include ``` `astropy.units.Quantity` ``` in ReST documentation,
+When we include ``` `astropy.units.Quantity` ``` in reST documentation,
 it will show up as `astropy.units.Quantity` and link to the appropriate
 `object` in Astropy's documentation.
 
@@ -254,12 +256,12 @@ Substitutions
 ~~~~~~~~~~~~~
 
 Some functions and classes are referred to repeatedly throughout the
-documentation. ReST allows us to `define substitutions
+documentation. reST allows us to `define substitutions
 <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
 
 .. code-block:: rst
 
-    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
+   .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
 PlasmaPy has certain common substitutions pre-defined so that they can
 be used throughout the documentation. For example, we can write
@@ -277,7 +279,6 @@ substitutions should not be used in docstrings when it is important
 that users have quick access to the full path of the `object` (such as
 in the ``See Also`` section).
 
-
 Writing documentation
 =====================
 
@@ -290,30 +291,38 @@ Docstrings begin with ``r"""`` (required when including backslashes,
 such as using LaTeX code in equations) or ``"""``, and end with
 ``"""``.
 
+In order to improve readability and maintain consistency, PlasmaPy uses
+the `numpydoc`_ standard for docstrings.
+
+Example docstring
+~~~~~~~~~~~~~~~~~
+
+Here is an example docstring in the `numpydoc`_ format.
 
 .. code-block:: python
+   :caption: Example docstring.
 
-  def subtract(a, b, *, switch_order=False):
-      r"""
-      Return the difference between two integers. ← state what function does in 1–2 lines
+   import numpy as np
+   import warnings
 
-      Add ∼1–3 sentences here for an extended summary of what the function
-      does.
+   def subtract(a, b, *, switch_order=False):
+       r"""
+       Return the difference between two integers.
 
-      Add ∼1–3 sentences here to clarify what the function does, if
-      necessary. This extended summary is a good place to briefly define
-      the quantity that is being returned.
+       Add ∼1–3 sentences here for an extended summary of what the function
+       does. This extended summary is a good place to briefly define
+       the quantity that is being returned.
 
-      .. math::
+       .. math::
 
           f(a, b) = a - b
 
       Parameters
       ----------
-      a : `int`
+      a : `float`
           The left multiplicand.
 
-      b : `int`
+      b : `float`
           The right multiplicand.
 
       switch_order : `bool`, optional, keyword-only
@@ -322,17 +331,26 @@ such as using LaTeX code in equations) or ``"""``, and end with
 
       Returns
       -------
-      float
-          The product of ``a`` and ``b``.
+      difference : float
+          The difference between ``a`` and ``b``.
 
       Raises
       ------
-      `TypeError`
-          If ``a`` or ``b`` is not a `float`.
+      `ValueError`
+          If ``a`` or ``b`` is `~numpy.inf`.
+
+      Warns
+      -----
+      `UserWarning`
+          If ``a`` or ``b`` is `~numpy.nan`.
+
+      See Also
+      --------
+      add : Add two numbers.
 
       Notes
       -----
-      This section is used to provide extra information that cannot fit in
+      The "Notes" section provides extra information that cannot fit in
       the extended summary near the beginning of the docstring. This
       section should include a discussion of the physics behind a
       particular concept that should be understandable to someone who is
@@ -341,9 +359,8 @@ such as using LaTeX code in equations) or ``"""``, and end with
       description of a particular algorithm.
 
       The next section contains example references to a journal article
-      [1]_, a book [2]_, and a software package. Using a link with the
-      digital object identifier (DOI) is helpful because of its permanence.
-      We can also link to a website [3]_, though this is discouraged because
+      [1]_ and a book [2]_. Using a link with the digital object identifier
+      (DOI) is helpful because of its permanence.
 
       References
       ----------
@@ -355,83 +372,230 @@ such as using LaTeX code in equations) or ``"""``, and end with
          Elements of Reusable Object-Oriented Software
          <https://www.oreilly.com/library/view/design-patterns-elements/0201633612/>`_
 
-      .. [3]
-
       Examples
       --------
-      Include a few example usages of the function here.
+      Include a few example usages of the function here. Start with simple
+      examples and then increase complexity when necessary.
 
       >>> from package.subpackage.module import subtract
       >>> subtract(9, 6)
       3
-      >>> subtract(9, 6, switch_order=True)
+
+      Here is an example of a multi-line function call.
+
+      >>> subtract(
+      ...     9, 6, switch_order=True,
+      ... )
       -3
 
-      Here is an example where one line is too short.
+      PlasmaPy's test suite will check that these commands provide the
+      output that follows each function call.
+      """
+      if np.isinf(a) or np.isinf(b):
+          raise ValueError("Cannot perform substraction operations involving infinity.")
 
-      >>>
+      warnings.warn("The subtract function encountered a nan value.", UserWarning)
 
-      PlasmaPy's test suite will check that these commands return the
-      output that
+      return b - a if switch_order else a - b
+
+Template docstring
+~~~~~~~~~~~~~~~~~~
+
+This template docstring may be copied into new functions. Usually only
+some of the sections will be necessary for a particular function, but
+any sections that are included should be in the order provided.
+
+.. code-block:: python
+  :caption: Docstring template.
+  :dedent: 2
+
+  def f():
+      r"""
+      Return ...
+
+      Parameters
+      ----------
+
+      Returns
+      -------
+
+      Raises
+      ------
+
+      Warns
+      -----
+
+      See Also
+      --------
+
+      Notes
+      -----
+
+      References
+      ----------
+
+      Examples
+      --------
+
       """
       if not isinstance(a, float) or not isinstance(b, float):
           raise TypeError("The arguments to multiply should be floats.")
 
       return b - a if switch_order else a - b
 
-Documentation guidelines
-========================
+Creating ``api_static`` pages
+-----------------------------
 
-* All public functions, classes, and other objects should have a
-  docstring.
+`sphinx_automodapi.automodapi` will autogenerate stub files for
+subpackages and module (``.py``) files when they are mentioned in the narrative
+documentation. When this is not the case, it is necessary for there to
+be a stub file in ``docs/api_static`` for the particular subpackage or
+module file.
 
-* Documentation should be intended for
+Here are sample contents for an ``api_static`` file for the
+``plasampy.particles.atomic`` subpackage. This file is located at
+``docs/api_static/plasmapy.particles.atomic.rst``.
 
-* Private functions, classes, and objects should generally have a
-  docstring. These
+.. code-block:: rst
 
+   :orphan:
 
+   `plasmapy.particles.atomic`
+   ===========================
 
-*
+   .. currentmodule:: plasmapy.particles.atomic
 
-Many words and software packages have more than one common acronym
-  or spelling.
+   .. automodapi::  plasmapy.particles.atomic
 
-  -
+Documentation guidelines and practices
+======================================
 
-Previewing documentation
-========================
+* Write documentation to be understandable to students taking their
+  first course or beginning their first research project in plasma
+  science. Include highly technical information only when necessary.
 
-When a pull request is submitted to
+* Use the `active voice <https://en.wikipedia.org/wiki/Active_voice>`_
+  in the present tense.
 
-.. Add picture of CI
+* Keep the documentation style consistent within a file or module, and
+  preferably across all of PlasmaPy's documentation.
 
-Docstrings
-==========
+* Refer to the `numpydoc`_ standard for how to write docstrings for
+  classes, class attributes, and constants.
 
-* All public classes, methods, and functions should have docstrings.
+* Update code and corresponding documentation at the same time.
 
-* PlasmaPy uses the `numpydoc`_ standard for docstrings.
+* Write sentences that are simple, concise, and direct rather than
+  complicated, vague, or ambiguous. Prefer sentences with ≲ 20
+  words.
 
-* Docstrings must be raw string `literals
-  <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_
-  if they contain backslashes. A raw string literal is denoted by
-  having an ``r`` immediately precede quotes or triple quotes:
+* Avoid idioms, metaphors, and references that are specific to a
+  particular culture.
 
-.. code-block:: python
+* Use technical jargon sparingly. Define technical jargon when
+  necessary.
 
-   r"""
-   I did not like unstable eigenfunctions at first, but then they
-   grew on me.
-   """
+* Many words and software packages have more than one common spelling
+  or acronym. Use the spelling that is used in the file you are
+  modifying, which is preferably the spelling used throughout
+  `PlasmaPy's online documentation`_.
 
-* Simple private functions may need only a one-line docstring.
+  * In general, it is preferable to use the spelling that is used in
+    `Python's documentation`_ or the spelling that is used most
+    commonly.
 
-Narrative Documentation
-=======================
+  * Represent names and acronyms for a software package as they are
+    represented in the documentation for that package.
 
-* Each subpackage must have narrative documentation describing its
-  use.
+* Write the full namespace when referring to code objects within
+  PlasmaPy. For example, write
+  ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
+  ``~plasmapy.formulary.Alfven_speed``.
 
-.. ``docs/conf.py``: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+* For readability, limit documentation line lengths to ≲ 72 characters.
+  Longer line lengths may be used when necessary (e.g., for hyperlinks).
+
+* Use indentations of 3 spaces for reST blocks.
+
+.. note::
+
+   Emphasize important points with `admonitions
+   <https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions>`_
+   like this one.
+
+Docstring guidelines
+--------------------
+
+* All functions, classes, and objects that are part of PlasmaPy's
+  public Application Programming Interface (API) must have a docstring
+  that follows the `numpydoc`_ standard.
+
+* The first line of the docstring for a function or method should begin
+  with a word like "Return", "Calculate", or "Compute" and end with a
+  period.
+
+* The first line of an object that is not callable (for example, an
+  attribute of a class decorated with `property`) should not begin with
+  a verb and should end with a period.
+
+* Keep the docstring indented at the same level as the ``r"""`` or
+  ``"""`` that begins the docstring, except for reST constructs like
+  lists, math, and code blocks. The indentation level should be four
+  spaces more than the declaration of the object.
+
+  .. code-block:: python
+
+     def some_function():
+         """This is indented four spaces relative to the `def` statement."""
+
+* The first sentence of a docstring of a function should include a
+  concise definition of the quantity being calculated, as in the
+  following example.
+
+  .. code-block:: python
+
+     def beta(T, n, B):
+         """Compute the ratio of thermal pressure to magnetic pressure."""
+
+  When the definition of the quantity being calculated is unable to fit
+  on ∼1–2 lines, include the definition in the extended summary instead.
+
+  .. code-block:: python
+
+     def beta(T, n, B):
+         """
+         Compute plasma beta.
+
+         Plasma beta is the ratio of thermal pressure to magnetic pressure.
+         """
+
+* Put any necessary highly technical information in the "Notes" section
+  of a docstring.
+
+* Private code objects (e.g., code objects that begin with a single
+  underscore) should have docstrings. A docstring for a private code
+  object may be a single line, and otherwise should be in `numpydoc`_
+  format.
+
+* Dunder methods (e.g., code objects like ``__init__`` that begin and
+  end with two underscores) only need to have docstrings when needed to
+  describe non-standard or potentially unexpected behavior.
+
+* When an attribute in a class has both a getter (which is decorated
+  with `property`) and a setter method, the behavior should be described in
+  the docstring for the getter.
+
+Narrative documentation guidelines
+----------------------------------
+
+* Each subpackage in PlasmaPy must have corresponding narrative
+  documentation.
+
+* Use narrative documentation to describe how different functionality
+  works together.
+
+* Use title case for page titles (e.g., "Title Case") and sentence case
+  for all other headings (e.g., "Sentence case").
+
+.. _:literal:`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
