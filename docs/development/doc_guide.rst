@@ -253,8 +253,8 @@ the ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
 `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
 `sphinx_automodapi`.
 
-When we include |Quantity_full| in the documentation, it will show up
-as `astropy.units.Quantity` and link to the appropriate `object` in
+When we include |Quantity_full_path| in the documentation, it will show
+up as `astropy.units.Quantity` and link to the appropriate `object` in
 Astropy's documentation.
 
 .. |Quantity_full_path| replace:: ``astropy.units.Quantity``
