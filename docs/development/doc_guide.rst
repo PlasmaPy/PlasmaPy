@@ -443,30 +443,6 @@ any sections that are included should be in the order provided.
 
       return b - a if switch_order else a - b
 
-Creating ``api_static`` pages
------------------------------
-
-`sphinx_automodapi.automodapi` will autogenerate stub files for
-subpackages and module (``.py``) files when they are mentioned in the narrative
-documentation. When this is not the case, it is necessary for there to
-be a stub file in ``docs/api_static`` for the particular subpackage or
-module file.
-
-Here are sample contents for an ``api_static`` file for the
-``plasampy.particles.atomic`` subpackage. This file is located at
-``docs/api_static/plasmapy.particles.atomic.rst``.
-
-.. code-block:: rst
-
-   :orphan:
-
-   `plasmapy.particles.atomic`
-   ===========================
-
-   .. currentmodule:: plasmapy.particles.atomic
-
-   .. automodapi::  plasmapy.particles.atomic
-
 Documentation guidelines and practices
 ======================================
 
@@ -596,6 +572,24 @@ Narrative documentation guidelines
 
 * Use title case for page titles (e.g., "Title Case") and sentence case
   for all other headings (e.g., "Sentence case").
+
+* When the narrative documentation does not reference a subpackage or
+  module file, it is necessary to create a stub file in
+  ``docs/api_static`` for that particular subpackage or module file.
+  Here are the sample contents for a stub file for the
+  ``plasmapy.particles.atomic`` module.  This file would be located at
+  ``docs/api_static/plasmapy.particles.atomic.rst``.
+
+  .. code-block:: rst
+
+     :orphan:
+
+     `plasmapy.particles.atomic`
+     ===========================
+
+     .. currentmodule:: plasmapy.particles.atomic
+
+     .. automodapi::  plasmapy.particles.atomic
 
 .. _:literal:`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
