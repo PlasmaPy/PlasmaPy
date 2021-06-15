@@ -35,7 +35,6 @@
 .. Astropy replacements
 .. --------------------
 
-.. |PhysicalType| replace:: :class:`~astropy.units.PhysicalType`
 .. |Quantity| replace:: :class:`~astropy.units.Quantity`
 .. |Time| replace:: :class:`~astropy.time.Time`
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
