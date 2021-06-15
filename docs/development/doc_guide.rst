@@ -246,9 +246,10 @@ References to other packages
 allows the automatic generation of links to the documentation of
 objects in other projects. The mappings are defined in the
 ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
-`python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and `sphinx_automodapi`.
+`python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
+`sphinx_automodapi`.
 
-When we include ``` `astropy.units.Quantity` ``` in reST documentation,
+When we include ``\`astropy.units.Quantity\``` in reST documentation,
 it will show up as `astropy.units.Quantity` and link to the appropriate
 `object` in Astropy's documentation.
 
