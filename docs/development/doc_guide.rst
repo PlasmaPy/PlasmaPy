@@ -249,9 +249,11 @@ objects in other projects. The mappings are defined in the
 `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
 `sphinx_automodapi`.
 
-When we include ``\`astropy.units.Quantity\``` in reST documentation,
+When we include ``|Quantity_full|`` in reST documentation,
 it will show up as `astropy.units.Quantity` and link to the appropriate
 `object` in Astropy's documentation.
+
+.. |Quantity_full_path| replace:: ``astropy.units.Quantity``
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -301,7 +303,7 @@ Example docstring
 Here is an example docstring in the `numpydoc`_ format.
 
 .. code-block:: python
-   :caption: Example docstring.
+   :caption: Example docstring
 
    import numpy as np
    import warnings
@@ -407,9 +409,9 @@ some of the sections will be necessary for a particular function, but
 any sections that are included should be in the order provided.
 
 .. code-block:: python
-  :caption: Docstring template.
-  :dedent: 0
+  :caption: Docstring template
 
+  def sample_function():
       r"""
       Return ...
 
@@ -476,8 +478,8 @@ Documentation guidelines and practices
   modifying, which is preferably the spelling used throughout
   `PlasmaPy's online documentation`_.
 
-  * In general, it is preferable to use the spelling that is used in
-    `Python's documentation`_ or the spelling that is used most
+  * More generally, it is preferable to use the spelling that is used
+    in `Python's documentation`_ or the spelling that is used most
     commonly.
 
   * Represent names and acronyms for a software package as they are
@@ -486,7 +488,10 @@ Documentation guidelines and practices
 * Write the full namespace when referring to code objects within
   PlasmaPy. For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
-  ``~plasmapy.formulary.Alfven_speed``.
+  ``~plasmapy.formulary.Alfven_speed``.  This does not need to be done
+  for intersphinx links to other packages; it is fine to do
+  ``~astropy.units.Quantity`` and not necessary to do
+  ``~astropy.units.quantity.Quantity``.
 
 * For readability, limit documentation line lengths to ≲ 72 characters.
   Longer line lengths may be used when necessary (e.g., for hyperlinks).
@@ -591,5 +596,8 @@ Narrative documentation guidelines
 
      .. automodapi::  plasmapy.particles.atomic
 
-.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+
+.. |docs/conf.py| replace:: ``docs/conf.py``
+
+.. _`|docs/conf.py|`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
