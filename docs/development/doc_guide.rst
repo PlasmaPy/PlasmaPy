@@ -591,5 +591,5 @@ Narrative documentation guidelines
 
      .. automodapi::  plasmapy.particles.atomic
 
-.. _:literal:`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
