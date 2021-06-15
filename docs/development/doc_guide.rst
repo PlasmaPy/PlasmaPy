@@ -440,10 +440,7 @@ any sections that are included should be in the order provided.
       --------
 
       """
-      if not isinstance(a, float) or not isinstance(b, float):
-          raise TypeError("The arguments to multiply should be floats.")
 
-      return b - a if switch_order else a - b
 
 Documentation guidelines and practices
 ======================================
@@ -596,8 +593,5 @@ Narrative documentation guidelines
 
      .. automodapi::  plasmapy.particles.atomic
 
-
-.. |docs/conf.py| replace:: ``docs/conf.py``
-
-.. _`|docs/conf.py|`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _`Read the Docs`: https://readthedocs.org/
