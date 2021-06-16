@@ -115,16 +115,16 @@ We can link to code objects by enclosing them in back ticks.
 .. code-block:: rst
 
   Here is a reference to `plasmapy.particles` that will write out the
-  full namespace when Sphinx generates the documentation and generates
+  full namespace when Sphinx_ generates the documentation and generates
   the link. Only the word "Particle" will show up if we prepend a
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`. `Intersphinx`_
+packages like `numpy`, `astropy`, `scipy`, and `pandas`. Intersphinx_
 mappings are defined in the ``intersphinx_mapping`` variable in
 `docs/conf.py`_.
 
-Sphinx can format code blocks for Python and the Python console.
+Sphinx_ can format code blocks for Python and the Python console.
 
    .. code-block:: rst
 
@@ -192,22 +192,22 @@ formatting.
 Sphinx
 ------
 
-`Sphinx`_ is the software used to generate `PlasmaPy's online documentation`_
+Sphinx_ is the software used to generate `PlasmaPy's online documentation`_
 from reST files and Python docstrings.
 
 Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize `Sphinx`_ behavior.
-The documentation for `Sphinx`_ lists the `configuration options
+to customize Sphinx_ behavior.
+The documentation for Sphinx_ lists the `configuration options
 <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_
 that can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
 
-PlasmaPy documentation is built with the following Sphinx extensions:
+PlasmaPy documentation is built with the following Sphinx_ extensions:
 
 * `sphinx.ext.autodoc
   <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
@@ -252,11 +252,9 @@ the ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
 `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
 `sphinx_automodapi`.
 
-When we include |Quantity_full_path| in the documentation, it will show
-up as `astropy.units.Quantity` and link to the appropriate `object` in
-Astropy's documentation.
-
-.. |Quantity_full_path| replace:: ``astropy.units.Quantity``
+When we include ``astropy.units.Quantity`` in the documentation, it
+will show up as `astropy.units.Quantity` with a link to Astropy's
+documentation.
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -270,13 +268,13 @@ documentation. reST allows us to `define substitutions
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
 PlasmaPy has certain common substitutions pre-defined so that they can
-be used throughout the documentation. For example, we can write
+be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ``~astropy.units.Quantity``, and
 ``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
 For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
 
-Because substitutions are performed when Sphinx builds the
+Because substitutions are performed when Sphinx_ builds the
 documentation, they will not be performed before `help` accesses the
 docstring of an `object`. For example, when ``|Particle|`` is used in
 a docstring, `help` will show it as ``|Particle|`` rather than
@@ -360,13 +358,12 @@ Here is an example docstring in the `numpydoc`_ format.
       the extended summary near the beginning of the docstring. This
       section should include a discussion of the physics behind a
       particular concept that should be understandable to someone who is
-      taking their first plasma physics class. This section can also
+      taking their first plasma physics class. This section can
       include a derivation of the quantity being calculated or a
       description of a particular algorithm.
 
       The next section contains example references to a journal article
-      [1]_ and a book [2]_. Using a link with the digital object identifier
-      (DOI) is helpful because of its permanence.
+      [1]_ and a book [2]_.
 
       References
       ----------
@@ -500,6 +497,8 @@ PlasmaPy documentation.
   Longer line lengths may be used when necessary (e.g., for hyperlinks).
 
 * Use indentations of 3 spaces for reST blocks.
+
+* When including references,
 
 .. note::
 
