@@ -167,7 +167,7 @@ Markdown
 A few of PlasmaPy's files are written using `Markdown
 <https://www.markdownguide.org/>`_, such as README files and licenses
 from other packages. Markdown is simpler but more limited than reST.
-Markdown files end with `.md`. Posts on GitHub are written in
+Markdown files end with ``.md``. Posts on GitHub are written in
 `GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
 The following code block contains a few common examples of Markdown
 formatting.
