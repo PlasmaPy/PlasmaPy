@@ -60,6 +60,7 @@
 .. _Python: https://www.python.org/
 .. _`Python's documentation`: https://docs.python.org/
 .. _SciPy: https://www.scipy.org/
+.. _Sphinx: https://www.sphinx-doc.org/
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
 .. _tox: https://tox.readthedocs.io/
 .. _virtualenv: https://pypi.org/project/virtualenv

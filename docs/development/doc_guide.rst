@@ -192,18 +192,17 @@ formatting.
 Sphinx
 ------
 
-`Sphinx <https://www.sphinx-doc.org/>`_ is the software used to generate
-`PlasmaPy's online documentation`_ from reST files and Python docstrings.
+`Sphinx`_ is the software used to generate `PlasmaPy's online documentation`_
+from reST files and Python docstrings.
 
 Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize Sphinx behavior.
-`Sphinx's documentation <https://www.sphinx-doc.org/>`_ lists the
-`configuration options
-<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_ that
-can be set.
+to customize `Sphinx`_ behavior.
+The documentation for `Sphinx`_ lists the `configuration options
+<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_
+that can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
@@ -241,6 +240,8 @@ PlasmaPy documentation is built with the following Sphinx extensions:
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy.
   Note that `plasmapy_sphinx` is expected to be broken out into its own
   package at a future date.
+
+These extensions are specified in ``extensions`` in `docs/conf.py`_.
 
 References to other packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
