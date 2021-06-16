@@ -115,7 +115,7 @@ We can link to code objects by enclosing them in back ticks.
 .. code-block:: rst
 
   Here is a reference to `plasmapy.particles` that will write out the
-  full namespace when Sphinx_ generates the documentation and generates
+  full namespace when `sphinx` generates the documentation and generates
   the link. Only the word "Particle" will show up if we prepend a
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
@@ -124,7 +124,7 @@ packages like `numpy`, `astropy`, `scipy`, and `pandas`. Intersphinx_
 mappings are defined in the ``intersphinx_mapping`` variable in
 `docs/conf.py`_.
 
-Sphinx_ can format code blocks for Python and the Python console.
+`sphinx` can format code blocks for Python and the Python console.
 
    .. code-block:: rst
 
@@ -192,22 +192,22 @@ formatting.
 Sphinx
 ------
 
-Sphinx_ is the software used to generate `PlasmaPy's online documentation`_
+`sphinx` is the software used to generate `PlasmaPy's online documentation`_
 from reST files and Python docstrings.
 
 Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize Sphinx_ behavior.
-The documentation for Sphinx_ lists the `configuration options
+to customize `sphinx` behavior.
+The documentation for `sphinx` lists the `configuration options
 <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_
 that can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
 
-PlasmaPy documentation is built with the following Sphinx_ extensions:
+PlasmaPy documentation is built with the following `sphinx` extensions:
 
 * `sphinx.ext.autodoc
   <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
@@ -274,7 +274,7 @@ be used elsewhere in the documentation. For example, we can write
 For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
 
-Because substitutions are performed when Sphinx_ builds the
+Because substitutions are performed when `sphinx` builds the
 documentation, they will not be performed before `help` accesses the
 docstring of an `object`. For example, when ``|Particle|`` is used in
 a docstring, `help` will show it as ``|Particle|`` rather than

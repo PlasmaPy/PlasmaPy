@@ -34,7 +34,7 @@ New Features
   <http://docs.plasmapy.org>`_ that is hosted by `Read the Docs
   <https://readthedocs.org/>`_.
 
-  - Automated documentation builds with Sphinx_.
+  - Automated documentation builds with Sphinx.
 
   - Wrote narrative documentation for each subpackage.
 
