@@ -498,7 +498,24 @@ PlasmaPy documentation.
 
 * Use indentations of 3 spaces for reST blocks.
 
-* When including references,
+* Avoid linking to websites that might disappear due to
+  `link rot <https://en.wikipedia.org/wiki/Link_rot>`_ such as documents
+  hosted on personal websites.
+
+  * When including references, use a link that includes a
+    `persistent identifier <https://en.wikipedia.org/wiki/Persistent_identifier>`_
+    such as a digital object identifier (DOI) when one is available (e.g.,
+    `https://doi.org/10.5281/zenodo.4602818
+    <https://doi.org/10.5281/zenodo.4602818>`_).
+
+  * `Wikipedia <https://www.wikipedia.org/>`_ articles may be linked to
+    when they contain a well-developed and accurate description of a
+    concept.
+
+* Include both the original references for a topic as well as accessible
+  pedagogical references. Prefer references that are open access over
+  references that require purchase of a subscription or are behind a
+  `paywall <https://en.wikipedia.org/wiki/Paywall>`_.
 
 .. note::
 
@@ -565,8 +582,20 @@ Docstring guidelines
   describe non-standard or potentially unexpected behavior.
 
 * When an attribute in a class has both a getter (which is decorated
-  with `property`) and a setter method, the behavior should be described in
-  the docstring for the getter.
+  with `property`) and a setter method, both the getter and setter
+  should be documented in the docstring for the getter.
+
+  .. code-block:: python
+
+     class Person:
+         @property
+         def age(self):
+             """Document both getter and setter here."""
+             return self._age
+
+         @age.setter
+         def age(self, n):
+             self._age = n
 
 Narrative documentation guidelines
 ----------------------------------
