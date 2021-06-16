@@ -12,10 +12,8 @@ available at these locations.
 
 * The documentation corresponding to the most recent official release
   is labelled ``stable`` and is found at
-  `https://docs.plasmapy.org/en/stable/
-  <https://docs.plasmapy.org/en/stable/>`_.
-  The link `https://docs.plasmapy.org/ <https://docs.plasmapy.org/>`_
-  redirects to ``stable``.
+  `https://docs.plasmapy.org/ <https://docs.plasmapy.org/>`_ or
+  `https://docs.plasmapy.org/en/stable/ <https://docs.plasmapy.org/en/stable/>`_.
 
 * The documentation corresponding to the ``main`` branch on
   `PlasmaPy's GitHub repository`_ is labelled ``latest`` and can be
@@ -94,8 +92,8 @@ ReStructuredText Examples
 Here we show some examples of reST that are commonly used in PlasmaPy.
 
 This is an example of including headings for the document title,
-sections, subsections, and so on. Note that the lines surrounding each
-heading are the same length as that heading.
+sections, subsections, and so on. The lines surrounding each heading
+are the same length as that heading.
 
 .. code-block:: rst
 
