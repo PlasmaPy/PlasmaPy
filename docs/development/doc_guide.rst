@@ -446,8 +446,11 @@ any sections that are included should be in the order provided.
       """
 
 
-Documentation guidelines and practices
-======================================
+Documentation guidelines
+========================
+
+This section contains guidelines and best practices for writing
+PlasmaPy documentation.
 
 * Write documentation to be understandable to students taking their
   first course or beginning their first research project in plasma
