@@ -16,7 +16,7 @@ from collections import defaultdict, namedtuple
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 
-from .Houlberg1997 import contributing_states, M_script, mu_hat, N_script, ξ
+from .Houlberg1997 import contributing_states, M_script, mu_hat, N_script, ξ, ExtendedParticleList
 
 try:
     from functools import cached_property
@@ -64,39 +64,24 @@ class FlowCalculator:
         """
 
         arrays = {}
+        lists = []
         data_vars = ["n", "gradn", "T", "gradT"]
-        for particle, a in dataset.groupby("particle"):
-            particle = Particle(particle)
-            try:
-                if particle.element not in arrays:
-                    n_states = particle.atomic_number + 1
-                    zeros = np.zeros(n_states)
-                    arrays[particle.element] = {
-                        dv: u.Quantity(zeros, dataset.attrs[f"{dv} unit"])
-                        for dv in data_vars
-                    }
-                for dv in data_vars:
-                    arrays[particle.element][dv][particle.charge_number] = (
-                        a[dv].item() * dataset.attrs[f"{dv} unit"]
-                    )
-            except InvalidElementError as e:
-                print(f"{particle} is not currently handled: {e}")
-
-        all_species = IonizationStateCollection(
-            {particle: arrays[particle]["n"] for particle in arrays},
-            T_e=dataset.T.sel(particle="e-").item() * dataset.attrs["T unit"],
-        )
-        # TODO add temperature!
-        density_gradient = {particle: arrays[particle]["gradn"] for particle in arrays}
-        temperature_gradient = {
-            particle: arrays[particle]["gradT"] for particle in arrays
-        }
+        dataset['basic_elements'] = 'particle', [Particle(i).element if Particle(i).element is not None else Particle(i).symbol for i in dataset.particle.values]
+        # TODO does not handle deuterium because H 1+.isotope = None, why?
+        for basic_element, a in dataset.groupby("basic_elements"):
+            lists.append(
+                ExtendedParticleList(
+                    [Particle(i) for i in a.particle.values],
+                    u.Quantity(a.T, dataset.attrs["T unit"]),
+                    u.Quantity(a.n, dataset.attrs["n unit"]),
+                    u.Quantity(a.dT, dataset.attrs["dT unit"]),
+                    u.Quantity(a.dn, dataset.attrs["dn unit"]),
+                )
+            )
 
         return cls(
-            all_species,
+            lists,
             flux_surface,
-            density_gradient,
-            temperature_gradient,
             dataset_input=dataset,
         )
 
@@ -105,13 +90,12 @@ class FlowCalculator:
         self,
         all_species: IonizationStateCollection,
         flux_surface: FluxSurface,
-        density_gradient: dict,
-        temperature_gradient: dict,
         *,
         mu_N: int = None,
         dataset_input: xarray.Dataset = None,
     ):
         self.all_species = all_species
+        self._all_species_map = {pl[0].symbol: pl for pl in all_species}
         self.flux_surface = fs = flux_surface
         self.density_gradient = density_gradient
         self.temperature_gradient = {
@@ -143,12 +127,12 @@ class FlowCalculator:
         self.r_pt = {}
         S_pt_list = []
         for a in self.all_species:
-            sym = a.base_particle
-            charges = a.charge_numbers * constants.e.si
+            sym = a[0].symbol
+            charges = a.charge_number * constants.e.si
             n_charge_states = len(charges)
             xi = ξ(a)
-            T_i = a.T_i
-            n_i = a.number_densities
+            T_i = a.T.to(u.K, equivalencies = u.temperature_energy())
+            n_i = a.n
             density_gradient = self.density_gradient.get(
                 sym, np.zeros(n_charge_states) * (u.m ** -4)
             )
@@ -242,21 +226,21 @@ class FlowCalculator:
 
     def M_script(self, a: IonizationState) -> np.ndarray:
         """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.M_script`."""
-        sym = a.base_particle
+        sym = a[0].symbol
         if sym not in self.M_script_matrices:
             self.M_script_matrices[sym] = M_script(a, self.all_species)
         return self.M_script_matrices[sym]
 
     def N_script(self, a: IonizationState, b: IonizationState) -> np.ndarray:
         """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.N_script`."""
-        sym_tuple = a.base_particle, b.base_particle
+        sym_tuple = a[0].symbol, b[0].symbol
         if sym_tuple not in self.N_script_matrices:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
         return self.N_script_matrices[sym_tuple]
 
     # profile
     def _funnymatrix(self, a_symbol):
-        a = self.all_species[a_symbol]
+        a = self._all_species_map[a_symbol]
         M = self.M_script(a)
         outputs = {}
         for _, ai in contributing_states(a):
@@ -289,12 +273,12 @@ class FlowCalculator:
                     self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
                 ) / B2fsav
                 μ = self.μ[sym]
-                Γ_BP = -(Fhat / ai.ion.charge * (μ[0, :] * u_θ).sum()).si
+                Γ_BP = -(Fhat / ai.charge * (μ[0, :] * u_θ).sum()).si
                 q_BP = -(
                     fs.Fhat
                     * constants.k_B
-                    * ai.T_i
-                    / ai.ion.charge
+                    * a.T
+                    / ai.charge
                     * (μ[1, :] * u_θ).sum()
                 ).si
                 results[sym] = Fluxes(
@@ -310,15 +294,15 @@ class FlowCalculator:
         results = {}
         fs = self.flux_surface
         for a in self.all_species:
-            silly = self._funnymatrix(a.base_particle)
+            silly = self._funnymatrix(a[0].symbol)
             for xi, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+                sym = ai.symbol
                 prefactor = (
-                    -fs.Fhat / ai.ion.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
+                    -fs.Fhat / ai.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
                 )
                 Γ_PS = prefactor * silly[sym][0]  # overlarge by s/m5
                 q_PS = (
-                    prefactor * constants.k_B * ai.T_i * silly[sym][1]
+                    prefactor * constants.k_B * a.T * silly[sym][1]
                 )  # overlarge by μ.unit
                 results[sym] = Fluxes(
                     Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit)
@@ -334,12 +318,12 @@ class FlowCalculator:
         Fhat = self.flux_surface.Fhat
         results = {}
         for a in self.all_species:
-            silly = self._funnymatrix(a.base_particle)
+            silly = self._funnymatrix(a[0].symbol)
             for xi, ai in contributing_states(a):
-                sym = ai.ionic_symbol
-                prefactor = FSA / Fhat * xi / ai.ion.charge
+                sym = ai.symbol
+                prefactor = FSA / Fhat * xi / ai.charge
                 Γ_CL = prefactor * silly[sym][0]
-                q_CL = prefactor * constants.k_B * ai.T_i * silly[sym][1]
+                q_CL = prefactor * constants.k_B * a.T * silly[sym][1]
                 results[sym] = Fluxes(
                     Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit)
                 )
@@ -350,7 +334,7 @@ class FlowCalculator:
         results = {}
         for a in self.all_species:
             for _, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+                sym = ai.symbol
                 Γ_BP, q_BP = self._fluxes_BP[sym]
                 Γ_PS, q_PS = self._fluxes_PS[sym]
                 Γ_CL, q_CL = self._fluxes_CL[sym]
@@ -471,10 +455,10 @@ class FlowCalculator:
 
         def gen():
             for a in self.all_species:
-                for _, ai in contributing_states(a):
-                    sym = ai.ionic_symbol
+                for (_, ai), n in zip(contributing_states(a), a.n):
+                    sym = ai.symbol
                     u_velocity = self._charge_state_flows[sym][0]
-                    yield ai.ion.charge * ai.number_density * u_velocity
+                    yield ai.charge * n * u_velocity
                     # eq 37, second term
 
         return sum(gen())
@@ -511,8 +495,8 @@ class FlowCalculator:
         B = fs.Bmag * u.T
         results = {}
         for a in self.all_species:
-            n_i = a.number_densities
-            T_i = a.T_i
+            n_i = a.n
+            T_i = a.T
             p = n_i * T_i
             for _, ai in contributing_states(a):
                 sym = ai.ionic_symbol

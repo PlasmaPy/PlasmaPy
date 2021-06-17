@@ -921,6 +921,17 @@ def test_iteration_with_nested_iterator():
     assert i == 4
 
 
-@pytest.mark.xfail()
 def test_hydrogen_deuterium():
     instance = IonizationStateCollection(["H", "D"])
+
+def test_electrons():
+    all_species = IonizationStateCollection(
+        {
+            "H": [0, 1],
+            "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
+            "e-": [1],
+        },
+        n0=1e20 * u.m ** -3,
+        abundances={"H": 1, "C": 0.11},
+        T_e=10 * u.eV,
+    )

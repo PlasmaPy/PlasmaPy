@@ -165,20 +165,15 @@ class IonizationStateCollection:
                     )
                 set_abundances = False
 
-        try:
-            self._pars = dict()
-            self.T_e = T_e
-            self.n0 = n0
-            self.tol = tol
-            self.ionic_fractions = inputs
-            if set_abundances:
-                self.abundances = abundances
-                self.log_abundances = log_abundances
-            self.kappa = kappa
-        except Exception as exc:
-            raise ParticleError(
-                "Unable to create IonizationStateCollection object."
-            ) from exc
+        self._pars = dict()
+        self.T_e = T_e
+        self.n0 = n0
+        self.tol = tol
+        self.ionic_fractions = inputs
+        if set_abundances:
+            self.abundances = abundances
+            self.log_abundances = log_abundances
+        self.kappa = kappa
 
     def __len__(self) -> int:
         return len(self._base_particles)

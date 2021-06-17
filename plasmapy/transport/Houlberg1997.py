@@ -14,7 +14,8 @@ import numpy as np
 from astropy import constants
 from astropy import units as u
 from scipy.special import erf
-from typing import Union
+from typing import Union, List, Iterable
+from functools import cached_property
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
@@ -48,25 +49,62 @@ __all__ = [
     "ionizationstate_mass_densities",
 ]
 
+from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.utils.decorators import (
+    validate_quantities,
+)
+
+class ExtendedParticleList(ParticleList):
+    def __init__(self, particles: Iterable, 
+                 T: u.eV,
+                 n: u.m**-3,
+                 dT: u.eV / u.m = None,
+                 dn: u.m**-4 = None,
+                 ):
+        super().__init__(particles)
+        self.T = u.Quantity(T).to(u.K, equivalencies = u.temperature_energy())
+        self.n = u.Quantity(n)
+
+        assert len(self.n) == len(particles)
+        if dT is not None:
+            self.dT = u.Quantity(dT)
+            assert len(self.dT) == len(self.T)
+        if dn is not None:
+            self.dn = u.Quantity(dn)
+            assert len(self.dn) == len(self.n)
+
+    @cached_property
+    def mass_density(self):
+        r"""Mass densities for each ionic level in an |IonizationState|.
+
+        Parameters
+        ----------
+        a : IonizationState
+            a
+
+        Returns
+        -------
+        u.kg/u.m**3
+
+        """
+        return self.n * self.mass
+
+    @cached_property
+    def thermal_speed(self):
+        return u.Quantity([thermal_speed(self.T, p) for p in self]).mean()
+
+    @cached_property
+    def ξ(self):
+        array = self.charge_number**2 * self.n
+        return array / array.sum()
+
+
 
 def ionizationstate_mass_densities(a: IonizationState) -> u.kg / u.m ** 3:
-    r"""Mass densities for each ionic level in an |IonizationState|.
-
-    Parameters
-    ----------
-    a : IonizationState
-        a
-
-    Returns
-    -------
-    u.kg/u.m**3
-
-    """
-
-    return a.number_densities * u.Quantity([ai.ion.mass for ai in a])
+    return a.mass_density
 
 
-def xab_ratio(a: IonizationState, b: IonizationState) -> u.dimensionless_unscaled:
+def xab_ratio(a: ExtendedParticleList, b: ExtendedParticleList) -> u.dimensionless_unscaled:
     """Ratio of thermal speeds as defined by |Houlberg_1997|
 
     Parameters
@@ -80,20 +118,22 @@ def xab_ratio(a: IonizationState, b: IonizationState) -> u.dimensionless_unscale
 
     """
 
-    return thermal_speed(b.T_e, b.base_particle) / thermal_speed(a.T_e, a.base_particle)
+    return b.thermal_speed / a.thermal_speed
+
+def mass_ratio_ab(a, b):
+    return a.mass[0] / b.mass[0]
 
 
-def M_matrix(species_a: IonizationState, species_b: IonizationState):
+def M_matrix(a: IonizationState, b: IonizationState):
     """Test particle matrix - equation A5a through A5f from |Houlberg_1997|
 
     Parameters
     ----------
-    species_a : IonizationState
-    species_b : IonizationState
+    a : IonizationState
+    b : IonizationState
     """
-    a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    mass_ratio = a._particle.mass / b._particle.mass
+    mass_ratio = mass_ratio_ab(a, b)
     M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
     M21 = M12
@@ -109,18 +149,17 @@ def M_matrix(species_a: IonizationState, species_b: IonizationState):
     return M
 
 
-def N_matrix(species_a: IonizationState, species_b: IonizationState):
+def N_matrix(a: IonizationState, b: IonizationState):
     """Test particle matrix - equation A6a through A6f from |Houlberg_1997|
 
     Parameters
     ----------
-    species_a : IonizationState
-    species_b : IonizationState
+    a : IonizationState
+    b : IonizationState
     """
-    a, b = species_a, species_b
     xab = xab_ratio(a, b)
-    temperature_ratio = a.T_e / b.T_e
-    mass_ratio = a._particle.mass / b._particle.mass
+    temperature_ratio = a.T / b.T
+    mass_ratio = mass_ratio_ab(a, b)
     N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
     N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
@@ -138,59 +177,26 @@ def N_matrix(species_a: IonizationState, species_b: IonizationState):
     return N
 
 
-CL = lambda a, b: Coulomb_logarithm(
-    b.T_e,
-    b.n_elem,
-    (a.base_particle, b.base_particle),  # simplifying assumption after A4
-)
-
-
-def effective_momentum_relaxation_rate(
-    species_a: IonizationState, species_b: IonizationState
-):
+def effective_momentum_relaxation_rate(a: IonizationState, b: IonizationState):
     """Equations A3, A4 from |Houlberg_1997|
 
     Parameters
     ----------
-    species_a : IonizationState
-    species_b : IonizationState
+    a : IonizationState
+    b : IonizationState
     """
     # TODO could be refactored using numpy
-    def contributions():
-        CL = lambda ai, bj: Coulomb_logarithm(
-            species_b.T_e,
-            species_b.n_elem,
-            (ai.ion, bj.ion),  # simplifying assumption after A4
-        )
-        for ai in species_a:
-            if ai.ion.charge == 0:
-                continue
-            for bj in species_b:
-                if bj.ion.charge == 0:
-                    continue
-                # Eq. A4, Houlberg_1997
-                # Eq. A3, Houlberg_1997
-                collision_frequency_ai_bj = (
-                    4
-                    / (3 * np.sqrt(np.pi))
-                    * (
-                        4
-                        * np.pi
-                        * ai.ion.charge ** 2
-                        * bj.ion.charge ** 2
-                        * bj.number_density
-                        * CL(ai, bj)
-                    )
-                    / (
-                        (4 * np.pi * constants.eps0) ** 2
-                        * ai.ion.mass ** 2
-                        * thermal_speed(species_a.T_e, ai.ion) ** 3
-                    )
-                ).si
+    collision_frequency = 1 / (3 * np.pi**(3/2)) *\
+        (a.charge[:, np.newaxis] * b.charge[np.newaxis, :] / a.mass[:, np.newaxis] / constants.eps0)**2 *\
+        (a.n[:, np.newaxis] * b.n[np.newaxis, :]) * a.mass[:, np.newaxis] / a.thermal_speed**3
 
-                yield (ai.number_density * ai.ion.mass) * collision_frequency_ai_bj
-
-    return sum(contributions())
+    CL = lambda ai, bj, bn: Coulomb_logarithm(
+        b.T,
+        bn,
+        (ai, bj),  # simplifying assumption after A4
+    )
+    CL_matrix = u.Quantity([[CL(ai, bj, bn) for bj, bn in zip(b, b.n)] for ai in a])
+    return (CL_matrix * collision_frequency).sum().si
 
 
 def ξ(isotope: IonizationState):
@@ -200,42 +206,37 @@ def ξ(isotope: IonizationState):
     ----------
     isotope : IonizationState
     """
-    array = u.Quantity(
-        [ai.number_density * ai.ion.charge_number ** 2 for ai in isotope]
-    )
-    return array / array.sum()
+    return isotope.ξ
 
 
-def N_script(species_a: IonizationState, species_b: IonizationState):
+def N_script(a: IonizationState, b: IonizationState):
     """Weighted field particle matrix - equation A2b from |Houlberg_1997|
 
     Parameters
     ----------
-    species_a : IonizationState
-    species_b : IonizationState
+    a : IonizationState
+    b : IonizationState
     """
-    N = N_matrix(species_a, species_b)
+    N = N_matrix(a, b)
     # Equation A2b
-    N_script = effective_momentum_relaxation_rate(species_a, species_b) * N
+    N_script = effective_momentum_relaxation_rate(a, b) * N
     return N_script
 
 
-def M_script(species_a: IonizationState, all_species: IonizationStateCollection):
+def M_script(a: IonizationState, all_species: IonizationStateCollection):
     """Weighted test particle matrix - equation A2a from |Houlberg_1997|
 
     Parameters
     ----------
-    species_a : IonizationState
+    a : IonizationState
     all_species : IonizationStateCollection
     """
     # Equation A2a
     def gener():
-        for species_b in all_species:
-            if species_b is not species_a:
+        for b in all_species:
+            if b is not a:
                 # TODO am I sure this if is necessary here?
-                yield M_matrix(
-                    species_a, species_b
-                ) * effective_momentum_relaxation_rate(species_a, species_b)
+                yield M_matrix(a, b) * effective_momentum_relaxation_rate(a, b)
 
     return sum(gener())
 
@@ -268,10 +269,9 @@ def pitch_angle_diffusion_rate(
             result = fraction * effective_momentum_relaxation_rate(a, b)
             yield result
 
-    mass_density = ionizationstate_mass_densities(a)
     result = (
         xi[:, np.newaxis]
-        / mass_density[:, np.newaxis]
+        / a.mass_density[:, np.newaxis]
         * 3
         * np.sqrt(np.pi)
         / 4
@@ -383,7 +383,7 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], a: IonizationState, fs: FluxSu
     """
     """Equation B11 of Houlberg_1997."""
     B11 = (
-        x * thermal_speed(a.T_e, a._particle) * m * fs.gamma / u.m
+        x * a.thermal_speed * m * fs.gamma / u.m
     )  # TODO why the u.m?
     return B11
 
@@ -402,17 +402,16 @@ def ν_T_ai(x: np.ndarray, a: IonizationState, all_species: IonizationStateColle
     all_species : IonizationStateCollection
         all_species
     """
-    mass_density = ionizationstate_mass_densities(a)
-    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / mass_density
+    prefactor = 3 * np.pi ** 0.5 / 4 * ξ(a) / a.mass_density
 
     def gen():
         """gen."""
         for b in all_species:
-            if b.base_particle != a.base_particle:  # TODO is not should work
+            if b is not a:  # TODO is not should work
                 x_over_xab = (x / xab_ratio(a, b)).value
                 part1 = (erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab)) / x ** 3
                 part2 = 4 * (
-                    a.T_e / b.T_e + xab_ratio(a, b) ** -2
+                    a.T / b.T + xab_ratio(a, b) ** -2
                 )  # TODO double check this ratio
                 part2full = part2 * Chandrasekhar_G(x_over_xab) / x
                 result = (part1 + part2full) * effective_momentum_relaxation_rate(a, b)
@@ -463,8 +462,8 @@ def K_ps_ai(
     return (
         3
         / 2
-        * thermal_speed(a.T_e, a.base_particle)
-        ** 2  # TODO replace T_e with T_i in the fullness of time
+        * a.thermal_speed
+        ** 2
         * x ** 2
         * full_sum
         / u.m ** 2
@@ -543,7 +542,7 @@ def mu_hat(
 
     α = orders
     β = orders
-    len_a = len(a.number_densities)
+    len_a = len(a)
     signs = (-1) * (α[:, None] + β[None, :])
     laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
     kterm = K(x, a, all_species, flux_surface, **kwargs)
@@ -552,8 +551,7 @@ def mu_hat(
     y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
     integral = trapezoid(y, x, axis=1)
     mu_hat_ai = integral * signs[None, ...]
-    mass_density = ionizationstate_mass_densities(a)
-    actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * mass_density[:, None, None]
+    actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * a.mass_density[:, None, None]
     return actual_units
 
 
@@ -568,7 +566,5 @@ def contributing_states(a: IonizationState):
 
     """
     xi = ξ(a)
-    for i, ai in enumerate(a):
-        if xi[i] == 0:
-            continue
-        yield xi[i], ai
+    for xii, ai in zip(xi, a):
+        yield xii, ai

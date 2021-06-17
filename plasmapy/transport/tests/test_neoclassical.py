@@ -8,7 +8,7 @@ from astropy.tests.helper import assert_quantity_allclose
 from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
-from plasmapy.particles import IonizationStateCollection
+from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.transport.Houlberg1997 import (
     effective_momentum_relaxation_rate,
     K_B_ai,
@@ -20,20 +20,20 @@ from plasmapy.transport.Houlberg1997 import (
     N_script,
     pitch_angle_diffusion_rate,
     ν_T_ai,
+    ExtendedParticleList,
 )
 
-all_species = IonizationStateCollection(
-    {
-        "H": [0, 1],
-        "C": [0, 1 / 1.1, 0.1 / 1.1, 0, 0, 0, 0],
-    },
-    n0=1e20 * u.m ** -3,
-    abundances={"H": 1, "C": 0.11},
-    T_e=10 * u.eV,
+hydrogen = ExtendedParticleList(
+    [Particle("p+")],
+    10 * u.eV,
+    u.Quantity([1e20 * u.m**-3]),
 )
-hydrogen = all_species["H"]
-carbon_states = all_species["C"]
-
+carbon_states = ExtendedParticleList(
+    [Particle("C 1+"), Particle("C 2+")],
+    10 * u.eV,
+    u.Quantity([1e20/1.1, 0.1e20/1.1], 1 / u.m**3),
+)
+all_species = [hydrogen, carbon_states]
 
 @pytest.mark.parametrize(
     ["function", "shape"],
