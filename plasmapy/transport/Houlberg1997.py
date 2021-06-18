@@ -74,6 +74,10 @@ class ExtendedParticleList(ParticleList):
             assert len(self.dn) == len(self.n)
 
     @cached_property
+    def basic_elements(self):
+        return [Particle(i).element if Particle(i).element is not None else Particle(i).symbol for i in dataset.particle.values]
+
+    @cached_property
     def mass_density(self):
         r"""Mass densities for each ionic level in an |IonizationState|.
 
@@ -94,9 +98,84 @@ class ExtendedParticleList(ParticleList):
         return u.Quantity([thermal_speed(self.T, p) for p in self]).mean()
 
     @cached_property
+    def thermal_speed_corrected(self):
+        return u.Quantity([thermal_speed(self.T, p) for p in self])
+
+    @cached_property
     def ξ(self):
         array = self.charge_number**2 * self.n
         return array / array.sum()
+
+
+    @cached_property
+    def xab_ratio(self):
+        return self.thermal_speed[:, np.newaxis] / self.thermal_speed[np.newaxis, :]
+
+    @cached_property
+    def mass_ratio(self) -> "(N, N)":
+        return self.mass[:, ...] / self.mass[..., :]
+
+    @cached_property
+    def temperature_ratio(self) -> "(N, N)":
+        return self.T[:, ...] / self.T[..., :] # TODO double check ordering of indices
+
+    @cached_property
+    def M_matrix(self) -> "(N, N, 3, 3)":
+        xab = self.xab_ratio
+        mass_ratio = self.mass_ratio
+        M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
+        M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
+        M21 = M12
+        M22 = (13 / 4 + 4 * xab ** 2 + 15 / 2 * xab ** 4) / (1 + xab ** 2) ** (5 / 2)
+        M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
+        M31 = M13
+        M23 = (69 / 16 + 6 * xab ** 2 + 63 / 4 * xab ** 4) / (1 + xab ** 2) ** (7 / 2)
+        M32 = M23
+        M33 = -(433 / 64 + 17 * xab ** 2 + 459 / 8 * xab ** 4 + 175 / 8 * xab ** 6) / (
+            1 + xab ** 2
+        ) ** (9 / 2)
+        M = np.array([[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]])
+        return M
+
+    @cached_property
+    def N_matrix(self) -> "(N, N, 3, 3)":
+        xab = self.xab_ratio
+        temperature_ratio = self.temperature_ratio
+        mass_ratio = self.mass_ratio
+        N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
+        N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
+        N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
+        M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
+        N12 = -(xab ** 2) * M12
+        N22 = 27 / 4 * (temperature_ratio) ** (1 / 2) * xab ** 2 / (1 + xab ** 2) ** (5 / 2)
+        M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
+        N13 = -(xab ** 4) * M13
+        N23 = -225 / 16 * temperature_ratio * xab ** 4 / (1 + xab ** 2) ** (7 / 2)
+        N32 = N23 / temperature_ratio
+        N33 = (
+            2625 / 64 * temperature_ratio ** (1 / 2) * xab ** 4 / (1 + xab ** 2) ** (9 / 2)
+        )
+        N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
+        return N
+
+    def effective_momentum_relaxation_rate(self):
+        """Equations A3, A4 from |Houlberg_1997|
+
+        """
+        # TODO could be refactored using numpy
+        collision_frequency = 1 / (3 * np.pi**(3/2)) *\
+            (self.charge[:, np.newaxis] * self.charge[np.newaxis, :] / self.mass[:, np.newaxis] / constants.eps0)**2 *\
+            (self.n[:, np.newaxis] * self.n[np.newaxis, :]) * self.mass[:, np.newaxis] / self.thermal_speed**3
+
+        CL = lambda ai, bj, bn: Coulomb_logarithm(
+            b.T,
+            bn,
+            (ai, bj),  # simplifying assumption after A4
+        )
+        CL_matrix = u.Quantity([[CL(ai, bj, bn) for bj, bn in zip(self, self.n)] for ai in self])
+        # TODO double check ordering
+        return (CL_matrix * collision_frequency).sum().si
+
 
 
 
@@ -158,7 +237,7 @@ def N_matrix(a: IonizationState, b: IonizationState):
     b : IonizationState
     """
     xab = xab_ratio(a, b)
-    temperature_ratio = a.T / b.T
+    temperature_ratio = (a.T / b.T)[0] # FIXME hack
     mass_ratio = mass_ratio_ab(a, b)
     N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
     N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)

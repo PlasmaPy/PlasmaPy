@@ -322,7 +322,7 @@ def test_integration():
             display(e)
 
 
-    i = 5
+    i = 3
     ψ, surface = surfaces[i]
     fc = FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface)
 
@@ -346,4 +346,3 @@ def test_integration():
 
     df.plot.line(x="x")
     results.bootstrap_current_normalized.plot.line(x="rho", label="My bootstrap current")
-    plt.legend()

@@ -43,14 +43,10 @@ class FlowCalculator:
 
     Parameters
     ----------
-    all_species : IonizationStateCollection
+    all_species : List[ExtendedParticleList]
         all_species
     flux_surface : FluxSurface
         flux_surface
-    density_gradient : dict
-        density_gradient
-    temperature_gradient : dict
-        temperature_gradient
     mu_N : int
         mu_N
     dataset_input : xarray.Dataset
@@ -68,14 +64,15 @@ class FlowCalculator:
         data_vars = ["n", "gradn", "T", "gradT"]
         dataset['basic_elements'] = 'particle', [Particle(i).element if Particle(i).element is not None else Particle(i).symbol for i in dataset.particle.values]
         # TODO does not handle deuterium because H 1+.isotope = None, why?
+        # TODO to wciaż jest przekombinowane i wszystko to trzeba spłaszczyć, bo bez sensu
         for basic_element, a in dataset.groupby("basic_elements"):
             lists.append(
                 ExtendedParticleList(
                     [Particle(i) for i in a.particle.values],
                     u.Quantity(a.T, dataset.attrs["T unit"]),
                     u.Quantity(a.n, dataset.attrs["n unit"]),
-                    u.Quantity(a.dT, dataset.attrs["dT unit"]),
-                    u.Quantity(a.dn, dataset.attrs["dn unit"]),
+                    u.Quantity(a.gradT, dataset.attrs["gradT unit"]),
+                    u.Quantity(a.gradn, dataset.attrs["gradn unit"]),
                 )
             )
 
@@ -97,14 +94,6 @@ class FlowCalculator:
         self.all_species = all_species
         self._all_species_map = {pl[0].symbol: pl for pl in all_species}
         self.flux_surface = fs = flux_surface
-        self.density_gradient = density_gradient
-        self.temperature_gradient = {
-            particle: (u.m * temperature_gradient[particle]).to(
-                u.K, equivalencies=u.temperature_energy()
-            )
-            / u.m
-            for particle in temperature_gradient
-        }
         self._dataset_input = dataset_input
 
         self.M_script_matrices = {}
@@ -133,12 +122,8 @@ class FlowCalculator:
             xi = ξ(a)
             T_i = a.T.to(u.K, equivalencies = u.temperature_energy())
             n_i = a.n
-            density_gradient = self.density_gradient.get(
-                sym, np.zeros(n_charge_states) * (u.m ** -4)
-            )
-            temperature_gradient = self.temperature_gradient.get(
-                sym, np.zeros(n_charge_states) * (u.K / u.m)
-            )
+            density_gradient = a.dn
+            temperature_gradient = (a.dT * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
             pressure_gradient_over_n_i = constants.k_B * (
                 T_i * density_gradient / n_i + temperature_gradient
             )
@@ -181,15 +166,13 @@ class FlowCalculator:
             )
             rbar_flows_list.append(rbar_flows)
             for i, ai in enumerate(a):
-                sym = ai.ionic_symbol
-                self.density_gradient[sym] = density_gradient[i]
-                self.temperature_gradient[sym] = temperature_gradient[i]
+                sym = ai.symbol
                 self.r_pt[sym] = r_pt[i]
                 self.S_pt[sym] = S_pt[i]
                 self.thermodynamic_forces[sym] = thermodynamic_forces[i]
                 self.μ[sym] = μ[i]
 
-        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)")
+        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)", dtype=np.float64)
         for i, a in enumerate(all_species):
             rarray = rbar_flows_list[i]
             for j, b in enumerate(self.all_species):
@@ -216,13 +199,13 @@ class FlowCalculator:
 
             for i, ai in enumerate(a):
                 if np.isfinite(u_velocity[i]).all():
-                    self._charge_state_flows[ai.ionic_symbol] = u_velocity[i]
+                    self._charge_state_flows[ai.symbol] = u_velocity[i]
 
     def all_contributing_states_symbols(self) -> typing.Iterator[str]:
         """Helper iterator over all charge levels of all isotopes in the calculation."""
         for a in self.all_species:
             for _, ai in contributing_states(a):
-                yield ai.ionic_symbol
+                yield ai.symbol
 
     def M_script(self, a: IonizationState) -> np.ndarray:
         """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.M_script`."""
@@ -244,12 +227,12 @@ class FlowCalculator:
         M = self.M_script(a)
         outputs = {}
         for _, ai in contributing_states(a):
-            sym = ai.ionic_symbol
+            sym = ai.symbol
             output = self.thermodynamic_forces[sym] * M
             for b in self.all_species:
                 N = self.N_script(a, b)
                 for xj, bj in contributing_states(b):
-                    output += xj * N * self.thermodynamic_forces[bj.ionic_symbol]
+                    output += xj * N * self.thermodynamic_forces[bj.symbol]
             outputs[sym] = output.sum(axis=1)
         return outputs
 
@@ -265,7 +248,7 @@ class FlowCalculator:
             ) in (
                 a
             ):  # this could be rfactored out by iterating over self._charge_state_flows, instead, given a way to access ionizationstate back from ioniclevel
-                sym = ai.ionic_symbol
+                sym = ai.symbol
                 if sym not in self._charge_state_flows:
                     continue
 
@@ -357,49 +340,49 @@ class FlowCalculator:
             {
                 "total_particle_flux": (
                     "particle",
-                    u.Quantity([flux.particle_flux for flux in self.fluxes.values()]),
+                    u.Quantity([flux.particle_flux for flux in self.fluxes.values()]).ravel(),
                 ),
                 "total_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self.fluxes.values()]),
+                    u.Quantity([flux.heat_flux for flux in self.fluxes.values()]).ravel(),
                 ),
                 "BP_particle_flux": (
                     "particle",
                     u.Quantity(
                         [flux.particle_flux for flux in self._fluxes_BP.values()]
-                    ),
+                    ).ravel(),
                 ),
                 "BP_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_BP.values()]),
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_BP.values()]).ravel(),
                 ),
                 "CL_particle_flux": (
                     "particle",
                     u.Quantity(
                         [flux.particle_flux for flux in self._fluxes_CL.values()]
-                    ),
+                    ).ravel(),
                 ),
                 "CL_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_CL.values()]),
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_CL.values()]).ravel(),
                 ),
                 "PS_particle_flux": (
                     "particle",
                     u.Quantity(
                         [flux.particle_flux for flux in self._fluxes_PS.values()]
-                    ),
+                    ).ravel(),
                 ),
                 "PS_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_PS.values()]),
+                    u.Quantity([flux.heat_flux for flux in self._fluxes_PS.values()]).ravel(),
                 ),
                 "diffusion_coefficient": (
                     "particle",
-                    u.Quantity(list(self.diffusion_coefficient.values())),
+                    u.Quantity(list(self.diffusion_coefficient.values())).ravel(),
                 ),
                 "thermal_conductivity": (
                     "particle",
-                    u.Quantity(list(self.thermal_conductivity.values())),
+                    u.Quantity(list(self.thermal_conductivity.values())).ravel(),
                 ),
                 "bootstrap_current": self.bootstrap_current,
                 # TODO this probably won't fit in the common array because of spatial dependence
@@ -429,11 +412,11 @@ class FlowCalculator:
     def diffusion_coefficient(self):
         results = {}
         for a in self.all_species:
-            for _, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+            for (_, ai), dn in zip(contributing_states(a), a.dn):
+                sym = ai.symbol
                 flux = self.fluxes[sym].particle_flux
                 results[sym] = (
-                    -flux / self.density_gradient[sym]
+                    -flux / dn
                 )  # Eq48 TODO this is a partial adaptation
         return results
 
@@ -441,10 +424,10 @@ class FlowCalculator:
     def thermal_conductivity(self):
         results = {}
         for a in self.all_species:
-            for _, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+            for (_, ai), dT in zip(contributing_states(a), a.dT):
+                sym = ai.symbol
                 flux = self.fluxes[sym].heat_flux
-                results[sym] = -flux / self.temperature_gradient[sym]
+                results[sym] = -flux / dT
         return results
 
     @cached_property
@@ -473,7 +456,7 @@ class FlowCalculator:
         results = {}
         for a in self.all_species:
             for _, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+                sym = ai.symbol
                 u_θ = (
                     self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
                 ) / B2fsav
@@ -499,7 +482,7 @@ class FlowCalculator:
             T_i = a.T
             p = n_i * T_i
             for _, ai in contributing_states(a):
-                sym = ai.ionic_symbol
+                sym = ai.symbol
                 u_θ = (
                     self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
                 ) / B2fsav
