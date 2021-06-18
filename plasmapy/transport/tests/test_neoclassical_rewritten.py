@@ -9,20 +9,14 @@ from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
 from plasmapy.particles import IonizationStateCollection, Particle
-from plasmapy.transport.Houlberg1997 import (
-    K_B_ai,
-    K_ps_ai,
-    mu_hat,
-    pitch_angle_diffusion_rate,
-    ν_T_ai,
-    ExtendedParticleList,
-)
+from plasmapy.transport.Houlberg1997 import ExtendedParticleList
 
 all_species = ExtendedParticleList(
     [Particle("C 1+"), Particle("C 2+"), Particle("C 3+"), Particle("p+"), ],
     10 * u.eV,
     u.Quantity([1e20/1.11, 0.1e20/1.11, 0.01e20/1.11, 1e20], u.m**-3),
 )
+x = np.logspace(-3, 6, 50)
 
 @pytest.mark.parametrize(
     ["function", "shape"],
@@ -45,14 +39,45 @@ def test_matrix_between_elements(function, shape, num_regression):
     num_regression.check({function: data.flatten()})
 
 
-def test_pitch_angle_diffusion_rate_and_banana_vsicosity(num_regression, flux_surface):
-    x = np.logspace(-3, 6, 50)
-    ν_D_ai = pitch_angle_diffusion_rate(x, carbon_states, all_species)[1]
-    k = K_B_ai(x, carbon_states, all_species, flux_surface)[1]
-    num_regression.check(
-        {"x": x, "ν_D_ai": ν_D_ai.si.value, "K_B_ai": k.si.value},
-        tolerances={"ν_D_ai": {"rtol": 1e-4}, "K_B_ai": {"rtol": 1e-4}},
-    )
+@pytest.mark.parametrize(
+    ["function", "shape", "rtol", "args"],
+    [
+        ("pitch_angle_diffusion_rate", (50, 4), 1e-6, []),
+        ("ν_T_ai", (50, 4), 1e-6, []),
+        ("K_B_ai", (50, 4), 1e-6, [0.6234941403639689]),
+    ],
+)
+def test_function_of_relative_velocity(num_regression, function, shape, rtol, args):
+    if args:
+        data = getattr(all_species, function)(x, *args)
+    else:
+        data = getattr(all_species, function)(x)
+
+    try:
+        data = data.si.value
+    except AttributeError:
+        pass  # we're already a numpy array
+    assert data.shape == shape, data.shape
+    num_regression.check({function: data.flatten()})
+
+@pytest.mark.parametrize(
+    ["function", "shape", "rtol", "args"],
+    [
+        ("K_ps_ai", (50, 4), 1e-6, []),
+    ],
+)
+def test_function_on_flux_surface(num_regression, flux_surface, function, shape, rtol, args):
+    if args:
+        data = getattr(all_species, function)(x, flux_surface, *args)
+    else:
+        data = getattr(all_species, function)(x, flux_surface)
+
+    try:
+        data = data.si.value
+    except AttributeError:
+        pass  # we're already a numpy array
+    assert data.shape == shape, data.shape
+    num_regression.check({function: data.flatten()})
 
 
 @given(
