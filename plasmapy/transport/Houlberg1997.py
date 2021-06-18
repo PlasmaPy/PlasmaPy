@@ -16,6 +16,7 @@ from astropy import units as u
 from scipy.special import erf
 from typing import Union, List, Iterable
 from functools import cached_property
+import warnings
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
@@ -62,20 +63,31 @@ class ExtendedParticleList(ParticleList):
                  dn: u.m**-4 = None,
                  ):
         super().__init__(particles)
-        self.T = u.Quantity(T).to(u.K, equivalencies = u.temperature_energy())
+        T = u.Quantity(T).to(u.K, equivalencies = u.temperature_energy())
         self.n = u.Quantity(n)
+        if T.size == 1:
+            T = np.broadcast_to(T, self.n.shape) * T.unit
+        self.T = T
 
         assert len(self.n) == len(particles)
+        indices = np.argsort(self.basic_elements)
+        is_sorted = (np.diff(indices) > 0).all()
+        if not is_sorted:
+            warnings.warn("Unsorted input array! Sorting.")
+            self._data = np.array(self._data)[indices].tolist()
+            self.n = self.n[indices]
+            self.T = self.T[indices]
+
         if dT is not None:
-            self.dT = u.Quantity(dT)
+            self.dT = u.Quantity(dT[indices])
             assert len(self.dT) == len(self.T)
         if dn is not None:
-            self.dn = u.Quantity(dn)
+            self.dn = u.Quantity(dn[indices])
             assert len(self.dn) == len(self.n)
-
-    @cached_property
+    @property
     def basic_elements(self):
-        return [Particle(i).element if Particle(i).element is not None else Particle(i).symbol for i in dataset.particle.values]
+        # TODO replace instances of element by isotope when that's fixed
+        return [p.element if p.element is not None else p.symbol for p in self]
 
     @cached_property
     def mass_density(self):
@@ -95,16 +107,22 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def thermal_speed(self):
-        return u.Quantity([thermal_speed(self.T, p) for p in self]).mean()
-
-    @cached_property
-    def thermal_speed_corrected(self):
-        return u.Quantity([thermal_speed(self.T, p) for p in self])
+        return u.Quantity([thermal_speed(T, p) for T, p in zip(self.T, self)])
 
     @cached_property
     def ξ(self):
-        array = self.charge_number**2 * self.n
-        return array / array.sum()
+        # assert np.all(np.array(self.basic_elements) == np.sort(self.basic_elements))
+        input_indices = np.unique(self.basic_elements,
+                                  return_index=True,
+                                  )[1]
+        charge_numbers = np.split(self.charge_number, input_indices)
+        ns = np.split(self.n, input_indices)
+        outputs = []
+        for charge_number, n in zip(charge_numbers, ns):
+            array = charge_number**2 * n
+            array /= array.sum()
+            outputs.append(array)
+        return np.concatenate(outputs)
 
 
     @cached_property
@@ -158,6 +176,7 @@ class ExtendedParticleList(ParticleList):
         N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
         return N
 
+    @cached_property
     def effective_momentum_relaxation_rate(self):
         """Equations A3, A4 from |Houlberg_1997|
 
@@ -167,158 +186,43 @@ class ExtendedParticleList(ParticleList):
             (self.charge[:, np.newaxis] * self.charge[np.newaxis, :] / self.mass[:, np.newaxis] / constants.eps0)**2 *\
             (self.n[:, np.newaxis] * self.n[np.newaxis, :]) * self.mass[:, np.newaxis] / self.thermal_speed**3
 
-        CL = lambda ai, bj, bn: Coulomb_logarithm(
-            b.T,
+        CL = lambda ai, bj, bn, bT: Coulomb_logarithm(
+            bT,
             bn,
             (ai, bj),  # simplifying assumption after A4
         )
-        CL_matrix = u.Quantity([[CL(ai, bj, bn) for bj, bn in zip(self, self.n)] for ai in self])
+        CL_matrix = u.Quantity([[CL(ai, bj, bn, bT) for bj, bn, bT in zip(self, self.n, self.T)] for ai in self])
         # TODO double check ordering
-        return (CL_matrix * collision_frequency).sum().si
+        return (CL_matrix * collision_frequency).sum(axis=-1).si
 
 
+    @cached_property
+    def N_script(self):
+        """Weighted field particle matrix - equation A2b from |Houlberg_1997|
+
+        Parameters
+        ----------
+        a : IonizationState
+        b : IonizationState
+        """
+        N = self.N_matrix
+        # Equation A2b
+        N_script = self.effective_momentum_relaxation_rate * N
+        return N_script
 
 
-def ionizationstate_mass_densities(a: IonizationState) -> u.kg / u.m ** 3:
-    return a.mass_density
+    @cached_property
+    def M_script(self):
+        """Weighted test particle matrix - equation A2a from |Houlberg_1997|
 
-
-def xab_ratio(a: ExtendedParticleList, b: ExtendedParticleList) -> u.dimensionless_unscaled:
-    """Ratio of thermal speeds as defined by |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    b : IonizationState
-
-    Returns
-    -------
-    u.dimensionless_unscaled
-
-    """
-
-    return b.thermal_speed / a.thermal_speed
-
-def mass_ratio_ab(a, b):
-    return a.mass[0] / b.mass[0]
-
-
-def M_matrix(a: IonizationState, b: IonizationState):
-    """Test particle matrix - equation A5a through A5f from |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    b : IonizationState
-    """
-    xab = xab_ratio(a, b)
-    mass_ratio = mass_ratio_ab(a, b)
-    M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
-    M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
-    M21 = M12
-    M22 = (13 / 4 + 4 * xab ** 2 + 15 / 2 * xab ** 4) / (1 + xab ** 2) ** (5 / 2)
-    M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
-    M31 = M13
-    M23 = (69 / 16 + 6 * xab ** 2 + 63 / 4 * xab ** 4) / (1 + xab ** 2) ** (7 / 2)
-    M32 = M23
-    M33 = -(433 / 64 + 17 * xab ** 2 + 459 / 8 * xab ** 4 + 175 / 8 * xab ** 6) / (
-        1 + xab ** 2
-    ) ** (9 / 2)
-    M = np.array([[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]])
-    return M
-
-
-def N_matrix(a: IonizationState, b: IonizationState):
-    """Test particle matrix - equation A6a through A6f from |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    b : IonizationState
-    """
-    xab = xab_ratio(a, b)
-    temperature_ratio = (a.T / b.T)[0] # FIXME hack
-    mass_ratio = mass_ratio_ab(a, b)
-    N11 = (1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
-    N21 = -3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
-    N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
-    M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
-    N12 = -(xab ** 2) * M12
-    N22 = 27 / 4 * (temperature_ratio) ** (1 / 2) * xab ** 2 / (1 + xab ** 2) ** (5 / 2)
-    M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
-    N13 = -(xab ** 4) * M13
-    N23 = -225 / 16 * temperature_ratio * xab ** 4 / (1 + xab ** 2) ** (7 / 2)
-    N32 = N23 / temperature_ratio
-    N33 = (
-        2625 / 64 * temperature_ratio ** (1 / 2) * xab ** 4 / (1 + xab ** 2) ** (9 / 2)
-    )
-    N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
-    return N
-
-
-def effective_momentum_relaxation_rate(a: IonizationState, b: IonizationState):
-    """Equations A3, A4 from |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    b : IonizationState
-    """
-    # TODO could be refactored using numpy
-    collision_frequency = 1 / (3 * np.pi**(3/2)) *\
-        (a.charge[:, np.newaxis] * b.charge[np.newaxis, :] / a.mass[:, np.newaxis] / constants.eps0)**2 *\
-        (a.n[:, np.newaxis] * b.n[np.newaxis, :]) * a.mass[:, np.newaxis] / a.thermal_speed**3
-
-    CL = lambda ai, bj, bn: Coulomb_logarithm(
-        b.T,
-        bn,
-        (ai, bj),  # simplifying assumption after A4
-    )
-    CL_matrix = u.Quantity([[CL(ai, bj, bn) for bj, bn in zip(b, b.n)] for ai in a])
-    return (CL_matrix * collision_frequency).sum().si
-
-
-def ξ(isotope: IonizationState):
-    """The charge state weighting factor - equation 11 from |Houlberg_1997|
-
-    Parameters
-    ----------
-    isotope : IonizationState
-    """
-    return isotope.ξ
-
-
-def N_script(a: IonizationState, b: IonizationState):
-    """Weighted field particle matrix - equation A2b from |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    b : IonizationState
-    """
-    N = N_matrix(a, b)
-    # Equation A2b
-    N_script = effective_momentum_relaxation_rate(a, b) * N
-    return N_script
-
-
-def M_script(a: IonizationState, all_species: IonizationStateCollection):
-    """Weighted test particle matrix - equation A2a from |Houlberg_1997|
-
-    Parameters
-    ----------
-    a : IonizationState
-    all_species : IonizationStateCollection
-    """
-    # Equation A2a
-    def gener():
-        for b in all_species:
-            if b is not a:
-                # TODO am I sure this if is necessary here?
-                yield M_matrix(a, b) * effective_momentum_relaxation_rate(a, b)
-
-    return sum(gener())
-
+        Parameters
+        ----------
+        a : IonizationState
+        all_species : IonizationStateCollection
+        """
+        # Equation A2a
+        integrand = (self.M_matrix * self.effective_momentum_relaxation_rate)
+        return integrand.sum(axis=-1)
 
 def pitch_angle_diffusion_rate(
     x: np.ndarray,
