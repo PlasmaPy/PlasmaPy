@@ -158,8 +158,8 @@ Math can be written using `LaTeX <https://www.latex-project.org/>`_ commands
 
       \alpha = \beta + \gamma
 
-Math can be in-line, like ``:math:\`x\```. Using Unicode characters
-makes math like ``:math:\`α + β + γ\``` easier to read in source code.
+Math can be in-line, like `` :math:`x` ``. Using Unicode characters
+makes math like `` :math:`α + β + γ` `` easier to read in source code.
 
 Markdown
 --------
