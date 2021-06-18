@@ -64,6 +64,7 @@ def test_function_of_relative_velocity(num_regression, function, shape, rtol, ar
     ["function", "shape", "rtol", "args"],
     [
         ("K_ps_ai", (50, 4), 1e-6, []),
+        ("K", (50, 4), 1e-6, []),
     ],
 )
 def test_function_on_flux_surface(num_regression, flux_surface, function, shape, rtol, args):
@@ -71,13 +72,20 @@ def test_function_on_flux_surface(num_regression, flux_surface, function, shape,
         data = getattr(all_species, function)(x, flux_surface, *args)
     else:
         data = getattr(all_species, function)(x, flux_surface)
-
     try:
         data = data.si.value
     except AttributeError:
         pass  # we're already a numpy array
     assert data.shape == shape, data.shape
     num_regression.check({function: data.flatten()})
+
+def test_mu_hat(num_regression, flux_surface):
+    data = all_species.mu_hat(flux_surface).si
+    assert data.unit == u.Unit("kg / (m3 s)")
+    assert data.shape == (3, 3, 4)
+    num_regression.check({"mu_hat": data.value.flatten()})
+
+
 
 
 @given(
@@ -95,9 +103,9 @@ def test_function_on_flux_surface(num_regression, flux_surface, function, shape,
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_ν_T_ai(x):
     x = np.array([x])
-    result = ν_T_ai(x, hydrogen, all_species)[1]
-    assert result > 0
-    assert np.isfinite(result)
+    result = all_species.ν_T_ai(x)
+    assert np.all(result > 0)
+    assert np.isfinite(result).all()
 
 
 @given(
@@ -114,13 +122,8 @@ def test_ν_T_ai(x):
 @settings(deadline=datetime.timedelta(milliseconds=1000))
 def test_K_ps_ai(x, flux_surface):
     x = np.array([x])
-    result = K_ps_ai(x, hydrogen, all_species, flux_surface)
-    assert (result[1:] > 0).all()
-    assert np.isfinite(result[1:]).all()
-    second_result = K_ps_ai(x, hydrogen, all_species, flux_surface)
+    result = all_species.K_ps_ai(x, flux_surface)
+    assert (result > 0).all()
+    assert np.isfinite(result).all()
+    second_result = all_species.K_ps_ai(x, flux_surface)
     assert_quantity_allclose(result, second_result)
-
-
-def test_mu(flux_surface, num_regression):
-    μ = mu_hat(hydrogen, all_species, flux_surface)
-    num_regression.check({"mu": μ.si.value.flatten()})

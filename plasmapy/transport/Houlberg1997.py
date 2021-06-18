@@ -38,7 +38,6 @@ __all__ = [
     "ωm",
     "F_m",
     "_B17",
-    "K_B_ai",
     "pitch_angle_diffusion_rate",
     "M_script",
     "N_script",
@@ -342,45 +341,40 @@ class ExtendedParticleList(ParticleList):
         ----------
         x : np.ndarray
             x
-        a : IonizationState
-            a
-        all_species : IonizationStateCollection
-            all_species
         flux_surface : FluxSurface
             flux_surface
         m_max :
             m_max
         """
-        ν = self.ν_T_ai(x)[:, np.newaxis, :]
+        ν = self.ν_T_ai(x)[:, :, np.newaxis]
 
         m = np.arange(1, m_max + 1)
-        F = F_m(m[:, np.newaxis], flux_surface)
-        ω = ωm(x.reshape(-1, 1, 1) , m[:, np.newaxis], self.thermal_speed, flux_surface.gamma)[np.newaxis, ...]
+        F = F_m(m, flux_surface)
+        ω = ωm(x, m, self.thermal_speed, flux_surface.gamma)
         B10 = (
-            1.5 * (ν / ω) ** 2
+            1.5 * (ν / ω) ** 1
             - 9 / 2 * (ν / ω) ** 4
             + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
             * (2 * ν / ω)
             * np.arctan(ω / ν).si.value
         )
-        onepart = F[:, np.newaxis] * B10
-        full_sum = np.sum(onepart / ν, axis=1)
+        onepart = F * B10
+        full_sum = np.sum(onepart / ν, axis=-1)
 
         return (
             3
             / 2
-            * self.thermal_speed[np.newaxis, :]
+            * self.thermal_speed.reshape(1, -1)
             ** 2
-            * x[:, np.newaxis] ** 2
+            * x.reshape(-1, 1) ** 2
             * full_sum
             / u.m ** 2   #TODO why the units here?
         )
 
 
     def K(
+        self,
         x: np.ndarray,
-        a: IonizationState,
-        all_species: IonizationStateCollection,
         flux_surface: FluxSurface,
         *,
         m_max: int = 100,
@@ -400,23 +394,18 @@ class ExtendedParticleList(ParticleList):
         ----------
         x : np.ndarray
             distribution velocity relative to the thermal velocity.
-        a : IonizationState
-        all_species : IonizationStateCollection
         flux_surface : FluxSurface
         m_max : int
         orbit_squeezing : bool
             orbit_squeezing
         """
         # Eq 16
-        kb = K_B_ai(x, a, all_species, flux_surface, orbit_squeezing=orbit_squeezing)
-        # print(f"got {kb=}")
-        kps = K_ps_ai(x, a, all_species, flux_surface, m_max=m_max)
-        # print(f"got {kps=}")
+        kb = self.K_B_ai(x, flux_surface.trapped_fraction, orbit_squeezing=orbit_squeezing)
+        kps = self.K_ps_ai(x, flux_surface, m_max=m_max)
         return 1 / (1 / kb + 1 / kps)
 
     def mu_hat(
-        a: IonizationState,
-        all_species: IonizationStateCollection,
+        self,
         flux_surface: FluxSurface,
         *,
         xmin: float = 0.0015,
@@ -448,17 +437,17 @@ class ExtendedParticleList(ParticleList):
 
         α = orders
         β = orders
-        len_a = len(a)
+        len_a = len(self)
         signs = (-1) * (α[:, None] + β[None, :])
         laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
-        kterm = K(x, a, all_species, flux_surface, **kwargs)
+        kterm = self.K(x, flux_surface, **kwargs)
         kterm = kterm.reshape(len_a, N, 1, 1)
         xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
         y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
         integral = trapezoid(y, x, axis=1)
         mu_hat_ai = integral * signs[None, ...]
-        actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * a.mass_density[:, None, None]
-        return actual_units
+        actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
+        return actual_units.T
 
 
     def contributing_states(a: IonizationState):
@@ -508,10 +497,13 @@ def F_m(m: Union[int, np.ndarray], fs: FluxSurface):
     flux_surface : FluxSurface
         flux_surface
     """
+    if isinstance(m, np.ndarray):
+        m = m.reshape(-1, 1)
+    Theta = fs.Theta.reshape(1, -1)
     B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
-    under_average_B16 = np.sin(m * fs.Theta) * B20
+    under_average_B16 = np.sin(Theta * m) * B20
     under_average_B15 = under_average_B16 / fs.Bmag
-    under_average_B16_cos = np.cos(m * fs.Theta) * B20
+    under_average_B16_cos = np.cos(Theta * m) * B20
     under_average_B15_cos = under_average_B16_cos / fs.Bmag
     B15 = fs.flux_surface_average(under_average_B15)
     B16 = fs.gamma * fs.flux_surface_average(under_average_B16)
@@ -537,6 +529,6 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m/u.s, gamma)
     """
     """Equation B11 of Houlberg_1997."""
     B11 = (
-        x * thermal_speed * m * gamma / u.m
+        x.reshape(-1, 1, 1) * thermal_speed.reshape(1, -1, 1) * m.reshape(1, 1, -1) * gamma / u.m
     )  # TODO why the u.m?
     return B11

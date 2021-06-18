@@ -147,6 +147,7 @@ class FluxSurface:
         f_tl = 1 - h2mean * self.flux_surface_average(integrand)
         return f_tl
 
+    @cached_property
     def trapped_fraction(self):
         f_t = 0.75 * self._f_tu + 0.25 * self._f_tl
         return f_t
