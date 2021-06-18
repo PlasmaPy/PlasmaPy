@@ -120,9 +120,14 @@ We can link to code objects by enclosing them in back ticks.
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`. Intersphinx_
-mappings are defined in the ``intersphinx_mapping`` variable in
-`docs/conf.py`_.
+packages like `numpy`, `astropy`, `scipy`, and `pandas`.   This cross-package
+linking is made possible with the `sphinx.ext.intersphinx` extension and
+the sources used for this cross-linking is defined in the
+``intersphinx_mapping`` variable in `docs/conf.py`_.  If a cross-link is not
+working as expected this is usually due to (1) a typo, (2) the package is
+not defined in the ``intersphinx_mapping`` configuration value, or (3)
+the referenced source package does not properly or fully index their
+own code (this is common in open-source packages).
 
 `sphinx` can format code blocks for Python and the Python console.
 
