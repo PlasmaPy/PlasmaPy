@@ -1115,6 +1115,9 @@ class CartesianGrid(AbstractGrid):
 
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
+        dx, dy, dz = self.dax0.si.value, self.dax1.si.value, self.dax2.si.value
+        Area = dx * dy * dz
+        n0, n1, n2 = self.shape
 
         # If persistent, double check the arguments list hasn't changed
         # If they have, run as non-persistent this time
@@ -1145,38 +1148,52 @@ class CartesianGrid(AbstractGrid):
         # Determine the points bounding the grid cell containing the
         # particle
         x0 = np.where(pos[:, 0] > xpos, i[:, 0], i[:, 0] - 1)
-        x1 = x0 + 1
+        xpts = np.array([x0, x0 + 1])
         y0 = np.where(pos[:, 1] > ypos, i[:, 1], i[:, 1] - 1)
-        y1 = y0 + 1
+        ypts = np.array([y0, y0 + 1])
         z0 = np.where(pos[:, 2] > zpos, i[:, 2], i[:, 2] - 1)
-        z1 = z0 + 1
+        zpts = np.array([z0, z0 + 1])
 
-        # Calculate the cell volume
-        cell_vol = self.dax0.si.value * self.dax1.si.value * self.dax2.si.value
-        n0, n1, n2 = self.shape
+        # Calculate the distance from each point to the x0,y0,z0 point
+        grid_pos = np.array([ax0[x0], ax1[y0], ax2[z0]])
+        grid_pos = np.moveaxis(grid_pos, 0, -1)
+        print(grid_pos.shape)
+        displacement = np.abs(grid_pos - pos)
 
         # Go through all of the vertices around the position and volume-
         # weight the values
-        for x in [x0, x1]:
-            for y in [y0, y1]:
-                for z in [z0, z1]:
+        for x in range(2):
+            for y in range(2):
+                for z in range(2):
 
                     # Determine if gridpoint is within bounds
                     valid = (
-                        (x >= 0) & (x < n0) & (y >= 0) & (y < n1) & (z >= 0) & (z < n2)
+                        (xpts[x] >= 0)
+                        & (xpts[x] < n0)
+                        & (ypts[y] >= 0)
+                        & (ypts[y] < n1)
+                        & (zpts[z] >= 0)
+                        & (zpts[z] < n2)
                     )
                     out = np.where(~valid)
 
-                    # Distance from grid vertex to particle position
-                    grid_pos = np.array([ax0[x], ax1[y], ax2[z]])
-                    grid_pos = np.moveaxis(grid_pos, 0, -1)
+                    if x == 0:
+                        Ax = dx - displacement[:, 0]
+                    else:
+                        Ax = displacement[:, 0]
 
-                    d = np.abs(grid_pos - pos)
+                    if y == 0:
+                        Ay = dy - displacement[:, 1]
+                    else:
+                        displacement[:, 1]
 
-                    # Fraction of cell volume that is closest to the
-                    # current point
-                    weight = (d[:, 0] * d[:, 1] * d[:, 2]) / cell_vol
-                    # weight = weight.to(u.dimensionless_unscaled)
+                    if z == 0:
+                        Az = dz - displacement[:, 2]
+                    else:
+                        displacement[:, 2]
+
+                    # Calculate the weight
+                    weight = ((Ax * Ay * Az) / Area).to(u.dimensionless_unscaled)
                     weight[out] = 0
                     weight *= nan_mask
                     weight = np.outer(weight, np.ones([nargs]))

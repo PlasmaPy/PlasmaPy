@@ -359,4 +359,5 @@ if __name__ == "__main__":
     test_volume_averaged_interpolator()
     test_NonUniformCartesianGrid()
     """
+    test_volume_averaged_interpolator()
     pass
