@@ -1116,7 +1116,7 @@ class CartesianGrid(AbstractGrid):
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
         dx, dy, dz = self.dax0.si.value, self.dax1.si.value, self.dax2.si.value
-        Area = dx * dy * dz
+        cell_volume = dx * dy * dz
         n0, n1, n2 = self.shape
 
         # If persistent, double check the arguments list hasn't changed
@@ -1154,10 +1154,15 @@ class CartesianGrid(AbstractGrid):
         z0 = np.where(pos[:, 2] > zpos, i[:, 2], i[:, 2] - 1)
         zpts = np.array([z0, z0 + 1])
 
+        print(i[:,0])
+        print(x0)
+        print(ax0[x0])
+
+
+
         # Calculate the distance from each point to the x0,y0,z0 point
         grid_pos = np.array([ax0[x0], ax1[y0], ax2[z0]])
         grid_pos = np.moveaxis(grid_pos, 0, -1)
-        print(grid_pos.shape)
         displacement = np.abs(grid_pos - pos)
 
         # Go through all of the vertices around the position and volume-
@@ -1177,28 +1182,35 @@ class CartesianGrid(AbstractGrid):
                     )
                     out = np.where(~valid)
 
+                    print(out)
+                    raise ValueError
+
                     if x == 0:
-                        Ax = dx - displacement[:, 0]
+                        Lx = dx - displacement[:, 0]
                     else:
-                        Ax = displacement[:, 0]
+                        Lx = displacement[:, 0]
 
                     if y == 0:
-                        Ay = dy - displacement[:, 1]
+                        Ly = dy - displacement[:, 1]
                     else:
-                        displacement[:, 1]
+                        Ly = displacement[:, 1]
 
                     if z == 0:
-                        Az = dz - displacement[:, 2]
+                        Lz = dz - displacement[:, 2]
                     else:
-                        displacement[:, 2]
+                        Lz = displacement[:, 2]
 
                     # Calculate the weight
-                    weight = ((Ax * Ay * Az) / Area).to(u.dimensionless_unscaled)
+                    weight = (Lx * Ly * Lz) / cell_volume
                     weight[out] = 0
                     weight *= nan_mask
+
                     weight = np.outer(weight, np.ones([nargs]))
 
-                    sum_value += weight * self._interp_quantities[x, y, z, :]
+
+
+                    sum_value += weight * self._interp_quantities[xpts[x], ypts[y], zpts[z], :]
+
 
         # Split output array into arrays with units
         # Apply units to output arrays

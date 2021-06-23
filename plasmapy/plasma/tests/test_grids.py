@@ -268,6 +268,8 @@ def test_nearest_neighbor_interpolator():
 
 
 def test_volume_averaged_interpolator():
+
+    """
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
     # Add some data to the grid
@@ -275,7 +277,7 @@ def test_volume_averaged_interpolator():
     grid.add_quantities(y=grid.grids[1])
 
     # One position
-    pos = np.array([0.1, -0.3, 0]) * u.cm
+    pos = np.array([0.1, -0.3, 0.2]) * u.cm
     pout = grid.volume_averaged_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.1)
 
@@ -300,6 +302,36 @@ def test_volume_averaged_interpolator():
     # to non-persistent interpolation in that case
     p1, p2 = grid.volume_averaged_interpolator(pos, "x", persistent=True)
     assert p1.size == 1
+
+    """
+
+    # Create a low resolution test grid and check that the volume-avg
+    # interpolator returns a higher resolution version
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
+    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
+    rho = radius.to(u.mm).value ** 2 * u.kg *  u.m**-3
+    grid.add_quantities(rho = rho)
+
+
+    npts = 150
+    interp_pts = np.array([ np.linspace(-1.2, 1.2,  num=npts),
+                           np.zeros(npts),
+                           np.zeros(npts)]) * u.cm
+    interp_pts = np.moveaxis(interp_pts, 0, -1)
+
+    interp_hax = interp_pts[:,0].to(u.mm).value
+
+    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
+
+    import matplotlib.pyplot as plt
+
+    raw_hax = grid.ax0.to(u.mm).value
+    raw_rho = grid['rho'][:,5, 5]
+
+    plt.plot(raw_hax, raw_rho)
+    plt.plot(interp_hax, interp_rho)
+    plt.ylim(0, 100)
+
 
 
 def test_NonUniformCartesianGrid():
