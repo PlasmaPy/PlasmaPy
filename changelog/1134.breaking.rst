@@ -1,0 +1,2 @@
+Added the `save_result()` function to `SyntheticProtonRadiograph` to save results to a `numpy.npz` file.
+`synthetic_radiograph` is now a separate function in the `proton_radiograph` module that takes either a `SyntheticProtonRadiograph` object or a result dictionary as an argument.
