@@ -1154,12 +1154,6 @@ class CartesianGrid(AbstractGrid):
         z0 = np.where(pos[:, 2] > zpos, i[:, 2], i[:, 2] - 1)
         zpts = np.array([z0, z0 + 1])
 
-        print(i[:,0])
-        print(x0)
-        print(ax0[x0])
-
-
-
         # Calculate the distance from each point to the x0,y0,z0 point
         grid_pos = np.array([ax0[x0], ax1[y0], ax2[z0]])
         grid_pos = np.moveaxis(grid_pos, 0, -1)
@@ -1179,11 +1173,11 @@ class CartesianGrid(AbstractGrid):
                         & (ypts[y] < n1)
                         & (zpts[z] >= 0)
                         & (zpts[z] < n2)
+                        & (displacement[:, 0] < dx)
+                        & (displacement[:, 1] < dy)
+                        & (displacement[:, 2] < dz)
                     )
                     out = np.where(~valid)
-
-                    print(out)
-                    raise ValueError
 
                     if x == 0:
                         Lx = dx - displacement[:, 0]
@@ -1204,7 +1198,6 @@ class CartesianGrid(AbstractGrid):
                     weight = (Lx * Ly * Lz) / cell_volume
                     weight[out] = 0
                     weight *= nan_mask
-
                     weight = np.outer(weight, np.ones([nargs]))
 
 
