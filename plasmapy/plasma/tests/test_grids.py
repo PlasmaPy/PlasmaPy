@@ -302,53 +302,79 @@ def test_volume_averaged_interpolator():
     p1, p2 = grid.volume_averaged_interpolator(pos, "x", persistent=True)
     assert p1.size == 1
 
-
     # Create a low resolution test grid and check that the volume-avg
     # interpolator returns a higher resolution version
     raw_npts = 20
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=raw_npts)
-    radius = np.sqrt(grid.pts0**2 + grid.pts1**2 + grid.pts2**2)
-    rho = radius.to(u.mm).value ** 4 * u.kg *  u.m**-3
-    grid.add_quantities(rho = rho)
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
 
     raw_hax = grid.ax0.to(u.mm).value
-    half = int(raw_npts/2)
-    raw_rho = grid['rho'][:,half, half]
-
+    half = int(raw_npts / 2)
+    raw_rho = grid["rho"][:, half, half]
 
     npts = 150
-    interp_pts = np.array([ np.linspace(-1, 1,  num=npts),
-                           np.zeros(npts),
-                           np.zeros(npts)]) * u.cm
+    interp_pts = (
+        np.array([np.linspace(-0.99, 1, num=npts), np.zeros(npts), np.zeros(npts)])
+        * u.cm
+    )
     interp_pts = np.moveaxis(interp_pts, 0, -1)
 
-    interp_hax = interp_pts[:,0].to(u.mm).value
+    interp_hax = interp_pts[:, 0].to(u.mm).value
 
     interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
     NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-
-    a,b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
+    a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
     analytic = interp_hax ** 4
-    vw_error = np.sum( np.abs(analytic[a:b] - interp_rho.value[a:b]) )
-    NN_error = np.sum( np.abs(analytic[a:b] - NN_rho.value[a:b]) )
+    vw_error = np.sum(np.abs(analytic[a:b] - interp_rho.value[a:b]))
+    NN_error = np.sum(np.abs(analytic[a:b] - NN_rho.value[a:b]))
 
+    """
+    # Uncomment plot for debugging
+    import matplotlib.pyplot as plt
+    plt.plot(raw_hax, raw_rho, marker='*', label='Interp points')
+    plt.plot(interp_hax, NN_rho, label='Nearest neighbor')
+    plt.plot(interp_hax, interp_rho, marker='o', label='Volume weighted')
+    plt.plot(interp_hax, analytic, label='Analytic')
+    plt.legend()
+    plt.xlim(6, 11)
+    """
 
+    # Assert that the VW interpolator is more accurate than the
+    # neareste neighbor interpolator
     assert vw_error < NN_error
 
+    # Now do the same computation but in 3D
 
-    """
-    import matplotlib.pyplot as plt
+    npts = 60
+    interp_pts = (
+        np.array(
+            [
+                np.linspace(-0.95, 0.95, num=npts),
+                np.linspace(-0.95, 0.95, num=npts),
+                np.linspace(-0.95, 0.95, num=npts),
+            ]
+        )
+        * u.cm
+    )
+    interp_pts = np.moveaxis(interp_pts, 0, -1)
 
+    xax = interp_pts[:, 0].to(u.mm).value
+    yax = interp_pts[:, 1].to(u.mm).value
+    zax = interp_pts[:, 2].to(u.mm).value
+    analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
 
-    plt.plot(raw_hax, raw_rho, marker='*')
-    plt.plot(interp_hax, NN_rho)
-    plt.plot(interp_hax, interp_rho, marker='o')
-    plt.plot(interp_hax, analytic)
+    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
+    NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-    plt.xlim(-11, -8)
-    """
+    vw_error = np.sum(np.abs(analytic - interp_rho.value))
+    NN_error = np.sum(np.abs(analytic - NN_rho.value))
 
+    # Assert that the VW interpolator is more accurate than the
+    # neareste neighbor interpolator
+    assert vw_error < NN_error
 
 
 def test_NonUniformCartesianGrid():

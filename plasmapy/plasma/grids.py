@@ -1200,10 +1200,9 @@ class CartesianGrid(AbstractGrid):
                     weight *= nan_mask
                     weight = np.outer(weight, np.ones([nargs]))
 
-
-
-                    sum_value += weight * self._interp_quantities[xpts[x], ypts[y], zpts[z], :]
-
+                    sum_value += (
+                        weight * self._interp_quantities[xpts[x], ypts[y], zpts[z], :]
+                    )
 
         # Split output array into arrays with units
         # Apply units to output arrays
