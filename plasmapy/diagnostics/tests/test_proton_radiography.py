@@ -5,7 +5,6 @@ Tests for proton radiography functions
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-import os
 import pytest
 import warnings
 
@@ -154,7 +153,7 @@ def run_1D_example(name):
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
     bins = [200, 60]
-    hax, vax, values = prad.synthetic_radiograph(sim, size=size, bins=bins)
+    hax, vax, values = sim.synthetic_radiograph(size=size, bins=bins)
 
     values = np.mean(values[:, 20:40], axis=1)
 
@@ -319,7 +318,7 @@ def test_input_validation():
         RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
     ):
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
-        hax, vax, values = prad.synthetic_radiograph(sim, size=size)
+        hax, vax, values = sim.synthetic_radiograph(size=size)
 
 
 def test_init():
@@ -464,52 +463,16 @@ def test_synthetic_radiograph():
 
     sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
-
-    # Verify exception raised if we try to make a synthetic radiograph before
-    # running
-    with pytest.raises(ValueError):
-        h, v, i = prad.synthetic_radiograph(sim)
-
     sim.run(field_weighting="nearest neighbor")
 
     size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
     bins = [200, 60]
 
     # Test size is None, default bins
-    h, v, i = prad.synthetic_radiograph(sim)
+    h, v, i = sim.synthetic_radiograph()
 
     # Test optical density
-    h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
-
-    # Test running from dictionary input
-    h, v, i = prad.synthetic_radiograph(sim.output)
-
-    # Verify exception if something other than sim or dict is given as argument
-    with pytest.raises(ValueError):
-        h, v, i = prad.synthetic_radiograph(np.ones(5))
-
-
-def test_saving_output(tmp_path):
-
-    path = os.path.join(tmp_path, "temp.npz")
-
-    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
-    sim.run(field_weighting="nearest neighbor")
-
-    res1 = sim.output
-
-    # Save result
-    sim.save_result(path)
-
-    # Load result
-    res2 = dict(np.load(path, "r", allow_pickle=True))
-
-    assert np.all(res1["x"] == res2["x"])
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins, optical_density=True)
 
 
 def test_gaussian_sphere_analytical_comparison():
@@ -557,7 +520,7 @@ def test_gaussian_sphere_analytical_comparison():
 
     size = np.array([[-1, 1], [-1, 1]]) * 4 * u.cm
     bins = [100, 100]
-    h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins)
+    h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
     h = h.to(u.mm).value / sim.mag
     v = v.to(u.mm).value / sim.mag
     r0 = h
@@ -671,7 +634,7 @@ def test_add_wire_mesh():
     # Expect a warning because many particles are off the radiograph
     # (Chose max_theta so corners are covered)
     with pytest.warns(RuntimeWarning):
-        h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins)
+        h, v, i = sim.synthetic_radiograph(size=size, bins=bins)
 
     # Sum up the vertical direction
     line = np.sum(i, axis=1)
@@ -720,6 +683,7 @@ def test_add_wire_mesh():
 
 
 if __name__ == "__main__":
+    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -730,4 +694,5 @@ if __name__ == "__main__":
     test_synthetic_radiograph()
     test_add_wire_mesh()
     test_gaussian_sphere_analytical_comparison()
+    """
     pass
