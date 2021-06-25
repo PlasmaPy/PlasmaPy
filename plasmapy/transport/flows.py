@@ -129,11 +129,11 @@ class FlowCalculator:
         r_pt = np.linalg.solve(Aai.T, S_pt.T).T
         r_sources = r_pt + 0 # TODO r_E itd
         rbar_sources_presum = (xi[np.newaxis, :] * r_sources)  # (3, N)
-        rbar_sources = all_species.split_sum(rbar_sources_presum, axis = 1)
+        rbar_sources = all_species.compress(rbar_sources_presum, axis = 1)
         S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
         r_flows = np.linalg.solve(Aai.T, S_flows)
         rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
-        rbar_flows = all_species.split_sum(rbar_flows_presum, axis=0)
+        rbar_flows = all_species.compress(rbar_flows_presum, axis=0)
         self.r_pt = r_pt
         self.S_pt = S_pt
         self.thermodynamic_forces = thermodynamic_forces

@@ -75,6 +75,8 @@ class ExtendedParticleList(ParticleList):
         self.T = T
 
         assert len(self.n) == len(particles)
+        # TODO replace instances of element by isotope when that's fixed
+        self.basic_elements = [p.element if p.element is not None else p.symbol for p in self]
         indices = np.argsort(self.basic_elements)
         is_sorted = (np.diff(indices) > 0).all()
         if not is_sorted:
@@ -90,22 +92,12 @@ class ExtendedParticleList(ParticleList):
             self.dn = u.Quantity(dn[indices])
             assert len(self.dn) == len(self.n)
 
-    @property
-    def basic_elements(self):
-        # TODO replace instances of element by isotope when that's fixed
-        return [p.element if p.element is not None else p.symbol for p in self]
 
-    @property
-    def num_isotopes(self):
-        return np.unique(self.basic_elements).size
-
-    @property
-    def split_index(self):
-        return np.unique(self.basic_elements, return_index=True)[1]
-
-    @property
-    def index_inverse(self):
-        return np.unique(self.basic_elements, return_inverse=True)[1]
+        uniq_all = np.unique(self.basic_elements,
+                             return_index=True,
+                             return_inverse=True)
+        unique, self.split_index, self.inverse_index = uniq_all
+        self.num_isotopes = unique.size
 
     def split_isotopes(self, arr, axis):
         assert arr.shape[axis] == len(self)
@@ -113,8 +105,23 @@ class ExtendedParticleList(ParticleList):
         assert output[0].size == 0
         return output[1:]
 
-    def split_sum(self, arr, axis):
-        return u.Quantity([a.sum(axis=axis) for a in self.split_isotopes(arr, axis=axis)])
+    def compress(self, arr, axis, aggregator = np.sum):
+        if isinstance(axis, tuple):
+            for integer in axis:
+                arr = self.compress(arr, integer, aggregator)
+            return arr
+        else:
+            return u.Quantity([aggregator(a, axis=axis) for a in self.split_isotopes(arr, axis=axis)])
+
+
+    def decompress(self, arr, axis):
+        # this is *not* quite invertible...
+        if isinstance(axis, tuple):
+            for integer in axis:
+                arr = self.decompress(arr, integer)
+            return arr
+        else:
+            return np.take(arr, self.inverse_index, axis=axis)
 
     @cached_property
     def mass_density(self):
@@ -162,7 +169,7 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def isotopic_temperature(self):
-        return u.Quantity([temperatures.mean() for temperatures in self.split_isotopes(self.temperatures, axis=0)])
+        return u.Quantity([temperatures.mean() for temperatures in self.split_isotopes(self.T, axis=0)])
 
     @cached_property
     def xab_ratio(self):
@@ -220,7 +227,6 @@ class ExtendedParticleList(ParticleList):
         """Equations A3, A4 from |Houlberg_1997|
 
         """
-        # TODO could be refactored using numpy
         collision_frequency = 1 / (3 * np.pi**(3/2)) *\
             (self.charge[:, np.newaxis] * self.charge[np.newaxis, :] / self.mass[:, np.newaxis] / constants.eps0)**2 *\
             (self.n[:, np.newaxis] * self.n[np.newaxis, :]) * self.mass[:, np.newaxis] / self.thermal_speed**3
@@ -232,7 +238,7 @@ class ExtendedParticleList(ParticleList):
         )
         CL_matrix = u.Quantity([[CL(ai, bj, bn, bT) for bj, bn, bT in zip(self, self.n, self.T)] for ai in self])
         # TODO double check ordering
-        return (CL_matrix * collision_frequency).sum(axis=-1).si
+        return self.compress(CL_matrix * collision_frequency, axis=(0, 1)).si
 
 
     @cached_property
@@ -288,15 +294,15 @@ class ExtendedParticleList(ParticleList):
         x_over_xab = self.x_over_xab(x)
         numerator = erf(x_over_xab) - Chandrasekhar_G(x_over_xab)
         fraction = numerator / denominator[:, np.newaxis, np.newaxis]
-        sum_items = np.sum(fraction * self.effective_momentum_relaxation_rate, axis=-1)
+        sum_items = fraction * self.effective_momentum_relaxation_rate
 
         result = (
             xi
             / self.mass_density
             * (3 * np.sqrt(np.pi) / 4)
-            * sum_items
+            * self.decompress(sum_items, axis=(1,2))
         )
-        return result
+        return result.sum(axis=-1)
 
 
     def K_B_ai(
