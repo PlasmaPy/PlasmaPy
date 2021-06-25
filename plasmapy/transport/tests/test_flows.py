@@ -19,38 +19,25 @@ from plasmapy.transport.flows import FlowCalculator
 # if "profile" not in globals():
 #     def profile(func):
 #         return func
+# TODO add a test with three particles - with 3 orders of calculations, it might glitch out on broadcasting!!!!
 
 
 
 # profile
 @pytest.fixture(scope="module")
 def fc(flux_surface):
-    hydrogen = ExtendedParticleList(
-        [Particle("p+")],
+    all_species = ExtendedParticleList(
+        [Particle("C 1+"), Particle("C 2+"), Particle("C 3+"), Particle("p+"), ],
         10 * u.eV,
-        u.Quantity([1e20 * u.m**-3]),
+        u.Quantity([1e20/1.11, 0.1e20/1.11, 0.01e20/1.11, 1e20], u.m**-3),
+        dn = u.Quantity([1e18, 1e18, 1e18, 1e18]) * u.m**-4,
+        dT = u.Quantity([-10, -10, -10, -10]) * u.K / u.m
     )
-    carbon_states = ExtendedParticleList(
-        [Particle("C 1+"), Particle("C 2+")],
-        10 * u.eV,
-        u.Quantity([1e20/1.1, 0.1e20/1.1], 1 / u.m**3),
-    )
-    all_species = [hydrogen, carbon_states]
 
-    density_gradient = {
-        "H": np.ones(1) * 1e18 * u.m ** -3 / u.m,
-        "C": np.ones(2) * 1e18 * u.m ** -3 / u.m,
-    }
-    temperature_gradient = {
-        "H": np.ones(1) * -10 * u.K / u.m,
-        "C": np.ones(2) * -10 * u.K / u.m,
-    }
 
     fc = FlowCalculator(
         all_species,
         flux_surface,
-        density_gradient,
-        temperature_gradient,
         mu_N=1000,
     )
     return fc

@@ -89,10 +89,32 @@ class ExtendedParticleList(ParticleList):
         if dn is not None:
             self.dn = u.Quantity(dn[indices])
             assert len(self.dn) == len(self.n)
+
     @property
     def basic_elements(self):
         # TODO replace instances of element by isotope when that's fixed
         return [p.element if p.element is not None else p.symbol for p in self]
+
+    @property
+    def num_isotopes(self):
+        return np.unique(self.basic_elements).size
+
+    @property
+    def split_index(self):
+        return np.unique(self.basic_elements, return_index=True)[1]
+
+    @property
+    def index_inverse(self):
+        return np.unique(self.basic_elements, return_inverse=True)[1]
+
+    def split_isotopes(self, arr, axis):
+        assert arr.shape[axis] == len(self)
+        output =  np.split(arr, self.split_index, axis=axis)
+        assert output[0].size == 0
+        return output[1:]
+
+    def split_sum(self, arr, axis):
+        return u.Quantity([a.sum(axis=axis) for a in self.split_isotopes(arr, axis=axis)])
 
     @cached_property
     def mass_density(self):

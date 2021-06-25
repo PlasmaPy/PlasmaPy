@@ -85,6 +85,25 @@ def test_mu_hat(num_regression, flux_surface):
     assert data.shape == (3, 3, 4)
     num_regression.check({"mu_hat": data.value.flatten()})
 
+def test_split_sum(num_regression):
+    N = len(all_species)
+    M = 9
+    assert (all_species.split_index == np.array([0, 3])).all()
+
+    arr = np.arange(N * M).reshape(N, M)
+    split = all_species.split_isotopes(arr, axis=0)
+    assert len(split) == 2
+
+    assert all_species.num_isotopes == 2
+
+    splitsum = all_species.split_sum(arr, axis=0)
+    assert splitsum.shape == (2, M)
+    
+
+
+
+
+
 
 
 

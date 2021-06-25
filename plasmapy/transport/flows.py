@@ -16,7 +16,7 @@ from collections import defaultdict, namedtuple
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 
-from .Houlberg1997 import contributing_states, M_script, mu_hat, N_script, ξ, ExtendedParticleList
+from .Houlberg1997 import ExtendedParticleList
 
 try:
     from functools import cached_property
@@ -92,12 +92,9 @@ class FlowCalculator:
         dataset_input: xarray.Dataset = None,
     ):
         self.all_species = all_species
-        self._all_species_map = {pl[0].symbol: pl for pl in all_species}
+        N = len(all_species)
         self.flux_surface = fs = flux_surface
         self._dataset_input = dataset_input
-
-        self.M_script_matrices = {}
-        self.N_script_matrices = {}
 
         self.S_pt = {}
         self.μ = {}
@@ -115,64 +112,57 @@ class FlowCalculator:
         rbar_sources_list = []
         self.r_pt = {}
         S_pt_list = []
-        for a in self.all_species:
-            sym = a[0].symbol
-            charges = a.charge_number * constants.e.si
-            n_charge_states = len(charges)
-            xi = ξ(a)
-            T_i = a.T.to(u.K, equivalencies = u.temperature_energy())
-            n_i = a.n
-            density_gradient = a.dn
-            temperature_gradient = (a.dT * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
-            pressure_gradient_over_n_i = constants.k_B * (
-                T_i * density_gradient / n_i + temperature_gradient
-            )
-            # we divide by n_i, which can be zero, leadning to inf, so to correct that...
-            pressure_gradient_over_n_i[np.isinf(pressure_gradient_over_n_i)] = 0
-            μ = mu_hat(a, self.all_species, self.flux_surface, N=mu_N)
 
-            Aai = xi[:, np.newaxis, np.newaxis] * self.M_script(a)[np.newaxis, ...] - μ
-            # --- TD forces eq21
-            S_pt_θ = thermodynamic_forces = (
-                fs.Fhat
-                / charges
-                * u.Quantity(
-                    [
-                        pressure_gradient_over_n_i,
-                        constants.k_B * temperature_gradient,
-                        np.zeros(n_charge_states) * (u.J / u.m),
-                    ]
-                )
-            ).T
-            CHARGE_STATE_AXIS = 0
-            BETA_AXIS = 2
-            S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
-                axis=BETA_AXIS
-            )  # Equation 29
-            S_pt_list.append(S_pt)
-            r_pt = np.linalg.solve(Aai, S_pt)
-            # TODO r_E itd
-            r_sources = r_pt + 0
-            r_sources_list.append(r_sources)
-            rbar_sources = (xi[:, np.newaxis] * r_sources).nansum(
-                axis=CHARGE_STATE_AXIS
-            )
-            rbar_sources_list.append(rbar_sources)
-            S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
-            r_flows = np.linalg.solve(Aai, S_flows)
-            r_flows_list.append(r_flows)
-            rbar_flows = (xi[:, np.newaxis, np.newaxis] * r_flows).nansum(
-                axis=CHARGE_STATE_AXIS
-            )
-            rbar_flows_list.append(rbar_flows)
-            for i, ai in enumerate(a):
-                sym = ai.symbol
-                self.r_pt[sym] = r_pt[i]
-                self.S_pt[sym] = S_pt[i]
-                self.thermodynamic_forces[sym] = thermodynamic_forces[i]
-                self.μ[sym] = μ[i]
+        charges = all_species.charge
+        xi = all_species.ξ
+        T_i = all_species.T.to(u.K, equivalencies = u.temperature_energy())
+        n_i = all_species.n
+        density_gradient = all_species.dn
+        temperature_gradient = (all_species.dT * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
+        pressure_gradient_over_n_i = constants.k_B * (
+            T_i * density_gradient / n_i + temperature_gradient
+        )
+        μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
-        lhs = u.Quantity(np.eye(3 * len(all_species)), "J2 / (A m6)", dtype=np.float64)
+        Aai = xi.reshape(1, 1, -1) * all_species.M_script - μ
+        # --- TD forces eq21
+        thermodynamic_forces = S_pt_θ =  (
+            fs.Fhat
+            / charges
+            * u.Quantity(
+                [
+                    pressure_gradient_over_n_i,
+                    constants.k_B * temperature_gradient,
+                    u.Quantity(np.zeros_like(temperature_gradient).value, u.J / u.m),
+                ]
+            )
+        )
+
+        BETA_AXIS = 1
+        S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
+            axis=BETA_AXIS
+        )  # Equation 29
+        S_pt_list.append(S_pt)
+        r_pt = np.linalg.solve(Aai.T, S_pt.T).T
+        r_sources = r_pt + 0 # TODO r_E itd
+        r_sources_list.append(r_sources)
+        rbar_sources_presum = (xi[np.newaxis, :] * r_sources)  # (3, N)
+        rbar_sources = all_species.split_sum(rbar_sources_presum, axis = 1)
+        rbar_sources_list.append(rbar_sources)
+        S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
+        r_flows = np.linalg.solve(Aai.T, S_flows)
+        r_flows_list.append(r_flows)
+        rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
+        rbar_flows = all_species.split_sum(rbar_flows_presum, axis=0)
+        rbar_flows_list.append(rbar_flows)
+        self.r_pt = r_pt
+        self.S_pt = S_pt
+        self.thermodynamic_forces = thermodynamic_forces
+        self.μ = μ
+        N_isotopes = all_species.num_isotopes
+
+        lhs = u.Quantity(np.stack(N_isotopes * [np.eye(3)], axis=0), "J2 / (A m6)", dtype=np.float64)
+        breakpoint()
         for i, a in enumerate(all_species):
             rarray = rbar_flows_list[i]
             for j, b in enumerate(self.all_species):

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from astropy import constants
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 try:
     from functools import cached_property
@@ -20,15 +20,15 @@ except ImportError:
 class FluxSurface:
     """Represents a single flux surface out of a magnetic equilibrium, experimental or otherwise."""
 
-    R: np.ndarray
-    Z: np.ndarray
+    R: np.ndarray = field(repr=False)
+    Z: np.ndarray = field(repr=False)
     psi: float
-    Brvals: np.ndarray
-    Bzvals: np.ndarray
-    Bphivals: np.ndarray
-    Bprimervals: np.ndarray
-    Bprimezvals: np.ndarray
-    GradRho2: np.ndarray
+    Brvals: np.ndarray = field(repr=False)
+    Bzvals: np.ndarray = field(repr=False)
+    Bphivals: np.ndarray = field(repr=False)
+    Bprimervals: np.ndarray = field(repr=False)
+    Bprimezvals: np.ndarray = field(repr=False)
+    GradRho2: np.ndarray = field(repr=False)
 
     def __post_init__(self):
         self.centroid = np.array([np.mean(self.R), np.mean(self.Z)])
