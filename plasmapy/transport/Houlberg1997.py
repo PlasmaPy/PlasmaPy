@@ -153,16 +153,28 @@ class ExtendedParticleList(ParticleList):
 
 
     @cached_property
+    def isotopic_thermal_speed(self):
+        return u.Quantity([speeds.mean() for speeds in self.split_isotopes(self.thermal_speed, axis=0)])
+
+    @cached_property
+    def isotopic_mass(self):
+        return u.Quantity([masses.mean() for masses in self.split_isotopes(self.mass, axis=0)])
+
+    @cached_property
+    def isotopic_temperature(self):
+        return u.Quantity([temperatures.mean() for temperatures in self.split_isotopes(self.temperatures, axis=0)])
+
+    @cached_property
     def xab_ratio(self):
-        return self.thermal_speed[:, np.newaxis] / self.thermal_speed[np.newaxis, :]
+        return self.isotopic_thermal_speed[:, np.newaxis] / self.isotopic_thermal_speed[np.newaxis, :]
 
     @cached_property
     def mass_ratio(self) -> "(N, N)":
-        return self.mass[:, ...] / self.mass[..., :]
+        return self.isotopic_mass[:, ...] / self.isotopic_mass[..., :]
 
     @cached_property
     def temperature_ratio(self) -> "(N, N)":
-        return self.T[:, ...] / self.T[..., :] # TODO double check ordering of indices
+        return self.isotopic_temperature[:, ...] / self.isotopic_temperature[..., :] # TODO double check ordering of indices
 
     @cached_property
     def M_matrix(self) -> "(N, N, 3, 3)":

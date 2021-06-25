@@ -96,23 +96,6 @@ class FlowCalculator:
         self.flux_surface = fs = flux_surface
         self._dataset_input = dataset_input
 
-        self.S_pt = {}
-        self.μ = {}
-        self.Aai = {}
-
-        r"""$S_{\theta,\beta}^{ai}"""
-        self.thermodynamic_forces = {}
-
-        self.pressure_gradient = {}
-        self.ξ = {}
-
-        r_flows_list = []
-        r_sources_list = []
-        rbar_flows_list = []
-        rbar_sources_list = []
-        self.r_pt = {}
-        S_pt_list = []
-
         charges = all_species.charge
         xi = all_species.ξ
         T_i = all_species.T.to(u.K, equivalencies = u.temperature_energy())
@@ -126,6 +109,7 @@ class FlowCalculator:
 
         Aai = xi.reshape(1, 1, -1) * all_species.M_script - μ
         # --- TD forces eq21
+        # r"""$S_{\theta,\beta}^{ai}"""
         thermodynamic_forces = S_pt_θ =  (
             fs.Fhat
             / charges
@@ -142,27 +126,21 @@ class FlowCalculator:
         S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
             axis=BETA_AXIS
         )  # Equation 29
-        S_pt_list.append(S_pt)
         r_pt = np.linalg.solve(Aai.T, S_pt.T).T
         r_sources = r_pt + 0 # TODO r_E itd
-        r_sources_list.append(r_sources)
         rbar_sources_presum = (xi[np.newaxis, :] * r_sources)  # (3, N)
         rbar_sources = all_species.split_sum(rbar_sources_presum, axis = 1)
-        rbar_sources_list.append(rbar_sources)
         S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
         r_flows = np.linalg.solve(Aai.T, S_flows)
-        r_flows_list.append(r_flows)
         rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
         rbar_flows = all_species.split_sum(rbar_flows_presum, axis=0)
-        rbar_flows_list.append(rbar_flows)
         self.r_pt = r_pt
         self.S_pt = S_pt
         self.thermodynamic_forces = thermodynamic_forces
         self.μ = μ
         N_isotopes = all_species.num_isotopes
 
-        lhs = u.Quantity(np.stack(N_isotopes * [np.eye(3)], axis=0), "J2 / (A m6)", dtype=np.float64)
-        breakpoint()
+        lhs = u.Quantity(np.stack(N_isotopes * [np.ones(3)], axis=0), "J2 / (A m6)", dtype=np.float64)
         for i, a in enumerate(all_species):
             rarray = rbar_flows_list[i]
             for j, b in enumerate(self.all_species):
