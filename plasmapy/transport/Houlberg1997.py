@@ -10,13 +10,13 @@ This work is referenced in docstrings as `Houlberg_1997`.
 from __future__ import annotations
 
 import numpy as np
+import warnings
 
 from astropy import constants
 from astropy import units as u
-from scipy.special import erf
-from typing import Union, List, Iterable
 from functools import cached_property
-import warnings
+from scipy.special import erf
+from typing import Iterable, List, Union
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
@@ -50,9 +50,7 @@ __all__ = [
 ]
 
 from plasmapy.particles.particle_collections import ParticleList
-from plasmapy.utils.decorators import (
-    validate_quantities,
-)
+from plasmapy.utils.decorators import validate_quantities
 
 LaguerrePolynomials = [
     lambda x: np.ones_like(x),
@@ -60,15 +58,18 @@ LaguerrePolynomials = [
     lambda x: 35 / 8 - 7 / 2 * x + 1 / 2 * x ** 2,
 ]
 
+
 class ExtendedParticleList(ParticleList):
-    def __init__(self, particles: Iterable, 
-                 T: u.eV,
-                 n: u.m**-3,
-                 dT: u.eV / u.m = None,
-                 dn: u.m**-4 = None,
-                 ):
+    def __init__(
+        self,
+        particles: Iterable,
+        T: u.eV,
+        n: u.m ** -3,
+        dT: u.eV / u.m = None,
+        dn: u.m ** -4 = None,
+    ):
         super().__init__(particles)
-        T = u.Quantity(T).to(u.K, equivalencies = u.temperature_energy())
+        T = u.Quantity(T).to(u.K, equivalencies=u.temperature_energy())
         self.n = u.Quantity(n)
         if T.size == 1:
             T = np.broadcast_to(T, self.n.shape) * T.unit
@@ -76,7 +77,9 @@ class ExtendedParticleList(ParticleList):
 
         assert len(self.n) == len(particles)
         # TODO replace instances of element by isotope when that's fixed
-        self.basic_elements = [p.element if p.element is not None else p.symbol for p in self]
+        self.basic_elements = [
+            p.element if p.element is not None else p.symbol for p in self
+        ]
         indices = np.argsort(self.basic_elements)
         is_sorted = (np.diff(indices) > 0).all()
         if not is_sorted:
@@ -92,27 +95,27 @@ class ExtendedParticleList(ParticleList):
             self.dn = u.Quantity(dn[indices])
             assert len(self.dn) == len(self.n)
 
-
-        uniq_all = np.unique(self.basic_elements,
-                             return_index=True,
-                             return_inverse=True)
+        uniq_all = np.unique(
+            self.basic_elements, return_index=True, return_inverse=True
+        )
         unique, self.split_index, self.inverse_index = uniq_all
         self.num_isotopes = unique.size
 
     def split_isotopes(self, arr, axis):
         assert arr.shape[axis] == len(self)
-        output =  np.split(arr, self.split_index, axis=axis)
+        output = np.split(arr, self.split_index, axis=axis)
         assert output[0].size == 0
         return output[1:]
 
-    def compress(self, arr, axis, aggregator = np.sum):
+    def compress(self, arr, axis, aggregator=np.sum):
         if isinstance(axis, tuple):
             for integer in axis:
                 arr = self.compress(arr, integer, aggregator)
             return arr
         else:
-            return u.Quantity([aggregator(a, axis=axis) for a in self.split_isotopes(arr, axis=axis)])
-
+            return u.Quantity(
+                [aggregator(a, axis=axis) for a in self.split_isotopes(arr, axis=axis)]
+            )
 
     def decompress(self, arr, axis):
         # this is *not* quite invertible...
@@ -146,34 +149,49 @@ class ExtendedParticleList(ParticleList):
     @cached_property
     def ξ(self):
         # assert np.all(np.array(self.basic_elements) == np.sort(self.basic_elements))
-        input_indices = np.unique(self.basic_elements,
-                                  return_index=True,
-                                  )[1]
+        input_indices = np.unique(
+            self.basic_elements,
+            return_index=True,
+        )[1]
         charge_numbers = np.split(self.charge_number, input_indices)
         ns = np.split(self.n, input_indices)
         outputs = []
         for charge_number, n in zip(charge_numbers, ns):
-            array = charge_number**2 * n
+            array = charge_number ** 2 * n
             array /= array.sum()
             outputs.append(array)
         return np.concatenate(outputs)
 
-
     @cached_property
     def isotopic_thermal_speed(self):
-        return u.Quantity([speeds.mean() for speeds in self.split_isotopes(self.thermal_speed, axis=0)])
+        return u.Quantity(
+            [
+                speeds.mean()
+                for speeds in self.split_isotopes(self.thermal_speed, axis=0)
+            ]
+        )
 
     @cached_property
     def isotopic_mass(self):
-        return u.Quantity([masses.mean() for masses in self.split_isotopes(self.mass, axis=0)])
+        return u.Quantity(
+            [masses.mean() for masses in self.split_isotopes(self.mass, axis=0)]
+        )
 
     @cached_property
     def isotopic_temperature(self):
-        return u.Quantity([temperatures.mean() for temperatures in self.split_isotopes(self.T, axis=0)])
+        return u.Quantity(
+            [
+                temperatures.mean()
+                for temperatures in self.split_isotopes(self.T, axis=0)
+            ]
+        )
 
     @cached_property
     def xab_ratio(self):
-        return self.isotopic_thermal_speed[:, np.newaxis] / self.isotopic_thermal_speed[np.newaxis, :]
+        return (
+            self.isotopic_thermal_speed[:, np.newaxis]
+            / self.isotopic_thermal_speed[np.newaxis, :]
+        )
 
     @cached_property
     def mass_ratio(self) -> "(N, N)":
@@ -181,7 +199,9 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def temperature_ratio(self) -> "(N, N)":
-        return self.isotopic_temperature[:, ...] / self.isotopic_temperature[..., :] # TODO double check ordering of indices
+        return (
+            self.isotopic_temperature[:, ...] / self.isotopic_temperature[..., :]
+        )  # TODO double check ordering of indices
 
     @cached_property
     def M_matrix(self) -> "(N, N, 3, 3)":
@@ -203,6 +223,8 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def N_matrix(self) -> "(N, N, 3, 3)":
+        # TODO np.where(all_species.N_matrix - np.swapaxes(all_species.N_matrix, 0, 1))  should maybe be symmetric, but doesn't seem to be
+        # cross-ref with NCLASS site errata
         xab = self.xab_ratio
         temperature_ratio = self.temperature_ratio
         mass_ratio = self.mass_ratio
@@ -211,35 +233,58 @@ class ExtendedParticleList(ParticleList):
         N31 = 15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
         M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
         N12 = -(xab ** 2) * M12
-        N22 = 27 / 4 * (temperature_ratio) ** (1 / 2) * xab ** 2 / (1 + xab ** 2) ** (5 / 2)
+        N22 = (
+            27
+            / 4
+            * (temperature_ratio) ** (1 / 2)
+            * xab ** 2
+            / (1 + xab ** 2) ** (5 / 2)
+        )
         M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
         N13 = -(xab ** 4) * M13
         N23 = -225 / 16 * temperature_ratio * xab ** 4 / (1 + xab ** 2) ** (7 / 2)
         N32 = N23 / temperature_ratio
         N33 = (
-            2625 / 64 * temperature_ratio ** (1 / 2) * xab ** 4 / (1 + xab ** 2) ** (9 / 2)
+            2625
+            / 64
+            * temperature_ratio ** (1 / 2)
+            * xab ** 4
+            / (1 + xab ** 2) ** (9 / 2)
         )
         N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
         return N
 
     @cached_property
     def effective_momentum_relaxation_rate(self):
-        """Equations A3, A4 from |Houlberg_1997|
-
-        """
-        collision_frequency = 1 / (3 * np.pi**(3/2)) *\
-            (self.charge[:, np.newaxis] * self.charge[np.newaxis, :] / self.mass[:, np.newaxis] / constants.eps0)**2 *\
-            (self.n[:, np.newaxis] * self.n[np.newaxis, :]) * self.mass[:, np.newaxis] / self.thermal_speed**3
+        """Equations A3, A4 from |Houlberg_1997|"""
+        collision_frequency = (
+            1
+            / (3 * np.pi ** (3 / 2))
+            * (
+                self.charge[:, np.newaxis]
+                * self.charge[np.newaxis, :]
+                / self.mass[:, np.newaxis]
+                / constants.eps0
+            )
+            ** 2
+            * (self.n[:, np.newaxis] * self.n[np.newaxis, :])
+            * self.mass[:, np.newaxis]
+            / self.thermal_speed ** 3
+        )
 
         CL = lambda ai, bj, bn, bT: Coulomb_logarithm(
             bT,
             bn,
             (ai, bj),  # simplifying assumption after A4
         )
-        CL_matrix = u.Quantity([[CL(ai, bj, bn, bT) for bj, bn, bT in zip(self, self.n, self.T)] for ai in self])
+        CL_matrix = u.Quantity(
+            [
+                [CL(ai, bj, bn, bT) for bj, bn, bT in zip(self, self.n, self.T)]
+                for ai in self
+            ]
+        )
         # TODO double check ordering
         return self.compress(CL_matrix * collision_frequency, axis=(0, 1)).si
-
 
     @cached_property
     def N_script(self):
@@ -255,7 +300,6 @@ class ExtendedParticleList(ParticleList):
         N_script = self.effective_momentum_relaxation_rate * N
         return N_script
 
-
     @cached_property
     def M_script(self):
         """Weighted test particle matrix - equation A2a from |Houlberg_1997|
@@ -266,7 +310,7 @@ class ExtendedParticleList(ParticleList):
         all_species : IonizationStateCollection
         """
         # Equation A2a
-        integrand = (self.M_matrix * self.effective_momentum_relaxation_rate)
+        integrand = self.M_matrix * self.effective_momentum_relaxation_rate
         return integrand.sum(axis=-1)
 
     def x_over_xab(self, x):
@@ -300,10 +344,9 @@ class ExtendedParticleList(ParticleList):
             xi
             / self.mass_density
             * (3 * np.sqrt(np.pi) / 4)
-            * self.decompress(sum_items, axis=(1,2))
+            * self.decompress(sum_items, axis=(1, 2))
         )
         return result.sum(axis=-1)
-
 
     def K_B_ai(
         self,
@@ -357,15 +400,13 @@ class ExtendedParticleList(ParticleList):
 
         # TODO check      if b is not a:  # TODO is not should work
         x_over_xab = self.x_over_xab(x)
-        x = x.reshape(-1, 1, 1) 
+        x = x.reshape(-1, 1, 1)
         part1 = (erf(x_over_xab) - 3 * Chandrasekhar_G(x_over_xab)) / x ** 3
-        part2 = 4 * (
-            self.temperature_ratio + self.xab_ratio ** -2
-        )
+        part2 = 4 * (self.temperature_ratio + self.xab_ratio ** -2)
         part2full = part2 * Chandrasekhar_G(x_over_xab) / x
         summation = (part1 + part2full) * self.effective_momentum_relaxation_rate
 
-        result = prefactor * summation.sum(axis=-1)
+        result = prefactor * self.decompress(summation.sum(axis=-1), axis=1)
         return result
 
     def K_ps_ai(
@@ -404,13 +445,11 @@ class ExtendedParticleList(ParticleList):
         return (
             3
             / 2
-            * self.thermal_speed.reshape(1, -1)
-            ** 2
+            * self.thermal_speed.reshape(1, -1) ** 2
             * x.reshape(-1, 1) ** 2
             * full_sum
-            / u.m ** 2   #TODO why the units here?
+            / u.m ** 2  # TODO why the units here?
         )
-
 
     def K(
         self,
@@ -440,7 +479,9 @@ class ExtendedParticleList(ParticleList):
             orbit_squeezing
         """
         # Eq 16
-        kb = self.K_B_ai(x, flux_surface.trapped_fraction, orbit_squeezing=orbit_squeezing)
+        kb = self.K_B_ai(
+            x, flux_surface.trapped_fraction, orbit_squeezing=orbit_squeezing
+        )
         kps = self.K_ps_ai(x, flux_surface, m_max=m_max)
         return 1 / (1 / kb + 1 / kps)
 
@@ -483,12 +524,18 @@ class ExtendedParticleList(ParticleList):
         kterm = self.K(x, flux_surface, **kwargs)
         kterm = kterm.reshape(len_a, N, 1, 1)
         xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
-        y = laguerres.reshape(1, N, 3, 1) * laguerres.reshape(1, N, 1, 3) * kterm * xterm
+        y = (
+            laguerres.reshape(1, N, 3, 1)
+            * laguerres.reshape(1, N, 1, 3)
+            * kterm
+            * xterm
+        )
         integral = trapezoid(y, x, axis=1)
         mu_hat_ai = integral * signs[None, ...]
-        actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
+        actual_units = (
+            (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
+        )
         return actual_units.T
-
 
     def contributing_states(a: IonizationState):
         """Helper iterator over |IonizationState|s.
@@ -503,8 +550,6 @@ class ExtendedParticleList(ParticleList):
         xi = ξ(a)
         for xii, ai in zip(xi, a):
             yield xii, ai
-
-
 
 
 def _B17(flux_surface):
@@ -556,7 +601,7 @@ def F_m(m: Union[int, np.ndarray], fs: FluxSurface):
     return F_m
 
 
-def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m/u.s, gamma):
+def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamma):
     """Equation B11 from |Houlberg_1997|.
 
     Parameters
@@ -569,6 +614,10 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m/u.s, gamma)
     """
     """Equation B11 of Houlberg_1997."""
     B11 = (
-        x.reshape(-1, 1, 1) * thermal_speed.reshape(1, -1, 1) * m.reshape(1, 1, -1) * gamma / u.m
+        x.reshape(-1, 1, 1)
+        * thermal_speed.reshape(1, -1, 1)
+        * m.reshape(1, 1, -1)
+        * gamma
+        / u.m
     )  # TODO why the u.m?
     return B11

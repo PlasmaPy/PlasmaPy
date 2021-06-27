@@ -62,7 +62,12 @@ class FlowCalculator:
         arrays = {}
         lists = []
         data_vars = ["n", "gradn", "T", "gradT"]
-        dataset['basic_elements'] = 'particle', [Particle(i).element if Particle(i).element is not None else Particle(i).symbol for i in dataset.particle.values]
+        dataset["basic_elements"] = "particle", [
+            Particle(i).element
+            if Particle(i).element is not None
+            else Particle(i).symbol
+            for i in dataset.particle.values
+        ]
         # TODO does not handle deuterium because H 1+.isotope = None, why?
         # TODO to wciaż jest przekombinowane i wszystko to trzeba spłaszczyć, bo bez sensu
         for basic_element, a in dataset.groupby("basic_elements"):
@@ -98,19 +103,24 @@ class FlowCalculator:
 
         charges = all_species.charge
         xi = all_species.ξ
-        T_i = all_species.T.to(u.K, equivalencies = u.temperature_energy())
+        T_i = all_species.T.to(u.K, equivalencies=u.temperature_energy())
         n_i = all_species.n
         density_gradient = all_species.dn
-        temperature_gradient = (all_species.dT * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
+        temperature_gradient = (all_species.dT * u.m).to(
+            u.K, equivalencies=u.temperature_energy()
+        ) / u.m
         pressure_gradient_over_n_i = constants.k_B * (
             T_i * density_gradient / n_i + temperature_gradient
         )
         μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
-        Aai = xi.reshape(1, 1, -1) * all_species.M_script - μ
+        Aai = (
+            xi.reshape(1, 1, -1) * all_species.decompress(all_species.M_script, axis=2)
+            - μ
+        ).T
         # --- TD forces eq21
         # r"""$S_{\theta,\beta}^{ai}"""
-        thermodynamic_forces = S_pt_θ =  (
+        thermodynamic_forces = S_pt_θ = (
             fs.Fhat
             / charges
             * u.Quantity(
@@ -126,48 +136,49 @@ class FlowCalculator:
         S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
             axis=BETA_AXIS
         )  # Equation 29
-        r_pt = np.linalg.solve(Aai.T, S_pt.T).T
-        r_sources = r_pt + 0 # TODO r_E itd
-        rbar_sources_presum = (xi[np.newaxis, :] * r_sources)  # (3, N)
-        rbar_sources = all_species.compress(rbar_sources_presum, axis = 1)
+        r_pt = np.linalg.solve(Aai, S_pt.T).T
+        r_sources = r_pt + 0  # TODO r_E itd
+        rbar_sources_presum = xi[np.newaxis, :] * r_sources  # (3, N)
+        rbar_sources = all_species.compress(rbar_sources_presum, axis=1)
+        N_isotopes = all_species.num_isotopes
+        assert rbar_sources.shape == (N_isotopes, 3)
         S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
-        r_flows = np.linalg.solve(Aai.T, S_flows)
+        r_flows = np.linalg.solve(Aai, S_flows)
+        assert r_flows.shape == (N, 3, 3)
+        np.testing.assert_allclose(
+            np.swapaxes(r_flows, 1, 2), r_flows
+        )  # symmetric matrix
         rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
         rbar_flows = all_species.compress(rbar_flows_presum, axis=0)
+        assert rbar_flows.shape == (N_isotopes, 3, 3)
         self.r_pt = r_pt
         self.S_pt = S_pt
         self.thermodynamic_forces = thermodynamic_forces
         self.μ = μ
-        N_isotopes = all_species.num_isotopes
 
-        lhs = u.Quantity(np.stack(N_isotopes * [np.ones(3)], axis=0), "J2 / (A m6)", dtype=np.float64)
-        for i, a in enumerate(all_species):
-            rarray = rbar_flows_list[i]
-            for j, b in enumerate(self.all_species):
-                narray = self.N_script(a, b).sum(axis=0, keepdims=True)
-                result = narray * rarray.T
-                lhs[3 * i : 3 * i + 3, 3 * j : 3 * j + 3] += result
-        rhs = u.Quantity(rbar_sources_list)
-        ubar = np.linalg.solve(lhs, rhs.ravel())
+        # equation 34
+        lhs = (
+            u.Quantity(
+                np.stack(N_isotopes * [np.eye(3)], axis=0),
+                "J2 / (A m6)",
+                dtype=np.float64,
+            )
+            + all_species.N_script.sum(axis=-1).T * rbar_flows
+        )
+        ubar = np.linalg.solve(lhs, rbar_sources).si
 
-        self._charge_state_flows = {}
-        for r_flows, r_sources, a in zip(
-            r_flows_list, r_sources_list, self.all_species
-        ):
+        Λ = -(all_species.N_script * ubar.reshape(1, 3, 1, -1)).sum(axis=(1, 3))
 
-            def gen():
-                for j, b in enumerate(self.all_species):
-                    ubar_b = ubar[3 * j : 3 * j + 3]
-                    yield (self.N_script(a, b) * ubar_b.reshape(1, -1)).sum(axis=1)
+        self_consistent_u = (
+            all_species.decompress(Λ, axis=1).reshape(-1, 3, 1) * r_flows
+        ).sum(
+            axis=1
+        )  # TODO is axis=1 right?
+        u_velocity = (self_consistent_u + r_sources.T).si
 
-            Λ = -sum(gen())
-
-            self_consistent_u = np.sum(Λ[np.newaxis, :, np.newaxis] * r_flows, axis=2)
-            u_velocity = self_consistent_u + r_sources
-
-            for i, ai in enumerate(a):
-                if np.isfinite(u_velocity[i]).all():
-                    self._charge_state_flows[ai.symbol] = u_velocity[i]
+        self._charge_state_flows = {
+            ai.symbol: u_velocity[i] for i, ai in enumerate(all_species)
+        }
 
     def all_contributing_states_symbols(self) -> typing.Iterator[str]:
         """Helper iterator over all charge levels of all isotopes in the calculation."""
@@ -226,11 +237,7 @@ class FlowCalculator:
                 μ = self.μ[sym]
                 Γ_BP = -(Fhat / ai.charge * (μ[0, :] * u_θ).sum()).si
                 q_BP = -(
-                    fs.Fhat
-                    * constants.k_B
-                    * a.T
-                    / ai.charge
-                    * (μ[1, :] * u_θ).sum()
+                    fs.Fhat * constants.k_B * a.T / ai.charge * (μ[1, :] * u_θ).sum()
                 ).si
                 results[sym] = Fluxes(
                     Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit)
@@ -308,11 +315,15 @@ class FlowCalculator:
             {
                 "total_particle_flux": (
                     "particle",
-                    u.Quantity([flux.particle_flux for flux in self.fluxes.values()]).ravel(),
+                    u.Quantity(
+                        [flux.particle_flux for flux in self.fluxes.values()]
+                    ).ravel(),
                 ),
                 "total_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self.fluxes.values()]).ravel(),
+                    u.Quantity(
+                        [flux.heat_flux for flux in self.fluxes.values()]
+                    ).ravel(),
                 ),
                 "BP_particle_flux": (
                     "particle",
@@ -322,7 +333,9 @@ class FlowCalculator:
                 ),
                 "BP_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_BP.values()]).ravel(),
+                    u.Quantity(
+                        [flux.heat_flux for flux in self._fluxes_BP.values()]
+                    ).ravel(),
                 ),
                 "CL_particle_flux": (
                     "particle",
@@ -332,7 +345,9 @@ class FlowCalculator:
                 ),
                 "CL_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_CL.values()]).ravel(),
+                    u.Quantity(
+                        [flux.heat_flux for flux in self._fluxes_CL.values()]
+                    ).ravel(),
                 ),
                 "PS_particle_flux": (
                     "particle",
@@ -342,7 +357,9 @@ class FlowCalculator:
                 ),
                 "PS_heat_flux": (
                     "particle",
-                    u.Quantity([flux.heat_flux for flux in self._fluxes_PS.values()]).ravel(),
+                    u.Quantity(
+                        [flux.heat_flux for flux in self._fluxes_PS.values()]
+                    ).ravel(),
                 ),
                 "diffusion_coefficient": (
                     "particle",
@@ -383,9 +400,7 @@ class FlowCalculator:
             for (_, ai), dn in zip(contributing_states(a), a.dn):
                 sym = ai.symbol
                 flux = self.fluxes[sym].particle_flux
-                results[sym] = (
-                    -flux / dn
-                )  # Eq48 TODO this is a partial adaptation
+                results[sym] = -flux / dn  # Eq48 TODO this is a partial adaptation
         return results
 
     @cached_property
