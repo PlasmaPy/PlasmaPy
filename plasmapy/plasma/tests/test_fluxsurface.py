@@ -67,7 +67,7 @@ def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
 
 
 def test_fs_trapped_fraction(num_regression, flux_surface):
-    f_t = flux_surface.trapped_fraction()
+    f_t = flux_surface.trapped_fraction
     f_tl = flux_surface._f_tl
     f_tu = flux_surface._f_tu
     f_ta = flux_surface.trapped_fraction_analytical()

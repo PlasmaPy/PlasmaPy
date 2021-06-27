@@ -21,11 +21,11 @@ x = np.logspace(-3, 6, 50)
 @pytest.mark.parametrize(
     ["function", "shape"],
     [
-        ("N_matrix", (3, 3, 4, 4)),
-        ("M_matrix", (3, 3, 4, 4)),
-        ("N_script", (3, 3, 4, 4)),
-        ("M_script", (3, 3, 4)),
-        ("effective_momentum_relaxation_rate", (4,)),
+        ("N_matrix", (3, 3, 2, 2)),
+        ("M_matrix", (3, 3, 2, 2)),
+        ("N_script", (3, 3, 2, 2)),
+        ("M_script", (3, 3, 2)),
+        ("effective_momentum_relaxation_rate", (2,)),
         ("ξ", (4,)),
     ],
 )
@@ -96,7 +96,7 @@ def test_split_sum(num_regression):
 
     assert all_species.num_isotopes == 2
 
-    splitsum = all_species.split_sum(arr, axis=0)
+    splitsum = all_species.compress(arr, axis=0)
     assert splitsum.shape == (2, M)
     
 

@@ -59,28 +59,14 @@ class FlowCalculator:
         Alternate constructor from an `xarray.Dataset` and an associated `~FluxSurface`.
         """
 
-        arrays = {}
-        lists = []
-        data_vars = ["n", "gradn", "T", "gradT"]
-        dataset["basic_elements"] = "particle", [
-            Particle(i).element
-            if Particle(i).element is not None
-            else Particle(i).symbol
-            for i in dataset.particle.values
-        ]
         # TODO does not handle deuterium because H 1+.isotope = None, why?
-        # TODO to wciaż jest przekombinowane i wszystko to trzeba spłaszczyć, bo bez sensu
-        for basic_element, a in dataset.groupby("basic_elements"):
-            lists.append(
-                ExtendedParticleList(
-                    [Particle(i) for i in a.particle.values],
-                    u.Quantity(a.T, dataset.attrs["T unit"]),
-                    u.Quantity(a.n, dataset.attrs["n unit"]),
-                    u.Quantity(a.gradT, dataset.attrs["gradT unit"]),
-                    u.Quantity(a.gradn, dataset.attrs["gradn unit"]),
+        lists = ExtendedParticleList(
+                    [Particle(i) for i in dataset.particle.values],
+                    u.Quantity(dataset.T, dataset.attrs["T unit"]),
+                    u.Quantity(dataset.n, dataset.attrs["n unit"]),
+                    u.Quantity(dataset.gradT, dataset.attrs["gradT unit"]),
+                    u.Quantity(dataset.gradn, dataset.attrs["gradn unit"]),
                 )
-            )
-
         return cls(
             lists,
             flux_surface,
@@ -90,7 +76,7 @@ class FlowCalculator:
     # profile
     def __init__(
         self,
-        all_species: IonizationStateCollection,
+        all_species: ExtendedParticleList,
         flux_surface: FluxSurface,
         *,
         mu_N: int = None,
@@ -101,10 +87,10 @@ class FlowCalculator:
         self.flux_surface = fs = flux_surface
         self._dataset_input = dataset_input
 
-        charges = all_species.charge
-        xi = all_species.ξ
-        T_i = all_species.T.to(u.K, equivalencies=u.temperature_energy())
-        n_i = all_species.n
+        charges = self.all_species.charge
+        xi = self.all_species.ξ
+        T_i = self.all_species.T.to(u.K, equivalencies=u.temperature_energy())
+        n_i = self.all_species.n
         density_gradient = all_species.dn
         temperature_gradient = (all_species.dT * u.m).to(
             u.K, equivalencies=u.temperature_energy()
@@ -196,20 +182,20 @@ class FlowCalculator:
             self.N_script_matrices[sym_tuple] = N_script(a, b)
         return self.N_script_matrices[sym_tuple]
 
-    # profile
-    def _funnymatrix(self, a_symbol):
-        a = self._all_species_map[a_symbol]
-        M = self.M_script(a)
-        outputs = {}
-        for _, ai in contributing_states(a):
-            sym = ai.symbol
-            output = self.thermodynamic_forces[sym] * M
-            for b in self.all_species:
-                N = self.N_script(a, b)
-                for xj, bj in contributing_states(b):
-                    output += xj * N * self.thermodynamic_forces[bj.symbol]
-            outputs[sym] = output.sum(axis=1)
-        return outputs
+    @cached_property
+    def _funnymatrix(self):
+        M = self.all_species.decompress(
+            self.all_species.M_script,
+            axis=-1,
+        )
+        output = self.thermodynamic_forces.reshape(3, 1, -1) * M
+        N = self.all_species.decompress(
+            self.all_species.N_script,
+            axis=(2,3),
+        )
+        ξ = self.all_species.ξ.reshape(1, 1, 1, -1)
+        presum = N * ξ * self.thermodynamic_forces.reshape(1, 3, 1, 4)
+        return output + presum.sum(axis=-1)
 
     @cached_property
     def _fluxes_BP(self):
@@ -235,23 +221,19 @@ class FlowCalculator:
         fs = self.flux_surface
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
         Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
-        results = {}
         fs = self.flux_surface
-        for a in self.all_species:
-            silly = self._funnymatrix(a[0].symbol)
-            for xi, ai in contributing_states(a):
-                sym = ai.symbol
-                prefactor = (
-                    -fs.Fhat / ai.charge * xi / B2fsav * (1 - B2fsav * Binv2fsav)
-                )
-                Γ_PS = prefactor * silly[sym][0]  # overlarge by s/m5
-                q_PS = (
-                    prefactor * constants.k_B * a.T * silly[sym][1]
-                )  # overlarge by μ.unit
-                results[sym] = Fluxes(
-                    Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit)
-                )
-        return results
+        silly = self._funnymatrix
+        ξ = self.all_species.ξ
+        prefactor = (
+            -fs.Fhat / self.all_species.charge * ξ / B2fsav * (1 - B2fsav * Binv2fsav)
+        )
+        Γ_PS = prefactor * silly[0].sum(axis=0)
+        q_PS = (
+            prefactor * constants.k_B * self.all_species.T * silly[1].sum(axis=0)
+        )
+        return Fluxes(
+            Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit)
+        )
 
     @cached_property
     def _fluxes_CL(self):
@@ -260,30 +242,21 @@ class FlowCalculator:
         # TODO fs.rho is [m]; fs.GradRho2 is actually [fs.gradRho]^2, gradRho is [1]
         # TODO FSA does not drop units; B2 and the others are unitless
         Fhat = self.flux_surface.Fhat
-        results = {}
-        for a in self.all_species:
-            silly = self._funnymatrix(a[0].symbol)
-            for xi, ai in contributing_states(a):
-                sym = ai.symbol
-                prefactor = FSA / Fhat * xi / ai.charge
-                Γ_CL = prefactor * silly[sym][0]
-                q_CL = prefactor * constants.k_B * a.T * silly[sym][1]
-                results[sym] = Fluxes(
-                    Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit)
-                )
-        return results
+        silly = self._funnymatrix
+        ξ = self.all_species.ξ
+        prefactor = FSA / Fhat * self.all_species.ξ / self.all_species.charge
+        Γ_CL = prefactor * silly[0].sum(axis=0)
+        q_CL = prefactor * constants.k_B * self.all_species.T * silly[1].sum(axis=0)
+        return Fluxes(
+            Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit)
+        )
 
     @cached_property
     def fluxes(self):
-        results = {}
-        for a in self.all_species:
-            for _, ai in contributing_states(a):
-                sym = ai.symbol
-                Γ_BP, q_BP = self._fluxes_BP[sym]
-                Γ_PS, q_PS = self._fluxes_PS[sym]
-                Γ_CL, q_CL = self._fluxes_CL[sym]
-                results[sym] = Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
-        return results
+        Γ_BP, q_BP = self._fluxes_BP
+        Γ_PS, q_PS = self._fluxes_PS
+        Γ_CL, q_CL = self._fluxes_CL
+        return Fluxes(Γ_BP + Γ_PS + Γ_CL, q_BP + q_PS + q_CL)
 
     def to_dataset(self, *, with_input=True) -> xarray.Dataset:
         r"""
@@ -381,23 +354,15 @@ class FlowCalculator:
 
     @cached_property
     def diffusion_coefficient(self):
-        results = {}
-        for a in self.all_species:
-            for (_, ai), dn in zip(contributing_states(a), a.dn):
-                sym = ai.symbol
-                flux = self.fluxes[sym].particle_flux
-                results[sym] = -flux / dn  # Eq48 TODO this is a partial adaptation
-        return results
+        flux = self.fluxes.particle_flux
+        dn = self.all_species.dn
+        return -flux / dn  # Eq48 TODO this is a partial adaptation
 
     @cached_property
     def thermal_conductivity(self):
-        results = {}
-        for a in self.all_species:
-            for (_, ai), dT in zip(contributing_states(a), a.dT):
-                sym = ai.symbol
-                flux = self.fluxes[sym].heat_flux
-                results[sym] = -flux / dT
-        return results
+        dT = self.all_species.dT
+        flux = self.fluxes.heat_flux
+        return -flux / dT
 
     @cached_property
     def bootstrap_current(self) -> u.J / u.m ** 2 / u.T:
@@ -405,15 +370,7 @@ class FlowCalculator:
         Bootstrap current caused by the charge state flows.
         """
 
-        def gen():
-            for a in self.all_species:
-                for (_, ai), n in zip(contributing_states(a), a.n):
-                    sym = ai.symbol
-                    u_velocity = self._charge_state_flows[sym][0]
-                    yield ai.charge * n * u_velocity
-                    # eq 37, second term
-
-        return sum(gen())
+        return (self._charge_state_flows[:,0] * self.all_species.charge * self.all_species.n).sum()
 
     @cached_property
     def local_flow_velocities(self):
@@ -422,21 +379,16 @@ class FlowCalculator:
         B_p = fs.Bp * u.T
         B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
         B = fs.Bmag * u.T
-        results = {}
-        for a in self.all_species:
-            for _, ai in contributing_states(a):
-                sym = ai.symbol
-                u_θ = (
-                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
-                ) / B2fsav
-                u_hat_theta_1_ai = u_θ[0]
-                S_theta_1_ai = self.thermodynamic_forces[sym][0]
-                u_p_ai = B_p * u_hat_theta_1_ai
-                u_t_ai = B_t * u_hat_theta_1_ai - S_theta_1_ai / B_t
-                u_parallel_ai = B * u_hat_theta_1_ai - S_theta_1_ai / B
-                u_perp_ai = B_p / B / B_t * S_theta_1_ai
-                results[sym] = u.Quantity([u_p_ai, u_t_ai, u_parallel_ai, u_perp_ai]).si
-        return results
+        u_θ = (
+            self._charge_state_flows + self.thermodynamic_forces
+        ) / B2fsav
+        u_hat_theta_1_ai = u_θ[:,0][:, np.newaxis]
+        S_theta_1_ai = self.thermodynamic_forces[:,0][:, np.newaxis]
+        u_p_ai = B_p * u_hat_theta_1_ai
+        u_t_ai = B_t * u_hat_theta_1_ai - S_theta_1_ai / B_t
+        u_parallel_ai = B * u_hat_theta_1_ai - S_theta_1_ai / B
+        u_perp_ai = B_p / B / B_t * S_theta_1_ai
+        return u.Quantity([u_p_ai, u_t_ai, u_parallel_ai, u_perp_ai]).si
 
     @cached_property
     def local_heat_flux_components(self):
@@ -445,22 +397,17 @@ class FlowCalculator:
         B_p = fs.Bp * u.T
         B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
         B = fs.Bmag * u.T
-        results = {}
-        for a in self.all_species:
-            n_i = a.n
-            T_i = a.T
-            p = n_i * T_i
-            for _, ai in contributing_states(a):
-                sym = ai.symbol
-                u_θ = (
-                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
-                ) / B2fsav
-                u_hat_theta_2_ai = u_θ[1]
-                S_theta_2_ai = self.thermodynamic_forces[sym][1]
-                p_ai = p[ai.charge_number]
-                q_p_ai = 5 / 2 * p_ai * B_p * u_hat_theta_2_ai
-                q_t_ai = 5 / 2 * p_ai * (B_t * u_hat_theta_2_ai - S_theta_2_ai / B_t)
-                q_parallel_ai = 5 / 2 * p_ai * (B * u_hat_theta_2_ai - S_theta_2_ai / B)
-                q_perp_ai = 5 / 2 * p_ai * B_p / B / B_t * S_theta_2_ai
-                results[sym] = u.Quantity([q_p_ai, q_t_ai, q_parallel_ai, q_perp_ai]).si
-        return results
+        n_i = self.all_species.n
+        T_i = self.all_species.T
+        p = n_i * T_i
+        u_θ = (
+            self._charge_state_flows + self.thermodynamic_forces
+        ) / B2fsav
+        u_hat_theta_2_ai = u_θ[:,1][:, np.newaxis]
+        S_theta_2_ai = self.thermodynamic_forces[:,1][:, np.newaxis]
+        p_ai = p[:,np.newaxis]
+        q_p_ai = 5 / 2 * p_ai * B_p * u_hat_theta_2_ai
+        q_t_ai = 5 / 2 * p_ai * (B_t * u_hat_theta_2_ai - S_theta_2_ai / B_t)
+        q_parallel_ai = 5 / 2 * p_ai * (B * u_hat_theta_2_ai - S_theta_2_ai / B)
+        q_perp_ai = 5 / 2 * p_ai * B_p / B / B_t * S_theta_2_ai
+        return u.Quantity([q_p_ai, q_t_ai, q_parallel_ai, q_perp_ai]).si

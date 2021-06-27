@@ -45,12 +45,9 @@ def fc(flux_surface):
 
 # profile
 def test_get_flows(fc, num_regression):
-    for ion, r in fc._charge_state_flows.items():
-        if "0" in ion:
-            continue
-        assert np.isfinite(r).all(), ion
+    assert fc._charge_state_flows.to(u.V/u.m)
     num_regression.check(
-        {key: value.si.value for key, value in fc._charge_state_flows.items()}
+        {"_charge_state_flows": fc._charge_state_flows.si.value.ravel()}
     )
 
 
@@ -64,35 +61,24 @@ def test_get_flows(fc, num_regression):
 )
 def test_fluxes_partial(fc, key, num_regression):
     fluxes = getattr(fc, f"_fluxes_{key}")
-    d_partial = {}
-    for ion, (Γ, q) in fluxes.items():
-        if "0" in ion:
-            continue
-        assert np.isfinite(Γ).all(), ion
-        assert np.isfinite(q).all(), ion
-        d_partial[f"Γ_{key}_{ion}"] = Γ.si.value
-        d_partial[f"q_{key}_{ion}"] = q.si.value
-    num_regression.check(d_partial)
+    num_regression.check(
+        dict(
+            particle=fluxes.particle_flux.si.value,
+            heat=fluxes.heat_flux.si.value,
+        )
+    )
 
 
 def test_diffusion_coefficient(fc, num_regression):
-    d = {}
-    for ion, D in fc.diffusion_coefficient.items():
-        assert np.isfinite(D).all(), ion
-        d[ion] = D.si.value
-        assert D.unit.si == (u.m ** 2 / u.s)
-    num_regression.check(d)
+    D = fc.diffusion_coefficient
+    assert D.to(u.m ** 2 / u.s)
+    num_regression.check({"diffusion_coefficient": D.si.value})
 
 
 def test_thermal_coefficient(fc, num_regression):
-    d = {}
-    for ion, χ in fc.thermal_conductivity.items():
-        if "0" in ion:
-            continue
-        assert np.isfinite(χ).all(), ion
-        d[ion] = χ.si.value
-        assert χ.si.unit == u.Unit("W / (K m)")
-    num_regression.check(d)
+    Chi = fc.thermal_conductivity
+    assert Chi.to(u.Unit("W / (K m)"))
+    num_regression.check({"thermal_conductivity": Chi.si.value})
 
 
 @pytest.mark.xfail(
@@ -111,24 +97,18 @@ def test_bootstrap_current(fc, num_regression):
 
 
 def test_fluxes(fc, num_regression):
-    d = {}
-    for ion, (Γ, q) in fc.fluxes.items():
-        if "0" in ion:
-            continue
-        assert np.isfinite(Γ).all(), ion
-        assert np.isfinite(q).all(), ion
-        d[f"Γ_{ion}"] = Γ.si.value
-        d[f"q_{ion}"] = q.si.value
+    Γ, q = fc.fluxes
+    d = dict(
+        Γ = Γ.si.value,
+        q = q.si.value,
+    )
     num_regression.check(d)
 
 
 def test_particle_velocities_heat_fluxes(fc, num_regression):
     d = {}
-    for ion, particle_velocities in fc.local_flow_velocities.items():
-        if "0" in ion:
-            continue
-        d[f"u_{ion}"] = particle_velocities.ravel().value
-        d[f"q_{ion}"] = fc.local_heat_flux_components[ion].ravel().value
+    d[f"u"] = fc.local_flow_velocities.ravel().value
+    d[f"q"] = fc.local_heat_flux_components.ravel().value
     num_regression.check(d)
 
 # @pytest.fixture(scope="module")

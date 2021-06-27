@@ -104,7 +104,8 @@ class ExtendedParticleList(ParticleList):
     def split_isotopes(self, arr, axis):
         assert arr.shape[axis] == len(self)
         output = np.split(arr, self.split_index, axis=axis)
-        assert output[0].size == 0
+        if output[0].size != 0:
+            raise ValueError
         return output[1:]
 
     def compress(self, arr, axis, aggregator=np.sum):
