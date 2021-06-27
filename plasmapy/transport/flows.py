@@ -153,8 +153,8 @@ class FlowCalculator:
         assert rbar_flows.shape == (N_isotopes, 3, 3)
         self.r_pt = r_pt
         self.S_pt = S_pt
-        self.thermodynamic_forces = thermodynamic_forces
-        self.μ = μ
+        self.thermodynamic_forces = thermodynamic_forces.T
+        self.μ = μ.T
 
         # equation 34
         lhs = (
@@ -174,11 +174,7 @@ class FlowCalculator:
         ).sum(
             axis=1
         )  # TODO is axis=1 right?
-        u_velocity = (self_consistent_u + r_sources.T).si
-
-        self._charge_state_flows = {
-            ai.symbol: u_velocity[i] for i, ai in enumerate(all_species)
-        }
+        self._charge_state_flows = (self_consistent_u + r_sources.T).si
 
     def all_contributing_states_symbols(self) -> typing.Iterator[str]:
         """Helper iterator over all charge levels of all isotopes in the calculation."""
@@ -220,29 +216,19 @@ class FlowCalculator:
         Fhat = self.flux_surface.Fhat
         fs = self.flux_surface
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
-        results = {}
-        for a in self.all_species:
-            for (
-                ai
-            ) in (
-                a
-            ):  # this could be rfactored out by iterating over self._charge_state_flows, instead, given a way to access ionizationstate back from ioniclevel
-                sym = ai.symbol
-                if sym not in self._charge_state_flows:
-                    continue
-
-                u_θ = (
-                    self._charge_state_flows[sym] + self.thermodynamic_forces[sym]
-                ) / B2fsav
-                μ = self.μ[sym]
-                Γ_BP = -(Fhat / ai.charge * (μ[0, :] * u_θ).sum()).si
-                q_BP = -(
-                    fs.Fhat * constants.k_B * a.T / ai.charge * (μ[1, :] * u_θ).sum()
-                ).si
-                results[sym] = Fluxes(
-                    Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit)
-                )
-        return results
+        # TODO cached property fs.B2av
+        u_θ = (self._charge_state_flows + self.thermodynamic_forces) / B2fsav
+        μ = self.μ
+        charge = self.all_species.charge
+        Γ_BP = -(Fhat / charge * (μ[:, 0] * u_θ).sum(axis=-1)).si
+        q_BP = -(
+            fs.Fhat
+            * constants.k_B
+            * self.all_species.T
+            / charge
+            * (μ[:, 1] * u_θ).sum(axis=1)
+        ).si
+        return Fluxes(Γ_BP.to(particle_flux_unit), q_BP.to(heat_flux_unit))
 
     @cached_property
     def _fluxes_PS(self):
