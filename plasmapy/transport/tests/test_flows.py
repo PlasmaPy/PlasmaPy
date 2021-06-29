@@ -9,12 +9,9 @@ from astropy.tests.helper import assert_quantity_allclose
 from hypothesis import example, given, settings
 from hypothesis import strategies as st
 
-from plasmapy.transport.Houlberg1997 import (
-    ExtendedParticleList,
-)
-
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.transport.flows import FlowCalculator
+from plasmapy.transport.Houlberg1997 import ExtendedParticleList
 
 # if "profile" not in globals():
 #     def profile(func):
@@ -22,18 +19,21 @@ from plasmapy.transport.flows import FlowCalculator
 # TODO add a test with three particles - with 3 orders of calculations, it might glitch out on broadcasting!!!!
 
 
-
 # profile
 @pytest.fixture(scope="module")
 def fc(flux_surface):
     all_species = ExtendedParticleList(
-        [Particle("C 1+"), Particle("C 2+"), Particle("C 3+"), Particle("p+"), ],
+        [
+            Particle("C 1+"),
+            Particle("C 2+"),
+            Particle("C 3+"),
+            Particle("p+"),
+        ],
         10 * u.eV,
-        u.Quantity([1e20/1.11, 0.1e20/1.11, 0.01e20/1.11, 1e20], u.m**-3),
-        dn = u.Quantity([1e18, 1e18, 1e18, 1e18]) * u.m**-4,
-        dT = u.Quantity([-10, -10, -10, -10]) * u.K / u.m
+        u.Quantity([1e20 / 1.11, 0.1e20 / 1.11, 0.01e20 / 1.11, 1e20], u.m ** -3),
+        dn=u.Quantity([1e18, 1e18, 1e18, 1e18]) * u.m ** -4,
+        dT=u.Quantity([-10, -10, -10, -10]) * u.K / u.m,
     )
-
 
     fc = FlowCalculator(
         all_species,
@@ -45,7 +45,7 @@ def fc(flux_surface):
 
 # profile
 def test_get_flows(fc, num_regression):
-    assert fc._charge_state_flows.to(u.V/u.m)
+    assert fc._charge_state_flows.to(u.V / u.m)
     num_regression.check(
         {"_charge_state_flows": fc._charge_state_flows.si.value.ravel()}
     )
@@ -99,8 +99,8 @@ def test_bootstrap_current(fc, num_regression):
 def test_fluxes(fc, num_regression):
     Γ, q = fc.fluxes
     d = dict(
-        Γ = Γ.si.value,
-        q = q.si.value,
+        Γ=Γ.si.value,
+        q=q.si.value,
     )
     num_regression.check(d)
 
@@ -110,6 +110,7 @@ def test_particle_velocities_heat_fluxes(fc, num_regression):
     d[f"u"] = fc.local_flow_velocities.ravel().value
     d[f"q"] = fc.local_heat_flux_components.ravel().value
     num_regression.check(d)
+
 
 # @pytest.fixture(scope="module")
 # def fc_with_electrons(flux_surface):
@@ -147,6 +148,7 @@ def test_particle_velocities_heat_fluxes(fc, num_regression):
 # def test_electrons(fc_with_electrons, num_regression):
 #     breakpoint()
 
+
 @pytest.mark.slow
 def test_integration():
     import astropy.units as u
@@ -154,7 +156,9 @@ def test_integration():
     import pandas as pd
     import xarray
 
-    data_df = pd.read_csv("/home/dominik/IFPILM/HoulbergNSTX.csv", index_col=0).iloc[::10, :]
+    data_df = pd.read_csv("/home/dominik/IFPILM/HoulbergNSTX.csv", index_col=0).iloc[
+        ::10, :
+    ]
 
     T_i = T_e = T_C6 = data_df["ToverT0"] * 0.5 * 1000
     dT_i = dT_e = dT_C6 = data_df["ToverT0_derivative"] * 0.5 * 1000
@@ -163,7 +167,6 @@ def test_integration():
     n_C6, dn_C6 = data_df["n_C"], data_df["n_C_derivative"]
 
     rho = data_df.x.values
-
 
     ## Multiple flux surfaces - radial grid
 
@@ -192,9 +195,7 @@ def test_integration():
     )  # these definitely, unfortunately, need to be moved into SymbolicEquilibrium
     zminmaxstep = (-2, 2, 0.001)
 
-
     from tqdm.auto import tqdm
-
 
     surfaces = list(
         tqdm(
@@ -205,11 +206,9 @@ def test_integration():
         )
     )
 
-
     ## `FlowCalculator`
 
-    rho_to_surface = {key: value for key, value in surfaces};
-
+    rho_to_surface = {key: value for key, value in surfaces}
 
     import xarray
 
@@ -266,10 +265,8 @@ def test_integration():
     dataset["charge_density"] = "rho", (dataset.charges * dataset.n).sum(dim="particle")
     dataset
 
-
     dataset["psi"] = eq.rho_to_psi(rho)
     dataset
-
 
     from tqdm import auto as tqdm
 
@@ -285,18 +282,17 @@ def test_integration():
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                fcs.append(FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface))
+                fcs.append(
+                    FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface)
+                )
         except ImportError as e:
             display(e)
-
 
     i = 3
     ψ, surface = surfaces[i]
     fc = FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface)
 
-
-    datasets = [fc.to_dataset() for fc in tqdm.tqdm(fcs)];
-
+    datasets = [fc.to_dataset() for fc in tqdm.tqdm(fcs)]
 
     results = xarray.concat(datasets, dim="rho")
     scaling = (fcs[0].bootstrap_current.unit / NSTX_Bt0).to(u.MA / u.m ** 2)
@@ -304,13 +300,13 @@ def test_integration():
         bootstrap_current_normalized=results.bootstrap_current * scaling
     )
 
-
     results.diffusion_coefficient.sel(particle="C 6+")
-
 
     import pandas as pd
 
     df = pd.read_csv("/home/dominik/Inbox/NSTXplot1.csv")
 
     df.plot.line(x="x")
-    results.bootstrap_current_normalized.plot.line(x="rho", label="My bootstrap current")
+    results.bootstrap_current_normalized.plot.line(
+        x="rho", label="My bootstrap current"
+    )

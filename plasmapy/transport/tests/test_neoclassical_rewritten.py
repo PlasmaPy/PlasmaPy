@@ -12,11 +12,17 @@ from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.transport.Houlberg1997 import ExtendedParticleList
 
 all_species = ExtendedParticleList(
-    [Particle("C 1+"), Particle("C 2+"), Particle("C 3+"), Particle("p+"), ],
+    [
+        Particle("C 1+"),
+        Particle("C 2+"),
+        Particle("C 3+"),
+        Particle("p+"),
+    ],
     10 * u.eV,
-    u.Quantity([1e20/1.11, 0.1e20/1.11, 0.01e20/1.11, 1e20], u.m**-3),
+    u.Quantity([1e20 / 1.11, 0.1e20 / 1.11, 0.01e20 / 1.11, 1e20], u.m ** -3),
 )
 x = np.logspace(-3, 6, 50)
+
 
 @pytest.mark.parametrize(
     ["function", "shape"],
@@ -60,6 +66,7 @@ def test_function_of_relative_velocity(num_regression, function, shape, rtol, ar
     assert data.shape == shape, data.shape
     num_regression.check({function: data.flatten()})
 
+
 @pytest.mark.parametrize(
     ["function", "shape", "rtol", "args"],
     [
@@ -67,7 +74,9 @@ def test_function_of_relative_velocity(num_regression, function, shape, rtol, ar
         ("K", (50, 4), 1e-6, []),
     ],
 )
-def test_function_on_flux_surface(num_regression, flux_surface, function, shape, rtol, args):
+def test_function_on_flux_surface(
+    num_regression, flux_surface, function, shape, rtol, args
+):
     if args:
         data = getattr(all_species, function)(x, flux_surface, *args)
     else:
@@ -79,11 +88,13 @@ def test_function_on_flux_surface(num_regression, flux_surface, function, shape,
     assert data.shape == shape, data.shape
     num_regression.check({function: data.flatten()})
 
+
 def test_mu_hat(num_regression, flux_surface):
     data = all_species.mu_hat(flux_surface).si
     assert data.unit == u.Unit("kg / (m3 s)")
     assert data.shape == (3, 3, 4)
     num_regression.check({"mu_hat": data.value.flatten()})
+
 
 def test_split_sum(num_regression):
     N = len(all_species)
@@ -98,13 +109,6 @@ def test_split_sum(num_regression):
 
     splitsum = all_species.compress(arr, axis=0)
     assert splitsum.shape == (2, M)
-    
-
-
-
-
-
-
 
 
 @given(
