@@ -1,1 +1,2 @@
-Fixed a bug in the volume-averaged interpolator in grids.CartesianGrid
+Fixed a bug in the volume-averaged interpolator for
+`~plasmapy.plasma.grids.CartesianGrid`.
