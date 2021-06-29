@@ -194,7 +194,7 @@ class FlowCalculator:
             axis=(2,3),
         )
         ξ = self.all_species.ξ.reshape(1, 1, 1, -1)
-        presum = N * ξ * self.thermodynamic_forces.reshape(1, 3, 1, 4)
+        presum = N * ξ * self.thermodynamic_forces.reshape(1, 3, 1, -1)
         return output + presum.sum(axis=-1)
 
     @cached_property
@@ -273,60 +273,34 @@ class FlowCalculator:
         result = xarray.Dataset(
             {
                 "total_particle_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.particle_flux for flux in self.fluxes.values()]
-                    ).ravel(),
+                    "particle", self.fluxes.particle_flux
                 ),
                 "total_heat_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.heat_flux for flux in self.fluxes.values()]
-                    ).ravel(),
+                    "particle", self.fluxes.heat_flux
                 ),
                 "BP_particle_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.particle_flux for flux in self._fluxes_BP.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_BP.particle_flux
                 ),
                 "BP_heat_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.heat_flux for flux in self._fluxes_BP.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_BP.heat_flux
                 ),
                 "CL_particle_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.particle_flux for flux in self._fluxes_CL.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_CL.particle_flux
                 ),
                 "CL_heat_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.heat_flux for flux in self._fluxes_CL.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_CL.heat_flux
                 ),
                 "PS_particle_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.particle_flux for flux in self._fluxes_PS.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_PS.particle_flux
                 ),
                 "PS_heat_flux": (
-                    "particle",
-                    u.Quantity(
-                        [flux.heat_flux for flux in self._fluxes_PS.values()]
-                    ).ravel(),
+                    "particle", self._fluxes_PS.heat_flux
                 ),
                 "diffusion_coefficient": (
-                    "particle",
-                    u.Quantity(list(self.diffusion_coefficient.values())).ravel(),
+                    "particle", self.diffusion_coefficient
                 ),
                 "thermal_conductivity": (
-                    "particle",
-                    u.Quantity(list(self.thermal_conductivity.values())).ravel(),
+                    "particle", self.thermal_conductivity
                 ),
                 "bootstrap_current": self.bootstrap_current,
                 # TODO this probably won't fit in the common array because of spatial dependence
@@ -340,7 +314,7 @@ class FlowCalculator:
                 # ),
             },
             {
-                "particle": list(self.all_contributing_states_symbols()),
+                "particle": self.all_species.symbols,
                 "psi": self.flux_surface.psi,
                 # "directions": ["poloidal", "toroidal", "parallel", "perpendicular"],
                 # "lp": self.flux_surface.lp,

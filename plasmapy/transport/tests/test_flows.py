@@ -147,6 +147,7 @@ def test_particle_velocities_heat_fluxes(fc, num_regression):
 # def test_electrons(fc_with_electrons, num_regression):
 #     breakpoint()
 
+@pytest.mark.slow
 def test_integration():
     import astropy.units as u
     import numpy as np

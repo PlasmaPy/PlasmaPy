@@ -21,7 +21,7 @@ from typing import Iterable, List, Union
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.mathematics import Chandrasekhar_G
-from plasmapy.particles import IonizationState, IonizationStateCollection
+from plasmapy.particles import IonizationState, IonizationStateCollection, Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 
 try:
@@ -68,6 +68,18 @@ class ExtendedParticleList(ParticleList):
         dT: u.eV / u.m = None,
         dn: u.m ** -4 = None,
     ):
+        symbols = np.array([particle.symbol for particle in particles])
+        sorted_particles = np.sort(symbols)
+        if not (sorted_particles == symbols).all():
+            warnings.warn("Your particles array was not sorted. Sorting!")
+            indices = np.argsort(symbols)
+            particles = [Particle(s) for s in sorted_particles]
+            if not T.size == 1:
+                T = T[indices]
+            n = n[indices]
+            dT = dT[indices]
+            dn = dn[indices]
+
         super().__init__(particles)
         T = u.Quantity(T).to(u.K, equivalencies=u.temperature_energy())
         self.n = u.Quantity(n)
@@ -104,9 +116,7 @@ class ExtendedParticleList(ParticleList):
     def split_isotopes(self, arr, axis):
         assert arr.shape[axis] == len(self)
         output = np.split(arr, self.split_index, axis=axis)
-        if output[0].size != 0:
-            raise ValueError
-        return output[1:]
+        return [a for a in output if a.size > 0]
 
     def compress(self, arr, axis, aggregator=np.sum):
         if isinstance(axis, tuple):
@@ -161,7 +171,9 @@ class ExtendedParticleList(ParticleList):
             array = charge_number ** 2 * n
             array /= array.sum()
             outputs.append(array)
-        return np.concatenate(outputs)
+        result = np.concatenate(outputs)
+        assert result.size == len(self)
+        return result
 
     @cached_property
     def isotopic_thermal_speed(self):
