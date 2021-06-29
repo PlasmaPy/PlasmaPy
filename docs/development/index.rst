@@ -10,6 +10,7 @@ Development Guide
    ../CONTRIBUTING
    ../CODE_OF_CONDUCT
    install_dev
+   workflow
    code_guide
    testing_guide
    doc_guide

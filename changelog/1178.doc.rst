@@ -1,0 +1,3 @@
+Started a page in the development guide in PlasmaPy's
+narrative documentation that describes the workflow
+required to contribute to PlasmaPy.
