@@ -1776,7 +1776,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     without any finite temperature effects, the resonance acts
     merely as a resonance such that power can be deposited there.
     If finite temperature effects are considered, mode conversion
-    can occur at the upper hybrid resonance, coupling to the 
+    can occur at the upper hybrid resonance, coupling to the
     electrostatic electron Bernstein wave.
 
     Example
