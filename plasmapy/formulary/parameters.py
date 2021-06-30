@@ -1864,7 +1864,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{pi}` is the ion plasma frequency.
 
     The lower hybrid frequency consitutes a resonance for electromagnetic
-    waves in magnetized plasmas, namely for the X-mode. There are waves
+    waves in magnetized plasmas, namely for the X-mode. These are waves
     with their wave electric field being perpendicular to the background
     magnetic field. For the lower hybrid frequency, ion and electron
     dynamics both play a role. As the name suggests, it has a lower frequency
