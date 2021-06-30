@@ -21,7 +21,7 @@ from typing import Iterable, List, Union
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.mathematics import Chandrasekhar_G
-from plasmapy.particles import IonizationState, IonizationStateCollection, Particle
+from plasmapy.particles import Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 
 try:
@@ -30,23 +30,10 @@ except ImportError:
     from scipy.integrate import trapezoid
 
 __all__ = [
-    "contributing_states",
-    "mu_hat",
-    "K",
-    "K_ps_ai",
-    "ν_T_ai",
+    "ExtendedParticleList",
     "ωm",
     "F_m",
     "_B17",
-    "pitch_angle_diffusion_rate",
-    "M_script",
-    "N_script",
-    "ξ",
-    "effective_momentum_relaxation_rate",
-    "N_matrix",
-    "M_matrix",
-    "xab_ratio",
-    "ionizationstate_mass_densities",
 ]
 
 from plasmapy.particles.particle_collections import ParticleList
@@ -139,12 +126,7 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def mass_density(self):
-        r"""Mass densities for each ionic level in an |IonizationState|.
-
-        Parameters
-        ----------
-        a : IonizationState
-            a
+        r"""Mass densities for each particle.
 
         Returns
         -------
@@ -301,13 +283,7 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def N_script(self):
-        """Weighted field particle matrix - equation A2b from |Houlberg_1997|
-
-        Parameters
-        ----------
-        a : IonizationState
-        b : IonizationState
-        """
+        """Weighted field particle matrix - equation A2b from |Houlberg_1997|"""
         N = self.N_matrix
         # Equation A2b
         N_script = self.effective_momentum_relaxation_rate * N
@@ -315,13 +291,7 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def M_script(self):
-        """Weighted test particle matrix - equation A2a from |Houlberg_1997|
-
-        Parameters
-        ----------
-        a : IonizationState
-        all_species : IonizationStateCollection
-        """
+        """Weighted test particle matrix - equation A2a from |Houlberg_1997|"""
         # Equation A2a
         integrand = self.M_matrix * self.effective_momentum_relaxation_rate
         return integrand.sum(axis=-1)
@@ -341,8 +311,6 @@ class ExtendedParticleList(ParticleList):
         ----------
         x : np.ndarray
             distribution velocity relative to the thermal velocity.
-        a : IonizationState
-        all_species : IonizationStateCollection
         """
         # Houlberg_1997, equation B4b,
         xi = self.ξ
@@ -374,12 +342,6 @@ class ExtendedParticleList(ParticleList):
         ----------
         x : np.ndarray
             x
-        a_states : IonizationState
-            a_states
-        all_species : IonizationStateCollection
-            all_species
-        flux_surface : FluxSurface
-            flux_surface
         orbit_squeezing : bool (default `False`)
             orbit_squeezing
         """
@@ -404,10 +366,6 @@ class ExtendedParticleList(ParticleList):
         ----------
         x : np.ndarray
             distribution velocity relative to the thermal velocity.
-        a : IonizationState
-            a
-        all_species : IonizationStateCollection
-            all_species
         """
         prefactor = 3 * np.pi ** 0.5 / 4 * self.ξ / self.mass_density
 
@@ -511,8 +469,6 @@ class ExtendedParticleList(ParticleList):
 
         Parameters
         ----------
-        a : IonizationState
-        all_species : IonizationStateCollection
         flux_surface : FluxSurface
         xmin :
             xmin
@@ -549,20 +505,6 @@ class ExtendedParticleList(ParticleList):
             (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
         )
         return actual_units.T
-
-    def contributing_states(a: IonizationState):
-        """Helper iterator over |IonizationState|s.
-
-        Return a generator of tuples (`ξ(a)[i], a[i]`).
-
-        Parameters
-        ----------
-        a : IonizationState
-
-        """
-        xi = ξ(a)
-        for xii, ai in zip(xi, a):
-            yield xii, ai
 
 
 def _B17(flux_surface):
@@ -622,7 +564,7 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamm
     x : np.ndarray
         distribution velocity relative to the thermal velocity.
     m : Union[int, np.ndarray]
-    a : IonizationState
+    thermal_speed : u.m/u.s
     fs : FluxSurface
     """
     """Equation B11 of Houlberg_1997."""
