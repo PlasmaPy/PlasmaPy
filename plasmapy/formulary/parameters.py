@@ -1037,7 +1037,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{ci} = \frac{Z e B}{m_i}
+        ω_{c} = \frac{Z e B}{m}
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -1074,14 +1074,14 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    m_i = particles.particle_mass(particle)
+    m = particles.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
-    omega_ci = u.rad * (Z * e * np.abs(B) / m_i).to(1 / u.s)
+    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
-    return omega_ci
+    return omega_c
 
 
 oc_ = gyrofrequency
