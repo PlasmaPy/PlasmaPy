@@ -183,9 +183,10 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def xab_ratio(self):
+        speed = self.isotopic_thermal_speed
         return (
-            self.isotopic_thermal_speed[:, np.newaxis]
-            / self.isotopic_thermal_speed[np.newaxis, :]
+            speed[np.newaxis, :]
+            / speed[:, np.newaxis]
         )
 
     @cached_property
