@@ -162,26 +162,6 @@ class FlowCalculator:
         )  # TODO is axis=1 right?
         self._charge_state_flows = (self_consistent_u + r_sources.T).si
 
-    def all_contributing_states_symbols(self) -> typing.Iterator[str]:
-        """Helper iterator over all charge levels of all isotopes in the calculation."""
-        for a in self.all_species:
-            for _, ai in contributing_states(a):
-                yield ai.symbol
-
-    def M_script(self, a: IonizationState) -> np.ndarray:
-        """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.M_script`."""
-        sym = a[0].symbol
-        if sym not in self.M_script_matrices:
-            self.M_script_matrices[sym] = M_script(a, self.all_species)
-        return self.M_script_matrices[sym]
-
-    def N_script(self, a: IonizationState, b: IonizationState) -> np.ndarray:
-        """Thin, cached wrapper on top of `~plasmapy.transport.Houlberg1997.N_script`."""
-        sym_tuple = a[0].symbol, b[0].symbol
-        if sym_tuple not in self.N_script_matrices:
-            self.N_script_matrices[sym_tuple] = N_script(a, b)
-        return self.N_script_matrices[sym_tuple]
-
     @cached_property
     def _funnymatrix(self):
         M = self.all_species.decompress(
