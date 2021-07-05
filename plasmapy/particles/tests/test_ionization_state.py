@@ -796,7 +796,6 @@ def test_iteration_with_nested_iterator():
 @pytest.mark.xfail
 def test_electrons_can_be_put_into_ionization_state():
     electrons = IonizationState("e-", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-    breakpoint()
 
 
 def test_ionization_state_inequality_and_identity():
