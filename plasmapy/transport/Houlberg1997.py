@@ -190,12 +190,14 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def mass_ratio(self) -> "(N, N)":
-        return self.isotopic_mass[:, ...] / self.isotopic_mass[..., :]
+        mass = self.isotopic_mass
+        return mass[:, np.newaxis] / mass[np.newaxis, :]
 
     @cached_property
     def temperature_ratio(self) -> "(N, N)":
+        temperature = self.isotopic_temperature
         return (
-            self.isotopic_temperature[:, ...] / self.isotopic_temperature[..., :]
+            temperature[:, np.newaxis] / temperature[np.newaxis, :]
         )  # TODO double check ordering of indices
 
     @cached_property
