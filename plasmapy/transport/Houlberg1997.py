@@ -253,23 +253,7 @@ class ExtendedParticleList(ParticleList):
         return N
 
     @cached_property
-    def effective_momentum_relaxation_rate(self):
-        """Equations A3, A4 from |Houlberg_1997|"""
-        collision_frequency = (
-            1
-            / (3 * np.pi ** (3 / 2))
-            * (
-                self.charge[:, np.newaxis]
-                * self.charge[np.newaxis, :]
-                / self.mass[:, np.newaxis]
-                / constants.eps0
-            )
-            ** 2
-            * (self.n[:, np.newaxis] * self.n[np.newaxis, :])
-            * self.mass[:, np.newaxis]
-            / self.thermal_speed ** 3
-        )
-
+    def CL_matrix(self):
         CL = lambda ai, bj, bn, bT: Coulomb_logarithm(
             bT,
             bn,
@@ -281,8 +265,32 @@ class ExtendedParticleList(ParticleList):
                 for ai in self
             ]
         )
+        return CL_matrix
+
+    @cached_property
+    def scaled_collision_frequency(self):
+        charge_a = self.charge[:, np.newaxis]
+        charge_b = self.charge[np.newaxis, :]
+        mass_a = self.mass[:, np.newaxis]
+        n_a = self.n[:, np.newaxis]
+        n_b = self.n[np.newaxis, :]
+        thermal_speed_a = self.thermal_speed[:, np.newaxis]
+        collision_frequency = (
+            1
+            / (3 * np.pi ** (3 / 2))
+            * (charge_a * charge_b / constants.eps0) ** 2
+            * (n_a * n_b)
+            / mass_a
+            / thermal_speed_a ** 3
+        )
+        return collision_frequency
+
+    @cached_property
+    def effective_momentum_relaxation_rate(self):
+        """Equations A3, A4 from |Houlberg_1997|"""
         # TODO double check ordering
-        return self.compress(CL_matrix * collision_frequency, axis=(0, 1)).si
+        return self.compress(self.CL_matrix * self.scaled_collision_frequency, 
+                             axis=(0, 1)).si
 
     @cached_property
     def N_script(self):
