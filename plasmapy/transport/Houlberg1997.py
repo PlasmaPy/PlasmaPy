@@ -88,7 +88,7 @@ class ExtendedParticleList(ParticleList):
             self.T = self.T[indices]
 
         if dT is not None:
-            self.dT = u.Quantity(dT[indices])
+            self.dT = (u.Quantity(dT[indices]) * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
             assert len(self.dT) == len(self.T)
         if dn is not None:
             self.dn = u.Quantity(dn[indices])
