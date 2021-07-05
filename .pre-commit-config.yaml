@@ -3,7 +3,7 @@ ci:
   autoupdate_schedule: "quarterly"
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
     -   id: check-yaml
     -   id: check-json
@@ -13,7 +13,7 @@ repos:
     -   id: check-ast
     -   id: requirements-txt-fixer
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.8.0
+    rev: 5.9.1
     hooks:
     -   id: isort
         name: isort
@@ -22,11 +22,11 @@ repos:
         language: python
         types: [python]
 -   repo: https://github.com/psf/black
-    rev: 21.4b2
+    rev: 21.6b0
     hooks:
     -   id: black
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 0.8.0
+  rev: 0.13.1
   hooks:
     - id: nbqa-black
       additional_dependencies: [black==19.10b0]
