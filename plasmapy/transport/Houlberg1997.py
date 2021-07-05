@@ -199,7 +199,7 @@ class ExtendedParticleList(ParticleList):
         temperature = self.isotopic_temperature
         return (
             temperature[:, np.newaxis] / temperature[np.newaxis, :]
-        )  # TODO double check ordering of indices
+        )
 
     @cached_property
     def M_matrix(self) -> "(N, N, 3, 3)":
