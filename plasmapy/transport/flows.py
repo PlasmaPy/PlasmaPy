@@ -18,6 +18,11 @@ from plasmapy.plasma.fluxsurface import FluxSurface
 
 from .Houlberg1997 import ExtendedParticleList
 
+A_AXIS = 0
+B_AXIS = 1
+ALPHA_AXIS = 2
+BETA_AXIS = 3
+
 try:
     from functools import cached_property
 except ImportError:
@@ -98,17 +103,18 @@ class FlowCalculator:
         pressure_gradient_over_n_i = constants.k_B * (
             T_i * density_gradient / n_i + temperature_gradient
         )
-        μ = all_species.mu_hat(self.flux_surface, N=mu_N)
+        self.μ = μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
+        M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
         Aai = (
-            xi.reshape(1, 1, -1) * all_species.decompress(all_species.M_script, axis=2)
-            - μ
-        ).T
+            xi.reshape(-1, 1, 1) * M_script_particlewise - μ
+        )
+
         # --- TD forces eq21
         # r"""$S_{\theta,\beta}^{ai}"""
-        thermodynamic_forces = S_pt_θ = (
+        self.thermodynamic_forces = thermodynamic_forces = S_pt_θ = (
             fs.Fhat
-            / charges
+                / charges[np.newaxis, :]
             * u.Quantity(
                 [
                     pressure_gradient_over_n_i,
@@ -116,19 +122,18 @@ class FlowCalculator:
                     u.Quantity(np.zeros_like(temperature_gradient).value, u.J / u.m),
                 ]
             )
-        )
+        ).T    # (3, N) -> (N, 3)
 
-        BETA_AXIS = 1
-        S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
-            axis=BETA_AXIS
+        self.S_pt = S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
+            axis=-1 # sum over beta
         )  # Equation 29
-        r_pt = np.linalg.solve(Aai, S_pt.T).T
+        self.r_pt = r_pt = np.linalg.solve(Aai, S_pt)
         r_sources = r_pt + 0  # TODO r_E itd
-        rbar_sources_presum = xi[np.newaxis, :] * r_sources  # (3, N)
-        rbar_sources = all_species.compress(rbar_sources_presum, axis=1)
+        rbar_sources_presum = xi[:, np.newaxis] * r_sources
+        rbar_sources = all_species.compress(rbar_sources_presum, axis=0)
         N_isotopes = all_species.num_isotopes
         assert rbar_sources.shape == (N_isotopes, 3)
-        S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)) * u.Unit("N T / m3")
+        S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)[np.newaxis, :, :]) * u.Unit("N T / m3")
         r_flows = np.linalg.solve(Aai, S_flows)
         assert r_flows.shape == (N, 3, 3)
         np.testing.assert_allclose(
@@ -137,10 +142,6 @@ class FlowCalculator:
         rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
         rbar_flows = all_species.compress(rbar_flows_presum, axis=0)
         assert rbar_flows.shape == (N_isotopes, 3, 3)
-        self.r_pt = r_pt
-        self.S_pt = S_pt
-        self.thermodynamic_forces = thermodynamic_forces.T
-        self.μ = μ.T
 
         # equation 34
         lhs = (
@@ -149,33 +150,34 @@ class FlowCalculator:
                 "J2 / (A m6)",
                 dtype=np.float64,
             )
-            + all_species.N_script.sum(axis=-1).T * rbar_flows
+            + all_species.N_script.sum(axis=1) * rbar_flows
         )
         ubar = np.linalg.solve(lhs, rbar_sources).si
 
-        Λ = -(all_species.N_script * ubar.reshape(1, 3, 1, -1)).sum(axis=(1, 3))
+        Λ = -(all_species.N_script * ubar[np.newaxis, :, np.newaxis, :]).sum(axis=(B_AXIS, BETA_AXIS))
 
         self_consistent_u = (
-            all_species.decompress(Λ, axis=1).reshape(-1, 3, 1) * r_flows
+            all_species.decompress(Λ, axis=0)[:, :, np.newaxis] * r_flows
         ).sum(
             axis=1
         )  # TODO is axis=1 right?
-        self._charge_state_flows = (self_consistent_u + r_sources.T).si
+        self._charge_state_flows = (self_consistent_u + r_sources).si
 
     @cached_property
     def _funnymatrix(self):
         M = self.all_species.decompress(
             self.all_species.M_script,
-            axis=-1,
+            axis=0,
         )
-        output = self.thermodynamic_forces.reshape(3, 1, -1) * M
+        output = self.thermodynamic_forces[:, np.newaxis, :] * M
         N = self.all_species.decompress(
-            self.all_species.N_script,
-            axis=(2, 3),
+                self.all_species.N_script,
+                axis=(0, 1),
         )
-        ξ = self.all_species.ξ.reshape(1, 1, 1, -1)
-        presum = N * ξ * self.thermodynamic_forces.reshape(1, 3, 1, -1)
-        return output + presum.sum(axis=-1)
+        ξ = self.all_species.ξ.reshape(1, -1, 1, 1)
+        presum = N * ξ * self.thermodynamic_forces[np.newaxis, :, np.newaxis, :]
+        sum_b = presum.sum(axis=B_AXIS)
+        return (output + sum_b).sum(axis=-1)
 
     @cached_property
     def _fluxes_BP(self):
@@ -202,13 +204,12 @@ class FlowCalculator:
         B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
         Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
         fs = self.flux_surface
-        silly = self._funnymatrix
         ξ = self.all_species.ξ
         prefactor = (
             -fs.Fhat / self.all_species.charge * ξ / B2fsav * (1 - B2fsav * Binv2fsav)
         )
-        Γ_PS = prefactor * silly[0].sum(axis=0)
-        q_PS = prefactor * constants.k_B * self.all_species.T * silly[1].sum(axis=0)
+        Γ_PS = prefactor * self._funnymatrix[:,0]
+        q_PS = prefactor * constants.k_B * self.all_species.T * self._funnymatrix[:,1]
         return Fluxes(Γ_PS.to(particle_flux_unit), q_PS.to(heat_flux_unit))
 
     @cached_property
@@ -218,11 +219,10 @@ class FlowCalculator:
         # TODO fs.rho is [m]; fs.GradRho2 is actually [fs.gradRho]^2, gradRho is [1]
         # TODO FSA does not drop units; B2 and the others are unitless
         Fhat = self.flux_surface.Fhat
-        silly = self._funnymatrix
         ξ = self.all_species.ξ
         prefactor = FSA / Fhat * self.all_species.ξ / self.all_species.charge
-        Γ_CL = prefactor * silly[0].sum(axis=0)
-        q_CL = prefactor * constants.k_B * self.all_species.T * silly[1].sum(axis=0)
+        Γ_CL = prefactor * self._funnymatrix[:,0]
+        q_CL = prefactor * constants.k_B * self.all_species.T * self._funnymatrix[:,1]
         return Fluxes(Γ_CL.to(particle_flux_unit), q_CL.to(heat_flux_unit))
 
     @cached_property
@@ -296,6 +296,8 @@ class FlowCalculator:
     def bootstrap_current(self) -> u.J / u.m ** 2 / u.T:
         """
         Bootstrap current caused by the charge state flows.
+
+        Needs normalizing by a magnetic field.
         """
 
         return (

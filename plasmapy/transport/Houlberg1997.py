@@ -23,12 +23,18 @@ from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.mathematics import Chandrasekhar_G
 from plasmapy.particles import Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
+import xarray
+
+A_AXIS = 0
+B_AXIS = 1
+ALPHA_AXIS = 2
+BETA_AXIS = 3
 
 try:
     from scipy.integrate import trapz as trapezoid
 except ImportError:
     from scipy.integrate import trapezoid
-
+1
 __all__ = [
     "ExtendedParticleList",
     "ωm",
@@ -236,8 +242,10 @@ class ExtendedParticleList(ParticleList):
         M33 = -(433 / 64 + 17 * xab ** 2 + 459 / 8 * xab ** 4 + 175 / 8 * xab ** 6) / (
             1 + xab ** 2
         ) ** (9 / 2)
-        M = np.array([[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]])
-        return M
+        ordering = [[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]]
+        M = np.array(ordering)
+        output = np.moveaxis(M, (2, 3), (0, 1))
+        return output
 
     @cached_property
     def N_matrix(self) -> "(N, N, 3, 3)":
@@ -270,7 +278,8 @@ class ExtendedParticleList(ParticleList):
             / (1 + xab ** 2) ** (9 / 2)
         )
         N = np.array([[N11, N12, N13], [N21, N22, N23], [N31, N32, N33]])
-        return N
+        output = np.moveaxis(N, (2, 3), (0, 1))
+        return output
 
     @cached_property
     def CL_matrix(self):
@@ -317,15 +326,15 @@ class ExtendedParticleList(ParticleList):
         """Weighted field particle matrix - equation A2b from |Houlberg_1997|"""
         N = self.N_matrix
         # Equation A2b
-        N_script = self.effective_momentum_relaxation_rate * N
+        N_script = self.effective_momentum_relaxation_rate[:, :, np.newaxis, np.newaxis] * N
         return N_script
 
     @cached_property
     def M_script(self):
         """Weighted test particle matrix - equation A2a from |Houlberg_1997|"""
         # Equation A2a
-        integrand = self.M_matrix * self.effective_momentum_relaxation_rate
-        return integrand.sum(axis=-1)
+        integrand = self.M_matrix * self.effective_momentum_relaxation_rate[:, :, np.newaxis, np.newaxis]
+        return integrand.sum(axis=B_AXIS)
 
     def x_over_xab(self, x):
         xab = self.xab_ratio
@@ -535,7 +544,7 @@ class ExtendedParticleList(ParticleList):
         actual_units = (
             (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
         )
-        return actual_units.T
+        return actual_units
 
 
 def _B17(flux_surface):
