@@ -103,10 +103,6 @@ def test_thermal_coefficient(fc, num_regression):
     num_regression.check({"thermal_conductivity": Chi.si.value})
 
 
-@pytest.mark.xfail(
-    raises=u.UnitsError,
-    reason="need a tesla in the denominator",
-)
 def test_bootstrap_current(fc, num_regression):
     Ib = fc.bootstrap_current
     assert np.isfinite(Ib), ion
@@ -115,7 +111,7 @@ def test_bootstrap_current(fc, num_regression):
     # if this crashes, we have replaced the current issue that Ib is actually <B * I_b> with another one
     (Ib.unit / u.T).to(current_density_unit)
 
-    assert_quantity_allclose(Ib, -0.007 * current_density_unit)
+    num_regression.check({"bootstrap_current": Ib.si.value})
 
 
 def test_fluxes(fc, num_regression):
