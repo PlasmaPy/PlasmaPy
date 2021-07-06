@@ -125,12 +125,12 @@ def hirose_dispersion_solution(
     c0 = -B * A ** 2
     
     [L1, L2, L3] = np.roots([c3, c2.value, c1.value, c0.value])
-    [omega1, omega2, omega3] = [np.sqrt(L1), np.sqrt(L2), np.sqrt(L3)]
+    [omega1, omega2, omega3] = [np.emath.sqrt(L1), np.emath.sqrt(L2), np.emath.sqrt(L3)]
     
     return omega1, omega2, omega3
 
 inputs = {
-"k": 0.01 * u.rad / u.m,
+"k": .01 * u.rad / u.m,
 "theta": 30 * u.deg,
 "B": 8.3e-9 * u.T,
 "n_i": 5e6 * u.m ** -3,

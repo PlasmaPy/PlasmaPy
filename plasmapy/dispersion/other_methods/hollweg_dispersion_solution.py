@@ -6,6 +6,12 @@ Created on Mon May 31 18:35:46 2021
 """
 import numpy as np
 import astropy.units as u
+import matplotlib.pyplot as plt
+import warnings
+
+from matplotlib import colors
+from matplotlib.ticker import MultipleLocator
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from astropy.constants.si import c
 from plasmapy.formulary import parameters as pfp
@@ -124,28 +130,46 @@ def hollweg_dispersion_solution(
     
     #Polynomial coefficients where x in 'cx' represents the order of the term
     c3 = (F * kx ** 2 + 1) / sigma
-    c2 = -((k ** 2 * (1 + beta) + F * k ** 2 * kx ** 2) / kz ** 2 + D * kx ** 2 + 1)
-    c1 = alpha * (1 + beta) + D * alpha * kx ** 2
-    c0 = -beta * k ** 2 * sigma * v_A ** 2
+    c2 = -((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
+    c1 =  alpha * (1 + 2 * beta + D * kx ** 2)
+    c0 = -beta * alpha * sigma
+    omega = {}
+    fast_mode = []
+    alfven_mode = []
+    acoustic_mode = []
+    if np.isscalar(k.value) == True :
+        
+        w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
+        fast_mode = np.max(w)
+        alfven_mode = np.median(w)
+        acoustic_mode = np.min(w)
+    else:
+        
+       for (a0,a1,a2,a3) in zip(c3, c2, c1, c0) :
     
-    [L1, L2, L3] = np.roots([c3.value, c2.value, c1.value, c0.value])
-    [omega1, omega2, omega3] = [np.sqrt(L1), np.sqrt(L2), np.sqrt(L3)]
-    
-    return omega1, omega2, omega3
+        w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
+        fast_mode.append(np.max(w))
+        alfven_mode.append(np.median(w))
+        acoustic_mode.append(np.min(w)) 
+
+    omega['fast_mode'] = fast_mode * u.rad / u.s
+    omega['alfven_mode'] = alfven_mode * u.rad / u.s
+    omega['acoustic_mode'] = acoustic_mode * u.rad / u.s
+    return omega 
+
 
 inputs = {
-"k": 0.01 * u.rad / u.m,
-"theta": 30 * u.deg,
-"B": 8.3e-9 * u.T,
-"n_i": 5e6 * u.m ** -3,
-"T_e": 1.6e6 * u.K,
-"T_i": 4.0e5 * u.K,
-"ion": "p+",
+    "k": np.logspace(-7,-2,2) * u.rad / u.m,
+    "theta": 88 * u.deg,
+    "n_i": 5 * u.cm ** -3,
+    "B": 2.2e-8 * u.T,
+    "T_e": 1.6e6 * u.K,
+    "T_i": 4.0e5 * u.K,
+    "ion": Particle("p+"),
 }
 
+
 print(hollweg_dispersion_solution(**inputs))
-    
-    
-    
+
     
 
