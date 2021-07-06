@@ -8,8 +8,6 @@ import numpy as np
 import astropy.units as u
 import warnings
 
-
-
 from astropy.constants.si import c
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
@@ -94,7 +92,7 @@ def hollweg_dispersion_solution(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
         ) 
-        
+    # Calc needed plasma parameters   
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
         T_e=T_e,
@@ -109,40 +107,43 @@ def hollweg_dispersion_solution(
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
     
-    #Grid/vector creation for k?
-    
-    #Parameters kx and kz
+    # Parameters kx and kz
     
     kz = np.cos(theta.value) * k
     kx = np.sqrt(k ** 2 - kz ** 2)
     
-    #Bellan2012JGR beta param equation 3
+    # Bellan2012JGR beta param equation 3
     beta = (c_s / v_A) ** 2
     
-    #Parameters sigma, D, and F to simplify equation 3
+    # Parameters D, F, sigma, and alpha to simplify equation 3
     D = (c_s / omega_ci) ** 2
     F = (c / omega_pe) ** 2
     sigma = (kz * v_A) ** 2
     alpha = (k * v_A) ** 2
     
-    #Polynomial coefficients where x in 'cx' represents the order of the term
+    # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = (F * kx ** 2 + 1) / sigma
     c2 = -((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
     c1 =  alpha * (1 + 2 * beta + D * kx ** 2)
     c0 = -beta * alpha * sigma
+    
     omega = {}
     fast_mode = []
     alfven_mode = []
     acoustic_mode = []
-    if np.isscalar(k.value) == True :
+    
+    # If a single k value is given
+    if np.isscalar(k.value) == True:
         
         w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
         fast_mode = np.max(w)
         alfven_mode = np.median(w)
         acoustic_mode = np.min(w)
+        
+    # If mutliple k values are given
     else:
         
-       for (a0,a1,a2,a3) in zip(c3, c2, c1, c0) :
+       for (a0,a1,a2,a3) in zip(c3, c2, c1, c0):
     
         w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
         fast_mode.append(np.max(w))
@@ -164,6 +165,7 @@ inputs = {
     "T_i": 4.0e5 * u.K,
     "ion": Particle("p+"),
 }
+
 
 
 print(hollweg_dispersion_solution(**inputs))
