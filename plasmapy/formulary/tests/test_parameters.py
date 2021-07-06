@@ -803,9 +803,9 @@ def test_gyroradius():
     assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
     # test for possiblity to allow nan for input values
-    assert np.isnan(gyroradius(np.nan*u.T, particle="e-", T_i=1*u.K))
-    assert np.isnan(gyroradius(1*u.T, particle="e-", T_i=np.nan*u.K))
-    assert np.isnan(gyroradius(1*u.T, particle="e-", Vperp=np.nan*u.m/u.s))
+    assert np.isnan(gyroradius(np.nan * u.T, particle="e-", T_i=1 * u.K))
+    assert np.isnan(gyroradius(1 * u.T, particle="e-", T_i=np.nan * u.K))
+    assert np.isnan(gyroradius(1 * u.T, particle="e-", Vperp=np.nan * u.m / u.s))
 
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
