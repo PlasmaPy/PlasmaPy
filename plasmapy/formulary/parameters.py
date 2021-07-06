@@ -1198,7 +1198,7 @@ def gyroradius(
 
     # check 1: ensure either Vperp or T_i invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+    if np.any(np.logical_and(isfinite_Vperp, isfinite_Ti)):
         raise ValueError(
             "Must give Vperp or T_i, but not both, as arguments to gyroradius"
         )
