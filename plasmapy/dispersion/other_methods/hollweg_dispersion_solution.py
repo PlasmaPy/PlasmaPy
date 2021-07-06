@@ -6,12 +6,9 @@ Created on Mon May 31 18:35:46 2021
 """
 import numpy as np
 import astropy.units as u
-import matplotlib.pyplot as plt
 import warnings
 
-from matplotlib import colors
-from matplotlib.ticker import MultipleLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 
 from astropy.constants.si import c
 from plasmapy.formulary import parameters as pfp
