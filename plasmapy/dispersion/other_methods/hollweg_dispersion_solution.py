@@ -17,6 +17,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 from typing import Union
 
+# Solves the equation 3 in Bellan2012JGR (equation 38 in hollweg1999)
 
 def hollweg_dispersion_solution(
     *,
