@@ -58,3 +58,16 @@ def test_symmetric_quantity(field, quantity, tolerances):
         np.diag(np.fliplr(data))[::-1]**-1
     )
 
+
+def is_sorted(arr):
+    return (arr.flatten() == np.sort(arr.flatten())).all()
+
+def test_compress():
+    N = len(all_species)
+    arr = np.arange(N ** 2).reshape(N, N)
+    assert is_sorted(arr)
+    compressed = all_species.compress(arr, axis=1)
+    assert is_sorted(compressed)
+
+
+

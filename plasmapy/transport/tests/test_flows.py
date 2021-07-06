@@ -12,28 +12,51 @@ from hypothesis import strategies as st
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.transport.flows import FlowCalculator
 from plasmapy.transport.Houlberg1997 import ExtendedParticleList
+import warnings
 
-# if "profile" not in globals():
-#     def profile(func):
-#         return func
-# TODO add a test with three particles - with 3 orders of calculations, it might glitch out on broadcasting!!!!
+@pytest.fixture(scope="module",
+    params = [
+        ExtendedParticleList(
+            [
+                Particle("C 1+"),
+                Particle("p+"),
+            ],
+            10 * u.eV,
+            u.Quantity([1e20 / 1.11,  1e20], u.m ** -3),
+            dn=u.Quantity([1e18, 1e18]) * u.m ** -4,
+            dT=u.Quantity([-10, -10]) * u.K / u.m,
+        ),
+        ExtendedParticleList(
+            [
+                Particle("C 1+"),
+                Particle("C 2+"),
+                Particle("p+"),
+            ],
+            10 * u.eV,
+            u.Quantity([1e20 / 1.11, 0.1e20 / 1.11, 1e20], u.m ** -3),
+            dn=u.Quantity([1e18, 1e18, 1e18]) * u.m ** -4,
+            dT=u.Quantity([-10, -10, -10]) * u.K / u.m,
+        ),
+        ExtendedParticleList(
+            [
+                Particle("C 1+"),
+                Particle("C 2+"),
+                Particle("C 3+"),
+                Particle("p+"),
+            ],
+            10 * u.eV,
+            u.Quantity([1e20 / 1.11, 0.1e20 / 1.11, 0.01e20 / 1.11, 1e20], u.m ** -3),
+            dn=u.Quantity([1e18, 1e18, 1e18, 1e18]) * u.m ** -4,
+            dT=u.Quantity([-10, -10, -10, -10]) * u.K / u.m,
+        ),
+    ],
+    ids = ["2particles", "3particles", "4particles"],
+)
+def all_species(request):
+    return request.param
 
-
-# profile
 @pytest.fixture(scope="module")
-def fc(flux_surface):
-    all_species = ExtendedParticleList(
-        [
-            Particle("C 1+"),
-            Particle("C 2+"),
-            Particle("C 3+"),
-            Particle("p+"),
-        ],
-        10 * u.eV,
-        u.Quantity([1e20 / 1.11, 0.1e20 / 1.11, 0.01e20 / 1.11, 1e20], u.m ** -3),
-        dn=u.Quantity([1e18, 1e18, 1e18, 1e18]) * u.m ** -4,
-        dT=u.Quantity([-10, -10, -10, -10]) * u.K / u.m,
-    )
+def fc(all_species, flux_surface):
 
     fc = FlowCalculator(
         all_species,
@@ -43,7 +66,6 @@ def fc(flux_surface):
     return fc
 
 
-# profile
 def test_get_flows(fc, num_regression):
     assert fc._charge_state_flows.to(u.V / u.m)
     num_regression.check(
@@ -156,7 +178,7 @@ def test_integration():
     import pandas as pd
     import xarray
 
-    data_df = pd.read_csv("/home/dominik/IFPILM/HoulbergNSTX.csv", index_col=0).iloc[
+    data_df = pd.read_csv("/home/dominik/home-import/IFPILM/Magisterka/HoulbergNSTX.csv", index_col=0).iloc[
         ::10, :
     ]
 
@@ -195,16 +217,9 @@ def test_integration():
     )  # these definitely, unfortunately, need to be moved into SymbolicEquilibrium
     zminmaxstep = (-2, 2, 0.001)
 
-    from tqdm.auto import tqdm
-
-    surfaces = list(
-        tqdm(
-            eq.get_multiple_flux_surfaces(
+    surfaces = list(eq.get_multiple_flux_surfaces(
                 rho_values=rho, rminmaxstep=rminmaxstep, zminmaxstep=zminmaxstep
-            ),
-            total=len(rho),
-        )
-    )
+            ))
 
     ## `FlowCalculator`
 
@@ -268,31 +283,22 @@ def test_integration():
     dataset["psi"] = eq.rho_to_psi(rho)
     dataset
 
-    from tqdm import auto as tqdm
-
-    from plasmapy.transport.flows import FlowCalculator
-
     fcs = []
-    import warnings
 
-    for i, (ψ, surface) in enumerate(tqdm.tqdm(surfaces)):
+    for i, (ψ, surface) in enumerate(surfaces):
         if surface is None:
             print(f"Skipping {i}-th surface at {ψ}")
             continue
         try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
+            with pytest.warns(UserWarning, match="was not sorted"):
                 fcs.append(
                     FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface)
                 )
         except ImportError as e:
             display(e)
 
-    i = 3
-    ψ, surface = surfaces[i]
-    fc = FlowCalculator.from_xarray_surface(dataset.isel(rho=i), surface)
 
-    datasets = [fc.to_dataset() for fc in tqdm.tqdm(fcs)]
+    datasets = [fc.to_dataset() for fc in fcs]
 
     results = xarray.concat(datasets, dim="rho")
     scaling = (fcs[0].bootstrap_current.unit / NSTX_Bt0).to(u.MA / u.m ** 2)
@@ -304,7 +310,7 @@ def test_integration():
 
     import pandas as pd
 
-    df = pd.read_csv("/home/dominik/Inbox/NSTXplot1.csv")
+    df = pd.read_csv("/home/dominik/home-import/IFPILM/Magisterka/NSTXplot1.csv")
 
     df.plot.line(x="x")
     results.bootstrap_current_normalized.plot.line(

@@ -106,14 +106,34 @@ class ExtendedParticleList(ParticleList):
         return [a for a in output if a.size > 0]
 
     def compress(self, arr, axis, aggregator=np.sum):
+        """Compresses an N-sized array into an M sized array.
+
+        N is the number of particles (different charge states)
+        in the system, while M is the number of isotopes.
+
+        The input must be N-sized along the dimension specified
+        by `axis`.
+
+        If the size of axis is equal to M (already compressed) and
+        N = M, the matrix is passed through without change.
+        This helps preserve ordering.
+        If N != M in this case, an exception is raised.
+
+        
+        """
         if isinstance(axis, tuple):
             for integer in axis:
                 arr = self.compress(arr, integer, aggregator)
             return arr
+        elif arr.shape[axis] == self.num_isotopes:
+            if self.num_isotopes == len(self):
+                return arr
+            else:
+                raise ValueError("Are you sure you should be compressing here?")
         else:
-            return u.Quantity(
-                [aggregator(a, axis=axis) for a in self.split_isotopes(arr, axis=axis)]
-            )
+            split = self.split_isotopes(arr, axis=axis)
+            return u.Quantity([aggregator(a, axis=axis) for a in split])
+        # TODO needs a test - breaks ordering
 
     def decompress(self, arr, axis):
         # this is *not* quite invertible...

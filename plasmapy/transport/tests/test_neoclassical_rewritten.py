@@ -150,3 +150,15 @@ def test_K_ps_ai(x, flux_surface):
     assert np.isfinite(result).all()
     second_result = all_species.K_ps_ai(x, flux_surface)
     assert_quantity_allclose(result, second_result)
+
+def test_compress():
+    arr = np.arange(len(all_species))**2
+    compressed = all_species.compress(arr, axis=0)
+    assert_quantity_allclose(compressed, [5, 9])
+
+    arr_5_4 = np.stack(5*[arr])
+    with pytest.raises(Exception):
+        all_species.compress(arr_5_4, axis=0)
+    compressed = all_species.compress(arr_5_4, axis=1)
+    assert_quantity_allclose(compressed, [5*[5], 5*[9]])
+
