@@ -142,17 +142,18 @@ def hollweg_dispersion_solution(
         
     # If mutliple k values are given
     else:
-        
-       for (a0,a1,a2,a3) in zip(c3, c2, c1, c0):
+        # a0*x^3 + a1*x^2 + a2*x^3 + a3 = 0
+        for (a0,a1,a2,a3) in zip(c3, c2, c1, c0):
     
-        w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
-        fast_mode.append(np.max(w))
-        alfven_mode.append(np.median(w))
-        acoustic_mode.append(np.min(w)) 
+            w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
+            fast_mode.append(np.max(w))
+            alfven_mode.append(np.median(w))
+            acoustic_mode.append(np.min(w)) 
 
     omega['fast_mode'] = fast_mode * u.rad / u.s
     omega['alfven_mode'] = alfven_mode * u.rad / u.s
     omega['acoustic_mode'] = acoustic_mode * u.rad / u.s
+    
     return omega 
 
 
