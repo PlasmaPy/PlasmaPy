@@ -345,7 +345,7 @@ class ExtendedParticleList(ParticleList):
         self,
         x: np.ndarray,
     ):
-        """The pitch angle diffusion rate, equation B4b from |Houlberg_1997|
+        """The pitch angle diffusion rate, nu_{D,ai}, equation B4b from |Houlberg_1997|
 
         Parameters
         ----------
@@ -363,7 +363,7 @@ class ExtendedParticleList(ParticleList):
 
         result = (
             xi
-            / self.mass_density
+            / self.mass_density[np.newaxis, :, np.newaxis]
             * (3 * np.sqrt(np.pi) / 4)
             * self.decompress(sum_items, axis=(1, 2))
         )
