@@ -234,12 +234,12 @@ class ExtendedParticleList(ParticleList):
         M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
         M12 = 3 / 2 * (1 + mass_ratio) / (1 + xab ** 2) ** (5 / 2)
         M21 = M12
-        M22 = (13 / 4 + 4 * xab ** 2 + 15 / 2 * xab ** 4) / (1 + xab ** 2) ** (5 / 2)
+        M22 = -(13 / 4 + 4 * xab ** 2 + 15 / 2 * xab ** 4) / (1 + xab ** 2) ** (5 / 2)
         M13 = -15 / 8 * (1 + mass_ratio) / (1 + xab ** 2) ** (7 / 2)
         M31 = M13
         M23 = (69 / 16 + 6 * xab ** 2 + 63 / 4 * xab ** 4) / (1 + xab ** 2) ** (7 / 2)
         M32 = M23
-        M33 = -(433 / 64 + 17 * xab ** 2 + 459 / 8 * xab ** 4 + 175 / 8 * xab ** 6) / (
+        M33 = -(433 / 64 + 17 * xab ** 2 + (459 / 8) * xab ** 4 + 28 * xab**6 + (175 / 8) * xab ** 8) / (
             1 + xab ** 2
         ) ** (9 / 2)
         ordering = [[M11, M12, M13], [M21, M22, M23], [M31, M32, M33]]
@@ -444,7 +444,7 @@ class ExtendedParticleList(ParticleList):
         F = F_m(m, flux_surface)
         ω = ωm(x, m, self.thermal_speed, flux_surface.gamma)
         B10 = (
-            1.5 * (ν / ω) ** 1
+            1.5 * (ν / ω) ** 2
             - 9 / 2 * (ν / ω) ** 4
             + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
             * (2 * ν / ω)
@@ -528,7 +528,7 @@ class ExtendedParticleList(ParticleList):
         α = orders
         β = orders
         len_a = len(self)
-        signs = (-1) * (α[:, None] + β[None, :])
+        signs = (-1) ** (α[:, None] + β[None, :])
         laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
         kterm = self.K(x, flux_surface, **kwargs)
         kterm = kterm.reshape(len_a, N, 1, 1)
@@ -541,9 +541,7 @@ class ExtendedParticleList(ParticleList):
         )
         integral = trapezoid(y, x, axis=1)
         mu_hat_ai = integral * signs[None, ...]
-        actual_units = (
-            (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
-        )
+        actual_units = (8 / 3 / np.sqrt(π)) * mu_hat_ai * self.mass_density[:, None, None]
         return actual_units
 
 

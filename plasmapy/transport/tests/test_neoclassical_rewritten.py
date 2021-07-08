@@ -27,10 +27,10 @@ x = np.logspace(-3, 6, 50)
 @pytest.mark.parametrize(
     ["function", "shape"],
     [
-        ("N_matrix", (3, 3, 2, 2)),
-        ("M_matrix", (3, 3, 2, 2)),
-        ("N_script", (3, 3, 2, 2)),
-        ("M_script", (3, 3, 2)),
+        ("N_matrix", (2, 2, 3, 3)),
+        ("M_matrix", (2, 2, 3, 3)),
+        ("N_script", (2, 2, 3, 3)),
+        ("M_script", (2, 3, 3)),
         ("effective_momentum_relaxation_rate", (2, 2)),
         ("ξ", (4,)),
     ],
@@ -92,7 +92,7 @@ def test_function_on_flux_surface(
 def test_mu_hat(num_regression, flux_surface):
     data = all_species.mu_hat(flux_surface).si
     assert data.unit == u.Unit("kg / (m3 s)")
-    assert data.shape == (3, 3, 4)
+    assert data.shape == (len(all_species), 3, 3)
     num_regression.check({"mu_hat": data.value.flatten()})
 
 
