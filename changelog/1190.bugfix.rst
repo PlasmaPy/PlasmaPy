@@ -1,0 +1,1 @@
+Fixed normalization of wavevector in thomson spectral density function.
