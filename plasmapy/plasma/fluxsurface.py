@@ -174,3 +174,32 @@ class FluxSurface:
         # Eq B14
         BdotNablaTheta = self.psiprime / (2 * np.pi * self.sqrt_jacobian)
         return self.flux_surface_average(BdotNablaTheta)
+
+    def F_m(self, M: int = 3):
+        """Mode weights for the Pfirsch-Schlüter contribution.
+
+        Equation B9 from |Houlberg_1997|.
+
+        Parameters
+        ----------
+        m : Union[int, np.ndarray]
+            m
+        flux_surface : FluxSurface
+            flux_surface
+        """
+        m = np.arange(1, M + 1).reshape(-1, 1)
+        Theta = self.Theta.reshape(1, -1)
+        B20 = self.Brvals * self.Bprimervals + self.Bzvals * self.Bprimezvals
+        under_average_B16 = np.sin(Theta * m) * B20
+        under_average_B15 = under_average_B16 / self.Bmag
+        under_average_B16_cos = np.cos(Theta * m) * B20
+        under_average_B15_cos = under_average_B16_cos / self.Bmag
+        B15 = self.flux_surface_average(under_average_B15)
+        B16 = self.gamma * self.flux_surface_average(under_average_B16)
+        B15_cos = self.flux_surface_average(under_average_B15_cos)
+        B16_cos = self.gamma * self.flux_surface_average(under_average_B16_cos)
+
+        B2mean = self.flux_surface_average(self.B2)
+
+        F_m = 2 / B2mean / self.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
+        return F_m

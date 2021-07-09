@@ -38,7 +38,6 @@ except ImportError:
 __all__ = [
     "ExtendedParticleList",
     "ωm",
-    "F_m",
     "_B17",
 ]
 
@@ -440,8 +439,8 @@ class ExtendedParticleList(ParticleList):
         """
         ν = self.ν_T_ai(x)[:, :, np.newaxis]
 
+        F = flux_surface.F_m(m_max)
         m = np.arange(1, m_max + 1)
-        F = F_m(m, flux_surface)
         ω = ωm(x, m, self.thermal_speed, flux_surface.gamma)
         B10 = (
             1.5 * (ν / ω) ** 2
@@ -563,35 +562,6 @@ def _B17(flux_surface):
     return fs.flux_surface_average(under_average_B17) / fs.flux_surface_average(fs.B2)
 
 
-def F_m(m: Union[int, np.ndarray], fs: FluxSurface):
-    """Mode weights for the Pfirsch-Schlüter contribution.
-
-    Equation B9 from |Houlberg_1997|.
-
-    Parameters
-    ----------
-    m : Union[int, np.ndarray]
-        m
-    flux_surface : FluxSurface
-        flux_surface
-    """
-    if isinstance(m, np.ndarray):
-        m = m.reshape(-1, 1)
-    Theta = fs.Theta.reshape(1, -1)
-    B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
-    under_average_B16 = np.sin(Theta * m) * B20
-    under_average_B15 = under_average_B16 / fs.Bmag
-    under_average_B16_cos = np.cos(Theta * m) * B20
-    under_average_B15_cos = under_average_B16_cos / fs.Bmag
-    B15 = fs.flux_surface_average(under_average_B15)
-    B16 = fs.gamma * fs.flux_surface_average(under_average_B16)
-    B15_cos = fs.flux_surface_average(under_average_B15_cos)
-    B16_cos = fs.gamma * fs.flux_surface_average(under_average_B16_cos)
-
-    B2mean = fs.flux_surface_average(fs.B2)
-
-    F_m = 2 / B2mean / fs.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
-    return F_m
 
 
 def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamma):
