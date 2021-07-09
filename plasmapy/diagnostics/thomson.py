@@ -261,6 +261,7 @@ def spectral_density(
     # Normal vector along k
     k_vec = (scatter_vec - probe_vec) * u.dimensionless_unscaled
     k_vec = k_vec / np.linalg.norm(k_vec)  # normalization
+    print(k_vec)
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths
