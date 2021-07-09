@@ -40,6 +40,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
+* `Bryan Foo <https://github.com/bryancfoo>`__
 * `Brian Goodall <https://github.com/goodab>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
