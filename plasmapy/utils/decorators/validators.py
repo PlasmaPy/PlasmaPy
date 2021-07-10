@@ -8,6 +8,7 @@ import functools
 import inspect
 import warnings
 
+from collections import OrderedDict
 from typing import Any, Dict
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
@@ -145,7 +146,28 @@ class ValidateQuantities(CheckUnits, CheckValues):
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
 
-    def __init__(self, validations_on_return=None, **validations: Dict[str, Any]):
+    skip_docstring = """
+    Other Parameters
+    ----------------
+    skip_validations : bool
+        (Default `False`)  When setting `True` NO value or unit validations will
+        be performed on input arguments or returned objects by
+        `~plasmapy.utils.decorators.validators.validate_quantities`.
+
+        .. warning::
+           This keyword was added to help speed up formulary calculations
+           when the calculations have to be repeatedly performed.  Use with caution
+           since objects are no longer validated and atypical behavior (with
+           respect to ``skip_validations==True``) can occur.
+    """
+
+    def __init__(
+        self,
+        *,
+        validations_on_return=None,
+        allow_skipping: bool = False,
+        **validations: Dict[str, Any],
+    ):
 
         if "checks_on_return" in validations:
             raise TypeError(
@@ -153,6 +175,13 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 "use 'validations_on_return' to set validations "
                 "on the return variable"
             )
+
+        if not isinstance(allow_skipping, bool):
+            raise TypeError(
+                f"Got type {type(allow_skipping)} for keyword 'allow_skipping',"
+                f" expected boolean."
+            )
+        self.allow_skipping = allow_skipping
 
         self._validations = validations
 
@@ -176,35 +205,65 @@ class ValidateQuantities(CheckUnits, CheckValues):
             wrapped function of `f`
         """
         self.f = f
-        wrapped_sign = inspect.signature(f)
+        fsig = inspect.signature(f)
+
+        if "skip_validations" in fsig.parameters:
+            raise TypeError(
+                f"Wrapped function '{f.__name__}' can not use keyword "
+                f"'skip_validations'.  Keyword is reserved for decorator "
+                f"functionality."
+            )
+
+        # add skip_validations to f's signature
+        if self.allow_skipping:
+            skip_param = inspect.Parameter(
+                "skip_validations",
+                inspect.Parameter.KEYWORD_ONLY,
+                default=False,
+                annotation=bool,
+            )
+            new_sig = OrderedDict(fsig.parameters)
+            new_sig.update({"skip_validations": skip_param})
+            new_sig = inspect.Signature(
+                parameters=tuple(new_sig.values()),
+                return_annotation=fsig.return_annotation,
+            )
+            f.__signature__ = new_sig
 
         @preserve_signature
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
+            skip_validations = kwargs.pop("skip_validations", False)
+
             # combine args and kwargs into dictionary
-            bound_args = wrapped_sign.bind(*args, **kwargs)
+            bound_args = fsig.bind(*args, **kwargs)
             bound_args.apply_defaults()
 
-            # get conditioned validations
-            validations = self._get_validations(bound_args)
+            if self.allow_skipping and skip_validations:
+                validations = {}
+            else:
+                # get conditioned validations
+                validations = self._get_validations(bound_args)
 
-            # validate (input) argument units and values
-            for arg_name in validations:
-                # skip check of output/return
-                if arg_name == "validations_on_return":
-                    continue
+                # validate (input) argument units and values
+                for arg_name in validations:
+                    # skip check of output/return
+                    if arg_name == "validations_on_return":
+                        continue
 
-                # validate argument & update for conversion
-                arg = self._validate_quantity(
-                    bound_args.arguments[arg_name], arg_name, validations[arg_name]
-                )
-                bound_args.arguments[arg_name] = arg
+                    # validate argument & update for conversion
+                    arg = self._validate_quantity(
+                        bound_args.arguments[arg_name], arg_name, validations[arg_name]
+                    )
+                    bound_args.arguments[arg_name] = arg
 
             # call function
-            _return = f(**bound_args.arguments)
+            _return = f(*bound_args.args, **bound_args.kwargs)
 
             # validate output
-            if "validations_on_return" in validations:
+            if self.allow_skipping and skip_validations:
+                pass
+            elif "validations_on_return" in validations:
                 _return = self._validate_quantity(
                     _return,
                     "validations_on_return",
@@ -212,6 +271,12 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 )
 
             return _return
+
+        if self.allow_skipping:
+            if wrapper.__doc__ is not None:
+                wrapper.__doc__ += self.skip_docstring
+            else:
+                wrapper.__doc__ = self.skip_docstring
 
         return wrapper
 

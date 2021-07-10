@@ -547,13 +547,14 @@ _coefficients = {
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     mass={"can_be_negative": False, "can_be_nan": True},
+    allow_skipping=True,
 )
 @particles.particle_input
 def thermal_speed(
     T: u.K,
     particle: Particle,
     method="most_probable",
-    mass: u.kg = np.nan * u.kg,
+    mass: u.kg = None,
     ndim=3,
 ) -> u.m / u.s:
     r"""
@@ -667,19 +668,35 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
     """
-    m = mass if np.isfinite(mass) else particles.particle_mass(particle)
+    m = mass if mass is not None else particles.particle_mass(particle)
 
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError(
+            f"Got unsupported value for argument 'ndim' ({ndim}), expect one of "
+            f"{list(_coefficients.keys())}."
+        )
     try:
         coef = coef[method]
     except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        raise ValueError(
+            f"Got unsupported value for argument 'method' ({method}), expected one "
+            f"of {list(coef.keys())}."
+        )
 
-    return np.sqrt(coef * k_B * T / m)
+    # strip units for performance
+    ll = [T, m]
+    for ii, val in enumerate(ll):
+        try:
+            ll[ii] = val.value
+        except AttributeError:
+            pass
+    T, m = ll
+
+    speed = np.sqrt(coef * k_B.value * T / m)
+    return speed * u.m / u.s
 
 
 vth_ = thermal_speed
