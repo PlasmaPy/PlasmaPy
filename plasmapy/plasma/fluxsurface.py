@@ -15,24 +15,35 @@ try:
     from scipy.integrate import trapz as trapezoid
 except ImportError:
     from scipy.integrate import cumulative_trapezoid, trapezoid
+from plasmapy.utils.decorators import validate_quantities
 
 
-@dataclass
 class FluxSurface:
     """Represents a single flux surface out of a magnetic equilibrium, experimental or otherwise."""
 
-    R: np.ndarray = field(repr=False)
-    Z: np.ndarray = field(repr=False)
-    psi: float
-    Brvals: np.ndarray = field(repr=False)
-    Bzvals: np.ndarray = field(repr=False)
-    Bphivals: np.ndarray = field(repr=False)
-    Bprimervals: np.ndarray = field(repr=False)
-    Bprimezvals: np.ndarray = field(repr=False)
-    GradRho2: np.ndarray = field(repr=False)
 
-    def __post_init__(self):
-        self.centroid = np.array([np.mean(self.R), np.mean(self.Z)])
+    @validate_quantities
+    def __init__(self,
+        R: u.m,
+        Z: u.m,
+        psi: float,
+        Brvals: u.T,
+        Bzvals: u.T,
+        Bphivals: u.T,
+        Bprimervals: u.T / u.m,
+        Bprimezvals: u.T / u.m,
+        GradRho2,
+    ):
+        self.R = R
+        self.Z = Z
+        self.psi = psi
+        self.Brvals = Brvals
+        self.Bzvals = Bzvals
+        self.Bphivals = Bphivals
+        self.Bprimervals = Bprimervals
+        self.Bprimezvals = Bprimezvals
+        self.GradRho2 = GradRho2
+        self.centroid = np.stack([self.R, self.Z]).mean(axis=1)
         self.Bvectors = np.stack((self.Brvals, self.Bzvals))
         self.dZ = np.gradient(self.Z)
         self.dR = np.gradient(self.R)
@@ -200,7 +211,7 @@ class FluxSurface:
         B15_cos = self.flux_surface_average(under_average_B15_cos)
         B16_cos = self.gamma * self.flux_surface_average(under_average_B16_cos)
 
-        B2mean = self.fsa_B2 / u.T**2
+        B2mean = self.fsa_B2
 
         F_m = 2 / B2mean / self.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
         return F_m
@@ -208,15 +219,15 @@ class FluxSurface:
     @cached_property
     def fsa_B2(self):
         # flux surface averaged B^2
-        return self.flux_surface_average(self.B2) * u.T ** 2
+        return self.flux_surface_average(self.B2)
 
     @cached_property
     def fsa_invB2(self):
-        return self.flux_surface_average(1 / self.B2) / u.T ** 2
+        return self.flux_surface_average(1 / self.B2)
 
     @cached_property
     def grbm2(self):
-        return self.flux_surface_average(self.GradRho2 / self.B2) / u.T ** 2
+        return self.flux_surface_average(self.GradRho2 / self.B2)
 
     @cached_property
     def _B17(self):

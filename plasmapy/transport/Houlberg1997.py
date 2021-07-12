@@ -42,7 +42,6 @@ __all__ = [
 ]
 
 from plasmapy.particles.particle_collections import ParticleList
-from plasmapy.utils.decorators import validate_quantities
 
 LaguerrePolynomials = [
     lambda x: np.ones_like(x),
@@ -106,7 +105,7 @@ class ExtendedParticleList(ParticleList):
         self.num_isotopes = unique.size
 
     @cached_property
-    def dP(self):
+    def dP(self) -> u.Pa / u.m:
         return constants.k_B * (
             self.T * self.dn + self.dT * self.n
         )
@@ -156,7 +155,7 @@ class ExtendedParticleList(ParticleList):
             return np.take(arr, self.inverse_index, axis=axis)
 
     @cached_property
-    def mass_density(self):
+    def mass_density(self) -> u.kg / u.m**3:
         r"""Mass densities for each particle.
 
         Returns
@@ -167,11 +166,11 @@ class ExtendedParticleList(ParticleList):
         return self.n * self.mass
 
     @cached_property
-    def thermal_speed(self):
+    def thermal_speed(self) -> u.m / u.s:
         return u.Quantity([thermal_speed(T, p) for T, p in zip(self.T, self)])
 
     @cached_property
-    def ξ(self):
+    def ξ(self) -> np.ndarray:
         # assert np.all(np.array(self.basic_elements) == np.sort(self.basic_elements))
         input_indices = np.unique(
             self.basic_elements,
@@ -189,7 +188,7 @@ class ExtendedParticleList(ParticleList):
         return result
 
     @cached_property
-    def isotopic_thermal_speed(self):
+    def isotopic_thermal_speed(self) -> u.m/u.s:
         return u.Quantity(
             [
                 speeds.mean()
@@ -198,13 +197,13 @@ class ExtendedParticleList(ParticleList):
         )
 
     @cached_property
-    def isotopic_mass(self):
+    def isotopic_mass(self) -> u.m:
         return u.Quantity(
             [masses.mean() for masses in self.split_isotopes(self.mass, axis=0)]
         )
 
     @cached_property
-    def isotopic_temperature(self):
+    def isotopic_temperature(self) -> u.eV:
         return u.Quantity(
             [
                 temperatures.mean()
@@ -213,7 +212,7 @@ class ExtendedParticleList(ParticleList):
         )
 
     @cached_property
-    def xab_ratio(self):
+    def xab_ratio(self) -> np.ndarray:
         speed = self.isotopic_thermal_speed
         return (
             speed[np.newaxis, :]
@@ -221,19 +220,20 @@ class ExtendedParticleList(ParticleList):
         )
 
     @cached_property
-    def mass_ratio(self) -> "(N, N)":
+    def mass_ratio(self) -> np.ndarray:
         mass = self.isotopic_mass
         return mass[:, np.newaxis] / mass[np.newaxis, :]
 
     @cached_property
-    def temperature_ratio(self) -> "(N, N)":
+    def temperature_ratio(self) -> np.ndarray:
         temperature = self.isotopic_temperature
         return (
             temperature[:, np.newaxis] / temperature[np.newaxis, :]
         )
 
     @cached_property
-    def M_matrix(self) -> "(N, N, 3, 3)":
+    def M_matrix(self) -> np.ndarray:
+        """(N, N, 3, 3)"""
         xab = self.xab_ratio
         mass_ratio = self.mass_ratio
         M11 = -(1 + mass_ratio) / (1 + xab ** 2) ** (3 / 2)
@@ -253,7 +253,8 @@ class ExtendedParticleList(ParticleList):
         return output
 
     @cached_property
-    def N_matrix(self) -> "(N, N, 3, 3)":
+    def N_matrix(self) -> np.ndarray:
+        """(N, N, 3, 3)"""
         # TODO np.where(all_species.N_matrix - np.swapaxes(all_species.N_matrix, 0, 1))  should maybe be symmetric, but doesn't seem to be
         # cross-ref with NCLASS site errata
         xab = self.xab_ratio
@@ -497,7 +498,7 @@ class ExtendedParticleList(ParticleList):
         kb = self.K_B_ai(
             x, flux_surface.trapped_fraction, orbit_squeezing=orbit_squeezing
         )
-        kps = self.K_ps_ai(x, flux_surface, m_max=m_max)
+        kps = self.K_ps_ai(x, flux_surface, m_max=m_max) / u.m**2
         return 1 / (1 / kb + 1 / kps)
 
     def mu_hat(
@@ -519,7 +520,7 @@ class ExtendedParticleList(ParticleList):
         xmax :
             xmax
         N :
-            N
+            N 
         kwargs :
             kwargs
         """
