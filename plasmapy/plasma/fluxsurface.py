@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from astropy import constants
+from astropy import units as u
 from dataclasses import dataclass, field
 
 try:
@@ -189,17 +190,53 @@ class FluxSurface:
         """
         m = np.arange(1, M + 1).reshape(-1, 1)
         Theta = self.Theta.reshape(1, -1)
-        B20 = self.Brvals * self.Bprimervals + self.Bzvals * self.Bprimezvals
+        B20 = (self.Brvals * self.Bprimervals + self.Bzvals * self.Bprimezvals).reshape(1, -1)
         under_average_B16 = np.sin(Theta * m) * B20
-        under_average_B15 = under_average_B16 / self.Bmag
+        under_average_B15 = under_average_B16 / self.Bmag.reshape(1, -1)
         under_average_B16_cos = np.cos(Theta * m) * B20
-        under_average_B15_cos = under_average_B16_cos / self.Bmag
+        under_average_B15_cos = under_average_B16_cos / self.Bmag.reshape(1, -1)
         B15 = self.flux_surface_average(under_average_B15)
         B16 = self.gamma * self.flux_surface_average(under_average_B16)
         B15_cos = self.flux_surface_average(under_average_B15_cos)
         B16_cos = self.gamma * self.flux_surface_average(under_average_B16_cos)
 
-        B2mean = self.flux_surface_average(self.B2)
+        B2mean = self.fsa_B2 / u.T**2
 
         F_m = 2 / B2mean / self.BDotNablaThetaFSA * (B15 * B16 + B15_cos * B16_cos)
         return F_m
+
+    @cached_property
+    def fsa_B2(self):
+        # flux surface averaged B^2
+        return self.flux_surface_average(self.B2) * u.T ** 2
+
+    @cached_property
+    def fsa_invB2(self):
+        return self.flux_surface_average(1 / self.B2) / u.T ** 2
+
+    @cached_property
+    def grbm2(self):
+        return self.flux_surface_average(self.GradRho2 / self.B2) / u.T ** 2
+
+    @cached_property
+    def _B17(self):
+        """Equation B17 from |Houlberg_1997|. Likely bugged!
+
+        Notes
+        -----
+        Eventually this should allow picking the right `m` in `K` below.
+
+        Parameters
+        ----------
+        flux_surface :
+            flux_surface
+        """
+        B20 = self.Brvals * self.Bprimervals + self.Bzvals * self.Bprimezvals
+        under_average_B17 = (B20 / self.Bmag) ** 2
+        return self.flux_surface_average(under_average_B17) / self.flux_surface_average(self.B2)
+
+
+
+    @cached_property
+    def F_m3(self):
+        return self.F_m()

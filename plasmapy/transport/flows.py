@@ -92,17 +92,13 @@ class FlowCalculator:
         self.flux_surface = fs = flux_surface
         self._dataset_input = dataset_input
 
-        charges = self.all_species.charge
-        xi = self.all_species.ξ
-        T_i = self.all_species.T.to(u.K, equivalencies=u.temperature_energy())
-        n_i = self.all_species.n
+        charges = all_species.charge
+        xi = all_species.ξ
+        T_i = all_species.T.to(u.K, equivalencies=u.temperature_energy())
+        n_i = all_species.n
         density_gradient = all_species.dn
-        temperature_gradient = (all_species.dT * u.m).to(
-            u.K, equivalencies=u.temperature_energy()
-        ) / u.m
-        pressure_gradient_over_n_i = constants.k_B * (
-            T_i * density_gradient / n_i + temperature_gradient
-        )
+        temperature_gradient = all_species.dT
+        pressure_gradient_over_n_i = all_species.dP / all_species.n
         self.μ = μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
         M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
@@ -181,14 +177,12 @@ class FlowCalculator:
 
     @cached_property
     def _fluxes_BP(self):
-        Fhat = self.flux_surface.Fhat
         fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
         # TODO cached property fs.B2av
-        u_θ = (self._charge_state_flows + self.thermodynamic_forces) / B2fsav
+        u_θ = (self._charge_state_flows + self.thermodynamic_forces) / fs.fsa_B2
         μ = self.μ
         charge = self.all_species.charge
-        Γ_BP = -(Fhat / charge * (μ[:, 0] * u_θ).sum(axis=-1)).si
+        Γ_BP = -(fs.Fhat / charge * (μ[:, 0] * u_θ).sum(axis=-1)).si
         q_BP = -(
             fs.Fhat
             * constants.k_B
@@ -201,8 +195,9 @@ class FlowCalculator:
     @cached_property
     def _fluxes_PS(self):
         fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
-        Binv2fsav = fs.flux_surface_average(1 / fs.B2) / u.T ** 2
+            # TODO move these and others into fluxsurface.py
+        B2fsav = fs.fsa_B2
+        Binv2fsav = fs.fsa_invB2
         fs = self.flux_surface
         ξ = self.all_species.ξ
         prefactor = (
@@ -215,10 +210,10 @@ class FlowCalculator:
     @cached_property
     def _fluxes_CL(self):
         fs = self.flux_surface
-        FSA = fs.flux_surface_average(fs.GradRho2 / fs.B2) / u.T ** 2
+        FSA = fs.grbm2
         # TODO fs.rho is [m]; fs.GradRho2 is actually [fs.gradRho]^2, gradRho is [1]
         # TODO FSA does not drop units; B2 and the others are unitless
-        Fhat = self.flux_surface.Fhat
+        Fhat = fs.Fhat
         ξ = self.all_species.ξ
         prefactor = FSA / Fhat * self.all_species.ξ / self.all_species.charge
         Γ_CL = prefactor * self._funnymatrix[:,0]
@@ -309,7 +304,7 @@ class FlowCalculator:
     @cached_property
     def local_flow_velocities(self):
         fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        B2fsav = fs.fsa_B2
         B_p = fs.Bp * u.T
         B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
         B = fs.Bmag * u.T
@@ -325,7 +320,7 @@ class FlowCalculator:
     @cached_property
     def local_heat_flux_components(self):
         fs = self.flux_surface
-        B2fsav = fs.flux_surface_average(fs.B2) * u.T ** 2  # flux surface averaged B^2
+        B2fsav = fs.fsa_B2
         B_p = fs.Bp * u.T
         B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
         B = fs.Bmag * u.T

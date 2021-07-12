@@ -190,9 +190,6 @@ class SymbolicEquilibrium:
         psi_values = np.asarray(rho) * psi_span + psi_min
         return psi_values
 
-    # TODO def psi_to_rho(self,
-    #                psi
-
     def get_multiple_flux_surfaces(
         self,
         *,

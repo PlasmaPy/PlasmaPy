@@ -105,6 +105,12 @@ class ExtendedParticleList(ParticleList):
         unique, self.split_index, self.inverse_index = uniq_all
         self.num_isotopes = unique.size
 
+    @cached_property
+    def dP(self):
+        return constants.k_B * (
+            self.T * self.dn + self.dT * self.n
+        )
+
     def split_isotopes(self, arr, axis):
         assert arr.shape[axis] == len(self)
         output = np.split(arr, self.split_index, axis=axis)
@@ -458,7 +464,6 @@ class ExtendedParticleList(ParticleList):
             * self.thermal_speed.reshape(1, -1) ** 2
             * x.reshape(-1, 1) ** 2
             * full_sum
-            / u.m ** 2  # TODO why the units here?
         )
 
     def K(
@@ -544,26 +549,6 @@ class ExtendedParticleList(ParticleList):
         return actual_units
 
 
-def _B17(flux_surface):
-    """Equation B17 from |Houlberg_1997|. Likely bugged!
-
-    Notes
-    -----
-    Eventually this should allow picking the right `m` in `K` below.
-
-    Parameters
-    ----------
-    flux_surface :
-        flux_surface
-    """
-    fs = flux_surface
-    B20 = fs.Brvals * fs.Bprimervals + fs.Bzvals * fs.Bprimezvals
-    under_average_B17 = (B20 / fs.Bmag) ** 2
-    return fs.flux_surface_average(under_average_B17) / fs.flux_surface_average(fs.B2)
-
-
-
-
 def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamma):
     """Equation B11 from |Houlberg_1997|.
 
@@ -573,7 +558,6 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamm
         distribution velocity relative to the thermal velocity.
     m : Union[int, np.ndarray]
     thermal_speed : u.m/u.s
-    fs : FluxSurface
     """
     """Equation B11 of Houlberg_1997."""
     B11 = (
