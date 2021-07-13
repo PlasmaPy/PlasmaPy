@@ -7,9 +7,6 @@ Charged particle radiography analysis
 .. currentmodule:: plasmapy.diagnostics.charged_particle_radiography
 
 .. automodapi:: plasmapy.diagnostics.charged_particle_radiography
-   :no-heading:
-
-|
 
 .. nbgallery::
     :caption: Examples
