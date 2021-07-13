@@ -281,9 +281,7 @@ def test_input_validation():
     source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
     detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
     with pytest.raises(ValueError):
-        sim = cpr.Tracker(
-            grid, source_bad, detector_bad, verbose=False
-        )
+        sim = cpr.Tracker(grid, source_bad, detector_bad, verbose=False)
 
     # Test raises warning when one (or more) of the required fields is missing
     grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
@@ -333,9 +331,7 @@ def test_init():
 
     # Test manually setting hdir and vdir
     hdir = np.array([1, 0, 1])
-    sim = cpr.Tracker(
-        grid, source, detector, verbose=False, detector_hdir=hdir
-    )
+    sim = cpr.Tracker(grid, source, detector, verbose=False, detector_hdir=hdir)
 
     # Test special case hdir == [0,0,1]
     source = (0 * u.mm, 0 * u.mm, -10 * u.mm)
