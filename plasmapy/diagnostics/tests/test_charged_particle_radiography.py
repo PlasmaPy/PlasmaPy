@@ -11,7 +11,7 @@ import warnings
 
 from scipy.special import erf
 
-from plasmapy.diagnostics import proton_radiography as prad
+from plasmapy.diagnostics import charged_particle_radiography as cpr
 from plasmapy.plasma.grids import CartesianGrid
 
 
@@ -148,13 +148,13 @@ def run_1D_example(name):
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
     bins = [200, 60]
-    hax, vax, values = prad.synthetic_radiograph(sim, size=size, bins=bins)
+    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     values = np.mean(values[:, 20:40], axis=1)
 
@@ -182,7 +182,7 @@ def run_mesh_example(
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.add_wire_mesh(
         location,
@@ -222,17 +222,17 @@ def test_coordinate_systems():
     # Cartesian
     source = (-7.07 * u.mm, -7.07 * u.mm, 0 * u.mm)
     detector = (70.07 * u.mm, 70.07 * u.mm, 0 * u.mm)
-    sim1 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
+    sim1 = cpr.Tracker(grid, source, detector, verbose=True)
 
     # Cylindrical
     source = (-1 * u.cm, 45 * u.deg, 0 * u.mm)
     detector = (10 * u.cm, 45 * u.deg, 0 * u.mm)
-    sim2 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim2 = cpr.Tracker(grid, source, detector, verbose=False)
 
     # In spherical
     source = (-0.01 * u.m, 90 * u.deg, 45 * u.deg)
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
-    sim3 = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim3 = cpr.Tracker(grid, source, detector, verbose=False)
 
     assert np.allclose(sim1.source, sim2.source, atol=1e-2)
     assert np.allclose(sim2.source, sim3.source, atol=1e-2)
@@ -259,13 +259,13 @@ def test_input_validation():
     Ex[0, 0, 0] = np.nan * u.V / u.m
     grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     Ex[0, 0, 0] = np.inf * u.V / u.m  # Reset element for the rest of the tests
     grid.add_quantities(E_x=Ex)
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Check what happens if a value is large realtive to the rest of the array
@@ -273,7 +273,7 @@ def test_input_validation():
     grid.add_quantities(E_x=Ex)
     # with pytest.raises(ValueError):
     with pytest.warns(RuntimeWarning):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     Ex[0, 0, 0] = 0 * u.V / u.m
 
     # Raise error when source-to-detector vector doesn't pass through the
@@ -281,26 +281,26 @@ def test_input_validation():
     source_bad = (10 * u.mm, -10 * u.mm, 0 * u.mm)
     detector_bad = (10 * u.mm, 100 * u.mm, 0 * u.mm)
     with pytest.raises(ValueError):
-        sim = prad.SyntheticProtonRadiograph(
+        sim = cpr.Tracker(
             grid, source_bad, detector_bad, verbose=False
         )
 
     # Test raises warning when one (or more) of the required fields is missing
     grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
     with pytest.warns(RuntimeWarning, match="is not specified for the provided grid."):
-        sim = prad.SyntheticProtonRadiograph(grid_bad, source, detector, verbose=True)
+        sim = cpr.Tracker(grid_bad, source, detector, verbose=True)
 
     # ************************************************************************
     # During create_particles
     # ************************************************************************
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad)
 
     # ************************************************************************
     # During runtime
     # ************************************************************************
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV)
 
     # Test an invalid field weighting keyword
@@ -319,7 +319,7 @@ def test_input_validation():
         RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
     ):
         size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
-        hax, vax, values = prad.synthetic_radiograph(sim, size=size)
+        hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 
 def test_init():
@@ -329,24 +329,24 @@ def test_init():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     # Test manually setting hdir and vdir
     hdir = np.array([1, 0, 1])
-    sim = prad.SyntheticProtonRadiograph(
+    sim = cpr.Tracker(
         grid, source, detector, verbose=False, detector_hdir=hdir
     )
 
     # Test special case hdir == [0,0,1]
     source = (0 * u.mm, 0 * u.mm, -10 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 200 * u.mm)
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
     # Test that hdir is calculated correctly if src-det axis is anti-parallel to z
     source = (0 * u.mm, 0 * u.mm, 10 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, -200 * u.mm)
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
@@ -357,7 +357,7 @@ def test_create_particles():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.create_particles(
         1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="monte-carlo"
@@ -379,7 +379,7 @@ def test_load_particles():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform")
 
     # Test adding unequal numbers of particles
@@ -409,7 +409,7 @@ def test_run_options():
     # Cartesian
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=True)
+    sim = cpr.Tracker(grid, source, detector, verbose=True)
 
     # Test that trying to call run() without creating particles
     # raises an exception
@@ -441,7 +441,7 @@ def test_run_options():
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg)
     with pytest.warns(
         RuntimeWarning,
@@ -462,13 +462,13 @@ def test_synthetic_radiograph():
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
     # Verify exception raised if we try to make a synthetic radiograph before
     # running
     with pytest.raises(ValueError):
-        h, v, i = prad.synthetic_radiograph(sim)
+        h, v, i = cpr.synthetic_radiograph(sim)
 
     sim.run(field_weighting="nearest neighbor")
 
@@ -476,17 +476,17 @@ def test_synthetic_radiograph():
     bins = [200, 60]
 
     # Test size is None, default bins
-    h, v, i = prad.synthetic_radiograph(sim)
+    h, v, i = cpr.synthetic_radiograph(sim)
 
     # Test optical density
-    h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
+    h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
 
     # Test running from dictionary input
-    h, v, i = prad.synthetic_radiograph(sim.output)
+    h, v, i = cpr.synthetic_radiograph(sim.output)
 
     # Verify exception if something other than sim or dict is given as argument
     with pytest.raises(ValueError):
-        h, v, i = prad.synthetic_radiograph(np.ones(5))
+        h, v, i = cpr.synthetic_radiograph(np.ones(5))
 
 
 def test_saving_output(tmp_path):
@@ -497,7 +497,7 @@ def test_saving_output(tmp_path):
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
 
@@ -550,14 +550,14 @@ def test_gaussian_sphere_analytical_comparison():
     with pytest.warns(
         RuntimeWarning, match="Fields should go to zero at edges of grid to avoid "
     ):
-        sim = prad.SyntheticProtonRadiograph(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg)
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 4 * u.cm
     bins = [100, 100]
-    h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins)
+    h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
     h = h.to(u.mm).value / sim.mag
     v = v.to(u.mm).value / sim.mag
     r0 = h
@@ -671,7 +671,7 @@ def test_add_wire_mesh():
     # Expect a warning because many particles are off the radiograph
     # (Chose max_theta so corners are covered)
     with pytest.warns(RuntimeWarning):
-        h, v, i = prad.synthetic_radiograph(sim, size=size, bins=bins)
+        h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     # Sum up the vertical direction
     line = np.sum(i, axis=1)

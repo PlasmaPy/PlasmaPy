@@ -6,7 +6,7 @@ original fields (under some set of assumptions).
 """
 
 __all__ = [
-    "SyntheticProtonRadiograph",
+    "Tracker",
     "synthetic_radiograph",
 ]
 
@@ -71,7 +71,7 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
-class SyntheticProtonRadiograph:
+class Tracker:
     r"""
     Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
@@ -1177,9 +1177,9 @@ def synthetic_radiograph(
     Parameters
     ----------
 
-    obj: dict or SyntheticProtonRadiograph
-        Either a SyntheticProtonRadiograph object that has been run,
-        or an output dictionary created by running SyntheticProtonRadiograph
+    obj: dict or cpr.Tracker
+        Either a cpr.Tracker object that has been run,
+        or an output dictionary created by running cpr.Tracker()
 
     size : `~astropy.units.Quantity`, shape (2,2)
         The size of the detector array, specified as the minimum
@@ -1216,13 +1216,13 @@ def synthetic_radiograph(
         The number of particles counted in each bin of the histogram.
     """
 
-    if isinstance(obj, SyntheticProtonRadiograph):
+    if isinstance(obj, Tracker):
 
         if hasattr(obj, "output"):
             d = obj.output
         else:
             raise ValueError(
-                "The SyntheticProtonRadiograph object must be run "
+                "The cpr.Tracker object must be run "
                 "using the run() method before a synthetic_radiograph "
                 "can be created."
             )
@@ -1233,8 +1233,8 @@ def synthetic_radiograph(
     else:
         raise ValueError(
             "The first argument of synthetic_radiograph must be "
-            "either a SyntheticProtonRadiograph or an "
-            "output dictionary from SyntheticProtonRadiograph"
+            "either a cpr.Tracker or an "
+            "output dictionary from cpr.Tracker"
         )
 
     # Note that, at the end of the simulation, all particles were moved
