@@ -1,3 +1,5 @@
+Continuous integration: .github/**/*
+
 Diagnostics: plasmapy/diagnostics/**/*
 
 Formulary: plasmapy/formulary/**/*
@@ -8,10 +10,17 @@ parameters.quantum: plasmapy/formulary/quantum.py
 
 Particles: plasmapy/particles/**/*
 
-Documentation: docs/**/*
+# Add Documentation label to any change in docs but notebooks
+Documentation:
+- any: ['docs/**/*']
+  all: ['!docs/notebooks/**/*']
+
+Notebooks: docs/notebooks/**/*
 
 Plasma class: plasmapy/plasma/**/*
 
 simulations: plasmapy/simulations/**/*
 
 Utilities: plasmapy/utils/**/*
+
+Breaking: changelog/*.breaking*rst

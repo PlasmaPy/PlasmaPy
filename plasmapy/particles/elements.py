@@ -14,9 +14,15 @@ import collections
 import json
 import pkgutil
 
-_PeriodicTable = collections.namedtuple(
-    "periodic_table", ["group", "category", "block", "period"]
-)
+from dataclasses import dataclass
+
+
+@dataclass
+class _PeriodicTable:
+    group: int
+    period: int
+    block: str
+    category: str
 
 
 def _element_obj_hook(obj):

@@ -152,7 +152,7 @@ def test_Wigner_Seitz_radius():
 class Test_chemical_potential:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.n_e = 1e20 * u.cm ** -3
         self.n_e_fail = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
@@ -191,7 +191,7 @@ class Test_chemical_potential:
 class Test__chemical_potential_interp:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.n_e = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
