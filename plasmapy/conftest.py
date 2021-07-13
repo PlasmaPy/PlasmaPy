@@ -43,8 +43,8 @@ def equilibrium():
 
 
 @pytest.fixture(scope="module", params=[
-    # -0.01,
-    # -0.02,
+    -0.01,
+    -0.02,
     "simple",
 ])
 def flux_surface(request, equilibrium):

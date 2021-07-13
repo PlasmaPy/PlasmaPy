@@ -42,7 +42,7 @@ class SimpleFluxSurface:
         return (1.0 + 1.5 * self.p_eps ** 2) / self.bt0 ** 2
 
     @validate_quantities
-    def F_m(self, M: float =3) -> u.dimensionless_unscaled:
+    def F_m(self, M: float =3) -> u.m**-2:
         p_eps = self.p_eps
         i = np.arange(1, M + 1)
         C1 = np.sqrt(1 - p_eps ** 2)
@@ -71,5 +71,10 @@ class SimpleFluxSurface:
 
     @cached_property
     @validate_quantities
-    def F_m3(self) -> u.dimensionless_unscaled:
+    def Fhat(self) -> u.dimensionless_unscaled:
+        return u.Quantity(self.p_q / self.p_eps)
+
+    @cached_property
+    @validate_quantities
+    def F_m3(self) -> u.m**-2:
         return self.F_m()

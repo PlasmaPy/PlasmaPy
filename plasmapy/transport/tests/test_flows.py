@@ -125,6 +125,8 @@ def test_fluxes(fc, num_regression):
 
 def test_particle_velocities_heat_fluxes(fc, num_regression):
     d = {}
+    if not hasattr(fc.flux_surface, "Bp"):
+        pytest.skip("SimpleFluxSurface has no Bp")
     d[f"u"] = fc.local_flow_velocities.ravel().value
     d[f"q"] = fc.local_heat_flux_components.ravel().value
     num_regression.check(d)

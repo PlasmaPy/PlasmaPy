@@ -111,9 +111,9 @@ class FluxSurface:
                 ax.get_figure().colorbar(line, ax=ax)
 
         if B:
-            ax.quiver(self.R, self.Z, self.Brvals, self.Bzvals, **kwargs)
+            ax.quiver(self.R, self.Z, self.Brvals.si.value, self.Bzvals.si.value, **kwargs)
         if n:
-            ax.quiver(self.R, self.Z, self.nr, self.nz, **kwargs)
+            ax.quiver(self.R, self.Z, self.nr.si.value, self.nz.si.value, **kwargs)
         if legend:
             ax.legend()
         return ax

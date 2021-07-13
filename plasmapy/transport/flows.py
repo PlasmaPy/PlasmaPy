@@ -303,9 +303,9 @@ class FlowCalculator:
     def local_flow_velocities(self):
         fs = self.flux_surface
         B2fsav = fs.fsa_B2
-        B_p = fs.Bp * u.T
-        B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
-        B = fs.Bmag * u.T
+        B_p = fs.Bp 
+        B_t = fs.Bphivals # TODO needs renaming T_T
+        B = fs.Bmag 
         u_θ = (self._charge_state_flows + self.thermodynamic_forces) / B2fsav
         u_hat_theta_1_ai = u_θ[:, 0][:, np.newaxis]
         S_theta_1_ai = self.thermodynamic_forces[:, 0][:, np.newaxis]
@@ -319,9 +319,9 @@ class FlowCalculator:
     def local_heat_flux_components(self):
         fs = self.flux_surface
         B2fsav = fs.fsa_B2
-        B_p = fs.Bp * u.T
-        B_t = fs.Bphivals * u.T  # TODO needs renaming T_T
-        B = fs.Bmag * u.T
+        B_p = fs.Bp
+        B_t = fs.Bphivals # TODO needs renaming T_T
+        B = fs.Bmag
         n_i = self.all_species.n
         T_i = self.all_species.T
         p = n_i * T_i

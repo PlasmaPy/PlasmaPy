@@ -1,13 +1,18 @@
 import numpy as np
 import pytest
+import astropy.units as u
 
 from hypothesis.extra.numpy import arrays
 from hypothesis.strategies import floats, integers
 
 
 def test_fs_Bmag(num_regression, flux_surface):
+    if not hasattr(flux_surface, "Bp"):
+        pytest.skip("SimpleFluxSurface has no Bp")
+    Bav = flux_surface.flux_surface_average(flux_surface.Bmag)
+    assert Bav.unit == u.T
     num_regression.check(
-        {"fs-averaged mod B": flux_surface.flux_surface_average(flux_surface.Bmag)}
+        {"fs-averaged mod B": Bav.si.value}
     )
 
 
@@ -42,6 +47,8 @@ def contour_shaped_array(draw, elements):
 
 @given(m=integers(-100, 100).filter(lambda x: x != 0))
 def test_fs_flux_surface_sine_modes(m: int, flux_surface):
+    if not hasattr(flux_surface, "Bp"):
+        pytest.skip("SimpleFluxSurface has no Bp")
     mode = np.sin(flux_surface.Theta * m)
     mode /= np.linalg.norm(mode, ord=2)
     assert abs(flux_surface.flux_surface_average(mode)) < 0.01
@@ -49,6 +56,8 @@ def test_fs_flux_surface_sine_modes(m: int, flux_surface):
 
 @given(m=integers(1, 100))
 def test_fs_flux_surface_cosine_modes(m: int, flux_surface):
+    if not hasattr(flux_surface, "Bp"):
+        pytest.skip("SimpleFluxSurface has no Bp")
     mode = np.cos(flux_surface.Theta * m)
     mode /= np.linalg.norm(mode, ord=2)
     assert abs(flux_surface.flux_surface_average(mode)) < 0.01
