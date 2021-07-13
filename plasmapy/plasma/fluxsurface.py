@@ -67,19 +67,22 @@ class FluxSurface:
         self.Bmin = self.Bmag.min()
 
         integrand = self.Bmag / self.Bp
-        integral = cumulative_trapezoid(integrand, self.lp, initial=0)
+        integral = cumulative_trapezoid(integrand, self.lp, initial=0) * self.lp.unit
         self.gamma = 2 * np.pi / integral[-1]
-        integral *= self.gamma
-        self.Theta = integral
+        self.Theta = integral * self.gamma * u.rad
 
+        self.psiprime = trapezoid(self.Bphivals, self.lp)
+
+    @cached_property
+    @validate_quantities
+    def Fhat(self) -> u.dimensionless_unscaled:
         F = (
             self.flux_surface_average(self.R * self.Bphivals)
             * 2
             * np.pi
             / constants.mu0
         )  # FS average because this is supposed to be constant on the flux surface
-        self.psiprime = trapezoid(self.Bphivals, self.lp)
-        self.Fhat = constants.mu0 * F
+        return F / self.psiprime * constants.mu0 
 
     def plot(
         self, ax=None, *, quantity = None, n=False, B=False, legend=True, colorbar = True, **kwargs

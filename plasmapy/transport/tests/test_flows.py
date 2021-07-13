@@ -163,9 +163,6 @@ def test_particle_velocities_heat_fluxes(fc, num_regression):
 #     )
 #     return fc
 
-# def test_electrons(fc_with_electrons, num_regression):
-#     breakpoint()
-
 
 @pytest.mark.slow
 def test_integration():

@@ -42,7 +42,11 @@ def equilibrium():
     return equilibrium
 
 
-@pytest.fixture(scope="module", params=[-0.01, -0.02, "simple"])
+@pytest.fixture(scope="module", params=[
+    # -0.01,
+    # -0.02,
+    "simple",
+])
 def flux_surface(request, equilibrium):
     psi_value = request.param
     if psi_value == "simple":
@@ -53,8 +57,8 @@ def flux_surface(request, equilibrium):
             minor_radius=2 * u.m,
             axial_elongation=equilibrium.elongation,
             axial_toroidal_field=5.3 * u.T,
-            q0 = 3.0,
-            axial_safety_factor = 3.0,
+            q0=3.0,
+            axial_safety_factor=3.0,
         )
 
     return equilibrium.get_flux_surface(psi_value)

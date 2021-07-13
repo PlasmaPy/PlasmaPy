@@ -7,8 +7,6 @@ r"""This module implements helper functions from [1]_.
 This work is referenced in docstrings as `Houlberg_1997`.
 """
 
-from __future__ import annotations
-
 import numpy as np
 import warnings
 
@@ -24,6 +22,7 @@ from plasmapy.formulary.mathematics import Chandrasekhar_G
 from plasmapy.particles import Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
 import xarray
+from plasmapy.utils.decorators import validate_quantities
 
 A_AXIS = 0
 B_AXIS = 1
@@ -328,7 +327,8 @@ class ExtendedParticleList(ParticleList):
                              axis=(0, 1)).si
 
     @cached_property
-    def N_script(self):
+    @validate_quantities
+    def N_script(self) -> u.kg / u.m**3 / u.s:
         """Weighted field particle matrix - equation A2b from |Houlberg_1997|"""
         N = self.N_matrix
         # Equation A2b
@@ -336,7 +336,8 @@ class ExtendedParticleList(ParticleList):
         return N_script
 
     @cached_property
-    def M_script(self):
+    @validate_quantities
+    def M_script(self) -> u.kg / u.m**3 / u.s:
         """Weighted test particle matrix - equation A2a from |Houlberg_1997|"""
         # Equation A2a
         integrand = self.M_matrix * self.effective_momentum_relaxation_rate[:, :, np.newaxis, np.newaxis]
@@ -347,10 +348,11 @@ class ExtendedParticleList(ParticleList):
         x_over_xab = (x[:, np.newaxis, np.newaxis] / xab[np.newaxis, ...]).value
         return x_over_xab
 
+    @validate_quantities
     def pitch_angle_diffusion_rate(
         self,
         x: np.ndarray,
-    ):
+    ) -> u.s**-1:
         """The pitch angle diffusion rate, nu_{D,ai}, equation B4b from |Houlberg_1997|
 
         Parameters
@@ -375,13 +377,14 @@ class ExtendedParticleList(ParticleList):
         )
         return result.sum(axis=-1)
 
+    @validate_quantities
     def K_B_ai(
         self,
         x: np.ndarray,
         trapped_fraction: float,
         *,
         orbit_squeezing: bool = False,
-    ):
+    ) -> u.s**-1:
         """Banana regime contribution to effective viscosity - eq. B1 from |Houlberg_1997|
 
         Parameters
@@ -403,7 +406,8 @@ class ExtendedParticleList(ParticleList):
         padr = self.pitch_angle_diffusion_rate(x)
         return padr * f_t / f_c / S_ai ** 1.5
 
-    def ν_T_ai(self, x: np.ndarray):
+    @validate_quantities
+    def ν_T_ai(self, x: np.ndarray) -> u.s**-1:
         """Characteristic rate of anisotropy relaxation.
 
         Equation B12 from |Houlberg_1997|.
@@ -411,7 +415,7 @@ class ExtendedParticleList(ParticleList):
         Parameters
         ----------
         x : np.ndarray
-            distribution velocity relative to the thermal velocity.
+            distribution velocity relative to the thermal velocity ($v / v_th$).
         """
         prefactor = 3 * np.pi ** 0.5 / 4 * self.ξ / self.mass_density
 
@@ -426,13 +430,14 @@ class ExtendedParticleList(ParticleList):
         result = prefactor * self.decompress(summation.sum(axis=-1), axis=1)
         return result
 
+    @validate_quantities
     def K_ps_ai(
         self,
         x: np.ndarray,
         flux_surface: FluxSurface,
         *,
         m_max=100,
-    ):
+    ) -> u.s**-1:
         """Pfirsch-Schlüter regime contribution to effective viscosity - eq. B8 from |Houlberg_1997|
 
         Parameters
@@ -450,7 +455,7 @@ class ExtendedParticleList(ParticleList):
         m = np.arange(1, m_max + 1)
         ω = ωm(x, m, self.thermal_speed, flux_surface.gamma)
         B10 = (
-            1.5 * (ν / ω) ** 2
+            - 1.5 * (ν / ω) ** 2
             - 9 / 2 * (ν / ω) ** 4
             + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
             * (2 * ν / ω)
@@ -459,14 +464,16 @@ class ExtendedParticleList(ParticleList):
         onepart = F * B10
         full_sum = np.sum(onepart / ν, axis=-1)
 
-        return (
+        output = (
             3
             / 2
             * self.thermal_speed.reshape(1, -1) ** 2
             * x.reshape(-1, 1) ** 2
             * full_sum
         )
+        return output
 
+    @validate_quantities
     def K(
         self,
         x: np.ndarray,
@@ -474,7 +481,7 @@ class ExtendedParticleList(ParticleList):
         *,
         m_max: int = 100,
         orbit_squeezing: bool = False,
-    ):
+    ) -> u.s**-1:
         """Total effective velocity-dependent viscosity with contributions from -
         eq. 16 from |Houlberg_1997|
 
@@ -498,9 +505,10 @@ class ExtendedParticleList(ParticleList):
         kb = self.K_B_ai(
             x, flux_surface.trapped_fraction, orbit_squeezing=orbit_squeezing
         )
-        kps = self.K_ps_ai(x, flux_surface, m_max=m_max) / u.m**2
+        kps = self.K_ps_ai(x, flux_surface, m_max=m_max)
         return 1 / (1 / kb + 1 / kps)
 
+    @validate_quantities
     def mu_hat(
         self,
         flux_surface: FluxSurface,
@@ -509,7 +517,7 @@ class ExtendedParticleList(ParticleList):
         xmax: float = 10,
         N: int = 1000,
         **kwargs,
-    ):
+    ) -> u.kg / u.m**3 / u.s:
         """Viscosity coefficients - equation 15 from |Houlberg_1997|.
 
         Parameters
@@ -524,6 +532,10 @@ class ExtendedParticleList(ParticleList):
         kwargs :
             kwargs
         """
+        # dirty hack because validate_quantities does not play well with **kwargs?
+        if "kwargs" in kwargs:
+            kwargs = kwargs["kwargs"]
+
         if N is None:
             N = 1000
         orders = np.arange(1, 4)
@@ -566,6 +578,5 @@ def ωm(x: np.ndarray, m: Union[int, np.ndarray], thermal_speed: u.m / u.s, gamm
         * thermal_speed.reshape(1, -1, 1)
         * m.reshape(1, 1, -1)
         * gamma
-        / u.m
     )  # TODO why the u.m?
     return B11

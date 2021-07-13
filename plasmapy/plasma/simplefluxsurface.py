@@ -1,6 +1,7 @@
 from functools import cached_property
 import astropy.units as u
 import numpy as np
+from plasmapy.utils.decorators import validate_quantities
 
 rho = u.def_unit("rho")
 
@@ -31,14 +32,17 @@ class SimpleFluxSurface:
         self.q0 = axial_safety_factor
 
     @cached_property
-    def fsa_B2(self):
+    @validate_quantities
+    def fsa_B2(self) -> u.T**2:
         return self.bt0 ** 2 * (1 + 0.5 * self.p_eps ** 2)
 
     @cached_property
-    def fsa_invB2(self):
+    @validate_quantities
+    def fsa_invB2(self) -> u.T ** -2:
         return (1.0 + 1.5 * self.p_eps ** 2) / self.bt0 ** 2
 
-    def F_m(self, M=3):
+    @validate_quantities
+    def F_m(self, M: float =3) -> u.dimensionless_unscaled:
         p_eps = self.p_eps
         i = np.arange(1, M + 1)
         C1 = np.sqrt(1 - p_eps ** 2)
@@ -50,18 +54,22 @@ class SimpleFluxSurface:
         )
 
     @cached_property
-    def trapped_fraction(self):
+    @validate_quantities
+    def trapped_fraction(self) -> float:
         return 1.46 * np.sqrt(self.p_eps)
 
     @cached_property
-    def grbm2(self):
+    @validate_quantities
+    def grbm2(self) -> u.T**-2:
         # <grad(ρ)**2 / B **2>    #ρ**2 / m**2 / T**2
         return 1 / self.bt0 ** 2
 
     @cached_property
-    def gamma(self):
+    @validate_quantities
+    def gamma(self) -> u.m**-1:
         return 1.0 / (self.p_q * self.r0)
 
     @cached_property
-    def F_m3(self):
+    @validate_quantities
+    def F_m3(self) -> u.dimensionless_unscaled:
         return self.F_m()
