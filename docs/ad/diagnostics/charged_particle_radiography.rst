@@ -1,8 +1,8 @@
 .. _charged_particle_radiography:
 
-***************************
+*************************************
 Charged particle radiography analysis
-***************************
+*************************************
 
 .. currentmodule:: plasmapy.diagnostics.charged_particle_radiography
 
