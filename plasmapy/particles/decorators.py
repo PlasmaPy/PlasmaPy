@@ -2,7 +2,7 @@
 Module used to define the framework needed for the `particle_input` decorator.
 The decorator takes string and/or integer representations of particles
 as arguments and passes through the corresponding instance of the
-`~plasmapy.particles.Particle` class.
+`~plasmapy.particles.particle_class.Particle` class.
 """
 __all__ = ["particle_input"]
 
@@ -42,7 +42,7 @@ def _particle_errmsg(
     if mass_numb is not None and Z is not None:
         errmsg += "and "
     if Z is not None:
-        errmsg += f"integer charge Z = {repr(Z)} "
+        errmsg += f"charge number Z = {repr(Z)} "
     errmsg += "does not correspond to a valid particle."
     return errmsg
 
@@ -81,12 +81,12 @@ def particle_input(
 ) -> Any:
     """
     Convert arguments to methods and functions to
-    `~plasmapy.particles.Particle` objects.
+    `~plasmapy.particles.particle_class.Particle` objects.
 
     Take positional and keyword arguments that are annotated with
-    `~plasmapy.particles.Particle`, and pass through the
-    `~plasmapy.particles.Particle` object corresponding to those arguments
-    to the decorated function or method.
+    `~plasmapy.particles.particle_class.Particle`, and pass through the
+    `~plasmapy.particles.particle_class.Particle` object corresponding
+    to those arguments to the decorated function or method.
 
     Optionally, raise an exception if the particle does not satisfy the
     specified categorical criteria.
@@ -98,18 +98,18 @@ def particle_input(
 
     require : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle must be in.  If a particle is not in
-        all of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        all of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     any_of : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle may be in.  If a particle is not in
-        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        any of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     exclude : `str`, `set`, `list`, or `tuple`, optional
         Categories that a particle cannot be in.  If a particle is in
-        any of these categories, then an `~plasmapy.particles.exceptions.ParticleError`
-        will be raised.
+        any of these categories, then a
+        `~plasmapy.particles.exceptions.ParticleError` will be raised.
 
     none_shall_pass : `bool`, optional
         If set to `True`, then the decorated argument may be set to
@@ -127,18 +127,18 @@ def particle_input(
     `~plasmapy.particles.exceptions.InvalidIonError` if the particle
     does not correspond to an element, isotope, or ion, respectively.
 
-    If exactly one argument is annotated with `~plasmapy.particles.Particle`,
-    then the keywords ``Z`` and ``mass_numb`` may be used to specify the
-    integer charge and/or mass number of an ion or isotope.  However,
-    the decorated function must allow ``Z`` and/or ``mass_numb`` as keywords
-    in order to enable this functionality.
+    If exactly one argument is annotated with
+    `~plasmapy.particles.particle_class.Particle`, then the keywords ``Z`` and
+    ``mass_numb`` may be used to specify the charge number and/or mass number
+    of an ion or isotope.  However, the decorated function must allow ``Z``
+    and/or ``mass_numb`` as keywords in order to enable this functionality.
 
     Raises
     ------
     `TypeError`
         If the annotated argument is not a `str`, `int`, `tuple`, `list`
-        or `~plasmapy.particles.Particle`; or if ``Z`` or ``mass_numb`` is
-        not an `int`.
+        or `~plasmapy.particles.particle_class.Particle`; or if ``Z`` or
+        ``mass_numb`` is not an `int`.
 
     `ValueError`
         If the number of input elements in a collection do not match the
@@ -171,13 +171,13 @@ def particle_input(
         categories in the ``require``, ``any_of``, and ``exclude``
         keywords; if more than one argument is annotated and ``Z`` or
         ``mass_numb`` are used as arguments; or if none of the arguments
-        have been annotated with `~plasmapy.particles.Particle`.
+        have been annotated with `~plasmapy.particles.particle_class.Particle`.
 
     Examples
     --------
     The following simple decorated function returns the
-    `~plasmapy.particles.Particle` object created from the function's
-    sole argument:
+    `~plasmapy.particles.particle_class.Particle` object created from
+    the function's sole argument:
 
     .. code-block:: python
 
@@ -189,7 +189,7 @@ def particle_input(
     This decorator may also be used to accept arguments using tuple
     annotation containing specific number of elements or using list
     annotation which accepts any number of elements in an iterable.
-    Returns a tuple of `~plasmapy.particles.Particle`:
+    Returns a tuple of `~plasmapy.particles.particle_class.Particle`:
 
     .. code-block:: python
 
@@ -421,8 +421,9 @@ def particle_input(
     def get_particle(argname, params, already_particle, funcname):
         argval, Z, mass_numb = params
         """
-        Convert the argument to a `~plasmapy.particles.Particle` object
-        if it is not already one.
+        Convert the argument to a
+        `~plasmapy.particles.particle_class.Particle` object if it is
+        not already one.
         """
 
         if not already_particle:
@@ -470,13 +471,13 @@ def particle_input(
         # Some functions require that particles be charged, or
         # at least that particles have charge information.
 
-        _integer_charge = particle._attributes["integer charge"]
+        _charge_number = particle._attributes["charge number"]
 
         must_be_charged = "charged" in require
         must_have_charge_info = set(any_of) == {"charged", "uncharged"}
 
-        uncharged = _integer_charge == 0
-        lacks_charge_info = _integer_charge is None
+        uncharged = _charge_number == 0
+        lacks_charge_info = _charge_number is None
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"A charged particle is required for {funcname}.")
