@@ -13,6 +13,6 @@
    :maxdepth: 1
    :caption: Sub-Packages and Modules
 
-   proton_radiography
+   charged_particle_radiography
    Swept Langmuir (will be deprecated) <langmuir>
    thomson
