@@ -479,6 +479,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_speed = _params_to_array(params, "electron_speed") * u.m / u.s
     ion_speed = _params_to_array(params, "ion_speed") * u.m / u.s
 
+    electron_vel = electron_speed[:, np.newaxis] * electron_vdir
+    ion_vel = ion_speed[:, np.newaxis] * ion_vdir
+
     alpha, model_Skw = spectral_density(
         wavelengths,
         probe_wavelength,
@@ -488,10 +491,8 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         ion_species=ion_species,
         efract=efract,
         ifract=ifract,
-        electron_vdir=electron_vdir,
-        electron_speed=electron_speed,
-        ion_vdir=ion_vdir,
-        ion_speed=ion_speed,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
         inst_fcn=inst_fcn,
@@ -528,8 +529,10 @@ def spectral_density_model(wavelengths, settings, params):
         and may contain the following optional variables
             - electron_vdir : (e#, 3) array of electron velocity unit vectors
             - ion_vdir : (e#, 3) array of ion velocity unit vectors
+            - inst_fcn : A function that takes a wavelength array and represents
+                    a spectrometer insturment function.
 
-        These quantities cannot be varied.
+        These quantities cannot be varied during the fit.
 
 
     params : `lmfit.Parameters` object
@@ -561,60 +564,97 @@ def spectral_density_model(wavelengths, settings, params):
     skeys = list(settings.keys())
     pkeys = list(params.keys())
 
+    print(skeys)
+
     req_settings = ["probe_wavelength", "probe_vec", "scatter_vec", "ion_species"]
     for k in req_settings:
         if k not in skeys:
             raise KeyError(f"{k} was not provided in settings, but is required.")
 
-    req_params = ["n", "Te_0", "Ti_0"]
-    for k in req_params:
-        if k not in pkeys:
-            raise KeyError(f"{k} was not provided in parameters, but is required.")
-
-    # Fill any missing settings
-    if "electron_vdir" not in skeys:
-        settings["electron_vdir"] = None
-
-    if "ion_vdir" not in skeys:
-        settings["ion_vdir"] = None
-
-    if "inst_fcn" not in skeys:
-        settings["inst_fcn"] = None
-
-    # Fill any missing required parameters
     if "efract_0" not in pkeys:
         params.add("efract_0", value=1.0, vary=False)
-
+        pkeys.append("efract_0")
     if "ifract_0" not in pkeys:
         params.add("ifract_0", value=1.0, vary=False)
+        pkeys.append("ifract_0")
 
-    if "electron_speed_0" not in pkeys:
-        params.add("electron_speed_0", value=0.0, vary=False)
-
-    if "ion_speed_0" not in pkeys:
-        params.add("ion_speed_0", value=0.0, vary=False)
+    num_e = _count_populations_in_params(pkeys, "efract")
+    num_i = _count_populations_in_params(pkeys, "ifract")
 
     # Automatically add an expression to the last efract parameter to
     # indicate that it depends on the others (so they sum to 1.0)
     # The resulting expression for the last of three will look like
     # efract_2.expr = "1.0 - efract_0 - efract_1"
-    num_e = _count_populations_in_params(pkeys, "efract")
     if num_e > 1:
         nums = ["efract_" + str(i) for i in range(num_e - 1)]
         nums.insert(0, "1.0")
         params["efract_" + str(num_e - 1)].expr = " - ".join(nums)
 
-    num_i = _count_populations_in_params(pkeys, "ifract")
     if num_i > 1:
         nums = ["ifract_" + str(i) for i in range(num_i - 1)]
         nums.insert(0, "1.0")
         params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
 
+    electron_speed = np.zeros([num_e])
+    for e in range(num_e):
+        k = "electron_speed_" + str(e)
+        if k in pkeys and params[k].value != 0:
+            electron_speed[e] = params[k].value
+        params.add(k, value=electron_speed[e], vary=False)
+        pkeys.append(k)
+
+    if "electron_vdir" not in skeys:
+        if np.all(electron_speed == 0):
+            # vdir is arbitrary in this case because vel is zero
+            settings["electron_vdir"] = np.ones([num_e, 3])
+        else:
+            raise ValueError(
+                "electron_vdir must be set if electron_speeds " "are not all zero."
+            )
+
+    print(list(settings.keys()))
+
+    ion_speed = np.zeros([num_i])
+    for i in range(num_i):
+        k = "ion_speed_" + str(i)
+        if k in pkeys and params[k].value != 0:
+            ion_speed[i] = params[k].value
+        params.add(k, value=ion_speed[i], vary=False)
+        pkeys.append(k)
+
+    if "ion_vdir" not in skeys:
+        if np.all(ion_speed == 0):
+            # vdir is arbitrary in this case because vel is zero
+            settings["ion_vdir"] = np.ones([num_i, 3])
+        else:
+            raise ValueError("ion_vdir must be set if ion_speeds " "are not all zero.")
+
+    req_params = ["n"]
+    for p in req_params:
+        if p not in pkeys:
+            raise KeyError(f"{p} was not provided in parameters, but is required.")
+
+    req_params = ["Te"]
+    for p in req_params:
+
+        for e in range(num_e):
+            k = p + "_" + str(e)
+            if k not in pkeys:
+                raise KeyError(f"{p} was not provided in parameters, but is required.")
+
+    req_params = ["Ti"]
+    for p in req_params:
+        for i in range(num_i):
+            k = p + "_" + str(i)
+            if k not in pkeys:
+                raise KeyError(f"{p} was not provided in parameters, but is required.")
+
+    if "inst_fcn" not in skeys:
+        settings["inst_fcn"] = None
+
     # TODO: raise an exception if the number of any of the ion or electron
     # quantities isn't consistent with the number of that species defined
     # by ifract or efract.
-    # Yes spectral_density() will complain about this, but catch that
-    # mistake earlier here for a better error message!
 
     # Create a lmfit.Model
     # nan_policy='omit' automatically ignores NaN values in data, allowing those

@@ -469,13 +469,6 @@ def run_fit(
     skeys = list(settings.keys())
     pkeys = list(params.keys())
 
-    # Fill any missing settings
-    if "electron_vdir" not in skeys:
-        settings["electron_vdir"] = None
-
-    if "ion_vdir" not in skeys:
-        settings["ion_vdir"] = None
-
     # Fill any missing required parameters
     if "efract_0" not in pkeys:
         params.add("efract_0", value=1.0, vary=False)
@@ -489,14 +482,6 @@ def run_fit(
     if "ion_speed" not in pkeys:
         params.add("ion_speed_0", value=0.0, vary=False)
 
-    # LOAD FROM SETTINGS
-    ion_species = settings["ion_species"]
-    probe_vec = settings["probe_vec"]
-    scatter_vec = settings["scatter_vec"]
-    electron_vdir = settings["electron_vdir"]
-    ion_vdir = settings["ion_vdir"]
-    probe_wavelength = settings["probe_wavelength"]
-
     # LOAD FROM PARAMS
     n = params["n"] * u.cm ** -3
     Te = thomson._params_to_array(params, "Te") * u.eV
@@ -505,6 +490,25 @@ def run_fit(
     ifract = thomson._params_to_array(params, "ifract")
     electron_speed = thomson._params_to_array(params, "electron_speed") * u.m / u.s
     ion_speed = thomson._params_to_array(params, "ion_speed") * u.m / u.s
+
+    # LOAD FROM SETTINGS
+    ion_species = settings["ion_species"]
+    probe_vec = settings["probe_vec"]
+    scatter_vec = settings["scatter_vec"]
+    probe_wavelength = settings["probe_wavelength"]
+
+    try:
+        electron_vdir = settings["electron_vdir"]
+    except KeyError:
+        electron_vdir = np.ones([len(Te), 3])
+
+    try:
+        ion_vdir = settings["ion_vdir"]
+    except KeyError:
+        ion_vdir = np.ones([len(Ti), 3])
+
+    electron_vel = electron_speed[:, np.newaxis] * electron_vdir
+    ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
     # Create the synthetic data
     alpha, Skw = thomson.spectral_density(
@@ -518,10 +522,8 @@ def run_fit(
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        ion_vdir=ion_vdir,
-        ion_speed=ion_speed,
-        electron_vdir=electron_vdir,
-        electron_speed=electron_speed,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
     )
 
     data = Skw.value
@@ -764,3 +766,11 @@ def test_fit_with_minimal_parameters():
         method="differential_evolution",
         max_nfev=2000,
     )
+
+
+if __name__ == "__main__":
+    # test_fit_with_minimal_parameters()
+    # test_fit_epw_single_species()
+    test_fit_epw_multi_species()
+    test_fit_iaw_single_species()
+    test_fit_iaw_multi_species()
