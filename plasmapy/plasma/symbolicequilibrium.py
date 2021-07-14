@@ -11,6 +11,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from scipy import interpolate, optimize
 from skimage import measure
+import astropy.units as u
 
 from plasmapy.plasma.fluxsurface import FluxSurface
 
@@ -164,14 +165,14 @@ class SymbolicEquilibrium:
 
         interpolated_GradRho2 = interpolator(Zcontour, Rcontour, grid=False)
         fs = FluxSurface(
-            Rcontour,
-            Zcontour,
+            Rcontour * u.m,
+            Zcontour * u.m,
             psi_value,
-            Brvals,
-            Bzvals,
-            Bphivals,
-            Bprimervals,
-            Bprimezvals,
+            Brvals * u.T,
+            Bzvals * u.T,
+            Bphivals * u.T,
+            Bprimervals * u.T / u.m,
+            Bprimezvals * u.T / u.m,
             interpolated_GradRho2,
         )
         return fs

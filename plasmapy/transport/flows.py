@@ -86,28 +86,25 @@ class FlowCalculator:
         dataset_input: xarray.Dataset = None,
     ):
         self.all_species = all_species
-        N = len(all_species)
-        self.flux_surface = fs = flux_surface
+        self.flux_surface = flux_surface
         self._dataset_input = dataset_input
 
-        charges = all_species.charge
-        xi = all_species.ξ
-        T_i = all_species.T.to(u.K, equivalencies=u.temperature_energy())
-        n_i = all_species.n
-        density_gradient = all_species.dn
-        temperature_gradient = all_species.dT
-        pressure_gradient_over_n_i = all_species.dP / all_species.n
-        self.μ = μ = all_species.mu_hat(self.flux_surface, N=mu_N)
+        self.μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
-        M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
-        Aai = (
-            xi.reshape(-1, 1, 1) * M_script_particlewise - μ
-        )
+    @cached_property
+    def thermodynamic_forces(self):
+        charges = self.all_species.charge
+        xi = self.all_species.ξ
+        T_i = self.all_species.T.to(u.K, equivalencies=u.temperature_energy())
+        n_i = self.all_species.n
+        density_gradient = self.all_species.dn
+        temperature_gradient = self.all_species.dT
+        pressure_gradient_over_n_i = self.all_species.dP / self.all_species.n
 
         # --- TD forces eq21
         # r"""$S_{\theta,\beta}^{ai}"""
-        self.thermodynamic_forces = thermodynamic_forces = S_pt_θ = (
-            fs.Fhat
+        thermodynamic_forces = (   # S_pt_θ
+            self.flux_surface.Fhat
                 / charges[np.newaxis, :]
             * u.Quantity(
                 [
@@ -117,11 +114,22 @@ class FlowCalculator:
                 ]
             )
         ).T    # (3, N) -> (N, 3)
+        return thermodynamic_forces
 
-        self.S_pt = S_pt = (thermodynamic_forces[:, np.newaxis, :] * μ).sum(
+    @cached_property
+    def _charge_state_flows(self):
+        all_species = self.all_species
+        N = len(all_species)
+        M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
+        xi = all_species.ξ
+        Aai = (
+            xi.reshape(-1, 1, 1) * M_script_particlewise - self.μ
+        )
+
+        S_pt = (self.thermodynamic_forces[:, np.newaxis, :] * self.μ).sum(
             axis=-1 # sum over beta
         )  # Equation 29
-        self.r_pt = r_pt = np.linalg.solve(Aai, S_pt)
+        r_pt = np.linalg.solve(Aai, S_pt)
         r_sources = r_pt + 0  # TODO r_E itd
         rbar_sources_presum = xi[:, np.newaxis] * r_sources
         rbar_sources = all_species.compress(rbar_sources_presum, axis=0)
@@ -155,7 +163,8 @@ class FlowCalculator:
         ).sum(
             axis=1
         )  # TODO is axis=1 right?
-        self._charge_state_flows = (self_consistent_u + r_sources).si
+        output = (self_consistent_u + r_sources).si
+        return output
 
     @cached_property
     def _funnymatrix(self):
@@ -176,7 +185,6 @@ class FlowCalculator:
     @cached_property
     def _fluxes_BP(self):
         fs = self.flux_surface
-        # TODO cached property fs.B2av
         u_θ = (self._charge_state_flows + self.thermodynamic_forces) / fs.fsa_B2
         μ = self.μ
         charge = self.all_species.charge
