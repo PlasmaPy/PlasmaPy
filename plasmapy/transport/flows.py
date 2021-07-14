@@ -117,7 +117,7 @@ class FlowCalculator:
         return thermodynamic_forces
 
     @cached_property
-    def _charge_state_flows(self):
+    def _Aai(self):
         all_species = self.all_species
         N = len(all_species)
         M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
@@ -125,18 +125,28 @@ class FlowCalculator:
         Aai = (
             xi.reshape(-1, 1, 1) * M_script_particlewise - self.μ
         )
+        return Aai
 
+    @cached_property
+    def _r_pt(self):
         S_pt = (self.thermodynamic_forces[:, np.newaxis, :] * self.μ).sum(
             axis=-1 # sum over beta
         )  # Equation 29
-        r_pt = np.linalg.solve(Aai, S_pt)
-        r_sources = r_pt + 0  # TODO r_E itd
+        r_pt = np.linalg.solve(self._Aai, S_pt)   # is this rhat?
+        return r_pt
+
+    @cached_property
+    def _charge_state_flows(self):
+        all_species = self.all_species
+        N = len(all_species)
+        xi = all_species.ξ
+        r_sources = self._r_pt + 0  # TODO r_E itd
         rbar_sources_presum = xi[:, np.newaxis] * r_sources
         rbar_sources = all_species.compress(rbar_sources_presum, axis=0)
         N_isotopes = all_species.num_isotopes
         assert rbar_sources.shape == (N_isotopes, 3)
         S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)[np.newaxis, :, :]) * u.Unit("N T / m3")
-        r_flows = np.linalg.solve(Aai, S_flows)
+        r_flows = np.linalg.solve(self._Aai, S_flows)
         assert r_flows.shape == (N, 3, 3)
         np.testing.assert_allclose(
             np.swapaxes(r_flows, 1, 2), r_flows
