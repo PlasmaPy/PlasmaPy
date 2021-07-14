@@ -17,7 +17,6 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 from typing import Union
 
-# Solves the equation 3 in Bellan2012JGR (equation 38 in hollweg1999)
 
 def hollweg_dispersion_solution(
     *,
@@ -32,7 +31,47 @@ def hollweg_dispersion_solution(
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
  ):
-    
+
+    r'''
+
+    Notes
+    -----
+
+    Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
+    .. math::
+        \left(\frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
+        \left[\omega^2\left(\omega^2 - k^2 v_{\rm A}^2\right) - &
+        \beta k^2 v_{\rm A}^2 \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right) &
+        \right]\\ = \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2 &
+        \left(\frac{c_{\rm s}^2}{\omega_{\rm ci}^2} - \frac{c^2}{\omega_{\rm pe}^2} &
+        \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}\right)
+
+    where
+
+    .. math::
+        k_{\rm x} = \mathbf{k} \cdot \hat{x}
+
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> inputs = {
+    ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+    ...    "theta": 88 * u.deg,
+    ...    "n_i": 5 * u.cm ** -3,
+    ...    "B": 2.2e-8 * u.T,
+    ...    "T_e": 1.6e6 * u.K,
+    ...    "T_i": 4.0e5 * u.K,
+    ...    "ion": Particle("p+"),
+    ... }
+    >>> omegas = hollweg_dispersion_solution(**inputs)
+    >>> omegas
+    {'fast_mode': <Quantity [2.62911663e-02, 2.27876968e+03] rad / s>,
+    'alfven_mode': <Quantity [7.48765909e-04, 2.13800404e+03] rad / s>,
+    'acoustic_mode': <Quantity [0.00043295, 0.07358991] rad / s>}
+'''
+
     # validate argument ion
     if not isinstance(ion, Particle):
         try:
@@ -92,8 +131,8 @@ def hollweg_dispersion_solution(
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
-        ) 
-    # Calc needed plasma parameters   
+            )
+    # Calc needed plasma parameters
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
         T_e=T_e,
@@ -103,74 +142,54 @@ def hollweg_dispersion_solution(
         gamma_e=gamma_e,
         gamma_i=gamma_i,
         z_mean=z_mean,
-        )   
+        )
     v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
-    
+
     # Parameters kx and kz
-    
     kz = np.cos(theta.value) * k
     kx = np.sqrt(k ** 2 - kz ** 2)
-    
+
     # Bellan2012JGR beta param equation 3
     beta = (c_s / v_A) ** 2
-    
+
     # Parameters D, F, sigma, and alpha to simplify equation 3
     D = (c_s / omega_ci) ** 2
     F = (c / omega_pe) ** 2
     sigma = (kz * v_A) ** 2
     alpha = (k * v_A) ** 2
-    
+
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = (F * kx ** 2 + 1) / sigma
     c2 = -((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
-    c1 =  alpha * (1 + 2 * beta + D * kx ** 2)
+    c1 = alpha * (1 + 2 * beta + D * kx ** 2)
     c0 = -beta * alpha * sigma
-    
+
     omega = {}
     fast_mode = []
     alfven_mode = []
     acoustic_mode = []
-    
+
     # If a single k value is given
-    if np.isscalar(k.value) == True:
-        
+    if np.isscalar(k.value) is True:
         w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
         fast_mode = np.max(w)
         alfven_mode = np.median(w)
         acoustic_mode = np.min(w)
-        
+
     # If mutliple k values are given
     else:
         # a0*x^3 + a1*x^2 + a2*x^3 + a3 = 0
-        for (a0,a1,a2,a3) in zip(c3, c2, c1, c0):
-    
+        for (a0, a1, a2, a3) in zip(c3, c2, c1, c0):
+
             w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
             fast_mode.append(np.max(w))
             alfven_mode.append(np.median(w))
-            acoustic_mode.append(np.min(w)) 
+            acoustic_mode.append(np.min(w))
 
     omega['fast_mode'] = fast_mode * u.rad / u.s
     omega['alfven_mode'] = alfven_mode * u.rad / u.s
     omega['acoustic_mode'] = acoustic_mode * u.rad / u.s
-    
-    return omega 
 
-
-inputs = {
-    "k": np.logspace(-7,-2,2) * u.rad / u.m,
-    "theta": 88 * u.deg,
-    "n_i": 5 * u.cm ** -3,
-    "B": 2.2e-8 * u.T,
-    "T_e": 1.6e6 * u.K,
-    "T_i": 4.0e5 * u.K,
-    "ion": Particle("p+"),
-}
-
-
-
-print(hollweg_dispersion_solution(**inputs))
-
-    
-
+    return omega
