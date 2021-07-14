@@ -769,8 +769,8 @@ def test_fit_with_minimal_parameters():
 
 
 if __name__ == "__main__":
-    # test_fit_with_minimal_parameters()
-    # test_fit_epw_single_species()
+    test_fit_with_minimal_parameters()
+    test_fit_epw_single_species()
     test_fit_epw_multi_species()
     test_fit_iaw_single_species()
     test_fit_iaw_multi_species()

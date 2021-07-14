@@ -53,11 +53,7 @@ def spectral_density(
     ifract: np.ndarray = None,
     ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
     electron_vel: u.m / u.s = None,
-    electron_vdir: np.ndarray = None,
-    electron_speed: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
-    ion_vdir: np.ndarray = None,
-    ion_speed: np.ndarray = None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
     inst_fcn=None,
@@ -131,36 +127,10 @@ def spectral_density(
         If set, overrides electron_vdir and electron_speed.
         Defaults to a stationary plasma [0, 0, 0] m/s.
 
-    electron_vdir : `numpy.ndarray`, shape (Ne,3), optional
-        Unit vectors describing the velocity of each electron population.
-        Unit vectors will be normalized, but must not contain all zero elements.
-        Setting electron_vel overrides this keyword.
-
-    electron_speed : `~astropy.units.Quantity`, shape (Ne), optional
-        A scalar speed for each electron population. Must be used along with
-        electron_vdir. The electron_vel is calculated from these keywords as
-
-        ``electron_vel = electron_speed * electron_vdir``
-
-        Setting electron_vel overrides this keyword.
-
     ion_vel : `~astropy.units.Quantity`, shape (Ni, 3), optional
         Velocity vectors for each electron population in the rest frame
         (convertible to m/s). If set, overrides ion_vdir and ion_speed.
         Defaults zero drift for all specified ion species.
-
-    ion_vdir : np.ndarray, shape (Ne,3), optional
-        Unit vectors describing the velocity of each ion population. Unit vectors
-        will be normalized, but must not contain all zero elements.
-        Setting ion_vel overrides this keyword.
-
-    ion_speed : `~astropy.units.Quantity`, shape (Ne), optional
-        A scalar speed for each ion population. Must be used along with
-        ion_vdir. The ion_vel is calculated from these keywords as
-
-        ``ion_vel = ion_speed * ion_vdir``
-
-        Setting ion_vel overrides this keyword.
 
     probe_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector in the direction of the probe laser. Defaults to
@@ -215,30 +185,11 @@ def spectral_density(
     else:
         ifract = np.asarray(ifract, dtype=np.float64)
 
-    # Condition the electron velocity keywords
-    if electron_vel is not None:
-        pass
-    elif (electron_speed is not None) and (electron_vdir is not None):
-        norm = np.linalg.norm(electron_vdir, axis=-1, keepdims=True)
-        if np.any(norm == 0.0):
-            raise ValueError("The electron_vdir vector cannot be zero.")
-
-        electron_vdir = electron_vdir / norm
-        electron_vel = electron_speed[:, np.newaxis] * electron_vdir
-    else:
+    if electron_vel is None:
         electron_vel = np.zeros([efract.size, 3]) * u.m / u.s
 
     # Condition the electron velocity keywords
-    if ion_vel is not None:
-        pass
-    elif (ion_speed is not None) and (ion_vdir is not None):
-        norm = np.linalg.norm(ion_vdir, axis=-1, keepdims=True)
-        if np.any(norm == 0.0):
-            raise ValueError("The ion_vdir vector cannot be zero.")
-
-        ion_vdir = ion_vdir / norm
-        ion_vel = ion_speed[:, np.newaxis] * ion_vdir
-    else:
+    if ion_vel is None:
         ion_vel = np.zeros([ifract.size, 3]) * u.m / u.s
 
     # Condition ion_species
@@ -564,8 +515,6 @@ def spectral_density_model(wavelengths, settings, params):
     skeys = list(settings.keys())
     pkeys = list(params.keys())
 
-    print(skeys)
-
     req_settings = ["probe_wavelength", "probe_vec", "scatter_vec", "ion_species"]
     for k in req_settings:
         if k not in skeys:
@@ -611,8 +560,6 @@ def spectral_density_model(wavelengths, settings, params):
             raise ValueError(
                 "electron_vdir must be set if electron_speeds " "are not all zero."
             )
-
-    print(list(settings.keys()))
 
     ion_speed = np.zeros([num_i])
     for i in range(num_i):
