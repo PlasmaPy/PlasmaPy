@@ -551,9 +551,11 @@ def spectral_density_model(wavelengths, settings, params):
     electron_speed = np.zeros([num_e])
     for e in range(num_e):
         k = "electron_speed_" + str(e)
-        if k in pkeys and params[k].value != 0:
+        if k in pkeys:
             electron_speed[e] = params[k].value
-        params.add(k, value=electron_speed[e], vary=False)
+        else:
+            # electron_speed[e] = 0 already
+            params.add(k, value=0, vary=False)
         pkeys.append(k)
 
     if "electron_vdir" not in skeys:
@@ -575,9 +577,11 @@ def spectral_density_model(wavelengths, settings, params):
     ion_speed = np.zeros([num_i])
     for i in range(num_i):
         k = "ion_speed_" + str(i)
-        if k in pkeys and params[k].value != 0:
+        if k in pkeys:
             ion_speed[i] = params[k].value
-        params.add(k, value=ion_speed[i], vary=False)
+        else:
+            # ion_speed[i] = 0 already
+            params.add(k, value=0, vary=False)
         pkeys.append(k)
 
     if "ion_vdir" not in skeys:
