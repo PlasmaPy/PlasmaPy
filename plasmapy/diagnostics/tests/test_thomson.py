@@ -207,34 +207,6 @@ def test_different_input_types():
             scatter_vec=scatter_vec,
         )
 
-    # Electron_vdir cannot be zero
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            Ti,
-            electron_speed=np.array([1, 1]) * u.m / u.s,
-            electron_vdir=np.array([[0, 0, 0], [1, 0, 0]]),
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-    # Electron_vdir cannot be zero
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            Ti,
-            ion_speed=np.array([100, 100]) * u.m / u.s,
-            ion_vdir=np.array([[0, 0, 0], [1, 0, 0]]),
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
 
 def test_collective_spectrum():
     """
@@ -769,6 +741,9 @@ def test_fit_with_minimal_parameters():
 
 
 if __name__ == "__main__":
+    test_different_input_types()
+    test_collective_spectrum()
+    test_non_collective_spectrum()
     test_fit_with_minimal_parameters()
     test_fit_epw_single_species()
     test_fit_epw_multi_species()

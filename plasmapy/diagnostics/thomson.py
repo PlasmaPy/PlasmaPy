@@ -544,6 +544,10 @@ def spectral_density_model(wavelengths, settings, params):
         nums.insert(0, "1.0")
         params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
 
+    # **************
+    # Electron velocity
+    # **************
+
     electron_speed = np.zeros([num_e])
     for e in range(num_e):
         k = "electron_speed_" + str(e)
@@ -560,6 +564,13 @@ def spectral_density_model(wavelengths, settings, params):
             raise ValueError(
                 "electron_vdir must be set if electron_speeds " "are not all zero."
             )
+    # Normalize vdir
+    norm = np.linalg.norm(settings["electron_vdir"], axis=-1)
+    settings["electron_vdir"] = settings["electron_vdir"] / norm[:, np.newaxis]
+
+    # **************
+    # Ionvelocity
+    # **************
 
     ion_speed = np.zeros([num_i])
     for i in range(num_i):
@@ -575,6 +586,10 @@ def spectral_density_model(wavelengths, settings, params):
             settings["ion_vdir"] = np.ones([num_i, 3])
         else:
             raise ValueError("ion_vdir must be set if ion_speeds " "are not all zero.")
+
+    # Normalize vdir
+    norm = np.linalg.norm(settings["ion_vdir"], axis=-1)
+    settings["ion_vdir"] = settings["ion_vdir"] / norm[:, np.newaxis]
 
     req_params = ["n"]
     for p in req_params:
