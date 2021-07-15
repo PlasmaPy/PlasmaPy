@@ -102,6 +102,7 @@ class ExtendedParticleList(ParticleList):
         )
         unique, self.split_index, self.inverse_index = uniq_all
         self.num_isotopes = unique.size
+        self.isotope_indices = np.argwhere(self.basic_elements).flatten()
 
     @cached_property
     def dP(self) -> u.Pa / u.m:

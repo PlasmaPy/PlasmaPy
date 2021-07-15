@@ -10,6 +10,7 @@ import xarray
 from astropy import constants
 from astropy import units as u
 from collections import defaultdict, namedtuple
+import scipy.linalg
 
 from plasmapy.particles import IonizationStateCollection, Particle
 from plasmapy.plasma.fluxsurface import FluxSurface
@@ -119,7 +120,6 @@ class FlowCalculator:
     @cached_property
     def _Aai(self):
         all_species = self.all_species
-        N = len(all_species)
         M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
         xi = all_species.ξ
         Aai = (
@@ -129,16 +129,16 @@ class FlowCalculator:
 
     @cached_property
     def _r_pt(self):
+        Aai = self._Aai
         S_pt = (self.thermodynamic_forces[:, np.newaxis, :] * self.μ).sum(
             axis=-1 # sum over beta
         )  # Equation 29
-        r_pt = np.linalg.solve(self._Aai, S_pt)   # is this rhat?
+        r_pt = np.linalg.solve(Aai, S_pt)   # is this rhat?
         return r_pt
 
     @cached_property
     def _charge_state_flows(self):
         all_species = self.all_species
-        N = len(all_species)
         xi = all_species.ξ
         r_sources = self._r_pt + 0  # TODO r_E itd
         rbar_sources_presum = xi[:, np.newaxis] * r_sources
@@ -147,7 +147,7 @@ class FlowCalculator:
         assert rbar_sources.shape == (N_isotopes, 3)
         S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)[np.newaxis, :, :]) * u.Unit("N T / m3")
         r_flows = np.linalg.solve(self._Aai, S_flows)
-        assert r_flows.shape == (N, 3, 3)
+        assert r_flows.shape == (len(all_species), 3, 3)
         np.testing.assert_allclose(
             np.swapaxes(r_flows, 1, 2), r_flows
         )  # symmetric matrix
@@ -175,6 +175,63 @@ class FlowCalculator:
         )  # TODO is axis=1 right?
         output = (self_consistent_u + r_sources).si
         return output
+
+    @cached_property
+    def _rhat_crhat(self):
+        p_eb = 0
+        N = len(self.all_species)
+        M = self.all_species.num_isotopes
+        A_matrices = self._Aai
+        charges = self.all_species.charge
+        temperatures = self.all_species.T
+        densities = self.all_species.n
+        orders = np.arange(3)
+        xi = self.all_species.ξ.value
+        rhat = np.zeros((N, 3, 6))
+        crhat = np.zeros((M, 3, 6))
+        rhatp = np.zeros((N, N, 3))
+        rhatt = np.zeros((N, N, 3))
+        crhatp = np.zeros((N, M, 3))
+        crhatt = np.zeros((N, M, 3))
+        mu = self.μ
+        srcth = self.thermodynamic_forces
+        for i in range(N):
+            isotope_index = self.all_species.isotope_indices[i]
+            assert A_matrices.shape[0] == N
+            lu = A_lu, A_pivots = scipy.linalg.lu_factor(A_matrices[i])
+            response1 = scipy.linalg.lu_solve(lu, np.eye(3) * xi[i])
+            rhat[i, :, :3] = response1
+            crhat[isotope_index, :, :3] += xi[i] * response1
+
+            response2 = scipy.linalg.lu_solve(lu, (srcth[i] * mu[i]).sum(axis=1))
+            rhat[i, :, 3] = response2
+            crhat[isotope_index, :, 3] += xi[i] * response2
+
+            srcthp = - self.flux_surface.Fhat / charges[i] * temperatures[i] # originally an array...
+            srctht = - self.flux_surface.Fhat / charges[i] * temperatures[i] # likewise
+
+            # rhatp[i,i] = srcthp * mu[i,0,:]
+            # rhatt[i,i] = srctht * mu[i,1,:]
+
+            response_3p = scipy.linalg.lu_solve(lu, srcthp * mu[i, 0, :])
+            response_3t = scipy.linalg.lu_solve(lu, srctht * mu[i, 1, :])
+
+            # oh shit c stands for cumulative?!
+            crhatp[isotope_index] += xi[i] * response_3p # TODO indices wrong?
+            crhatt[isotope_index] += xi[i] * response_3t
+
+            input4 = np.append(-charges[i] * densities[i], [0, 0])
+            response4 = scipy.linalg.lu_solve(lu, input4)
+            rhat[i, :, 4] = response4
+            crhat[isotope_index, :, 4] += xi[i] * p_eb * response4
+
+            # external forces are skipped
+        return rhat, crhat
+
+            
+
+
+
 
     @cached_property
     def _funnymatrix(self):
