@@ -173,7 +173,7 @@ def test_integration():
     import pandas as pd
     import xarray
 
-    data_df = pd.read_csv("/home/dominik/home-import/IFPILM/Magisterka/HoulbergNSTX.csv", index_col=0).iloc[
+    data_df = pd.read_csv("/home/dominik/IFPILM/Magisterka/HoulbergNSTX.csv", index_col=0).iloc[
         ::10, :
     ]
 
@@ -305,7 +305,7 @@ def test_integration():
 
     import pandas as pd
 
-    df = pd.read_csv("/home/dominik/home-import/IFPILM/Magisterka/NSTXplot1.csv")
+    df = pd.read_csv("/home/dominik/IFPILM/Magisterka/NSTXplot1.csv")
 
     df.plot.line(x="x")
     results.bootstrap_current_normalized.plot.line(

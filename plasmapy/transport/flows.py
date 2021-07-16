@@ -93,7 +93,8 @@ class FlowCalculator:
         self.μ = all_species.mu_hat(self.flux_surface, N=mu_N)
 
     @cached_property
-    def thermodynamic_forces(self):
+    @validate_quantities
+    def thermodynamic_forces(self) -> u.Unit("V / m"):
         charges = self.all_species.charge
         xi = self.all_species.ξ
         T_i = self.all_species.T.to(u.K, equivalencies=u.temperature_energy())
@@ -118,28 +119,47 @@ class FlowCalculator:
         return thermodynamic_forces
 
     @cached_property
-    def _Aai(self):
+    @validate_quantities
+    def _Aai(self) -> u.Unit("kg / (m3 s)"):
         all_species = self.all_species
         M_script_particlewise = all_species.decompress(all_species.M_script, axis=A_AXIS)
         xi = all_species.ξ
-        Aai = (
-            xi.reshape(-1, 1, 1) * M_script_particlewise - self.μ
-        )
-        return Aai # TODO verify this has ai
+        Aai = xi.reshape(-1, 1, 1) * M_script_particlewise - self.μ
+        return Aai
 
     @cached_property
-    def _r_pt(self):
-        Aai = self._Aai
-        S_pt = (self.thermodynamic_forces[:, np.newaxis, :] * self.μ).sum(
-            axis=-1 # sum over beta
-        )  # Equation 29
-        r_pt = np.linalg.solve(Aai, S_pt)   # is this rhat?
-        return r_pt
+    @validate_quantities
+    def _charge_state_flows(self) -> u.Unit("V / m"):
+        """Reconstructs charge state flows using equation 31.
 
-    @cached_property
-    def _charge_state_flows(self):
+            TODO
+
+            There's a bug in this code.
+
+            Find it.
+
+            Remove it.
+        """
         p_eb = 0 # TODO
         rhat, crhat = self._rhat_crhat
+        Λ_ai = self.all_species.decompress(self.Λ, axis = 0)
+
+        r_flows = rhat[:,:,:3]
+        r_sources = rhat[:,:,3:]
+        r_sources[:,:,2] *= p_eb
+        velocity_responses = r_flows[:,:,0]
+        heat_responses = r_flows[:,:,1]
+        u2_responses = r_flows[:,:,2]
+        u_hat = Λ_ai[:,0][:,np.newaxis] * velocity_responses +\
+                Λ_ai[:,1][:,np.newaxis] * heat_responses +\
+                Λ_ai[:,2][:,np.newaxis] * u2_responses +\
+                r_sources.sum(axis=-1) # TODO check
+        return u_hat * u.Unit("V / m")
+
+    @cached_property
+    @validate_quantities
+    def Λ(self):
+        """Equation 27 for Λ"""
         Nscript = self.all_species.N_script
 
         M = self.all_species.num_isotopes
@@ -149,23 +169,12 @@ class FlowCalculator:
         u2_flows = xab[2*M:]
         u_bar = np.stack([isotopic_velocities, isotopic_heat_flows, u2_flows], axis=1)
         Λ = -(Nscript * u_bar[np.newaxis, :, :, :]).sum(axis=(B_AXIS, BETA_AXIS))
-        Λ_ai = self.all_species.decompress(Λ, axis = 0)
-
-        r_flows = rhat[:,:,:3]
-        r_sources = rhat[:,:,3:]
-        r_sources[:,:,2] *= p_eb
-        Λ_ai = self.all_species.decompress(Λ, axis=0)
-        velocity_responses = r_flows[:,:,0]
-        heat_responses = r_flows[:,:,1]
-        u2_responses = r_flows[:,:,2]
-        u_hat = Λ_ai[:,0][:,np.newaxis] * velocity_responses +\
-                Λ_ai[:,1][:,np.newaxis] * heat_responses +\
-                Λ_ai[:,2][:,np.newaxis] * u2_responses +\
-                r_sources.sum(axis=-1) # TODO check
-        return u_hat
+        return Λ
 
     @cached_property
-    def _xab(self):
+    @validate_quantities
+    def _xab(self) -> u.Unit("m3 s / kg"):   #TODO
+        r"""Solves equation 34 for $\bar{u}_k^a$."""
         rhat, crhat = self._rhat_crhat
         lhs = self._lhs
         rhs = np.vstack(crhat[:,:,3:])
@@ -173,12 +182,16 @@ class FlowCalculator:
         return xab
 
     @cached_property
-    def _lhs(self):
-        # equation 34
+    @validate_quantities
+    def _lhs(self) -> u.Unit("kg / (m3 s)"):
+        r"""The left hand side of equation 34."""
         M = self.all_species.num_isotopes
-        ab = u.Quantity(np.eye(3 * M), "kg / (m3 s)")
-        Nscript = self.all_species.N_script
         crhat = self._rhat_crhat[1]
+        # The $\bar{u}_k^a$ term:
+        ab = u.Quantity(np.eye(3 * M), "kg / (m3 s)")
+
+        # The summation term:
+        Nscript = self.all_species.N_script
         for im in range(M):
             for m in range(3):
                 m1 = im + m * M
@@ -205,9 +218,6 @@ class FlowCalculator:
         crhat = np.zeros((M, 3, 6))
         rhatp = np.zeros((N, N, 3))
         rhatt = np.zeros((N, N, 3))
-        crhatp = np.zeros((N, M, 3))
-        crhatt = np.zeros((N, M, 3))
-        mu = self.μ
         srcth = self.thermodynamic_forces
         for i in range(N):
             isotope_index = self.all_species.isotope_indices[i]
@@ -217,22 +227,9 @@ class FlowCalculator:
             rhat[i, :, :3] = response1
             crhat[isotope_index, :, :3] += xi[i] * response1
 
-            response2 = scipy.linalg.lu_solve(lu, (srcth[i] * mu[i]).sum(axis=1))
+            response2 = scipy.linalg.lu_solve(lu, (srcth[i] * self.μ[i]).sum(axis=1))
             rhat[i, :, 3] = response2
             crhat[isotope_index, :, 3] += xi[i] * response2
-
-            srcthp = - self.flux_surface.Fhat / charges[i] * temperatures[i] # originally an array...
-            srctht = - self.flux_surface.Fhat / charges[i] * temperatures[i] # likewise
-
-            # rhatp[i,i] = srcthp * mu[i,0,:]
-            # rhatt[i,i] = srctht * mu[i,1,:]
-
-            response_3p = scipy.linalg.lu_solve(lu, srcthp * mu[i, 0, :])
-            response_3t = scipy.linalg.lu_solve(lu, srctht * mu[i, 1, :])
-
-            # oh shit c stands for cumulative?!
-            crhatp[isotope_index] += xi[i] * response_3p # TODO indices wrong?
-            crhatt[isotope_index] += xi[i] * response_3t
 
             input4 = np.append(-charges[i] * densities[i], [0, 0])
             response4 = scipy.linalg.lu_solve(lu, input4)
@@ -242,13 +239,15 @@ class FlowCalculator:
             # external forces are skipped
         return rhat, crhat
 
-            
-
-
+    # @cached_property
+    # def _crhat(self):
+    #     p_eb 
+    #     rhat = self._rhat.copy()
 
 
     @cached_property
-    def _funnymatrix(self):
+    @validate_quantities
+    def _funnymatrix(self) -> u.Unit("J2 / (A m6)"):
         M = self.all_species.decompress(
             self.all_species.M_script,
             axis=0,
