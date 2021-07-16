@@ -498,7 +498,7 @@ PlasmaPy documentation.
   each package may have their own standard.  For example, Astropy's
   `~astropy.units.Quantity` class is defined in
   ``astropy.units.quantity.Quantity`` but is also indexed at
-  ``~astropy.units.Quantity`` so either option will link to some
+  ``~astropy.units.Quantity`` so either option will link to the same
   documentation.
 
 * For readability, limit documentation line lengths to ≲ 72 characters.
