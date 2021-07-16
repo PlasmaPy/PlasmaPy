@@ -7,3 +7,4 @@ numba
 numba-scipy
 pytest >= 5.1
 setuptools_scm
+tox
