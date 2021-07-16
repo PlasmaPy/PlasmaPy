@@ -198,7 +198,10 @@ Sphinx
 ------
 
 `sphinx` is the software used to generate `PlasmaPy's online documentation`_
-from reST files and Python docstrings.
+from reST files and Python docstrings.  It was originally created to write Python's
+documentation and has become the de facto software for documenting python
+packages.  Almost all python open-source packages utilize `sphinx` to generate
+their documentation.
 
 Configuration
 ~~~~~~~~~~~~~
