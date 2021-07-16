@@ -316,7 +316,7 @@ Here is an example docstring in the `numpydoc`_ format.
 
    def subtract(a, b, *, switch_order=False):
        r"""
-       Return the difference between two integers.
+       Compute the difference between two integers.
 
        Add ∼1–3 sentences here for an extended summary of what the function
        does. This extended summary is a good place to briefly define
