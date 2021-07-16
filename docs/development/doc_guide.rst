@@ -303,8 +303,8 @@ such as using LaTeX code in equations) or ``"""``, and end with
 ``"""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
-the `numpydoc`_ standard for docstrings. More generally, docstring
-conventions for Python are described in
+the `numpydoc`_ standard for docstrings. Docstring conventions for
+Python are more generally described in
 `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_.
 
 Example docstring
