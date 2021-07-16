@@ -465,6 +465,17 @@ PlasmaPy documentation.
 * Refer to the `numpydoc`_ standard for how to write docstrings for
   classes, class attributes, and constants.
 
+* The short summary statement at the beginning of a docstring should be
+  one line long, but may be two lines long.
+
+* The extended summary that immediately follows the short summary should
+  be ≲ 4 sentences long.  Any additional information should included in
+  the "Notes" section.
+
+* The short summary should start on the line immediately following the
+  triple quotes.  There should not be any blank lines immediately before
+  the closing triple quotes.
+
 * Update code and corresponding documentation at the same time.
 
 * Write sentences that are simple, concise, and direct rather than
