@@ -279,9 +279,9 @@ be used elsewhere in the documentation. For example, we can write
 For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
 
-Because substitutions are performed when `sphinx` builds the
-documentation, they will not be performed before `help` accesses the
-docstring of an `object`. For example, when ``|Particle|`` is used in
+Since substitutions are performed by `sphinx` when the documentation
+is built, any substitution used in docstrings will not show up when using
+Python's `help` function (or the like). For example, when ``|Particle|`` is used in
 a docstring, `help` will show it as ``|Particle|`` rather than
 ``~plasmapy.particles.particle_class.Particle``. Consequently,
 substitutions should not be used in docstrings when it is important
