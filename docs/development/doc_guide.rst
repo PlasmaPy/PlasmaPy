@@ -490,8 +490,9 @@ PlasmaPy documentation.
   * Represent names and acronyms for a software package as they are
     represented in the documentation for that package.
 
-* Write the full namespace when referring to code objects within
-  PlasmaPy. For example, write
+* When referencing PlasmaPy functionality, write the full namespace path to
+  where the functionality is defined, not where it's conveniently accessed.
+  For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
   ``~plasmapy.formulary.Alfven_speed``.  This does not necessarily
   need to be done when referencing external packages, since
