@@ -290,6 +290,13 @@ substitutions should not be used in docstrings when it is important
 that users have quick access to the full path of the `object` (such as
 in the ``See Also`` section).
 
+Templating
+~~~~~~~~~~
+
+`sphinx` uses the `Jinja <https://jinja.palletsprojects.com/>`
+templating engine to generate HTML code.  Jinja may be used within
+the documentation when templating is necessary.
+
 Writing documentation
 =====================
 
