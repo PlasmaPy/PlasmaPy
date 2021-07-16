@@ -605,7 +605,7 @@ Docstring guidelines
 Narrative documentation guidelines
 ----------------------------------
 
-* Each subpackage in PlasmaPy must have corresponding narrative
+* Each top-level subpackage in PlasmaPy must have corresponding narrative
   documentation.
 
 * Use narrative documentation to describe how different functionality
