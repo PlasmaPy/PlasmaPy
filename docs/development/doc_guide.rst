@@ -614,9 +614,10 @@ Narrative documentation guidelines
 * Use title case for page titles (e.g., "Title Case") and sentence case
   for all other headings (e.g., "Sentence case").
 
-* When the narrative documentation does not reference a subpackage or
-  module file, it is necessary to create a stub file in
-  `docs/api_static`_ for that particular subpackage or module file.
+* When the narrative documentation does not index a subpackage
+  (directory) or module (``.py`` file) with :dir:`automodule`,
+  :dir:`automodapi`, or the like, then it is required to create a stub
+  file for that particular subpackage or module in `doc/api_static`_ .
   Here are the sample contents for a stub file for
   `plasmapy.particles.atomic``.  This file would be located at
   ``docs/api_static/plasmapy.particles.atomic.rst``.
