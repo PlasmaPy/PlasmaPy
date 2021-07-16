@@ -584,9 +584,16 @@ Docstring guidelines
   object may be a single line, and otherwise should be in `numpydoc`_
   format.
 
-* Dunder methods (e.g., code objects like ``__init__`` that begin and
-  end with two underscores) only need to have docstrings when needed to
-  describe non-standard or potentially unexpected behavior.
+* Dunder methods (e.g., code objects like ``__add__`` that begin and
+  end with two underscores) only need docstrings if it is necessary to
+  describe non-standard or potentially unexpected behavior.  Docstrings
+  for most dunder methods are not rendered in the online documentation
+  and should therefore be intended for developers.  Custom behavior
+  associated with dunder methods should be described in the class-level
+  documentation, when necessary.
+
+* Docstrings for ``__init__`` and ``__new__`` are included in the
+  class-level docstring when rendering documentation.
 
 * When an attribute in a class has both a ``getter`` (which is decorated
   with `property`) and a ``setter`` decoration, then the ``getter`` and
