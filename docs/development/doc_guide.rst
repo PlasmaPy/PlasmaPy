@@ -418,7 +418,7 @@ any sections that are included should be in the order provided.
 
   def sample_function():
       r"""
-      Return ...
+      Compute ...
 
       Parameters
       ----------
@@ -445,7 +445,6 @@ any sections that are included should be in the order provided.
       --------
 
       """
-
 
 Documentation guidelines
 ========================
