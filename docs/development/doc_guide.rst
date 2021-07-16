@@ -633,6 +633,10 @@ Narrative documentation guidelines
 * Use narrative documentation to describe how different functionality
   works together.
 
+* Narrative documentation should be used when the full scope of some
+  functionality cannot be adequately described within only the
+  docstrings of that functionality.
+
 * Use title case for page titles (e.g., "Title Case") and sentence case
   for all other headings (e.g., "Sentence case").
 
