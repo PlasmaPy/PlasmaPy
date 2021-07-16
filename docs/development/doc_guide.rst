@@ -198,10 +198,10 @@ Sphinx
 ------
 
 `sphinx` is the software used to generate `PlasmaPy's online documentation`_
-from reST files and Python docstrings.  It was originally created to write Python's
-documentation and has become the de facto software for documenting python
-packages.  Almost all python open-source packages utilize `sphinx` to generate
-their documentation.
+from reST files and Python docstrings.  It was originally created to
+write Python's documentation and has become the de facto software for
+documenting Python packages.  Almost all Python open-source packages
+utilize `sphinx` to generate their documentation.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -511,8 +511,9 @@ PlasmaPy documentation.
     in `Python's documentation`_ or the spelling that is used most
     commonly.
 
-  * Represent names and acronyms for a software package as they are
-    represented in the documentation for that package.
+  * Represent names and acronyms for a software package or language as
+    they are represented in the documentation for each project. Common
+    examples include "Python", "Astropy", "NumPy", and "reST".
 
 * When referencing PlasmaPy functionality, write the full namespace
   path to where the functionality is defined, not where it's conveniently
