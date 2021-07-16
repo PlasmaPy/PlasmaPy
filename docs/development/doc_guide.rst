@@ -34,7 +34,7 @@ run
 
 .. code-block:: bash
 
-   pip install tox -r requirements.txt
+   pip install -r requirements.txt
 
 You can use `tox`_ to build the documentation from within the main
 PlasmaPy repository directory by running
