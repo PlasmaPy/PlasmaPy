@@ -54,8 +54,8 @@ automodapi_custom_groups = {
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones. When extensions are removed or added, please update the
-# documentation guide in the development guide.
+# ones. When extensions are removed or added, please update the section
+# in docs/doc_guide.rst on Sphinx extensions.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
@@ -73,7 +73,7 @@ extensions = [
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
-# the documentation guide in the development guide.
+# the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
