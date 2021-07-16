@@ -586,9 +586,10 @@ Docstring guidelines
   end with two underscores) only need to have docstrings when needed to
   describe non-standard or potentially unexpected behavior.
 
-* When an attribute in a class has both a getter (which is decorated
-  with `property`) and a setter method, both the getter and setter
-  should be documented in the docstring for the getter.
+* When an attribute in a class has both a ``getter`` (which is decorated
+  with `property`) and a ``setter`` decoration, then the ``getter`` and
+  ``setter`` functionality should be documented in the docstring of
+  method decorated with ``@property``.
 
   .. code-block:: python
 
