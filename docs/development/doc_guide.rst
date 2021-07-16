@@ -619,7 +619,7 @@ Narrative documentation guidelines
   :dir:`automodapi`, or the like, then it is required to create a stub
   file for that particular subpackage or module in `doc/api_static`_ .
   Here are the sample contents for a stub file for
-  `plasmapy.particles.atomic``.  This file would be located at
+  `plasmapy.particles.atomic`.  This file would be located at
   ``docs/api_static/plasmapy.particles.atomic.rst``.
 
   .. code-block:: rst
