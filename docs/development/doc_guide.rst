@@ -120,14 +120,14 @@ We can link to code objects by enclosing them in back ticks.
   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`.   This cross-package
-linking is made possible with the `sphinx.ext.intersphinx` extension and
-the sources used for this cross-linking is defined in the
-``intersphinx_mapping`` variable in `docs/conf.py`_.  If a cross-link is not
-working as expected this is usually due to (1) a typo, (2) the package is
-not defined in the ``intersphinx_mapping`` configuration value, or (3)
-the referenced source package does not properly or fully index their
-own code (this is common in open-source packages).
+packages like `numpy`, `astropy`, `scipy`, and `pandas`.  This
+cross-package linking is made possible with the `sphinx.ext.intersphinx`
+extension. The sources used for this cross-linking are defined in the
+:confval:`intersphinx_mapping` configuration value in `docs/conf.py`_.
+If a cross-link is not working as expected this is usually due to (1) a
+typo, (2) the package not being defined in :confval:`intersphinx_mapping`,
+or (3) the referenced source package does not properly or fully index
+their own code (this is common in open-source packages).
 
 `sphinx` can format code blocks for Python and the Python console.
 
@@ -253,8 +253,8 @@ References to other packages
 
 Intersphinx_ allows the automatic generation of links to the
 documentation of objects in other projects. The mappings are defined in
-the ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
-`python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
+the :confval:`intersphinx_mapping` dictionary in `docs/conf.py`_, and
+include `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
 `sphinx_automodapi`.
 
 When we include ``astropy.units.Quantity`` in the documentation, it
