@@ -511,20 +511,20 @@ PlasmaPy documentation.
   * Represent names and acronyms for a software package as they are
     represented in the documentation for that package.
 
-* When referencing PlasmaPy functionality, write the full namespace path to
-  where the functionality is defined, not where it's conveniently accessed.
-  For example, write
-  ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
-  ``~plasmapy.formulary.Alfven_speed``.  This does not necessarily
-  need to be done when referencing external packages, since
+* When referencing PlasmaPy functionality, write the full namespace
+  path to where the functionality is defined, not where it's conveniently
+  accessed. For example, write ``~plasmapy.formulary.parameters.Alfven_speed``
+  rather than ``~plasmapy.formulary.Alfven_speed``.  This does not
+  necessarily need to be done when referencing external packages, since
   each package may have their own standard.  For example, Astropy's
   `~astropy.units.Quantity` class is defined in
   ``astropy.units.quantity.Quantity`` but is also indexed at
   ``~astropy.units.Quantity`` so either option will link to the same
   documentation.
 
-* For readability, limit documentation line lengths to ≲ 72 characters.
-  Longer line lengths may be used when necessary (e.g., for hyperlinks).
+* For readability, limit documentation line lengths to ≲ 72 characters
+  (excluding leading spaces in docstrings). Longer line lengths may be
+  used when necessary (e.g., for hyperlinks).
 
 * Use indentations of 3 spaces for reST blocks.
 
