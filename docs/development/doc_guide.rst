@@ -493,10 +493,13 @@ PlasmaPy documentation.
 * Write the full namespace when referring to code objects within
   PlasmaPy. For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
-  ``~plasmapy.formulary.Alfven_speed``.  This does not need to be done
-  for intersphinx links to other packages; it is fine to do
-  ``~astropy.units.Quantity`` and not necessary to do
-  ``~astropy.units.quantity.Quantity``.
+  ``~plasmapy.formulary.Alfven_speed``.  This does not necessarily
+  need to be done when referencing external packages, since
+  each package may have their own standard.  For example, Astropy's
+  `~astropy.units.Quantity` class is defined in
+  ``astropy.units.quantity.Quantity`` but is also indexed at
+  ``~astropy.units.Quantity`` so either option will link to some
+  documentation.
 
 * For readability, limit documentation line lengths to ≲ 72 characters.
   Longer line lengths may be used when necessary (e.g., for hyperlinks).
