@@ -125,7 +125,7 @@ class FlowCalculator:
         Aai = (
             xi.reshape(-1, 1, 1) * M_script_particlewise - self.μ
         )
-        return Aai
+        return Aai # TODO verify this has ai
 
     @cached_property
     def _r_pt(self):
@@ -138,44 +138,58 @@ class FlowCalculator:
 
     @cached_property
     def _charge_state_flows(self):
-        all_species = self.all_species
-        xi = all_species.ξ
-        r_sources = self._r_pt + 0  # TODO r_E itd
-        rbar_sources_presum = xi[:, np.newaxis] * r_sources
-        rbar_sources = all_species.compress(rbar_sources_presum, axis=0)
-        N_isotopes = all_species.num_isotopes
-        assert rbar_sources.shape == (N_isotopes, 3)
-        S_flows = (xi[:, np.newaxis, np.newaxis] * np.eye(3)[np.newaxis, :, :]) * u.Unit("N T / m3")
-        r_flows = np.linalg.solve(self._Aai, S_flows)
-        assert r_flows.shape == (len(all_species), 3, 3)
-        np.testing.assert_allclose(
-            np.swapaxes(r_flows, 1, 2), r_flows
-        )  # symmetric matrix
-        rbar_flows_presum = xi[:, np.newaxis, np.newaxis] * r_flows
-        rbar_flows = all_species.compress(rbar_flows_presum, axis=0)
-        assert rbar_flows.shape == (N_isotopes, 3, 3)
+        p_eb = 0 # TODO
+        rhat, crhat = self._rhat_crhat
+        Nscript = self.all_species.N_script
 
+        M = self.all_species.num_isotopes
+        xab = self._xab
+        isotopic_velocities = xab[:M]
+        isotopic_heat_flows = xab[M:2*M]
+        u2_flows = xab[2*M:]
+        u_bar = np.stack([isotopic_velocities, isotopic_heat_flows, u2_flows], axis=1)
+        Λ = -(Nscript * u_bar[np.newaxis, :, :, :]).sum(axis=(B_AXIS, BETA_AXIS))
+        Λ_ai = self.all_species.decompress(Λ, axis = 0)
+
+        r_flows = rhat[:,:,:3]
+        r_sources = rhat[:,:,3:]
+        r_sources[:,:,2] *= p_eb
+        Λ_ai = self.all_species.decompress(Λ, axis=0)
+        velocity_responses = r_flows[:,:,0]
+        heat_responses = r_flows[:,:,1]
+        u2_responses = r_flows[:,:,2]
+        u_hat = Λ_ai[:,0][:,np.newaxis] * velocity_responses +\
+                Λ_ai[:,1][:,np.newaxis] * heat_responses +\
+                Λ_ai[:,2][:,np.newaxis] * u2_responses +\
+                r_sources.sum(axis=-1) # TODO check
+        return u_hat
+
+    @cached_property
+    def _xab(self):
+        rhat, crhat = self._rhat_crhat
+        lhs = self._lhs
+        rhs = np.vstack(crhat[:,:,3:])
+        xab = np.linalg.solve(lhs, rhs).si
+        return xab
+
+    @cached_property
+    def _lhs(self):
         # equation 34
-        lhs = (
-            u.Quantity(
-                np.stack(N_isotopes * [np.eye(3)], axis=0),
-                "J2 / (A m6)",
-                dtype=np.float64,
-            )
-            + all_species.N_script.sum(axis=1) * rbar_flows
-        )
-        ubar = np.linalg.solve(lhs, rbar_sources).si
-
-        Λ = -(all_species.N_script * ubar[np.newaxis, :, np.newaxis, :]).sum(axis=(B_AXIS, BETA_AXIS))
-
-        self_consistent_u = (
-            all_species.decompress(Λ, axis=0)[:, :, np.newaxis] * r_flows
-        ).sum(
-            axis=1
-        )  # TODO is axis=1 right?
-        output = (self_consistent_u + r_sources).si
-        return output
-
+        M = self.all_species.num_isotopes
+        ab = u.Quantity(np.eye(3 * M), "kg / (m3 s)")
+        Nscript = self.all_species.N_script
+        crhat = self._rhat_crhat[1]
+        for im in range(M):
+            for m in range(3):
+                m1 = im + m * M
+                for jm in range(M):
+                    for l in range(3):
+                        l1 = jm + l * M
+                        for k in range(3):
+                            value = Nscript[im, jm, k,l] * crhat[im, m,k]
+                            ab[m1, l1] += value
+        return ab
+        
     @cached_property
     def _rhat_crhat(self):
         p_eb = 0
