@@ -246,7 +246,8 @@ PlasmaPy documentation is built with the following `sphinx` extensions:
   Note that `plasmapy_sphinx` is expected to be broken out into its own
   package at a future date.
 
-These extensions are specified in ``extensions`` in `docs/conf.py`_.
+These extensions are specified in :confval:`extensions` configuration
+value in `docs/conf.py`_.
 
 References to other packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
