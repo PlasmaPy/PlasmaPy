@@ -259,7 +259,8 @@ the ``intersphinx_mapping`` dictionary in `docs/conf.py`_, and include
 
 When we include ``astropy.units.Quantity`` in the documentation, it
 will show up as `astropy.units.Quantity` with a link to Astropy's
-documentation.
+documentation.  Similarly, ``~astropy.units.Quantity`` will show up as
+`~astropy.units.Quantity`.
 
 Substitutions
 ~~~~~~~~~~~~~
