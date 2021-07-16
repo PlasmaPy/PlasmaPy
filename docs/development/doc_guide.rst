@@ -536,8 +536,7 @@ Docstring guidelines
   that follows the `numpydoc`_ standard.
 
 * The first line of the docstring for a function or method should begin
-  with a word like "Return", "Calculate", or "Compute" and end with a
-  period.
+  with a word like "Calculate" or "Compute" and end with a period.
 
 * The first line of an object that is not callable (for example, an
   attribute of a class decorated with `property`) should not begin with
