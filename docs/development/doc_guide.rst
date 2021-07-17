@@ -28,6 +28,19 @@ to the checks at the bottom of a pull request, and clicking on
 Building documentation
 ======================
 
+There are two methods for building the documentation: make_ and tox_.
+Using make_ will build the documentation based off of what is in the
+current directory structure.  Using make_ is quicker for local builds
+but requires that setting up all dependencies ahead of time.  Using
+tox_ does not require setting up all dependencies ahead of time, but
+is more computationally intensive since it builds the package and
+environment before building the documentation.  Consequently, tox_ is
+the preferable for building the documentation on continuous integration
+testing platforms.
+
+Prerequisites
+-------------
+
 To install all dependencies required to develop PlasmaPy on your local
 computer, enter the top-level directory of the cloned repository and
 run
@@ -36,7 +49,33 @@ run
 
    pip install -r requirements.txt
 
-You can use `tox`_ to build the documentation from within the main
+Building documentation with make
+--------------------------------
+
+If you have make_ installed, then you can build the documentation by
+entering the ``docs/`` directory and running
+
+.. code-block:: bash
+
+   make html
+
+Including the ``-j n`` flag in the ``make`` command will enable a
+parallel build, where ``n`` is replaced with the number of processes.
+
+Running the command
+
+.. code-block:: bash
+
+   make clean
+
+will remove all files from the documentation build.  This command is
+needed when you make a change to a file that does not trigger sphinx_
+to rebuild the file that you altered.
+
+Building documentation with tox
+-------------------------------
+
+You can use tox_ to build the documentation from within the main
 PlasmaPy repository directory by running
 
 .. code-block:: bash
@@ -61,17 +100,6 @@ in order to build the documentation without executing the
 even if there are warnings.  The `tox`_ command may also include the
 ``--parallel`` flag to allow a parallel build.
 
-If you have `make <https://www.gnu.org/software/make/>`_ installed,
-then you can build the documentation by entering the ``docs/`` directory
-and running
-
-.. code-block:: bash
-
-   make html
-
-Including the ``-j n`` flag in the ``make`` command will enable a
-parallel build, where ``n`` is replaced with the number of processes.
-
 Documentation tools
 ===================
 
@@ -84,7 +112,8 @@ markup language. reST is human readable when viewed within a
 source code file or when printed out using `help`. reST also contains
 markup that allows the text to be transformed into `PlasmaPy's online
 documentation`_. reST files end in ``.rst``. Documentation contained
-within ``.py`` files is written in reST.
+within ``.py`` files are in the form of `docstrings
+<https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -676,4 +705,5 @@ Narrative documentation guidelines
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+.. _make: https://www.gnu.org/software/make/
 .. _`Read the Docs`: https://readthedocs.org/
