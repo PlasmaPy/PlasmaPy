@@ -108,17 +108,19 @@ ReStructuredText
 
 PlasmaPy's documentation is written using the `reStructuredText (reST)
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-markup language. reST is human readable when viewed within a
-source code file or when printed out using `help`. reST also contains
+markup language. reST_ is human readable when viewed within a
+source code file or when printed out using `help`. reST_ also contains
 markup that allows the text to be transformed into `PlasmaPy's online
-documentation`_. reST files end in ``.rst``. Documentation contained
+documentation`_. reST_ files end in ``.rst``. Documentation contained
 within ``.py`` files are in the form of `docstrings
-<https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST.
+<https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of reST that are commonly used in PlasmaPy.
+Here we show some examples of reST_ that are commonly used in PlasmaPy.
+Please refer do the documentation for sphinx_ and reST_ for a more
+complete list of available directives and syntax.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading
@@ -198,12 +200,11 @@ makes math like `` :math:`α + β + γ` `` easier to read in source code.
 Markdown
 --------
 
-A few of PlasmaPy's files are written using `Markdown
-<https://www.markdownguide.org/>`_, such as README files and licenses
-from other packages. Markdown is simpler but more limited than reST.
-Markdown files end with ``.md``. Posts on GitHub are written in
-`GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
-The following code block contains a few common examples of Markdown
+A few of PlasmaPy's files are written using Markdown_, such as README
+files and licenses from other packages. Markdown_ is simpler but more
+limited than reST_. Markdown_ files end with ``.md``. Posts on GitHub
+are written in `GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
+The following code block contains a few common examples of Markdown_
 formatting.
 
 .. code-block:: markdown
@@ -227,7 +228,7 @@ Sphinx
 ------
 
 `sphinx` is the software used to generate `PlasmaPy's online documentation`_
-from reST files and Python docstrings.  It was originally created to
+from reST_ files and Python docstrings.  It was originally created to
 write Python's documentation and has become the de facto software for
 documenting Python packages.  Almost all Python open-source packages
 utilize `sphinx` to generate their documentation.
@@ -299,7 +300,7 @@ Substitutions
 ~~~~~~~~~~~~~
 
 Some functions and classes are referred to repeatedly throughout the
-documentation. reST allows us to `define substitutions
+documentation. reST_ allows us to `define substitutions
 <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
 
 .. code-block:: rst
@@ -559,7 +560,7 @@ PlasmaPy documentation.
   (excluding leading spaces in docstrings). Longer line lengths may be
   used when necessary (e.g., for hyperlinks).
 
-* Use indentations of 3 spaces for reST blocks.
+* Use indentations of 3 spaces for reST_ blocks.
 
 * Avoid linking to websites that might disappear due to
   `link rot <https://en.wikipedia.org/wiki/Link_rot>`_ such as documents
@@ -601,7 +602,7 @@ Docstring guidelines
   a verb and should end with a period.
 
 * Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for reST constructs like
+  ``"""`` that begins the docstring, except for reST_ constructs like
   lists, math, and code blocks. The indentation level should be four
   spaces more than the declaration of the object.
 
@@ -706,4 +707,6 @@ Narrative documentation guidelines
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _make: https://www.gnu.org/software/make/
+.. _Markdown: https://www.markdownguide.org/
 .. _`Read the Docs`: https://readthedocs.org/
+.. _reST: https://docutils.sourceforge.io/rst.html
