@@ -145,10 +145,17 @@ We can link to code objects by enclosing them in back ticks.
 
 .. code-block:: rst
 
-  Here is a reference to `plasmapy.particles` that will write out the
-  full namespace when `sphinx` generates the documentation and generates
-  the link. Only the word "Particle" will show up if we prepend a
-  tilde like in `~plasmapy.particles.particle_class.Particle`.
+   Here is a reference to `plasmapy.particles` that will write out the
+   full namespace when `sphinx` generates the documentation and generates
+   the link. Only the word "Particle" will show up if we prepend a
+   tilde like in `~plasmapy.particles.particle_class.Particle`.
+
+This reST block will render as:
+
+   Here is a reference to `plasmapy.particles` that will write out the
+   full namespace when `sphinx` generates the documentation and generates
+   the link. Only the word "Particle" will show up if we prepend a
+   tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for `python` commands as well as commonly used
 packages like `numpy`, `astropy`, `scipy`, and `pandas`.  This
@@ -174,6 +181,18 @@ their own code (this is common in open-source packages).
          >>> print(6 * 9)
          54
 
+This reST block will render as:
+
+   .. code-block:: python
+
+      def sample_function():
+          return 42
+
+   .. code-block:: pycon
+
+      >>> print(6 * 9)
+      54
+
 Here are some examples for linking to websites.
 
 .. code-block:: rst
@@ -185,10 +204,16 @@ Here are some examples for linking to websites.
    .. _documentation: https://docs.plasmapy.org/en/latest/
    .. _`Python's documentation`: https://www.python.org/
 
-Math can be written using `LaTeX <https://www.latex-project.org/>`_ commands
-
+Math can typically be written using
+`LaTeX <https://www.latex-project.org/>`_ commands.
 
 .. code-block:: rst
+
+   .. math::
+
+      \alpha = \beta + \gamma
+
+This reST block will render as:
 
    .. math::
 
@@ -315,13 +340,13 @@ For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
 
 Since substitutions are performed by `sphinx` when the documentation
-is built, any substitution used in docstrings will not show up when using
-Python's `help` function (or the like). For example, when ``|Particle|`` is used in
-a docstring, `help` will show it as ``|Particle|`` rather than
-``~plasmapy.particles.particle_class.Particle``. Consequently,
-substitutions should not be used in docstrings when it is important
-that users have quick access to the full path of the `object` (such as
-in the ``See Also`` section).
+is built, any substitution used in docstrings will not show up when
+using Python's `help` function (or the like). For example, when
+``|Particle|`` is used in a docstring, `help` will show it as
+``|Particle|`` rather than ``~plasmapy.particles.particle_class.Particle``.
+Consequently, substitutions should not be used in docstrings when it is
+important that users have quick access to the full path of the `object`
+(such as in the ``See Also`` section).
 
 Templating
 ~~~~~~~~~~
@@ -545,12 +570,14 @@ PlasmaPy documentation.
     examples include "Python", "Astropy", "NumPy", and "reST".
 
 * When referencing PlasmaPy functionality, write the full namespace
-  path to where the functionality is defined, not where it's conveniently
-  accessed. For example, write ``~plasmapy.formulary.parameters.Alfven_speed``
-  rather than ``~plasmapy.formulary.Alfven_speed``.  This does not
-  necessarily need to be done when referencing external packages, since
-  each package may have their own standard.  For example, Astropy's
-  `~astropy.units.Quantity` class is defined in
+  path to where the functionality is defined, not where it is
+  conveniently accessed. For example, write
+  ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
+  ``~plasmapy.formulary.Alfven_speed``.
+
+  This does not necessarily need to be done when referencing external
+  packages, since each package may have their own standard.  For
+  example, Astropy's |Quantity| class is defined in
   ``astropy.units.quantity.Quantity`` but is also indexed at
   ``~astropy.units.Quantity`` so either option will link to the same
   documentation.
@@ -684,9 +711,9 @@ Narrative documentation guidelines
   for all other headings (e.g., "Sentence case").
 
 * When the narrative documentation does not index a subpackage
-  (directory) or module (``.py`` file) with :dir:`automodule`,
+  (a directory) or module (a ``.py`` file) with :dir:`automodule`,
   :dir:`automodapi`, or the like, then it is required to create a stub
-  file for that particular subpackage or module in `doc/api_static`_ .
+  file for that particular subpackage or module in `docs/api_static`_ .
   Here are the sample contents for a stub file for
   `plasmapy.particles.atomic`.  This file would be located at
   ``docs/api_static/plasmapy.particles.atomic.rst``.
