@@ -20,6 +20,7 @@ from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
+from plasmapy.formulary.relativity import relativistic_energy
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
@@ -1106,6 +1107,15 @@ class Tracker:
         x0loc = np.dot(self.x0 - self.detector, self.det_hdir)
         y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
 
+        # Calculate the kinetic energy of each particle
+        vmag = np.linalg.norm(self.v, axis=-1)
+        # relativistic_energy includes the rest mass energy
+        ke = (
+            relativistic_energy(self.m * u.kg, vmag * u.m / u.s)
+            - self.m * self._c ** 2 * u.J
+        )
+        ke = ke.to(u.eV).value
+
         # Store output values in a dictionary
         self.output = dict(
             source=self.source,
@@ -1118,6 +1128,7 @@ class Tracker:
             y=yloc,
             x0=x0loc,
             y0=y0loc,
+            ke=ke,
         )
 
     def save_result(self, path):
