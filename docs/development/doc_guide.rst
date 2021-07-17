@@ -69,7 +69,7 @@ Running the command
    make clean
 
 will remove all files from the documentation build.  This command is
-needed when you make a change to a file that does not trigger sphinx_
+needed when you make a change to a file that does not trigger `sphinx`
 to rebuild the file that you altered.
 
 Building documentation with tox
@@ -97,7 +97,7 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.  The `tox`_ command may also include the
+even if there are warnings.  The tox_ command may also include the
 ``--parallel`` flag to allow a parallel build.
 
 Documentation tools
@@ -119,7 +119,7 @@ ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of reST_ that are commonly used in PlasmaPy.
-Please refer do the documentation for sphinx_ and reST_ for a more
+Please refer do the documentation for `sphinx` and reST_ for a more
 complete list of available directives and syntax.
 
 This is an example of including headings for the document title,
@@ -326,9 +326,8 @@ in the ``See Also`` section).
 Templating
 ~~~~~~~~~~
 
-`sphinx` uses the `Jinja <https://jinja.palletsprojects.com/>`
-templating engine to generate HTML code.  Jinja may be used within
-the documentation when templating is necessary.
+`sphinx` uses the Jinja_ templating engine to generate HTML code. Jinja_
+may be used within the documentation when templating is necessary.
 
 Writing documentation
 =====================
@@ -343,14 +342,14 @@ such as using LaTeX code in equations) or ``"""``, and end with
 ``"""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
-the `numpydoc`_ standard for docstrings. Docstring conventions for
+the numpydoc_ standard for docstrings. Docstring conventions for
 Python are more generally described in
 `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
 
-Here is an example docstring in the `numpydoc`_ format.
+Here is an example docstring in the numpydoc_ format.
 
 .. code-block:: python
    :caption: Example docstring
@@ -506,7 +505,7 @@ PlasmaPy documentation.
 * Keep the documentation style consistent within a file or module, and
   preferably across all of PlasmaPy's documentation.
 
-* Refer to the `numpydoc`_ standard for how to write docstrings for
+* Refer to the numpydoc_ standard for how to write docstrings for
   classes, class attributes, and constants.
 
 * The short summary statement at the beginning of a docstring should be
@@ -592,7 +591,7 @@ Docstring guidelines
 
 * All functions, classes, and objects that are part of PlasmaPy's
   public Application Programming Interface (API) must have a docstring
-  that follows the `numpydoc`_ standard.
+  that follows the numpydoc_ standard.
 
 * The first line of the docstring for a function or method should begin
   with a word like "Calculate" or "Compute" and end with a period.
@@ -637,7 +636,7 @@ Docstring guidelines
 
 * Private code objects (e.g., code objects that begin with a single
   underscore) should have docstrings. A docstring for a private code
-  object may be a single line, and otherwise should be in `numpydoc`_
+  object may be a single line, and otherwise should be in numpydoc_
   format.
 
 * Dunder methods (e.g., code objects like ``__add__`` that begin and
@@ -651,8 +650,8 @@ Docstring guidelines
 * Docstrings for ``__init__`` and ``__new__`` are included in the
   class-level docstring when rendering documentation.
 
-* When an attribute in a class has both a ``getter`` (which is decorated
-  with `property`) and a ``setter`` decoration, then the ``getter`` and
+* When an attribute in a class has both a getter (which is decorated
+  with `property`) and a ``setter`` decoration, then the getter and
   ``setter`` functionality should be documented in the docstring of
   method decorated with ``@property``.
 
@@ -705,8 +704,5 @@ Narrative documentation guidelines
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
-.. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+.. _Jinja: https://jinja.palletsprojects.com/
 .. _make: https://www.gnu.org/software/make/
-.. _Markdown: https://www.markdownguide.org/
-.. _`Read the Docs`: https://readthedocs.org/
-.. _reST: https://docutils.sourceforge.io/rst.html
