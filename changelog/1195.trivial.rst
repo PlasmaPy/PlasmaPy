@@ -1,1 +1,1 @@
-Added tox as an extra requirement.
+Added tox and removed pytest as extra requirement.
