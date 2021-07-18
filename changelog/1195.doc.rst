@@ -1,1 +1,0 @@
-Added `tox` to intersphinx.
