@@ -81,7 +81,7 @@ intersphinx_mapping = {
         None,
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
-    "tox": ("https://tox.readthedocs.io/en/stable/", None),
+    "tox": ("https://tox.readthedocs.io/en/latest/", None),
 }
 
 autoclass_content = "both"
