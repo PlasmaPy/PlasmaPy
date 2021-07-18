@@ -166,12 +166,6 @@ def fast_spectral_density(
 
 
 
-
-
-
-
-
-
 @validate_quantities(
     wavelengths={"can_be_negative": False, "can_be_zero": False},
     probe_wavelength={"can_be_negative": False, "can_be_zero": False},
@@ -187,13 +181,13 @@ def spectral_density(
     Ti: u.K,
     efract: np.ndarray = None,
     ifract: np.ndarray = None,
-    ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
+    ion_species: Union[str, List[str], Particle, List[Particle]] = "p",
     electron_vel: u.m / u.s = None,
     electron_vdir: np.ndarray = None,
     electron_speed: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
     ion_vdir: np.ndarray = None,
-    ion_speed: np.ndarray = None,
+    ion_speed: u.m/u.s = None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
     inst_fcn=None,
@@ -432,7 +426,7 @@ def spectral_density(
     ion_z, ion_mu = [], []
     for ion in ion_species:
         ion_z.append(ion.integer_charge)
-        ion_mu.append(ion.mass_number)
+        ion_mu.append(ion.atomic_number)
         
     ion_z = np.array(ion_z)
     ion_mu = np.array(ion_mu)
@@ -544,7 +538,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_vdir = settings["electron_vdir"]
     ion_vdir = settings["ion_vdir"]
     probe_wavelength = settings["probe_wavelength"]
-    inst_fcn = settings["inst_fcn"]
+    inst_fcn_arr = settings["inst_fcn_arr"]
 
     # LOAD FROM PARAMS
     n = params["n"] 
@@ -565,9 +559,10 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         n,
         Te,
         Ti,
-        ion_species=ion_species,
         efract=efract,
         ifract=ifract,
+        ion_z=ion_z,
+        ion_mu=ion_mu,
         electron_vel=electron_vel,
         ion_vel=ion_vel,
         probe_vec=probe_vec,
@@ -604,6 +599,7 @@ def spectral_density_model(wavelengths, settings, params):
         and may contain the following optional variables
             - electron_vdir : (e#, 3) array of electron velocity unit vectors
             - ion_vdir : (e#, 3) array of ion velocity unit vectors
+            - inst_fcn : A function that takes a wavelength array argument
 
         These quantities cannot be varied.
 
@@ -652,13 +648,43 @@ def spectral_density_model(wavelengths, settings, params):
     for ion in settings['ion_species']:
         particle = Particle(ion)
         ion_z.append(particle.integer_charge)
-        ion_mu.append(particle.mass_number)
+        ion_mu.append(particle.atomic_number)
     settings['ion_z'] = np.array(ion_z)
     settings['ion_mu'] = np.array(ion_mu)
+    
+    
+    if "efract_0" not in pkeys:
+        params.add("efract_0", value=1.0, vary=False)
+
+    if "ifract_0" not in pkeys:
+        params.add("ifract_0", value=1.0, vary=False)
+        
+    num_e = _count_populations_in_params(pkeys, "efract")
+    num_i = _count_populations_in_params(pkeys, "ifract")
+    
+    
+    
+    # Condition electron velocity keywords
+    if "electron_vel" in skeys:
+        norm = np.linalg.norm(settings['electron_vel'], axis=-1, keepdims=True)
+        if np.any(norm == 0.0):
+            raise ValueError("The electron_vel vector cannot be zero.")
+          
+        settings['electron_speed'] =  norm
+        settings['electron_vdir'] = settings['electron_vel'] / norm
+        
+    elif "electron_speed" in skeys:
+        if "electron_vdir" not in skeys:
+            raise ValueError("electron_vdir is required.")        
+    else:
+        settings["electron_vdir"] = None
+        settings["electron_speed"] = None
+
+    
+    
 
     # Fill any missing settings
-    if "electron_vdir" not in skeys:
-        settings["electron_vdir"] = None
+    
 
     if "ion_vdir" not in skeys:
         settings["ion_vdir"] = None
@@ -667,6 +693,7 @@ def spectral_density_model(wavelengths, settings, params):
         settings["inst_fcn_arr"] = None
     else:
         # Create inst fcn array from inst_fcn
+        inst_fcn = settings['inst_fcn']
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         inst_fcn_arr = inst_fcn(eval_w)
@@ -675,11 +702,7 @@ def spectral_density_model(wavelengths, settings, params):
 
 
     # Fill any missing required parameters
-    if "efract_0" not in pkeys:
-        params.add("efract_0", value=1.0, vary=False)
-
-    if "ifract_0" not in pkeys:
-        params.add("ifract_0", value=1.0, vary=False)
+    
 
     if "electron_speed_0" not in pkeys:
         params.add("electron_speed_0", value=0.0, vary=False)
@@ -691,13 +714,13 @@ def spectral_density_model(wavelengths, settings, params):
     # indicate that it depends on the others (so they sum to 1.0)
     # The resulting expression for the last of three will look like
     # efract_2.expr = "1.0 - efract_0 - efract_1"
-    num_e = _count_populations_in_params(pkeys, "efract")
+    
     if num_e > 1:
         nums = ["efract_" + str(i) for i in range(num_e - 1)]
         nums.insert(0, "1.0")
         params["efract_" + str(num_e - 1)].expr = " - ".join(nums)
 
-    num_i = _count_populations_in_params(pkeys, "ifract")
+    
     if num_i > 1:
         nums = ["ifract_" + str(i) for i in range(num_i - 1)]
         nums.insert(0, "1.0")

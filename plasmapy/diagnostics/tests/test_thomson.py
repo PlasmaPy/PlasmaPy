@@ -250,10 +250,10 @@ def test_collective_spectrum():
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
     
     # Check that the widths of the ion and electron features match expectations
-    assert np.isclose(i_width, 0.1599, 1e-3), (
+    assert np.isclose(i_width, 0.2199, 1e-3), (
         "Collective case ion feature "
         f"width is {i_width}"
-        "instead of expected 0.1599"
+        "instead of expected 0.2199"
     )
 
     assert np.isclose(e_width, 17.7899, 1e-3), (
@@ -527,8 +527,8 @@ def run_fit(
 
     data = Skw
     if notch is not None:
-        x0 = np.argmin(np.abs(wavelengths*1e9 - notch[0]))
-        x1 = np.argmin(np.abs(wavelengths*1e9 - notch[1]))
+        x0 = np.argmin(np.abs(wavelengths.to(u.m).value*1e9 - notch[0]))
+        x1 = np.argmin(np.abs(wavelengths.to(u.m).value*1e9 - notch[1]))
         data[x0:x1] = np.nan
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
@@ -767,7 +767,7 @@ def test_fit_with_minimal_parameters():
 
 
 if __name__ == '__main__':
-    # test_different_input_types()
-    # test_non_collective_spectrum()
-    # test_collective_spectrum()
+    test_different_input_types()
+    test_non_collective_spectrum()
+    test_collective_spectrum()
     test_fit_epw_single_species()
