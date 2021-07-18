@@ -482,21 +482,21 @@ def run_fit(
 
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
-
+    
     # Create the synthetic data
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
         n * u.m**-3,
-        Te * u.K,
-        Ti * u.K,
+        Te * u.eV,
+        Ti * u.eV,
         ifract=ifract,
         efract=efract,
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        electron_vel=electron_vel,
-        ion_vel=ion_vel,
+        electron_vel=electron_vel * u.m/u.s,
+        ion_vel=ion_vel  * u.m/u.s,
     )
 
     data = Skw
@@ -515,14 +515,14 @@ def run_fit(
             params[p].value = np.random.uniform(
                 low=params[p].min, high=params[p].max, size=1
             )
-
+            
     # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths, settings, params)
+    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
     result = model.fit(
         data,
         params,
-        wavelengths=wavelengths,
+        wavelengths=wavelengths.to(u.m).value,
         method=fit_method,
         max_nfev=max_iter,
         fit_kws=fit_kws,
@@ -729,23 +729,26 @@ def test_fit_with_minimal_parameters():
     params.add("Te_0", value=Te.value, vary=False, min=5, max=20)
 
     # Make the model, then perform the fit
-    model = thomson.spectral_density_model(wavelengths, settings, params)
+    model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
     result = model.fit(
         data,
         params,
-        wavelengths=wavelengths,
+        wavelengths=wavelengths.to(u.m).value,
         method="differential_evolution",
         max_nfev=2000,
     )
 
 if __name__ == "__main__":
-    test_different_input_types()
-    test_collective_spectrum()
-    test_non_collective_spectrum()
-    test_fit_with_minimal_parameters()
-    test_fit_epw_single_species()
-    test_fit_epw_multi_species()
-    test_fit_iaw_single_species()
-    test_fit_iaw_multi_species()
+    #test_different_input_types()
+    #test_collective_spectrum()
+    #test_non_collective_spectrum()
+    #test_fit_with_minimal_parameters()
+    #test_fit_epw_single_species()
+    #test_fit_epw_multi_species()
+    #test_fit_iaw_single_species()
+    #test_fit_iaw_multi_species()
+    test_multiple_ion_species_spectrum()
+    
+    
 
