@@ -40,6 +40,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
+* `Bryan Foo <https://github.com/bryancfoo>`__
 * `Brian Goodall <https://github.com/goodab>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
@@ -50,12 +51,14 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
 * `Nabil Humphrey <https://github.com/NabilHumphrey>`__
 * `Maria Isupova <https://github.com/misupova>`__
+* `Alf Köhn-Seemann <https://github.com/alfkoehn>`__ (`0000-0002-1192-2057 <https://orcid.org/0000-0002-1192-2057>`__)
 * `Pawel Kozlowski <https://github.com/lemmatum>`__ (`0000-0001-6849-3612 <https://orcid.org/0000-0001-6849-3612>`__)
 * `Siddharth Kulshrestha <https://github.com/siddharth185>`__
 * `Piotr Kuszaj <https://github.com/kuszaj>`__
 * `Samuel Langendorf <https://github.com/samurai688>`__ (`0000-0002-7757-5879 <https://orcid.org/0000-0002-7757-5879>`__)
 * `Drew Leonard <https://github.com/SolarDrew>`__ (`0000-0001-5270-7487 <https://orcid.org/0000-0001-5270-7487>`__)
 * `lgoenner <https://github.com/lgoenner>`__
+* `Fionnlagh Mackenzie Dover <https://github.com/FinMacDov>`__ (`0000-0002-1984-7303 <https://orcid.org/0000-0002-1984-7303>`__)
 * `Aditya Magarde <https://github.com/adityamagarde>`__
 * `Ritiek Malhotra <https://github.com/ritiek>`__
 * `Stuart Mumford <https://github.com/Cadair>`__ (`0000-0003-4217-4642 <https://orcid.org/0000-0003-4217-4642>`__)
@@ -91,7 +94,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
 * `David Drozdov <https://github.com/davemus>`__
 * `Dhawal Modi <https://github.com/Dhawal-Modi>`__
-
+* `Armando Salcido <https://github.com/aksalcido>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision
