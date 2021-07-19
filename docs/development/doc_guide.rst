@@ -34,8 +34,8 @@ current directory structure.  Using make_ is quicker for local builds
 but requires that setting up all dependencies ahead of time.  Using
 tox_ does not require setting up all dependencies ahead of time, but
 is more computationally intensive since it builds the package and
-environment before building the documentation.  Consequently, tox_ is
-the preferable for building the documentation on continuous integration
+environment before building the documentation.  Consequently, PlasmaPy
+uses tox_ for building the documentation on continuous integration
 testing platforms.
 
 Prerequisites
@@ -62,15 +62,14 @@ entering the ``docs/`` directory and running
 Including the ``-j n`` flag in the ``make`` command will enable a
 parallel build, where ``n`` is replaced with the number of processes.
 
-Running the command
+To remove all files from a documentation build, run
 
 .. code-block:: bash
 
    make clean
 
-will remove all files from the documentation build.  This command is
-needed when you make a change to a file that does not trigger `sphinx`
-to rebuild the file that you altered.
+This command is needed when you make a change to a file that does not
+trigger Sphinx_ to rebuild the file that you altered.
 
 Building documentation with tox
 -------------------------------
@@ -119,7 +118,7 @@ ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of reST_ that are commonly used in PlasmaPy.
-Please refer do the documentation for `sphinx` and reST_ for a more
+Please refer do the documentation for Sphinx_ and reST_ for a more
 complete list of available directives and syntax.
 
 This is an example of including headings for the document title,
@@ -141,33 +140,27 @@ are the same length as that heading.
    Heading 3
    ~~~~~~~~~
 
-We can link to code objects by enclosing them in back ticks.
+We can link to code objects by enclosing them in single back ticks.
 
 .. code-block:: rst
 
    Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when `sphinx` generates the documentation and generates
+   full namespace when Sphinx_ generates the documentation and generates
    the link. Only the word "Particle" will show up if we prepend a
    tilde like in `~plasmapy.particles.particle_class.Particle`.
 
 This reST block will render as:
 
    Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when `sphinx` generates the documentation and generates
+   full namespace when Sphinx_ generates the documentation and generates
    the link. Only the word "Particle" will show up if we prepend a
    tilde like in `~plasmapy.particles.particle_class.Particle`.
 
-This linking will work for `python` commands as well as commonly used
-packages like `numpy`, `astropy`, `scipy`, and `pandas`.  This
-cross-package linking is made possible with the `sphinx.ext.intersphinx`
-extension. The sources used for this cross-linking are defined in the
-:confval:`intersphinx_mapping` configuration value in `docs/conf.py`_.
-If a cross-link is not working as expected this is usually due to (1) a
-typo, (2) the package not being defined in :confval:`intersphinx_mapping`,
-or (3) the referenced source package does not properly or fully index
-their own code (this is common in open-source packages).
+This linking will work for Python_ commands as well as commonly used
+packages like `numpy`, Astropy_, `scipy`, and `pandas`, as described in
+the section on :ref:`external-references`.
 
-`sphinx` can format code blocks for Python and the Python console.
+Sphinx_ can format code blocks for Python and the Python console.
 
    .. code-block:: rst
 
@@ -252,25 +245,25 @@ formatting.
 Sphinx
 ------
 
-`sphinx` is the software used to generate `PlasmaPy's online documentation`_
+Sphinx_ is the software used to generate `PlasmaPy's online documentation`_
 from reST_ files and Python docstrings.  It was originally created to
 write Python's documentation and has become the de facto software for
 documenting Python packages.  Almost all Python open-source packages
-utilize `sphinx` to generate their documentation.
+utilize Sphinx_ to generate their documentation.
 
 Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize `sphinx` behavior.
-The documentation for `sphinx` lists the `configuration options
+to customize Sphinx_ behavior.
+The documentation for Sphinx_ lists the `configuration options
 <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_
 that can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
 
-PlasmaPy documentation is built with the following `sphinx` extensions:
+PlasmaPy documentation is built with the following Sphinx_ extensions:
 
 * `sphinx.ext.autodoc
   <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
@@ -302,24 +295,41 @@ PlasmaPy documentation is built with the following `sphinx` extensions:
   for rendering `towncrier`_ changelogs
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy.
   Note that `plasmapy_sphinx` is expected to be broken out into its own
-  package at a future date.
+  package in the future.
 
 These extensions are specified in :confval:`extensions` configuration
 value in `docs/conf.py`_.
+
+.. _external-references:
 
 References to other packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Intersphinx_ allows the automatic generation of links to the
-documentation of objects in other projects. The mappings are defined in
-the :confval:`intersphinx_mapping` dictionary in `docs/conf.py`_, and
-include `python`, `numpy`, `scipy`, `astropy`, `pandas`, `sphinx`, and
-`sphinx_automodapi`.
+documentation of objects in other projects. This cross-package linking
+is made possible with the `sphinx.ext.intersphinx` extension.
 
 When we include ``astropy.units.Quantity`` in the documentation, it
-will show up as `astropy.units.Quantity` with a link to Astropy's
-documentation.  Similarly, ``~astropy.units.Quantity`` will show up as
-`~astropy.units.Quantity`.
+will show up as `astropy.units.Quantity` with a link to the appropriate
+page in Astropy documentation.  Similarly, ``~astropy.units.Quantity``
+will show up as `~astropy.units.Quantity`.
+
+The mappings are defined in the :confval:`intersphinx_mapping`
+dictionary in `docs/conf.py`_, and include Python_, `numpy`, `scipy`,
+Astropy_, `pandas`, Sphinx_, and `sphinx_automodapi`.
+
+If a cross-link is not working as expected this is usually due to one
+of the following reasons:
+
+* A typo;
+* The package not being defined in :confval:`intersphinx_mapping`, or
+* The referenced source package not properly or fully indexing their
+  own code, which is common in Python_ packages.
+
+New source packages may be added, but please verify that references to
+a function or class in that package show up correctly in PlasmaPy's
+documentation.  The name of the package does not always link as
+expected.
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -339,7 +349,7 @@ be used elsewhere in the documentation. For example, we can write
 For an up-to-date list of substitutions, please refer to the
 `docs/common_links.rst`_ file.
 
-Since substitutions are performed by `sphinx` when the documentation
+Since substitutions are performed by Sphinx_ when the documentation
 is built, any substitution used in docstrings will not show up when
 using Python's `help` function (or the like). For example, when
 ``|Particle|`` is used in a docstring, `help` will show it as
@@ -351,7 +361,7 @@ important that users have quick access to the full path of the `object`
 Templating
 ~~~~~~~~~~
 
-`sphinx` uses the Jinja_ templating engine to generate HTML code. Jinja_
+Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
 may be used within the documentation when templating is necessary.
 
 Writing documentation
@@ -733,3 +743,4 @@ Narrative documentation guidelines
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _make: https://www.gnu.org/software/make/
+.. _Sphinx: https://www.sphinx-doc.org/
