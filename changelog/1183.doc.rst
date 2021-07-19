@@ -1,0 +1,2 @@
+Made the function `~plasmapy.formulary.parameters.gyrofrequency` more general
+by removing the indications that it might only work for ions.

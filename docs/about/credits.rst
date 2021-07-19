@@ -39,6 +39,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
 * `Michael Fischer <https://github.com/mj-fischer>`__
+* `Bryan Foo <https://github.com/bryancfoo>`__
 * `Brian Goodall <https://github.com/goodab>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
 * `Silvina Guidoni <https://www.american.edu/cas/faculty/guidoni.cfm>`__
@@ -49,6 +50,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Yi-Min Huang <https://github.com/yopology>`__ (`0000-0002-4237-2211 <https://orcid.org/0000-0002-4237-2211>`__)
 * `Nabil Humphrey <https://github.com/NabilHumphrey>`__
 * `Maria Isupova <https://github.com/misupova>`__
+* `Alf Köhn-Seemann <https://github.com/alfkoehn>`__ (`0000-0002-1192-2057 <https://orcid.org/0000-0002-1192-2057>`__)
 * `Pawel Kozlowski <https://github.com/lemmatum>`__ (`0000-0001-6849-3612 <https://orcid.org/0000-0001-6849-3612>`__)
 * `Siddharth Kulshrestha <https://github.com/siddharth185>`__
 * `Piotr Kuszaj <https://github.com/kuszaj>`__

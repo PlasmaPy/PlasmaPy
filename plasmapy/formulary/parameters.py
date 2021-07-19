@@ -1037,7 +1037,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{ci} = \frac{Z e B}{m_i}
+        ω_{c} = \frac{Z e B}{m}
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -1074,14 +1074,14 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    m_i = particles.particle_mass(particle)
+    m = particles.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
-    omega_ci = u.rad * (Z * e * np.abs(B) / m_i).to(1 / u.s)
+    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
-    return omega_ci
+    return omega_c
 
 
 oc_ = gyrofrequency
@@ -1198,7 +1198,7 @@ def gyroradius(
 
     # check 1: ensure either Vperp or T_i invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+    if np.any(np.logical_and(isfinite_Vperp, isfinite_Ti)):
         raise ValueError(
             "Must give Vperp or T_i, but not both, as arguments to gyroradius"
         )
@@ -1769,6 +1769,16 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     where :math:`ω_{ce}` is the electron gyrofrequency and
     :math:`ω_{pe}` is the electron plasma frequency.
 
+    The upper hybrid frequency is a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are
+    waves with their wave electric field being perpendicular to
+    the background magnetic field. In the cold plasma model, i.e.
+    without any finite temperature effects, the resonance acts
+    merely as a resonance such that power can be deposited there.
+    If finite temperature effects are considered, mode conversion
+    can occur at the upper hybrid resonance, coupling to the
+    electrostatic electron Bernstein wave.
+
     Example
     -------
     >>> from astropy import units as u
@@ -1852,6 +1862,14 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     where :math:`ω_{ci}` is the ion gyrofrequency,
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
+
+    The lower hybrid frequency consitutes a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are waves
+    with their wave electric field being perpendicular to the background
+    magnetic field. For the lower hybrid frequency, ion and electron
+    dynamics both play a role. As the name suggests, it has a lower frequency
+    compared to the upper hybrid frequency. It can play an important role
+    for heating and current drive in fusion plasmas.
 
     Example
     -------
