@@ -34,7 +34,7 @@ current directory structure.  Using make_ is quicker for local builds
 but requires that setting up all dependencies ahead of time.  Using
 tox_ does not require setting up all dependencies ahead of time, but
 is more computationally intensive since it builds the package and
-environment before building the documentation.  Consequently, PlasmaPy
+environment before building the documentation.  Consequently, PlasmaPy_
 uses tox_ for building the documentation on continuous integration
 testing platforms.
 
@@ -74,8 +74,7 @@ trigger Sphinx_ to rebuild the file that you altered.
 Building documentation with tox
 -------------------------------
 
-You can use tox_ to build the documentation from within the main
-PlasmaPy repository directory by running
+You can use tox_ to locally build the documentation by running:
 
 .. code-block:: bash
 
@@ -97,7 +96,7 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.  A tox_ command may also include the
+even if there are warnings. A tox_ command may also include the
 ``--parallel`` flag to allow a parallel build.
 
 Documentation tools
@@ -157,11 +156,11 @@ This reST_ block will render as:
    the link. Only the word "Particle" will show up if we prepend a
    tilde like in `~plasmapy.particles.particle_class.Particle`.
 
-This linking will work for Python_ commands as well as commonly used
-packages like `numpy`, Astropy_, `scipy`, and `pandas`, as described in
-the section on :ref:`external-references`.
+This linking will work for Python_ commands as well as certain packages
+like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described
+in the section on :ref:`external-references`.
 
-Sphinx_ can format code blocks for Python and the Python console.
+Sphinx_ can format code blocks for Python_ and the Python_ console.
 
    .. code-block:: rst
 
@@ -256,9 +255,9 @@ Sphinx
 ------
 
 Sphinx_ is the software used to generate `PlasmaPy's documentation`_
-from reST_ files and Python docstrings.  It was originally created to
+from reST_ files and Python_ docstrings. It was originally created to
 write Python's documentation and has become the de facto software for
-documenting Python packages.  Almost all Python open-source packages
+documenting Python_ packages. Almost all Python_ open-source packages
 utilize Sphinx_ to generate their documentation.
 
 Configuration
@@ -321,25 +320,27 @@ is made possible with the `sphinx.ext.intersphinx` extension.
 
 When we include ``astropy.units.Quantity`` in the documentation, it
 will show up as `astropy.units.Quantity` with a link to the appropriate
-page in Astropy documentation.  Similarly, ``~astropy.units.Quantity``
+page in Astropy documentation. Similarly, ``~astropy.units.Quantity``
 will show up as `~astropy.units.Quantity`.
 
 The mappings are defined in the :confval:`intersphinx_mapping`
-dictionary in `docs/conf.py`_, and include Python_, `numpy`, `scipy`,
-Astropy_, `pandas`, Sphinx_, and `sphinx_automodapi`.
-
-If a cross-link is not working as expected this is usually due to one
-of the following reasons:
-
-* A typo;
-* The package not being defined in :confval:`intersphinx_mapping`, or
-* The referenced source package not properly or fully indexing their
-  own code, which is common in Python_ packages.
+dictionary in `docs/conf.py`_, and include Python_, NumPy_, SciPy_,
+Astropy_, pandas_, Sphinx_, and `sphinx_automodapi`_.
 
 New source packages may be added, but please verify that references to
-a function or class in that package show up correctly in PlasmaPy's
-documentation. The name of the package does not always link as
+a function or class in that package show up correctly in `PlasmaPy's
+documentation`_. The name of the package does not always link as
 expected.
+
+.. hint::
+
+   If a cross-link is not working as expected this is usually due to
+   one of the following reasons:
+
+   * A typo;
+   * The package not being defined in :confval:`intersphinx_mapping`, or
+   * The referenced source package not properly or fully indexing their
+     own code, which is common in Python_ packages.
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -388,7 +389,7 @@ such as using LaTeX code in equations) or ``"""``, and end with
 
 In order to improve readability and maintain consistency, PlasmaPy uses
 the numpydoc_ standard for docstrings. Docstring conventions for
-Python are more generally described in :pep:`257`.
+Python_ are more generally described in :pep:`257`.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -550,7 +551,7 @@ PlasmaPy documentation.
   in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
-  preferably across all of PlasmaPy's documentation.
+  preferably across all of `PlasmaPy's documentation`_.
 
 * Update code and corresponding documentation at the same time.
 
@@ -574,14 +575,14 @@ PlasmaPy documentation.
     they are represented in the documentation for each project. Common
     examples include "Python", "Astropy", "NumPy", and "reST".
 
-* When referencing PlasmaPy functionality, write the full namespace
+* When referencing PlasmaPy_ functionality, write the full namespace
   path to where the functionality is defined, not where it is
   conveniently accessed. For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
   ``~plasmapy.formulary.Alfven_speed``.
 
   This does not necessarily need to be done when referencing external
-  packages, since each package may have their own standard.  For
+  packages, since each package may have their own standard. For
   example, Astropy's |Quantity| class is defined in
   ``astropy.units.quantity.Quantity`` but is also indexed at
   ``~astropy.units.Quantity`` so either option will link to the same
@@ -682,11 +683,11 @@ Docstring guidelines
   one line long, but may be longer if necessary.
 
 * The extended summary that immediately follows the short summary should
-  be ≲ 4 sentences long.  Any additional information should included in
+  be ≲ 4 sentences long. Any additional information should included in
   the "Notes" section.
 
 * The short summary should start on the line immediately following the
-  triple quotes.  There should not be any blank lines immediately before
+  triple quotes. There should not be any blank lines immediately before
   the closing triple quotes.
 
 * The first line of the docstring for a function or method should begin
@@ -770,8 +771,8 @@ Docstring guidelines
 Narrative documentation guidelines
 ----------------------------------
 
-* Each top-level subpackage in PlasmaPy must have corresponding
-  narrative documentation.
+* Each top-level subpackage must have corresponding narrative
+  documentation.
 
 * Use narrative documentation to describe how different functionality
   works together.
@@ -780,15 +781,15 @@ Narrative documentation guidelines
   functionality cannot be adequately described within only the
   docstrings of that functionality.
 
-* Use title case for page titles (e.g., "Title Case") and sentence case
-  for all other headings (e.g., "Sentence case").
+* Use title case for page titles (e.g., "This is Title Case") and
+  sentence case for all other headings (e.g., "This is sentence case").
 
 * When the narrative documentation does not index a subpackage
   (a directory) or module (a :file:`.py` file) with ``automodule``,
   ``automodapi``, or the like, then it is required to create a stub
   file for that particular subpackage or module in `docs/api_static`_ .
   Here are the sample contents for a stub file for
-  `plasmapy.particles.atomic`.  This file would be located at
+  `plasmapy.particles.atomic`. This file would be located at
   :file:`docs/api_static/plasmapy.particles.atomic.rst`.
 
   .. code-block:: rst
@@ -806,4 +807,6 @@ Narrative documentation guidelines
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _make: https://www.gnu.org/software/make/
+.. _pandas: https://pandas.pydata.org/
 .. _Sphinx: https://www.sphinx-doc.org/
+.. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
