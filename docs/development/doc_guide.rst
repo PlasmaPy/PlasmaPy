@@ -97,8 +97,8 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.  The ``tox`` command may also
-include the ``--parallel`` flag to allow a parallel build.
+even if there are warnings.  A ``tox`` command may also include the
+``--parallel`` flag to allow a parallel build.
 
 Documentation tools
 ===================
@@ -715,6 +715,24 @@ Docstring guidelines
          @age.setter
          def age(self, n):
              self._age = n
+
+* Physical units should not be formatted as math.
+
+  .. code-block:: rst
+
+     The speed of light is approximately :math:`3 × 10^8` m/s or
+
+     .. math::
+
+        3 × 10^{10} \mbox{cm/s}
+
+  This reST_ block renders as:
+
+     The speed of light is approximately :math:`3 × 10^8` m/s or
+
+     .. math::
+
+        3 × 10^{10} \mbox{cm/s}
 
 Narrative documentation guidelines
 ----------------------------------
