@@ -5,7 +5,7 @@ Documentation Guide
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
-PlasmaPy_ and affiliated packages.
+PlasmaPy and affiliated packages.
 
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations.
@@ -34,14 +34,14 @@ current directory structure.  Using make_ is quicker for local builds
 but requires that setting up all dependencies ahead of time.  Using
 tox_ does not require setting up all dependencies ahead of time, but
 is more computationally intensive since it builds the package and
-environment before building the documentation.  Consequently, PlasmaPy_
+environment before building the documentation.  Consequently, PlasmaPy
 uses tox_ for building the documentation on continuous integration
 testing platforms.
 
 Prerequisites
 -------------
 
-To install all dependencies required to develop PlasmaPy_ on your local
+To install all dependencies required to develop PlasmaPy on your local
 computer, enter the top-level directory of the cloned repository and
 run
 
@@ -117,7 +117,7 @@ within :file:`.py` files are in the form of `docstrings
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of reST_ that are commonly used in PlasmaPy_.
+Here we show some examples of reST_ that are commonly used in PlasmaPy.
 Please refer to the documentation for Sphinx_ and reST_ for a list
 of available directives and syntax.
 
@@ -302,7 +302,7 @@ extensions:
 * IPython.sphinxext.ipython_console_highlighting
 * `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_
   for rendering `towncrier`_ changelogs
-* `plasmapy_sphinx` for customizations created for use in PlasmaPy_ and
+* `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
 
@@ -353,7 +353,7 @@ documentation. reST_ allows us to `define substitutions
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-PlasmaPy_ has certain common substitutions pre-defined so that they can
+PlasmaPy has certain common substitutions pre-defined so that they can
 be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ``~astropy.units.Quantity``, and
 ``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
@@ -387,7 +387,7 @@ Docstrings begin with ``r"""`` (required when including backslashes,
 such as using LaTeX_ code in equations) or ``"""``, and end with
 ``"""``.
 
-In order to improve readability and maintain consistency, PlasmaPy_
+In order to improve readability and maintain consistency, PlasmaPy
 uses the numpydoc_ standard for docstrings. Docstring conventions for
 Python_ are more generally described in :pep:`257`.
 
@@ -538,7 +538,7 @@ Documentation guidelines
 ========================
 
 This section contains guidelines and best practices for writing
-documentation for PlasmaPy_ and affiliated packages.
+documentation for PlasmaPy and affiliated packages.
 
 * Write documentation to be understandable to students taking their
   first course or beginning their first research project in plasma
@@ -575,7 +575,7 @@ documentation for PlasmaPy_ and affiliated packages.
     they are represented in the documentation for each project. Common
     examples include "Python", "Astropy", "NumPy", and "reST".
 
-* When referencing PlasmaPy_ functionality, write the full namespace
+* When referencing PlasmaPy functionality, write the full namespace
   path to where the functionality is defined, not where it is
   conveniently accessed. For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
@@ -629,7 +629,7 @@ documentation for PlasmaPy_ and affiliated packages.
 
 * Physical unit symbols should not be formatted as math. If units are needed
   inside a math block, use LaTeX_'s ``\mbox`` command as in the example
-  below.
+  below. A tilde will need to precede the unit so that
 
   .. code-block:: rst
 
@@ -637,7 +637,7 @@ documentation for PlasmaPy_ and affiliated packages.
 
      .. math::
 
-        3 × 10^{10} \mbox{cm/s}
+        3 × 10^{10} \mbox{~cm/s}
 
   This reST_ block renders as:
 

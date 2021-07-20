@@ -56,7 +56,6 @@
 .. _NumPy: https://numpy.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _pip: https://pip.pypa.io
-.. _PlasmaPy: https://www.plasmapy.org/
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
