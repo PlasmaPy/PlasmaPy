@@ -18,7 +18,7 @@ PlasmaPy and affiliated packages.
    confusing or incomplete, please `raise an issue
    <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation>`_!
    This really helps PlasmaPy not only by helping us improve the
-   documentation, but also by creating opportunities for new
+   documentation for all, but also by creating opportunities for new
    contributors to make their first contribution to the project.
 
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
