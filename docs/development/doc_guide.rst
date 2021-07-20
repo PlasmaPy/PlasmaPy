@@ -40,13 +40,15 @@ Building documentation
 ======================
 
 There are two methods for building the documentation: make_ and tox_.
-Using make_ will build the documentation based off of what is in the
-current directory structure. Using make_ is quicker for local builds but
-requires that setting up all dependencies ahead of time. Using tox_ does
-not require setting up all dependencies ahead of time, but is more
-computationally intensive since it builds the package and environment
-before building the documentation. Consequently, PlasmaPy uses tox_ for
-building the documentation on continuous integration testing platforms.
+
+* Using make_ will build the documentation based off of what is in the
+  current directory structure. Using make_ is quicker for local builds
+  but requires that setting up all dependencies ahead of time.
+* Using tox_ does not require setting up all dependencies ahead of time,
+  but is more computationally intensive since it builds the package and
+  environment before building the documentation. Consequently, PlasmaPy
+  uses tox_ for building the documentation on continuous integration
+  testing platforms.
 
 Prerequisites
 -------------
@@ -95,7 +97,7 @@ You can access the documentation landing page by opening
 
 When writing documentation, please make sure to fix any warnings that
 arise. To enforce this, the ``build_docs`` environment is set to fail on
-encountering any warnings via the ``-W`` flag to :command:`sphinx-build`.
+encountering any warnings via the ``-W`` flag to `sphinx-build`_.
 
 You can shorten the tox_ documentation build by running:
 
@@ -820,6 +822,7 @@ Narrative documentation guidelines
 .. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
 .. _Sphinx: https://www.sphinx-doc.org/
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
+.. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _Wikipedia: https://www.wikipedia.org/
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
