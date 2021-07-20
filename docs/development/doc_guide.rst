@@ -97,7 +97,7 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.  A ``tox`` command may also include the
+even if there are warnings.  A tox_ command may also include the
 ``--parallel`` flag to allow a parallel build.
 
 Documentation tools
