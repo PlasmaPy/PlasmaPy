@@ -53,7 +53,7 @@ Building documentation with make
 --------------------------------
 
 If you have make_ installed, then you can build the documentation by
-entering the ``docs/`` directory and running
+entering the :file:`docs/` directory and running
 
 .. code-block:: bash
 
@@ -86,7 +86,8 @@ You can access the documentation landing page by opening
 
 When writing documentation, please make sure to fix any warnings that
 arise. To enforce this, the ``build_docs`` environment is set to fail
-on encountering any warnings via the ``-W`` flag to ``sphinx-build``.
+on encountering any warnings via the ``-W`` flag to
+:command:`sphinx-build`.
 
 You can shorten the documentation build by running
 
@@ -96,8 +97,8 @@ You can shorten the documentation build by running
 
 in order to build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings.  The tox_ command may also include the
-``--parallel`` flag to allow a parallel build.
+even if there are warnings.  The ``tox`` command may also
+include the ``--parallel`` flag to allow a parallel build.
 
 Documentation tools
 ===================
@@ -110,8 +111,8 @@ PlasmaPy's documentation is written using the `reStructuredText (reST)
 markup language. reST_ is human readable when viewed within a
 source code file or when printed out using `help`. reST_ also contains
 markup that allows the text to be transformed into `PlasmaPy's online
-documentation`_. reST_ files end in ``.rst``. Documentation contained
-within ``.py`` files are in the form of `docstrings
+documentation`_. reST_ files end in :file:`.rst`. Documentation contained
+within :file:`.py` files are in the form of `docstrings
 <https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST_.
 
 ReStructuredText Examples
@@ -229,7 +230,7 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than reST_. Markdown_ files end with ``.md``. Posts on GitHub
+limited than reST_. Markdown_ files end with :file:`.md`. Posts on GitHub
 are written in `GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
 The following code block contains a few common examples of Markdown_
 formatting.
@@ -387,7 +388,7 @@ such as using LaTeX code in equations) or ``"""``, and end with
 
 In order to improve readability and maintain consistency, PlasmaPy uses
 the numpydoc_ standard for docstrings. Docstring conventions for
-Python are more generally described in `PEP 257`_.
+Python are more generally described in :pep:`257`.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -732,12 +733,12 @@ Narrative documentation guidelines
   for all other headings (e.g., "Sentence case").
 
 * When the narrative documentation does not index a subpackage
-  (a directory) or module (a ``.py`` file) with ``automodule``,
+  (a directory) or module (a :file:`.py` file) with ``automodule``,
   ``automodapi``, or the like, then it is required to create a stub
   file for that particular subpackage or module in `docs/api_static`_ .
   Here are the sample contents for a stub file for
   `plasmapy.particles.atomic`.  This file would be located at
-  ``docs/api_static/plasmapy.particles.atomic.rst``.
+  :file:`docs/api_static/plasmapy.particles.atomic.rst`.
 
   .. code-block:: rst
 
@@ -754,5 +755,4 @@ Narrative documentation guidelines
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _make: https://www.gnu.org/software/make/
-.. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
 .. _Sphinx: https://www.sphinx-doc.org/
