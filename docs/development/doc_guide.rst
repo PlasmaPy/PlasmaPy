@@ -118,8 +118,8 @@ ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of reST_ that are commonly used in PlasmaPy.
-Please refer do the documentation for Sphinx_ and reST_ for a more
-complete list of available directives and syntax.
+Please refer to the documentation for Sphinx_ and reST_ for a list
+of available directives and syntax.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading
@@ -145,14 +145,14 @@ We can link to code objects by enclosing them in single back ticks.
 .. code-block:: rst
 
    Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when Sphinx_ generates the documentation and generates
+   full namespace when Sphinx generates the documentation and generates
    the link. Only the word "Particle" will show up if we prepend a
    tilde like in `~plasmapy.particles.particle_class.Particle`.
 
-This reST block will render as:
+This reST_ block will render as:
 
    Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when Sphinx_ generates the documentation and generates
+   full namespace when Sphinx generates the documentation and generates
    the link. Only the word "Particle" will show up if we prepend a
    tilde like in `~plasmapy.particles.particle_class.Particle`.
 
@@ -206,14 +206,23 @@ Math can typically be written using
 
       \alpha = \beta + \gamma
 
-This reST block will render as:
+This reST_ block will render as:
 
    .. math::
 
       \alpha = \beta + \gamma
 
-Math can be in-line, like `` :math:`x` ``. Using Unicode characters
-makes math like `` :math:`α + β + γ` `` easier to read in source code.
+Math can be in-line.
+
+.. code-block:: rst
+
+   An example of in-line math is :math:`x`. Using Unicode characters
+   like :math:`α + β + γ` makes math easier to read in the source code.
+
+This reST_ block will render as:
+
+   An example of in-line math is :math:`x`. Using Unicode characters
+   like :math:`α + β + γ` makes math easier to read in the source code.
 
 Markdown
 --------
@@ -534,25 +543,14 @@ PlasmaPy documentation.
   first course or beginning their first research project in plasma
   science. Include highly technical information only when necessary.
 
+* Use technical jargon sparingly. Define technical jargon when
+  necessary.
+
 * Use the `active voice <https://en.wikipedia.org/wiki/Active_voice>`_
   in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
   preferably across all of PlasmaPy's documentation.
-
-* Refer to the numpydoc_ standard for how to write docstrings for
-  classes, class attributes, and constants.
-
-* The short summary statement at the beginning of a docstring should be
-  one line long, but may be two lines long.
-
-* The extended summary that immediately follows the short summary should
-  be ≲ 4 sentences long.  Any additional information should included in
-  the "Notes" section.
-
-* The short summary should start on the line immediately following the
-  triple quotes.  There should not be any blank lines immediately before
-  the closing triple quotes.
 
 * Update code and corresponding documentation at the same time.
 
@@ -562,9 +560,6 @@ PlasmaPy documentation.
 
 * Avoid idioms, metaphors, and references that are specific to a
   particular culture.
-
-* Use technical jargon sparingly. Define technical jargon when
-  necessary.
 
 * Many words and software packages have more than one common spelling
   or acronym. Use the spelling that is used in the file you are
@@ -628,7 +623,20 @@ Docstring guidelines
 
 * All functions, classes, and objects that are part of PlasmaPy's
   public Application Programming Interface (API) must have a docstring
-  that follows the numpydoc_ standard.
+  that follows the numpydoc_ standard. Refer to the numpydoc_ standard
+  for how to write docstrings for classes, class attributes, and
+  constants.
+
+* The short summary statement at the beginning of a docstring should be
+  one line long, but may be longer if necessary.
+
+* The extended summary that immediately follows the short summary should
+  be ≲ 4 sentences long.  Any additional information should included in
+  the "Notes" section.
+
+* The short summary should start on the line immediately following the
+  triple quotes.  There should not be any blank lines immediately before
+  the closing triple quotes.
 
 * The first line of the docstring for a function or method should begin
   with a word like "Calculate" or "Compute" and end with a period.
@@ -639,12 +647,12 @@ Docstring guidelines
 
 * Keep the docstring indented at the same level as the ``r"""`` or
   ``"""`` that begins the docstring, except for reST_ constructs like
-  lists, math, and code blocks. The indentation level should be four
-  spaces more than the declaration of the object.
+  lists, math, and code blocks. Use an indentation of four spaces more
+  than the declaration of the object.
 
   .. code-block:: python
 
-     def some_function():
+     def f():
          """This is indented four spaces relative to the `def` statement."""
 
 * The first sentence of a docstring of a function should include a
@@ -672,25 +680,29 @@ Docstring guidelines
   of a docstring.
 
 * Private code objects (e.g., code objects that begin with a single
-  underscore) should have docstrings. A docstring for a private code
-  object may be a single line, and otherwise should be in numpydoc_
-  format.
+  underscore, like ``_private_object``) should have docstrings. A
+  docstring for a private code object may be a single line, and
+  otherwise should be in numpydoc_ format.
+
+  * Docstrings for private code objects do not get rendered in the
+    online documentation, and should be intended for contributors.
 
 * Dunder methods (e.g., code objects like ``__add__`` that begin and
   end with two underscores) only need docstrings if it is necessary to
-  describe non-standard or potentially unexpected behavior.  Docstrings
-  for most dunder methods are not rendered in the online documentation
-  and should therefore be intended for developers.  Custom behavior
-  associated with dunder methods should be described in the class-level
-  documentation, when necessary.
+  describe non-standard or potentially unexpected behavior. Custom
+  behavior associated with dunder methods should be described in the
+  class-level documentation.
 
-* Docstrings for ``__init__`` and ``__new__`` are included in the
-  class-level docstring when rendering documentation.
+  * Docstrings for most dunder methods are not rendered in the online
+    documentation and should therefore be intended for contributors.
+
+  * Docstrings for ``__init__`` and ``__new__`` are included in the
+    class-level docstring when rendering documentation.
 
 * When an attribute in a class has both a getter (which is decorated
   with `property`) and a ``setter`` decoration, then the getter and
   ``setter`` functionality should be documented in the docstring of
-  method decorated with ``@property``.
+  the attribute decorated with ``@property``.
 
   .. code-block:: python
 
@@ -707,8 +719,8 @@ Docstring guidelines
 Narrative documentation guidelines
 ----------------------------------
 
-* Each top-level subpackage in PlasmaPy must have corresponding narrative
-  documentation.
+* Each top-level subpackage in PlasmaPy must have corresponding
+  narrative documentation.
 
 * Use narrative documentation to describe how different functionality
   works together.
