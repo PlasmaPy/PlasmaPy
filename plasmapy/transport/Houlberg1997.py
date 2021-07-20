@@ -8,6 +8,7 @@ This work is referenced in docstrings as `Houlberg_1997`.
 """
 
 import numpy as np
+from numpy import pi
 import warnings
 
 from astropy import constants
@@ -19,7 +20,7 @@ from typing import Iterable, List, Union
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.mathematics import Chandrasekhar_G
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, electron
 from plasmapy.plasma.fluxsurface import FluxSurface
 import xarray
 from plasmapy.utils.decorators import validate_quantities
@@ -29,6 +30,7 @@ B_AXIS = 1
 ALPHA_AXIS = 2
 BETA_AXIS = 3
 
+temperature_unit = u.K
 try:
     from scipy.integrate import trapz as trapezoid
 except ImportError:
@@ -71,7 +73,7 @@ class ExtendedParticleList(ParticleList):
             dn = dn[indices]
 
         super().__init__(particles)
-        T = u.Quantity(T).to(u.K, equivalencies=u.temperature_energy())
+        T = u.Quantity(T).to(temperature_unit, equivalencies=u.temperature_energy())
         self.n = u.Quantity(n)
         if T.size == 1:
             T = np.broadcast_to(T, self.n.shape) * T.unit
@@ -91,7 +93,7 @@ class ExtendedParticleList(ParticleList):
             self.T = self.T[indices]
 
         if dT is not None:
-            self.dT = (u.Quantity(dT[indices]) * u.m).to(u.K, equivalencies = u.temperature_energy()) / u.m
+            self.dT = (u.Quantity(dT[indices]) * u.m).to(temperature_unit, equivalencies = u.temperature_energy()) / u.m
             assert len(self.dT) == len(self.T)
         if dn is not None:
             self.dn = u.Quantity(dn[indices])
