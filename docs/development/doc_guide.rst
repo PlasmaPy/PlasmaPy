@@ -648,26 +648,26 @@ PlasmaPy documentation.
   The ``:sub:`` and ``:sup:`` roles should be used for subscripts and
   superscripts, respectively.
 
-  Because whitespace is normally required around interpreted text, a
-  backslash followed by a space will be needed for the interpreted text
-  to show up immediately next to regular text; the space immediately
-  following the backslash will not show up in the rendered text.
+  Because interpreted text must normally be surrounded by whitespace or
+  punctuation, use a backslash followed by a space for the interpreted
+  text to show up immediately next to the regular text. This is not
+  necessary before a period or comma.
 
-  .. code-block::
+  .. code-block:: rst
 
      The symbol for helium is He.
 
-     The symbol for an electron is e\ :sup:`-`\ .
+     The symbol for an electron is e\ :sup:`-`.
 
-     An alpha particle may be represented as :sup:`4`\ :sub:`2`\ He\ :sup:`1+`\ .
+     An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
 
   The above reST_ block is rendered as:
 
      The symbol for helium is He.
 
-     The symbol for an electron is e\ :sup:`-`\ .
+     The symbol for an electron is e\ :sup:`-`.
 
-     An alpha particle may be represented as :sup:`4`\ :sub:`2`\ He\ :sup:`1+`\ .
+     An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
 
 Docstring guidelines
 --------------------
