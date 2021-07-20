@@ -7,7 +7,7 @@ health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
-`PlasmaPy's online documentation`_ is hosted by `Read the Docs`_ and is
+`PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations.
 
 * The documentation corresponding to the most recent official release
@@ -110,7 +110,7 @@ PlasmaPy's documentation is written using the `reStructuredText (reST)
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
 markup language. reST_ is human readable when viewed within a
 source code file or when printed out using `help`. reST_ also contains
-markup that allows the text to be transformed into `PlasmaPy's online
+markup that allows the text to be transformed into `PlasmaPy's
 documentation`_. reST_ files end in :file:`.rst`. Documentation contained
 within :file:`.py` files are in the form of `docstrings
 <https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST_.
@@ -255,7 +255,7 @@ formatting.
 Sphinx
 ------
 
-Sphinx_ is the software used to generate `PlasmaPy's online documentation`_
+Sphinx_ is the software used to generate `PlasmaPy's documentation`_
 from reST_ files and Python docstrings.  It was originally created to
 write Python's documentation and has become the de facto software for
 documenting Python packages.  Almost all Python open-source packages
@@ -564,7 +564,7 @@ PlasmaPy documentation.
 * Many words and software packages have more than one common spelling
   or acronym. Use the spelling that is used in the file you are
   modifying, which is preferably the spelling used throughout
-  `PlasmaPy's online documentation`_.
+  `PlasmaPy's documentation`_.
 
   * More generally, it is preferable to use the spelling that is used
     in `Python's documentation`_ or the spelling that is used most
@@ -715,24 +715,6 @@ Docstring guidelines
          @age.setter
          def age(self, n):
              self._age = n
-
-* Physical units should not be formatted as math.
-
-  .. code-block:: rst
-
-     The speed of light is approximately :math:`3 × 10^8` m/s or
-
-     .. math::
-
-        3 × 10^{10} \mbox{cm/s}
-
-  This reST_ block renders as:
-
-     The speed of light is approximately :math:`3 × 10^8` m/s or
-
-     .. math::
-
-        3 × 10^{10} \mbox{cm/s}
 
 Narrative documentation guidelines
 ----------------------------------
