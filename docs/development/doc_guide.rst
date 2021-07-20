@@ -15,25 +15,21 @@ PlasmaPy and affiliated packages.
 .. note::
 
    If you discover areas within PlasmaPy's documentation that are
-   confusing or incomplete, please `raise an issue
-   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation>`_!
-   This really helps PlasmaPy not only by helping us improve the
-   documentation for all, but also by creating opportunities for new
-   contributors to make their first contribution to the project.
+   confusing or incomplete, please `raise an issue`_! This really helps
+   PlasmaPy not only by helping us improve the documentation for all,
+   but also by creating opportunities for new contributors to make their
+   first contribution to the project.
 
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations:
 
 * The documentation corresponding to the most recent official release is
-  labelled ``stable`` and is found at `https://docs.plasmapy.org/
-  <https://docs.plasmapy.org/>`_ or
-  `https://docs.plasmapy.org/en/stable/
-  <https://docs.plasmapy.org/en/stable/>`_.
+  labelled ``stable`` and is found at `https://docs.plasmapy.org/`_ or
+  `https://docs.plasmapy.org/en/stable/`_.
 
 * The documentation corresponding to the ``main`` branch on `PlasmaPy's
   GitHub repository`_ is labelled ``latest`` and can be found at
-  `https://docs.plasmapy.org/en/latest/
-  <https://docs.plasmapy.org/en/latest/>`_.
+  `https://docs.plasmapy.org/en/latest/`_.
 
 A preview of the documentation is generated every time a pull request is
 created or updated. You can access this preview by scrolling down to the
@@ -43,7 +39,7 @@ to ``docs/readthedocs.org:plasmapy``.
 Building documentation
 ======================
 
-There are two methods for building the documentation: make_ and tox_\ .
+There are two methods for building the documentation: make_ and tox_.
 Using make_ will build the documentation based off of what is in the
 current directory structure. Using make_ is quicker for local builds but
 requires that setting up all dependencies ahead of time. Using tox_ does
@@ -99,10 +95,9 @@ You can access the documentation landing page by opening
 
 When writing documentation, please make sure to fix any warnings that
 arise. To enforce this, the ``build_docs`` environment is set to fail on
-encountering any warnings via the ``-W`` flag to
-:command:`sphinx-build`.
+encountering any warnings via the ``-W`` flag to :command:`sphinx-build`.
 
-You can shorten the documentation build by running:
+You can shorten the tox_ documentation build by running:
 
 .. code-block:: bash
 
@@ -119,14 +114,13 @@ Documentation tools
 ReStructuredText
 ----------------
 
-PlasmaPy's documentation is written using the `reStructuredText (reST)
-<https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
+PlasmaPy's documentation is written using the `reStructuredText (reST)`_
 markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
-that allows the text to be transformed into `PlasmaPy's
-documentation`_. reST_ files end in :file:`.rst`. Documentation
-contained within :file:`.py` files are in the form of `docstrings
-<https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST_.
+that allows the text to be transformed into `PlasmaPy's documentation`_.
+reST_ files end in :file:`.rst`. Documentation contained within
+:file:`.py` files are in the form of docstrings_, which are written in
+reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,24 +149,30 @@ the same length as that heading.
    ~~~~~~~~~
 
 We can link to code objects by enclosing them in single back ticks.
+This linking will work for Python_ commands as well as certain packages
+like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
+the section on :ref:`external-references`. In-line code examples are
+enclosed in double back ticks.
 
 .. code-block:: rst
 
-   Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when Sphinx generates the documentation and generates
-   the link. Only the word "Particle" will show up if we prepend a tilde
-   like in `~plasmapy.particles.particle_class.Particle`.
+   Here is a reference to `plasmapy.particles` that will show the full
+   namespace in the rendered documentation.
+
+   Only the word "Particle" will show up if a prepend a tilde like in
+   `~plasmapy.particles.particle_class.Particle`.
+
+   Here is some in-line code: ``import astropy.units as u``.
 
 This reST_ block will render as:
 
-   Here is a reference to `plasmapy.particles` that will write out the
-   full namespace when Sphinx generates the documentation and generates
-   the link. Only the word "Particle" will show up if we prepend a tilde
-   like in `~plasmapy.particles.particle_class.Particle`.
+   Here is a reference to `plasmapy.particles` that will show the full
+   namespace in the rendered documentation.
 
-This linking will work for Python_ commands as well as certain packages
-like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
-the section on :ref:`external-references`.
+   Only the word "Particle" will show up if a prepend a tilde like in
+   `~plasmapy.particles.particle_class.Particle`.
+
+   Here is some in-line code: ``import astropy.units as u``.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console.
 
@@ -277,9 +277,7 @@ Configuration
 
 The `docs/conf.py`_ file contains the configuration information needed
 to customize Sphinx_ behavior.  The documentation for Sphinx_ lists the
-`configuration options
-<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_ that
-can be set.
+`configuration options`_ that can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
@@ -287,34 +285,17 @@ Sphinx extensions
 `PlasmaPy's documentation`_ is built with the following Sphinx_
 extensions:
 
-* `sphinx.ext.autodoc
-  <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
-  for including documentation from docstrings
-* `sphinx.ext.intersphinx
-  <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
-  for linking to other projects' documentation
-* `sphinx.ext.graphviz
-  <https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html>`_
-  to allow `Graphviz <https://graphviz.org/>`_ graphs to be included
-* `sphinx.ext.mathjax
-  <https://www.sphinx-doc.org/en/master/usage/extensions/math.html#module-sphinx.ext.mathjax>`_
-  for math rendering with `MathJax <https://www.mathjax.org/>`_
-* `sphinx.ext.napoleon
-  <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`_
-  for allowing NumPy style docstrings
-* `sphinx.ext.todo
-  <https://www.sphinx-doc.org/en/master/usage/extensions/todo.html>`_ to
-  support ``todo`` directives
-* `nbsphinx <https://nbsphinx.readthedocs.io>`_ for including `Jupyter`_
-  notebooks
-* `sphinx_copybutton <https://sphinx-copybutton.readthedocs.io>`_ to add
-  a "copy" button for code blocks
-* `sphinx_gallery.load_style
-  <https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles>`_
-  for using sphinx-gallery styles
-* IPython.sphinxext.ipython_console_highlighting
-* `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_ for
-  rendering `towncrier`_ changelogs
+* `sphinx.ext.autodoc` for including documentation from docstrings
+* `sphinx.ext.intersphinx` for linking to other projects' documentation
+* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included
+* `sphinx.ext.mathjax` for math rendering with MathJax_
+* `sphinx.ext.napoleon` for allowing NumPy style docstrings
+* `sphinx.ext.todo` to support ``todo`` directives
+* nbsphinx_ for including Jupyter_ notebooks
+* `sphinx_copybutton`_ to add a "copy" button for code blocks
+* `sphinx_gallery.load_style`_ for using sphinx-gallery styles
+* `IPython.sphinxext.ipython_console_highlighting`_
+* `sphinx_changelog`_ for rendering `towncrier`_ changelogs
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -337,7 +318,7 @@ in Astropy documentation. Similarly, ``~astropy.units.Quantity`` will
 show up as `~astropy.units.Quantity`.
 
 The mappings are defined in the :confval:`intersphinx_mapping`
-dictionary in `docs/conf.py`_, and include Python_, NumPy_, SciPy_,
+dictionary in :file:`docs/conf.py`_, and include Python_, NumPy_, SciPy_,
 Astropy_, pandas_, Sphinx_, and `sphinx_automodapi`_.
 
 New source packages may be added, but please verify that references to a
@@ -511,8 +492,9 @@ Template docstring
 ~~~~~~~~~~~~~~~~~~
 
 This template docstring may be copied into new functions. Usually only
-some of the sections will be necessary for a particular function, but
-any sections that are included should be in the order provided.
+some of the sections will be necessary for a particular function, and
+unnecessary sections should be deleted. Any sections that are included
+should be in the order provided.
 
 .. code-block:: python
   :caption: Docstring template
@@ -560,8 +542,7 @@ documentation for PlasmaPy and affiliated packages.
 * Use technical jargon sparingly. Define technical jargon when
   necessary.
 
-* Use the `active voice <https://en.wikipedia.org/wiki/Active_voice>`_
-  in the present tense.
+* Use the `active voice`_ in the present tense.
 
 * Keep the documentation style consistent within a file or module, and
   preferably across all of `PlasmaPy's documentation`_.
@@ -611,30 +592,24 @@ documentation for PlasmaPy and affiliated packages.
 
 * Use indentations of 3 spaces for reST_ blocks.
 
-* Avoid linking to websites that might disappear due to `link rot
-  <https://en.wikipedia.org/wiki/Link_rot>`_ such as documents hosted on
-  personal websites.
+* Avoid linking to websites that might disappear due to `link rot`_ such
+  as documents hosted on personal websites.
 
   * When including references, use a link that includes a `persistent
-    identifier <https://en.wikipedia.org/wiki/Persistent_identifier>`_
-    such as a digital object identifier (DOI) when one is available
-    (e.g., `https://doi.org/10.5281/zenodo.4602818
-    <https://doi.org/10.5281/zenodo.4602818>`_).
+    identifier`_ such as a digital object identifier (DOI) when one is
+    available (e.g., `https://doi.org/10.5281/zenodo.4602818`_).
 
-  * `Wikipedia <https://www.wikipedia.org/>`_ articles may be linked to
-    when they contain a well-developed and accurate description of a
-    concept.
+  * Wikipedia_ articles may be linked to when they contain a
+    well-developed and accurate description of a concept.
 
 * Include both the original references for a topic as well as accessible
   pedagogical references. Prefer references that are open access over
   references that require purchase of a subscription or are behind a
-  `paywall <https://en.wikipedia.org/wiki/Paywall>`_.
+  paywall_.
 
 .. note::
 
-   Emphasize important points with `admonitions
-   <https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions>`_
-   like this one.
+   Emphasize important points with admonitions_ like this one.
 
 * Start the names of all physical units with a lower case letter, except
   at the beginning of a sentence and for "degree Celsius".
@@ -805,7 +780,7 @@ Narrative documentation guidelines
   ``automodapi``, or the like, then it is required to create a stub file
   for that particular subpackage or module in `docs/api_static`_ .  Here
   are the sample contents for a stub file for
-  `plasmapy.particles.atomic`. This file would be located at
+  `plasmapy.particles.atomic`. This file would be located at jlkj;lj
   :file:`docs/api_static/plasmapy.particles.atomic.rst`.
 
   .. code-block:: rst
@@ -819,12 +794,33 @@ Narrative documentation guidelines
 
      .. automodapi::  plasmapy.particles.atomic
 
+.. _`active voice`: https://en.wikipedia.org/wiki/Active_voice
+.. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
+.. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _`GitHub Flavored Markdown`: https://github.github.com/gfm/
+.. _Graphviz: https://graphviz.org/
+.. _`https://docs.plasmapy.org/`: https://docs.plasmapy.org/
+.. _`https://docs.plasmapy.org/en/stable/`: https://docs.plasmapy.org/en/stable/
+.. _`https://docs.plasmapy.org/en/latest/`: https://docs.plasmapy.org/en/latest/
+.. _`https://doi.org/10.5281/zenodo.4602818`: https://doi.org/10.5281/zenodo.4602818
+.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _LaTeX: https://www.latex-project.org/
+.. _`link rot`: https://en.wikipedia.org/wiki/Link_rot
 .. _make: https://www.gnu.org/software/make/
+.. _MathJax: https://www.mathjax.org/
+.. _nbsphinx: https://nbsphinx.readthedocs.io
 .. _pandas: https://pandas.pydata.org/
+.. _paywall: https://en.wikipedia.org/wiki/Paywall
+.. _`persistent identifier`: https://en.wikipedia.org/wiki/Persistent_identifier
+.. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
 .. _Sphinx: https://www.sphinx-doc.org/
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
+.. _Wikipedia: https://www.wikipedia.org/
+.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
+.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
+.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
