@@ -175,10 +175,11 @@ class FlowCalculator:
     @validate_quantities
     def _xab(self) -> u.Unit("m3 s / kg"):   #TODO
         r"""Solves equation 34 for $\bar{u}_k^a$."""
-        rhat, crhat = self._rhat_crhat
+        _, crhat = self._rhat_crhat
         lhs = self._lhs
-        rhs = np.vstack(crhat[:,:,3:])
-        xab = np.linalg.solve(lhs, rhs).si
+        rhs_prestack = crhat[:,:,3:]
+        rhs = np.vstack(rhs_prestack)
+        xab = np.linalg.solve(lhs, rhs)
         return xab
 
     @cached_property
