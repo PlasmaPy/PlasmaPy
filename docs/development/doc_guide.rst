@@ -732,8 +732,8 @@ Narrative documentation guidelines
   for all other headings (e.g., "Sentence case").
 
 * When the narrative documentation does not index a subpackage
-  (a directory) or module (a ``.py`` file) with :dir:`automodule`,
-  :dir:`automodapi`, or the like, then it is required to create a stub
+  (a directory) or module (a ``.py`` file) with ``automodule``,
+  ``automodapi``, or the like, then it is required to create a stub
   file for that particular subpackage or module in `docs/api_static`_ .
   Here are the sample contents for a stub file for
   `plasmapy.particles.atomic`.  This file would be located at
