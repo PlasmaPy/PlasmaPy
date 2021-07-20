@@ -205,19 +205,12 @@ class ExtendedParticleList(ParticleList):
         )
 
     @cached_property
-    def isotopic_mass(self) -> u.m:
-        return u.Quantity(
-            [masses.mean() for masses in self.split_isotopes(self.mass, axis=0)]
-        )
+    def isotopic_mass(self) -> u.kg:
+        return self.compress(self.mass, axis=0, aggregator = np.mean)
 
     @cached_property
     def isotopic_temperature(self) -> u.eV:
-        return u.Quantity(
-            [
-                temperatures.mean()
-                for temperatures in self.split_isotopes(self.T, axis=0)
-            ]
-        )
+        return self.compress(self.T, axis=0, aggregator = np.mean)
 
     @cached_property
     def xab_ratio(self) -> np.ndarray:
