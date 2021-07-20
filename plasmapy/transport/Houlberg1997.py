@@ -289,44 +289,58 @@ class ExtendedParticleList(ParticleList):
         return output
 
     @cached_property
-    def CL_matrix(self):
-        CL = lambda ai, bj, bn, bT: Coulomb_logarithm(
-            bT,
-            bn,
-            (ai, bj),  # simplifying assumption after A4
-        )
-        CL_matrix = u.Quantity(
-            [
-                [CL(ai, bj, bn, bT) for bj, bn, bT in zip(self, self.n, self.T)]
-                for ai in self
-            ]
-        )
-        return CL_matrix
-
-    @cached_property
-    def scaled_collision_frequency(self):
+    def tau(self):
+        """Equations A3, A4 from |Houlberg_1997|"""
         charge_a = self.charge[:, np.newaxis]
-        charge_b = self.charge[np.newaxis, :]
-        mass_a = self.mass[:, np.newaxis]
+        charge_b = charge_a.T
+        mass = self.isotopic_mass.to(u.u)
+        mass_a = mass[:, np.newaxis]
+        mass_b = mass_a.T
+        T = self.isotopic_temperature.to(u.keV, equivalencies=u.temperature_energy())
+        T_a = T[:, np.newaxis]
+        T_b = T_a.T
+        xn = self.compress(self.n, axis=0)
+        xnz = self.compress(self.charge_number * self.n, axis=0)
+        xz = xnz / xn
+        xz_a = xz[:, np.newaxis]
+        xz_b = xz_a.T
         n_a = self.n[:, np.newaxis]
-        n_b = self.n[np.newaxis, :]
-        thermal_speed_a = self.thermal_speed[:, np.newaxis]
-        collision_frequency = (
-            1
-            / (3 * np.pi ** (3 / 2))
-            * (charge_a * charge_b / constants.eps0) ** 2
-            * (n_a * n_b)
-            / mass_a
-            / thermal_speed_a ** 3
-        )
-        return collision_frequency
+        n_b = n_a.T
+        xnz2 = self.compress(self.charge_number**2 * self.n, axis=0)
+        xnz2_a = xnz2[:, np.newaxis]
+        xnz2_b = xnz2_a.T
+        t_ele = self.T.to(u.keV, equivalencies=u.temperature_energy())
+        clnab = 37.8 - np.log((np.sqrt(self.n) / t_ele).value)
+        xlnab = 40.3 - np.log((
+            xz_a * xz_b * (mass_a + mass_b) /
+            (mass_a * T_b + mass_b * T_a) *
+            np.sqrt(xnz2_a / T_a + xnz2_b / T_b)
+        ).value)
+        for i, p1 in enumerate(self):
+            for j, p2 in enumerate(self):
+                index = None
+                if p1 == electron:
+                    index = i
+                elif p2 == electron:
+                    index = j
+
+                if index is not None:
+                    xlnab[self.isotope_indices[index], :] = clnab[index]
+                    xlnab[:, self.isotope_indices[index]] = clnab[index]
+
+        CL_matrix = self.decompress(xlnab, axis=(0, 1))
+        c1=4.0/3.0/np.sqrt(pi)*4.0*np.pi/(4.0*np.pi*constants.eps0)**2
+        c2 = self.thermal_speed**3 * self.mass **2 / c1
+        tau = c2 / CL_matrix / charge_a ** 2 / n_b / charge_b ** 2
+        return tau.T
 
     @cached_property
     def effective_momentum_relaxation_rate(self):
         """Equations A3, A4 from |Houlberg_1997|"""
-        # TODO double check ordering
-        return self.compress(self.CL_matrix * self.scaled_collision_frequency, 
-                             axis=(0, 1)).si
+        mass_a = self.mass[:, np.newaxis]
+        n_a = self.n[:, np.newaxis]
+        amnt = self.compress(mass_a * n_a / self.tau, axis=(0,1))
+        return amnt
 
     @cached_property
     @validate_quantities
