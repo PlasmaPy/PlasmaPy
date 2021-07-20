@@ -24,33 +24,33 @@ PlasmaPy and affiliated packages.
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations:
 
-* The documentation corresponding to the most recent official release
-  is labelled ``stable`` and is found at
-  `https://docs.plasmapy.org/ <https://docs.plasmapy.org/>`_ or
-  `https://docs.plasmapy.org/en/stable/ <https://docs.plasmapy.org/en/stable/>`_.
+* The documentation corresponding to the most recent official release is
+  labelled ``stable`` and is found at `https://docs.plasmapy.org/
+  <https://docs.plasmapy.org/>`_ or
+  `https://docs.plasmapy.org/en/stable/
+  <https://docs.plasmapy.org/en/stable/>`_.
 
-* The documentation corresponding to the ``main`` branch on
-  `PlasmaPy's GitHub repository`_ is labelled ``latest`` and can be
-  found at `https://docs.plasmapy.org/en/latest/
+* The documentation corresponding to the ``main`` branch on `PlasmaPy's
+  GitHub repository`_ is labelled ``latest`` and can be found at
+  `https://docs.plasmapy.org/en/latest/
   <https://docs.plasmapy.org/en/latest/>`_.
 
-A preview of the documentation is generated every time a pull request
-is created or updated. You can access this preview by scrolling down
-to the checks at the bottom of a pull request, and clicking on
-``Details`` next to ``docs/readthedocs.org:plasmapy``.
+A preview of the documentation is generated every time a pull request is
+created or updated. You can access this preview by scrolling down to the
+checks at the bottom of a pull request, and clicking on ``Details`` next
+to ``docs/readthedocs.org:plasmapy``.
 
 Building documentation
 ======================
 
 There are two methods for building the documentation: make_ and tox_\ .
 Using make_ will build the documentation based off of what is in the
-current directory structure.  Using make_ is quicker for local builds
-but requires that setting up all dependencies ahead of time.  Using
-tox_ does not require setting up all dependencies ahead of time, but
-is more computationally intensive since it builds the package and
-environment before building the documentation.  Consequently, PlasmaPy
-uses tox_ for building the documentation on continuous integration
-testing platforms.
+current directory structure. Using make_ is quicker for local builds but
+requires that setting up all dependencies ahead of time. Using tox_ does
+not require setting up all dependencies ahead of time, but is more
+computationally intensive since it builds the package and environment
+before building the documentation. Consequently, PlasmaPy uses tox_ for
+building the documentation on continuous integration testing platforms.
 
 Prerequisites
 -------------
@@ -98,8 +98,8 @@ You can access the documentation landing page by opening
 ``docs/_build/html/index.html`` with your browser of choice.
 
 When writing documentation, please make sure to fix any warnings that
-arise. To enforce this, the ``build_docs`` environment is set to fail
-on encountering any warnings via the ``-W`` flag to
+arise. To enforce this, the ``build_docs`` environment is set to fail on
+encountering any warnings via the ``-W`` flag to
 :command:`sphinx-build`.
 
 You can shorten the documentation build by running:
@@ -108,10 +108,10 @@ You can shorten the documentation build by running:
 
    tox -e build_docs_no_examples
 
-in order to build the documentation without executing the
-:ref:`example notebooks <example_notebooks>`. This command will pass
-even if there are warnings. A tox_ command may also include the
-``--parallel`` flag to allow a parallel build.
+in order to build the documentation without executing the :ref:`example
+notebooks <example_notebooks>`. This command will pass even if there are
+warnings. A tox_ command may also include the ``--parallel`` flag to
+allow a parallel build.
 
 Documentation tools
 ===================
@@ -121,23 +121,23 @@ ReStructuredText
 
 PlasmaPy's documentation is written using the `reStructuredText (reST)
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
-markup language. reST_ is human readable when viewed within a
-source code file or when printed out using `help`. reST_ also contains
-markup that allows the text to be transformed into `PlasmaPy's
-documentation`_. reST_ files end in :file:`.rst`. Documentation contained
-within :file:`.py` files are in the form of `docstrings
+markup language. reST_ is human readable when viewed within a source
+code file or when printed out using `help`. reST_ also contains markup
+that allows the text to be transformed into `PlasmaPy's
+documentation`_. reST_ files end in :file:`.rst`. Documentation
+contained within :file:`.py` files are in the form of `docstrings
 <https://en.wikipedia.org/wiki/Docstring>`_, which are written in reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of reST_ that are commonly used in PlasmaPy.
-Please refer to the documentation for Sphinx_ and reST_ for a list
-of available directives and syntax.
+Please refer to the documentation for Sphinx_ and reST_ for a list of
+available directives and syntax.
 
 This is an example of including headings for the document title,
-sections, subsections, and so on. The lines surrounding each heading
-are the same length as that heading.
+sections, subsections, and so on. The lines surrounding each heading are
+the same length as that heading.
 
 .. code-block:: rst
 
@@ -160,19 +160,19 @@ We can link to code objects by enclosing them in single back ticks.
 
    Here is a reference to `plasmapy.particles` that will write out the
    full namespace when Sphinx generates the documentation and generates
-   the link. Only the word "Particle" will show up if we prepend a
-   tilde like in `~plasmapy.particles.particle_class.Particle`.
+   the link. Only the word "Particle" will show up if we prepend a tilde
+   like in `~plasmapy.particles.particle_class.Particle`.
 
 This reST_ block will render as:
 
    Here is a reference to `plasmapy.particles` that will write out the
    full namespace when Sphinx generates the documentation and generates
-   the link. Only the word "Particle" will show up if we prepend a
-   tilde like in `~plasmapy.particles.particle_class.Particle`.
+   the link. Only the word "Particle" will show up if we prepend a tilde
+   like in `~plasmapy.particles.particle_class.Particle`.
 
 This linking will work for Python_ commands as well as certain packages
-like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described
-in the section on :ref:`external-references`.
+like NumPy_, SciPy_, Astropy_, and pandas_. This linking is described in
+the section on :ref:`external-references`.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console.
 
@@ -242,10 +242,10 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than reST_. Markdown_ files end with :file:`.md`. Posts on GitHub
-are written in `GitHub Flavored Markdown <https://github.github.com/gfm/>`_.
-The following code block contains a few common examples of Markdown_
-formatting.
+limited than reST_. Markdown_ files end with :file:`.md`. Posts on
+GitHub are written in `GitHub Flavored Markdown
+https://github.github.com/gfm/>`_.  The following code block contains a
+few common examples of Markdown_ formatting.
 
 .. code-block:: markdown
 
@@ -277,10 +277,10 @@ Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize Sphinx_ behavior.
-The documentation for Sphinx_ lists the `configuration options
-<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_
-that can be set.
+to customize Sphinx_ behavior.  The documentation for Sphinx_ lists the
+`configuration options
+<https://www.sphinx-doc.org/en/master/usage/configuration.html>`_ that
+can be set.
 
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
@@ -304,18 +304,18 @@ extensions:
   <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`_
   for allowing NumPy style docstrings
 * `sphinx.ext.todo
-  <https://www.sphinx-doc.org/en/master/usage/extensions/todo.html>`_ to support
-  ``todo`` directives
-* `nbsphinx <https://nbsphinx.readthedocs.io>`_ for including
-  `Jupyter`_ notebooks
+  <https://www.sphinx-doc.org/en/master/usage/extensions/todo.html>`_ to
+  support ``todo`` directives
+* `nbsphinx <https://nbsphinx.readthedocs.io>`_ for including `Jupyter`_
+  notebooks
 * `sphinx_copybutton <https://sphinx-copybutton.readthedocs.io>`_ to add
   a "copy" button for code blocks
 * `sphinx_gallery.load_style
   <https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles>`_
   for using sphinx-gallery styles
 * IPython.sphinxext.ipython_console_highlighting
-* `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_
-  for rendering `towncrier`_ changelogs
+* `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_ for
+  rendering `towncrier`_ changelogs
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -332,24 +332,24 @@ Intersphinx_ allows the automatic generation of links to the
 documentation of objects in other projects. This cross-package linking
 is made possible with the `sphinx.ext.intersphinx` extension.
 
-When we include ``astropy.units.Quantity`` in the documentation, it
-will show up as `astropy.units.Quantity` with a link to the appropriate
-page in Astropy documentation. Similarly, ``~astropy.units.Quantity``
-will show up as `~astropy.units.Quantity`.
+When we include ``astropy.units.Quantity`` in the documentation, it will
+show up as `astropy.units.Quantity` with a link to the appropriate page
+in Astropy documentation. Similarly, ``~astropy.units.Quantity`` will
+show up as `~astropy.units.Quantity`.
 
 The mappings are defined in the :confval:`intersphinx_mapping`
 dictionary in `docs/conf.py`_, and include Python_, NumPy_, SciPy_,
 Astropy_, pandas_, Sphinx_, and `sphinx_automodapi`_.
 
-New source packages may be added, but please verify that references to
-a function or class in that package show up correctly in `PlasmaPy's
+New source packages may be added, but please verify that references to a
+function or class in that package show up correctly in `PlasmaPy's
 documentation`_. The name of the package does not always link as
 expected.
 
 .. hint::
 
-   If a cross-link is not working as expected this is usually due to
-   one of the following reasons:
+   If a cross-link is not working as expected this is usually due to one
+   of the following reasons:
 
    * A typo;
    * The package not being defined in :confval:`intersphinx_mapping`, or
@@ -370,18 +370,18 @@ documentation. reST_ allows us to `define substitutions
 PlasmaPy has certain common substitutions pre-defined so that they can
 be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ``~astropy.units.Quantity``, and
-``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
-For an up-to-date list of substitutions, please refer to the
-`docs/common_links.rst`_ file.
+``|Particle|`` instead of
+``~plasmapy.particles.particle_class.Particle``.  For an up-to-date list
+of substitutions, please refer to the `docs/common_links.rst`_ file.
 
-Since substitutions are performed by Sphinx_ when the documentation
-is built, any substitution used in docstrings will not show up when
-using Python's `help` function (or the like). For example, when
-``|Particle|`` is used in a docstring, `help` will show it as
-``|Particle|`` rather than ``~plasmapy.particles.particle_class.Particle``.
-Consequently, substitutions should not be used in docstrings when it is
-important that users have quick access to the full path of the `object`
-(such as in the ``See Also`` section).
+Since substitutions are performed by Sphinx_ when the documentation is
+built, any substitution used in docstrings will not show up when using
+Python's `help` function (or the like). For example, when ``|Particle|``
+is used in a docstring, `help` will show it as ``|Particle|`` rather
+than ``~plasmapy.particles.particle_class.Particle``.  Consequently,
+substitutions should not be used in docstrings when it is important that
+users have quick access to the full path of the `object` (such as in the
+``See Also`` section).
 
 Templating
 ~~~~~~~~~~
@@ -401,9 +401,9 @@ Docstrings begin with ``r"""`` (required when including backslashes,
 such as using LaTeX_ code in equations) or ``"""``, and end with
 ``"""``.
 
-In order to improve readability and maintain consistency, PlasmaPy
-uses the numpydoc_ standard for docstrings. Docstring conventions for
-Python_ are more generally described in :pep:`257`.
+In order to improve readability and maintain consistency, PlasmaPy uses
+the numpydoc_ standard for docstrings. Docstring conventions for Python_
+are more generally described in :pep:`257`.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -420,9 +420,9 @@ Here is an example docstring in the numpydoc_ format.
        r"""
        Compute the difference between two integers.
 
-       Add ∼1–3 sentences here for an extended summary of what the function
-       does. This extended summary is a good place to briefly define
-       the quantity that is being returned.
+       Add ∼1–3 sentences here for an extended summary of what the
+       function does. This extended summary is a good place to briefly
+       define the quantity that is being returned.
 
        .. math::
 
@@ -465,9 +465,9 @@ Here is an example docstring in the numpydoc_ format.
       the extended summary near the beginning of the docstring. This
       section should include a discussion of the physics behind a
       particular concept that should be understandable to someone who is
-      taking their first plasma physics class. This section can
-      include a derivation of the quantity being calculated or a
-      description of a particular algorithm.
+      taking their first plasma physics class. This section can include
+      a derivation of the quantity being calculated or a description of
+      a particular algorithm.
 
       The next section contains example references to a journal article
       [1]_ and a book [2]_.
@@ -484,8 +484,8 @@ Here is an example docstring in the numpydoc_ format.
 
       Examples
       --------
-      Include a few example usages of the function here. Start with simple
-      examples and then increase complexity when necessary.
+      Include a few example usages of the function here. Start with
+      simple examples and then increase complexity when necessary.
 
       >>> from package.subpackage.module import subtract
       >>> subtract(9, 6)
@@ -570,34 +570,33 @@ documentation for PlasmaPy and affiliated packages.
 * Update code and corresponding documentation at the same time.
 
 * Write sentences that are simple, concise, and direct rather than
-  complicated, vague, or ambiguous. Prefer sentences with ≲ 20
-  words.
+  complicated, vague, or ambiguous. Prefer sentences with ≲ 20 words.
 
 * Avoid idioms, metaphors, and references that are specific to a
   particular culture.
 
-* Many words and software packages have more than one common spelling
-  or acronym. Use the spelling that is used in the file you are
-  modifying, which is preferably the spelling used throughout
-  `PlasmaPy's documentation`_.
+* Many words and software packages have more than one common spelling or
+  acronym. Use the spelling that is used in the file you are modifying,
+  which is preferably the spelling used throughout `PlasmaPy's
+  documentation`_.
 
-  * More generally, it is preferable to use the spelling that is used
-    in `Python's documentation`_ or the spelling that is used most
+  * More generally, it is preferable to use the spelling that is used in
+    `Python's documentation`_ or the spelling that is used most
     commonly.
 
   * Represent names and acronyms for a software package or language as
     they are represented in the documentation for each project. Common
     examples include "Python", "Astropy", "NumPy", and "reST".
 
-* When referencing PlasmaPy functionality, write the full namespace
-  path to where the functionality is defined, not where it is
-  conveniently accessed. For example, write
+* When referencing PlasmaPy functionality, write the full namespace path
+  to where the functionality is defined, not where it is conveniently
+  accessed. For example, write
   ``~plasmapy.formulary.parameters.Alfven_speed`` rather than
   ``~plasmapy.formulary.Alfven_speed``.
 
   This does not necessarily need to be done when referencing external
-  packages, since each package may have their own standard. For
-  example, Astropy's |Quantity| class is defined in
+  packages, since each package may have their own standard. For example,
+  Astropy's |Quantity| class is defined in
   ``astropy.units.quantity.Quantity`` but is also indexed at
   ``~astropy.units.Quantity`` so either option will link to the same
   documentation.
@@ -613,14 +612,14 @@ documentation for PlasmaPy and affiliated packages.
 
 * Use indentations of 3 spaces for reST_ blocks.
 
-* Avoid linking to websites that might disappear due to
-  `link rot <https://en.wikipedia.org/wiki/Link_rot>`_ such as documents
-  hosted on personal websites.
+* Avoid linking to websites that might disappear due to `link rot
+  <https://en.wikipedia.org/wiki/Link_rot>`_ such as documents hosted on
+  personal websites.
 
-  * When including references, use a link that includes a
-    `persistent identifier <https://en.wikipedia.org/wiki/Persistent_identifier>`_
-    such as a digital object identifier (DOI) when one is available (e.g.,
-    `https://doi.org/10.5281/zenodo.4602818
+  * When including references, use a link that includes a `persistent
+    identifier <https://en.wikipedia.org/wiki/Persistent_identifier>`_
+    such as a digital object identifier (DOI) when one is available
+    (e.g., `https://doi.org/10.5281/zenodo.4602818
     <https://doi.org/10.5281/zenodo.4602818>`_).
 
   * `Wikipedia <https://www.wikipedia.org/>`_ articles may be linked to
@@ -641,9 +640,9 @@ documentation for PlasmaPy and affiliated packages.
 * Start the names of all physical units with a lower case letter, except
   at the beginning of a sentence and for "degree Celsius".
 
-* Physical unit symbols should not be formatted as math. If units are needed
-  inside a math block, use LaTeX_'s ``\mbox`` command as in the example
-  below. A tilde will need to precede the unit so that
+* Physical unit symbols should not be formatted as math. If units are
+  needed inside a math block, use LaTeX_'s ``\mbox`` command as in the
+  example below. A tilde will need to precede the unit so that
 
   .. code-block:: rst
 
@@ -661,8 +660,8 @@ documentation for PlasmaPy and affiliated packages.
 
         3 × 10^{10} \mbox{cm/s}
 
-* The names of chemical elements are lower case, except at the
-  beginning of a sentence.
+* The names of chemical elements are lower case, except at the beginning
+  of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text.
   The ``:sub:`` and ``:sup:`` roles should be used for subscripts and
@@ -757,8 +756,8 @@ Docstring guidelines
   * Docstrings for private code objects do not get rendered in the
     online documentation, and should be intended for contributors.
 
-* Dunder methods (e.g., code objects like ``__add__`` that begin and
-  end with two underscores) only need docstrings if it is necessary to
+* Dunder methods (e.g., code objects like ``__add__`` that begin and end
+  with two underscores) only need docstrings if it is necessary to
   describe non-standard or potentially unexpected behavior. Custom
   behavior associated with dunder methods should be described in the
   class-level documentation.
@@ -771,8 +770,8 @@ Docstring guidelines
 
 * When an attribute in a class has both a getter (which is decorated
   with `property`) and a ``setter`` decoration, then the getter and
-  ``setter`` functionality should be documented in the docstring of
-  the attribute decorated with ``@property``.
+  ``setter`` functionality should be documented in the docstring of the
+  attribute decorated with ``@property``.
 
   .. code-block:: python
 
@@ -802,11 +801,11 @@ Narrative documentation guidelines
 * Use title case for page titles (e.g., "This is Title Case") and
   sentence case for all other headings (e.g., "This is sentence case").
 
-* When the narrative documentation does not index a subpackage
-  (a directory) or module (a :file:`.py` file) with ``automodule``,
-  ``automodapi``, or the like, then it is required to create a stub
-  file for that particular subpackage or module in `docs/api_static`_ .
-  Here are the sample contents for a stub file for
+* When the narrative documentation does not index a subpackage (a
+  directory) or module (a :file:`.py` file) with ``automodule``,
+  ``automodapi``, or the like, then it is required to create a stub file
+  for that particular subpackage or module in `docs/api_static`_ .  Here
+  are the sample contents for a stub file for
   `plasmapy.particles.atomic`. This file would be located at
   :file:`docs/api_static/plasmapy.particles.atomic.rst`.
 
