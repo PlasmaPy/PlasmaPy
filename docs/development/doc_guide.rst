@@ -618,6 +618,26 @@ PlasmaPy documentation.
    <https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions>`_
    like this one.
 
+* Physical units should not be formatted as math. If units are needed
+  inside a math block, use LaTeX's ``\mbox`` command as in the example
+  below.
+
+  .. code-block:: rst
+
+     The speed of light is approximately :math:`3 × 10^8` m/s or
+
+     .. math::
+
+        3 × 10^{10} \mbox{cm/s}
+
+  This reST_ block renders as:
+
+     The speed of light is approximately :math:`3 × 10^8` m/s or
+
+     .. math::
+
+        3 × 10^{10} \mbox{cm/s}
+
 Docstring guidelines
 --------------------
 
