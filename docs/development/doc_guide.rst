@@ -95,7 +95,7 @@ You can use tox_ to locally build the documentation by running:
    tox -e build_docs
 
 You can access the documentation landing page by opening
-``docs/_build/html/index.html`` with your browser of choice.
+:file:`docs/_build/html/index.html` with your browser of choice.
 
 When writing documentation, please make sure to fix any warnings that
 arise. To enforce this, the ``build_docs`` environment is set to fail on
@@ -243,9 +243,8 @@ Markdown
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
 limited than reST_. Markdown_ files end with :file:`.md`. Posts on
-GitHub are written in `GitHub Flavored Markdown
-https://github.github.com/gfm/>`_.  The following code block contains a
-few common examples of Markdown_ formatting.
+GitHub are written in `GitHub Flavored Markdown`_.  The following code
+block contains a few common examples of Markdown_ formatting.
 
 .. code-block:: markdown
 
@@ -822,6 +821,7 @@ Narrative documentation guidelines
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+.. _`GitHub Flavored Markdown`: https://github.github.com/gfm/
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _LaTeX: https://www.latex-project.org/
 .. _make: https://www.gnu.org/software/make/
