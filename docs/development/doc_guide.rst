@@ -5,7 +5,7 @@ Documentation Guide
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
-PlasmaPy and affiliated packages.
+PlasmaPy_ and affiliated packages.
 
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations.
@@ -41,7 +41,7 @@ testing platforms.
 Prerequisites
 -------------
 
-To install all dependencies required to develop PlasmaPy on your local
+To install all dependencies required to develop PlasmaPy_ on your local
 computer, enter the top-level directory of the cloned repository and
 run
 
@@ -197,8 +197,7 @@ Here are some examples for linking to websites.
    .. _documentation: https://docs.plasmapy.org/en/latest/
    .. _`Python's website`: https://www.python.org/
 
-Math can typically be written using
-`LaTeX <https://www.latex-project.org/>`_ commands.
+Math can typically be written using LaTeX_ commands.
 
 .. code-block:: rst
 
@@ -384,7 +383,7 @@ Docstrings
 A docstring is a comment at the beginning of a function or another
 object that provides information on how to use that function.
 Docstrings begin with ``r"""`` (required when including backslashes,
-such as using LaTeX code in equations) or ``"""``, and end with
+such as using LaTeX_ code in equations) or ``"""``, and end with
 ``"""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
@@ -538,7 +537,7 @@ Documentation guidelines
 ========================
 
 This section contains guidelines and best practices for writing
-PlasmaPy documentation.
+documentation for PlasmaPy_ and affiliated packages.
 
 * Write documentation to be understandable to students taking their
   first course or beginning their first research project in plasma
@@ -592,6 +591,11 @@ PlasmaPy documentation.
   (excluding leading spaces in docstrings). Longer line lengths may be
   used when necessary (e.g., for hyperlinks).
 
+  .. note::
+
+     Studies typically show that line lengths of 50–75 characters are
+     optimal for readability.
+
 * Use indentations of 3 spaces for reST_ blocks.
 
 * Avoid linking to websites that might disappear due to
@@ -623,7 +627,7 @@ PlasmaPy documentation.
   at the beginning of a sentence and for "degree Celsius".
 
 * Physical unit symbols should not be formatted as math. If units are needed
-  inside a math block, use LaTeX's ``\mbox`` command as in the example
+  inside a math block, use LaTeX_'s ``\mbox`` command as in the example
   below.
 
   .. code-block:: rst
@@ -673,11 +677,10 @@ PlasmaPy documentation.
 Docstring guidelines
 --------------------
 
-* All functions, classes, and objects that are part of PlasmaPy's
-  public Application Programming Interface (API) must have a docstring
-  that follows the numpydoc_ standard. Refer to the numpydoc_ standard
-  for how to write docstrings for classes, class attributes, and
-  constants.
+* All functions, classes, and objects that are part of the public
+  Application Programming Interface (API) must have a docstring that
+  follows the numpydoc_ standard. Refer to the numpydoc_ standard for
+  how to write docstrings for classes, class attributes, and constants.
 
 * The short summary statement at the beginning of a docstring should be
   one line long, but may be longer if necessary.
@@ -806,6 +809,7 @@ Narrative documentation guidelines
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _Jinja: https://jinja.palletsprojects.com/
+.. _LaTeX: https://www.latex-project.org/
 .. _make: https://www.gnu.org/software/make/
 .. _pandas: https://pandas.pydata.org/
 .. _Sphinx: https://www.sphinx-doc.org/
