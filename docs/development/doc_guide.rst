@@ -117,7 +117,7 @@ within :file:`.py` files are in the form of `docstrings
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of reST_ that are commonly used in PlasmaPy.
+Here we show some examples of reST_ that are commonly used in PlasmaPy_.
 Please refer to the documentation for Sphinx_ and reST_ for a list
 of available directives and syntax.
 
@@ -271,7 +271,8 @@ that can be set.
 Sphinx extensions
 ~~~~~~~~~~~~~~~~~
 
-PlasmaPy documentation is built with the following Sphinx_ extensions:
+`PlasmaPy's documentation`_ is built with the following Sphinx_
+extensions:
 
 * `sphinx.ext.autodoc
   <https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html>`_
@@ -301,9 +302,9 @@ PlasmaPy documentation is built with the following Sphinx_ extensions:
 * IPython.sphinxext.ipython_console_highlighting
 * `sphinx_changelog <https://sphinx-changelog.readthedocs.io>`_
   for rendering `towncrier`_ changelogs
-* `plasmapy_sphinx` for customizations created for use in PlasmaPy.
-  Note that `plasmapy_sphinx` is expected to be broken out into its own
-  package in the future.
+* `plasmapy_sphinx` for customizations created for use in PlasmaPy_ and
+  affiliated packages. Note that `plasmapy_sphinx` is expected to be
+  broken out into its own package in the future.
 
 These extensions are specified in :confval:`extensions` configuration
 value in `docs/conf.py`_.
@@ -352,7 +353,7 @@ documentation. reST_ allows us to `define substitutions
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-PlasmaPy has certain common substitutions pre-defined so that they can
+PlasmaPy_ has certain common substitutions pre-defined so that they can
 be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ``~astropy.units.Quantity``, and
 ``|Particle|`` instead of ``~plasmapy.particles.particle_class.Particle``.
@@ -386,8 +387,8 @@ Docstrings begin with ``r"""`` (required when including backslashes,
 such as using LaTeX_ code in equations) or ``"""``, and end with
 ``"""``.
 
-In order to improve readability and maintain consistency, PlasmaPy uses
-the numpydoc_ standard for docstrings. Docstring conventions for
+In order to improve readability and maintain consistency, PlasmaPy_
+uses the numpydoc_ standard for docstrings. Docstring conventions for
 Python_ are more generally described in :pep:`257`.
 
 Example docstring
