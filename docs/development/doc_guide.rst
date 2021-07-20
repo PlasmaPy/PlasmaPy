@@ -1,6 +1,6 @@
-*******************
-Documentation Guide
-*******************
+*********************
+Writing Documentation
+*********************
 
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
