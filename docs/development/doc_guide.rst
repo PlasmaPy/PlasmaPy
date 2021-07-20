@@ -320,7 +320,7 @@ in Astropy documentation. Similarly, ``~astropy.units.Quantity`` will
 show up as `~astropy.units.Quantity`.
 
 The mappings are defined in the :confval:`intersphinx_mapping`
-dictionary in :file:`docs/conf.py`_, and include Python_, NumPy_, SciPy_,
+dictionary in `docs/conf.py`_, and include Python_, NumPy_, SciPy_,
 Astropy_, pandas_, Sphinx_, and `sphinx_automodapi`_.
 
 New source packages may be added, but please verify that references to a
