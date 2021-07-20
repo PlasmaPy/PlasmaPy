@@ -57,7 +57,7 @@ Prerequisites
 
 To install all dependencies required to develop PlasmaPy on your local
 computer, enter the top-level directory of the cloned repository and
-run
+run:
 
 .. code-block:: bash
 
@@ -67,7 +67,7 @@ Building documentation with make
 --------------------------------
 
 If you have make_ installed, then you can build the documentation by
-entering the :file:`docs/` directory and running
+entering the :file:`docs/` directory and running:
 
 .. code-block:: bash
 
@@ -76,7 +76,7 @@ entering the :file:`docs/` directory and running
 Including the ``-j n`` flag in the ``make`` command will enable a
 parallel build, where ``n`` is replaced with the number of processes.
 
-To remove all files from a documentation build, run
+To remove all files from a documentation build, run:
 
 .. code-block:: bash
 
@@ -102,7 +102,7 @@ arise. To enforce this, the ``build_docs`` environment is set to fail
 on encountering any warnings via the ``-W`` flag to
 :command:`sphinx-build`.
 
-You can shorten the documentation build by running
+You can shorten the documentation build by running:
 
 .. code-block:: bash
 
