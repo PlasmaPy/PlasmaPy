@@ -65,7 +65,7 @@ Building documentation with make
 --------------------------------
 
 If you have make_ installed, then you can build the documentation by
-entering the :file:`docs/` directory and running::
+entering the :file:`docs/` directory and running:
 
 .. code-block:: bash
 
@@ -74,7 +74,7 @@ entering the :file:`docs/` directory and running::
 Including the ``-j n`` flag in the ``make`` command will enable a
 parallel build, where ``n`` is replaced with the number of processes.
 
-To remove all files from a documentation build, run::
+To remove all files from a documentation build, run:
 
 .. code-block:: bash
 
@@ -86,7 +86,7 @@ trigger Sphinx_ to rebuild the file that you altered.
 Building documentation with tox
 -------------------------------
 
-You can use tox_ to locally build the documentation by running::
+You can use tox_ to locally build the documentation by running:
 
 .. code-block:: bash
 
@@ -99,7 +99,7 @@ When writing documentation, please make sure to fix any warnings that
 arise. To enforce this, the ``build_docs`` environment is set to fail on
 encountering any warnings via the ``-W`` flag to `sphinx-build`_.
 
-You can shorten the tox_ documentation build by running::
+You can shorten the tox_ documentation build by running:
 
 .. code-block:: bash
 
@@ -166,7 +166,7 @@ enclosed in double back ticks.
 
    Here is some in-line code: ``import astropy.units as u``.
 
-This reST_ block will render as::
+This reST_ block will render as:
 
    Here is a reference to `plasmapy.particles` that will show the full
    namespace in the rendered documentation.
@@ -190,7 +190,7 @@ Sphinx_ can format code blocks for Python_ and the Python_ console.
          >>> print(6 * 9)
          54
 
-This reST block will render as::
+This reST block will render as:
 
    .. code-block:: python
 
@@ -221,7 +221,7 @@ Math can typically be written using LaTeX_ commands.
 
       \alpha = \beta + \gamma
 
-This reST_ block will render as::
+This reST_ block will render as:
 
    .. math::
 
@@ -390,7 +390,7 @@ are more generally described in :pep:`257`.
 Example docstring
 ~~~~~~~~~~~~~~~~~
 
-Here is an example docstring in the numpydoc_ format::
+Here is an example docstring in the numpydoc_ format:
 
 .. code-block:: python
    :caption: Example docstring
