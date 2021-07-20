@@ -195,7 +195,7 @@ Here are some examples for linking to websites.
    We can link to PlasmaPy's latest documentation_ or `Python's website`_.
 
    .. _documentation: https://docs.plasmapy.org/en/latest/
-   .. _`Python's documentation`: https://www.python.org/
+   .. _`Python's website`: https://www.python.org/
 
 Math can typically be written using
 `LaTeX <https://www.latex-project.org/>`_ commands.
@@ -387,8 +387,7 @@ such as using LaTeX code in equations) or ``"""``, and end with
 
 In order to improve readability and maintain consistency, PlasmaPy uses
 the numpydoc_ standard for docstrings. Docstring conventions for
-Python are more generally described in
-`PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_.
+Python are more generally described in `PEP 257`_.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -755,4 +754,5 @@ Narrative documentation guidelines
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _Jinja: https://jinja.palletsprojects.com/
 .. _make: https://www.gnu.org/software/make/
+.. _`PEP 257`: https://www.python.org/dev/peps/pep-0257/
 .. _Sphinx: https://www.sphinx-doc.org/
