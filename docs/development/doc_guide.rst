@@ -337,7 +337,7 @@ of the following reasons:
 
 New source packages may be added, but please verify that references to
 a function or class in that package show up correctly in PlasmaPy's
-documentation.  The name of the package does not always link as
+documentation. The name of the package does not always link as
 expected.
 
 Substitutions
