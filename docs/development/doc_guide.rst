@@ -7,8 +7,22 @@ health of a software project. This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
+.. hint::
+
+   Updating documentation is one of the best ways to make a first
+   contribution to an open source software project.
+
+.. note::
+
+   If you discover areas within PlasmaPy's documentation that are
+   confusing or incomplete, please `raise an issue
+   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation>`_!
+   This really helps PlasmaPy not only by helping us improve the
+   documentation, but also by creating opportunities for new
+   contributors to make their first contribution to the project.
+
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
-available at these locations.
+available at these locations:
 
 * The documentation corresponding to the most recent official release
   is labelled ``stable`` and is found at
