@@ -28,7 +28,7 @@ to the checks at the bottom of a pull request, and clicking on
 Building documentation
 ======================
 
-There are two methods for building the documentation: make_ and tox_.
+There are two methods for building the documentation: make_ and tox_\ .
 Using make_ will build the documentation based off of what is in the
 current directory structure.  Using make_ is quicker for local builds
 but requires that setting up all dependencies ahead of time.  Using
@@ -618,7 +618,10 @@ PlasmaPy documentation.
    <https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions>`_
    like this one.
 
-* Physical units should not be formatted as math. If units are needed
+* Start the names of all physical units with a lower case letter, except
+  at the beginning of a sentence and for "degree Celsius".
+
+* Physical unit symbols should not be formatted as math. If units are needed
   inside a math block, use LaTeX's ``\mbox`` command as in the example
   below.
 
@@ -637,6 +640,34 @@ PlasmaPy documentation.
      .. math::
 
         3 × 10^{10} \mbox{cm/s}
+
+* The names of chemical elements are lower case, except at the
+  beginning of a sentence.
+
+* Particle and chemical symbols should be formatted as regular text.
+  The ``:sub:`` and ``:sup:`` roles should be used for subscripts and
+  superscripts, respectively.
+
+  Because whitespace is normally required around interpreted text, a
+  backslash followed by a space will be needed for the interpreted text
+  to show up immediately next to regular text; the space immediately
+  following the backslash will not show up in the rendered text.
+
+  .. code-block::
+
+     The symbol for helium is He.
+
+     The symbol for an electron is e\ :sup:`-`\ .
+
+     An alpha particle may be represented as :sup:`4`\ :sub:`2`\ He\ :sup:`1+`\ .
+
+  The above reST_ block is rendered as:
+
+     The symbol for helium is He.
+
+     The symbol for an electron is e\ :sup:`-`\ .
+
+     An alpha particle may be represented as :sup:`4`\ :sub:`2`\ He\ :sup:`1+`\ .
 
 Docstring guidelines
 --------------------
