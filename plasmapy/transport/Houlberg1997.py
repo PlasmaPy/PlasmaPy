@@ -15,7 +15,7 @@ from astropy import constants
 from astropy import units as u
 from functools import cached_property
 from scipy.special import erf
-from typing import Iterable, List, Union
+from typing import Iterable, Union, Optional
 
 from plasmapy.formulary import thermal_speed
 from plasmapy.formulary.collisions import Coulomb_logarithm
@@ -175,7 +175,7 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def thermal_speed(self) -> u.m / u.s:
-        return u.Quantity([thermal_speed(T, p) for T, p in zip(self.T, self)])
+        return u.Quantity([thermal_speed(T, p, mass=m) for T, p, m in zip(self.T, self, self.mass)])
 
     @cached_property
     def ξ(self) -> np.ndarray:
@@ -197,12 +197,11 @@ class ExtendedParticleList(ParticleList):
 
     @cached_property
     def isotopic_thermal_speed(self) -> u.m/u.s:
-        return u.Quantity(
-            [
-                speeds.mean()
-                for speeds in self.split_isotopes(self.thermal_speed, axis=0)
-            ]
-        )
+        return self.compress(self.thermal_speed, axis=0, aggregator = np.mean)
+
+    @cached_property
+    def mass(self) -> u.kg:
+        return u.Quantity([p.mass_number * u.u for p in self])
 
     @cached_property
     def isotopic_mass(self) -> u.kg:
@@ -293,6 +292,8 @@ class ExtendedParticleList(ParticleList):
         """Equations A3, A4 from |Houlberg_1997|"""
         charge_a = self.charge[:, np.newaxis]
         charge_b = charge_a.T
+        charge_number_a = self.charge[:, np.newaxis]
+        charge_number_b = charge_number_a.T
         mass = self.isotopic_mass.to(u.u)
         mass_a = mass[:, np.newaxis]
         mass_b = mass_a.T
@@ -330,8 +331,12 @@ class ExtendedParticleList(ParticleList):
 
         CL_matrix = self.decompress(xlnab, axis=(0, 1))
         c1=4.0/3.0/np.sqrt(pi)*4.0*np.pi/(4.0*np.pi*constants.eps0)**2
+        c1_fortran_ver=4.0/3.0/np.sqrt(pi)*4.0*np.pi*(constants.e.si / 
+            (4.0*np.pi*constants.eps0))**2*(constants.e.si/constants.m_p)**2
         c2 = self.thermal_speed**3 * self.mass **2 / c1
+        c2_fortran_ver=(self.thermal_speed**3)*self.mass.to(u.u)**2/c1_fortran_ver
         tau = c2 / CL_matrix / charge_a ** 2 / n_b / charge_b ** 2
+        tau_fortran_ver = c2_fortran_ver / CL_matrix / charge_number_a ** 2 / n_b / charge_number_b ** 2
         return tau.T
 
     @cached_property
@@ -377,19 +382,16 @@ class ExtendedParticleList(ParticleList):
             distribution velocity relative to the thermal velocity.
         """
         # Houlberg_1997, equation B4b,
-        xi = self.ξ
         denominator = x ** 3
 
         x_over_xab = self.x_over_xab(x)
         numerator = erf(x_over_xab) - Chandrasekhar_G(x_over_xab)
         fraction = numerator / denominator[:, np.newaxis, np.newaxis]
-        sum_items = fraction * self.effective_momentum_relaxation_rate
+        sum_items = fraction / self.tau[np.newaxis, :, :]
 
         result = (
-            xi
-            / self.mass_density[np.newaxis, :, np.newaxis]
-            * (3 * np.sqrt(np.pi) / 4)
-            * self.decompress(sum_items, axis=(1, 2))
+            (3 * np.sqrt(np.pi) / 4)
+            * sum_items
         )
         return result.sum(axis=-1)
 
@@ -453,7 +455,8 @@ class ExtendedParticleList(ParticleList):
         flux_surface: FluxSurface,
         *,
         m_max=100,
-    ) -> u.s**-1:
+        with_B10 = False,
+    ):
         """Pfirsch-Schlüter regime contribution to effective viscosity - eq. B8 from |Houlberg_1997|
 
         Parameters
@@ -475,9 +478,9 @@ class ExtendedParticleList(ParticleList):
             - 9 / 2 * (ν / ω) ** 4
             + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
             * (2 * ν / ω)
-            * np.arctan(ω / ν).si.value
+            * np.arctan(ω / ν).value
         )
-        onepart = F * B10
+        onepart = F * B10.si.value
         full_sum = np.sum(onepart / ν, axis=-1)
 
         output = (
@@ -487,7 +490,10 @@ class ExtendedParticleList(ParticleList):
             * x.reshape(-1, 1) ** 2
             * full_sum
         )
-        return output
+        if with_B10:
+            return output, B10
+        else:
+            return output
 
     @validate_quantities
     def K(
@@ -529,11 +535,11 @@ class ExtendedParticleList(ParticleList):
         self,
         flux_surface: FluxSurface,
         *,
-        xmin: float = 0.0015,
-        xmax: float = 10,
-        N: int = 1000,
+        xmin: float = 0.000015,
+        xmax: float = 5,
+        N: Optional[int] = None,
         **kwargs,
-    ) -> u.kg / u.m**3 / u.s:
+    ) -> u.Unit("kg / m3 / s"):
         """Viscosity coefficients - equation 15 from |Houlberg_1997|.
 
         Parameters
@@ -547,6 +553,12 @@ class ExtendedParticleList(ParticleList):
             N 
         kwargs :
             kwargs
+
+        Notes
+        =====
+
+        The array shapes in this function go as follows:
+            (species, x_grid, alpha, beta)
         """
         # dirty hack because validate_quantities does not play well with **kwargs?
         if "kwargs" in kwargs:
@@ -556,16 +568,20 @@ class ExtendedParticleList(ParticleList):
             N = 1000
         orders = np.arange(1, 4)
         π = np.pi
-        x = np.logspace(np.log10(xmin), np.log10(xmax), N)
+        x = np.linspace(xmin, xmax, N)
 
-        α = orders
-        β = orders
-        len_a = len(self)
-        signs = (-1) ** (α[:, None] + β[None, :])
+        # signs = np.array([
+        #     [ 1, 1, -1],
+        #     [ 1, 1,  1],
+        #     [-1, 1,  1],
+        # ])
+        α = orders[:, None]
+        β = orders[None, :]
+        signs = (-1) ** (α + β)
         laguerres = np.vstack([LaguerrePolynomials[o - 1](x ** 2) for o in orders])
-        kterm = self.K(x, flux_surface, **kwargs)
-        kterm = kterm.reshape(len_a, N, 1, 1)
-        xterm = (x ** 4 * np.exp(-(x ** 2))).reshape(1, N, 1, 1)
+        kterm = self.K(x, flux_surface, **kwargs).T[..., np.newaxis, np.newaxis]
+        xterm = (x ** 4 * np.exp(-(x ** 2)))[np.newaxis, :, np.newaxis, np.newaxis]
+        # TODO try quadgk here, it should work decently!
         y = (
             laguerres.reshape(1, N, 3, 1)
             * laguerres.reshape(1, N, 1, 3)

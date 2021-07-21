@@ -1103,12 +1103,12 @@ class Particle(AbstractPhysicalParticle):
         elif self.symbol == "n":
             return const.m_n
 
-        if not self.isotope:
-            raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
-
         base_mass = self._attributes["isotope mass"]
 
         if base_mass is None:  # coverage: ignore
+            base_mass = self._attributes['standard atomic weight']
+
+        if base_mass is None:
             raise MissingParticleDataError(
                 f"The mass of a {self.isotope} nuclide is not available."
             )

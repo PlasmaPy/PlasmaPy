@@ -91,7 +91,7 @@ def Fermi_integral(
         raise TypeError(f"Improper type {type(x)} given for argument x.")
 
 
-def Chandrasekhar_G(x: float):
+def Chandrasekhar_G(x: float) -> np.ndarray:
     r"""
     Calculate the Chandrasekhar G function used in transport theory.
 
@@ -144,20 +144,10 @@ def Chandrasekhar_G(x: float):
 
     """
     x = np.asarray(x)
-    output = np.empty_like(x, dtype=float)
-    small_indices = np.abs(x) < np.finfo(np.float64).eps
-    output[small_indices] = 2 * x[small_indices] / 3 / np.sqrt(np.pi)
-    # large_indices = np.abs(x) >= np.sqrt(np.finfo(np.float64).max)
-    # output[large_indices] = 0
-    relatively_large_indices = np.abs(x) >= np.finfo(np.float32).max
-    relatively_large_x = x[relatively_large_indices]
-    with np.errstate(over='ignore'):
-        output[relatively_large_indices] = np.sign(relatively_large_x) / (2 * relatively_large_x ** 2)
-    the_rest = (~small_indices) & (~relatively_large_indices)
-    selected_x = x[the_rest]
-    erf = special.erf(selected_x)
-    erf_derivative = 2 * np.exp(-(selected_x ** 2)) / np.sqrt(np.pi)
-    output[the_rest] = 0.5 * (erf / selected_x ** 2 - erf_derivative / selected_x)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        erf_derivative = 2 * np.exp(-x**2) / np.sqrt(np.pi)
+        output = (special.erf(x) / x **2 - erf_derivative / x) / 2
+    output = np.where(x == 0, 0, output)
     return output
 
 

@@ -56,7 +56,7 @@ class SimpleFluxSurface:
     @cached_property
     @validate_quantities
     def trapped_fraction(self) -> float:
-        return 1.46 * np.sqrt(self.p_eps)
+        return u.Quantity(1.46 * np.sqrt(self.p_eps))
 
     @cached_property
     @validate_quantities
@@ -67,7 +67,7 @@ class SimpleFluxSurface:
     @cached_property
     @validate_quantities
     def gamma(self) -> u.m**-1:
-        return 1.0 / (self.p_q * self.r0)
+        return u.Quantity(1.0 / (self.p_q * self.r0))
 
     @cached_property
     @validate_quantities

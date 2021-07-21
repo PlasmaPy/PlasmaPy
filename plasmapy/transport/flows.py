@@ -95,16 +95,15 @@ class FlowCalculator:
     @cached_property
     @validate_quantities
     def thermodynamic_forces(self) -> u.Unit("V / m"):
+        """Calculates the thermodynamic forces from equation 21.
+
+            This is $S_{\theta,\beta}^{ai}
+        """
         charges = self.all_species.charge
-        xi = self.all_species.ξ
-        T_i = self.all_species.T.to(u.K, equivalencies=u.temperature_energy())
-        n_i = self.all_species.n
         density_gradient = self.all_species.dn
         temperature_gradient = self.all_species.dT
         pressure_gradient_over_n_i = self.all_species.dP / self.all_species.n
 
-        # --- TD forces eq21
-        # r"""$S_{\theta,\beta}^{ai}"""
         thermodynamic_forces = (   # S_pt_θ
             self.flux_surface.Fhat
                 / charges[np.newaxis, :]
@@ -112,7 +111,7 @@ class FlowCalculator:
                 [
                     pressure_gradient_over_n_i,
                     constants.k_B * temperature_gradient,
-                    u.Quantity(np.zeros_like(temperature_gradient).value, u.J / u.m),
+                    np.zeros_like(pressure_gradient_over_n_i),
                 ]
             )
         ).T    # (3, N) -> (N, 3)
@@ -141,7 +140,7 @@ class FlowCalculator:
             Remove it.
         """
         p_eb = 0 # TODO
-        rhat, crhat = self._rhat_crhat
+        rhat, _ = self._rhat_crhat
         Λ_ai = self.all_species.decompress(self.Λ, axis = 0)
 
         r_flows = rhat[:,:,:3]
