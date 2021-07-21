@@ -1,0 +1,2 @@
+Added `tox <https://tox.readthedocs.io/en/latest/>`_ and removed
+`pytest <https://docs.pytest.org/>`_ as extra requirements.
