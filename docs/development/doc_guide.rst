@@ -840,7 +840,6 @@ Narrative documentation guidelines
 .. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io/
 .. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
-.. _Sphinx: https://www.sphinx-doc.org/
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
 .. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
