@@ -134,9 +134,9 @@ reST_.
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here we show some examples of reST_ that are commonly used in PlasmaPy.
-Please refer to the documentation for Sphinx_ and reST_ for a list of
-available directives and syntax.
+Here we show some examples of commonly used reST_ syntax in
+PlasmaPy.  Please refer to the documentation for Sphinx_ and reST_ for
+a list of available directives and syntax.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading are
