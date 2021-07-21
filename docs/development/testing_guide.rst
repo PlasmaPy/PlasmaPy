@@ -1,7 +1,7 @@
 .. _testing-guidelines:
 
 *************
-Writing Tests
+Testing Guide
 *************
 
 Code contributions to PlasmaPy that create or change functionality must
