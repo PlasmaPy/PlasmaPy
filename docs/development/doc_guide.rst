@@ -23,7 +23,7 @@ PlasmaPy and affiliated packages.
 `PlasmaPy's documentation`_ is hosted by `Read the Docs`_ and is
 available at these locations:
 
-* The documentation corresponding to the most recent release to `PyPI`_ is
+* The documentation corresponding to the most recent release to PyPI_ is
   labelled ``stable`` and is found at `https://docs.plasmapy.org/`_ or
   `https://docs.plasmapy.org/en/stable/`_.
 
