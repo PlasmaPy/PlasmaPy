@@ -1,8 +1,8 @@
 .. _testing-guidelines:
 
-******************
-Testing Guidelines
-******************
+*************
+Writing Tests
+*************
 
 Code contributions to PlasmaPy that create or change functionality must
 include tests and documentation before being merged.
@@ -19,6 +19,10 @@ easier to understand and modify when the behavior of a function or
 method is changed. Consequently, tests should be held to the same
 code quality standards as the rest of the package.
 
+.. tip::
+
+   Writing tests takes time, but debugging takes more time.
+
 .. _testing-guidelines-overview:
 
 Testing tools
@@ -26,16 +30,15 @@ Testing tools
 
 PlasmaPy uses `pytest`_ for software testing
 
-
 GitHub Actions
 --------------
 
-Most of the tests are run through GitHub Actions
+Most of the tests are run through `GitHub Actions`_
 
 Pull requests that create or change functionality must include tests
 and documentation before being merged. PlasmaPy uses `pytest`_ for
-software testing.  The test suite may be run locally or automatically
-via pull requests on `GitHub`_.  PlasmaPy undergoes continuous
+software testing. The test suite may be run locally or automatically
+via pull requests on `GitHub`_. PlasmaPy undergoes continuous
 integration testing using `GitHub Actions`_ for both the test suite as
 well as test builds of the documentation. `Codecov`_ performs test
 coverage checks and shows whether or not each line of code is run
@@ -56,7 +59,7 @@ The recommended way to run PlasmaPy's full test suite when contributing
 code is to `create a pull request
 <https://help.github.com/articles/creating-a-pull-request/>`_ from your
 development branch to `PlasmaPy's GitHub repository
-<https://github.com/PlasmaPy/PlasmaPy>`_.  The test suite will be run
+<https://github.com/PlasmaPy/PlasmaPy>`_. The test suite will be run
 when the pull request is created and every time your development branch
 is subsequently updated.
 
@@ -65,13 +68,13 @@ examples in docstrings produce the expected output, as well as to test
 build the documentation.
 
 The results from continuous integration testing are used to generate
-test coverage reports which are displayed by `Codecov`_.  These reports
+test coverage reports which are displayed by `Codecov`_. These reports
 show which lines of code are covered by tests and which are not, and
 allow us to write targeted tests to fill in the gaps in test coverage.
 The results displayed by Codecov will be marked as passing when the code
 coverage is sufficiently high.
 
-If any inconsistencies with the `PEP 8 style guide`_ are found, then
+If any inconsistencies with the :pep:`8` style guide are found, then
 automated code style checks will and update that comment as the pull
 request is updated.  (NEEDS UPDATING)
 
@@ -145,7 +148,7 @@ maintainable, and robust tests.
   returns the expected results, issues the appropriate warnings, and
   raises the appropriate exceptions.
 
-* Each unit test should test one unit of behavior [3]_.
+* Each unit test should test *one unit of behavior* [3]_.
 
 * Bugs should be turned into test cases.
 
@@ -165,19 +168,19 @@ Pytest has certain `test discovery conventions
 <https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery>`_
 that are used to collect the tests to be run.
 
-The tests for each subpackage are contained in a ``tests`` subfolder.
+The tests for each subpackage are contained in a :file:`tests/` subdirectory.
 For example, the tests for `~plasmapy.particles` are located in
-``plasmapy/particles/tests``.  Test files should begin with ``test_``
+:file:`plasmapy/particles/tests`.  Test files should begin with :file:`test_`
 and generally contain the name of the module or `object` that is being
 tested.
 
 The functions that are to be tested in each test file should likewise be
-prepended with `test_` (e.g., ``test_atomic.py``).  Tests may also be
+prepended with `test_` (e.g., :file:`test_atomic.py`).  Tests may also be
 `grouped into classes
 <https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class>`_.
 In order for pytest to find tests in classes, the class name should
 start with ``Test`` and the methods to be run as tests should start with
-``test_``.  For example, ``test_particle_class.py`` could define the
+``test_``.  For example, :file:`test_particle_class.py` could define the
 ``TestParticle`` class containing the method ``test_charge_number``.
 
 .. _testing-guidelines-writing-tests-asserts:
@@ -348,6 +351,11 @@ functions or pass in tuples containing inputs and expected values.
 Pytest helpers
 --------------
 
+.. todo::
+
+   The functionality described in this section is likely to change in
+   the future, and may be incorporated into a separate package.
+
 A robust testing framework should test not just that functions and
 methods return the expected results, but also that they issue the
 expected warnings and raise the expected exceptions. In PlasmaPy, tests
@@ -492,7 +500,7 @@ For example, testing exception handling for an `ImportError` when
 importing an external package would usually be impractical.  In these
 instances, we may end a line with ``# coverage: ignore`` to indicate
 that these lines should be excluded from coverage reports (or add a
-line to ``.coveragerc``).  This strategy should be used sparingly, since
+line to :file:`.coveragerc`).  This strategy should be used sparingly, since
 it is often better to explicitly test exceptions and warnings and to
 show the lines of code that are not tested.
 
@@ -509,7 +517,7 @@ Coverage reports may be generated on your local computer by running
   coverage html
 
 The coverage reports may be accessed by opening the newly generated
-``htmlcov/index.html`` in your favorite web brower.  These commands
+:file:`htmlcov/index.html` in your favorite web brower.  These commands
 require the ``pytest`` and ``coverage`` packages to be installed.
 
 .. _testing-guidelines-coverage-ignore:
@@ -536,7 +544,7 @@ the following example, lines 3 and 4 will be ignored in coverage tests.
   except ModuleNotFoundError as exc:  # coverage: ignore
       raise RuntimeError from exc
 
-The ``.coveragerc`` file is used to specify lines of code and files that
+The :file:`.coveragerc` file is used to specify lines of code and files that
 should always be ignored in coverage tests.
 
 .. note::
@@ -567,5 +575,4 @@ Footnotes
 
 .. _Codecov: https://about.codecov.io/
 .. _`GitHub Actions`: https://github.com/features/actions
-.. _`PEP 8 style guide`: https://www.python.org/dev/peps/pep-0008
 .. _pytest: https://docs.pytest.org/
