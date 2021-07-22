@@ -21,6 +21,8 @@ from collections import namedtuple
 from scipy.spatial import distance
 from typing import Union
 
+from plasmapy.utils.decorators.helpers import modify_docstring
+
 
 def _detect_is_uniform_grid(pts0, pts1, pts2, tol=1e-6):
     r"""
@@ -1068,9 +1070,28 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
+    @modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
+        """
+        Notes
+        -----
+
+        This interpolator approximates the value of a quantity at a given
+        interpolation point using a weighted sum of the values at the eight grid
+        verticies that surround the point. The weighting factors are calculated by
+        defining a volume :math:`dx \times dy \times dz`
+        (where :math:`dx`, :math:`dy`, and :math:`dz` are the grid
+        spacings in each direction) around each grid vertex and around the
+        interpolation point. The contribution of each grid vertex is then
+        weighted by the fraction of the volume surrounding the interpolation
+        point that overlaps the volume surrounding that vertex. This effectively
+        introduces a linear interpolation between grid vertices.
+
+        This implementation of this algorithm assumes that the grid is uniformly
+        spaced and Cartesian.
+        """
 
         # Condition pos
         # If a single point was given, add empty dimension
