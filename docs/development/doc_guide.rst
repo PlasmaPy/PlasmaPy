@@ -794,10 +794,10 @@ Docstring guidelines
   * Docstrings for ``__init__`` and ``__new__`` are included in the
     class-level docstring when rendering documentation.
 
-* When an attribute in a class has both a getter (which is decorated
-  with `property`) and a ``setter`` decoration, then the getter and
-  ``setter`` functionality should be documented in the docstring of the
-  attribute decorated with ``@property``.
+* When an attribute in a class has both a getter (which is the method
+  decorated with `@property`) and a ``setter`` decoration, then the
+  getter and ``setter`` functionality should be documented in the
+  docstring of the attribute decorated with ``@property``.
 
   .. code-block:: python
 
