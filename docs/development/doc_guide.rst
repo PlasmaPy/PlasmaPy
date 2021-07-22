@@ -1,6 +1,6 @@
-*********************
-Writing Documentation
-*********************
+*******************
+Documentation Guide
+*******************
 
 Documentation that is up-to-date and understandable is vital to the
 health of a software project. This page describes the documentation
@@ -363,7 +363,7 @@ documentation. reST_ allows us to `define substitutions
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-Here whenever ``|Particle|`` is used Sphinx_ will replace it with 
+Here whenever ``|Particle|`` is used Sphinx_ will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
 PlasmaPy has certain common substitutions pre-defined so that they can
