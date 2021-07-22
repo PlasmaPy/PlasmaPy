@@ -1114,8 +1114,16 @@ class CartesianGrid(AbstractGrid):
         i = i.astype(np.int32)  # Cast as integers
 
         # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = self.ax0.si.value, self.ax1.si.value, self.ax2.si.value
-        dx, dy, dz = self.dax0.si.value, self.dax1.si.value, self.dax2.si.value
+        ax0, ax1, ax2 = (
+            self.ax0.to(u.m).value,
+            self.ax1.to(u.m).value,
+            self.ax2.to(u.m).value,
+        )
+        dx, dy, dz = (
+            self.dax0.to(u.m).value,
+            self.dax1.to(u.m).value,
+            self.dax2.to(u.m).value,
+        )
         cell_volume = dx * dy * dz
         n0, n1, n2 = self.shape
 
