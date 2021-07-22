@@ -165,23 +165,27 @@ enclosed in double back ticks.
 
 .. code-block:: rst
 
-   Here is a reference to `plasmapy.particles` that will show the full
-   namespace in the rendered documentation.
+   Here `plasmapy.particles` provides a linked reference to the
+   module's documentation.
+   
+   Adding a tilde at the beginning `~plasmapy.particles` still
+   provides a linked reference to the associated documentation
+   but shortens the display so only "particles" is displayed.
 
-   Only the word "Particle" will show up if a prepend a tilde like in
-   `~plasmapy.particles.particle_class.Particle`.
-
-   Here is some in-line code: ``import astropy.units as u``.
+   Double backticks are used to show inline code that is not
+   cross-referenced: ``import astropy.units as u``.
 
 This reST_ block will render as:
 
-   Here is a reference to `plasmapy.particles` that will show the full
-   namespace in the rendered documentation.
+   Here `plasmapy.particles` provides a linked reference to the
+   module's documentation.
+   
+   Adding a tilde at the beginning `~plasmapy.particles` still
+   provides a linked reference to the associated documentation
+   but shortens the display so only "particles" is displayed.
 
-   Only the word "Particle" will show up if a prepend a tilde like in
-   `~plasmapy.particles.particle_class.Particle`.
-
-   Here is some in-line code: ``import astropy.units as u``.
+   Double backticks are used to show inline code that is not
+   cross-referenced: ``import astropy.units as u``.
 
 Sphinx_ can format code blocks for Python_ and the Python_ console.
 
