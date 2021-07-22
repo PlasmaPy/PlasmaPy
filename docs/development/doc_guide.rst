@@ -175,7 +175,7 @@ enclosed in double back ticks.
    Double backticks are used to show inline code that is not
    cross-referenced: ``import astropy.units as u``.
 
-This reST_ block will render as:
+This reST_ block renders as:
 
    Here `plasmapy.particles` provides a linked reference to the
    module's documentation.
@@ -201,7 +201,7 @@ Sphinx_ can format code blocks for Python_ and the Python_ console.
          >>> print(6 * 9)
          54
 
-This reST block will render as:
+This reST block renders as:
 
    .. code-block:: python
 
@@ -217,12 +217,23 @@ Here are some examples for linking to websites.
 
 .. code-block:: rst
 
-   Here is a link to `PlasmaPy's website <https://www.plasmapy.org>`_.
+   `PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_
+   are used to propose major changes to PlasmaPy.
 
-   We can link to PlasmaPy's latest documentation_ or `Python's website`_.
+   `Write the Docs`_ has a guide_ on writing software documentation.
 
-   .. _documentation: https://docs.plasmapy.org/en/latest/
-   .. _`Python's website`: https://www.python.org/
+   .. _`Write the Docs`: https://www.writethedocs.org/
+   .. _guide: https://www.writethedocs.org/
+
+This reST_ block renders as:
+
+   `PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_
+   are used to propose major changes to PlasmaPy.
+
+   `Write the Docs`_ has a guide_ on writing software documentation.
+
+   .. _`Write the Docs`: https://www.writethedocs.org/
+   .. _guide: https://www.writethedocs.org/
 
 Math can typically be written using LaTeX_ commands.
 
@@ -232,7 +243,7 @@ Math can typically be written using LaTeX_ commands.
 
       \alpha = \beta + \gamma
 
-This reST_ block will render as:
+This reST_ block renders as:
 
    .. math::
 
@@ -245,7 +256,7 @@ Math can be in-line.
    An example of in-line math is :math:`x`. Using Unicode characters
    like :math:`α + β + γ` makes math easier to read in the source code.
 
-This reST_ block will render as:
+This reST_ block renders as:
 
    An example of in-line math is :math:`x`. Using Unicode characters
    like :math:`α + β + γ` makes math easier to read in the source code.
@@ -695,7 +706,7 @@ documentation for PlasmaPy and affiliated packages.
 
      An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
 
-  The above reST_ block is rendered as:
+  This reST_ block renders as:
 
      The symbol for helium is He.
 
