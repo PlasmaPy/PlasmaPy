@@ -791,11 +791,14 @@ Docstring guidelines
   * Docstrings for most dunder methods are not rendered in the online
     documentation and should therefore be intended for contributors.
 
-  * Docstrings for ``__init__`` and ``__new__`` are included in the
-    class-level docstring when rendering documentation.
+  * Docstrings for ``__init__``, ``__new__``, and ``__call__`` are
+    rendered in the documentation, and should be written for users. The
+    docstrings for ``__init__`` and ``__new__`` are included in the
+    class-level docstring, while the docstring for ``__call__`` is
+    included in the methods summary of a class.
 
 * When an attribute in a class has both a getter (which is the method
-  decorated with `@property`) and a ``setter`` decoration, then the
+  decorated with `property`) and a ``setter`` decoration, then the
   getter and ``setter`` functionality should be documented in the
   docstring of the attribute decorated with ``@property``.
 
