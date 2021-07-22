@@ -252,8 +252,6 @@ def test_nearest_neighbor_interpolator():
     # Create a non-uniform grid
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
 
-    print(grid.shape)
-
     grid.add_quantities(x=grid.grids[0], y=grid.grids[1])
 
     # One position
