@@ -167,7 +167,7 @@ enclosed in double back ticks.
 
    Here `plasmapy.particles` provides a linked reference to the
    module's documentation.
-   
+
    Adding a tilde at the beginning `~plasmapy.particles` still
    provides a linked reference to the associated documentation
    but shortens the display so only "particles" is displayed.
@@ -179,7 +179,7 @@ This reST_ block will render as:
 
    Here `plasmapy.particles` provides a linked reference to the
    module's documentation.
-   
+
    Adding a tilde at the beginning `~plasmapy.particles` still
    provides a linked reference to the associated documentation
    but shortens the display so only "particles" is displayed.
@@ -391,7 +391,8 @@ Templating
 ~~~~~~~~~~
 
 Sphinx_ uses the Jinja_ templating engine to generate HTML code. Jinja_
-may be used within the documentation when templating is necessary.
+may be used within the documentation when templating is necessary. For
+more details, please refer to `Sphinx's templating page`_.
 
 Writing documentation
 =====================
@@ -869,5 +870,6 @@ Narrative documentation guidelines
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
 .. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
+.. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
 .. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _Wikipedia: https://www.wikipedia.org/
