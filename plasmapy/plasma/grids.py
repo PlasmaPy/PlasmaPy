@@ -1080,8 +1080,8 @@ class CartesianGrid(AbstractGrid):
 
         This interpolator approximates the value of a quantity at a given
         interpolation point using a weighted sum of the values at the eight grid
-        verticies that surround the point. The weighting factors are calculated by
-        defining a volume :math:`dx \times dy \times dz`
+        vertices that surround the point. The weighting factors are calculated by
+        defining a volume :math:`dx \\times dy \\times dz`
         (where :math:`dx`, :math:`dy`, and :math:`dz` are the grid
         spacings in each direction) around each grid vertex and around the
         interpolation point. The contribution of each grid vertex is then
