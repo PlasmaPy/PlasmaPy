@@ -128,8 +128,8 @@ markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
 that allows the text to be transformed into `PlasmaPy's documentation`_.
 reST_ files use the file extension :file:`.rst`. Documentation contained
-within :file:`.py` files are in the form of docstrings_, which are written in
-reST_.
+within :file:`.py` files are in the form of docstrings_, which are
+written in reST_.
 
 ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -327,10 +327,10 @@ documentation of objects in other projects. This cross-package linking
 is made possible with the `sphinx.ext.intersphinx` extension and proper
 package indexing by the external package using `sphinx.ext.autodoc`.
 
-When we include ```astropy.units.Quantity``` in the documentation, it will
-show up as `astropy.units.Quantity` with a link to the appropriate page
-in Astropy documentation. Similarly, ```~astropy.units.Quantity``` will
-show up as `~astropy.units.Quantity`.
+When we include ```astropy.units.Quantity``` in the documentation, it
+will show up as `astropy.units.Quantity` with a link to the appropriate
+page in Astropy documentation. Similarly, ```~astropy.units.Quantity```
+will show up as `~astropy.units.Quantity`.
 
 To make cross-referencing to an external package available its
 mappings have to be defined in the :confval:`intersphinx_mapping`
@@ -357,8 +357,7 @@ Substitutions
 ~~~~~~~~~~~~~
 
 Some functions and classes are referred to repeatedly throughout the
-documentation. reST_ allows us to `define substitutions
-<https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions>`_.
+documentation. reST_ allows us to `define substitutions`_
 
 .. code-block:: rst
 
@@ -835,6 +834,7 @@ Narrative documentation guidelines
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://en.wikipedia.org/wiki/CSS
+.. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/
 .. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
