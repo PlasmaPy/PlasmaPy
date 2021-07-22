@@ -1105,10 +1105,7 @@ class CartesianGrid(AbstractGrid):
 
         # Get the indices that are equal to nan (fill values), then set
         # their values to 0. They will be over-written after the interpolation
-
-        # Nan array is shape [n] and is 1 if none of the indices for a
-        # position are NaN, and 0 otherwise.
-        nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
+        nan_mask = np.isnan(i).any(axis=1)
         # Replace all NaNs temporarily with 0
         i = np.where(np.isnan(i), 0, i)
         i = i.astype(np.int32)  # Cast as integers
@@ -1197,7 +1194,7 @@ class CartesianGrid(AbstractGrid):
                     # Calculate the weight
                     weight = (Lx * Ly * Lz) / cell_volume
                     weight[out] = 0
-                    weight *= nan_mask
+                    weight[nan_mask] = 0
                     weight = np.outer(weight, np.ones([nargs]))
 
                     sum_value += (
