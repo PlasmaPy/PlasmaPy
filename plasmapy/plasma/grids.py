@@ -1135,7 +1135,6 @@ class CartesianGrid(AbstractGrid):
                 del self._interp_units
             except AttributeError:
                 pass
-        
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])
