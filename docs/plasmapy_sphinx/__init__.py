@@ -1,5 +1,5 @@
 """
-This Sphinx_ extension package contains custom documentation functionality
+This Sphinx extension package contains custom documentation functionality
 used to document `PlasmaPy's packages <https://github.com/PlasmaPy>`_ .
 
 .. contents:: Content
