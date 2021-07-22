@@ -994,6 +994,9 @@ class AbstractGrid(ABC):
         if not persistent:
             try:
                 del self._interp_quantities
+            except AttributeError:
+                pass
+            try:
                 del self._interp_units
             except AttributeError:
                 pass
@@ -1126,9 +1129,13 @@ class CartesianGrid(AbstractGrid):
         if not persistent:
             try:
                 del self._interp_quantities
+            except AttributeError:
+                pass
+            try:
                 del self._interp_units
             except AttributeError:
                 pass
+        
 
         # Create a list of empty arrays to hold results
         sum_value = np.zeros([nparticles, nargs])
