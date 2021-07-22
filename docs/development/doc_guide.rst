@@ -127,8 +127,8 @@ PlasmaPy's documentation is written using the `reStructuredText (reST)`_
 markup language. reST_ is human readable when viewed within a source
 code file or when printed out using `help`. reST_ also contains markup
 that allows the text to be transformed into `PlasmaPy's documentation`_.
-reST_ files end in :file:`.rst`. Documentation contained within
-:file:`.py` files are in the form of docstrings_, which are written in
+reST_ files use the file extension :file:`.rst`. Documentation contained
+within :file:`.py` files are in the form of docstrings_, which are written in
 reST_.
 
 ReStructuredText Examples
@@ -251,7 +251,7 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than reST_. Markdown_ files end with :file:`.md`. Posts on
+limited than reST_. Markdown_ files use the file extension :file:`.md`. Posts on
 GitHub are written in `GitHub Flavored Markdown`_.  The following code
 block contains a few common examples of Markdown_ formatting.
 
@@ -318,21 +318,24 @@ value in `docs/conf.py`_.
 
 .. _external-references:
 
-References to other packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Cross-referencing external packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Intersphinx_ allows the automatic generation of links to the
 documentation of objects in other projects. This cross-package linking
-is made possible with the `sphinx.ext.intersphinx` extension.
+is made possible with the `sphinx.ext.intersphinx` extension and proper
+package indexing by the external package using `sphinx.ext.autodoc`.
 
-When we include ``astropy.units.Quantity`` in the documentation, it will
+When we include ```astropy.units.Quantity``` in the documentation, it will
 show up as `astropy.units.Quantity` with a link to the appropriate page
-in Astropy documentation. Similarly, ``~astropy.units.Quantity`` will
+in Astropy documentation. Similarly, ```~astropy.units.Quantity``` will
 show up as `~astropy.units.Quantity`.
 
-The mappings are defined in the :confval:`intersphinx_mapping`
-dictionary in `docs/conf.py`_, and include Python_, NumPy_, SciPy_,
-Astropy_, pandas_, Sphinx_, and `sphinx_automodapi`_.
+To make cross-referencing to an external package available its
+mappings have to be defined in the :confval:`intersphinx_mapping`
+configuration dictionary contained in `docs/conf.py`_.  PlasmaPy
+has already include several packages like Python_, NumPy_, SciPy_,
+Astropy_, Sphinx_, etc.
 
 New source packages may be added, but please verify that references to a
 function or class in that package show up correctly in `PlasmaPy's
@@ -360,18 +363,21 @@ documentation. reST_ allows us to `define substitutions
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
+Here whenever ``|Particle|`` is used Sphinx_ will replace it with 
+```~plasmapy.particles.particle_class.Particle``` during build time.
+
 PlasmaPy has certain common substitutions pre-defined so that they can
 be used elsewhere in the documentation. For example, we can write
-``|Quantity|`` instead of ``~astropy.units.Quantity``, and
+``|Quantity|`` instead of ```~astropy.units.Quantity```, and
 ``|Particle|`` instead of
-``~plasmapy.particles.particle_class.Particle``.  For an up-to-date list
+```~plasmapy.particles.particle_class.Particle```.  For an up-to-date list
 of substitutions, please refer to the `docs/common_links.rst`_ file.
 
 Since substitutions are performed by Sphinx_ when the documentation is
 built, any substitution used in docstrings will not show up when using
 Python's `help` function (or the like). For example, when ``|Particle|``
 is used in a docstring, `help` will show it as ``|Particle|`` rather
-than ``~plasmapy.particles.particle_class.Particle``.  Consequently,
+than ```~plasmapy.particles.particle_class.Particle```.  Consequently,
 substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
@@ -388,11 +394,15 @@ Writing documentation
 Docstrings
 ----------
 
-A docstring is a comment at the beginning of a function or another
-object that provides information on how to use that function.
-Docstrings begin with ``r"""`` (required when including backslashes,
-such as using LaTeX_ code in equations) or ``"""``, and end with
-``"""``.
+A docstring_ is a comment at the beginning of a function or another
+object that provides information on how to use that function
+(see :pep:`257`).  Docstrings are designated by surrounding the content
+with triple quotes ``"""This is my docstring."""``.  If a docstring
+contains math that utilizes LaTex_ code, then we recommend
+using a raw-string so you don't have to handle escape
+characters on backslashes.  For example, the raw-string
+``r""":math:`\alpha`"""`` will render the same as the normal string
+``""":math:`\\alpha`"""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
 the numpydoc_ standard for docstrings. Docstring conventions for Python_
@@ -796,10 +806,10 @@ Narrative documentation guidelines
 * When the narrative documentation does not index a subpackage (a
   directory) or module (a :file:`.py` file) with ``automodule``,
   ``automodapi``, or the like, then it is required to create a stub file
-  for that particular subpackage or module in `docs/api_static`_ .  Here
-  are the sample contents for a stub file for
-  `plasmapy.particles.atomic`. This file would be located at jlkj;lj
-  :file:`docs/api_static/plasmapy.particles.atomic.rst`.
+  for that particular subpackage or module in `docs/api_static`_ .  For
+  example, the stub file for `plasmapy.particles.atomic` is placed at
+  :file:`docs/api_static/plasampy.particles.atomic.rst` and its contents
+  look like:
 
   .. code-block:: rst
 
