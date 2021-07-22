@@ -135,8 +135,8 @@ ReStructuredText Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here we show some examples of commonly used reST_ syntax in
-PlasmaPy.  Please refer to the documentation for Sphinx_ and reST_ for
-a list of available directives and syntax.
+PlasmaPy. Please refer to the documentation for Sphinx_ and reST_ for a
+list of available directives and syntax.
 
 This is an example of including headings for the document title,
 sections, subsections, and so on. The lines surrounding each heading are
@@ -290,7 +290,7 @@ Configuration
 ~~~~~~~~~~~~~
 
 The `docs/conf.py`_ file contains the configuration information needed
-to customize Sphinx_ behavior.  The documentation for Sphinx_ lists the
+to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
 The `docs/_static/sphinx_rtd_overrides.css`_ file contains `style
@@ -338,7 +338,7 @@ will show up as `~astropy.units.Quantity`.
 
 To make cross-referencing to an external package available its
 mappings have to be defined in the :confval:`intersphinx_mapping`
-configuration dictionary contained in `docs/conf.py`_.  PlasmaPy
+configuration dictionary contained in `docs/conf.py`_. PlasmaPy
 has already include several packages like Python_, NumPy_, SciPy_,
 Astropy_, Sphinx_, etc.
 
@@ -382,7 +382,7 @@ Since substitutions are performed by Sphinx_ when the documentation is
 built, any substitution used in docstrings will not show up when using
 Python's `help` function (or the like). For example, when ``|Particle|``
 is used in a docstring, `help` will show it as ``|Particle|`` rather
-than ```~plasmapy.particles.particle_class.Particle```.  Consequently,
+than ```~plasmapy.particles.particle_class.Particle```. Consequently,
 substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
@@ -402,7 +402,7 @@ Docstrings
 
 A docstring_ is a comment at the beginning of a function or another
 object that provides information on how to use that function (see
-:pep:`257`).  Docstrings are designated by surrounding the content
+:pep:`257`). Docstrings are designated by surrounding the content
 with triple quotes ``"""This is my docstring."""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
@@ -819,7 +819,7 @@ Narrative documentation guidelines
 * When the narrative documentation does not index a subpackage (a
   directory) or module (a :file:`.py` file) with ``automodule``,
   ``automodapi``, or the like, then it is required to create a stub file
-  for that particular subpackage or module in `docs/api_static`_ .  For
+  for that particular subpackage or module in `docs/api_static`_ . For
   example, the stub file for `plasmapy.particles.atomic` is placed at
   :file:`docs/api_static/plasampy.particles.atomic.rst` and its contents
   look like:
