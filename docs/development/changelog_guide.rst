@@ -1,12 +1,12 @@
-********************
-Changelog Guidelines
-********************
+***************
+Changelog Guide
+***************
 
 A changelog tells users and contributors what notable changes have been
 made between each release.
 
 Creating a changelog entry
---------------------------
+==========================
 
 Each changelog entry should be created after a pull request to the main
 branch has been made. If the change is sufficiently minor (e.g., a typo
@@ -104,3 +104,9 @@ will work best if you stick to a single paragraph, but multiple sentences and
 links are OK and encouraged.  You can install ``towncrier`` and then run
 ``towncrier --draft`` if you want to get a preview of how your change will look
 in the final release notes.
+
+
+Changelog guidelines
+====================
+
+* Use the past tense to describe
