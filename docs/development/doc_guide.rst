@@ -251,9 +251,10 @@ Markdown
 
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
-limited than reST_. Markdown_ files use the file extension :file:`.md`. Posts on
-GitHub are written in `GitHub Flavored Markdown`_.  The following code
-block contains a few common examples of Markdown_ formatting.
+limited than reST_. Markdown_ files use the file extension :file:`.md`.
+Posts on GitHub_ are written in `GitHub Flavored Markdown`_. The
+following code block contains a few common examples of Markdown_
+formatting.
 
 .. code-block:: markdown
 
@@ -370,8 +371,9 @@ PlasmaPy has certain common substitutions pre-defined so that they can
 be used elsewhere in the documentation. For example, we can write
 ``|Quantity|`` instead of ```~astropy.units.Quantity```, and
 ``|Particle|`` instead of
-```~plasmapy.particles.particle_class.Particle```.  For an up-to-date list
-of substitutions, please refer to the `docs/common_links.rst`_ file.
+```~plasmapy.particles.particle_class.Particle```. For an up-to-date
+list of substitutions, please refer to the `docs/common_links.rst`_
+file.
 
 Since substitutions are performed by Sphinx_ when the documentation is
 built, any substitution used in docstrings will not show up when using
@@ -395,18 +397,25 @@ Docstrings
 ----------
 
 A docstring_ is a comment at the beginning of a function or another
-object that provides information on how to use that function
-(see :pep:`257`).  Docstrings are designated by surrounding the content
-with triple quotes ``"""This is my docstring."""``.  If a docstring
-contains math that utilizes LaTex_ code, then we recommend
-using a raw-string so you don't have to handle escape
-characters on backslashes.  For example, the raw-string
-``r""":math:`\alpha`"""`` will render the same as the normal string
-``""":math:`\\alpha`"""``.
+object that provides information on how to use that function (see
+:pep:`257`).  Docstrings are designated by surrounding the content
+with triple quotes ``"""This is my docstring."""``.
 
 In order to improve readability and maintain consistency, PlasmaPy uses
 the numpydoc_ standard for docstrings. Docstring conventions for Python_
 are more generally described in :pep:`257`.
+
+.. tip::
+
+   If a docstring contains math that utilizes LaTeX_ syntax, begin the
+   docstring with ``r"""`` instead of ``"""``.
+
+   In a normal string, backslashes are used to begin escape sequences,
+   and a single backslash needs to be represented with ``\\``. This
+   complication is avoided by beginning the docstring with ``r"""``,
+   which denotes the docstring as a `raw string`_. For example, the `raw
+   string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
+   string ``""":math:`\\alpha`"""``.
 
 Example docstring
 ~~~~~~~~~~~~~~~~~
@@ -848,6 +857,7 @@ Narrative documentation guidelines
 .. _paywall: https://en.wikipedia.org/wiki/Paywall
 .. _`persistent identifier`: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _`raw string`: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io/
 .. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
