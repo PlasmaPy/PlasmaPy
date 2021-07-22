@@ -25,6 +25,8 @@ from plasmapy.plasma.fluxsurface import FluxSurface
 import xarray
 from plasmapy.utils.decorators import validate_quantities
 
+M_MAX_DEFAULT = 10
+
 A_AXIS = 0
 B_AXIS = 1
 ALPHA_AXIS = 2
@@ -454,7 +456,7 @@ class ExtendedParticleList(ParticleList):
         x: np.ndarray,
         flux_surface: FluxSurface,
         *,
-        m_max=100,
+        m_max=M_MAX_DEFAULT,
         with_B10 = False,
     ):
         """Pfirsch-Schlüter regime contribution to effective viscosity - eq. B8 from |Houlberg_1997|
@@ -501,7 +503,7 @@ class ExtendedParticleList(ParticleList):
         x: np.ndarray,
         flux_surface: FluxSurface,
         *,
-        m_max: int = 100,
+        m_max: int = M_MAX_DEFAULT,
         orbit_squeezing: bool = False,
     ) -> u.s**-1:
         """Total effective velocity-dependent viscosity with contributions from -
