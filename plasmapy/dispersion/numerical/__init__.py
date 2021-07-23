@@ -13,4 +13,4 @@ from plasmapy.dispersion.dispersionfunction import (
     plasma_dispersion_func_deriv,
 )
 
-from plasmapy.dispersion.numerical.hollweg import hollweg.py
+from plasmapy.dispersion.numerical.hollweg import hollweg
