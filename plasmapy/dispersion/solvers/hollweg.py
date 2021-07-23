@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 31 18:35:46 2021
-
-@author: sshan
-"""
 import numpy as np
 import astropy.units as u
 import warnings
