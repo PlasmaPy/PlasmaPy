@@ -290,6 +290,23 @@ class ParticleList(collections.UserList):
         """A `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
+    def mean_particle(self, abundances=None) -> CustomParticle:
+        """
+        Return a representation of the mean particle.
+
+        If ``abundances`` is provided, then this method will return a
+        weighted mean, using ``abundances`` as the weights.
+
+        Parameters
+        ----------
+        abundances : array-like, optional
+            The relative abundances of the particles in the |ParticleList|. Must
+            have the same number of elements as the |ParticleList|.
+        """
+        average_mass = np.average(self.mass, weights=abundances)
+        average_charge = np.average(self.charge, weights=abundances)
+        return CustomParticle(mass=average_mass, charge=average_charge)
+
 
 # Override the docstrings for the parent class
 

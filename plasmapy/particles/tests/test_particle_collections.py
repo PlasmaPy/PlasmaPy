@@ -322,3 +322,33 @@ def test_particle_multiplication(method, particle):
     """
     particle_list = getattr(particle, method)(3)
     assert particle_list == [particle, particle, particle]
+
+
+def test_getting_mean_particle():
+    massless_uncharged_particle = CustomParticle(mass=0 * u.kg, charge=0 * u.C)
+
+    particle_list = ParticleList([proton, electron, alpha, massless_uncharged_particle])
+
+    expected_mass = (proton.mass + electron.mass + alpha.mass) / 4
+    expected_charge = (proton.charge + electron.charge + alpha.charge) / 4
+
+    mean_particle = particle_list.mean_particle()
+
+    assert u.isclose(mean_particle.mass, expected_mass)
+    assert u.isclose(mean_particle.charge, expected_charge)
+
+
+def test_getting_weighted_mean_particle():
+    custom_proton = CustomParticle(mass=proton.mass, charge=proton.charge)
+
+    particle_list = ParticleList([proton, electron, alpha, custom_proton])
+
+    abundances = [1, 2, 0, 1]
+
+    expected_mass = (proton.mass + electron.mass) / 2
+    expected_charge = 0 * u.C
+
+    mean_particle = particle_list.mean_particle(abundances=abundances)
+
+    assert u.isclose(mean_particle.mass, expected_mass)
+    assert u.isclose(mean_particle.charge, expected_charge)
