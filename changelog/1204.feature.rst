@@ -1,0 +1,4 @@
+Added the `~plasmapy.particles.particle_collections.ParticleList.mean_particle` method to
+|ParticleList| to return a representation of the mean particle in the |ParticleList|.
+Optionally, the mean can be weighted.  This function can also be used to get the root mean
+square mean of the charge and/or mass.
