@@ -14,7 +14,7 @@ Backwards Incompatible Changes
 Deprecations and Removals
 -------------------------
 
-- Remove ``parameters_cython.pyx``, switching to Numba for the future of computationally intensive code in PlasmaPy (`#650 <https://github.com/plasmapy/plasmapy/pull/650>`__)
+- Remove :file:`parameters_cython.pyx`, switching to Numba for the future of computationally intensive code in PlasmaPy (`#650 <https://github.com/plasmapy/plasmapy/pull/650>`__)
 - Remove plasmapy.constants, which was a thin wrapper around astropy.constants
   with no added value (`#651 <https://github.com/plasmapy/plasmapy/pull/651>`__)
 
