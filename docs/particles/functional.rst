@@ -12,8 +12,9 @@ Symbols and names
 =================
 
 Several functions in `~plasmapy.particles` return string representations
-of particles, including `~plasmapy.particles.atomic_symbol`,
-`~plasmapy.particles.isotope_symbol`, `~plasmapy.particles.ionic_symbol`,
+of particles, including `~plasmapy.particles.atomic.atomic_symbol`,
+`~plasmapy.particles.atomic.isotope_symbol`,
+`~plasmapy.particles.atomic.ionic_symbol`,
 and `~plasmapy.particles.element_name`.
 
 >>> from plasmapy.particles import *
@@ -29,7 +30,7 @@ and `~plasmapy.particles.element_name`.
 'helium'
 
 The full symbol of the particle can be found using
-`~plasmapy.particles.particle_symbol`.
+`~plasmapy.particles.atomic.particle_symbol`.
 
 >>> particle_symbol('electron')
 'e-'
@@ -66,7 +67,7 @@ Traceback (most recent call last):
 plasmapy.particles.exceptions.ChargeError: Charge information is required for electric_charge.
 
 The standard atomic weight for the terrestrial environment may be
-accessed using `~plasmapy.particles.standard_atomic_weight`.
+accessed using `~plasmapy.particles.atomic.standard_atomic_weight`.
 
 >>> standard_atomic_weight('Pb').to('u')
 <Quantity 207.2 u>
@@ -91,7 +92,7 @@ environment may be found using `~plasmapy.particles.atomic.isotopic_abundance`.
 0.000115
 
 A list of all discovered isotopes in order of increasing mass number
-can be found with `~plasmapy.particles.known_isotopes`.
+can be found with `~plasmapy.particles.atomic.known_isotopes`.
 
 >>> known_isotopes('H')
 ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
@@ -141,7 +142,7 @@ estimated value while issuing a |MissingParticleDataWarning|.
 Reduced mass
 ============
 
-The `~plasmapy.particles.reduced_mass` function is useful in cases of
+The `~plasmapy.particles.atomic.reduced_mass` function is useful in cases of
 two-body collisions.
 
 >>> reduced_mass('e-', 'p+')
