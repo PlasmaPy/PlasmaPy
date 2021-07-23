@@ -34,7 +34,7 @@ with version, so, rather than apply `black` and `isort` manually, let
 pre-commit do the version management for you instead!
 
 Our pre-commit suite can be found in `.pre-commit-config.yaml
-<https://github.com/PlasmaPy/PlasmaPy/blob/master/.pre-commit-config.yaml>`_.
+<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
 It includes
 
 * `black <https://black.readthedocs.io/en/stable/>`_ to automatically
@@ -103,7 +103,7 @@ repository:
   git fetch upstream
 
 Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your master branch so that it can be kept
+to avoid making changes on your main branch so that it can be kept
 consistent with the upstream repository.  Instead we can create a new
 branch for the specific feature that you would like to work on:
 
@@ -141,7 +141,7 @@ recommend reading about `best practices for scientific computing
 `PEP 8 style guide for Python code
 <https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
 for docstrings
-<https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
+<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
 submitting a pull request, as the `PEP8 Speaks
@@ -335,7 +335,7 @@ by an angular frequency to get a length scale:
 Examples
 ========
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 .. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
@@ -344,7 +344,7 @@ takes care of executing them at documentation build time and including them
 in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook

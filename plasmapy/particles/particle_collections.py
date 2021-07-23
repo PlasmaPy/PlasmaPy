@@ -36,8 +36,7 @@ class ParticleList(collections.UserList):
     Raises
     ------
     `~plasmapy.particles.exceptions.InvalidParticleError`
-        If an object supplied to
-        `~plasmapy.particles.particle_collections.ParticleList` is not
+        If an object supplied to |ParticleList| is not
         `~plasmapy.particles.particle_class.ParticleLike`.
 
     TypeError
@@ -46,9 +45,9 @@ class ParticleList(collections.UserList):
 
     Examples
     --------
-    A `~plasmapy.particles.particle_collections.ParticleList` can be
-    created by calling it with a `list`, `tuple`, or other iterable that
-    provides `~plasmapy.particles.particle_class.ParticleLike` objects.
+    A |ParticleList| can be created by calling it with a `list`,
+    `tuple`, or other iterable that provides
+    `~plasmapy.particles.particle_class.ParticleLike` objects.
 
     >>> from plasmapy.particles import ParticleList
     >>> particle_list = ParticleList(["e-", "e+"])
@@ -60,7 +59,7 @@ class ParticleList(collections.UserList):
     and `~plasmapy.particles.particle_collections.ParticleList.charge`
     will return a `~astropy.units.Quantity` array containing the values
     of the corresponding attribute for each particle in the
-    `~plasmapy.particles.particle_collections.ParticleList`.
+    |ParticleList|.
 
     >>> particle_list.mass
     <Quantity [9.1093...e-31, 9.1093...e-31] kg>
@@ -69,11 +68,10 @@ class ParticleList(collections.UserList):
     >>> particle_list.symbols
     ['e-', 'e+']
 
-    `~plasmapy.particles.particle_collections.ParticleList` instances
-    can also be created through addition and
+    |ParticleList| instances can also be created through addition and
     multiplication with `~plasmapy.particles.particle_class.Particle`,
     `~plasmapy.particles.particle_class.CustomParticle`, and
-    `~plasmapy.particles.particle_collections.ParticleList` instances.
+    |ParticleList| instances.
 
     >>> from plasmapy.particles import Particle, CustomParticle
     >>> import astropy.units as u
@@ -88,11 +86,9 @@ class ParticleList(collections.UserList):
     >>> particle_list + "deuteron"
     ParticleList(['e-', 'e+', 'D 1+'])
 
-    Normal `list` methods may also be used on
-    `~plasmapy.particles.particle_collections.ParticleList` objects.
+    Normal `list` methods may also be used on |ParticleList| objects.
     When a `~plasmapy.particles.particle_class.ParticleLike` object is
-    appended to a `~plasmapy.particles.particle_collections.ParticleList`,
-    that object will be cast into a
+    appended to a |ParticleList|, that object will be cast into a
     `~plasmapy.particles.particle_class.Particle`.
 
     >>> noble_gases = ParticleList(["He", "Ar", "Kr", "Xe", "Rn"])
@@ -101,8 +97,7 @@ class ParticleList(collections.UserList):
     Particle("Og")
 
     The ``>`` operator may be used with
-    `~plasmapy.particles.particle_class.Particle` and
-    `~plasmapy.particles.particle_collections.ParticleList`
+    `~plasmapy.particles.particle_class.Particle` and |ParticleList|
     instances to access the nuclear reaction energy.
 
     >>> reactants = ParticleList(["deuterium", "tritium"])
@@ -199,10 +194,7 @@ class ParticleList(collections.UserList):
         return values
 
     def append(self, particle: ParticleLike):
-        """
-        Append a particle to the end of the
-        `~plasmapy.particles.particle_collections.ParticleList`.
-        """
+        """Append a particle to the end of the |ParticleList|."""
         # TODO: use particle_input when it works with CustomParticle and ParticleLike
         if not isinstance(particle, (Particle, CustomParticle)):
             particle = Particle(particle)
@@ -220,7 +212,7 @@ class ParticleList(collections.UserList):
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
         A `list` containing the particles contained in the
-        `~plasmapy.particles.particle_collections.ParticleList` instance.
+        |ParticleList| instance.
 
         The `~plasmapy.particles.particle_collections.ParticleList.data`
         attribute should not be modified directly.
@@ -229,8 +221,9 @@ class ParticleList(collections.UserList):
 
     def extend(self, iterable: Iterable[ParticleLike]):
         """
-        Extend the sequence by appending `~plasmapy.particles.particle_class.ParticleLike` elements
-        from ``iterable``.
+        Extend the sequence by appending
+        `~plasmapy.particles.particle_class.ParticleLike` elements from
+        ``iterable``.
         """
         if isinstance(iterable, ParticleList):
             self.data.extend(iterable)
@@ -283,8 +276,7 @@ class ParticleList(collections.UserList):
 
     def sort(self, key: Callable = None, reverse: bool = False):
         """
-        Sort the `~plasmapy.particles.particle_collections.ParticleList`
-        in-place.
+        Sort the |ParticleList| in-place.
 
         For more information, refer to the documentation for `list.sort`.
         """
@@ -301,15 +293,9 @@ class ParticleList(collections.UserList):
 
 # Override the docstrings for the parent class
 
-ParticleList.clear.__doc__ = """
-Remove all items from the
-`~plasmapy.particles.particle_collections.ParticleList`.
-"""
+ParticleList.clear.__doc__ = """Remove all items from the |ParticleList|."""
 
-ParticleList.copy.__doc__ = """
-Return a shallow copy of the
-`~plasmapy.particles.particle_collections.ParticleList`.
-"""
+ParticleList.copy.__doc__ = """Return a shallow copy of the |ParticleList|."""
 
 ParticleList.count.__doc__ = """
 Return the number of occurrences of ``item``.  Here, ``item`` may be a
@@ -320,9 +306,9 @@ particle.
 """
 
 ParticleList.extend.__doc__ = """
-Extend `~plasmapy.particles.particle_collections.ParticleList` by casting
-`~plasmapy.particles.particle_class.ParticleLike` items from ``iterable`` into
-`~plasmapy.particles.particle_class.Particle` or
+Extend |ParticleList| by casting
+`~plasmapy.particles.particle_class.ParticleLike` items from
+``iterable`` into `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle` instances.
 """
 
@@ -333,8 +319,7 @@ value. Raise `ValueError` if the value is not present.
 
 ParticleList.pop.__doc__ = """
 Remove and return item at index (default last).  Raise `IndexError` if
-the `~plasmapy.particles.particle_collections.ParticleList` is empty or
-the index is out of range.
+the |ParticleList| is empty or the index is out of range.
 """
 
 ParticleList.remove.__doc__ = """
@@ -343,7 +328,4 @@ Remove the first occurrence of a
 `ValueError` if the value is not present.
 """
 
-ParticleList.reverse.__doc__ = """
-Reverse the `~plasmapy.particles.particle_collections.ParticleList` in
-place.
-"""
+ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
