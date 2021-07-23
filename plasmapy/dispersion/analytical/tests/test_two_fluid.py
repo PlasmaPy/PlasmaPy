@@ -5,13 +5,13 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.two_fluid_dispersion import two_fluid_dispersion_solution
+from plasmapy.dispersion.analytical.two_fluid import two_fluid
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
-class TestTwoFluidDispersionSolution:
+class TestTwoFluid:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "ion": "p+",
@@ -65,7 +65,7 @@ class TestTwoFluidDispersionSolution:
     def test_raises(self, kwargs, _error):
         """Test scenarios that raise an `Exception`."""
         with pytest.raises(_error):
-            two_fluid_dispersion_solution(**kwargs)
+            two_fluid(**kwargs)
 
     @pytest.mark.parametrize(
         "kwargs, _warning",
@@ -88,7 +88,7 @@ class TestTwoFluidDispersionSolution:
     def test_warns(self, kwargs, _warning):
         """Test scenarios the issue a `Warning`."""
         with pytest.warns(_warning):
-            two_fluid_dispersion_solution(**kwargs)
+            two_fluid(**kwargs)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
@@ -133,7 +133,7 @@ class TestTwoFluidDispersionSolution:
                 f"parameters yielded {Lambda:.6f}."
             )
 
-        ws = two_fluid_dispersion_solution(**kwargs)
+        ws = two_fluid(**kwargs)
         for mode, val in ws.items():
             norm = (np.absolute(val) / (kwargs["k"] * va)).value ** 2
             assert np.isclose(norm, expected[mode])
@@ -160,8 +160,8 @@ class TestTwoFluidDispersionSolution:
     )
     def test_z_mean_override(self, kwargs, expected):
         """Test overriding behavior of kw 'z_mean'."""
-        ws = two_fluid_dispersion_solution(**kwargs)
-        ws_expected = two_fluid_dispersion_solution(**expected)
+        ws = two_fluid(**kwargs)
+        ws_expected = two_fluid(**expected)
 
         for mode in ws:
             assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
@@ -194,7 +194,7 @@ class TestTwoFluidDispersionSolution:
     )
     def test_return_structure(self, kwargs, expected):
         """Test the structure of the returned values."""
-        ws = two_fluid_dispersion_solution(**kwargs)
+        ws = two_fluid(**kwargs)
 
         assert isinstance(ws, dict)
         assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
