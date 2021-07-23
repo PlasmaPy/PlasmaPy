@@ -1,6 +1,4 @@
-"""
-Functionality for JSON deserialization of PlasmaPy particles.
-"""
+"""Functionality for JSON deserialization of particle objects."""
 __all__ = [
     "json_load_particle",
     "json_loads_particle",
@@ -21,7 +19,7 @@ from plasmapy.particles.particle_class import (
 class ParticleJSONDecoder(json.JSONDecoder):
     """
     A custom `~json.JSONDecoder` class to deserialize JSON objects into
-    PlasmaPy particle objects.
+    the appropriate particle objects.
 
     Parameters
     ----------
@@ -29,8 +27,9 @@ class ParticleJSONDecoder(json.JSONDecoder):
         If specified, will be called with the result of every JSON object
         decoded and its return value will be used in place of the given `dict`.
         This can be used to provide custom deserializations (e.g. to support
-        JSON-RPC class hinting)
-        (If not specified, then defaults to `particle_hook`.).
+        JSON-RPC class hinting).  If not specified, then defaults to
+        `particle_hook`.).
+
     **kwargs :
         Any keyword accepted by `~json.JSONDecoder`.
     """
@@ -43,9 +42,12 @@ class ParticleJSONDecoder(json.JSONDecoder):
     @staticmethod
     def particle_hook(json_dict):
         """
-        An `object_hook` utilized by the `json` deserialization processes to decode
-        json strings into a `plasmapy` particle class (`AbstractParticle`,
-        `CustomParticle`, `DimensionlessParticle`, `Particle`).
+        Decode JSON strings into the appropriate particle class.
+
+        This method is an `object_hook` utilized by the `json`
+        deserialization processes to decode json strings into a particle
+        class (`AbstractParticle`, `CustomParticle`,
+        `DimensionlessParticle`, `Particle`).
         """
         particle_types = {
             "AbstractParticle": AbstractParticle,
@@ -63,7 +65,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
                 return particle
             except KeyError:
                 raise InvalidElementError(
-                    f"json file does not define a valid plasmapy particle"
+                    "json file does not define a valid plasmapy particle"
                 )
         else:
             return json_dict
@@ -71,16 +73,20 @@ class ParticleJSONDecoder(json.JSONDecoder):
 
 def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
     """
-    A convenient form of `json.load` to deserialize a JSON document into a
-    PlasmaPy particle object. (Mirrors `json.load` with `cls` defaulting to
-    `ParticleJSONDecoder`.).
+    Deserialize a JSON document into the appropriate particle object.
+
+    This function is a convenient form of `json.load` to deserialize a
+    JSON document into a particle object. (Mirrors `json.load` with
+    `cls` defaulting to `ParticleJSONDecoder`.).
 
     Parameters
     ----------
     fp : `file object <https://docs.python.org/3/glossary.html#term-file-object>`_
         A file object containing a JSON document.
+
     cls : `json.JSONDecoder` class
         A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`).
+
     **kwargs :
         Any keyword accepted by `json.load`.
     """
@@ -89,16 +95,20 @@ def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):
 
 def json_loads_particle(s, *, cls=ParticleJSONDecoder, **kwargs):
     """
-    A convenient form of `json.loads` to deserialize a JSON string into a
-    PlasmaPy particle object. (Mirrors `json.loads` with `cls` defaulting to
-    `ParticleJSONDecoder`.).
+    Deserialize a JSON string into the appropriate particle object.
+
+    This function is convenient form of `json.loads` to deserialize a
+    JSON string into a particle object. (Mirrors `json.loads` with `cls`
+    defaulting to `ParticleJSONDecoder`.).
 
     Parameters
     ----------
     s : str
         A JSON string.
+
     cls : `json.JSONDecoder` class
         A `~json.JSONDecoder` class. (Default `ParticleJSONDecoder`).
+
     **kwargs :
         Any keyword accepted by `json.loads`.
     """

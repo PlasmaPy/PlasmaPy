@@ -1,6 +1,5 @@
-"""
-Formulas for calculating particle drifts.
-"""
+"""Functions for calculating particle drifts."""
+
 __all__ = [
     "diamagnetic_drift",
     "ExB_drift",
@@ -9,6 +8,7 @@ __all__ = [
     "veb_",
     "vfd_",
 ]
+__aliases__ = ["vd_", "veb_", "vfd_"]
 
 import astropy.units as u
 import numpy as np
@@ -25,18 +25,18 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
     Parameters
     ----------
-    dp : ~astropy.units.Quantity
+    dp : `~astropy.units.Quantity`
         Pressure gradient vector
-    B  : ~astropy.units.Quantity
+    B  : `~astropy.units.Quantity`
         Magnetic field vector
-    n  : ~astropy.units.Quantity
+    n  : `~astropy.units.Quantity`
         Number density
-    q  : ~astropy.units.Quantity
+    q  : `~astropy.units.Quantity`
         Particle charge
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Examples
@@ -56,7 +56,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
     .. math::
 
-        \vec{v} = -\frac{ \nabla p \times \vec{B} }{ q n |B|^2 }
+        \vec{v} = -\frac{ ∇ p \times \vec{B} }{ q n |B|^2 }
 
     This is the velocity component of a fluid element perpendicular to the
     magnetic field.
@@ -84,14 +84,14 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
     Parameters
     ----------
-    E : ~astropy.units.Quantity
+    E : `~astropy.units.Quantity`
         Electric field vector
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field vector
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Examples
@@ -141,11 +141,11 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
     Parameters
     ----------
-    F : ~astropy.units.Quantity
+    F : `~astropy.units.Quantity`
         Force acting on particle
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field
-    q : ~astropy.units.Quantity
+    q : `~astropy.units.Quantity`
         Particle charge
 
     Examples
@@ -163,7 +163,7 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Notes

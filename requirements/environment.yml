@@ -14,15 +14,20 @@ dependencies:
   - mpmath
   - pandas
   - pillow
-  - colorama
   - pip
   - xarray
+  - numba
   - pip:
+    - numba-scipy
+    - hypothesis
+    - docutils < 0.17
     - numpydoc
     - pytest
     - lmfit
     - pygments>=2.4.1
-    - sphinx>2
+    - sphinx>=3.2.0
     - sphinx-gallery
-    - sphinx-automodapi
     - sphinx_rtd_theme
+    - towncrier >= 19.2.0
+    - pytest-regressions
+    - notebook

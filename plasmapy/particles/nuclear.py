@@ -20,7 +20,7 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -79,7 +79,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -91,7 +91,8 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
     Returns
     -------
     mass_energy: `~astropy.units.Quantity`
-        The mass energy of the particle (or in the case of ) in units of joules.
+        The mass energy of the particle (or, in the case of an isotope,
+        its nuclide) in units of joules.
 
     Raises
     ------
@@ -106,7 +107,6 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Examples
     --------
-
     >>> mass_energy('He-4')
     <Quantity 5.9719e-10 J>
     """
@@ -167,10 +167,8 @@ def nuclear_reaction_energy(*args, **kwargs):
     Examples
     --------
     >>> from astropy import units as u
-
     >>> nuclear_reaction_energy("D + T --> alpha + n")
     <Quantity 2.8181e-12 J>
-
     >>> triple_alpha1 = '2*He-4 --> Be-8'
     >>> triple_alpha2 = 'Be-8 + alpha --> carbon-12'
     >>> energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
@@ -179,7 +177,6 @@ def nuclear_reaction_energy(*args, **kwargs):
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
     <Quantity 7.3665870 MeV>
-
     >>> nuclear_reaction_energy(reactants=['n'], products=['p+', 'e-'])
     <Quantity 1.25343e-13 J>
     """
@@ -191,7 +188,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.
 
-    errmsg = f"Invalid nuclear reaction."
+    errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
         unformatted_particles_list: List[Union[str, Particle]]
@@ -256,7 +253,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     def total_charge(particles: List[Particle]) -> int:
         """
-        Find the total integer charge in a list of nuclides
+        Find the total charge number in a list of nuclides
         (excluding bound electrons) and other particles.
         """
         total_charge = 0
@@ -264,7 +261,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             if particle.isotope:
                 total_charge += particle.atomic_number
             elif not particle.element:
-                total_charge += particle.integer_charge
+                total_charge += particle.charge_number
         return total_charge
 
     def add_mass_energy(particles: List[Particle]) -> u.Quantity:

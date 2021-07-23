@@ -9,7 +9,7 @@ from typing import Dict
 
 from plasmapy.particles import (
     atomic_number,
-    IonicFraction,
+    IonicLevel,
     IonizationState,
     IonizationStateCollection,
     mass_number,
@@ -38,7 +38,7 @@ def check_abundances_consistency(
         abundance_from_log_abundances = 10 ** log_abundances[element]
         assert np.isclose(
             abundance_from_abundances, abundance_from_log_abundances
-        ), f"Mismatch between abundances and log_abundances."
+        ), "Mismatch between abundances and log_abundances."
 
 
 def has_attribute(attribute, tests_dict):
@@ -141,10 +141,10 @@ class TestIonizationStateCollection:
         """Test that __eq__ is not extremely broken."""
         a = IonizationStateCollection(**tests[test_name])
         b = IonizationStateCollection(**tests[test_name])
-        assert a == a, f"IonizationStateCollection instance does not equal itself."
+        assert a == a, "IonizationStateCollection instance does not equal itself."
         assert (
             a == b
-        ), f"IonizationStateCollection instance does not equal identical instance."
+        ), "IonizationStateCollection instance does not equal identical instance."
 
     @pytest.mark.parametrize(
         "test_name",
@@ -157,7 +157,7 @@ class TestIonizationStateCollection:
     def test_that_particles_were_set_correctly(self, test_name):
         input_particles = tests[test_name]["inputs"].keys()
         particles = [Particle(input_particle) for input_particle in input_particles]
-        expected_particles = {p.particle for p in particles}
+        expected_particles = {p.symbol for p in particles}
         actual_particles = {
             particle for particle in self.instances[test_name].ionic_fractions.keys()
         }
@@ -217,13 +217,10 @@ class TestIonizationStateCollection:
         if isinstance(inputs, dict):
             input_keys = list(tests[test_name]["inputs"].keys())
 
-            input_keys = sorted(
-                input_keys,
-                key=lambda k: (
-                    atomic_number(k),
-                    mass_number(k) if Particle(k).isotope else 0,
-                ),
-            )
+            def sort_key(k):
+                return atomic_number(k), mass_number(k) if Particle(k).isotope else 0
+
+            input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys):
                 expected = tests[test_name]["inputs"][input_key]
@@ -650,12 +647,12 @@ class TestIonizationStateCollectionAttributes:
         result = instance[indices]
 
         particle = indices[0]
-        integer_charge = indices[1]
+        charge_number = indices[1]
 
-        assert isinstance(result, IonicFraction)
-        assert result.integer_charge == integer_charge
+        assert isinstance(result, IonicLevel)
+        assert result.charge_number == charge_number
 
-        expected_ionic_fraction = instance.ionic_fractions[particle][integer_charge]
+        expected_ionic_fraction = instance.ionic_fractions[particle][charge_number]
 
         assert np.any(
             [
@@ -664,7 +661,7 @@ class TestIonizationStateCollectionAttributes:
             ]
         )
 
-        assert result.ionic_symbol == particle_symbol(particle, Z=integer_charge)
+        assert result.ionic_symbol == particle_symbol(particle, Z=charge_number)
 
     def test_setting_n(self):
         try:
@@ -905,3 +902,25 @@ def test_number_density_assignment():
     instance = IonizationStateCollection(["H", "He"])
     number_densities = [2, 3, 5] * u.m ** -3
     instance["He"] = number_densities
+
+
+def test_len():
+    ionization_states = IonizationStateCollection(["H", "He"])
+    assert len(ionization_states) == 2
+
+
+def test_iteration_with_nested_iterator():
+    ionization_states = IonizationStateCollection(["H", "He"])
+
+    i = 0
+    for ionization_state1 in ionization_states:
+        assert isinstance(ionization_state1, IonizationState)
+        for ionization_state2 in ionization_states:
+            assert isinstance(ionization_state2, IonizationState)
+            i += 1
+    assert i == 4
+
+
+@pytest.mark.xfail()
+def test_hydrogen_deuterium():
+    instance = IonizationStateCollection(["H", "D"])

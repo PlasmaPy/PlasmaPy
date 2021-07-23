@@ -11,8 +11,9 @@ from plasmapy.formulary.dimensionless import quantum_theta
 from plasmapy.formulary.parameters import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
-from plasmapy.utils import call_string, CouplingWarning
+from plasmapy.utils import code_repr
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning
 
 
 class PlasmaBlob(GenericPlasma):
@@ -24,7 +25,7 @@ class PlasmaBlob(GenericPlasma):
     @validate_quantities(T_e=u.K, n_e=u.m ** -3)
     def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
-        Initialize plasma paramters.
+        Initialize plasma parameters.
         The most basic description is composition (ion), temperature,
         density, and ionization.
         """
@@ -37,7 +38,7 @@ class PlasmaBlob(GenericPlasma):
 
     def __str__(self):
         """
-        Fetches regimes for easy printing
+        Fetch regimes for easy printing.
 
         Examples
         --------
@@ -69,7 +70,7 @@ class PlasmaBlob(GenericPlasma):
             "Z": self.Z,
         }
 
-        return call_string(PlasmaBlob, (), argument_dict)
+        return code_repr.call_string(PlasmaBlob, (), argument_dict)
 
     @property
     def electron_temperature(self):

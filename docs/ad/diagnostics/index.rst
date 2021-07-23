@@ -6,12 +6,16 @@
 `plasmapy.diagnostics`
 ======================
 
-.. automodapi:: plasmapy.diagnostics
-   :no-heading:
-
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages and Modules
+   :caption: Sub-Packages & Modules
 
-   Swept Langmuir Analysis <langmuir>
+   proton_radiography
+   Swept Langmuir (will be deprecated) <langmuir>
    thomson
+
+API
+---
+
+.. automodapi:: plasmapy.diagnostics
+   :heading-chars: ^~

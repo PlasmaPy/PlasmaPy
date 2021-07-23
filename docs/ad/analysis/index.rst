@@ -10,8 +10,10 @@
 
 .. toctree::
    :maxdepth: 1
+   :caption: Sub-Packages & Modules
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
+   Swept Langmuir <swept_langmuir>
 
 Notebooks
 ---------
@@ -25,17 +27,5 @@ Notebooks
 API
 ---
 
-.. automodule:: plasmapy.analysis
-
-Sub-Packages & Modules
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. autosummary::
-
-   fit_functions
-
 .. automodapi:: plasmapy.analysis
-   :no-main-docstr:
-   :no-heading:
-   :include-all-objects:
-   :headings: "^-"
+   :heading-chars: ^~

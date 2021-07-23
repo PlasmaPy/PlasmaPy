@@ -6,9 +6,6 @@
 .. currentmodule:: plasmapy.dispersion.two_fluid_dispersion
 
 .. automodapi:: plasmapy.dispersion.two_fluid_dispersion
-   :include-all-objects:
-   :no-heading:
-   :headings: "-^"
 
 Example Notebooks
 -----------------

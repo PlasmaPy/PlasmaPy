@@ -1,25 +1,25 @@
 .. _particle-class:
 
-`~plasmapy.particles.Particle` Class
-************************************
+|Particle| Class
+****************
 
-The `~plasmapy.particles.Particle` class provides an object-oriented
-interface to access and represent particle information.
+The |Particle| class provides an object-oriented interface to access
+and represent particle information.
 
 .. _particle-class-instantiation:
 
-Creating a `~plasmapy.particles.Particle` object
-================================================
+Creating a |Particle| object
+============================
 
-The simplest way to create a `~plasmapy.particles.Particle` object
-is to pass it a `str` representing a particle.
+The simplest way to create a |Particle| object is to pass it a `str`
+representing a particle.
 
 >>> from plasmapy.particles import Particle
 >>> electron = Particle('e-')
 
-The `~plasmapy.particles.Particle` class accepts a variety of different
-`str` formats to represent particles. Atomic symbols are case-sensitive,
-but element names and many aliases are not.
+The |Particle| class accepts a variety of different `str` formats to
+represent particles. Atomic symbols are case-sensitive, but element
+names and many aliases are not.
 
 >>> alpha = Particle('alpha')
 >>> deuteron = Particle('D+')
@@ -30,40 +30,40 @@ but element names and many aliases are not.
 >>> antimuon = Particle('antimuon')
 >>> hydride = Particle('H-')
 
-An `int` may be used as the first positional argument to
-`~plasmapy.particles.Particle` to represent an atomic number.  For isotopes
-and ions, the mass number may be represented with the ``mass_numb``
-keyword and the integer charge may be represented with the ``Z``
-keyword.
+An `int` may be used as the first positional argument to |Particle| to
+represent an atomic number.  For isotopes and ions, the mass number
+may be represented with the ``mass_numb`` keyword and the integer
+charge may be represented with the ``Z`` keyword.
 
 >>> proton = Particle(1, mass_numb=1, Z=1)
 
-The most frequently used `~plasmapy.particles.Particle` objects may be
-imported directly from the atomic subpackage.
+The most frequently used |Particle| objects may be imported directly
+from the atomic subpackage.
 
 >>> from plasmapy.particles import proton, electron
 
-The `~plasmapy.particles.Particle` objects that may be imported
-directly are: ``proton``, ``electron``, ``neutron``, ``positron``,
-``deuteron``, ``triton``, and ``alpha``.
+The |Particle| objects that may be imported directly are:
+`~plasmapy.particles.proton`, `~plasmapy.particles.electron`,
+`~plasmapy.particles.neutron`, `~plasmapy.particles.positron`,
+`~plasmapy.particles.deuteron`, `~plasmapy.particles.triton`, and
+`~plasmapy.particles.alpha`.
 
 .. _particle-class-properties:
 
 Accessing particle properties
 =============================
 
-The properties of each particle may be accessed using the attributes of
-the corresponding `~plasmapy.particles.Particle` object.
+The properties of each particle may be accessed using the attributes
+of the corresponding |Particle| object.
 
 >>> proton.atomic_number
 1
->>> electron.integer_charge
+>>> electron.charge_number
 -1
 >>> triton.mass_number
 3
 
-Some of these properties are returned as a `~astropy.units.Quantity` in
-SI units.
+Some of these properties are returned as a |Quantity| in SI units.
 
 >>> alpha.charge
 <Quantity 3.20435324e-19 C>
@@ -75,12 +75,12 @@ SI units.
 <Quantity 0.49225958 GeV>
 
 Strings representing particles may be accessed using the
-`~plasmapy.particles.Particle.particle`,
-`~plasmapy.particles.Particle.element`,
-`~plasmapy.particles.Particle.isotope`, and
-`~plasmapy.particles.Particle.ionic_symbol` attributes.
+`~plasmapy.particles.particle_class.Particle.symbol`,
+`~plasmapy.particles.particle_class.Particle.element`,
+`~plasmapy.particles.particle_class.Particle.isotope`, and
+`~plasmapy.particles.particle_class.Particle.ionic_symbol` attributes.
 
->>> antimuon.particle
+>>> antimuon.symbol
 'mu+'
 >>> triton.element
 'H'
@@ -94,14 +94,15 @@ Strings representing particles may be accessed using the
 Categories
 ==========
 
-The `~plasmapy.particles.Particle.categories` attribute returns a `set`
-with the classification categories corresponding to the particle.
+The `~plasmapy.particles.particle_class.Particle.categories` attribute
+returns a `set` with the classification categories corresponding to
+the particle.
 
 >>> sorted(electron.categories)
 ['charged', 'electron', 'fermion', 'lepton', 'matter', 'stable']
 
 Membership of a particle within a category may be checked using the
-`~plasmapy.particles.Particle.is_category` method.
+`~plasmapy.particles.particle_class.Particle.is_category` method.
 
 >>> alpha.is_category('lepton')
 False
@@ -122,13 +123,14 @@ False
 >>> alpha.is_category(exclude='lepton')
 True
 
-Calling the `~plasmapy.particles.Particle.is_category` method with no
-arguments returns a set containing all of the valid categories for any
-particle.  Valid categories include: ``'actinide'``, ``'alkali metal'``,
-``'alkaline earth metal'``, ``'antibaryon'``, ``'antilepton'``,
-``'antimatter'``, ``'antineutrino'``, ``'baryon'``, ``'boson'``,
-``'charged'``, ``'electron'``, ``'element'``, ``'fermion'``,
-``'halogen'``, ``'ion'``, ``'isotope'``, ``'lanthanide'``, ``'lepton'``,
+Calling the `~plasmapy.particles.particle_class.Particle.is_category`
+method with no arguments returns a set containing all of the valid
+categories for any particle.  Valid categories include:
+``'actinide'``, ``'alkali metal'``, ``'alkaline earth metal'``,
+``'antibaryon'``, ``'antilepton'``, ``'antimatter'``,
+``'antineutrino'``, ``'baryon'``, ``'boson'``, ``'charged'``,
+``'electron'``, ``'element'``, ``'fermion'``, ``'halogen'``,
+``'ion'``, ``'isotope'``, ``'lanthanide'``, ``'lepton'``,
 ``'matter'``, ``'metal'``, ``'metalloid'``, ``'neutrino'``,
 ``'neutron'``, ``'noble gas'``, ``'nonmetal'``, ``'positron'``,
 ``'post-transition metal'``, ``'proton'``, ``'stable'``,
@@ -139,18 +141,18 @@ particle.  Valid categories include: ``'actinide'``, ``'alkali metal'``,
 Conditionals and equality properties
 ====================================
 
-Equality between particles may be tested either between two
-`~plasmapy.particles.Particle` objects, or between a
-`~plasmapy.particles.Particle` object and a `str`.
+Equality between particles may be tested either between two |Particle|
+objects, or between a |Particle| object and a `str`.
 
 >>> Particle('H-1') == Particle('protium 1+')
 False
 >>> alpha == 'He-4 2+'
 True
 
-The `~plasmapy.particles.Particle.is_electron` and
-`~plasmapy.particles.Particle.is_ion` attributes provide a quick way to
-check whether or not a particle is an electron or ion, respectively.
+The `~plasmapy.particles.particle_class.Particle.is_electron` and
+`~plasmapy.particles.particle_class.Particle.is_ion` attributes
+provide a quick way to check whether or not a particle is an electron
+or ion, respectively.
 
 >>> electron.is_electron
 True
@@ -159,13 +161,13 @@ False
 >>> deuteron.is_ion
 True
 
-The `~plasmapy.particles.Particle.element` and
-`~plasmapy.particles.Particle.isotope` attributes return `None` when the
-particle does not correspond to an element or isotope.  Because
-non-empty strings evaluate to `True` and `None` evaluates to `False`
-when converted to a `bool`, these attributes may be used in conditional
-statements to test whether or not a particle is in one of these
-categories.
+The `~plasmapy.particles.particle_class.Particle.element` and
+`~plasmapy.particles.particle_class.Particle.isotope` attributes
+return `None` when the particle does not correspond to an element or
+isotope.  Because non-empty strings evaluate to `True` and `None`
+evaluates to `False` when converted to a `bool`, these attributes may
+be used in conditional statements to test whether or not a particle is
+in one of these categories.
 
 .. code-block:: python
 
@@ -182,10 +184,10 @@ categories.
 Returning antiparticles
 =======================
 
-The antiparticle of an elementary particle or antiparticle may be found
-by either using Python's unary invert operator (``~``) or the
-`~plasmapy.particles.Particle.antiparticle` attribute of a
-`~plasmapy.particles.Particle` object.
+The antiparticle of an elementary particle or antiparticle may be
+found by either using Python's unary invert operator (``~``) or the
+`~plasmapy.particles.particle_class.Particle.antiparticle` attribute
+of a |Particle| object.
 
 >>> ~electron
 Particle("e+")
