@@ -211,7 +211,7 @@ Backwards Incompatible Changes
 ------------------------------
 
 - Created `plasmapy.dispersion` in accordance with PlasmaPy Enhancement Proposal 7
-  (`PLEP 7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_)
+  (`PLEP 7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/main/PLEP-0007.rst>`_)
   and migrated the dispersion functionality (`dispersionfunction.py`) from
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the `ion` and `particle` arguments of functions contained in `plasmapy.formulary.parameters`, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
@@ -228,7 +228,7 @@ Features
 - Added support for multiple electron components to diagnostics.thomson.spectral_density. Also fixed a bug for multiple ion populations. (`#893 <https://github.com/plasmapy/plasmapy/pull/893>`__)
 - Add dependency `pygments >= 2.4.1`. (`#898 <https://github.com/plasmapy/plasmapy/pull/898>`__)
 - Create the `plasmapy.analysis` package as per
-  `PLEP-7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/master/PLEP-0007.rst>`_ and
+  `PLEP-7 <https://github.com/PlasmaPy/PlasmaPy-PLEPs/blob/main/PLEP-0007.rst>`_ and
   initialize the package with the `~plasmapy.analysis.fit_functions` module.  Fit
   functions are designed to wrap together an analytical function, a curve fitter,
   uncertainty propagation, and a root solver to make curve fitting a little less

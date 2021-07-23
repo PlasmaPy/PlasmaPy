@@ -1,0 +1,3 @@
+Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
+property to fix the documentation build warning caused by the release
+of `sphinx` ``v4.1.0``.

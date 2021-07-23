@@ -80,7 +80,7 @@ intersphinx_mapping = {
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
     ),
-    "spihnx": ("https://www.sphinx-doc.org/en/master/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 
 autoclass_content = "both"
@@ -94,8 +94,8 @@ templates_path = ["_templates"]
 # source_suffix = ['.rst', '.md']
 source_suffix = ".rst"
 
-# The master toctree document.
-master_doc = "index"
+# The root toctree document.
+root_doc = "index"
 
 # General information about the project.
 project = "PlasmaPy"
@@ -215,7 +215,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (
-        master_doc,
+        root_doc,
         "PlasmaPy.tex",
         "PlasmaPy Documentation",
         "PlasmaPy Community",
@@ -228,7 +228,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
+man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -238,7 +238,7 @@ man_pages = [(master_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc,
+        root_doc,
         "PlasmaPy",
         "PlasmaPy Documentation",
         author,
@@ -274,7 +274,7 @@ nbsphinx_thumbnails = {
 nbsphinx_prolog = r"""
 {% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
-{% set nb_where = env.config.revision if env.config.revision else 'master' %}
+{% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
 .. raw:: html
 
