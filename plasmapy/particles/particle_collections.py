@@ -303,6 +303,8 @@ class ParticleList(collections.UserList):
             The relative abundances of the particles in the |ParticleList|. Must
             have the same number of elements as the |ParticleList|.
         """
+        # TODO: If the list contains all identical Particle instances, then
+        # return the Particle instance instead of a CustomParticle.
         average_mass = np.average(self.mass, weights=abundances)
         average_charge = np.average(self.charge, weights=abundances)
         return CustomParticle(mass=average_mass, charge=average_charge)
