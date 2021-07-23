@@ -9,17 +9,17 @@ specific version of PlasmaPy used in your project.  Citing a software
 package promotes scientific reproducibility, gives credit to its developers,
 and highlights the importance of software as a vital research product.
 
-Version 0.4.0 of PlasmaPy may be cited with the following reference:
+Version 0.6.0 of PlasmaPy may be cited with the following reference:
 
-   PlasmaPy Community et al. (2020). *PlasmaPy*, version 0.4.0, Zenodo,
-   http://doi.org/10.5281/zenodo.4037407
+   PlasmaPy Community et al. (2021). *PlasmaPy*, version 0.6.0, Zenodo,
+   http://doi.org/10.5281/zenodo.4602818
 
 This reference may be made, for example, by adding the following line
 to the methods or acknowledgements section of a paper.
 
-   This research made use of PlasmaPy version 0.4.0, a community-developed
+   This research made use of PlasmaPy version 0.6.0, a community-developed
    open source Python package for plasma science (PlasmaPy Community et al.
-   2020).
+   2021).
 
 A paper written using `AASTeX <https://journals.aas.org/aastexguide>`__
 use the ``\software{PlasmaPy}`` command to cite PlasmaPy.

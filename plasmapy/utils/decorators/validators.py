@@ -57,6 +57,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
@@ -148,9 +149,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         if "checks_on_return" in validations:
             raise TypeError(
-                f"keyword argument 'checks_on_return' is not allowed, "
-                f"use 'validations_on_return' to set validations "
-                f"on the return variable"
+                "keyword argument 'checks_on_return' is not allowed, "
+                "use 'validations_on_return' to set validations "
+                "on the return variable"
             )
 
         self._validations = validations
@@ -315,7 +316,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         # initialize str for error message
         if arg_name == "checks_on_return":
-            err_msg = f"The return value  "
+            err_msg = "The return value  "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"
@@ -329,8 +330,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             typeerror_msg += f"{unit}"
 
             if ii != len(arg_validations["units"]) - 1:
-                typeerror_msg += f", "
-        typeerror_msg += f"]"
+                typeerror_msg += ", "
+        typeerror_msg += "]"
 
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
@@ -429,6 +430,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         can_be_inf             `bool`  [DEFAULT `True`] values can be :data:`~numpy.inf`
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes

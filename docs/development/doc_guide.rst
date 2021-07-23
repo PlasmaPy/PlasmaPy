@@ -8,7 +8,7 @@ packages.
 
 Building documentation
 ======================
-Documentation is built from the master branch on every commit pushed
+Documentation is built from the main branch on every commit pushed
 to it.
 
 Sphinx, the documentation generator of PlasmaPy, uses reStructuredText (reST) as its markup language. A primer on reST is available at this `webpage
@@ -38,26 +38,39 @@ Docstrings
 
 * All public classes, methods, and functions should have docstrings.
 
-* PlasmaPy uses the `numpydoc standard for docstrings
-  <https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard>`_\
-  .
+* PlasmaPy uses the `numpydoc`_ standard for docstrings.
 
 * Docstrings must be raw string `literals
   <https://docs.python.org/3/reference/lexical_analysis.html#literals>`_
   if they contain backslashes.  A raw string literal is denoted by
-  having an `r` immediately precede quotes or triple quotes:
+  having an ``r`` immediately precede quotes or triple quotes:
 
 .. code-block:: python
 
-   r""" I did not like unstable eigenfunctions at first, but then they
+   r"""
+   I did not like unstable eigenfunctions at first, but then they
    grew on me.
-
    """
 
-* Simple functions may need only a one-line docstring.
+* Simple private functions may need only a one-line docstring.
 
 Narrative Documentation
 =======================
 
 * Each subpackage must have narrative documentation describing its
   use.
+
+Substitutions
+=============
+
+The `common_links.rst
+<https://github.com/PlasmaPy/PlasmaPy/blob/master/docs/common_links.rst>`_
+file defines reStructuredText substitutions that can be used in
+PlasmaPy's documentation.
+
+.. code-block:: RST
+
+    Instead of writing `~plasmapy.particles.particle_class.Particle`,
+    we can write |Particle|.
+
+Substitutions should be defined when they are used in multiple files.

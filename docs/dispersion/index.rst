@@ -4,26 +4,13 @@ Dispersion (`plasmapy.dispersion`)
 
 .. py:currentmodule:: plasmapy.dispersion
 
-.. automodule:: plasmapy.dispersion
+.. automodapi:: plasmapy.dispersion
 
 Example Notebooks
 -----------------
 
 .. nbgallery::
+   :glob:
+   :reversed:
 
-   /notebooks/dispersion/dispersion_function
-   /notebooks/dispersion/two_fluid_dispersion
-
-Sub-Packages & Modules
-----------------------
-
-.. autosummary::
-
-   dispersionfunction
-   two_fluid_dispersion
-
-.. automodapi:: plasmapy.dispersion
-   :no-main-docstr:
-   :no-heading:
-   :include-all-objects:
-   :headings: "-^
+   /notebooks/dispersion/*

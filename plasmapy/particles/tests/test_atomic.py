@@ -5,19 +5,21 @@ from astropy import constants as const
 from astropy import units as u
 
 from plasmapy.particles.exceptions import (
-    AtomicError,
-    AtomicWarning,
     ChargeError,
     InvalidElementError,
     InvalidIsotopeError,
     InvalidParticleError,
-    MissingAtomicDataError,
+    MissingParticleDataError,
+    ParticleError,
+    ParticleWarning,
 )
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 from ..atomic import (
     _is_electron,
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -35,7 +37,7 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..isotopes import _Isotopes
+from ..isotopes import _isotopes
 from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from ..symbols import atomic_symbol, element_name, isotope_symbol
 
@@ -154,13 +156,13 @@ isotope_symbol_table = [
     ["h-3", {}, InvalidParticleError],
     ["h", {}, InvalidParticleError],
     ["d+", {}, InvalidParticleError],
-    ["H-1", {"mass_numb": 1}, AtomicWarning],
-    ["H-2", {"mass_numb": 2}, AtomicWarning],
-    ["T", {"mass_numb": 3}, AtomicWarning],
-    ["Li-6", {"mass_numb": 6}, AtomicWarning],
-    ["lithium-6", {"mass_numb": 6}, AtomicWarning],
-    ["alpha", {"mass_numb": 4}, AtomicWarning],
-    ["p", {"mass_numb": 1}, AtomicWarning],
+    ["H-1", {"mass_numb": 1}, ParticleWarning],
+    ["H-2", {"mass_numb": 2}, ParticleWarning],
+    ["T", {"mass_numb": 3}, ParticleWarning],
+    ["Li-6", {"mass_numb": 6}, ParticleWarning],
+    ["lithium-6", {"mass_numb": 6}, ParticleWarning],
+    ["alpha", {"mass_numb": 4}, ParticleWarning],
+    ["p", {"mass_numb": 1}, ParticleWarning],
 ]
 
 atomic_number_table = [
@@ -263,17 +265,17 @@ standard_atomic_weight_table = [
     [1, (1.008 * u.u).to(u.kg)],
     ["Hydrogen", (1.008 * u.u).to(u.kg)],
     ["Au", u.kg],
-    ["H-1", AtomicError],
+    ["H-1", ParticleError],
     ["help i'm trapped in a unit test", InvalidParticleError],
     [1.1, TypeError],
     ["n", InvalidElementError],
-    ["p", AtomicError],
-    ["alpha", AtomicError],
-    ["deuteron", AtomicError],
-    ["tritium", AtomicError],
-    ["Au+", AtomicError],
-    ["Fe -2", AtomicError],
-    ["Og 2+", AtomicError],
+    ["p", ParticleError],
+    ["alpha", ParticleError],
+    ["deuteron", ParticleError],
+    ["tritium", ParticleError],
+    ["Au+", ParticleError],
+    ["Fe -2", ParticleError],
+    ["Og 2+", ParticleError],
     ["h", InvalidParticleError],
     ["fe", InvalidParticleError],
 ]
@@ -287,16 +289,16 @@ particle_mass_table = [
     ["hydrogen-1", {"Z": 1}, const.m_p],
     ["p+", const.m_p],
     ["F-19", {"Z": 3}, u.kg],
-    ["Og 1+", {}, MissingAtomicDataError],
+    ["Og 1+", {}, MissingParticleDataError],
     ["Fe-56", {"Z": 1.4}, TypeError],
     ["H-1 +1", {"Z": 0}, InvalidParticleError],
     [26, {"Z": 1, "mass_numb": "a"}, TypeError],
     [26, {"Z": 27, "mass_numb": 56}, InvalidParticleError],
-    ["Og", {"Z": 1}, MissingAtomicDataError],
+    ["Og", {"Z": 1}, MissingParticleDataError],
     ["Og", {"mass_numb": 696, "Z": 1}, InvalidParticleError],
     ["He 1+", {"mass_numb": 99}, InvalidParticleError],
     ["fe-56 1+", {}, InvalidParticleError],
-    ["H-1", {"mass_numb": 1, "Z": 1}, AtomicWarning],
+    ["H-1", {"mass_numb": 1, "Z": 1}, ParticleWarning],
     ["H", standard_atomic_weight("H")],
 ]
 
@@ -335,7 +337,7 @@ is_stable_table = [
     [("B",), InvalidIsotopeError],
 ]
 
-integer_charge_table = [
+charge_number_table = [
     ["H+", 1],
     ["D +1", 1],
     ["tritium 1+", 1],
@@ -363,9 +365,9 @@ integer_charge_table = [
     ["d+", InvalidParticleError],
     ["Fe 29+", InvalidParticleError],
     ["H-1", ChargeError],
-    ["H---", AtomicWarning],
-    ["Fe -26", AtomicWarning],
-    ["Og 10-", AtomicWarning],
+    ["H---", ParticleWarning],
+    ["Fe -26", ParticleWarning],
+    ["Og 10-", ParticleWarning],
 ]
 
 electric_charge_table = [
@@ -377,8 +379,8 @@ electric_charge_table = [
     ["badinput", InvalidParticleError],
     ["h+", InvalidParticleError],
     ["Au 81+", InvalidParticleError],
-    ["Au 81-", AtomicWarning],
-    ["H---", AtomicWarning],
+    ["Au 81-", ParticleWarning],
+    ["H---", ParticleWarning],
 ]
 
 half_life_table = [["H-1", u.s], ["tritium", u.s], ["H-1", np.inf * u.s]]
@@ -417,7 +419,7 @@ tables_and_functions = [
     (standard_atomic_weight, standard_atomic_weight_table),
     (is_stable, is_stable_table),
     (particle_mass, particle_mass_table),
-    (integer_charge, integer_charge_table),
+    (charge_number, charge_number_table),
     (electric_charge, electric_charge_table),
     (half_life, half_life_table),
 ]
@@ -463,7 +465,7 @@ atomic_ParticleErrors_funcs_table = [
     stable_isotopes,
     common_isotopes,
     isotopic_abundance,
-    integer_charge,
+    charge_number,
     electric_charge,
 ]
 
@@ -623,12 +625,13 @@ def test_half_life():
 def test_half_life_unstable_isotopes():
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
-    for isotope in _Isotopes.keys():
+    for isotope in _isotopes.keys():
         if (
-            "half_life" not in _Isotopes[isotope].keys()
-            and not _Isotopes[isotope].keys()
+            "half_life" not in _isotopes[isotope].keys()
+            and not _isotopes[isotope].keys()
         ):
-            with pytest.raises(MissingAtomicDataError):
+            with pytest.raises(MissingParticleDataError):
+
                 half_life(isotope)
 
 
@@ -638,7 +641,7 @@ def test_half_life_u_220():
 
     isotope_without_half_life_data = "No-248"
 
-    with pytest.raises(MissingAtomicDataError):
+    with pytest.raises(MissingParticleDataError):
         half_life(isotope_without_half_life_data)
         pytest.fail(
             f"This test assumes that {isotope_without_half_life_data} does "
@@ -714,7 +717,7 @@ def test_isotopic_abundance():
     assert isotopic_abundance("Be-8") == 0.0, "Be-8"
     assert isotopic_abundance("Li-8") == 0.0, "Li-8"
 
-    with pytest.warns(AtomicWarning):
+    with pytest.warns(ParticleWarning):
         isotopic_abundance("Og", 294)
 
     with pytest.raises(InvalidIsotopeError):
@@ -758,7 +761,7 @@ class TestReducedMassInput:
             reduced_mass("N", 6e-26 * u.l)
 
     def test_missing_atomic_data(self):
-        with pytest.raises(MissingAtomicDataError):
+        with pytest.raises(MissingParticleDataError):
             reduced_mass("Og", "H")
 
 
@@ -780,3 +783,8 @@ str_electron_table = [
 @pytest.mark.parametrize("particle, electron", str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
+
+
+def test_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert integer_charge("Fe 20+") == 20

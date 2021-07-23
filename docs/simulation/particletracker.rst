@@ -1,3 +1,5 @@
+:orphan:
+
 .. currentmodule:: plasmapy.simulation.particletracker
 
 ************************************************
@@ -13,15 +15,13 @@ stepper implementing the Boris algorithm.
 This module is highly unstable and is expected to change a lot in the
 future.
 
-
 .. nbgallery::
     :caption: Examples
 
-    /notebooks/particle_stepper
+    /notebooks/simulation/particle_stepper
 
-Reference/API
-=============
+API
+===
 
 .. automodapi:: plasmapy.simulation.particletracker
-   :no-heading:
-   :no-main-docstr:
+   :no-main-docstring:

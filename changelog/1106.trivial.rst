@@ -1,0 +1,4 @@
+Move our custom pre-commit style testing suite to pre-commit.ci,
+taking advantage of the new `pre-commit.ci autofix` command that
+allows manually calling for pre-commit to be run. Simply type
+that as a comment to a PR.

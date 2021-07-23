@@ -65,21 +65,21 @@ def to_roman(n: Union[Integral, np.integer]) -> str:
 
     Parameters
     ----------
-    n : int or `~numpy.integer`
+    n : `int` or `~numpy.integer`
         The integer to be converted to a Roman numeral that must be
         between 1 and 4999, inclusive.
 
     Returns
     -------
-    result : str
+    result : `str`
         The number in Roman numeral notation.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If the input is not an integer.
 
-    OutOfRangeError
+    `~plasmapy.utils.exceptions.OutOfRangeError`
         If the number is not between 1 and 4999, inclusive.
 
     See Also
@@ -113,20 +113,20 @@ def from_roman(s: str) -> Integral:
 
     Parameters
     ----------
-    s : str
+    s : `str`
         A Roman numeral.
 
     Returns
     -------
-    result : int
-        The integer corresponding to the Roman numeral.
+    result : `int`
+        The positive integer corresponding to the Roman numeral.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         The argument is not a `str`.
 
-    InvalidRomanNumeralError
+    `~plasmapy.utils.exceptions.InvalidRomanNumeralError`
         The argument is not a valid Roman numeral.
 
     See Also
@@ -161,24 +161,23 @@ def is_roman_numeral(s: str) -> bool:
 
     Parameters
     ----------
-    s : str
+    s : `str`
         The possible Roman numeral.
 
     Returns
     -------
-    result : bool
+    result : `bool`
         `True` if the `str` input is a valid Roman numeral, and `False`
         if it is not.
 
     Raises
     ------
-    TypeError
+    `TypeError`
         If the argument is not a `str`.
 
     See Also
     --------
     to_roman
-
     from_roman
 
     Examples

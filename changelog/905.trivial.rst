@@ -1,1 +1,0 @@
-Changed remaining instances of @u.quantity_input to @validate_quantities in response to issue #880.

@@ -38,7 +38,7 @@ from plasmapy.formulary.braginskii import (
 )
 from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.parameters import Hall_parameter
-from plasmapy.particles.atomic import integer_charge, particle_mass
+from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityWarning
 
@@ -58,7 +58,7 @@ class Test_classical_transport:
         self.n_e = 2e13 / u.cm ** 3
         self.ion = "D +1"
         self.m_i = particle_mass(self.ion)
-        self.Z = integer_charge(self.ion)
+        self.Z = charge_number(self.ion)
         self.T_i = self.T_e
         self.n_i = self.n_e / self.Z
         self.B = 0.01 * u.T
@@ -179,7 +179,7 @@ class Test_classical_transport:
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self):
-        """output should be Quantity with units of Pa s """
+        """output should be Quantity with units of Pa s"""
         testTrue = self.ct.ion_viscosity.unit == u.Pa * u.s
         errStr = (
             f"Ion viscosity units should be {u.Pa * u.s} "

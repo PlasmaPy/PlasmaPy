@@ -7,30 +7,67 @@ Code Development Guidelines
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.6 and
+Code written for PlasmaPy must be compatible with Python 3.7 and
 later.
 
 Coding Style
 ============
 
+TL;DR: use pre-commit
+---------------------
+
+PlasmaPy has a configuration for the `pre-commit framework
+<https://pre-commit.com/>`_ that takes care of style mostly automatically.
+Install it with `pip install pre-commit`, then use `pre-commit install` within
+the repository.
+
+This will cause pre-commit to download the right versions of linters we use,
+then run an automated style checking suite on every commit.  Do note that this
+works better with a `git add`, then `git commit` workflow than a `git commit
+-a` workflow — that way, you can check via `git diff` what the automated
+changes actually did.
+
+Note that the "Style linters / pre-commit (pull_request)" part of our
+Continuous Integration system can and will (metaphorically) shout at you if it
+finds you didn't apply the linters. Also note that the linters' output may vary
+with version, so, rather than apply `black` and `isort` manually, let
+pre-commit do the version management for you instead!
+
+Our pre-commit suite can be found in `.pre-commit-config.yaml
+<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
+It includes
+
+* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package
+* `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
+  to example notebooks as well.
+* a few tools for `requirements.txt`, `.yml` files and the like.
+
+PlasmaPy Code Style Guide, codified
+-----------------------------------
+
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
   <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
-  * The PEP 8 Speaks integration on GitHub will comment when there are
-    any departures from the PEP 8 style guide.
-
-  * PEP 8 compliance may be checked locally using
-    `pycodestyle <http://pycodestyle.pycqa.org/en/latest/>`_.
-
   * Line lengths should be chosen to maximize the readability and
     elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 99 characters.
+    PlasmaPy is 88 characters.
 
   * Docstrings and comments should generally be limited to
-    72 characters.
+    about 72 characters.
 
-* Follow the existing coding style within a subpackage.
+* During code development, use
+  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
+  format code and ensure a consistent code style throughout the
+  package and `isort <https://pycqa.github.io/isort/>`_ to
+  automatically sort imports.
+
+* Follow the existing coding style within a subpackage.  This includes,
+  for example, variable naming conventions.
 
 * Use standard abbreviations for imported packages when possible, such
   as ``import numpy as np``, ``import matplotlib as mpl``, ``import
@@ -42,32 +79,17 @@ Coding Style
   functionality should be put into a separate file.
 
 * Use absolute imports, such as
-  ``from plasmapy.mathematics import Fermi_integral``,
-  rather than relative imports such as
-  ``from ..mathematics import Fermi_integral``.
+  ``from plasmapy.particles import Particle``, rather than relative
+  imports such as ``from ..particles import Particle``.
 
-* For multiline imports, instead of using ``\`` to break lines, wrap the
-  imported names in ``()`` parentheses and use consistent whitespace.
+* Use ``Optional[type]`` for type hinted keyword arguments with a
+  default value of ``None``.
 
-* Use ``Optional[type]`` for type hinted keyword arguments with a default value of
-  ``None``.
+* There should be at least one pun per 1284 lines of code.
 
-* There should be at most one pun per 1284 lines of code.
+* Avoid using `lambda` to define functions, as this notation may be
+  unfamiliar to newcomers to Python.
 
-pre-commit hooks
-----------------
-
-PlasmaPy has a configuration for `pre-commit` that takes care of style mostly
-automatically. Install it with `pip install pre-commit`, then use `pre-commit
-install` within the repository.
-
-This will cause git to run an automated style checking suite, mostly composed
-of `flake8` and `black`, on every commit. Do note that this works better with
-a `git add`, then `git commit` workflow than a `git commit -a` workflow - that
-way, you can check via `git diff` what the automated changes actually did.
-
-Note that `flake8` does not change your files automatically (help in setting
-that up, if possible, most welcome!).
 
 Branches, commits, and pull requests
 ====================================
@@ -81,7 +103,7 @@ repository:
   git fetch upstream
 
 Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your master branch so that it can be kept
+to avoid making changes on your main branch so that it can be kept
 consistent with the upstream repository.  Instead we can create a new
 branch for the specific feature that you would like to work on:
 
@@ -119,7 +141,7 @@ recommend reading about `best practices for scientific computing
 `PEP 8 style guide for Python code
 <https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
 for docstrings
-<https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`_
+<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
 submitting a pull request, as the `PEP8 Speaks
@@ -313,7 +335,7 @@ by an angular frequency to get a length scale:
 Examples
 ========
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/master/docs/notebooks
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
 .. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
@@ -322,7 +344,7 @@ takes care of executing them at documentation build time and including them
 in the documentation.
 
 Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all outputs" option). This accomplishes two goals:
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
