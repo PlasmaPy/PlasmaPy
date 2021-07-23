@@ -115,6 +115,16 @@ Post-release
   branch's version `on Read the Docs
   <https://readthedocs.org/projects/plasmapy/versions/>`_.
 
+* In the ``0.6.x`` branch, change the line in ``binder/requirements.txt``
+  that has ``.`` to ``plasmapy == 0.6``. Open one of the binder example
+  in the docs for ``0.6.x``, run the following commands to verify that the
+  released version of PlasmaPy begins with ``0.6``.
+
+  .. code-block:: python
+
+     import plasmapy
+     print(plasmapy.__version__)
+
 * Update the ``stable`` branch on GitHub: ``git checkout v0.6.x; git pull; git
   checkout stable; git merge v0.6.x; git push``.
 
