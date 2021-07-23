@@ -1131,7 +1131,7 @@ class CartesianGrid(AbstractGrid):
         # their values to 0. They will be over-written after the interpolation
         nan_mask = np.isnan(i).any(axis=1)
         # Replace all NaNs temporarily with 0
-        i = np.where(np.isnan(i), 0, i)
+        i[np.isnan(i)] = 0
         i = i.astype(np.int32)  # Cast as integers
 
         # Load grid attributes (so this isn't repeated)
