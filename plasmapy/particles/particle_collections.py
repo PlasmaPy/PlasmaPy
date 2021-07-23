@@ -8,6 +8,7 @@ import numpy as np
 
 from typing import Callable, Iterable, List, Union
 
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
@@ -348,3 +349,21 @@ Remove the first occurrence of a
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
+
+
+@particle_input(any_of=["element", "isotope"])
+def get_ions_of(particle: Particle, *, min_charge=0, max_charge=None, mass_numb=None):
+
+    base_particle = particle.isotope if particle.isotope else particle.element
+
+    if max_charge is None:
+        max_charge = particle.atomic_number
+
+    if min_charge > max_charge:
+        raise ValueError
+
+    charge_numbers = range(min_charge, max_charge + 1)
+
+    return ParticleList([Particle(base_particle, Z=Z) for Z in charge_numbers])
+
+    # TODO: add tests!
