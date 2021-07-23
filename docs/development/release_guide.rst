@@ -29,15 +29,15 @@ Pre-release
 Release
 -------
 
-* Reserve a digital object identifier (DOI) on `Zenodo`_ for version ``0.6.0``.
+* Reserve a digital object identifier (DOI) on Zenodo_ for version ``0.6.0``.
 
 * Update ``docs/about/citation.rst`` with the DOI for version ``0.6.0``.
 
 * Update version metadata in ``codemeta.json``.  In particular, update the
   ``"identifier"`` tag with the DOI for version ``0.6.0``.
 
-* Update the author list (with affiliations and ORCIDs, when possible) to be
-  consistent with the Zenodo record.  Update any other tags if necessary. Check
+* Update the author list (with affiliations and ORCID_ numbers, when possible) to be
+  consistent with the Zenodo_ record.  Update any other tags if necessary. Check
   ``.mailmap``, ``codemeta.json``, and ``docs/about/credits.rst``.
 
 * ``hub ci-status main -v`` — Check that the Continuous Integration is passing
@@ -73,7 +73,7 @@ Release
 * Use ``git shortlog -nse | cut -f 2 | vim -c "sort" -c "vsplit .mailmap" -c
   "windo diffthis"`` to compare the old and new ``.mailmap`` version. Make sure
   the old addresses are preserved in the new version, then overwrite the
-  existing ``.mailmap`` file
+  existing ``.mailmap`` file.
 
   .. note::
 
@@ -104,7 +104,7 @@ Release
 At this point, the GitHub Actions packaging workflow should do most of the work
 for you! `Ensure that the pipeline goes through.
 <https://dev.azure.com/plasmapy/PlasmaPy/_build>`_. When ``sdist`` and
-``wheels_universal`` finish, check `PyPI`_ for the new version!
+``wheels_universal`` finish, check PyPI_ for the new version!
 
 Post-release
 ------------
@@ -126,7 +126,7 @@ Post-release
     * If tests fail, look at the ``recipe.yaml`` file - usually it's either
       changed dependencies or the simple import tests they've got there.
 
-* Upload the release to the Zenodo record corresponding to the reserved
+* Upload the release to the Zenodo_ record corresponding to the reserved
   DOI
 
 * Notify plasma physics communities about the release
@@ -143,9 +143,8 @@ Compatibility with Prior Versions of Python, NumPy, and Astropy
 ===============================================================
 
 PlasmaPy releases will generally abide by the following standards,
-which are adapted from `NumPy Enhancement Proposal 29
-<https://numpy.org/neps/nep-0029-deprecation_policy.html>`_ for the
-support of old versions of `Python`_, `NumPy`_, and `Astropy`_.
+which are adapted from `NumPy Enhancement Proposal 29`_ for the
+support of old versions of Python_, NumPy_, and Astropy_.
 
 * PlasmaPy should support at least the minor versions of Python
   initially released 42 months prior to a planned project release date.
@@ -165,3 +164,6 @@ patch releases.
 Exceptions to these guidelines should only be made when there are major
 improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
+
+.. _`NumPy Enhancement Proposal 29`: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _ORCID: https://orcid.org/
