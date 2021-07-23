@@ -41,35 +41,35 @@ New Features
 
 * Adopted use of `~astropy.units` as a units package.
 
-* Created the `~plasmapy.atomic` subpackage to provide easy access to
+* Created the ``plasmapy.atomic`` subpackage to provide easy access to
   commonly used atomic data.
 
   - Created a functional interface to access particle properties and
     find the energy released from nuclear reactions.
 
-  - Created the `~plasmapy.atomic.Particle` class as an object-oriented
-    interface to the `~plasmapy.atomic` subpackage.
+  - Created the ``plasmapy.atomic.Particle`` class as an object-oriented
+    interface to the ``plasmapy.atomic`` subpackage.
 
-  - Created the `~plasmapy.atomic.particle_input` decorator.
+  - Created the ``plasmapy.atomic.particle_input`` decorator.
 
-* Created the `~plasmapy.classes` subpackage that includes the prototype
-  `~plasmapy.classes.Plasma3D`, `~plasmapy.classes.PlasmaBlob`, and
-  `~plasmapy.classes.Species` classes.
+* Created the ``plasmapy.classes`` subpackage that includes the prototype
+  ``plasmapy.classes.Plasma3D``, ``plasmapy.classes.PlasmaBlob``, and
+  ``plasmapy.classes.Species`` classes.
 
-* Created the `~plasmapy.constants` subpackage.
+* Created the ``plasmapy.constants`` subpackage.
 
-* Created the `~plasmapy.mathematics` subpackage that contains
+* Created the ``plasmapy.mathematics`` subpackage that contains
   analytical functions commonly used in plasma physics.
 
-* Created the `~plasmapy.physics` subpackage with its
-  `~plasmapy.physics.transport` module to calculate plasma parameters,
+* Created the ``plasmapy.physics`` subpackage with its
+  ``plasmapy.physics.transport`` module to calculate plasma parameters,
   transport coefficients, dielectric tensor elements, collision rates,
   and relativity/quantum physics parameters used in plasma physics.
 
 * Created the `~plasmapy.utils` subpackage.
 
-  - Created `~plasmapy.utils.check_quantity` and
-    `~plasmapy.utils.check_relativistic` decorators.
+  - Created ``plasmapy.utils.check_quantity`` and
+    ``plasmapy.utils.check_relativistic`` decorators.
 
   - Created custom exceptions.
 
@@ -88,7 +88,7 @@ New Features
 * Set up architecture to incorporate `Cython <http://cython.org/>`_ into
   performance-critical sections of code.
 
-* Incorporated import and setup tools from the `~astropy_helpers`
+* Incorporated import and setup tools from the ``astropy_helpers``
   package.
 
 * Set up a page describing the :ref:`subpackage-stability`.
