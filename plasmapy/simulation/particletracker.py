@@ -38,10 +38,10 @@ class ParticleTracker:
         and macroparticles.
 
     dt : `astropy.units.Quantity`
-        Duration of timestep
+        Duration of timestep.
 
     nt : `int`
-        Number of timesteps
+        Number of timesteps.
 
     Attributes
     ----------
@@ -97,7 +97,7 @@ class ParticleTracker:
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
-        self.q = atomic.integer_charge(particle_type) * constants.e.si
+        self.q = atomic.charge_number(particle_type) * constants.e.si
         self.m = atomic.particle_mass(particle_type)
         self.N = int(n_particles)
         self.scaling = scaling

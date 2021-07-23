@@ -99,7 +99,7 @@ def thermal_bremsstrahlung(
 
     # Default n_i is n_e/Z:
     if n_i is None:
-        n_i = n_e / ion_species.integer_charge
+        n_i = n_e / ion_species.charge_number
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -140,7 +140,7 @@ def thermal_bremsstrahlung(
         / (const.m_e.si * const.c.si ** 2) ** 1.5
     )
 
-    Zi = ion_species.integer_charge
+    Zi = ion_species.charge_number
     c2 = (
         np.sqrt(1 - ω_pe ** 2 / ω ** 2)
         * Zi ** 2

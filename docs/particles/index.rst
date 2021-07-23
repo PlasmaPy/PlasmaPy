@@ -1,11 +1,10 @@
-.. py:module:: plasmapy.particles
-
 .. _plasmapy-particles:
 
 ********************************
 Particles (`plasmapy.particles`)
 ********************************
 
+.. py:module:: plasmapy.particles
 .. currentmodule:: plasmapy.particles
 
 Introduction
@@ -33,11 +32,9 @@ See Also
   package provides access to properties of elements, isotopes, and ions
   in the periodic table of elements.
 
-Reference/API
-=============
+API
+===
 
 .. automodapi:: plasmapy.particles
-   :no-heading:
-   :no-main-docstr:
-   :inherited-members:
-   :include-all-objects:
+   :noindex:
+   :no-main-docstring:

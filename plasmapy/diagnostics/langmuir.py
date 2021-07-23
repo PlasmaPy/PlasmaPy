@@ -160,7 +160,7 @@ class Characteristic:
             )
 
         if len(np.unique(self.bias)) != len(self.bias):
-            raise ValueError(f"Bias array contains duplicate values.")
+            raise ValueError("Bias array contains duplicate values.")
 
     def get_padded_limit(self, padding, log=False):  # coverage: ignore
         r"""Return the limits of the current range for plotting, taking into

@@ -18,7 +18,7 @@ New Features
 * Created a guide on :ref:`contributing-to-plasmapy`.
 
 * Adopted a permissive BSD 3-clause `license
-  <https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md>`_ with
+  <https://github.com/PlasmaPy/PlasmaPy/blob/main/LICENSE.md>`_ with
   protections against software patents.
 
 * Set up continuous integration testing with `Travis CI

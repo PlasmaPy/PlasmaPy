@@ -26,7 +26,7 @@ def func_simple_noparens(
     """
     if not isinstance(particle, Particle):
         raise TypeError(
-            f"The argument particle in func_simple_noparens is not a Particle"
+            "The argument particle in func_simple_noparens is not a Particle"
         )
     return particle
 
@@ -41,9 +41,7 @@ def func_simple_parens(
     inputs.
     """
     if not isinstance(particle, Particle):
-        raise TypeError(
-            f"The argument particle in func_simple_parens is not a Particle"
-        )
+        raise TypeError("The argument particle in func_simple_parens is not a Particle")
     return particle
 
 

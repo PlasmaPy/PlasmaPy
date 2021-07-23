@@ -47,9 +47,9 @@ build-backend = "setuptools.build_meta"
   [ tool.gilesbot.towncrier_changelog ]
       enabled = true
       changelog_skip_label = "No changelog entry needed"
-      help_url = "https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst"
+      help_url = "https://github.com/PlasmaPy/PlasmaPy/blob/main/changelog/README.rst"
       changelog_missing = "Missing changelog entry"
-      changelog_missing_long = "This pull request needs a changelog entry file in `changelog/NUMBER.TYPE.rst`. For more information, consult https://github.com/PlasmaPy/PlasmaPy/blob/master/changelog/README.rst "
+      changelog_missing_long = "This pull request needs a changelog entry file in `changelog/NUMBER.TYPE.rst`. For more information, consult https://github.com/PlasmaPy/PlasmaPy/blob/main/changelog/README.rst "
       number_incorrect = "Incorrect changelog entry number (match PR!)"
       number_incorrect_long = "The changelog entry's number does not match this pull request's number."
       type_incorrect = "Incorrect changelog entry type (see list in changelog README)"
@@ -65,4 +65,5 @@ multi_line_output = 3
 use_parentheses = true
 include_trailing_comma = true
 force_alphabetical_sort_within_sections = true
+honor_noqa = true
 lines_between_types = 1
