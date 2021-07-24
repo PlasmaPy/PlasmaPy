@@ -193,7 +193,7 @@ def two_fluid(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid
+    >>> from plasmapy.dispersion.analytical import two_fluid
     >>> inputs = {
     ...     "k": 0.01 * u.rad / u.m,
     ...     "theta": 30 * u.deg,
