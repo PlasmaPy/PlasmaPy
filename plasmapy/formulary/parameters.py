@@ -1127,6 +1127,10 @@ def gyroradius(
     T : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
 
+    T_i : `~astropy.units.Quantity`, optional, keyword-only
+        The particle temperature in units convertible to kelvin.
+        Note: Deprecated. Use T instead.
+
     Returns
     -------
     r_Li : `~astropy.units.Quantity`
