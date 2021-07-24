@@ -1,1 +1,2 @@
 Use more generalized keyword argument T instead of T_i in gyroradius functionality
+Modified gyroradius tests i.e. replaced all T_i in parameters to T
