@@ -41,13 +41,13 @@ class IonicLevel:
         The fraction of an element or isotope that is at this ionization
         level.
 
-    number_density: `~astropy.units.Quantity`, optional
+    number_density: |Quantity|, optional
         The number density of this ion.
 
     See Also
     --------
-    IonizationState
-    plasmapy.particles.IonizationStateCollection
+    ~plasmapy.particles.ionization_state.IonizationState
+    ~plasmapy.particles.ionization_state_collection.IonizationStateCollection
 
     Examples
     --------
@@ -134,7 +134,7 @@ class IonicLevel:
 
     @property
     def ionic_fraction(self) -> Real:
-        r"""
+        """
         The fraction of particles of an element that are at this
         ionization level.
 
@@ -202,19 +202,19 @@ class IonizationState:
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or `~astropy.units.Quantity`; optional
+    ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or |Quantity|; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
         absolute tolerance of ``tol`` if dimensionless.  Alternatively,
-        this argument may be a `~astropy.units.Quantity` that represents
+        this argument may be a |Quantity| that represents
         the number densities of each neutral/ion.  This argument cannot
         be specified when ``particle`` is an ion.
 
-    T_e: `~astropy.units.Quantity`, keyword-only, optional
+    T_e: |Quantity|, keyword-only, optional
         The electron temperature or thermal energy per electron.
 
-    n_elem: `~astropy.units.Quantity`, keyword-only, optional
+    n_elem: |Quantity|, keyword-only, optional
         The number density of the element, including neutrals and all
         ions.
 
