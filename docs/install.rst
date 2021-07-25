@@ -149,7 +149,6 @@ by running
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
 
-.. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _from PyPI: https://pypi.org/project/plasmapy/
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls

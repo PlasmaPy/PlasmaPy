@@ -7,7 +7,6 @@ PlasmaPy Coordinating Committee
 
 * Erik Everson
 * Nicholas Murphy
-* Tulasi Parashar
 * Dominik Stańczak
 
 PlasmaPy Contributors
