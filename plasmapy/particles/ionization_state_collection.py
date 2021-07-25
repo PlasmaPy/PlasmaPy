@@ -37,8 +37,8 @@ class IonizationStateCollection:
         A `list` or `tuple` of elements or isotopes (if ``T_e`` is
         provided); a `list` of `~plasmapy.particles.IonizationState`
         instances; a `dict` with elements or isotopes as keys and
-        a `~numpy.ndarray` of ionic fractions as the values; or a `dict`
-        with elements or isotopes as keys and `~astropy.units.Quantity`
+        a |ndarray| of ionic fractions as the values; or a `dict`
+        with elements or isotopes as keys and |Quantity|
         instances with units of number density.
 
     abundances: `dict`, optional, keyword-only
@@ -51,12 +51,12 @@ class IonizationStateCollection:
         objects used as the keys and the corresponding base 10 logarithms of their
         relative abundances as the values.  The values must be real numbers.
 
-    n0: `~astropy.units.Quantity`, optional, keyword-only
+    n0: |Quantity|, optional, keyword-only
         The number density normalization factor corresponding to the
         abundances.  The number density of each element is the product
         of its abundance and ``n0``.
 
-    T_e: `~astropy.units.Quantity`, optional, keyword-only
+    T_e: |Quantity|, optional, keyword-only
         The electron temperature in units of temperature or thermal
         energy per particle.
 
@@ -117,7 +117,7 @@ class IonizationStateCollection:
     specified.
 
     If the value provided during item assignment is a
-    `~astropy.units.Quantity` with units of number density that retains
+    |Quantity| with units of number density that retains
     the total element density, then the ionic fractions will be set
     proportionately.
 
@@ -409,7 +409,7 @@ class IonizationStateCollection:
         isotope.
 
         The keys of this `dict` are the symbols for each element or
-        isotope.  The values will be `~numpy.ndarray` objects containing
+        isotope.  The values will be |ndarray| objects containing
         the ionic fractions for each ionization level corresponding to
         each element or isotope.
         """

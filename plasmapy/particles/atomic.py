@@ -51,9 +51,9 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: `str` or `~plasmapy.particles.particle_class.Particle`
+    element: `str` or |Particle|
         A string representing an element, isotope, or ion; or an
-        instance of the `~plasmapy.particles.particle_class.Particle` class.
+        instance of the |Particle| class.
 
     Returns
     -------
@@ -97,9 +97,9 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : `str` or `~plasmapy.particles.particle_class.Particle`
+    isotope : `str` or |Particle|
         A string representing an isotope or a neutron; or an instance of
-        the `plasmapy.particles.particle_class.Particle` class.
+        the |Particle| class.
 
     Returns
     -------
@@ -144,13 +144,13 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    element: `str`, `int`, or |Particle|
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
     Returns
     -------
-    atomic_weight: `~astropy.units.Quantity`
+    atomic_weight: |Quantity|
         The standard atomic weight of an element based on values from
         NIST.
 
@@ -205,7 +205,7 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    particle: `str`, `int`, or |Particle|
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
@@ -218,7 +218,7 @@ def particle_mass(
 
     Returns
     -------
-    mass: `~astropy.units.Quantity`
+    mass: |Quantity|
         The mass of the particle.
 
     Raises
@@ -382,7 +382,7 @@ def electric_charge(particle: Particle) -> u.C:
 
     Returns
     -------
-    charge: `~astropy.units.Quantity`
+    charge: |Quantity|
         The electric charge in coulombs.
 
     Raises
@@ -431,7 +431,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle: `int`, `str`, or |Particle|
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
@@ -484,7 +484,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
+    particle: `int`, `str`, or |Particle|
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
@@ -494,7 +494,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Returns
     -------
-    half_life_sec: `~astropy.units.Quantity`
+    half_life_sec: |Quantity|
         The half-life of the isotope or particle in units of seconds.
 
     Raises
@@ -847,17 +847,17 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.particle_class.Particle`,
-    `~astropy.units.Quantity`, or `~astropy.constants.Constant`
+    test_particle, target_particle : `str`, `int`, |Particle|,
+    |Quantity|, or `~astropy.constants.Constant`
 
         The test particle as represented by a string, an integer
-        representing atomic number, a `~plasmapy.particles.particle_class.Particle`
-        object, or a `~astropy.units.Quantity` or
+        representing atomic number, a |Particle|
+        object, or a |Quantity| or
         `~astropy.constants.Constant` with units of mass.
 
     Returns
     -------
-    reduced_mass : `~astropy.units.Quantity`
+    reduced_mass : |Quantity|
         The reduced mass between the test particle and target particle.
 
     Raises
@@ -866,7 +866,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         If either particle is invalid.
 
     `~astropy.units.UnitConversionError`
-        If an argument is a `~astropy.units.Quantity` or
+        If an argument is a |Quantity| or
         `~astropy.constants.Constant` but does not have units of mass.
 
     `~plasmapy.particles.exceptions.MissingParticleDataError`
@@ -874,8 +874,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `TypeError`
         If either argument is not a `str`, `int`,
-        `~plasmapy.particles.particle_class.Particle`,
-        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
+        |Particle|,
+        |Quantity|, or `~astropy.constants.Constant`.
 
     Example
     -------
@@ -893,7 +893,7 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         """Return the mass of a particle.
 
         Take a representation of a particle and returns the mass in
-        kg.  If the input is a `~astropy.units.Quantity` or
+        kg.  If the input is a |Quantity| or
         `~astropy.constants.Constant` with units of mass already, then
         this returns that mass converted to kg.
         """
