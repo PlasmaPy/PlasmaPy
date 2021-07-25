@@ -866,16 +866,15 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         If either particle is invalid.
 
     `~astropy.units.UnitConversionError`
-        If an argument is a |Quantity| or
-        `~astropy.constants.Constant` but does not have units of mass.
+        If an argument is a |Quantity| or `~astropy.constants.Constant`
+        but does not have units of mass.
 
     `~plasmapy.particles.exceptions.MissingParticleDataError`
         If the mass of either particle is not known.
 
     `TypeError`
         If either argument is not a `str`, `int`,
-        |Particle|,
-        |Quantity|, or `~astropy.constants.Constant`.
+        |Particle|, |Quantity|, or `~astropy.constants.Constant`.
 
     Example
     -------
@@ -925,7 +924,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
     ----------
     argument: `str` or `int`
         Atomic number (either integer or string), atomic symbol (e.g.,
-        ``"H"``, string), or element name (e.g. ``"Francium"``, string).
+        ``"H"``, string), or element name (e.g. ``"francium"``, string).
 
     Returns
     -------
