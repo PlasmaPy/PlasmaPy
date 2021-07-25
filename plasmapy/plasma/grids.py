@@ -1093,19 +1093,18 @@ class CartesianGrid(AbstractGrid):
         spaced and Cartesian.
         """
 
-        # Condition pos
+        if isinstance(pos, u.Quantity):
+            pos = pos.to(u.m).value
+        elif self.unit != u.m:
+            pos *= self.unit.to(u.m).value
+
         # If a single point was given, add empty dimension
         if pos.ndim == 1:
             pos = np.reshape(pos, [1, 3])
 
-        # Convert position to u.Quantiy
-        if not hasattr(pos, "unit"):
-            pos *= self.unit
-
-        # Validate args
+        # -- Validate args --
         # must be np.ndarray or u.Quantity arrays of same shape as grid
         for arg in args:
-
             if arg not in self.quantities:
                 raise KeyError(
                     "Quantity arguments must correspond to "
@@ -1122,37 +1121,6 @@ class CartesianGrid(AbstractGrid):
         # Update _interp_args variable
         self._interp_args = args
 
-        # Interpolate the indices
-        i = self.interpolate_indices(pos)
-        nparticles = i.shape[0]
-        nargs = len(args)
-
-        # Get the indices that are equal to nan (fill values), then set
-        # their values to 0. They will be over-written after the interpolation
-        nan_mask = np.isnan(i).any(axis=1)
-        # Replace all NaNs temporarily with 0
-        i[np.isnan(i)] = 0
-        i = i.astype(np.int32)  # Cast as integers
-
-        # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = (
-            self.ax0.to(u.m).value,
-            self.ax1.to(u.m).value,
-            self.ax2.to(u.m).value,
-        )
-        dx, dy, dz = (
-            self.dax0.to(u.m).value,
-            self.dax1.to(u.m).value,
-            self.dax2.to(u.m).value,
-        )
-        cell_volume = dx * dy * dz
-        n0, n1, n2 = self.shape
-
-        # If persistent, double check the arguments list hasn't changed
-        # If they have, run as non-persistent this time
-        if persistent and args != self._interp_args:
-            persistent = False
-
         # If not persistent, clear the cached properties so they are re-created
         # when called below
         if not persistent:
@@ -1165,82 +1133,118 @@ class CartesianGrid(AbstractGrid):
             except AttributeError:
                 pass
 
-        # Create a list of empty arrays to hold results
-        sum_value = np.zeros([nparticles, nargs])
+        # -- begin averaging --
 
-        # Strip units from pos (eliminate unit operations in loop)
-        pos = pos.si.value
+        nparticles = pos.shape[0]
+        nargs = len(args)
 
-        # Calculate the grid positions for each particle as interpolated
-        # by the nearest neighbor interpolator
-        xpos = ax0[i[:, 0]]
-        ypos = ax1[i[:, 1]]
-        zpos = ax2[i[:, 2]]
+        # Load grid attributes (so this isn't repeated)
+        ax0, ax1, ax2 = (
+            self.ax0.to(u.m).value,
+            self.ax1.to(u.m).value,
+            self.ax2.to(u.m).value,
+        )
+        dx, dy, dz = (
+            self.dax0.to(u.m).value,
+            self.dax1.to(u.m).value,
+            self.dax2.to(u.m).value,
+        )
+        n0, n1, n2 = self.shape
 
-        # Determine the points bounding the grid cell containing the
-        # particle
-        x0 = np.where(pos[:, 0] > xpos, i[:, 0], i[:, 0] - 1)
-        xpts = np.array([x0, x0 + 1])
-        y0 = np.where(pos[:, 1] > ypos, i[:, 1], i[:, 1] - 1)
-        ypts = np.array([y0, y0 + 1])
-        z0 = np.where(pos[:, 2] > zpos, i[:, 2], i[:, 2] - 1)
-        zpts = np.array([z0, z0 + 1])
+        # find cell nearest to particle
+        nearest_neighbor_index = np.zeros((nparticles, 3), dtype=np.int32)
+        nearest_neighbor_index[..., 0] = np.abs(pos[:, 0, None] - ax0).argmin(axis=1)
+        nearest_neighbor_index[..., 1] = np.abs(pos[:, 1, None] - ax1).argmin(axis=1)
+        nearest_neighbor_index[..., 2] = np.abs(pos[:, 2, None] - ax2).argmin(axis=1)
 
-        # Calculate the distance from each point to the x0,y0,z0 point
-        grid_pos = np.array([ax0[x0], ax1[y0], ax2[z0]])
-        grid_pos = np.moveaxis(grid_pos, 0, -1)
-        displacement = np.abs(grid_pos - pos)
+        # What particles are off the grid?
+        mask_particle_off = (
+            (pos[:, 0] < ax0.min() - 0.5 * dx)
+            | (pos[:, 0] > ax0.max() + 0.5 * dx)
+            | (pos[:, 1] < ax1.min() - 0.5 * dy)
+            | (pos[:, 1] > ax1.max() + 0.5 * dy)
+            | (pos[:, 2] < ax2.min() - 0.5 * dz)
+            | (pos[:, 2] > ax2.max() + 0.5 * dz)
+        )
 
-        # Go through all of the vertices around the position and volume-
-        # weight the values
-        for x in range(2):
-            for y in range(2):
-                for z in range(2):
+        # Get the physical positions for the nearest neighbor cell
+        # for the each particle
+        xpos = ax0[nearest_neighbor_index[:, 0]]
+        ypos = ax1[nearest_neighbor_index[:, 1]]
+        zpos = ax2[nearest_neighbor_index[:, 2]]
+        nearest_neighbor_pos = np.array([xpos, ypos, zpos]).swapaxes(0, 1)
 
-                    # Determine if gridpoint is within bounds
-                    valid = (
-                        (xpts[x] >= 0)
-                        & (xpts[x] < n0)
-                        & (ypts[y] >= 0)
-                        & (ypts[y] < n1)
-                        & (zpts[z] >= 0)
-                        & (zpts[z] < n2)
-                        & (displacement[:, 0] < dx)
-                        & (displacement[:, 1] < dy)
-                        & (displacement[:, 2] < dz)
-                    )
-                    out = np.where(~valid)
+        # Determine the indices for the grid cells bounding the particle
+        # - The imaginary cell centered on the particle will overlap with
+        #   1 to 8 surrounding cells
+        # - typically this is 8 but will be 4, 2, or 1 when the particle is
+        #   near the boundary of the grid
+        bounding_cell_indices = np.empty((nparticles, 8, 3), dtype=np.int32)
+        lower_indices = np.where(
+            pos >= nearest_neighbor_pos,
+            nearest_neighbor_index,
+            nearest_neighbor_index - 1,
+        )
 
-                    if x == 0:
-                        Lx = dx - displacement[:, 0]
-                    else:
-                        Lx = displacement[:, 0]
+        # populate x indices
+        bounding_cell_indices[:, 0:4, 0] = np.tile(
+            lower_indices[:, 0], (4, 1)
+        ).swapaxes(0, 1)
+        bounding_cell_indices[:, 4:, 0] = bounding_cell_indices[:, 0:4, 0] + 1
 
-                    if y == 0:
-                        Ly = dy - displacement[:, 1]
-                    else:
-                        Ly = displacement[:, 1]
+        # populate y indices
+        bounding_cell_indices[:, [0, 1, 4, 5], 1] = np.tile(
+            lower_indices[:, 1], (4, 1)
+        ).swapaxes(0, 1)
+        bounding_cell_indices[:, [2, 3, 6, 7], 1] = (
+            bounding_cell_indices[:, [0, 1, 4, 5], 1] + 1
+        )
 
-                    if z == 0:
-                        Lz = dz - displacement[:, 2]
-                    else:
-                        Lz = displacement[:, 2]
+        # populate z indices
+        bounding_cell_indices[:, 0::2, 2] = np.tile(
+            lower_indices[:, 2], (4, 1)
+        ).swapaxes(0, 1)
+        bounding_cell_indices[:, 1::2, 2] = bounding_cell_indices[:, 0::2, 2] + 1
 
-                    # Calculate the weight
-                    weight = (Lx * Ly * Lz) / cell_volume
-                    weight[out] = 0
-                    weight[nan_mask] = 0
-                    weight = np.outer(weight, np.ones([nargs]))
+        # create off the grid mask
+        mask_cell_off = (
+            (bounding_cell_indices < 0).any(axis=2)
+            | (bounding_cell_indices[:, :, 0] >= n0)
+            | (bounding_cell_indices[:, :, 1] >= n1)
+            | (bounding_cell_indices[:, :, 2] >= n2)
+        )
 
-                    sum_value += (
-                        weight * self._interp_quantities[xpts[x], ypts[y], zpts[z], :]
-                    )
+        # Zero any out of bounds indices so IndexError is not raised
+        # during indexing.  This means an incorrect value will be retrieved
+        # but will not be used because of the zero weighting and the
+        # off the grid mask
+        bounding_cell_indices[mask_cell_off, :] = 0
+
+        lx = dx - np.abs(pos[:, None, 0] - ax0[bounding_cell_indices[..., 0]])
+        ly = dy - np.abs(pos[:, None, 1] - ax1[bounding_cell_indices[..., 1]])
+        lz = dz - np.abs(pos[:, None, 2] - ax2[bounding_cell_indices[..., 2]])
+        bounding_cell_weights = lx * ly * lz
+        bounding_cell_weights[mask_cell_off] = 0.0
+        bounding_cell_weights[mask_particle_off, ...] = 0.0
+        norms = np.sum(bounding_cell_weights, axis=1)
+        mask_norm_zero = norms == 0.0
+        bounding_cell_weights[~mask_norm_zero] = (
+            bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
+        )
+
+        vals = self._interp_quantities[
+            bounding_cell_indices[..., 0],
+            bounding_cell_indices[..., 1],
+            bounding_cell_indices[..., 2],
+            :,
+        ]
+        weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
 
         # Split output array into arrays with units
         # Apply units to output arrays
         output = []
-        for i in range(nargs):
-            output.append(sum_value[:, i] * self._interp_units[i])
+        for arg in range(nargs):
+            output.append(weighted_ave[..., arg] * self._interp_units[arg])
 
         if len(output) == 1:
             return output[0]
