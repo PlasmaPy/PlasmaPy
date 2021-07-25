@@ -240,7 +240,7 @@ class Particle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    argument : `ParticleLike`, excluding `CustomParticle` instances
+    argument : |ParticleLike|, excluding |CustomParticle| instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         |Particle| instance.
@@ -284,8 +284,8 @@ class Particle(AbstractPhysicalParticle):
 
     See Also
     --------
-    CustomParticle
-    DimensionlessParticle
+    ~plasmapy.particles.particle_class.CustomParticle
+    ~plasmapy.particles.particle_class.DimensionlessParticle
     ~plasmapy.particles.particle_collections.ParticleList
 
     Examples
@@ -1762,10 +1762,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        ~plasmapy.particles.exceptions.InvalidElementError
             If the |Particle| is not an element.
 
-        ~plasmapy.particles.ChargeError
+        ~plasmapy.particles.exceptions.ChargeError
             If no charge information for the |Particle| object is
             specified.
 
@@ -1833,7 +1833,7 @@ class DimensionlessParticle(AbstractParticle):
     See Also
     --------
     ~plasmapy.particles.particle_class.Particle
-    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.particle_class.CustomParticle
 
     Notes
     -----
@@ -2303,8 +2303,8 @@ instances, are particle-like.
 
 See Also
 --------
-Particle
-CustomParticle
+~plasmapy.particles.particle_class.Particle
+~plasmapy.particles.particle_class.CustomParticle
 ~plasmapy.particles.decorators.particle_input
 
 Examples
