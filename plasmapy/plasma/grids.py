@@ -357,6 +357,11 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
+    
+    
+    @property
+    def _ax0_si(self):
+        return self.ds.coords["ax0"].values * self.si_factors[0]
 
     @property
     def ax0(self):
@@ -377,6 +382,10 @@ class AbstractGrid(ABC):
             )
 
     @property
+    def _ax1_si(self):
+        return self.ds.coords["ax1"].values * self.si_factors[1]
+
+    @property
     def ax1(self):
         r"""
         Second axis of the grid. Only valid for uniform grids.
@@ -392,6 +401,10 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
             )
+            
+    @property
+    def _ax2_si(self):
+        return self.ds.coords["ax2"].values * self.si_factors[2]
 
     @property
     def ax2(self):
@@ -409,6 +422,11 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
             )
+            
+            
+    @property
+    def _dax0_si(self):
+        return np.mean(np.gradient(self._ax0_si))
 
     @property
     def dax0(self):
@@ -427,6 +445,10 @@ class AbstractGrid(ABC):
                 "The grid step size properties are only valid on "
                 "uniformly spaced grids."
             )
+            
+    @property
+    def _dax1_si(self):
+        return np.mean(np.gradient(self._ax1_si))
 
     @property
     def dax1(self):
@@ -445,6 +467,10 @@ class AbstractGrid(ABC):
                 "The grid step size properties are only valid on "
                 "uniformly spaced grids."
             )
+
+    @property
+    def _dax2_si(self):
+        return np.mean(np.gradient(self._ax2_si))
 
     @property
     def dax2(self):
@@ -515,6 +541,12 @@ class AbstractGrid(ABC):
         self.ds = xr.Dataset()
 
         self.ds.attrs["axis_units"] = [pts0.unit, pts1.unit, pts2.unit]
+        
+        # Store the conversion factors for each axis to SI
+        self.si_factors = [(1 * pts0.unit).si.value,
+                           (1 * pts1.unit).si.value, 
+                           (1 * pts2.unit).si.value]
+        
         if self.is_uniform:
             self.ds.coords["ax0"] = pts0[:, 0, 0]
             self.ds.coords["ax1"] = pts1[0, :, 0]
@@ -1140,14 +1172,15 @@ class CartesianGrid(AbstractGrid):
 
         # Load grid attributes (so this isn't repeated)
         ax0, ax1, ax2 = (
-            self.ax0.to(u.m).value,
-            self.ax1.to(u.m).value,
-            self.ax2.to(u.m).value,
+            self._ax0_si,
+            self._ax1_si,
+            self._ax2_si,
         )
+        
         dx, dy, dz = (
-            self.dax0.to(u.m).value,
-            self.dax1.to(u.m).value,
-            self.dax2.to(u.m).value,
+            self._dax0_si,
+            self._dax1_si,
+            self._dax2_si,
         )
         n0, n1, n2 = self.shape
 
