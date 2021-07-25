@@ -1,6 +1,7 @@
 """
-This Sphinx extension package contains custom documentation functionality
-used to document `PlasmaPy's packages <https://github.com/PlasmaPy>`_ .
+This `Sphinx <https://www.sphinx-doc.org/en/master/>`_ extension package contains
+custom documentation functionality used to document
+`PlasmaPy's packages <https://github.com/PlasmaPy>`_ .
 
 .. contents:: Content
    :local:
