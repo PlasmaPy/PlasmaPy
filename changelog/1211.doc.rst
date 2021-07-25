@@ -1,2 +1,2 @@
-Fixed reST links and used reST substitutions in docstrings and narrative
+Fixed reST_ links and used reST_ substitutions in docstrings and narrative
 documentation for `plasmapy.particles`.
