@@ -153,7 +153,6 @@ class ExtendedParticleList(ParticleList):
         else:
             split = self.split_isotopes(arr, axis=axis)
             return u.Quantity([aggregator(a, axis=axis) for a in split])
-        # TODO needs a test - breaks ordering
 
     def decompress(self, arr, axis):
         # this is *not* quite invertible...
@@ -424,7 +423,9 @@ class ExtendedParticleList(ParticleList):
         else:
             S_ai = 1  # Equation B2
         padr = self.pitch_angle_diffusion_rate(x)
-        return padr * f_t / f_c / S_ai ** 1.5
+        output = padr * f_t / f_c / S_ai ** 1.5
+        output[x == 0] = 0
+        return output
 
     @validate_quantities
     def ν_T_ai(self, x: np.ndarray) -> u.s**-1:
@@ -475,15 +476,20 @@ class ExtendedParticleList(ParticleList):
         F = flux_surface.F_m(m_max)
         m = np.arange(1, m_max + 1)
         ω = ωm(x, m, self.thermal_speed, flux_surface.gamma)
+
+        ratio = ν / ω
+
         B10 = (
-            - 1.5 * (ν / ω) ** 2
-            - 9 / 2 * (ν / ω) ** 4
-            + (1 / 4 + (3 / 2 + 9 / 4 * (ν / ω) ** 2) * (ν / ω) ** 2)
-            * (2 * ν / ω)
-            * np.arctan(ω / ν).value
+            - 1.5 * ratio ** 2
+            - 9 / 2 * ratio ** 4
+            + (1 / 4 + (3 / 2 + 9 / 4 * ratio ** 2) * ratio ** 2)
+            * (2 * ratio)
+            * np.arctan(1/ratio).value
         )
+        B10 [ratio **2 > 9] = 0.4   # TODO WHY???
         onepart = F * B10.si.value
-        full_sum = np.sum(onepart / ν, axis=-1)
+        presum = onepart / ν
+        full_sum = np.sum(presum, axis=-1)
 
         output = (
             3
@@ -492,6 +498,8 @@ class ExtendedParticleList(ParticleList):
             * x.reshape(-1, 1) ** 2
             * full_sum
         )
+        output[x == 0] = 0
+        # breakpoint()
         if with_B10:
             return output, B10
         else:
@@ -537,8 +545,8 @@ class ExtendedParticleList(ParticleList):
         self,
         flux_surface: FluxSurface,
         *,
-        xmin: float = 0.000015,
-        xmax: float = 5,
+        xmin: float = 0,
+        xmax: float = 3.2,
         N: Optional[int] = None,
         **kwargs,
     ) -> u.Unit("kg / m3 / s"):
@@ -567,7 +575,7 @@ class ExtendedParticleList(ParticleList):
             kwargs = kwargs["kwargs"]
 
         if N is None:
-            N = 1000
+            N = 13
         orders = np.arange(1, 4)
         π = np.pi
         x = np.linspace(xmin, xmax, N)
