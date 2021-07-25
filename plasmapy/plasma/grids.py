@@ -357,8 +357,7 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
-    
-    
+
     @property
     def _ax0_si(self):
         return self.ds.coords["ax0"].values * self.si_factors[0]
@@ -401,7 +400,7 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
             )
-            
+
     @property
     def _ax2_si(self):
         return self.ds.coords["ax2"].values * self.si_factors[2]
@@ -422,8 +421,7 @@ class AbstractGrid(ABC):
             raise ValueError(
                 "The axis properties are only valid on " "uniformly spaced grids."
             )
-            
-            
+
     @property
     def _dax0_si(self):
         return np.mean(np.gradient(self._ax0_si))
@@ -445,7 +443,7 @@ class AbstractGrid(ABC):
                 "The grid step size properties are only valid on "
                 "uniformly spaced grids."
             )
-            
+
     @property
     def _dax1_si(self):
         return np.mean(np.gradient(self._ax1_si))
@@ -541,12 +539,14 @@ class AbstractGrid(ABC):
         self.ds = xr.Dataset()
 
         self.ds.attrs["axis_units"] = [pts0.unit, pts1.unit, pts2.unit]
-        
+
         # Store the conversion factors for each axis to SI
-        self.si_factors = [(1 * pts0.unit).si.value,
-                           (1 * pts1.unit).si.value, 
-                           (1 * pts2.unit).si.value]
-        
+        self.si_factors = [
+            (1 * pts0.unit).si.value,
+            (1 * pts1.unit).si.value,
+            (1 * pts2.unit).si.value,
+        ]
+
         if self.is_uniform:
             self.ds.coords["ax0"] = pts0[:, 0, 0]
             self.ds.coords["ax1"] = pts1[0, :, 0]
@@ -1176,7 +1176,7 @@ class CartesianGrid(AbstractGrid):
             self._ax1_si,
             self._ax2_si,
         )
-        
+
         dx, dy, dz = (
             self._dax0_si,
             self._dax1_si,
