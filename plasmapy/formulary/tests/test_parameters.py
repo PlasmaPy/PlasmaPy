@@ -839,9 +839,7 @@ def test_gyroradius():
         )
 
     with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, "e-", T=1.2) == gyroradius(
-            1.1 * u.T, "e-", T=1.2 * u.K
-        )
+        assert gyroradius(1.1, "e-", T=1.2) == gyroradius(1.1 * u.T, "e-", T=1.2 * u.K)
 
     with pytest.raises(ValueError):
         gyroradius(1.1 * u.T, "e-", Vperp=1 * u.m / u.s, T=1.2 * u.K)
