@@ -235,8 +235,8 @@ class IonizationState:
 
     See Also
     --------
-    IonicLevel
-    plasmapy.particles.IonizationStateCollection
+    ~plasmapy.particles.ionization_state.IonicLevel
+    ~plasmapy.particles.ionization_state_collection.IonizationStateCollection
 
     Examples
     --------
