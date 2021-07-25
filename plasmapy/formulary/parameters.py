@@ -1202,10 +1202,9 @@ def gyroradius(
     # Backwards Compatibility and Deprecation check for keyword T_i
     if not np.isnan(T_i):
         warnings.warn(
-            "keyword T_i will is deprecated, use T instead",
+            "Keyword T_i is deprecated, use T instead.",
             PlasmaPyFutureWarning,
         )
-        # Assign T_i to T, if T is not assigned already else use T value instead
         if np.isnan(T):
             T = T_i
 
