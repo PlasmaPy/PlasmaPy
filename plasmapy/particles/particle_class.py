@@ -2011,9 +2011,9 @@ class CustomParticle(AbstractPhysicalParticle):
 
     charge : ~astropy.units.Quantity or ~numbers.Real, optional
         The electric charge of the custom particle.  If provided as a
-        `~astropy.units.Quantity`, then it must be in units of electric
-        charge.  If provided as a real number, then it is treated as the
-        ratio of the charge to the elementary charge.
+        |Quantity|, then it must be in units of electric charge.  If
+        provided as a real number, then it is treated as the ratio of
+        the charge to the elementary charge.
 
     symbol : str, optional
         The symbol to be assigned to the custom particle.
