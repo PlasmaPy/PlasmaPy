@@ -20,8 +20,8 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
-        A Particle object, a string representing an element or isotope,
+    particle: `str`, `int`, or |Particle|
+        A |Particle| object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
     mass_numb: `int`, optional
@@ -31,7 +31,7 @@ def nuclear_binding_energy(
 
     Returns
     -------
-    binding_energy: `~astropy.units.Quantity`
+    binding_energy: |Quantity|
         The binding energy of the nucleus in units of joules.
 
     Raises
@@ -79,7 +79,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
+    particle: `str`, `int`, or |Particle|
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -90,7 +90,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Returns
     -------
-    mass_energy: `~astropy.units.Quantity`
+    mass_energy: |Quantity|
         The mass energy of the particle (or, in the case of an isotope,
         its nuclide) in units of joules.
 
@@ -135,7 +135,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     Returns
     -------
-    energy: `~astropy.units.Quantity`
+    energy: |Quantity|
         The difference between the mass energy of the reactants and
         the mass energy of the products in a nuclear reaction.  This
         quantity will be positive if the reaction is exothermic

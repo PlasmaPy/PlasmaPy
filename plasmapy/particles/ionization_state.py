@@ -202,7 +202,8 @@ class IonizationState:
         representing an element, isotope, or ion; or an integer representing
         the atomic number of an element.
 
-    ionic_fractions: `~numpy.ndarray`, `list`, `tuple`, or |Quantity|; optional
+    ionic_fractions: |ndarray|, `list`, `tuple`, or |Quantity|; optional
+    ionic_fractions: |ndarray|, `list`, `tuple`, or |Quantity|; optional
         The ionization fractions of an element, where the indices
         correspond to the charge number.  This argument should contain the
         atomic number plus one items, and must sum to one within an
