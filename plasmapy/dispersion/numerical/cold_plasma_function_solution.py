@@ -7,7 +7,6 @@ import astropy.constants as const
 
 from plasmapy.utils.decorators import validate_quantities
 
-import pandas as pd
 from sympy import var, solve
 
 
@@ -25,12 +24,13 @@ def cold_plasma_function_solution(
     theta: u.rad,
 ):
     r"""
-    Using the solution provided by Bellan 2012, calculate the analytical
-    solution to the two fluid, low-frequency (:math:`\omega/kc \ll 1`) dispersion
-    relation presented by Stringer 1963.  This dispersion relation also
-    assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
-    field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
-    see the **Notes** section below.
+    Using the solution provided by Bellan 2012, calculate the numerical
+    solution to the Stix, cold plasma method (:math:`\omega`) dispersion
+    relation presented by Stix 1992.  This dispersion relation also
+    assummes a uniform magnetic field :math:`\mathbf{B_o}`, theta is angle 
+    between the magnetic field and the normal surface of the wave vector, 
+    and k is the wave vector in direction of propagtion normal to the surface.
+    For more information see the **Notes** section below.
 
     Parameters
     ----------
@@ -40,11 +40,9 @@ def cold_plasma_function_solution(
         Wavenumber in units convertible to :math:`rad / m`.  Either single
         valued or 1-D array of length :math:`N`.
     omega_e : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Electron frequency in units convertible to :math:`s^{-1}`.
     omega_p : `~astropy.units.Quantity`
-        The electron temperature in units of :math:`K` or :math:`eV`.
-    T_i : `~astropy.units.Quantity`
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        Plasma frequency in units convertible to :math:`s^{-1}`.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the magnetic field,
         :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
@@ -53,11 +51,8 @@ def cold_plasma_function_solution(
 
     Returns
     -------
-    omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+    omega : array[float, `~astropy.units.Quantity`]
+        An array of computed wave frequencies in units :math:`rad/s`.  
 
     Raises
     ------
@@ -66,94 +61,52 @@ def cold_plasma_function_solution(
         cannot be converted into one.
 
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
-
-    TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``omega_e`` or ``omega_p``  are not of type `int` or `float`.
 
     ~astropy.units.UnitTypeError
         If applicable arguments do not have units convertible to the expected
         units.
 
     ValueError
-        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+        If any of ``B``, ``k`` or ``theta`` is negative.
 
     ValueError
         If ``k`` is negative or zero.
 
     ValueError
-        If ``ion`` is not of category ion or element.
-
-    ValueError
-        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        If ``B`` is not single valued
         `astropy.units.Quantity` (i.e. an array).
 
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
 
-    Warns
-    -----
-    : `~plasmapy.utils.exceptions.PhysicsWarning`
-        When the computed wave frequencies violate the low-frequency
-        (:math:`\omega/kc \ll 1`) assumption of the dispersion relation.
 
     Notes
     -----
 
-    The complete dispersion equation presented by Springer 1963 [2]_ (equation 1
+    The cold plasma waves equation presented by Strix 1992 [2]_ (equation 9
     of Bellan 2012 [1]_) is:
 
     .. math::
-        \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
-        \left[
-            \left( \cos^2 \theta - \frac{\omega^2}{k^2 {c_s}^2} \right)
-            - Q \frac{\omega^2}{k^2 {v_A}^2} \left(
-                1 - \frac{\omega^2}{k^2 {c_s}^2}
-            \right)
-        \right] \\
-            &= \left(1 - \frac{\omega^2}{k^2 {c_s}^2} \right)
-              \frac{\omega^2}{{\omega_{ci}}^2} \cos^2 \theta
+       #---
 
     where
 
     .. math::
-        Q &= 1 + k^2 c^2/{\omega_{pe}}^2 \\
-        \cos \theta &= \frac{k_z}{k} \\
-        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
-
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber, :math:`v_A`
-    is the Alfvén velocity, :math:`c_s` is the sound speed, :math:`\omega_{ci}` is
-    the ion gyrofrequency, and :math:`\omega_{pe}` is the electron plasma frequency.
-    This relation does additionally assume low-frequency waves
-    :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
-    quasi-neutrality.
+       #---
 
     Following section 5 of Bellan 2012 [1]_ the exact roots of the above dispersion
     equation can be derived and expressed as one analytical solution (equation 38
     of Bellan 2012 [1]_):
 
     .. math::
-        \frac{\omega}{\omega_{ci}} = \sqrt{
-            2 \Lambda \sqrt{-\frac{P}{3}} \cos\left(
-                \frac{1}{3} \cos^{-1}\left(
-                    \frac{3q}{2p} \sqrt{-\frac{3}{p}}
-                \right)
-                - \frac{2 \pi}{3}j
-            \right)
-            + \frac{\Lambda A}{3}
-        }
+        #-----
 
     where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
     Alfvén mode, and :math:`j = 2` represents the acoustic mode.  Additionally,
 
     .. math::
-        p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
-        A &= \frac{Q + Q^2 \beta + Q \alpha + \alpha \Lambda}{Q^2} \;
-            , \; B = \alpha \frac{1 + 2 Q \beta + \Lambda \beta}{Q^2} \;
-            , \; C = \frac{\alpha^2 \beta}{Q^2} \\
-        \alpha &= \cos^2 \theta \;
-            , \; \beta = \left( \frac{c_s}{v_A}\right)^2 \;
-            , \; \Lambda = \left( \frac{k v_{A}}{\omega_{ci}}\right)^2
+        #----
 
     References
     ----------
@@ -161,14 +114,15 @@ def cold_plasma_function_solution(
        JGR, 117, A12219, doi: `10.1029/2012JA017856
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
-    .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
+    .. [2] TH Strix, 1992, Waves in Plasmas, Illustrated, 
+        Springer Science & Business Media, 1992, New York 
        Part C, doi: `10.1088/0368-3281/5/2/304
        <https://doi.org/10.1088/0368-3281/5/2/304>`_
 
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> from plasmapy.dispersion import cold_plasma_function_solution
     >>> inputs = {
     ...     "k": 0.01 * u.rad / u.m,
     ...     "theta": 30 * u.deg,
@@ -235,16 +189,7 @@ def cold_plasma_function_solution(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
         )
-
-
-    #Start#
     
-    plasma_proton = np.zeros(1)  
-    plasma_electron = np.zeros(1) 
-    component_frequency = np.zeros(2)
-    
-    lenr = 1
-
     #Set our variable to solve for
     w = var('omega')
 
@@ -256,20 +201,44 @@ def cold_plasma_function_solution(
     P0 = 1
     
     ck = k*const.c
-
-    plasma_proton[0] = omega_p
-    plasma_electron[0] = omega_e
+    
+    component_frequency = np.zeros(2)
     component_frequency[0] = (abs(const.e)*B)/((const.m_e)*const.c) #Proton
     component_frequency[1] = ((const.e)*B)/((const.m_e)*const.c) #Elelctron
 
+    if len(k) == 0:
+        sum_len = len(omega_e)
+        plasma_proton = np.zeros(sum_len)  
+        plasma_electron = np.zeros(sum_len) 
+        
+        for i in range(sum_len):
+            plasma_proton[i] = omega_p[i]
+            plasma_electron[i] = omega_e[i]
+        
+    elif len(k) >0:
+        sum_len = 1
+        plasma_proton = np.zeros(1)  
+        plasma_electron = np.zeros(1) 
+        
+        plasma_proton[0] = omega_p
+        plasma_electron[0] = omega_e
+        
+    else:
+        raise ValueError(
+            f"Error in input, either k or omega_e,p can be a float or a array not both."
+            f" k of shape {k.shape}, omega_p of shape {omega_p.shape}, omega_e of shape {omega_e.shape}."
+        )
+        
+        
+
     #Calculate S, D and P
-    for i in range(0,lenr):
+    for i in range(0,sum_len):
         S_Sum  =+  (plasma_proton[i]**2)/(w**2 - component_frequency[0]**2) + (plasma_electron[i]**2)/(w**2 - component_frequency[1]**2)
     
-    for i in range(0,lenr):
+    for i in range(0,sum_len):
         P_Sum =+  (plasma_proton[i]**2)/(w**2) + (plasma_electron[i]**2)/(w**2)
     
-    for i in range(0,lenr):
+    for i in range(0,sum_len):
         D_Sum =+ (plasma_proton[i]**2/w)*(component_frequency[0]/(w**2-component_frequency[0]**2)) + (plasma_electron[i]**2/w)*(component_frequency[1]/(w**2-component_frequency[1]**2))
     
     #Define our values for SPD
@@ -297,18 +266,18 @@ def cold_plasma_function_solution(
         sol[i] = round(sol[i], 4)
     
     dummy_set = set(sol)
-    final_list = list(dummy_set)
-    final_list.sort()
-    print(final_list)
+    omega_final = list(dummy_set)
+    omega_final.sort()
+    print(omega_final)
 
     
     #End#    
 
 
-    return final_list
+    return omega_final
 
 inputs = {
-   "k": 0.01 * u.rad / u.m,
+   "k": [0.01,0.01,0.01] * u.rad / u.m,
    "theta": 30 * u.deg,
    "B": 8.3e-9 * u.T,
    "omega_p": 1.6e6 * 1/u.s,
