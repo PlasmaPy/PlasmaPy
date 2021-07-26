@@ -103,7 +103,7 @@ def online_help(query: str):
         "{0}&check_keywords=yes&area=default"
     ).format(urlencode({"q": query}))
 
-    if query.lower() in ("unit", "units", "quantity"):
+    if query.lower() in ("unit", "units", "quantity", "quantities"):
         url = "http://docs.astropy.org/en/stable/units/"
 
     webbrowser.open(url)
