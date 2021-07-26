@@ -81,12 +81,13 @@ __citation__ = (
 )
 
 
-def online_help(query):
+def online_help(query: str):
     """
-    Search the online PlasmaPy documentation for the given query from plasmapy.org
-    Opens the results in the default web browser.
-    Requires an active Internet connection.
-    Redirects to Astropy.units in case of query 'unit' or 'units'
+    Open a webpage containing a search page in `PlasmaPy's online
+    documentation`_, or another page that contains relevant online help.
+
+    This function requires an active internet connection, and will open
+    the page in the default web browser.
 
     Parameters
     ----------
@@ -102,7 +103,7 @@ def online_help(query):
         "{0}&check_keywords=yes&area=default"
     ).format(urlencode({"q": query}))
 
-    if query.lower() in ("unit", "units"):
+    if query.lower() in ("unit", "units", "quantity"):
         url = "http://docs.astropy.org/en/stable/units/"
 
     webbrowser.open(url)
