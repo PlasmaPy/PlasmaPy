@@ -105,7 +105,7 @@ Improved Documentation
 - Reorder documentation page (`#777 <https://github.com/plasmapy/plasmapy/pull/777>`__)
 - Fix failing documentation build due to duplicate docstrings for
   `ParticleTracker.kinetic_energy_history` and incompatibility of `sphinx-automodapi`
-  with `sphinx` `v3.0.0`. (`#780 <https://github.com/plasmapy/plasmapy/pull/780>`__)
+  with Sphinx_ `v3.0.0`. (`#780 <https://github.com/plasmapy/plasmapy/pull/780>`__)
 - Automate definition of documentation `release` and `version` in `docs/conf.py` with
   `plasmapy.__version__`. (`#781 <https://github.com/plasmapy/plasmapy/pull/781>`__)
 - Add a docstring to ``__init__.py`` in `plasmapy.formulary`. (`#788 <https://github.com/plasmapy/plasmapy/pull/788>`__)
