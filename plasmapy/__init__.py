@@ -83,8 +83,8 @@ __citation__ = (
 
 def online_help(query: str):
     """
-    Open a webpage containing a search page in `PlasmaPy's online
-    documentation`_, or another page that contains relevant online help.
+    Open a webpage containing a search page in `PlasmaPy's documentation`_,
+    or another page that contains relevant online help.
 
     This function requires an active internet connection, and will open
     the page in the default web browser.
