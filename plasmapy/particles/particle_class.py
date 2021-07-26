@@ -170,8 +170,7 @@ class AbstractParticle(ABC):
 
     def __bool__(self):
         """
-        Raise an `~plasmapy.particles.exceptions.ParticleError` because
-        particles do not have a truth value.
+        Raise a |ParticleError| because particles do not have a truth value.
         """
         raise ParticleError("The truth value of a particle is not defined.")
 
@@ -257,21 +256,21 @@ class Particle(AbstractPhysicalParticle):
         For when any of the arguments or keywords is not of the required
         type.
 
-    `~plasmapy.particles.exceptions.InvalidParticleError`
+    |InvalidParticleError|
         Raised when the particle input does not correspond to a valid
         particle or is contradictory.
 
-    `~plasmapy.particles.exceptions.InvalidElementError`
+    |InvalidElementError|
         For when an attribute is being accessed that requires
         information about an element, but the particle is not an
         element, isotope, or ion.
 
-    `~plasmapy.particles.exceptions.InvalidIsotopeError`
+    |InvalidIsotopeError|
         For when an attribute is being accessed that requires
         information about an isotope or nuclide, but the particle is not
         an isotope (or an ion of an isotope).
 
-    `~plasmapy.particles.exceptions.ChargeError`
+    |ChargeError|
         For when either the
         `~plasmapy.particles.particle_class.Particle.charge` or
         `~plasmapy.particles.particle_class.Particle.charge_number`
@@ -279,8 +278,7 @@ class Particle(AbstractPhysicalParticle):
         particle is not available.
 
     `~plasmapy.particles.exceptions.ParticleError`
-        Raised for attempts at converting a
-        |Particle| object to a `bool`.
+        Raised for attempts at converting a |Particle| object to a `bool`.
 
     See Also
     --------
@@ -391,16 +389,14 @@ class Particle(AbstractPhysicalParticle):
     >>> Particle(iron, mass_numb=56)
     Particle("Fe-56")
 
-    Adding particles together will create a
-    `~plasmapy.particles.particle_collections.ParticleList`, which is
+    Adding particles together will create a |ParticleList|, which is
     a list-like collection of particles.
 
     >>> proton + 2 * electron
     ParticleList(['p+', 'e-', 'e-'])
 
-    The ``>`` operator can be used with |Particle| and/or
-    `~plasmapy.particles.particle_collections.ParticleList` objects to
-    return the nuclear reaction energy.
+    The ``>`` operator can be used with |Particle| and/or |ParticleList|
+    objects to return the nuclear reaction energy.
 
     >>> deuteron + triton > alpha + neutron
     <Quantity 2.81810898e-12 J>
@@ -427,7 +423,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
-        """Instantiate a |Particle| object and set private attributes."""
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
@@ -610,7 +605,7 @@ class Particle(AbstractPhysicalParticle):
         If ``other`` is not a `str` or |Particle| instance, then this
         method will raise a `TypeError`.  If ``other.symbol`` equals
         ``self.symbol`` but the attributes differ, then this method
-        will raise a `~plasmapy.particles.exceptions.ParticleError`.
+        will raise a |ParticleError|.
 
         Examples
         --------
@@ -683,7 +678,7 @@ class Particle(AbstractPhysicalParticle):
         If ``other`` is not a `str` or |Particle| instance, then this
         method will raise a `TypeError`.  If ``other.symbol`` equals
         ``self.symbol`` but the attributes differ, then this method
-        will raise a `~plasmapy.particles.exceptions.ParticleError`.
+        will raise a |ParticleError|.
         """
         return not self.__eq__(other)
 
@@ -696,9 +691,8 @@ class Particle(AbstractPhysicalParticle):
 
     def __invert__(self) -> Particle:
         """
-        Return the corresponding antiparticle, or raise an
-        `~plasmapy.particles.exceptions.ParticleError` if the particle
-        is not an elementary particle.
+        Return the corresponding antiparticle, or raise a |ParticleError|
+        if the particle is not an elementary particle.
         """
         return self.antiparticle
 
@@ -707,7 +701,8 @@ class Particle(AbstractPhysicalParticle):
         """
         A JSON friendly dictionary representation of the particle.
 
-        See `AbstractParticle.json_dict` for more details.
+        See `~plasmapy.particles.particle_class.AbstractParticle.json_dict`
+        for more details.
 
         Examples
         --------
@@ -760,7 +755,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.ParticleError`
+        |ParticleError|
             If the particle is not an elementary particle and does not
             have a defined antiparticle.
 
@@ -835,8 +830,7 @@ class Particle(AbstractPhysicalParticle):
 
         If the particle is not an ion or neutral atom, return `None`.
         The roman numeral represents one plus the charge number. Raise
-        `~plasmapy.particles.exceptions.ChargeError` if no charge has
-        been specified and
+        |ChargeError| if no charge has been specified and
         `~plasmapy.utils.roman.roman.OutOfRangeError` if the charge is
         negative.
 
@@ -868,7 +862,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`
+        |InvalidElementError|
             If the particle does not correspond to an element.
 
         Examples
@@ -889,10 +883,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`
+        |InvalidElementError|
             If the particle is not a valid element.
 
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`
+        |InvalidIsotopeError|
             If the particle is not a valid isotope.
 
         Examples
@@ -925,7 +919,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.ChargeError`
+        |ChargeError|
             If the charge has not been specified.
 
         Examples
@@ -960,7 +954,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.ChargeError`
+        |ChargeError|
             If the charge has not been specified.
 
         Examples
@@ -983,11 +977,11 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`
+        |InvalidElementError|
             If the particle is not an element or corresponds to an
             isotope or ion.
 
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
+        |MissingParticleDataError|
             If the element does not have a defined standard atomic
             weight.
 
@@ -1027,9 +1021,9 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
+        |MissingParticleDataError|
             If the mass is unavailable (e.g., for neutrinos or elements
-            with no standard atomic weight.
+            with no standard atomic weight).
 
         Examples
         --------
@@ -1081,10 +1075,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`
+        |InvalidIsotopeError|
             If the particle is not an isotope or neutron.
 
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
+        |MissingParticleDataError|
             If the isotope mass is not available.
 
         Examples
@@ -1128,7 +1122,7 @@ class Particle(AbstractPhysicalParticle):
         of the nucleus only.
 
         If the mass of the particle is not known, then raise a
-        `~plasmapy.particles.exceptions.MissingParticleDataError`.
+        |MissingParticleDataError|.
 
         Examples
         --------
@@ -1161,7 +1155,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`
+        |InvalidIsotopeError|
             If the particle is not a nucleon or isotope.
 
         Examples
@@ -1211,7 +1205,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`.
+        |InvalidElementError|
             If the particle does not correspond to an element.
 
         Examples
@@ -1234,7 +1228,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`.
+        |InvalidIsotopeError|
             If the particle does not correspond to an isotope.
 
         Examples
@@ -1256,8 +1250,7 @@ class Particle(AbstractPhysicalParticle):
         or ``1`` for a neutron.
 
         If this particle is not an isotope or neutron, then this
-        attribute will raise an
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`.
+        attribute will raise an |InvalidIsotopeError|.
 
         Examples
         --------
@@ -1284,7 +1277,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidIonError`
+        |InvalidIonError|
             If this particle is not an ion or electron.
 
         Examples
@@ -1308,10 +1301,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidIsotopeError`
+        |InvalidIsotopeError|
             If the particle does not correspond to an isotope.
 
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
+        |MissingParticleDataError|
             If the isotopic abundance is not available.
 
         Examples
@@ -1347,7 +1340,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
+        |MissingParticleDataError|
             If the baryon number is unavailable.
 
         Examples
@@ -1372,7 +1365,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.MissingParticleDataError`
+        |MissingParticleDataError|
             If the lepton number is unavailable.
 
         Examples
@@ -1399,7 +1392,7 @@ class Particle(AbstractPhysicalParticle):
         Particles that do not have sufficiently well-constrained
         half-lives will return a `str` containing the information
         that is available about the half-life and issue a
-        `~plasmapy.particles.exceptions.MissingParticleDataWarning`.
+        |MissingParticleDataWarning|.
 
         Examples
         --------
@@ -1428,9 +1421,8 @@ class Particle(AbstractPhysicalParticle):
         """
         The intrinsic spin of the particle.
 
-        If the spin is unavailable, then a
-        `~plasmapy.particles.exceptions.MissingParticleDataError` will
-        be raised.
+        If the spin is unavailable, then a |MissingParticleDataError|
+        will be raised.
 
         Examples
         --------
@@ -1453,7 +1445,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`
+        |InvalidElementError|
             If the particle is not an element, isotope, or ion.
 
         Examples
@@ -1683,14 +1675,14 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.InvalidElementError`
+        |InvalidElementError|
             If the |Particle| is not an element.
 
-        `~plasmapy.particles.exceptions.ChargeError`
+        |ChargeError|
             If no charge information for the |Particle| object is
             specified.
 
-        `~plasmapy.particles.exceptions.InvalidIonError`
+        |InvalidIonError|
             If there are less than ``n`` remaining bound electrons.
 
         ValueError
@@ -1755,17 +1747,17 @@ class Particle(AbstractPhysicalParticle):
 
         Returns
         -------
-        particle : ~plasmapy.particles.particle_class.Particle
+        particle : |Particle|
             A new |Particle| object that has undergone recombination
             ``n`` times relative to the original |Particle|.  If
             ``inplace`` is `False`, instead return `None`.
 
         Raises
         ------
-        ~plasmapy.particles.exceptions.InvalidElementError
+        |InvalidElementError|
             If the |Particle| is not an element.
 
-        ~plasmapy.particles.exceptions.ChargeError
+        |ChargeError|
             If no charge information for the |Particle| object is
             specified.
 
@@ -1837,10 +1829,9 @@ class DimensionlessParticle(AbstractParticle):
 
     Notes
     -----
-    |DimensionlessParticle| instances are not considered
-    `~plasmapy.particles.particle_class.ParticleLike` because
-    dimensionless particles cannot uniquely identify a physical particle
-    without normalization information.
+    |DimensionlessParticle| instances are not considered |ParticleLike|
+    because dimensionless particles cannot uniquely identify a physical
+    particle without normalization information.
 
     Examples
     --------
@@ -2006,21 +1997,21 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    mass : ~astropy.units.Quantity, optional
+    mass : |Quantity|, optional
         The mass of the custom particle in units of mass.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real, optional
+    charge : |Quantity| or real number, optional
         The electric charge of the custom particle.  If provided as a
         |Quantity|, then it must be in units of electric charge.  If
         provided as a real number, then it is treated as the ratio of
         the charge to the elementary charge.
 
-    symbol : str, optional
+    symbol : `str`, optional
         The symbol to be assigned to the custom particle.
 
     Raises
     ------
-    ~plasmapy.particles.exceptions.InvalidParticleError
+    |InvalidParticleError|
         If the charge or mass provided is invalid so that the custom
         particle cannot be created.
 
@@ -2032,7 +2023,7 @@ class CustomParticle(AbstractPhysicalParticle):
     Notes
     -----
     If the charge or mass is not specified, then the corresponding value
-    will be set to ``numpy.nan`` in the appropriate units.
+    will be set to `numpy.nan` in the appropriate units.
 
     Examples
     --------
@@ -2223,23 +2214,21 @@ An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
-When used as a type hint annotation, `ParticleLike` indicates that an
+When used as a type hint annotation, |ParticleLike| indicates that an
 argument should represent a physical particle. Particle-like objects
-can include strings, integers, or instances of the
-`~plasmapy.particles.particle_class.Particle` or
-`~plasmapy.particles.particle_class.CustomParticle` classes.
+can include strings, integers, or instances of the |Particle| or
+|CustomParticle| classes.
 
 Notes
 -----
 Real world particles are typically represented as instances of the
-`~plasmapy.particles.particle_class.Particle` class in PlasmaPy.
+|Particle| class in PlasmaPy.
 
 >>> from plasmapy.particles import Particle
 >>> Particle("proton")
 Particle("p+")
 
-All `~plasmapy.particles.particle_class.Particle` instances, and objects
-that can be cast into `~plasmapy.particles.particle_class.Particle`
+All |Particle| instances, and objects that can be cast into |Particle|
 instances, are particle-like.
 
 * **Elements**
@@ -2292,14 +2281,14 @@ instances, are particle-like.
 
 * **Custom particles**
 
-    `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    |CustomParticle| instances are particle-like because particle
+    properties are provided in physical units.
 
 .. note::
 
-    `~plasmapy.particles.particle_class.DimensionlessParticle`
-    instances are *not* particle-like because, without normalization
-    information, they do not uniquely identify a physical particle.
+    |DimensionlessParticle| instances are *not* particle-like because,
+    without normalization information, they do not uniquely identify a
+    physical particle.
 
 See Also
 --------
@@ -2309,7 +2298,7 @@ See Also
 
 Examples
 --------
-Using `ParticleLike` as a type hint annotation indicates that an
+Using |ParticleLike| as a type hint annotation indicates that an
 argument or variable should represent a physical particle.
 
 >>> from plasmapy.particles import ParticleLike, Particle
