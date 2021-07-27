@@ -51,7 +51,7 @@ Trivial/Internal Changes
   :func:`plasmapy.formulary.quantum.chemical_potential` and
   ``plasmapy.formulary.quantum._chemical_potential_interp``, add a ``raise NotImplementedError`` due
   to bug outlined in issue `<https://github.com/PlasmaPy/PlasmaPy/issues/726>`_.  Associated pytests
-  are marked with ``pytest.mark.xfails`` and doctests are marked with ``doctests: +SKIP``. (`#722 <https://github.com/plasmapy/plasmapy/pull/722>`__)
+  are marked with ``pytest.mark.xfail`` and doctests are marked with ``doctests: +SKIP``. (`#722 <https://github.com/plasmapy/plasmapy/pull/722>`__)
 - Add `Towncrier <https://github.com/hawkowl/towncrier>`_ automated changelog creation support (`#643 <https://github.com/plasmapy/plasmapy/pull/643>`__)
 - Move existing "check" decorators to new ``plasmapy.utils.decorators`` module (`#647 <https://github.com/plasmapy/plasmapy/pull/647>`__)
 - Allow running our sphinx-gallery examples as Jupyter notebooks via Binder (`#656 <https://github.com/plasmapy/plasmapy/pull/656>`__)
