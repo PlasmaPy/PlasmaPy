@@ -1,6 +1,7 @@
 """Tests for particle collections."""
 
 import astropy.units as u
+import numpy as np
 import pytest
 
 from plasmapy.particles import alpha, electron, neutron, proton
@@ -352,3 +353,20 @@ def test_getting_weighted_mean_particle():
 
     assert u.isclose(mean_particle.mass, expected_mass)
     assert u.isclose(mean_particle.charge, expected_charge)
+
+
+def test_using_rms_for_mean_particle(attr):
+
+    particle_list = ParticleList([proton, electron, alpha])
+
+    masses = getattr(particle_list, attr)
+
+    sum_of_squares = np.sum(masses ** 2) / len(masses)
+
+    expected_rms_charge = np.sqrt(
+        (proton.charge ** 2 + electron.charge ** 2 + alpha.charge ** 2) / 3
+    )
+
+    actual_rms_charge = particle_list.mean_particle(use_rms_charge=True)
+
+    assert expected_rms_charge == actual_rms_charge

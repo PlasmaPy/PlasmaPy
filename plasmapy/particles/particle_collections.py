@@ -290,7 +290,9 @@ class ParticleList(collections.UserList):
         """A `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
-    def mean_particle(self, abundances=None) -> CustomParticle:
+    def mean_particle(
+        self, abundances=None, *, use_rms_charge=False, use_rms_mass=False
+    ) -> CustomParticle:
         """
         Return a representation of the mean particle.
 
@@ -302,12 +304,35 @@ class ParticleList(collections.UserList):
         abundances : array-like, optional
             The relative abundances of the particles in the |ParticleList|. Must
             have the same number of elements as the |ParticleList|.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, return a |CustomParticle| with the root mean square
+            charge instead of the mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, return a |CustomParticle| with the root mean square
+            mass instead of the mean mass. Defaults to `False`.
+
+
         """
         # TODO: If the list contains all identical Particle instances, then
         # return the Particle instance instead of a CustomParticle.
-        average_mass = np.average(self.mass, weights=abundances)
-        average_charge = np.average(self.charge, weights=abundances)
-        return CustomParticle(mass=average_mass, charge=average_charge)
+
+        def _average(array, weights, use_rms):
+            if use_rms:
+                return
+            else:
+                return np.average(array, weights=weights)
+
+        new_mass = _average(self.mass, weights=abundances, use_rms=use_rms_mass)
+        new_charge = _average(self.charge, weights=abundances, use_rms=use_rms_charge)
+
+        if use_rms_charge:
+            new_charge = np.average
+        else:
+            new_charge = 2
+
+        return CustomParticle(mass=new_mass, charge=new_charge)
 
 
 # Override the docstrings for the parent class
