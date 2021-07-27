@@ -126,7 +126,7 @@ using the available cores by using ``-j=auto`` in `sphinx-build`_.
    arise. To enforce this, the ``build_docs`` and ``build_docs_nitpicky``
    tox_ environments will fail after completing the documentation build
    if they encountered any warnings (via the ``-W`` and ``--keep-going``
-   flags to `sphinx_build`_).
+   flags to `sphinx-build`_).
 
 Documentation tools
 ===================
