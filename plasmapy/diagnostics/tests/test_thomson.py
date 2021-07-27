@@ -207,12 +207,13 @@ def test_different_input_types():
             scatter_vec=scatter_vec,
         )
 
+
 def test_collective_spectrum():
     """
     Compares the generated spectrum to previously determined values
     """
     alpha, wavelength, Skw = gen_collective_spectrum()
-    
+
     # Check that alpha is correct
     assert np.isclose(
         alpha, 1.801, atol=0.01
@@ -220,12 +221,12 @@ def test_collective_spectrum():
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
-    
+
     # Check that the widths of the ion and electron features match expectations
-    assert np.isclose(i_width, 0.2199, 1e-3), (
+    assert np.isclose(i_width, 0.1599, 1e-3), (
         "Collective case ion feature "
         f"width is {i_width}"
-        "instead of expected 0.2199"
+        "instead of expected 0.1599"
     )
 
     assert np.isclose(e_width, 17.7899, 1e-3), (
@@ -233,8 +234,6 @@ def test_collective_spectrum():
         f"feature width is {e_width} "
         "instead of expected 17.7899"
     )
-
-    
 
 
 def test_non_collective_spectrum():
@@ -456,9 +455,9 @@ def run_fit(
         params.add("ion_speed_0", value=0.0, vary=False)
 
     # LOAD FROM PARAMS
-    n = params["n"] 
-    Te = thomson._params_to_array(params, "Te") 
-    Ti = thomson._params_to_array(params, "Ti") 
+    n = params["n"]
+    Te = thomson._params_to_array(params, "Te")
+    Ti = thomson._params_to_array(params, "Ti")
     efract = thomson._params_to_array(params, "efract")
     ifract = thomson._params_to_array(params, "ifract")
     electron_speed = thomson._params_to_array(params, "electron_speed")
@@ -482,12 +481,12 @@ def run_fit(
 
     electron_vel = electron_speed[:, np.newaxis] * electron_vdir
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
-    
+
     # Create the synthetic data
     alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
-        n * u.m**-3,
+        n * u.m ** -3,
         Te * u.eV,
         Ti * u.eV,
         ifract=ifract,
@@ -495,14 +494,14 @@ def run_fit(
         ion_species=ion_species,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        electron_vel=electron_vel * u.m/u.s,
-        ion_vel=ion_vel  * u.m/u.s,
+        electron_vel=electron_vel * u.m / u.s,
+        ion_vel=ion_vel * u.m / u.s,
     )
 
     data = Skw
     if notch is not None:
-        x0 = np.argmin(np.abs(wavelengths.to(u.m).value*1e9 - notch[0]))
-        x1 = np.argmin(np.abs(wavelengths.to(u.m).value*1e9 - notch[1]))
+        x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
+        x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
         data[x0:x1] = np.nan
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
@@ -515,7 +514,7 @@ def run_fit(
             params[p].value = np.random.uniform(
                 low=params[p].min, high=params[p].max, size=1
             )
-            
+
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
 
@@ -739,16 +738,15 @@ def test_fit_with_minimal_parameters():
         max_nfev=2000,
     )
 
-if __name__ == "__main__":
-    #test_different_input_types()
-    #test_collective_spectrum()
-    #test_non_collective_spectrum()
-    #test_fit_with_minimal_parameters()
-    #test_fit_epw_single_species()
-    #test_fit_epw_multi_species()
-    #test_fit_iaw_single_species()
-    #test_fit_iaw_multi_species()
-    test_multiple_ion_species_spectrum()
-    
-    
 
+if __name__ == "__main__":
+    pass
+    # test_different_input_types()
+    # test_collective_spectrum()
+    # test_non_collective_spectrum()
+    # test_fit_with_minimal_parameters()
+    # test_fit_epw_single_species()
+    # test_fit_epw_multi_species()
+    # test_fit_iaw_single_species()
+    # test_fit_iaw_multi_species()
+    # test_multiple_ion_species_spectrum()

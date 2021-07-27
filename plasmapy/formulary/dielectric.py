@@ -213,8 +213,6 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return RotatingTensorElements(L, R, P)
 
 
-
-
 def fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp):
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
@@ -322,6 +320,5 @@ def permittivity_1D_Maxwellian(
     vTh = parameters.thermal_speed(T=T, particle=particle, method="most_probable")
     # plasma frequency
     wp = parameters.plasma_frequency(n=n, particle=particle, z_mean=z_mean)
-    
-    return fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp)
 
+    return fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp)

@@ -545,7 +545,8 @@ _coefficients = {
 
 _k_B = k_B.si.value
 
-def fast_thermal_speed(T, m, ndim=3, method='most_probable'):
+
+def fast_thermal_speed(T, m, ndim=3, method="most_probable"):
     coeff = _coefficients[ndim][method]
     return np.sqrt(coeff * _k_B * T / m)
 
@@ -686,10 +687,9 @@ def thermal_speed(
     except KeyError:
         raise ValueError("Method {method} not supported in thermal_speed")
 
-    return fast_thermal_speed(T.to(u.K).value,
-                              m.to(u.kg).value,
-                              ndim=ndim,
-                              method=method)
+    return fast_thermal_speed(
+        T.to(u.K).value, m.to(u.kg).value, ndim=ndim, method=method
+    )
 
 
 vth_ = thermal_speed
@@ -1261,9 +1261,9 @@ rhoc_ = gyroradius
 """ Alias to :func:`gyroradius`. """
 
 
-
 _e = e.si.value
 _eps0 = eps0.si.value
+
 
 def fast_plasma_frequency(n, Z, m):
     return Z * _e * np.sqrt(n / (_eps0 * m))
@@ -1368,11 +1368,11 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
         # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
-        
-    omega = u.rad / u.s * fast_plasma_frequency(n.to(u.m**-3).value, 
-                                         Z,
-                                         m.to(u.kg).value)
-        
+
+    omega = (
+        u.rad / u.s * fast_plasma_frequency(n.to(u.m ** -3).value, Z, m.to(u.kg).value)
+    )
+
     return omega
 
 
