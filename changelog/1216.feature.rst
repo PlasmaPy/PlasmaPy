@@ -1,0 +1,1 @@
+mplemented __eq__, __ne__ and __hash__ in CustomParticle for use as dict keys
