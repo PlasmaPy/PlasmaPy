@@ -2229,8 +2229,8 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"The equality of a CustomParticle object with a {type(other)} is undefined."
             )
 
-        return (self.symbol.__eq__(other.symbol) 
-                and self.mass.__eq__(other.mass) 
+        return (self.symbol.__eq__(other.symbol)
+                and self.mass.__eq__(other.mass)
                 and self.charge.__eq__(other.charge))
 
 
@@ -2250,8 +2250,8 @@ class CustomParticle(AbstractPhysicalParticle):
         as a key in a `dict`.
         """
         return hash((self.__repr__(), self.symbol))
-    
-    
+
+
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
 ParticleLike.__doc__ = """
