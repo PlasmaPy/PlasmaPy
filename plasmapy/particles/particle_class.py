@@ -2047,7 +2047,7 @@ class CustomParticle(AbstractPhysicalParticle):
     'Ξ'
     """
 
-    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol = None):
+    def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol=None):
         try:
             self.mass = mass
             self.charge = charge
@@ -2229,10 +2229,11 @@ class CustomParticle(AbstractPhysicalParticle):
                 f"The equality of a CustomParticle object with a {type(other)} is undefined."
             )
 
-        return (self.symbol.__eq__(other.symbol)
-                and self.mass.__eq__(other.mass)
-                and self.charge.__eq__(other.charge))
-
+        return (
+            self.symbol.__eq__(other.symbol)
+            and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
+            and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
+        )
 
     def __ne__(self, other) -> bool:
         """
