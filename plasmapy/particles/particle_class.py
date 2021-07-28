@@ -2239,8 +2239,8 @@ class CustomParticle(AbstractPhysicalParticle):
         Test whether or not two objects are different particles.
 
         This method will return `False` if ``other`` is an identical
-        |CustomParticle| instance,
-        and return `True` if ``other`` is a different |CustomParticle|.
+        |CustomParticle| instance, and return `True` if ``other`` is
+        a different |CustomParticle|.
         """
         return not self.__eq__(other)
 

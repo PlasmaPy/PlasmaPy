@@ -1,1 +1,1 @@
-mplemented __eq__, __ne__ and __hash__ in CustomParticle for use as dict keys
+Implemented ``__eq__``, ``__ne__`` and ``__hash__`` to allow |CustomParticle| instances to be used as `dict` keys.

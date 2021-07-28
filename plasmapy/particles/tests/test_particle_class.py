@@ -1373,13 +1373,12 @@ def test_deprecated_integer_charge():
         
 def test_CustomParticle_cmp():
     """Test ``__eq__`` and ``__ne__`` in the CustomParticle class."""
-    part1 = CustomParticle(2*126.90447*u.u, 0*u.C, "I2")
-    part2 = CustomParticle(2*126.90447*u.u, 0*u.C, "I2")
+    particle1 = CustomParticle(2*126.90447*u.u, 0*u.C, "I2")
+    particle2 = CustomParticle(2*126.90447*u.u, 0*u.C, "I2")
     other = CustomParticle(2*126.90447*u.u, e.si, "I2 +")
 
-    assert part1 == part2, "Particle('p+') == Particle('proton') is False."
-    assert part1 != other, "Particle('p+') == Particle('e-') is True."
+    assert particle1 == particle2, "CustomParticle instances that should be equal are not."
+    assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
     with pytest.raises(TypeError):
-        part1 == 1
-
+        particle1 == 1
