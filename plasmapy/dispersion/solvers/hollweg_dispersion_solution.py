@@ -191,5 +191,7 @@ def hollweg_dispersion_solution(
     omega['fast_mode'] = fast_mode * u.rad / u.s
     omega['alfven_mode'] = alfven_mode * u.rad / u.s
     omega['acoustic_mode'] = acoustic_mode * u.rad / u.s
-
+    
+    # check that low frequency assumption (w << w_ci) is satisfied
+    w_max = np.max(omega)
     return omega
