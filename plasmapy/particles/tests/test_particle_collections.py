@@ -359,11 +359,11 @@ def test_getting_weighted_mean_particle():
 def particle_list_test_data():
     """
     Return a `collections.namedtuple` that includes a |ParticleList| named
-    `all_particles`, a |ParticleList| named `unique_particles` that contains
-    only one instance of each unique |Particle|,
+    ``all_particles``, a |ParticleList| named ``unique_particles`` that
+    contains only one instance of each unique |Particle|,
     """
 
-    custom_particle = CustomParticle(mass=1e-27 * u.kg, charge=1.421e-19 * u.C)
+    custom_particle = CustomParticle(mass=1e-27 * u.kg, charge=1.4e-19 * u.C)
     particle_multiplicities = {"p+": 5, custom_particle: 9, "e-": 11, "Fe-56 5+": 2}
 
     all_particles = ParticleList([])
