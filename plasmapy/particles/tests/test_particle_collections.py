@@ -362,21 +362,18 @@ def particle_list_test_data():
     `all_particles`, a |ParticleList| named `unique_particles` that contains
     only one instance of each unique |Particle|,
     """
-    particles_and_multiplicity = {
-        "p+": 2,
-        "e-": 3,
-        "Fe-56 5+": 5,
-        CustomParticle(mass=1e-27 * u.kg, charge=1.421e-19 * u.C): 7,
-    }
+
+    custom_particle = CustomParticle(mass=1e-27 * u.kg, charge=1.421e-19 * u.C)
+    particle_multiplicities = {"p+": 5, custom_particle: 9, "e-": 11, "Fe-56 5+": 2}
 
     all_particles = ParticleList([])
-    for particle, multiplicity in particles_and_multiplicity.items():
+    for particle, multiplicity in particle_multiplicities.items():
         all_particles.extend(ParticleList(multiplicity * [particle]))
 
-    unique_particles = ParticleList(particles_and_multiplicity.keys())
+    unique_particles = ParticleList(particle_multiplicities.keys())
 
     abundances = [
-        particles_and_multiplicity[particle] for particle in unique_particles.symbols
+        particle_multiplicities[particle] for particle in unique_particles.symbols
     ]
 
     test_data = collections.namedtuple(
