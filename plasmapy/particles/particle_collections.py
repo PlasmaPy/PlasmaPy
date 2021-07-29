@@ -290,14 +290,17 @@ class ParticleList(collections.UserList):
         """A `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
-    def mean_particle(
+    def average_particle(
         self, abundances=None, *, use_rms_charge=False, use_rms_mass=False
-    ) -> CustomParticle:
+    ) -> Union[CustomParticle, Particle]:
         """
-        Return a representation of the mean particle.
+        Return a particle with the average mass and charge.
 
-        If ``abundances`` is provided, then this method will return a
-        weighted mean, using ``abundances`` as the weights.
+        By default, the mean will be used as the average. If the ``abundances``
+        are provided, then this method will return the weighted mean. If
+        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then return the root
+        mean square of the charge or mass, respectively. If all items in the
+        |ParticleList| are the same, then return that item.
 
         Parameters
         ----------
@@ -306,31 +309,38 @@ class ParticleList(collections.UserList):
             have the same number of elements as the |ParticleList|.
 
         use_rms_charge : `bool`, optional, keyword-only
-            If `True`, return a |CustomParticle| with the root mean square
-            charge instead of the mean charge. Defaults to `False`.
+            If `True`, use the root mean square charge instead of the mean
+            charge. Defaults to `False`.
 
         use_rms_mass : `bool`, optional, keyword-only
-            If `True`, return a |CustomParticle| with the root mean square
-            mass instead of the mean mass. Defaults to `False`.
+            If `True`, use the root mean square mass instead of the mean mass.
+            Defaults to `False`.
 
-
+        Examples
+        --------
+        >>> reactants = ParticleList(["electron", "positron"])
+        >>> reactants.average_particle()
+        CustomParticle(mass=9.109383...e-31 kg, charge=0.0 C)
+        >>> reactants.average_particle(abundances=[1, 0.5])
+        CustomParticle(mass=9.109383...e-31 kg, charge=-5.34058...e-20 C)
+        >>> reactants.average_particle(use_rms_charge=True)
+        CustomParticle(mass=9.109383...e-31 kg, charge=1.6021766...-19 C)
+        >>> protons = ParticleList(["p+", "p+", "p+"])
+        >>> protons.average_particle()
+        Particle("p+")
         """
-        # TODO: If the list contains all identical Particle instances, then
-        # return the Particle instance instead of a CustomParticle.
+        all_particles_are_equal = 0 < len(self) == self.count(self[0])
+        if all_particles_are_equal:
+            return self[0]
 
         def _average(array, weights, use_rms):
             if use_rms:
-                return
+                return np.sqrt(np.average(array ** 2, weights=weights))
             else:
                 return np.average(array, weights=weights)
 
         new_mass = _average(self.mass, weights=abundances, use_rms=use_rms_mass)
         new_charge = _average(self.charge, weights=abundances, use_rms=use_rms_charge)
-
-        if use_rms_charge:
-            new_charge = np.average
-        else:
-            new_charge = 2
 
         return CustomParticle(mass=new_mass, charge=new_charge)
 
