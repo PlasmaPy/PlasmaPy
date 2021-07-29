@@ -1,1 +1,1 @@
-Fixes a typo in the docstring of Alfven_speed.
+Fixed a typo in the docstring of `~plasmapy.formulary.parameters.Alfven_speed`.

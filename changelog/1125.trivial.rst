@@ -1,1 +1,1 @@
-Added tests using ```hypothesis`` <https://hypothesis.readthedocs.io/>`__.
+Added tests using `hypothesis <https://hypothesis.readthedocs.io/>`__.

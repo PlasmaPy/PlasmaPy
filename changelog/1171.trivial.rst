@@ -1,1 +1,1 @@
-Added ion velocity input to the thomson.ipynb diagnostics notebook.
+Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook.

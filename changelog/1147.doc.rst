@@ -1,3 +1,3 @@
 Implement a framework to define and use common `Sphinx substitutions
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-#substitutions>`_ across the narrative documentation and docstrings.
+#substitutions>`__ across the narrative documentation and docstrings.

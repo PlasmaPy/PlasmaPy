@@ -1,1 +1,1 @@
-Made `~plasmapy.particles.Particle` instances pickleable.
+Made `~plasmapy.particles.particle_class.Particle` instances pickleable.
