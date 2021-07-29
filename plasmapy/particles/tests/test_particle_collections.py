@@ -1,6 +1,6 @@
 """Tests for particle collections."""
-
 import astropy.units as u
+import collections
 import numpy as np
 import pytest
 
@@ -333,10 +333,10 @@ def test_getting_mean_particle():
     expected_mass = (proton.mass + electron.mass + alpha.mass) / 4
     expected_charge = (proton.charge + electron.charge + alpha.charge) / 4
 
-    mean_particle = particle_list.mean_particle()
+    average_particle = particle_list.average_particle()
 
-    assert u.isclose(mean_particle.mass, expected_mass)
-    assert u.isclose(mean_particle.charge, expected_charge)
+    assert u.isclose(average_particle.mass, expected_mass, rtol=1e-14)
+    assert u.isclose(average_particle.charge, expected_charge, rtol=1e-14)
 
 
 def test_getting_weighted_mean_particle():
@@ -349,24 +349,67 @@ def test_getting_weighted_mean_particle():
     expected_mass = (proton.mass + electron.mass) / 2
     expected_charge = 0 * u.C
 
-    mean_particle = particle_list.mean_particle(abundances=abundances)
+    average_particle = particle_list.average_particle(abundances=abundances)
 
-    assert u.isclose(mean_particle.mass, expected_mass)
-    assert u.isclose(mean_particle.charge, expected_charge)
+    assert u.isclose(average_particle.mass, expected_mass, rtol=1e-14)
+    assert u.isclose(average_particle.charge, expected_charge, rtol=1e-14)
 
 
-def test_using_rms_for_mean_particle(attr):
+@pytest.fixture
+def particle_list_test_data():
+    """
+    Return a `collections.namedtuple` that includes a |ParticleList| named
+    `all_particles`, a |ParticleList| named `unique_particles` that contains
+    only one instance of each unique |Particle|,
+    """
+    particles_and_multiplicity = {
+        "p+": 2,
+        "e-": 3,
+        "Fe-56 5+": 5,
+        CustomParticle(mass=1e-27 * u.kg, charge=1.421e-19 * u.C): 7,
+    }
 
-    particle_list = ParticleList([proton, electron, alpha])
+    all_particles = ParticleList([])
+    for particle, multiplicity in particles_and_multiplicity.items():
+        all_particles.extend(ParticleList(multiplicity * [particle]))
 
-    masses = getattr(particle_list, attr)
+    unique_particles = ParticleList(particles_and_multiplicity.keys())
 
-    sum_of_squares = np.sum(masses ** 2) / len(masses)
+    abundances = [
+        particles_and_multiplicity[particle] for particle in unique_particles.symbols
+    ]
 
-    expected_rms_charge = np.sqrt(
-        (proton.charge ** 2 + electron.charge ** 2 + alpha.charge ** 2) / 3
+    test_data = collections.namedtuple(
+        "test_data",
+        ["all_particles", "unique_particles", "abundances"],
     )
 
-    actual_rms_charge = particle_list.mean_particle(use_rms_charge=True)
+    return test_data(
+        all_particles=all_particles,
+        unique_particles=unique_particles,
+        abundances=abundances,
+    )
 
-    assert expected_rms_charge == actual_rms_charge
+
+@pytest.mark.parametrize(
+    "use_rms_charge, use_rms_mass",
+    [(False, False), (True, False), (False, True), (True, True)],
+)
+def test_weighted_mean1(particle_list_test_data, use_rms_charge, use_rms_mass):
+
+    all_particles = particle_list_test_data.all_particles
+    unique_particles = particle_list_test_data.unique_particles
+    abundances = particle_list_test_data.abundances
+
+    unweighted_mean_of_all_particles = all_particles.average_particle(
+        use_rms_charge=use_rms_charge,
+        use_rms_mass=use_rms_mass,
+    )
+
+    weighted_mean_of_unique_particles = unique_particles.average_particle(
+        use_rms_charge=use_rms_charge, use_rms_mass=use_rms_mass, abundances=abundances
+    )
+
+    assert u.isclose(
+        unweighted_mean_of_all_particles, weighted_mean_of_unique_particles, rtol=1e-14
+    )
