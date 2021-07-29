@@ -1,2 +1,6 @@
-Added the `~plasmapy.particles.particle_collections.ParticleList.mean_particle`
-method to |ParticleList|.
+Added the `~plasmapy.particles.particle_collections.ParticleList.average_particle`
+method to |ParticleList|. This method returns a particle with the mean mass and
+charge of the |ParticleList|. The ``use_rms_charge`` and ``use_rms_mass`` keyword
+arguments make this method calculate the root mean square charge and mass, respectively.
+The ``abundances`` keyword argument allows the calculation of the mean or root
+mean square to be weighted.
