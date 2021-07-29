@@ -59,6 +59,7 @@
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
+.. _pytest: https://docs.pytest.org
 .. _Python: https://www.python.org/
 .. _`Python's documentation`: https://docs.python.org/
 .. _`Read the Docs`: https://readthedocs.org/
