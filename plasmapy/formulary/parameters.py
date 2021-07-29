@@ -234,7 +234,7 @@ def Alfven_speed(
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible to
         m\ :sup:`-3` or the total mass density :math:`ρ` in units
-        convertible to kg * m\ :sup:`-3`\ .
+        convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.Particle`, optional
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
