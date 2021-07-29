@@ -1,3 +1,2 @@
-Started a page in the development guide in PlasmaPy's
-narrative documentation that describes the workflow
+Created an outline of a page in the development guide to describe the workflow
 required to contribute to PlasmaPy.

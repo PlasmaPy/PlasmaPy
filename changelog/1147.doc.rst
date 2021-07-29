@@ -1,3 +1,4 @@
-Implement a framework to define and use common `Sphinx substitutions
+Implemented a framework to define and use common `Sphinx substitutions
 <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 #substitutions>`__ across the narrative documentation and docstrings.
+These substitutions are defined in :file:`docs/common_links.rst`.
