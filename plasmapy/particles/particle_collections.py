@@ -329,8 +329,15 @@ class ParticleList(collections.UserList):
         >>> protons.average_particle()
         Particle("p+")
         """
-        all_particles_are_equal = 0 < len(self) == self.count(self[0])
-        if all_particles_are_equal:
+
+        all_are_equal_particle_instances = all(
+            [
+                [isinstance(particle, Particle) for particle in self],
+                len(set(self)) == 1,
+            ]
+        )
+
+        if all_are_equal_particle_instances:
             return self[0]
 
         def _average(array, weights, use_rms):
