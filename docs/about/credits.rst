@@ -7,7 +7,6 @@ PlasmaPy Coordinating Committee
 
 * Erik Everson
 * Nicholas Murphy
-* Tulasi Parashar
 * Dominik Stańczak
 
 PlasmaPy Contributors
@@ -95,6 +94,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `David Drozdov <https://github.com/davemus>`__
 * `Dhawal Modi <https://github.com/Dhawal-Modi>`__
 * `Armando Salcido <https://github.com/aksalcido>`__
+* `Nicolas Lequette <https://github.com/Quettle>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision

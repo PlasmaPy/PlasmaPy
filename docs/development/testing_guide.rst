@@ -59,8 +59,7 @@ Running tests on GitHub
 The recommended way to run PlasmaPy's full test suite when contributing
 code is to `create a pull request
 <https://help.github.com/articles/creating-a-pull-request/>`_ from your
-development branch to `PlasmaPy's GitHub repository
-<https://github.com/PlasmaPy/PlasmaPy>`_.  The test suite will be run
+development branch to `PlasmaPy's GitHub repository`_.  The test suite will be run
 when the pull request is created and every time your development branch
 is subsequently updated.
 
