@@ -1,1 +1,1 @@
-Began a project glossary at ``docs/glossary.rst``.
+Began a project glossary at :file:`docs/glossary.rst`.
