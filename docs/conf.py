@@ -153,11 +153,12 @@ exclude_patterns = [
 ]
 
 
-# Mappings to fully qualified paths (or correct ReST references) for the
+# Mappings to fully qualified paths (or correct reST references) for the
 # aliases/shortcuts used when specifying the types of parameters.
-# Numpy provides some defaults
+# Numpy provides some defaults so we only need to define PlasmaPy-specific
+# xrefs.
 # https://github.com/numpy/numpydoc/blob/b352cd7635f2ea7748722f410a31f937d92545cc/numpydoc/xref.py#L62-L94
-# so we only need to define PlasmaPy-specific x-refs
+
 numpydoc_xref_aliases = {
     # ultra-general
     "-like": ":term:`-like`",
@@ -178,6 +179,24 @@ numpydoc_xref_aliases = {
 }
 
 numpydoc_xref_param_type = True
+
+# Common words used in parameter type descriptions that should not be
+# cross-referenced.
+
+numpydoc_xref_ignore = {
+    "type",
+    "optional",
+    "default",
+    "or",
+    "of",
+    "method",
+    "instance",
+    "like",
+    "class",
+    "subclass",
+    "default",
+    "thereof",
+}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
