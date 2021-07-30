@@ -879,7 +879,6 @@ Narrative documentation guidelines
 .. _`raw string`: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io/
 .. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
-.. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io/
 .. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
