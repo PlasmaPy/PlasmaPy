@@ -1,5 +1,5 @@
 Created the Sphinx_ extension package `plasmapy_sphinx` and used it to replace
-`sphinx_automodapi`.  `plasmapy_sphinx` creates directives :rst:dir:`automodapi`
+`sphinx_automodapi`_.  `plasmapy_sphinx` creates directives :rst:dir:`automodapi`
 and :rst:dir:`automodsumm` to replace the same directives defined by
-`sphinx_automodapi`.  Documentation is updated so the slight syntax differences
+`sphinx_automodapi`_.  Documentation is updated so the slight syntax differences
 in the newly defined directives will still render the same as before.

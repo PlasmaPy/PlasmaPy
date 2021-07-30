@@ -1,16 +1,13 @@
 In `plasmapy.particles`, objects based on the term "integer charge" have
 been deprecated in favor of objects named after the term "charge number".
 The `~plasmapy.particles.particle_class.Particle.integer_charge`
-attribute of `~plasmapy.particles.particle_class.Particle` has been
-deprecated in favor of
+attribute of |Particle| has been deprecated in favor of
 `~plasmapy.particles.particle_class.Particle.charge_number`.
-The `~plasmapy.particles.ionization_state.IonicFraction.integer_charge`
+The `~plasmapy.particles.ionization_state.IonicLevel.integer_charge`
 attribute of
-`~plasmapy.particles.ionization_state.IonicFraction`
+|IonicLevel| (formerly ``IonicFraction``)
 has been deprecated in favor of
-`~plasmapy.particles.ionization_state.IonicFraction.charge_number`.
+`~plasmapy.particles.ionization_state.IonicLevel.charge_number`.
 The `~plasmapy.particles.ionization_state.IonizationState.integer_charges`
-attribute of
-`~plasmapy.particles.ionization_state.IonizationState`
-has been deprecated in favor of
+attribute of |IonizationState| has been deprecated in favor of
 `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`.
