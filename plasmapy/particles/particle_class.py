@@ -240,15 +240,15 @@ class Particle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    argument : particle-like, excluding `CustomParticle` instances
+    argument : :term:`particle-like`, excluding `CustomParticle` instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional
+    mass_numb : `int`, :term:`optional`
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional
+    Z : `int`, :term:`optional`
         The charge number of the particle.
 
     Raises
