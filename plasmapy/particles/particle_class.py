@@ -9,6 +9,7 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "random_function_to_test_docs_delete_this",
 ]
 
 import astropy.constants as const
@@ -2353,3 +2354,22 @@ argument or variable should represent a physical particle.
 >>> def is_electron(particle: ParticleLike):
 ...     return particle == Particle("e-")
 """
+
+
+def random_function_to_test_docs_delete_this(cats, bats, gnats, rats, *, wombats=None):
+    """
+    First line of docstring
+
+    Parameters
+    ----------
+    cats : list of str
+
+    bats : particle-like
+
+    gnats : :term:`particle-like`
+
+    rats : |Quantity|
+
+    wombats : particle-like, keyword-only, optional
+    """
+    pass
