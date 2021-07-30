@@ -855,7 +855,10 @@ def test_particleing_a_particle(arg):
     )
 
 
-@pytest.mark.parametrize("key", [Particle("H"), Particle("e+")])
+@pytest.mark.parametrize(
+    "key",
+    [Particle("H"), Particle("e+"), CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")],
+)
 def test_that_object_can_be_dict_key(key):
     """
     Test that ``key`` can be used as the key of a `dict`.
@@ -1367,3 +1370,18 @@ def test_particle_is_category_valid_categories():
 def test_deprecated_integer_charge():
     with pytest.warns(PlasmaPyFutureWarning):
         assert Particle("e-").integer_charge == -1
+
+
+def test_CustomParticle_cmp():
+    """Test ``__eq__`` and ``__ne__`` in the CustomParticle class."""
+    particle1 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
+    particle2 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
+    other = CustomParticle(2 * 126.90447 * u.u, e.si, "I2 +")
+
+    assert (
+        particle1 == particle2
+    ), "CustomParticle instances that should be equal are not."
+    assert particle1 != other, "CustomParticle instances should not be equal, but are."
+
+    with pytest.raises(TypeError):
+        particle1 == 1
