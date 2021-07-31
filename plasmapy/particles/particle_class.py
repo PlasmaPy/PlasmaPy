@@ -2364,11 +2364,11 @@ def random_function_to_test_docs_delete_this(cats, bats, gnats, rats, *, wombats
     ----------
     cats : list of str
 
-    bats : particle-like
+    bats : `particle-like`
 
     gnats : :term:`particle-like`
 
-    rats : |Quantity|
+    rats : :term:`astropy:quantity-like`
 
     wombats : particle-like, keyword-only, optional
     """
