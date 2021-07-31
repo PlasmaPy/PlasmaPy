@@ -1,14 +1,16 @@
 """Collections of `~plasmapy.particles.particle_class.Particle` objects."""
 
-__all__ = ["ParticleList"]
+__all__ = ["ion_list", "ParticleList"]
 
 import astropy.units as u
 import collections
 import numpy as np
 
-from typing import Callable, Iterable, List, Union
+from numbers import Integral
+from typing import Callable, Iterable, List, Optional, Union
 
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -25,7 +27,7 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    particles : iterable
+    particles : iterable, optional
         An iterable that provides a sequence of
         `~plasmapy.particles.particle_class.ParticleLike` objects.
         Objects that are not a `~plasmapy.particles.particle_class.Particle`
@@ -136,8 +138,11 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Iterable):
-        self._data = self._list_of_particles_and_custom_particles(particles)
+    def __init__(self, particles: Iterable = None):
+        if particles is not None:
+            self._data = self._list_of_particles_and_custom_particles(particles)
+        else:
+            self._data = list()
 
     @staticmethod
     def _cast_other_as_particle_list(other):
@@ -329,3 +334,58 @@ Remove the first occurrence of a
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
+
+
+@particle_input(any_of={"element", "isotope", "ion"})
+def ion_list(
+    particle: Particle,
+    min_charge: Integral = 0,
+    max_charge: Optional[Integral] = None,
+) -> ParticleList:
+    """
+    Return a |ParticleList| that includes different ionic levels of a
+    base atom.
+
+    Parameters
+    ----------
+    particle : ParticleLike
+        Representation of an element, ion, or isotope.
+
+    min_charge : integer, optional
+        The starting charge number. Defaults to ``0``.
+
+    max_charge : integer, optional
+        The ending charge number, which will be included in the
+        |ParticleList|.  Defaults to the atomic number.
+
+    Returns
+    -------
+    |ParticleList|
+
+    Examples
+    --------
+    >>> from plasmapy.particles import ion_list
+    >>> ion_list("He")
+    ParticleList(['He 0+', 'He 1+', 'He 2+'])
+    >>> ion_list("Fe-56", min_charge=13, max_charge=15)
+    ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
+
+    See Also
+    --------
+    ~plasmapy.particles.particle_collections.ParticleList
+    """
+    base_particle = Particle(particle.isotope if particle.isotope else particle.element)
+
+    if max_charge is None:
+        max_charge = particle.atomic_number
+
+    if not min_charge <= max_charge <= particle.atomic_number:
+        raise ChargeError(
+            f"Need min_charge ({min_charge}) "
+            f"≤ max_charge ({max_charge}) "
+            f"≤ atomic number ({base_particle.atomic_number})."
+        )
+
+    return ParticleList(
+        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
+    )
