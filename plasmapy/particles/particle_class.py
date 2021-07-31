@@ -9,7 +9,6 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
-    "random_function_to_test_docs_delete_this",
 ]
 
 import astropy.constants as const
@@ -241,15 +240,15 @@ class Particle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    argument : :term:`particle-like`, excluding `CustomParticle` instances
+    argument : `ParticleLike`, excluding `CustomParticle` instances
         A string representing a particle, element, isotope, or ion; an
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, :term:`optional`
+    mass_numb : `int`, optional
         The mass number of an isotope or nuclide.
 
-    Z : `int`, :term:`optional`
+    Z : `int`, optional
         The charge number of the particle.
 
     Raises
@@ -2354,22 +2353,3 @@ argument or variable should represent a physical particle.
 >>> def is_electron(particle: ParticleLike):
 ...     return particle == Particle("e-")
 """
-
-
-def random_function_to_test_docs_delete_this(cats, bats, gnats, rats, *, wombats=None):
-    """
-    First line of docstring
-
-    Parameters
-    ----------
-    cats : list of str
-
-    bats : `particle-like`
-
-    gnats : :term:`particle-like`
-
-    rats : :term:`astropy:quantity-like`
-
-    wombats : particle-like, keyword-only, optional
-    """
-    pass
