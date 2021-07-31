@@ -152,7 +152,6 @@ exclude_patterns = [
     "common_links.rst",
 ]
 
-
 # Mappings to fully qualified paths (or correct reST references) for the
 # aliases/shortcuts used when specifying the types of parameters.
 # Numpy provides some defaults so we only need to define PlasmaPy-specific
@@ -189,6 +188,8 @@ numpydoc_xref_ignore = {
     "default",
     "or",
     "of",
+    "a",
+    "the",
     "method",
     "instance",
     "like",
