@@ -444,7 +444,8 @@ class AbstractGrid(ABC):
     @property
     def _dax0_si(self):
         """
-        The grid spacing along the ax0 axis in SI units.
+        Grid step size along axis :attr:`ax0` without units and scaled such
+        that its values correspond to SI values.
         """
         return np.mean(np.gradient(self._ax0_si))
 
@@ -469,7 +470,8 @@ class AbstractGrid(ABC):
     @property
     def _dax1_si(self):
         """
-        The grid spacing along the ax1 axis in SI units.
+        Grid step size along axis :attr:`ax1` without units and scaled such
+        that its values correspond to SI values.
         """
         return np.mean(np.gradient(self._ax1_si))
 
@@ -494,7 +496,8 @@ class AbstractGrid(ABC):
     @property
     def _dax2_si(self):
         """
-        The grid spacing along the ax2 axis in SI units.
+        Grid step size along axis :attr:`ax2` without units and scaled such
+        that its values correspond to SI values.
         """
         return np.mean(np.gradient(self._ax2_si))
 
@@ -1156,7 +1159,7 @@ class CartesianGrid(AbstractGrid):
         if isinstance(pos, u.Quantity):
             pos = pos.to(u.m).value
         elif self.unit != u.m:
-            pos *= self.unit.to(u.m).value
+            pos *= self.unit.si.scale
 
         # If a single point was given, add empty dimension
         if pos.ndim == 1:
