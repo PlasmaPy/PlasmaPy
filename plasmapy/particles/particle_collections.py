@@ -360,11 +360,9 @@ def ion_list(
 
     Returns
     -------
-    |ParticleList|
-
-    See Also
-    --------
-    ~plasmapy.particles.particle_collections.ParticleList
+    `~plasmapy.particles.particle_collections.ParticleList`
+        The ionic levels of the atom provided from ``min_charge`` to
+        ``max_charge``.
 
     Examples
     --------
