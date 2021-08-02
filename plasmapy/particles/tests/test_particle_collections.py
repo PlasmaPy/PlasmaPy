@@ -325,6 +325,13 @@ def test_particle_multiplication(method, particle):
     assert particle_list == [particle, particle, particle]
 
 
+def test_particle_list_with_no_arguments():
+    """Test that `ParticleList()` returns an empty `ParticleList`."""
+    empty_particle_list = ParticleList()
+    assert isinstance(empty_particle_list, ParticleList)
+    assert len(empty_particle_list) == 0
+
+
 def test_ion_list_example():
     ions = ion_list("He-4")
     assert np.allclose(ions.charge_number, [0, 1, 2])
