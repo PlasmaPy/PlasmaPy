@@ -367,7 +367,27 @@ class AbstractGrid(ABC):
 
     def _get_ax(self, *, axis: int, si: bool = False):
         """
-        Helper function for generating the axis properties
+        Helper function for retrieving axis values.
+
+        Parameters
+        ----------
+        axis: int
+            Axis index for axis of interest (e.g. ``0`` for :attr:`ax0`).
+        si: bool
+            (Default: `False`) If `True` then convert the axis values to
+            their SI equivalent.
+
+        Returns
+        -------
+        ~numpy.ndarray or ~astropy.units.Quantity
+            If ``si==True`` then return a unitless `~numpy.ndarray`.
+            If ``si==False`` then return a `~astropy.units.Quantity`
+            array with the original units.
+
+        Raises
+        ------
+        ValueError
+            If the grid is not uniform.
         """
         ax_name = f"ax{axis}"
 
@@ -384,7 +404,11 @@ class AbstractGrid(ABC):
 
     def _get_dax(self, *, axis: int, si: bool = False):
         """
-        Helper function for generating the axis spacing properties
+        Helper function for calculating grid spacing.
+
+        See Also
+        --------
+        plasmapy.plasma.grids.AbstractGrid._get_ax
         """
         ax = self._get_ax(axis=axis, si=si)
         return np.mean(np.gradient(ax))
@@ -392,8 +416,10 @@ class AbstractGrid(ABC):
     @property
     def _ax0_si(self):
         """
-        The ax0 axis without units, but scaled such that its values
+        The :attr:`ax0` axis without units, but scaled such that its values
         correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=0, si=True)
 
@@ -412,8 +438,10 @@ class AbstractGrid(ABC):
     @property
     def _ax1_si(self):
         """
-        The ax1 axis without units, but scaled such that its values
+        The :attr:`ax1` axis without units, but scaled such that its values
         correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=1, si=True)
 
@@ -432,8 +460,10 @@ class AbstractGrid(ABC):
     @property
     def _ax2_si(self):
         """
-        The ax2 axis without units, but scaled such that its values
+        The :attr:`ax2` axis without units, but scaled such that its values
         correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=2, si=True)
 
@@ -454,6 +484,8 @@ class AbstractGrid(ABC):
         """
         Grid step size along axis :attr:`ax0` without units and scaled such
         that its values correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=0, si=True)
 
@@ -474,6 +506,8 @@ class AbstractGrid(ABC):
         """
         Grid step size along axis :attr:`ax1` without units and scaled such
         that its values correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=1, si=True)
 
@@ -494,6 +528,8 @@ class AbstractGrid(ABC):
         """
         Grid step size along axis :attr:`ax2` without units and scaled such
         that its values correspond to SI values.
+
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=2, si=True)
 
