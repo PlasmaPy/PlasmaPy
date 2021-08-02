@@ -358,19 +358,19 @@ class AbstractGrid(ABC):
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
     @property
-    def si_factors(self):
+    def si_scale_factors(self):
         """
         Scale factors that convert the units of each axis to SI units.
 
         """
-        return self.si_factors
+        return self._si_factors
 
     @property
     def _ax0_si(self):
         """
         The ax0 axis in SI units.
         """
-        return self.ds.coords["ax0"].values * self.si_factors[0]
+        return self.ds.coords["ax0"].values * self._si_factors[0]
 
     @property
     def ax0(self):
@@ -395,7 +395,7 @@ class AbstractGrid(ABC):
         """
         The ax1 axis in SI units.
         """
-        return self.ds.coords["ax1"].values * self.si_factors[1]
+        return self.ds.coords["ax1"].values * self._si_factors[1]
 
     @property
     def ax1(self):
@@ -419,7 +419,7 @@ class AbstractGrid(ABC):
         """
         The ax2 axis in SI units.
         """
-        return self.ds.coords["ax2"].values * self.si_factors[2]
+        return self.ds.coords["ax2"].values * self._si_factors[2]
 
     @property
     def ax2(self):
@@ -566,7 +566,7 @@ class AbstractGrid(ABC):
         self.ds.attrs["axis_units"] = [pts0.unit, pts1.unit, pts2.unit]
 
         # Store the conversion factors for each axis to SI
-        self.si_factors = [
+        self._si_factors = [
             pts0.unit.si.scale,
             pts1.unit.si.scale,
             pts2.unit.si.scale,
