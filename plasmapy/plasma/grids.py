@@ -370,7 +370,7 @@ class AbstractGrid(ABC):
         """
         The ax0 axis in SI units.
         """
-        return self.ds.coords["ax0"].values * self._si_factors[0]
+        return self.ds.coords["ax0"].values * self.si_scale_factors[0]
 
     @property
     def ax0(self):
