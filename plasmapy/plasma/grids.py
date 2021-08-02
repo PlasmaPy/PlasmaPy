@@ -542,9 +542,9 @@ class AbstractGrid(ABC):
 
         # Store the conversion factors for each axis to SI
         self.si_factors = [
-            (1 * pts0.unit).si.value,
-            (1 * pts1.unit).si.value,
-            (1 * pts2.unit).si.value,
+            pts0.unit.si.scale,
+            pts1.unit.si.scale,
+            pts2.unit.si.scale,
         ]
 
         if self.is_uniform:
