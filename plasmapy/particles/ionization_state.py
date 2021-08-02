@@ -19,7 +19,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ion_list, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -308,9 +308,7 @@ class IonizationState:
                 )
 
         self._particle = particle
-        self._particle_list = ParticleList(
-            [Particle(particle, Z=i) for i in range(0, particle.atomic_number + 1)]
-        )
+        self._particle_list = ion_list(particle)
 
         try:
             self.tol = tol
@@ -715,7 +713,7 @@ class IonizationState:
         return self.isotope if self.isotope else self.element
 
     @property
-    def as_particle_list(self) -> ParticleList:
+    def ions(self) -> ParticleList:
         """
         A `~plasmapy.particles.particle_collections.ParticleList` of
         the ionic levels.  The index corresponds to the charge number.
@@ -733,12 +731,12 @@ class IonizationState:
     @property
     def ionic_symbols(self) -> List[str]:
         """The ionic symbols for all charge states."""
-        return self.as_particle_list.symbols
+        return self.ions.symbols
 
     @property
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
-        return self.as_particle_list.charge_number
+        return self.ions.charge_number
 
     @property
     @deprecated(

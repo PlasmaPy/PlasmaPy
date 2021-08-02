@@ -363,10 +363,10 @@ class Test_IonizationState:
         atom = instance.base_particle
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
-        assert expected_particles == instance.as_particle_list, (
+        assert expected_particles == instance.ions, (
             f"The expected Particle instances of {expected_particles} "
             f"are not all equal to the IonizationState particles of "
-            f"{instance.as_particle_list} for test {test_name}."
+            f"{instance.ions} for test {test_name}."
         )
 
     @pytest.mark.parametrize(
@@ -408,7 +408,7 @@ class Test_IonizationState:
 
         charge_numbers = np.arange(instance.atomic_number + 1)
         symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
-        particles = instance.as_particle_list
+        particles = instance.ions
 
         errors = []
 

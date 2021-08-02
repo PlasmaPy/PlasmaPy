@@ -1,4 +1,3 @@
-Created the `~plasmapy.particles.ionization_state.IonizationState.as_particle_list`
-attribute of `~plasmapy.particles.ionization_state.IonizationState` to
-provide a `~plasmapy.particles.particle_collections.ParticleList`
-instance that contains the different ionic levels.
+Created the `~plasmapy.particles.ionization_state.IonizationState.ions`
+attribute of |IonizationState| to provide a |ParticleList| instance that
+contains the different ionic levels.
