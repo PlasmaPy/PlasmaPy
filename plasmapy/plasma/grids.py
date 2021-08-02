@@ -400,12 +400,9 @@ class AbstractGrid(ABC):
     @property
     def ax0(self):
         r"""
-        First axis of the grid. Only valid for uniform grids.
+        First axis of the grid.
 
-        Raises
-        ------
-        `ValueError`
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=0)
 
@@ -420,12 +417,9 @@ class AbstractGrid(ABC):
     @property
     def ax1(self):
         r"""
-        Second axis of the grid. Only valid for uniform grids.
+        Second axis of the grid.
 
-        Raises
-        ------
-        `ValueError`
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=1)
 
@@ -440,12 +434,9 @@ class AbstractGrid(ABC):
     @property
     def ax2(self):
         r"""
-        Third axis of the grid. Only valid for uniform grids.
+        Third axis of the grid.
 
-        Raises
-        ------
-        `ValueError`
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_ax(axis=2)
 
@@ -460,12 +451,9 @@ class AbstractGrid(ABC):
     @property
     def dax0(self):
         r"""
-        Grid step size along axis :attr:`ax0`. Only valid for uniform grids.
+        Grid step size along axis :attr:`ax0`.
 
-        Raises
-        ------
-        `ValueError`
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=0)
 
@@ -480,12 +468,9 @@ class AbstractGrid(ABC):
     @property
     def dax1(self):
         r"""
-        Grid step size along axis :attr:`ax1`. Only valid for uniform grids.
+        Grid step size along axis :attr:`ax1`.
 
-        Raises
-        ------
-        `ValueError`
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=1)
 
@@ -500,12 +485,9 @@ class AbstractGrid(ABC):
     @property
     def dax2(self):
         r"""
-        Grid step size along axis :attr:`ax2`. Only valid for uniform grids.
+        Grid step size along axis :attr:`ax2`.
 
-        Raises
-        ------
-        ValueError
-            If grid is non-uniform.
+        Only valid for uniform grids.
         """
         return self._get_dax(axis=2)
 
