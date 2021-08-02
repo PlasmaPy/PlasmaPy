@@ -357,9 +357,19 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
+    @property
+    def si_factors(self):
+        """
+        Scale factors that convert the units of each axis to SI units.
+
+        """
+        return self.si_factors
 
     @property
     def _ax0_si(self):
+        """
+        The ax0 axis in SI units.
+        """
         return self.ds.coords["ax0"].values * self.si_factors[0]
 
     @property
@@ -382,6 +392,9 @@ class AbstractGrid(ABC):
 
     @property
     def _ax1_si(self):
+        """
+        The ax1 axis in SI units.
+        """
         return self.ds.coords["ax1"].values * self.si_factors[1]
 
     @property
@@ -403,6 +416,9 @@ class AbstractGrid(ABC):
 
     @property
     def _ax2_si(self):
+        """
+        The ax2 axis in SI units.
+        """
         return self.ds.coords["ax2"].values * self.si_factors[2]
 
     @property
@@ -424,6 +440,9 @@ class AbstractGrid(ABC):
 
     @property
     def _dax0_si(self):
+        """
+        The grid spacing along the ax0 axis in SI units.
+        """
         return np.mean(np.gradient(self._ax0_si))
 
     @property
@@ -446,6 +465,9 @@ class AbstractGrid(ABC):
 
     @property
     def _dax1_si(self):
+        """
+        The grid spacing along the ax1 axis in SI units.
+        """
         return np.mean(np.gradient(self._ax1_si))
 
     @property
@@ -468,6 +490,9 @@ class AbstractGrid(ABC):
 
     @property
     def _dax2_si(self):
+        """
+        The grid spacing along the ax2 axis in SI units.
+        """
         return np.mean(np.gradient(self._ax2_si))
 
     @property
