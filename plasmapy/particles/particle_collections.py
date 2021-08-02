@@ -348,7 +348,7 @@ def ion_list(
 
     Parameters
     ----------
-    particle : ParticleLike
+    particle : `~plasmapy.particles.particle_class.ParticleLike`
         Representation of an element, ion, or isotope.
 
     min_charge : integer, optional
@@ -362,6 +362,10 @@ def ion_list(
     -------
     |ParticleList|
 
+    See Also
+    --------
+    ~plasmapy.particles.particle_collections.ParticleList
+
     Examples
     --------
     >>> from plasmapy.particles import ion_list
@@ -369,10 +373,6 @@ def ion_list(
     ParticleList(['He 0+', 'He 1+', 'He 2+'])
     >>> ion_list("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
-
-    See Also
-    --------
-    ~plasmapy.particles.particle_collections.ParticleList
     """
     base_particle = Particle(particle.isotope if particle.isotope else particle.element)
 
