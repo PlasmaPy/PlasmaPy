@@ -368,7 +368,8 @@ class AbstractGrid(ABC):
     @property
     def _ax0_si(self):
         """
-        The ax0 axis in SI units.
+        The ax0 axis without units, but scaled such that its values
+        correspond to SI values.
         """
         return self.ds.coords["ax0"].values * self.si_scale_factors[0]
 
@@ -393,9 +394,10 @@ class AbstractGrid(ABC):
     @property
     def _ax1_si(self):
         """
-        The ax1 axis in SI units.
+        The ax1 axis without units, but scaled such that its values
+        correspond to SI values.
         """
-        return self.ds.coords["ax1"].values * self._si_factors[1]
+        return self.ds.coords["ax1"].values * self.si_scale_factors[1]
 
     @property
     def ax1(self):
@@ -417,7 +419,8 @@ class AbstractGrid(ABC):
     @property
     def _ax2_si(self):
         """
-        The ax2 axis in SI units.
+        The ax2 axis without units, but scaled such that its values
+        correspond to SI values.
         """
         return self.ds.coords["ax2"].values * self.si_scale_factors[2]
 
