@@ -361,7 +361,6 @@ class AbstractGrid(ABC):
     def si_scale_factors(self):
         """
         Scale factors that convert the units of each axis to SI units.
-
         """
         return self._si_factors
 
