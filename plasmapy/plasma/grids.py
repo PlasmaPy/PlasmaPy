@@ -365,13 +365,37 @@ class AbstractGrid(ABC):
         """
         return self._si_factors
 
+    def _get_ax(self, *, axis: int, si: bool = False):
+        """
+        Helper function for generating the axis properties
+        """
+        ax_name = f"ax{axis}"
+
+        if not self.is_uniform:
+            raise ValueError(
+                "The axis properties are only valid on uniformly spaced grids."
+            )
+
+        vals = self.ds.coords[ax_name].values
+        if si:
+            return vals * self.si_scale_factors[axis]
+        else:
+            return vals * self.units[axis]
+
+    def _get_dax(self, *, axis: int, si: bool = False):
+        """
+        Helper function for generating the axis spacing properties
+        """
+        ax = self._get_ax(axis=axis, si=si)
+        return np.mean(np.gradient(ax))
+
     @property
     def _ax0_si(self):
         """
         The ax0 axis without units, but scaled such that its values
         correspond to SI values.
         """
-        return self.ds.coords["ax0"].values * self.si_scale_factors[0]
+        return self._get_ax(axis=0, si=True)
 
     @property
     def ax0(self):
@@ -383,13 +407,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If grid is non-uniform.
         """
-
-        if self.is_uniform:
-            return self.ds.coords["ax0"].values * self.unit0
-        else:
-            raise ValueError(
-                "The axis properties are only valid on " "uniformly spaced grids."
-            )
+        return self._get_ax(axis=0)
 
     @property
     def _ax1_si(self):
@@ -397,7 +415,7 @@ class AbstractGrid(ABC):
         The ax1 axis without units, but scaled such that its values
         correspond to SI values.
         """
-        return self.ds.coords["ax1"].values * self.si_scale_factors[1]
+        return self._get_ax(axis=1, si=True)
 
     @property
     def ax1(self):
@@ -409,12 +427,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If grid is non-uniform.
         """
-        if self.is_uniform:
-            return self.ds.coords["ax1"].values * self.unit1
-        else:
-            raise ValueError(
-                "The axis properties are only valid on " "uniformly spaced grids."
-            )
+        return self._get_ax(axis=1)
 
     @property
     def _ax2_si(self):
@@ -422,7 +435,7 @@ class AbstractGrid(ABC):
         The ax2 axis without units, but scaled such that its values
         correspond to SI values.
         """
-        return self.ds.coords["ax2"].values * self.si_scale_factors[2]
+        return self._get_ax(axis=2, si=True)
 
     @property
     def ax2(self):
@@ -434,12 +447,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If grid is non-uniform.
         """
-        if self.is_uniform:
-            return self.ds.coords["ax2"].values * self.unit2
-        else:
-            raise ValueError(
-                "The axis properties are only valid on " "uniformly spaced grids."
-            )
+        return self._get_ax(axis=2)
 
     @property
     def _dax0_si(self):
@@ -447,7 +455,7 @@ class AbstractGrid(ABC):
         Grid step size along axis :attr:`ax0` without units and scaled such
         that its values correspond to SI values.
         """
-        return np.mean(np.gradient(self._ax0_si))
+        return self._get_dax(axis=0, si=True)
 
     @property
     def dax0(self):
@@ -459,13 +467,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If grid is non-uniform.
         """
-        if self.is_uniform:
-            return np.mean(np.gradient(self.ax0))
-        else:
-            raise ValueError(
-                "The grid step size properties are only valid on "
-                "uniformly spaced grids."
-            )
+        return self._get_dax(axis=0)
 
     @property
     def _dax1_si(self):
@@ -473,7 +475,7 @@ class AbstractGrid(ABC):
         Grid step size along axis :attr:`ax1` without units and scaled such
         that its values correspond to SI values.
         """
-        return np.mean(np.gradient(self._ax1_si))
+        return self._get_dax(axis=1, si=True)
 
     @property
     def dax1(self):
@@ -485,13 +487,7 @@ class AbstractGrid(ABC):
         `ValueError`
             If grid is non-uniform.
         """
-        if self.is_uniform:
-            return np.mean(np.gradient(self.ax1))
-        else:
-            raise ValueError(
-                "The grid step size properties are only valid on "
-                "uniformly spaced grids."
-            )
+        return self._get_dax(axis=1)
 
     @property
     def _dax2_si(self):
@@ -499,7 +495,7 @@ class AbstractGrid(ABC):
         Grid step size along axis :attr:`ax2` without units and scaled such
         that its values correspond to SI values.
         """
-        return np.mean(np.gradient(self._ax2_si))
+        return self._get_dax(axis=2, si=True)
 
     @property
     def dax2(self):
@@ -511,13 +507,7 @@ class AbstractGrid(ABC):
         ValueError
             If grid is non-uniform.
         """
-        if self.is_uniform:
-            return np.mean(np.gradient(self.ax2))
-        else:
-            raise ValueError(
-                "The grid step size properties are only valid on "
-                "uniformly spaced grids."
-            )
+        return self._get_dax(axis=2)
 
     @property
     def grid_resolution(self):
