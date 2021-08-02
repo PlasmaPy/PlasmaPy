@@ -419,7 +419,7 @@ class AbstractGrid(ABC):
         """
         The ax2 axis in SI units.
         """
-        return self.ds.coords["ax2"].values * self._si_factors[2]
+        return self.ds.coords["ax2"].values * self.si_scale_factors[2]
 
     @property
     def ax2(self):
