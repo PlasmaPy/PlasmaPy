@@ -567,9 +567,9 @@ class AbstractGrid(ABC):
 
         # Store the conversion factors for each axis to SI
         self.si_factors = [
-            (1 * pts0.unit).si.value,
-            (1 * pts1.unit).si.value,
-            (1 * pts2.unit).si.value,
+            pts0.unit.si.scale,
+            pts1.unit.si.scale,
+            pts2.unit.si.scale,
         ]
 
         if self.is_uniform:
@@ -1196,17 +1196,8 @@ class CartesianGrid(AbstractGrid):
         nargs = len(args)
 
         # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = (
-            self._ax0_si,
-            self._ax1_si,
-            self._ax2_si,
-        )
-
-        dx, dy, dz = (
-            self._dax0_si,
-            self._dax1_si,
-            self._dax2_si,
-        )
+        ax0, ax1, ax2 = self._ax0_si, self._ax1_si, self._ax2_si
+        dx, dy, dz = self._dax0_si, self._dax1_si, self._dax2_si
         n0, n1, n2 = self.shape
 
         # find cell nearest to particle
