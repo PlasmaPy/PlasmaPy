@@ -1171,17 +1171,8 @@ class CartesianGrid(AbstractGrid):
         nargs = len(args)
 
         # Load grid attributes (so this isn't repeated)
-        ax0, ax1, ax2 = (
-            self._ax0_si,
-            self._ax1_si,
-            self._ax2_si,
-        )
-
-        dx, dy, dz = (
-            self._dax0_si,
-            self._dax1_si,
-            self._dax2_si,
-        )
+        ax0, ax1, ax2 = self._ax0_si, self._ax1_si, self._ax2_si
+        dx, dy, dz = self._dax0_si, self._dax1_si, self._dax2_si
         n0, n1, n2 = self.shape
 
         # find cell nearest to particle
