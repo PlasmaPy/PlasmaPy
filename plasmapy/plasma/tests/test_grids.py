@@ -265,53 +265,61 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
 
 
-def test_volume_averaged_interpolator():
-
+@pytest.fixture
+def example_grid():
     # Create grid
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
+
     # Add some data to the grid
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
 
-    # One position
-    pos = np.array([0.1, -0.3, 0.2]) * u.cm
-    pout = grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pos[0], pout, atol=0.1)
-
-    # Test quantity key not present in dataset
-    with pytest.raises(KeyError):
-        pout = grid.volume_averaged_interpolator(pos, "B_x")
-
-    # Two positions, two quantities
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    pout = grid.volume_averaged_interpolator(pos, "x", "y")
-
-    # Contains out-of-bounds values (must handle NaNs correctly)
-    pos = np.array([5, -0.3, 0]) * u.cm
-    pout = grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pout, 0 * u.cm, atol=0.1)
-
-    # Try running with persistance
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    p1, p2 = grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
-    p1, p2 = grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
-    # Try changing the arg list, make sure it catchs this and auto-reverts
-    # to non-persistent interpolation in that case
-    p1, p2 = grid.volume_averaged_interpolator(pos, "x", persistent=True)
-    assert p1.size == 1
-
-    # Create a low resolution test grid and check that the volume-avg
-    # interpolator returns a higher resolution version
-    raw_npts = 20
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=raw_npts)
     radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
     rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
     grid.add_quantities(rho=rho)
 
-    raw_hax = grid.ax0.to(u.mm).value
-    half = int(raw_npts / 2)
-    raw_rho = grid["rho"][:, half, half]
+    return grid
 
+
+def test_volume_averaged_interpolator_at_several_positions(example_grid):
+    # One position
+    pos = np.array([0.1, -0.3, 0.2]) * u.cm
+    pout = example_grid.volume_averaged_interpolator(pos, "x")
+    assert np.allclose(pos[0], pout, atol=0.1)
+
+    # Two positions, two quantities
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    pout = example_grid.volume_averaged_interpolator(pos, "x", "y")
+
+
+def test_volume_averaged_interpolator_missing_key(example_grid):
+    # Test quantity key not present in dataset
+    pos = np.array([0.1, -0.3, 0.2]) * u.cm
+    with pytest.raises(KeyError):
+        example_grid.volume_averaged_interpolator(pos, "B_x")
+
+
+def test_volume_averaged_interpolator_handle_out_of_bounds(example_grid):
+    # Contains out-of-bounds values (must handle NaNs correctly)
+    pos = np.array([5, -0.3, 0]) * u.cm
+    pout = example_grid.volume_averaged_interpolator(pos, "x")
+    assert np.allclose(pout, 0 * u.cm, atol=0.1)
+
+
+def test_volume_averaged_interpolator_persistance(example_grid):
+    # Try running with persistance
+    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
+    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
+    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
+    # Try changing the arg list, make sure it catchs this and auto-reverts
+    # to non-persistent interpolation in that case
+    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", persistent=True)
+    assert p1.size == 1
+
+
+def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
+    # Create a low resolution test grid and check that the volume-avg
+    # interpolator returns a higher resolution version
     npts = 150
     interp_pts = (
         np.array([np.linspace(-0.99, 1, num=npts), np.zeros(npts), np.zeros(npts)])
@@ -321,8 +329,8 @@ def test_volume_averaged_interpolator():
 
     interp_hax = interp_pts[:, 0].to(u.mm).value
 
-    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
-    NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    interp_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
+    NN_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
     analytic = interp_hax ** 4
@@ -332,6 +340,9 @@ def test_volume_averaged_interpolator():
     """
     # Uncomment plot for debugging
     import matplotlib.pyplot as plt
+    raw_hax = example_grid.ax0.to(u.mm).value
+    half = int(25 / 2)
+    raw_rho = example_grid["rho"][:, half, half]
     plt.plot(raw_hax, raw_rho, marker='*', label='Interp points')
     plt.plot(interp_hax, NN_rho, label='Nearest neighbor')
     plt.plot(interp_hax, interp_rho, marker='o', label='Volume weighted')
@@ -344,15 +355,17 @@ def test_volume_averaged_interpolator():
     # neareste neighbor interpolator
     assert vw_error < NN_error
 
-    # Now do the same computation but in 3D
 
-    npts = 60
+def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
+    # Do the same computation as the NN_1D test but in 3D
+
+    npts = 150
     interp_pts = (
         np.array(
             [
-                np.linspace(-0.95, 0.95, num=npts),
-                np.linspace(-0.95, 0.95, num=npts),
-                np.linspace(-0.95, 0.95, num=npts),
+                np.linspace(-0.9, 0.9, num=npts),
+                np.linspace(-0.9, 0.9, num=npts),
+                np.linspace(-0.9, 0.9, num=npts),
             ]
         )
         * u.cm
@@ -364,8 +377,8 @@ def test_volume_averaged_interpolator():
     zax = interp_pts[:, 2].to(u.mm).value
     analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
 
-    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
-    NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    interp_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
+    NN_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     vw_error = np.sum(np.abs(analytic - interp_rho.value))
     NN_error = np.sum(np.abs(analytic - NN_rho.value))
@@ -432,4 +445,5 @@ if __name__ == "__main__":
     test_volume_averaged_interpolator()
     test_NonUniformCartesianGrid()
     """
+    test_volume_averaged_interpolator()
     pass
