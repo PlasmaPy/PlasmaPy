@@ -620,7 +620,7 @@ class Particle(AbstractPhysicalParticle):
             try:
                 other_particle = Particle(other)
                 return self.symbol == other_particle.symbol
-            except InvalidParticleError as exc:
+            except InvalidParticleError:
                 return False
 
         if not isinstance(other, self.__class__):
