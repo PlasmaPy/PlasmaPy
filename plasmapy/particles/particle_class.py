@@ -605,7 +605,7 @@ class Particle(AbstractPhysicalParticle):
         This method will return `True` if ``other`` is an identical
         |Particle| instance or a `str` representing the same particle,
         and return `False` if ``other`` is a different |Particle|, a
-        `str` representing a different particle or an other type.
+        `str` representing a different particle or another type.
 
         Examples
         --------
