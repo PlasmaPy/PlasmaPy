@@ -74,9 +74,11 @@ allow us to write targeted tests to fill in the gaps in test coverage.
 The results displayed by Codecov will be marked as passing when the code
 coverage is sufficiently high.
 
-If any inconsistencies with the :pep:`8` style guide are found, then
-automated code style checks will and update that comment as the pull
-request is updated.  (NEEDS UPDATING)
+PlasmaPy uses the `black` code formatter. If any inconsistencies
+with its style are found, the `pre-commit.ci - pr` will notify you
+about them. To apply the fixes automagically, write a comment with
+the message `pre-commit.ci autofix`. Remember to `git pull`
+afterwards!
 
 .. _testing-guidelines-running-tests-command-line:
 
