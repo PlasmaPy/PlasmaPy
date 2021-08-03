@@ -1214,13 +1214,14 @@ class CartesianGrid(AbstractGrid):
         dx, dy, dz = self._dax0_si, self._dax1_si, self._dax2_si
         n0, n1, n2 = self.shape
 
-        # find cell nearest to particle
+        # find cell nearest to each position
         nearest_neighbor_index = np.zeros((nparticles, 3), dtype=np.int32)
         nearest_neighbor_index[..., 0] = np.abs(pos[:, 0, None] - ax0).argmin(axis=1)
         nearest_neighbor_index[..., 1] = np.abs(pos[:, 1, None] - ax1).argmin(axis=1)
         nearest_neighbor_index[..., 2] = np.abs(pos[:, 2, None] - ax2).argmin(axis=1)
 
-        # What particles are off the grid?
+        # Create a mask for positions that are off the grid. The values at
+        # these points will be set to zero later.
         mask_particle_off = (
             (pos[:, 0] < ax0.min() - 0.5 * dx)
             | (pos[:, 0] > ax0.max() + 0.5 * dx)
@@ -1269,7 +1270,9 @@ class CartesianGrid(AbstractGrid):
         ).swapaxes(0, 1)
         bounding_cell_indices[:, 1::2, 2] = bounding_cell_indices[:, 0::2, 2] + 1
 
-        # create off the grid mask
+        # Create a mask for cells whose locations would be off the grid,
+        # which occurs when the interpolation point is near the edge of the
+        # grid. These values will be weighted as zero later.
         mask_cell_off = (
             (bounding_cell_indices < 0).any(axis=2)
             | (bounding_cell_indices[:, :, 0] >= n0)
@@ -1283,10 +1286,14 @@ class CartesianGrid(AbstractGrid):
         # off the grid mask
         bounding_cell_indices[mask_cell_off, :] = 0
 
+        # Calculate the volume of the overlap between the point volume
+        # and the volume of each of the surrounding vertices
         lx = dx - np.abs(pos[:, None, 0] - ax0[bounding_cell_indices[..., 0]])
         ly = dy - np.abs(pos[:, None, 1] - ax1[bounding_cell_indices[..., 1]])
         lz = dz - np.abs(pos[:, None, 2] - ax2[bounding_cell_indices[..., 2]])
         bounding_cell_weights = lx * ly * lz
+
+        # Set the weight for any off-grid vertices to zero
         bounding_cell_weights[mask_cell_off] = 0.0
         bounding_cell_weights[mask_particle_off, ...] = 0.0
         norms = np.sum(bounding_cell_weights, axis=1)
@@ -1295,12 +1302,15 @@ class CartesianGrid(AbstractGrid):
             bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
         )
 
+        # Get the values of each of the interpolated quantities at each
+        # of the bounding vertices
         vals = self._interp_quantities[
             bounding_cell_indices[..., 0],
             bounding_cell_indices[..., 1],
             bounding_cell_indices[..., 2],
             :,
         ]
+        # Construct a weighted average of the interpolated quantities
         weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
 
         # Split output array into arrays with units
