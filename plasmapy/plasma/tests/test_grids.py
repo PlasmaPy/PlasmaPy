@@ -433,17 +433,3 @@ def test_NonUniformCartesianGrid():
     L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
         grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
-
-
-if __name__ == "__main__":
-    """
-    test_AbstractGrid()
-    test_CartesianGrid()
-    test_grid_methods()
-    test_interpolate_indices()
-    test_nearest_neighbor_interpolator()
-    test_volume_averaged_interpolator()
-    test_NonUniformCartesianGrid()
-    """
-    test_volume_averaged_interpolator()
-    pass
