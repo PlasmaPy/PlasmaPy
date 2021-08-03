@@ -1296,11 +1296,11 @@ class CartesianGrid(AbstractGrid):
         # Set the weight for any off-grid vertices to zero
         bounding_cell_weights[mask_cell_off] = 0.0
         bounding_cell_weights[mask_particle_off, ...] = 0.0
-        norms = np.sum(bounding_cell_weights, axis=1)
-        mask_norm_zero = norms == 0.0
-        bounding_cell_weights[~mask_norm_zero] = (
-            bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
-        )
+
+        # Normalize the bounding cell weights to the volume surrounding the
+        # interpolation position. The weights now represent fractions of that
+        # volume
+        bounding_cell_weights *= 1 / (dx * dy * dz)
 
         # Get the values of each of the interpolated quantities at each
         # of the bounding vertices
