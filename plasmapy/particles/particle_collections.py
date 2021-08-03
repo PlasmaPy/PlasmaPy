@@ -1,6 +1,6 @@
 """Collections of `~plasmapy.particles.particle_class.Particle` objects."""
 
-__all__ = ["ion_list", "ParticleList"]
+__all__ = ["ionic_levels", "ParticleList"]
 
 import astropy.units as u
 import collections
@@ -337,7 +337,7 @@ ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
 
 @particle_input(any_of={"element", "isotope", "ion"})
-def ion_list(
+def ionic_levels(
     particle: Particle,
     min_charge: Integral = 0,
     max_charge: Optional[Integral] = None,
@@ -366,10 +366,10 @@ def ion_list(
 
     Examples
     --------
-    >>> from plasmapy.particles import ion_list
-    >>> ion_list("He")
+    >>> from plasmapy.particles import ionic_levels
+    >>> ionic_levels("He")
     ParticleList(['He 0+', 'He 1+', 'He 2+'])
-    >>> ion_list("Fe-56", min_charge=13, max_charge=15)
+    >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
     base_particle = Particle(particle.isotope if particle.isotope else particle.element)

@@ -13,7 +13,7 @@ from plasmapy.particles.particle_class import (
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.particle_collections import ion_list, ParticleList
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
@@ -333,7 +333,7 @@ def test_particle_list_with_no_arguments():
 
 
 def test_ion_list_example():
-    ions = ion_list("He-4")
+    ions = ionic_levels("He-4")
     assert np.allclose(ions.charge_number, [0, 1, 2])
     assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
 
@@ -348,9 +348,9 @@ def test_ion_list_example():
     ],
 )
 def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
-    """Test that inputs to ion_list are interpreted correctly."""
+    """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
-    ions = ion_list(particle, min_charge, max_charge)
+    ions = ionic_levels(particle, min_charge, max_charge)
     assert np.allclose(ions.charge_number, expected_charge_numbers)
     assert ions[0].element == particle.element
     if particle.is_category("isotope"):
@@ -362,4 +362,4 @@ def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
 )
 def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
     with pytest.raises(ChargeError):
-        ion_list(element, min_charge, max_charge)
+        ionic_levels(element, min_charge, max_charge)
