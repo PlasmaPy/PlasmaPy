@@ -1,0 +1,3 @@
+Renamed "Development Guide" to "Contributor Guide", and temporarily removed
+the incomplete ``docs/development/workflow.rst`` from the ``toctree`` of the
+Contributor Guide.
