@@ -1,1 +1,1 @@
-Changed behaviour of `~plasmapy.particles.Particle.__eq__` to return False instead of an error when used to compare with an other type or a string that doesn't represents a particle.
+Changed behaviour of `~plasmapy.particles.particle_class.Particle.__eq__` to return `False` instead of an error when used to compare with another type or a string that does not represent a particle.
