@@ -852,7 +852,7 @@ class IonizationState:
 
         return states_info
 
-    def mean_particle(self, include_neutrals: bool = True) -> CustomParticle:
+    def average_particle(self, include_neutrals: bool = True) -> CustomParticle:
         """
         Return a `~plasmapy.particles.particle_class.CustomParticle`
         instance representing the mean particle in this ionization state.
@@ -864,7 +864,7 @@ class IonizationState:
             of the different particles.  If `False`, include only ions.
             Defaults to `True`.
         """
-        pass
+        return self.ions.average_particle()
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
