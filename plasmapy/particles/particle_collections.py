@@ -111,7 +111,7 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Iterable[ParticleLike] = None,
+        particles: Optional[Iterable[ParticleLike]],
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
         Convert an iterable that provides
