@@ -19,7 +19,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import Particle
-from plasmapy.particles.particle_collections import ion_list, ParticleList
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -308,7 +308,7 @@ class IonizationState:
                 )
 
         self._particle = particle
-        self._particle_list = ion_list(particle)
+        self._particle_list = ionic_levels(particle)
 
         try:
             self.tol = tol
