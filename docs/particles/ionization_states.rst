@@ -11,9 +11,8 @@ He\ :sup:`0+`\ , 94% He\ :sup:`1+`\ , and 1% He\ :sup:`2+`\ .
 The ionization state of a single element
 ========================================
 
-We may use the `~plasmapy.particles.ionization_state.IonizationState`
-class to represent the ionization state of a single element, such as
-for this example.
+We may use the |IonizationState| class to represent the ionization
+state of a single element, such as for this example.
 
 >>> from plasmapy.particles import IonizationState
 >>> ionization_state = IonizationState("He", [0.05, 0.94, 0.01])
@@ -43,8 +42,8 @@ attribute returns the root mean square charge number.
 0.9899...
 
 The `~plasmapy.particles.ionization_state.IonizationState.Z_most_abundant`
-attribute returns a `list` of the most abundant ion(s).  The `list` may
-contain more than one charge number in case of a tie.
+attribute returns a `list` of the most abundant ion(s).  The `list`
+may contain more than one charge number in case of a tie.
 
 >>> ionization_state.Z_most_abundant
 [1]
@@ -69,8 +68,8 @@ The number density of the element may be specified through the
 ...     "He", [0.05, 0.94, 0.01], n_elem = 1e19 * u.m ** -3,
 ... )
 
-The `~plasmapy.particles.ionization_state.IonizationState.n_e` attribute
-provides the electron number density as a `~astropy.units.Quantity`.
+The `~plasmapy.particles.ionization_state.IonizationState.n_e`
+attribute provides the electron number density as a |Quantity|.
 
 >>> ionization_state.n_e
 <Quantity 9.6e+18 1 / m3>
@@ -84,18 +83,16 @@ attribute provides the number density of each ion or neutral.
 Ionization states for multiple elements
 =======================================
 
-The `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-class may be used to represent the ionization state for multiple
-elements. This can be used, for example, to describe the various
-impurities in a fusion plasma or the charge state distributions of
-different elements in the solar wind.
+The |IonizationStateCollection| class may be used to represent the
+ionization state for multiple elements. This can be used, for example,
+to describe the various impurities in a fusion plasma or the charge
+state distributions of different elements in the solar wind.
 
 >>> from plasmapy.particles import IonizationStateCollection
 
-The minimal input to
-`~plasmapy.particles.ionization_state_collection.IonizationStateCollection`
-is a `list` of the elements or isotopes to represent.  Integers in the
-`list` will be treated as atomic numbers.
+The minimal input to |IonizationStateCollection| is a `list` of the
+elements or isotopes to represent.  Integers in the `list` will be
+treated as atomic numbers.
 
 >>> states = IonizationStateCollection(["H", 2])
 
@@ -103,15 +100,14 @@ To set the ionic fractions for hydrogen, we may do item assignment.
 
 >>> states["H"] = [0.9, 0.1]
 
-We may use indexing to retrieve an
-`~plasmapy.particles.ionization_state.IonizationState` instance for an
+We may use indexing to retrieve an |IonizationState| instance for an
 element.
 
 >>> states["H"]
 <IonizationState instance for H>
 
-The ionization states for all of the elements may be specified directly
-as arguments to the class.
+The ionization states for all of the elements may be specified
+directly as arguments to the class.
 
 >>> states = IonizationStateCollection(
 ...     {"H": [0.01, 0.99], "He": [0.04, 0.95, 0.01]},
@@ -126,9 +122,10 @@ The ionic fractions will be stored as a `dict`.
 
 The number density for each element is the product of the number
 density scaling factor
-`~plasmapy.particles.ionization_state.IonizationStateCollection.n0` with
-that element's abundance.  The number density for each ion is the
-product of `~plasmapy.particles.ionization_state.IonizationStateCollection.n0`,
+`~plasmapy.particles.ionization_state.IonizationStateCollection.n0`
+with that element's abundance.  The number density for each ion is the
+product of
+`~plasmapy.particles.ionization_state.IonizationStateCollection.n0`,
 the corresponding element's abundance, and the ionic fraction.
 
 >>> states.n

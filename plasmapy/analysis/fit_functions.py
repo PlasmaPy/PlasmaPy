@@ -51,12 +51,7 @@ class AbstractFitFunction(ABC):
 
         """
 
-        self.FitParamTuple = namedtuple("FitParamTuple", self._param_names)
-        """
-        A `~collections.namedtuple` used for attributes :attr:`params` and
-        :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
-        the tuple field names.
-        """
+        self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
 
         if params is None:
             self._params = None
@@ -220,6 +215,15 @@ class AbstractFitFunction(ABC):
         `scipy.optimize.curve_fit`.
         """
         return self._curve_fit_results
+
+    @property
+    def FitParamTuple(self):
+        """
+        A `~collections.namedtuple` used for attributes :attr:`params` and
+        :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
+        the tuple field names.
+        """
+        return self._FitParamTuple
 
     @property
     def params(self) -> Union[None, tuple]:
