@@ -111,7 +111,7 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Iterable[ParticleLike],
+        particles: Iterable[ParticleLike] = None,
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
         Convert an iterable that provides
@@ -119,7 +119,9 @@ class ParticleList(collections.UserList):
         `list` containing `~plasmapy.particles.particle_class.Particle`
         and `~plasmapy.particles.particle_class.CustomParticle` instances.
         """
-        new_particles = []
+        new_particles = list()
+        if particles is None:
+            return new_particles
         for obj in particles:
             if isinstance(obj, (Particle, CustomParticle)):
                 new_particles.append(obj)
@@ -139,10 +141,7 @@ class ParticleList(collections.UserList):
         return new_particles
 
     def __init__(self, particles: Iterable = None):
-        if particles is not None:
-            self._data = self._list_of_particles_and_custom_particles(particles)
-        else:
-            self._data = list()
+        self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
     def _cast_other_as_particle_list(other):
