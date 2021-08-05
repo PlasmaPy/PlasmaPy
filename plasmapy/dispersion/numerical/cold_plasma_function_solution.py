@@ -11,18 +11,20 @@ from sympy import var, solve
 
 
 
-@validate_quantities(
-    B={"can_be_negative": False},
-    theta={"can_be_negative": False},
-)
+#@validate_quantities(
+#    B={"can_be_negative": False},
+#    theta={"can_be_negative": False},
+#)
+print('')
 def cold_plasma_function_solution(
     *,
     B: u.T,
-    k: u.rad / u.m,
-    omega_p: 1/u.s,
-    omega_e: 1/u.s,
+    k: u.rad, #/ u.m,
+    omega_p: u.s,
+    omega_e: u.s,
     theta: u.rad,
 ):
+    
     r"""
     Using the solution provided by Bellan 2012, calculate the numerical
     solution to the Stix, cold plasma method (:math:`\omega`) dispersion
@@ -152,7 +154,7 @@ def cold_plasma_function_solution(
     <Quantity [[0.00767..., 0.00779... ],
                [0.01534..., 0.01558...]] rad / s>
     """
-
+    
     # validate arguments
     for arg_name in ("B"):
         val = locals()[arg_name].squeeze()
