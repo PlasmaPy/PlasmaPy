@@ -1,6 +1,5 @@
 """
-The `~plasmapy.dispersion` subpackage contains functionality associated with
-plasma dispersion relations, numerical solvers and analytical solutions.
+The `~plasmapy.dispersion.numerical` subpackage contains functionality
+associated with numerical dispersion solvers.
 """
-__all__ = [
-]
+__all__ = []
