@@ -1,6 +1,6 @@
 """
-The `~plasmapy.dispersion` subpackage contains functionality associated with
-plasma dispersion relations, numerical solvers and analytical solutions.
+The `~plasmapy.dispersion.analytical` subpackage contains functionality
+associated with analytical dispersion solutions.
 """
 __all__ = [
     "two_fluid",
