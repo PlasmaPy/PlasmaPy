@@ -1,18 +1,19 @@
 """Tests for particle collections."""
 
 import astropy.units as u
+import numpy as np
 import pytest
 
 from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.atomic import atomic_number
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.nuclear import nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
@@ -322,3 +323,43 @@ def test_particle_multiplication(method, particle):
     """
     particle_list = getattr(particle, method)(3)
     assert particle_list == [particle, particle, particle]
+
+
+def test_particle_list_with_no_arguments():
+    """Test that `ParticleList()` returns an empty `ParticleList`."""
+    empty_particle_list = ParticleList()
+    assert isinstance(empty_particle_list, ParticleList)
+    assert len(empty_particle_list) == 0
+
+
+def test_ion_list_example():
+    ions = ionic_levels("He-4")
+    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
+    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
+
+
+@pytest.mark.parametrize(
+    "particle, min_charge, max_charge, expected_charge_numbers",
+    [
+        ("H-1", 0, 1, [0, 1]),
+        ("p+", 1, 1, [1]),
+        (Particle("p+"), 0, 0, [0]),
+        ("C", 3, 5, [3, 4, 5]),
+    ],
+)
+def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+    """Test that inputs to ionic_levels are interpreted correctly."""
+    particle = Particle(particle)
+    ions = ionic_levels(particle, min_charge, max_charge)
+    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
+    assert ions[0].element == particle.element
+    if particle.is_category("isotope"):
+        assert ions[0].isotope == particle.isotope
+
+
+@pytest.mark.parametrize(
+    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+)
+def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+    with pytest.raises(ChargeError):
+        ionic_levels(element, min_charge, max_charge)
