@@ -878,15 +878,21 @@ class SyntheticProtonRadiograph:
                 persistent=True,
             )
 
+        # Interpret any NaN values (points off the grid) as zero
+        Ex = np.nan_to_num(Ex, nan=0.0 * u.V / u.m)
+        Ey = np.nan_to_num(Ey, nan=0.0 * u.V / u.m)
+        Ez = np.nan_to_num(Ez, nan=0.0 * u.V / u.m)
+        Bx = np.nan_to_num(Bx, nan=0.0 * u.T)
+        By = np.nan_to_num(By, nan=0.0 * u.T)
+        Bz = np.nan_to_num(Bz, nan=0.0 * u.T)
+
         # Create arrays of E and B as required by push algorithm
         E = np.array(
             [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
         )
         E = np.moveaxis(E, 0, -1)
-        E = np.nan_to_num(E, nan=0.0)
         B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
-        B = np.nan_to_num(B, nan=0.0)
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles
