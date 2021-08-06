@@ -1220,15 +1220,15 @@ class CartesianGrid(AbstractGrid):
         nearest_neighbor_index[..., 1] = np.abs(pos[:, 1, None] - ax1).argmin(axis=1)
         nearest_neighbor_index[..., 2] = np.abs(pos[:, 2, None] - ax2).argmin(axis=1)
 
-        # Create a mask for positions that are within dx/2 of the edge of the
-        # grid. These v. The values will be set to NaN later.
+        # Create a mask for positions that are off the grid. The values at
+        # these points will be set to zero later.
         mask_particle_off = (
-            (pos[:, 0] < ax0.min() + 0.5 * dx)
-            | (pos[:, 0] > ax0.max() - 0.5 * dx)
-            | (pos[:, 1] < ax1.min() + 0.5 * dy)
-            | (pos[:, 1] > ax1.max() - 0.5 * dy)
-            | (pos[:, 2] < ax2.min() + 0.5 * dz)
-            | (pos[:, 2] > ax2.max() - 0.5 * dz)
+            (pos[:, 0] < ax0.min() - 0.5 * dx)
+            | (pos[:, 0] > ax0.max() + 0.5 * dx)
+            | (pos[:, 1] < ax1.min() - 0.5 * dy)
+            | (pos[:, 1] > ax1.max() + 0.5 * dy)
+            | (pos[:, 2] < ax2.min() - 0.5 * dz)
+            | (pos[:, 2] > ax2.max() + 0.5 * dz)
         )
 
         # Get the physical positions for the nearest neighbor cell
@@ -1279,6 +1279,7 @@ class CartesianGrid(AbstractGrid):
             | (bounding_cell_indices[:, :, 1] >= n1)
             | (bounding_cell_indices[:, :, 2] >= n2)
         )
+
         # Zero any out of bounds indices so IndexError is not raised
         # during indexing.  This means an incorrect value will be retrieved
         # but will not be used because of the zero weighting and the
@@ -1294,9 +1295,11 @@ class CartesianGrid(AbstractGrid):
 
         # Set the weight for any off-grid vertices to zero
         bounding_cell_weights[mask_cell_off] = 0.0
+        bounding_cell_weights[mask_particle_off, ...] = 0.0
 
         # Normalize the bounding cell weights to the volume surrounding the
-        # interpolation position.
+        # interpolation position. The weights now represent fractions of that
+        # volume
         bounding_cell_weights *= 1 / (dx * dy * dz)
 
         # Get the values of each of the interpolated quantities at each
@@ -1308,16 +1311,13 @@ class CartesianGrid(AbstractGrid):
             :,
         ]
         # Construct a weighted average of the interpolated quantities
-        weighted_avg = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
-
-        # Replace values at out-of-grid positons with np.NaN
-        weighted_avg[mask_particle_off, :] = np.nan
+        weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
 
         # Split output array into arrays with units
         # Apply units to output arrays
         output = []
         for arg in range(nargs):
-            output.append(weighted_avg[..., arg] * self._interp_units[arg])
+            output.append(weighted_ave[..., arg] * self._interp_units[arg])
 
         if len(output) == 1:
             return output[0]
