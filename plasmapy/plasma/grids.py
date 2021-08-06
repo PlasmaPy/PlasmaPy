@@ -56,13 +56,13 @@ class AbstractGrid(ABC):
     A new grid can also be created using a syntax similar to `np.linspace`
     by providing two three-element `~astropy.units.Quantity` arrays of start
     and stop values and setting the `num` keyword to the number of points along
-    each axis. 
+    each axis.
 
     >>> AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num = [Nx, Ny, Nz], **kwargs)
-    
+
     In this case, any additional keyword arguments provided will be passed directly to
     `~np.linspace`.
-    
+
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
