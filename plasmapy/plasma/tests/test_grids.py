@@ -303,7 +303,7 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(example_grid):
     # Contains out-of-bounds values (must handle NaNs correctly)
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = example_grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pout, 0 * u.cm, atol=0.1)
+    assert np.isnan(pout.value)
 
 
 def test_volume_averaged_interpolator_persistance(example_grid):
