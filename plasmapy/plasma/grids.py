@@ -45,6 +45,24 @@ class AbstractGrid(ABC):
     Abstract grid represents a 3D grid of positions. The grid is stored
     as an `~numpy.ndarray`, while the units associated with each
     dimension are stored separately.
+
+    A grid can be intialized by providing three 3D `~astropy.units.Quantity` arrays of
+    positions along each axis, eg.
+
+
+    >>> AbstractGrid(xpoints, ypoints, zpoints)
+
+
+    A new grid can also be created using a syntax similar to `np.linspace`
+    by providing two three-element `~astropy.units.Quantity` arrays of start
+    and stop values and setting the `num` keyword to the number of points along
+    each axis. 
+
+    >>> AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num = [Nx, Ny, Nz], **kwargs)
+    
+    In this case, any additional keyword arguments provided will be passed directly to
+    `~np.linspace`.
+    
     """
 
     def __init__(self, *seeds, num=100, **kwargs):
@@ -59,6 +77,7 @@ class AbstractGrid(ABC):
 
         # If two inputs are given, assume they are start and stop arrays
         # to create a new grid
+        # kwargs are passed to np.linspace in _make_grid()
         elif len(seeds) == 2:
             self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
 
@@ -379,7 +398,7 @@ class AbstractGrid(ABC):
 
         Returns
         -------
-        ~numpy.ndarray or ~astropy.units.Quantity
+        ~numpy.ndarray or `~astropy.units.Quantity`
             If ``si==True`` then return a unitless `~numpy.ndarray`.
             If ``si==False`` then return a `~astropy.units.Quantity`
             array with the original units.
@@ -549,7 +568,10 @@ class AbstractGrid(ABC):
     # *************************************************************************
 
     def _load_grid(
-        self, pts0: u.Quantity, pts1: u.Quantity, pts2: u.Quantity, **kwargs
+        self,
+        pts0: u.Quantity,
+        pts1: u.Quantity,
+        pts2: u.Quantity,
     ):
         r"""
         Initialize the grid object from a user-supplied grid.
@@ -597,12 +619,6 @@ class AbstractGrid(ABC):
                 names=["ax0", "ax1", "ax2"],
             )
             self.ds.coords["ax"] = mdx
-
-        # Add quantities
-        for qk in kwargs.keys():
-            q = kwargs[qk]
-
-            self.add_quantity(qk, q)
 
         # Check to make sure that the object created satisfies any
         # requirements: eg. units correspond to the coordinate system
