@@ -883,10 +883,10 @@ class SyntheticProtonRadiograph:
             [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
         )
         E = np.moveaxis(E, 0, -1)
-        E = np.nan_to_num(E)
+        E = np.nan_to_num(E, nan=0.0)
         B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
         B = np.moveaxis(B, 0, -1)
-        B = np.nan_to_num(B)
+        B = np.nan_to_num(B, nan=0.0)
 
         # Calculate the adaptive timestep from the fields currently experienced
         # by the particles

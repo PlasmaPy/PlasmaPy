@@ -303,7 +303,7 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(example_grid):
     # Contains out-of-bounds values (must handle NaNs correctly)
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = example_grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pout, 0 * u.cm, atol=0.1)
+    assert np.isnan(pout.value)
 
 
 def test_volume_averaged_interpolator_persistance(example_grid):
@@ -433,3 +433,52 @@ def test_NonUniformCartesianGrid():
     L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
     with pytest.raises(ValueError):
         grid = grids.NonUniformCartesianGrid(L0, L1, num=10)
+
+
+def debug_volume_avg_interpolator():
+
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
+
+    # Add some data to the grid
+    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(y=grid.grids[1])
+
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
+
+    # Create a low resolution test grid and check that the volume-avg
+    # interpolator returns a higher resolution version
+    npts = 150
+    interp_pts = (
+        np.array([np.linspace(-0.99, 1, num=npts), np.zeros(npts), np.zeros(npts)])
+        * u.cm
+    )
+    interp_pts = np.moveaxis(interp_pts, 0, -1)
+
+    interp_hax = interp_pts[:, 0].to(u.mm).value
+
+    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
+    NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
+
+    a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
+    analytic = interp_hax ** 4
+    vw_error = np.sum(np.abs(analytic[a:b] - interp_rho.value[a:b]))
+    NN_error = np.sum(np.abs(analytic[a:b] - NN_rho.value[a:b]))
+
+    # Uncomment plot for debugging
+    import matplotlib.pyplot as plt
+
+    raw_hax = grid.ax0.to(u.mm).value
+    half = int(25 / 2)
+    raw_rho = grid["rho"][:, half, half]
+    plt.plot(raw_hax, raw_rho, marker="*", label="Interp points")
+    plt.plot(interp_hax, NN_rho, label="Nearest neighbor")
+    plt.plot(interp_hax, interp_rho, marker="o", label="Volume weighted")
+    plt.plot(interp_hax, analytic, label="Analytic")
+    plt.legend()
+    plt.xlim(-11, 11)
+
+
+if __name__ == "__main__":
+    debug_volume_avg_interpolator()

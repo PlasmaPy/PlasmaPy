@@ -1223,12 +1223,12 @@ class CartesianGrid(AbstractGrid):
         # Create a mask for positions that are off the grid. The values at
         # these points will be set to zero later.
         mask_particle_off = (
-            (pos[:, 0] < ax0.min() - 0.5 * dx)
-            | (pos[:, 0] > ax0.max() + 0.5 * dx)
-            | (pos[:, 1] < ax1.min() - 0.5 * dy)
-            | (pos[:, 1] > ax1.max() + 0.5 * dy)
-            | (pos[:, 2] < ax2.min() - 0.5 * dz)
-            | (pos[:, 2] > ax2.max() + 0.5 * dz)
+            (pos[:, 0] < ax0.min() + 0.5 * dx)
+            | (pos[:, 0] > ax0.max() - 0.5 * dx)
+            | (pos[:, 1] < ax1.min() + 0.5 * dy)
+            | (pos[:, 1] > ax1.max() - 0.5 * dy)
+            | (pos[:, 2] < ax2.min() + 0.5 * dz)
+            | (pos[:, 2] > ax2.max() - 0.5 * dz)
         )
 
         # Get the physical positions for the nearest neighbor cell
@@ -1296,11 +1296,7 @@ class CartesianGrid(AbstractGrid):
         # Set the weight for any off-grid vertices to zero
         bounding_cell_weights[mask_cell_off] = 0.0
         bounding_cell_weights[mask_particle_off, ...] = 0.0
-        norms = np.sum(bounding_cell_weights, axis=1)
-        mask_norm_zero = norms == 0.0
-        bounding_cell_weights[~mask_norm_zero] = (
-            bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
-        )
+        bounding_cell_weights *= 1 / (dx * dy * dz)
 
         # Get the values of each of the interpolated quantities at each
         # of the bounding vertices
@@ -1312,6 +1308,8 @@ class CartesianGrid(AbstractGrid):
         ]
         # Construct a weighted average of the interpolated quantities
         weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
+
+        weighted_ave[mask_particle_off, :] = np.nan
 
         # Split output array into arrays with units
         # Apply units to output arrays
