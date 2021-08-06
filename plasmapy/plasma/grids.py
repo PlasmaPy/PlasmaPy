@@ -1223,12 +1223,12 @@ class CartesianGrid(AbstractGrid):
         # Create a mask for positions that are off the grid. The values at
         # these points will be set to zero later.
         mask_particle_off = (
-            (pos[:, 0] < ax0.min() + 0.5 * dx)
-            | (pos[:, 0] > ax0.max() - 0.5 * dx)
-            | (pos[:, 1] < ax1.min() + 0.5 * dy)
-            | (pos[:, 1] > ax1.max() - 0.5 * dy)
-            | (pos[:, 2] < ax2.min() + 0.5 * dz)
-            | (pos[:, 2] > ax2.max() - 0.5 * dz)
+            (pos[:, 0] < ax0.min())
+            | (pos[:, 0] > ax0.max())
+            | (pos[:, 1] < ax1.min())
+            | (pos[:, 1] > ax1.max())
+            | (pos[:, 2] < ax2.min())
+            | (pos[:, 2] > ax2.max())
         )
 
         # Get the physical positions for the nearest neighbor cell
