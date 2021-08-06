@@ -1293,10 +1293,14 @@ class CartesianGrid(AbstractGrid):
         lz = dz - np.abs(pos[:, None, 2] - ax2[bounding_cell_indices[..., 2]])
         bounding_cell_weights = lx * ly * lz
 
-        # Set the weight for any off-grid vertices to zero
+        # Set the weight for any off-grid vertices (cell or particle) to zero
         bounding_cell_weights[mask_cell_off] = 0.0
         bounding_cell_weights[mask_particle_off, ...] = 0.0
-        bounding_cell_weights *= 1 / (dx * dy * dz)
+        norms = np.sum(bounding_cell_weights, axis=1)
+        mask_norm_zero = norms == 0.0
+        bounding_cell_weights[~mask_norm_zero] = (
+            bounding_cell_weights[~mask_norm_zero, ...] / norms[~mask_norm_zero, None]
+        )
 
         # Get the values of each of the interpolated quantities at each
         # of the bounding vertices
@@ -1308,7 +1312,6 @@ class CartesianGrid(AbstractGrid):
         ]
         # Construct a weighted average of the interpolated quantities
         weighted_ave = np.sum(bounding_cell_weights[..., None] * vals, axis=1)
-
         weighted_ave[mask_particle_off, :] = np.nan
 
         # Split output array into arrays with units
