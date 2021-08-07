@@ -18,19 +18,19 @@ Requirements
 PlasmaPy requires Python version 3.7 or newer.
 PlasmaPy requires the following packages for installation:
 
-- `NumPy <https://www.numpy.org/>`_ — 1.18.1 or newer
-- `SciPy <https://www.scipy.org/>`_ — 1.2 or newer
-- `Astropy <https://www.astropy.org/>`_ — 4.0 or newer
+- `NumPy`_ — 1.18.1 or newer
+- `SciPy`_ — 1.2 or newer
+- `Astropy`_ — 4.0 or newer
 - `pandas <https://pandas.pydata.org/>`_ — 1.0 or newer
 - `xarray <http://xarray.pydata.org>`_ — above 0.14
-- `tqdm <https://tqdm.github.io/>`_ — 4.56 or newer
+- `tqdm <https://tqdm.github.io/>`_ — 4.41 or newer
 - `cached_property <https://pypi.org/project/cached-property/>`_ — 1.5.2 or newer
 
 PlasmaPy also depends on the following packages for optional features:
 
 - `h5py <https://www.h5py.org/>`_ — 2.8 or newer
 - `lmfit <https://lmfit.github.io/lmfit-py/>`_ — 1.0.1 or newer
-- `matplotlib <https://matplotlib.org/>`_ — 2.0 or newer
+- `matplotlib`_ — 2.0 or newer
 - `mpmath <https:htt//mpmath.org/>`_ — 1.0 or newer
 
 .. _install-process:
@@ -38,14 +38,13 @@ PlasmaPy also depends on the following packages for optional features:
 Installing PlasmaPy
 ===================
 
-
 .. _install-pip:
 
 Installation with pip
 ---------------------
 
 To install the most recent release of PlasmaPy on `PyPI`_
-with `pip <https://pip.pypa.io/en/stable/>`_ into an existing Python environment
+with `pip`_ into an existing Python environment
 with both required and optional dependencies, run
 
 .. code:: bash
@@ -115,7 +114,7 @@ from the most recent development version by running:
 
 The repository will be cloned inside a new subdirectory called ``PlasmaPy``.
 
-If you do not have git installed on your computer, then you may download
+If you do not have `git`_ installed on your computer, then you may download
 the most recent source code from `PlasmaPy's GitHub repository`_ by
 selecting "Clone or Download", which will give you the option to
 download a zip file.
@@ -150,10 +149,6 @@ by running
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
 
-.. _git: https://git-scm.com/
-.. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
-.. _Conda: https://conda.io/docs/
-.. _PyPI: https://pypi.org/
 .. _from PyPI: https://pypi.org/project/plasmapy/
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls

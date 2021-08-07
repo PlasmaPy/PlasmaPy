@@ -242,7 +242,7 @@ def two_fluid(
     # validate z_mean
     if z_mean is None:
         try:
-            z_mean = abs(ion.integer_charge)
+            z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
     else:

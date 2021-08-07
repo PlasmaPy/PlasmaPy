@@ -180,6 +180,9 @@ class IonizationStateCollection:
                 "Unable to create IonizationStateCollection object."
             ) from exc
 
+    def __len__(self) -> int:
+        return len(self._base_particles)
+
     def __str__(self) -> str:
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
@@ -402,8 +405,8 @@ class IonizationStateCollection:
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
         """
-        Return a `dict` containing the ionic fractions for each element
-        and isotope.
+        A `dict` containing the ionic fractions for each element and
+        isotope.
 
         The keys of this `dict` are the symbols for each element or
         isotope.  The values will be `~numpy.ndarray` objects containing
@@ -651,23 +654,20 @@ class IonizationStateCollection:
     @property
     @validate_quantities
     def n_e(self) -> u.m ** -3:
-        """
-        Return the electron number density under the assumption of
-        quasineutrality.
-        """
+        """The electron number density under the assumption of quasineutrality."""
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
         for elem in self.base_particles:
             atomic_numb = atomic_number(elem)
             number_of_ionization_states = atomic_numb + 1
-            integer_charges = np.linspace(0, atomic_numb, number_of_ionization_states)
-            n_e += np.sum(number_densities[elem] * integer_charges)
+            charge_numbers = np.linspace(0, atomic_numb, number_of_ionization_states)
+            n_e += np.sum(number_densities[elem] * charge_numbers)
         return n_e
 
     @property
     @validate_quantities
     def n0(self) -> u.m ** -3:
-        """Return the number density scaling factor."""
+        """The number density scaling factor."""
         return self._pars["n"]
 
     @n0.setter
@@ -687,8 +687,8 @@ class IonizationStateCollection:
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
         """
-        Return a `dict` containing the number densities for element or
-        isotope.
+        A `dict` containing the number densities for the elements and/or
+        isotopes composing the collection.
         """
         return {
             elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
@@ -697,7 +697,7 @@ class IonizationStateCollection:
 
     @property
     def abundances(self) -> Optional[Dict[ParticleLike, Real]]:
-        """Return the elemental abundances."""
+        """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
@@ -760,9 +760,8 @@ class IonizationStateCollection:
     @property
     def log_abundances(self) -> Dict[str, Real]:
         """
-        Return a `dict` with atomic or isotope symbols as keys and the
-        base 10 logarithms of the relative abundances as the
-        corresponding values.
+        A `dict` with atomic or isotope symbols as keys and the base 10
+        logarithms of the relative abundances as the corresponding values.
         """
         log_abundances_dict = {}
         for key in self.abundances.keys():
@@ -783,7 +782,7 @@ class IonizationStateCollection:
 
     @property
     def T_e(self) -> u.K:
-        """Return the electron temperature."""
+        """The electron temperature."""
         return self._pars["T_e"]
 
     @T_e.setter
@@ -807,8 +806,7 @@ class IonizationStateCollection:
     @property
     def kappa(self) -> np.real:
         """
-        Return the kappa parameter for a kappa distribution function
-        for electrons.
+        The κ parameter for a kappa distribution function for electrons.
 
         The value of ``kappa`` must be greater than ``1.5`` in order to
         have a valid distribution function.  If ``kappa`` equals
@@ -834,14 +832,14 @@ class IonizationStateCollection:
     @property
     def base_particles(self) -> List[str]:
         """
-        Return a list of the elements and isotopes whose ionization
-        states are being kept track of.
+        A `list` of the elements and isotopes whose ionization states
+        are being kept track of.
         """
         return self._base_particles
 
     @property
     def tol(self) -> np.real:
-        """Return the absolute tolerance for comparisons."""
+        """The absolute tolerance for comparisons."""
         return self._tol
 
     @tol.setter
@@ -878,11 +876,11 @@ class IonizationStateCollection:
         >>> states.summarize()
         IonizationStateCollection instance for: H, He
         ----------------------------------------------------------------
-        H  0+: 0.100    n_i = 3.00e+14 m**-3
-        H  1+: 0.900    n_i = 2.70e+15 m**-3
+        H  0+: 0.100    n_i = 3.00e+14 m**-3    T_i = 1.20e+04 K
+        H  1+: 0.900    n_i = 2.70e+15 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
-        He  0+: 0.950    n_i = 2.85e+14 m**-3
-        He  1+: 0.050    n_i = 1.50e+13 m**-3
+        He  0+: 0.950    n_i = 2.85e+14 m**-3    T_i = 1.20e+04 K
+        He  1+: 0.050    n_i = 1.50e+13 m**-3    T_i = 1.20e+04 K
         ----------------------------------------------------------------
         n_e = 2.71e+15 m**-3
         T_e = 1.20e+04 K

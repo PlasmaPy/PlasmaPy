@@ -65,12 +65,12 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-main-docstring:
 
             or
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-main-docstring:
                :groups: all
 
@@ -80,7 +80,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-main-docstring:
                :groups: classes
 
@@ -89,7 +89,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :groups: classes, functions
 
     .. rst:directive:option:: exclude-groups
@@ -101,7 +101,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :exclude-groups: functions
 
     .. rst:directive:option:: no-groups
@@ -111,7 +111,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-groups:
 
     .. rst:directive:option:: skip
@@ -119,16 +119,16 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
         This option allows you to skip (exclude) selected objects from the
         generated tables.  The argument is given as a comma separated list of
         the object's short name.  Continuing with the example from above, let's
-        skip `~plasmapy_sphinx.automodapi.ModAPIDocumenter` and
-        `~plasmapy_sphinx.automodapi.setup` from the tables.
+        skip `~plasmapy_sphinx.autodoc.automodapi.ModAPIDocumenter` and
+        `~plasmapy_sphinx.autodoc.automodapi.setup` from the tables.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-main-docstrings:
                :skip: ModAPIDocumenter, setup
 
-        .. automodapi:: plasmapy_sphinx.automodapi
+        .. automodapi:: plasmapy_sphinx.autodoc.automodapi
            :noindex:
            :no-toctree:
            :no-main-docstring:
@@ -144,7 +144,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :noindex:
 
     .. rst:directive:option:: include-heading
@@ -208,7 +208,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :toctree: DIRNAME
 
         If ``:toctree:`` is not set, then ``DIRNAME`` will default to what is set
@@ -222,7 +222,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-toctree:
 
     .. rst:directive:option:: no-main-docstring
@@ -233,7 +233,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-main-docstring:
 
     .. rst:directive:option:: inheritance-diagram
@@ -247,7 +247,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :inheritance-diagram:
 
     .. rst:directive:option:: no-inheritance-diagram
@@ -257,7 +257,7 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
         .. code-block:: rst
 
-            .. automodapi:: plasmapy_sphinx.automodapi
+            .. automodapi:: plasmapy_sphinx.autodoc.automodapi
                :no-inheritance-diagram:
 
 .. _automodapi-confvals:
@@ -324,8 +324,8 @@ from sphinx.locale import __
 from sphinx.util import logging
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from .automodsumm import AutomodsummOptions, option_str_list
-from .utils import default_grouping_info
+from ..automodsumm.core import AutomodsummOptions, option_str_list
+from ..utils import default_grouping_info
 
 if sys.version_info >= (3, 0):
     text_type = str
@@ -362,7 +362,7 @@ del option_name
 class AutomodapiOptions(AutomodsummOptions):
     """
     Class for advanced conditioning and manipulation of option arguments of
-    `plasmapy_sphinx.automodapi.ModAPIDocumenter`.
+    `plasmapy_sphinx.autodoc.automodapi.ModAPIDocumenter`.
     """
 
     option_spec = _option_spec
@@ -802,7 +802,7 @@ class ModAPIDocumenter(ModuleDocumenter):
 def setup(app: Sphinx):
     """Sphinx ``setup()`` function for the :rst:dir:`automodapi` functionality."""
 
-    from .automodsumm import setup as setup_automodsumm
+    from ..automodsumm.core import setup as setup_automodsumm
 
     rtn = setup_automodsumm(app)
 

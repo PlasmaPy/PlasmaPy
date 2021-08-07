@@ -15,7 +15,7 @@ New Features
 - Create an openPMD ``Plasma`` subclass
 - Create classes to represent ionization state distributions for one
   or more elements or isotopes.
-- Add basic particle drifts to `plasmapy.physics.drifts`
+- Add basic particle drifts to ``plasmapy.physics.drifts``
 - Turn most dependencies into optional, subpackage-specific ones
 
 .. _change-log-0.2.0-bugfix:
@@ -24,13 +24,13 @@ Bug Fixes
 ---------
 
 - Improve handling of NumPy arrays for plasma parameter and transport functions.
-- Vendor the `roman` package so as to allow installation via Conda
-- Decrease strictness of `check_quantity` to allow `nan` and `inf` by default
+- Vendor the ``roman`` package so as to allow installation via Conda
+- Decrease strictness of ``check_quantity`` to allow `~numpy.nan` and `~numpy.inf` by default
 
 .. _change-log-0.2.0-api:
 
 Changes to API
 --------------
 
-- Move `~plasmapy.transport` from `~plasmapy.physics` to its own
+- Move ``plasmapy.transport`` from ``plasmapy.physics`` to its own
   subpackage.

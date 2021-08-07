@@ -59,8 +59,7 @@ Running tests on GitHub
 The recommended way to run PlasmaPy's full test suite when contributing
 code is to `create a pull request
 <https://help.github.com/articles/creating-a-pull-request/>`_ from your
-development branch to `PlasmaPy's GitHub repository
-<https://github.com/PlasmaPy/PlasmaPy>`_.  The test suite will be run
+development branch to `PlasmaPy's GitHub repository`_.  The test suite will be run
 when the pull request is created and every time your development branch
 is subsequently updated.
 
@@ -186,7 +185,7 @@ prepended with `test_` (e.g., ``test_atomic.py``).  Tests may also be
 In order for pytest to find tests in classes, the class name should
 start with ``Test`` and the methods to be run as tests should start with
 ``test_``.  For example, ``test_particle_class.py`` could define the
-``TestParticle`` class containing the method ``test_integer_charge``.
+``TestParticle`` class containing the method ``test_charge_number``.
 
 .. _testing-guidelines-writing-tests-asserts:
 

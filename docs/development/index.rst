@@ -1,7 +1,7 @@
-.. _plasmapy-development-guide:
+.. _plasmapy-contributor-guide:
 
 *****************
-Development Guide
+Contributor Guide
 *****************
 
 .. toctree::

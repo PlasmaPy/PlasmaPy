@@ -30,3 +30,4 @@ dependencies:
     - sphinx_rtd_theme
     - towncrier >= 19.2.0
     - pytest-regressions
+    - notebook
