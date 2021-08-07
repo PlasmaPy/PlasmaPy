@@ -9,22 +9,22 @@ from plasmapy.utils.decorators import validate_quantities
 
 from sympy import var, solve
 
+print('jk')
 
+@validate_quantities(
+    B={"can_be_negative": False},
+    theta={"can_be_negative": False},
+)
 
-#@validate_quantities(
-#    B={"can_be_negative": False},
-#    theta={"can_be_negative": False},
-#)
-print('')
 def cold_plasma_function_solution(
     *,
     B: u.T,
-    k: u.rad, #/ u.m,
-    omega_p: u.s,
-    omega_e: u.s,
+    k: u.rad/u.m,
+    omega_p: u.rad/u.s,
+    omega_e: u.rad/u.s,
     theta: u.rad,
 ):
-    
+    print('test')
     r"""
     Using the solution provided by Bellan 2012, calculate the numerical
     solution to the Stix, cold plasma method (:math:`\omega`) dispersion
@@ -282,6 +282,8 @@ inputs = {
    "k": [0.01,0.01,0.01] * u.rad / u.m,
    "theta": 30 * u.deg,
    "B": 8.3e-9 * u.T,
-   "omega_p": 1.6e6 * 1/u.s,
-   "omega_e": 4.0e5 * 1/u.s,
+   "omega_p": 1.6e6 * u.rad/u.s,
+   "omega_e": 4.0e5 * u.rad/u.s,
 }
+
+cold_plasma_function_solution(**inputs)
