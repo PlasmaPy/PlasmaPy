@@ -50,7 +50,7 @@ class AbstractGrid(ABC):
     positions along each axis, eg.
 
 
-    >>> AbstractGrid(xpoints, ypoints, zpoints)
+    AbstractGrid(xpoints, ypoints, zpoints)
 
 
     A new grid can also be created using a syntax similar to `np.linspace`
@@ -58,7 +58,7 @@ class AbstractGrid(ABC):
     and stop values and setting the `num` keyword to the number of points along
     each axis.
 
-    >>> AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num = [Nx, Ny, Nz], **kwargs)
+    AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num = [Nx, Ny, Nz], **kwargs)
 
     In this case, any additional keyword arguments provided will be passed directly to
     `~np.linspace`.
