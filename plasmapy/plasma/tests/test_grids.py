@@ -317,6 +317,30 @@ def test_volume_averaged_interpolator_persistance(example_grid):
     assert p1.size == 1
 
 
+def test_volume_averaged_interpolator_known_solutions():
+    # Create a 4x4x4 test grid with positions -3, -1, 1, and 3 cm
+    # Add a quantity that equals 0 when x=-3, 1 when x=-1,
+    # 2 when x=1, and 3 when x= 3
+    grid = grids.CartesianGrid(-3 * u.cm, 3 * u.cm, num=4)
+
+    Bz = np.zeros([4, 4, 4]) * u.T
+    Bz[1, :, :] = 1 * u.T
+    Bz[2, :, :] = 2 * u.T
+    Bz[3, :, :] = 3 * u.T
+    grid.add_quantities(B_z=Bz)
+
+    # Interpolate the following points:
+    xpts = np.linspace(-4, 4, num=9) * u.cm
+    pos = np.zeros([xpts.size, 3])
+    pos[:, 0] = xpts
+
+    pts = grid.volume_averaged_interpolator(pos, "B_z", persistent=True)
+
+    assert np.allclose(
+        pts.value, np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]), equal_nan=True
+    )
+
+
 def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
     # Create a low resolution test grid and check that the volume-avg
     # interpolator returns a higher resolution version
@@ -481,4 +505,4 @@ def debug_volume_avg_interpolator():
 
 
 if __name__ == "__main__":
-    debug_volume_avg_interpolator()
+    test_volume_averaged_interpolator_known_solutions()
