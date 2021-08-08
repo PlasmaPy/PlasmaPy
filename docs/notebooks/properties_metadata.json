@@ -1,0 +1,13 @@
+{
+    "speed":[
+        {
+            "function_name":"Alfven_speed",
+            "module_name":"plasmapy.formulary"
+        },
+        {
+            "function_name":"gyroradius",
+            "module_name":"plasmapy.formulary",
+            "spec_combo":[["B","particle","Vperp"],["B","particle","T"]]
+        }
+    ]
+}
