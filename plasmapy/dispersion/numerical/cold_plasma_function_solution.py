@@ -23,7 +23,7 @@ def cold_plasma_function_solution(
     omega_e: u.Hz,
     theta: u.rad,
 ):
-    print('test')  
+ 
     r"""
     Using the solution provided by Bellan 2012, calculate the numerical
     solution to the Stix, cold plasma method (:math:`\omega`) dispersion
@@ -164,13 +164,15 @@ def cold_plasma_function_solution(
             )
         locals()[arg_name] = val
 
+
     # validate arguments
-    for arg_name in ("omega_e", "omega_p"):
-        if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
-            raise TypeError(
-                f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}."
-            )
+    #for arg_name in ("omega_e", "omega_p"):
+    #    print(arg_name)
+    #    if not isinstance(locals()[arg_name], (int, np.integer, float, np.floating)):
+    #        raise TypeError(
+    #            f"Expected int or float for argument '{arg_name}', but got "
+    #            f"{type(locals()[arg_name])}."
+    #        )
 
     # validate argument k
     k = k.squeeze()
@@ -201,10 +203,10 @@ def cold_plasma_function_solution(
     P_Sum = 0
     P0 = 1
     
-    ck = k*const.c
+    ck = k*const.c.cgs
     
     component_frequency = np.zeros(2)
-    component_frequency[0] = (abs(const.e)*B)/((const.m_e)*const.c) #Proton
+    component_frequency[0] = (const.e)
     component_frequency[1] = ((const.e)*B)/((const.m_e)*const.c) #Elelctron
 
     if len(k) == 0:
