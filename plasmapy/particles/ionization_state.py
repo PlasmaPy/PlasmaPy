@@ -308,7 +308,6 @@ class IonizationState:
                 )
 
         self._particle = particle
-        self._particle_list = ionic_levels(particle)
 
         try:
             self.tol = tol
@@ -712,13 +711,12 @@ class IonizationState:
         """The symbol of the element or isotope."""
         return self.isotope if self.isotope else self.element
 
-    @property
-    def ions(self) -> ParticleList:
+    def to_list(self) -> ParticleList:
         """
-        A `~plasmapy.particles.particle_collections.ParticleList` of
-        the ionic levels.  The index corresponds to the charge number.
+        Return a `~plasmapy.particles.particle_collections.ParticleList`
+        of the ionic levels.
         """
-        return self._particle_list
+        return ionic_levels(self.base_particle)
 
     @property
     def atomic_number(self) -> int:
