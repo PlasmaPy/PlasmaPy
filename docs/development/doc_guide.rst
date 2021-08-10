@@ -108,7 +108,7 @@ You can shorten the documentation build by running:
 
    tox -e build_docs -- -j=auto
 
-The `-j command 
+The `-j command
 <https://www.sphinx-doc.org/en/master/man/sphinx-build.html#cmdoption-sphinx-build-j>`_
 will build the documentation in parallel, with the number
 of processes being automatically determined. Flags that follow the
