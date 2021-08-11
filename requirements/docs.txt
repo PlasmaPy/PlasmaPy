@@ -1,7 +1,7 @@
 # these are dependencies required to build package documentation
 # ought to mirror 'docs' under options.extras_require in setup.cfg
 -r extras.txt
-docutils < 0.17
+docutils < 0.18
 ipykernel
 ipywidgets
 nbsphinx
