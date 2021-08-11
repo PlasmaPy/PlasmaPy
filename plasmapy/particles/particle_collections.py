@@ -295,7 +295,11 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("symbol")
 
     def average_particle(
-        self, abundances=None, *, use_rms_charge=False, use_rms_mass=False
+        self,
+        abundances=None,
+        *,
+        use_rms_charge=False,
+        use_rms_mass=False,
     ) -> Union[CustomParticle, Particle]:
         """
         Return a particle with the average mass and charge.
