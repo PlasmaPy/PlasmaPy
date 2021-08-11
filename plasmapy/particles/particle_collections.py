@@ -298,8 +298,8 @@ class ParticleList(collections.UserList):
         self,
         abundances=None,
         *,
-        use_rms_charge=False,
-        use_rms_mass=False,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
     ) -> Union[CustomParticle, Particle]:
         """
         Return a particle with the average mass and charge.
