@@ -6,6 +6,7 @@ import numpy as np
 import astropy.constants as const
 
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.formulary import parameters as pfp
 
 from sympy import var, solve
 
@@ -19,8 +20,8 @@ def cold_plasma_function_solution(
     *,
     B: u.T,
     k: u.rad/u.m,
-    omega_p: u.Hz,
-    omega_e: u.Hz,
+    omega_p: u.rad/u.s,
+    omega_e:u.rad/u.s,
     theta: u.rad,
 ):
  
@@ -202,17 +203,22 @@ def cold_plasma_function_solution(
     D_Sum = 0
     P_Sum = 0
     P0 = 1
+
+    ck = k*const.c
+
+
+    component_frequency = np.tile(0*u.rad/u.s, 2)
     
-    ck = k*const.c.cgs
-    
-    component_frequency = np.zeros(2)
-    component_frequency[0] = (const.e)
-    component_frequency[1] = ((const.e)*B)/((const.m_e)*const.c) #Elelctron
+    print(B)
+
+    component_frequency[0] = pfp.gyrofrequency(B=B, particle='H+', signed=False)
+    print(component_frequency)
+    component_frequency[1] = pfp.gyrofrequency(B=B, particle='e-', signed=True)
 
     if len(k) == 0:
         sum_len = len(omega_e)
-        plasma_proton = np.zeros(sum_len)  
-        plasma_electron = np.zeros(sum_len) 
+        plasma_proton = np.tile(0*u.rad/u.s, sum_len)
+        plasma_electron = np.tile(0*u.rad/u.s, 2)
         
         for i in range(sum_len):
             plasma_proton[i] = omega_p[i]
@@ -220,8 +226,8 @@ def cold_plasma_function_solution(
         
     elif len(k) >0:
         sum_len = 1
-        plasma_proton = np.zeros(1)  
-        plasma_electron = np.zeros(1) 
+        plasma_proton = np.tile(0*u.rad/u.s, 1)  
+        plasma_electron = np.tile(0*u.rad/u.s, 1)
         
         plasma_proton[0] = omega_p
         plasma_electron[0] = omega_e
@@ -233,7 +239,7 @@ def cold_plasma_function_solution(
         )
         
         
-
+        
     #Calculate S, D and P
     for i in range(0,sum_len):
         S_Sum  =+  (plasma_proton[i]**2)/(w**2 - component_frequency[0]**2) + (plasma_electron[i]**2)/(w**2 - component_frequency[1]**2)
@@ -283,8 +289,8 @@ inputs = {
    "k": [0.01,0.01,0.01] * u.rad / u.m,
    "theta": 30 * u.deg,
    "B": 8.3e-9 * u.T,
-   "omega_p": 1.6e6 *u.Hz,
-   "omega_e": 4.0e5 * u.Hz,
+   "omega_p": 1.6e6 * u.rad / u.s,
+   "omega_e": 4.0e5 * u.rad / u.s,
 }
 
 cold_plasma_function_solution(**inputs)
