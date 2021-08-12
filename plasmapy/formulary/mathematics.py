@@ -144,9 +144,9 @@ def Chandrasekhar_G(x: float) -> np.ndarray:
 
     """
     x = np.asarray(x)
-    with np.errstate(divide='ignore', invalid='ignore'):
-        erf_derivative = 2 * np.exp(-x**2) / np.sqrt(np.pi)
-        output = (special.erf(x) / x **2 - erf_derivative / x) / 2
+    with np.errstate(divide="ignore", invalid="ignore"):
+        erf_derivative = 2 * np.exp(-(x ** 2)) / np.sqrt(np.pi)
+        output = (special.erf(x) / x ** 2 - erf_derivative / x) / 2
     output = np.where(x == 0, 0, output)
     return output
 
