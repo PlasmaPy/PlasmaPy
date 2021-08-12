@@ -129,13 +129,13 @@ def Chandrasekhar_G(x: float) -> np.ndarray:
     Examples
     --------
     >>> Chandrasekhar_G(1)
-    0.21379664776456
+    array(0.21379665)
     >>> Chandrasekhar_G(1e-6)
-    3.7602148950099945e-07
+    array(3.7602149e-07)
     >>> Chandrasekhar_G(1e6)
-    5e-13
+    array(5e-13)
     >>> Chandrasekhar_G(-1)
-    -0.21379664776456
+    array(-0.21379665)
 
     References
     ----------

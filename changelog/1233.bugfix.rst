@@ -1,0 +1,1 @@
+Remove nmba-scipy from dependencies.
