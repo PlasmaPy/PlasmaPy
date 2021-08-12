@@ -1,6 +1,6 @@
 """Mathematical formulas relevant to plasma physics."""
 
-__all__ = ["Fermi_integral", "Chandrasekhar_G", "rot_a_to_b"]
+__all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
 import numpy as np
