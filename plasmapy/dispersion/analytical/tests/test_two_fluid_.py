@@ -5,7 +5,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.dispersion.analytical.two_fluid import two_fluid
+from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
