@@ -4,31 +4,218 @@
 Testing Guide
 *************
 
-Code contributions to PlasmaPy that create or change functionality must
-include tests and documentation before being merged.
+`Software tests <https://en.wikipedia.org/wiki/Software_testing>`__ are
+vital for software reliability and maintainability. Code contributions
+to PlasmaPy that create or change functionality need to have
+corresponding tests before that contribution can be merged.
 
-Tests are vital for software reliability and maintainability. Writing
-tests requires additional effort in the short term, but saves
-considerable time in the long term. Tests enable us to modify code and
-discover bugs as soon as we introduce them [1]_. When a new bug is
-discovered, adding a corresponding test greatly reduces the likelihood
-of that bug showing up in the future [2]_.
+PlasmaPy uses the pytest_ framework for software testing.
 
-Tests should be readable and maintainable. Well-written tests are
-easier to understand and modify when the behavior of a function or
-method is changed. Consequently, tests should be held to the same
-code quality standards as the rest of the package.
+.. not sure where it should go
+
+.. hint::
+
+   Running tests in Python ≥3.10 will provide improved error messages
+   compared to Python ≤3.9.
+
+Why write tests?
+================
+
+We write software tests so that we can:
+
+* Find and fix bugs in our code (preferably as soon as we introduce
+  them).
+* Prevent old bugs from getting re-introduced.
+* Speed up development of complicated software.
+* Confirm that our code works on different operating systems and
+  different versions of software dependencies.
+* Provide confidence that our code is behaving as expected.
+* Show future contributors examples of how code was intended to be used.
+* Enable us to change code with confidence that our changes are not
+  introducing bugs elsewhere in our program.
+
+Writing tests requires additional effort in the short term, but saves
+considerable time in the long term.
 
 .. tip::
 
    Writing tests takes time, but debugging takes more time.
 
-.. _testing-guidelines-overview:
+.. enable us to modify code and
+discover bugs as soon as we introduce them [1]_. When a new bug is
+discovered, adding a corresponding test greatly reduces the likelihood
+of that bug showing up in the future [2]_.
 
-Testing tools
-=============
+.. Tests should be readable and maintainable. Well-written tests are
+easier to understand and modify when the behavior of a function or
+method is changed. Consequently, tests should be held to the same
+code quality standards as the rest of the package.
 
-PlasmaPy uses `pytest`_ for software testing
+.. .. _testing-guidelines-overview:
+
+Writing a software test
+=======================
+
+Assertions
+----------
+
+The essential purpose of a software test is to run a section of code and
+check that a particular condition is met. This check is most commonly
+made using an `assert` statement.
+
+.. code-block:: python
+
+  def test_addition():
+      assert 2 + 2 == 4
+
+If the condition is not met, then the `assert` statement will raise an
+`AssertionError`.
+
+When `assert` statements raise an `AssertionError`, pytest_ will display
+the values of the expressions evaluated in the `assert` statement. The
+automatic output from pytest is sufficient for simple tests as
+above. For more complex tests, we can add a descriptive error message
+to help us find the cause of a particular test failure.
+
+.. code-block:: python
+
+  def test_addition():
+      result = 2 + 2
+      expected = 4
+      assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+
+.. TODO Python 3.8+: update this example to use the f"{result=}" syntax.
+
+.. tip::
+
+   Use `f-strings`_ to improve error message readability.
+
+Floating point comparisons
+--------------------------
+
+Comparisons between floating point numbers with `==` is fraught with
+peril because of limited precision and rounding errors.  Moreover, the
+values of fundamental constants in `astropy.constants` are occasionally
+refined as improvements become available.
+
+Using `numpy.isclose` when comparing floating point numbers and
+`astropy.units.isclose` for |Quantity| instances lets us
+avoid these difficulties.  The ``rtol`` keyword for each of these
+functions allows us to set an acceptable relative tolerance.  Ideally,
+``rtol`` should be set to be an order of magnitude or two greater than
+the expected uncertainty.  For mathematical functions, a value of
+``rtol=1e-14`` may be appropriate.  For quantities that depend on
+physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
+be required, depending on how much the accepted values for fundamental
+constants are likely to change.  For comparing arrays, `numpy.allclose`
+and `astropy.units.allclose` should be used instead.
+
+Testing warnings and exceptions
+-------------------------------
+
+Robust testing frameworks should test that functions and methods return
+the expected results, issue the expected warnings, and raise the
+expected exceptions.  pytest_ contains functionality to `test warnings
+<https://docs.pytest.org/en/latest/warnings.html#warns>`_
+and `test exceptions
+<https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions>`_.
+
+To test that a function issues an appropriate warning, use
+`pytest.warns`.
+
+.. code-block:: python
+
+  import pytest
+  import warnings
+
+  def issue_warning():
+      warnings.warn("Beware the ides of March", UserWarning)
+
+  def test_issue_warning():
+      with pytest.warns(UserWarning):
+          issue_warning()
+
+To test that a function raises an appropriate exception, use
+`pytest.raises`.
+
+.. code-block:: python
+
+  def raise_exception():
+      raise Exception
+
+  def test_raise_exception():
+      with pytest.raises(Exception):
+          raise_exception()
+          pytest.fail("Exception not raised.")
+
+.. _testing-guidelines-writing-tests-parametrize:
+
+
+Test independence and parametrization
+-------------------------------------
+
+In this section, we'll discuss the issue of parametrization based on
+an example of a `proof
+<https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_
+of Gauss's class number conjecture.
+
+The proof goes along these lines:
+
+* If the generalized Riemann hypothesis is true, the conjecture is true.
+
+* If the generalized Riemann hypothesis is false, the conjecture is also
+  true.
+
+* Therefore, the conjecture is true.
+
+One way to use pytest would be to write sequential test in a single
+function.
+
+.. code-block:: python
+
+  def test_proof_by_riemann_hypothesis():
+       assert proof_by_riemann(False)
+       assert proof_by_riemann(True)  # only run if previous test passes
+
+If the first test were to fail, then the second test will never be run.
+We would therefore not know the potentially useful results of the second
+test.  This drawback can be avoided by making independent tests that
+will both be run.
+
+.. code-block:: python
+
+  def test_proof_if_riemann_false():
+       assert proof_by_riemann(False)
+
+  def test_proof_if_riemann_true():
+       assert proof_by_riemann(True)
+
+However, this approach can lead to cumbersome, repeated code if you are
+calling the same function over and over.  If you wish to run multiple
+tests for the same function, the preferred method is to use
+`pytest.mark.parametrize`.
+
+.. code-block:: python
+
+  @pytest.mark.parametrize("truth_value", [True, False])
+  def test_proof_if_riemann(truth_value):
+       assert proof_by_riemann(truth_value)
+
+This code snippet will run ``proof_by_riemann(truth_value)`` for each
+``truth_value`` in ``truth_values_to_test``.  Both of the above
+tests will be run regardless of failures.  This approach is much cleaner
+for long lists of arguments, and has the advantage that you would only
+need to change the function call in one place if something changes.
+
+With qualitatively different tests you would use either separate
+functions or pass in tuples containing inputs and expected values.
+
+.. code-block:: python
+
+  @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
+  def test_proof_if_riemann(truth_value, expected):
+       assert proof_by_riemann(truth_value) == expected
+
 
 GitHub Actions
 --------------
@@ -185,168 +372,8 @@ start with ``Test`` and the methods to be run as tests should start with
 ``test_``.  For example, :file:`test_particle_class.py` could define the
 ``TestParticle`` class containing the method ``test_charge_number``.
 
-.. _testing-guidelines-writing-tests-asserts:
 
-Assert statements
------------------
 
-* Pytest often runs tests by checking `assert` statements.
-
-.. code-block:: python
-
-  def test_addition():
-      assert 2 + 2 == 4
-
-When `assert` statements raise an `AssertionError`, pytest will display
-the values of the expressions evaluated in the `assert` statement.  The
-automatic output from pytest is sufficient for simple tests as above.
-For more complex tests, we can add a descriptive error message to
-provide context that can help us pinpoint the causes of test failures
-more quickly.
-
-.. code-block:: python
-
-  def test_addition():
-      assert 2 + 2 == 4, "Addition is broken. Reinstall universe and reboot."
-
-To make the error statement easier to read, the values of variables can
-be included in the error message by using `f-strings
-<https://www.python.org/dev/peps/pep-0498/>`_.
-
-.. code-block:: python
-
-  def test_addition():
-      result = 2 + 2
-      expected = 4
-      assert result == expected, f"2 + 2 returns {result} instead of {expected}."
-
-.. _testing-guidelines-writing-tests-warnings:
-
-Floating point comparisons
---------------------------
-
-Comparisons between floating point numbers with `==` is fraught with
-peril because of limited precision and rounding errors.  Moreover, the
-values of fundamental constants in `astropy.constants` are occasionally
-refined as improvements become available.
-
-Using `numpy.isclose` when comparing floating point numbers and
-`astropy.units.isclose` for `astropy.units.Quantity` instances lets us
-avoid these difficulties.  The ``rtol`` keyword for each of these
-functions allows us to set an acceptable relative tolerance.  Ideally,
-``rtol`` should be set to be an order of magnitude or two greater than
-the expected uncertainty.  For mathematical functions, a value of
-``rtol=1e-14`` may be appropriate.  For quantities that depend on
-physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
-be required, depending on how much the accepted values for fundamental
-constants are likely to change.  For comparing arrays, `numpy.allclose`
-and `astropy.units.allclose` should be used instead.
-
-Testing warnings and exceptions
--------------------------------
-
-Robust testing frameworks should test that functions and methods return
-the expected results, issue the expected warnings, and raise the
-expected exceptions.  Pytest contains functionality to `test warnings
-<https://docs.pytest.org/en/latest/warnings.html#warns>`_
-and `test exceptions
-<https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions>`_.
-
-To test that a function issues an appropriate warning, use
-`pytest.warns`.
-
-.. code-block:: python
-
-  import pytest
-  import warnings
-
-  def issue_warning():
-      warnings.warn("Beware the ides of March", UserWarning)
-
-  def test_issue_warning():
-      with pytest.warns(UserWarning):
-          issue_warning()
-
-To test that a function raises an appropriate exception, use
-`pytest.raises`.
-
-.. code-block:: python
-
-  def raise_exception():
-      raise Exception
-
-  def test_raise_exception():
-      with pytest.raises(Exception):
-          raise_exception()
-          pytest.fail("Exception not raised.")
-
-.. _testing-guidelines-writing-tests-parametrize:
-
-Test independence and parametrization
--------------------------------------
-
-In this section, we'll discuss the issue of parametrization based on
-an example of a `proof
-<https://en.wikipedia.org/wiki/Riemann\_hypothesis#Excluded\_middle>`_
-of Gauss's class number conjecture.
-
-The proof goes along these lines:
-
-* If the generalized Riemann hypothesis is true, the conjecture is true.
-
-* If the generalized Riemann hypothesis is false, the conjecture is also
-  true.
-
-* Therefore, the conjecture is true.
-
-One way to use pytest would be to write sequential test in a single
-function.
-
-.. code-block:: python
-
-  def test_proof_by_riemann_hypothesis():
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # only run if previous test passes
-
-If the first test were to fail, then the second test will never be run.
-We would therefore not know the potentially useful results of the second
-test.  This drawback can be avoided by making independent tests that
-will both be run.
-
-.. code-block:: python
-
-  def test_proof_if_riemann_false():
-       assert proof_by_riemann(False)
-
-  def test_proof_if_riemann_true():
-       assert proof_by_riemann(True)
-
-However, this approach can lead to cumbersome, repeated code if you are
-calling the same function over and over.  If you wish to run multiple
-tests for the same function, the preferred method is to use pytest's
-`parametrization <https://docs.pytest.org/en/stable/parametrize.html>`_
-capabilities.
-
-.. code-block:: python
-
-  @pytest.mark.parametrize("truth_value", [True, False])
-  def test_proof_if_riemann(truth_value):
-       assert proof_by_riemann(truth_value)
-
-This code snippet will run ``proof_by_riemann(truth_value)`` for each
-``truth_value`` in ``truth_values_to_test``.  Both of the above
-tests will be run regardless of failures.  This approach is much cleaner
-for long lists of arguments, and has the advantage that you would only
-need to change the function call in one place if something changes.
-
-With qualitatively different tests you would use either separate
-functions or pass in tuples containing inputs and expected values.
-
-.. code-block:: python
-
-  @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-  def test_proof_if_riemann(truth_value, expected):
-       assert proof_by_riemann(truth_value) == expected
 
 .. _testing-guidelines-writing-tests-helpers:
 
@@ -576,5 +603,6 @@ Footnotes
 .. [3]
 
 .. _Codecov: https://about.codecov.io/
+.. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`GitHub Actions`: https://github.com/features/actions
 .. _pytest: https://docs.pytest.org/
