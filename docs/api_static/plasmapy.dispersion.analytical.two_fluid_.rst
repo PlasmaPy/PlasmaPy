@@ -1,7 +1,7 @@
 :orphan:
 
 `plasmapy.dispersion.analytical.two_fluid_`
-==========================================
+===========================================
 
 .. currentmodule:: plasmapy.dispersion.analytical.two_fluid_
 
