@@ -6,4 +6,4 @@ __all__ = [
     "two_fluid",
 ]
 
-from plasmapy.dispersion.analytical.two_fluid import two_fluid
+from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
