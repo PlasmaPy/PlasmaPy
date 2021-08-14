@@ -1,4 +1,4 @@
-Reorganization of `~plasmapy.dispersion.two_fluid_dispersion_solution`,
-The analytical solution file has been moved to a new folder inside 
-PlasmaP/plasmapy/dispersion/ called `analytical` and the file it self has been 
-renamed from two_fluid_dispersion_solution.py to two_fluid.py
+Renamed file ``two_fluid_dispersion.py`` to ``two_fluid.py`` and moved into
+the ``plasmapy.dispersion.analytical`` subpackage.  The contained function
+``two_fluid_dispersion_solutions()`` was also renamed to
+`~plasmapy.dispersion.analytical.two_fluid.two_fluid`.
