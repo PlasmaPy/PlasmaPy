@@ -1,1 +1,3 @@
-
+Restructuring of the `plasmapy.dispersion` subpackage by creating the
+`~plasmapy.dispersion.analytical` subpackage to contain functionality
+related to analytical dispersion solutions.
