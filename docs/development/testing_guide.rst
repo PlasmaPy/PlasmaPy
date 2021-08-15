@@ -4,54 +4,59 @@
 Testing Guide
 *************
 
-`Software tests <https://en.wikipedia.org/wiki/Software_testing>`__ are
-vital for software reliability and maintainability. Code contributions
-to PlasmaPy that create or change functionality need to have
-corresponding tests before that contribution can be merged.
+Because software testing is vital for software reliability and
+maintainability, every code contribution to PlasmaPy that adds or
+changes functionality must also have corresponding tests.
 
-PlasmaPy uses the pytest_ framework for software testing.
+PlasmaPy's tests are set up using the pytest_ framework. The tests for
+a subpackage are located in its :file:`tests` subdirectory in files with
+names of the form :file:`test_*.py`. For example, tests for
+`plasmapy.formulary.parameters` are located at
+:file:`plasmapy/formulary/tests/test_parameters.py` relative to the top
+of the package. Example code contained within docstrings is tested to
+make sure that the actual printed output matches what is in the
+docstring.
 
-.. not sure where it should go
-
-.. hint::
-
-   Running tests in Python ≥3.10 will provide improved error messages
-   compared to Python ≤3.9.
+Creating or updating a pull request will activate PlasmaPy's test suite
+to be run via `GitHub Actions`_, along with some additional checks. The
+results of the test suite are shown at the bottom of each pull request.
+Click on "Details" next to each test run to find the reason for any test
+failures.
 
 Why write tests?
 ================
 
 We write software tests so that we can:
 
-* Find and fix bugs in our code (preferably as soon as we introduce
-  them).
+* Quickly find and fix bugs.
+* Provide confidence that our code is behaving correctly.
 * Prevent old bugs from getting re-introduced.
-* Speed up development of complicated software.
-* Confirm that our code works on different operating systems and
-  different versions of software dependencies.
-* Provide confidence that our code is behaving as expected.
+* Speed up code development and refactoring.
 * Show future contributors examples of how code was intended to be used.
+* Confirm that our code works on different operating systems and
+  with different versions of software dependencies.
 * Enable us to change code with confidence that our changes are not
   introducing bugs elsewhere in our program.
 
 Writing tests requires additional effort in the short term, but saves
 considerable time in the long term.
 
-.. tip::
+.. hint::
 
    Writing tests takes time, but debugging takes more time.
 
-.. enable us to modify code and
-discover bugs as soon as we introduce them [1]_. When a new bug is
-discovered, adding a corresponding test greatly reduces the likelihood
-of that bug showing up in the future [2]_.
+.. tip::
 
-.. Tests should be readable and maintainable. Well-written tests are
-easier to understand and modify when the behavior of a function or
-method is changed. Consequently, tests should be held to the same
-code quality standards as the rest of the package.
+   Well-written tests are easier to understand and modify when the
+   behavior of a function changes. Similarly, poorly written tests
+   can become change preventers. Test code should therefore be held
+   to the same code quality standards as production code.
 
-.. .. _testing-guidelines-overview:
+.. hint::
+
+   Running tests in Python ≥3.10 will provide improved error messages
+   compared to Python ≤3.9.
+
 
 Writing a software test
 =======================
@@ -604,5 +609,5 @@ Footnotes
 
 .. _Codecov: https://about.codecov.io/
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
-.. _`GitHub Actions`: https://github.com/features/actions
+.. _`GitHub Actions`: https://docs.github.com/en/actions
 .. _pytest: https://docs.pytest.org/
