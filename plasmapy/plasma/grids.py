@@ -46,22 +46,29 @@ class AbstractGrid(ABC):
     as an `~numpy.ndarray`, while the units associated with each
     dimension are stored separately.
 
-    A grid can be intialized by providing three 3D `~astropy.units.Quantity` arrays of
-    positions along each axis, eg.
 
+    There are two preferred methods to creating a grid object:
 
-    AbstractGrid(xpoints, ypoints, zpoints)
+    1. Initializing the grid by providing three 3D
+       `~astropy.units.Quantity` arrays of positions along each axis
+       (``xpoints``, ``ypoints``, ``zpoints``)
 
+       >>> AbstractGrid(xpoints, ypoints, zpoints)
 
-    A new grid can also be created using a syntax similar to `np.linspace`
-    by providing two three-element `~astropy.units.Quantity` arrays of start
-    and stop values and setting the `num` keyword to the number of points along
-    each axis.
+    2. A new grid can also be created using a syntax similar to
+       `numpy.linspace` by providing two three-element
+       `~astropy.units.Quantity` arrays of start and stop values and
+       setting the ``num`` keyword to the number of points along each axis.
 
-    AbstractGrid(start=[x0, y0, z0], stop=[x1, y1, z1], num = [Nx, Ny, Nz], **kwargs)
+       >>> AbstractGrid(
+               start=[x0, y0, z0],
+               stop=[x1, y1, z1],
+               num=[Nx, Ny, Nz],
+               **kwargs
+           )
 
-    In this case, any additional keyword arguments provided will be passed directly to
-    `~np.linspace`.
+       In this case, any additional keyword arguments ``**kwargs`` provided
+       will be passed directly to `~numpy.linspace`.
 
     """
 
