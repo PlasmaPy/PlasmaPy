@@ -53,19 +53,23 @@ class AbstractGrid(ABC):
        `~astropy.units.Quantity` arrays of positions along each axis
        (``xpoints``, ``ypoints``, ``zpoints``)
 
-       >>> AbstractGrid(xpoints, ypoints, zpoints)
+       .. code-block:: python
+
+          AbstractGrid(xpoints, ypoints, zpoints)
 
     2. A new grid can also be created using a syntax similar to
        `numpy.linspace` by providing two three-element
        `~astropy.units.Quantity` arrays of start and stop values and
        setting the ``num`` keyword to the number of points along each axis.
 
-       >>> AbstractGrid(
-               start=[x0, y0, z0],
-               stop=[x1, y1, z1],
-               num=[Nx, Ny, Nz],
-               **kwargs
-           )
+       .. code-block:: python
+
+          AbstractGrid(
+              start=[x0, y0, z0],
+              stop=[x1, y1, z1],
+              num=[Nx, Ny, Nz],
+              **kwargs
+          )
 
        In this case, any additional keyword arguments ``**kwargs`` provided
        will be passed directly to `~numpy.linspace`.
