@@ -418,31 +418,17 @@ def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
 
     interp_hax = interp_pts[:, 0].to(u.mm).value
 
-    interp_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
-    NN_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    va_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
+    nn_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
     analytic = interp_hax ** 4
-    vw_error = np.sum(np.abs(analytic[a:b] - interp_rho.value[a:b]))
-    NN_error = np.sum(np.abs(analytic[a:b] - NN_rho.value[a:b]))
+    va_error = np.sum(np.abs(analytic[a:b] - va_rho.value[a:b]))
+    nn_error = np.sum(np.abs(analytic[a:b] - nn_rho.value[a:b]))
 
-    """
-    # Uncomment plot for debugging
-    import matplotlib.pyplot as plt
-    raw_hax = example_grid.ax0.to(u.mm).value
-    half = int(25 / 2)
-    raw_rho = example_grid["rho"][:, half, half]
-    plt.plot(raw_hax, raw_rho, marker='*', label='Interp points')
-    plt.plot(interp_hax, NN_rho, label='Nearest neighbor')
-    plt.plot(interp_hax, interp_rho, marker='o', label='Volume weighted')
-    plt.plot(interp_hax, analytic, label='Analytic')
-    plt.legend()
-    plt.xlim(6, 11)
-    """
-
-    # Assert that the VW interpolator is more accurate than the
+    # Assert that the volume averaged interpolator is more accurate than the
     # nearest neighbor interpolator
-    assert vw_error < NN_error
+    assert va_error < nn_error
 
 
 def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
@@ -466,15 +452,15 @@ def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
     zax = interp_pts[:, 2].to(u.mm).value
     analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
 
-    interp_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
-    NN_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    va_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
+    nn_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-    vw_error = np.sum(np.abs(analytic - interp_rho.value))
-    NN_error = np.sum(np.abs(analytic - NN_rho.value))
+    va_error = np.sum(np.abs(analytic - va_rho.value))
+    nn_error = np.sum(np.abs(analytic - nn_rho.value))
 
-    # Assert that the VW interpolator is more accurate than the
+    # Assert that the volume averaged interpolator is more accurate than the
     # nearest neighbor interpolator
-    assert vw_error < NN_error
+    assert va_error < nn_error
 
 
 def test_NonUniformCartesianGrid():
@@ -525,19 +511,24 @@ def test_NonUniformCartesianGrid():
 
 
 def debug_volume_avg_interpolator():
+    """
+    Plot the comparison of the nearest neighbor interpolator and volume
+    averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
+    """
+    import matplotlib.pyplot as plt
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 
-    # Add some data to the grid
+    # add x and y positions to grid
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
 
+    # add a mass density to grid
     radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
     rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
     grid.add_quantities(rho=rho)
 
-    # Create a low resolution test grid and check that the volume-avg
-    # interpolator returns a higher resolution version
+    # Create a low resolution test grid
     npts = 150
     interp_pts = (
         np.array([np.linspace(-0.99, 1, num=npts), np.zeros(npts), np.zeros(npts)])
@@ -547,23 +538,17 @@ def debug_volume_avg_interpolator():
 
     interp_hax = interp_pts[:, 0].to(u.mm).value
 
-    interp_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
-    NN_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    va_rho = grid.volume_averaged_interpolator(interp_pts, "rho")
+    nn_rho = grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
-    a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
     analytic = interp_hax ** 4
-    vw_error = np.sum(np.abs(analytic[a:b] - interp_rho.value[a:b]))
-    NN_error = np.sum(np.abs(analytic[a:b] - NN_rho.value[a:b]))
-
-    # Uncomment plot for debugging
-    import matplotlib.pyplot as plt
 
     raw_hax = grid.ax0.to(u.mm).value
     half = int(25 / 2)
     raw_rho = grid["rho"][:, half, half]
-    plt.plot(raw_hax, raw_rho, marker="*", label="Interp points")
-    plt.plot(interp_hax, NN_rho, label="Nearest neighbor")
-    plt.plot(interp_hax, interp_rho, marker="o", label="Volume weighted")
+    plt.plot(raw_hax, raw_rho, marker="*", label="Interpolated points")
+    plt.plot(interp_hax, nn_rho, label="Nearest neighbor")
+    plt.plot(interp_hax, va_rho, marker="o", label="Volume averaged")
     plt.plot(interp_hax, analytic, label="Analytic")
     plt.legend()
     plt.xlim(-11, 11)
