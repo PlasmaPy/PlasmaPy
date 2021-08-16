@@ -112,7 +112,7 @@ def test_AbstractGrid():
     with pytest.raises(ValueError):
         grid.add_quantities(B_x=q)
 
-    # Test adding multiple quantites at once
+    # Test adding multiple quantities at once
     q = np.random.randn(10, 10, 10) * u.T
     grid.add_quantities(B_x=q, B_y=q, B_z=q)
 
@@ -242,7 +242,7 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pout, 0 * u.cm, atol=0.1)
 
-    # Test persistance
+    # Test persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
@@ -259,7 +259,7 @@ def test_nearest_neighbor_interpolator():
     pout = grid.nearest_neighbor_interpolator(pos, "x")
     assert np.allclose(pos[0], pout, atol=0.5)
 
-    # Test persistance
+    # Test persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
@@ -338,12 +338,12 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(
         assert np.all(~np.isnan(pout.value[~nan_mask]))
 
 
-def test_volume_averaged_interpolator_persistance(example_grid):
+def test_volume_averaged_interpolator_persistence(example_grid):
     # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
     p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
-    # Try changing the arg list, make sure it catchs this and auto-reverts
+    # Try changing the arg list, make sure it catches this and auto-reverts
     # to non-persistent interpolation in that case
     p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", persistent=True)
     assert p1.size == 1
@@ -408,7 +408,7 @@ def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
     """
 
     # Assert that the VW interpolator is more accurate than the
-    # neareste neighbor interpolator
+    # nearest neighbor interpolator
     assert vw_error < NN_error
 
 
@@ -440,7 +440,7 @@ def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
     NN_error = np.sum(np.abs(analytic - NN_rho.value))
 
     # Assert that the VW interpolator is more accurate than the
-    # neareste neighbor interpolator
+    # nearest neighbor interpolator
     assert vw_error < NN_error
 
 
