@@ -323,9 +323,7 @@ def test_volume_averaged_interpolator_missing_key(example_grid):
         ),
     ],
 )
-def test_volume_averaged_interpolator_handle_out_of_bounds(
-    pos, nan_mask, example_grid
-):
+def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, example_grid):
     # Contains out-of-bounds values (must handle NaNs correctly)
     pout = example_grid.volume_averaged_interpolator(pos, "x")
     if nan_mask is None:
