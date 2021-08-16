@@ -319,7 +319,7 @@ def test_volume_averaged_interpolator_missing_key(example_grid):
                 [[0.0, 0.0, 0.0], [-1.2, 0.0, 0.0], [0.9, 0.5, -0.2], [0.3, -2.0, 5.0]]
             )
             * u.cm,
-            np.array([False, True, False, True])
+            np.array([False, True, False, True]),
         ),
     ],
 )
