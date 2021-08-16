@@ -287,15 +287,53 @@ def example_grid():
     return grid
 
 
-def test_volume_averaged_interpolator_at_several_positions(example_grid):
-    # One position
-    pos = np.array([0.1, -0.3, 0.2]) * u.cm
-    pout = example_grid.volume_averaged_interpolator(pos, "x")
-    assert np.allclose(pos[0], pout, atol=0.1)
-
-    # Two positions, two quantities
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    pout = example_grid.volume_averaged_interpolator(pos, "x", "y")
+@pytest.mark.parametrize(
+    "pos, what, expected",
+    [
+        (np.array([0.1, -0.3, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
+        (np.array([0.1, 0.25, 0.2]) * u.cm, ("x",), np.array([0.1]) * u.cm),
+        (
+            np.array(
+                [
+                    [0.1, -0.3, 0.2],
+                    [-0.253, -0.1, 0.88],
+                    [0.125, 0.11, -0.6],
+                    [0.45, -0.16, 0.2],
+                ]
+            )
+            * u.cm,
+            ("x",),
+            np.array([0.1, -0.253, 0.125, 0.45]) * u.cm,
+        ),
+        (
+            np.array(
+                [
+                    [0.1, -0.3, 0.2],
+                    [-0.253, -0.1, 0.88],
+                    [0.125, 0.11, -0.6],
+                    [0.45, -0.16, 0.2],
+                ]
+            )
+            * u.cm,
+            ("x", "y"),
+            (
+                np.array([0.1, -0.253, 0.125, 0.45]) * u.cm,
+                np.array([-0.3, -0.1, 0.11, -0.16]) * u.cm,
+            ),
+        ),
+    ],
+)
+def test_volume_averaged_interpolator_at_several_positions(
+    pos, what, expected, example_grid
+):
+    pout = example_grid.volume_averaged_interpolator(pos, *what)
+    if len(what) == 1:
+        assert np.allclose(pout, expected)
+    else:
+        assert isinstance(pout, tuple)
+        assert len(pout) == len(what)
+        for ii in range(len(what)):
+            assert np.allclose(pout[ii], expected[ii])
 
 
 def test_volume_averaged_interpolator_missing_key(example_grid):
