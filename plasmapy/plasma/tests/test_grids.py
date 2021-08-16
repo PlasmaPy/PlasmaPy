@@ -5,9 +5,6 @@ Tests for grids.py
 import astropy.units as u
 import numpy as np
 import pytest
-import warnings
-
-from numpy.testing import assert_allclose
 
 from plasmapy.plasma import grids as grids
 
