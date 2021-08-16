@@ -1,0 +1,4 @@
+For `~plasmapy.plasma.grids.CartesianGrid` the
+`~plasmapy.plasma.grids.CartesianGrid.volume_average_interpolator`
+now returns `numpy.nan` values for any interpolation not bounded by
+the grid points.
