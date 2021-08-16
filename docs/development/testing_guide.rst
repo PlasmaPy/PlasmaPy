@@ -1,12 +1,34 @@
-.. _testing-guidelines:
-
 *************
 Testing Guide
 *************
 
-Because software testing is vital for software reliability and
-maintainability, every code contribution to PlasmaPy that adds or
-changes functionality must also have corresponding tests.
+Software testing is vital for software reliability and maintainability.
+We write software tests to:
+
+* Find and fix bugs.
+* Prevent old bugs from getting re-introduced.
+* Provide confidence that our code is behaving correctly.
+* Define what "behaving correctly" actually means.
+* Speed up code development and refactoring.
+* Show future contributors examples of how code was intended to be used.
+* Confirm that our code works on different operating systems and
+  with different versions of software dependencies.
+* Enable us to change code with confidence that we are not unknowingly
+  introducing bugs elsewhere in our program.
+
+.. Writing tests requires additional effort in the short term, but saves
+   considerable time in the long term.
+
+.. hint::
+
+   Writing tests takes time, but debugging takes more time.
+
+Every code contribution to PlasmaPy that adds or changes functionality
+must also have corresponding tests. Creating or updating a pull request
+will activate PlasmaPy's test suite to be run via `GitHub Actions`_,
+along with some additional checks. The results of the test suite are
+shown at the bottom of each pull request. Click on *Details* next to
+each test run to find the reason for any test failures.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
@@ -17,48 +39,109 @@ of the package. Example code contained within docstrings is tested to
 make sure that the actual printed output matches what is in the
 docstring.
 
-Creating or updating a pull request will activate PlasmaPy's test suite
-to be run via `GitHub Actions`_, along with some additional checks. The
-results of the test suite are shown at the bottom of each pull request.
-Click on *Details* next to each test run to find the reason for any test
-failures.
+Running tests
+=============
 
-Why write tests?
-================
+Using GitHub
+------------
 
-We write software tests so that we can:
+The easiest way to run PlasmaPy's full test suite is to `create a pull
+request`_ from your development branch to `PlasmaPy's GitHub
+repository`_. The test suite will be run when the pull request is
+created and every time your development branch is updated.
 
-* Quickly find and fix bugs.
-* Provide confidence that our code is behaving correctly.
-* Prevent old bugs from getting re-introduced.
-* Speed up code development and refactoring.
-* Show future contributors examples of how code was intended to be used.
-* Confirm that our code works on different operating systems and
-  with different versions of software dependencies.
-* Enable us to change code with confidence that our changes are not
-  introducing bugs elsewhere in our program.
+The following checks are performed with each pull request. The results
+of the checks are found near the end of the *Conversation* tab in each
+pull request. Most of these checks have been automated using `GitHub
+Actions`_. Checks that pass are marked with ✔️, while tests that fail
+are marked with ❌. Click on *Details* for information about why a
+particular check failed.
 
-Writing tests requires additional effort in the short term, but saves
-considerable time in the long term.
+* Checks with labels like **CI / Python 3.9 (pull request)** verify that
+  PlasmaPy works with different versions of Python and other
+  dependencies, and on different operating systems.
 
-.. hint::
+  * These tests are set up using tox_ and run with pytest_.
 
-   Writing tests takes time, but debugging takes more time.
+  * If multiple tests fail, investigate these tests first.
 
-.. tip::
+* Checks with labels like **CI / Python 3.9 with NumPy dev (pull
+  request)** verify that PlasmaPy works the version of NumPy that is
+  currently being developed on GitHub. Occasionally these tests will
+  fail for reasons not associated with a particular pull request.
 
-   Well-written tests are easier to understand and modify when the
-   behavior of a function changes. Similarly, poorly written tests
-   can become change preventers. Test code should therefore be held
-   to the same code quality standards as production code.
+* The **CI / Documentation (pull request)** check verifies that
+  PlasmaPy's documentation is able to build correctly. Warnings are
+  treated as errors.
 
-.. The following hint would be worth putting somewhere, at least after
-   Python 3.10 is released, but maybe not here.
+* The **docs/readthedocs.org:plasmapy** check allows us to preview
+  how the documentation will appear if the pull request is merged.
+  Click on *Details* link to access this preview.
 
-.. hint::
+* The check labeled **changelog: found** or **changelog: absent**
+  indicates whether or not a changelog entry with the correct number
+  is present, unless the pull request has been labeled with "No
+  changelog entry needed".
 
-   Running tests in Python ≥3.10 will provide improved error messages
-   compared to Python ≤3.9.
+  * The :file:`changelog/README.rst` file describes the process for
+    adding a changelog entry to a pull request.
+
+* The **codecov/patch** and **codecov/project** checks generate test
+  coverage reports which are displayed by Codecov_. These reports show
+  which lines of code are covered by tests and which are not. The
+  Codecov_ checks will be marked as passing when the test coverage is
+  satisfactorily high.
+
+  * Test coverage reports allow us to write targeted tests to fill in
+    the gaps in test coverage. These reports also help us find sections
+    of code that can never be run.
+
+* The **CI / Linters (pull request)** and **pre-commit.ci - pr** checks
+  make sure that the code meets style requirements. These tests can be
+  ignored until the pull request is nearing completion.
+
+  * PlasmaPy uses black_ to format code and isort_ to sort `import`
+    statements. If any inconsistencies with the output from black_ or
+    isort_ are found, one or both of these checks will fail.
+
+  * To apply the needed fixes automagically, write a comment with the
+    message ``pre-commit.ci autofix`` to the *Conversation* tab on
+    a pull request. Remember to ``git pull`` afterwards!
+
+Using pytest
+------------
+
+Using tox
+---------
+
+
+
+
+
+..  The recommended method for running the test suite locally on your
+  computer is running
+  .. code-block:: shell
+  python setup.py test
+  in the repository's root directory.  This command will run all of the
+tests and verify that examples in docstrings produce the expected
+output.  This command (which was enabled by `integrating pytest with
+setuptools
+<https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner>`_)
+ensures that the package is set up. These tests should be run in a Python
+environment in which PlasmaPy has not already been installed.
+Command line options for pytest may be passed using the ``-a`` flag.
+For example, if you want to stop pytest after two test failures, return
+short traceback reports, and run tests only if the test path contains
+``plasma`` and not ``blob``, then run
+ .. code-block:: shell
+  python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
+One may also run ``pytest`` from the command line.
+
+
+Some tests in the test suite can take a long time to run, which can
+slow down development. These tests can be identified with the pytest annotation
+``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
+To exclusively test the slow tests, execute ``pytest -m slow``.
 
 
 Writing a software test
@@ -221,114 +304,7 @@ functions or pass in tuples containing inputs and expected values.
   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
 
-.. _testing-guidelines-running-tests:
 
-Running Tests
-=============
-
-.. _testing-guidelines-running-tests-github:
-
-Running tests on GitHub
------------------------
-
-The recommended way for new contributors to run PlasmaPy's full test
-suite is to `create a pull request`_ from your development branch to
-`PlasmaPy's GitHub repository`_. The test suite will be run when the
-pull request is created and every time your development branch is
-updated.
-
-Most of these checks have been automated using `GitHub Actions`_. Test
-results are found near the end of the "conversation" tab in every pull
-request.
-
-The following are some of the checks that are performed. Checks that
-pass are labeled with ✔️, while tests that fail are marked with ❌.
-Click on the *Details* link for information about why a particular check
-failed.
-
-* Tests with labels like **CI / Python 3.9 (pull request)** verify that
-  PlasmaPy works with different versions of Python and various other
-  dependencies.
-
-* Tests with labels like **CI / Python 3.9 with NumPy dev (pull
-  request)** verify that PlasmaPy works the version of NumPy that is
-  currently being developed on GitHub. Occasionally these tests will
-  fail for reasons not associated with a particular pull request.
-
-* The **CI / Documentation (pull request)** test verifies that
-  PlasmaPy's documentation is able to build correctly. Warnings in
-  documentation test builds are treated as errors.
-
-  * The **docs/readthedocs.org:plasmapy** check allows us to preview
-    how the documentation will appear if the pull request is merged.
-    Click on *Details* link to access this preview.
-
-* The check labeled **changelog: found** or **changelog: absent**
-  indicates whether or not a changelog entry with the correct number
-  is present, unless the pull request has been labeled with "No
-  changelog entry needed".
-
-  * The :file:`changelog/README.rst` file describes the process for
-    adding a changelog entry to a pull request.
-
-* The **codecov/patch** and **codecov/project** checks generate test
-  coverage reports which are displayed by Codecov_. These reports show
-  which lines of code are covered by tests and which are not. The
-  Codecov_ checks will be marked as passing when the test coverage is
-  satisfactorily high.
-
-  * Test coverage reports allow us to write targeted tests to fill in
-    the gaps in test coverage. These reports also help us find sections
-    of code that can never be run.
-
-* The **CI / Linters (pull request)** and **pre-commit.ci - pr** checks
-  make sure that the code meets style requirements. These tests can be
-  ignored until the pull request is nearing completion.
-
-  * PlasmaPy uses black_ to format code and isort_ to sort `import`
-    statements. If any inconsistencies with the output from black_ or
-    isort_ are found, one or both of these checks will fail.
-
-  * To apply the needed fixes automagically, write a comment with the
-    message ``pre-commit.ci autofix`` to the *Conversation* tab on
-    a pull request. Remember to ``git pull`` afterwards!
-
-.. _black: https://black.readthedocs.io
-
-Running tests from the command line
------------------------------------
-
-Using tox
-~~~~~~~~~
-
-Using pytest
-~~~~~~~~~~~~
-
-
-..  The recommended method for running the test suite locally on your
-  computer is running
-  .. code-block:: shell
-  python setup.py test
-  in the repository's root directory.  This command will run all of the
-tests and verify that examples in docstrings produce the expected
-output.  This command (which was enabled by `integrating pytest with
-setuptools
-<https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner>`_)
-ensures that the package is set up. These tests should be run in a Python
-environment in which PlasmaPy has not already been installed.
-Command line options for pytest may be passed using the ``-a`` flag.
-For example, if you want to stop pytest after two test failures, return
-short traceback reports, and run tests only if the test path contains
-``plasma`` and not ``blob``, then run
- .. code-block:: shell
-  python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
-One may also run ``pytest`` from the command line.
-
-
-Some tests in the test suite can take a long time to run, which can
-slow down development. These tests can be identified with the pytest annotation
-``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
-To exclusively test the slow tests, execute ``pytest -m slow``.
 
 Writing Tests
 =============
@@ -346,7 +322,8 @@ maintainable, and robust tests.
   returns the expected results, issues the appropriate warnings, and
   raises the appropriate exceptions.
 
-* Each unit test should test *one unit of behavior*.
+* Each unit test should test *one unit of behavior*, *quickly*, and
+  *in isolation from other tests*.
 
 * Bugs should be turned into test cases.
 
@@ -356,6 +333,24 @@ maintainable, and robust tests.
 
 * Slow tests can be decorated with `pytest.mark.slow` when they cannot
   be made more efficient.
+
+* Write test code with the same quality as production code. Well-written
+  tests are easier to modify when the tested behavior changes, while
+  poorly written tests can
+
+.. tip::
+
+   Well-written tests are easier to understand and modify when the
+   behavior of a function changes. Similarly, poorly written tests
+   can become change preventers. Test code should therefore written
+   with the same quality as production code.
+
+.. The following hint would be worth putting somewhere, at least after
+   Python 3.10 is released, but maybe not here.
+
+.. .. hint::
+   Running tests in Python ≥3.10 will provide improved error messages
+   compared to Python ≤3.9.
 
 Test organization and collection
 --------------------------------
@@ -378,109 +373,6 @@ In order for pytest to find tests in classes, the class name should
 start with ``Test`` and the methods to be run as tests should start with
 ``test_``.  For example, :file:`test_particle_class.py` could define the
 ``TestParticle`` class containing the method ``test_charge_number``.
-
-
-Pytest helpers
---------------
-
-.. todo::
-
-   The functionality described in this section is likely to change in
-   the future, and may be incorporated into a separate package.
-
-A robust testing framework should test not just that functions and
-methods return the expected results, but also that they issue the
-expected warnings and raise the expected exceptions. In PlasmaPy, tests
-often need to compare a `float` against a `float`, an `~numpy.array`
-against an `~numpy.array`, and `~astropy.units.Quantity` objects against
-other `~astropy.units.Quantity` objects to within a certain tolerance.
-Occasionally tests will be needed to make sure that a function will
-return the same value for different arguments (e.g., due to symmetry
-properties). PlasmaPy's `~plasmapy.utils` subpackage contains the
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` helper functions that can
-generically perform many of these comparisons and checks.
-
-The `~plasmapy.utils.pytest_helpers.run_test` function can be used to
-check that a callable object returns the expected result, raises the
-expected exception, or issues the expected warning for different
-positional and keyword arguments. This function is particularly useful
-when unit testing straightforward functions when you have a bunch of
-inputs and know the expected result.
-
-Suppose that we want to test the trigonometric property that
-
-.. math::
-
-  \sin(\theta) = \cos(\theta + \frac{\pi}{2}).
-
-We may use `~plasmapy.utils.pytest_helpers.run_test` as in the following example to
-check the case of :math:`\theta \equiv 0`.
-
-.. code-block:: python
-
-  from numpy import sin, cos, pi
-  from plasmapy.utils.pytest_helpers import run_test
-
-  def test_trigonometric_properties():
-      run_test(func=sin, args=0, expected_outcome=cos(pi/2), atol=1e-16)
-
-We may use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test` to check multiple cases.  If
-`~plasmapy.utils.pytest_helpers.run_test` only receives one positional
-argument that is a `list` or `tuple`, then it will assume that `list`
-or `tuple` contains the `callable`, the positional arguments, the
-keyword arguments (which may be omitted), and the expected outcome
-(which may be the returned `object`, a warning, or an exception).
-
-.. code-block:: python
-
-  @pytest.mark.parametrize("input_tuple", [(sin, 0, cos(pi/2)), (sin, '.', TypeError)])
-  def test_trigonometry(input_tuple):
-      run_test(input_tuple, atol=1e-16)
-
-This parametrized function will check that ``sin(0)`` is within
-``1e-16`` of ``cos(pi/2)`` and that  ``sin('.')`` raises a `TypeError`.
-
-We may use `~plasmapy.utils.run_test_equivalent_calls` to check symmetry
-properties such as
-
-.. math::
-
-  \cos(\theta) = \cos(-\theta).
-
-This property can be checked for :math:`\theta = 1` with the following
-code.
-
-.. code-block:: python
-
-  def test_cosine_symmetry():
-      """Test that cos(1) equals cos(-1)."""
-      plasmapy.utils.run_test_equivalent_calls(cos, 1, -1)
-
-We may also use `pytest.mark.parametrize` with
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to
-sequentially test multiple symmetry properties.
-
-.. code-block:: python
-
-  @pytest.mark.parametrize('input_tuple', [(cos, 1, -1), ([cos, pi/2], [sin, 0])])
-  def test_symmetry_properties(input_tuple):
-      plasmapy.utils.run_test_equivalent_calls(input_tuple, atol=1e-16)
-
-This parametrized function will check that ``cos(1)`` is within
-``1e-16`` of ``cos(-1)``, and that ``cos(pi/2)`` is within ``1e-16`` of
-``sin(0)``.
-
-Please refer to the documentation for
-`~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls` to learn
-about the full capabilities of these pytest helper functions (including
-for testing functions that return `~astropy.units.Quantity` objects).
-
-.. warning::
-    The API within `~plasmapy.utils.pytest_helpers` is not yet stable
-    and may change in the near future.
 
 .. _testing-guidelines-writing-tests-fixtures:
 
@@ -604,6 +496,7 @@ should always be ignored in coverage tests.
    the bug and watch the failing test turn green.
 
 
+.. _black: https://black.readthedocs.io
 .. _Codecov: https://about.codecov.io/
 .. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
