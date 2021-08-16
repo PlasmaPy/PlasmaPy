@@ -295,9 +295,17 @@ failed.
 
 .. _black: https://black.readthedocs.io
 
-.. Running tests from the command line
-  -----------------------------------
-  The recommended method for running the test suite locally on your
+Running tests from the command line
+-----------------------------------
+
+Using tox
+~~~~~~~~~
+
+Using pytest
+~~~~~~~~~~~~
+
+
+..  The recommended method for running the test suite locally on your
   computer is running
   .. code-block:: shell
   python setup.py test
@@ -315,6 +323,8 @@ short traceback reports, and run tests only if the test path contains
  .. code-block:: shell
   python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
 One may also run ``pytest`` from the command line.
+
+
 Some tests in the test suite can take a long time to run, which can
 slow down development. These tests can be identified with the pytest annotation
 ``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
