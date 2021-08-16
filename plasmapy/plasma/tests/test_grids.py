@@ -339,7 +339,7 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(
 
 
 def test_volume_averaged_interpolator_persistance(example_grid):
-    # Try running with persistance
+    # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
     p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
