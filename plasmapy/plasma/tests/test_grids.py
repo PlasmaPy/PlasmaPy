@@ -308,11 +308,34 @@ def test_volume_averaged_interpolator_missing_key(example_grid):
         example_grid.volume_averaged_interpolator(pos, "B_x")
 
 
-def test_volume_averaged_interpolator_handle_out_of_bounds(example_grid):
+@pytest.mark.parametrize(
+    "pos, nan_mask",
+    [
+        (np.array([-5.0, 0.0, 0.0]) * u.cm, None),
+        (np.array([5.0, 0.0, 0.0]) * u.cm, None),
+        (np.array([0.0, -1.2, 0.0]) * u.cm, None),
+        (np.array([0.0, 1.5, 0.0]) * u.cm, None),
+        (np.array([0.0, 0.0, -100.0]) * u.cm, None),
+        (np.array([0.0, 0.0, 21.0]) * u.cm, None),
+        (
+            np.array(
+                [[0.0, 0.0, 0.0], [-1.2, 0.0, 0.0], [0.9, 0.5, -0.2], [0.3, -2.0, 5.0]]
+            )
+            * u.cm,
+            np.array([False, True, False, True])
+        ),
+    ],
+)
+def test_volume_averaged_interpolator_handle_out_of_bounds(
+    pos, nan_mask, example_grid
+):
     # Contains out-of-bounds values (must handle NaNs correctly)
-    pos = np.array([5, -0.3, 0]) * u.cm
     pout = example_grid.volume_averaged_interpolator(pos, "x")
-    assert np.isnan(pout.value)
+    if nan_mask is None:
+        assert np.all(np.isnan(pout.value))
+    else:
+        assert np.all(np.isnan(pout.value[nan_mask]))
+        assert np.all(~np.isnan(pout.value[~nan_mask]))
 
 
 def test_volume_averaged_interpolator_persistance(example_grid):
