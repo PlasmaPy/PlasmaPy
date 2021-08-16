@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 31 18:35:46 2021
-
-@author: sshan
-"""
 import numpy as np
 import astropy.units as u
 import warnings
@@ -55,7 +49,7 @@ def hollweg_dispersion_solution(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> from plasmapy.dispersion import two_fluid
     >>> inputs = {
     ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
     ...    "theta": 88 * u.deg,
