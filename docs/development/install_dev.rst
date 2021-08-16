@@ -7,9 +7,8 @@ Installing PlasmaPy for Development
 Obtaining PlasmaPy source code
 ==============================
 
-After creating your GitHub account, go to the `PlasmaPy repository on
-GitHub <https://github.com/PlasmaPy/plasmapy>`_ and **fork a copy of
-PlasmaPy to your account**.
+After creating your GitHub account, go to `PlasmaPy's GitHub repository`_
+and **fork a copy of PlasmaPy to your account**.
 
 To access Git commands on Windows, try `Git Bash
 <https://git-scm.com/downloads>`_.

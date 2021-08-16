@@ -7,6 +7,7 @@ __all__ = []
 
 from plasmapy.particles.atomic import (
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -32,7 +33,7 @@ from plasmapy.particles.particle_class import (
     Particle,
     ParticleLike,
 )
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.particles.serialization import (
     json_load_particle,
     json_loads_particle,

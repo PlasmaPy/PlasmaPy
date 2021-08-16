@@ -34,6 +34,21 @@ div.graphviz {
     margin-bottom: 0 !important;
 }
 
+/* Remove excess bottom margin for table headings */
+.rst-content table.docutils thead p {
+    margin-bottom: 0;
+}
+
+/* Remove excess bottom margin for for multiline table entries when using line-block */
+.rst-content table.docutils div.line-block {
+    margin-bottom: 0;
+}
+
+/* Allow text wrapping for last column of a table. */
+.rst-content table.docutils td:last-child p {
+    white-space: normal;
+    line-height: 140%;
+}
 /* -----------------------------------------------------------------------------
  * RTD layout styling additions
  */

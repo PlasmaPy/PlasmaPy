@@ -60,7 +60,7 @@ from plasmapy.utils.decorators import (
     check_relativistic,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning
+from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
 __all__ += __aliases__
 
@@ -81,14 +81,14 @@ def _grab_charge(ion: Particle, z_mean=None):
     Returns
     -------
     float
-        if ``z_mean`` was passed, ``z_mean``, otherwise, the integer charge
+        if ``z_mean`` was passed, ``z_mean``, otherwise, the charge number
         of ``ion``.
 
     """
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
-        Z = particles.integer_charge(ion)
+        Z = particles.charge_number(ion)
     else:
         # using average ionization provided by user
         Z = z_mean
@@ -112,8 +112,8 @@ def mass_density(
               = | Z_{ratio} | n_{s} m_{particle}
 
     where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
-    density for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
-    species :math:`s`, and :math:`Z_{particle}` is the integer charge of
+    density for plasma species :math:`s`, :math:`Z_{s}` is the charge number of
+    species :math:`s`, and :math:`Z_{particle}` is the charge number of
     ``particle``.  For example, if the electron density is given for :math:`n_s`
     and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`\ .
 
@@ -134,7 +134,7 @@ def mass_density(
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
-        The ratio of the integer charges corresponding to the plasma species
+        The ratio of the charge numbers corresponding to the plasma species
         represented by ``density`` and the ``particle``.  For example, if the
         given ``density`` is and electron density and ``particle`` is doubly
         ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
@@ -234,7 +234,7 @@ def Alfven_speed(
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible to
         m\ :sup:`-3` or the total mass density :math:`ρ` in units
-        convertible to kg / m\ :sup:`-3`\ .
+        convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.Particle`, optional
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
@@ -330,7 +330,7 @@ def Alfven_speed(
                 )
         if z_mean is None:
             try:
-                z_mean = abs(ion.integer_charge)
+                z_mean = abs(ion.charge_number)
             except ChargeError:
                 z_mean = 1
 
@@ -411,7 +411,7 @@ def ion_sound_speed(
     z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
+        given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
         plasma where multiple charge states are present.
 
@@ -1005,11 +1005,11 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     Z : `float` or `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
+        given then the charge number of the ion
         is used. This is effectively an average gyrofrequency for the
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
-        If not provided, it defaults to the integer charge of the ``particle``.
+        If not provided, it defaults to the charge number of the ``particle``.
 
     Returns
     -------
@@ -1037,7 +1037,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{ci} = \frac{Z e B}{m_i}
+        ω_{c} = \frac{Z e B}{m}
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -1074,14 +1074,14 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    m_i = particles.particle_mass(particle)
+    m = particles.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
-    omega_ci = u.rad * (Z * e * np.abs(B) / m_i).to(1 / u.s)
+    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
-    return omega_ci
+    return omega_c
 
 
 oc_ = gyrofrequency
@@ -1094,6 +1094,7 @@ wc_ = gyrofrequency
 @validate_quantities(
     Vperp={"can_be_nan": True},
     T_i={"can_be_nan": True, "equivalencies": u.temperature_energy()},
+    T={"can_be_nan": True, "equivalencies": u.temperature_energy()},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 def gyroradius(
@@ -1102,6 +1103,7 @@ def gyroradius(
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
+    T: u.K = np.nan * u.K,
 ) -> u.m:
     r"""Return the particle gyroradius.
 
@@ -1122,8 +1124,12 @@ def gyroradius(
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
+    T : `~astropy.units.Quantity`, optional, keyword-only
+        The particle temperature in units convertible to kelvin.
+
     T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
+        Note: Deprecated. Use T instead.
 
     Returns
     -------
@@ -1152,9 +1158,9 @@ def gyroradius(
 
     Notes
     -----
-    One but not both of ``Vperp`` and ``T_i`` must be inputted.
+    One but not both of ``Vperp`` and ``T`` must be inputted.
 
-    If any of ``B``, ``Vperp``, or ``T_i`` is a number rather than a
+    If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
     warning will be raised.
 
@@ -1173,69 +1179,78 @@ def gyroradius(
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(5*u.uG, particle='alpha', T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, particle='alpha', T=1*u.eV)
     <Quantity 288002.38... m>
     >>> gyroradius(400*u.G, particle='Fe+++', Vperp=1e7*u.m/u.s)
     <Quantity 48.23129... m>
-    >>> gyroradius(B=0.01*u.T, particle='e-', T_i=1e6*u.K)
+    >>> gyroradius(B=0.01*u.T, particle='e-', T=1e6*u.K)
     <Quantity 0.003130... m>
     >>> gyroradius(0.01*u.T, 'e-', Vperp=1e6*u.m/u.s)
     <Quantity 0.000568... m>
-    >>> gyroradius(0.2*u.T, 'e-', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, 'e-', T=1e5*u.K)
     <Quantity 4.94949...e-05 m>
-    >>> gyroradius(5*u.uG, 'e-', T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, 'e-', T=1*u.eV)
     <Quantity 6744.25... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001421... m>
     """
 
-    isfinite_Ti = np.isfinite(T_i)
+    # Backwards Compatibility and Deprecation check for keyword T_i
+    if not np.isnan(T_i):
+        warnings.warn(
+            "Keyword T_i is deprecated, use T instead.",
+            PlasmaPyFutureWarning,
+        )
+        if np.isnan(T):
+            T = T_i
+
+    isfinite_T = np.isfinite(T)
     isfinite_Vperp = np.isfinite(Vperp)
 
-    # check 1: ensure either Vperp or T_i invalid, keeping in mind that
+    # check 1: ensure either Vperp or T invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+    if np.any(np.logical_and(isfinite_Vperp, isfinite_T)):
         raise ValueError(
-            "Must give Vperp or T_i, but not both, as arguments to gyroradius"
+            "Must give Vperp or T, but not both, as arguments to gyroradius"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
     if np.isscalar(Vperp.value) and np.isscalar(
-        T_i.value
-    ):  # both T_i and Vperp are scalars
+        T.value
+    ):  # both T and Vperp are scalars
         # we know exactly one of them is nan from check 1
-        if isfinite_Ti:
-            # T_i is valid, so use it to determine Vperp
-            Vperp = thermal_speed(T_i, particle=particle)
+        if isfinite_T:
+            # T is valid, so use it to determine Vperp
+            Vperp = thermal_speed(T, particle=particle)
         # else: Vperp is already valid, do nothing
-    elif np.isscalar(Vperp.value):  # only T_i is an array
-        # this means either Vperp must be nan, or T_i must be array of all nan,
+    elif np.isscalar(Vperp.value):  # only T is an array
+        # this means either Vperp must be nan, or T must be array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_Vperp:
-            # Vperp is valid, T_i is a vector that is all nan
+            # Vperp is valid, T is a vector that is all nan
             # uh...
-            Vperp = np.repeat(Vperp, len(T_i))
+            Vperp = np.repeat(Vperp, len(T))
         else:
-            # normal case where Vperp is scalar nan and T_i is valid array
-            Vperp = thermal_speed(T_i, particle=particle)
-    elif np.isscalar(T_i.value):  # only Vperp is an array
-        # this means either T_i must be nan, or V_perp must be array of all nan,
+            # normal case where Vperp is scalar nan and T is valid array
+            Vperp = thermal_speed(T, particle=particle)
+    elif np.isscalar(T.value):  # only Vperp is an array
+        # this means either T must be nan, or V_perp must be array of all nan,
         # or else we couldn't have gotten through check 1
-        if isfinite_Ti:
-            # T_i is valid, V_perp is an array of all nan
+        if isfinite_T:
+            # T is valid, V_perp is an array of all nan
             # uh...
-            Vperp = thermal_speed(np.repeat(T_i, len(Vperp)), particle=particle)
-        # else: normal case where T_i is scalar nan and Vperp is already a valid array
+            Vperp = thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
+        # else: normal case where T is scalar nan and Vperp is already a valid array
         # so, do nothing
-    else:  # both T_i and Vperp are arrays
+    else:  # both T and Vperp are arrays
         # we know all the elementwise combinations have one nan and one finite, due to check 1
-        # use the valid Vperps, and replace the others with those calculated from T_i
+        # use the valid Vperps, and replace the others with those calculated from T
         Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
-        Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
+        Vperp[isfinite_T] = thermal_speed(T[isfinite_T], particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
@@ -1340,7 +1355,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = particles.integer_charge(particle)
+                Z = particles.charge_number(particle)
             except Exception:
                 Z = 1
         else:
@@ -1769,6 +1784,16 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     where :math:`ω_{ce}` is the electron gyrofrequency and
     :math:`ω_{pe}` is the electron plasma frequency.
 
+    The upper hybrid frequency is a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are
+    waves with their wave electric field being perpendicular to
+    the background magnetic field. In the cold plasma model, i.e.
+    without any finite temperature effects, the resonance acts
+    merely as a resonance such that power can be deposited there.
+    If finite temperature effects are considered, mode conversion
+    can occur at the upper hybrid resonance, coupling to the
+    electrostatic electron Bernstein wave.
+
     Example
     -------
     >>> from astropy import units as u
@@ -1853,6 +1878,14 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
 
+    The lower hybrid frequency consitutes a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are waves
+    with their wave electric field being perpendicular to the background
+    magnetic field. For the lower hybrid frequency, ion and electron
+    dynamics both play a role. As the name suggests, it has a lower frequency
+    compared to the upper hybrid frequency. It can play an important role
+    for heating and current drive in fusion plasmas.
+
     Example
     -------
     >>> from astropy import units as u
@@ -1866,7 +1899,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        particles.integer_charge(ion)
+        particles.charge_number(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 

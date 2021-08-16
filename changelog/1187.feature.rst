@@ -1,0 +1,3 @@
+The behaviour of the function `~plasmapy.formulary.parameters.gyroradius` has
+been changed: if NaN-values are provided for T_i or Vperp, no longer is a
+slightly misleading error raised, but simply NaN is returned.

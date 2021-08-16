@@ -1,0 +1,3 @@
+Added the `plasmapy.utils.decorators.deprecation` module. The module includes
+`~plasmapy.utils.decorators.deprecation.deprecated`, which is a decorator that
+is based on `astropy.utils.decorators.deprecated`.

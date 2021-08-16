@@ -32,7 +32,7 @@ of this software, even if advised of the possibility of such damage.
 # Notice
 
 [PlasmaPy's
-license](https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md)
+license](https://github.com/PlasmaPy/PlasmaPy/blob/main/LICENSE.md)
 was [updated on 2017 October
 19](https://github.com/PlasmaPy/PlasmaPy/pull/114) to include
 protections against software patents from the [BSD+Patent
@@ -42,7 +42,7 @@ license](plasmapy-license-prior-to-2017-october-19).  Most
 contributors to PlasmaPy [have
 agreed](https://github.com/PlasmaPy/PlasmaPy/pull/114) to have
 their contributions covered by the [new
-license](https://github.com/PlasmaPy/PlasmaPy/blob/master/LICENSE.md).
+license](https://github.com/PlasmaPy/PlasmaPy/blob/main/LICENSE.md).
 Pull requests
 [#63](https://github.com/PlasmaPy/PlasmaPy/pull/63),
 [#77](https://github.com/PlasmaPy/PlasmaPy/pull/77),
