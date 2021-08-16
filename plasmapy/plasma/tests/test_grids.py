@@ -267,6 +267,15 @@ def test_nearest_neighbor_interpolator():
 
 @pytest.fixture
 def example_grid():
+    """
+    A `pytest` fixture that generates a CartesianGrid that spans
+    -1 cm to 1 cm in all dimensions.  Three quantities are added to the
+    grid:
+
+    1. "x" which is the x position at each point in the grid [in cm]
+    2. "y" which is the y position at each point in the grid [in cm]
+    3. "rho" which is a mass density at each point in the grid [kg/m^-3]
+    """
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 
