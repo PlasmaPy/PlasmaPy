@@ -1,4 +1,8 @@
-__all__ = ["two_fluid_dispersion_solution"]
+"""
+This module contains functionality for calculating various analytical
+solutions to the two fluid dispersion relation.
+"""
+__all__ = ["two_fluid"]
 
 import astropy.units as u
 import numpy as np
@@ -20,7 +24,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid_dispersion_solution(
+def two_fluid(
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -193,7 +197,7 @@ def two_fluid_dispersion_solution(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> from plasmapy.dispersion.analytical import two_fluid
     >>> inputs = {
     ...     "k": 0.01 * u.rad / u.m,
     ...     "theta": 30 * u.deg,
@@ -203,7 +207,7 @@ def two_fluid_dispersion_solution(
     ...     "T_i": 4.0e5 * u.K,
     ...     "ion": "p+",
     ... }
-    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas = two_fluid(**inputs)
     >>> omegas
     {'fast_mode': <Quantity 1520.57... rad / s>,
      'alfven_mode': <Quantity 1261.75... rad / s>,
@@ -218,7 +222,7 @@ def two_fluid_dispersion_solution(
     ...     "T_i": 4.0e5 * u.K,
     ...     "ion": "He+",
     ... }
-    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas = two_fluid(**inputs)
     >>> omegas['fast_mode']
     <Quantity [[0.00767..., 0.00779... ],
                [0.01534..., 0.01558...]] rad / s>

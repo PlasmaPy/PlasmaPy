@@ -102,20 +102,40 @@ You can use tox_ to locally build the documentation by running:
 You can access the documentation landing page by opening
 :file:`docs/_build/html/index.html` with your browser of choice.
 
-When writing documentation, please make sure to fix any warnings that
-arise. To enforce this, the ``build_docs`` environment is set to fail on
-encountering any warnings via the ``-W`` flag to `sphinx-build`_.
+You can shorten the documentation build by running:
 
-You can shorten the tox_ documentation build by running:
+.. code-block:: bash
+
+   tox -e build_docs -- -j=auto
+
+The `-j command
+<https://www.sphinx-doc.org/en/master/man/sphinx-build.html#cmdoption-sphinx-build-j>`_
+will build the documentation in parallel, with the number
+of processes being automatically determined. Flags that follow the
+``--`` are passed to `sphinx-build`_.
+
+You can alternatively shorten the documentation build by running:
 
 .. code-block:: bash
 
    tox -e build_docs_no_examples
 
-in order to build the documentation without executing the :ref:`example
-notebooks <example_notebooks>`. This command will pass even if there are
-warnings. A tox_ command may also include the ``--parallel`` flag to
-allow a parallel build.
+This command will build the documentation without executing the
+:ref:`example notebooks <example_notebooks>`.
+
+You can check for broken reST_ links by running:
+
+.. code-block:: bash
+
+   tox -e build_docs_nitpicky
+
+.. tip::
+
+   When writing documentation, please make sure to fix any warnings that
+   arise. To enforce this, the ``build_docs`` and ``build_docs_nitpicky``
+   tox_ environments will fail after completing the documentation build
+   if they encountered any warnings (via the ``-W`` and ``--keep-going``
+   flags to `sphinx-build`_).
 
 Documentation tools
 ===================
