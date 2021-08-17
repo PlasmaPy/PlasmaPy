@@ -12,6 +12,12 @@ from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
 
+@validate_quantities(
+    B={"can_be_negative": False},
+    n_i={"can_be_negative": False},
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
 def hollweg(
     *,
     B: u.T,
