@@ -75,7 +75,7 @@ def hollweg(
         dictionary contains three keys: ``'fast_mode'`` for the fast mode,
         ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
         ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
- 
+
     Raises
     ------
     TypeError
@@ -113,7 +113,7 @@ def hollweg(
     where
     .. math::
         k_{\rm x} = \mathbf{k} \cdot \hat{x}
- 
+
     Examples
     --------
     >>> from astropy import units as u
