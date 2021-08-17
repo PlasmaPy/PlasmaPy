@@ -194,7 +194,7 @@ def hollweg(
     w_max = max(m1, m2, m3)
 
     # dispersion relation is only valid in the regime w << w_ci
-    if w_max / omega_ci > 0.01:
+    if w_max / omega_ci > 0.1:
         warnings.warn(
             "The calculation produced a high-frequency wave, "
             "which violates the low frequency assumption (w << w_ci)",
