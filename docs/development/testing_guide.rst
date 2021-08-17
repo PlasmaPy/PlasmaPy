@@ -3,7 +3,7 @@ Testing Guide
 *************
 
 Software testing is vital for software reliability and maintainability.
-We write software tests to:
+Software tests help us to:
 
 * Find and fix bugs.
 * Prevent old bugs from getting re-introduced.
@@ -23,12 +23,12 @@ We write software tests to:
 
    Writing tests takes time, but debugging takes more time.
 
-Every code contribution to PlasmaPy that adds or changes functionality
-must also have corresponding tests. Creating or updating a pull request
-will activate PlasmaPy's test suite to be run via `GitHub Actions`_,
-along with some additional checks. The results of the test suite are
-shown at the bottom of each pull request. Click on *Details* next to
-each test run to find the reason for any test failures.
+Every code contribution to PlasmaPy with new functionality must also
+have corresponding tests. Creating or updating a pull request will
+activate PlasmaPy's test suite to be run via `GitHub Actions`_, along
+with some additional checks. The results of the test suite are shown at
+the bottom of each pull request. Click on *Details* next to each test
+run to find the reason for any test failures.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
@@ -45,10 +45,11 @@ Running tests
 Using GitHub
 ------------
 
-The easiest way to run PlasmaPy's full test suite is to `create a pull
-request`_ from your development branch to `PlasmaPy's GitHub
-repository`_. The test suite will be run when the pull request is
-created and every time your development branch is updated.
+The recommended way for new contributors to run PlasmaPy's full test
+suite is to `create a pull request`_ from your development branch to
+`PlasmaPy's GitHub repository`_. The test suite will be run
+automatically when the pull request is created and every time changes
+are pushed to the development branch on GitHub.
 
 The following checks are performed with each pull request. The results
 of the checks are found near the end of the *Conversation* tab in each
@@ -63,7 +64,9 @@ particular check failed.
 
   * These tests are set up using tox_ and run with pytest_.
 
-  * If multiple tests fail, investigate these tests first.
+  * When multiple checks fail, investigate these tests first.
+
+If multiple tests fail, investigate these tests first.
 
 * Checks with labels like **CI / Python 3.9 with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
@@ -71,8 +74,8 @@ particular check failed.
   fail for reasons not associated with a particular pull request.
 
 * The **CI / Documentation (pull request)** check verifies that
-  PlasmaPy's documentation is able to build correctly. Warnings are
-  treated as errors.
+  PlasmaPy's documentation is able to build correctly from the pull
+  request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
   how the documentation will appear if the pull request is merged.
@@ -92,21 +95,35 @@ particular check failed.
   Codecov_ checks will be marked as passing when the test coverage is
   satisfactorily high.
 
-  * Test coverage reports allow us to write targeted tests to fill in
-    the gaps in test coverage. These reports also help us find sections
-    of code that can never be run.
+  * Test coverage reports help us write targeted tests to fill in gaps
+    in test coverage and find unreachable blocks of code that can never
+    be run.
 
-* The **CI / Linters (pull request)** and **pre-commit.ci - pr** checks
-  make sure that the code meets style requirements. These tests can be
-  ignored until the pull request is nearing completion.
+* PlasmaPy uses black_ to format code and isort_ to sort `import`
+  statements. The **CI / Linters (pull request)** and
+  **pre-commit.ci - pr** checks verify that the pull request meets these
+  style requirements. These checks will fail when inconsistencies with
+  the output from black_ or isort_ are found or when there are syntax
+  errors. These checks can usually be ignored until the pull request is
+    nearing completion.
 
-  * PlasmaPy uses black_ to format code and isort_ to sort `import`
-    statements. If any inconsistencies with the output from black_ or
-    isort_ are found, one or both of these checks will fail.
+  .. tip::
 
-  * To apply the needed fixes automagically, write a comment with the
-    message ``pre-commit.ci autofix`` to the *Conversation* tab on
-    a pull request. Remember to ``git pull`` afterwards!
+     The required formatting fixes can be applied automatically by
+     writing a comment with the message ``pre-commit.ci autofix`` to the
+     *Conversation* tab on a pull request, as long as there are no
+     syntax errors. This approach is much more efficient than making the
+     style fixes manually. Remember to ``git pull`` afterwards!
+
+* The **Pull Request Labeler / triage (pull_request_target)** check
+  applies appropriate GitHub labels to pull requests.
+
+.. attention::
+
+   PlasmaPy's continuous integration checks change frequently. If you
+   notice that this documentation has become out-of-date, please
+   `submit an issue that this section needs updating
+   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
 
 Using pytest
 ------------
@@ -114,9 +131,7 @@ Using pytest
 Using tox
 ---------
 
-
-
-
+However, tests run by tox_ take longer
 
 ..  The recommended method for running the test suite locally on your
   computer is running
