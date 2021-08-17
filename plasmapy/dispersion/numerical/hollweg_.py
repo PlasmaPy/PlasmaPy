@@ -29,7 +29,6 @@ def hollweg(
     r"""
     Notes
     -----
-
     Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
     .. math::
         \left(\frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
@@ -38,13 +37,9 @@ def hollweg(
         \right]\\ = \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2 &
         \left(\frac{c_{\rm s}^2}{\omega_{\rm ci}^2} - \frac{c^2}{\omega_{\rm pe}^2} &
         \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}\right)
-
     where
-
     .. math::
         k_{\rm x} = \mathbf{k} \cdot \hat{x}
-
-
     Examples
     --------
     >>> from astropy import units as u
@@ -192,12 +187,14 @@ def hollweg(
     m3 = np.max(omega['acoustic_mode'])
 
     w_max = max(m1, m2, m3)
+    w_wci_max = w_max / omega_ci
 
     # dispersion relation is only valid in the regime w << w_ci
     if w_max / omega_ci > 0.1:
         warnings.warn(
-            "The calculation produced a high-frequency wave, "
-            "which violates the low frequency assumption (w << w_ci)",
+            f"This solver is valid in the regime w/w_ci << 1. "
+            f"A w value of {w_max:.2f} and a w/w_ci value of {w_wci_max:.2f} "  
+            f"were calculated which may affect the validity of the solution.",
             PhysicsWarning,
             )
 
