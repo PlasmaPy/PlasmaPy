@@ -33,6 +33,7 @@ def hollweg(
 ):
 
     r"""
+
     Parameters
     ----------
     B : `~astropy.units.Quantity`
