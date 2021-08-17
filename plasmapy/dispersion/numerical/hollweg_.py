@@ -30,7 +30,7 @@ def hollweg(
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
- ):
+):
 
     r"""
     Notes
@@ -63,8 +63,7 @@ def hollweg(
     >>> omegas
     {'fast_mode': <Quantity [2.62911663e-02, 2.27876968e+03] rad / s>,
     'alfven_mode': <Quantity [7.48765909e-04, 2.13800404e+03] rad / s>,
-    'acoustic_mode': <Quantity [0.00043295, 0.07358991] rad / s>}
-"""
+    'acoustic_mode': <Quantity [0.00043295, 0.07358991] rad / s>}"""
 
     # validate argument ion
     if not isinstance(ion, Particle):
@@ -125,7 +124,7 @@ def hollweg(
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
-            )
+        )
     # Calc needed plasma parameters
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
@@ -136,7 +135,7 @@ def hollweg(
         gamma_e=gamma_e,
         gamma_i=gamma_i,
         z_mean=z_mean,
-        )
+    )
     v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
@@ -182,15 +181,15 @@ def hollweg(
             alfven_mode.append(np.median(w))
             acoustic_mode.append(np.min(w))
 
-    omega['fast_mode'] = fast_mode * u.rad / u.s
-    omega['alfven_mode'] = alfven_mode * u.rad / u.s
-    omega['acoustic_mode'] = acoustic_mode * u.rad / u.s
+    omega["fast_mode"] = fast_mode * u.rad / u.s
+    omega["alfven_mode"] = alfven_mode * u.rad / u.s
+    omega["acoustic_mode"] = acoustic_mode * u.rad / u.s
 
     # check the low-frequency limit
 
-    m1 = np.max(omega['fast_mode'])
-    m2 = np.max(omega['alfven_mode'])
-    m3 = np.max(omega['acoustic_mode'])
+    m1 = np.max(omega["fast_mode"])
+    m2 = np.max(omega["alfven_mode"])
+    m3 = np.max(omega["acoustic_mode"])
 
     w_max = max(m1, m2, m3)
     w_wci_max = w_max / omega_ci
@@ -199,9 +198,9 @@ def hollweg(
     if w_max / omega_ci > 0.1:
         warnings.warn(
             f"This solver is valid in the regime w/w_ci << 1. "
-            f"A w value of {w_max:.2f} and a w/w_ci value of {w_wci_max:.2f} "  
+            f"A w value of {w_max:.2f} and a w/w_ci value of {w_wci_max:.2f} "
             f"were calculated which may affect the validity of the solution.",
             PhysicsWarning,
-            )
+        )
 
     return omega
