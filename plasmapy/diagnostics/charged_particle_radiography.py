@@ -890,6 +890,14 @@ class Tracker:
                 persistent=True,
             )
 
+        # Interpret any NaN values (points off the grid) as zero
+        Ex = np.nan_to_num(Ex, nan=0.0 * u.V / u.m)
+        Ey = np.nan_to_num(Ey, nan=0.0 * u.V / u.m)
+        Ez = np.nan_to_num(Ez, nan=0.0 * u.V / u.m)
+        Bx = np.nan_to_num(Bx, nan=0.0 * u.T)
+        By = np.nan_to_num(By, nan=0.0 * u.T)
+        Bz = np.nan_to_num(Bz, nan=0.0 * u.T)
+
         # Create arrays of E and B as required by push algorithm
         E = np.array(
             [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
