@@ -31,7 +31,7 @@ def hollweg(
     -----
 
     Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
-#    .. math::
+    .. math::
         \left(\frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
         \left[\omega^2\left(\omega^2 - k^2 v_{\rm A}^2\right) - &
         \beta k^2 v_{\rm A}^2 \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right) &
