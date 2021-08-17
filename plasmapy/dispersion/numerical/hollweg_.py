@@ -27,7 +27,6 @@ def hollweg(
  ):
 
     r"""
-
     Notes
     -----
 
