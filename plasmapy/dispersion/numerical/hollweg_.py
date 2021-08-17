@@ -110,6 +110,7 @@ def hollweg(
     Notes
     -----
     Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
+
     .. math::
         \left(\frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
         \left[\omega^2\left(\omega^2 - k^2 v_{\rm A}^2\right) - &
@@ -141,7 +142,6 @@ def hollweg(
     {'fast_mode': <Quantity [2.62911663e-02, 2.27876968e+03] rad / s>,
      'alfven_mode': <Quantity [7.48765909e-04, 2.13800404e+03] rad / s>,
      'acoustic_mode': <Quantity [0.00043295, 0.07358991] rad / s>}
-
     """
 
     # validate argument ion
