@@ -1,15 +1,15 @@
-import numpy as np
 import astropy.units as u
+import numpy as np
 import warnings
 
 from astropy.constants.si import c
+from typing import Union
+
 from plasmapy.formulary import parameters as pfp
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
-
-from typing import Union
 
 
 def hollweg(
