@@ -33,6 +33,71 @@ def hollweg(
 ):
 
     r"""
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to :math:`T`.
+    ion : `str` or `~plasmapy.particles.particle_class.Particle`
+        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
+        charge state information is provided, then the ions are assumed to be
+        singly ionized.
+    k : `~astropy.units.Quantity`, single valued or 1-D array
+        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        valued or 1-D array of length :math:`N`.
+    n_i : `~astropy.units.Quantity`
+        Ion number density in units convertible to :math:`m^{-3}`.
+    T_e : `~astropy.units.Quantity`
+        The electron temperature in units of :math:`K` or :math:`eV`.
+    T_i : `~astropy.units.Quantity`
+        The ion temperature in units of :math:`K` or :math:`eV`.
+    theta : `~astropy.units.Quantity`, single valued or 1-D array
+        The angle of propagation of the wave with respect to the magnetic field,
+        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
+        Either single valued or 1-D array of size :math:`M`.
+    gamma_e : `float` or `int`, optional
+        The adiabatic index for electrons, which defaults to 1.  This
+        value assumes that the electrons are able to equalize their
+        temperature rapidly enough that the electrons are effectively
+        isothermal.
+    gamma_i : `float` or `int`, optional
+        The adiabatic index for ions, which defaults to 3. This value
+        assumes that ion motion has only one degree of freedom, namely
+        along magnetic field lines.
+    z_mean : `float` or int, optional
+        The average ionization state (arithmetic mean) of the ``ion`` composing
+        the plasma.  Will override any charge state defined by argument ``ion``.
+    Returns
+    -------
+    omega : Dict[str, `~astropy.units.Quantity`]
+        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
+        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
+        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
+        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+    Raises
+    ------
+    TypeError
+        If applicable arguments are not instances of `~astropy.units.Quantity` or
+        cannot be converted into one.
+    TypeError
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+    TypeError
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+    ~astropy.units.UnitTypeError
+        If applicable arguments do not have units convertible to the expected
+        units.
+    ValueError
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+    ValueError
+        If ``k`` is negative or zero.
+    ValueError
+        If ``ion`` is not of category ion or element.
+    ValueError
+        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        `astropy.units.Quantity` (i.e. an array).
+    ValueError
+        If ``k`` or ``theta`` are not single valued or a 1-D array.
+
     Notes
     -----
     Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
