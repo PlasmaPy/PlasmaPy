@@ -142,7 +142,7 @@ def hollweg(
      'alfven_mode': <Quantity [7.48765909e-04, 2.13800404e+03] rad / s>,
      'acoustic_mode': <Quantity [0.00043295, 0.07358991] rad / s>}
     """
-    
+
     # validate argument ion
     if not isinstance(ion, Particle):
         try:
