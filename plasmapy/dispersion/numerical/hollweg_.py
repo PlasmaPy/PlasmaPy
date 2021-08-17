@@ -117,7 +117,9 @@ def hollweg(
         \right]\\ = \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2 &
         \left(\frac{c_{\rm s}^2}{\omega_{\rm ci}^2} - \frac{c^2}{\omega_{\rm pe}^2} &
         \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}\right)
+
     where
+
     .. math::
         k_{\rm x} = \mathbf{k} \cdot \hat{x}
 
