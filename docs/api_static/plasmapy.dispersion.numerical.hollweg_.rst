@@ -12,4 +12,4 @@ Example Notebooks
 
 .. nbgallery::
 
-    /notebooks/dispersion/numerical/hollweg_dispersion_solution
+    /notebooks/dispersion/hollweg_dispersion
