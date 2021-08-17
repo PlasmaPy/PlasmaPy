@@ -12,7 +12,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
 from typing import Union
 
 
-def hollweg_dispersion_solution(
+def hollweg(
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -49,7 +49,7 @@ def hollweg_dispersion_solution(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid
+    >>> from plasmapy.dispersion.numerical import hollweg_
     >>> inputs = {
     ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
     ...    "theta": 88 * u.deg,
@@ -59,7 +59,7 @@ def hollweg_dispersion_solution(
     ...    "T_i": 4.0e5 * u.K,
     ...    "ion": Particle("p+"),
     ... }
-    >>> omegas = hollweg_dispersion_solution(**inputs)
+    >>> omegas = hollweg(**inputs)
     >>> omegas
     {'fast_mode': <Quantity [2.62911663e-02, 2.27876968e+03] rad / s>,
     'alfven_mode': <Quantity [7.48765909e-04, 2.13800404e+03] rad / s>,
