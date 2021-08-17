@@ -5,4 +5,4 @@ associated with numerical dispersion solvers.
 __all__ = [
   "hollweg",
 ]
-from plasmapy.dispersion.numerical.hollweg import hollweg
+from plasmapy.dispersion.numerical.hollweg_ import hollweg
