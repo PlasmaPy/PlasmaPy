@@ -46,11 +46,14 @@
 
 .. _Astropy: https://www.astropy.org/
 .. _`Astropy docs`: https://docs.astropy.org/
+.. _black: https://black.readthedocs.io
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/docs/
 .. _git: https://git-scm.com/
 .. _GitHub: https://github.com/
+.. _`GitHub Actions`: https://docs.github.com/en/actions
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+.. _isort: https://pycqa.github.io/isort/
 .. _Jupyter: https://jupyter.org/
 .. _Markdown: https://www.markdownguide.org/
 .. _matplotlib: https://matplotlib.org/
