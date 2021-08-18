@@ -228,15 +228,30 @@ interpreted to mean that the tests should be performed with Python 3.8,
 appropriate version of Python has been installed and can be found by
 tox_.
 
-Using an IDE
-------------
+Using an integrated development environment
+-------------------------------------------
 
-Most `integrated development environments`_ (IDEs) have built-in tools
-that simplify running tests. Setting up testing configurations within an
-IDE generally saves considerable time
+Most IDEs have built-in tools that simplify software testing. IDEs like
+PyCharm_, `Visual Studio`_, and Atom_ allow test configurations to be
+run with a click of the mouse or a few keystrokes. While IDEs require
+time to learn, they are among the most efficient methods to
+interactively perform tests. Here are instructions for running tests in
+several popular IDEs:
 
-Testing techniques
-==================
+* `Python testing in PyCharm
+  <https://www.jetbrains.com/help/pycharm/testing-your-first-python-application.html>`__
+* `Python testing in Visual Studio Code
+  <https://code.visualstudio.com/docs/python/testing>`__
+* `Python testing in Atom <https://atom.io/packages/atom-python-test>`__
+
+.. _Atom: https://atom.io/
+.. _PyCharm: https://www.jetbrains.com/pycharm/
+.. _`Visual Studio`: https://visualstudio.microsoft.com/
+
+Writing Tests
+=============
+
+
 
 Assertions
 ----------
@@ -265,8 +280,6 @@ to help us find the cause of a particular test failure.
       result = 2 + 2
       expected = 4
       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
-
-.. TODO Python 3.8+: update this example to use the f"{result=}" syntax.
 
 .. tip::
 
@@ -396,56 +409,8 @@ functions or pass in tuples containing inputs and expected values.
        assert proof_by_riemann(truth_value) == expected
 
 
-
-Writing Tests
-=============
-
 Pull requests must include tests of new or changed functionality before
 being merged.
-
-Best practices for writing tests
---------------------------------
-
-The following guidelines are helpful suggestions for writing readable,
-maintainable, and robust tests.
-
-* Each function and method should have unit tests that check that it
-  returns the expected results, issues the appropriate warnings, and
-  raises the appropriate exceptions.
-
-* Each unit test should test *one unit of behavior*, *quickly*, and
-  *in isolation from other tests*.
-
-.. add citation for above from the audiobook that I don't feel like
-   looking up again
-
-* Bugs should be turned into test cases.
-
-* Tests are run frequently during code development, and slow tests may
-  interrupt the flow of a contributor.  Tests should be minimal,
-  sufficient enough to be complete, efficient.
-
-* Decorate slow tests with `pytest.mark.slow`.
-
-  .. code-block:: python
-
-     import pytest
-
-     @pytest.mark.slow
-     def test_calculating_primes():
-        calculate_all_primes()
-
-* Write test code with the same quality as production code. Well-written
-  tests are easier to modify when the tested behavior changes. Poorly
-  written tests are difficult to change and slow down future development.
-
-
-.. The following hint would be worth putting somewhere, at least after
-   Python 3.10 is released, but maybe not here.
-
-.. .. hint::
-   Running tests in Python ≥3.10 will provide improved error messages
-   compared to Python ≤3.9.
 
 Test organization and collection
 --------------------------------
@@ -571,6 +536,125 @@ should always be ignored in coverage tests.
   In general, untested lines of code should remain marked as untested to
   give future developers a better idea of where tests should be added in
   the future and where potential bugs may exist.
+
+
+Best practices
+--------------
+
+The following list contains suggestions for testing scientific software.
+
+.. need to balance these things against each other
+
+.. it's not always possible to follow all of these guidelines simultaneously
+
+
+* **Run tests frequently for continual feedback.** If we edit a single
+  section of code and discover a new test failure, then we know that the
+  problem is related to that section of code. If we edit 97 sections of
+  code before running tests, then we will have a much harder time
+  isolating the problematic section of code.
+
+* **Write code that is easy to test.** It is easier to test short
+  functions that do one thing than long functions that do many things.
+
+* **Write tests that are easy to change.**
+
+
+
+* **Make tests fast.** Tests are most valuable when they provide
+  immediate feedback. Tests that take a while to run limits our ability
+  to focus.
+
+  * Decorate slow tests with `pytest.mark.slow`.
+
+    .. code-block:: python
+
+       import pytest
+
+       @pytest.mark.slow
+       def test_calculating_primes():
+           calculate_all_primes()
+
+
+
+
+* **Test one unit of behavior per test.**
+
+  * Use `pytest.mark.parametrize` to break up chains of similar `assert`
+    statements into independent tests.
+
+* **Make tests independent of each other.** Tests should be isolated
+  from other tests and
+
+* **Avoid using the same mutable object in multiple tests.** Passing an
+  `object` that can be changed between multiple tests risks making tests
+  interdependent. The `object` being tested should be
+
+When an
+  `object` can be changed in a test
+
+If one of
+  those objects is changed
+
+
+* **Make tests deterministic.** When a test fails intermittently, it is
+  hard to tell when it has been fixed.
+
+* **Turn bugs into test cases.**
+
+
+
+* **Use test-driven development.**
+
+* **Write tests that isolate bugs.**
+
+* **Avoid testing implementation details.** Testing implementation
+  details and private functions can
+
+
+* Each function and method should have unit tests that check that it
+  returns the expected results, issues the appropriate warnings, and
+  raises the appropriate exceptions.
+
+* Each unit test should test *one unit of behavior*, *quickly*, and
+  *in isolation from other tests*.
+
+
+
+.. add citation for above from the audiobook that I don't feel like
+   looking up again
+
+* Bugs should be turned into test cases.
+
+* Tests are run frequently during code development, and slow tests may
+  interrupt the flow of a contributor.  Tests should be minimal,
+  sufficient enough to be complete, efficient.
+
+
+* Write test code with the same quality as production code. Well-written
+  tests are easier to modify when the tested behavior changes. Poorly
+  written tests are difficult to change and slow down future development.
+
+
+* **Separate code that is hard to test from code that is easy to test.**
+
+It is not uncommon to find situations where the software
+
+.. tip::
+
+   At times, some of these suggestions will contradict each other.
+
+If we
+   test implementation details then we
+
+
+.. The following hint would be worth putting somewhere, at least after
+   Python 3.10 is released, but maybe not here.
+
+.. .. hint::
+   Running tests in Python ≥3.10 will provide improved error messages
+   compared to Python ≤3.9.
+
 
 .. Footnotes
    =========
