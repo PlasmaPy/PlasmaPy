@@ -5,7 +5,6 @@ from plasmapy.particles import Particle
 from astropy.constants.si import m_p, m_e
 import astropy.units as units
 from inspect import signature, trace
-import traceback
 
 
 values_container = dict()
@@ -166,12 +165,7 @@ class FunctionInfo:
         with self.output_widget:
             try:
                 self.output_widget.layout.border="0px"
-                print("Front")
-                for line in traceback.format_stack():
-                    print(line.strip())
-                # print(traceback.format_stack())
                 print(" : "+str(self.fattr(**args_dict)))
-                print("back")
 
             except Exception as e:
                 self.output_widget.layout.border="1px solid red"
