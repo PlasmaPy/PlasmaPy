@@ -79,6 +79,7 @@ def create_interactive_layout():
             grid[i,j] = cell
     
     grid[-1,0] = calculate_button
+    grid[-1,1] = clear_button
     return grid
 
 def create_output_layout():

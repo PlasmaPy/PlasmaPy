@@ -190,8 +190,17 @@ def handle_button_click(event):
     print("clicked")
     for fn in process_queue:
         fn.process()
+
+def handle_clear_click(event):
+    for key in values_container:
+        values_container[key] = None
+    for fn in process_queue:
+        fn.output_widget.clear_output()
 calculate_button = widgets.Button(description="Calculate Properties",button_style="info")
 calculate_button.on_click(handle_button_click)
+
+clear_button = widgets.Button(description="Clear Values",button_style="danger")
+clear_button.on_click(handle_clear_click)
 
 def create_widget(widget_type,**kwargs):
     unit = None
