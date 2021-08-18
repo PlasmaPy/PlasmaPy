@@ -150,28 +150,49 @@ If multiple tests fail, investigate these tests first.
 Using pytest
 ------------
 
-To install the packages necessary to run tests and develop PlasmaPy on
-your local computer, run:
+To install the packages necessary to run tests on your local computer,
+run:
 
 .. code-block:: shell
 
    pip install -r requirements.txt
 
-To run PlasmaPy's test suite from the command line with pytest_, go to
-the top-level directory of your clone of PlasmaPy and run:
+To run PlasmaPy's tests from the command line, go to a directory within
+PlasmaPy's repository and run:
 
 .. code-block:: shell
 
    pytest
 
-This command will run all of the tests that pytest_ finds within your directory and
+This command will run all of the tests found within your current
+directory and all of its subdirectories. Because it takes time to run
+PlasmaPy's tests, it is usually most convenient to specify that only a
+subset of the tests be run. To run the tests contained within a
+particular file or directory, include its name after ``pytest``. The
+tests in :file:`test_atomic.py` can be run with:
 
+.. code-block:: shell
 
+   pytest test_atomic.py
 
-Some tests in the test suite can take a long time to run, which can
-slow down development. These tests can be identified with the pytest annotation
-``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
-To exclusively test the slow tests, execute ``pytest -m slow``.
+The documentation for pytest_ describes `how to invoke pytest`_ and
+specify which tests should or should not be run.
+
+.. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
+
+Some tests in the test suite can take a long time to run, which can slow
+down development of new features. These tests are decorated with
+`pytest.mark.slow`. To skip the slow tests, run:
+
+.. code-block:: shell
+
+   pytest -m 'not slow'
+
+To exclusively run the slow tests, run:
+
+.. code-block:: shell
+
+   pytest -m slow
 
 Using tox
 ---------
@@ -406,18 +427,13 @@ maintainable, and robust tests.
 
 * Decorate slow tests with `pytest.mark.slow`.
 
-  .. code-block:: Python
+  .. code-block:: python
+
      import pytest
 
      @pytest.mark.slow
      def test_calculating_primes():
         calculate_all_primes()
-
-  Slow tests can be skipped with pytest_ by running
-
-  .. code-block:: shell
-
-     ADD CODE BLOCK HERE
 
 * Write test code with the same quality as production code. Well-written
   tests are easier to modify when the tested behavior changes. Poorly
