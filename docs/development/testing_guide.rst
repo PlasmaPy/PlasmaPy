@@ -16,9 +16,6 @@ Software tests help us to:
 * Enable us to change code with confidence that we are not unknowingly
   introducing bugs elsewhere in our program.
 
-.. Writing tests requires additional effort in the short term, but saves
-   considerable time in the long term.
-
 .. hint::
 
    Writing tests takes time, but debugging takes more time.
@@ -42,6 +39,27 @@ docstring.
 Running tests
 =============
 
+PlasmaPy's tests can be run in the following ways:
+
+1. Creating and updating a pull request on GitHub_.
+2. Running pytest_ from the command line.
+3. Running tox_ from the command line.
+4. Running tests from an `integrated development environment` (IDE).
+
+We recommend that new contributors perform the tests via a pull request
+on GitHub_. Creating a draft pull request and keeping it updated will
+ensure that the necessary checks are run frequently. This approach is
+also appropriate for pull requests with a limited scope. This advantage
+of this approach is that the tests are run automatically and do not
+require any extra work. The disadvantages are that running the tests on
+GitHub_ is often slow and that navigating the test results is sometimes
+difficult.
+
+We recommend that experienced contributors run tests either by using
+pytest_ from the command line or by using your preferred IDE.
+Using tox_ is an alternative to pytest_, but running tests with tox_ is
+typically slower than running tests with pytest_.
+
 Using GitHub
 ------------
 
@@ -49,7 +67,7 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub.
+are pushed to the development branch on GitHub_.
 
 The following checks are performed with each pull request. The results
 of the checks are found near the end of the *Conversation* tab in each
@@ -70,7 +88,7 @@ If multiple tests fail, investigate these tests first.
 
 * Checks with labels like **CI / Python 3.9 with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
-  currently being developed on GitHub. Occasionally these tests will
+  currently being developed on GitHub_. Occasionally these tests will
   fail for reasons not associated with a particular pull request.
 
 * The **CI / Documentation (pull request)** check verifies that
@@ -115,42 +133,39 @@ If multiple tests fail, investigate these tests first.
      syntax errors. This approach is much more efficient than making the
      style fixes manually. Remember to ``git pull`` afterwards!
 
+* The **CI / Packaging (pull request)** check verifies that no errors
+  arise that would prevent an official release of PlasmaPy from being
+  made.
+
 * The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate GitHub labels to pull requests.
+  applies appropriate GitHub_ labels to pull requests.
 
 .. attention::
 
-   PlasmaPy's continuous integration checks change frequently. If you
-   notice that this documentation has become out-of-date, please
-   `submit an issue that this section needs updating
+   The continuous integration checks performed for pull requests change
+   frequently. If you notice that the above list has become out-of-date,
+   please `submit an issue that this section needs updating
    <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
 
 Using pytest
 ------------
 
-Using tox
----------
+To install the packages necessary to run tests and develop PlasmaPy on
+your local computer, run:
 
-However, tests run by tox_ take longer
+.. code-block:: shell
 
-..  The recommended method for running the test suite locally on your
-  computer is running
-  .. code-block:: shell
-  python setup.py test
-  in the repository's root directory.  This command will run all of the
-tests and verify that examples in docstrings produce the expected
-output.  This command (which was enabled by `integrating pytest with
-setuptools
-<https://docs.pytest.org/en/latest/goodpractices.html#integrating-with-setuptools-python-setup-py-test-pytest-runner>`_)
-ensures that the package is set up. These tests should be run in a Python
-environment in which PlasmaPy has not already been installed.
-Command line options for pytest may be passed using the ``-a`` flag.
-For example, if you want to stop pytest after two test failures, return
-short traceback reports, and run tests only if the test path contains
-``plasma`` and not ``blob``, then run
- .. code-block:: shell
-  python setup.py test -a "--maxfail=2 --tb=short -k 'plasma and not blob'"
-One may also run ``pytest`` from the command line.
+   pip install -r requirements.txt
+
+To run PlasmaPy's test suite from the command line with pytest_, go to
+the top-level directory of your clone of PlasmaPy and run:
+
+.. code-block:: shell
+
+   pytest
+
+This command will run all of the tests that pytest_ finds within your directory and
+
 
 
 Some tests in the test suite can take a long time to run, which can
@@ -158,9 +173,49 @@ slow down development. These tests can be identified with the pytest annotation
 ``@pytest.mark.slow``. To skip these tests, execute ``pytest -m 'not slow'``.
 To exclusively test the slow tests, execute ``pytest -m slow``.
 
+Using tox
+---------
 
-Writing a software test
-=======================
+PlasmaPy's continuous integration tests on GitHub_ are typically run
+using tox_, a tool for automating Python testing. Using tox_ simplifies
+testing PlasmaPy with different releases of Python, with different
+versions of PlasmaPy's dependencies, and on different operating systems.
+While testing with tox_ is more robust than testing with pytest_, using
+tox_ to run tests is typically slower because tox_ creates its own
+virtual environments.
+
+The `tox environments`_ are found in :file:`tox.ini` in the
+top-level directory of PlasmaPy's repository. To find a list of
+the environments defined in :file:`tox.ini`, run:
+
+.. code-block:: shell
+
+   tox -a
+
+The ``py39`` testing environment, for example, can be run with:
+
+.. code-block:: shell
+
+   tox -e py39
+
+These commands can be run in any directory within PlasmaPy's repository
+with the same effect.
+
+Environments with names like ``py38``, ``py39``, and ``py310`` are
+interpreted to mean that the tests should be performed with Python 3.8,
+3.9, or 3.10, respectively. Running these tests requires that the
+appropriate version of Python has been installed and can be found by
+tox_.
+
+Using an IDE
+------------
+
+Most `integrated development environments`_ (IDEs) have built-in tools
+that simplify running tests. Setting up testing configurations within an
+IDE generally saves considerable time
+
+Testing techniques
+==================
 
 Assertions
 ----------
@@ -340,25 +395,34 @@ maintainable, and robust tests.
 * Each unit test should test *one unit of behavior*, *quickly*, and
   *in isolation from other tests*.
 
+.. add citation for above from the audiobook that I don't feel like
+   looking up again
+
 * Bugs should be turned into test cases.
 
 * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
-  sufficient enough to be complete, and as efficient as possible.
+  sufficient enough to be complete, efficient.
 
-* Slow tests can be decorated with `pytest.mark.slow` when they cannot
-  be made more efficient.
+* Decorate slow tests with `pytest.mark.slow`.
+
+  .. code-block:: Python
+     import pytest
+
+     @pytest.mark.slow
+     def test_calculating_primes():
+        calculate_all_primes()
+
+  Slow tests can be skipped with pytest_ by running
+
+  .. code-block:: shell
+
+     ADD CODE BLOCK HERE
 
 * Write test code with the same quality as production code. Well-written
-  tests are easier to modify when the tested behavior changes, while
-  poorly written tests can
+  tests are easier to modify when the tested behavior changes. Poorly
+  written tests are difficult to change and slow down future development.
 
-.. tip::
-
-   Well-written tests are easier to understand and modify when the
-   behavior of a function changes. Similarly, poorly written tests
-   can become change preventers. Test code should therefore written
-   with the same quality as production code.
 
 .. The following hint would be worth putting somewhere, at least after
    Python 3.10 is released, but maybe not here.
@@ -403,12 +467,12 @@ set up with parametrization as described above.
    and/or more references for pytest fixtures when we use them more
    frequently.
 
-.. _testing-guidelines-coverage:
+.. .. _testing-guidelines-coverage:
 
-Code Coverage
-=============
+.. Code Coverage
+.. =============
 
-PlasmaPy uses `Codecov`_ to show what lines of code
+.. PlasmaPy uses `Codecov`_ to show what lines of code
 are covered by the test suite and which lines are not.  At the end of
 every testing session, information on which lines were
 executed is sent to Codecov.  Codecov comments on the pull request on
@@ -511,12 +575,11 @@ should always be ignored in coverage tests.
    the bug and watch the failing test turn green.
 
 
-.. _black: https://black.readthedocs.io
 .. _Codecov: https://about.codecov.io/
 .. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
-.. _`GitHub Actions`: https://docs.github.com/en/actions
-.. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/PlasmaPy
+.. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _pytest: https://docs.pytest.org/
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
+.. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
