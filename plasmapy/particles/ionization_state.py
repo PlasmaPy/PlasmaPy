@@ -729,12 +729,12 @@ class IonizationState:
     @property
     def ionic_symbols(self) -> List[str]:
         """The ionic symbols for all charge states."""
-        return self.ions.symbols
+        return self.to_list().symbols
 
     @property
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
-        return self.ions.charge_number
+        return self.to_list().charge_number
 
     @property
     @deprecated(
