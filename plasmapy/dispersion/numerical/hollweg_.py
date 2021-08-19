@@ -1,3 +1,8 @@
+"""
+This module contains functionality for calculating various numerical
+solutions to the hollweg dispersion relation
+"""
+
 import astropy.units as u
 import numpy as np
 import warnings
