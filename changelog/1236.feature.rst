@@ -1,0 +1,3 @@
+Added a function plasmapy.thomson.Maxwellian_scattered_power which computes the Thomson-scattered power spectrum (to a constant factor) to first order in beta.
+Renamed plasmapy.thomson.spectral_density to plasmapy.thomson.Maxwellian_spectral_density.
+Changed references to above function to account for name change.
