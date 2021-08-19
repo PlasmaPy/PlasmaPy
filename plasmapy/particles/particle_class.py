@@ -604,13 +604,8 @@ class Particle(AbstractPhysicalParticle):
 
         This method will return `True` if ``other`` is an identical
         |Particle| instance or a `str` representing the same particle,
-        and return `False` if ``other`` is a different |Particle| or a
-        `str` representing a different particle.
-
-        If ``other`` is not a `str` or |Particle| instance, then this
-        method will raise a `TypeError`.  If ``other.symbol`` equals
-        ``self.symbol`` but the attributes differ, then this method
-        will raise a `~plasmapy.particles.exceptions.ParticleError`.
+        and return `False` if ``other`` is a different |Particle|, a
+        `str` representing a different particle or another type.
 
         Examples
         --------
@@ -625,15 +620,11 @@ class Particle(AbstractPhysicalParticle):
             try:
                 other_particle = Particle(other)
                 return self.symbol == other_particle.symbol
-            except InvalidParticleError as exc:
-                raise InvalidParticleError(
-                    f"{other} is not a particle and cannot be compared to {self}."
-                ) from exc
+            except InvalidParticleError:
+                return False
 
         if not isinstance(other, self.__class__):
-            raise TypeError(
-                f"The equality of a Particle object with a {type(other)} is undefined."
-            )
+            return False
 
         no_symbol_attr = "symbol" not in dir(self) or "symbol" not in dir(other)
         no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(
@@ -641,7 +632,7 @@ class Particle(AbstractPhysicalParticle):
         )
 
         if no_symbol_attr or no_attributes_attr:  # coverage: ignore
-            raise TypeError(f"The equality of {self} with {other} is undefined.")
+            return False
 
         same_particle = self.symbol == other.symbol
 
