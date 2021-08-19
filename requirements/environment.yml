@@ -18,7 +18,6 @@ dependencies:
   - xarray
   - numba
   - pip:
-    - numba-scipy
     - hypothesis
     - docutils < 0.17
     - numpydoc

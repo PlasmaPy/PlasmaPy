@@ -68,7 +68,7 @@ code contributions. Do note that you can usually find help in the
 chatroom <https://app.element.io/#/room/#plasmapy:matrix.org>`_.
 
 For actual guidelines for working on PlasmaPy, please see our
-:ref:`plasmapy-development-guide`.
+:ref:`plasmapy-contributor-guide`.
 
 Towncrier changelog entries
 ---------------------------

@@ -60,26 +60,37 @@
 .. Astropy replacements
 .. --------------------
 
-.. |PhysicalType| replace:: :class:`~astropy.units.PhysicalType`
 .. |Quantity| replace:: :class:`~astropy.units.Quantity`
 .. |Time| replace:: :class:`~astropy.time.Time`
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
-.. -----------------
-.. Links to Packages
-.. -----------------
+.. --------
+.. Websites
+.. --------
 
 .. _Astropy: https://www.astropy.org/
 .. _`Astropy docs`: https://docs.astropy.org/
+.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/docs/
 .. _git: https://git-scm.com/
+.. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+.. _Jupyter: https://jupyter.org/
+.. _Markdown: https://www.markdownguide.org/
 .. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
-.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html
+.. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _pip: https://pip.pypa.io
+.. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
+.. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
+.. _`Python's documentation`: https://docs.python.org/
+.. _`Read the Docs`: https://readthedocs.org/
+.. _reST: https://docutils.sourceforge.io/rst.html
 .. _SciPy: https://www.scipy.org/
+.. _Sphinx: https://www.sphinx-doc.org/
+.. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
+.. _tox: https://tox.readthedocs.io/
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Zenodo: https://zenodo.org
