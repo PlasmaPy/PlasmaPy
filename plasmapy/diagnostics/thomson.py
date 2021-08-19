@@ -463,4 +463,4 @@ def Maxwellian_scattered_power(
         scatter_vec=scatter_vec,
     )
 
-    return (1 - 2 * w / w_l) * Skw
+    return (1 - 2 * w / wl) * Skw
