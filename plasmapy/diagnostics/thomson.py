@@ -3,9 +3,7 @@ Defines the Thomson scattering analysis module as
 part of the diagnostics package.
 """
 
-__all__ = [
-    "spectral_density",
-]
+__all__ = ["Maxwellian_spectral_density", "Maxwellian_scattered_power"]
 
 import astropy.constants as const
 import astropy.units as u
