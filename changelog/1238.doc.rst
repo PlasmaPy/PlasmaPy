@@ -1,0 +1,1 @@
+Fixed broken reST links in docstrings for aliases in `plasmapy.formulary`.
