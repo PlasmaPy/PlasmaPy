@@ -1,1 +1,1 @@
-Remove nmba-scipy from dependencies.
+Revert most of #1084 and #1125.
