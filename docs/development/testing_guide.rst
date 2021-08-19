@@ -57,8 +57,9 @@ difficult.
 
 We recommend that experienced contributors run tests either by using
 pytest_ from the command line or by using your preferred IDE.
-Using tox_ is an alternative to pytest_, but running tests with tox_ is
-typically slower than running tests with pytest_.
+Using tox_ is an alternative to pytest_, but running tests with tox_ adds
+the overhead of creating an isolated environment for your test and can
+thus be slower.
 
 Using GitHub
 ------------
@@ -75,6 +76,14 @@ pull request. Most of these checks have been automated using `GitHub
 Actions`_. Checks that pass are marked with ✔️, while tests that fail
 are marked with ❌. Click on *Details* for information about why a
 particular check failed.
+
+.. note::
+
+   For first-time contributors, existing maintainers may need to manually
+   enable your GitHub Action test runs. This is, believe it or not,
+   indirectly caused by the invention of cryptocurrencies. Read more about this at
+   https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks
+  
 
 * Checks with labels like **CI / Python 3.9 (pull request)** verify that
   PlasmaPy works with different versions of Python and other
