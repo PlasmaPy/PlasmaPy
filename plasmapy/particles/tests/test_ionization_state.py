@@ -409,7 +409,7 @@ class Test_IonizationState:
 
         charge_numbers = np.arange(instance.atomic_number + 1)
         symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
-        particles = instance.ions
+        particles = instance.to_list()
 
         errors = []
 
