@@ -1,4 +1,4 @@
 The behaviour of the function `~plasmapy.formulary.parameters.gyroradius` has
-been changed. If `~numpy.nan` values are provided for ``T_i`` or ``Vperp``,
-then instead of raising a slightly misleading error, `~numpy.nan` in the
+been changed. If `numpy.nan` values are provided for ``T_i`` or ``Vperp``,
+then instead of raising a slightly misleading error, `numpy.nan` in the
 appropriate units is returned.
