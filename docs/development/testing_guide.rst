@@ -550,9 +550,9 @@ The following list contains suggestions for testing scientific software.
 
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
-  problem is related to that section of code. If we edit 97 sections of
-  code before running tests, then we will have a much harder time
-  isolating the problematic section of code.
+  problem is related to that section of code. If we edit a hundred
+  sections of code before in between tests, then we will have a much
+  harder time isolating the problematic section of code.
 
 * **Write code that is easy to test.** It is easier to test short
   functions that do one thing than long functions that do many things.
@@ -624,9 +624,8 @@ If one of
 .. add citation for above from the audiobook that I don't feel like
    looking up again
 
-* Bugs should be turned into test cases.
 
-* Tests are run frequently during code development, and slow tests may
+.. d * Tests are run frequently during code development, and slow tests may
   interrupt the flow of a contributor.  Tests should be minimal,
   sufficient enough to be complete, efficient.
 
@@ -638,7 +637,6 @@ If one of
 
 * **Separate code that is hard to test from code that is easy to test.**
 
-It is not uncommon to find situations where the software
 
 .. tip::
 
