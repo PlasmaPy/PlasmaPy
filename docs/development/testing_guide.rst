@@ -83,7 +83,7 @@ particular check failed.
    enable your GitHub Action test runs. This is, believe it or not,
    indirectly caused by the invention of cryptocurrencies. Read more about this at
    https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks
-  
+
 
 * Checks with labels like **CI / Python 3.9 (pull request)** verify that
   PlasmaPy works with different versions of Python and other
@@ -458,9 +458,6 @@ set up with parametrization as described above.
    frequently.
 
 .. .. _testing-guidelines-coverage:
-
-.. Code Coverage
-.. =============
 
 .. PlasmaPy uses `Codecov`_ to show what lines of code
 are covered by the test suite and which lines are not.  At the end of

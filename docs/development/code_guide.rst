@@ -37,11 +37,9 @@ Our pre-commit suite can be found in `.pre-commit-config.yaml
 <https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
 It includes
 
-* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package
-* `isort <https://pycqa.github.io/isort/>`_ to
-  automatically sort imports.
+* black_ to automatically format code and ensure a consistent code style
+  throughout the package
+* isort_ to automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
   to example notebooks as well.
 * a few tools for `requirements.txt`, `.yml` files and the like.
