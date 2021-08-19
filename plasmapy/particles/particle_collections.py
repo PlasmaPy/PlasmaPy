@@ -314,10 +314,12 @@ class ParticleList(collections.UserList):
         Parameters
         ----------
         abundances : array-like, optional
-            The relative abundances of the particles in the |ParticleList|. Must
-            have the same number of elements as the |ParticleList|. This
-            parameter gets passed to `numpy.average` via that function's
-            ``weights`` parameter.
+            Real numbers representing relative abundances of the particles in
+            the |ParticleList|. Must have the same number of elements as the
+            |ParticleList|. This parameter gets passed to `numpy.average` via
+            that function's ``weights`` parameter. If not provided, the
+            particles contained in the |ParticleList| are assumed to be
+            equally abundant.
 
         use_rms_charge : `bool`, optional, keyword-only
             If `True`, use the root mean square charge instead of the mean
