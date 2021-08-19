@@ -306,9 +306,9 @@ class ParticleList(collections.UserList):
 
         By default, the mean will be used as the average. If the ``abundances``
         are provided, then this method will return the weighted mean. If
-        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then return the root
-        mean square of the charge or mass, respectively. If all items in the
-        |ParticleList| are the same, then return that item.
+        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this method will
+        return the root mean square of the charge or mass, respectively. If all
+        items in the |ParticleList| are the same, then return that item.
 
         Parameters
         ----------
