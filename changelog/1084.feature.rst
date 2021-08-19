@@ -1,2 +1,3 @@
-Added `~plasmapy.formulary.mathematics.Chandrasekhar_G` function, which is
-helpful in neoclassical transport theory.
+Added the ``plasmapy.formulary.mathematics.Chandrasekhar_G`` function, which is
+helpful in neoclassical transport theory. This change was
+reverted in `#1233 <https://github.com/plasmapy/plasmapy/pull/1233>`__.
