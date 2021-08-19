@@ -389,6 +389,7 @@ particle_multiplicities = [
     {CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {"p+": 5, CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
     {CustomParticle(): 1},
+    {"p+": 2, "p+": 1},
 ]
 
 
