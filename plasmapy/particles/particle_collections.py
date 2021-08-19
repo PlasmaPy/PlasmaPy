@@ -308,13 +308,16 @@ class ParticleList(collections.UserList):
         are provided, then this method will return the weighted mean. If
         ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this method will
         return the root mean square of the charge or mass, respectively. If all
-        items in the |ParticleList| are the same, then return that item.
+        items in the |ParticleList| are the same, then this method will return
+        that item.
 
         Parameters
         ----------
         abundances : array-like, optional
             The relative abundances of the particles in the |ParticleList|. Must
-            have the same number of elements as the |ParticleList|.
+            have the same number of elements as the |ParticleList|. This
+            parameter gets passed to `numpy.average` via that function's
+            ``weights`` parameter.
 
         use_rms_charge : `bool`, optional, keyword-only
             If `True`, use the root mean square charge instead of the mean
