@@ -238,7 +238,7 @@ def cold_plasma_function_solver(
 
     eq = A*((ck[0]/w)**4) - B*((ck[0]/w)**2) + C
     print(eq)
-    sol = solve(test, w)
+    sol = solve(eq, w)
     omegas = sol.sort()
     
     for i in range(len(omegas)):
