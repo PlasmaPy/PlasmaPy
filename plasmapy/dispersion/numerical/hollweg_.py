@@ -112,12 +112,18 @@ def hollweg(
     Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
 
     .. math::
-        \left(\frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
-        \left[\omega^2\left(\omega^2 - k^2 v_{\rm A}^2\right) - &
-        \beta k^2 v_{\rm A}^2 \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right) &
-        \right]\\ = \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2 &
-        \left(\frac{c_{\rm s}^2}{\omega_{\rm ci}^2} - \frac{c^2}{\omega_{\rm pe}^2} &
-        \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}\right)
+        \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
+        \left[
+            \omega^2 \left( \omega^2 - k^2 v_{\rm A}^2 \right)
+            - \beta k^2 v_{\rm A}^2 \left(
+                \omega^2 - k_{\rm z}^2 v_{\rm A}^2
+            \right)
+        \right] \\
+        &= \omega^2 \left(\omega^2 - k^2 v_{\rm A}^2 \right) k_{\rm x}^2
+        \left(
+            \frac{c_{\rm s}^2}{\omega_{\rm ci}^2}
+            - \frac{c^2}{\omega_{\rm pe}^2} \frac{\omega^2}{k_{\rm z}^2v_{\rm A}^2}
+        \right)
 
     where
 
