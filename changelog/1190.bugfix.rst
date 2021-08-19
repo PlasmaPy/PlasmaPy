@@ -1,2 +1,2 @@
-Fixed normalization of wavevector in thomson spectral density function,
-:func:`~plasmapy.diagnostics.thomson.spectral_density`.
+Fixed the normalization of the wavevector in the Thomson spectral density function,
+`~plasmapy.diagnostics.thomson.spectral_density`.

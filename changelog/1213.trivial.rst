@@ -1,2 +1,2 @@
-Make queries to `plasmapy.online_help` for "quantity" or "quantities" redirect to the
-help page for `astropy.units` (which was already the case for "unit" and "units").
+Make queries to `plasmapy.online_help` for ``"quantity"`` or ``"quantities"`` redirect to the
+help page for `astropy.units` (which was already the case for ``"unit"`` and ``"units"``).
