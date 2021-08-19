@@ -23,7 +23,7 @@ PlasmaPy requires the following packages for installation:
 - `Astropy`_ — 4.0 or newer
 - `pandas <https://pandas.pydata.org/>`_ — 1.0 or newer
 - `xarray <http://xarray.pydata.org>`_ — above 0.14
-- `tqdm <https://tqdm.github.io/>`_ — 4.56 or newer
+- `tqdm <https://tqdm.github.io/>`_ — 4.41 or newer
 - `cached_property <https://pypi.org/project/cached-property/>`_ — 1.5.2 or newer
 
 PlasmaPy also depends on the following packages for optional features:
@@ -149,7 +149,6 @@ by running
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
 
-.. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
 .. _from PyPI: https://pypi.org/project/plasmapy/
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls

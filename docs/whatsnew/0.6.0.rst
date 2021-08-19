@@ -20,19 +20,19 @@ Where a * indicates their first contribution to PlasmaPy.
 Backwards Incompatible Changes
 ------------------------------
 
-- The ``State`` namedtuple was changed to the `~plasmapy.particles.IonicFraction`
+- The ``State`` namedtuple was changed to the ``plasmapy.particles.IonicFraction``
   class. (Note: #1046 subsequently changed that to
-  `~plasmapy.particles.IonicLevel`). (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
-- Now, when the `~plasmapy.particles.IonizationState` class is provided with an ion,
+  `~plasmapy.particles.ionization_state.IonicLevel`). (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
+- Now, when the `~plasmapy.particles.ionization_state.IonizationState` class is provided with an ion,
   the ionic fraction for that ion is set to 100% for the corresponding element or
   isotope. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
 - ``AtomicError`` was renamed to `~plasmapy.particles.exceptions.ParticleError`
   and ``MissingAtomicDataError`` was renamed to
   `~plasmapy.particles.exceptions.MissingParticleDataError`. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
 - In `plasmapy.particles`, the ``IonizationStates`` class was renamed to
-  `~plasmapy.particles.IonizationStateCollection`.  Argument ``n`` of
+  `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`.  Argument ``n`` of
   ``IonizationStates`` was changed to ``n0`` in
-  `~plasmapy.particles.IonizationStateCollection`. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
+  `~plasmapy.particles.ionization_state_collection.IonizationStateCollection`. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
 - Moved and refactored error message formatting functionality from
   ``plasmapy.utils.error_messages`` to `plasmapy.utils.code_repr`. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
 - Renamed the available "methods" for computing the Coulomb logarithm in an attempt
@@ -40,7 +40,7 @@ Backwards Incompatible Changes
   for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
   `~plasmapy.formulary.collisions.impact_parameter`, and then propogated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
-- Add dependency ``pandas >= 1.0.0``.  Modify `xarray` dependency to be
+- Add dependency ``pandas >= 1.0.0``.  Modify ``xarray`` dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - The `~plasmapy.plasma.grids.AbstractGrid` property
   `~plasmapy.plasma.grids.AbstractGrid.grid` is now dimensioned (has units) and
@@ -49,8 +49,8 @@ Backwards Incompatible Changes
   to ``is_uniform``. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
 - Drop Python 3.6 support. (`#987 <https://github.com/plasmapy/plasmapy/pull/987>`__)
 - The ``__getitem__`` method of `~plasmapy.plasma.grids.AbstractGrid` now returns
-  a `~astropy.units.Quantity` array instead of a reference to a `xarray.DataArray`. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
-- Renamed `IonicFraction` to `~plasmapy.particles.ionization_state.IonicLevel`.
+  a |Quantity| array instead of a reference to a ``xarray.DataArray``. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
+- Renamed ``IonicFraction`` to `~plasmapy.particles.ionization_state.IonicLevel`.
   This lays groundwork for future changes, where that class is going to become
   more than a fraction. (`#1046 <https://github.com/plasmapy/plasmapy/pull/1046>`__)
 
@@ -116,17 +116,17 @@ Features
   `~plasmapy.utils.decorators.checks.check_values`,
   `~plasmapy.utils.decorators.validators.ValidateQuantities`,
   `~plasmapy.utils.decorators.validators.validate_quantities`). (`#999 <https://github.com/plasmapy/plasmapy/pull/999>`__)
-- Both `plasmapy.particles.CustomParticle` and `plasmapy.particles.DimensionlessParticle`
+- Both `plasmapy.particles.particle_class.CustomParticle` and `plasmapy.particles.particle_class.DimensionlessParticle`
   now allow users to define a custom symbol via the ``symbol`` keyword argument, which
   can then be accessed by the ``symbol`` attribute in each of these classes. (`#1015 <https://github.com/plasmapy/plasmapy/pull/1015>`__)
 - The greater than (``>``) operator can now be used between
-  `~plasmapy.particles.Particle` and/or `~plasmapy.particles.ParticleList`
+  `~plasmapy.particles.particle_class.Particle` and/or `~plasmapy.particles.particle_collections.ParticleList`
   instances to get the nuclear reaction energy. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
-- Create `plasmapy.particles.ParticleList` as a list-like collection for
-  instances of `plasmapy.particles.Particle` and
-  `plasmapy.particles.CustomParticle`.  Adding `~plasmapy.particles.Particle`
-  and/or `~plasmapy.particles.CustomParticle` instances will now create a
-  `~plasmapy.particles.ParticleList`. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
+- Create `plasmapy.particles.particle_collections.ParticleList` as a list-like collection for
+  instances of `plasmapy.particles.particle_class.Particle` and
+  `plasmapy.particles.particle_class.CustomParticle`.  Adding `~plasmapy.particles.particle_class.Particle`
+  and/or `~plasmapy.particles.particle_class.CustomParticle` instances will now create a
+  `~plasmapy.particles.particle_collections.ParticleList`. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
 - Added method `~plasmapy.plasma.grids.AbstractGrid.require_quantities` to
   `~plasmapy.plasma.grids.AbstractGrid` that verifies a list of quantities is present
   on the grid.  Method is also incorported into
@@ -150,10 +150,10 @@ Bug Fixes
 - Bugfix :meth:`plasmapy.analysis.fit_functions.Linear.root_solve` to handle the case
   where the slope is zero and no finite roots exist. (`#959 <https://github.com/plasmapy/plasmapy/pull/959>`__)
 - Fixed a bug that prevented nested iterations of a single
-  `~plasmapy.particles.IonizationState` or
-  `~plasmapy.particles.IonizationStateCollection` instance. (`#1025 <https://github.com/plasmapy/plasmapy/pull/1025>`__)
-- Fixed a bug in `grids.py` for non-uniform grids that arose when `xarray` upgraded
-  to `v0.17.0` (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
+  `~plasmapy.particles.ionization_state.IonizationState` or
+  `~plasmapy.particles.ionization_state_collection.IonizationStateCollection` instance. (`#1025 <https://github.com/plasmapy/plasmapy/pull/1025>`__)
+- Fixed a bug in :file:`grids.py` for non-uniform grids that arose when ``xarray`` upgraded
+  to ``v0.17.0`` (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - In `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`,
   adaptive ``dt`` now calculates the cyclotron period using the provided particle
   charge and mass (previously assumed protons). (`#1035 <https://github.com/plasmapy/plasmapy/pull/1035>`__)
@@ -173,18 +173,18 @@ Improved Documentation
 - Added description to :func:`~plasmapy.formulary.parameters.Hall_parameter`
   signature and equation in docstrings. (`#934 <https://github.com/plasmapy/plasmapy/pull/934>`__)
 - Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages. (`#942 <https://github.com/plasmapy/plasmapy/pull/942>`__)
-- Improves documentation of `plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
+- Improves documentation of :file:`plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
 - Update all docstrings associated with computing the Coulomb logarithm and the
   possible methods of calculation. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
 - Add two Jupyter notebooks for functionality contained in `plasmapy.plasma.grids`:
-  `grids_cartesian.ipynb` and `grids_nonuniform.ipynb`. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
+  :file:`grids_cartesian.ipynb` and :file:`grids_nonuniform.ipynb`. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - Added the ExB drift notebook, which demonstrates the analytical solution for the
   drift and the implementation of the corresponding formulary drift functions,
   `~plasmapy.formulary.drifts.force_drift` and `~plasmapy.formulary.drifts.ExB_drift`. (`#971 <https://github.com/plasmapy/plasmapy/pull/971>`__)
 - Describe what constitutes a valid representation of a particle in the docstring
   for the `plasmapy.particles.particle_class.ParticleLike` typing construct. (`#985 <https://github.com/plasmapy/plasmapy/pull/985>`__)
-- Put the docstring for `plasmapy.particles.Particle.is_category` into
-  `numpydoc` format. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
+- Put the docstring for `plasmapy.particles.particle_class.Particle.is_category` into
+  ``numpydoc`` format. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
 - Adds formulas (which were missing) to the docstrings of
   `~plasmapy.formulary.dimensionless.quantum_theta` and
   `~plasmapy.formulary.dimensionless.beta`. (`#1041 <https://github.com/plasmapy/plasmapy/pull/1041>`__)
@@ -206,15 +206,15 @@ Improved Documentation
 Trivial/Internal Changes
 ------------------------
 
-- Removed `colorama` as a dependency. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
+- Removed ``colorama`` as a dependency. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
 - Moved remaining CI from CircleCI to GitHub Actions. (`#996 <https://github.com/plasmapy/plasmapy/pull/996>`__)
-- Add notebook CI through `nbqa`. (`#997 <https://github.com/plasmapy/plasmapy/pull/997>`__)
-- Remove `lambda` expressions from `plasmapy.particles` and `plasmapy.utils`. (`#1013 <https://github.com/plasmapy/plasmapy/pull/1013>`__)
+- Add notebook CI through ``nbqa``. (`#997 <https://github.com/plasmapy/plasmapy/pull/997>`__)
+- Remove ``lambda`` expressions from `plasmapy.particles` and `plasmapy.utils`. (`#1013 <https://github.com/plasmapy/plasmapy/pull/1013>`__)
 - Add unicode particle aliases for electrons (``"β-"``, ``"β⁻"``), muons
   (``"μ-"``, ``"μ⁻"``), anti-muons (``"μ+"``, ``"μ⁺"``), tau particles
   (``"τ"``, ``"τ-"``, ``"τ⁻"``), anti-tau particles (``"τ+"``, ``"τ⁺"``)
   electron neutrinos (``"ν_e"``), muon neutrinos (``"ν_μ"``), tau neutrinos
   (``"ν_τ"``), and alpha particles (``"α"``). (`#1036 <https://github.com/plasmapy/plasmapy/pull/1036>`__)
 - A set containing all valid particle categories may now be accessed via
-  `plasmapy.particles.Particle.is_category.valid_categories`. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
-- Properly handled warnings in `test_proton_radiography.py` (`#1050 <https://github.com/plasmapy/plasmapy/pull/1050>`__)
+  ``plasmapy.particles.particle_class.Particle.is_category.valid_categories``. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
+- Properly handled warnings in :file:`test_proton_radiography.py` (`#1050 <https://github.com/plasmapy/plasmapy/pull/1050>`__)
