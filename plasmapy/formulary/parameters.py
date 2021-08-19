@@ -198,7 +198,7 @@ def mass_density(
 
 
 rho_ = mass_density
-""" Alias to :func:`mass_density`. """
+"""Alias to `~plasmapy.formulary.parameters.mass_density`."""
 
 
 @check_relativistic
@@ -342,7 +342,7 @@ def Alfven_speed(
 
 
 va_ = Alfven_speed
-""" Alias to :func:`Alfven_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.Alfven_speed`."""
 
 
 @check_relativistic
@@ -530,7 +530,7 @@ def ion_sound_speed(
 
 
 cs_ = ion_sound_speed
-""" Alias to :func:`ion_sound_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.ion_sound_speed`."""
 
 
 # This dictionary defines coefficients for thermal speeds
@@ -683,7 +683,7 @@ def thermal_speed(
 
 
 vth_ = thermal_speed
-""" Alias to :func:`thermal_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.thermal_speed`."""
 
 
 @validate_quantities(
@@ -737,7 +737,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
 
 pth_ = thermal_pressure
-""" Alias to :func:`thermal_pressure`. """
+"""Alias to `~plasmapy.formulary.parameters.thermal_pressure`."""
 
 
 @check_relativistic
@@ -851,7 +851,7 @@ def kappa_thermal_speed(
 
 
 vth_kappa_ = kappa_thermal_speed
-""" Alias to :func:`kappa_thermal_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.kappa_thermal_speed`."""
 
 
 @validate_quantities(
@@ -970,7 +970,7 @@ def Hall_parameter(
 
 
 betaH_ = Hall_parameter
-""" Alias to :func:`Hall_parameter`. """
+"""Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
 
 
 @validate_quantities(
@@ -1085,10 +1085,10 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
 
 oc_ = gyrofrequency
-""" Alias to :func:`gyrofrequency`. """
+"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
 
 wc_ = gyrofrequency
-""" Alias to :func:`gyrofrequency`. """
+"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
 
 
 @validate_quantities(
@@ -1260,10 +1260,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-""" Alias to :func:`gyroradius`. """
+"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
 
 rhoc_ = gyroradius
-""" Alias to :func:`gyroradius`. """
+"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
 
 
 @validate_quantities(
@@ -1372,7 +1372,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
 
 wp_ = plasma_frequency
-""" Alias to :func:`plasma_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
 
 
 @validate_quantities(
@@ -1446,7 +1446,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-""" Alias to :func:`Debye_length`. """
+"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
 
 
 @validate_quantities(
@@ -1520,7 +1520,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
 
 nD_ = Debye_number
-""" Alias to :func:`Debye_number`. """
+"""Alias to `~plasmapy.formulary.parameters.Debye_number`."""
 
 
 @validate_quantities(
@@ -1594,9 +1594,9 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to :func:`inertial_length`.
+Alias to `~plasmapy.formulary.parameters.inertial_length`.
 
-* Name is shorthand for :math:`c / \\omega_p`.
+* Name is shorthand for :math:`c / ω_p`.
 """
 
 
@@ -1662,7 +1662,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
 
 pmag_ = magnetic_pressure
-""" Alias to :func:`magnetic_pressure`. """
+"""Alias to `~plasmapy.formulary.parameters.magnetic_pressure`."""
 
 
 @validate_quantities
@@ -1727,7 +1727,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
 
 ub_ = magnetic_energy_density
-""" Alias to :func:`magnetic_energy_density`. """
+"""Alias to `~plasmapy.formulary.parameters.magnetic_energy_density`."""
 
 
 @validate_quantities(
@@ -1811,7 +1811,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
 
 wuh_ = upper_hybrid_frequency
-""" Alias to :func:`upper_hybrid_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.upper_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -1914,7 +1914,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
 
 wlh_ = lower_hybrid_frequency
-""" Alias to :func:`lower_hybrid_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.lower_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -1977,7 +1977,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     Returns
     -------
     D_B : `~astropy.units.Quantity`
-    The Bohm diffusion coefficient in meters squared per second.
+        The Bohm diffusion coefficient in meters squared per second.
 
     """
     D_B = k_B * T_e / (16 * e * B)
@@ -1985,4 +1985,4 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
 
 DB_ = Bohm_diffusion
-""" Alias to :func:`Bohm_diffusion`. """
+"""Alias to `~plasmapy.formulary.parameters.Bohm_diffusion`."""
