@@ -31,7 +31,7 @@ from plasmapy.utils.decorators import validate_quantities
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def spectral_density(
+def Maxwellian_spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
     n: u.m ** -3,
@@ -320,3 +320,149 @@ def spectral_density(
     Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
 
     return np.mean(alpha), Skw
+
+
+@validate_quantities(
+    wavelengths={"can_be_negative": False},
+    probe_wavelength={"can_be_negative": False},
+    n={"can_be_negative": False},
+    Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
+def Maxwellian_scattered_power(
+    wavelengths: u.nm,
+    probe_wavelength: u.nm,
+    n: u.m ** -3,
+    Te: u.K,
+    Ti: u.K,
+    efract: np.ndarray = None,
+    ifract: np.ndarray = None,
+    ion_species: Union[str, List[str], Particle, List[Particle]] = "H+",
+    electron_vel: u.m / u.s = None,
+    ion_vel: u.m / u.s = None,
+    probe_vec=np.array([1, 0, 0]),
+    scatter_vec=np.array([0, 1, 0]),
+) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
+    r"""
+    Calculate the integral normalized scattered power function for Thomson scattering of a
+    probe laser beam by a multi-species Maxwellian plasma, including relativistic corrections
+    to first order in beta. Note that the spectral density has no first order corrections.
+
+    .. math::
+        P(\omega_s) ~ \bigg(1 + \frac{2\omega}{\omega_i}\bigg)S(k,\omega)
+
+    where :math:`\omega_s` is the scattered frequency, :math:`\omega_i` is the
+    incident frequency, :math:`\omega = \omega_s - \omega_i` is their difference,
+    and :math:`S(k,\omega)` is the spectral density function as defined above in
+    Maxwellian_spectral_density. See `Sheffield`_ Eq. 5.1.1.
+
+
+    Parameters
+    ----------
+
+    wavelengths : `~astropy.units.Quantity`
+        Array of wavelengths over which the spectral density function
+        will be calculated. (convertible to nm)
+
+    probe_wavelength : `~astropy.units.Quantity`
+        Wavelength of the probe laser. (convertible to nm)
+
+    n : `~astropy.units.Quantity`
+        Mean (0th order) density of all plasma components combined.
+        (convertible to cm^-3.)
+
+    Te : `~astropy.units.Quantity`, shape (Ne, )
+        Temperature of each electron component. Shape (Ne, ) must be equal to the
+        number of electron components Ne. (in K or convertible to eV)
+
+    Ti : `~astropy.units.Quantity`, shape (Ni, )
+        Temperature of each ion component. Shape (Ni, ) must be equal to the
+        number of ion components Ni. (in K or convertible to eV)
+
+    efract : array_like, shape (Ne, ), optional
+        An array-like object where each element represents the fraction (or ratio)
+        of the electron component number density to the total electron number density.
+        Must sum to 1.0. Default is a single electron component.
+
+    ifract : array_like, shape (Ni, ), optional
+        An array-like object where each element represents the fraction (or ratio)
+        of the ion component number density to the total ion number density.
+        Must sum to 1.0. Default is a single ion species.
+
+    ion_species : str or `~plasmapy.particles.Particle`, shape (Ni, ), optional
+        A list or single instance of `~plasmapy.particles.Particle`, or strings
+        convertible to `~plasmapy.particles.Particle`. Default is `'H+'`
+        corresponding to a single species of hydrogen ions.
+
+    electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
+        Velocity of each electron component in the rest frame. (convertible to m/s)
+        Defaults to a stationary plasma [0, 0, 0] m/s.
+
+    ion_vel : `~astropy.units.Quantity`, shape (Ni, 3), optional
+        Velocity vectors for each electron population in the rest frame
+        (convertible to m/s) Defaults zero drift
+        for all specified ion species.
+
+    probe_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector in the direction of the probe laser. Defaults to
+        [1, 0, 0].
+
+    scatter_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector pointing from the scattering volume to the detector.
+        Defaults to [0, 1, 0] which, along with the default `probe_vec`,
+        corresponds to a 90 degree scattering angle geometry.
+
+    Returns
+    -------
+    alpha : float
+        Mean scattering parameter, where `alpha` > 1 corresponds to collective
+        scattering and `alpha` < 1 indicates non-collective scattering. The
+        scattering parameter is calculated based on the total plasma density n.
+
+    Skw : `~astropy.units.Quantity`
+        Computed spectral density function over the input `wavelengths` array
+        with units of s/rad.
+
+    Notes
+    -----
+
+    For details, see "Plasma Scattering of Electromagnetic Radiation" by
+    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version
+    of the program described therein.
+
+    For a concise summary of the relevant physics, see Chapter 5 of Derek
+    Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
+
+    .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
+    .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
+    .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
+    """
+
+    # Define some constants
+    C = const.c.si  # speed of light
+
+    # Convert wavelengths to angular frequencies (electromagnetic waves, so
+    # phase speed is c)
+    ws = (2 * np.pi * u.rad * C / wavelengths).to(u.rad / u.s)
+    wl = (2 * np.pi * u.rad * C / probe_wavelength).to(u.rad / u.s)
+
+    # Compute the frequency shift (required by energy conservation)
+    w = ws - wl
+
+    # Compute the spectral density
+    alpha, Skw = Maxwellian_spectral_density(
+        wavelengths=wavelengths,
+        probe_wavelength=probe_wavelength,
+        n=n,
+        Te=Te,
+        Ti=Ti,
+        efract=efract,
+        ifract=ifract,
+        ion_species=ion_species,
+        electron_vel=electron_vel,
+        ion_vel=ion_vel,
+        probe_vec=probe_vec,
+        scatter_vec=scatter_vec,
+    )
+
+    return (1 - 2 * w / w_l) * Skw
