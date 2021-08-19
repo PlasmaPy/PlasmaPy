@@ -31,7 +31,7 @@ def gen_collective_spectrum():
     Ti = np.array([10]) * u.eV
     ion_species = ["C-12 5+"]
 
-    alpha, Skw = thomson.spectral_density(
+    alpha, Skw = thomson.Maxwellian_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -65,7 +65,7 @@ def gen_multiple_ion_species_spectrum():
     # Use this to also test passing in ion species as Particle objects
     ion_species = [Particle("p+"), Particle("C-12 5+")]
 
-    alpha, Skw = thomson.spectral_density(
+    alpha, Skw = thomson.Maxwellian_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -96,7 +96,7 @@ def gen_non_collective_spectrum():
     Ti = np.array([10]) * u.eV
     ion_species = ["H+"]
 
-    alpha, Skw = thomson.spectral_density(
+    alpha, Skw = thomson.Maxwellian_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -125,7 +125,7 @@ def test_different_input_types():
 
     # Raise a ValueError with inconsistent ion array lengths
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
+        alpha, Skw = thomson.Maxwellian_spectral_density(
             wavelengths,
             probe_wavelength,
             n,
@@ -139,7 +139,7 @@ def test_different_input_types():
 
     # Raise a ValueError with inconsistent ion temperature array
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
+        alpha, Skw = thomson.Maxwellian_spectral_density(
             wavelengths,
             probe_wavelength,
             n,
@@ -153,7 +153,7 @@ def test_different_input_types():
 
     # Raise a ValueError with empty ion_species
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
+        alpha, Skw = thomson.Maxwellian_spectral_density(
             wavelengths,
             probe_wavelength,
             n,
@@ -168,7 +168,7 @@ def test_different_input_types():
     # Raise a Value Error with inconsistent electron array lengths
     # Te.size != efract.size
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
+        alpha, Skw = thomson.Maxwellian_spectral_density(
             wavelengths,
             probe_wavelength,
             n,
@@ -181,7 +181,7 @@ def test_different_input_types():
 
     # Electron vel shape not compatible with efract.size
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
+        alpha, Skw = thomson.Maxwellian_spectral_density(
             wavelengths,
             probe_wavelength,
             n,
@@ -294,7 +294,7 @@ def test_split_populations():
     ifract = np.array([1.0])
     efract = np.array([1.0])
 
-    alpha, Skw0 = thomson.spectral_density(
+    alpha, Skw0 = thomson.Maxwellian_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -315,7 +315,7 @@ def test_split_populations():
     ifract = np.array([0.2, 0.8])
     efract = np.array([0.8, 0.2])
 
-    alpha, Skw1 = thomson.spectral_density(
+    alpha, Skw1 = thomson.Maxwellian_spectral_density(
         wavelengths,
         probe_wavelength,
         n,
