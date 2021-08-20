@@ -17,6 +17,10 @@ Glossary
    charge number
       The charge of a particle in units of elementary charge.
 
+   integration test
+      A software test that verifies that multiple software components
+      are able to work together as intended.
+
    keyword-only
       An |argument| or |parameter| is *keyword-only* when the |argument|
       must be provided with the name of the corresponding |parameter|.
@@ -69,6 +73,10 @@ Glossary
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+   unit test
+      A software test that verifies a single unit of behavior, does it
+      quickly, and does it in isolation from other tests [].
 
 .. |argument| replace:: :term:`argument`
 .. |parameter| replace:: :term:`parameter`
