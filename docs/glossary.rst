@@ -18,9 +18,11 @@ Glossary
       The charge of a particle in units of elementary charge.
 
    keyword-only
-      An argument that must be provided along with the name of that
-      argument. If ``z`` is a keyword-only argument to ``f(z)``, then
-      it can be provided as ``f(z=2)`` but not ``f(2)``.
+      An |argument| or |parameter| is *keyword-only* when the |argument|
+      must be provided with the name of the corresponding |parameter|.
+
+      If ``z`` is a keyword-only |parameter| to ``f(z)``, then the
+      |argument| ``2`` can be provided as ``f(z=2)`` but not ``f(2)``.
 
    kwargs
       An abbreviation for `keyword arguments`_.
@@ -59,10 +61,13 @@ Glossary
 
    real number
       Any numeric type that represents a real number. This could include
-      a  `float`, `int`, a dimensionless |Quantity|, or any of the
+      a `float`, `int`, a dimensionless |Quantity|, or any of the
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+.. |argument| replace:: :term:`argument`
+.. |parameter| replace:: :term:`parameter`
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
