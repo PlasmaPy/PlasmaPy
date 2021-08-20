@@ -57,6 +57,10 @@ Glossary
       represented as ``"p+"``, ``"p"``, or ``"proton"``; and an electron
       can be represented by ``"e-"``, ``"e"``, or ``"electron"``.
 
+      |DimensionlessParticle| instances are not particle-like because,
+      without normalization information, they do not uniquely identify a
+      physical particle.
+
       For more complete details, refer to |ParticleLike|.
 
    real number
