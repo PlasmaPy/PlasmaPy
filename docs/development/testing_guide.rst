@@ -196,31 +196,39 @@ tests in :file:`test_atomic.py` can be run with:
 The documentation for pytest_ describes `how to invoke pytest`_ and
 specify which tests will or will not be run.
 
-Some tests in the test suite can take a long time to run, which can slow
-down development of new features. These tests are decorated with
-`pytest.mark.slow`. To skip the slow tests, run:
+* Use the ``--tb=short`` to shorten traceback reports, which is useful
+  when there are multiple related errors. Use ``--tb=long`` for
+  traceback reports with extra detail.
 
-.. code-block:: shell
+* Use the ``-x`` flag to stop the tests after the first failure. To stop
+  after :math:`n` failures, use ``--maxfail=n`` where ``n`` is replaced
+  with a positive integer.
 
-   pytest -m 'not slow'
+* Use the ``-m 'not slow'`` flag to skip running slow tests, which is
+  useful when the slow tests are unrelated to your changes. To
+  exclusively run slow tests, use ``-m slow``.
 
-To exclusively run the slow tests, run:
+* Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
+  failures.
 
-.. code-block:: shell
 
-   pytest -m slow
+* Use the ``--cov`` flag to generate a
+
+
+Generating coverage reports
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
-an HTML report, run:
+an HTML report, use the ``--cov`` flag for ``pytest``:
 
 .. code-block:: shell
 
    pytest --cov
    coverage html
 
-The coverage reports may be accessed by opening :file:`htmlcov/index.html`
-in your web browser.
+Open :file:`htmlcov/index.html` in your web browser to view the coverage
+reports.
 
 Using tox
 ---------
