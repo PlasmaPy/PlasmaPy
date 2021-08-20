@@ -130,12 +130,6 @@ particular check failed.
      Use test coverage reports to write tests that target untested
      sections of code and to find unreachable sections of code.
 
-  .. caution::
-
-     High test coverage does *not* imply that the tests are sufficient
-     or high quality. A test that makes no assertions has little value,
-     but could still have high test coverage.
-
 * PlasmaPy uses black_ to format code and isort_ to sort `import`
   statements. The **CI / Linters (pull request)** and
   **pre-commit.ci - pr** checks verify that the pull request meets these
@@ -481,66 +475,47 @@ would be unwieldy to set up using `pytest.mark.parametrize`.
 Code coverage
 -------------
 
-Code contributions to PlasmaPy are required to be well-tested. Tests
-must be provided in the original pull request because a test delayed is
-often a test not written.
+`Code coverage`_ is a metric "used to describe the degree to which the
+source code of a program is executed when a particular test suite runs."
+The most common code coverage metric is line coverage:
 
-Code coverage is a metric that helps us gauge how well-tested our source
-code is.  Coverage reports show which lines of code have been used in a test
-and which have not.
+.. math::
 
-add more here
+   \mathrm{line coverage} ≡
+   \frac{
+      \mathrm{number of lines accessed by tests}
+   }{
+      \mathrm{total number of lines}
+   }
 
-Code contributions to PlasmaPy are required to be well-tested. A good
-practice is for new code to have a test coverage percentage of at least
-about the current code coverage. Tests must be provided in the original
-pull request, because often a delayed test ends up being a test not
-written. There is no strict cutoff percentage for how high the code
-coverage must be in order to be acceptable, and it is not always
-necessary to cover every line of code. For example, it is often helpful
-for methods that raise a `NotImplementedError` to be marked as untested
-as a reminder of unfinished work.
+.. caution::
 
-Occasionally there will be some lines that do not require testing.
-For example, testing exception handling for an `ImportError` when
-importing an external package would usually be impractical. In these
-instances, we may end a line with ``# coverage: ignore`` to indicate
-that these lines should be excluded from coverage reports (or add a
-line to :file:`.coveragerc`). This strategy should be used sparingly, since
-it is often better to explicitly test exceptions and warnings and to
-show the lines of code that are not tested.
+   While a low value of line coverage indicates that the code is not
+   adequately tested, a high value does not necessarily indicate that
+   the testing is sufficient. A test that makes no assertions has little
+   value, but could still have high test coverage.
 
-Ignoring lines in coverage tests
---------------------------------
+Coverage reports show which lines of code have been used in a test and
+which have not. These reports show which lines of code remain to be
+tested, and sometimes indicate sections of code that are unreachable.
 
-Occasionally there will be lines of code that do not require tests. For
-example, it would be impractical to test that an `ImportError` is raised
-when running ``import plasmapy`` from Python 2.7.
+Occasionally there will be certain lines that should not be tested. For
+example, it would be impractical to create a new testing environment to
+check that an `ImportError` is raised when attempting to import a
+missing package. There are also situations that coverage tools are not
+yet able to handle correctly (such as for functions decorated with
+``@numba.vectorize``).  In these cases we may end a line with
+``# coverage: ignore`` to indicate that it should be excluded from
+coverage reports. Alternatively, we may add a line to ``exclude_lines``
+in the ``[coverage:report]`` section of :file:`setup.cfg` that includes
+a pattern that indicates that a line be excluded from coverage reports.
+In general, untested lines of code should remain marked as untested to
+give future developers a better idea of where tests should be added in
+the future and where potential bugs may exist.
 
-To ignore a line of code in coverage tests, append it with
-``# coverage: ignore``. If this comment is used on a line with a
-control flow structure (e.g., `if`, `for`, and `while`) that begins a
-block of code, then all lines in that block of code will be ignored. In
-the following example, lines 3 and 4 will be ignored in coverage tests.
-
-.. code-block:: python
-  :linenos:
-  :emphasize-lines: 3,4
-
-  try:
-      import numpy
-  except ModuleNotFoundError as exc:  # coverage: ignore
-      raise RuntimeError from exc
-
-The :file:`.coveragerc` file is used to specify lines of code and files that
-should always be ignored in coverage tests.
-
-.. note::
-
-  In general, untested lines of code should remain marked as untested to
-  give future developers a better idea of where tests should be added in
-  the future and where potential bugs may exist.
-
+Configurations for coverage tests are given in the ``[coverage:run]``
+and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
+configurations are given in :file:`.codecov.yaml`.
 
 Best practices
 ==============
@@ -559,9 +534,11 @@ The following list contains suggestions for testing scientific software.
   harder time isolating the problematic section of code.
 
 * **Write code that is easy to test.** It is easier to test short
-  functions that do one thing than long functions that do many things.
+  functions that do exactly one thing than long functions that do many
+  things.
 
-* **Write tests that are easy to change.**
+
+* **Write tests that are easy to understand and change.**
 
 
 
@@ -569,7 +546,7 @@ The following list contains suggestions for testing scientific software.
   immediate feedback. Tests that take a while to run limits our ability
   to focus.
 
-  * Decorate slow tests with `pytest.mark.slow`.
+  * Decorate tests slower than ∼0.1 s with `pytest.mark.slow`.
 
     .. code-block:: python
 
@@ -578,9 +555,6 @@ The following list contains suggestions for testing scientific software.
        @pytest.mark.slow
        def test_calculating_primes():
            calculate_all_primes()
-
-
-
 
 * **Test one unit of behavior per test.**
 
@@ -679,6 +653,7 @@ If we
 
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
+.. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
 .. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
