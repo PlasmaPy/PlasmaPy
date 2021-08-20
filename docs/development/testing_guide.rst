@@ -123,12 +123,8 @@ particular check failed.
   coverage reports that show which lines of code are run by the test
   suite and which are not. Codecov_ will automatically post its report
   as a comment to the pull request. The Codecov_ checks will be marked
-  as passing when the test coverage is satisfactorily high.
-
-  .. tip::
-
-     Use test coverage reports to write tests that target untested
-     sections of code and to find unreachable sections of code.
+  as passing when the test coverage is satisfactorily high. For more
+  information, see :ref:`code-coverage`.
 
 * PlasmaPy uses black_ to format code and isort_ to sort ``import``
   statements. The **CI / Linters (pull request)** and
@@ -453,6 +449,13 @@ Fixtures_ provide a way to set up well-defined states in order to have
 consistent tests. We recommend using fixtures for complex tests that
 would be unwieldy to set up using `pytest.mark.parametrize`.
 
+.. _code-coverage:
+
+Property-based testing
+----------------------
+
+
+
 Code coverage
 =============
 
@@ -472,6 +475,11 @@ suite runs." The most common code coverage metric is line coverage:
 Line coverage reports show which lines of code have been used in a test
 and which have not. These reports show which lines of code remain to be
 tested, and sometimes indicate sections of code that are unreachable.
+
+.. tip::
+
+   Use test coverage reports to write tests that target untested
+   sections of code and to find unreachable sections of code.
 
 .. caution::
 
@@ -523,10 +531,30 @@ Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
 configurations are given in :file:`.codecov.yaml`.
 
-Best practices
-==============
+Testing guidelines
+==================
 
-The following list contains suggestions for testing scientific software.
+The following list contains suggestions on how to write clean tests for
+scientific software. These guidelines are not rigid, and some of these
+guidelines even contradict other guidelines.
+
+These guidelines are not rigid, and should be
+treated as general principles that usually make tests more valuable and
+easier to maintain. In particular, some of these guidelines must be
+balanced against each other.
+
+Indeed, some of these guidelines must be balanced
+against other guidelines.
+
+should not be treated as rigid
+principles, but rather as general principles that usually make tests easier to run and
+maintain.
+
+These suggestions are not rigid, and it is not always possible
+(or even wise) to follow all of these guidelines simultaneously. Indeed,
+some of the guidelines must be balanced against other guidelines.
+
+
 
 .. need to balance these things against each other
 
@@ -536,31 +564,38 @@ The following list contains suggestions for testing scientific software.
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
   problem is related to that section of code. If we edit a hundred
-  sections of code before in between tests, then we will have a much
+  sections of code before running tests, then we will have a much
   harder time isolating the problematic section of code.
 
 * **Write code that is easy to test.** It is easier to test short
   functions that do exactly one thing than long functions that do many
-  things.
+  things. If code is difficult to test, then consider rewriting the
+
+* **Write tests that are easy to change.**
 
 
-* **Write tests that are easy to understand and change.**
+
+
+* **Avoid conditionals in tests.** Including an ``if`` blocks in a test
+  suggests that the
+
+  is
 
 
 
 * **Make tests fast.** Tests are most valuable when they provide
-  immediate feedback. Tests that take a while to run limits our ability
-  to focus.
+  immediate feedback. A test suite that takes a long time to run
+  increases the probability that we will get distracted from the task
+  at hand.
 
-  * Decorate tests slower than ∼0.1 s with `pytest.mark.slow`.
+  Some tests are unavoidably slow. Decorate such tests with
+  `pytest.mark.slow`.
 
-    .. code-block:: python
+  .. code-block:: python
 
-       import pytest
-
-       @pytest.mark.slow
-       def test_calculating_primes():
-           calculate_all_primes()
+     @pytest.mark.slow
+     def test_calculating_primes():
+         calculate_all_primes()
 
 * **Test one unit of behavior per test.**
 
@@ -570,9 +605,9 @@ The following list contains suggestions for testing scientific software.
 * **Make tests independent of each other.** Tests should be isolated
   from other tests and
 
-* **Avoid using the same mutable object in multiple tests.** Passing an
-  `object` that can be changed between multiple tests risks making tests
-  interdependent. The `object` being tested should be
+* **Avoid using the same mutable object in multiple tests.** Passing
+  an `object` that can be changed between multiple tests risks making
+  tests interdependent. The `object` being tested should be
 
 When an
   `object` can be changed in a test
@@ -666,6 +701,7 @@ If we
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
+.. _hypothesis: https://hypothesis.readthedocs.io/
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
