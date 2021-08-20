@@ -109,7 +109,7 @@ particular check failed.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
   how the documentation will appear if the pull request is merged.
-  Click on *Details* link to access this preview.
+  Click on *Details* to access this preview.
 
 * The check labeled **changelog: found** or **changelog: absent**
   indicates whether or not a changelog entry with the correct number
@@ -130,7 +130,7 @@ particular check failed.
      Use test coverage reports to write tests that target untested
      sections of code and to find unreachable sections of code.
 
-* PlasmaPy uses black_ to format code and isort_ to sort `import`
+* PlasmaPy uses black_ to format code and isort_ to sort ``import``
   statements. The **CI / Linters (pull request)** and
   **pre-commit.ci - pr** checks verify that the pull request meets these
   style requirements. These checks will fail when inconsistencies with
@@ -205,25 +205,6 @@ specify which tests will or will not be run.
 
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
-
-
-* Use the ``--cov`` flag to generate a
-
-
-Generating coverage reports
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Code coverage reports may be generated on your local computer to show
-which lines of code are covered by tests and which are not. To generate
-an HTML report, use the ``--cov`` flag for ``pytest``:
-
-.. code-block:: shell
-
-   pytest --cov
-   coverage html
-
-Open :file:`htmlcov/index.html` in your web browser to view the coverage
-reports.
 
 Using tox
 ---------
@@ -473,20 +454,24 @@ consistent tests. We recommend using fixtures for complex tests that
 would be unwieldy to set up using `pytest.mark.parametrize`.
 
 Code coverage
--------------
+=============
 
-`Code coverage`_ is a metric "used to describe the degree to which the
-source code of a program is executed when a particular test suite runs."
-The most common code coverage metric is line coverage:
+`Code coverage`_ refers to a metric "used to describe the degree to
+which the source code of a program is executed when a particular test
+suite runs." The most common code coverage metric is line coverage:
 
 .. math::
 
    \mathrm{line coverage} ≡
    \frac{
-      \mathrm{number of lines accessed by tests}
+      \mbox{number of lines accessed by tests}
    }{
-      \mathrm{total number of lines}
+      \mbox{total number of lines}
    }
+
+Line coverage reports show which lines of code have been used in a test
+and which have not. These reports show which lines of code remain to be
+tested, and sometimes indicate sections of code that are unreachable.
 
 .. caution::
 
@@ -495,23 +480,44 @@ The most common code coverage metric is line coverage:
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
 
-Coverage reports show which lines of code have been used in a test and
-which have not. These reports show which lines of code remain to be
-tested, and sometimes indicate sections of code that are unreachable.
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
+measure code coverage and Codecov_ to provide reports on GitHub.
+
+Generating coverage reports with pytest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Code coverage reports may be generated on your local computer to show
+which lines of code are covered by tests and which are not. To generate
+an HTML report, use the ``--cov`` flag for ``pytest``:
+
+.. code-block:: shell
+
+   pytest --cov
+   coverage html
+
+Open :file:`htmlcov/index.html` in your web browser to view the coverage
+reports.
+
+Excluding lines in coverage reports
+-----------------------------------
 
 Occasionally there will be certain lines that should not be tested. For
 example, it would be impractical to create a new testing environment to
 check that an `ImportError` is raised when attempting to import a
 missing package. There are also situations that coverage tools are not
-yet able to handle correctly (such as for functions decorated with
-``@numba.vectorize``).  In these cases we may end a line with
-``# coverage: ignore`` to indicate that it should be excluded from
-coverage reports. Alternatively, we may add a line to ``exclude_lines``
-in the ``[coverage:report]`` section of :file:`setup.cfg` that includes
+yet able to handle correctly.
+
+To exclude a line from a coverage report, end it with
+``# coverage: ignore``. Alternatively, we may add a line to
+``exclude_lines`` in the ``[coverage:report]`` section of
+:file:`setup.cfg` that consists of a
 a pattern that indicates that a line be excluded from coverage reports.
 In general, untested lines of code should remain marked as untested to
 give future developers a better idea of where tests should be added in
 the future and where potential bugs may exist.
+
+Coverage configurations
+-----------------------
 
 Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
@@ -654,6 +660,7 @@ If we
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
+.. _`coverage.py`: https://coverage.readthedocs.io/
 .. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
@@ -662,6 +669,7 @@ If we
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
+.. _`pytest-cov`: https://pytest-cov.readthedocs.io/
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
