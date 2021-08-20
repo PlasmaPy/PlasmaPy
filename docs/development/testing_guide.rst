@@ -44,7 +44,7 @@ PlasmaPy's tests can be run in the following ways:
 1. Creating and updating a pull request on GitHub_.
 2. Running pytest_ from the command line.
 3. Running tox_ from the command line.
-4. Running tests from an `integrated development environment` (IDE).
+4. Running tests from an `integrated development environment`_ (IDE).
 
 We recommend that new contributors perform the tests via a pull request
 on GitHub_. Creating a draft pull request and keeping it updated will
@@ -84,16 +84,18 @@ particular check failed.
    indirectly caused by the invention of cryptocurrencies. Read more about this at
    https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks
 
-
 * Checks with labels like **CI / Python 3.9 (pull request)** verify that
   PlasmaPy works with different versions of Python and other
-  dependencies, and on different operating systems.
+  dependencies, and on different operating systems. These tests are set
+  up using tox_ and run with pytest_ via `GitHub Actions`_. When
+  multiple tests fail, investigate these tests first.
 
-  * These tests are set up using tox_ and run with pytest_.
+  .. tip::
 
-  * When multiple checks fail, investigate these tests first.
-
-If multiple tests fail, investigate these tests first.
+    `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
+    `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
+    include (or will include) significant improvements to common error
+    messages.
 
 * Checks with labels like **CI / Python 3.9 with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
@@ -101,7 +103,7 @@ If multiple tests fail, investigate these tests first.
   fail for reasons not associated with a particular pull request.
 
 * The **CI / Documentation (pull request)** check verifies that
-  PlasmaPy's documentation is able to build correctly from the pull
+  `PlasmaPy's documentation`_ is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
@@ -117,14 +119,21 @@ If multiple tests fail, investigate these tests first.
     adding a changelog entry to a pull request.
 
 * The **codecov/patch** and **codecov/project** checks generate test
-  coverage reports which are displayed by Codecov_. These reports show
-  which lines of code are covered by tests and which are not. The
-  Codecov_ checks will be marked as passing when the test coverage is
-  satisfactorily high.
+  coverage reports that show which lines of code are run by the test
+  suite and which are not. Codecov_ will automatically post its report
+  as a comment to the pull request. The Codecov_ checks will be marked
+  as passing when the test coverage is satisfactorily high.
 
-  * Test coverage reports help us write targeted tests to fill in gaps
-    in test coverage and find unreachable blocks of code that can never
-    be run.
+  .. tip::
+
+     Use test coverage reports to write tests that target untested
+     sections of code and to find unreachable sections of code.
+
+  .. caution::
+
+     High test coverage does *not* imply that the tests are sufficient
+     or high quality. A test that makes no assertions has little value,
+     but could still have high test coverage.
 
 * PlasmaPy uses black_ to format code and isort_ to sort `import`
   statements. The **CI / Linters (pull request)** and
@@ -132,9 +141,9 @@ If multiple tests fail, investigate these tests first.
   style requirements. These checks will fail when inconsistencies with
   the output from black_ or isort_ are found or when there are syntax
   errors. These checks can usually be ignored until the pull request is
-    nearing completion.
+  nearing completion.
 
-  .. tip::
+  .. hint::
 
      The required formatting fixes can be applied automatically by
      writing a comment with the message ``pre-commit.ci autofix`` to the
@@ -149,7 +158,7 @@ If multiple tests fail, investigate these tests first.
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
 
-.. attention::
+.. todo::
 
    The continuous integration checks performed for pull requests change
    frequently. If you notice that the above list has become out-of-date,
@@ -159,8 +168,8 @@ If multiple tests fail, investigate these tests first.
 Using pytest
 ------------
 
-To install the packages necessary to run tests on your local computer,
-run:
+To install the packages necessary to run tests on your local computer
+(including tox_ and pytest_), run:
 
 .. code-block:: shell
 
@@ -185,9 +194,7 @@ tests in :file:`test_atomic.py` can be run with:
    pytest test_atomic.py
 
 The documentation for pytest_ describes `how to invoke pytest`_ and
-specify which tests should or should not be run.
-
-.. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
+specify which tests will or will not be run.
 
 Some tests in the test suite can take a long time to run, which can slow
 down development of new features. These tests are decorated with
@@ -202,6 +209,18 @@ To exclusively run the slow tests, run:
 .. code-block:: shell
 
    pytest -m slow
+
+Code coverage reports may be generated on your local computer to show
+which lines of code are covered by tests and which are not. To generate
+an HTML report, run:
+
+.. code-block:: shell
+
+   pytest --cov
+   coverage html
+
+The coverage reports may be accessed by opening :file:`htmlcov/index.html`
+in your web browser.
 
 Using tox
 ---------
@@ -253,33 +272,59 @@ several popular IDEs:
   <https://code.visualstudio.com/docs/python/testing>`__
 * `Python testing in Atom <https://atom.io/packages/atom-python-test>`__
 
-.. _Atom: https://atom.io/
-.. _PyCharm: https://www.jetbrains.com/pycharm/
-.. _`Visual Studio`: https://visualstudio.microsoft.com/
-
 Writing Tests
 =============
 
+Every code contribution that adds new functionality requires both tests
+and documentation in order to be merged. Here we describe the process of
+write a test.
 
+Locating tests
+--------------
+
+The tests for each subpackage are contained in its :file:`tests`
+subdirectory. For example, the tests for `plasmapy.particles` are
+located in :file:`plasmapy/particles/tests`. Test files begin with
+:file:`test_` and generally contain either the name of the module or a
+description of the behavior that is being tested. For example, tests for
+|Particle| are located at
+:file:`plasmapy/particles/tests/test_particle_class.py`.
+
+The functions that are to be tested in each test file are prepended with
+``test_`` and end with a description of the behavior that is being
+tested. For example, a test that checks that a |Particle| can be turned
+into an antiparticle could be named ``test_particle_inversion``.
+
+Strongly related tests may also be `grouped into classes`_. The name of
+such a class begins with ``Test`` and the methods to be tested begin
+with ``test_``. For example, :file:`test_particle_class.py` could define
+the ``TestParticle`` class containing the method ``test_charge_number``.
+
+More information on test organization, naming, and collection is
+provided in pytest_'s documentation on `test discovery conventions`_.
 
 Assertions
 ----------
 
 A software test runs a section of code and checks that a particular
-condition is met.  If the condition is not met, then the test fails.
-This check is most commonly made using an `assert` statement.
+condition is met. If the condition is not met, then the test fails.
+Here is a minimal software test:
 
 .. code-block:: python
 
-  def test_addition():
-      assert 2 + 2 == 4
+   def test_addition():
+       assert 2 + 2 == 4
 
-If the condition is not met, then the `assert` statement will raise an
-`AssertionError`.
+The most common way to check that a condition is met is through an
+`assert` statement, as in this example. If the expression that follows
+`assert` evaluates to `False`, then this statement will raise an
+`AssertionError` so that the test will fail.  If the expression that
+follows `assert` evaluates to `True`, then this statement will do
+nothing and the test will pass.
 
 When `assert` statements raise an `AssertionError`, pytest_ will display
 the values of the expressions evaluated in the `assert` statement. The
-automatic output from pytest is sufficient for simple tests as
+automatic output from pytest_ is sufficient for simple tests like
 above. For more complex tests, we can add a descriptive error message
 to help us find the cause of a particular test failure.
 
@@ -297,29 +342,31 @@ to help us find the cause of a particular test failure.
 Floating point comparisons
 --------------------------
 
-Because of limited precision and rounding errors, comparisons between
-floating point numbers with ``==`` is not recommended.  Additionally,
-the values of fundamental constants in `astropy.constants` are
-occasionally refined as improvements become available.
+.. caution::
 
-Using `numpy.isclose` when comparing floating point numbers and
-`astropy.units.isclose` for |Quantity| instances lets us
-avoid these difficulties.  The ``rtol`` keyword for each of these
-functions allows us to set an acceptable relative tolerance.  Ideally,
-``rtol`` should be set to be an order of magnitude or two greater than
-the expected uncertainty.  For mathematical functions, a value of
-``rtol=1e-14`` may be appropriate.  For quantities that depend on
-physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
-be required, depending on how much the accepted values for fundamental
-constants are likely to change.  For comparing arrays, `numpy.allclose`
-and `astropy.units.allclose` should be used instead.
+  Using ``==`` to compare floating point numbers can lead to brittle
+  tests because of slight differences due to limited precision, rounding
+  errors, and revisions to fundamental constants.
+
+Use `numpy.isclose` when comparing floating point numbers and
+`astropy.units.isclose` for |Quantity| instances to avoid these
+difficulties.  For comparing arrays, use `numpy.allclose`
+and `astropy.units.allclose` instead.
+
+The ``rtol`` keyword for each of these functions sets the acceptable
+relative tolerance. The value of ``rtol`` should be set ∼1–2 orders of
+magnitude greater than the expected relative uncertainty. For
+mathematical functions, a value of ``rtol=1e-14`` is often appropriate.
+For quantities that depend on physical constants, a value between
+``rtol=1e-8`` and ``rtol=1e-5`` may be required, depending on how much
+the accepted values for fundamental constants are likely to change.
 
 Testing warnings and exceptions
 -------------------------------
 
 Robust testing frameworks should test that functions and methods return
 the expected results, issue the expected warnings, and raise the
-expected exceptions.  pytest_ contains functionality to `test warnings`_
+expected exceptions. pytest_ contains functionality to `test warnings`_
 and `test exceptions`_.
 
 To test that a function issues an appropriate warning, use
@@ -327,13 +374,12 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-  import pytest
-  import warnings
+  import pytest, warnings
 
   def issue_warning():
-      warnings.warn("Beware the ides of March", UserWarning)
+      warnings.warn("warning message", UserWarning)
 
-  def test_issue_warning():
+  def test_that_a_warning_is_issued():
       with pytest.warns(UserWarning):
           issue_warning()
 
@@ -342,15 +388,14 @@ To test that a function raises an appropriate exception, use
 
 .. code-block:: python
 
+  import pytest
+
   def raise_exception():
       raise Exception
 
-  def test_raise_exception():
+  def test_that_an_exception_is_raised():
       with pytest.raises(Exception):
           raise_exception()
-          pytest.fail("Exception not raised.")
-
-.. _testing-guidelines-writing-tests-parametrize:
 
 Test independence and parametrization
 -------------------------------------
@@ -376,12 +421,12 @@ function.
 
   def test_proof_by_riemann_hypothesis():
        assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # only run if previous test passes
+       assert proof_by_riemann(True)  # will only be run if the previous test passes
 
-If the first test were to fail, then the second test will never be run.
+If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
-test.  This drawback can be avoided by making independent tests that
-will both be run.
+test. This drawback can be avoided by making independent tests so that
+both will be run.
 
 .. code-block:: python
 
@@ -392,9 +437,9 @@ will both be run.
        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
-calling the same function over and over.  If you wish to run multiple
-tests for the same function, the preferred method is to use
-`pytest.mark.parametrize`.
+calling the same function over and over. If you wish to run multiple
+tests for the same function, the preferred method is to use the
+`pytest.mark.parametrize` decorator.
 
 .. code-block:: python
 
@@ -403,10 +448,10 @@ tests for the same function, the preferred method is to use
        assert proof_by_riemann(truth_value)
 
 This code snippet will run ``proof_by_riemann(truth_value)`` for each
-``truth_value`` in ``truth_values_to_test``.  Both of the above
-tests will be run regardless of failures.  This approach is much cleaner
+``truth_value`` in ``[True, False]``. Both of the above
+tests will be run regardless of failures. This approach is much cleaner
 for long lists of arguments, and has the advantage that you would only
-need to change the function call in one place if something changes.
+need to change the function call in one place if the function changes.
 
 With qualitatively different tests you would use either separate
 functions or pass in tuples containing inputs and expected values.
@@ -417,112 +462,56 @@ functions or pass in tuples containing inputs and expected values.
   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
 
-
-Pull requests must include tests of new or changed functionality before
-being merged.
-
-Test organization and collection
---------------------------------
-
-Pytest has certain `test discovery conventions
-<https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery>`_
-that are used to collect the tests to be run.
-
-The tests for each subpackage are contained in a :file:`tests/` subdirectory.
-For example, the tests for `~plasmapy.particles` are located in
-:file:`plasmapy/particles/tests`.  Test files should begin with :file:`test_`
-and generally contain the name of the module or `object` that is being
-tested.
-
-The functions that are to be tested in each test file should likewise be
-prepended with `test_` (e.g., :file:`test_atomic.py`).  Tests may also be
-`grouped into classes
-<https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class>`_.
-In order for pytest to find tests in classes, the class name should
-start with ``Test`` and the methods to be run as tests should start with
-``test_``.  For example, :file:`test_particle_class.py` could define the
-``TestParticle`` class containing the method ``test_charge_number``.
-
-.. _testing-guidelines-writing-tests-fixtures:
-
 Fixtures
 --------
 
-`Fixtures <https://docs.pytest.org/en/stable/fixture.html>`_ provide a
-way to set up well-defined states in order to have consistent tests.
-We recommend using fixtures for complex tests that would be unwieldy to
-set up with parametrization as described above.
+Fixtures_ provide a way to set up well-defined states in order to have
+consistent tests. We recommend using fixtures for complex tests that
+would be unwieldy to set up using `pytest.mark.parametrize`.
 
-.. At some point in the future, we may wish to add more information
-   and/or more references for pytest fixtures when we use them more
-   frequently.
+Code coverage
+-------------
 
-.. .. _testing-guidelines-coverage:
+Code contributions to PlasmaPy are required to be well-tested. Tests
+must be provided in the original pull request because a test delayed is
+often a test not written.
 
-.. PlasmaPy uses `Codecov`_ to show what lines of code
-are covered by the test suite and which lines are not.  At the end of
-every testing session, information on which lines were
-executed is sent to Codecov.  Codecov comments on the pull request on
-GitHub with a coverage report.
+Code coverage is a metric that helps us gauge how well-tested our source
+code is.  Coverage reports show which lines of code have been used in a test
+and which have not.
 
-.. The following lines should be included if we end up using Numba JIT
-   compiled functions:  "At the time of writing this, coverage.py has a
-   known issue with being unable to check lines executed in Numba JIT
-   compiled functions."
+add more here
 
-.. _testing-guidelines-coverage-testing:
-
-Test coverage of contributed code
----------------------------------
-
-Code contributions to PlasmaPy are required to be well-tested.  A good
+Code contributions to PlasmaPy are required to be well-tested. A good
 practice is for new code to have a test coverage percentage of at least
 about the current code coverage. Tests must be provided in the original
 pull request, because often a delayed test ends up being a test not
-written.  There is no strict cutoff percentage for how high the code
+written. There is no strict cutoff percentage for how high the code
 coverage must be in order to be acceptable, and it is not always
-necessary to cover every line of code.  For example, it is often helpful
+necessary to cover every line of code. For example, it is often helpful
 for methods that raise a `NotImplementedError` to be marked as untested
 as a reminder of unfinished work.
 
 Occasionally there will be some lines that do not require testing.
 For example, testing exception handling for an `ImportError` when
-importing an external package would usually be impractical.  In these
+importing an external package would usually be impractical. In these
 instances, we may end a line with ``# coverage: ignore`` to indicate
 that these lines should be excluded from coverage reports (or add a
-line to :file:`.coveragerc`).  This strategy should be used sparingly, since
+line to :file:`.coveragerc`). This strategy should be used sparingly, since
 it is often better to explicitly test exceptions and warnings and to
 show the lines of code that are not tested.
-
-.. _testing-guidelines-coverage-local:
-
-Generating coverage reports locally
------------------------------------
-
-Coverage reports may be generated on your local computer by running
-
-.. code-block:: shell
-
-  python setup.py test --coverage
-  coverage html
-
-The coverage reports may be accessed by opening the newly generated
-:file:`htmlcov/index.html` in your favorite web brower.  These commands
-require the ``pytest`` and ``coverage`` packages to be installed.
-
-.. _testing-guidelines-coverage-ignore:
 
 Ignoring lines in coverage tests
 --------------------------------
 
-Occasionally there will be lines of code that do not require tests.  For
+Occasionally there will be lines of code that do not require tests. For
 example, it would be impractical to test that an `ImportError` is raised
 when running ``import plasmapy`` from Python 2.7.
 
 To ignore a line of code in coverage tests, append it with
-``# coverage: ignore``.  If this comment is used on a line with a
+``# coverage: ignore``. If this comment is used on a line with a
 control flow structure (e.g., `if`, `for`, and `while`) that begins a
-block of code, then all lines in that block of code will be ignored.  In
+block of code, then all lines in that block of code will be ignored. In
 the following example, lines 3 and 4 will be ignored in coverage tests.
 
 .. code-block:: python
@@ -545,7 +534,7 @@ should always be ignored in coverage tests.
 
 
 Best practices
---------------
+==============
 
 The following list contains suggestions for testing scientific software.
 
@@ -632,7 +621,7 @@ If one of
 
 
 .. d * Tests are run frequently during code development, and slow tests may
-  interrupt the flow of a contributor.  Tests should be minimal,
+  interrupt the flow of a contributor. Tests should be minimal,
   sufficient enough to be complete, efficient.
 
 
@@ -665,25 +654,32 @@ If we
 
 .. .. [1] In `Working Effectively With Legacy Code
    <https://www.oreilly.com/library/view/working-effectively-with/0131177052/>`__,
-   Michael Feathers bluntly writes: "Code without tests is bad code.  It
+   Michael Feathers bluntly writes: "Code without tests is bad code. It
    doesn't matter how well written it is; it doesn't matter how pretty
-   or object-oriented or well-encapsulated it is.  With tests, we can
-   change the behavior of our code quickly and verifiably.  Without
+   or object-oriented or well-encapsulated it is. With tests, we can
+   change the behavior of our code quickly and verifiably. Without
    them, we really don't know if our code is getting better or worse."
 
 .. .. [2] In the chapter "Bugs Are Missing Tests" in `Beyond
    Legacy Code <https://pragprog.com/book/dblegacy/beyond-legacy-code>`__,
    David Bernstein writes: "Every bug exists because of a missing test
-   in a system.  The way to fix bugs using TDD [test-driven development]
+   in a system. The way to fix bugs using TDD [test-driven development]
    is first write a failing test that represents the bug and then fix
    the bug and watch the failing test turn green.
 
 
+.. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
 .. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
+.. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
+.. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
+.. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
+.. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
+.. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _`Visual Studio`: https://visualstudio.microsoft.com/
