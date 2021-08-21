@@ -95,11 +95,11 @@ class ParticleBox(GenericWidget):
     def edge_case(self, value):
         self.values_cont[self.property_name] = None
         self.widget.description = ""
-        self.widget.layout.border = "1px solid black"
+        self.widget.layout.border = ""
     def try_change_value(self, value):
         particle = Particle(value)
         self.values_cont[self.property_name] = particle
-        self.widget.layout.border="1px solid black"
+        self.widget.layout.border=""
         self.widget.description = ""
 
     def create_widget(self,style={"description_width": "initial"}):
@@ -113,7 +113,7 @@ class IonBox(ParticleBox):
         ion = Particle(value)
         if ion.is_ion:
             self.values_cont[self.property_name] = ion
-            self.widget.layout.border="1px solid black"
+            self.widget.layout.border=""
             self.widget.description = ""
         else:
             raise ValueError(f"{ion} is not an ion")
