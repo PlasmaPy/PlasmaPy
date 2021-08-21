@@ -124,7 +124,7 @@ particular check failed.
   suite and which are not. Codecov_ will automatically post its report
   as a comment to the pull request. The Codecov_ checks will be marked
   as passing when the test coverage is satisfactorily high. For more
-  information, see :ref:`code-coverage`.
+  information, see the section on :ref:`code-coverage`.
 
 * PlasmaPy uses black_ to format code and isort_ to sort ``import``
   statements. The **CI / Linters (pull request)** and
@@ -449,12 +449,16 @@ Fixtures_ provide a way to set up well-defined states in order to have
 consistent tests. We recommend using fixtures for complex tests that
 would be unwieldy to set up using `pytest.mark.parametrize`.
 
-.. _code-coverage:
-
 Property-based testing
 ----------------------
 
+Suppose a function :math:`f(x)` has a property that :math:`f(x) > 0` for
+all :math:`x`. A property-based test would verify that ``f(x)`` — the
+code implementation of :math:`f(x)` — returns positive output for
+multiple values of :math:`x`. The hypothesis_ package simplifies
+`property-based testing`_ for Python.
 
+.. _code-coverage:
 
 Code coverage
 =============
@@ -534,54 +538,49 @@ configurations are given in :file:`.codecov.yaml`.
 Testing guidelines
 ==================
 
-The following list contains suggestions on how to write clean tests for
-scientific software. These guidelines are not rigid, and some of these
-guidelines even contradict other guidelines.
-
-These guidelines are not rigid, and should be
-treated as general principles that usually make tests more valuable and
-easier to maintain. In particular, some of these guidelines must be
-balanced against each other.
-
-Indeed, some of these guidelines must be balanced
-against other guidelines.
-
-should not be treated as rigid
-principles, but rather as general principles that usually make tests easier to run and
-maintain.
-
-These suggestions are not rigid, and it is not always possible
-(or even wise) to follow all of these guidelines simultaneously. Indeed,
-some of the guidelines must be balanced against other guidelines.
-
-
-
-.. need to balance these things against each other
-
-.. it's not always possible to follow all of these guidelines simultaneously
-
+The following list contains suggested practices for testing
+scientific software. These guidelines are not rigid, and should be
+treated as general principles should be balanced with each other in
+order to make tests easier to run and maintain.
 
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
-  problem is related to that section of code. If we edit a hundred
+  problem is related to that section of code. If we edit numerous
   sections of code before running tests, then we will have a much
-  harder time isolating the problematic section of code.
+  harder time isolating the section of code causing problems.
 
 * **Write code that is easy to test.** It is easier to test short
   functions that do exactly one thing than long functions that do many
-  things. If code is difficult to test, then consider rewriting the
+  things.
 
-* **Write tests that are easy to change.**
+  .. tip::
+
+     When a section of code is difficult to test, consider refactoring_
+     it to make it easier to test.
+
+* **Write tests that are easy to understand and change.**
+
+  * ...future contributors will need to read the tests in order to understand
+    why it is failing.
+  * ...occasionally tests
 
 
+
+  .. tip::
+
+     A conditional block in a test often indicates that the test is
+     testing more than one thing. Avoid using conditionals in the
+     arrange and act stages of tests.
+
+DEFINE ARRANGE ACT ASSERT
 
 
 * **Avoid conditionals in tests.** Including an ``if`` blocks in a test
-  suggests that the
+  suggests that the test is testing more than one thing.
 
-  is
-
-
+  However, it may reasonable to use ``if`` statements as part of
+  "assert" stage of unit tests in order to provide a targeted error
+  message.
 
 * **Make tests fast.** Tests are most valuable when they provide
   immediate feedback. A test suite that takes a long time to run
@@ -617,7 +616,8 @@ If one of
 
 
 * **Make tests deterministic.** When a test fails intermittently, it is
-  hard to tell when it has been fixed.
+  hard to tell when it has been fixed. If a test depends on a random
+  number generator, use the same random seed in the test suite.
 
 * **Turn bugs into test cases.**
 
@@ -628,7 +628,8 @@ If one of
 * **Write tests that isolate bugs.**
 
 * **Avoid testing implementation details.** Testing implementation
-  details and private functions can
+  details and private functions help isolate bugs, but at the cost of
+  reduced resistance to refactoring.
 
 
 * Each function and method should have unit tests that check that it
@@ -703,9 +704,11 @@ If we
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
 .. _hypothesis: https://hypothesis.readthedocs.io/
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
+.. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis/
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io/
+.. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
