@@ -692,7 +692,7 @@ should be balanced with each other rather than absolute principles.
 
 .. [Osherove2009] R. Osherove, `The Art of Unit Testing: With Examples in .NET
    <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
-   (Manning
+   (Manning Press, 2013, 2nd ed.)
 
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
