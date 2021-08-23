@@ -18,11 +18,9 @@ PlasmaPy Documentation
    :align: right
    :scale: 80%
 
-
 `PlasmaPy <http://www.plasmapy.org/>`_ is an open source
 community-developed core `Python <https://www.python.org/>`_ 3.7+
 package for plasma physics currently under development.
-
 
 .. toctree::
    :caption: First Steps
@@ -62,6 +60,7 @@ package for plasma physics currently under development.
    :caption: All the Rest
 
    about/credits
+   bibliography
    glossary
    whatsnew/index
    about/stability
