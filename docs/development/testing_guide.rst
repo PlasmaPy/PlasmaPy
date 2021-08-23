@@ -19,7 +19,7 @@ Software tests help us to:
 * Enable us to change code with confidence that we are not unknowingly
   introducing bugs elsewhere in our program.
 
-.. hint::
+.. tip::
 
    Writing tests takes time, but debugging takes more time.
 
@@ -137,7 +137,7 @@ particular check failed.
   errors. These checks can usually be ignored until the pull request is
   nearing completion.
 
-  .. hint::
+  .. tip::
 
      The required formatting fixes can be applied automatically by
      writing a comment with the message ``pre-commit.ci autofix`` to the
@@ -152,7 +152,7 @@ particular check failed.
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
 
-.. todo::
+.. note::
 
    The continuous integration checks performed for pull requests change
    frequently. If you notice that the above list has become out-of-date,
@@ -180,8 +180,9 @@ This command will run all of the tests found within your current
 directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
-particular file or directory, include its name after ``pytest``. The
-tests in :file:`test_atomic.py` can be run with:
+particular file or directory, include its name after ``pytest``. If you
+are in the directory :file:`plasmapy/particles/tests`, then the tests in
+in :file:`test_atomic.py` can be run with:
 
 .. code-block:: shell
 
@@ -280,7 +281,7 @@ involves collecting or constructing the inputs for the function. The
 *assert* phase is when the value returned by the function is compared to
 the expected result.
 
-.. hint::
+.. tip::
 
    The *act* phase should generally be a single line of code. If it is
    more than one line of code, consider revising the functionality being
@@ -291,9 +292,9 @@ the expected result.
    Verifying a single unit of behavior does not necessarily imply that
    there should be one assertion per test [Khorikov2020]_. Multiple
    related assertions are appropriate when needed to verify a particular
-   unit of behavior. However, having multiple unrelated assertions in a
-   test often indicates that the test should be split up into multiple
-   smaller tests.
+   unit of behavior. However, having multiple assertions in a test often
+   indicates that the test should be split up into multiple smaller and
+   more focused tests.
 
 Integration tests
 -----------------
