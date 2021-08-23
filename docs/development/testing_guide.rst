@@ -608,45 +608,20 @@ order to make tests easier to run and maintain.
   sections of code before running tests, then we will have a much
   harder time isolating the section of code causing problems.
 
-* **Write code that is easy to test.** It is easier to test short
-  functions that do exactly one thing than long functions that do many
-  things.
-
-  .. tip::
-
-     When a section of code is difficult to test, consider refactoring_
-     it to make it easier to test.
-
-* **Write tests that are easy to understand and change.**
-
-  * ...future contributors will need to read the tests in order to understand
-    why it is failing.
-  * ...occasionally tests
-
-
-
-  .. tip::
-
-     A conditional block in a test often indicates that the test is
-     testing more than one thing. Avoid using conditionals in the
-     arrange and act stages of tests.
-
-DEFINE ARRANGE ACT ASSERT
-
-
-* **Avoid conditionals in tests.** Including an ``if`` blocks in a test
-  suggests that the test is testing more than one thing.
-
-  However, it may reasonable to use ``if`` statements as part of
-  "assert" stage of unit tests in order to provide a targeted error
-  message.
+* **Turn bugs into test cases** [Wilson2014]_. It is said that "every
+  every bug exists because of a missing test" [Bernstein2015]_. After
+  finding a bug, write a minimal failing test that reproduces that bug.
+  Then fix the bug to get the test to pass. Keeping the new test in the
+  test suite will prevent the same bug from being introduced again.
+  Because bugs tend to be clustered around each other, consider adding
+  tests related to the functionality affected by the bug.
 
 * **Make tests fast.** Tests are most valuable when they provide
   immediate feedback. A test suite that takes a long time to run
-  increases the probability that we will get distracted from the task
-  at hand.
+  increases the probability that we will lose track of what we are
+  doing and slows down progress.
 
-* **Decorate unavoidably slow tests with ``pytest.mark.slow``.
+  Decorate unavoidably slow tests with `pytest.mark.slow`:
 
   .. code-block:: python
 
@@ -654,53 +629,96 @@ DEFINE ARRANGE ACT ASSERT
      def test_calculating_primes():
          calculate_all_primes()
 
-* **Test one unit of behavior per test.**
+* **Write tests that are easy to understand and change.** To fully
+  understand a test failure or modify existing functionality, a
+  contributor will need to understand both the code being tested and the
+  code that is doing the testing. Test code that is difficult to
+  understand makes it harder to fix bugs, especially if the error
+  message is missing or hard to understand, or if the bug is in the test
+  itself. When test code is difficult to change, it is harder to change
+  the corresponding production code. Test code should therefore be kept
+  as high quality as production code.
 
-  * Use `pytest.mark.parametrize` to break up chains of similar `assert`
-    statements into independent tests.
+* **Write code that is easy to test.** Write short functions that do
+  exactly one thing with no side effects. Break up long functions into
+  multiple functions that are smaller and more focused. Use
+  `pure functions`_ rather than functions that change the underlying
+  state of the system or depend on non-local variables. Use
+  `test-driven development`_ and write tests before writing the code to
+  be tested. When a section of code is difficult to test, consider
+  refactoring_ it to make it easier to test.
 
-* **Make tests independent of each other.** Tests should be isolated
-  from other tests and
+* **Separate easy-to-test code from hard-to-test code.** Some
+  functionality is inherently hard to test, such as graphical user
+  interfaces. Often the hard-to-test behavior depends on particular
+  functionality that is easy to test, such as function calls that return
+  a well-determined value. Separating the hard-to-test code from the
+  easy-to-test code maximizes the amount of code that can be tested
+  thoroughly and isolates the code that must be tested manually. This
+  strategy is known as the *Humble Object pattern*.
 
-* **Avoid using the same mutable object in multiple tests.** Passing
-  an `object` that can be changed between multiple tests risks making
-  tests interdependent. The `object` being tested should be
-
-When an
-  `object` can be changed in a test
-
-If one of
-  those objects is changed
-
+* **Make tests independent of each other.** Tests that are coupled with
+  each other lead to several potential problems. Side effects from one
+  test could prevent another test from failing, and tests lose their
+  ability to run in parallel. Tests can become coupled when the same
+  mutable `object` is used in multiple tests. Keeping tests independent
+  allows us to avoid these problems.
 
 * **Make tests deterministic.** When a test fails intermittently, it is
-  hard to tell when it has been fixed. If a test depends on a random
-  number generator, use the same random seed in the test suite.
+  hard to tell when it has actually been fixed. When a test is
+  deterministic, we will always be able to tell if it is passing or
+  failing. If a test depends on random numbers, use the same random
+  seed for each automated test run.
 
+* **Avoid testing implementation details.** Fine-grained tests help us
+  find and fix bugs. However, tests that are too fine-grained become
+  brittle and lose resistance to refactoring. Avoid testing
+  implementation details that are likely to be changed in future
+  refactorings.
+
+* **Avoid complex logic in tests.** When the *arrange* or *act* sections
+  of a test include conditional blocks, most likely the test is
+  verifying more than one unit of behavior and should be split into
+  multiple smaller tests.
+
+.. DRAFT STUFF BELOW
+   -----------------
+
+.. ..* **Write targeted test failure messages.**
+
+.. ..* **Write tests that are easy to understand and change.**
+  * ...future contributors will need to read the tests in order to understand
+    why it is failing.
+  * ...occasionally tests
+  .. tip::
+     A conditional block in a test often indicates that the test is
+     testing more than one thing. Avoid using conditionals in the
+     arrange and act stages of tests.
+  * **Write targeted error messages.**
+  * **Avoid conditionals in tests.** Including an ``if`` blocks in a test
+  suggests that the test is testing more than one thing.
+  However, it may reasonable to use ``if`` statements as part of
+  "assert" stage of unit tests in order to provide a targeted error
+  message.
+  * **Test one unit of behavior per test.**
+  * Use `pytest.mark.parametrize` to break up chains of similar `assert`
+    statements into independent tests.
+  **Make tests independent of each other.** Tests should be isolated
+  from other tests and
+  * **Avoid using the same mutable object in multiple tests.** Passing
+  an `object` that can be changed between multiple tests risks making
+  tests interdependent. The `object` being tested should be
+   When an `object` can be changed in a test
+  If one of
+  those objects is changed
 * **Turn bugs into test cases.**
-
-
-
 * **Use test-driven development.**
-
 * **Write tests that isolate bugs.**
 
-* **Avoid testing implementation details.** Testing implementation
-  details and private functions help isolate bugs, but at the cost of
-  reduced resistance to refactoring.
 
-
-* Each function and method should have unit tests that check that it
+.. ..* Each function and method should have unit tests that check that it
   returns the expected results, issues the appropriate warnings, and
   raises the appropriate exceptions.
-
-* Each unit test should test *one unit of behavior*, *quickly*, and
-  *in isolation from other tests*.
-
-
-
-.. add citation for above from the audiobook that I don't feel like
-   looking up again
 
 
 .. d * Tests are run frequently during code development, and slow tests may
@@ -708,29 +726,9 @@ If one of
   sufficient enough to be complete, efficient.
 
 
-* Write test code with the same quality as production code. Well-written
+.. ..* Write test code with the same quality as production code. Well-written
   tests are easier to modify when the tested behavior changes. Poorly
   written tests are difficult to change and slow down future development.
-
-
-* **Separate code that is hard to test from code that is easy to test.**
-
-
-.. tip::
-
-   At times, some of these suggestions will contradict each other.
-
-If we
-   test implementation details then we
-
-
-.. The following hint would be worth putting somewhere, at least after
-   Python 3.10 is released, but maybe not here.
-
-.. .. hint::
-   Running tests in Python ≥3.10 will provide improved error messages
-   compared to Python ≤3.9.
-
 
 .. Footnotes
    =========
@@ -750,7 +748,6 @@ If we
    is first write a failing test that represents the bug and then fix
    the bug and watch the failing test turn green.
 
-
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
@@ -763,11 +760,13 @@ If we
 .. _hypothesis: https://hypothesis.readthedocs.io/
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis/
+.. _`pure functions`: https://en.wikipedia.org/wiki/Pure_function
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io/
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
+.. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
