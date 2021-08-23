@@ -556,7 +556,7 @@ PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for pytest_ to
 measure code coverage and Codecov_ to provide reports on GitHub.
 
 Generating coverage reports with pytest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------
 
 Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
@@ -710,6 +710,7 @@ should be balanced with each other rather than absolute principles.
 .. _PyCharm: https://www.jetbrains.com/pycharm/
 .. _pytest: https://docs.pytest.org/
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io/
+.. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
