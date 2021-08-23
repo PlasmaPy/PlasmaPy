@@ -2,6 +2,9 @@
 Testing Guide
 *************
 
+Introduction
+============
+
 Software testing is vital for software reliability and maintainability.
 Software tests help us to:
 
@@ -251,6 +254,62 @@ several popular IDEs:
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
 * `Python testing in Atom <https://atom.io/packages/atom-python-test>`__
+
+Types of tests
+==============
+
+A **unit test** verifies a single unit of behavior, does it quickly, and
+does it in isolation from other tests [Khorikov2020]_.
+
+Unit tests are intended to provide fast feedback that help pinpoint the
+locations of errors. Unit tests often abide by the following pattern
+[Osherove2009]_:
+
+1. *Arrange*: gather inputs and get the system to the state in which the
+   test is expected to run.
+
+2. *Act*: make the system under test undertake the operation that is
+   being tested.
+
+3. *Assert*: verify that the actual outcome of the *act* phase matches
+   the expected outcome.
+
+For an example, consider a unit test for a function. The *arrange* phase
+involves collecting or constructing the inputs for the function. The
+*act* phase occurs when the function is called with those inputs. The
+*assert* phase is when the value returned by the function is compared to
+the expected result.
+
+.. hint::
+
+   The *act* phase should generally be a single line of code. If it is
+   more than one line of code, consider revising the functionality being
+   tested so that it is a single line of code [Khorikov2020]_.
+
+.. tip::
+
+   Verifying a single unit of behavior does not necessarily imply that
+   there should be one assertion per test [Khorikov2020]_. Multiple
+   related assertions are appropriate when needed to verify a particular
+   unit of behavior. However, having multiple unrelated assertions in a
+   test often indicates that the test should be split up into multiple
+   smaller tests.
+
+Integration tests
+-----------------
+
+An **integration test** verifies that multiple software components work
+together as intended.
+
+Compared to unit tests, integration tests are typically harder to write,
+slower to run, more difficult to maintain, and less useful at
+pinpointing the specific cause of a problem. However, integration tests
+are able to find problems that unit tests cannot. In particular,
+integration tests are able to find problems at the interfaces between
+different modules. On average, each integration test covers more lines
+of code than each related unit tests. Because unit tests and integration
+tests complement each other, both are important constituents of a test
+suite.
 
 Writing Tests
 =============
@@ -587,8 +646,7 @@ DEFINE ARRANGE ACT ASSERT
   increases the probability that we will get distracted from the task
   at hand.
 
-  Some tests are unavoidably slow. Decorate such tests with
-  `pytest.mark.slow`.
+* **Decorate unavoidably slow tests with ``pytest.mark.slow``.
 
   .. code-block:: python
 
