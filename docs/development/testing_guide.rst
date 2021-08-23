@@ -594,13 +594,13 @@ Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
 configurations are given in :file:`.codecov.yaml`.
 
-Testing guidelines
-==================
+Best practices
+==============
 
 The following list contains suggested practices for testing
-scientific software. These guidelines are not rigid, and should be
-treated as general principles should be balanced with each other in
-order to make tests easier to run and maintain.
+scientific software and making tests easier to run and maintain. These
+guidelines are not rigid, and should be treated as general principles
+should be balanced with each other rather than absolute principles.
 
 * **Run tests frequently for continual feedback.** If we edit a single
   section of code and discover a new test failure, then we know that the
