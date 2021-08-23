@@ -1,2 +1,2 @@
-Updated information on how to write and run tests in the development
+Updated information on how to write and run tests in the contributor
 guide.
