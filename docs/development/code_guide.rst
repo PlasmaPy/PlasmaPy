@@ -30,7 +30,7 @@ changes actually did.
 Note that the "Style linters / pre-commit (pull_request)" part of our
 Continuous Integration system can and will (metaphorically) shout at you if it
 finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply `black` and `isort` manually, let
+with version, so, rather than apply black_ and isort_ manually, let
 pre-commit do the version management for you instead!
 
 Our pre-commit suite can be found in `.pre-commit-config.yaml
@@ -58,10 +58,8 @@ PlasmaPy Code Style Guide, codified
   * Docstrings and comments should generally be limited to
     about 72 characters.
 
-* During code development, use
-  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package and `isort <https://pycqa.github.io/isort/>`_ to
+* During code development, use black_ to automatically format code and
+  ensure a consistent code style throughout the package and isort_ to
   automatically sort imports.
 
 * Follow the existing coding style within a subpackage.  This includes,
@@ -87,7 +85,6 @@ PlasmaPy Code Style Guide, codified
 
 * Avoid using `lambda` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
-
 
 Branches, commits, and pull requests
 ====================================
