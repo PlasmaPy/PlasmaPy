@@ -38,6 +38,12 @@ def hollweg(
 ):
 
     r"""
+    Using the equation provided by Bellan 2012, this function 
+    calculates the numerical solution to the dispersion relation
+    presented by Hollweg 1999.
+
+    ***IN PROGRESS***
+
     Parameters
     ----------
     B : `~astropy.units.Quantity`
@@ -114,7 +120,8 @@ def hollweg(
 
     Notes
     -----
-    Solves the equation 3 in Bellan2012JGR (equation 38 in Hollweg1999)
+    The equation presented in Hollweg 1999 [2]_ (equation 3 in Bellan 2012
+    [1]_) is:
 
     .. math::
         \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
@@ -134,6 +141,16 @@ def hollweg(
 
     .. math::
         k_{\rm x} = \mathbf{k} \cdot \hat{x}
+
+    References
+    ----------
+    .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
+       JGR, 117, A12219, doi: `10.1029/2012JA017856
+       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+
+    .. [2] JV Hollweg, Kinetic Alfvén wave revisited, 1999, JGR, 104(A7), 
+       14811 – 14819, doi: `10.1029/1998JA900132.
+       <https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/1998JA900132>`_.
 
     Examples
     --------
@@ -215,6 +232,7 @@ def hollweg(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
         )
+
     # Calc needed plasma parameters
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
