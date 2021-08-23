@@ -38,7 +38,7 @@ def hollweg(
 ):
 
     r"""
-    Using the equation provided by Bellan 2012, this function 
+    Using the equation provided by Bellan 2012, this function
     calculates the numerical solution to the dispersion relation
     presented by Hollweg 1999.
 
@@ -148,7 +148,7 @@ def hollweg(
        JGR, 117, A12219, doi: `10.1029/2012JA017856
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
-    .. [2] JV Hollweg, Kinetic Alfvén wave revisited, 1999, JGR, 104(A7), 
+    .. [2] JV Hollweg, Kinetic Alfvén wave revisited, 1999, JGR, 104(A7),
        14811 – 14819, doi: `10.1029/1998JA900132.
        <https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/1998JA900132>`_.
 
