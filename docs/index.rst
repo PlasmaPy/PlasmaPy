@@ -60,7 +60,6 @@ package for plasma physics currently under development.
    :caption: All the Rest
 
    about/credits
-   bibliography
    glossary
    whatsnew/index
    about/stability
