@@ -42,7 +42,6 @@ def hollweg(
     calculates the numerical solution to the dispersion relation
     presented by Hollweg 1999.
 
-
     Parameters
     ----------
     B : `~astropy.units.Quantity`
@@ -119,6 +118,7 @@ def hollweg(
 
     Notes
     -----
+
     The equation presented in Hollweg 1999 [2]_ (equation 3 in Bellan 2012
     [1]_) is:
 
@@ -148,7 +148,7 @@ def hollweg(
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
     .. [2] JV Hollweg, Kinetic Alfven wave revisited, 1999, JGR, 104(A7),
-       14811 – 14819, doi: `10.1029/1998JA900132.
+       14811 – 14819, doi: `10.1029/1998JA900132
        <https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/1998JA900132>`_
 
     Examples
