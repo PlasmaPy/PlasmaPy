@@ -62,6 +62,7 @@ package for plasma physics currently under development.
    :caption: All the Rest
 
    about/credits
+   glossary
    whatsnew/index
    about/stability
    PlasmaPy.org <https://www.plasmapy.org>

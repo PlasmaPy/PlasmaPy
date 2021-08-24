@@ -8,7 +8,6 @@ __all__ = ["IonicLevel", "IonizationState"]
 import numpy as np
 import warnings
 
-from astropy import constants as const
 from astropy import units as u
 from numbers import Integral, Real
 from typing import List, Optional, Union
@@ -20,6 +19,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -346,7 +346,7 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> IonicLevel:
+    def __getitem__(self, value) -> List[IonicLevel]:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             return [
@@ -711,6 +711,13 @@ class IonizationState:
         """The symbol of the element or isotope."""
         return self.isotope if self.isotope else self.element
 
+    def to_list(self) -> ParticleList:
+        """
+        Return a `~plasmapy.particles.particle_collections.ParticleList`
+        of the ionic levels.
+        """
+        return ionic_levels(self.base_particle)
+
     @property
     def atomic_number(self) -> int:
         """The atomic number of the element."""
@@ -720,24 +727,14 @@ class IonizationState:
         return self._number_of_particles
 
     @property
-    def _particle_instances(self) -> List[Particle]:
-        """
-        A `list` of the `~plasmapy.particles.particle_class.Particle` class
-        instances corresponding to each ion.
-        """
-        return [
-            Particle(self._particle.symbol, Z=i) for i in range(self.atomic_number + 1)
-        ]
-
-    @property
     def ionic_symbols(self) -> List[str]:
         """The ionic symbols for all charge states."""
-        return [particle.ionic_symbol for particle in self._particle_instances]
+        return self.to_list().symbols
 
     @property
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
-        return np.arange(0, self.atomic_number + 1, dtype=int)
+        return self.to_list().charge_number
 
     @property
     @deprecated(
@@ -762,14 +759,12 @@ class IonizationState:
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
             )
-        return np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1))
+        return np.sum(self.ionic_fractions * self.charge_numbers)
 
     @property
     def Z_rms(self) -> np.float64:
         """The root mean square charge number."""
-        return np.sqrt(
-            np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2)
-        )
+        return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers ** 2))
 
     @property
     def Z_most_abundant(self) -> List[Integral]:
