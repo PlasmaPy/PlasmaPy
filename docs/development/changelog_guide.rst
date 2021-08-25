@@ -3,7 +3,10 @@ Changelog Guide
 ***************
 
 A changelog tells users and contributors what notable changes have been
-made between each release.
+made between each release. Pull requests to PlasmaPy need changelog
+entries before they can be merged, except when the changes are very
+minor. PlasmaPy uses towncrier_ to convert the changelog entries into
+the full changelog.
 
 Creating a changelog entry
 ==========================
@@ -47,9 +50,7 @@ pull request to PlasmaPy's ``main`` branch.
       :file:`1206.trivial.2.rst`.
 
 #. Open that file and write a short description of the changes that were
-   made, using the past tense.
-
-   As an example, :file:`1198.doc.rst` might include:
+   made. As an example, :file:`1198.doc.rst` might include:
 
    .. code-block:: rst
 
@@ -66,32 +67,33 @@ Changelog guidelines
   packages that depend on it, so please write each entry to be
   understandable to someone with limited familiarity of the package.
 
-* Use the past tense when describing the changes that were made.
+* Changelog entries are not required for changes that are sufficiently
+  minor, such as typo fixes. When this is the case, a package maintainer
+  will add the *No changelog entry needed* label to the pull request.
+
+* Use the past tense to describe the change, and the present tense to
+  describe how the functionality currently works.
 
 * A changelog entry may include multiple sentences to describe important
   context and consequences of the change. Because towncrier_
-  automatically reflows text, entries should be limited to a single
-  paragraph.
+  automatically reflows text, keep entries to a single paragraph.
 
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
   ``` `~plasmapy.particles.particle_class.Particle` ``` to refer to
   |Particle|. The tilde is used to hide all but the name of the object.
 
-* Show the full namespace for features that have been removed or moved,
+* Show the full namespace for objects that have been removed or moved,
   and use double back ticks so that the name is rendered as code without
-  attempting to create a link. For example, an entry could mention that
-  the ``` ``plasmapy.physics`` ``` subpackage was removed with the contents
-  being moved into `plasmapy.formulary`.
+  attempting to create a link.
 
   .. code-block:: rst
 
-     Removed the ``plasmapy.physics`` subpackage and moved the contents
-     into `plasmapy.formulary`.
+     Removed the ``plasmapy.physics`` subpackage. The functionality in
+     that subpackage is now in `plasmapy.formulary`.
 
-* Changelog entries are not required for changes that are sufficiently
-  minor, such as typo fixes. When this is the case, a package maintainer
-  will add the *No changelog entry needed* label to the pull request.
+* Substitutions as defined in :file:`common_links.rst` may be used in
+  changelog entries.
 
 * The pull request number does not need to be included inside the
   changelog entry because it will be added automatically when the
@@ -106,9 +108,6 @@ Changelog guidelines
 Building the changelog
 ======================
 
-PlasmaPy uses towncrier_ to convert the changelog entries (called "news
-fragments") into the full changelog.
-
 To install towncrier_ and the other packages needed to develop PlasmaPy,
 go to the top-level directory of your local clone of PlasmaPy and run:
 
@@ -116,22 +115,22 @@ go to the top-level directory of your local clone of PlasmaPy and run:
 
    pip install -r requirements.txt
 
-To print out a preview of the changelog, run:
+To run towncrier_, enter the top-level directory of PlasmaPy's
+repository. To print out a preview of the changelog, run:
 
 .. code-block:: shell
 
    towncrier --draft
 
-
-
-
-To turn changelog entries into a :file:`CHANGELOG.rst` file for the
-0.6.0 release, run:
+To convert the changelog entries into a changelog prior to the 0.7.0
+release, run:
 
 .. code-block:: shell
 
-   towncrier --version v0.6.0
+   towncrier --version v0.7.0
 
-The
+This will create :file:`CHANGELOG.rst` in the top-level directory. The
+full steps to update the changelog are described in the
+:ref:`Release Guide`.
 
 Configuration files for towncrier_ are in :file:`pyproject.toml`.
