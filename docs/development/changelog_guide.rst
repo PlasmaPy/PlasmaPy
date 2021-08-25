@@ -10,31 +10,43 @@ Creating a changelog entry
 
 Each changelog entry should be created after a pull request to the main
 branch has been made. If the change is sufficiently minor (e.g., a typo
-fix), then a package maintainer will add the "No changelog entry needed"
-label.
+fix or a tweak to the GitHub Actions configuration), then a package
+maintainer will add the "No changelog entry needed" label.
 
-In the ``changelog/`` directory, create a new file entitled,
-``⟨number⟩.⟨type⟩.rst``, where ``⟨number⟩`` is replaced with the pull
-request number and ``⟨type⟩`` is replaced with one of the following
-changelog types:
+#. In the :file:`changelog/` directory, create a new file entitled,
+   :file:`⟨number⟩.⟨type⟩.rst`, where ``⟨number⟩`` is replaced with the pull
+   request number and ``⟨type⟩`` is replaced with one of the following
+   changelog types:
 
-* ``breaking``: A change which requires users to change code and is not
-  backwards compatible. (Not to be used for removal of deprecated features.)
-* ``bugfix``: Fixes a bug.
-* ``doc``: Documentation addition or improvement, like rewording a
-  section or adding missing docs.
-* ``feature``: New user facing features and any new behavior.
-* ``removal``: Feature deprecation and/or feature removal.
-* ``trivial``: A change which has no user-facing effect or is tiny change.
+   * ``breaking``: A change which requires users to change code and is not
+     backwards compatible. (Not to be used for removal of deprecated features.)
+   * ``bugfix``: Fixes a bug.
+   * ``doc``: Documentation addition or improvement, like rewording a
+     section or adding missing docs.
+   * ``feature``: New user facing features and any new behavior.
+   * ``removal``: Feature deprecation and/or feature removal.
+   * ``trivial``: A change which has no user-facing effect or is tiny.
 
-For example, [pull request #1198](https://github.com/PlasmaPy/PlasmaPy/pull/1198)
-to PlasmaPy includes an update to the documentation, so the file to be
-created will be entitled ``1198.doc.rst``.
+   For example, pull request
+   `#1198 <https://github.com/PlasmaPy/PlasmaPy/pull/1198>`__
+   to PlasmaPy includes an update to the documentation, so the file to be
+   created will be entitled :file:`changelog/1198.doc.rst`.
 
-Open that file and write a short description of the changes that were made.
+   More than one changelog file
+   If a pull request includes the removal of a deprecated feature and an
+   update to the documentation, then
 
-Changelog entries are written in `reStructuredText
-<https://docutils.sourceforge.io/docs/user/rst/quickstart.html>`_.
+#. Open that file and write a short description of the changes that
+   were made, using the past tense.
+
+   .. code-block:: rst
+
+      Created a page in the contributor guide that describes how to add
+      changelog entries.
+
+
+
+   Changelog entries are written using reST_.
 
 
 For this example, we will assume that we are writing a changelog entry
