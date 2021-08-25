@@ -33,29 +33,28 @@ pull request to PlasmaPy's ``main`` branch.
 
    .. tip::
 
-      If a pull request includes multiple changes, add a separate
-      changelog entry for each change. For example, because pull request
-      `#1208 <https://github.com/PlasmaPy/PlasmaPy/pull/1208>`__
-      includes a breaking change as well as a new feature, the two files
-      to be created will be :file:`1208.breaking.rst` and
-      :file:`1208.feature.rst`.
+      When a pull request includes multiple changes, use a separate
+      changelog entry for each change to improve readability.
 
-      If multiple changes were made in the same category, use filenames
-      like :file:`1206.trivial.1.rst` and :file:`1206.trivial.2.rst`.
+      When there are changes in multiple categories, include a separate
+      changelog file for each category. For example, pull request
+      `#1208 <https://github.com/PlasmaPy/PlasmaPy/pull/1208>`__
+      included both a breaking change and a new feature, and thus needed
+      both :file:`1208.breaking.rst` and :file:`1208.feature.rst`.
+
+      When there are multiple changes in a single category, use
+      filenames like :file:`1206.trivial.1.rst` and
+      :file:`1206.trivial.2.rst`.
 
 #. Open that file and write a short description of the changes that were
    made, using the past tense.
 
-   For example, :file:`1198.doc.rst` might include:
+   As an example, :file:`1198.doc.rst` might include:
 
    .. code-block:: rst
 
       Added a page in the contributor guide that describes how to add
       changelog entries.
-
-   Changelog entries are written using reST_.
-
-
 
 #. Commit the file and push the change to branch associated with the
    pull request on GitHub.
@@ -69,7 +68,10 @@ Changelog guidelines
 
 * Use the past tense when describing the changes that were made.
 
-* Use full sentences with correct case and punctuation.
+* A changelog entry may include multiple sentences to describe important
+  context and consequences of the change. Because towncrier_
+  automatically reflows text, entries should be limited to a single
+  paragraph.
 
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
@@ -84,7 +86,7 @@ Changelog guidelines
 
   .. code-block:: rst
 
-     Removed the ``plasmapy.physics`` subpackage and move the contents
+     Removed the ``plasmapy.physics`` subpackage and moved the contents
      into `plasmapy.formulary`.
 
 * Changelog entries are not required for changes that are sufficiently
@@ -114,25 +116,22 @@ go to the top-level directory of your local clone of PlasmaPy and run:
 
    pip install -r requirements.txt
 
-To print out a preview of the changelog, run
+To print out a preview of the changelog, run:
 
 .. code-block:: shell
 
    towncrier --draft
 
 
-.. Please try to use Sphinx intersphinx using backticks.
 
-.. Each file should be named like ``<PULL REQUEST>.<TYPE>.rst``, where ``<PULL
-REQUEST>`` is a pull request number and ``<TYPE>`` is one of:
 
-.. So for example: ``123.feature.rst``, ``456.bugfix.rst``.
+To turn changelog entries into a :file:`CHANGELOG.rst` file for the
+0.6.0 release, run:
 
-.. If you are unsure what pull request type to use, don't hesitate to ask in your
-PR.
+.. code-block:: shell
 
-Note that the ``towncrier`` tool will automatically reflow your text, so it
-will work best if you stick to a single paragraph, but multiple sentences and
-links are OK and encouraged.  You can install ``towncrier`` and then run
-``towncrier --draft`` if you want to get a preview of how your change will look
-in the final release notes.
+   towncrier --version v0.6.0
+
+The
+
+Configuration files for towncrier_ are in :file:`pyproject.toml`.
