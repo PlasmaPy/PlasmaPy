@@ -847,19 +847,47 @@ class IonizationState:
 
         return states_info
 
-    def average_particle(self, include_neutrals: bool = True) -> CustomParticle:
+    def average_particle(
+        self,
+        *,
+        include_neutrals: bool = True,
+        use_rms_charge=False,
+        use_rms_mass=False,
+    ) -> CustomParticle:
         """
         Return a `~plasmapy.particles.particle_class.CustomParticle`
-        instance representing the mean particle in this ionization state.
+        instance representing the average particle in this ionization state.
+
+        By default, the weighted mean will be used as the average, with
+        the ionic fractions as the weights. If ``use_rms_charge`` or
+        ``use_rms_mass`` is `True`, then this method will return the root
+        mean square of the charge or mass, respectively.
 
         Parameters
         ----------
-        include_neutrals : `bool`, optional
+        include_neutrals : `bool`, optional, keyword-only
             If `True`, include neutrals when calculating the mean values
-            of the different particles.  If `False`, include only ions.
+            of the different particles.  If `False`, exclude neutrals.
             Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
         """
-        return self.ions.average_particle()
+        min_charge = 0 if include_neutrals else 1
+
+        particle_list = self.to_list()[min_charge:]
+        abundances = self.abundances[min_charge:]
+
+        return particle_list.average_particle(
+            abundances=abundances,
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+        )
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
