@@ -1,0 +1,2 @@
+Add the `~plasmapy.particles.ionization_state.IonizationState.average_particle`
+method to |IonizationState|.
