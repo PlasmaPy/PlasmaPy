@@ -1,6 +1,6 @@
 """
 This module contains functionality for calculating various numerical
-solutions to the hollweg dispersion relation
+solutions to Hollweg's two fluid dispersion relation
 """
 
 import astropy.units as u
@@ -39,8 +39,10 @@ def hollweg(
 
     r"""
     Using the equation provided by Bellan 2012, this function
-    calculates the numerical solution to the dispersion relation
-    presented by Hollweg 1999.
+    calculates the numerical solution to the two fluid dispersion relation
+    presented by Hollweg 1999. This dispersion relation assumes
+    :math:`\omega/\omega_{\rm ci} \ll 1`.
+    
 
     Parameters
     ----------
@@ -115,6 +117,12 @@ def hollweg(
 
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When the computed wave frequencies violate the
+        :math:`\omega/\omega_{\rm ci} \ll 1` assumption of the dispersion relation.
 
     Notes
     -----
