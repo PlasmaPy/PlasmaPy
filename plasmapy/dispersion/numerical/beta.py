@@ -5,22 +5,23 @@ import astropy.units as u
 import astropy.constants as const
 from plasmapy.formulary import parameters as pfp
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.particles import *
 from sympy import Symbol
 from sympy.solvers import solve
 
 #@validate_quantities(
 #    B={"can_be_negative": False},
 #    k={"can_be_negative": False},
-#    ions={}
-#    omega_ions={"can_be_negative": False,},
+#    omega_p={"can_be_negative": False,},
+#    omega_e={"can_be_negative": False,}
+#    omega_alpha={}
 #    theta={},
 #) equives here
 def cold_plasma_function_solver(
     B: u.T,
     k: u.rad/u.m,
-    ions: str,
-    omega_ions:u.rad/u.s,
+    omega_p: u.rad/u.s,
+    omega_e:u.rad/u.s,
+    omega_alpha:u.rad/u.s,
     theta: u.rad,
 ):
     
@@ -40,10 +41,8 @@ def cold_plasma_function_solver(
         
     k : single value or 1 D array astropy ~astropy.units.Quantity
         Value of the wavenumber in units convertible to :math:'rad/m'.
-
-    ions: single
     
-    omega_ions: single value or 1 D array astropy ~astropy.units.Quantity
+    omega_p,e,alpha: single value or 1 D array astropy ~astropy.units.Quantity
         Frequency value for the associated ion in units convertible to :math:'rad/s'.
         
     theta: single value or 1 D array astropy ~astropy.units.Quantity
@@ -104,6 +103,7 @@ def cold_plasma_function_solver(
     The prediction of :math:'k \to 0' occurs when P, R or L cut off and predicts
     :math:'k \to \inf' for perpendicualr propagation durring wave resonance :math:'S \to 0'.   
         
+        
     References
     ----------
     .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
@@ -119,15 +119,17 @@ def cold_plasma_function_solver(
     -------
     >>>    from astropy import units as u
     >>>    from numerical.cold_plasma_function_solver import cold_plasma_function_solver
-    >>>        inputs = {
-    ...           "B": 8.3e-9 * u.T,
-    ...           "k": 0.001* u.rad / u.m,
-    ...           "ions": ['e-','H+'],
-    ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
-    ...           "theta": 30 * u.deg,
-    >>>        }
-    >>>        w = cold_plasma_function_solver(**inputs)
-
+    >>>    inputs = {
+    ...       "B": 8.3e-9 * u.T,
+    ...       "k": 0.01 * u.rad / u.m,
+    ...       "omega_p": 1.6e6 * u.rad / u.s,
+    ...       "omega_e": 4.0e5 * u.rad / u.s,
+    ...       "omega_alpha": 3.0e5 * u.rad / u.s,
+    ...       "theta": 30 * u.deg,
+    ...    }
+    >>>    cold_plasma_function_solution(**inputs)
+    >>>    omegas
+    {}
         
     
     """
@@ -142,26 +144,6 @@ def cold_plasma_function_solver(
                 f"shape {value.shape}."
                 )
         locals()[arg_name] = value
-
-    if omega_ions.ndim == 0 and len(ions) == 0:
-        omega_int = True
-        lengths = 1
-    elif omega_ions.ndim == 1 and len(ions) == len(omega_ions):
-        omega_int = False
-        lengths = min(len(omega_ions), len(ions))
-    else:
-        raise ValueError(
-            f"Arguement 'omega_ions' and 'ions' need to be the same quantity type,"
-            f"got value of shape {omega_ions.shape} and {ions.shape}."
-        )
-
-
-    for i in range(lengths):
-        if type(ions[i]) is not str:
-            raise TypeError(
-                f"Arguement 'ions[i]' need to be particles of string type"
-                f"got value of type {ions[i].type}."
-            )
     
     k = k.squeeze()
     if not (k.ndim == 0  or k.ndim == 1):
@@ -170,11 +152,23 @@ def cold_plasma_function_solver(
             f"got a value of shape {k.shpae}."
         )
 
-    omega_ions = omega_ions.squeeze()
-    if not (omega_ions.ndim == 0 or omega_ions.ndim == 1):
+    omega_p = omega_p.squeeze()
+    omega_e = omega_e.squeeze()
+    omega_alpha = omega_alpha.squeeze() 
+    if not (omega_e.ndim == 0 or omega_e.ndim == 1):
         raise TypeError(
             f"Arguement 'omega_e' needs to be a single value or a single valued 1D array astropy Quantity,"   
             f"got value of shape {omega_e.shape}."
+        )
+    if not (omega_p.ndim == 0 or omega_p.ndim == 1):
+        raise TypeError(
+            f"Arguement 'omega_p' needs to be a single value or a single valued 1D array astropy Quantity,"   
+            f"got value of shape {omega_p.shape}."
+        )
+    if not (omega_alpha.ndim == 0 or omega_alpha.ndim == 1):
+        raise TypeError(
+            f"Arguement 'omega_alpha' needs to be a single value or a single valued 1D array astropy Quantity,"   
+            f"got value of shape {omega_alpha.shape}."
         )
         
     theta = theta.squeeze()
@@ -204,24 +198,46 @@ def cold_plasma_function_solver(
             f"Arguement 'k' needs to be a single value or 1D array astropy Quantity,"
             f"got value of shape {k.shape}."
         )
+       
+    component_frequency = np.tile(0*u.rad/u.s, 3)
+    component_frequency[0] = pfp.gyrofrequency(B=B, particle='H+', signed=False)
+    component_frequency[1] = pfp.gyrofrequency(B=B, particle='e-', signed=True)
+    component_frequency[2] = pfp.gyrofrequency(B=B, particle='alpha', signed=False)
         
-    sum_len = lengths
+    lengths = []
+    if omega_p.ndim == 0 and omega_e.ndim == 0 and omega_alpha.ndim == 0:
+        omega_int = True
+        lengths.append(1)
+    elif omega_p.ndim == 1 and omega_e.ndim == 1 and omega_alpha.ndim == 1:
+        omega_int = False
+        lengths.append(len(omega_p))
+        lengths.append(len(omega_e))
+        lengths.append(len(omega_alpha))
+    else:
+        raise ValueError(
+            f"Arguement 'omega_p', 'omega_alpha' and 'omega_e' need to be the same quantity type,"
+            f"got value of shape {omega_p.shape}, {omega_alpha} and {omega_e.shape}."
+        )
+    
+    sum_len = min(lengths)
 
-    plasma_freq = np.zeros(sum_len)
-
-    component_frequency = np.tile(0*u.rad/u.s, sum_len)
-    for i in range(sum_len):
-        component_frequency[i] = pfp.gyrofrequency(B=B, particle=ions[i], signed=True)
+    plasma_proton = np.zeros(sum_len)
+    plasma_electron = np.zeros(sum_len)
+    plasma_alpha = np.zeros(sum_len)
     
     if omega_int == False:
         for i in range(sum_len):
-            plasma_freq[i] = float(omega_ions[i].value)
+            plasma_proton[i] = float(omega_p[i].value)
+            plasma_electron[i] = float(omega_e[i].value)
+            plasma_alpha[i] = float(omega_alpha[i].value)
     elif omega_int == True:
-        plasma_freq[0] = float(omega_ions.value)
+        plasma_proton[0] = float(omega_p.value)
+        plasma_electron[0] = float(omega_e.value)
+        plasma_alpha[0] = float(omega_alpha.value)
     else:
         raise TypeError(
-            f"Arguement 'omega_ions', quantity type could not be deterimined,"
-            f"got value of shape {omega_ions.shape}."
+            f"Arguement 'omega_p', 'omega_alpha' and 'omega_e' quantity type could not be deterimined,"
+            f"got value of shape {omega_p.shape}, {omega_alpha.shape} and {omega_e.shape}."
         )
 
     #---#
@@ -229,6 +245,10 @@ def cold_plasma_function_solver(
     #---#
     
     w = Symbol('w')
+    
+    prot_w = (component_frequency[0].value)
+    elec_w = (component_frequency[1].value)
+    alpha_w = (component_frequency[2].value)
 
     S = 1
     P = 1
@@ -237,9 +257,9 @@ def cold_plasma_function_solver(
     omegas = {}
 
     for i in range(sum_len):
-        S =+ ((plasma_freq[i]**2)/(w**2+(component_frequency[i].value)**2)) 
-        P =+ ((plasma_freq[i]**2)/(w**2))
-        D =+ ((plasma_freq[i]**2)/(w**2+(component_frequency[i].value)**2))*((component_frequency[i].value)/(w)) 
+        S =+ ((plasma_proton[i]**2)/(w**2+prot_w**2)) + ((plasma_electron[i]**2)/(w**2+elec_w**2)) + ((plasma_alpha[i]**2)/(w**2+alpha_w**2))
+        P =+ ((plasma_proton[i]**2)/(w**2)) + ((plasma_electron[i]**2)/(w**2)) + ((plasma_alpha[i]**2)/(w**2))
+        D =+ ((plasma_proton[i]**2)/(w**2+prot_w**2))*((prot_w)/(w)) + ((plasma_electron[i]**2)/(w**2+elec_w**2))*((elec_w)/(w)) #+ ((plasma_alpha[i]**2)/(w**2+alpha_w**2))*((alpha_w)/(w))
 
     R = S + D
     L = S - D
