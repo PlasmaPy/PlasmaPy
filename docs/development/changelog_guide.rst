@@ -1,3 +1,5 @@
+.. _Changelog Guide:
+
 ***************
 Changelog Guide
 ***************
