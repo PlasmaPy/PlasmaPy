@@ -28,10 +28,8 @@ Pre-release
   Only pull requests directly related to the release should be merged during
   during the code freeze.
 
-* Revise changelog entries to make sure that they
-
-Create a pull request to revise changelog entries, correct reST_ links, and
-
+* Revise changelog entries to make sure that they are understandable and
+  that reST_ links are working correctly.
 
 Release
 -------
