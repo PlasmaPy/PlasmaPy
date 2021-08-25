@@ -1,0 +1,1 @@
+Bump the Python_ version `Read the Docs`_ builds on from ``3.7`` to ``3.8``.
