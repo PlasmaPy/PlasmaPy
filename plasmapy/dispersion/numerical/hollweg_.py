@@ -42,7 +42,6 @@ def hollweg(
     calculates the numerical solution to the two fluid dispersion relation
     presented by Hollweg 1999. This dispersion relation assumes
     :math:`\omega/\omega_{\rm ci} \ll 1`.
-    
 
     Parameters
     ----------
