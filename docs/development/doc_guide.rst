@@ -549,7 +549,7 @@ Here is an example docstring in the numpydoc_ format:
       output that follows each function call.
       """
       if np.isinf(a) or np.isinf(b):
-          raise ValueError("Cannot perform substraction operations involving infinity.")
+          raise ValueError("Cannot perform subtraction operations involving infinity.")
 
       warnings.warn("The subtract function encountered a nan value.", UserWarning)
 
