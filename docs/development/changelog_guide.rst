@@ -80,7 +80,7 @@ Changelog guidelines
 
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
-  ``` `~plasmapy.particles.particle_class.Particle` ``` to refer to
+  ```~plasmapy.particles.particle_class.Particle``` to refer to
   |Particle|. The tilde is used to hide all but the name of the object.
 
 * Show the full namespace for objects that have been removed or moved,
