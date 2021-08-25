@@ -1,3 +1,5 @@
+.. _Release Guide:
+
 *************
 Release Guide
 *************
