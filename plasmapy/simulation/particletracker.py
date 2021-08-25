@@ -170,7 +170,8 @@ class ParticleTracker:
         Notes
         ----------
         The Boris algorithm is the standard energy conserving algorithm for
-        particle movement in plasma physics. See [1]_ for more details.
+        particle movement in plasma physics [Boris1970]_. See
+        [BirdsallLangdon2004]_ for more details.
 
         Conceptually, the algorithm has three phases:
 
@@ -181,11 +182,6 @@ class ParticleTracker:
 
         This ends up causing the magnetic field action to be properly
         "centered" in time, and the algorithm conserves energy.
-
-        References
-        ----------
-        .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-               Simulation", 2004, p. 58-63
         """
         b, e = self._interpolate_fields()
 
