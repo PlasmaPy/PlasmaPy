@@ -485,7 +485,7 @@ def run_fit(
     # Create the synthetic data
     alpha, Skw = thomson.spectral_density(
         wavelengths,
-        probe_wavelength,
+        probe_wavelength * u.m,
         n * u.m ** -3,
         Te * u.eV,
         Ti * u.eV,
@@ -538,13 +538,13 @@ def test_fit_epw_single_species():
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
     settings = {}
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+"]
 
     params = Parameters()
-    params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
+    params.add("n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6)
     params.add("Te_0", value=10, vary=True, min=5, max=20)
     params.add("Ti_0", value=20, vary=False, min=5, max=70)
 
@@ -561,13 +561,13 @@ def test_fit_epw_multi_species():
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
     settings = {}
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+"]
 
     params = Parameters()
-    params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
+    params.add("n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6)
     params.add("Te_0", value=10, vary=True, min=5, max=20)
     params.add("Te_1", value=35, vary=True, min=5, max=20)
     params.add("Ti_0", value=20, vary=False, min=5, max=70)
@@ -588,7 +588,7 @@ def test_fit_iaw_single_species():
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
     settings = {}
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+"]
@@ -596,7 +596,7 @@ def test_fit_iaw_single_species():
     settings["electron_vdir"] = np.array([[1, 0, 0]])
 
     params = Parameters()
-    params.add("n", value=2e17, vary=False)
+    params.add("n", value=2e17 * 1e6, vary=False)
     params.add("Te_0", value=10, vary=False, min=5, max=20)
     params.add("Ti_0", value=20, vary=True, min=5, max=70)
     params.add("ifract_0", value=1.0, vary=False, min=0.2, max=0.8)
@@ -616,7 +616,7 @@ def test_fit_iaw_multi_species():
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
     settings = {}
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+", "H+", "C-12 +4"]
@@ -624,7 +624,7 @@ def test_fit_iaw_multi_species():
     settings["electron_vdir"] = np.array([[0, 0.2, 0.7]])
 
     params = Parameters()
-    params.add("n", value=1e19, vary=False)
+    params.add("n", value=1e19 * 1e6, vary=False)
     params.add("Te_0", value=500, vary=False, min=5, max=1000)
     params.add("Ti_0", value=200, vary=True, min=5, max=1000)
     params.add("Ti_1", value=500, vary=True, min=5, max=1000)
@@ -651,7 +651,7 @@ def test_fit_noncollective_single_species():
     scatter_vec = np.array([np.cos(scattering_angle), np.sin(scattering_angle), 0])
 
     settings = {}
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
     settings["probe_vec"] = probe_vec
     settings["scatter_vec"] = scatter_vec
     settings["ion_species"] = ["H+"]
@@ -659,7 +659,7 @@ def test_fit_noncollective_single_species():
     settings["electron_vdir"] = np.array([[1, 0, 0]])
 
     params = Parameters()
-    params.add("n", value=2e17, vary=True, min=8e16, max=6e17)
+    params.add("n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6)
     params.add("Te_0", value=10, vary=True, min=5, max=20)
     params.add("Ti_0", value=120, vary=False, min=5, max=70)
     params.add("efract_0", value=1.0, vary=False)
@@ -710,7 +710,7 @@ def test_fit_with_minimal_parameters():
     settings["ion_species"] = ion_species
 
     params = Parameters()
-    params.add("n", value=n.to(u.cm ** -3).value, vary=False)
+    params.add("n", value=n.to(u.m ** -3).value, vary=False)
     params.add("Ti_0", value=Ti.value, vary=True, min=5, max=70)
 
     # Try creating model: will raise exception because required values
@@ -719,7 +719,7 @@ def test_fit_with_minimal_parameters():
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
     # Add back in the required values
-    settings["probe_wavelength"] = probe_wavelength
+    settings["probe_wavelength"] = probe_wavelength.to(u.m).value
 
     # Still raises an exception because Te_0 is still missing
     with pytest.raises(KeyError):
@@ -745,7 +745,7 @@ if __name__ == "__main__":
     # test_collective_spectrum()
     # test_non_collective_spectrum()
     # test_fit_with_minimal_parameters()
-    # test_fit_epw_single_species()
+    test_fit_epw_single_species()
     # test_fit_epw_multi_species()
     # test_fit_iaw_single_species()
     # test_fit_iaw_multi_species()

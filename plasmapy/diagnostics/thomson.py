@@ -530,15 +530,15 @@ def spectral_density_model(wavelengths, settings, params):
     ----------
 
 
-    wavelengths : u.Quantity
-        Wavelength array
+    wavelengths : np.ndarray
+        Wavelength array, in meters.
 
 
     settings : dict
         A dictionary of non-variable inputs to the spectral density function
         which must include the following:
 
-            - probe_wavelength: Probe wavelength in nm
+            - probe_wavelength: Probe wavelength in meters
             - probe_vec : (3,) unit vector in the probe direction
             - scatter_vec: (3,) unit vector in the scattering direction
             - ion_species : list of Particle strings describing each ion species
@@ -554,7 +554,7 @@ def spectral_density_model(wavelengths, settings, params):
 
     params : `lmfit.Parameters` object
         A Parameters object that must contains the following variables
-            - n: 0th order density in cm^-3
+            - n: 0th order density in m^-3
             - Te_e# : Temperature in eV
             - Ti_i# : Temperature in eV
 
@@ -701,12 +701,6 @@ def spectral_density_model(wavelengths, settings, params):
         inst_fcn_arr = inst_fcn(eval_w)
         inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
         settings["inst_fcn_arr"] = inst_fcn_arr
-
-    # Convert and strip units from settings if necessary
-    val = {"probe_wavelength": u.m}
-    for k, unit in val.items():
-        if hasattr(settings[k], "unit"):
-            settings[k] = settings[k].to(unit).value
 
     # TODO: raise an exception if the number of any of the ion or electron
     # quantities isn't consistent with the number of that species defined
