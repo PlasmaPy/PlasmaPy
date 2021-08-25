@@ -43,7 +43,7 @@ def boris_push(x, v, B, E, q, m, dt):
     ----------
     The Boris algorithm [Boris1970]_ is the standard energy conserving
     algorithm for particle movement in plasma physics. See
-    [BirdsallLangdon2004]_ for more details, and [Brieda2004]_ for a
+    [BirdsallLangdon2004]_ for more details, and [Brieda2011]_ for a
     nice overview.
 
     Conceptually, the algorithm has three phases:
