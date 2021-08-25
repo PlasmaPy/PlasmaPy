@@ -1,0 +1,2 @@
+Added a page in the contributor guide that describes how to add
+changelog entries.
