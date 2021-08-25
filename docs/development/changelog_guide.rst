@@ -8,8 +8,8 @@ entries before they can be merged, except when the changes are very
 minor. PlasmaPy uses towncrier_ to convert the changelog entries into
 the full changelog.
 
-Creating a changelog entry
-==========================
+Adding a changelog entry
+========================
 
 Please follow these steps to add a changelog entry after submitting a
 pull request to PlasmaPy's ``main`` branch.
@@ -115,6 +115,8 @@ go to the top-level directory of your local clone of PlasmaPy and run:
 
    pip install -r requirements.txt
 
+Configuration files for towncrier_ are in :file:`pyproject.toml`.
+
 To run towncrier_, enter the top-level directory of PlasmaPy's
 repository. To print out a preview of the changelog, run:
 
@@ -129,8 +131,6 @@ release, run:
 
    towncrier --version v0.7.0
 
-This will create :file:`CHANGELOG.rst` in the top-level directory. The
-full steps to update the changelog are described in the
-:ref:`Release Guide`.
-
-Configuration files for towncrier_ are in :file:`pyproject.toml`.
+This will create :file:`CHANGELOG.rst` in the top-level directory, with
+the option to delete the individual changelog entry files. The full
+steps to update the changelog are described in the :ref:`Release Guide`.
