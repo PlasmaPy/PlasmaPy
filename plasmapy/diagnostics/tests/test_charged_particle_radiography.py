@@ -199,6 +199,7 @@ def run_mesh_example(
     return sim
 
 
+@pytest.mark.slow
 def test_1D_deflections():
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
@@ -211,6 +212,7 @@ def test_1D_deflections():
     assert np.isclose(loc.si.value, 0.0335, 0.005)
 
 
+@pytest.mark.slow
 def test_coordinate_systems():
     """
     Check that specifying the same point in different coordinate systems
@@ -240,6 +242,7 @@ def test_coordinate_systems():
     assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
 
 
+@pytest.mark.slow
 def test_input_validation():
     """
     Intentionally raise a number of errors.
@@ -367,6 +370,7 @@ def test_create_particles():
     sim.create_particles(1e3, 15 * u.MeV, particle="e")
 
 
+@pytest.mark.slow
 def test_load_particles():
 
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
@@ -399,6 +403,7 @@ def test_load_particles():
     sim.run(field_weighting="nearest neighbor")
 
 
+@pytest.mark.slow
 def test_run_options():
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -451,6 +456,7 @@ def test_run_options():
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
+@pytest.mark.slow
 def test_synthetic_radiograph():
 
     # CREATE A RADIOGRAPH OBJECT
@@ -508,6 +514,7 @@ def test_saving_output(tmp_path):
     assert np.all(res1["x"] == res2["x"])
 
 
+@pytest.mark.slow
 def test_gaussian_sphere_analytical_comparison():
     """
     This test runs a known example problem and compares to a theoretical
@@ -603,6 +610,7 @@ def test_gaussian_sphere_analytical_comparison():
     assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
 
 
+@pytest.mark.slow
 def test_add_wire_mesh():
 
     # ************************************************************

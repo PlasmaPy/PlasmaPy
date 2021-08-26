@@ -135,7 +135,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
 
 lambdaDB_ = deBroglie_wavelength
-""" Alias to :func:`deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -194,7 +194,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
 
 lambdaDB_th_ = thermal_deBroglie_wavelength
-""" Alias to :func:`thermal_deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.thermal_deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -261,7 +261,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
 
 Ef_ = Fermi_energy
-""" Alias to :func:`Fermi_energy`. """
+"""Alias to `~plasmapy.formulary.quantum.Fermi_energy`."""
 
 
 @validate_quantities(
