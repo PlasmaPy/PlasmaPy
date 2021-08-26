@@ -149,8 +149,6 @@ by running
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
 
-[Purposefully_put_in_a_missing_citation_to_get_a_warning_message]_
-
 .. _from PyPI: https://pypi.org/project/plasmapy/
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls
