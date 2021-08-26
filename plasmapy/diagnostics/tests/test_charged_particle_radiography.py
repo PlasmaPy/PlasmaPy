@@ -468,8 +468,8 @@ def test_synthetic_radiograph():
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
     # Verify exception raised if we try to make a synthetic radiograph before
-    # running
-    with pytest.raises(ValueError):
+    # running (error is raised by sim.results_dict)
+    with pytest.raises(RuntimeError):
         h, v, i = cpr.synthetic_radiograph(sim)
 
     sim.run(field_weighting="nearest neighbor")

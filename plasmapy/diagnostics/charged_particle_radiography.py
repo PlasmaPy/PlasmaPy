@@ -1309,16 +1309,9 @@ def synthetic_radiograph(
         The number of particles counted in each bin of the histogram.
     """
 
+    # results_dict will raise an error if the simulation has not been run.
     if isinstance(obj, Tracker):
-
-        if hasattr(obj, "results_dict"):
-            d = obj.results_dict
-        else:
-            raise ValueError(
-                "The cpr.Tracker object must be run "
-                "using the run() method before a synthetic_radiograph "
-                "can be created."
-            )
+        d = obj.results_dict
 
     # Check if dictioanry-like (dict or npz file)
     elif isinstance(obj, dict):
