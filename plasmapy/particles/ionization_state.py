@@ -851,8 +851,8 @@ class IonizationState:
         self,
         *,
         include_neutrals: bool = True,
-        use_rms_charge=False,
-        use_rms_mass=False,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
     ) -> CustomParticle:
         """
         Return a `~plasmapy.particles.particle_class.CustomParticle`
