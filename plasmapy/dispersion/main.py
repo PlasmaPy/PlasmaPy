@@ -1,7 +1,7 @@
 from astropy import units as u
 from numerical.cold_plasma_function_solver import cold_plasma_function_solver
 
-k = 0.001 
+k = [0.001,0.005] 
 
 inputs = {
    "B": 8.3e-9 * u.T,
@@ -12,5 +12,7 @@ inputs = {
 }
 
 w = cold_plasma_function_solver(**inputs)
-print(w[k])
+for i in range(len(k)):
+    print(w[k[i]])
+    print(w[k[i]][0])
 
