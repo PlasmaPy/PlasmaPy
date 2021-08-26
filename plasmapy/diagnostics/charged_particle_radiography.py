@@ -143,6 +143,9 @@ class Tracker:
         # by _apply_wire_mesh
         self.mesh_list = []
 
+        # This flag records whether the simulation has been run
+        self._has_run = False
+
         # ************************************************************************
         # Setup the source and detector geometries
         # ************************************************************************
@@ -163,16 +166,6 @@ class Tracker:
         # Magnification
         self.mag = 1 + np.linalg.norm(self.detector) / np.linalg.norm(self.source)
         self._log(f"Magnification: {self.mag}")
-
-        # Calculate the size of the grid imaged onto the detector
-        # (used for auto-choosing the size keyword when making histograms)
-        self.grid_scale_length = np.max(
-            [
-                np.max(np.abs(self.grid.pts0.to(u.m).value)),
-                np.max(np.abs(self.grid.pts1.to(u.m).value)),
-                np.max(np.abs(self.grid.pts2.to(u.m).value)),
-            ]
-        )
 
         # Check that source-detector vector actually passes through the grid
         if not self.grid.vector_intersects(self.source * u.m, self.detector * u.m):
@@ -358,6 +351,9 @@ class Tracker:
             between the source and the object grid.
 
         """
+
+        # Simulation has not run, because adding mesh changes the simulation
+        self._has_run = False
 
         location = _coerce_to_cartesian_si(location)
         wire_radius = wire_diameter.si.value / 2
@@ -610,6 +606,9 @@ class Tracker:
         """
         self._log("Creating Particles")
 
+        # Simulation has not run, because creating new particles changes the simulation
+        self._has_run = False
+
         # Load inputs
         self.nparticles = int(nparticles)
         self.particle_energy = particle_energy.to(u.eV).value
@@ -692,6 +691,10 @@ class Tracker:
 
 
         """
+
+        # Simulation has not run, because loading new particles changes the simulation
+        self._has_run = False
+
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -1083,10 +1086,6 @@ class Tracker:
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
-        # Store the particle positions in the detector plane in a dictionary
-        # that can be easily exported or saved
-        self._store_result()
-
         # Log a summary of the run
 
         self._log("Run completed")
@@ -1104,9 +1103,77 @@ class Tracker:
             f"{self.fract_deflected*100}%"
         )
 
-        return self.output
+        # Simulation has not run, because creating new particles changes the simulation
+        self._has_run = True
 
-    def _store_result(self):
+        return self.results_dict
+
+    @property
+    def results_dict(self):
+        r"""
+        A dictionary containing the results of the simulation.
+
+
+        Contents
+        --------
+
+        'source' : `~numpy.ndarray`
+            The source location vector, in meters.
+
+        'detector' : `~numpy.ndarray`
+            The detector location vector in meters.
+
+        'mag' : float
+            The system magnification.
+
+        'nparticles' : int
+            Number of particles in the simulation.
+
+        'max_deflection' : `~astropy.units.Quantity`
+            The maximum deflection experienced by a particle
+            in the simulation, in radians.
+
+        'xloc' :  `~numpy.ndarray`, [nparticles,]
+            The x-coordinate location where each particle hit the
+            detector plane, in meters.
+
+        'yloc' :  `~numpy.ndarray`, [nparticles,]
+            The y-coordinate location where each particle hit the
+            detector plane, in meters.
+
+        'v' : `~numpy.ndarray`, [nparticles, 3]
+            The velocity of each particle when it hit the detector plane,
+            in meters per second. The velocity is in a coordinate system
+            relative to the detector plane. The components are
+            [normal, horizontal, vertical] relative to the detector plane
+            coordinates.
+
+
+        'xloc0' :  `~numpy.ndarray`, [nparticles,]
+            The x-coordinate location where each particle would have hit the
+            detector plane if the grid fields were zero, in meters. Useful
+            for calculating the source profile.
+
+        'yloc0' :  `~numpy.ndarray`, [nparticles,]
+            The y-coordinate location where each particle would have hit the
+            detector plane if the grid fields were zero, in meters. Useful
+            for calculating the source profile.
+
+        'v0' : `~numpy.ndarray`, [nparticles, 3]
+            The velocity of each particle when it hit the detector plan if the
+            grid fields were zero, in meters per second. The velocity is in a
+            coordinate system relative to the detector plane. The components are
+            [normal, horizontal, vertical] relative to the detector plane
+            coordinates.
+
+        """
+
+        if not self._has_run:
+            raise RuntimeError(
+                "The simulation must be run before a results "
+                "dictionary can be created."
+            )
+
         # Determine locations of points in the detector plane using unit
         # vectors
         xloc = np.dot(self.x - self.detector, self.det_hdir)
@@ -1115,29 +1182,35 @@ class Tracker:
         x0loc = np.dot(self.x0 - self.detector, self.det_hdir)
         y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
 
-        # Calculate the kinetic energy of each particle
-        vmag = np.linalg.norm(self.v, axis=-1)
-        # relativistic_energy includes the rest mass energy
-        ke = (
-            relativistic_energy(self.m * u.kg, vmag * u.m / u.s)
-            - self.m * self._c ** 2 * u.J
-        )
-        ke = ke.to(u.eV).value
+        # Determine the velocity components of each particle in the
+        # coordinate frame of the detector, eg. the components of v are
+        # now [normal, det_hdir, det_vdir]
+        v = np.zeros(self.v.shape)
+        v[:, 0] = np.dot(self.v, self.det_n)
+        v[:, 1] = np.dot(self.v, self.det_hdir)
+        v[:, 2] = np.dot(self.v, self.det_vdir)
+
+        v0 = np.zeros(self.v.shape)
+        v0[:, 0] = np.dot(self.v_init, self.det_n)
+        v0[:, 1] = np.dot(self.v_init, self.det_hdir)
+        v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
         # Store output values in a dictionary
-        self.output = dict(
+        result_dict = dict(
             source=self.source,
             detector=self.detector,
             mag=self.mag,
             nparticles=self.nparticles,
-            grid_scale_length=self.grid_scale_length,
             max_deflection=self.max_deflection,
             x=xloc,
             y=yloc,
+            v=v,
             x0=x0loc,
             y0=y0loc,
-            ke=ke,
+            v0=v0,
         )
+
+        return result_dict
 
     def save_result(self, path):
         """
@@ -1151,7 +1224,8 @@ class Tracker:
             The path to save the output file.
 
         """
-        np.savez(path, **self.output)
+
+        np.savez(path, **self.results_dict)
 
     @property
     def max_deflection(self):
@@ -1237,8 +1311,8 @@ def synthetic_radiograph(
 
     if isinstance(obj, Tracker):
 
-        if hasattr(obj, "output"):
-            d = obj.output
+        if hasattr(obj, "results_dict"):
+            d = obj.results_dict
         else:
             raise ValueError(
                 "The cpr.Tracker object must be run "
@@ -1269,9 +1343,9 @@ def synthetic_radiograph(
         yloc = d["y"]
 
     if size is None:
-        # If a detector size is not given, choose lengths based on the
-        # dimensions of the grid
-        w = d["grid_scale_length"] * d["mag"]
+        # If a detector size is not given, choose a size based on the
+        # particle positions
+        w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
 
         # The factor of 5 here is somewhat arbitrary: we just want a
         # region a few times bigger than the image of the grid on the

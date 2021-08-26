@@ -484,7 +484,7 @@ def test_synthetic_radiograph():
     h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
 
     # Test running from dictionary input
-    h, v, i = cpr.synthetic_radiograph(sim.output)
+    h, v, i = cpr.synthetic_radiograph(sim.results_dict)
 
     # Verify exception if something other than sim or dict is given as argument
     with pytest.raises(ValueError):
@@ -500,10 +500,15 @@ def test_saving_output(tmp_path):
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(grid, source, detector, verbose=False)
+
+    # Test that output cannot be saved prior to running
+    with pytest.raises(RuntimeError):
+        sim.results_dict
+
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
 
-    res1 = sim.output
+    res1 = sim.results_dict
 
     # Save result
     sim.save_result(path)
@@ -512,6 +517,12 @@ def test_saving_output(tmp_path):
     res2 = dict(np.load(path, "r", allow_pickle=True))
 
     assert np.all(res1["x"] == res2["x"])
+
+    # Test that changing the particles then requires the simulation to be
+    # run again prior to saving output
+    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    with pytest.raises(RuntimeError):
+        sim.results_dict
 
 
 @pytest.mark.slow
