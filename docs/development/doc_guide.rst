@@ -109,7 +109,7 @@ following example:
 
    tox -e build_docs -- -j=auto -q
 
-The ``-j=auto`` option tells `sphinx_build`_ to build the documentation
+The ``-j=auto`` option tells `sphinx-build`_ to build the documentation
 in parallel, with the number of processes being automatically
 determined. The ``-q`` flag makes `sphinx-build`_ print out only
 warnings and errors, which makes them easier to find and debug.
