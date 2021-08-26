@@ -1113,10 +1113,6 @@ class Tracker:
         r"""
         A dictionary containing the results of the simulation.
 
-
-        Contents
-        --------
-
         'source' : `~numpy.ndarray`
             The source location vector, in meters.
 
@@ -1147,7 +1143,6 @@ class Tracker:
             relative to the detector plane. The components are
             [normal, horizontal, vertical] relative to the detector plane
             coordinates.
-
 
         'xloc0' :  `~numpy.ndarray`, [nparticles,]
             The x-coordinate location where each particle would have hit the
