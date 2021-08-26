@@ -18,6 +18,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
@@ -852,22 +853,58 @@ class IonizationStateCollection:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def mean_particle(self, include_neutrals: bool = True) -> CustomParticle:
+    def mean_particle(
+        self,
+        include_neutrals: bool = True,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> CustomParticle:
         """
         Return a `~plasmapy.particles.particle_class.CustomParticle`
         instance representing the mean particle included across all
         ionization states.
 
+        By default, the weighted mean will be used as the average, with
+        the ionic fractions as the weights. If ``use_rms_charge`` or
+        ``use_rms_mass`` is `True`, then this method will return the root
+        mean square of the charge or mass, respectively.
+
         Parameters
         ----------
-        include_neutrals : `bool`, optional
+        include_neutrals : `bool`, optional, keyword-only
             If `True`, include neutrals when calculating the mean values
-            of the different particles.  If `False`, include only ions.
+            of the different particles.  If `False`, exclude neutrals.
             Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
         """
-        # If the relative abundances are NaN, then this should return a
-        # `CustomParticle` with NaNs for the charge and mass.
-        pass
+        min_charge = 0 if include_neutrals else 1
+
+        all_particles = ParticleList()
+        all_abundances = []
+
+        for base_particle in self.base_particles:
+
+            ionization_state = self[base_particle]
+            ionic_levels = ionization_state.to_list()[min_charge:]
+            all_particles.extend(ionic_levels)
+
+            base_particle_abundance = self.abundances[base_particle]
+            ionic_fractions = ionization_state.ionic_fractions[min_charge:]
+            ionic_abundances = base_particle_abundance * ionic_fractions
+            all_abundances.extend(ionic_abundances)
+
+        return all_particles.average_particle(
+            include_neutrals=include_neutrals,
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+        )
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
