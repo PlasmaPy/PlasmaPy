@@ -73,6 +73,7 @@ jobs:
             os: ubuntu-latest
             python: 3.8
             toxenv: build_docs
+            toxposargs: -q
 
           - name: Linters
             os: ubuntu-latest
