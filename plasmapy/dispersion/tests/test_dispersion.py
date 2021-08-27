@@ -4,10 +4,10 @@
 
 import numpy as np
 import pytest
-from hypothesis import given
-from hypothesis.strategies import complex_numbers
 
 from astropy import units as u
+from hypothesis import given
+from hypothesis.strategies import complex_numbers
 from numpy import pi as π
 from scipy.special import gamma as Γ
 
@@ -51,13 +51,13 @@ def test_plasma_dispersion_func(w, expected):
 def test_plasma_dispersion_func_symmetry(w):
     r"""Test plasma_dispersion_func against its symmetry properties"""
 
-    # The two symmetry properties of the plasma dispersion function 
+    # The two symmetry properties of the plasma dispersion function
     # are taken from the bottom of page 30 of "NRL Plasma Formulary"
     # by A.S. Richardson (2019)
 
     Z_of_wconj = plasma_dispersion_func(w.conjugate())
     minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
-    
+
     assert np.isclose(Z_of_wconj, minusZ_of_minuswconj, atol=0, rtol=1e-15), (
         "The symmetry property of the plasma dispersion function that "
         f"Z(w*) == -[Z(-w)]* is not met for w = {w}.  Instead, "
@@ -66,7 +66,7 @@ def test_plasma_dispersion_func_symmetry(w):
         f"{minusZ_of_minuswconj}.  "
         "The difference between Z(w*) and -[Z(-w)]* is "
         f"{Z_of_wconj - minusZ_of_minuswconj}."
-        )
+    )
 
     if w.imag > 0:
         should_equal_Z_of_wconj = (
@@ -193,7 +193,7 @@ def test_plasma_dispersion_func_deriv(w, expected):
 def test_plasma_dispersion_func_deriv_characterization(w):
     r"""Test plasma_dispersion_func_deriv against an exact relationship."""
 
-    # The exact analytical relationship comes from the bottom of 
+    # The exact analytical relationship comes from the bottom of
     # page 3 of Fried & Conte (1961).
 
     Z = plasma_dispersion_func(w)
