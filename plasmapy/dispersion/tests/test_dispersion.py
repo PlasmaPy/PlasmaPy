@@ -36,9 +36,7 @@ def test_plasma_dispersion_func(w, expected):
 
     # Many of the tabulated results originally came from the book
     # entitled "The Plasma Dispersion Function: The Hilbert Transform
-    # of the Gaussian" by B. D. Fried and S. D. Conte (1961).  The two
-    # symmetry properties of the plasma dispersion function are at the
-    # bottom of page 2 of this book.
+    # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
 
     Z_of_w = plasma_dispersion_func(w)
 
@@ -54,7 +52,8 @@ def test_plasma_dispersion_func_symmetry(w):
     r"""Test plasma_dispersion_func against its symmetry properties"""
 
     # The two symmetry properties of the plasma dispersion function 
-    # are taken from the bottom of page 2 of Fried & Conte (1961)
+    # are taken from the bottom of page 30 of "NRL Plasma Formulary"
+    # by A.S. Richardson (2019)
 
     Z_of_wconj = plasma_dispersion_func(w.conjugate())
     minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
