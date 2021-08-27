@@ -26,13 +26,13 @@ def cold_plasma_function_solver(
     Calculate the cold plasma function solution by using Bellan 2012, this uses
     the numerical method to find (:math:'\omega') dispersion relation provided 
     by Stix 1992. This dispersion relation also assumes a uniform magnetic field
-    :math: '\mathbf{B_0}', theta is the angle between the magneitc and the normal 
+    :math: '\mathbf{B_0}', theta is the angle between the magnetic and the normal 
     surface of the wave vector. For more information see the **Notes** section below.
     
     Parameters
     ----------
     B : '~astropy.units.Quantity'
-        Value of the magnetiude of the magnetic field in units convertible to :math:'T'.
+        Value of the magnitude of the magnetic field in units convertible to :math:'T'.
         
     k : single value or 1 D array astropy ~astropy.units.Quantity
         Value of the wavenumber in units convertible to :math:'rad/m'.
@@ -52,7 +52,7 @@ def cold_plasma_function_solver(
     omegas : Dictionary astropy ~astropy.units.Quantity
         Presents the wavenumber used to find the value(s) of the cold plasma
         frequencies, (omega), dispersion solver(s) and then the solutions 
-        themsevles.
+        themselves.
         
     Raises
     ------
@@ -98,7 +98,7 @@ def cold_plasma_function_solver(
     The equation is valid for all :math:'\omega' and :math:'\k' providing that 
     :math:'\frac{\omega}{k_{z}} >> \nu_{Te}' with :math:'\nu_{Ti}' and :math:'k_{x}r_{Le,i} << 1'.
     The prediction of :math:'k \to 0' occurs when P, R or L cut off and predicts
-    :math:'k \to \inf' for perpendicualr propagation durring wave resonance :math:'S \to 0'.   
+    :math:'k \to \inf' for perpendicular propagation during wave resonance :math:'S \to 0'.   
         
     References
     ----------
