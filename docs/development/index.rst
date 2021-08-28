@@ -9,6 +9,7 @@ Contributor Guide
 
    ../CONTRIBUTING
    ../CODE_OF_CONDUCT
+   workflow
    install_dev
    code_guide
    testing_guide
