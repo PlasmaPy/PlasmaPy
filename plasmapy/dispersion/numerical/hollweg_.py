@@ -41,7 +41,9 @@ def hollweg(
     Using the equation provided by Bellan 2012, this function
     calculates the numerical solution to the two fluid dispersion relation
     presented by Hollweg 1999. This dispersion relation assumes
-    :math:`\omega/\omega_{\rm ci} \ll 1`.
+    :math:`\omega/\omega_{\rm ci} \ll 1`, a uniform magnetic field
+    :math: `\mathbf{B_0}`, no D.C electric field :math: `\mathbf{E_0}=0`,
+    and quasi-neutrality.
 
     Parameters
     ----------
