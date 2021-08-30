@@ -564,6 +564,9 @@ class Tracker:
         particles to be neglected to focus computational resources on the
         particles who will actually hit the detector.
 
+        Parameters
+        ----------
+
         nparticles : integer
             The number of particles to include in the simulation. The default
             is 1e5.
@@ -663,6 +666,9 @@ class Tracker:
     ):
         r"""
         Load arrays of particle positions and velocities
+
+        Parameters
+        ----------
 
         x : `~astropy.units.Quantity`, shape (N,3)
             Positions for N particles
@@ -1232,7 +1238,7 @@ class Tracker:
     def max_deflection(self):
         """
         The maximum deflection experienced by one of the particles, determined
-        by comparing their initial and final velocitiy vectors.
+        by comparing their initial and final velocity vectors.
 
         This value can be used to determine the charged particle radiography regime
         using the dimensionless number defined by Kugland et al. 2012
