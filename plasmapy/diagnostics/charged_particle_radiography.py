@@ -1218,7 +1218,7 @@ class Tracker:
 
         return result_dict
 
-    def save_result(self, path):
+    def save_results(self, path):
         """
         Save the output dictionary containing the final particle positions in
         the detector plane into a `numpy.npz` file for later analysis.

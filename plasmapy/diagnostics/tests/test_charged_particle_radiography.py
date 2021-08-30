@@ -513,7 +513,7 @@ def test_saving_output(tmp_path):
     res1 = sim.results_dict
 
     # Save result
-    sim.save_result(path)
+    sim.save_results(path)
 
     # Load result
     res2 = dict(np.load(path, "r", allow_pickle=True))
