@@ -1265,7 +1265,6 @@ class Tracker:
 
     def _enforce_order(self):
         r"""
-
         The `Tracker` methods could give strange results if setup methods
         are used again after the simulation has run. This method
         raises an error if the simulation has already been run.
