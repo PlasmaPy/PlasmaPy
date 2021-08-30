@@ -1220,14 +1220,17 @@ class Tracker:
 
     def save_results(self, path):
         """
-        Save the output dictionary containing the final particle positions in
-        the detector plane into a `numpy.npz` file for later analysis.
+        Save the simulations results :attr:`results_dict` to a `numpy`
+        ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
 
         Parameters
         ----------
 
-        path : str or `os.path`
-            The path to save the output file.
+        path : `str` or `os.path`
+            Either the filename (string) or an open file (file-like object)
+            where the data will be saved. If file is a string or a Path,
+            the ``.npz`` extension will be appended to the filename if
+            it is not already there.
 
         """
 
