@@ -352,8 +352,8 @@ class Tracker:
 
         """
 
-        # Simulation has not run, because adding mesh changes the simulation
-        self._has_run = False
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
 
         location = _coerce_to_cartesian_si(location)
         wire_radius = wire_diameter.si.value / 2
@@ -606,8 +606,8 @@ class Tracker:
         """
         self._log("Creating Particles")
 
-        # Simulation has not run, because creating new particles changes the simulation
-        self._has_run = False
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
 
         # Load inputs
         self.nparticles = int(nparticles)
@@ -691,9 +691,8 @@ class Tracker:
 
 
         """
-
-        # Simulation has not run, because loading new particles changes the simulation
-        self._has_run = False
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
 
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
@@ -1248,6 +1247,22 @@ class Tracker:
         max_deflection = np.max(np.arccos(proj))
 
         return max_deflection * u.rad
+
+    def _enforce_order(self):
+        r"""
+
+        The Tracker methods could give strange results if setup methods
+        are used again after the simulation has run. This method
+        raises an error if the simulation has already been run.
+
+        """
+
+        if self._has_run:
+            raise RuntimeError(
+                "Adding new particles or meshes after a simulation "
+                "is complete is not supported. Create a new simulation "
+                "object to begin a new run."
+            )
 
 
 # *************************************************************************

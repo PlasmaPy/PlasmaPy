@@ -417,6 +417,7 @@ def test_run_options():
     with pytest.raises(ValueError):
         sim.run()
 
+    sim = cpr.Tracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
 
     # Try running with nearest neighbor interpolator
@@ -427,6 +428,7 @@ def test_run_options():
     sim.max_deflection
 
     # Test way too big of a max_theta
+    sim = cpr.Tracker(grid, source, detector, verbose=True)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg)
     with pytest.warns(RuntimeWarning, match="of " "particles entered the field grid"):
         sim.run(field_weighting="nearest neighbor", dt=1e-12 * u.s)
@@ -518,11 +520,35 @@ def test_saving_output(tmp_path):
 
     assert np.all(res1["x"] == res2["x"])
 
+
+def test_cannot_modify_simulation_after_running():
+
+    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+    sim = cpr.Tracker(grid, source, detector, verbose=False)
+
     # Test that changing the particles then requires the simulation to be
     # run again prior to saving output
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.run(field_weighting="nearest neighbor")
+
+    # Error from creating particles
     with pytest.raises(RuntimeError):
-        sim.results_dict
+        sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+
+    # Error from loading particles
+    with pytest.raises(RuntimeError):
+        sim.load_particles(sim.x, sim.v)
+
+    # Error from adding wire mesh
+    with pytest.raises(RuntimeError):
+        sim.add_wire_mesh(
+            np.array([0, -2, 0]) * u.mm,
+            (2 * u.mm, 1.5 * u.mm),
+            9,
+            20 * u.um,
+        )
 
 
 @pytest.mark.slow
@@ -735,6 +761,7 @@ def test_add_wire_mesh():
 
 
 if __name__ == "__main__":
+    """
     test_coordinate_systems()
     test_input_validation()
     test_1D_deflections()
@@ -745,4 +772,7 @@ if __name__ == "__main__":
     test_synthetic_radiograph()
     test_add_wire_mesh()
     test_gaussian_sphere_analytical_comparison()
+    test_cannot_modify_simulation_after_running()
+    """
+    test_run_options()
     pass
