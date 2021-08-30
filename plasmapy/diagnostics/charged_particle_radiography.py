@@ -1294,42 +1294,45 @@ def synthetic_radiograph(
     Parameters
     ----------
 
-    obj: dict or cpr.Tracker
-        Either a cpr.Tracker object that has been run,
-        or an output dictionary created by running cpr.Tracker()
+    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+        Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+        object that has been run, or an output dictionary created by
+        running `~plasmapy.diagnostics.charged_particle_radiography.Tracker`.
 
-    size : `~astropy.units.Quantity`, shape (2,2)
+    size : `~astropy.units.Quantity`, shape ``(2, 2)``
         The size of the detector array, specified as the minimum
         and maximum values included in both the horizontal and vertical
         directions in the detector plane coordinates. Shape is
-        [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
+        ``((hmin, hmax), (vmin, vmax))``. Units must be convertable to
+        meters.
 
-    bins : array of integers, shape (2)
-        The number of bins in each direction in the format [hbins, vbins].
-        The default is [200,200].
+    bins : array of integers, shape ``(2)``
+        The number of bins in each direction in the format
+        ``(hbins, vbins)``.  The default is ``(200, 200)``.
 
-    ignore_grid: bool
-        If True, returns the intensity in the image plane in the absence
+    ignore_grid: `bool`
+        If `True`, returns the intensity in the image plane in the absence
         of simulated fields.
 
-    optical_density: bool
-        If True, return the optical density rather than the intensity
+    optical_density: `bool`
+        If `True`, return the optical density rather than the intensity
 
         .. math::
             OD = -log_{10}(Intensity/I_0)
 
-        where I_O is the intensity on the detector plane in the absence of
-        simulated fields. Default is False.
+        where :math:`Intensity` is the simulation intensity on the
+        detector plane and :math:`I_0` is the intensity on the detector
+        plane in the absence of simulated fields. Default is `False`.
 
     Returns
     -------
-    hax : `~astropy.units.Quantity` array shape (hbins,)
+    hax : `~astropy.units.Quantity` array shape ``(hbins,)``
         The horizontal axis of the synthetic radiograph in meters.
 
-    vax : `~astropy.units.Quantity` array shape (vbins, )
+    vax : `~astropy.units.Quantity` array shape ``(vbins, )``
         The vertical axis of the synthetic radiograph in meters.
 
-    intensity : ndarray, shape (hbins, vbins)
+    intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
     """
 
