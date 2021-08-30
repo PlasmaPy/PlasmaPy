@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from astropy import units as u
+from hypothesis import given
+from hypothesis.strategies import complex_numbers
 from numpy import pi as π
 from scipy.special import gamma as Γ
 
@@ -34,9 +36,7 @@ def test_plasma_dispersion_func(w, expected):
 
     # Many of the tabulated results originally came from the book
     # entitled "The Plasma Dispersion Function: The Hilbert Transform
-    # of the Gaussian" by B. D. Fried and S. D. Conte (1961).  The two
-    # symmetry properties of the plasma dispersion function are at the
-    # bottom of page 2 of this book.
+    # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
 
     Z_of_w = plasma_dispersion_func(w)
 
@@ -45,6 +45,15 @@ def test_plasma_dispersion_func(w, expected):
         f"expected approximate result of {expected}.  The difference between "
         f"the actual and expected results is {Z_of_w - expected}."
     )
+
+
+@given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+def test_plasma_dispersion_func_symmetry(w):
+    r"""Test plasma_dispersion_func against its symmetry properties"""
+
+    # The two symmetry properties of the plasma dispersion function
+    # are taken from the bottom of page 30 of "NRL Plasma Formulary"
+    # by A.S. Richardson (2019)
 
     Z_of_wconj = plasma_dispersion_func(w.conjugate())
     minusZ_of_minuswconj = -(plasma_dispersion_func(-w).conjugate())
@@ -60,14 +69,13 @@ def test_plasma_dispersion_func(w, expected):
     )
 
     if w.imag > 0:
-
         should_equal_Z_of_wconj = (
             plasma_dispersion_func(w)
         ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
-        assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-14), (
+        assert np.isclose(Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13), (
             "The symmetry property of the plasma dispersion function that "
-            "Z(w*) = Z(w) + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
+            "Z(w*) = Z(w)* + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
             f"is not met for w = {w}.  The value of "
             f"plasma_dispersion_func({w.conjugate()}) is {Z_of_wconj}, "
             f"which is different from {should_equal_Z_of_wconj}.  "
@@ -166,12 +174,9 @@ plasma_disp_deriv_table = [
 
 @pytest.mark.parametrize("w, expected", plasma_disp_deriv_table)
 def test_plasma_dispersion_func_deriv(w, expected):
-    r"""Test plasma_dispersion_func_deriv against tabulated results
-    and an exact relationship."""
+    r"""Test plasma_dispersion_func_deriv against tabulated results"""
 
-    # The tabulated results are taken from Fried & Conte (1961).  The
-    # exact analytical relationship comes from the bottom of page 3 of
-    # Fried & Conte (1961).
+    # The tabulated results are taken from Fried & Conte (1961)
 
     Z_deriv = plasma_dispersion_func_deriv(w)
 
@@ -183,7 +188,16 @@ def test_plasma_dispersion_func_deriv(w, expected):
         f"and expected results is {Z_deriv - expected}."
     )
 
+
+@given(complex_numbers(allow_infinity=False, allow_nan=False, max_magnitude=20))
+def test_plasma_dispersion_func_deriv_characterization(w):
+    r"""Test plasma_dispersion_func_deriv against an exact relationship."""
+
+    # The exact analytical relationship comes from the bottom of
+    # page 3 of Fried & Conte (1961).
+
     Z = plasma_dispersion_func(w)
+    Z_deriv = plasma_dispersion_func_deriv(w)
     Z_deriv_characterization = -2 * (1 + w * Z)
 
     assert np.isclose(Z_deriv, Z_deriv_characterization, rtol=1e-15), (
