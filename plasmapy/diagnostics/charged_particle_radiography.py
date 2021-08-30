@@ -1105,8 +1105,6 @@ class Tracker:
         # Simulation has not run, because creating new particles changes the simulation
         self._has_run = True
 
-        return self.results_dict
-
     @property
     def results_dict(self):
         r"""
