@@ -1110,53 +1110,62 @@ class Tracker:
         r"""
         A dictionary containing the results of the simulation.
 
-        'source' : `~numpy.ndarray`
-            The source location vector, in meters.
+        .. list-table:: Dictionary keys and descriptions.
+           :width: 100%
+           :widths: 1 1 4
+           :header-rows: 1
 
-        'detector' : `~numpy.ndarray`
-            The detector location vector in meters.
-
-        'mag' : float
-            The system magnification.
-
-        'nparticles' : int
-            Number of particles in the simulation.
-
-        'max_deflection' : `~astropy.units.Quantity`
-            The maximum deflection experienced by a particle
-            in the simulation, in radians.
-
-        'xloc' :  `~numpy.ndarray`, [nparticles,]
-            The x-coordinate location where each particle hit the
-            detector plane, in meters.
-
-        'yloc' :  `~numpy.ndarray`, [nparticles,]
-            The y-coordinate location where each particle hit the
-            detector plane, in meters.
-
-        'v' : `~numpy.ndarray`, [nparticles, 3]
-            The velocity of each particle when it hit the detector plane,
-            in meters per second. The velocity is in a coordinate system
-            relative to the detector plane. The components are
-            [normal, horizontal, vertical] relative to the detector plane
-            coordinates.
-
-        'xloc0' :  `~numpy.ndarray`, [nparticles,]
-            The x-coordinate location where each particle would have hit the
-            detector plane if the grid fields were zero, in meters. Useful
-            for calculating the source profile.
-
-        'yloc0' :  `~numpy.ndarray`, [nparticles,]
-            The y-coordinate location where each particle would have hit the
-            detector plane if the grid fields were zero, in meters. Useful
-            for calculating the source profile.
-
-        'v0' : `~numpy.ndarray`, [nparticles, 3]
-            The velocity of each particle when it hit the detector plan if the
-            grid fields were zero, in meters per second. The velocity is in a
-            coordinate system relative to the detector plane. The components are
-            [normal, horizontal, vertical] relative to the detector plane
-            coordinates.
+           * - Key
+             - Type
+             - Description
+           * - ``"source"``
+             - `~numpy.ndarray`
+             - The source location vector, in meters.
+           * - ``"detector"``
+             - `~numpy.ndarray`
+             - The detector location vector, in meters.
+           * - ``"mag"``
+             - `float`
+             - The system magnification.
+           * - ``"nparticles"``
+             - `int`
+             - Number of particles in the simulation.
+           * - ``"max_deflection"``
+             - `~astropy.units.Quantity`
+             - The maximum deflection experienced by a particle in the
+               simulation, in radians.
+           * - ``"xloc"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The x-coordinate location where each particle hit the
+               detector plane, in meters.
+           * - ``"yloc"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The y-coordinate location where each particle hit the
+               detector plane, in meters.
+           * - ``"v"``
+             - `~numpy.ndarray`, [``nparticles``, 3]
+             - The velocity of each particle when it hits the detector
+               plane, in meters per second. The velocity is in a
+               coordinate system relative to the detector plane. The
+               components are [normal, horizontal, vertical] relative
+               to the detector plane coordinates.
+           * - ``"xloc0"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The x-coordinate location where each particle would have
+               hit the detector plane if the grid fields were zero, in
+               meters. Useful for calculating the source profile.
+           * - ``"yloc0"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The y-coordinate location where each particle would have
+               hit the detector plane if the grid fields were zero, in
+               meters. Useful for calculating the source profile.
+           * - ``"v0"``
+             - `~numpy.ndarray`, [``nparticles``, 3]
+             - The velocity of each particle when it hit the detector
+               plan if the grid fields were zero, in meters per second.
+               The velocity is in a coordinate system relative to the
+               detector plane. The components are [normal, horizontal,
+               vertical] relative to the detector plane coordinates.
 
         """
 
