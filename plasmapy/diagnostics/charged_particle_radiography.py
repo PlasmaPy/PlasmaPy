@@ -20,7 +20,6 @@ from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
-from plasmapy.formulary.relativity import relativistic_energy
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
