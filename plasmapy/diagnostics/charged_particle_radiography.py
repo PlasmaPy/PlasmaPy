@@ -1273,9 +1273,9 @@ class Tracker:
 
         if self._has_run:
             raise RuntimeError(
-                "Adding new particles or meshes after a simulation "
-                "is complete is not supported. Create a new simulation "
-                "object to begin a new run."
+                "Modifying the `Tracker` object after running the "
+                "simulation is not supported. Create a new `Tracker` "
+                "object for a new simulation."
             )
 
 
@@ -1285,7 +1285,7 @@ class Tracker:
 
 
 def synthetic_radiograph(
-    obj, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
+    obj, size=None, bins=None, ignore_grid=False, optical_density=False
 ):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
@@ -1346,6 +1346,9 @@ def synthetic_radiograph(
             "either a cpr.Tracker or an "
             "output dictionary from cpr.Tracker"
         )
+
+    if bins is None:
+        bins = [200, 200]
 
     # Note that, at the end of the simulation, all particles were moved
     # into the image plane.
