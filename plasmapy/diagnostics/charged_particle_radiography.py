@@ -1340,7 +1340,7 @@ def synthetic_radiograph(
     if isinstance(obj, Tracker):
         d = obj.results_dict
 
-    # Check if dictioanry-like (dict or npz file)
+    # Check if dictionary-like (dict or npz file)
     elif isinstance(obj, dict):
         d = obj
     else:
@@ -1380,8 +1380,8 @@ def synthetic_radiograph(
 
     # h, v are the bin edges: compute the centers to produce arrays
     # of the right length (then trim off the extra point)
-    h = ((h + np.roll(h, -1)) / 2)[0:-1]
-    v = ((v + np.roll(v, -1)) / 2)[0:-1]
+    h = ((h + np.roll(h, -1)) / 2)[:-1]
+    v = ((v + np.roll(v, -1)) / 2)[:-1]
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
