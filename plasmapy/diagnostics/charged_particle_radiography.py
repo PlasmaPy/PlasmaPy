@@ -1325,6 +1325,12 @@ def synthetic_radiograph(
         detector plane and :math:`I_0` is the intensity on the detector
         plane in the absence of simulated fields. Default is `False`.
 
+        If the `Intensity` histogram contains zeros, `OD` will contain
+        -`~numpy.inf` values. These can be easily replaced with zeros
+        if desired for plotting using `~numpy.nan_to_num`
+
+        ``OD = np.nan_to_num(OD, neginf=0)``
+
     Returns
     -------
     hax : `~astropy.units.Quantity` array shape ``(hbins,)``
@@ -1409,10 +1415,9 @@ def synthetic_radiograph(
         # histogram. Zeros are just outside of the illuminate area.
         I0 = np.mean(I0[I0 != 0])
 
-        # Overwrite any zeros in intensity to avoid log10(0)
-        intensity[intensity == 0] = 1
-
         # Calculate the optical_density
-        intensity = -np.log10(intensity / I0)
+        # ignore any errors resulting from zero values in intensity
+        with np.errstate(divide="ignore"):
+            intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity
