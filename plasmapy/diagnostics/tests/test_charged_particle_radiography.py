@@ -492,6 +492,18 @@ def test_synthetic_radiograph():
     with pytest.raises(ValueError):
         h, v, i = cpr.synthetic_radiograph(np.ones(5))
 
+    # Raise exception if size is not a u.Quantity
+    with pytest.raises(TypeError):
+        h, v, i = cpr.synthetic_radiograph(sim, size=size.value)
+
+    # Raise exception if size has wrong units
+    with pytest.raises(TypeError):
+        h, v, i = cpr.synthetic_radiograph(sim, size=size.value * u.kg)
+
+    # Raise exception if size the wrong shape
+    with pytest.raises(ValueError):
+        h, v, i = cpr.synthetic_radiograph(sim, size=[-5, 5] * u.m)
+
 
 def test_saving_output(tmp_path):
 
@@ -774,5 +786,4 @@ if __name__ == "__main__":
     test_gaussian_sphere_analytical_comparison()
     test_cannot_modify_simulation_after_running()
     """
-    test_run_options()
     pass

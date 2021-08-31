@@ -1370,8 +1370,17 @@ def synthetic_radiograph(
         # If a detector size is not given, choose a size based on the
         # particle positions
         w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
-
         size = np.array([[-w, w], [-w, w]]) * u.m
+    elif not isinstance(size, u.Quantity) or not size.unit.is_equivalent(u.m):
+        raise TypeError(
+            "``size`` must be an `~astropy.units.Quantity` "
+            "object with units convertable to meters."
+        )
+    elif size.shape != (2, 2):
+        raise ValueError(
+            "``size`` must have shape ``(2,2)`` corresponding to "
+            "``[[xmin, xmax], [ymin, ymax]]``."
+        )
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(xloc, yloc, range=size.to(u.m).value, bins=bins)
