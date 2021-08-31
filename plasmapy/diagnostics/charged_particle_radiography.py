@@ -1299,12 +1299,13 @@ def synthetic_radiograph(
         object that has been run, or an output dictionary created by
         running `~plasmapy.diagnostics.charged_particle_radiography.Tracker`.
 
-    size : `~astropy.units.Quantity`, shape ``(2, 2)``
+    size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
         and maximum values included in both the horizontal and vertical
         directions in the detector plane coordinates. Shape is
-        ``((hmin, hmax), (vmin, vmax))``. Units must be convertable to
-        meters.
+        ``((hmin, hmax), (vmin, vmax))``. If not specified, the size will be
+        set to include all particles on the detector. Units must be convertable
+        to meters.
 
     bins : array of integers, shape ``(2)``
         The number of bins in each direction in the format
@@ -1370,10 +1371,7 @@ def synthetic_radiograph(
         # particle positions
         w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
 
-        # The factor of 5 here is somewhat arbitrary: we just want a
-        # region a few times bigger than the image of the grid on the
-        # detector, since particles could be deflected out
-        size = 5 * np.array([[-w, w], [-w, w]]) * u.m
+        size = np.array([[-w, w], [-w, w]]) * u.m
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(xloc, yloc, range=size.to(u.m).value, bins=bins)
