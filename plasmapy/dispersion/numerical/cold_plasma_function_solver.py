@@ -1,4 +1,4 @@
-__all__ = ["stix"]
+__all__ = ["cold_plasma_function_solver"]
 
 import numpy as np
 import astropy.units as u
@@ -12,13 +12,15 @@ from sympy.solvers import solve
 @validate_quantities(
     B={"can_be_negative": False},
 ) 
-def stix(
+def cold_plasma_function_solver(
     B: u.T,
     k: u.rad/u.m,
     ions: str,
     omega_ions:u.rad/u.s,
     theta: u.rad,
 ):
+    
+    #---#
     
     r"""
     Calculate the cold plasma function solution by using Bellan 2012, this uses
@@ -43,7 +45,8 @@ def stix(
     theta: single value or 1 D array astropy ~astropy.units.Quantity
         Value of theta with respect to the magnetic field, :math:'\cos^{-1}(k_z/k)',
         must be in units convertible to :math:'rad'.
-             
+       
+        
     Returns
     -------
     omegas : Dictionary astropy ~astropy.units.Quantity
@@ -111,7 +114,7 @@ def stix(
     Example
     -------
     >>>    from astropy import units as u
-    >>>    from numerical.stix_ import stix
+    >>>    from numerical.cold_plasma_function_solver import cold_plasma_function_solver
     >>>    inputs = {
     ...           "B": 8.3e-9 * u.T,
     ...           "k": 0.001* u.rad / u.m,
@@ -119,10 +122,12 @@ def stix(
     ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
     ...           "theta": 30 * u.deg,
     >>>    }
-    >>>    w = stix(**inputs)
-    >>>    print(w[0.001])
+    >>>    w = cold_plasma_function_solver(**inputs)
+    >>>    print(w[k])
 
     """
+ 
+    #---#
     
     for arg_name in ("B"):
         value = locals()[arg_name].squeeze()
@@ -174,7 +179,11 @@ def stix(
             f"Arguement 'theta' needs to be a single value astropy Quantity,"
             f"got value of shape {theta.shape}."
         )
-
+        
+    #---#
+    
+    #---#
+    
     k_dim = k.ndim
     if k_dim == 0:
         ck = np.zeros(1)
@@ -209,6 +218,10 @@ def stix(
             f"Arguement 'omega_ions', quantity type could not be deterimined,"
             f"got value of shape {omega_ions.shape}."
         )
+
+    #---#
+       
+    #---#
     
     w = Symbol('w')
 
@@ -229,7 +242,11 @@ def stix(
     A = S*(np.sin(theta.value)**2) + P*(np.cos(theta.value)**2)
     B = R*L*(np.sin(theta.value)**2) + P*S*(1 + np.cos(theta.value)**2)
     C = P*R*L
-    
+
+    #---#
+    print('Solving for omega values...')
+    #---#
+        
     for i in range(len(ck)):
         eq = A*((ck[i]/w)**4) - B*((ck[i]/w)**2) + C
 
