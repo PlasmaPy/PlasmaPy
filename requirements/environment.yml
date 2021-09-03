@@ -8,6 +8,7 @@ dependencies:
   - python=3.7
   - numpy
   - scipy
+  - sympy
   - astropy
   - h5py
   - matplotlib
