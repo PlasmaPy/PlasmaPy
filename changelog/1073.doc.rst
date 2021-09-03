@@ -1,2 +1,0 @@
-Improved consistency of documentation style and made
-reStructuredText fixes in several subpackages.

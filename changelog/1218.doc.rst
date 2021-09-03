@@ -1,1 +1,0 @@
-Fixes a typo in the docstring of Alfven_speed.

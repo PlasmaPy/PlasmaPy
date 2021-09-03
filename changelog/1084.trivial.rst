@@ -1,3 +1,0 @@
-Added `pytest-regressions
-<https://pytest-regressions.readthedocs.io/en/latest/>`__ to testing
-dependencies, to make regression tests a little easier to write.

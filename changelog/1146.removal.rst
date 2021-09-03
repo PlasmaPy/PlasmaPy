@@ -1,2 +1,0 @@
-The ``particle`` attribute of `~plasmapy.particles.particle_class.Particle`
-has been removed after having been deprecated in 0.6.0.

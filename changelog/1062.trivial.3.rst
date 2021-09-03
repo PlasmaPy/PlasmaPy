@@ -1,3 +1,0 @@
-Add flake8-rst-docstrings to catch RST formatting
-errors in documentation in the linter stage of
-continuous integration.

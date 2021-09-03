@@ -1,2 +1,0 @@
-The term "integer charge" has been replaced in the documentation with
-the term "charge number".
