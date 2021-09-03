@@ -1,5 +1,6 @@
 from astropy import units as u
-from stix_ import stix
+
+from ..stix_ import stix
 
 inputs = {
     "B": 8.3e-9 * u.T,
