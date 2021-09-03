@@ -142,37 +142,36 @@ def stix(
         lengths = min(len(omega_ions), len(ions))
     else:
         raise ValueError(
-            f"Arguement 'omega_ions' and 'ions' need to be the same quantity type,"
+            f"Argument 'omega_ions' and 'ions' need to be the same quantity type,"
             f"got value of shape {omega_ions.shape} and {ions.shape}."
         )
-
 
     for i in range(lengths):
         if type(ions[i]) is not str:
             raise TypeError(
-                f"Arguement 'ions[i]' need to be particles of string type"
+                f"Argument 'ions[i]' need to be particles of string type"
                 f"got value of type {ions[i].type}."
             )
     
     k = k.squeeze()
     if not (k.ndim == 0  or k.ndim == 1):
         raise TypeError(
-            f"Arguement 'k' needs to be a single value or a 1D array astropy Quantity,"
+            f"Argument 'k' needs to be a single value or a 1D array astropy Quantity,"
             f"got a value of shape {k.shpae}."
         )
 
     omega_ions = omega_ions.squeeze()
     if not (omega_ions.ndim == 0 or omega_ions.ndim == 1):
         raise TypeError(
-            f"Arguement 'omega_e' needs to be a single value or a single valued 1D array astropy Quantity,"   
-            f"got value of shape {omega_e.shape}."
+            f"Argument 'omega_e' needs to be a single value or a single valued "
+            f"1D array astropy Quantity, got value of shape {omega_ions.shape}."
         )
         
     theta = theta.squeeze()
     theta = theta.to(u.radian)
     if not (theta.ndim == 0):
         raise TypeError(
-            f"Arguement 'theta' needs to be a single value astropy Quantity,"
+            f"Argument 'theta' needs to be a single value astropy Quantity,"
             f"got value of shape {theta.shape}."
         )
 
@@ -188,7 +187,7 @@ def stix(
             ck[i] = val.value
     else:
        raise TypeError(
-            f"Arguement 'k' needs to be a single value or 1D array astropy Quantity,"
+            f"Argument 'k' needs to be a single value or 1D array astropy Quantity,"
             f"got value of shape {k.shape}."
         )
         
@@ -207,7 +206,7 @@ def stix(
         plasma_freq[0] = float(omega_ions.value)
     else:
         raise TypeError(
-            f"Arguement 'omega_ions', quantity type could not be deterimined,"
+            f"Argument 'omega_ions', quantity type could not be determined,"
             f"got value of shape {omega_ions.shape}."
         )
     
@@ -234,7 +233,7 @@ def stix(
     for i in range(len(ck)):
         eq = A*((ck[i]/w)**4) - B*((ck[i]/w)**2) + C
 
-        sol = solve(eq,w,warn=True)
+        sol = solve(eq, w, warn=True)
 
         sol_omega = []
     
