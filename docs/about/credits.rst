@@ -38,7 +38,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Erik Everson <https://github.com/rocco8773>`__
 * `Thomas Fan <https://github.com/thomasjpfan>`__
 * `Samaiyah I. Farid <https://github.com/samaiyahfarid>`__
-* `Michael Fischer <https://github.com/mj-fischer>`__
+* Michael Fischer
 * `Bryan Foo <https://github.com/bryancfoo>`__
 * `Brian Goodall <https://github.com/goodab>`__
 * `Graham Goudeau <https://github.com/GrahamGoudeau>`__
@@ -67,9 +67,9 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `nrb1324 <https://github.com/nrb1324>`__
 * `Tulasi Parashar <https://github.com/tulasinandan>`__ (`0000-0003-0602-8381 <https://orcid.org/0000-0003-0602-8381>`__)
 * `Neil Patel <https://github.com/ministrike3>`__
-* `Francisco Silva Pavon <https://github.com/fsilvapavon>`__
-* `Roberto Díaz Pérez <https://github.com/RobertTnf>`__
-* `Jakub Polak <https://github.com/Ishinomori>`__
+* Francisco Silva Pavon
+* `Roberto Díaz Pérez <https://github.com/RoberTnf>`__
+* Jakub Polak
 * `Raajit Raj <https://github.com/raajitr>`__
 * `Vishwas Rajashekar <https://github.com/DarkAEther>`__ (`0000-0002-4914-6612 <https://orcid.org/0000-0002-4914-6612>`__)
 * `Antonia Savcheva <https://github.com/savcheva>`__ (`0000-0002-5598-046X <https://orcid.org/0000-0002-5598-046X>`__)
@@ -77,17 +77,17 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Dawa Nurbu Sherpa <https://github.com/nurbu5>`__
 * `Angad Singh <https://github.com/singha95>`__
 * `Ankit Singh <https://github.com/Griffintaur>`__
-* `Brigitta Sipőcz <http://github.com/bsipocz>`__
+* `Brigitta Sipőcz <https://github.com/bsipocz>`__
 * `David Stansby <https://github.com/dstansby>`__ (`0000-0002-1365-1908 <https://orcid.org/0000-0002-1365-1908>`__)
 * `Dominik Stańczak <https://github.com/StanczakDominik>`__ (`0000-0001-6291-8843 <https://orcid.org/0000-0001-6291-8843>`__)
-* `Antoine Tavant <https://github.com/antoinelpp>`__
+* `Antoine Tavant <https://github.com/antoinetavant>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Thomas Varnish <https://github.com/tvarnish>`__
 * `Anthony Vo <https://github.com/anthony-vo>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
-* `Cody Skinner <https://github.com/wskinner74>`__
-* `Ramiz Qudsi <https://github.com/ahmadryan>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
+* `Cody Skinner <https://github.com/cskinner74>`__
+* `Ramiz Qudsi <https://github.com/qudsiramiz>`__ (`0000-0001-8358-0482 <https://orcid.org/0000-0001-8358-0482>`__)
 * `Steve Richardson <https://github.com/arichar6>`__ (`0000-0002-3056-6334 <https://orcid.org/0000-0002-3056-6334>`__)
 * `Tiger Du <https://github.com/Tiger-Du>`__ (`0000-0002-8676-1710 <https://orcid.org/0000-0002-8676-1710>`__)
 * `Kevin Montes <https://github.com/kjmontes>`__ (`0000-0002-0762-3708 <https://orcid.org/0000-0002-0762-3708>`__)
@@ -127,7 +127,7 @@ Environment Enhancements (HDEE) grant 80NSSC20K0174.  PlasmaPy is
 being developed with support from the U.S. National Science Foundation
 through grants 1931388, 1931393, 1931429, and 1931435 that were awarded
 through `a collaborative proposal
-<http://doi.org/10.5281/zenodo.3406803>`__ submitted to the
+<https://doi.org/10.5281/zenodo.3406803>`__ submitted to the
 Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
 
 All opinions, findings, conclusions, and recommendations expressed
