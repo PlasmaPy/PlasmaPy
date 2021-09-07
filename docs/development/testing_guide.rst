@@ -88,7 +88,7 @@ Actions`_. Checks that pass are marked with ✔️, while tests that fail
 are marked with ❌. Click on *Details* for information about why a
 particular check failed.
 
-* Checks with labels like **CI / Python 3.9 (pull request)** verify that
+* Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
   up using tox_ and run with pytest_ via `GitHub Actions`_. When
@@ -101,7 +101,7 @@ particular check failed.
     include (or will include) significant improvements to common error
     messages.
 
-* Checks with labels like **CI / Python 3.9 with NumPy dev (pull
+* Checks with labels like **CI / Python 3.x with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
   currently being developed on GitHub_. Occasionally these tests will
   fail for reasons not associated with a particular pull request.
