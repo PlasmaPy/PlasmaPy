@@ -1019,7 +1019,8 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    .. [1] `Cross Section: Collision among gas particles
+       <https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles>`__
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1106,8 +1107,9 @@ def fundamental_electron_collision_freq(
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       by James D. Callen
 
     Examples
     --------
@@ -1243,8 +1245,9 @@ def fundamental_ion_collision_freq(
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       by James D. Callen
 
     Examples
     --------
