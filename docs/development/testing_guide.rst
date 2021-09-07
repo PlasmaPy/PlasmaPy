@@ -694,6 +694,12 @@ should be balanced with each other rather than absolute principles.
    <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
    (Manning Press, 2013, 2nd ed.)
 
+.. [Wilson2014] G. Wilson, D. A. Aruliah, C. T. Brown, N. P. Chue Hong,
+   M. Davis, R. T. Guy, S. H. D. Haddock, K. D. Huff, I. M. Mitchell,
+   M. D. Plumbley, B. Waugh, E. P. White, P. Wilson, `Best practices for
+   scientific computing <https://doi.org/10.1371/journal.pbio.1001745>`_,
+   PLoS Biology, 12, 1, e1001745 (2014), doi: 10.1371/journal.pbio.1001745
+
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
