@@ -1,0 +1,3 @@
+Simplified handling of package dependencies.  Removed duplicated requirements
+files, centralizing them instead.  Allowed developer dependencies installation
+as either `pip install plasmapy[developer]` or `pip install requirements.txt`.

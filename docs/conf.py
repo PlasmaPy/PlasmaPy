@@ -26,10 +26,27 @@ from pkg_resources import parse_version
 from sphinx.application import Sphinx
 
 sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath("."))
 
 from plasmapy import __version__ as release
 
 # -- General configuration ------------------------------------------------
+
+autosummary_generate = True
+automodapi_custom_groups = {
+    "aliases": {
+        "title": "Aliases",
+        "description": (
+            "PlasmaPy provides short-named (alias) versions of the most "
+            "common plasma functionality.  These aliases are only given to "
+            "functionality where there is a common lexicon in the community, "
+            "for example `~plasmapy.formulary.parameters.plasma_frequency` "
+            " has the alias `~plasmapy.formulary.parameters.wp_`.  All aliases "
+            "in PlasmaPy are denoted with a trailing underscore ``_``."
+        ),
+        "dunder": "__aliases__",
+    },
+}
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -45,13 +62,12 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "sphinx_automodapi.automodapi",
-    "sphinx_automodapi.smart_resolver",
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
+    "plasmapy_sphinx",
 ]
 
 intersphinx_mapping = {
@@ -60,6 +76,11 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "sphinx_automodapi": (
+        "https://sphinx-automodapi.readthedocs.io/en/latest/",
+        None,
+    ),
+    "spihnx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 
 autoclass_content = "both"
@@ -119,6 +140,7 @@ exclude_patterns = [
     ".DS_Store",
     "notebooks/langmuir_samples",
     "**.ipynb_checkpoints",
+    "plasmapy_sphinx",
 ]
 
 
@@ -228,12 +250,19 @@ html_favicon = "./_static/icon.ico"
 nbsphinx_thumbnails = {
     "notebooks/*": "_static/graphic-circular.png",
     "notebooks/*/*": "_static/graphic-circular.png",
-    "notebooks/diagnostics/langmuir_analysis": "_static/notebook_images/langmuir_analysis.png",
-    "notebooks/plasma/grids_cartesian": "_static/notebook_images/uniform_grid_thumbnail.png",
-    "notebooks/plasma/grids_nonuniform": "_static/notebook_images/nonuniform_grid_thumbnail.png",
+    "notebooks/diagnostics/langmuir_analysis": (
+        "_static/notebook_images/langmuir_analysis.png"
+    ),
+    "notebooks/plasma/grids_cartesian": (
+        "_static/notebook_images/uniform_grid_thumbnail.png"
+    ),
+    "notebooks/plasma/grids_nonuniform": (
+        "_static/notebook_images/nonuniform_grid_thumbnail.png"
+    ),
 }
 
-# adapted from https://github.com/spatialaudio/nbsphinx/blob/58b8034dd9d7349c1b4ac3e7a7d6baa87ab2a6a9/doc/conf.py
+# adapted from
+# https://github.com/spatialaudio/nbsphinx/blob/58b8034dd9d7349c1b4ac3e7a7d6baa87ab2a6a9/doc/conf.py
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
@@ -264,4 +293,4 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_stylesheet("rtd_theme_overrides.css")
+    app.add_css_file("rtd_theme_overrides.css")

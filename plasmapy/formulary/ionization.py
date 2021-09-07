@@ -1,6 +1,7 @@
 """Functions related to ionization states and the properties thereof."""
 
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
+__aliases__ = ["Z_bal_"]
 
 import astropy.units as u
 

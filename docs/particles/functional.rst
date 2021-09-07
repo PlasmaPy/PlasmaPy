@@ -48,10 +48,10 @@ functions are analogous to the corresponding attributes in the
 >>> mass_number('T+')
 3
 
-Charge information may be found using `~plasmapy.particles.integer_charge`
+Charge information may be found using `~plasmapy.particles.charge_number`
 and `~plasmapy.particles.electric_charge`.
 
->>> integer_charge('H-')
+>>> charge_number('H-')
 -1
 >>> electric_charge('muon antineutrino')
 <Quantity 0. C>

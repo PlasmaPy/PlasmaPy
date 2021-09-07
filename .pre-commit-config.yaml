@@ -1,8 +1,9 @@
 ci:
   autofix_prs: false
+  autoupdate_schedule: "quarterly"
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.1.0
+    rev: v3.4.0
     hooks:
     -   id: check-yaml
     -   id: check-json
@@ -11,8 +12,8 @@ repos:
     -   id: trailing-whitespace
     -   id: check-ast
     -   id: requirements-txt-fixer
--   repo: https://github.com/timothycrosley/isort
-    rev: 5.7.0
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.8.0
     hooks:
     -   id: isort
         name: isort
@@ -21,11 +22,11 @@ repos:
         language: python
         types: [python]
 -   repo: https://github.com/psf/black
-    rev: 19.10b0
+    rev: 21.4b2
     hooks:
     -   id: black
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 0.6.0
+  rev: 0.8.0
   hooks:
     - id: nbqa-black
       additional_dependencies: [black==19.10b0]

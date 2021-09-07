@@ -3,10 +3,6 @@
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
-    "betaH_",
-    "cs_",
-    "cwp_",
-    "DB_",
     "Debye_length",
     "Debye_number",
     "gyrofrequency",
@@ -15,23 +11,29 @@ __all__ = [
     "inertial_length",
     "ion_sound_speed",
     "kappa_thermal_speed",
-    "lambdaD_",
     "lower_hybrid_frequency",
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
+    "plasma_frequency",
+    "thermal_pressure",
+    "thermal_speed",
+    "upper_hybrid_frequency",
+]
+__aliases__ = [
+    "betaH_",
+    "cs_",
+    "cwp_",
+    "DB_",
+    "lambdaD_",
     "nD_",
     "oc_",
-    "plasma_frequency",
     "pmag_",
     "pth_",
     "rc_",
     "rho_",
     "rhoc_",
-    "thermal_pressure",
-    "thermal_speed",
     "ub_",
-    "upper_hybrid_frequency",
     "va_",
     "vth_",
     "vth_kappa_",
@@ -60,6 +62,8 @@ from plasmapy.utils.decorators import (
 )
 from plasmapy.utils.exceptions import PhysicsWarning
 
+__all__ += __aliases__
+
 
 def _grab_charge(ion: Particle, z_mean=None):
     """
@@ -77,14 +81,14 @@ def _grab_charge(ion: Particle, z_mean=None):
     Returns
     -------
     float
-        if ``z_mean`` was passed, ``z_mean``, otherwise, the integer charge
+        if ``z_mean`` was passed, ``z_mean``, otherwise, the charge number
         of ``ion``.
 
     """
     if z_mean is None:
         # warnings.warn("No z_mean given, defaulting to atomic charge",
         #               PhysicsWarning)
-        Z = particles.integer_charge(ion)
+        Z = particles.charge_number(ion)
     else:
         # using average ionization provided by user
         Z = z_mean
@@ -95,7 +99,7 @@ def _grab_charge(ion: Particle, z_mean=None):
     density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
 )
 def mass_density(
-    density: [u.m ** -3, u.kg / (u.m ** 3)],
+    density: (u.m ** -3, u.kg / (u.m ** 3)),
     particle: Union[Particle, str],
     z_ratio: Optional[numbers.Real] = 1,
 ) -> u.kg / u.m ** 3:
@@ -108,8 +112,8 @@ def mass_density(
               = | Z_{ratio} | n_{s} m_{particle}
 
     where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
-    density for plasma species :math:`s`, :math:`Z_{s}` is the integer charge of
-    species :math:`s`, and :math:`Z_{particle}` is the integer charge of
+    density for plasma species :math:`s`, :math:`Z_{s}` is the charge number of
+    species :math:`s`, and :math:`Z_{particle}` is the charge number of
     ``particle``.  For example, if the electron density is given for :math:`n_s`
     and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`\ .
 
@@ -130,7 +134,7 @@ def mass_density(
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
-        The ratio of the integer charges corresponding to the plasma species
+        The ratio of the charge numbers corresponding to the plasma species
         represented by ``density`` and the ``particle``.  For example, if the
         given ``density`` is and electron density and ``particle`` is doubly
         ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
@@ -201,7 +205,7 @@ rho_ = mass_density
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
     B: u.T,
-    density: [u.m ** -3, u.kg / u.m ** 3],
+    density: (u.m ** -3, u.kg / u.m ** 3),
     ion: Optional[Particle] = None,
     z_mean: Optional[numbers.Real] = None,
 ) -> u.m / u.s:
@@ -326,7 +330,7 @@ def Alfven_speed(
                 )
         if z_mean is None:
             try:
-                z_mean = abs(ion.integer_charge)
+                z_mean = abs(ion.charge_number)
             except ChargeError:
                 z_mean = 1
 
@@ -407,7 +411,7 @@ def ion_sound_speed(
     z_mean : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
+        given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
         plasma where multiple charge states are present.
 
@@ -1001,11 +1005,11 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     Z : `float` or `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where the
         a macroscopic description is valid. If this quantity is not
-        given then the atomic charge state (integer) of the ion
+        given then the charge number of the ion
         is used. This is effectively an average gyrofrequency for the
         plasma where multiple charge states are present, and should
         not be interpreted as the gyrofrequency for any single particle.
-        If not provided, it defaults to the integer charge of the ``particle``.
+        If not provided, it defaults to the charge number of the ``particle``.
 
     Returns
     -------
@@ -1336,7 +1340,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
             try:
-                Z = particles.integer_charge(particle)
+                Z = particles.charge_number(particle)
             except Exception:
                 Z = 1
         else:
@@ -1862,7 +1866,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     # We do not need a charge state here, so the sole intent is to
     # catch invalid ions.
     try:
-        particles.integer_charge(ion)
+        particles.charge_number(ion)
     except Exception:
         raise ValueError("Invalid ion in lower_hybrid_frequency.")
 
