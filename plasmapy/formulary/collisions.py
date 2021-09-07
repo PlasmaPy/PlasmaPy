@@ -1020,7 +1020,6 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
-
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
