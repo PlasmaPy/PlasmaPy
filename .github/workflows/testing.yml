@@ -28,10 +28,10 @@ jobs:
             python: 3.7
             toxenv: py37
 
-          - name: Python 3.7 with Astropy dev
+          - name: Python 3.8 with Astropy dev
             os: ubuntu-latest
-            python: 3.7
-            toxenv: py37-astropydev
+            python: 3.8
+            toxenv: py38-astropydev
 
           - name: Python 3.8 with code coverage
             os: ubuntu-latest
