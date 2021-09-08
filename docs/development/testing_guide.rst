@@ -11,7 +11,7 @@ Software tests help us to:
 * Find and fix bugs.
 * Prevent old bugs from getting re-introduced.
 * Provide confidence that our code is behaving correctly.
-* Define what "behaving correctly" actually means.
+* Define what "correct behavior" actually is.
 * Speed up code development and refactoring.
 * Show future contributors examples of how code was intended to be used.
 * Confirm that our code works on different operating systems and
