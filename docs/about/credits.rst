@@ -67,7 +67,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `nrb1324 <https://github.com/nrb1324>`__
 * `Tulasi Parashar <https://github.com/tulasinandan>`__ (`0000-0003-0602-8381 <https://orcid.org/0000-0003-0602-8381>`__)
 * `Neil Patel <https://github.com/ministrike3>`__
-* Francisco Silva Pavon
+* Francisco Silva Pavon <https://github.com/silvafrancisco>__
 * `Roberto Díaz Pérez <https://github.com/RoberTnf>`__
 * Jakub Polak
 * `Raajit Raj <https://github.com/raajitr>`__
