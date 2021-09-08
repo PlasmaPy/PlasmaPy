@@ -3,8 +3,8 @@
 Feedback and Communication
 ==========================
 
-`Matrix chat <https://app.element.io/#/room/#plasmapy:matrix.org>`__
---------------------------------------------------------------------
+Matrix chat <https://app.element.io/#/room/#plasmapy:openastronomy.org>`__
+--------------------------------------------------------------------------
 
 The primary communication channel for PlasmaPy, and the quickest way to ask
 a question and get a response, is our `Matrix room

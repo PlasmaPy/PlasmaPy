@@ -102,17 +102,17 @@ You can use tox_ to locally build the documentation by running:
 You can access the documentation landing page by opening
 :file:`docs/_build/html/index.html` with your browser of choice.
 
-You can shorten the documentation build by running:
+To pass any `options to sphinx-build`_, put them after ``--``, as in the
+following example:
 
 .. code-block:: bash
 
-   tox -e build_docs -- -j=auto
+   tox -e build_docs -- -j=auto -q
 
-The `-j command
-<https://www.sphinx-doc.org/en/master/man/sphinx-build.html#cmdoption-sphinx-build-j>`_
-will build the documentation in parallel, with the number
-of processes being automatically determined. Flags that follow the
-``--`` are passed to `sphinx-build`_.
+The ``-j=auto`` option tells `sphinx-build`_ to build the documentation
+in parallel, with the number of processes being automatically
+determined. The ``-q`` flag makes `sphinx-build`_ print out only
+warnings and errors, which makes them easier to find and debug.
 
 You can alternatively shorten the documentation build by running:
 
@@ -687,8 +687,9 @@ documentation for PlasmaPy and affiliated packages.
   at the beginning of a sentence and for "degree Celsius".
 
 * Physical unit symbols should not be formatted as math. If units are
-  needed inside a math block, use LaTeX_'s ``\mbox`` command as in the
-  example below. A tilde will need to precede the unit so that
+  needed inside a math block, use LaTeX_'s ``\text`` command as in the
+  example below. The backslash followed by a space is needed to have a
+  space between the number and the units.
 
   .. code-block:: rst
 
@@ -696,7 +697,7 @@ documentation for PlasmaPy and affiliated packages.
 
      .. math::
 
-        3 × 10^{10} \mbox{~cm/s}
+        3 × 10^{10}\ \text{cm/s}
 
   This reST_ block renders as:
 
@@ -704,7 +705,7 @@ documentation for PlasmaPy and affiliated packages.
 
      .. math::
 
-        3 × 10^{10} \mbox{cm/s}
+        3 × 10^{10}\ \text{cm/s}
 
 * The names of chemical elements are lower case, except at the beginning
   of a sentence.
@@ -892,6 +893,7 @@ Narrative documentation guidelines
 .. _make: https://www.gnu.org/software/make/
 .. _MathJax: https://www.mathjax.org/
 .. _nbsphinx: https://nbsphinx.readthedocs.io
+.. _`options to sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _pandas: https://pandas.pydata.org/
 .. _paywall: https://en.wikipedia.org/wiki/Paywall
 .. _`persistent identifier`: https://en.wikipedia.org/wiki/Persistent_identifier
