@@ -30,6 +30,12 @@ with some additional checks. The results of the test suite are shown at
 the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
 
+A |unit test| verifies a single unit of behavior, does it quickly, and
+does it in isolation from other tests [Khorikov2020]_. A typical
+|unit test| is broken up into three parts: *arrange*, *act*, and
+*assert* [Osherove2013]_. An |integration test| verifies that multiple
+software components work together as intended.
+
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
 names of the form :file:`test_*.py`. For example, tests for
@@ -257,62 +263,6 @@ several popular IDEs:
 * `Python testing in Visual Studio Code
   <https://code.visualstudio.com/docs/python/testing>`__
 * `Python testing in Atom <https://atom.io/packages/atom-python-test>`__
-
-Types of tests
-==============
-
-A **unit test** verifies a single unit of behavior, does it quickly, and
-does it in isolation from other tests [Khorikov2020]_.
-
-Unit tests are intended to provide fast feedback that help pinpoint the
-locations of errors. Unit tests often abide by the following pattern
-[Osherove2009]_:
-
-1. *Arrange*: gather inputs and get the system to the state in which the
-   test is expected to run.
-
-2. *Act*: make the system under test undertake the operation that is
-   being tested.
-
-3. *Assert*: verify that the actual outcome of the *act* phase matches
-   the expected outcome.
-
-For an example, consider a unit test for a function. The *arrange* phase
-involves collecting or constructing the inputs for the function. The
-*act* phase occurs when the function is called with those inputs. The
-*assert* phase is when the value returned by the function is compared to
-the expected result.
-
-.. tip::
-
-   The *act* phase should generally be a single line of code. If it is
-   more than one line of code, consider revising the functionality being
-   tested so that it is a single line of code [Khorikov2020]_.
-
-.. tip::
-
-   Verifying a single unit of behavior does not necessarily imply that
-   there should be one assertion per test [Khorikov2020]_. Multiple
-   related assertions are appropriate when needed to verify a particular
-   unit of behavior. However, having multiple assertions in a test often
-   indicates that the test should be split up into multiple smaller and
-   more focused tests.
-
-Integration tests
------------------
-
-An **integration test** verifies that multiple software components work
-together as intended.
-
-Compared to unit tests, integration tests are typically harder to write,
-slower to run, more difficult to maintain, and less useful at
-pinpointing the specific cause of a problem. However, integration tests
-are able to find problems that unit tests cannot. In particular,
-integration tests are able to find problems at the interfaces between
-different modules. On average, each integration test covers more lines
-of code than each related unit tests. Because unit tests and integration
-tests complement each other, both are important constituents of a test
-suite.
 
 Writing Tests
 =============
@@ -685,6 +635,17 @@ should be balanced with each other rather than absolute principles.
   verifying more than one unit of behavior and should be split into
   multiple smaller tests.
 
+* **Test a single unit of behavior in each unit test.** This suggestion
+  often implies that there should be a single assertion per |unit test|.
+  However, multiple related assertions are appropriate when needed to
+  verify a particular unit of behavior. However, having multiple
+  assertions in a test often indicates that the test should be split up
+  into multiple smaller and more focused tests.
+
+* If the *act* phase of a |unit test| is more than a single line of
+  code, consider revising the functionality being tested so that it can
+  be called in a single line of code [Khorikov2020]_.
+
 .. [Bernstein2015] D. S. Bernstein, `Beyond Legacy Code: Nine Practices
    to Extend the Life (and Value) of Your Software
    <https://pragprog.com/titles/dblegacy/beyond-legacy-code/>`_
@@ -693,7 +654,7 @@ should be balanced with each other rather than absolute principles.
 .. [Khorikov2020] V. Khorikov, `Unit Testing Principles, Practices, and Patterns
    <https://www.manning.com/books/unit-testing>`_ (Manning Press, 2020, 1st ed.)
 
-.. [Osherove2009] R. Osherove, `The Art of Unit Testing: With Examples in .NET
+.. [Osherove2013] R. Osherove, `The Art of Unit Testing: With Examples in .NET
    <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
    (Manning Press, 2013, 2nd ed.)
 
@@ -702,6 +663,9 @@ should be balanced with each other rather than absolute principles.
    M. D. Plumbley, B. Waugh, E. P. White, P. Wilson, `Best practices for
    scientific computing <https://doi.org/10.1371/journal.pbio.1001745>`_,
    PLoS Biology, 12, 1, e1001745 (2014), doi: 10.1371/journal.pbio.1001745
+
+.. |integration test| replace:: :term:`integration test`
+.. |unit test| replace:: :term:`unit test`
 
 .. _Atom: https://atom.io/
 .. _Codecov: https://about.codecov.io/
