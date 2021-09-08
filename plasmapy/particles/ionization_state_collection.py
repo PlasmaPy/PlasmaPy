@@ -853,7 +853,7 @@ class IonizationStateCollection:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
-    def average_particle(
+    def average_ion(
         self,
         include_neutrals: bool = True,
         use_rms_charge: bool = False,

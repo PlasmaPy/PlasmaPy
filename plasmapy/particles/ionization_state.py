@@ -847,7 +847,7 @@ class IonizationState:
 
         return states_info
 
-    def average_particle(
+    def average_ion(
         self,
         *,
         include_neutrals: bool = True,
