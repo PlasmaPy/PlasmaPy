@@ -104,7 +104,7 @@ particular check failed.
 * Checks with labels like **CI / Python 3.x with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
   currently being developed on GitHub_. Occasionally these tests will
-  fail for reasons not associated with a particular pull request.
+  fail due to upstream changes or conflicts.
 
 * The **CI / Documentation (pull request)** check verifies that
   `PlasmaPy's documentation`_ is able to build correctly from the pull
