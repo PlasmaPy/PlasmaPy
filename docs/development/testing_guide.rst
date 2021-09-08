@@ -346,14 +346,12 @@ Floating point comparisons
   tests because of slight differences due to limited precision, rounding
   errors, and revisions to fundamental constants.
 
-Use `numpy.isclose` when comparing floating point numbers and
-`astropy.units.isclose` for |Quantity| instances to avoid these
-difficulties.  For comparing arrays, use `numpy.allclose`
-and `astropy.units.allclose` instead.
-
-The ``rtol`` keyword for each of these functions sets the acceptable
-relative tolerance. The value of ``rtol`` should be set ∼1–2 orders of
-magnitude greater than the expected relative uncertainty. For
+In order to avoid these difficulties, use `numpy.testing.assert_allclose`
+when comparing floating point numbers and arrays, and
+`astropy.tests.helper.assert_quantity_allclose` when comparing |Quantity|
+instances. The ``rtol`` keyword for each of these functions sets the
+acceptable relative tolerance. The value of ``rtol`` should be set ∼1–2
+orders of magnitude greater than the expected relative uncertainty. For
 mathematical functions, a value of ``rtol=1e-14`` is often appropriate.
 For quantities that depend on physical constants, a value between
 ``rtol=1e-8`` and ``rtol=1e-5`` may be required, depending on how much
