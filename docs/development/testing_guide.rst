@@ -77,29 +77,20 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_. The results of these
-tests are located near the bottom of a pull request and will appear
-like:
+are pushed to the development branch on GitHub_. Most of these checks\
+have been automated using `GitHub Actions`_.
+
+The following image shows how the results of the checks will appear in
+each pull request near the end of the *Conversation* tab. Checks that
+pass are marked with ✔️, while tests that fail are marked with ❌. Click
+on *Details* for information about why a particular check failed.
 
 .. image:: ../_static/contributor_guide/CI_checks_for_a_PR_from_2021.png
    :width: 700
    :align: center
    :alt: Continuous integration test results during a pull request
 
-.. note::
-
-   For first-time contributors, existing maintainers `may need to
-   manually enable your `GitHub Action test runs
-   <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
-   This is, believe it or not, indirectly caused by the invention of
-   cryptocurrencies.
-
-The following checks are performed with each pull request. The results
-of the checks are found near the end of the *Conversation* tab in each
-pull request. Most of these checks have been automated using `GitHub
-Actions`_. Checks that pass are marked with ✔️, while tests that fail
-are marked with ❌. Click on *Details* for information about why a
-particular check failed.
+The following checks are performed with each pull request.
 
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
@@ -164,6 +155,14 @@ particular check failed.
 
 * The **Pull Request Labeler / triage (pull_request_target)** check
   applies appropriate GitHub_ labels to pull requests.
+
+.. note::
+
+   For first-time contributors, existing maintainers `may need to
+   manually enable your `GitHub Action test runs
+   <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
+   This is, believe it or not, indirectly caused by the invention of
+   cryptocurrencies.
 
 .. note::
 
