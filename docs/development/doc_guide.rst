@@ -687,8 +687,9 @@ documentation for PlasmaPy and affiliated packages.
   at the beginning of a sentence and for "degree Celsius".
 
 * Physical unit symbols should not be formatted as math. If units are
-  needed inside a math block, use LaTeX_'s ``\mbox`` command as in the
-  example below. A tilde will need to precede the unit so that
+  needed inside a math block, use LaTeX_'s ``\text`` command as in the
+  example below. The backslash followed by a space is needed to have a
+  space between the number and the units.
 
   .. code-block:: rst
 
@@ -696,7 +697,7 @@ documentation for PlasmaPy and affiliated packages.
 
      .. math::
 
-        3 × 10^{10} \mbox{~cm/s}
+        3 × 10^{10}\ \text{cm/s}
 
   This reST_ block renders as:
 
@@ -704,7 +705,7 @@ documentation for PlasmaPy and affiliated packages.
 
      .. math::
 
-        3 × 10^{10} \mbox{cm/s}
+        3 × 10^{10}\ \text{cm/s}
 
 * The names of chemical elements are lower case, except at the beginning
   of a sentence.

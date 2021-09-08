@@ -47,16 +47,21 @@
 
 .. _Astropy: https://www.astropy.org/
 .. _`Astropy docs`: https://docs.astropy.org/
+.. _black: https://black.readthedocs.io
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/en/latest/
 .. _git: https://git-scm.com/
+.. _GitHub: https://github.com/
+.. _`GitHub Actions`: https://docs.github.com/en/actions
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
+.. _isort: https://pycqa.github.io/isort/
 .. _Jupyter: https://jupyter.org/
 .. _Markdown: https://www.markdownguide.org/
 .. _matplotlib: https://matplotlib.org/
 .. _NumPy: https://numpy.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _pip: https://pip.pypa.io
+.. _PlasmaPy: https://www.plasmapy.org
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
@@ -69,4 +74,4 @@
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs/
 .. _tox: https://tox.readthedocs.io/
 .. _virtualenv: https://pypi.org/project/virtualenv
-.. _Zenodo: https://zenodo.org
+.. _Zenodo: https://zenodo.org/
