@@ -81,7 +81,7 @@ are pushed to the development branch on GitHub_. The results of these
 tests are located near the bottom of a pull request and will appear
 like:
 
-.. image:: ../_static/CI_checks_for_a_PR_from_2021.png
+.. image:: ../_static/contributor_guide/CI_checks_for_a_PR_from_2021.png
    :width: 700
    :align: center
    :alt: Continuous integration test results during a pull request
