@@ -189,7 +189,8 @@ in :file:`test_atomic.py` can be run with:
    pytest test_atomic.py
 
 The documentation for pytest_ describes `how to invoke pytest`_ and
-specify which tests will or will not be run.
+specify which tests will or will not be run. A few useful
+examples of flags you can use with it:
 
 * Use the ``--tb=short`` to shorten traceback reports, which is useful
   when there are multiple related errors. Use ``--tb=long`` for
