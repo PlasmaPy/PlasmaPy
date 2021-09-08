@@ -200,9 +200,10 @@ examples of flags you can use with it:
   after :math:`n` failures, use ``--maxfail=n`` where ``n`` is replaced
   with a positive integer.
 
-* Use the ``-m 'not slow'`` flag to skip running slow tests, which is
-  useful when the slow tests are unrelated to your changes. To
-  exclusively run slow tests, use ``-m slow``.
+* Use the ``-m 'not slow'`` flag to skip running slow (defined by the
+  `pytest.mark.slow` marker) tests, which is
+  useful when the slow tests are unrelated to your changes. To exclusively run
+  slow tests, use ``-m slow``.
 
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
