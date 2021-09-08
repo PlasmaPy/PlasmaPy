@@ -122,6 +122,6 @@ Parts of these guidelines have been adapted from the `Contributor
 Covenant (version 1.4)
 <https://www.contributor-covenant.org/version/1/4/code-of-conduct.html>`_,
 the `Astropy Community Code of Conduct
-<http://www.astropy.org/code_of_conduct.html>`_, and the
+<https://www.astropy.org/code_of_conduct.html>`_, and the
 `Python Software Foundation code of conduct
 <https://www.python.org/psf/codeofconduct/>`_.
