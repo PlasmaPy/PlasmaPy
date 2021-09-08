@@ -507,8 +507,9 @@ Fixtures
 --------
 
 Fixtures_ provide a way to set up well-defined states in order to have
-consistent tests. We recommend using fixtures for complex tests that
-would be unwieldy to set up using `pytest.mark.parametrize`.
+consistent tests. We recommend using fixtures whenever you need to test
+multiple properties (thus, using multiple test functions) for a series
+of related objects.
 
 Property-based testing
 ----------------------
