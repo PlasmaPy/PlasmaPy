@@ -66,9 +66,9 @@ difficult.
 
 We recommend that experienced contributors run tests either by using
 pytest_ from the command line or by using your preferred IDE.
-Using tox_ is an alternative to pytest_, but running tests with tox_ adds
-the overhead of creating an isolated environment for your test and can
-thus be slower.
+Using tox_ is an alternative to pytest_, but running tests with tox_
+adds the overhead of creating an isolated environment for your test and
+can thus be slower.
 
 Using GitHub
 ------------
@@ -77,7 +77,14 @@ The recommended way for new contributors to run PlasmaPy's full test
 suite is to `create a pull request`_ from your development branch to
 `PlasmaPy's GitHub repository`_. The test suite will be run
 automatically when the pull request is created and every time changes
-are pushed to the development branch on GitHub_.
+are pushed to the development branch on GitHub_. The results of these
+tests are located near the bottom of a pull request and will appear
+like:
+
+.. image:: ../_static/CI_checks_for_a_PR_from_2021.png
+   :width: 700
+   :align: center
+   :alt: Continuous integration test results during a pull request
 
 .. note::
 
