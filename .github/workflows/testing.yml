@@ -28,10 +28,10 @@ jobs:
             python: 3.7
             toxenv: py37
 
-          - name: Python 3.7 with Astropy dev
+          - name: Python 3.8 with Astropy dev
             os: ubuntu-latest
-            python: 3.7
-            toxenv: py37-astropydev
+            python: 3.8
+            toxenv: py38-astropydev
 
           - name: Python 3.8 with code coverage
             os: ubuntu-latest
@@ -73,6 +73,7 @@ jobs:
             os: ubuntu-latest
             python: 3.8
             toxenv: build_docs
+            toxposargs: -q
 
           - name: Linters
             os: ubuntu-latest
@@ -97,7 +98,7 @@ jobs:
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v2.0.2
+      uses: codecov/codecov-action@v2.0.3
       with:
         file: ./coverage.xml
   build-n-publish:

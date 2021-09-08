@@ -253,7 +253,7 @@ def Alfven_speed(
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units :math:`m/s`.
+        The Alfvén speed in units m s\ :sup:`-1`.
 
     Raises
     ------

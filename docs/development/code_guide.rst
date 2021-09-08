@@ -48,7 +48,7 @@ PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and

@@ -49,7 +49,7 @@
 .. _`Astropy docs`: https://docs.astropy.org/
 .. _black: https://black.readthedocs.io
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
-.. _Conda: https://conda.io/docs/
+.. _Conda: https://conda.io/en/latest/
 .. _git: https://git-scm.com/
 .. _GitHub: https://github.com/
 .. _`GitHub Actions`: https://docs.github.com/en/actions
@@ -65,7 +65,7 @@
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
-.. _`Python's documentation`: https://docs.python.org/
+.. _`Python's documentation`: https://docs.python.org/3/
 .. _`Read the Docs`: https://readthedocs.org/
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _SciPy: https://www.scipy.org/

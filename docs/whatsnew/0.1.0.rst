@@ -31,7 +31,7 @@ New Features
   <https://pep8speaks.com/>`_.
 
 * Developed `online documentation for PlasmaPy
-  <http://docs.plasmapy.org>`_ that is hosted by `Read the Docs
+  <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs
   <https://readthedocs.org/>`_.
 
   - Automated documentation builds with Sphinx_.
@@ -84,7 +84,7 @@ New Features
 * Began using `type hint annotations
   <https://docs.python.org/3/library/typing.html>`_.
 
-* Set up architecture to incorporate `Cython <http://cython.org/>`_ into
+* Set up architecture to incorporate `Cython <https://cython.org/>`_ into
   performance-critical sections of code.
 
 * Incorporated import and setup tools from the ``astropy_helpers``
