@@ -865,10 +865,13 @@ class IonizationStateCollection:
         instance representing the mean particle included across all
         ionization states.
 
-        By default, the weighted mean will be used as the average, with
-        the ionic fractions as the weights. If ``use_rms_charge`` or
-        ``use_rms_mass`` is `True`, then this method will return the root
-        mean square of the charge or mass, respectively.
+        By default, this method will use the weighted mean to calculate
+        the properties of the |CustomParticle|, where the weights for
+        each ionic level is given by its ionic fraction multiplied by
+        the abundance of the base element or isotope. If
+        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this
+        method will return the root mean square of the charge or mass,
+        respectively.
 
         Parameters
         ----------
@@ -888,7 +891,9 @@ class IonizationStateCollection:
         Raises
         ------
         `~plasmapy.particles.exceptions.ParticleError
-            If the abundance
+            If the abundance of any of the elements or isotopes is not
+            defined and the |IonizationStateCollection| instance includes
+            more than one element or isotope.
         """
         min_charge = 0 if include_neutrals else 1
 
