@@ -855,6 +855,7 @@ class IonizationStateCollection:
 
     def average_ion(
         self,
+        *,
         include_neutrals: bool = True,
         use_rms_charge: bool = False,
         use_rms_mass: bool = False,
@@ -901,7 +902,6 @@ class IonizationStateCollection:
             all_abundances.extend(ionic_abundances)
 
         return all_particles.average_particle(
-            include_neutrals=include_neutrals,
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
         )
