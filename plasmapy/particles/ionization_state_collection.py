@@ -537,7 +537,6 @@ class IonizationStateCollection:
                     )
 
                 nstates_input = len(inputs[key])
-                nstates_input = len(inputs[key])
                 nstates = particles[key].atomic_number + 1
                 if nstates != nstates_input:
                     raise ParticleError(
