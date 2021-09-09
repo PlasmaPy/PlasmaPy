@@ -976,3 +976,15 @@ def test_average_ion_consistency(
     assert_quantity_allclose(
         quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
     )
+
+
+def test_average_particle_exception():
+    """
+    Test that `IonizationStateCollection.average_ion` raises the
+    appropriate exception when abundances are undefined and there is more
+    than one base element or isotope.
+    """
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+
+    with pytest.raises(ParticleError):
+        ionization_states.average_ion()

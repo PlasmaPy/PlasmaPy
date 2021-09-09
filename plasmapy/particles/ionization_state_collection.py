@@ -885,6 +885,11 @@ class IonizationStateCollection:
         use_rms_mass : `bool`, optional, keyword-only
             If `True`, use the root mean square mass instead of the mean
             mass. Defaults to `False`.
+
+        Raises
+        ------
+        `~plasmapy.particles.exceptions.ParticleError
+            If the abundance
         """
         min_charge = 0 if include_neutrals else 1
 
@@ -899,8 +904,13 @@ class IonizationStateCollection:
 
             base_particle_abundance = self.abundances[base_particle]
 
-            if np.isnan(base_particle_abundance) and len(self) == 1:
-                base_particle_abundance = 1
+            if np.isnan(base_particle_abundance):
+                if len(self) == 1:
+                    base_particle_abundance = 1
+                else:
+                    raise ParticleError(
+                        "Unable to provide an average particle without abundances."
+                    )
 
             ionic_fractions = ionization_state.ionic_fractions[min_charge:]
             ionic_abundances = base_particle_abundance * ionic_fractions
