@@ -18,6 +18,7 @@ from plasmapy.particles import (
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.pytest_helpers import run_test
 
 
@@ -935,11 +936,14 @@ example_ionic_fractions = [
 ]
 
 
+physical_properties = ["charge", "mass"]
+
+
 @pytest.mark.parametrize("include_neutrals", [True, False])
 @pytest.mark.parametrize("use_rms_mass", [False, True])
 @pytest.mark.parametrize("use_rms_charge", [False, True])
 @pytest.mark.parametrize("base_particle, ionic_fractions", example_ionic_fractions)
-@pytest.mark.parametrize("physical_type", ["charge", "mass"])
+@pytest.mark.parametrize("physical_type", physical_properties)
 def test_average_ion_consistency(
     base_particle,
     ionic_fractions,
@@ -976,6 +980,44 @@ def test_average_ion_consistency(
     assert_quantity_allclose(
         quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
     )
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("use_rms", [True, False])
+@pytest.mark.parametrize("include_neutrals", [True, False])
+def test_comparison_to_equivalent_particle_list(
+    physical_property, use_rms, include_neutrals
+):
+    """
+    Test that `IonizationState.average_ion` gives consistent results with
+    `ParticleList.average_particle` when the ratios of different particles
+    is the same between the `IonizationState` and the `ParticleList`.
+    """
+
+    neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
+    ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
+    particles = ParticleList(neutrals + ions)
+
+    ionic_fractions = {
+        "H-1": [0.6, 0.4],
+        "He-4": [0.2, 0.3, 0.5],
+    }
+
+    abundances = {"H-1": 1, "He-4": 2}
+    ionization_state_collection = IonizationStateCollection(
+        ionic_fractions, abundances=abundances
+    )
+
+    kwarg = {f"use_rms_{physical_property}": True}
+    expected_average_particle = particles.average_particle(**kwarg)
+    expected_average_quantity = getattr(expected_average_particle, physical_property)
+
+    actual_average_particle = ionization_state_collection.average_ion(
+        include_neutrals=include_neutrals, **kwarg
+    )
+    actual_average_quantity = getattr(actual_average_particle, physical_property)
+
+    assert_quantity_allclose(actual_average_quantity, expected_average_quantity)
 
 
 def test_average_particle_exception():
