@@ -4,6 +4,7 @@ import itertools
 import numpy as np
 import pytest
 
+from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
 from typing import Dict
 
@@ -925,3 +926,53 @@ def test_iteration_with_nested_iterator():
 @pytest.mark.xfail()
 def test_hydrogen_deuterium():
     instance = IonizationStateCollection(["H", "D"])
+
+
+example_ionic_fractions = [
+    ("H-1", [0, 1]),
+    ("H-1", [0.2, 0.8]),
+    ("He-4", [0.2, 0.3, 0.5]),
+]
+
+
+@pytest.mark.parametrize("include_neutrals", [True, False])
+@pytest.mark.parametrize("use_rms_mass", [False, True])
+@pytest.mark.parametrize("use_rms_charge", [False, True])
+@pytest.mark.parametrize("base_particle, ionic_fractions", example_ionic_fractions)
+@pytest.mark.parametrize("physical_type", ["charge", "mass"])
+def test_average_ion_consistency(
+    base_particle,
+    ionic_fractions,
+    include_neutrals,
+    use_rms_mass,
+    use_rms_charge,
+    physical_type,
+):
+    """
+    Make sure that the average ions returned from equivalent `IonizationState`
+    and `IonizationStateCollection` instances are consistent with each other.
+    """
+    ionization_state = IonizationState(base_particle, ionic_fractions)
+    ionization_state_collection = IonizationStateCollection(
+        {base_particle: ionic_fractions}
+    )
+
+    options = {
+        "include_neutrals": include_neutrals,
+        "use_rms_charge": use_rms_charge,
+        "use_rms_mass": use_rms_mass,
+    }
+
+    average_ion_from_ionization_state = ionization_state.average_ion(**options)
+    average_ion_from_ionization_state_collection = (
+        ionization_state_collection.average_ion(**options)
+    )
+
+    quantity_from_ion_state = getattr(average_ion_from_ionization_state, physical_type)
+    quantity_from_ion_collection = getattr(
+        average_ion_from_ionization_state_collection, physical_type
+    )
+
+    assert_quantity_allclose(
+        quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
+    )
