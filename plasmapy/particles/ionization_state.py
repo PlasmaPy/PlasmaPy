@@ -881,7 +881,7 @@ class IonizationState:
         min_charge = 0 if include_neutrals else 1
 
         particle_list = self.to_list()[min_charge:]
-        abundances = self.abundances[min_charge:]
+        abundances = self.ionic_fractions[min_charge:]
 
         return particle_list.average_particle(
             abundances=abundances,
