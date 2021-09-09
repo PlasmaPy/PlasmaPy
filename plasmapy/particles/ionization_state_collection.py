@@ -537,6 +537,7 @@ class IonizationStateCollection:
                     )
 
                 nstates_input = len(inputs[key])
+                nstates_input = len(inputs[key])
                 nstates = particles[key].atomic_number + 1
                 if nstates != nstates_input:
                     raise ParticleError(
@@ -897,6 +898,10 @@ class IonizationStateCollection:
             all_particles.extend(ionic_levels)
 
             base_particle_abundance = self.abundances[base_particle]
+
+            if np.isnan(base_particle_abundance) and len(self) == 1:
+                base_particle_abundance = 1
+
             ionic_fractions = ionization_state.ionic_fractions[min_charge:]
             ionic_abundances = base_particle_abundance * ionic_fractions
             all_abundances.extend(ionic_abundances)
@@ -904,6 +909,7 @@ class IonizationStateCollection:
         return all_particles.average_particle(
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
+            abundances=all_abundances,
         )
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
