@@ -112,10 +112,6 @@ class IonizationStateCollection:
     >>> states.number_densities['He']
     <Quantity [0.4, 0.6, 0. ] 1 / m3>
 
-    You may access the average ion.
-
-    >>> states.average_ion()
-
     Notes
     -----
     No more than one of ``abundances`` and ``log_abundances`` may be
@@ -901,6 +897,17 @@ class IonizationStateCollection:
         Returns
         -------
         ~plasmapy.particles.particle_class.CustomParticle
+
+        Examples
+        --------
+        >>> states = IonizationStateCollection(
+        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]},
+        ...     abundances={"H": 1, "He": 0.1}
+        ... )
+        >>> states.average_ion()
+        CustomParticle(mass=2.12498014110406e-27 kg, charge=1.5876113918727271e-19 C)
+        >>> states.average_ion(include_neutrals=False, use_rms_charge=True, use_rms_mass=True)
+        CustomParticle(mass=2.633256093298318e-27 kg, charge=1.805561369076159e-19 C)
         """
         min_charge = 0 if include_neutrals else 1
 
