@@ -1,12 +1,8 @@
 import astropy.units as u
 import collections
 import numpy as np
-import os
-import pickle
 import pytest
-import sre_constants
 
-from astropy import constants as const
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles import (
@@ -14,12 +10,11 @@ from plasmapy.particles import (
     atomic_symbol,
     charge_number,
     isotope_symbol,
-    Particle,
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
