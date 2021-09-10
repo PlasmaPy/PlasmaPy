@@ -889,7 +889,7 @@ class IonizationStateCollection:
 
         Raises
         ------
-        `~plasmapy.particles.exceptions.ParticleError
+        `~plasmapy.particles.exceptions.ParticleError`
             If the abundance of any of the elements or isotopes is not
             defined and the |IonizationStateCollection| instance includes
             more than one element or isotope.
@@ -905,9 +905,9 @@ class IonizationStateCollection:
         ...     abundances={"H": 1, "He": 0.1}
         ... )
         >>> states.average_ion()
-        CustomParticle(mass=2.12498014110406e-27 kg, charge=1.5876113918727271e-19 C)
+        CustomParticle(mass=2.124.....6e-27 kg, charge=1.587...e-19 C)
         >>> states.average_ion(include_neutrals=False, use_rms_charge=True, use_rms_mass=True)
-        CustomParticle(mass=2.633256093298318e-27 kg, charge=1.805561369076159e-19 C)
+        CustomParticle(mass=2.633...e-27 kg, charge=1.805...e-19 C)
         """
         min_charge = 0 if include_neutrals else 1
 

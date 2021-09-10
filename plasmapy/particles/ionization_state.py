@@ -886,11 +886,11 @@ class IonizationState:
         --------
         >>> state = IonizationState("He", [0.1, 0.9, 0.0])
         >>> state.average_ion()
-        CustomParticle(mass=6.64565714451816e-27 kg, charge=1.4419589706e-19 C)
+        CustomParticle(mass=6.645...e-27 kg, charge=1.441...6e-19 C)
         >>> state.average_ion(include_neutrals=False)
-        CustomParticle(mass=6.645566050681144e-27 kg, charge=1.602176634e-19 C)
+        CustomParticle(mass=6.645...e-27 kg, charge=1.602...e-19 C)
         >>> state.average_ion(use_rms_charge=True, use_rms_mass=True)
-        CustomParticle(mass=6.645657150137076e-27 kg, charge=1.519958213202591e-19 C)
+        CustomParticle(mass=6.645...e-27 kg, charge=1.519...e-19 C)
         """
         min_charge = 0 if include_neutrals else 1
 
