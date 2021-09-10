@@ -250,6 +250,8 @@ class IonizationState:
     <Quantity 400000. 1 / m3>
     >>> states.n_elem  # element number density
     <Quantity 1000000. 1 / m3>
+    >>> states.average_ion()
+    CustomParticle(mass=1.67345900378474e-27 kg, charge=6.408706536e-20 C)
 
     If the input particle is an ion, then the ionization state for the
     corresponding element or isotope will be set to ``1.0`` for that
@@ -855,8 +857,8 @@ class IonizationState:
         use_rms_mass: bool = False,
     ) -> CustomParticle:
         """
-        Return a `~plasmapy.particles.particle_class.CustomParticle`
-        instance representing the average particle in this ionization state.
+        Return a |CustomParticle| instance representing the average
+        particle in this ionization state.
 
         By default, the weighted mean will be used as the average, with
         the ionic fractions as the weights. If ``use_rms_charge`` or
@@ -877,6 +879,10 @@ class IonizationState:
         use_rms_mass : `bool`, optional, keyword-only
             If `True`, use the root mean square mass instead of the mean
             mass. Defaults to `False`.
+
+        Returns
+        -------
+        ~plasmapy.particles.particle_class.CustomParticle
         """
         min_charge = 0 if include_neutrals else 1
 
