@@ -187,19 +187,17 @@ def create_button():
     return button
 
 def handle_button_click(event):
-    print("clicked")
     for fn in process_queue:
         fn.process()
 
 def handle_clear_click(event):
-    for key in values_container:
-        values_container[key] = None
     for fn in process_queue:
         fn.output_widget.clear_output()
+
 calculate_button = widgets.Button(description="Calculate Properties",button_style="info")
 calculate_button.on_click(handle_button_click)
 
-clear_button = widgets.Button(description="Clear Values",button_style="danger")
+clear_button = widgets.Button(description="Clear Output",button_style="danger")
 clear_button.on_click(handle_clear_click)
 
 def create_widget(widget_type,**kwargs):
@@ -221,13 +219,13 @@ def create_widget(widget_type,**kwargs):
         widget_element.set_unit(unit)
     if placeholder:
         widget_element.set_place_holder(placeholder)
+    
     if opts:
         widget_element.attach_units_dropdown(opts)
-        return [widget_element.get_widget(),widget_element.get_dropdown_widget()]
-    return widget_element.get_widget()
-
-
-
+        widgets = [widget_element.get_widget(),widget_element.get_dropdown_widget()]   
+    else:
+        widgets = widget_element.get_widget()
+    return widgets
 
 def colored(r, g, b, text):
     return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(r, g, b, text)
