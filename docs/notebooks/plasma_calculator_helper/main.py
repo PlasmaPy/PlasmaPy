@@ -20,6 +20,14 @@ grid_data = [
         create_widget(IonBox,property_name="ion",property_alias="ion_type",placeholder="Enter ion e.g. He 2+")
     ],
     [
+        create_label("kappa:"),
+        create_widget(FloatBox,property_name="kappa")
+    ],
+    [
+        create_label("z mean:"),
+        create_widget(FloatBox,property_name="z_mean")
+    ],
+    [
         create_label("Convert to Hertz:"),
         create_widget(CheckBox,property_name="to_hz")
     ],
@@ -71,7 +79,7 @@ grid_data = [
 
 def create_interactive_layout():
     ## grid config
-    grid = widgets.GridspecLayout(15, 3)
+    grid = widgets.GridspecLayout(18, 3)
     grid.layout.margin="10px"
 
     for i,row in enumerate(grid_data):

@@ -11,8 +11,11 @@
         {
             "function_name":"kappa_thermal_speed",
             "module_name":"plasmapy.formulary"
+        },
+        {
+            "function_name":"ion_sound_speed",
+            "module_name":"plasmapy.formulary"
         }
-        
     ],
     "Length":[
         {
@@ -57,6 +60,20 @@
         },
         {
             "function_name":"Debye_number",
+            "module_name":"plasmapy.formulary"
+        }
+    ],
+    "Magnetics":[
+        {
+            "function_name":"magnetic_pressure",
+            "module_name":"plasmapy.formulary"
+        },
+        {
+            "function_name":"magnetic_energy_density",
+            "module_name":"plasmapy.formulary"
+        },
+        {
+            "function_name":"Bohm_diffusion",
             "module_name":"plasmapy.formulary"
         }
     ]
