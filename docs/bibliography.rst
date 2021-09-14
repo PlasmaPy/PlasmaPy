@@ -1,1 +1,6 @@
+############
+Bibliography
+############
+
 .. bibliography::
+   :all:
