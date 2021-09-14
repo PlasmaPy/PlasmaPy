@@ -52,7 +52,7 @@ def plasma_dispersion_func(
         Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{x-\zeta} dx
 
-    where the argument is a complex number :cite:t:`fried:1961`.
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
@@ -135,7 +135,7 @@ def plasma_dispersion_func_deriv(
         Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{(x-\zeta)^2} dx
 
-    where the argument is a complex number :cite:t:`fried:1961`.
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     Examples
     --------
