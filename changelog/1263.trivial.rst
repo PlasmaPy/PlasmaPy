@@ -1,0 +1,2 @@
+Added [sphinxcontrib-bibtex](https://sphinxcontrib-bibtex.readthedocs.io/)
+as a dependency.

@@ -1,0 +1,2 @@
+Updated the documentation guide within the contributor guide to describe
+how to add references in bibtex format.
