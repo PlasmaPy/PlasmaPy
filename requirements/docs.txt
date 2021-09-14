@@ -13,4 +13,5 @@ sphinx-changelog
 sphinx-copybutton
 sphinx-gallery
 sphinx_rtd_theme
+sphinxcontrib-bibtex
 towncrier >= 19.2.0

@@ -66,6 +66,7 @@ Example highlights
    :caption: All the Rest
 
    about/credits
+   bibliography
    glossary
    whatsnew/index
    about/stability
