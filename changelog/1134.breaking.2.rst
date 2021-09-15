@@ -1,2 +1,2 @@
-Added the `save_results()` function to `Tracker` to save results to a `numpy.npz` file.
-`synthetic_radiograph` is now a separate function in the `charged_particle_radiograph` module that takes either a `Tracker` object or a result dictionary as an argument.
+Added the ``save_results()`` function to `~plasmapy.diagnostics.charged_particle_radiograph.Tracker` to save results to a `numpy.npz` file.
+``synthetic_radiograph`` is now a separate function in the `~plasmapy.diagnostics.charged_particle_radiograph` module that takes either a ``Tracker`` object or a result dictionary as an argument.
