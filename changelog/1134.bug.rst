@@ -1,0 +1,2 @@
+`~plasmapy.diagnostics.charged_particle_radiograph.synthetic_radiograph` run with the `optical_density` keyword will now return `np.nan` where the 
+source profile `I0` is zero. Previously, an incorrect value was returned.
