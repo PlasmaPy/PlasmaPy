@@ -222,7 +222,7 @@ def Alfven_speed(
     where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
     is the total mass density (:math:`n_i` is the ion number density,
     :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass).
+    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
