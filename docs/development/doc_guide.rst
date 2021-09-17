@@ -814,7 +814,7 @@ Docstring guidelines
          """
 
 * When a function calculates a formula, put the formula in the extended
-  summary section when it can be done so concisely. When the formula is
+  summary section when it can be included concisely. When the formula is
   particularly complicated, put it in the "Notes" section. Put
   derivations and extensive discussions of mathematics in the "Notes"
   section.
