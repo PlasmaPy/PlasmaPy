@@ -750,6 +750,9 @@ Docstring guidelines
   be ≲ 4 sentences long. Any additional information should included in
   the "Notes" section.
 
+* Put any necessary highly technical information in the "Notes" section
+  of a docstring.
+
 * The short summary should start on the line immediately following the
   triple quotes. There should not be any blank lines immediately before
   the closing triple quotes.
@@ -792,8 +795,11 @@ Docstring guidelines
          Plasma beta is the ratio of thermal pressure to magnetic pressure.
          """
 
-* Put any necessary highly technical information in the "Notes" section
-  of a docstring.
+* When a function calculates a formula, put the formula in the extended
+  summary section when it can be done so concisely. When the formula is
+  particularly complicated, put it in the "Notes" section. Put
+  derivations and extensive discussions of mathematics in the "Notes"
+  section.
 
 * Private code objects (e.g., code objects that begin with a single
   underscore, like ``_private_object``) should have docstrings. A
