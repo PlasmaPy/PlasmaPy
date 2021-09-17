@@ -2,6 +2,12 @@
 .. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
 
 .. ------------------
+.. plasmapy.formulary
+.. ------------------
+
+.. |ClassicalTransport| replace:: :class:`~plasmapy.formulary.braginskii.ClassicalTransport`
+
+.. ------------------
 .. plasmapy.particles
 .. ------------------
 
