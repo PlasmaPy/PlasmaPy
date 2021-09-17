@@ -596,6 +596,24 @@ should be in the order provided.
 
       """
 
+Definitions
+-----------
+
+Define important terms in PlasmaPy's glossary, which is located at
+:file:`docs/glossary.rst`. Here is an example of a term defined within
+a glossary.
+
+.. code-block:: rst
+
+   .. glossary::
+
+      kwargs
+         An abbreviation for keyword arguments.
+
+Terms can be referred to using the ``:term:`` role. We can get to the
+definition of :term:`kwargs` by using ``:term:`kwargs``` elsewhere in
+the documentation.
+
 Documentation guidelines
 ========================
 
