@@ -25,7 +25,7 @@ software package for plasma physics.
 
 There is considerable need in plasma physics for open, general purpose
 software framework using modern `best practices for scientific
-computing <https://dx.doi.org/10.1371/journal.pbio.1001745>`_. As most
+computing <https://doi.org/10.1371/journal.pbio.1001745>`_. As most
 scientific programmers are largely self-taught, software often does not
 take advantage of these practices and is instead written in a rush to
 produce results for the next research paper. The resulting code is often
