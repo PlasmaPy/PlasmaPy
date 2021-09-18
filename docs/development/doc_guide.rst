@@ -74,8 +74,8 @@ entering the :file:`docs/` directory and running:
 
    make html
 
-Including the ``-j n`` flag in the ``make`` command will enable a
-parallel build, where ``n`` is replaced with the number of processes.
+Including the :samp:`-j {n}` flag in the ``make`` command will enable a
+parallel build, where :samp:`{n}` is replaced with the number of processes.
 
 You can access the documentation landing page by opening
 :file:`docs/_build/html/index.html` with your browser of choice.
@@ -734,8 +734,7 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text.
-  The :rst:role:`sub` and :rst:role:`sup` |roles| should be used for
-  subscripts and superscripts, respectively.
+  Use ``:sub:`` for subscripts and ``:sup:`` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -949,7 +948,7 @@ Narrative documentation guidelines
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
 .. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
-.. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
+.. _`Sphinx's glossary`: https://www.sphinx-doc.org/en/master/glossary.html
 .. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
 .. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _Wikipedia: https://www.wikipedia.org/
@@ -958,7 +957,7 @@ Narrative documentation guidelines
 .. |docs/_static| replace:: :file:`docs/_static`
 
 .. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. |docs/_static/sphinx_rtd_overrides.css|: :file:`docs/_static/sphinx_rtd_overrides.css`
+.. |docs/_static/sphinx_rtd_overrides.css| replace:: :file:`docs/_static/sphinx_rtd_overrides.css`
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
 .. |docs/api_static| replace:: :file:`docs/api_static`
