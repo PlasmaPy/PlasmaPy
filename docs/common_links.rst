@@ -70,6 +70,7 @@
 .. _PlasmaPy: https://www.plasmapy.org
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
+.. _`PlasmaPy's Matrix chat room`: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _PyPI: https://pypi.org/
 .. _Python: https://www.python.org/
 .. _`Python's documentation`: https://docs.python.org/3/
