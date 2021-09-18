@@ -680,7 +680,7 @@ should be balanced with each other rather than absolute principles.
 .. _Codecov: https://about.codecov.io/
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
 .. _`coverage.py`: https://coverage.readthedocs.io/
-.. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
+.. _`create a pull request`: https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
