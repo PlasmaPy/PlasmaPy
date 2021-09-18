@@ -91,7 +91,7 @@ Features
 - For `plasmapy.plasma.grids` functionality, improve interpolation performance on
   non-uniform grids. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - Added the `~plasmapy.formulary.drifts.diamagnetic_drift` function to
-  `~plasmapy.formulary.drifts`. (`#966 <https://github.com/plasmapy/plasmapy/pull/966>`__)
+  `~plasmapy.formulary.drifts`. (`#972 <https://github.com/plasmapy/plasmapy/pull/972>`__)
 - Add properties `~plasmapy.plasma.grids.AbstractGrid.grid_resolution` and
   `~plasmapy.plasma.grids.AbstractGrid.quantities` to
   `~plasmapy.plasma.grids.AbstractGrid`. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
