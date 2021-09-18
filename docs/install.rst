@@ -151,4 +151,4 @@ Note, however, that this does not download all the dependencies. Check the
 
 .. _from PyPI: https://pypi.org/project/plasmapy/
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
-.. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls
+.. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
