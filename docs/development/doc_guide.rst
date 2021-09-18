@@ -875,9 +875,9 @@ Narrative documentation guidelines
 .. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
-.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/
+.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/api_static/
+.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _`GitHub Flavored Markdown`: https://github.github.com/gfm/
