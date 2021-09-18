@@ -931,7 +931,7 @@ def collision_frequency(
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     """
@@ -1105,10 +1105,10 @@ def fundamental_electron_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
     .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     Examples
@@ -1243,10 +1243,10 @@ def fundamental_ion_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
     .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     Examples
@@ -1537,7 +1537,7 @@ def Spitzer_resistivity(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
     """
     # collisional frequency
     freq = collision_frequency(
