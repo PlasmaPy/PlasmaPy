@@ -154,6 +154,14 @@ exclude_patterns = [
     "common_links.rst",
 ]
 
+napoleon_google_docstring = False
+napoleon_use_param = True
+napoleon_use_keyword = True
+napoleon_type_aliases = {
+    "keyword-only": ":term:`keyword-only`",
+    "particle-like": ":term:`particle-like`",
+}
+napoleon_preprocess_types = True
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
