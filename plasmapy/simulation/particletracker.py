@@ -161,7 +161,7 @@ class ParticleTracker:
         Implement the Boris algorithm for moving particles and updating their
         velocities.
 
-        Arguments
+        Parameters
         ----------
         init : `bool`, optional
             If `True`, does not change the particle positions and sets ``dt``
