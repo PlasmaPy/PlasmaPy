@@ -1,0 +1,2 @@
+Adopted the ``"xcode"`` code highlighting style for `pygments `__ to
+increase color contrast and improve web accessibility.
