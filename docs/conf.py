@@ -160,8 +160,28 @@ todo_include_todos = False
 
 default_role = "obj"
 
-# Use a high contrast code highlighting style for web accessibility
-pygments_style = "borland"
+from pygments.style import Style
+from pygments.token import (
+    Comment,
+    Error,
+    Escape,
+    Generic,
+    Keyword,
+    Literal,
+    Name,
+    Number,
+    Operator,
+    Other,
+    Punctuation,
+    STANDARD_TYPES,
+    String,
+    Text,
+    Token,
+    Whitespace,
+)
+
+# Use a code highlighting style that meets the WCAG AA contrast standard
+pygments_style = "xcode"
 
 # -- Options for HTML output ----------------------------------------------
 
