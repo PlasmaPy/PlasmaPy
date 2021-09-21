@@ -615,9 +615,10 @@ within the :rst:dir:`glossary` |directive|.
 Using the :rst:role:`term` |role| allows us to link to the
 definitions of terms. Using ``:term:`kwargs``` will link to
 :term:`kwargs` in the :doc:`glossary`. We can also refer to terms
-defined in the projects connected via intersphinx_.  Using
-``:term:`role``` will link to |role| and ``:term:`directive```
-will link to |directive| in `Sphinx's glossary`_.
+defined in the projects connected via intersphinx_ if they have not
+already been defined in PlasmaPy's :ref:`glossary`.  Using
+``:term:`role``` will link to |role| and ``:term:`directive``` will link
+to |directive| in `Sphinx's glossary`_.
 
 Documentation guidelines
 ========================
