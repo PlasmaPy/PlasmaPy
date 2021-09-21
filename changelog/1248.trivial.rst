@@ -1,1 +1,1 @@
-Bump the Python_ version for `Read the Docs`_ builds from ``3.7`` to ``3.8``.
+Bumped the Python_ version for `Read the Docs`_ builds from ``3.7`` to ``3.8``.

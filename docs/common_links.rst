@@ -53,6 +53,7 @@
 .. _git: https://git-scm.com/
 .. _GitHub: https://github.com/
 .. _`GitHub Actions`: https://docs.github.com/en/actions
+.. _hypothesis: https://hypothesis.readthedocs.io
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _isort: https://pycqa.github.io/isort/
 .. _Jupyter: https://jupyter.org/
