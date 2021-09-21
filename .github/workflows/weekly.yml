@@ -3,6 +3,7 @@ name: weekly tests
 on:
   schedule:
     - cron: "17 7 * * 1"
+  workflow_dispatch:
 
 jobs:
   tests:
