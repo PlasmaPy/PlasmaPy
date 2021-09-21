@@ -215,7 +215,7 @@ def Reynolds_number(
 
 
 Re_ = Reynolds_number
-""" Alias to :func:`Reynolds_number`. """
+"""Alias to `~plasmapy.formulary.dimensionless.Reynolds_number`."""
 
 
 @validate_quantities(U={"can_be_negative": True})
@@ -289,4 +289,4 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
 
 Rm_ = Mag_Reynolds
-""" Alias to :func:`Mag_Reynolds`. """
+"""Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""

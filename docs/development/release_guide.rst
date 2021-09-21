@@ -8,7 +8,7 @@ The following is a partial list of tasks to be performed for each
 release.  This list is currently under development.  Developers should
 revise and expand the instructions while performing each release,
 and may refer to `Astropy's release procedures
-<http://docs.astropy.org/en/stable/development/releasing.html>`_ for
+<https://docs.astropy.org/en/stable/development/releasing.html>`_ for
 guidance.
 
 Throughout this guide, ``0.6.0`` denotes the version you're releasing,

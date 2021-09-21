@@ -75,9 +75,8 @@ activate via
 where ``/home/user/anaconda3/`` can be swapped to wherever your anaconda
 installation resides.
 
-On `newer versions of Anaconda <https://conda.io/docs/release-notes
-.html#recommended-change-to-enable-conda-in-your-shell>`_ the
-recommended activation process has changed to:
+On newer versions of Anaconda the recommended activation process has
+changed to:
 
 .. code-block:: bash
 

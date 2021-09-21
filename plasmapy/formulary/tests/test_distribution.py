@@ -19,8 +19,6 @@ from ..distribution import (
 )
 from ..parameters import kappa_thermal_speed, thermal_speed
 
-# test class for Maxwellian_1D (velocity) function:
-
 
 class Test_Maxwellian_1D(object):
     @classmethod
@@ -199,7 +197,6 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_1D function
 class Test_Maxwellian_speed_1D(object):
     @classmethod
     def setup_class(self):
@@ -329,7 +326,6 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
 
-# test class for Maxwellian_velocity_2D function
 class Test_Maxwellian_velocity_2D(object):
     @classmethod
     def setup_class(self):
@@ -487,7 +483,7 @@ class Test_Maxwellian_velocity_2D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_2D function
+@pytest.mark.slow
 class Test_Maxwellian_speed_2D(object):
     @classmethod
     def setup_class(self):
@@ -613,15 +609,7 @@ class Test_Maxwellian_speed_2D(object):
             )
 
 
-#        errStr = (f"Distribution function should be 0.0 "
-#                  f"and not {distFunc}.")
-#        assert np.isclose(distFunc.value,
-#                          0.0,
-#                          rtol=1e-5,
-#                          atol=0.0), errStr
-
-
-# test class for Maxwellian_velocity_3D function
+@pytest.mark.slow
 class Test_Maxwellian_velocity_3D(object):
     @classmethod
     def setup_class(self):
@@ -796,7 +784,6 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for Maxwellian_speed_3D function
 class Test_Maxwellian_speed_3D(object):
     @classmethod
     def setup_class(self):
@@ -922,17 +909,6 @@ class Test_Maxwellian_speed_3D(object):
             )
 
 
-#        errStr = (f"Distribution function should be 0.0 "
-#                  f"and not {distFunc}.")
-#        assert np.isclose(distFunc.value,
-#                          0.0,
-#                          rtol=1e-5,
-#                          atol=0.0), errStr
-
-
-# kappa
-
-# test class for kappa_velocity_1D function:
 class Test_kappa_velocity_1D(object):
     @classmethod
     def setup_class(self):
@@ -1159,7 +1135,7 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-# test class for kappa_velocity_3D function
+@pytest.mark.slow
 class Test_kappa_velocity_3D(object):
     @classmethod
     def setup_class(self):

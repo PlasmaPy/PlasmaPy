@@ -11,7 +11,7 @@ New Features
 ------------
 
 - Implement machinery for a ``Plasma`` class factory based on
-  `PLEP 6 <http://doi.org/10.5281/zenodo.1460977>`__
+  `PLEP 6 <https://doi.org/10.5281/zenodo.1460977>`__
 - Create an openPMD ``Plasma`` subclass
 - Create classes to represent ionization state distributions for one
   or more elements or isotopes.

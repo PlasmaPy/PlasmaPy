@@ -390,7 +390,6 @@ def Coulomb_logarithm(
     .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
-       (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
 
     .. [4] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
@@ -931,7 +930,10 @@ def collision_frequency(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       by James D. Callen
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -1017,7 +1019,8 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    .. [1] `Cross Section: Collision among gas particles
+       <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1104,8 +1107,9 @@ def fundamental_electron_collision_freq(
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       by James D. Callen
 
     Examples
     --------
@@ -1241,8 +1245,9 @@ def fundamental_ion_collision_freq(
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
        https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       by James D. Callen
 
     Examples
     --------
