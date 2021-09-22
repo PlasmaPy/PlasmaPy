@@ -772,6 +772,68 @@ def test_add_wire_mesh():
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
+def test_film_stack_energy_bands():
+    path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "tissue-equivalent.txt"
+    )
+    arr = np.loadtxt(path, skiprows=8)
+    eaxis = arr[:, 0] * u.MeV
+    tissue_density = 1.04 * u.g / u.cm ** 3
+    tissue_equivalent = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * tissue_density
+
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "aluminum.txt")
+    arr = np.loadtxt(path, skiprows=8)
+    aluminum_density = 2.7 * u.g / u.cm ** 3
+    aluminum = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * aluminum_density
+
+    # Defines the geometry of
+    HDV2 = [
+        cpr.Layer(12 * u.um, eaxis, tissue_equivalent, name="2-HDV2-active"),
+        cpr.Layer(
+            97 * u.um, eaxis, tissue_equivalent, name="2-HDV2-substrate", active=False
+        ),
+    ]
+
+    # Define a film pack
+    layers = [*HDV2] * 10
+    layers = [
+        cpr.Layer(100 * u.um, eaxis, aluminum, name="1-aluminum filter", active=False),
+        *layers,
+    ]
+
+    stack = cpr.Stack(layers)
+
+    ebands = stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV)
+
+    # Expected energy bands, in MeV (only in active layers)
+    expected = np.array(
+        [
+            [2.7, 3.3],
+            [4.0, 4.4],
+            [5.0, 5.4],
+            [5.9, 6.1],
+            [6.6, 7.0],
+            [7.3, 7.7],
+            [8.0, 8.2],
+            [8.6, 8.8],
+            [9.1, 9.4],
+            [9.7, 9.9],
+        ]
+    )
+
+    assert np.allclose(ebands.to(u.MeV).value, expected)
+
+    # Test including inactive layers
+    ebands = stack.energy_bands(
+        [0.1, 60] * u.MeV, 0.1 * u.MeV, return_only_active=False
+    )
+
+    # Expected first 5 energy bands
+    expected = np.array([[0.1, 3.7], [2.7, 3.3], [3.2, 4.9], [4.0, 4.4], [4.4, 5.9]])
+
+    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
+
+
 if __name__ == "__main__":
     """
     test_coordinate_systems()
@@ -786,4 +848,5 @@ if __name__ == "__main__":
     test_gaussian_sphere_analytical_comparison()
     test_cannot_modify_simulation_after_running()
     """
+    test_film_stack_energy_bands()
     pass

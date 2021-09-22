@@ -1558,9 +1558,7 @@ class Stack:
 
         return deposited
 
-    def energy_bands(
-        self, energy_range=[0.1, 60] * u.MeV, dE=0.1 * u.MeV, return_only_active=True
-    ):
+    def energy_bands(self, energy_range, dE, return_only_active=True):
         """
         Calculate the energy bands in each of the active layers of a film stack.
 
@@ -1571,11 +1569,11 @@ class Stack:
 
         energy_range : `~astropy.units.Quantity` list, shape [2,]
             A range of energies to include in the calculation. Units convertable
-            to eV. Defaults to [0.1,60] MeV.
+            to eV.
 
         dE :  `~astropy.units.Quantity`
             Spacing between energy bins in the calculation. Units convertable
-            to eV. Defaults to 100 keV.
+            to eV.
 
         return_only_active : boolean, optional
             If True, only the energy bands of layers in which the `active` property
