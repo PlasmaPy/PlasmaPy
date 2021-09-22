@@ -8,6 +8,8 @@ original fields (under some set of assumptions).
 __all__ = [
     "Tracker",
     "synthetic_radiograph",
+    "Layer",
+    "Stack",
 ]
 
 import astropy.constants as const
