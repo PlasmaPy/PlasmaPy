@@ -269,10 +269,10 @@ def hollweg(
     alpha = (k * v_A) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
-    c3 = (F * kx ** 2 + 1) / sigma
-    c2 = -((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
-    c1 = alpha * (1 + 2 * beta + D * kx ** 2)
-    c0 = -beta * alpha * sigma
+    c3 = (F * kx ** 2 + 1)
+    c2 = -sigma * ((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
+    c1 = sigma * alpha * (1 + 2 * beta + D * kx ** 2)
+    c0 = -beta * alpha * sigma ** 2
 
     omega = {}
     fast_mode = []
