@@ -1,0 +1,2 @@
+`~plasmapy.diagnostics.charged_particle_radiograph.synthetic_radiograph` now determines the default detector size to be the smallest
+detector plane centered on the origin that includes all particles.
