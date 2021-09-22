@@ -1,0 +1,2 @@
+Added the ``Stack`` and ``Layer` objects to the `~plasmapy.diagnostics.charged_particle_radiography` module, which represent a stack of detector media layers. 
+The ``deposition_curve`` and ``energy_bands`` methods of ``Stack``  calculate the particle energies deposited in each detector layer.
