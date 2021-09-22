@@ -13,10 +13,10 @@ __all__ = [
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from scipy.interpolate import interp1d
 import sys
 import warnings
 
+from scipy.interpolate import interp1d
 from tqdm import tqdm
 
 from plasmapy import particles
@@ -1424,18 +1424,18 @@ def synthetic_radiograph(
     return h * u.m, v * u.m, intensity
 
 
-
 # *************************************************************************
 # Film Stack & Layers
 # *************************************************************************
 
+
 class Layer:
-    def __init__(self, thickness, energy_axis, stopping_power, active=True, name=''):
+    def __init__(self, thickness, energy_axis, stopping_power, active=True, name=""):
         r"""
         A layer in a detector film stack. The layer could either be an active
         layer (the actual film medium) or an inactive layer (a filter or
         inactive part of the film, such as a substrate.)
-        
+
         Tabulated stopping powers for protons and electrons can be found at
         https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html
         and
@@ -1443,21 +1443,21 @@ class Layer:
 
         Parameters
         ----------
-        
+
         thickness : `~astropy.units.Quantity`
             The thickness of the layer, in units convertable to meters.
-            
+
         energy_axis : `~astropy.units.Quantity`
             The energies corresponding to the stopping power array.
-            
+
         stopping_power : `~astropy.units.Quantity`
             The stopping power in the material, multiplied by the material
-            mass density. The stopping power is tabulated in units of 
-            MeV cm^2 / g, so this variable has units of MeV/cm. 
-       
+            mass density. The stopping power is tabulated in units of
+            MeV cm^2 / g, so this variable has units of MeV/cm.
+
         active : boolean, optional
             If True, this layer is marked as an active layer. The default is True.
-            
+
         name : str, optional
             An optional name for the layer.
 
@@ -1467,157 +1467,159 @@ class Layer:
         self.stopping_power = stopping_power
         self.active = active
         self.name = name
-        
-        
+
+
 class Stack:
     r"""
-    A Stack is an ordered list of Layer objects. 
-    
-    
+    A Stack is an ordered list of Layer objects.
+
+
     Parameters
     ----------
-        
+
     layers : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
         A list of the layers that make up the film stack.
     """
+
     def __init__(self, layers):
-            self._layers = layers
-            self._energy_bands = None
-            
-            
+        self._layers = layers
+        self._energy_bands = None
+
     def deposition_curves(self, energies, return_only_active=True):
         """
         Calculates the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
-    
+
         Parameters
         ----------
-        
+
         stack : list of Layer objects
             This list of Layer objects defines the composition of the film stack.
-        
+
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
             Energies axis over which to calculate the deposition. Units convertable
             to eV.
-            
+
         return_only_active : boolean, optional
             If True, only the deposition in layers in which the `active` property
             is True will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If False, deposition in 
+            captured in other layers will not be measured. If False, deposition in
             all layers of the stack are returned. The default is True.
-        
+
         Returns
         -------
-    
+
         deposited : `~numpy.ndarray`, shape [nlayers, nenergies]
             The fraction of an ensemble of each energy that will be deposited in
             each layer of film. The array is normalized such that the sum
             along the first dimension (all of the layers) for each population
             is unity.
-    
+
         """
 
         energies = energies.to(u.MeV).value
         energy_axis = np.copy(energies)
-        
+
         # Deposited energy in MeV
         deposited = np.zeros([len(self._layers), energies.size])
-        
+
         for i, layer in enumerate(self._layers):
-            
-                # Interpolate stopping power for each energy
-                # stopping power here is in MeV/cm
-                sp_fcn = interp1d(layer.energy_axis.to(u.MeV).value, 
-                                  layer.stopping_power.to(u.MeV/u.cm).value,
-                                  fill_value = (0, np.inf), bounds_error=False)
-                interpolated_stopping_power = sp_fcn(energies)
-    
-                # dE is in MeV
-                dE = interpolated_stopping_power * layer.thickness.to(u.cm).value
-        
-                # If dE > E for a given energy, set dE=E (stop the particle)
-                dE = np.where(dE > energies, energies, dE)
-                
-                energies += - dE
-                
-                deposited[i,:] = dE
-                
-                
+
+            # Interpolate stopping power for each energy
+            # stopping power here is in MeV/cm
+            sp_fcn = interp1d(
+                layer.energy_axis.to(u.MeV).value,
+                layer.stopping_power.to(u.MeV / u.cm).value,
+                fill_value=(0, np.inf),
+                bounds_error=False,
+            )
+            interpolated_stopping_power = sp_fcn(energies)
+
+            # dE is in MeV
+            dE = interpolated_stopping_power * layer.thickness.to(u.cm).value
+
+            # If dE > E for a given energy, set dE=E (stop the particle)
+            dE = np.where(dE > energies, energies, dE)
+
+            energies += -dE
+
+            deposited[i, :] = dE
+
         # Normalize the deposited energy array so that each number represents
         # the fraction of a population of particles of that energy stopped
         # in that layer.
         deposited = deposited / energy_axis
-        
-        
+
         # If this flag is set, return only the layers that correspond to active
         # medium, ignoring the filter and substrate layers
         if return_only_active:
             active_ind = [i for i in range(len(self._layers)) if self._layers[i].active]
             deposited = deposited[active_ind, :]
-       
+
         return deposited
 
-
-
-
-    def energy_bands(self, energy_range=[0.1, 60] * u.MeV, dE= 0.1 * u.MeV, 
-                     return_only_active=True):
+    def energy_bands(
+        self, energy_range=[0.1, 60] * u.MeV, dE=0.1 * u.MeV, return_only_active=True
+    ):
         """
         Calculate the energy bands in each of the active layers of a film stack.
-        
+
         Parameters
         ----------
         stack : list of Layer objects
             This list of Layer objects defines the composition of the film stack.
-            
+
         energy_range : `~astropy.units.Quantity` list, shape [2,]
-            A range of energies to include in the calculation. Units convertable 
+            A range of energies to include in the calculation. Units convertable
             to eV. Defaults to [0.1,60] MeV.
-            
+
         dE :  `~astropy.units.Quantity`
             Spacing between energy bins in the calculation. Units convertable
             to eV. Defaults to 100 keV.
-            
+
         return_only_active : boolean, optional
             If True, only the energy bands of layers in which the `active` property
             is True will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If False, energy bands in 
+            captured in other layers will not be measured. If False, energy bands in
             all layers of the stack are returned. The default is True.
-    
+
         Returns
         -------
-    
+
         energy_bands : `~astropy.units.Quantity`, shape [nlayers, 2]
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in MeV.
-    
+
         """
-    
-        energies = np.arange(energy_range[0].to(u.MeV).value,
-                             energy_range[1].to(u.MeV).value,
-                             dE.to(u.MeV).value) * u.MeV
-        
-        deposited = self.deposition_curves(energies, return_only_active=return_only_active)
-        
-    
+
+        energies = (
+            np.arange(
+                energy_range[0].to(u.MeV).value,
+                energy_range[1].to(u.MeV).value,
+                dE.to(u.MeV).value,
+            )
+            * u.MeV
+        )
+
+        deposited = self.deposition_curves(
+            energies, return_only_active=return_only_active
+        )
+
         energy_bands = np.zeros([deposited.shape[0], 2]) * u.MeV
-        
+
         for i in range(deposited.shape[0]):
-            bragg_curve = deposited[i,:]
-            
+            bragg_curve = deposited[i, :]
+
             # Find the indices corresponding to half the maximum value
             # on either side of the peak
-            halfmax = np.max(bragg_curve)/2
-    
+            halfmax = np.max(bragg_curve) / 2
+
             inds = np.argwhere(bragg_curve > halfmax)
             # Store those energies
-    
-            energy_bands[i,0] = energies[inds[0][0]]
-            energy_bands[i,1] = energies[inds[-1][0]]
-            
+
+            energy_bands[i, 0] = energies[inds[0][0]]
+            energy_bands[i, 1] = energies[inds[-1][0]]
+
         self._energy_bands = energy_bands
-            
+
         return energy_bands
-            
-            
-    
