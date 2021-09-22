@@ -1,0 +1,2 @@
+Updated the requirements for the documentation build to be docutils ≥ 0.17.1
+and sphinx_rtd_them ≥ 1.0.0.
