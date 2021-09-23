@@ -22,7 +22,6 @@ _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 
 def get_file(filename, base_url=_BASE_URL):
-
     path = os.path.join(_DOWNLOADS_PATH, filename)
 
     # If file doesn't exist, download it
@@ -31,7 +30,7 @@ def get_file(filename, base_url=_BASE_URL):
         dl = Downloader(
             overwrite=True, progress=True, headers={"Accept-Encoding": "identity"}
         )
-        dl.enqueue_file(url, filename=os.path.join("downloads", filename))
+        dl.enqueue_file(url, path=_DOWNLOADS_PATH, filename=filename)
         files = dl.download()
         path = files[0]
     return path

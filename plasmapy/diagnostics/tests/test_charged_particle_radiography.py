@@ -11,6 +11,7 @@ import warnings
 
 from scipy.special import erf
 
+from plasmapy.data.data import get_file
 from plasmapy.diagnostics import charged_particle_radiography as cpr
 from plasmapy.plasma.grids import CartesianGrid
 
@@ -773,16 +774,16 @@ def test_add_wire_mesh():
 
 
 def test_film_stack_energy_bands():
-    path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "tissue-equivalent.txt"
-    )
-    arr = np.loadtxt(path, skiprows=8)
+    # Fetch stopping power data files from data module
+    tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt")
+    aluminum_path = get_file("NIST_PSTAR_aluminum.txt")
+
+    arr = np.loadtxt(tissue_path, skiprows=8)
     eaxis = arr[:, 0] * u.MeV
     tissue_density = 1.04 * u.g / u.cm ** 3
     tissue_equivalent = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * tissue_density
 
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "aluminum.txt")
-    arr = np.loadtxt(path, skiprows=8)
+    arr = np.loadtxt(aluminum_path, skiprows=8)
     aluminum_density = 2.7 * u.g / u.cm ** 3
     aluminum = arr[:, 1] * u.MeV * u.cm ** 2 / u.g * aluminum_density
 
