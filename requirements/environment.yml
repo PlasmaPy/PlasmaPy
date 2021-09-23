@@ -30,4 +30,4 @@ dependencies:
     - towncrier >= 19.2.0
     - pytest-regressions
     - notebook
-    - parfive >= 1.4.1
+    - parfive >= 1.4.0
