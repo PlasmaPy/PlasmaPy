@@ -1,0 +1,1 @@
+Created the `~plasmapy.data` module, which downloads data files and stores them locally.

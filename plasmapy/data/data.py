@@ -1,36 +1,37 @@
+"""
+Do
+
+"""
+
 import os
-import pkgutil
-from urllib.parse import urljoin
+
 from parfive import Downloader
+from urllib.parse import urljoin
+
+__all__ = ["get_file"]
+
+# TODO: the normal GitHub raw links seem to have an issue with file compression?
+# their Content-Type header seems to be incorrectly set to say they are using gzip, but the files disagree?
+# _BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
+# _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/sample-data/main/data/"
+
+# This service fixes the GitHub headers...
+_BASE_URL = "https://gitcdn.link/repo/PlasmaPy/sample-data/main/data/"
+
+_DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 
-_BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
+def get_file(filename, base_url=_BASE_URL):
 
-#_BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/sample-data/main/data/"
+    path = os.path.join(_DOWNLOADS_PATH, filename)
 
-
-def get_file(filename, base_url = _BASE_URL):
-    
-    
-    
-    try:
-        path = pkgutil.get_data("plasmapy", os.path.join("data", "downloads", filename))
-    except FileNotFoundError:
-        # If file doesn't exist, download it
+    # If file doesn't exist, download it
+    if not os.path.exists(path):
         url = urljoin(base_url, filename)
-        print(url)
-        dl = Downloader(overwrite=True, progress=True, headers={'Accept-Encoding': 'identity'})
-        dl.enqueue_file(url, filename=filename)
+        dl = Downloader(
+            overwrite=True, progress=True, headers={"Accept-Encoding": "identity"}
+        )
+        dl.enqueue_file(url, filename=os.path.join("downloads", filename))
         files = dl.download()
-        print(files)
-        
-
-
-
-if __name__ == '__main__':
-    file = 'NIST_PSTAR_aluminum.txt'
-    
-    f = get_file(file)
-            
-    
-    
+        path = files[0]
+    return path
