@@ -1488,6 +1488,14 @@ class Stack:
         self._energy_bands = None
 
     @property
+    def nlayers(self):
+        r"""
+        The number of layers in the stack.
+        """
+
+        return len(self._layers)
+
+    @property
     def nactive(self):
         r"""
         The number of layers in the stack marked 'active'

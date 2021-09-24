@@ -809,6 +809,10 @@ def hdv2_stack():
 
 
 def test_film_stack_properties(hdv2_stack):
+
+    # Test nlayers property
+    assert hdv2_stack.nlayers == 21
+
     # Test nactive property
     assert hdv2_stack.nactive == 10
 
