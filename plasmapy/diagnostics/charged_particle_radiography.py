@@ -1493,7 +1493,7 @@ class Stack:
         The number of layers in the stack marked 'active'
         """
 
-        return len([l for l in self._layers if l.active == True])
+        return len([layer for layer in self._layers if layer.active])
 
     def deposition_curves(self, energies, return_only_active=True):
         """
@@ -1528,7 +1528,6 @@ class Stack:
         """
 
         energies = energies.to(u.MeV).value
-        energy_axis = np.copy(energies)
 
         # Deposited energy in MeV
         deposited = np.zeros([len(self._layers), energies.size])
