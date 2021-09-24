@@ -1487,6 +1487,14 @@ class Stack:
         self._layers = layers
         self._energy_bands = None
 
+    @property
+    def nactive(self):
+        r"""
+        The number of layers in the stack marked 'active'
+        """
+
+        return len([l for l in self._layers if l.active == True])
+
     def deposition_curves(self, energies, return_only_active=True):
         """
         Calculates the deposition of an ensemble of particles over a range of
@@ -1550,7 +1558,7 @@ class Stack:
         # Normalize the deposited energy array so that each number represents
         # the fraction of a population of particles of that energy stopped
         # in that layer.
-        deposited = deposited / energy_axis
+        deposited = deposited / np.sum(deposited, axis=0)
 
         # If this flag is set, return only the layers that correspond to active
         # medium, ignoring the filter and substrate layers
