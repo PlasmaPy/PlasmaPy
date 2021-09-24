@@ -804,6 +804,19 @@ def test_film_stack_energy_bands():
 
     stack = cpr.Stack(layers)
 
+    # Test nactive property
+    assert stack.nactive == 10
+
+    energies = np.arange(1, 60, 1) * u.MeV
+
+    # Test deposition curves
+    deposition_curves = stack.deposition_curves(energies, return_only_active=False)
+
+    # Test that integral over all layers for each particle species is unity
+    integral = np.sum(deposition_curves, axis=0)
+    assert np.allclose(integral, 1.0)
+
+    # Test energy bands
     ebands = stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV)
 
     # Expected energy bands, in MeV (only in active layers)
