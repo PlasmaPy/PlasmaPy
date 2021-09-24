@@ -773,7 +773,8 @@ def test_add_wire_mesh():
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
-def test_film_stack_energy_bands():
+@pytest.fixture
+def hdv2_stack():
     # Fetch stopping power data files from data module
     tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt")
     aluminum_path = get_file("NIST_PSTAR_aluminum.txt")
@@ -804,20 +805,29 @@ def test_film_stack_energy_bands():
 
     stack = cpr.Stack(layers)
 
-    # Test nactive property
-    assert stack.nactive == 10
+    return stack
 
+
+def test_film_stack_properties(hdv2_stack):
+    # Test nactive property
+    assert hdv2_stack.nactive == 10
+
+
+def test_film_stack_deposition_curves(hdv2_stack):
     energies = np.arange(1, 60, 1) * u.MeV
 
     # Test deposition curves
-    deposition_curves = stack.deposition_curves(energies, return_only_active=False)
+    deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
 
     # Test that integral over all layers for each particle species is unity
     integral = np.sum(deposition_curves, axis=0)
     assert np.allclose(integral, 1.0)
 
+
+def test_film_stack_energy_bands(hdv2_stack):
+
     # Test energy bands
-    ebands = stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV)
+    ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV)
 
     # Expected energy bands, in MeV (only in active layers)
     expected = np.array(
@@ -838,7 +848,7 @@ def test_film_stack_energy_bands():
     assert np.allclose(ebands.to(u.MeV).value, expected)
 
     # Test including inactive layers
-    ebands = stack.energy_bands(
+    ebands = hdv2_stack.energy_bands(
         [0.1, 60] * u.MeV, 0.1 * u.MeV, return_only_active=False
     )
 
@@ -862,5 +872,4 @@ if __name__ == "__main__":
     test_gaussian_sphere_analytical_comparison()
     test_cannot_modify_simulation_after_running()
     """
-    test_film_stack_energy_bands()
     pass
