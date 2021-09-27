@@ -19,7 +19,7 @@ dependencies:
   - numba
   - pip:
     - hypothesis
-    - docutils >= 0.16
+    - docutils
     - numpydoc
     - pytest
     - lmfit
