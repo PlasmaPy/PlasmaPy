@@ -170,6 +170,9 @@ linkcheck_anchors_ignore = [
     "!forum/plasmapy",
 ]
 
+# Use a code highlighting style that meets the WCAG AA contrast standard
+pygments_style = "xcode"
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
