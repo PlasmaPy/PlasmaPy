@@ -657,7 +657,7 @@ should be balanced with each other rather than absolute principles.
 
 .. [Bernstein2015] D. S. Bernstein, `Beyond Legacy Code: Nine Practices
    to Extend the Life (and Value) of Your Software
-   <https://pragprog.com/titles/dblegacy/beyond-legacy-code/>`_
+   <https://pragprog.com/titles/dblegacy/beyond-legacy-code>`_
    (Pragmatic Bookshelf, 2015, 1st ed.)
 
 .. [Khorikov2020] V. Khorikov, `Unit Testing Principles, Practices, and Patterns
@@ -676,22 +676,22 @@ should be balanced with each other rather than absolute principles.
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
 
-.. _Atom: https://atom.io/
-.. _Codecov: https://about.codecov.io/
+.. _Atom: https://atom.io
+.. _Codecov: https://about.codecov.io
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
-.. _`coverage.py`: https://coverage.readthedocs.io/
+.. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
-.. _hypothesis: https://hypothesis.readthedocs.io/
+.. _hypothesis: https://hypothesis.readthedocs.io
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
-.. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis/
+.. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis
 .. _`pure functions`: https://en.wikipedia.org/wiki/Pure_function
-.. _PyCharm: https://www.jetbrains.com/pycharm/
-.. _pytest: https://docs.pytest.org/
-.. _`pytest-cov`: https://pytest-cov.readthedocs.io/
+.. _PyCharm: https://www.jetbrains.com/pycharm
+.. _pytest: https://docs.pytest.org
+.. _`pytest-cov`: https://pytest-cov.readthedocs.io
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
