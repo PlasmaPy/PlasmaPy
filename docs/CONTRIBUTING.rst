@@ -53,7 +53,7 @@ first!
 
 Work on PlasmaPy is done via GitHub, so you’ll need a `(free)
 account <https://github.com/join?source=header-home>`_. If you are new
-to `git <https://git-scm.com/>`_, helpful resources include
+to `git <https://git-scm.com>`_, helpful resources include
 documentation on `git
 basics <https://git-scm.com/book/en/v2>`_
 and an `interactive git
@@ -62,7 +62,7 @@ You must also `install
 git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
 locally on your computer. We highly recommend getting reasonably
 familiar with git by going through these tutorials or a `Software
-Carpentry <https://software-carpentry.org/>`_ workshop prior to making
+Carpentry <https://software-carpentry.org>`_ workshop prior to making
 code contributions. Do note that you can usually find help in the
 `PlasmaPy Matrix
 chatroom <https://app.element.io/#/room/#plasmapy:openastronomy.org>`_.

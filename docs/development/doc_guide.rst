@@ -90,8 +90,6 @@ This command is needed when you make a change to a file that does not
 trigger Sphinx_ to rebuild the file that you altered, for example
 modifying a CSS_ file.
 
-
-
 Building documentation with tox
 -------------------------------
 
@@ -245,7 +243,7 @@ Here are some examples for linking to websites.
 
    `Write the Docs`_ has a guide_ on writing software documentation.
 
-   .. _`Write the Docs`: https://www.writethedocs.org/
+   .. _`Write the Docs`: https://www.writethedocs.org
    .. _guide: https://www.writethedocs.org/
 
 This reST_ block renders as:

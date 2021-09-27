@@ -124,4 +124,4 @@ Covenant (version 1.4)
 the `Astropy Community Code of Conduct
 <https://www.astropy.org/code_of_conduct.html>`_, and the
 `Python Software Foundation code of conduct
-<https://www.python.org/psf/conduct/>`_.
+<https://www.python.org/psf/conduct>`_.
