@@ -158,10 +158,18 @@ default_role = "obj"
 
 # Customizations for make linkcheck using regular expressions
 linkcheck_allowed_redirects = {
-    r"https://.+\.(org|io|com)": r".+(org|io|com)/en/.+",  # to different doc branches
     r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
+    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
+    r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
+    r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
+    r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
+    r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
+    r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
     r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
+    r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
+    r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
 }
+
 linkcheck_anchors = True
 linkcheck_anchors_ignore = [
     "/room",
