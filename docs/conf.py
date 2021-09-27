@@ -160,6 +160,9 @@ todo_include_todos = False
 
 default_role = "obj"
 
+# Use a code highlighting style that meets the WCAG AA contrast standard
+pygments_style = "xcode"
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -197,7 +200,6 @@ modindex_common_prefix = ["plasmapy."]
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = "PlasmaPydoc"
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
