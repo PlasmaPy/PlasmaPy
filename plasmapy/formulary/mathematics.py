@@ -128,7 +128,9 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     special case explicitly.
 
     This algorithm is based on
-    `this discussion <https://math.stackexchange.com/a/476311>`_ on StackExchange.
+    `this discussion
+    <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>`_
+    on StackExchange.
 
     Parameters
     ----------
