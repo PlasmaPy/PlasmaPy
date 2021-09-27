@@ -859,8 +859,8 @@ class IonizationState:
             below this level, then information for it will not be
             printed.  Defaults to 0.01.
 
-        Example
-        -------
+        Examples
+        --------
         >>> He_states = IonizationState(
         ...     'He',
         ...     [0.941, 0.058, 0.001],
