@@ -90,6 +90,12 @@ This command is needed when you make a change to a file that does not
 trigger Sphinx_ to rebuild the file that you altered, for example
 modifying a CSS_ file.
 
+To check that hyperlinks are correct, run:
+
+.. code-block:: bash
+
+   make linkcheck
+
 Building documentation with tox
 -------------------------------
 
