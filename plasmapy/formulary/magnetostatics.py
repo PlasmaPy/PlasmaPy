@@ -380,14 +380,14 @@ class CircularWire(Wire):
     """
 
     def __repr__(self):
-        name = (self.__class__.__name__,)
-        normal = (self.normal,)
-        center = (self.center,)
-        radius = (self.radius,)
-        current = (self.current,)
-        center_u = (self._center_u,)
-        radius_u = (self._radius_u,)
-        current_u = (self._current_u,)
+        name = self.__class__.__name__
+        normal = self.normal
+        center = self.center
+        radius = self.radius
+        current = self.current
+        center_u = self._center_u
+        radius_u = self._radius_u
+        current_u = self._current_u
         return (
             f"{name}(normal={normal}, center={center}{center_u}, "
             f"radius={radius}{radius_u}, current={current}{current_u})"
