@@ -908,11 +908,11 @@ class IonizationStateCollection:
 
         attributes = []
         if np.isfinite(self.n_e):
-            attributes.append("n_e = " + "{:.2e}".format(self.n_e.value) + " m**-3")
+            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
         if np.isfinite(self.T_e):
-            attributes.append("T_e = " + "{:.2e}".format(self.T_e.value) + " K")
+            attributes.append(f"T_e = {self.T_e.value:.2e} K")
         if np.isfinite(self.kappa):
-            attributes.append("kappa = " + "{:.2f}".format(self.kappa))
+            attributes.append(f"kappa = {self.kappa:.2f}")
 
         if attributes:
             attributes.append(separator_line)
