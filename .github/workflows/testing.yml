@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
+      - stable
       - v0.*.x
     tags:
       - "v*"
@@ -28,11 +29,6 @@ jobs:
             python: 3.7
             toxenv: py37
 
-          - name: Python 3.8 with Astropy dev
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-astropydev
-
           - name: Python 3.8 with code coverage
             os: ubuntu-latest
             python: 3.8
@@ -42,16 +38,6 @@ jobs:
             os: ubuntu-latest
             python: 3.8
             toxenv: py38-slow-cov
-
-          - name: Python 3.8 with Numpy dev
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-numpydev
-
-          - name: Python 3.9 with Xarray dev
-            os: ubuntu-latest
-            python: 3.9
-            toxenv: py39-numpydev
 
           - name: Python 3.9
             os: ubuntu-latest
