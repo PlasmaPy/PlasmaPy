@@ -28,7 +28,7 @@ jobs:
           - name: Python 3.8 with xarray dev
             os: ubuntu-latest
             python: 3.8
-            toxenv: py39-xarraydev
+            toxenv: py38-xarraydev
 
           - name: Documentation with Sphinx dev
             os: ubuntu-latest
