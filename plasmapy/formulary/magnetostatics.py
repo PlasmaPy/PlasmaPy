@@ -192,7 +192,7 @@ class GeneralWire(Wire):
         step = (self.t2 - self.t1) / n
         t = self.t1
         B = 0
-        for i in range(n):
+        for _ in range(n):
             t = t + step
             p2 = self.parametric_eq(t)
             dl = p2 - p1
