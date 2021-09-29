@@ -348,11 +348,13 @@ extensions:
 * `sphinx.ext.mathjax` for math rendering with MathJax_
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings
 * `sphinx.ext.todo` to support ``todo`` :term:`directive`\ s
-* nbsphinx_ for including Jupyter_ notebooks
-* `sphinx_copybutton`_ to add a "copy" button for code blocks
-* `sphinx_gallery.load_style`_ for using sphinx-gallery styles
-* `IPython.sphinxext.ipython_console_highlighting`_
-* `sphinx_changelog`_ for rendering `towncrier`_ changelogs
+* |nbsphinx|_ for including Jupyter_ notebooks
+* |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
+  a bibliography
+* |sphinx_copybutton|_ to add a "copy" button for code blocks
+* |sphinx_gallery.load_style|_ for using sphinx-gallery styles
+* |IPython.sphinxext.ipython_console_highlighting|_
+* |sphinx_changelog|_ for rendering `towncrier`_ changelogs
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -425,6 +427,10 @@ than ```~plasmapy.particles.particle_class.Particle```. Consequently,
 substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
+
+Bibliography
+~~~~~~~~~~~~
+
 
 Templating
 ~~~~~~~~~~
@@ -523,19 +529,6 @@ Here is an example docstring in the numpydoc_ format:
       taking their first plasma physics class. This section can include
       a derivation of the quantity being calculated or a description of
       a particular algorithm.
-
-      The next section contains example references to a journal article
-      [1]_ and a book [2]_.
-
-      References
-      ----------
-      .. [1] J. E. Foster, `Plasma-based water purification: Challenges and
-         prospects for the future <https://doi.org/10.1063/1.4977921>`_,
-         Physics of Plasmas, 22, 05501 (2017).
-
-      .. [2] E. Gamma, R. Helm, R. Johnson, J. Vlissides, `Design Patterns:
-         Elements of Reusable Object-Oriented Software
-         <https://www.oreilly.com/library/view/design-patterns-elements/0201633612/>`_
 
       Examples
       --------
@@ -924,6 +917,7 @@ Narrative documentation guidelines
 
 .. _`active voice`: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
+.. _BibTeX: http://www.bibtex.org/
 .. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
@@ -934,13 +928,11 @@ Narrative documentation guidelines
 .. _`https://docs.plasmapy.org/en/stable`: https://docs.plasmapy.org/en/stable
 .. _`https://docs.plasmapy.org/en/latest`: https://docs.plasmapy.org/en/latest
 .. _`https://doi.org/10.5281/zenodo.4602818`: https://doi.org/10.5281/zenodo.4602818
-.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. _Jinja: https://jinja.palletsprojects.com
 .. _LaTeX: https://www.latex-project.org
 .. _`link rot`: https://en.wikipedia.org/wiki/Link_rot
 .. _make: https://www.gnu.org/software/make
 .. _MathJax: https://www.mathjax.org
-.. _nbsphinx: https://nbsphinx.readthedocs.io
 .. _`nested inline markup`: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _`options to sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _pandas: https://pandas.pydata.org
@@ -952,9 +944,6 @@ Narrative documentation guidelines
 .. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
-.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
-.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
-.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
 .. _`Sphinx's glossary`: https://www.sphinx-doc.org/en/master/glossary.html
 .. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
 .. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
@@ -982,3 +971,21 @@ Narrative documentation guidelines
 
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
+
+.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
+.. |IPython.sphinxext.ipython_console_highlighting| replace:: ``IPython.sphinxext.ipython_console_highlighting``
+
+.. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
+.. |sphinxcontrib-bibtex| replace:: ``sphinxcontrib-bibtex``
+
+.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
+.. |sphinx_copybutton| replace:: ``sphinx_copybutton``
+
+.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
+.. |sphinx_gallery.load_style| replace:: ``sphinx_gallery.load_style``
+
+.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
+.. |sphinx_changelog| replace:: ``sphinx_changelog``
+
+.. _nbsphinx: https://nbsphinx.readthedocs.io
+.. |nbsphinx| replace:: ``nbsphinx``
