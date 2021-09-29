@@ -1,2 +1,4 @@
-Updated the requirements for the documentation build to be docutils ≥ 0.17.1
-and sphinx_rtd_them ≥ 1.0.0.
+Updated the requirements for the documentation build to be no restrictions on `docutils`
+and `sphinx_rtd_them >= 1.0.0`.  `docutils == 0.17` is not compatible with
+`sphinx_rtd_theme < 1.0` (see :pr:`1107`) and `docutils == 0.17` is not compatible with
+`sphinx_rtd_theme < 1.0` (see :issue:`1230`).
