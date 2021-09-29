@@ -1458,7 +1458,7 @@ class Layer:
             mass density. The stopping power is tabulated in units of
             MeV cm\ :sup:`^2` / g, so this variable has units of MeV/cm.
 
-        active : boolean, optional
+        active : `bool`, optional
             If `True`, this layer is marked as an active layer. The default is `True`.
 
         name : `str`, optional
@@ -1482,7 +1482,7 @@ class Stack:
     ----------
 
     layers : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-        A list of the layers that make up the film stack.
+        A list of the `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects that make up the film stack.
     """
 
     def __init__(self, layers):
