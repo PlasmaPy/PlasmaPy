@@ -664,7 +664,7 @@ class IonizationState:
             )
 
             if value.size == 5 and self._number_of_particles != 5:
-                error_str += " For {self.base_particle}, five is right out."
+                error_str += f" For {self.base_particle}, five is right out."
             raise ParticleError(error_str)
 
     @property
@@ -883,17 +883,8 @@ class IonizationState:
         """
         separator_line = [64 * "-"]
 
-        scientific = "{:.2e}"
-        floaty = "{:.2f}"
-
-        n_elem = scientific.format(self.n_elem.value)
-        n_e = scientific.format(self.n_e.value)
-        T_e = scientific.format(self.T_e.value)
-        kappa = floaty.format(self.kappa)
-        Z_mean = floaty.format(self.Z_mean)
-
         output = [
-            f"IonizationState instance for {self.base_particle} with Z_mean = {Z_mean}"
+            f"IonizationState instance for {self.base_particle} with Z_mean = {self.Z_mean:.2f}"
         ]
         attributes = []
 
@@ -904,12 +895,12 @@ class IonizationState:
             # TODO add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
-            attributes.append(f"n_elem = {n_elem} m**-3")
-            attributes.append(f"n_e = {n_e} m**-3")
+            attributes.append(f"n_elem = {self.n_elem.value:.2e} m**-3")
+            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
         if not np.isnan(self.T_e):
-            attributes.append(f"T_e = {T_e} K")
+            attributes.append(f"T_e = {self.T_e.value:.2f} K")
         if np.isfinite(self.kappa):
-            attributes.append(f"kappa = {kappa}")
+            attributes.append(f"kappa = {self.kappa:.2f}")
 
         if attributes:
             attributes += separator_line

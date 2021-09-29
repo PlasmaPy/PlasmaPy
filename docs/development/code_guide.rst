@@ -139,9 +139,8 @@ for docstrings
 <https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
-submitting a pull request, as the `PEP8 Speaks
-<http://pep8speaks.com/>`_ GitHub integration will check pull requests
-for PEP 8 compatibility, and further changes to the style can be
+submitting a pull request, GitHub Actions will check pull requests
+for :pep:`8` compatibility, and further changes to the style can be
 suggested during code review.
 
 You may periodically commit changes to your branch by running

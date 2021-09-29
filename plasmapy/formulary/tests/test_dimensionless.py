@@ -2,8 +2,6 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy.constants import c
-
 from plasmapy.formulary.dimensionless import (
     beta,
     Mag_Reynolds,
@@ -12,7 +10,6 @@ from plasmapy.formulary.dimensionless import (
     Reynolds_number,
     Rm_,
 )
-from plasmapy.utils import RelativityError
 
 B = 1.0 * u.T
 n = 5e19 * u.m ** -3
