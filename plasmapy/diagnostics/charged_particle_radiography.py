@@ -1474,7 +1474,8 @@ class Layer:
 
 class Stack:
     r"""
-    A Stack is an ordered list of Layer objects.
+    A `~plasmapy.diagnostic.charged_particle_radiography.Stack` is an ordered
+    list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects.
 
 
     Parameters
