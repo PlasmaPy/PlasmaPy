@@ -916,7 +916,7 @@ class AbstractGrid(ABC):
         in the `_interp_quantities` array.
         """
         _interp_units = []
-        for j, arg in enumerate(self._interp_args):
+        for arg in self._interp_args:
             _interp_units.append(self.ds[arg].attrs["unit"])
 
         return _interp_units
