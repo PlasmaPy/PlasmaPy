@@ -73,7 +73,7 @@ def Fermi_integral(
     """
     try:
         from mpmath import polylog
-    except (ImportError, ModuleNotFoundError) as e:
+    except ImportError as e:
         from plasmapy.optional_deps import mpmath_import_error
 
         raise mpmath_import_error from e
