@@ -5,7 +5,6 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
-from scipy import special
 from typing import Union
 
 

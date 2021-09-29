@@ -54,11 +54,11 @@ __all__ = [
     "coupling_parameter",
 ]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
-from astropy.constants.si import c, e, eps0, hbar, k_B, m_e
+from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from numpy import pi
 
 from plasmapy import particles, utils
@@ -372,7 +372,7 @@ def Coulomb_logarithm(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
     >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
@@ -574,7 +574,7 @@ def impact_parameter_perp(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
@@ -701,7 +701,7 @@ def impact_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -919,7 +919,7 @@ def collision_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1113,7 +1113,8 @@ def fundamental_electron_collision_freq(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1251,7 +1252,8 @@ def fundamental_ion_collision_freq(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1394,7 +1396,7 @@ def mean_free_path(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m ** -3
     >>> T = 1e6 * u.K
     >>> mean_free_path(T, n, ('e-', 'p+'))
@@ -1524,7 +1526,7 @@ def Spitzer_resistivity(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1656,7 +1658,7 @@ def mobility(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1788,7 +1790,7 @@ def Knudsen_number(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> L = 1e-3 * u.m
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
@@ -1943,7 +1945,7 @@ def coupling_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
