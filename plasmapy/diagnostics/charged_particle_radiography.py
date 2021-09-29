@@ -1224,7 +1224,7 @@ class Tracker:
     def save_results(self, path):
         """
         Save the simulations results :attr:`results_dict` to a `numpy`
-        ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
+        :file:`.npz` file format (see `numpy.lib.format`) using `numpy.savez`.
 
         Parameters
         ----------
