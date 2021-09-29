@@ -1503,6 +1503,14 @@ class Stack:
 
         return len([layer for layer in self._layers if layer.active])
 
+    @property
+    def thickness(self):
+        r"""
+        The total thickness of the stack.
+        """
+        thickness = np.array([layer.thickness.to(u.mm).value for layer in self._layers])
+        return np.sum(thickness) * u.mm
+
     def deposition_curves(self, energies, return_only_active=True):
         """
         Calculates the deposition of an ensemble of particles over a range of
