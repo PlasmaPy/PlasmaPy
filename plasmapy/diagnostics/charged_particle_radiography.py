@@ -1232,7 +1232,7 @@ class Tracker:
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
             where the data will be saved. If file is a string or a path,
-            the ``.npz`` extension will be appended to the filename if
+            the :file:`.npz` extension will be appended to the filename if
             it is not already there.
 
         """
