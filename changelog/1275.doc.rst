@@ -1,3 +1,5 @@
 Updated the requirements for the documentation build to be no restrictions on ``docutils``
 and ``sphinx_rtd_theme >= 1.0.0``.  ``docutils == 0.17`` is not compatible with
-``sphinx_rtd_theme < 1.0`` (see :pr:`1107` and :issue:`1230`).
+``sphinx_rtd_theme < 1.0`` (see
+`#1107 <https://github.com/PlasmaPy/PlasmaPy/pull/1107>`__ and
+`#1230 <https://github.com/PlasmaPy/PlasmaPy/issues/1230>`__).
