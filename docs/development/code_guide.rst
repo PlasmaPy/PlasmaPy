@@ -30,18 +30,16 @@ changes actually did.
 Note that the "Style linters / pre-commit (pull_request)" part of our
 Continuous Integration system can and will (metaphorically) shout at you if it
 finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply `black` and `isort` manually, let
+with version, so, rather than apply black_ and isort_ manually, let
 pre-commit do the version management for you instead!
 
 Our pre-commit suite can be found in `.pre-commit-config.yaml
 <https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
 It includes
 
-* `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package
-* `isort <https://pycqa.github.io/isort/>`_ to
-  automatically sort imports.
+* black_ to automatically format code and ensure a consistent code style
+  throughout the package
+* isort_ to automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
   to example notebooks as well.
 * a few tools for `requirements.txt`, `.yml` files and the like.
@@ -50,7 +48,7 @@ PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <http://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and
@@ -60,10 +58,8 @@ PlasmaPy Code Style Guide, codified
   * Docstrings and comments should generally be limited to
     about 72 characters.
 
-* During code development, use
-  `black <https://black.readthedocs.io/en/stable/>`_ to automatically
-  format code and ensure a consistent code style throughout the
-  package and `isort <https://pycqa.github.io/isort/>`_ to
+* During code development, use black_ to automatically format code and
+  ensure a consistent code style throughout the package and isort_ to
   automatically sort imports.
 
 * Follow the existing coding style within a subpackage.  This includes,
@@ -89,7 +85,6 @@ PlasmaPy Code Style Guide, codified
 
 * Avoid using `lambda` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
-
 
 Branches, commits, and pull requests
 ====================================
@@ -144,9 +139,8 @@ for docstrings
 <https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
-submitting a pull request, as the `PEP8 Speaks
-<http://pep8speaks.com/>`_ GitHub integration will check pull requests
-for PEP 8 compatibility, and further changes to the style can be
+submitting a pull request, GitHub Actions will check pull requests
+for :pep:`8` compatibility, and further changes to the style can be
 suggested during code review.
 
 You may periodically commit changes to your branch by running
