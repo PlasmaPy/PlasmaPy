@@ -1460,7 +1460,7 @@ class Layer:
         active : boolean, optional
             If True, this layer is marked as an active layer. The default is True.
 
-        name : str, optional
+        name : `str`, optional
             An optional name for the layer.
 
         """
