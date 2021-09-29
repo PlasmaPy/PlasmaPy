@@ -1333,6 +1333,7 @@ def synthetic_radiograph(
         if desired for plotting using `~numpy.nan_to_num`
 
         .. code-block::
+
            OD = np.nan_to_num(OD, neginf=0)
 
     Returns
