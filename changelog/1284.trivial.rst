@@ -1,2 +1,3 @@
-Added pre-commit hooks to auto-format :file:`.ini`, :file:`.toml`, and :file:`.yaml`
+Added `pre-commit <https://pre-commit.com/>`_
+hooks to auto-format :file:`.ini`, :file:`.toml`, and :file:`.yaml`
 files, and applied changes from those hooks to existing files.
