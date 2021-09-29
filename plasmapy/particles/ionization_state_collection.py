@@ -359,8 +359,8 @@ class IonizationStateCollection:
         # that np.nan == np.nan is False.
 
         for attribute in ["T_e", "n_e", "kappa"]:
-            this = eval(f"self.{attribute}")
-            that = eval(f"other.{attribute}")
+            this = getattr(self, attribute)
+            that = getattr(other, attribute)
 
             # TODO: Maybe create a function in utils called same_enough
             # TODO: that would take care of all of these disparate
@@ -381,8 +381,8 @@ class IonizationStateCollection:
 
         for attribute in ["ionic_fractions", "number_densities"]:
 
-            this_dict = eval(f"self.{attribute}")
-            that_dict = eval(f"other.{attribute}")
+            this_dict = getattr(self, attribute)
+            that_dict = getattr(other, attribute)
 
             for particle in self.base_particles:
 
