@@ -1520,8 +1520,9 @@ class Stack:
         Parameters
         ----------
 
-        stack : list of Layer objects
-            This list of Layer objects defines the composition of the film stack.
+        stack : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
+            This list of `~plasmapy.diagnostic.charged_particle_radiography.Layer`
+            objects defines the composition of the film stack.
 
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
             Energies axis over which to calculate the deposition. Units convertable
