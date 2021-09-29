@@ -5,6 +5,7 @@ Glossary
 ********
 
 .. glossary::
+   :sorted:
 
    args
       An abbreviation for `positional arguments`_.

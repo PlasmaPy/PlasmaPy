@@ -31,8 +31,7 @@ New Features
   <https://pep8speaks.com/>`_.
 
 * Developed `online documentation for PlasmaPy
-  <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs
-  <https://readthedocs.org/>`_.
+  <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.
 
   - Automated documentation builds with Sphinx_.
 
