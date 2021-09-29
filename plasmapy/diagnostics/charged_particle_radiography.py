@@ -1458,7 +1458,7 @@ class Layer:
             MeV cm^2 / g, so this variable has units of MeV/cm.
 
         active : boolean, optional
-            If True, this layer is marked as an active layer. The default is True.
+            If `True`, this layer is marked as an active layer. The default is `True`.
 
         name : `str`, optional
             An optional name for the layer.
