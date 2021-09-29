@@ -1456,7 +1456,7 @@ class Layer:
         stopping_power : `~astropy.units.Quantity`
             The stopping power in the material, multiplied by the material
             mass density. The stopping power is tabulated in units of
-            MeV cm^2 / g, so this variable has units of MeV/cm.
+            MeV cm\ :sup:`^2` / g, so this variable has units of MeV/cm.
 
         active : boolean, optional
             If `True`, this layer is marked as an active layer. The default is `True`.
