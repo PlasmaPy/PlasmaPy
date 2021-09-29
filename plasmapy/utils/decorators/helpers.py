@@ -62,7 +62,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
             )
 
         # save the original docstring
-        setattr(wrapper, "__original_doc__", wrapper.__doc__)
+        wrapper.__original_doc__ = wrapper.__doc__
         doclines = inspect.cleandoc(wrapper.__doc__).splitlines()
 
         # prepend docstring lines
