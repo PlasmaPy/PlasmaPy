@@ -814,8 +814,8 @@ class ExponentialPlusLinear(AbstractFitFunction):
         super().__init__(params=params, param_errors=param_errors)
 
     def __str__(self):
-        exp_str = self._exponential.__str__().lstrip("f(x) = ")
-        lin_str = self._linear.__str__().lstrip("f(x) = ")
+        exp_str = self._exponential.__str__().replace("f(x) = ", "")
+        lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
 
     @property
