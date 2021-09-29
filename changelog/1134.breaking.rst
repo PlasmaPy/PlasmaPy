@@ -1,2 +1,2 @@
-Renamed `~plasmapy.diagnostics.proton_radiography` to `~plasmapy.diagnostics.charged_particle_radiography`,
-and renamed the ``SyntheticProtonRadiograph`` class within that module to ``Tracker``.
+Renamed ``plasmapy.diagnostics.proton_radiography`` to `plasmapy.diagnostics.charged_particle_radiography`,
+and renamed the ``SyntheticProtonRadiograph`` class within that module to `~plasmapy.diagnostics.charged_particle_radiograph.Tracker`.
