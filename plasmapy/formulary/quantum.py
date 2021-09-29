@@ -504,7 +504,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     alphaGuess = 1 * u.dimensionless_unscaled
     try:
         from lmfit import minimize, Parameters
-    except (ImportError, ModuleNotFoundError) as e:
+    except ImportError as e:
         from plasmapy.optional_deps import lmfit_import_error
 
         raise lmfit_import_error from e
