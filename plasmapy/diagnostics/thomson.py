@@ -279,7 +279,7 @@ def spectral_density(
     # Calculate the susceptibilities
 
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, fract in enumerate(efract):
+    for i in len(efract):
         chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
 
     # Treatment of multiple species is an extension of the discussion in
