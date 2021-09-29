@@ -816,6 +816,9 @@ def test_film_stack_properties(hdv2_stack):
     # Test nactive property
     assert hdv2_stack.nactive == 10
 
+    # Test thickness property
+    assert np.isclose(hdv2_stack.thickness.to(u.mm).value, 1.19)
+
 
 def test_film_stack_deposition_curves(hdv2_stack):
     energies = np.arange(1, 60, 1) * u.MeV
@@ -828,37 +831,23 @@ def test_film_stack_deposition_curves(hdv2_stack):
     assert np.allclose(integral, 1.0)
 
 
-def test_film_stack_energy_bands(hdv2_stack):
-
+def test_film_stack_energy_bands_active(hdv2_stack):
     # Test energy bands
-    ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV)
+    ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um)
 
     # Expected energy bands, in MeV (only in active layers)
-    expected = np.array(
-        [
-            [2.7, 3.3],
-            [4.0, 4.4],
-            [5.0, 5.4],
-            [5.9, 6.1],
-            [6.6, 7.0],
-            [7.3, 7.7],
-            [8.0, 8.2],
-            [8.6, 8.8],
-            [9.1, 9.4],
-            [9.7, 9.9],
-        ]
-    )
+    expected = np.array([[3.5, 3.8], [4.6, 4.9], [5.6, 5.7], [6.4, 6.5], [7.1, 7.2]])
 
-    assert np.allclose(ebands.to(u.MeV).value, expected)
+    assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
 
+
+def test_film_stack_energy_bands_inactive(hdv2_stack):
     # Test including inactive layers
     ebands = hdv2_stack.energy_bands(
-        [0.1, 60] * u.MeV, 0.1 * u.MeV, return_only_active=False
+        [0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um, return_only_active=False
     )
-
     # Expected first 5 energy bands
-    expected = np.array([[0.1, 3.7], [2.7, 3.3], [3.2, 4.9], [4.0, 4.4], [4.4, 5.9]])
-
+    expected = np.array([[0.1, 4.2], [3.5, 3.8], [3.9, 5.1], [4.6, 4.9], [4.9, 6]])
     assert np.allclose(ebands.to(u.MeV).value[0:5, :], expected)
 
 

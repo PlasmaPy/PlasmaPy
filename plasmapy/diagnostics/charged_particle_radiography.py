@@ -1511,7 +1511,7 @@ class Stack:
         thickness = np.array([layer.thickness.to(u.mm).value for layer in self._layers])
         return np.sum(thickness) * u.mm
 
-    def deposition_curves(self, energies, return_only_active=True):
+    def deposition_curves(self, energies: u.MeV, dx=1 * u.um, return_only_active=True):
         """
         Calculates the deposition of an ensemble of particles over a range of
         energies in a stack of films and filters.
@@ -1525,6 +1525,10 @@ class Stack:
         energies : `~astropy.units.Quantity` array, shape [nenergies,]
             Energies axis over which to calculate the deposition. Units convertable
             to eV.
+
+        dx : `~astropy.units.Quantity`, optional
+            The spatial resolution of the numerical integration of the stopping power.
+            Defaults to 1 um.
 
         return_only_active : boolean, optional
             If True, only the deposition in layers in which the `active` property
@@ -1558,17 +1562,28 @@ class Stack:
                 fill_value=(0, np.inf),
                 bounds_error=False,
             )
-            interpolated_stopping_power = sp_fcn(energies)
 
-            # dE is in MeV
-            dE = interpolated_stopping_power * layer.thickness.to(u.cm).value
+            # Slice the layer into sublayer dx thick
+            nsublayers = int(
+                np.floor(layer.thickness.to(u.um).value / dx.to(u.um).value)
+            )
+            sublayers = np.ones(nsublayers) * dx.to(u.um)
+            # Include any remainder in the last sublayer
+            sublayers[-1] += layer.thickness.to(u.um) % dx.to(u.um)
 
-            # If dE > E for a given energy, set dE=E (stop the particle)
-            dE = np.where(dE > energies, energies, dE)
+            # Calculate the energy deposited in each sublayer
+            # This is essentially numerically integrating the stopping power
+            for ds in sublayers:
+                # Interpolate the stopping power at the current energies
+                interpolated_stopping_power = sp_fcn(energies)
+                # dE is in MeV
+                dE = interpolated_stopping_power * ds.to(u.cm).value
 
-            energies += -dE
+                # If dE > E for a given energy, set dE=E (stop the particle)
+                dE = np.where(dE > energies, energies, dE)
 
-            deposited[i, :] = dE
+                energies += -dE
+                deposited[i, :] += dE
 
         # Normalize the deposited energy array so that each number represents
         # the fraction of a population of particles of that energy stopped
@@ -1583,7 +1598,7 @@ class Stack:
 
         return deposited
 
-    def energy_bands(self, energy_range, dE, return_only_active=True):
+    def energy_bands(self, energy_range, dE, dx=1 * u.um, return_only_active=True):
         """
         Calculate the energy bands in each of the active layers of a film stack.
 
@@ -1599,6 +1614,10 @@ class Stack:
         dE :  `~astropy.units.Quantity`
             Spacing between energy bins in the calculation. Units convertable
             to eV.
+
+        dx : `~astropy.units.Quantity`, optional
+            The spatial resolution of the numerical integration of the stopping power.
+            Passed directly to the `~deposition_curves` method. Defaults to 1 um.
 
         return_only_active : boolean, optional
             If True, only the energy bands of layers in which the `active` property
