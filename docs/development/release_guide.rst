@@ -113,7 +113,7 @@ Post-release
 
 * If necessary (for MINOR+ and not for BUGFIX versions) activate the new
   branch's version `on Read the Docs
-  <https://readthedocs.org/projects/plasmapy/versions/>`_.
+  <https://readthedocs.org/projects/plasmapy/versions>`_.
 
 * In the ``0.6.x`` branch, change the line in :file:`binder/requirements.txt`
   that has ``.`` to ``plasmapy == 0.6``. Open one of the binder example
@@ -176,4 +176,4 @@ improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
 
 .. _`NumPy Enhancement Proposal 29`: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _ORCID: https://orcid.org/
+.. _ORCID: https://orcid.org

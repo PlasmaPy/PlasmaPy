@@ -54,11 +54,11 @@ __all__ = [
     "coupling_parameter",
 ]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
-from astropy.constants.si import c, e, eps0, hbar, k_B, m_e
+from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from numpy import pi
 
 from plasmapy import particles, utils
@@ -372,7 +372,7 @@ def Coulomb_logarithm(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
     >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
@@ -574,7 +574,7 @@ def impact_parameter_perp(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
@@ -701,7 +701,7 @@ def impact_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -919,7 +919,7 @@ def collision_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -931,7 +931,7 @@ def collision_frequency(
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     """
@@ -1105,15 +1105,16 @@ def fundamental_electron_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
     .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1243,15 +1244,16 @@ def fundamental_ion_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
     .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub>`__,
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1394,7 +1396,7 @@ def mean_free_path(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m ** -3
     >>> T = 1e6 * u.K
     >>> mean_free_path(T, n, ('e-', 'p+'))
@@ -1524,7 +1526,7 @@ def Spitzer_resistivity(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1537,7 +1539,7 @@ def Spitzer_resistivity(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1656,7 +1658,7 @@ def mobility(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1788,7 +1790,7 @@ def Knudsen_number(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> L = 1e-3 * u.m
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
@@ -1943,7 +1945,7 @@ def coupling_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
