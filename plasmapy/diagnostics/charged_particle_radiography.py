@@ -1530,11 +1530,11 @@ class Stack:
             The spatial resolution of the numerical integration of the stopping power.
             Defaults to 1 um.
 
-        return_only_active : boolean, optional
-            If True, only the deposition in layers in which the `active` property
-            is True will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If False, deposition in
-            all layers of the stack are returned. The default is True.
+        return_only_active : `bool`, optional
+            If `True`, only the deposition in layers in which the `active` property
+            is `True` will be returned. This is usually desirable, since particles
+            captured in other layers will not be measured. If `False`, deposition in
+            all layers of the stack are returned. The default is `True`.
 
         Returns
         -------
