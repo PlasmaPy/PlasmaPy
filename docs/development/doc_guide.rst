@@ -943,16 +943,16 @@ Narrative documentation guidelines
 .. |directive| replace:: :term:`directive`
 .. |directives| replace:: :term:`directives <directive>`
 
-.. _`active voice`: https://en.wikipedia.org/wiki/Active_voice
+.. _active voice: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _BibTeX: http://www.bibtex.org/
 .. _BibTeX format: http://www.bibtex.org/g/bibtex-format
-.. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
+.. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://en.wikipedia.org/wiki/CSS
-.. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
+.. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org/
-.. _`GitHub Flavored Markdown`: https://github.github.com/gfm
+.. _GitHub Flavored Markdown: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
 .. _`https://docs.plasmapy.org`: https://docs.plasmapy.org
 .. _`https://docs.plasmapy.org/en/stable`: https://docs.plasmapy.org/en/stable
@@ -960,23 +960,23 @@ Narrative documentation guidelines
 .. _`https://doi.org/10.5281/zenodo.4602818`: https://doi.org/10.5281/zenodo.4602818
 .. _Jinja: https://jinja.palletsprojects.com
 .. _LaTeX: https://www.latex-project.org
-.. _`link rot`: https://en.wikipedia.org/wiki/Link_rot
+.. _link rot: https://en.wikipedia.org/wiki/Link_rot
 .. _make: https://www.gnu.org/software/make
 .. _MathJax: https://www.mathjax.org
-.. _`nested inline markup`: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
-.. _`options to sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
+.. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
+.. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _pandas: https://pandas.pydata.org
 .. _paywall: https://en.wikipedia.org/wiki/Paywall
-.. _`persistent identifier`: https://en.wikipedia.org/wiki/Persistent_identifier
-.. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _`raw string`: https://docs.python.org/3/reference/lexical_analysis.html#literals
-.. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io
-.. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
+.. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
+.. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
+.. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
+.. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
-.. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
-.. _`Sphinx's glossary`: https://www.sphinx-doc.org/en/master/glossary.html
-.. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
-.. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
+.. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
+.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
+.. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _Wikipedia: https://www.wikipedia.org
 
 .. A workaround for nested inline literals so that the filename will get
