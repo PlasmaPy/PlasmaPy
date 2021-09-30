@@ -82,3 +82,8 @@ div.pkgnav ul li a:hover {
     color: white;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
+
+code.literal {
+    color: #000050 !important;
+    background-color: #fffff7 !important;
+}
