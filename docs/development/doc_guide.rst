@@ -342,19 +342,19 @@ Sphinx extensions
 `PlasmaPy's documentation`_ is built with the following Sphinx_
 extensions:
 
-* `sphinx.ext.autodoc` for including documentation from docstrings
-* `sphinx.ext.intersphinx` for linking to other projects' documentation
-* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included
-* `sphinx.ext.mathjax` for math rendering with MathJax_
-* `sphinx.ext.napoleon` for allowing NumPy style docstrings
-* `sphinx.ext.todo` to support ``todo`` :term:`directive`\ s
-* |nbsphinx|_ for including Jupyter_ notebooks
+* `sphinx.ext.autodoc` for including documentation from docstrings.
+* `sphinx.ext.intersphinx` for linking to other projects' documentation.
+* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
+* `sphinx.ext.mathjax` for math rendering with MathJax_.
+* `sphinx.ext.napoleon` for allowing NumPy style docstrings.
+* `sphinx.ext.todo` to support ``todo`` :term:`directive`\ s.
+* |nbsphinx|_ for including Jupyter_ notebooks.
 * |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
-  a bibliography
-* |sphinx_copybutton|_ to add a "copy" button for code blocks
-* |sphinx_gallery.load_style|_ for using sphinx-gallery styles
-* |IPython.sphinxext.ipython_console_highlighting|_
-* |sphinx_changelog|_ for rendering `towncrier`_ changelogs
+  the :doc:`bibliography`.
+* |sphinx_copybutton|_ to add a "copy" button for code blocks.
+* |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
+* |IPython.sphinxext.ipython_console_highlighting|_.
+* |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -431,6 +431,30 @@ users have quick access to the full path of the `object` (such as in the
 Bibliography
 ~~~~~~~~~~~~
 
+PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references. This
+extension allows us to store references in a BibTeX_ file which is then
+used to generate the :doc:`bibliography`.
+
+To add a new reference to the :doc:`bibliography`, open |docs/refs.bib|_
+and add the reference in `BibTeX format`_. The citekey should generally
+be the surname of the first author (all lower case) followed by a colon
+and the year. A letter should be added after the year when needed to
+disambiguate multiple references. Include the DOI_ the reference has
+one. If the reference does not have a DOI_, then include the URL. The
+ISBN or ISSN number should be included for books.  The ``misc`` field
+type should be used when citing data sets and software. Please follow
+the existing style in the |docs/refs.bib|_ and alphabetize references by
+the surname of the first author. To preserve capitalization, enclose
+words or phrases within curly brackets (e.g., ``{NumPy}``).
+
+Use :samp:``:cite:p:`{citekey}``` to create a parenthetical citation and
+:samp:``:cite:t:`{citekey}``` to create a textual citation. Multiple
+citekeys can also be used when separated by commas, like
+:samp:``:cite:p:`{citekey1}, {citekey2}```. For example,
+``:cite:p:`wilson:2014``` will show up as :cite:p:`wilson:2014`,
+``:cite:t:`wilson:2014``` will show up as :cite:t:`wilson:2014`, and
+``:cite:p:`wilson:2014, wilson:2017``` will show up as
+:cite:p:`wilson:2014, wilson:2017`.
 
 Templating
 ~~~~~~~~~~
@@ -691,7 +715,7 @@ documentation for PlasmaPy and affiliated packages.
   as documents hosted on personal websites.
 
   * When including references, use a link that includes a `persistent
-    identifier`_ such as a digital object identifier (DOI) when one is
+    identifier`_ such as a digital object identifier (DOI_) when one is
     available (e.g., `https://doi.org/10.5281/zenodo.4602818`_).
 
   * Wikipedia_ articles may be linked to when they contain a
@@ -918,10 +942,12 @@ Narrative documentation guidelines
 .. _`active voice`: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
 .. _BibTeX: http://www.bibtex.org/
+.. _BibTeX format: http://www.bibtex.org/g/bibtex-format
 .. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
+.. _DOI: https://www.doi.org/
 .. _`GitHub Flavored Markdown`: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
 .. _`https://docs.plasmapy.org`: https://docs.plasmapy.org
@@ -971,6 +997,9 @@ Narrative documentation guidelines
 
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
+
+.. _`docs/refs.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/refs.bib
+.. |docs/refs.bib| replace:: :file:`docs/refs.bib`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: ``IPython.sphinxext.ipython_console_highlighting``
