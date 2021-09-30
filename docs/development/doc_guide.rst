@@ -439,7 +439,7 @@ PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references. This
 extension allows us to store references in a BibTeX_ file which is then
 used to generate the :doc:`../bibliography`.
 
-To add a new reference to the :doc:`../bibliography`, open |docs/refs.bib|_
+To add a new reference to the :doc:`../bibliography`, open |docs/bibliography.bib|_
 and add the reference in `BibTeX format`_. The citekey should generally
 be the surname of the first author (all lower case) followed by a colon
 and the year. A letter should be added after the year when needed to
@@ -447,7 +447,7 @@ disambiguate multiple references. Include the DOI_ the reference has
 one. If the reference does not have a DOI_, then include the URL. The
 ISBN or ISSN number should be included for books.  The ``misc`` field
 type should be used when citing data sets and software. Please follow
-the existing style in the |docs/refs.bib|_ and alphabetize references by
+the existing style in the |docs/bibliography.bib|_ and alphabetize references by
 the surname of the first author. To preserve capitalization, enclose
 words or phrases within curly brackets (e.g., ``{NumPy}``).
 
@@ -998,8 +998,8 @@ Narrative documentation guidelines
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
 
-.. _`docs/refs.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/refs.bib
-.. |docs/refs.bib| replace:: :file:`docs/refs.bib`
+.. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
+.. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: ``IPython.sphinxext.ipython_console_highlighting``

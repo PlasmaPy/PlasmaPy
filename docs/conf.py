@@ -70,7 +70,7 @@ extensions = [
     "sphinxcontrib.bibtex",
 ]
 
-bibtex_bibfiles = ["refs.bib"]
+bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "alpha"
 bibtex_reference_style = "label"
 
