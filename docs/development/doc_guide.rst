@@ -362,6 +362,10 @@ extensions:
 These extensions are specified in :confval:`extensions` configuration
 value in |docs/conf.py|_.
 
+When an extension contains new |roles|, it may be necessary to add these
+|roles| to ``rst-roles`` in the ``[flake8]`` section of |setup.cfg|_ to
+avoid linter errors.
+
 .. _external-references:
 
 Cross-referencing external packages
@@ -1003,6 +1007,9 @@ Narrative documentation guidelines
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: ``IPython.sphinxext.ipython_console_highlighting``
+
+.. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
+.. |setup.cfg| replace:: :file:`setup.cfg`
 
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
 .. |sphinxcontrib-bibtex| replace:: ``sphinxcontrib-bibtex``
