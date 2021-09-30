@@ -1,5 +1,4 @@
 #!/usr/bin/env python3.7
-# -*- coding: utf-8 -*-
 #
 # PlasmaPy documentation build configuration file, created by
 # sphinx-quickstart on Wed May 31 18:16:46 2017.
@@ -16,7 +15,6 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 
 import os
 import sys
@@ -54,7 +52,8 @@ automodapi_custom_groups = {
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# ones. When extensions are removed or added, please update the section
+# in docs/doc_guide.rst on Sphinx extensions.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
@@ -70,12 +69,16 @@ extensions = [
     "plasmapy_sphinx",
 ]
 
+# Intersphinx generates automatic links to the documentation of objects
+# in other packages. When mappings are removed or added, please update
+# the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "pytest": ("https://docs.pytest.org/en/stable", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
@@ -101,7 +104,6 @@ root_doc = "index"
 project = "PlasmaPy"
 author = "PlasmaPy Community"
 copyright = f"2015–{datetime.utcnow().year}, {author}"
-
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -149,11 +151,35 @@ exclude_patterns = [
     "common_links.rst",
 ]
 
-
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 default_role = "obj"
+
+# Customizations for make linkcheck using regular expressions
+linkcheck_allowed_redirects = {
+    r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
+    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
+    r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
+    r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
+    r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
+    r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
+    r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
+    r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
+    r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
+    r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
+}
+
+linkcheck_anchors = True
+linkcheck_anchors_ignore = [
+    "/room",
+    r".+openastronomy.+",
+    "L[0-9].+",
+    "!forum/plasmapy",
+]
+
+# Use a code highlighting style that meets the WCAG AA contrast standard
+pygments_style = "xcode"
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -193,7 +219,6 @@ modindex_common_prefix = ["plasmapy."]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "PlasmaPydoc"
 
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
@@ -223,13 +248,11 @@ latex_documents = [
     )
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -249,7 +272,6 @@ texinfo_documents = [
 ]
 
 html_favicon = "./_static/icon.ico"
-
 
 # -- NBSphinx options
 

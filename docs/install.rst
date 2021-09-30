@@ -21,17 +21,17 @@ PlasmaPy requires the following packages for installation:
 - `NumPy`_ — 1.18.1 or newer
 - `SciPy`_ — 1.2 or newer
 - `Astropy`_ — 4.0 or newer
-- `pandas <https://pandas.pydata.org/>`_ — 1.0 or newer
-- `xarray <http://xarray.pydata.org>`_ — above 0.14
-- `tqdm <https://tqdm.github.io/>`_ — 4.56 or newer
-- `cached_property <https://pypi.org/project/cached-property/>`_ — 1.5.2 or newer
+- `pandas <https://pandas.pydata.org>`_ — 1.0 or newer
+- `xarray <https://xarray.pydata.org/en/stable>`_ — above 0.14
+- `tqdm <https://tqdm.github.io>`_ — 4.41 or newer
+- `cached_property <https://pypi.org/project/cached-property>`_ — 1.5.2 or newer
 
 PlasmaPy also depends on the following packages for optional features:
 
-- `h5py <https://www.h5py.org/>`_ — 2.8 or newer
-- `lmfit <https://lmfit.github.io/lmfit-py/>`_ — 1.0.1 or newer
-- `matplotlib`_ — 2.0 or newer
-- `mpmath <https:htt//mpmath.org/>`_ — 1.0 or newer
+- `h5py <https://www.h5py.org>`_ — 2.8 or newer
+- `lmfit <https://lmfit.github.io/lmfit-py>`_ — 1.0.1 or newer
+- matplotlib_ — 2.0 or newer
+- `mpmath <https://mpmath.org>`_ — 1.0 or newer
 
 .. _install-process:
 
@@ -69,12 +69,12 @@ Installation with conda
 -----------------------
 
 We recommend installing PlasmaPy from a Python environment
-created using `Conda`_.  Conda allows us to
+created using Conda_.  Conda_ allows us to
 create and switch between Python environments that are isolated from
 each other and the system installation (in contrast to `this xkcd
-<https://xkcd.com/1987/>`_).
+<https://xkcd.com/1987>`_).
 
-After `installing conda <https://conda.io/docs/user-guide/install/>`_,
+After `installing conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_,
 create a PlasmaPy environment with all required and optional dependencies
 by running:
 
@@ -149,7 +149,6 @@ by running
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
 
-.. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/PlasmaPy
-.. _from PyPI: https://pypi.org/project/plasmapy/
+.. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
-.. _clone a repository using SSH: https://help.github.com/en/github/using-git/which-remote-url-should-i-use#cloning-with-ssh-urls
+.. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls

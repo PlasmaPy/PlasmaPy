@@ -25,7 +25,7 @@ software package for plasma physics.
 
 There is considerable need in plasma physics for open, general purpose
 software framework using modern `best practices for scientific
-computing <http://dx.doi.org/10.1371/journal.pbio.1001745>`_. As most
+computing <https://doi.org/10.1371/journal.pbio.1001745>`_. As most
 scientific programmers are largely self-taught, software often does not
 take advantage of these practices and is instead written in a rush to
 produce results for the next research paper. The resulting code is often
@@ -81,7 +81,7 @@ organizing conferences, trainings, and workshops; maintaining and
 moderating social media groups and accounts; overseeing PlasmaPy’s
 website; and communicating with the PlasmaPy and plasma physics
 communities. The CEC will facilitate partnerships with groups such as
-`Software Carpentry <https://software-carpentry.org/>`_.
+`Software Carpentry <https://software-carpentry.org>`_.
 
 Each subpackage will have lead and deputy coordinators who will guide
 and oversee the development of that subpackage.
@@ -98,7 +98,7 @@ committee. Major decisions should ideally be made by general consensus
 among the PlasmaPy community, but when consensus is not possible then
 the committees may decide via majority vote. Much of this section is
 following the `organizational structure of
-Astropy <http://www.astropy.org/team.html>`_.
+Astropy <https://www.astropy.org/team.html>`_.
 
 Development Procedure
 ---------------------
@@ -126,7 +126,7 @@ maintainers and the CC. The CC and CEC will develop a friendly guide on
 how users may contribute new code to PlasmaPy.
 
 New code should conform to the `PEP 8 style guide for Python
-code <https://www.python.org/dev/peps/pep-0008/>`_ and the established
+code <https://www.python.org/dev/peps/pep-0008>`_ and the established
 coding style within PlasmaPy. New code should be submitted with
 documentation and tests. Documentation should be written primarily in
 docstrings and follow the `numpydoc documentation style
@@ -182,7 +182,7 @@ maintaining the significant advantages of using a high level language.
 Versioning
 ~~~~~~~~~~
 
-PlasmaPy will use `Semantic Versioning <http://semver.org/>`_. Releases
+PlasmaPy will use `Semantic Versioning <https://semver.org>`_. Releases
 will be given version numbers of the form *MAJOR*.\ *MINOR*.\ *PATCH*,
 where *MAJOR*, *MINOR*, and *PATCH* are nonnegative integers. Starting
 with version 1.0, *MAJOR* will be incremented when backwards
