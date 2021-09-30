@@ -451,10 +451,10 @@ the existing style in the |docs/bibliography.bib|_ and alphabetize references by
 the surname of the first author. To preserve capitalization, enclose
 words or phrases within curly brackets (e.g., ``{NumPy}``).
 
-Use :samp:``:cite:p:`{citekey}``` to create a parenthetical citation and
-:samp:``:cite:t:`{citekey}``` to create a textual citation. Multiple
+Use ``:cite:p:`citekey``` to create a parenthetical citation and
+``:cite:t:`citekey``` to create a textual citation. Multiple
 citekeys can also be used when separated by commas, like
-:samp:``:cite:p:`{citekey1}, {citekey2}```. For example,
+``:cite:p:`{citekey1}, {citekey2}```. For example,
 ``:cite:p:`wilson:2014``` will show up as :cite:p:`wilson:2014`,
 ``:cite:t:`wilson:2014``` will show up as :cite:t:`wilson:2014`, and
 ``:cite:p:`wilson:2014, wilson:2017``` will show up as
