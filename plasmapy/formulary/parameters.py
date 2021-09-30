@@ -253,7 +253,7 @@ def Alfven_speed(
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units :math:`m/s`.
+        The Alfvén speed in units m s\ :sup:`-1`.
 
     Raises
     ------
@@ -472,8 +472,8 @@ def ion_sound_speed(
     :math:`\sqrt{γ_e k_B T_e / m_i}`. Ion acoustic waves can
     therefore occur even when the ion temperature is zero.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
@@ -673,11 +673,11 @@ def thermal_speed(
     try:
         coef = _coefficients[ndim]
     except KeyError:
-        raise ValueError("{ndim} is not a supported value for ndim in thermal_speed")
+        raise ValueError(f"{ndim} is not a supported value for ndim in thermal_speed")
     try:
         coef = coef[method]
     except KeyError:
-        raise ValueError("Method {method} not supported in thermal_speed")
+        raise ValueError(f"Method {method} not supported in thermal_speed")
 
     return np.sqrt(coef * k_B * T / m)
 
@@ -1334,8 +1334,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     :math:`2π`\ . The alternatives are to convert to cycle/second or to
     do the conversion manually, as shown in the examples.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4.16329...e+09 rad / s>
@@ -1434,8 +1434,8 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     --------
     Debye_number
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
     <Quantity 0.002182... m>
@@ -1505,8 +1505,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     --------
     Debye_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>
@@ -1578,8 +1578,8 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
     The inertial length is also known as the skin depth.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> inertial_length(5 * u.m ** -3, 'He+')
     <Quantity 2.02985...e+08 m>
@@ -1651,8 +1651,8 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
         except in units of joules per cubic meter.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
     <Quantity 3978.87... Pa>
@@ -1716,8 +1716,8 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     magnetic_pressure : Returns an equivalent `~astropy.units.Quantity`,
         except in units of pascals.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> magnetic_energy_density(0.1*u.T)
     <Quantity 3978.87... J / m3>
@@ -1794,8 +1794,8 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     can occur at the upper hybrid resonance, coupling to the
     electrostatic electron Bernstein wave.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
@@ -1886,8 +1886,8 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     compared to the upper hybrid frequency. It can play an important role
     for heating and current drive in fusion plasmas.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>

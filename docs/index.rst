@@ -2,9 +2,20 @@
 
 .. _plasmapy-documentation:
 
+.. image:: _static/graphic-circular.png
+   :alt: PlasmaPy logo
+   :align: right
+   :scale: 40%
+
 ######################
 PlasmaPy Documentation
 ######################
+
+PlasmaPy_ is an open source community-developed core Python_ 3.7+
+package for plasma physics currently under development.
+
+Example highlights
+------------------
 
 .. nbgallery::
    :hidden:
@@ -12,16 +23,9 @@ PlasmaPy Documentation
    notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
-
-.. image:: _static/graphic-circular.png
-   :alt: PlasmaPy logo
-   :align: right
-   :scale: 80%
-
-
-`PlasmaPy <http://www.plasmapy.org/>`_ is an open source
-community-developed core `Python <https://www.python.org/>`_ 3.7+
-package for plasma physics currently under development.
+   notebooks/analysis/swept_langmuir/find_floating_potential
+   notebooks/formulary/thermal_bremsstrahlung
+   notebooks/plasma/grids_nonuniform
 
 
 .. toctree::

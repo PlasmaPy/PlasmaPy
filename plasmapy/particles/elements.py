@@ -2,7 +2,7 @@
 Module for loading atomic data for elements from
 :file:`plasmapy/particles/data/elements.json`.
 
-The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
+The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 
 .. attention::
     This module is not part of PlasmaPy's public API.
@@ -10,7 +10,6 @@ The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
 __all__ = []
 
 import astropy.units as u
-import collections
 import json
 import pkgutil
 

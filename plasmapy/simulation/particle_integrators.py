@@ -6,10 +6,7 @@ limit overhead and increase performance.
 They act in-place on position and velocity arrays to reduce
 memory allocation.
 """
-import math
 import numpy as np
-
-from astropy import constants
 
 
 def boris_push(x, v, B, E, q, m, dt):

@@ -54,11 +54,11 @@ __all__ = [
     "coupling_parameter",
 ]
 
+import astropy.units as u
 import numpy as np
 import warnings
 
-from astropy import units as u
-from astropy.constants.si import c, e, eps0, hbar, k_B, m_e
+from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from numpy import pi
 
 from plasmapy import particles, utils
@@ -372,7 +372,7 @@ def Coulomb_logarithm(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
     >>> Coulomb_logarithm(T, n, ('e-', 'p+'))
@@ -390,7 +390,6 @@ def Coulomb_logarithm(
     .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
-       (http://www.euro-fusionscipub.org/wp-content/uploads/2014/11/EFDR07001.pdf)
 
     .. [4] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
@@ -575,7 +574,7 @@ def impact_parameter_perp(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
@@ -702,7 +701,7 @@ def impact_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -920,7 +919,7 @@ def collision_frequency(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -931,7 +930,10 @@ def collision_frequency(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
+       by James D. Callen
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -1017,7 +1019,8 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/Cross_section_(physics)#Collision_among_gas_particles
+    .. [1] `Cross Section: Collision among gas particles
+       <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1102,14 +1105,16 @@ def fundamental_electron_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
+       by James D. Callen
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 0.001801... 1 / s>
     >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1239,14 +1244,16 @@ def fundamental_ion_collision_freq(
 
     .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
        revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary
+       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
 
-    .. [3] J.D. Callen, Fundamentals of Plasma Physics draft material,
-       Chapter 2, http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
+       by James D. Callen
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
+    >>> from astropy.constants import c
     >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
     <Quantity 2.868...e-05 1 / s>
     >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
@@ -1389,7 +1396,7 @@ def mean_free_path(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19 * u.m ** -3
     >>> T = 1e6 * u.K
     >>> mean_free_path(T, n, ('e-', 'p+'))
@@ -1519,7 +1526,7 @@ def Spitzer_resistivity(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1532,7 +1539,7 @@ def Spitzer_resistivity(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] http://homepages.cae.wisc.edu/~callen/chap2.pdf
+    .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1651,7 +1658,7 @@ def mobility(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')
@@ -1783,7 +1790,7 @@ def Knudsen_number(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> L = 1e-3 * u.m
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
@@ -1938,7 +1945,7 @@ def coupling_parameter(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> n = 1e19*u.m**-3
     >>> T = 1e6*u.K
     >>> species = ('e', 'p')

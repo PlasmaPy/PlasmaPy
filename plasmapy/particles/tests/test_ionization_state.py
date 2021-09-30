@@ -1,8 +1,6 @@
 import astropy.units as u
 import collections
 import numpy as np
-import os
-import pickle
 import pytest
 
 from astropy.tests.helper import assert_quantity_allclose
