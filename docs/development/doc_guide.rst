@@ -350,7 +350,7 @@ extensions:
 * `sphinx.ext.todo` to support ``todo`` :term:`directive`\ s.
 * |nbsphinx|_ for including Jupyter_ notebooks.
 * |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
-  the :doc:`bibliography`.
+  the :doc:`../bibliography`.
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
@@ -437,9 +437,9 @@ Bibliography
 
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references. This
 extension allows us to store references in a BibTeX_ file which is then
-used to generate the :doc:`bibliography`.
+used to generate the :doc:`../bibliography`.
 
-To add a new reference to the :doc:`bibliography`, open |docs/refs.bib|_
+To add a new reference to the :doc:`../bibliography`, open |docs/refs.bib|_
 and add the reference in `BibTeX format`_. The citekey should generally
 be the surname of the first author (all lower case) followed by a colon
 and the year. A letter should be added after the year when needed to
