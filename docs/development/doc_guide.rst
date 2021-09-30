@@ -362,9 +362,9 @@ extensions:
 These extensions are specified in :confval:`extensions` configuration
 value in |docs/conf.py|_.
 
-When an extension contains new |roles|, it may be necessary to add these
-|roles| to ``rst-roles`` in the ``[flake8]`` section of |setup.cfg|_ to
-avoid linter errors.
+When an extension contains new |roles| or |directives|, it may be
+necessary to add them to ``rst-roles`` and ``rst-directives`` in the
+``[flake8]`` section of |setup.cfg|_ to avoid linter errors.
 
 .. _external-references:
 
