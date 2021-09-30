@@ -24,13 +24,13 @@ PlasmaPy and affiliated packages.
 available at these locations:
 
 * The documentation corresponding to the most recent release to PyPI_ is
-  labelled ``stable`` and is found at `https://docs.plasmapy.org`_ or
-  `https://docs.plasmapy.org/en/stable`_.
+  labelled ``stable`` and is found at https://docs.plasmapy.org or
+  https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
-  ``main`` branch in `PlasmaPy's GitHub repository`_ , which is often ahead
+  ``main`` branch in `PlasmaPy's GitHub repository`_, which is often ahead
   of the most recent release, is labelled ``latest`` and can be found at
-  `https://docs.plasmapy.org/en/latest`_.
+  https://docs.plasmapy.org/en/latest.
 
 .. tip::
 
@@ -720,7 +720,7 @@ documentation for PlasmaPy and affiliated packages.
 
   * When including references, use a link that includes a `persistent
     identifier`_ such as a digital object identifier (DOI_) when one is
-    available (e.g., `https://doi.org/10.5281/zenodo.4602818`_).
+    available (e.g., https://doi.org/10.5281/zenodo.4602818\ ).
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -954,10 +954,6 @@ Narrative documentation guidelines
 .. _DOI: https://www.doi.org/
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
-.. _`https://docs.plasmapy.org`: https://docs.plasmapy.org
-.. _`https://docs.plasmapy.org/en/stable`: https://docs.plasmapy.org/en/stable
-.. _`https://docs.plasmapy.org/en/latest`: https://docs.plasmapy.org/en/latest
-.. _`https://doi.org/10.5281/zenodo.4602818`: https://doi.org/10.5281/zenodo.4602818
 .. _Jinja: https://jinja.palletsprojects.com
 .. _LaTeX: https://www.latex-project.org
 .. _link rot: https://en.wikipedia.org/wiki/Link_rot
