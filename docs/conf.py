@@ -72,7 +72,7 @@ extensions = [
 
 bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "alpha"
-bibtex_reference_style = "label"
+bibtex_reference_style = "author_year"
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
