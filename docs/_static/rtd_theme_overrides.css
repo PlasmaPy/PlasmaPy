@@ -84,6 +84,11 @@ div.pkgnav ul li a:hover {
 }
 
 code.literal {
-    color: #000050 !important;
+    color: #000065 !important;
+    background-color: #fffff7 !important;
+}
+
+code.file {
+    color: #006500 !important;
     background-color: #fffff7 !important;
 }
