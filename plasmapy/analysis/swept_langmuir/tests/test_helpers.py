@@ -166,7 +166,8 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
     ],
 )
 def test_check_sweep(voltage, current, kwargs, with_context, expected):
-    """Test functionality of `plasmapy.analysis.swept_langmuir.helpers.check_sweep`."""
+    """Test functionality of
+    `plasmapy.analysis.swept_langmuir.helpers.check_sweep`."""
     with with_context:
         rtn_voltage, rtn_current = check_sweep(
             voltage=voltage,

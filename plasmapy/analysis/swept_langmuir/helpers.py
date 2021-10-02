@@ -65,7 +65,6 @@ def check_sweep(
     `ValueError`
         If either the ``voltage`` or ``current`` array does not have a
         `numpy.dtype` of either `numpy.integer` or `numpy.floating`.
-
     """
     # -- examine voltage array --
     # check type

@@ -1,7 +1,5 @@
-"""
-Tests for functionality contained in
-`plasmapy.analysis.swept_langmuir.floating_potential`.
-"""
+"""Tests for functionality contained in
+`plasmapy.analysis.swept_langmuir.floating_potential`."""
 
 import numpy as np
 import pytest
@@ -19,10 +17,8 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 def test_floating_potential_namedtuple():
-    """
-    Test structure of the namedtuple used to return computed floating potential
-    data.
-    """
+    """Test structure of the namedtuple used to return computed floating
+    potential data."""
 
     assert issubclass(FloatingPotentialResults, tuple)
     assert hasattr(FloatingPotentialResults, "_fields")
@@ -40,8 +36,9 @@ def test_floating_potential_namedtuple():
 
 class TestFindFloatingPotential:
     """
-    Tests for function
-    `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`.
+    Tests for function `~plasmapy.analysis.swept_langmuir.floating_potential.
+
+    .find_floating_potential`.
     """
 
     _null_result = FloatingPotentialResults(
@@ -57,11 +54,9 @@ class TestFindFloatingPotential:
         assert find_vf_ is find_floating_potential
 
     def test_call_of_check_sweep(self):
-        """
-        Test `find_floating_potential` appropriately calls
-        `plasmapy.analysis.swept_langmuir.helpers.check_sweep` so we can relay on
-        the `check_sweep` tests.
-        """
+        """Test `find_floating_potential` appropriately calls
+        `plasmapy.analysis.swept_langmuir.helpers.check_sweep` so we can relay
+        on the `check_sweep` tests."""
         varr = np.linspace(-20.0, 20.0, 100)
         carr = np.linspace(-20.0, 20.0, 100)
 
@@ -243,10 +238,8 @@ class TestFindFloatingPotential:
         ],
     )
     def test_kwarg_min_points(self, min_points, fit_type, islands, indices):
-        """
-        Test functionality of keyword `min_points` and how it affects the
-        size of the crossing-point island.
-        """
+        """Test functionality of keyword `min_points` and how it affects the
+        size of the crossing-point island."""
         voltage = self._voltage
         current = self._linear_current if fit_type == "linear" else self._exp_current
         results = find_floating_potential(
@@ -341,9 +334,8 @@ class TestFindFloatingPotential:
         ],
     )
     def test_island_finding(self, kwargs, expected):
-        """
-        Test scenarios related to the identification of crossing-point islands.
-        """
+        """Test scenarios related to the identification of crossing-point
+        islands."""
         results = find_floating_potential(**kwargs)
         assert isinstance(results, FloatingPotentialResults)
 
@@ -388,7 +380,8 @@ class TestFindFloatingPotential:
         [(1.0, 0.2, -0.2), (2.7, 0.2, -10.0), (6.0, 0.6, -10.0)],
     )
     def test_perfect_exponential(self, a, alpha, b):
-        """Test calculated fit parameters on a few perfectly exponential cases."""
+        """Test calculated fit parameters on a few perfectly exponential
+        cases."""
         voltage = self._voltage
         current = a * np.exp(alpha * voltage) + b
 
