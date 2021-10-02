@@ -316,7 +316,7 @@ def test_get_ion_density_OML_without_return_fit(characteristic):
 
 
 def test_get_EEDF():
-    """Test the obtained EEDF"""
+    """Test the obtained EEDF."""
 
     char = langmuir.Characteristic(bias_arr[:17], current_arr[:17])
     energy, probability = langmuir.get_EEDF(char, visualize=False)
