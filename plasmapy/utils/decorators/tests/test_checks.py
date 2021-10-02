@@ -1,7 +1,5 @@
-"""
-Tests for 'check` decorators (i.e. decorators that only check objects but do not
-change them).
-"""
+"""Tests for 'check` decorators (i.e. decorators that only check objects but do
+not change them)."""
 import inspect
 import numpy as np
 import pytest
@@ -32,9 +30,8 @@ from plasmapy.utils.exceptions import (
 # Test Decorator class `CheckBase`
 # ----------------------------------------------------------------------------------------
 class TestCheckBase:
-    """
-    Test for decorator class :class:`~plasmapy.utils.decorators.checks.CheckBase`.
-    """
+    """Test for decorator class
+    :class:`~plasmapy.utils.decorators.checks.CheckBase`."""
 
     def test_for_members(self):
         assert hasattr(CheckUnits, "checks")
@@ -56,10 +53,9 @@ class TestCheckBase:
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
 class TestCheckUnits:
-    """
-    Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_units` and
-    decorator class :class:`~plasmapy.utils.decorators.checks.CheckUnits`.
-    """
+    """Tests for decorator
+    :func:`~plasmapy.utils.decorators.checks.check_units` and decorator class
+    :class:`~plasmapy.utils.decorators.checks.CheckUnits`."""
 
     check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
@@ -182,9 +178,11 @@ class TestCheckUnits:
 
     def test_cu_method__get_unit_checks(self):
         """
-        Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
-        This method reviews the decorator `checks` arguments and wrapped function
-        annotations to build a complete checks dictionary.
+        Test functionality/behavior of the method `_get_unit_checks` on
+        `CheckUnits`.
+
+        This method reviews the decorator `checks` arguments and wrapped
+        function annotations to build a complete checks dictionary.
         """
         # methods must exist
         assert hasattr(CheckUnits, "_get_unit_checks")
@@ -435,9 +433,11 @@ class TestCheckUnits:
 
     def test_cu_method__check_unit(self):
         """
-        Test functionality/behavior of the methods `_check_unit` and `_check_unit_core`
-        on `CheckUnits`.  These methods do the actual checking of the argument units
-        and should be called by `CheckUnits.__call__()`.
+        Test functionality/behavior of the methods `_check_unit` and
+        `_check_unit_core` on `CheckUnits`.
+
+        These methods do the actual checking of the argument units and
+        should be called by `CheckUnits.__call__()`.
         """
         # methods must exist
         assert hasattr(CheckUnits, "_check_unit")
@@ -554,9 +554,8 @@ class TestCheckUnits:
                     cu._check_unit(arg, arg_name, arg_checks)
 
     def test_cu_called_as_decorator(self):
-        """
-        Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
-        """
+        """Test behavior of `CheckUnits.__call__` (i.e. used as a
+        decorator)."""
         # setup test cases
         # 'setup' = arguments for `CheckUnits` and wrapped function
         # 'output' = expected return from wrapped function
@@ -636,10 +635,8 @@ class TestCheckUnits:
         autospec=True,
     )
     def test_decorator_func_def(self, mock_cu_class):
-        """
-        Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
-        properly defined.
-        """
+        """Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
+        properly defined."""
         # create mock function (mock_foo) from function to mock (self.foo_no_anno)
         mock_foo = mock.Mock(
             side_effect=self.foo_no_anno, name="mock_foo", autospec=True
@@ -715,10 +712,9 @@ class TestCheckUnits:
 # Test Decorator class `CheckValues` and decorator `check_values`
 # ----------------------------------------------------------------------------------------
 class TestCheckValues:
-    """
-    Tests for decorator :func:`~plasmapy.utils.decorators.checks.check_values` and
-    decorator class :class:`~plasmapy.utils.decorators.checks.CheckValues`.
-    """
+    """Tests for decorator
+    :func:`~plasmapy.utils.decorators.checks.check_values` and decorator class
+    :class:`~plasmapy.utils.decorators.checks.CheckValues`."""
 
     check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, bool]
 
@@ -734,7 +730,7 @@ class TestCheckValues:
         assert issubclass(CheckValues, CheckBase)
 
     def test_cv_default_check_values(self):
-        """Test the default check dictionary for CheckValues"""
+        """Test the default check dictionary for CheckValues."""
         cv = CheckValues()
         assert hasattr(cv, "_CheckValues__check_defaults")
         assert isinstance(cv._CheckValues__check_defaults, dict)
@@ -751,9 +747,11 @@ class TestCheckValues:
 
     def test_cv_method__get_value_checks(self):
         """
-        Test functionality/behavior of the method `_get_value_checks` on `CheckValues`.
-        This method reviews the decorator `checks` arguments to build a complete
-        checks dictionary.
+        Test functionality/behavior of the method `_get_value_checks` on
+        `CheckValues`.
+
+        This method reviews the decorator `checks` arguments to build a
+        complete checks dictionary.
         """
         # methods must exist
         assert hasattr(CheckValues, "_get_value_checks")
@@ -858,9 +856,11 @@ class TestCheckValues:
 
     def test_cv_method__check_value(self):
         """
-        Test functionality/behavior of the `_check_value` method on `CheckValues`.
-        This method does the actual checking of the argument values and should be
-        called by `CheckValues.__call__()`.
+        Test functionality/behavior of the `_check_value` method on
+        `CheckValues`.
+
+        This method does the actual checking of the argument values and
+        should be called by `CheckValues.__call__()`.
         """
         # setup wrapped function
         cv = CheckValues()
@@ -1038,9 +1038,8 @@ class TestCheckValues:
                     assert cv._check_value(arg, arg_name, checks) is None
 
     def test_cv_called_as_decorator(self):
-        """
-        Test behavior of `CheckValues.__call__` (i.e. used as a decorator).
-        """
+        """Test behavior of `CheckValues.__call__` (i.e. used as a
+        decorator)."""
         # setup test cases
         # 'setup' = arguments for `CheckUnits` and wrapped function
         # 'output' = expected return from wrapped function
@@ -1136,10 +1135,8 @@ class TestCheckValues:
         autospec=True,
     )
     def test_decorator_func_def(self, mock_cv_class):
-        """
-        Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
-        properly defined.
-        """
+        """Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
+        properly defined."""
         # create mock function (mock_foo) from function to mock (self.foo)
         mock_foo = mock.Mock(side_effect=self.foo, name="mock_foo", autospec=True)
         mock_foo.__name__ = "mock_foo"

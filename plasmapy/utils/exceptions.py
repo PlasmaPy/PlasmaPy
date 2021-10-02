@@ -32,9 +32,7 @@ class PlasmaPyError(Exception):
 
 
 class PhysicsError(PlasmaPyError, ValueError):
-    """
-    The base exception for physics-related errors.
-    """
+    """The base exception for physics-related errors."""
 
     pass
 
@@ -49,27 +47,21 @@ class RomanError(PlasmaPyError):
 
 
 class RelativityError(PhysicsError):
-    """
-    An exception for speeds greater than the speed of light.
-    """
+    """An exception for speeds greater than the speed of light."""
 
     pass
 
 
 class OutOfRangeError(RomanError):
-    """
-    An exception to be raised for integers that outside of the range
-    that can be converted to Roman numerals.
-    """
+    """An exception to be raised for integers that outside of the range that
+    can be converted to Roman numerals."""
 
     pass
 
 
 class InvalidRomanNumeralError(RomanError):
-    """
-    An exception to be raised when the input is not a valid Roman
-    numeral.
-    """
+    """An exception to be raised when the input is not a valid Roman
+    numeral."""
 
     pass
 
@@ -103,36 +95,28 @@ class PhysicsWarning(PlasmaPyWarning):
 
 
 class RelativityWarning(PhysicsWarning):
-    """
-    A warning for when relativistic velocities are being used in or are
-    returned by non-relativistic functionality.
-    """
+    """A warning for when relativistic velocities are being used in or are
+    returned by non-relativistic functionality."""
 
     pass
 
 
 class CouplingWarning(PhysicsWarning):
-    """
-    A warning for functions that rely on a particular coupling regime to
-    be valid.
-    """
+    """A warning for functions that rely on a particular coupling regime to be
+    valid."""
 
     pass
 
 
 class PlasmaPyDeprecationWarning(PlasmaPyWarning, DeprecationWarning):
-    """
-    A warning for deprecated features when the warning is intended for
-    other Python developers.
-    """
+    """A warning for deprecated features when the warning is intended for other
+    Python developers."""
 
     pass
 
 
 class PlasmaPyFutureWarning(PlasmaPyWarning, FutureWarning):
-    """
-    A warning for deprecated features when the warning is intended for
-    end users of PlasmaPy.
-    """
+    """A warning for deprecated features when the warning is intended for end
+    users of PlasmaPy."""
 
     pass

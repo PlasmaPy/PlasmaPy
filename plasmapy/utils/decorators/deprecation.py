@@ -10,10 +10,9 @@ from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 
 def deprecated(*args, warning_type=PlasmaPyDeprecationWarning, **kwargs):
-    """
-    A wrapper of `astropy.utils.decorators.deprecated` that by default assumes
-    a warning type of `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning`.
-    """
+    """A wrapper of `astropy.utils.decorators.deprecated` that by default
+    assumes a warning type of
+    `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning`."""
     return astropy_deprecated(*args, warning_type=warning_type, **kwargs)
 
 

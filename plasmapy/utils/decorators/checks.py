@@ -1,6 +1,4 @@
-"""
-Decorator for checking input/output arguments of functions.
-"""
+"""Decorator for checking input/output arguments of functions."""
 __all__ = [
     "check_values",
     "check_units",
@@ -58,17 +56,15 @@ class CheckBase:
 
     @property
     def checks(self):
-        """
-        Requested checks on the decorated function's input arguments
-        and/or return.
-        """
+        """Requested checks on the decorated function's input arguments and/or
+        return."""
         return self._checks
 
 
 class CheckValues(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the values of input and return
-    arguments to a function or method.
+    A decorator class to 'check' -- limit/control -- the values of input and
+    return arguments to a function or method.
 
     Parameters
     ----------
@@ -197,9 +193,9 @@ class CheckValues(CheckBase):
         self, bound_args: inspect.BoundArguments
     ) -> Dict[str, Dict[str, bool]]:
         """
-        Review :attr:`checks` and function bound arguments to build a complete 'checks'
-        dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check values`_).
+        Review :attr:`checks` and function bound arguments to build a complete
+        'checks' dictionary.  If a check key is omitted from the argument
+        checks, then a default value is assumed (see `check values`_).
 
         Parameters
         ----------
@@ -295,7 +291,6 @@ class CheckValues(CheckBase):
         ------
         ValueError
             raised if a check fails
-
         """
         if arg_name == "checks_on_return":
             valueerror_msg = "The return value "
@@ -338,8 +333,8 @@ class CheckValues(CheckBase):
 
 class CheckUnits(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the units of input and return
-    arguments to a function or method.
+    A decorator class to 'check' -- limit/control -- the units of input and
+    return arguments to a function or method.
 
     Parameters
     ----------
@@ -529,9 +524,9 @@ class CheckUnits(CheckBase):
         self, bound_args: inspect.BoundArguments
     ) -> Dict[str, Dict[str, Any]]:
         """
-        Review :attr:`checks` and function bound arguments to build a complete 'checks'
-        dictionary.  If a check key is omitted from the argument checks, then a default
-        value is assumed (see `check units`_)
+        Review :attr:`checks` and function bound arguments to build a complete
+        'checks' dictionary.  If a check key is omitted from the argument
+        checks, then a default value is assumed (see `check units`_)
 
         Parameters
         ----------
@@ -1020,8 +1015,7 @@ class CheckUnits(CheckBase):
 
     def _flatten_equivalencies_list(self, elist):
         """
-        Given a list of equivalencies, flatten out any sub-element lists
-
+        Given a list of equivalencies, flatten out any sub-element lists.
 
         Parameters
         ----------
@@ -1032,7 +1026,6 @@ class CheckUnits(CheckBase):
         -------
         list
             a flattened list of astropy :mod:`~astropy.units.equivalencies`
-
         """
         new_list = []
         for el in elist:

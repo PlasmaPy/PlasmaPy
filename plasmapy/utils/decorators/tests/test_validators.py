@@ -1,7 +1,5 @@
-"""
-Tests for 'validate` decorators (i.e. decorators that check objects and change them
-when possible).
-"""
+"""Tests for 'validate` decorators (i.e. decorators that check objects and
+change them when possible)."""
 import inspect
 import pytest
 
@@ -340,7 +338,8 @@ class TestValidateQuantities:
             assert mock_cv_checks.called
 
     def test_vq_preserves_signature(self):
-        """Test `ValidateQuantities` preserves signature of wrapped function."""
+        """Test `ValidateQuantities` preserves signature of wrapped
+        function."""
         # I'd like to directly test the @preserve_signature is used (??)
 
         wfoo = ValidateQuantities()(self.foo_anno)
@@ -348,9 +347,8 @@ class TestValidateQuantities:
         assert wfoo.__signature__ == inspect.signature(self.foo_anno)
 
     def test_vq_called_as_decorator(self):
-        """
-        Test behavior of `ValidateQuantities.__call__` (i.e. used as a decorator).
-        """
+        """Test behavior of `ValidateQuantities.__call__` (i.e. used as a
+        decorator)."""
         # setup test cases
         # 'setup' = arguments for `CheckUnits` and wrapped function
         # 'output' = expected return from wrapped function
@@ -478,10 +476,9 @@ class TestValidateQuantities:
         autospec=True,
     )
     def test_decorator_func_def(self, mock_vq_class):
-        """
-        Test that :func:`~plasmapy.utils.decorators.validators.validate_quantities` is
-        properly defined.
-        """
+        """Test that
+        :func:`~plasmapy.utils.decorators.validators.validate_quantities` is
+        properly defined."""
         # create mock function (mock_foo) from function to mock (self.foo)
         mock_foo = mock.Mock(side_effect=self.foo, name="mock_foo", autospec=True)
         mock_foo.__name__ = "mock_foo"
