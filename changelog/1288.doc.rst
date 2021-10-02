@@ -1,0 +1,4 @@
+Added a `pre-commit <https://pre-commit.com/>`__ hook for
+`docformatter <https://pypi.org/project/docformatter/>`__ to automatically
+format docstrings in pull requests, and applied some of the formatting
+changes.
