@@ -21,9 +21,8 @@ from plasmapy.particles.particle_class import (
 
 class ParticleList(collections.UserList):
     """
-    A `list` like collection of
-    `~plasmapy.particles.particle_class.Particle` and/or
-    `~plasmapy.particles.particle_class.CustomParticle` objects.
+    A `list` like collection of `~plasmapy.particles.particle_class.Particle`
+    and/or `~plasmapy.particles.particle_class.CustomParticle` objects.
 
     Parameters
     ----------
@@ -113,12 +112,10 @@ class ParticleList(collections.UserList):
     def _list_of_particles_and_custom_particles(
         particles: Optional[Iterable[ParticleLike]],
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
-        """
-        Convert an iterable that provides
-        `~plasmapy.particles.particle_class.ParticleLike` objects into a
-        `list` containing `~plasmapy.particles.particle_class.Particle`
-        and `~plasmapy.particles.particle_class.CustomParticle` instances.
-        """
+        """Convert an iterable that provides
+        `~plasmapy.particles.particle_class.ParticleLike` objects into a `list`
+        containing `~plasmapy.particles.particle_class.Particle` and
+        `~plasmapy.particles.particle_class.CustomParticle` instances."""
         new_particles = list()
         if particles is None:
             return new_particles
@@ -206,16 +203,15 @@ class ParticleList(collections.UserList):
 
     @property
     def charge(self) -> u.C:
-        """
-        A `~astropy.units.Quantity` array of the electric charges
-        of the particles.
-        """
+        """A `~astropy.units.Quantity` array of the electric charges of the
+        particles."""
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
     def data(self) -> List[Union[Particle, CustomParticle]]:
         """
-        A `list` containing the particles contained in the
+        A `list` containing the particles contained in the.
+
         |ParticleList| instance.
 
         The `~plasmapy.particles.particle_collections.ParticleList.data`
@@ -224,11 +220,9 @@ class ParticleList(collections.UserList):
         return self._data
 
     def extend(self, iterable: Iterable[ParticleLike]):
-        """
-        Extend the sequence by appending
+        """Extend the sequence by appending
         `~plasmapy.particles.particle_class.ParticleLike` elements from
-        ``iterable``.
-        """
+        ``iterable``."""
         if isinstance(iterable, ParticleList):
             self.data.extend(iterable)
         else:
@@ -237,10 +231,8 @@ class ParticleList(collections.UserList):
 
     @property
     def half_life(self) -> u.s:
-        """
-        A `~astropy.units.Quantity` array of the half-lives of the
-        particles.
-        """
+        """A `~astropy.units.Quantity` array of the half-lives of the
+        particles."""
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
     def insert(self, index, particle: ParticleLike):
@@ -252,10 +244,8 @@ class ParticleList(collections.UserList):
 
     @property
     def charge_number(self) -> np.array:
-        """
-        An array of the quantized charges of the particles, as
-        multiples of the elementary charge.
-        """
+        """An array of the quantized charges of the particles, as multiples of
+        the elementary charge."""
         return np.array(self._get_particle_attribute("charge_number", default=np.nan))
 
     @property
@@ -282,7 +272,8 @@ class ParticleList(collections.UserList):
         """
         Sort the |ParticleList| in-place.
 
-        For more information, refer to the documentation for `list.sort`.
+        For more information, refer to the documentation for
+        `list.sort`.
         """
         if key is None:
             raise TypeError("Unable to sort a ParticleList without a key.")
@@ -405,8 +396,8 @@ def ionic_levels(
     max_charge: Optional[Integral] = None,
 ) -> ParticleList:
     """
-    Return a |ParticleList| that includes different ionic levels of a
-    base atom.
+    Return a |ParticleList| that includes different ionic levels of a base
+    atom.
 
     Parameters
     ----------

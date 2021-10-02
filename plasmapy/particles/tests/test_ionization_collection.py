@@ -25,10 +25,8 @@ from plasmapy.utils.pytest_helpers import run_test
 def check_abundances_consistency(
     abundances: Dict[str, Real], log_abundances: Dict[str, Real]
 ):
-    """
-    Test that a set of abundances is consistent with a set of the base
-    10 logarithm of abundances.
-    """
+    """Test that a set of abundances is consistent with a set of the base 10
+    logarithm of abundances."""
     assert abundances.keys() == log_abundances.keys(), (
         f"Mismatch between keys from abundances and log_abundances.\n\n"
         f"abundances.keys():     {abundances.keys()}\n\n"
@@ -257,7 +255,7 @@ class TestIonizationStateCollection:
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_getitem_element(self, test_name):
-        """Test that __get_item__ returns an IonizationState instance"""
+        """Test that __get_item__ returns an IonizationState instance."""
         instance = self.instances[test_name]
 
         for key in instance.base_particles:
@@ -360,9 +358,7 @@ def test_abundances_consistency():
 
 
 class TestIonizationStateCollectionItemAssignment:
-    """
-    Test IonizationStateCollection.__setitem__ and exceptions.
-    """
+    """Test IonizationStateCollection.__setitem__ and exceptions."""
 
     @classmethod
     def setup_class(cls):
@@ -537,11 +533,9 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail(errmsg)
 
     def test_setting_ionic_fractions_for_single_element(self):
-        """
-        Test that __setitem__ correctly sets new ionic fractions when
-        used for just H, while not changing the ionic fractions for He
-        from the uninitialized default of an array of nans of length 3.
-        """
+        """Test that __setitem__ correctly sets new ionic fractions when used
+        for just H, while not changing the ionic fractions for He from the
+        uninitialized default of an array of nans of length 3."""
         self.new_fractions = [0.3, 0.7]
         self.instance["H"] = self.new_fractions
         resulting_fractions = self.instance.ionic_fractions["H"]
@@ -677,10 +671,8 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail("Incorrect units for new number density.")
 
     def test_resetting_valid_densities(self):
-        """
-        Test that item assignment can be used to set number densities
-        that preserve the total element number density.
-        """
+        """Test that item assignment can be used to set number densities that
+        preserve the total element number density."""
 
         element = "H"
         valid_ionic_fractions = [0.54, 0.46]
@@ -701,10 +693,8 @@ class TestIonizationStateCollectionAttributes:
         ), "Item assignment of valid number densities did not yield correct number densities."
 
     def test_resetting_invalid_densities(self):
-        """
-        Test that item assignment with number densities that would
-        change the total element number density raises an exception.
-        """
+        """Test that item assignment with number densities that would change
+        the total element number density raises an exception."""
         element = "H"
         original_n_elem = np.sum(self.instance.number_densities[element])
         invalid_number_densities = np.array([1.0001, 0]) * original_n_elem
@@ -730,11 +720,8 @@ class TestIonizationStateCollectionAttributes:
         assert np.all(np.isnan(iron_fractions))
 
     def test_base_particles(self):
-        """
-        Test that the original base particles remain as the base
-        particles after performing a bunch of operations that should not
-        change them.
-        """
+        """Test that the original base particles remain as the base particles
+        after performing a bunch of operations that should not change them."""
         assert self.instance.base_particles == self.elements
 
     def test_base_particles_equal_ionic_fraction_particles(self):
@@ -801,10 +788,8 @@ tests_for_exceptions = {
 
 @pytest.mark.parametrize("test_name", tests_for_exceptions.keys())
 def test_exceptions_upon_instantiation(test_name):
-    """
-    Test that appropriate exceptions are raised for inappropriate inputs
-    to IonizationStateCollection when first instantiated.
-    """
+    """Test that appropriate exceptions are raised for inappropriate inputs to
+    IonizationStateCollection when first instantiated."""
     run_test(
         IonizationStateCollection,
         kwargs=tests_for_exceptions[test_name].inputs,
@@ -813,11 +798,9 @@ def test_exceptions_upon_instantiation(test_name):
 
 
 class TestIonizationStateCollectionDensityEqualities:
-    """
-    Test that IonizationStateCollection instances are equal or not equal to each
-    other as they should be for different combinations of inputs
-    related to ionic_fractions, number densities, and abundances.
-    """
+    """Test that IonizationStateCollection instances are equal or not equal to
+    each other as they should be for different combinations of inputs related
+    to ionic_fractions, number densities, and abundances."""
 
     @classmethod
     def setup_class(cls):
@@ -881,11 +864,13 @@ class TestIonizationStateCollectionDensityEqualities:
     def test_equality(self, this, that):
         """
         Test that the IonizationStateCollection instances that should provide
-        ``number_densities`` are all equal to each other.  Test that the
-        instances that should not provide ``number_densities`` are all
-        equal to each other.  Test that each instance that should
-        provide ``number_densities`` is not equal to each instance that
-        should not provide ``number_densities``.
+        ``number_densities`` are all equal to each other.
+
+        Test that the instances that should not provide
+        ``number_densities`` are all equal to each other.  Test that
+        each instance that should provide ``number_densities`` is not
+        equal to each instance that should not provide
+        ``number_densities``.
         """
         expect_equality = this[0:4] == that[0:4]
         are_equal = self.instances[this] == self.instances[that]
@@ -952,10 +937,9 @@ def test_average_ion_consistency(
     use_rms_charge,
     physical_type,
 ):
-    """
-    Make sure that the average ions returned from equivalent `IonizationState`
-    and `IonizationStateCollection` instances are consistent with each other.
-    """
+    """Make sure that the average ions returned from equivalent
+    `IonizationState` and `IonizationStateCollection` instances are consistent
+    with each other."""
     ionization_state = IonizationState(base_particle, ionic_fractions)
     ionization_state_collection = IonizationStateCollection(
         {base_particle: ionic_fractions}
@@ -988,11 +972,9 @@ def test_average_ion_consistency(
 def test_comparison_to_equivalent_particle_list(
     physical_property, use_rms, include_neutrals
 ):
-    """
-    Test that `IonizationState.average_ion` gives consistent results with
-    `ParticleList.average_particle` when the ratios of different particles
-    is the same between the `IonizationState` and the `ParticleList`.
-    """
+    """Test that `IonizationState.average_ion` gives consistent results with
+    `ParticleList.average_particle` when the ratios of different particles is
+    the same between the `IonizationState` and the `ParticleList`."""
 
     neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
     ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
@@ -1021,11 +1003,9 @@ def test_comparison_to_equivalent_particle_list(
 
 
 def test_average_particle_exception():
-    """
-    Test that `IonizationStateCollection.average_ion` raises the
-    appropriate exception when abundances are undefined and there is more
-    than one base element or isotope.
-    """
+    """Test that `IonizationStateCollection.average_ion` raises the appropriate
+    exception when abundances are undefined and there is more than one base
+    element or isotope."""
     ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
 
     with pytest.raises(ParticleError):

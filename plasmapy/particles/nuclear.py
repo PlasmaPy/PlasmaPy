@@ -74,8 +74,8 @@ def nuclear_binding_energy(
 @particle_input
 def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quantity:
     """
-    Return a particle's mass energy.  If the particle is an isotope or
-    nuclide, return the nuclear mass energy only.
+    Return a particle's mass energy.  If the particle is an isotope or nuclide,
+    return the nuclear mass energy only.
 
     Parameters
     ----------
@@ -194,11 +194,12 @@ def nuclear_reaction_energy(*args, **kwargs):
         unformatted_particles_list: List[Union[str, Particle]]
     ) -> List[Particle]:
         """
-        Take an unformatted list of particles and puts each
-        particle into standard form, while allowing an integer and
-        asterisk immediately preceding a particle to act as a
-        multiplier.  A string argument will be treated as a list
-        containing that string as its sole item.
+        Take an unformatted list of particles and puts each particle into
+        standard form, while allowing an integer and asterisk immediately
+        preceding a particle to act as a multiplier.
+
+        A string argument will be treated as a list containing that
+        string as its sole item.
         """
 
         if isinstance(unformatted_particles_list, str):
@@ -242,20 +243,16 @@ def nuclear_reaction_energy(*args, **kwargs):
         return particles
 
     def total_baryon_number(particles: List[Particle]) -> int:
-        """
-        Find the total number of baryons minus the number of
-        antibaryons in a list of particles.
-        """
+        """Find the total number of baryons minus the number of antibaryons in
+        a list of particles."""
         total_baryon_number = 0
         for particle in particles:
             total_baryon_number += particle.baryon_number
         return total_baryon_number
 
     def total_charge(particles: List[Particle]) -> int:
-        """
-        Find the total charge number in a list of nuclides
-        (excluding bound electrons) and other particles.
-        """
+        """Find the total charge number in a list of nuclides (excluding bound
+        electrons) and other particles."""
         total_charge = 0
         for particle in particles:
             if particle.isotope:
@@ -265,10 +262,8 @@ def nuclear_reaction_energy(*args, **kwargs):
         return total_charge
 
     def add_mass_energy(particles: List[Particle]) -> u.Quantity:
-        """
-        Find the total mass energy from a list of particles, while
-        taking the masses of the fully ionized isotopes.
-        """
+        """Find the total mass energy from a list of particles, while taking
+        the masses of the fully ionized isotopes."""
         total_mass_energy = 0.0 * u.J
         for particle in particles:
             total_mass_energy += particle.mass_energy

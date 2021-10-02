@@ -1,7 +1,5 @@
-"""
-A class for storing ionization state data for multiple elements or
-isotopes.
-"""
+"""A class for storing ionization state data for multiple elements or
+isotopes."""
 __all__ = ["IonizationStateCollection"]
 
 import astropy.units as u
@@ -29,8 +27,8 @@ def _atomic_number_and_mass_number(p: Particle):
 
 class IonizationStateCollection:
     """
-    Describe the ionization state distributions of multiple elements
-    or isotopes.
+    Describe the ionization state distributions of multiple elements or
+    isotopes.
 
     Parameters
     ----------
@@ -406,8 +404,7 @@ class IonizationStateCollection:
     @property
     def ionic_fractions(self) -> Dict[str, np.array]:
         """
-        A `dict` containing the ionic fractions for each element and
-        isotope.
+        A `dict` containing the ionic fractions for each element and isotope.
 
         The keys of this `dict` are the symbols for each element or
         isotope.  The values will be `~numpy.ndarray` objects containing
@@ -441,7 +438,6 @@ class IonizationStateCollection:
             If ``inputs`` is not a `list`, `tuple`, or `dict` during
             instantiation, or if ``inputs`` is not a `dict` when it is
             being set.
-
         """
 
         # A potential problem is that using item assignment on the
@@ -644,10 +640,8 @@ class IonizationStateCollection:
         self._ionic_fractions = new_ionic_fractions
 
     def normalize(self) -> None:
-        """
-        Normalize the ionic fractions so that the sum for each element
-        equals one.
-        """
+        """Normalize the ionic fractions so that the sum for each element
+        equals one."""
         for particle in self.base_particles:
             tot = np.sum(self.ionic_fractions[particle])
             self.ionic_fractions[particle] = self.ionic_fractions[particle] / tot
@@ -655,7 +649,8 @@ class IonizationStateCollection:
     @property
     @validate_quantities
     def n_e(self) -> u.m ** -3:
-        """The electron number density under the assumption of quasineutrality."""
+        """The electron number density under the assumption of
+        quasineutrality."""
         number_densities = self.number_densities
         n_e = 0.0 * u.m ** -3
         for elem in self.base_particles:
@@ -687,10 +682,8 @@ class IonizationStateCollection:
 
     @property
     def number_densities(self) -> Dict[str, u.Quantity]:
-        """
-        A `dict` containing the number densities for the elements and/or
-        isotopes composing the collection.
-        """
+        """A `dict` containing the number densities for the elements and/or
+        isotopes composing the collection."""
         return {
             elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
             for elem in self.base_particles
@@ -704,9 +697,10 @@ class IonizationStateCollection:
     @abundances.setter
     def abundances(self, abundances_dict: Optional[Dict[ParticleLike, Real]]):
         """
-        Set the elemental (or isotopic) abundances.  The elements and
-        isotopes must be the same as or a superset of the elements whose
-        ionization states are being tracked.
+        Set the elemental (or isotopic) abundances.
+
+        The elements and isotopes must be the same as or a superset of
+        the elements whose ionization states are being tracked.
         """
         if abundances_dict is None:
             self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
@@ -760,10 +754,8 @@ class IonizationStateCollection:
 
     @property
     def log_abundances(self) -> Dict[str, Real]:
-        """
-        A `dict` with atomic or isotope symbols as keys and the base 10
-        logarithms of the relative abundances as the corresponding values.
-        """
+        """A `dict` with atomic or isotope symbols as keys and the base 10
+        logarithms of the relative abundances as the corresponding values."""
         log_abundances_dict = {}
         for key in self.abundances.keys():
             log_abundances_dict[key] = np.log10(self.abundances[key])
@@ -813,7 +805,6 @@ class IonizationStateCollection:
         have a valid distribution function.  If ``kappa`` equals
         `~numpy.inf`, then the distribution function reduces to a
         Maxwellian.
-
         """
         return self._pars["kappa"]
 
@@ -821,7 +812,9 @@ class IonizationStateCollection:
     def kappa(self, value: Real):
         """
         Set the kappa parameter for a kappa distribution function for
-        electrons.  The value must be between ``1.5`` and `~numpy.inf`.
+        electrons.
+
+        The value must be between ``1.5`` and `~numpy.inf`.
         """
         kappa_errmsg = "kappa must be a real number greater than 1.5"
         if not isinstance(value, Real):
@@ -832,10 +825,8 @@ class IonizationStateCollection:
 
     @property
     def base_particles(self) -> List[str]:
-        """
-        A `list` of the elements and isotopes whose ionization states
-        are being kept track of.
-        """
+        """A `list` of the elements and isotopes whose ionization states are
+        being kept track of."""
         return self._base_particles
 
     @property
@@ -861,8 +852,8 @@ class IonizationStateCollection:
         use_rms_mass: bool = False,
     ) -> CustomParticle:
         """
-        Return a |CustomParticle| representing the mean particle
-        included across all ionization states.
+        Return a |CustomParticle| representing the mean particle included
+        across all ionization states.
 
         By default, this method will use the weighted mean to calculate
         the properties of the |CustomParticle|, where the weights for
@@ -974,7 +965,6 @@ class IonizationStateCollection:
         T_e = 1.20e+04 K
         kappa = 3.40
         ----------------------------------------------------------------
-
         """
         separator_line = 64 * "-"
 

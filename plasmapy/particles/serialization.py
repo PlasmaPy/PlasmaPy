@@ -18,8 +18,8 @@ from plasmapy.particles.particle_class import (
 
 class ParticleJSONDecoder(json.JSONDecoder):
     """
-    A custom `~json.JSONDecoder` class to deserialize JSON objects into
-    the appropriate particle objects.
+    A custom `~json.JSONDecoder` class to deserialize JSON objects into the
+    appropriate particle objects.
 
     Parameters
     ----------

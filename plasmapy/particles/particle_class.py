@@ -95,12 +95,10 @@ _valid_categories = (
 
 
 def _category_errmsg(particle, category: str) -> str:
-    """
-    Return an error message when an attribute raises an
+    """Return an error message when an attribute raises an
     `~plasmapy.particles.exceptions.InvalidElementError`,
     `~plasmapy.particles.exceptions.InvalidIonError`, or
-    `~plasmapy.particles.exceptions.InvalidIsotopeError`.
-    """
+    `~plasmapy.particles.exceptions.InvalidIsotopeError`."""
     article = "an" if category[0] in "aeiouAEIOU" else "a"
     errmsg = (
         f"The particle {particle} is not {article} {category}, "
@@ -169,10 +167,8 @@ class AbstractParticle(ABC):
         return json_dictionary
 
     def __bool__(self):
-        """
-        Raise an `~plasmapy.particles.exceptions.ParticleError` because
-        particles do not have a truth value.
-        """
+        """Raise an `~plasmapy.particles.exceptions.ParticleError` because
+        particles do not have a truth value."""
         raise ParticleError("The truth value of a particle is not defined.")
 
     def json_dump(self, fp, **kwargs):
@@ -192,8 +188,8 @@ class AbstractParticle(ABC):
 
     def json_dumps(self, **kwargs) -> str:
         """
-        Serialize the particle's `json_dict` into a JSON formatted `str`
-        using `json.dumps`.
+        Serialize the particle's `json_dict` into a JSON formatted `str` using
+        `json.dumps`.
 
         Parameters
         ----------
@@ -679,18 +675,14 @@ class Particle(AbstractPhysicalParticle):
         return not self.__eq__(other)
 
     def __hash__(self) -> int:
-        """
-        Allow use of `hash` so that a |Particle| instance may be used
-        as a key in a `dict`.
-        """
+        """Allow use of `hash` so that a |Particle| instance may be used as a
+        key in a `dict`."""
         return hash(self.__repr__())
 
     def __invert__(self) -> Particle:
-        """
-        Return the corresponding antiparticle, or raise an
-        `~plasmapy.particles.exceptions.ParticleError` if the particle
-        is not an elementary particle.
-        """
+        """Return the corresponding antiparticle, or raise an
+        `~plasmapy.particles.exceptions.ParticleError` if the particle is not
+        an elementary particle."""
         return self.antiparticle
 
     @property
@@ -776,8 +768,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def element(self) -> Optional[str]:
         """
-        The atomic symbol if the particle corresponds to an element, and
-        `None` otherwise.
+        The atomic symbol if the particle corresponds to an element, and `None`
+        otherwise.
 
         Examples
         --------
@@ -790,8 +782,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def isotope(self) -> Optional[str]:
         """
-        The isotope symbol if the particle corresponds to an isotope,
-        and `None` otherwise.
+        The isotope symbol if the particle corresponds to an isotope, and
+        `None` otherwise.
 
         Examples
         --------
@@ -804,8 +796,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def ionic_symbol(self) -> Optional[str]:
         """
-        The ionic symbol if the particle corresponds to an ion or
-        neutral atom, and `None` otherwise.
+        The ionic symbol if the particle corresponds to an ion or neutral atom,
+        and `None` otherwise.
 
         Examples
         --------
@@ -821,8 +813,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def roman_symbol(self) -> Optional[str]:
         """
-        The spectral name of the particle (i.e. the ionic symbol in
-        Roman numeral notation).
+        The spectral name of the particle (i.e. the ionic symbol in Roman
+        numeral notation).
 
         If the particle is not an ion or neutral atom, return `None`.
         The roman numeral represents one plus the charge number. Raise
@@ -875,8 +867,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def isotope_name(self) -> Optional[str]:
         """
-        The name of the element along with the isotope symbol if the
-        particle corresponds to an isotope, or `None` if it does not.
+        The name of the element along with the isotope symbol if the particle
+        corresponds to an isotope, or `None` if it does not.
 
         Raises
         ------
@@ -941,7 +933,8 @@ class Particle(AbstractPhysicalParticle):
         warning_type=PlasmaPyFutureWarning,
     )
     def integer_charge(self) -> Integral:
-        """The particle's electrical charge in units of the elementary charge."""
+        """The particle's electrical charge in units of the elementary
+        charge."""
         return self.charge_number
 
     @property
@@ -1439,8 +1432,8 @@ class Particle(AbstractPhysicalParticle):
     @property
     def periodic_table(self) -> namedtuple:
         """
-        A `~collections.namedtuple` that provides access to category,
-        period, group, and block information about an element.
+        A `~collections.namedtuple` that provides access to category, period,
+        group, and block information about an element.
 
         Raises
         ------
@@ -1476,7 +1469,6 @@ class Particle(AbstractPhysicalParticle):
         True
         >>> 'antilepton' in gold.categories
         False
-
         """
         return self._categories
 
@@ -1625,7 +1617,6 @@ class Particle(AbstractPhysicalParticle):
         True
         >>> Particle('e+').is_electron
         False
-
         """
         return self == "e-"
 
@@ -1642,13 +1633,13 @@ class Particle(AbstractPhysicalParticle):
         False
         >>> Particle('e+').is_ion
         False
-
         """
         return self.is_category("ion")
 
     def ionize(self, n: Integral = 1, inplace: bool = False):
         """
-        Create a new |Particle| instance corresponding to the current
+        Create a new |Particle| instance corresponding to the current.
+
         |Particle| after being ionized ``n`` times.
 
         If ``inplace`` is `False` (default), then return the ionized
@@ -1695,7 +1686,6 @@ class Particle(AbstractPhysicalParticle):
         >>> helium_particle.ionize(n=2, inplace=True)
         >>> helium_particle
         Particle("He-4 2+")
-
         """
         if not self.element:
             raise InvalidElementError(
@@ -1726,7 +1716,8 @@ class Particle(AbstractPhysicalParticle):
 
     def recombine(self, n: Integral = 1, inplace=False):
         """
-        Create a new |Particle| instance corresponding to the current
+        Create a new |Particle| instance corresponding to the current.
+
         |Particle| after undergoing recombination ``n`` times.
 
         If ``inplace`` is `False` (default), then return the |Particle|
@@ -1771,7 +1762,6 @@ class Particle(AbstractPhysicalParticle):
         >>> helium_particle.recombine(n=2, inplace=True)
         >>> helium_particle
         Particle("He-4 0+")
-
         """
 
         if not self.element:
@@ -1899,7 +1889,8 @@ class DimensionlessParticle(AbstractParticle):
     @property
     def json_dict(self) -> dict:
         """
-        A `json` friendly dictionary representation of the
+        A `json` friendly dictionary representation of the.
+
         |DimensionlessParticle|.
 
         See `~plasmapy.particles.particle_class.AbstractParticle.json_dict`
@@ -2212,7 +2203,8 @@ class CustomParticle(AbstractPhysicalParticle):
 
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
-        and return `False` if ``other`` differs on any of these attributes.
+        and return `False` if ``other`` differs on any of these
+        attributes.
         """
 
         if not isinstance(other, self.__class__):
@@ -2231,16 +2223,14 @@ class CustomParticle(AbstractPhysicalParticle):
         Test whether or not two objects are different particles.
 
         This method will return `False` if ``other`` is an identical
-        |CustomParticle| instance, and return `True` if ``other`` is
-        a different |CustomParticle|.
+        |CustomParticle| instance, and return `True` if ``other`` is a
+        different |CustomParticle|.
         """
         return not self.__eq__(other)
 
     def __hash__(self) -> int:
-        """
-        Allow use of `hash` so that a |CustomParticle| instance may be used
-        as a key in a `dict`.
-        """
+        """Allow use of `hash` so that a |CustomParticle| instance may be used
+        as a key in a `dict`."""
         return hash((self.__repr__(), self.symbol))
 
 

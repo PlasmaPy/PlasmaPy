@@ -92,8 +92,8 @@ def atomic_number(element: Particle) -> Integral:
 
 @particle_input
 def mass_number(isotope: Particle) -> Integral:
-    """Get the mass number (the number of protons and neutrons) of an
-    isotope.
+    """
+    Get the mass number (the number of protons and neutrons) of an isotope.
 
     Parameters
     ----------
@@ -138,9 +138,9 @@ def mass_number(isotope: Particle) -> Integral:
 
 @particle_input(exclude={"isotope", "ion"})
 def standard_atomic_weight(element: Particle) -> u.Quantity:
-    """Return the standard (conventional) atomic weight of an element
-    based on the relative abundances of isotopes in terrestrial
-    environments.
+    """
+    Return the standard (conventional) atomic weight of an element based on the
+    relative abundances of isotopes in terrestrial environments.
 
     Parameters
     ----------
@@ -303,7 +303,8 @@ def isotopic_abundance(isotope: Particle, mass_numb: Optional[Integral] = None) 
 
 @particle_input(any_of={"charged", "uncharged"})
 def charge_number(particle: Particle) -> Integral:
-    """Return the charge number of a particle.
+    """
+    Return the charge number of a particle.
 
     Parameters
     ----------
@@ -426,8 +427,8 @@ def electric_charge(particle: Particle) -> u.C:
 @particle_input
 def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
     """
-    Return `True` for stable isotopes and particles and `False` for
-    unstable isotopes.
+    Return `True` for stable isotopes and particles and `False` for unstable
+    isotopes.
 
     Parameters
     ----------
@@ -479,8 +480,8 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 @particle_input(any_of={"stable", "unstable", "isotope"})
 def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Quantity:
     """
-    Return the half-life in seconds for unstable isotopes and particles,
-    and `~numpy.inf` in seconds for stable isotopes and particles.
+    Return the half-life in seconds for unstable isotopes and particles, and
+    `~numpy.inf` in seconds for stable isotopes and particles.
 
     Parameters
     ----------
@@ -533,8 +534,8 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
 def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     """
-    Return a list of all known isotopes of an element, or a list of all
-    known isotopes of every element if no input is provided.
+    Return a list of all known isotopes of an element, or a list of all known
+    isotopes of every element if no input is provided.
 
     Parameters
     ----------
@@ -626,9 +627,9 @@ def common_isotopes(
     argument: Union[str, Integral] = None, most_common_only: bool = False
 ) -> List[str]:
     """
-    Return a list of isotopes of an element with an isotopic abundances
-    greater than zero, or if no input is provided, a list of all such
-    isotopes for every element.
+    Return a list of isotopes of an element with an isotopic abundances greater
+    than zero, or if no input is provided, a list of all such isotopes for
+    every element.
 
     Parameters
     ----------
@@ -890,10 +891,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
     # TODO: Add equation for reduced mass to docstring
 
     def get_particle_mass(particle) -> u.Quantity:
-        """Return the mass of a particle.
+        """
+        Return the mass of a particle.
 
-        Take a representation of a particle and returns the mass in
-        kg.  If the input is a `~astropy.units.Quantity` or
+        Take a representation of a particle and returns the mass in kg.
+        If the input is a `~astropy.units.Quantity` or
         `~astropy.constants.Constant` with units of mass already, then
         this returns that mass converted to kg.
         """
@@ -1127,10 +1129,8 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
 
 
 def _is_electron(arg: Any) -> bool:
-    """
-    Return `True` if the argument corresponds to an electron, and
-    `False` otherwise.
-    """
+    """Return `True` if the argument corresponds to an electron, and `False`
+    otherwise."""
     # TODO: Remove _is_electron from all parts of code.
 
     if not isinstance(arg, str):

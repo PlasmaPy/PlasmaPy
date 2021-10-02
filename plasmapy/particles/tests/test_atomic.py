@@ -514,8 +514,8 @@ def test_atomic_functions(inputs):
 
 
 def test_standard_atomic_weight_value_between():
-    """Test that `standard_atomic_weight` returns approximately the
-    correct value for phosphorus."""
+    """Test that `standard_atomic_weight` returns approximately the correct
+    value for phosphorus."""
     assert (
         30.973 < standard_atomic_weight("P").to(u.u).value < 30.974
     ), "Incorrect standard atomic weight for phosphorus."
@@ -529,10 +529,13 @@ def test_particle_mass_berkelium_249():
 
 
 def test_particle_mass_for_hydrogen_with_no_mass_number():
-    """Test that `particle_mass` does not return the proton mass when no
-    mass number is specified for hydrogen.  In this case, the
-    standard atomic weight should be used to account for the small
-    fraction of deuterium."""
+    """
+    Test that `particle_mass` does not return the proton mass when no mass
+    number is specified for hydrogen.
+
+    In this case, the standard atomic weight should be used to account
+    for the small fraction of deuterium.
+    """
     assert particle_mass("H", Z=1) > const.m_p
     assert particle_mass("hydrogen", Z=1) > const.m_p
 
@@ -570,8 +573,8 @@ equivalent_particle_mass_args = [
     "arg1, kwargs1, arg2, kwargs2, expected", equivalent_particle_mass_args
 )
 def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
-    """Test that `particle_mass` returns equivalent results for
-    equivalent positional and keyword arguments."""
+    """Test that `particle_mass` returns equivalent results for equivalent
+    positional and keyword arguments."""
 
     result1 = particle_mass(arg1, **kwargs1)
     result2 = particle_mass(arg2, **kwargs2)
@@ -592,8 +595,8 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
 
 @pytest.mark.slow
 def test_known_common_stable_isotopes():
-    """Test that `known_isotopes`, `common_isotopes`, and
-    `stable_isotopes` return the correct values for hydrogen."""
+    """Test that `known_isotopes`, `common_isotopes`, and `stable_isotopes`
+    return the correct values for hydrogen."""
 
     known_should_be = ["H-1", "D", "T", "H-4", "H-5", "H-6", "H-7"]
     common_should_be = ["H-1", "D"]
@@ -624,8 +627,8 @@ def test_half_life():
 
 
 def test_half_life_unstable_isotopes():
-    """Test that `half_life` returns `None` and raises an exception for
-    all isotopes that do not yet have half-life data."""
+    """Test that `half_life` returns `None` and raises an exception for all
+    isotopes that do not yet have half-life data."""
     for isotope in _isotopes.keys():
         if (
             "half_life" not in _isotopes[isotope].keys()
@@ -637,8 +640,8 @@ def test_half_life_unstable_isotopes():
 
 
 def test_half_life_u_220():
-    """Test that `half_life` returns `None` and issues a warning for an
-    isotope without half-life data."""
+    """Test that `half_life` returns `None` and issues a warning for an isotope
+    without half-life data."""
 
     isotope_without_half_life_data = "No-248"
 
@@ -653,8 +656,8 @@ def test_half_life_u_220():
 
 
 def test_known_common_stable_isotopes_cases():
-    """Test that known_isotopes, common_isotopes, and stable_isotopes
-    return certain isotopes that fall into these categories."""
+    """Test that known_isotopes, common_isotopes, and stable_isotopes return
+    certain isotopes that fall into these categories."""
     assert "H-1" in known_isotopes("H")
     assert "D" in known_isotopes("H")
     assert "T" in known_isotopes("H")
@@ -671,8 +674,9 @@ def test_known_common_stable_isotopes_cases():
 
 @pytest.mark.slow
 def test_known_common_stable_isotopes_len():
-    """Test that `known_isotopes`, `common_isotopes`, and
-    `stable_isotopes` each return a `list` of the expected length.
+    """
+    Test that `known_isotopes`, `common_isotopes`, and `stable_isotopes` each
+    return a `list` of the expected length.
 
     The number of common isotopes may change if isotopic composition
     data has any significant changes.
@@ -682,7 +686,6 @@ def test_known_common_stable_isotopes_len():
 
     The number of known isotopes will increase as new isotopes are
     discovered, so a buffer is included in the test.
-
     """
 
     assert len(common_isotopes()) == 288, (
@@ -703,17 +706,16 @@ def test_known_common_stable_isotopes_len():
 
 @pytest.mark.parametrize("func", [common_isotopes, stable_isotopes, known_isotopes])
 def test_known_common_stable_isotopes_error(func):
-    """Test that `known_isotopes`, `common_isotopes`, and
-    `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
-    neutrons."""
+    """Test that `known_isotopes`, `common_isotopes`, and `stable_isotopes`
+    raise an `~plasmapy.utils.InvalidElementError` for neutrons."""
     with pytest.raises(InvalidElementError):
         func("n")
         pytest.fail(f"{func} is not raising a ElementError for neutrons.")
 
 
 def test_isotopic_abundance():
-    """Test that `isotopic_abundance` returns the appropriate values or
-    raises appropriate errors for various isotopes."""
+    """Test that `isotopic_abundance` returns the appropriate values or raises
+    appropriate errors for various isotopes."""
     assert isotopic_abundance("H", 1) == isotopic_abundance("protium")
     assert np.isclose(isotopic_abundance("D"), 0.000115)
     assert isotopic_abundance("Be-8") == 0.0, "Be-8"
@@ -749,8 +751,8 @@ isotopic_abundance_sum_table = (
 
 @pytest.mark.parametrize("element, isotopes", isotopic_abundance_sum_table)
 def test_isotopic_abundances_sum(element, isotopes):
-    """Test that the sum of isotopic abundances for each element with
-    isotopic abundances is one."""
+    """Test that the sum of isotopic abundances for each element with isotopic
+    abundances is one."""
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
     assert np.isclose(
         sum_of_iso_abund, 1, atol=1e-6

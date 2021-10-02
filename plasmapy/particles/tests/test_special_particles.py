@@ -16,8 +16,8 @@ particle_antiparticle_pairs = [
 
 @pytest.mark.parametrize("particle,antiparticle", particle_antiparticle_pairs)
 def test_particle_antiparticle_pairs(particle, antiparticle):
-    """Test that particles and antiparticles have the same or exact
-    opposite properties in the _Particles dictionary."""
+    """Test that particles and antiparticles have the same or exact opposite
+    properties in the _Particles dictionary."""
 
     assert not _Particles[particle][
         "antimatter"

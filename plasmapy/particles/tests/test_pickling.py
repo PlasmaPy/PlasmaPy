@@ -14,9 +14,7 @@ from plasmapy.particles.particle_class import (
 
 
 class TestPickling:
-    """
-    Test that different objects in `plasmapy.particles` can be pickled.
-    """
+    """Test that different objects in `plasmapy.particles` can be pickled."""
 
     @pytest.mark.parametrize(
         "instance",
@@ -30,10 +28,8 @@ class TestPickling:
         ],
     )
     def test_pickling(self, instance, tmp_path):
-        """
-        Test that different objects contained within `plasmapy.particles`
-        can be pickled and unpickled.
-        """
+        """Test that different objects contained within `plasmapy.particles`
+        can be pickled and unpickled."""
         filename = tmp_path / "pickled_particles.p"
         with open(filename, "wb") as pickle_file:
             pickle.dump(instance, pickle_file)

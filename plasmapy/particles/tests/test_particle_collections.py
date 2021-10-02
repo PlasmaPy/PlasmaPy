@@ -49,10 +49,8 @@ def various_particles():
 
 
 def _everything_is_particle_or_custom_particle(iterable):
-    """
-    Test that every object in an iterable is either a `Particle` instance
-    or a `CustomParticle` instance.
-    """
+    """Test that every object in an iterable is either a `Particle` instance or
+    a `CustomParticle` instance."""
     return all(isinstance(p, (Particle, CustomParticle)) for p in iterable)
 
 
@@ -70,10 +68,8 @@ def _everything_is_particle_or_custom_particle(iterable):
     ],
 )
 def test_particle_list_membership(args):
-    """
-    Test that the particles in the `ParticleList` match the particles
-    (or particle-like objects) that are passed to it.
-    """
+    """Test that the particles in the `ParticleList` match the particles (or
+    particle-like objects) that are passed to it."""
     particle_list = ParticleList(args)
     for arg, particle in zip(args, particle_list):
         assert particle == arg
@@ -84,8 +80,8 @@ def test_particle_list_membership(args):
 @pytest.mark.parametrize("attribute", attributes)
 def test_particle_list_attributes(attribute, various_particles):
     """
-    Test that the attributes of ParticleList correspond to the
-    attributes of the listed particles.
+    Test that the attributes of ParticleList correspond to the attributes of
+    the listed particles.
 
     This class does not test ParticleList instances that include
     CustomParticle instances inside of them.
@@ -103,23 +99,25 @@ def test_particle_list_no_redefining_attributes(various_particles, attribute):
     """
     Test that attributes of `ParticleList` cannot be manually redefined.
 
-    This test may fail if `@cached_property` is used instead of `@property`
-    because `@cached_property` allows reassignment while `@property` does
-    not.
+    This test may fail if `@cached_property` is used instead of
+    `@property` because `@cached_property` allows reassignment while
+    `@property` does not.
     """
     with pytest.raises(AttributeError):
         various_particles.__setattr__(attribute, 42)
 
 
 def test_particle_list_len():
-    """Test that using `len` on a `ParticleList` returns the expected number."""
+    """Test that using `len` on a `ParticleList` returns the expected
+    number."""
     original_list = ["n", "p", "e-"]
     particle_list = ParticleList(original_list)
     assert len(particle_list) == len(original_list)
 
 
 def test_particle_list_append(various_particles):
-    """Test that a particle-like object can get appended to a `ParticleList`."""
+    """Test that a particle-like object can get appended to a
+    `ParticleList`."""
     original_length = len(various_particles)
     various_particles.append("Li")
     appended_item = various_particles[-1]
@@ -130,7 +128,7 @@ def test_particle_list_append(various_particles):
 
 
 def test_particle_list_pop(various_particles):
-    """Test that the last item in the `ParticleList` is removed when"""
+    """Test that the last item in the `ParticleList` is removed when."""
     expected = various_particles[:-1]
     particle_that_should_be_removed = various_particles[-1]
     removed_particle = various_particles.pop()
@@ -139,10 +137,8 @@ def test_particle_list_pop(various_particles):
 
 
 def test_particle_list_extend(various_particles):
-    """
-    Test that a `ParticleList` can be extended when provided with an
-    iterable that yields particle-like objects.
-    """
+    """Test that a `ParticleList` can be extended when provided with an
+    iterable that yields particle-like objects."""
     new_particles = ["Fe", Particle("e-"), CustomParticle()]
     various_particles.extend(new_particles)
     assert _everything_is_particle_or_custom_particle(various_particles)
@@ -150,14 +146,15 @@ def test_particle_list_extend(various_particles):
 
 
 def test_particle_list_extended_with_particle_list(various_particles):
-    """Test that a `ParticleList` can be extended with another `ParticleList`."""
+    """Test that a `ParticleList` can be extended with another
+    `ParticleList`."""
     particle_list = ParticleList(["D", "T", CustomParticle()])
     various_particles.extend(particle_list)
     assert various_particles[-3:] == particle_list
 
 
 def test_particle_list_insert(various_particles):
-    """Test insertion of particle-like objects into"""
+    """Test insertion of particle-like objects into."""
     various_particles.insert(0, "tau neutrino")
     assert various_particles[0] == "tau neutrino"
     assert _everything_is_particle_or_custom_particle(various_particles)
@@ -167,48 +164,38 @@ invalid_particles = (0, "not a particle", DimensionlessParticle())
 
 
 def test_particle_list_instantiate_with_invalid_particles():
-    """
-    Test that a `ParticleList` instance cannot be created when it is
-    provided with invalid particles.
-    """
+    """Test that a `ParticleList` instance cannot be created when it is
+    provided with invalid particles."""
     with pytest.raises(InvalidParticleError):
         ParticleList(invalid_particles)
 
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_append_invalid_particle(various_particles, invalid_particle):
-    """
-    Test that objects that are not particle-like cannot be appended to
-    a `ParticleList` instance.
-    """
+    """Test that objects that are not particle-like cannot be appended to a
+    `ParticleList` instance."""
     with pytest.raises((InvalidParticleError, TypeError)):
         various_particles.append(invalid_particle)
 
 
 def test_particle_list_extend_with_invalid_particles(various_particles):
-    """
-    Test that a `ParticleList` instance cannot be extended with any
-    objects that are not particle-like.
-    """
+    """Test that a `ParticleList` instance cannot be extended with any objects
+    that are not particle-like."""
     with pytest.raises(InvalidParticleError):
         various_particles.extend(invalid_particles)
 
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_insert_invalid_particle(various_particles, invalid_particle):
-    """
-    Test that objects that are not particle-like cannot be inserted into
-    a `ParticleList` instance.
-    """
+    """Test that objects that are not particle-like cannot be inserted into a
+    `ParticleList` instance."""
     with pytest.raises((InvalidParticleError, TypeError)):
         various_particles.insert(1, invalid_particle)
 
 
 def test_particle_list_sort_with_key_and_reverse():
-    """
-    Test that a `ParticleList` instance can be sorted if a key is
-    provided, and that the ``reverse`` keyword argument works too.
-    """
+    """Test that a `ParticleList` instance can be sorted if a key is provided,
+    and that the ``reverse`` keyword argument works too."""
     elements = ["He", "H", "Fe", "U"]
     particle_list = ParticleList(elements)
     particle_list.sort(key=atomic_number, reverse=True)
@@ -222,10 +209,8 @@ def test_particle_list_sort_without_key(various_particles):
 
 
 def test_particle_list_dimensionless_particles():
-    """
-    Test that a `ParticleList` cannot be instantiated with a
-    `DimensionlessParticle`.
-    """
+    """Test that a `ParticleList` cannot be instantiated with a
+    `DimensionlessParticle`."""
     with pytest.raises(TypeError):
         ParticleList([DimensionlessParticle()])
 
@@ -239,10 +224,8 @@ def test_particle_list_adding_particle_list(various_particles):
 
 
 def test_add_particle_list_and_particle(various_particles):
-    """
-    Test that a `ParticleList` can be added to a `Particle` on the right
-    and then return a `ParticleList`.
-    """
+    """Test that a `ParticleList` can be added to a `Particle` on the right and
+    then return a `ParticleList`."""
     new_particle_list = various_particles + electron
     assert new_particle_list[-1] == electron
     assert new_particle_list[0:-1] == various_particles
@@ -250,10 +233,8 @@ def test_add_particle_list_and_particle(various_particles):
 
 
 def test_add_particle_and_particle_list(various_particles):
-    """
-    Test that a `Particle` can be added to a `ParticleList` on the right
-    and then return a `ParticleList`.
-    """
+    """Test that a `Particle` can be added to a `ParticleList` on the right and
+    then return a `ParticleList`."""
     new_particle_list = electron + various_particles
     assert new_particle_list[0] == electron
     assert new_particle_list[1:] == various_particles
@@ -261,10 +242,8 @@ def test_add_particle_and_particle_list(various_particles):
 
 
 def test_add_particle_and_particle_like():
-    """
-    Test that a `Particle` can be added to a particle-like object on the
-    right and then return a `ParticleList`.
-    """
+    """Test that a `Particle` can be added to a particle-like object on the
+    right and then return a `ParticleList`."""
     heavy_isotopes_of_hydrogen = Particle("D") + "T"
     assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
     assert heavy_isotopes_of_hydrogen[0] == "D"
@@ -272,10 +251,8 @@ def test_add_particle_and_particle_like():
 
 
 def test_add_particle_like_and_particle():
-    """
-    Test that a particle-like object on the left can be added to a
-    `Particle` instance on the right and then return a `ParticleList`.
-    """
+    """Test that a particle-like object on the left can be added to a
+    `Particle` instance on the right and then return a `ParticleList`."""
     heavy_isotopes_of_hydrogen = "D" + Particle("T")
     assert isinstance(heavy_isotopes_of_hydrogen, ParticleList)
     assert heavy_isotopes_of_hydrogen[0] == "D"
@@ -283,10 +260,8 @@ def test_add_particle_like_and_particle():
 
 
 def test_particle_list_gt_as_nuclear_reaction_energy():
-    """
-    Test that `ParticleList.__gt__` can be used to get the same result
-    as `nuclear_reaction_energy`.
-    """
+    """Test that `ParticleList.__gt__` can be used to get the same result as
+    `nuclear_reaction_energy`."""
     reactants = ParticleList(["D+", "T+"])
     products = ParticleList(["alpha", "n"])
     expected_energy = nuclear_reaction_energy("D + T --> alpha + n")
@@ -295,10 +270,8 @@ def test_particle_list_gt_as_nuclear_reaction_energy():
 
 
 def test_particle_gt_as_radioactive_decay():
-    """
-    Test a nuclear reaction where a `Particle` instance is the sole
-    reactant on the left side.
-    """
+    """Test a nuclear reaction where a `Particle` instance is the sole reactant
+    on the left side."""
     tritium = Particle("T")
     expected_energy = nuclear_reaction_energy("T -> He-3 + e")
     actual_energy = tritium > Particle("He-3") + "e"
@@ -308,10 +281,8 @@ def test_particle_gt_as_radioactive_decay():
 @pytest.mark.parametrize("method", ["append", "__add__", "__radd__"])
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_invalid_ops(various_particles, invalid_particle, method):
-    """
-    Test that operations with invalid particles raise the appropriate
-    exceptions.
-    """
+    """Test that operations with invalid particles raise the appropriate
+    exceptions."""
     with pytest.raises((InvalidParticleError, TypeError)):
         getattr(various_particles, method)(invalid_particle)
 
@@ -319,19 +290,15 @@ def test_particle_list_invalid_ops(various_particles, invalid_particle, method):
 @pytest.mark.parametrize("particle", [electron, CustomParticle()])
 @pytest.mark.parametrize("method", ["__mul__", "__rmul__"])
 def test_particle_multiplication(method, particle):
-    """
-    Test that multiplying a `Particle` or `CustomParticle` with an
-    integer returns a `ParticleList` that contains the correct values.
-    """
+    """Test that multiplying a `Particle` or `CustomParticle` with an integer
+    returns a `ParticleList` that contains the correct values."""
     particle_list = getattr(particle, method)(3)
     assert particle_list == [particle, particle, particle]
 
 
 def test_mean_particle():
-    """
-    Test that ``ParticleList.average_particle()`` returns a particle with
-    the mean mass and mean charge of a |ParticleList|.
-    """
+    """Test that ``ParticleList.average_particle()`` returns a particle with
+    the mean mass and mean charge of a |ParticleList|."""
     massless_uncharged_particle = CustomParticle(mass=0 * u.kg, charge=0 * u.C)
     particle_list = ParticleList([proton, electron, alpha, massless_uncharged_particle])
     expected_mass = (proton.mass + electron.mass + alpha.mass) / 4
@@ -342,10 +309,8 @@ def test_mean_particle():
 
 
 def test_weighted_mean_particle():
-    """
-    Test that ``ParticleList.average_particle()`` returns a particle with
-    the weighted mean.
-    """
+    """Test that ``ParticleList.average_particle()`` returns a particle with
+    the weighted mean."""
     custom_proton = CustomParticle(mass=proton.mass, charge=proton.charge)
     particle_list = ParticleList([proton, electron, alpha, custom_proton])
     abundances = [1, 2, 0, 1]
@@ -361,10 +326,8 @@ boolean_pairs = [(False, False), (True, False), (False, True), (True, True)]
 
 @pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
 def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
-    """
-    Test that ``ParticleList.average_particle`` returns the mean or root
-    mean square of the charge and mass, as appropriate.
-    """
+    """Test that ``ParticleList.average_particle`` returns the mean or root
+    mean square of the charge and mass, as appropriate."""
 
     particle_list = ParticleList(["p+", "e-"])
     average_particle = particle_list.average_particle(

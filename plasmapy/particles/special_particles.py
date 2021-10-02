@@ -1,7 +1,5 @@
-"""
-Classes, sets, and dictionaries to store data and taxonomy
-information for special particles.
-"""
+"""Classes, sets, and dictionaries to store data and taxonomy information for
+special particles."""
 __all__ = ["ParticleZoo", "_ParticleZooClass"]
 
 import astropy.constants as const
@@ -35,7 +33,6 @@ class _ParticleZooClass:
     False
     >>> 'mu+' in ParticleZoo.antiparticles
     True
-
     """
 
     def __init__(self):
@@ -130,9 +127,8 @@ ParticleZoo = _ParticleZooClass()
 
 def _create_Particles_dict() -> Dict[str, dict]:
     """
-    Create a dictionary of dictionaries that contains physical
-    information for particles and antiparticles that are not elements or
-    ions.
+    Create a dictionary of dictionaries that contains physical information for
+    particles and antiparticles that are not elements or ions.
 
     The keys of the top-level dictionary are the standard particle
     symbols. The values of the top-level dictionary are dictionaries for

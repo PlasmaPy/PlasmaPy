@@ -1,9 +1,7 @@
 """
 Functionality to parse representations of particles into standard form.
 
-.. attention::
-    This module is not part of PlasmaPy's public API.
-
+.. attention::     This module is not part of PlasmaPy's public API.
 """
 __all__ = []
 
@@ -31,11 +29,11 @@ from plasmapy.utils import roman
 
 def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     """
-    Create dictionaries for case sensitive aliases and case
-    insensitive aliases of special particles and antiparticles.
+    Create dictionaries for case sensitive aliases and case insensitive aliases
+    of special particles and antiparticles.
 
-    The keys of these dictionaries are the aliases, and the values
-    are the corresponding standardized symbol for the particle or
+    The keys of these dictionaries are the aliases, and the values are
+    the corresponding standardized symbol for the particle or
     antiparticle.
     """
 
@@ -116,11 +114,12 @@ _case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(_Partic
 
 def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     """
-    Return the standard symbol for a particle or antiparticle
-    when the argument is a valid alias.  If the argument is not a
-    valid alias, then this function returns the original argument
-    (which will usually be a `str` but may be an `int` representing
-    atomic number).
+    Return the standard symbol for a particle or antiparticle when the argument
+    is a valid alias.
+
+    If the argument is not a valid alias, then this function returns the
+    original argument (which will usually be a `str` but may be an `int`
+    representing atomic number).
     """
     if not isinstance(alias, str):
         symbol = alias
@@ -139,10 +138,8 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
 
 
 def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
-    """
-    Return an appropriate error message for an
-    `~plasmapy.particles.exceptions.InvalidParticleError`.
-    """
+    """Return an appropriate error message for an
+    `~plasmapy.particles.exceptions.InvalidParticleError`."""
     errmsg = f"The argument {repr(argument)} "
     if mass_numb is not None or Z is not None:
         errmsg += "with "
@@ -160,8 +157,8 @@ def _parse_and_check_atomic_input(
     argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
 ):
     """
-    Parse information about a particle into a dictionary of standard
-    symbols, and check the validity of the particle.
+    Parse information about a particle into a dictionary of standard symbols,
+    and check the validity of the particle.
 
     Parameters
     ----------
@@ -204,12 +201,10 @@ def _parse_and_check_atomic_input(
     """
 
     def _atomic_number_to_symbol(atomic_numb: Integral):
-        """
-        Return the atomic symbol associated with an integer
-        representing an atomic number, or raises an
-        `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
-        not represent a known element.
-        """
+        """Return the atomic symbol associated with an integer representing an
+        atomic number, or raises an
+        `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic
+        number does not represent a known element."""
         if atomic_numb in _atomic_numbers_to_symbols.keys():
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
@@ -218,6 +213,7 @@ def _parse_and_check_atomic_input(
     def _extract_charge(arg: str):
         """
         Receive a `str` representing an element, isotope, or ion.
+
         Return a `tuple` containing a `str` that should represent an
         element or isotope, and either an `int` representing the
         charge or `None` if no charge information is provided.  Raise
@@ -276,6 +272,7 @@ def _parse_and_check_atomic_input(
     def _extract_mass_number(isotope_info: str):
         """
         Receives a string representing an element or isotope.
+
         Return a tuple containing a string that should represent
         an element, and either an integer representing the mass
         number or None if no mass number is available.  Raises an
@@ -306,10 +303,8 @@ def _parse_and_check_atomic_input(
         return element_info, mass_numb
 
     def _get_element(element_info: str) -> str:
-        """
-        Receive a `str` representing an element's symbol or
-        name, and returns a `str` representing the atomic symbol.
-        """
+        """Receive a `str` representing an element's symbol or name, and
+        returns a `str` representing the atomic symbol."""
         if element_info.lower() in _element_names_to_symbols.keys():
             element = _element_names_to_symbols[element_info.lower()]
         elif element_info in _atomic_numbers_to_symbols.values():
@@ -323,8 +318,10 @@ def _parse_and_check_atomic_input(
 
     def _reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
         """
-        Receive a `str` representing an atomic symbol and an
-        `int` representing a mass number.  Return the isotope symbol
+        Receive a `str` representing an atomic symbol and an `int` representing
+        a mass number.
+
+        Return the isotope symbol
         or `None` if no mass number information is available.  Raises an
         `~plasmapy.particles.exceptions.InvalidParticleError` for isotopes that have
         not yet been discovered.
@@ -353,10 +350,11 @@ def _parse_and_check_atomic_input(
         element: str, isotope: Integral = None, Z: Integral = None
     ):
         """
-        Receive a `str` representing an atomic symbol and/or a
-        string representing an isotope, and an `int` representing the
-        charge number.  Return a `str` representing the ion symbol,
-        or `None` if no charge information is available.
+        Receive a `str` representing an atomic symbol and/or a string
+        representing an isotope, and an `int` representing the charge number.
+
+        Return a `str` representing the ion symbol, or `None` if no
+        charge information is available.
         """
 
         if Z is not None:

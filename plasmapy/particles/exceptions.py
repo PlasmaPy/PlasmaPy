@@ -23,10 +23,8 @@ class ParticleError(PlasmaPyError):
 
 
 class MissingParticleDataError(ParticleError):
-    """
-    An exception for missing atomic or particle data in the
-    `~plasmapy.particles` subpackage.
-    """
+    """An exception for missing atomic or particle data in the
+    `~plasmapy.particles` subpackage."""
 
     pass
 
@@ -44,28 +42,22 @@ class UnexpectedParticleError(ParticleError):
 
 
 class InvalidIonError(UnexpectedParticleError):
-    """
-    An exception for when an argument is a valid particle but not a
-    valid ion.
-    """
+    """An exception for when an argument is a valid particle but not a valid
+    ion."""
 
     pass
 
 
 class InvalidIsotopeError(UnexpectedParticleError):
-    """
-    An exception for when an argument is a valid particle but not a
-    valid isotope.
-    """
+    """An exception for when an argument is a valid particle but not a valid
+    isotope."""
 
     pass
 
 
 class InvalidElementError(UnexpectedParticleError):
-    """
-    An exception for when an argument is a valid particle is not a
-    valid element.
-    """
+    """An exception for when an argument is a valid particle is not a valid
+    element."""
 
     pass
 

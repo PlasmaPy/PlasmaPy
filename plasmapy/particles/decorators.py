@@ -1,5 +1,6 @@
 """
 Module used to define the framework needed for the `particle_input` decorator.
+
 The decorator takes string and/or integer representations of particles
 as arguments and passes through the corresponding instance of the
 `~plasmapy.particles.particle_class.Particle` class.
@@ -30,10 +31,8 @@ def _particle_errmsg(
     mass_numb: int = None,
     funcname: str = None,
 ) -> str:
-    """
-    Return a string with an appropriate error message for an
-    `~plasmapy.particles.exceptions.InvalidParticleError`.
-    """
+    """Return a string with an appropriate error message for an
+    `~plasmapy.particles.exceptions.InvalidParticleError`."""
     errmsg = f"In {funcname}, {argname} = {repr(argval)} "
     if mass_numb is not None or Z is not None:
         errmsg += "with "
@@ -48,10 +47,8 @@ def _particle_errmsg(
 
 
 def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
-    """
-    Return an appropriate error message for when a particle does not
-    meet the required categorical specifications.
-    """
+    """Return an appropriate error message for when a particle does not meet
+    the required categorical specifications."""
     category_errmsg = (
         f"The particle {particle} does not meet the required "
         f"classification criteria to be a valid input to {funcname}. "

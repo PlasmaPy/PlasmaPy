@@ -52,8 +52,8 @@ aliases_and_symbols = [
 @pytest.mark.parametrize("alias, symbol", aliases_and_symbols)
 def test_dealias_particle_aliases(alias, symbol):
     """Test that _dealias_particle_aliases correctly takes in aliases and
-    returns the corresponding symbols, and returns the original argument
-    if the argument does not correspond to an alias."""
+    returns the corresponding symbols, and returns the original argument if the
+    argument does not correspond to an alias."""
     result = _dealias_particle_aliases(alias)
     assert result == symbol, (
         f"_dealias_particle_aliases({alias}) returns '{result}', which "

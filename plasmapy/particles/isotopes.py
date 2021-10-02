@@ -1,8 +1,8 @@
 """
-Module for loading isotope data from :file:`plasmapy/particles/data/isotopes.json`.
+Module for loading isotope data from
+:file:`plasmapy/particles/data/isotopes.json`.
 
-.. attention::
-    This module is not part of PlasmaPy's public API.
+.. attention::     This module is not part of PlasmaPy's public API.
 """
 __all__ = []
 
