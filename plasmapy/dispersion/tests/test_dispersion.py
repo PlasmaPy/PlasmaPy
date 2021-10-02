@@ -1,4 +1,4 @@
-"""Tests for the plasma dispersion function and its derivative"""
+"""Tests for the plasma dispersion function and its derivative."""
 
 # This file contains experimental usage of unicode characters.
 
@@ -85,8 +85,8 @@ def test_plasma_dispersion_func_symmetry(w):
 
 
 def test_plasma_dispersion_func_power_series_expansion():
-    """Test plasma_dispersion_func against a power series expansion of
-    the plasma dispersion function."""
+    """Test plasma_dispersion_func against a power series expansion of the
+    plasma dispersion function."""
 
     w_array = np.array(
         [
