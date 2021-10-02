@@ -1,4 +1,4 @@
-"""Adds custom functionality to pytest"""
+"""Adds custom functionality to pytest."""
 # Force MPL to use non-gui backends for testing.
 try:
     import matplotlib
@@ -12,7 +12,8 @@ else:
 
 
 def pytest_configure(config):  # coverage: ignore
-    """Adds @pytest.mark.slow annotation for marking slow tests for optional skipping."""
+    """Adds @pytest.mark.slow annotation for marking slow tests for optional
+    skipping."""
     config.addinivalue_line(
         "markers",
         (

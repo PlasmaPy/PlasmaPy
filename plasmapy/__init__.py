@@ -1,6 +1,8 @@
 """
 Welcome to the `plasmapy` package, an open source community-developed Python
-package for the plasma community.  Documentation is available in the docstrings
+package for the plasma community.
+
+Documentation is available in the docstrings
 and online at https://docs.plasmapy.org (accessible also using the
 :func:`~plasmapy.online_help` function).
 """
@@ -83,8 +85,8 @@ __citation__ = (
 
 def online_help(query: str):
     """
-    Open a webpage containing a search page in `PlasmaPy's documentation`_,
-    or another page that contains relevant online help.
+    Open a webpage containing a search page in `PlasmaPy's documentation`_, or
+    another page that contains relevant online help.
 
     This function requires an active internet connection, and will open
     the page in the default web browser.

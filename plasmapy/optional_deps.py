@@ -1,6 +1,4 @@
-"""
-Useful error messages for optional dependencies that aren't found.
-"""
+"""Useful error messages for optional dependencies that aren't found."""
 __all__ = [
     "h5py_import_error",
     "lmfit_import_error",
