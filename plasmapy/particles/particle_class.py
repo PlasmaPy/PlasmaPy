@@ -2311,7 +2311,7 @@ instances, are particle-like.
 * **Custom particles**
 
     `~plasmapy.particles.particle_class.CustomParticle` instances are
-    particle-like because particle properties are provided in physical units.
+    particle-like because particle properties are provided in physical units.k
 
 .. note::
 
