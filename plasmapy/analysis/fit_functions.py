@@ -1,7 +1,5 @@
-"""
-`FitFunction` classes designed to assist in curve fitting of swept Langmuir
-traces.
-"""
+"""`FitFunction` classes designed to assist in curve fitting of swept Langmuir
+traces."""
 __all__ = [
     "AbstractFitFunction",
     "Exponential",
@@ -26,10 +24,8 @@ _RootResults = namedtuple("RootResults", ("root", "err"))
 
 
 class AbstractFitFunction(ABC):
-    """
-    Abstract class for defining fit functions :math:`f(x)` and the tools for
-    fitting the function to a set of data.
-    """
+    """Abstract class for defining fit functions :math:`f(x)` and the tools for
+    fitting the function to a set of data."""
 
     _param_names = NotImplemented  # type: Tuple[str, ...]
 
@@ -301,10 +297,8 @@ class AbstractFitFunction(ABC):
 
     @staticmethod
     def _check_params(*args) -> None:
-        """
-        Check fitting parameters so that they are an expected type for the
-        class functionality.
-        """
+        """Check fitting parameters so that they are an expected type for the
+        class functionality."""
         for arg in args:
             if not isinstance(arg, (int, np.integer, float, np.floating)):
                 raise TypeError(
@@ -314,10 +308,8 @@ class AbstractFitFunction(ABC):
 
     @staticmethod
     def _check_x(x):
-        """
-        Check the independent variable ``x`` so that it is an expected
-        type for the class functionality.
-        """
+        """Check the independent variable ``x`` so that it is an expected type
+        for the class functionality."""
         if isinstance(x, (int, float, np.integer, np.floating)):
             x = np.array(x)
         else:
@@ -414,7 +406,6 @@ class AbstractFitFunction(ABC):
         range between 0 and 1.  Values close to 0 indicate that the points
         are uncorrelated and have little tendency to lie close to the model,
         whereas, values close to 1 indicate a high correlation to the model.
-
         """
         return self._rsq
 
@@ -518,7 +509,6 @@ class Linear(AbstractFitFunction):
         -------
         y: array_like
             dependent variables corresponding to `:math:``x``
-
         """
         x = self._check_x(x)
         self._check_params(m, b)
@@ -534,7 +524,6 @@ class Linear(AbstractFitFunction):
         .. math::
 
             (\\delta y)^2 = (x \\, \\delta m)^2 + (m \\, \\delta x)^2 + (\\delta b)^2
-
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
@@ -559,8 +548,9 @@ class Linear(AbstractFitFunction):
     @property
     def rsq(self):
         """
-        Coefficient of determination (r-squared) value of the fit.  Calculated
-        by `scipy.stats.linregress` from the fit.
+        Coefficient of determination (r-squared) value of the fit.
+
+        Calculated by `scipy.stats.linregress` from the fit.
         """
         return self._rsq
 
@@ -706,7 +696,6 @@ class Exponential(AbstractFitFunction):
         -------
         y: array_like
             dependent variables corresponding to ``x``
-
         """
         x = self._check_x(x)
         self._check_params(a, alpha)
@@ -725,7 +714,6 @@ class Exponential(AbstractFitFunction):
                 \\left( \\frac{\\delta a}{a} \\right)^2
                 + (x \\, \\delta \\alpha)^2
                 + (\\alpha \\, \\delta x)^2
-
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
@@ -871,7 +859,6 @@ class ExponentialPlusLinear(AbstractFitFunction):
         -------
         y: array_like
             dependent variables corresponding to ``x``
-
         """
         exp_term = self._exponential.func(x, a, alpha)
         lin_term = self._linear.func(x, m, b)
@@ -896,7 +883,6 @@ class ExponentialPlusLinear(AbstractFitFunction):
                 & + \\left[(
                         x \\, \\delta m)^2 + (\\delta b)^2 +(m \\, \\delta x)^2
                     \\right]
-
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
@@ -939,7 +925,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
     :math:`\\delta \\alpha`, :math:`\\delta b`, and :math:`\\delta x` are the
     respective uncertainties for :math:`a`, :math:`\\alpha`, and :math:`b`, and
     :math:`x`.
-
     """
 
     _param_names = ("a", "alpha", "b")
@@ -1008,7 +993,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
         -------
         y: array_like
             dependent variables corresponding to ``x``
-
         """
         return self._explin.func(x, a, alpha, 0.0, b)
 
@@ -1027,7 +1011,6 @@ class ExponentialPlusOffset(AbstractFitFunction):
                     + (\\alpha \\, \\delta x)^2
                 \\right]
                 + (\\delta b)^2
-
         """
         return self._explin.func_err(x, x_err=x_err, rety=rety)
 

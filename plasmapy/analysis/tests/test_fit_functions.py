@@ -1,6 +1,5 @@
-"""
-Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
-"""
+"""Tests for the fitting function classes defined in
+`plasmapy.analysis.fit_functions`."""
 import numpy as np
 import pytest
 
@@ -12,7 +11,8 @@ import plasmapy.analysis.fit_functions as ffuncs
 
 class TestAbstractFitFunction:
     """
-    Tests for fit function class `plasmapy.analysis.fit_functions.AbstractFitFunction`.
+    Tests for fit function class
+    `plasmapy.analysis.fit_functions.AbstractFitFunction`.
 
     Notes
     -----
@@ -79,6 +79,7 @@ class BaseFFTests(ABC):
     def func(x, *args):
         """
         Formula/Function that the fit function class is suppose to be modeling.
+
         This is used to test the fit function `func` method.
         """
         ...
@@ -86,8 +87,10 @@ class BaseFFTests(ABC):
     @abstractmethod
     def func_err(self, x, params, param_errors, x_err=None):
         """
-        Function representing the propagation of error associated with fit function
-        model. This is used to test the fit function `func_err` method.
+        Function representing the propagation of error associated with fit
+        function model.
+
+        This is used to test the fit function `func_err` method.
         """
         ...
 
@@ -207,10 +210,8 @@ class BaseFFTests(ABC):
                 assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
 
     def test_param_namedtuple(self):
-        """
-        Test that the namedtuple used for `params` and `param_errors` is
-        constructed correctly.
-        """
+        """Test that the namedtuple used for `params` and `param_errors` is
+        constructed correctly."""
         ff_obj = self.ff_class()
         assert hasattr(ff_obj, "FitParamTuple")
         assert issubclass(ff_obj.FitParamTuple, tuple)
@@ -410,9 +411,8 @@ class BaseFFTests(ABC):
 
 
 class TestFFExponential(BaseFFTests):
-    """
-    Tests for fit function class `plasmapy.analysis.fit_functions.Exponential`.
-    """
+    """Tests for fit function class
+    `plasmapy.analysis.fit_functions.Exponential`."""
 
     ff_class = ffuncs.Exponential
     _test_params = (5.0, 1.0)
@@ -451,10 +451,8 @@ class TestFFExponential(BaseFFTests):
 
 
 class TestFFExponentialPlusLinear(BaseFFTests):
-    """
-    Tests for fit function class
-    `plasmapy.analysis.fit_functions.ExponentialPlusLinear`.
-    """
+    """Tests for fit function class
+    `plasmapy.analysis.fit_functions.ExponentialPlusLinear`."""
 
     ff_class = ffuncs.ExponentialPlusLinear
     _test_params = (2.0, 1.0, 5.0, -10.0)
@@ -499,10 +497,8 @@ class TestFFExponentialPlusLinear(BaseFFTests):
 
 
 class TestFFExponentialPlusOffset(BaseFFTests):
-    """
-    Tests for fit function class
-    `plasmapy.analysis.fit_functions.ExponentialPlusOffset`.
-    """
+    """Tests for fit function class
+    `plasmapy.analysis.fit_functions.ExponentialPlusOffset`."""
 
     ff_class = ffuncs.ExponentialPlusOffset
     _test_params = (2.0, 1.0, -10.0)
@@ -548,9 +544,8 @@ class TestFFExponentialPlusOffset(BaseFFTests):
 
 
 class TestFFLinear(BaseFFTests):
-    """
-    Tests for fit function class `plasmapy.analysis.fit_functions.Linear`.
-    """
+    """Tests for fit function class
+    `plasmapy.analysis.fit_functions.Linear`."""
 
     ff_class = ffuncs.Linear
     _test_params = (5.0, 4.0)
