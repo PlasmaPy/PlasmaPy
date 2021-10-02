@@ -54,3 +54,9 @@ repos:
     args: [--autofix]
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
+
+- repo: https://github.com/myint/docformatter
+  rev: v1.3.1
+  hooks:
+  - id: docformatter
+    args: [--in-place, --pre-summary-newline, --wrap-descriptions, '72', --wrap-summaries, '79']
