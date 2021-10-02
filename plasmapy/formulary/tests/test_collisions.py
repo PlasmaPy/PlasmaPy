@@ -28,7 +28,7 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 class Test_Coulomb_logarithm:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.temperature1 = 10 * 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.density1 = 1e20 * u.cm ** -3
@@ -86,13 +86,13 @@ class Test_Coulomb_logarithm:
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             Coulomb_logarithm, insert_some_nans, insert_all_nans, kwargs
         )
 
     def test_unknown_method(self):
-        """Test that function will raise ValueError on non-existent method"""
+        """Test that function will raise ValueError on non-existent method."""
         with pytest.raises(ValueError):
             Coulomb_logarithm(
                 self.T_arr[0],
@@ -128,7 +128,7 @@ class Test_Coulomb_logarithm:
         assert_quantity_allclose(methodVal_0, methodVal_2)
 
     def test_handle_zero_V(self):
-        """Test that V == 0 returns a PhysicsError"""
+        """Test that V == 0 returns a PhysicsError."""
         with pytest.raises(exceptions.PhysicsError):
             Coulomb_logarithm(
                 self.T_arr[0],
@@ -139,7 +139,8 @@ class Test_Coulomb_logarithm:
             )
 
     def test_handle_V_arraysizes(self):
-        """Test that different sized V input array gets handled by _boilerplate"""
+        """Test that different sized V input array gets handled by
+        _boilerplate."""
         with pytest.warns(CouplingWarning):
             methodVal_0 = Coulomb_logarithm(
                 self.T_arr[0],
@@ -176,11 +177,9 @@ class Test_Coulomb_logarithm:
         assert lnLambda == lnLambdaRev
 
     def test_Chen_Q_machine(self):
-        """
-        Tests whether Coulomb logarithm gives value consistent with
-        Chen's Introduction to Plasma Physics and Controlled Fusion
-        section 5.6.2 Q-machine example.
-        """
+        """Tests whether Coulomb logarithm gives value consistent with Chen's
+        Introduction to Plasma Physics and Controlled Fusion section 5.6.2
+        Q-machine example."""
         T = 0.2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
         n = 1e15 * u.m ** -3
@@ -197,11 +196,9 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_Chen_lab(self):
-        """
-        Tests whether Coulomb logarithm gives value consistent with
-        Chen's Introduction to Plasma Physics and Controlled Fusion
-        section 5.6.2 lab plasma example.
-        """
+        """Tests whether Coulomb logarithm gives value consistent with Chen's
+        Introduction to Plasma Physics and Controlled Fusion section 5.6.2 lab
+        plasma example."""
         T = 2 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
         n = 1e17 * u.m ** -3
@@ -218,11 +215,9 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_Chen_torus(self):
-        """
-        Tests whether Coulomb logarithm gives value consistent with
-        Chen's Introduction to Plasma Physics and Controlled Fusion
-        section 5.6.2 torus example.
-        """
+        """Tests whether Coulomb logarithm gives value consistent with Chen's
+        Introduction to Plasma Physics and Controlled Fusion section 5.6.2
+        torus example."""
         T = 100 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
         n = 1e19 * u.m ** -3
@@ -239,11 +234,9 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_Chen_fusion(self):
-        """
-        Tests whether Coulomb logarithm gives value consistent with
-        Chen's Introduction to Plasma Physics and Controlled Fusion
-        section 5.6.2 fusion reactor example.
-        """
+        """Tests whether Coulomb logarithm gives value consistent with Chen's
+        Introduction to Plasma Physics and Controlled Fusion section 5.6.2
+        fusion reactor example."""
         T = 1e4 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
         n = 1e21 * u.m ** -3
@@ -261,11 +254,9 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_Chen_laser(self):
-        """
-        Tests whether Coulomb logarithm gives value consistent with
-        Chen's Introduction to Plasma Physics and Controlled Fusion
-        section 5.6.2 laser plasma example.
-        """
+        """Tests whether Coulomb logarithm gives value consistent with Chen's
+        Introduction to Plasma Physics and Controlled Fusion section 5.6.2
+        laser plasma example."""
         T = 1e3 * u.eV
         T = T.to(u.K, equivalencies=u.temperature_energy())
         n = 1e27 * u.m ** -3
@@ -283,10 +274,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_ls_min_interp(self):
-        """
-        Test for first version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for first version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -304,10 +293,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS1(self):
-        """
-        Test for first version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for first version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -326,9 +313,11 @@ class Test_Coulomb_logarithm:
 
     def test_ls_min_interp_negative(self):
         """
-        Test for first version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks for when
-        a negative (invalid) Coulomb logarithm is returned.
+        Test for first version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks for when a negative (invalid) Coulomb logarithm is
+        returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             Coulomb_logarithm(
@@ -342,9 +331,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS1_negative(self):
         """
-        Test for first version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks for when
-        a negative (invalid) Coulomb logarithm is returned.
+        Test for first version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks for when a negative (invalid) Coulomb logarithm is
+        returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             Coulomb_logarithm(
@@ -357,10 +348,8 @@ class Test_Coulomb_logarithm:
             )
 
     def test_ls_full_interp(self):
-        """
-        Test for second version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for second version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -378,10 +367,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS2(self):
-        """
-        Test for second version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for second version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -400,9 +387,11 @@ class Test_Coulomb_logarithm:
 
     def test_ls_full_interp_negative(self):
         """
-        Test for second version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks for when
-        a negative (invalid) Coulomb logarithm is returned.
+        Test for second version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks for when a negative (invalid) Coulomb logarithm is
+        returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             methodVal = Coulomb_logarithm(
@@ -416,9 +405,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS2_negative(self):
         """
-        Test for second version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks for when
-        a negative (invalid) Coulomb logarithm is returned.
+        Test for second version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks for when a negative (invalid) Coulomb logarithm is
+        returned.
         """
         with pytest.warns(exceptions.CouplingWarning, match="depends on weak coupling"):
             methodVal = Coulomb_logarithm(
@@ -431,10 +422,8 @@ class Test_Coulomb_logarithm:
             )
 
     def test_ls_clamp_mininterp(self):
-        """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for third version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -452,10 +441,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS3(self):
-        """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for third version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -474,10 +461,11 @@ class Test_Coulomb_logarithm:
 
     def test_ls_clamp_mininterp_negative(self):
         """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for third version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -499,10 +487,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS3_negative(self):
         """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for third version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -522,10 +511,11 @@ class Test_Coulomb_logarithm:
 
     def test_ls_clamp_mininterp_non_scalar_density(self):
         """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        passing in a collection of density values returns a
-        collection of Coulomb logarithm values.
+        Test for third version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether passing in a collection of density values
+        returns a collection of Coulomb logarithm values.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -547,10 +537,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS3_non_scalar_density(self):
         """
-        Test for third version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        passing in a collection of density values returns a
-        collection of Coulomb logarithm values.
+        Test for third version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether passing in a collection of density values
+        returns a collection of Coulomb logarithm values.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -569,10 +560,8 @@ class Test_Coulomb_logarithm:
         assert testTrue.all(), errStr
 
     def test_hls_min_interp(self):
-        """
-        Test for fourth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for fourth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -590,10 +579,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS4(self):
-        """
-        Test for fourth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for fourth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -612,10 +599,11 @@ class Test_Coulomb_logarithm:
 
     def test_hls_min_interp_negative(self):
         """
-        Test for fourth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for fourth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -637,10 +625,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS4_negative(self):
         """
-        Test for fourth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for fourth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -659,10 +648,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_hls_max_interp(self):
-        """
-        Test for fifth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for fifth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -680,10 +667,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS5(self):
-        """
-        Test for fifth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for fifth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -702,10 +687,11 @@ class Test_Coulomb_logarithm:
 
     def test_hls_max_interp_negative(self):
         """
-        Test for fifth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for fifth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -727,10 +713,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS5_negative(self):
         """
-        Test for fifth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for fifth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -749,10 +736,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_hls_full_interp(self):
-        """
-        Test for sixth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for sixth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -770,10 +755,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_GMS6(self):
-        """
-        Test for sixth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002).
-        """
+        """Test for sixth version of Coulomb logarithm from Gericke, Murillo,
+        and Schlanges PRE (2002)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
                 self.temperature1,
@@ -792,10 +775,11 @@ class Test_Coulomb_logarithm:
 
     def test_hls_full_interp_negative(self):
         """
-        Test for sixth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for sixth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -817,10 +801,11 @@ class Test_Coulomb_logarithm:
 
     def test_GMS6_negative(self):
         """
-        Test for sixth version of Coulomb logarithm from Gericke,
-        Murillo, and Schlanges PRE (2002). This checks whether
-        a positive value is returned whereas the classical Coulomb
-        logarithm would return a negative value.
+        Test for sixth version of Coulomb logarithm from Gericke, Murillo, and
+        Schlanges PRE (2002).
+
+        This checks whether a positive value is returned whereas the
+        classical Coulomb logarithm would return a negative value.
         """
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Coulomb_logarithm(
@@ -839,10 +824,8 @@ class Test_Coulomb_logarithm:
         assert testTrue, errStr
 
     def test_ls_full_interp_zmean_error(self):
-        """
-        Tests whether ls_full_interp raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether ls_full_interp raises z_mean error when a z_mean is
+        not provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
@@ -852,20 +835,16 @@ class Test_Coulomb_logarithm:
             )
 
     def test_GMS2_zmean_error(self):
-        """
-        Tests whether GMS-2 raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether GMS-2 raises z_mean error when a z_mean is not
+        provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-2"
             )
 
     def test_hls_max_interp_zmean_error(self):
-        """
-        Tests whether hls_max_interp raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether hls_max_interp raises z_mean error when a z_mean is
+        not provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
@@ -875,20 +854,16 @@ class Test_Coulomb_logarithm:
             )
 
     def test_GMS5_zmean_error(self):
-        """
-        Tests whether GMS-5 raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether GMS-5 raises z_mean error when a z_mean is not
+        provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-5"
             )
 
     def test_hls_full_interp_zmean_error(self):
-        """
-        Tests whether hls_full_interp raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether hls_full_interp raises z_mean error when a z_mean is
+        not provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2,
@@ -898,10 +873,8 @@ class Test_Coulomb_logarithm:
             )
 
     def test_GMS6_zmean_error(self):
-        """
-        Tests whether GMS-6 raises z_mean error when a z_mean is not
-        provided.
-        """
+        """Tests whether GMS-6 raises z_mean error when a z_mean is not
+        provided."""
         with pytest.raises(ValueError):
             methodVal = Coulomb_logarithm(
                 self.temperature2, self.density2, self.particles, method="GMS-6"
@@ -918,27 +891,22 @@ class Test_Coulomb_logarithm:
             Coulomb_logarithm(1e5 * u.K, 1 * u.m ** -3, ("e", "p"), V=1.1 * c)
 
     def test_unit_conversion_error(self):
-        """
-        Tests whether unit conversion error is raised when arguments
-        are given with incorrect units.
-        """
+        """Tests whether unit conversion error is raised when arguments are
+        given with incorrect units."""
         with pytest.raises(u.UnitTypeError):
             Coulomb_logarithm(
                 1e5 * u.g, 1 * u.m ** -3, ("e", "p"), V=29979245 * u.m / u.s
             )
 
     def test_single_particle_error(self):
-        """
-        Tests whether an error is raised if only a single particle is given.
-        """
+        """Tests whether an error is raised if only a single particle is
+        given."""
         with pytest.raises(ValueError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, "e")
 
     def test_invalid_particle_error(self):
-        """
-        Tests whether an error is raised when an invalid particle name
-        is given.
-        """
+        """Tests whether an error is raised when an invalid particle name is
+        given."""
         with pytest.raises(plasmapy.particles.exceptions.InvalidParticleError):
             Coulomb_logarithm(1 * u.K, 5 * u.m ** -3, ("e", "g"))
 
@@ -951,7 +919,7 @@ class Test_Coulomb_logarithm:
 class Test_impact_parameter_perp:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.particles = ("e", "p")
         self.V = 1e4 * u.km / u.s
@@ -963,9 +931,7 @@ class Test_impact_parameter_perp:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         methodVal = impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
         errStr = (
@@ -976,10 +942,8 @@ class Test_impact_parameter_perp:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 + 1e-15
         methodVal = impact_parameter_perp(self.T, self.particles, V=np.nan * u.m / u.s)
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
@@ -992,7 +956,7 @@ class Test_impact_parameter_perp:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             impact_parameter_perp, insert_some_nans, insert_all_nans, {}
         )
@@ -1006,7 +970,7 @@ class Test_impact_parameter_perp:
 class Test_impact_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_e = 1e17 * u.cm ** -3
@@ -1022,9 +986,7 @@ class Test_impact_parameter:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         methodVal = impact_parameter(
             self.T,
             self.n_e,
@@ -1040,10 +1002,8 @@ class Test_impact_parameter:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         methodVal = impact_parameter(
             self.T,
@@ -1089,16 +1049,14 @@ class Test_impact_parameter:
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             impact_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
     def test_extend_scalar_bmin(self):
-        """
-        Test to verify that if T is scalar and n is vector, bmin will be extended
-        to the same length as bmax
-        """
+        """Test to verify that if T is scalar and n is vector, bmin will be
+        extended to the same length as bmax."""
         (bmin, bmax) = impact_parameter(1 * u.eV, self.n_e_arr, self.particles)
         assert len(bmin) == len(bmax)
 
@@ -1106,7 +1064,7 @@ class Test_impact_parameter:
 class Test_collision_frequency:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.n = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1126,9 +1084,7 @@ class Test_collision_frequency:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
@@ -1143,10 +1099,8 @@ class Test_collision_frequency:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
@@ -1175,15 +1129,13 @@ class Test_collision_frequency:
         ],
     )
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             collision_frequency, insert_some_nans, insert_all_nans, kwargs
         )
 
     def test_electrons(self):
-        """
-        Testing collision frequency between electrons.
-        """
+        """Testing collision frequency between electrons."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
@@ -1203,9 +1155,7 @@ class Test_collision_frequency:
         assert testTrue, errStr
 
     def test_protons(self):
-        """
-        Testing collision frequency between protons (ions).
-        """
+        """Testing collision frequency between protons (ions)."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
@@ -1225,9 +1175,7 @@ class Test_collision_frequency:
         assert testTrue, errStr
 
     def test_zmean(self):
-        """
-        Test collisional frequency function when given arbitrary z_mean.
-        """
+        """Test collisional frequency function when given arbitrary z_mean."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = collision_frequency(
                 self.T,
@@ -1245,7 +1193,7 @@ class Test_collision_frequency:
 class Test_fundamental_electron_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1255,7 +1203,7 @@ class Test_fundamental_electron_collision_freq:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             fundamental_electron_collision_freq, insert_some_nans, insert_all_nans, {}
         )
@@ -1264,7 +1212,7 @@ class Test_fundamental_electron_collision_freq:
 class Test_fundamental_ion_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1274,7 +1222,7 @@ class Test_fundamental_ion_collision_freq:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             fundamental_ion_collision_freq, insert_some_nans, insert_all_nans, {}
         )
@@ -1283,7 +1231,7 @@ class Test_fundamental_ion_collision_freq:
 class Test_mean_free_path:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1298,9 +1246,7 @@ class Test_mean_free_path:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = mean_free_path(
                 self.T,
@@ -1315,10 +1261,8 @@ class Test_mean_free_path:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = mean_free_path(
@@ -1339,14 +1283,14 @@ class Test_mean_free_path:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(mean_free_path, insert_some_nans, insert_all_nans, {})
 
 
 class Test_Spitzer_resistivity:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.n = 1e12 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1361,9 +1305,7 @@ class Test_Spitzer_resistivity:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         methodVal = Spitzer_resistivity(
             self.T,
             self.n,
@@ -1377,10 +1319,8 @@ class Test_Spitzer_resistivity:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         methodVal = Spitzer_resistivity(
             self.T,
@@ -1415,7 +1355,7 @@ class Test_Spitzer_resistivity:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             Spitzer_resistivity, insert_some_nans, insert_all_nans, {}
         )
@@ -1424,7 +1364,7 @@ class Test_Spitzer_resistivity:
 class Test_mobility:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1440,9 +1380,7 @@ class Test_mobility:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = mobility(
                 self.T,
@@ -1457,10 +1395,8 @@ class Test_mobility:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = mobility(
@@ -1497,14 +1433,14 @@ class Test_mobility:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(mobility, insert_some_nans, insert_all_nans, {})
 
 
 class Test_Knudsen_number:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.length = 1 * u.nm
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
@@ -1522,9 +1458,7 @@ class Test_Knudsen_number:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
                 self.length,
@@ -1540,10 +1474,8 @@ class Test_Knudsen_number:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
             methodVal = Knudsen_number(
@@ -1565,14 +1497,14 @@ class Test_Knudsen_number:
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(Knudsen_number, insert_some_nans, insert_all_nans, {})
 
 
 class Test_coupling_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 11604 * u.K
         self.n_e = 1e21 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1588,9 +1520,7 @@ class Test_coupling_parameter:
         assert result == resultRev
 
     def test_known1(self):
-        """
-        Test for known value.
-        """
+        """Test for known value."""
         methodVal = coupling_parameter(
             self.T,
             self.n_e,
@@ -1604,10 +1534,8 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 * (1 + 1e-15)
         methodVal = coupling_parameter(
             self.T,
@@ -1625,9 +1553,7 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     def test_zmean(self):
-        """
-        Test value obtained when arbitrary z_mean is passed
-        """
+        """Test value obtained when arbitrary z_mean is passed."""
         methodVal = coupling_parameter(
             self.T,
             self.n_e,
@@ -1646,7 +1572,7 @@ class Test_coupling_parameter:
     # @pytest.mark.parametrize("kwargs", [{"method": "classical"},
     #                                     {"method": "quantum"},])   # TODO quantum issues
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
-        """Test for ability to handle numpy array quantities"""
+        """Test for ability to handle numpy array quantities."""
         assert_can_handle_nparray(
             coupling_parameter, insert_some_nans, insert_all_nans, {}
         )
@@ -1655,9 +1581,7 @@ class Test_coupling_parameter:
         reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
     )
     def test_quantum(self):
-        """
-        Testing quantum method for coupling parameter.
-        """
+        """Testing quantum method for coupling parameter."""
         methodVal = coupling_parameter(
             self.T, self.n_e, self.particles, method="quantum"
         )
@@ -1668,6 +1592,6 @@ class Test_coupling_parameter:
         assert testTrue, errStr
 
     def test_kwarg_method_error(self):
-        """Testing kwarg `method` fails is not 'classical' or 'quantum'"""
+        """Testing kwarg `method` fails is not 'classical' or 'quantum'."""
         with pytest.raises(ValueError):
             coupling_parameter(self.T, self.n_e, self.particles, method="not a method")

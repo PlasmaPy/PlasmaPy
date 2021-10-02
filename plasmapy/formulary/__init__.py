@@ -1,7 +1,5 @@
-"""
-The `~plasmapy.formulary` subpackage contains commonly used formulae
-from plasma science.
-"""
+"""The `~plasmapy.formulary` subpackage contains commonly used formulae from
+plasma science."""
 # __all__ & __aliases__ will be auto populated below
 __all__ = []
 __aliases__ = []

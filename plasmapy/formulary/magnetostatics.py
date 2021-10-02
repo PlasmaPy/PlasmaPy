@@ -1,7 +1,5 @@
-"""
-Define MagneticStatics class to calculate common static magnetic fields
-as first raised in issue #100.
-"""
+"""Define MagneticStatics class to calculate common static magnetic fields as
+first raised in issue #100."""
 __all__ = [
     "CircularWire",
     "FiniteStraightWire",
@@ -24,7 +22,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 class MagnetoStatics(abc.ABC):
-    """Abstract class for all kinds of magnetic static fields"""
+    """Abstract class for all kinds of magnetic static fields."""
 
     @abc.abstractmethod
     def magnetic_field(self, p: u.m) -> u.T:

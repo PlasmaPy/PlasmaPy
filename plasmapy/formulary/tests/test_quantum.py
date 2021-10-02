@@ -138,9 +138,7 @@ def test_Thomas_Fermi_length():
 
 
 def test_Wigner_Seitz_radius():
-    """
-    Checks Wigner-Seitz radius for a known value.
-    """
+    """Checks Wigner-Seitz radius for a known value."""
     n_e = 1e23 * u.cm ** -3
     radiusTrue = 1.3365046175719772e-10 * u.m
     radiusMeth = Wigner_Seitz_radius(n_e)
@@ -152,7 +150,7 @@ def test_Wigner_Seitz_radius():
 class Test_chemical_potential:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.n_e = 1e20 * u.cm ** -3
         self.n_e_fail = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
@@ -162,9 +160,7 @@ class Test_chemical_potential:
         reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
     )
     def test_known1(self):
-        """
-        Tests Fermi_integral for expected value.
-        """
+        """Tests Fermi_integral for expected value."""
         methodVal = chemical_potential(self.n_e, self.T)
         testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
@@ -174,10 +170,8 @@ class Test_chemical_potential:
         reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
     )
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 + 1e-15
         methodVal = chemical_potential(self.n_e, self.T)
         testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
@@ -191,7 +185,7 @@ class Test_chemical_potential:
 class Test__chemical_potential_interp:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.n_e = 1e23 * u.cm ** -3
         self.T = 11604 * u.K
         self.True1 = 7.741256653579105
@@ -200,9 +194,7 @@ class Test__chemical_potential_interp:
         reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
     )
     def test_known1(self):
-        """
-        Tests Fermi_integral for expected value.
-        """
+        """Tests Fermi_integral for expected value."""
         methodVal = _chemical_potential_interp(self.n_e, self.T)
         testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
@@ -212,10 +204,8 @@ class Test__chemical_potential_interp:
         reason="see issue https://github.com/PlasmaPy/PlasmaPy/issues/726"
     )
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 + 1e-15
         methodVal = _chemical_potential_interp(self.n_e, self.T)
         testTrue = not u.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)

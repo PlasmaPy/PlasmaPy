@@ -1,4 +1,5 @@
-"""Functions to calculate transport coefficients.
+"""
+Functions to calculate transport coefficients.
 
 This module includes a number of functions for handling Coulomb collisions
 spanning weakly coupled (low density) to strongly coupled (high density)
@@ -37,7 +38,6 @@ These include:
 * `mobility`
 * `Knudsen_number`
 * `coupling_parameter`
-
 """
 __all__ = [
     "Coulomb_logarithm",
@@ -465,9 +465,10 @@ def Coulomb_logarithm(
 @particles.particle_input
 def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
     """
-    Check the inputs to functions in ``collisions.py``.  Also obtains
-    reduced in mass in a 2 particle collision system along with thermal
-    velocity.
+    Check the inputs to functions in ``collisions.py``.
+
+    Also obtains reduced in mass in a 2 particle collision system along
+    with thermal velocity.
     """
     masses = [p.mass for p in species]
     charges = [np.abs(p.charge) for p in species]
@@ -486,8 +487,9 @@ def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
 def _replaceNanVwithThermalV(V, T, m):
     """
     Get thermal velocity of system if no velocity is given, for a given mass.
-    Handles vector checks for ``V``, you must already know that ``T`` and ``m``
-    are okay.
+
+    Handles vector checks for ``V``, you must already know that ``T``
+    and ``m`` are okay.
     """
     if np.any(V == 0):
         raise utils.PhysicsError("You cannot have a collision for zero velocity!")

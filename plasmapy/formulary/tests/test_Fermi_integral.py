@@ -26,19 +26,15 @@ class Test_Fermi_integral:
         )
 
     def test_known1(self):
-        """
-        Test Fermi_integral for expected value.
-        """
+        """Test Fermi_integral for expected value."""
         methodVal = Fermi_integral(self.arg1, self.order1)
         testTrue = np.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
         errStr = f"Fermi integral value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Test if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Test if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 + 1e-15
         methodVal = Fermi_integral(self.arg1, self.order1)
         testTrue = not np.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
@@ -56,9 +52,7 @@ class Test_Fermi_integral:
         assert testTrue, errStr
 
     def test_invalid_type(self):
-        """
-        Test whether `TypeError` is raised when an invalid argument
-        type is passed to `~plasmapy.mathematics.Fermi_integral`.
-        """
+        """Test whether `TypeError` is raised when an invalid argument type is
+        passed to `~plasmapy.mathematics.Fermi_integral`."""
         with pytest.raises(TypeError):
             Fermi_integral([1, 2, 3], self.order1)

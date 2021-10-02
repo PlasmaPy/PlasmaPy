@@ -23,7 +23,7 @@ from ..parameters import kappa_thermal_speed, thermal_speed
 class Test_Maxwellian_1D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T_e = 30000 * u.K
         self.v = 1e5 * u.m / u.s
         self.v_drift = 1000000 * u.m / u.s
@@ -40,29 +40,24 @@ class Test_Maxwellian_1D(object):
         self.distFuncTrue = 5.851627151617136e-07
 
     def test_max_noDrift(self):
-        """
-        Checks maximum value of distribution function is in expected place,
-        when there is no drift applied.
-        """
+        """Checks maximum value of distribution function is in expected place,
+        when there is no drift applied."""
         max_index = Maxwellian_1D(
             self.v_vect, T=self.T_e, particle=self.particle, v_drift=0 * u.m / u.s
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
     def test_max_drift(self):
-        """
-        Checks maximum value of distribution function is in expected place,
-        when there is drift applied.
-        """
+        """Checks maximum value of distribution function is in expected place,
+        when there is drift applied."""
         max_index = Maxwellian_1D(
             self.v_vect, T=self.T_e, particle=self.particle, v_drift=self.v_drift
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # converting vTh to unitless
         vTh = self.vTh.si.value
         # setting up integration from -10*vTh to 10*vTh, which is close to Inf
@@ -83,9 +78,7 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self):
-        """
-        Tests standard deviation of function?
-        """
+        """Tests standard deviation of function?"""
         std = (
             Maxwellian_1D(self.v_vect, T=self.T_e, particle=self.particle)
             * self.v_vect ** 2
@@ -96,9 +89,7 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_1D(
             v=self.v, T=self.T_e, particle=self.particle, units="units"
         )
@@ -111,9 +102,7 @@ class Test_Maxwellian_1D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_1D(
             v=self.v, T=self.T_e, vTh=self.vTh, particle=self.particle, units="units"
         )
@@ -126,9 +115,7 @@ class Test_Maxwellian_1D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T_e = self.T_e.to(u.K, equivalencies=u.temperature_energy())
         T_e = T_e.si.value
@@ -142,9 +129,7 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T_e = self.T_e.to(u.K, equivalencies=u.temperature_energy())
         T_e = T_e.si.value
@@ -163,8 +148,10 @@ class Test_Maxwellian_1D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_1D(
             v=self.v,
@@ -182,9 +169,7 @@ class Test_Maxwellian_1D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         testVal = ((self.vTh ** 2 * np.pi) ** (-1 / 2)).si.value
         distFunc = Maxwellian_1D(
             v=self.v,
@@ -200,7 +185,7 @@ class Test_Maxwellian_1D(object):
 class Test_Maxwellian_speed_1D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -212,9 +197,8 @@ class Test_Maxwellian_speed_1D(object):
         self.distFuncDrift = 2 * (self.vTh ** 2 * np.pi) ** (-1 / 2)
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # setting up integration from 0 to 10*vTh
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_1D(v=xData1D, T=self.T, particle=self.particle)
@@ -224,9 +208,7 @@ class Test_Maxwellian_speed_1D(object):
         assert np.isclose(integ.value, 1), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_speed_1D(
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
@@ -239,9 +221,7 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_speed_1D(
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
@@ -254,9 +234,7 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -270,9 +248,7 @@ class Test_Maxwellian_speed_1D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -291,8 +267,10 @@ class Test_Maxwellian_speed_1D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_speed_1D(
             v=self.v,
@@ -310,9 +288,7 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         distFunc = Maxwellian_speed_1D(
             v=self.v,
             T=self.T,
@@ -329,7 +305,7 @@ class Test_Maxwellian_speed_1D(object):
 class Test_Maxwellian_velocity_2D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -343,9 +319,8 @@ class Test_Maxwellian_velocity_2D(object):
         self.distFuncTrue = 7.477094598799251e-55
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # converting vTh to unitless
         vTh = self.vTh.si.value
         # setting up integration from -10*vTh to 10*vTh, which is close to Inf
@@ -368,9 +343,7 @@ class Test_Maxwellian_velocity_2D(object):
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx, vy=self.vy, T=self.T, particle=self.particle, units="units"
         )
@@ -383,9 +356,7 @@ class Test_Maxwellian_velocity_2D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx,
             vy=self.vy,
@@ -403,9 +374,7 @@ class Test_Maxwellian_velocity_2D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -423,9 +392,7 @@ class Test_Maxwellian_velocity_2D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -445,8 +412,10 @@ class Test_Maxwellian_velocity_2D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx,
@@ -466,9 +435,7 @@ class Test_Maxwellian_velocity_2D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         testVal = ((self.vTh ** 2 * np.pi) ** (-1)).si.value
         distFunc = Maxwellian_velocity_2D(
             vx=self.vx,
@@ -487,7 +454,7 @@ class Test_Maxwellian_velocity_2D(object):
 class Test_Maxwellian_speed_2D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -498,9 +465,8 @@ class Test_Maxwellian_speed_2D(object):
         self.distFuncTrue = 2.2148166449365907e-26
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # setting up integration from 0 to 10*vTh
         xData1D = np.arange(0, 10.001, 0.001) * self.vTh
         yData1D = Maxwellian_speed_2D(v=xData1D, T=self.T, particle=self.particle)
@@ -510,9 +476,7 @@ class Test_Maxwellian_speed_2D(object):
         assert np.isclose(integ.value, 1), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_speed_2D(
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
@@ -525,9 +489,7 @@ class Test_Maxwellian_speed_2D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_speed_2D(
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
@@ -540,9 +502,7 @@ class Test_Maxwellian_speed_2D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -556,9 +516,7 @@ class Test_Maxwellian_speed_2D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -577,8 +535,10 @@ class Test_Maxwellian_speed_2D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_speed_2D(
             v=self.v,
@@ -596,9 +556,7 @@ class Test_Maxwellian_speed_2D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         with pytest.raises(NotImplementedError):
             distFunc = Maxwellian_speed_2D(
                 v=self.v,
@@ -613,7 +571,7 @@ class Test_Maxwellian_speed_2D(object):
 class Test_Maxwellian_velocity_3D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -630,9 +588,8 @@ class Test_Maxwellian_velocity_3D(object):
         self.distFuncTrue = 6.465458269306909e-82
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # converting vTh to unitless
         vTh = self.vTh.si.value
         # setting up integration from -10*vTh to 10*vTh, which is close to Inf
@@ -657,9 +614,7 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -677,9 +632,7 @@ class Test_Maxwellian_velocity_3D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -698,9 +651,7 @@ class Test_Maxwellian_velocity_3D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -719,9 +670,7 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -742,8 +691,10 @@ class Test_Maxwellian_velocity_3D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
@@ -765,9 +716,7 @@ class Test_Maxwellian_velocity_3D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         testVal = ((self.vTh ** 2 * np.pi) ** (-3 / 2)).si.value
         distFunc = Maxwellian_velocity_3D(
             vx=self.vx,
@@ -787,7 +736,7 @@ class Test_Maxwellian_velocity_3D(object):
 class Test_Maxwellian_speed_3D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.particle = "H+"
         # get thermal velocity and thermal velocity squared
@@ -798,9 +747,8 @@ class Test_Maxwellian_speed_3D(object):
         self.distFuncTrue = 1.8057567503860518e-25
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # setting up integration from 0 to 10*vTh
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_3D(v=xData1D, T=self.T, particle=self.particle)
@@ -810,9 +758,7 @@ class Test_Maxwellian_speed_3D(object):
         assert np.isclose(integ.value, 1), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = Maxwellian_speed_3D(
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
@@ -825,9 +771,7 @@ class Test_Maxwellian_speed_3D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = Maxwellian_speed_3D(
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
@@ -840,9 +784,7 @@ class Test_Maxwellian_speed_3D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -856,9 +798,7 @@ class Test_Maxwellian_speed_3D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -877,8 +817,10 @@ class Test_Maxwellian_speed_3D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = Maxwellian_speed_3D(
             v=self.v,
@@ -896,9 +838,7 @@ class Test_Maxwellian_speed_3D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         with pytest.raises(NotImplementedError):
             distFunc = Maxwellian_speed_3D(
                 v=self.v,
@@ -912,7 +852,7 @@ class Test_Maxwellian_speed_3D(object):
 class Test_kappa_velocity_1D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T_e = 30000 * u.K
         self.kappa = 4
         self.kappaInvalid = 3 / 2
@@ -931,10 +871,8 @@ class Test_kappa_velocity_1D(object):
         self.distFuncTrue = 6.637935187755855e-07
 
     def test_invalid_kappa(self):
-        """
-        Checks if function raises error when kappa <= 3/2 is passed as an
-        argument.
-        """
+        """Checks if function raises error when kappa <= 3/2 is passed as an
+        argument."""
         with pytest.raises(ValueError):
             kappa_velocity_1D(
                 v=self.v,
@@ -945,10 +883,8 @@ class Test_kappa_velocity_1D(object):
             )
 
     def test_max_noDrift(self):
-        """
-        Checks maximum value of distribution function is in expected place,
-        when there is no drift applied.
-        """
+        """Checks maximum value of distribution function is in expected place,
+        when there is no drift applied."""
         max_index = kappa_velocity_1D(
             self.v_vect,
             T=self.T_e,
@@ -959,10 +895,8 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
     def test_max_drift(self):
-        """
-        Checks maximum value of distribution function is in expected place,
-        when there is drift applied.
-        """
+        """Checks maximum value of distribution function is in expected place,
+        when there is drift applied."""
         max_index = kappa_velocity_1D(
             self.v_vect,
             T=self.T_e,
@@ -973,16 +907,13 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
     def test_maxwellian_limit(self):
-        """
-        Tests the limit of large kappa to see if kappa distribution function
-        converges to Maxwellian.
-        """
+        """Tests the limit of large kappa to see if kappa distribution function
+        converges to Maxwellian."""
         return
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # converting vTh to unitless
         vTh = self.vTh.si.value
         # setting up integration from -10*vTh to 10*vTh, which is close to Inf
@@ -1003,9 +934,7 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self):
-        """
-        Tests standard deviation of function?
-        """
+        """Tests standard deviation of function?"""
         std = (
             kappa_velocity_1D(
                 self.v_vect, T=self.T_e, kappa=self.kappa, particle=self.particle
@@ -1018,9 +947,7 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(T_distri.value, self.T_e.value)
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = kappa_velocity_1D(
             v=self.v,
             T=self.T_e,
@@ -1037,9 +964,7 @@ class Test_kappa_velocity_1D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = kappa_velocity_1D(
             v=self.v,
             T=self.T_e,
@@ -1057,9 +982,7 @@ class Test_kappa_velocity_1D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T_e = self.T_e.to(u.K, equivalencies=u.temperature_energy())
         T_e = T_e.si.value
@@ -1077,9 +1000,7 @@ class Test_kappa_velocity_1D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T_e = self.T_e.to(u.K, equivalencies=u.temperature_energy())
         T_e = T_e.si.value
@@ -1099,8 +1020,10 @@ class Test_kappa_velocity_1D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = kappa_velocity_1D(
             v=self.v,
@@ -1119,9 +1042,7 @@ class Test_kappa_velocity_1D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         testVal = 6.755498543630533e-07
         distFunc = kappa_velocity_1D(
             v=self.v,
@@ -1139,7 +1060,7 @@ class Test_kappa_velocity_1D(object):
 class Test_kappa_velocity_3D(object):
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 1.0 * u.eV
         self.kappa = 4
         self.kappaInvalid = 3 / 2
@@ -1158,10 +1079,8 @@ class Test_kappa_velocity_3D(object):
         self.distFuncTrue = 1.1847914288918793e-22
 
     def test_invalid_kappa(self):
-        """
-        Checks if function raises error when kappa <= 3/2 is passed as an
-        argument.
-        """
+        """Checks if function raises error when kappa <= 3/2 is passed as an
+        argument."""
         with pytest.raises(ValueError):
             kappa_velocity_3D(
                 vx=self.vx,
@@ -1209,9 +1128,8 @@ class Test_kappa_velocity_3D(object):
     #        return
 
     def test_norm(self):
-        """
-        Tests whether distribution function is normalized, and integrates to 1.
-        """
+        """Tests whether distribution function is normalized, and integrates to
+        1."""
         # converting vTh to unitless
         vTh = self.vTh.si.value
         # setting up integration from -10*vTh to 10*vTh, which is close to Inf
@@ -1236,9 +1154,7 @@ class Test_kappa_velocity_3D(object):
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self):
-        """
-        Tests distribution function with units, but not passing vTh.
-        """
+        """Tests distribution function with units, but not passing vTh."""
         distFunc = kappa_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -1257,9 +1173,7 @@ class Test_kappa_velocity_3D(object):
         ), errStr
 
     def test_units_vTh(self):
-        """
-        Tests distribution function with units and passing vTh.
-        """
+        """Tests distribution function with units and passing vTh."""
         distFunc = kappa_velocity_3D(
             vx=self.vx,
             vy=self.vy,
@@ -1279,9 +1193,7 @@ class Test_kappa_velocity_3D(object):
         ), errStr
 
     def test_unitless_no_vTh(self):
-        """
-        Tests distribution function without units, and not passing vTh.
-        """
+        """Tests distribution function without units, and not passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -1301,9 +1213,7 @@ class Test_kappa_velocity_3D(object):
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
     def test_unitless_vTh(self):
-        """
-        Tests distribution function without units, and with passing vTh.
-        """
+        """Tests distribution function without units, and with passing vTh."""
         # converting T to SI then stripping units
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
@@ -1325,8 +1235,10 @@ class Test_kappa_velocity_3D(object):
 
     def test_zero_drift_units(self):
         """
-        Testing inputting drift equal to 0 with units. These should just
-        get passed and not have extra units applied to them.
+        Testing inputting drift equal to 0 with units.
+
+        These should just get passed and not have extra units applied to
+        them.
         """
         distFunc = kappa_velocity_3D(
             vx=self.vx,
@@ -1349,9 +1261,7 @@ class Test_kappa_velocity_3D(object):
         ), errStr
 
     def test_value_drift_units(self):
-        """
-        Testing vdrifts with values
-        """
+        """Testing vdrifts with values."""
         testVal = 1.2376545373917465e-13
         distFunc = kappa_velocity_3D(
             vx=self.vx,

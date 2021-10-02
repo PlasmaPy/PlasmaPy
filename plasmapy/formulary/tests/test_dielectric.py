@@ -1,5 +1,5 @@
 """Tests for functions that calculate plasma dielectric parameters in
-dielectric.py"""
+dielectric.py."""
 
 import numpy as np
 
@@ -25,10 +25,8 @@ three_species = ["e", "D+", "H+"]
 
 class Test_ColdPlasmaPermittivity(object):
     def test_proton_electron_plasma(self):
-        """
-        Test proton-electron plasma against the (approximate)
-        analytical formulas
-        """
+        """Test proton-electron plasma against the (approximate) analytical
+        formulas."""
         B = 1 * u.T
         n = [1, 1] * 1 / u.m ** 3
         omega = 1 * u.rad / u.s
@@ -70,9 +68,8 @@ class Test_ColdPlasmaPermittivity(object):
         assert isinstance(rotating_tuple_result, RotatingTensorElements)
 
     def test_three_species(self):
-        """
-        Test with three species (2 ions): D plasma with 5%H minority fraction
-        """
+        """Test with three species (2 ions): D plasma with 5%H minority
+        fraction."""
         n_3 = np.array([1, 1, 5 / 100]) * 1e19 / u.m ** 3
         S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
         assert np.isclose(S, -11753.3)
@@ -81,9 +78,10 @@ class Test_ColdPlasmaPermittivity(object):
 
     def test_SD_to_LR_relationships(self):
         """
-        Test the relationships between (S, D, P) notation in Stix basis and
-        (L, R, P) notation in the rotating basis, ie test:
-         S = (R+L)/2 and D = (R-L)/2
+        Test the relationships between (S, D, P) notation in Stix basis and (L,
+        R, P) notation in the rotating basis, ie test:
+
+        S = (R+L)/2 and D = (R-L)/2
         and
          R = S+D and L = S-D
         """
@@ -99,6 +97,7 @@ class Test_ColdPlasmaPermittivity(object):
     def test_numpy_array_workflow(self):
         """
         As per @jhillairet at:
+
         https://github.com/PlasmaPy/PlasmaPy/issues/539#issuecomment-425337810
         """
         ns = np.logspace(17, 19, 50) / u.m ** 3
@@ -114,7 +113,7 @@ class Test_ColdPlasmaPermittivity(object):
 class Test_permittivity_1D_Maxwellian:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests"""
+        """initializing parameters for tests."""
         self.T = 30 * 11600 * u.K
         self.n = 1e18 * u.cm ** -3
         self.particle = "Ne"
@@ -127,9 +126,7 @@ class Test_permittivity_1D_Maxwellian:
         ) * u.dimensionless_unscaled
 
     def test_known1(self):
-        """
-        Tests Fermi_integral for expected value.
-        """
+        """Tests Fermi_integral for expected value."""
         methodVal = permittivity_1D_Maxwellian(
             self.omega, self.kWave, self.T, self.n, self.particle, self.z_mean
         )
@@ -138,10 +135,8 @@ class Test_permittivity_1D_Maxwellian:
         assert testTrue, errStr
 
     def test_fail1(self):
-        """
-        Tests if test_known1() would fail if we slightly adjusted the
-        value comparison by some quantity close to numerical error.
-        """
+        """Tests if test_known1() would fail if we slightly adjusted the value
+        comparison by some quantity close to numerical error."""
         fail1 = self.True1 + 1e-15
         methodVal = permittivity_1D_Maxwellian(
             self.omega, self.kWave, self.T, self.n, self.particle, self.z_mean

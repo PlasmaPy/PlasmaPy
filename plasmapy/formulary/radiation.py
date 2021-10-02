@@ -1,7 +1,5 @@
-"""
-Functions for calculating quantities associated with electromagnetic
-radiation.
-"""
+"""Functions for calculating quantities associated with electromagnetic
+radiation."""
 
 __all__ = [
     "thermal_bremsstrahlung",
