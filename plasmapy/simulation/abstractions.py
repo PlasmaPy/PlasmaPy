@@ -16,15 +16,12 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    .. warning::
-        This interface is unstable and subject to change.
+    .. warning::     This interface is unstable and subject to change.
     """
 
     @abstractmethod
     def summarize(self):
-        """
-        Print a summary of the simulation parameters and status.
-        """
+        """Print a summary of the simulation parameters and status."""
         ...
 
     @abstractmethod
@@ -47,8 +44,8 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     """
     A prototype abstract interface for time-dependent numerical simulations.
 
-    .. warning::
-        This interface is unstable and is subject to change.
+    .. warning::     This interface is unstable and is subject to
+    change.
     """
 
     ...
@@ -56,11 +53,11 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
 
 class AbstractNormalizations(ABC):
     """
-    An abstract base class to represent the normalization constants for
-    systems of equations describing plasmas.
+    An abstract base class to represent the normalization constants for systems
+    of equations describing plasmas.
 
-    .. warning::
-        This interface is unstable and is subject to change.
+    .. warning::     This interface is unstable and is subject to
+    change.
     """
 
     @property
@@ -177,7 +174,7 @@ class AbstractNormalizations(ABC):
         """
         The normalization for a volumetric rate.
 
-        This normalization is applicable to, for example, the number
-        of collisions per unit volume per unit time.
+        This normalization is applicable to, for example, the number of
+        collisions per unit volume per unit time.
         """
         ...
