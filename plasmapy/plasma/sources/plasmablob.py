@@ -1,6 +1,5 @@
-"""
-Defines the core Plasma class used by PlasmaPy to represent plasma properties.
-"""
+"""Defines the core Plasma class used by PlasmaPy to represent plasma
+properties."""
 __all__ = ["PlasmaBlob"]
 
 import astropy.units as u
@@ -17,15 +16,14 @@ from plasmapy.utils.exceptions import CouplingWarning
 
 
 class PlasmaBlob(GenericPlasma):
-    """
-    Class for describing and calculating plasma parameters without
-    spatial/temporal description.
-    """
+    """Class for describing and calculating plasma parameters without
+    spatial/temporal description."""
 
     @validate_quantities(T_e=u.K, n_e=u.m ** -3)
     def __init__(self, T_e, n_e, Z=None, particle="p"):
         """
         Initialize plasma parameters.
+
         The most basic description is composition (ion), temperature,
         density, and ionization.
         """
@@ -46,7 +44,6 @@ class PlasmaBlob(GenericPlasma):
         PlasmaBlob(T_e=10000.0*u.K, n_e=1e+20*u.m**-3, particle='p', Z=1)
         Intermediate coupling regime: Gamma = 0.01250283...
         Thermal kinetic energy dominant: Theta = 109690.5...
-
         """
         return self.__repr__() + "\n" + "\n".join(self.regimes())
 
@@ -89,10 +86,8 @@ class PlasmaBlob(GenericPlasma):
         return self.particle
 
     def regimes(self):
-        """
-        Generate a comprehensive description of the plasma regimes
-        based on plasma properties and consequent plasma parameters.
-        """
+        """Generate a comprehensive description of the plasma regimes based on
+        plasma properties and consequent plasma parameters."""
         # getting dimensionless parameters
         coupling = self.coupling()
         quantum_theta = self.quantum_theta()
@@ -131,9 +126,11 @@ class PlasmaBlob(GenericPlasma):
 
     def coupling(self):
         """
-        Ion-ion coupling parameter to determine if quantum/coupling effects
-        are important. This compares Coulomb potential energy to thermal
-        kinetic energy.
+        Ion-ion coupling parameter to determine if quantum/coupling effects are
+        important.
+
+        This compares Coulomb potential energy to thermal kinetic
+        energy.
         """
         couple = coupling_parameter(
             self.T_e, self.n_e, (self.particle, self.particle), self.Z
@@ -147,10 +144,8 @@ class PlasmaBlob(GenericPlasma):
         return couple
 
     def quantum_theta(self):
-        """
-        Quantum theta parameter, which compares Fermi kinetic energy to
-        thermal kinetic energy to check if quantum effects are important.
-        """
+        """Quantum theta parameter, which compares Fermi kinetic energy to
+        thermal kinetic energy to check if quantum effects are important."""
         theta = quantum_theta(self.T_e, self.n_e)
         return theta
 

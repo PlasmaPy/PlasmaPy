@@ -1,6 +1,4 @@
-"""
-Module for defining the base framework of the plasma classes.
-"""
+"""Module for defining the base framework of the plasma classes."""
 __all__ = ["BasePlasma", "GenericPlasma"]
 
 from abc import ABC, abstractmethod
@@ -8,12 +6,12 @@ from abc import ABC, abstractmethod
 
 class BasePlasma(ABC):
     """
-    Registration class for `~plasmapy.plasma.GenericPlasma` and declares
-    some abstract methods for data common in different kinds of plasmas.
+    Registration class for `~plasmapy.plasma.GenericPlasma` and declares some
+    abstract methods for data common in different kinds of plasmas.
 
-    This class checks for the existence of a method named ``is_datasource_for``
-    when a subclass of `GenericPlasma` is defined. If it exists it will add that
-    class to the registry.
+    This class checks for the existence of a method named
+    ``is_datasource_for`` when a subclass of `GenericPlasma` is defined.
+    If it exists it will add that class to the registry.
     """
 
     # GenericPlasma subclass registry
@@ -62,8 +60,10 @@ class BasePlasma(ABC):
 
 class GenericPlasma(BasePlasma):
     """
-    A Generic Plasma class. This class contains definitions for abstract
-    methods declared in the `BasePlasma`.
+    A Generic Plasma class.
+
+    This class contains definitions for abstract methods declared in the
+    `BasePlasma`.
     """
 
     def __init__(self, **kwargs):

@@ -1,6 +1,4 @@
-"""
-Module for defining the framework around the plasma factory.
-"""
+"""Module for defining the framework around the plasma factory."""
 __all__ = ["PlasmaFactory", "Plasma"]
 
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -9,9 +7,10 @@ from plasmapy.utils.datatype_factory_base import BasicRegistrationFactory
 
 class PlasmaFactory(BasicRegistrationFactory):
     """
-    Plasma factory class. Used to create a variety of Plasma objects.
-    Valid plasma structures are specified by registering them with the
-    factory.
+    Plasma factory class.
+
+    Used to create a variety of Plasma objects. Valid plasma structures
+    are specified by registering them with the factory.
     """
 
     pass

@@ -22,17 +22,13 @@ class IsNotDataSource(BasePlasma):
 
 class TestRegistrar:
     def test_no_data_source(self):
-        """
-        NoDataSource class should not be registered since it has
-        no method named ``is_datasource_for``.
-        """
+        """NoDataSource class should not be registered since it has no method
+        named ``is_datasource_for``."""
         assert not BasePlasma._registry.get(NoDataSource)
 
     def test_is_data_source(self):
-        """
-        IsDataSource class should be registered since it has a
-        method named ``is_datasource_for`` and must return True.
-        """
+        """IsDataSource class should be registered since it has a method named
+        ``is_datasource_for`` and must return True."""
         assert BasePlasma._registry.get(IsDataSource)
         assert BasePlasma._registry[IsDataSource]()
         # Delete the class from _registry once test is done
@@ -40,10 +36,8 @@ class TestRegistrar:
         del BasePlasma._registry[IsDataSource]
 
     def test_is_not_data_source(self):
-        """
-        IsNotDataSource class should be registered since it has a
-        method named ``is_datasource_for`` but must return False.
-        """
+        """IsNotDataSource class should be registered since it has a method
+        named ``is_datasource_for`` but must return False."""
         assert BasePlasma._registry.get(IsNotDataSource)
         assert not BasePlasma._registry[IsNotDataSource]()
         del BasePlasma._registry[IsNotDataSource]

@@ -50,7 +50,6 @@ class HDF5Reader(GenericPlasma):
 
     **kwargs
         Any keyword accepted by `GenericPlasma`.
-
     """
 
     def __init__(self, hdf5, **kwargs):
@@ -103,8 +102,9 @@ class HDF5Reader(GenericPlasma):
     @property
     def electric_field(self):
         """
-        An (x, y, z) array containing electric field data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        An (x, y, z) array containing electric field data.
+
+        (Returned as an astropy `~astropy.units.Quantity`.)
         """
         path = f"data/{self.subname}/fields/E"
         if path in self.h5:
@@ -117,8 +117,9 @@ class HDF5Reader(GenericPlasma):
     @property
     def charge_density(self):
         """
-        An array containing charge density data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        An array containing charge density data.
+
+        (Returned as an astropy `~astropy.units.Quantity`.)
         """
         path = f"data/{self.subname}/fields/rho"
         if path in self.h5:
