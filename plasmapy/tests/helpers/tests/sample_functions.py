@@ -1,7 +1,5 @@
-"""
-Sample functions and classes to be used for testing the test helper
-functionality.
-"""
+"""Sample functions and classes to be used for testing the test helper
+functionality."""
 
 import astropy.units as u
 import numpy as np
@@ -17,9 +15,7 @@ class SampleException(Exception):
 
 
 class SampleExceptionSubclass(SampleException):
-    """
-    The subclass of `SampleException` to used for testing purposes.
-    """
+    """The subclass of `SampleException` to used for testing purposes."""
 
     pass
 
@@ -31,9 +27,7 @@ class SampleWarning(Warning):
 
 
 class SampleWarningSubclass(SampleWarning):
-    """
-    The subclass of `SampleWarning` to be used for testing purposes.
-    """
+    """The subclass of `SampleWarning` to be used for testing purposes."""
 
     pass
 
@@ -45,10 +39,8 @@ def return_42() -> int:
 
 
 def return_42_meters() -> u.Quantity:
-    """
-    A sample function for testing purposes that returns an
-    `~astropy.units.Quantity` with a value of ``42.0 m``.
-    """
+    """A sample function for testing purposes that returns an
+    `~astropy.units.Quantity` with a value of ``42.0 m``."""
 
     return 42.0 * u.m
 
@@ -66,26 +58,23 @@ def issue_warning() -> NoReturn:
 
 
 def issue_warning_return_42() -> int:
-    """
-    A sample function for testing purposes that issues a `SampleWarning`
-    and returns ``42``.
-    """
+    """A sample function for testing purposes that issues a `SampleWarning` and
+    returns ``42``."""
 
     warnings.warn("warning message", SampleWarning)
     return 42
 
 
 def raise_exception():
-    """A sample function for testing purposes that raises a `SampleException`."""
+    """A sample function for testing purposes that raises a
+    `SampleException`."""
 
     raise SampleException("exception message")
 
 
 def sum_of_args_and_kwargs(arg1, arg2, *, kw1, kw2):
-    """
-    A sample function for testing purposes that returns the sum of
-    two positional arguments and two keyword arguments.
-    """
+    """A sample function for testing purposes that returns the sum of two
+    positional arguments and two keyword arguments."""
 
     return arg1 + arg2 + kw1 + kw2
 
@@ -105,10 +94,8 @@ class SampleClass1:
 
     @classmethod
     def arg_plus_kwarg(self, arg, *, kwarg):
-        """
-        A sample method that returns the sum of a positional argument
-        and a keyword argument.
-        """
+        """A sample method that returns the sum of a positional argument and a
+        keyword argument."""
 
         return arg + kwarg
 
@@ -140,11 +127,9 @@ class SampleClass2:
         self.cls_kwarg2 = cls_kwarg2
 
     def method(self, method_arg1, method_arg2, *, method_kwarg1, method_kwarg2):
-        """
-        Return the sum of the positional and keyword arguments supplied
-        to the class upon instantiation plus the sum of the positional
-        and keyword arguments supplied to the method when it is called.
-        """
+        """Return the sum of the positional and keyword arguments supplied to
+        the class upon instantiation plus the sum of the positional and keyword
+        arguments supplied to the method when it is called."""
 
         return sum(
             [
@@ -161,9 +146,7 @@ class SampleClass2:
 
     @property
     def attr(self):
-        """
-        Return the sum of the positional and keyword arguments supplied
-        to the class upon instantiation.
-        """
+        """Return the sum of the positional and keyword arguments supplied to
+        the class upon instantiation."""
 
         return self.cls_arg1 + self.cls_arg2 + self.cls_kwarg1 + self.cls_kwarg2

@@ -32,11 +32,12 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 
 def _process_input(wrapped_function: Callable):  # coverage: ignore
     """
-    Allow `run_test` to take a single positional argument that is a
-    `list` or `tuple` in lieu of using multiple positional/keyword
-    arguments as usual.  If `len` of this argument returns `3`, then
-    it assumes that `kwargs` is an empty `dict` and that the expected
-    result/outcome is the last item.
+    Allow `run_test` to take a single positional argument that is a `list` or
+    `tuple` in lieu of using multiple positional/keyword arguments as usual.
+
+    If `len` of this argument returns `3`, then it assumes that `kwargs`
+    is an empty `dict` and that the expected result/outcome is the last
+    item.
     """
 
     def decorator(wrapped_function: Callable):
@@ -77,9 +78,9 @@ def run_test(
     atol: float = 0.0,
 ):  # coverage: ignore
     """
-    Test that a function or class returns the expected result, raises
-    the expected exception, or issues an expected warning for the
-    supplied positional and keyword arguments.
+    Test that a function or class returns the expected result, raises the
+    expected exception, or issues an expected warning for the supplied
+    positional and keyword arguments.
 
     Parameters
     ----------
@@ -212,7 +213,6 @@ def run_test(
         @pytest.mark.parametrize('inputs', inputs_table)
         def test_func(inputs):
             run_test(inputs)
-
     """
 
     if kwargs is None:
@@ -492,7 +492,6 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     raised if the results are of different types.
 
     >>> run_test_equivalent_calls(f, -1, 1.0, require_same_type=False)
-
     """
 
     if len(test_inputs) == 1:
@@ -681,9 +680,8 @@ def assert_can_handle_nparray(
     def _prepare_input(
         param_name, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
-        """
-        Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.
-        """
+        """Parse parameter names and set up values to input for 0d, 1d, and 2d
+        array tests."""
         # first things first: let any passed in kwarg right through (VIP access)
         if param_name in kwargs.keys():
             return (kwargs[param_name],) * 4

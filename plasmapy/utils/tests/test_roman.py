@@ -155,37 +155,29 @@ fromRoman_exceptions_table = [
 
 @pytest.mark.parametrize("integer, roman_numeral", ints_and_roman_numerals)
 def test_to_roman(integer, roman_numeral):
-    """
-    Test that `~plasmapy.utils.roman.to_roman` correctly converts
-    integers to Roman numerals.
-    """
+    """Test that `~plasmapy.utils.roman.to_roman` correctly converts integers
+    to Roman numerals."""
     run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
 
 
 @pytest.mark.parametrize("integer, roman_numeral", ints_and_roman_numerals)
 def test_from_roman(integer, roman_numeral):
-    """
-    Test that `~plasmapy.utils.roman.from_roman` correctly converts
-    Roman numerals to integers.
-    """
+    """Test that `~plasmapy.utils.roman.from_roman` correctly converts Roman
+    numerals to integers."""
     run_test(func=roman.from_roman, args=roman_numeral, expected_outcome=int(integer))
 
 
 @pytest.mark.parametrize("input, expected_exception", toRoman_exceptions_table)
 def test_to_roman_exceptions(input, expected_exception):
-    """
-    Test that `~plasmapy.utils.roman.to_roman` raises the correct
-    exceptions when necessary.
-    """
+    """Test that `~plasmapy.utils.roman.to_roman` raises the correct exceptions
+    when necessary."""
     run_test(func=roman.to_roman, args=input, expected_outcome=expected_exception)
 
 
 @pytest.mark.parametrize("input, expected_exception", fromRoman_exceptions_table)
 def test_from_roman_exceptions(input, expected_exception):
-    """
-    Test that `~plasmapy.utils.roman.from_roman` raises the correct
-    exceptions when necessary.
-    """
+    """Test that `~plasmapy.utils.roman.from_roman` raises the correct
+    exceptions when necessary."""
     run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)
 
 

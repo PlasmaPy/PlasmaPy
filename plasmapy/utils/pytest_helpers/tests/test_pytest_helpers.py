@@ -131,7 +131,6 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         The type of exception that the test helper function is supposed
         to raise, or `None` if the test helper function is not supposed
         to raise an exception.
-
     """
 
     try:

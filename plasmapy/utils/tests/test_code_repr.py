@@ -121,10 +121,8 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
     ],
 )
 def test_call_string(func, args, kwargs, expected):
-    """
-    Tests that call_string returns a string that is equivalent to the
-    function call.
-    """
+    """Tests that call_string returns a string that is equivalent to the
+    function call."""
     actual = call_string(func, args, kwargs, max_items=8)
     assert actual == expected, (
         "When call_string is called with:\n"
@@ -309,9 +307,10 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
 )
 def test__code_repr_of_ndarray(array_inputs, max_items, expected):
     """
-    Test that `numpy.ndarray` objects get converted into a string as
-    expected.  Subsequently, test that evaluating the code representation
-    of an ndarray returns an array equal to the array created from
+    Test that `numpy.ndarray` objects get converted into a string as expected.
+
+    Subsequently, test that evaluating the code representation of an
+    ndarray returns an array equal to the array created from
     `array_inputs`.
     """
     array = np.array(array_inputs)
@@ -353,10 +352,8 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
     ],
 )
 def test__code_repr_of_quantity(quantity, expected):
-    """
-    Test that `astropy.units.Quantity` objects get converted into a
-    string as expected.
-    """
+    """Test that `astropy.units.Quantity` objects get converted into a string
+    as expected."""
     actual = _code_repr_of_quantity(quantity)
     assert actual == expected, (
         f"_code_repr_of_quantity for {quantity} is not producing the "
@@ -394,10 +391,8 @@ def test__string_together_warnings_for_printing():
     ],
 )
 def test__code_repr_of_arg(arg, expected):
-    """
-    Test that _code_repr_of_arg correctly transforms arguments into a
-    `str` the represents how the arg would appear in code.
-    """
+    """Test that _code_repr_of_arg correctly transforms arguments into a `str`
+    the represents how the arg would appear in code."""
     code_repr_of_arg = _code_repr_of_arg(arg)
     assert code_repr_of_arg == expected, (
         f"_code_repr_of_arg is not returning the expected result.\n"
@@ -418,11 +413,9 @@ def test__code_repr_of_arg(arg, expected):
     ],
 )
 def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
-    """
-    Test that `_code_repr_of_args_and_kwargs` returns a string containing
-    the positional and keyword arguments, as they would appear in a
-    function call.
-    """
+    """Test that `_code_repr_of_args_and_kwargs` returns a string containing
+    the positional and keyword arguments, as they would appear in a function
+    call."""
     args_and_kwargs = _code_repr_of_args_and_kwargs(args, kwargs)
     assert args_and_kwargs == expected, (
         f"_code_repr_of_args_and_kwargs with the following arguments:\n"
@@ -447,10 +440,8 @@ def test__code_repr_of_args_and_kwargs(args, kwargs, expected):
     ],
 )
 def test__name_with_article(obj, expected):
-    """
-    Test that `_name_with_article` returns the expected string, which
-    contains ``"a "`` or ``"an "`` followed by the name of ``obj``.
-    """
+    """Test that `_name_with_article` returns the expected string, which
+    contains ``"a "`` or ``"an "`` followed by the name of ``obj``."""
     name_with_article = _name_with_article(obj)
     assert name_with_article == expected, (
         f"When calling _name_with_article for {obj}, expecting "

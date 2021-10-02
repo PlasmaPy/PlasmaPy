@@ -12,8 +12,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
     """
-    Transform a `~numpy.ndarray` into a format as would appear in a
-    function call, after having done ``import numpy as np``.
+    Transform a `~numpy.ndarray` into a format as would appear in a function
+    call, after having done ``import numpy as np``.
 
     If ``max_items`` is less than ``array.size``, then include only the
     first ``max_items`` elements of the array in the resulting string
@@ -49,10 +49,8 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
 
 
 def _code_repr_of_quantity(arg: u.Quantity, max_items=np.inf) -> str:
-    """
-    Transform a `~astropy.units.Quantity` into a format as would appear
-    in a function call.
-    """
+    """Transform a `~astropy.units.Quantity` into a format as would appear in a
+    function call."""
     if isinstance(arg.value, np.ndarray):
         formatted = _code_repr_of_ndarray(arg.value, max_items=max_items)
     else:
@@ -73,7 +71,8 @@ def _code_repr_of_quantity(arg: u.Quantity, max_items=np.inf) -> str:
 
 
 def _code_repr_of_arg(arg, max_items=np.inf) -> str:
-    """Transform an argument into a format as would appear in a function call."""
+    """Transform an argument into a format as would appear in a function
+    call."""
     if hasattr(arg, "__name__"):
         return arg.__name__
     function_for_type = {
@@ -90,10 +89,8 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 def _code_repr_of_args_and_kwargs(
     args: Any = None, kwargs: Dict = None, max_items=np.inf
 ) -> str:
-    """
-    Take positional and keyword arguments, and format them into a
-    string as they would appear in a function call (excluding parentheses).
-    """
+    """Take positional and keyword arguments, and format them into a string as
+    they would appear in a function call (excluding parentheses)."""
     args = tuple() if args is None else args
     kwargs = dict() if kwargs is None else kwargs
 
@@ -115,8 +112,8 @@ def _code_repr_of_args_and_kwargs(
 
 def _name_with_article(ex: Exception) -> str:
     """
-    Return a string with an indefinite article and the name of
-    the exception ``ex`` (e.g. ``Exception`` -> ``'an Exception'``).
+    Return a string with an indefinite article and the name of the exception
+    ``ex`` (e.g. ``Exception`` -> ``'an Exception'``).
 
     Notes
     -----
@@ -172,11 +169,9 @@ def _object_name(obj: Any, showmodule=False) -> str:
 def _string_together_warnings_for_printing(
     warning_types: List[Warning], warning_messages: List[str]
 ):
-    """
-    Take a list of warning types with a list of corresponding warning
-    messages, and create a string that prints out each warning type
-    followed by the corresponding message, separated by a full line.
-    """
+    """Take a list of warning types with a list of corresponding warning
+    messages, and create a string that prints out each warning type followed by
+    the corresponding message, separated by a full line."""
     warnings_with_messages = [
         _object_name(warning, showmodule=False) + ": " + message
         for warning, message in zip(warning_types, warning_messages)
@@ -191,8 +186,8 @@ def call_string(
     max_items: Integral = 12,
 ) -> str:
     """
-    Approximate a call of a function or class with positional and
-    keyword arguments.
+    Approximate a call of a function or class with positional and keyword
+    arguments.
 
     Parameters
     ----------
@@ -253,8 +248,8 @@ def attribute_call_string(
     max_items: Integral = 12,
 ) -> str:
     """
-    Approximate the command to instantiate a class, and access an
-    attribute of the resulting class instance.
+    Approximate the command to instantiate a class, and access an attribute of
+    the resulting class instance.
 
     Parameters
     ----------
@@ -329,8 +324,8 @@ def method_call_string(
     max_items: Integral = 12,
 ) -> str:
     """
-    Approximate the command to instantiate a class, and then call a
-    method in the resulting class instance.
+    Approximate the command to instantiate a class, and then call a method in
+    the resulting class instance.
 
     Parameters
     ----------

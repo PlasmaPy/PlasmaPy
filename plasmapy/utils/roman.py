@@ -9,7 +9,6 @@ Copyright (c) 2001 Mark Pilgrim
 This program is free software; you can redistribute it and/or modify
 it under the terms of the Python 2.1.1 license, available at
 https://www.python.org/download/releases/2.1.1/license/
-
 """
 __all__ = [
     "to_roman",
@@ -92,7 +91,6 @@ def to_roman(n: Union[Integral, np.integer]) -> str:
     'V'
     >>> to_roman(2525)
     'MMDXXV'
-
     """
     if not isinstance(n, (Integral, np.integer)):
         raise TypeError(f"{n} cannot be converted to a Roman numeral.")
@@ -139,7 +137,6 @@ def from_roman(s: str) -> Integral:
     5
     >>> from_roman('MMMMCCCLXVII')
     4367
-
     """
     if not isinstance(s, str):
         raise TypeError("The argument to from_roman must be a string.")
@@ -186,7 +183,6 @@ def is_roman_numeral(s: str) -> bool:
     True
     >>> is_roman_numeral("42")
     False
-
     """
     if not isinstance(s, str):
         raise TypeError("Only strings may be tested ")
