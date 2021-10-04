@@ -611,7 +611,7 @@ def test_saving_output(tmp_path):
 
     # Test that output cannot be saved prior to running
     with pytest.raises(RuntimeError):
-        sim.results_dict
+        _ = sim.results_dict
 
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
@@ -619,42 +619,45 @@ def test_saving_output(tmp_path):
     res1 = sim.results_dict
 
     # Save result
+    path = os.path.join(tmp_path, "temp.npz")
     sim.save_results(path)
 
     # Load result
-    res2 = dict(np.load(path, "r", allow_pickle=True))
+    results_2 = dict(np.load(path, "r", allow_pickle=True))
 
-    assert np.all(res1["x"] == res2["x"])
+    assert set(results_1.keys()) == set(results_2.keys())
+    for key in results_1.keys():
+        assert np.allclose(results_1[key], results_2[key])
 
 
-def test_cannot_modify_simulation_after_running():
+@pytest.mark.parametrize(
+    "case",
+    ["creating particles", "loading particles", "adding a wire mesh"],
+)
+def test_cannot_modify_simulation_after_running(case):
+    """
+    Test that a Tracker objection can not be modified after it is
+    run (Tracker.run).
+    """
 
-    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
-
-    # Test that changing the particles then requires the simulation to be
-    # run again prior to saving output
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim = create_tracker_obj()
     sim.run(field_weighting="nearest neighbor")
 
     # Error from creating particles
     with pytest.raises(RuntimeError):
-        sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
-
-    # Error from loading particles
-    with pytest.raises(RuntimeError):
-        sim.load_particles(sim.x, sim.v)
-
-    # Error from adding wire mesh
-    with pytest.raises(RuntimeError):
-        sim.add_wire_mesh(
-            np.array([0, -2, 0]) * u.mm,
-            (2 * u.mm, 1.5 * u.mm),
-            9,
-            20 * u.um,
-        )
+        if case == "creating particles":
+            sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+        elif case == "loading particles":
+            sim.load_particles(sim.x, sim.v)
+        elif case == "adding a wire mesh":
+            sim.add_wire_mesh(
+                np.array([0, -2, 0]) * u.mm,
+                (2 * u.mm, 1.5 * u.mm),
+                9,
+                20 * u.um,
+            )
+        else:
+            pytest.fail(f"Unrecognized test case '{case}'.")
 
 
 @pytest.mark.slow
