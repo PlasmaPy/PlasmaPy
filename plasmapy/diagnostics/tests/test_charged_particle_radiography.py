@@ -604,20 +604,15 @@ def test_saving_output(tmp_path):
 
     path = os.path.join(tmp_path, "temp.npz")
 
-    grid = _test_grid("electrostatic_gaussian_sphere", num=50)
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim = create_tracker_obj()
 
     # Test that output cannot be saved prior to running
     with pytest.raises(RuntimeError):
         _ = sim.results_dict
 
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
     sim.run(field_weighting="nearest neighbor")
 
-    res1 = sim.results_dict
+    results_1 = sim.results_dict
 
     # Save result
     path = os.path.join(tmp_path, "temp.npz")
