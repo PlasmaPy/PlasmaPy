@@ -1,5 +1,5 @@
 Added the
-:meth:`~plasmapy.diagnostics.charged_particle_radiograph.Tracker.save_results`
-method to `~plasmapy.diagnostics.charged_particle_radiograph.Tracker`
+:meth:`~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results`
+method to `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
 for saving results to a ``.npz`` file format (see `numpy.lib.format` for
 details on the file format).
