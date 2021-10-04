@@ -602,8 +602,6 @@ class TestSyntheticRadiograph:
 def test_saving_output(tmp_path):
     """Test behavior of Tracker.save_results."""
 
-    path = os.path.join(tmp_path, "temp.npz")
-
     sim = create_tracker_obj()
 
     # Test that output cannot be saved prior to running
