@@ -1,4 +1,4 @@
-Running `~plasmapy.diagnostics.charged_particle_radiograph.synthetic_radiograph`
+Running `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
 with the ``optical_density=True`` keyword will now return `numpy.inf`
 where the source profile intensity is zero. Previously, an incorrect value
 was returned since zero entries were replaced with values of ``1`` before
