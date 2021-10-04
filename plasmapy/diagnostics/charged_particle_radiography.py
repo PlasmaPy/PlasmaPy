@@ -1380,7 +1380,7 @@ def synthetic_radiograph(
         # particle positions
         w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
         size = np.array([[-w, w], [-w, w]]) * u.m
-        elif not isinstance(size, u.Quantity):
+    elif not isinstance(size, u.Quantity):
         raise TypeError(
             "Argument `size` must be an astropy.units.Quantity object with "
             "units convertable to meters."

@@ -458,51 +458,148 @@ def test_run_options():
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-@pytest.mark.slow
-def test_synthetic_radiograph():
-
+def create_tracker_obj():
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(grid, source, detector, verbose=False)
-    sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg)
+    sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg)
+    return sim
 
-    # Verify exception raised if we try to make a synthetic radiograph before
-    # running (error is raised by sim.results_dict)
-    with pytest.raises(RuntimeError):
-        h, v, i = cpr.synthetic_radiograph(sim)
 
-    sim.run(field_weighting="nearest neighbor")
+tracker_obj_simulated = create_tracker_obj().run(field_weighting="nearest neighbor")
 
-    size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
-    bins = [200, 60]
 
-    # Test size is None, default bins
-    h, v, i = cpr.synthetic_radiograph(sim)
+@pytest.mark.slow
+class TestSyntheticRadiograph:
+    """
+    Tests for
+    `plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+    """
 
-    # Test optical density
-    h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins, optical_density=True)
+    tracker_obj_not_simulated = create_tracker_obj()
+    tracker_obj_simulated = create_tracker_obj()
+    tracker_obj_simulated.run(field_weighting="nearest neighbor")
+    sim_results = tracker_obj_simulated.results_dict.copy()
 
-    # Test running from dictionary input
-    h, v, i = cpr.synthetic_radiograph(sim.results_dict)
+    @pytest.mark.parametrize(
+        "args, kwargs, _raises",
+        [
+            # obj wrong type
+            ((5, ), {}, TypeError),
+            # size wrong type
+            ((tracker_obj_simulated,), {"size": "not a Quantity"}, TypeError),
+            # size not convertible to meters
+            ((sim_results,), {"size": 5 * u.ms}, ValueError),
+            # size wrong shape
+            ((sim_results,), {"size": [-1, 1] * u.cm}, ValueError),
+            # simulation was never run
+            ((tracker_obj_not_simulated, ), {}, RuntimeError),
+        ],
+    )
+    def test_raises(self, args, kwargs, _raises):
+        """Test scenarios the raise an Exception."""
+        with pytest.raises(_raises):
+            cpr.synthetic_radiograph(*args, **kwargs)
 
-    # Verify exception if something other than sim or dict is given as argument
-    with pytest.raises(ValueError):
-        h, v, i = cpr.synthetic_radiograph(np.ones(5))
+    def test_warns(self):
+        """
+        Test warning when less than half the particles reach the detector plane.
+        """
+        sim_results = self.sim_results.copy()
+        sim_results["nparticles"] = 3 * sim_results["nparticles"]
+        with pytest.warns(RuntimeWarning):
+            cpr.synthetic_radiograph(sim_results)
 
-    # Raise exception if size is not a u.Quantity
-    with pytest.raises(TypeError):
-        h, v, i = cpr.synthetic_radiograph(sim, size=size.value)
+    @pytest.mark.parametrize(
+        "args, kwargs, expected",
+        [
+            (
+                # From a Tracker object
+                (tracker_obj_simulated,),
+                {},
+                {
+                    "xrange": [-0.036934532101889815, 0.03702186098974771] * u.m,
+                    "yrange": [-0.03697401811598356, 0.037007901161403144] * u.m,
+                    "bins": (200, 200)
+                },
+            ),
+            (
+                # From a dict
+                (sim_results,),
+                {},
+                {
+                    "xrange": [-0.036934532101889815, 0.03702186098974771] * u.m,
+                    "yrange": [-0.03697401811598356, 0.037007901161403144] * u.m,
+                    "bins": (200, 200)
+                },
+            ),
+            (
+                # From a dict
+                (sim_results,),
+                {
+                    "size": np.array([[-1, 1], [-1, 1]]) * 30 * u.cm,
+                    "bins": (200, 60)
+                },
+                {
+                    "xrange": [-0.3, 0.3] * u.m,
+                    "yrange": [-0.3, 0.3] * u.m,
+                    "bins": (200, 60)
+                },
+            ),
+        ],
+    )
+    def test_intensity_histogram(self, args, kwargs, expected):
+        """Test several valid use cases."""
+        results = cpr.synthetic_radiograph(*args, **kwargs)
 
-    # Raise exception if size has wrong units
-    with pytest.raises(TypeError):
-        h, v, i = cpr.synthetic_radiograph(sim, size=size.value * u.kg)
+        assert len(results) == 3
 
-    # Raise exception if size the wrong shape
-    with pytest.raises(ValueError):
-        h, v, i = cpr.synthetic_radiograph(sim, size=[-5, 5] * u.m)
+        x = results[0]
+        assert isinstance(x, u.Quantity)
+        assert x.unit == u.m
+        assert x.shape == (expected["bins"][0],)
+        assert np.isclose(np.min(x), expected["xrange"][0], rtol=1e4)
+        assert np.isclose(np.max(x), expected["xrange"][1], rtol=1e4)
+
+        y = results[1]
+        assert isinstance(y, u.Quantity)
+        assert y.unit == u.m
+        assert y.shape == (expected["bins"][1],)
+        assert np.isclose(np.min(y), expected["yrange"][0], rtol=1e4)
+        assert np.isclose(np.max(y), expected["yrange"][1], rtol=1e4)
+
+        histogram = results[2]
+        assert isinstance(histogram, np.ndarray)
+        assert histogram.shape == expected["bins"]
+
+    def test_optical_density_histogram(self):
+        """
+        Test the optical density calculation is correct and stuffed
+        with numpy.inf when the intensity is zero.
+        """
+        bins = (200, 60)
+        size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
+
+        intensity_results = cpr.synthetic_radiograph(
+            self.sim_results, size=size, bins=bins
+        )
+        od_results = cpr.synthetic_radiograph(
+            self.sim_results, size=size, bins=bins, optical_density=True
+        )
+
+        assert np.allclose(intensity_results[0], od_results[0])
+        assert np.allclose(intensity_results[1], od_results[1])
+
+        intensity = intensity_results[2]
+        zero_mask = intensity == 0
+        i0 = np.mean(intensity[~zero_mask])
+        od = -np.log10(intensity/i0)
+
+        assert np.allclose(od[~zero_mask], od_results[2][~zero_mask])
+        assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
 def test_saving_output(tmp_path):
