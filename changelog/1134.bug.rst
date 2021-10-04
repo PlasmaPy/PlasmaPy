@@ -1,2 +1,5 @@
-`~plasmapy.diagnostics.charged_particle_radiograph.synthetic_radiograph` run with the ``optical_density`` keyword will now return `numpy.nan` where the
-source profile ``I0`` is zero. Previously, an incorrect value was returned.
+Running `~plasmapy.diagnostics.charged_particle_radiograph.synthetic_radiograph`
+with the ``optical_density=True`` keyword will now return `numpy.inf`
+where the source profile intensity is zero. Previously, an incorrect value
+was returned since zero entries were replaced with values of ``1`` before
+taking the logarithm.
