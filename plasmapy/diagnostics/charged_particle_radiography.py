@@ -1323,13 +1323,11 @@ def synthetic_radiograph(
 
         where :math:`Intensity` is the simulation intensity on the
         detector plane and :math:`I_0` is the intensity on the detector
-        plane in the absence of simulated fields. Default is `False`.
-
-        If the `Intensity` histogram contains zeros, `OD` will contain
-        -`~numpy.inf` values. These can be easily replaced with zeros
-        if desired for plotting using `~numpy.nan_to_num`
-
-        ``OD = np.nan_to_num(OD, neginf=0)``
+        plane in the absence of simulated fields. Default is `False`. If the
+        :math:`Intensity` histogram contains zeros, then the
+        corresponding values in :math:`OD` will be `numpy.inf`. When
+        plotting :math:`OD` the `~numpy.inf` values can be replaced
+        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
 
     Returns
     -------
