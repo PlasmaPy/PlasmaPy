@@ -1,2 +1,4 @@
-`~plasmapy.diagnostics.charged_particle_radiograph.Tracker` no longer supports making changes to a `~plasmapy.diagnostics.charged_particle_radiograph.Tracker` object and re-running.
-Subsequent simulations should be performed by instantiating a new ``Tracker`` object.
+`~plasmapy.diagnostics.charged_particle_radiograph.Tracker` no longer
+supports making changes to an instantiated object and
+re-running.  Subsequent simulations should be performed by instantiating
+a new `~plasmapy.diagnostics.charged_particle_radiograph.Tracker` object.
