@@ -600,6 +600,7 @@ class TestSyntheticRadiograph:
 
 
 def test_saving_output(tmp_path):
+    """Test behavior of Tracker.save_results."""
 
     path = os.path.join(tmp_path, "temp.npz")
 
