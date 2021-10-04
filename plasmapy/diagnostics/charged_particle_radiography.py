@@ -1207,7 +1207,7 @@ class Tracker:
             detector=self.detector,
             mag=self.mag,
             nparticles=self.nparticles,
-            max_deflection=self.max_deflection,
+            max_deflection=self.max_deflection.to(u.rad).value,
             x=xloc,
             y=yloc,
             v=v,
