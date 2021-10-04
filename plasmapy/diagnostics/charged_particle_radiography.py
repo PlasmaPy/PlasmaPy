@@ -1139,11 +1139,11 @@ class Tracker:
              - `~astropy.units.Quantity`
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
-           * - ``"xloc"``
+           * - ``"x"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle hit the
                detector plane, in meters.
-           * - ``"yloc"``
+           * - ``"y"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle hit the
                detector plane, in meters.
@@ -1154,12 +1154,12 @@ class Tracker:
                coordinate system relative to the detector plane. The
                components are [normal, horizontal, vertical] relative
                to the detector plane coordinates.
-           * - ``"xloc0"``
+           * - ``"x0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
-           * - ``"yloc0"``
+           * - ``"y0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
@@ -1232,6 +1232,13 @@ class Tracker:
             the ``.npz`` extension will be appended to the filename if
             it is not already there.
 
+    Notes
+    -----
+
+    Useful for saving the results from a simulation so they can be
+    loaded at a later time and passed into
+    `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+
         """
 
         np.savez(path, **self.results_dict)
@@ -1296,8 +1303,8 @@ def synthetic_radiograph(
 
     obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
         Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
-        object that has been run, or an output dictionary created by
-        running `~plasmapy.diagnostics.charged_particle_radiography.Tracker`.
+        object that has been run, or a dictionary equivalent to
+        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
