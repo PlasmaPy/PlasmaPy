@@ -1136,7 +1136,7 @@ class Tracker:
              - `int`
              - Number of particles in the simulation.
            * - ``"max_deflection"``
-             - `~astropy.units.Quantity`
+             - `~numpy.ndarray`
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
            * - ``"x"``
