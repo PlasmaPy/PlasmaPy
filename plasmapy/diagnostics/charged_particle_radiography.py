@@ -1139,11 +1139,11 @@ class Tracker:
              - `~astropy.units.Quantity`
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
-           * - ``"xloc"``
+           * - ``"x"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle hit the
                detector plane, in meters.
-           * - ``"yloc"``
+           * - ``"y"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle hit the
                detector plane, in meters.
@@ -1154,12 +1154,12 @@ class Tracker:
                coordinate system relative to the detector plane. The
                components are [normal, horizontal, vertical] relative
                to the detector plane coordinates.
-           * - ``"xloc0"``
+           * - ``"x0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
-           * - ``"yloc0"``
+           * - ``"y0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
@@ -1232,6 +1232,13 @@ class Tracker:
             the ``.npz`` extension will be appended to the filename if
             it is not already there.
 
+    Notes
+    -----
+
+    Useful for saving the results from a simulation so they can be
+    loaded at a later time and passed into
+    `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+
         """
 
         np.savez(path, **self.results_dict)
@@ -1296,8 +1303,8 @@ def synthetic_radiograph(
 
     obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
         Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
-        object that has been run, or an output dictionary created by
-        running `~plasmapy.diagnostics.charged_particle_radiography.Tracker`.
+        object that has been run, or a dictionary equivalent to
+        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1341,18 +1348,16 @@ def synthetic_radiograph(
         The number of particles counted in each bin of the histogram.
     """
 
-    # results_dict will raise an error if the simulation has not been run.
+    # condition `obj` input
     if isinstance(obj, Tracker):
+        # results_dict raises an error if the simulation has not been run.
         d = obj.results_dict
-
-    # Check if dictionary-like (dict or npz file)
     elif isinstance(obj, dict):
         d = obj
     else:
-        raise ValueError(
-            "The first argument of synthetic_radiograph must be "
-            "either a cpr.Tracker or an "
-            "output dictionary from cpr.Tracker"
+        raise TypeError(
+            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"got type {type(obj)}."
         )
 
     if bins is None:
@@ -1375,15 +1380,18 @@ def synthetic_radiograph(
         # particle positions
         w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
         size = np.array([[-w, w], [-w, w]]) * u.m
-    elif not isinstance(size, u.Quantity) or not size.unit.is_equivalent(u.m):
+        elif not isinstance(size, u.Quantity):
         raise TypeError(
-            "``size`` must be an `~astropy.units.Quantity` "
-            "object with units convertable to meters."
+            "Argument `size` must be an astropy.units.Quantity object with "
+            "units convertable to meters."
+        )
+    elif not size.unit.is_equivalent(u.m):
+        raise ValueError(
+            "Argument `size` must have units convertible to meters."
         )
     elif size.shape != (2, 2):
         raise ValueError(
-            "``size`` must have shape ``(2,2)`` corresponding to "
-            "``[[xmin, xmax], [ymin, ymax]]``."
+            f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
     # Generate the histogram
