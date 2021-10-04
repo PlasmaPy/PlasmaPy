@@ -488,7 +488,7 @@ class TestSyntheticRadiograph:
         "args, kwargs, _raises",
         [
             # obj wrong type
-            ((5, ), {}, TypeError),
+            ((5,), {}, TypeError),
             # size wrong type
             ((tracker_obj_simulated,), {"size": "not a Quantity"}, TypeError),
             # size not convertible to meters
@@ -496,7 +496,7 @@ class TestSyntheticRadiograph:
             # size wrong shape
             ((sim_results,), {"size": [-1, 1] * u.cm}, ValueError),
             # simulation was never run
-            ((tracker_obj_not_simulated, ), {}, RuntimeError),
+            ((tracker_obj_not_simulated,), {}, RuntimeError),
         ],
     )
     def test_raises(self, args, kwargs, _raises):
@@ -523,7 +523,7 @@ class TestSyntheticRadiograph:
                 {
                     "xrange": [-0.036934532101889815, 0.03702186098974771] * u.m,
                     "yrange": [-0.03697401811598356, 0.037007901161403144] * u.m,
-                    "bins": (200, 200)
+                    "bins": (200, 200),
                 },
             ),
             (
@@ -533,20 +533,17 @@ class TestSyntheticRadiograph:
                 {
                     "xrange": [-0.036934532101889815, 0.03702186098974771] * u.m,
                     "yrange": [-0.03697401811598356, 0.037007901161403144] * u.m,
-                    "bins": (200, 200)
+                    "bins": (200, 200),
                 },
             ),
             (
                 # From a dict
                 (sim_results,),
-                {
-                    "size": np.array([[-1, 1], [-1, 1]]) * 30 * u.cm,
-                    "bins": (200, 60)
-                },
+                {"size": np.array([[-1, 1], [-1, 1]]) * 30 * u.cm, "bins": (200, 60)},
                 {
                     "xrange": [-0.3, 0.3] * u.m,
                     "yrange": [-0.3, 0.3] * u.m,
-                    "bins": (200, 60)
+                    "bins": (200, 60),
                 },
             ),
         ],
@@ -596,7 +593,7 @@ class TestSyntheticRadiograph:
         intensity = intensity_results[2]
         zero_mask = intensity == 0
         i0 = np.mean(intensity[~zero_mask])
-        od = -np.log10(intensity/i0)
+        od = -np.log10(intensity / i0)
 
         assert np.allclose(od[~zero_mask], od_results[2][~zero_mask])
         assert np.all(np.isposinf(od_results[2][zero_mask]))

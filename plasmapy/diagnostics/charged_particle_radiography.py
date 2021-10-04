@@ -1232,12 +1232,12 @@ class Tracker:
             the ``.npz`` extension will be appended to the filename if
             it is not already there.
 
-    Notes
-    -----
+        Notes
+        -----
 
-    Useful for saving the results from a simulation so they can be
-    loaded at a later time and passed into
-    `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+        Useful for saving the results from a simulation so they can be
+        loaded at a later time and passed into
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
 
         """
 
@@ -1386,9 +1386,7 @@ def synthetic_radiograph(
             "units convertable to meters."
         )
     elif not size.unit.is_equivalent(u.m):
-        raise ValueError(
-            "Argument `size` must have units convertible to meters."
-        )
+        raise ValueError("Argument `size` must have units convertible to meters.")
     elif size.shape != (2, 2):
         raise ValueError(
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
