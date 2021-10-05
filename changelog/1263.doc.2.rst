@@ -1,2 +1,3 @@
-Updated the documentation guide within the contributor guide to describe
-how to add references in BibTeX format.
+Updated the documentation guide to include a description on how to
+add and cite references to PlasmaPy's global bibliography BibTeX file,
+``bibliography.bib``.
