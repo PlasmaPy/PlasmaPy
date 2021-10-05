@@ -17,6 +17,7 @@ import sys
 import warnings
 
 from tqdm import tqdm
+import multiprocessing as mp
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -857,13 +858,15 @@ class Tracker:
                 RuntimeWarning,
             )
 
-    def _push(self):
+    def _push(self, particles, x, v, field_weighting):
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm
         """
+        
+       
         # Get a list of positions (input for interpolator)
-        pos = self.x[self.grid_ind, :] * u.m
+        pos = self.x[particles, :] * u.m
 
         # Update the list of particles on and off the grid
         self.on_grid = self.grid.on_grid(pos)
@@ -921,11 +924,11 @@ class Tracker:
         # TODO: Test v/c and implement relativistic Boris push when required
         # vc = np.max(v)/_c
 
-        x = self.x[self.grid_ind, :]
-        v = self.v[self.grid_ind, :]
+        x = x[particles, :]
+        v = v[particles, :]
         boris_push(x, v, B, E, self.q, self.m, dt)
-        self.x[self.grid_ind, :] = x
-        self.v[self.grid_ind, :] = v
+        x[particles, :] = x
+        v[particles, :] = v
 
     def _stop_condition(self):
         r"""
