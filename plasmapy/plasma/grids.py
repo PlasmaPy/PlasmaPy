@@ -1168,7 +1168,8 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
-    @modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
+    #@modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
+    @profile
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
