@@ -47,7 +47,7 @@ jobs:
 
         - name: Python 3.10
           os: ubuntu-latest
-          python: 3.10
+          python: "3.10"
           toxenv: py310
 
         - name: Python 3.8 (Windows)
