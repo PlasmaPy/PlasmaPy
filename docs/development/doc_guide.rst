@@ -443,7 +443,7 @@ To add a new reference to the :doc:`../bibliography`, open |docs/bibliography.bi
 and add the reference in `BibTeX format`_. The citekey should generally
 be the surname of the first author (all lower case) followed by a colon
 and the year. A letter should be added after the year when needed to
-disambiguate multiple references. Include the DOI_ the reference has
+disambiguate multiple references. Include the DOI_ if the reference has
 one. If the reference does not have a DOI_, then include the URL. The
 ISBN or ISSN number should be included for books.  The ``misc`` field
 type should be used when citing data sets and software. Please follow
