@@ -435,9 +435,11 @@ users have quick access to the full path of the `object` (such as in the
 Bibliography
 ~~~~~~~~~~~~
 
-PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references. This
-extension allows us to store references in a BibTeX_ file which is then
-used to generate the :doc:`../bibliography`.
+PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
+documentation. This Sphinx_ extension allows us to store references
+in a BibTeX_ file which is then used to generate the 
+:doc:`../bibliography`.  References in the :doc:`../bibliography` are then
+citable from anywhere in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open |docs/bibliography.bib|_
 and add the reference in `BibTeX format`_. The citekey should generally
