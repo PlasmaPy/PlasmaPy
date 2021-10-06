@@ -993,16 +993,16 @@ Narrative documentation guidelines
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
 .. _`sphinxcontrib-bibtex`: https://sphinxcontrib-bibtex.readthedocs.io
-.. |sphinxcontrib-bibtex| replace:: ``sphinxcontrib-bibtex``
+.. |sphinxcontrib-bibtex| replace:: `sphinxcontrib-bibtex`
 
 .. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
-.. |sphinx_copybutton| replace:: ``sphinx_copybutton``
+.. |sphinx_copybutton| replace:: `sphinx_copybutton`
 
 .. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
-.. |sphinx_gallery.load_style| replace:: ``sphinx_gallery.load_style``
+.. |sphinx_gallery.load_style| replace:: `sphinx_gallery.load_style`
 
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
-.. |sphinx_changelog| replace:: ``sphinx_changelog``
+.. |sphinx_changelog| replace:: `sphinx_changelog`
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
-.. |nbsphinx| replace:: ``nbsphinx``
+.. |nbsphinx| replace:: `nbsphinx`
