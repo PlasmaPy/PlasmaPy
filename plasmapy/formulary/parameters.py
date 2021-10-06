@@ -222,7 +222,7 @@ def Alfven_speed(
     where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
     is the total mass density (:math:`n_i` is the ion number density,
     :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass).
+    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
@@ -253,7 +253,7 @@ def Alfven_speed(
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units m s\ :sup:`-1`.
+        The Alfvén speed in units of m s\ :sup:`-1`.
 
     Raises
     ------
@@ -1927,9 +1927,10 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     The Bohm diffusion coefficient was conjectured to follow Bohm model
     of the diffusion of plasma across a magnetic field and describe the
-    diffusion of early fusion energy machines. The rate predicted by
-    Bohm diffusion is much higher than classical diffusion, and if there
-    were no exceptions, magnetically confined fusion would be impractical.
+    diffusion of early fusion energy machines :cite:p:`bohm:1949`. The
+    rate predicted by Bohm diffusion is much higher than classical
+    diffusion, and if there were no exceptions, magnetically confined
+    fusion would be impractical.
 
     .. math::
 

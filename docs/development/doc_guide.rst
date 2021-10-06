@@ -24,20 +24,20 @@ PlasmaPy and affiliated packages.
 available at these locations:
 
 * The documentation corresponding to the most recent release to PyPI_ is
-  labelled ``stable`` and is found at `https://docs.plasmapy.org`_ or
-  `https://docs.plasmapy.org/en/stable`_.
+  labelled ``stable`` and is found at https://docs.plasmapy.org or
+  https://docs.plasmapy.org/en/stable.
 
 * The documentation corresponding to the ongoing development on the
-  ``main`` branch in `PlasmaPy's GitHub repository`_ , which is often ahead
+  ``main`` branch in `PlasmaPy's GitHub repository`_, which is often ahead
   of the most recent release, is labelled ``latest`` and can be found at
-  `https://docs.plasmapy.org/en/latest`_.
+  https://docs.plasmapy.org/en/latest.
 
 .. tip::
 
   A preview of the documentation is generated every time a pull request
   is created or updated. You can access this preview by scrolling down
   to the checks at the bottom of a pull request, and clicking on
-  ``Details`` next to ``docs/readthedocs.org:plasmapy``.
+  :guilabel:`Details` next to :guilabel:`docs/readthedocs.org:plasmapy`.
 
 Building documentation
 ======================
@@ -342,23 +342,30 @@ Sphinx extensions
 `PlasmaPy's documentation`_ is built with the following Sphinx_
 extensions:
 
-* `sphinx.ext.autodoc` for including documentation from docstrings
-* `sphinx.ext.intersphinx` for linking to other projects' documentation
-* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included
-* `sphinx.ext.mathjax` for math rendering with MathJax_
-* `sphinx.ext.napoleon` for allowing NumPy style docstrings
-* `sphinx.ext.todo` to support ``todo`` :term:`directive`\ s
-* nbsphinx_ for including Jupyter_ notebooks
-* `sphinx_copybutton`_ to add a "copy" button for code blocks
-* `sphinx_gallery.load_style`_ for using sphinx-gallery styles
-* `IPython.sphinxext.ipython_console_highlighting`_
-* `sphinx_changelog`_ for rendering `towncrier`_ changelogs
+* `sphinx.ext.autodoc` for including documentation from docstrings.
+* `sphinx.ext.intersphinx` for linking to other projects' documentation.
+* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
+* `sphinx.ext.mathjax` for math rendering with MathJax_.
+* `sphinx.ext.napoleon` for allowing NumPy style docstrings.
+* `sphinx.ext.todo` to support ``todo`` |directives|.
+* |nbsphinx|_ for including Jupyter_ notebooks.
+* |sphinxcontrib-bibtex|_ to enable usage of a BibTeX_ file to create
+  the :doc:`../bibliography`.
+* |sphinx_copybutton|_ to add a "copy" button for code blocks.
+* |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
+* |IPython.sphinxext.ipython_console_highlighting|_.
+* |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
 
 These extensions are specified in :confval:`extensions` configuration
 value in |docs/conf.py|_.
+
+When an extension contains new |roles| or |directives|, it may be
+necessary to add them to ``rst-roles`` and ``rst-directives`` in the
+``[flake8]`` section of |setup.cfg|_ to avoid linter errors during
+continuous integration tests in pull requests.
 
 .. _external-references:
 
@@ -425,6 +432,37 @@ than ```~plasmapy.particles.particle_class.Particle```. Consequently,
 substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
+
+Bibliography
+~~~~~~~~~~~~
+
+PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
+documentation. This Sphinx_ extension allows us to store references
+in a BibTeX_ file which is then used to generate the
+:doc:`../bibliography`.  References in the :doc:`../bibliography` are then
+citable from anywhere in the documentation.
+
+To add a new reference to the :doc:`../bibliography`, open
+|docs/bibliography.bib|_ and add the reference in `BibTeX format`_. The
+citekey should generally be the surname of the first author (all lower
+case) followed by a colon and the year. A letter should be added after
+the year when needed to disambiguate multiple references. Include the
+DOI_ if the reference has one. If the reference does not have a DOI_,
+then include the URL. The ISBN or ISSN number should be included for
+books.  The ``misc`` field type should be used when citing data sets and
+software. Please follow the existing style in |docs/bibliography.bib|_
+and alphabetize references by the surname of the first author. To
+preserve capitalization, enclose words or phrases within curly brackets
+(e.g., ``{NumPy}``).
+
+Use ``:cite:p:`citekey``` to create a parenthetical citation and
+``:cite:t:`citekey``` to create a textual citation, where ``citekey``
+is replaced with the BibTeX_ citekey. Multiple citekeys can also be used
+when separated by commas, like ``:cite:p:`citekey1, citekey2```. For
+example, ``:cite:p:`wilson:2014``` will show up as :cite:p:`wilson:2014`,
+``:cite:t:`wilson:2014``` will show up as :cite:t:`wilson:2014`, and
+``:cite:p:`wilson:2014, wilson:2017``` will show up as
+:cite:p:`wilson:2014, wilson:2017`.
 
 Templating
 ~~~~~~~~~~
@@ -523,19 +561,6 @@ Here is an example docstring in the numpydoc_ format:
       taking their first plasma physics class. This section can include
       a derivation of the quantity being calculated or a description of
       a particular algorithm.
-
-      The next section contains example references to a journal article
-      [1]_ and a book [2]_.
-
-      References
-      ----------
-      .. [1] J. E. Foster, `Plasma-based water purification: Challenges and
-         prospects for the future <https://doi.org/10.1063/1.4977921>`_,
-         Physics of Plasmas, 22, 05501 (2017).
-
-      .. [2] E. Gamma, R. Helm, R. Johnson, J. Vlissides, `Design Patterns:
-         Elements of Reusable Object-Oriented Software
-         <https://www.oreilly.com/library/view/design-patterns-elements/0201633612/>`_
 
       Examples
       --------
@@ -698,8 +723,8 @@ documentation for PlasmaPy and affiliated packages.
   as documents hosted on personal websites.
 
   * When including references, use a link that includes a `persistent
-    identifier`_ such as a digital object identifier (DOI) when one is
-    available (e.g., `https://doi.org/10.5281/zenodo.4602818`_).
+    identifier`_ such as a digital object identifier (DOI_) when one is
+    available (e.g., https://doi.org/10.5281/zenodo.4602818\ ).
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -922,63 +947,17 @@ Narrative documentation guidelines
 .. |directive| replace:: :term:`directive`
 .. |directives| replace:: :term:`directives <directive>`
 
-.. _`active voice`: https://en.wikipedia.org/wiki/Active_voice
+.. _active voice: https://en.wikipedia.org/wiki/Active_voice
 .. _admonitions: https://docutils.sourceforge.io/docs/ref/rst/directives.html#admonitions
-.. _`configuration options`: https://www.sphinx-doc.org/en/master/usage/configuration.html
-.. _CSS: https://en.wikipedia.org/wiki/CSS
-.. _`define substitutions`: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
-.. _docstring: https://en.wikipedia.org/wiki/Docstring
-.. _`GitHub Flavored Markdown`: https://github.github.com/gfm
-.. _Graphviz: https://graphviz.org
-.. _`https://docs.plasmapy.org`: https://docs.plasmapy.org
-.. _`https://docs.plasmapy.org/en/stable`: https://docs.plasmapy.org/en/stable
-.. _`https://docs.plasmapy.org/en/latest`: https://docs.plasmapy.org/en/latest
-.. _`https://doi.org/10.5281/zenodo.4602818`: https://doi.org/10.5281/zenodo.4602818
-.. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
-.. _Jinja: https://jinja.palletsprojects.com
-.. _LaTeX: https://www.latex-project.org
-.. _`link rot`: https://en.wikipedia.org/wiki/Link_rot
-.. _make: https://www.gnu.org/software/make
-.. _MathJax: https://www.mathjax.org
-.. _nbsphinx: https://nbsphinx.readthedocs.io
-.. _`nested inline markup`: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
-.. _`options to sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
-.. _pandas: https://pandas.pydata.org
+.. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
+.. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
+.. _link rot: https://en.wikipedia.org/wiki/Link_rot
+.. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
+.. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _paywall: https://en.wikipedia.org/wiki/Paywall
-.. _`persistent identifier`: https://en.wikipedia.org/wiki/Persistent_identifier
-.. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _`raw string`: https://docs.python.org/3/reference/lexical_analysis.html#literals
-.. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io
-.. _`reStructuredText (reST)`: https://docutils.sourceforge.io/rst.html
-.. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
-.. _`sphinx-build`: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
-.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
-.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
-.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
-.. _`Sphinx's glossary`: https://www.sphinx-doc.org/en/master/glossary.html
-.. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
-.. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
-.. _Wikipedia: https://www.wikipedia.org
-
-.. A workaround for nested inline literals so that the filename will get
-   formatted like a file but will be a link. In the text, these get used
-   with the syntax for a substitution followed by an underscore to
-   indicate that it's for a link: |docs/_static|_
-
-.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static| replace:: :file:`docs/_static`
-
-.. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. |docs/_static/sphinx_rtd_overrides.css| replace:: :file:`docs/_static/sphinx_rtd_overrides.css`
-
-.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static| replace:: :file:`docs/api_static`
-
-.. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
-.. |docs/conf.py| replace:: :file:`docs/conf.py`
-
-.. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
-.. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
-
-.. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
-.. |docs/common_links.rst| replace:: :file:`docs/common_links.rst`
+.. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
+.. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
+.. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
+.. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
+.. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
+.. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html

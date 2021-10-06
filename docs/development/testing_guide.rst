@@ -31,10 +31,10 @@ the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
 
 A |unit test| verifies a single unit of behavior, does it quickly, and
-does it in isolation from other tests [Khorikov2020]_. A typical
+does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 |unit test| is broken up into three parts: *arrange*, *act*, and
-*assert* [Osherove2013]_. An |integration test| verifies that multiple
-software components work together as intended.
+*assert* :cite:p:`osherove:2013`. An |integration test| verifies that
+multiple software components work together as intended.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
@@ -571,13 +571,14 @@ should be balanced with each other rather than absolute principles.
   sections of code before running tests, then we will have a much
   harder time isolating the section of code causing problems.
 
-* **Turn bugs into test cases** [Wilson2014]_. It is said that "every
-  every bug exists because of a missing test" [Bernstein2015]_. After
-  finding a bug, write a minimal failing test that reproduces that bug.
-  Then fix the bug to get the test to pass. Keeping the new test in the
-  test suite will prevent the same bug from being introduced again.
-  Because bugs tend to be clustered around each other, consider adding
-  tests related to the functionality affected by the bug.
+* **Turn bugs into test cases** :cite:p:`wilson:2014`. It is said that
+  "every every bug exists because of a missing test"
+  :cite:p:`bernstein:2015`. After finding a bug, write a minimal failing
+  test that reproduces that bug. Then fix the bug to get the test to
+  pass. Keeping the new test in the test suite will prevent the same bug
+  from being introduced again. Because bugs tend to be clustered around
+  each other, consider adding tests related to the functionality
+  affected by the bug.
 
 * **Make tests fast.** Tests are most valuable when they provide
   immediate feedback. A test suite that takes a long time to run
@@ -653,25 +654,7 @@ should be balanced with each other rather than absolute principles.
 
 * If the *act* phase of a |unit test| is more than a single line of
   code, consider revising the functionality being tested so that it can
-  be called in a single line of code [Khorikov2020]_.
-
-.. [Bernstein2015] D. S. Bernstein, `Beyond Legacy Code: Nine Practices
-   to Extend the Life (and Value) of Your Software
-   <https://pragprog.com/titles/dblegacy/beyond-legacy-code>`_
-   (Pragmatic Bookshelf, 2015, 1st ed.)
-
-.. [Khorikov2020] V. Khorikov, `Unit Testing Principles, Practices, and Patterns
-   <https://www.manning.com/books/unit-testing>`_ (Manning Press, 2020, 1st ed.)
-
-.. [Osherove2013] R. Osherove, `The Art of Unit Testing: With Examples in .NET
-   <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
-   (Manning Press, 2013, 2nd ed.)
-
-.. [Wilson2014] G. Wilson, D. A. Aruliah, C. T. Brown, N. P. Chue Hong,
-   M. Davis, R. T. Guy, S. H. D. Haddock, K. D. Huff, I. M. Mitchell,
-   M. D. Plumbley, B. Waugh, E. P. White, P. Wilson, `Best practices for
-   scientific computing <https://doi.org/10.1371/journal.pbio.1001745>`_,
-   PLoS Biology, 12, 1, e1001745 (2014), doi: 10.1371/journal.pbio.1001745
+  be called in a single line of code :cite:p:`khorikov:2020`.
 
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
