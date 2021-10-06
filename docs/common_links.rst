@@ -134,7 +134,7 @@
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
-.. |IPython.sphinxext.ipython_console_highlighting| replace:: ``IPython.sphinxext.ipython_console_highlighting``
+.. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
