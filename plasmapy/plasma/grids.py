@@ -1154,6 +1154,31 @@ class AbstractGrid(ABC):
         )
 
 
+def _fast_nearest_neighbor_interpolate(pos, ax):
+    """
+    This function finds the indices in the axis 'ax' that are closet to the
+    values in the array 'pos'
+
+    Assumes the axis 'ax' is sorted in accending order.
+
+    """
+    # Find the index where each position would be inserted into the axis.
+    # This is equivalent to a nearest neighbor interpolation but always
+    # rounding to the next highest axis point.
+    indices = np.searchsorted(ax, pos)
+
+    # searchsorted can return an out-of-bound index on the top end, so replace
+    # that point with the closest in bound index
+    indices = np.where(indices == ax.size, ax.size - 1, indices)
+
+    # For any points that are closer to the point below than the point above,
+    # correct the index
+    indices = np.where(
+        np.abs(ax[indices] - pos) > np.abs(ax[indices - 1] - pos), indices - 1, indices
+    )
+    return indices
+
+
 class CartesianGrid(AbstractGrid):
     r"""A uniformly spaced Cartesian grid."""
 
@@ -1168,15 +1193,14 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
-    #@modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
-    @profile
+    @modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
         """
         Notes
         -----
-
+        
         This interpolator approximates the value of a quantity at a given
         interpolation point using a weighted sum of the values at the eight grid
         vertices that surround the point. The weighting factors are calculated by
@@ -1244,9 +1268,15 @@ class CartesianGrid(AbstractGrid):
 
         # find cell nearest to each position
         nearest_neighbor_index = np.zeros((nparticles, 3), dtype=np.int32)
-        nearest_neighbor_index[..., 0] = np.abs(pos[:, 0, None] - ax0).argmin(axis=1)
-        nearest_neighbor_index[..., 1] = np.abs(pos[:, 1, None] - ax1).argmin(axis=1)
-        nearest_neighbor_index[..., 2] = np.abs(pos[:, 2, None] - ax2).argmin(axis=1)
+        nearest_neighbor_index[..., 0] = _fast_nearest_neighbor_interpolate(
+            pos[:, 0], ax0
+        )
+        nearest_neighbor_index[..., 1] = _fast_nearest_neighbor_interpolate(
+            pos[:, 1], ax1
+        )
+        nearest_neighbor_index[..., 2] = _fast_nearest_neighbor_interpolate(
+            pos[:, 2], ax2
+        )
 
         # Create a mask for positions that are off the grid. The values at
         # these points will be set to zero later.
