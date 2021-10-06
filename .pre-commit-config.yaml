@@ -36,12 +36,12 @@ repos:
   hooks:
   - id: nbqa-black
     additional_dependencies:
-    - black==19.10b0
+    - black==21.9b0
     args:
     - --nbqa-mutate
   - id: nbqa-isort
     additional_dependencies:
-    - isort==5.7.0
+    - isort==5.9.3
     args:
     - --nbqa-mutate
 
