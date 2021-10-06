@@ -20,7 +20,7 @@ Example highlights
 .. nbgallery::
    :hidden:
 
-   notebooks/diagnostics/proton_radiography_particle_tracing
+   notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
