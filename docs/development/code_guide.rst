@@ -330,10 +330,9 @@ Examples
 ========
 
 .. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
-.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
 takes care of executing them at documentation build time and including them
 in the documentation.
 
@@ -342,7 +341,7 @@ Please note that it is necessary to store notebooks with their outputs stripped
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals `nbsphinx` that it should execute the notebook.
+2. signals |nbsphinx|_ that it should execute the notebook.
 
 .. note::
 
