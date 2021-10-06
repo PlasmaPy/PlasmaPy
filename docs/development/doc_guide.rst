@@ -37,7 +37,14 @@ available at these locations:
   A preview of the documentation is generated every time a pull request
   is created or updated. You can access this preview by scrolling down
   to the checks at the bottom of a pull request, and clicking on
-  ``Details`` next to ``docs/readthedocs.org:plasmapy``.
+  ``Details`` next to ``docs/readthedocs.org:plasmapy`` as seen in the image
+  image below.
+
+.. image:: ../_static/contributor_guide/readthedocs_preview_link.png
+   :width: 700
+   :align: center
+   :alt: Access to the preview of the documentation after a pull request
+
 
 Building documentation
 ======================
