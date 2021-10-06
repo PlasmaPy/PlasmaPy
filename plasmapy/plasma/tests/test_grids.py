@@ -556,5 +556,27 @@ def debug_volume_avg_interpolator():
     plt.xlim(-11, 11)
 
 
+def test_fast_nearest_neighbor_interpolate():
+    """
+    Confirms that the fast linear interpolator function is equivalent to
+    the np.argmin(np.abs(x-y)) search method for ordered arrays
+    """
+    ax = 100 * np.linspace(0, 1, num=100)
+    pos = np.random.random([300])
+    # Make sure values outside the axis on either end are included
+    pos[0] = -2
+    pos[1] = 102
+    # Make sure at least one value is closer to the top of an interval than
+    # the bottom
+    pos[2] = 3.9
+
+    expected = np.abs(pos[:, None] - ax).argmin(axis=1)
+
+    result = grids._fast_nearest_neighbor_interpolate(pos, ax)
+
+    assert np.allclose(expected, result)
+
+
 if __name__ == "__main__":
-    test_volume_averaged_interpolator_known_solutions()
+    # test_volume_averaged_interpolator_known_solutions()
+    test_fast_nearest_neighbor_interpolate()
