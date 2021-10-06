@@ -71,7 +71,7 @@ extensions = [
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
-bibtex_default_style = "alpha"
+bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 
 # Intersphinx generates automatic links to the documentation of objects
