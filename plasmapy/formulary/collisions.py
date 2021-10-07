@@ -1236,7 +1236,6 @@ def fundamental_electron_collision_freq(
     --------
     collision_frequency
     fundamental_ion_collision_freq
-
     """
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
@@ -1380,7 +1379,6 @@ def fundamental_ion_collision_freq(
     --------
     collision_frequency
     fundamental_electron_collision_freq
-
     """
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
@@ -1523,7 +1521,6 @@ def mean_free_path(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-
     """
     # collisional frequency
     freq = collision_frequency(
@@ -2098,7 +2095,6 @@ def coupling_parameter(
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
     .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
