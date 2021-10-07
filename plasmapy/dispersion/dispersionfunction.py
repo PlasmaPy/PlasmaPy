@@ -52,18 +52,12 @@ def plasma_dispersion_func(
         Z(\zeta) = \pi^{-0.5} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{x-\zeta} dx
 
-    where the argument is a complex number [#]_.
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     In plasma wave theory, the plasma dispersion function appears
     frequently when the background medium has a Maxwellian
     distribution function.  The argument of this function then refers
     to the ratio of a wave's phase velocity to a thermal velocity.
-
-    References
-    ----------
-    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
-       The Plasma Dispersion Function: The Hilbert Transformation of the
-       Gaussian. Academic Press (New York and London). ISBN 9781483261737
 
     Examples
     --------
@@ -141,13 +135,7 @@ def plasma_dispersion_func_deriv(
         Z'(\zeta) = \pi^{-1/2} \int_{-\infty}^{+\infty}
         \frac{e^{-x^2}}{(x-\zeta)^2} dx
 
-    where the argument is a complex number [#]_.
-
-    References
-    ----------
-    .. [#] Fried, Burton D. and Samuel D. Conte. 1961.
-       The Plasma Dispersion Function: The Hilbert Transformation of the
-       Gaussian. Academic Press (New York and London). ISBN 9781483261737
+    where the argument is a complex number :cite:p:`fried:1961`.
 
     Examples
     --------

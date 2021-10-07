@@ -1311,7 +1311,7 @@ class Particle(AbstractPhysicalParticle):
         >>> D.isotopic_abundance
         0.000115
         """
-        from .atomic import common_isotopes
+        from plasmapy.particles.atomic import common_isotopes
 
         if not self.isotope or self.is_ion:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self.symbol, "isotope"))

@@ -17,7 +17,8 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
@@ -359,8 +360,8 @@ class IonizationStateCollection:
         # that np.nan == np.nan is False.
 
         for attribute in ["T_e", "n_e", "kappa"]:
-            this = eval(f"self.{attribute}")
-            that = eval(f"other.{attribute}")
+            this = getattr(self, attribute)
+            that = getattr(other, attribute)
 
             # TODO: Maybe create a function in utils called same_enough
             # TODO: that would take care of all of these disparate
@@ -381,8 +382,8 @@ class IonizationStateCollection:
 
         for attribute in ["ionic_fractions", "number_densities"]:
 
-            this_dict = eval(f"self.{attribute}")
-            that_dict = eval(f"other.{attribute}")
+            this_dict = getattr(self, attribute)
+            that_dict = getattr(other, attribute)
 
             for particle in self.base_particles:
 
@@ -852,6 +853,93 @@ class IonizationStateCollection:
         else:
             raise ValueError("Need 0 <= tol <= 1.")
 
+    def average_ion(
+        self,
+        *,
+        include_neutrals: bool = True,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> CustomParticle:
+        """
+        Return a |CustomParticle| representing the mean particle
+        included across all ionization states.
+
+        By default, this method will use the weighted mean to calculate
+        the properties of the |CustomParticle|, where the weights for
+        each ionic level is given by its ionic fraction multiplied by
+        the abundance of the base element or isotope. If
+        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this
+        method will return the root mean square of the charge or mass,
+        respectively.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional, keyword-only
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, exclude neutrals.
+            Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
+
+        Raises
+        ------
+        `~plasmapy.particles.exceptions.ParticleError`
+            If the abundance of any of the elements or isotopes is not
+            defined and the |IonizationStateCollection| instance includes
+            more than one element or isotope.
+
+        Returns
+        -------
+        ~plasmapy.particles.particle_class.CustomParticle
+
+        Examples
+        --------
+        >>> states = IonizationStateCollection(
+        ...     {"H": [0.1, 0.9], "He": [0, 0.1, 0.9]},
+        ...     abundances={"H": 1, "He": 0.1}
+        ... )
+        >>> states.average_ion()
+        CustomParticle(mass=2.12498...e-27 kg, charge=1.5876...e-19 C)
+        >>> states.average_ion(include_neutrals=False, use_rms_charge=True, use_rms_mass=True)
+        CustomParticle(mass=2.633...e-27 kg, charge=1.805...e-19 C)
+        """
+        min_charge = 0 if include_neutrals else 1
+
+        all_particles = ParticleList()
+        all_abundances = []
+
+        for base_particle in self.base_particles:
+
+            ionization_state = self[base_particle]
+            ionic_levels = ionization_state.to_list()[min_charge:]
+            all_particles.extend(ionic_levels)
+
+            base_particle_abundance = self.abundances[base_particle]
+
+            if np.isnan(base_particle_abundance):
+                if len(self) == 1:
+                    base_particle_abundance = 1
+                else:
+                    raise ParticleError(
+                        "Unable to provide an average particle without abundances."
+                    )
+
+            ionic_fractions = ionization_state.ionic_fractions[min_charge:]
+            ionic_abundances = base_particle_abundance * ionic_fractions
+            all_abundances.extend(ionic_abundances)
+
+        return all_particles.average_particle(
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+            abundances=all_abundances,
+        )
+
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
@@ -908,11 +996,11 @@ class IonizationStateCollection:
 
         attributes = []
         if np.isfinite(self.n_e):
-            attributes.append("n_e = " + "{:.2e}".format(self.n_e.value) + " m**-3")
+            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
         if np.isfinite(self.T_e):
-            attributes.append("T_e = " + "{:.2e}".format(self.T_e.value) + " K")
+            attributes.append(f"T_e = {self.T_e.value:.2e} K")
         if np.isfinite(self.kappa):
-            attributes.append("kappa = " + "{:.2f}".format(self.kappa))
+            attributes.append(f"kappa = {self.kappa:.2f}")
 
         if attributes:
             attributes.append(separator_line)

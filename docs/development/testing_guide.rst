@@ -31,10 +31,10 @@ the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
 
 A |unit test| verifies a single unit of behavior, does it quickly, and
-does it in isolation from other tests [Khorikov2020]_. A typical
+does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 |unit test| is broken up into three parts: *arrange*, *act*, and
-*assert* [Osherove2013]_. An |integration test| verifies that multiple
-software components work together as intended.
+*assert* :cite:p:`osherove:2013`. An |integration test| verifies that
+multiple software components work together as intended.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
@@ -571,13 +571,14 @@ should be balanced with each other rather than absolute principles.
   sections of code before running tests, then we will have a much
   harder time isolating the section of code causing problems.
 
-* **Turn bugs into test cases** [Wilson2014]_. It is said that "every
-  every bug exists because of a missing test" [Bernstein2015]_. After
-  finding a bug, write a minimal failing test that reproduces that bug.
-  Then fix the bug to get the test to pass. Keeping the new test in the
-  test suite will prevent the same bug from being introduced again.
-  Because bugs tend to be clustered around each other, consider adding
-  tests related to the functionality affected by the bug.
+* **Turn bugs into test cases** :cite:p:`wilson:2014`. It is said that
+  "every every bug exists because of a missing test"
+  :cite:p:`bernstein:2015`. After finding a bug, write a minimal failing
+  test that reproduces that bug. Then fix the bug to get the test to
+  pass. Keeping the new test in the test suite will prevent the same bug
+  from being introduced again. Because bugs tend to be clustered around
+  each other, consider adding tests related to the functionality
+  affected by the bug.
 
 * **Make tests fast.** Tests are most valuable when they provide
   immediate feedback. A test suite that takes a long time to run
@@ -653,45 +654,27 @@ should be balanced with each other rather than absolute principles.
 
 * If the *act* phase of a |unit test| is more than a single line of
   code, consider revising the functionality being tested so that it can
-  be called in a single line of code [Khorikov2020]_.
-
-.. [Bernstein2015] D. S. Bernstein, `Beyond Legacy Code: Nine Practices
-   to Extend the Life (and Value) of Your Software
-   <https://pragprog.com/titles/dblegacy/beyond-legacy-code/>`_
-   (Pragmatic Bookshelf, 2015, 1st ed.)
-
-.. [Khorikov2020] V. Khorikov, `Unit Testing Principles, Practices, and Patterns
-   <https://www.manning.com/books/unit-testing>`_ (Manning Press, 2020, 1st ed.)
-
-.. [Osherove2013] R. Osherove, `The Art of Unit Testing: With Examples in .NET
-   <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
-   (Manning Press, 2013, 2nd ed.)
-
-.. [Wilson2014] G. Wilson, D. A. Aruliah, C. T. Brown, N. P. Chue Hong,
-   M. Davis, R. T. Guy, S. H. D. Haddock, K. D. Huff, I. M. Mitchell,
-   M. D. Plumbley, B. Waugh, E. P. White, P. Wilson, `Best practices for
-   scientific computing <https://doi.org/10.1371/journal.pbio.1001745>`_,
-   PLoS Biology, 12, 1, e1001745 (2014), doi: 10.1371/journal.pbio.1001745
+  be called in a single line of code :cite:p:`khorikov:2020`.
 
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
 
-.. _Atom: https://atom.io/
-.. _Codecov: https://about.codecov.io/
+.. _Atom: https://atom.io
+.. _Codecov: https://about.codecov.io
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
-.. _`coverage.py`: https://coverage.readthedocs.io/
-.. _`create a pull request`: https://help.github.com/articles/creating-a-pull-request
+.. _`coverage.py`: https://coverage.readthedocs.io
+.. _`create a pull request`: https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
 .. _`how to invoke pytest`: https://docs.pytest.org/en/latest/how-to/usage.html
-.. _hypothesis: https://hypothesis.readthedocs.io/
+.. _hypothesis: https://hypothesis.readthedocs.io
 .. _`integrated development environment`: https://en.wikipedia.org/wiki/Integrated_development_environment
-.. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis/
+.. _`property-based testing`: https://hypothesis.works/articles/what-is-hypothesis
 .. _`pure functions`: https://en.wikipedia.org/wiki/Pure_function
-.. _PyCharm: https://www.jetbrains.com/pycharm/
-.. _pytest: https://docs.pytest.org/
-.. _`pytest-cov`: https://pytest-cov.readthedocs.io/
+.. _PyCharm: https://www.jetbrains.com/pycharm
+.. _pytest: https://docs.pytest.org
+.. _`pytest-cov`: https://pytest-cov.readthedocs.io
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery

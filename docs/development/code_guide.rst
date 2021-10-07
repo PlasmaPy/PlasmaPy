@@ -139,9 +139,8 @@ for docstrings
 <https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
 to maintain consistency and readability.  New contributors should not
 worry too much about precisely matching these styles when first
-submitting a pull request, as the `PEP8 Speaks
-<http://pep8speaks.com/>`_ GitHub integration will check pull requests
-for PEP 8 compatibility, and further changes to the style can be
+submitting a pull request, GitHub Actions will check pull requests
+for :pep:`8` compatibility, and further changes to the style can be
 suggested during code review.
 
 You may periodically commit changes to your branch by running
@@ -331,10 +330,9 @@ Examples
 ========
 
 .. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
-.. _nbsphinx: https://nbsphinx.readthedocs.io/en/latest/
 
 Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. `nbsphinx`_
+of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
 takes care of executing them at documentation build time and including them
 in the documentation.
 
@@ -343,7 +341,7 @@ Please note that it is necessary to store notebooks with their outputs stripped
 
 1. helps with versioning the notebooks, as binary image data is not stored in
    the notebook
-2. signals `nbsphinx` that it should execute the notebook.
+2. signals |nbsphinx|_ that it should execute the notebook.
 
 .. note::
 
