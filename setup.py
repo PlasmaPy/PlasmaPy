@@ -10,4 +10,6 @@ site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 # Get configuration information from all of the various subpackages.
 # See the docstring for setup_helpers.update_package_files for more
 # details.
-setup(use_scm_version=True)
+setup(use_scm_version=True, entry_points={
+    "console_scripts":"plasma-calculator=plasma_calculator.plasma_calculator:main"
+})
