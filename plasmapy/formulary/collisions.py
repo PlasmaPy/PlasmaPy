@@ -469,9 +469,8 @@ def Coulomb_logarithm(
 
     See Also
     --------
-    ~plasmapy.formulary.collisions.impact_parameter :
-        Computes :math:`b_{min}` and :math:`b_{max}`.
-
+    ~plasmapy.formulary.collisions.impact_parameter : Computes
+        :math:`b_{min}` and :math:`b_{max}`.
     """
     # fetching impact min and max impact parameters
     bmin, bmax = impact_parameter(
@@ -622,14 +621,14 @@ def impact_parameter_perp(
 
     Raises
     ------
-    ValueError
+    `ValueError`
         If the mass or charge of either particle cannot be found, or
         any of the inputs contain incorrect values.
 
-    UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
-    TypeError
+    `TypeError`
         If either of ``T`` or ``V`` is not a `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
@@ -665,7 +664,6 @@ def impact_parameter_perp(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -741,14 +739,14 @@ def impact_parameter(
 
     Raises
     ------
-    ValueError
+    `ValueError`
         If the mass or charge of either particle cannot be found, or any
         of the inputs contain incorrect values.
 
-    UnitConversionError
+    `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
-    TypeError
+    `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a
         `~astropy.units.Quantity`.
 
@@ -978,7 +976,7 @@ def collision_frequency(
         of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
-        If the units on any of the inputs are incorrect
+        If the units on any of the inputs are incorrect.
 
     `TypeError`
         If any of ``n_e``, ``T``, or ``V`` is not a
