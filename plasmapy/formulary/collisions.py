@@ -17,7 +17,8 @@ collisions.
 Coulomb logarithms
 ==================
 
-Please read the documentation of `Coulomb_logarithm` below for an
+Please read the documentation of
+`~plasmapy.formulary.collisions.Coulomb_logarithm` below for an
 explanation of the seven PlasmaPy-supported methods of computing the
 Coulomb logarithm.
 
@@ -26,21 +27,17 @@ Collision rates
 
 The module gathers a few functions helpful for calculating collision
 rates between particles. The most general of these is
-`collision_frequency`, while if you need average values for a Maxwellian
-distribution, try out `collision_rate_electron_ion` and
-`collision_rate_ion_ion`. These use `collision_frequency` under the
-hood.
+`~plasmapy.formulary.collisions.collision_frequency`.
 
 Macroscopic properties
 ======================
 
 These include:
 
-* `Spitzer_resistivity`
-* `mobility`
-* `Knudsen_number`
-* `coupling_parameter`
-
+* `~plasmapy.formulary.collisions.Spitzer_resistivity`
+* `~plasmapy.formulary.collisions.mobility`
+* `~plasmapy.formulary.collisions.Knudsen_number`
+* `~plasmapy.formulary.collisions.coupling_parameter`
 """
 __all__ = [
     "Coulomb_logarithm",
@@ -96,7 +93,6 @@ def Coulomb_logarithm(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-
         Temperature in units of temperature or energy per particle,
         which is assumed to be equal for both the test particle and the
         target particle.
@@ -125,7 +121,7 @@ def Coulomb_logarithm(
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
         default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported
+        method (``"classical"`` or ``"ls"``). The other six supported
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
@@ -166,7 +162,7 @@ def Coulomb_logarithm(
     -----
     **Summary of Supported Methods of Computing the Coulomb Logarithm**
 
-    PlasmaPy supports 7 methods of computing the Coulomb logarithm:
+    PlasmaPy supports seven methods of computing the Coulomb logarithm:
 
     1. ``"classical"`` or ``"ls"``
     2. ``"ls_min_interp"`` or ``"GMS-1"``
@@ -197,7 +193,7 @@ def Coulomb_logarithm(
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner
     impact parameter and the outer impact parameter, respectively, for
     Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are
-    each computed by `impact_parameter`, another function.
+    each computed by `~plasmapy.formulary.collisions.impact_parameter`.
 
     The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first
     initials of the three authors of Reference [4]_.
@@ -473,7 +469,8 @@ def Coulomb_logarithm(
 
     See Also
     --------
-    impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
+    `~plasmapy.formulary.collisions.impact_parameter` :
+        Computes :math:`b_{min}` and :math:`b_{max}`.
 
     """
     # fetching impact min and max impact parameters
@@ -599,7 +596,8 @@ def impact_parameter_perp(
     species: (particles.Particle, particles.Particle),
     V: u.m / u.s = np.nan * u.m / u.s,
 ) -> u.m:
-    r"""Distance of closest approach for a 90° Coulomb collision.
+    r"""
+    Distance of closest approach for a 90° Coulomb collision.
 
     Parameters
     ----------
@@ -641,16 +639,15 @@ def impact_parameter_perp(
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The distance of closest approach, impact_parameter_perp, is given by
-    [1]_
+    [1]_\ :
 
     .. math::
 
@@ -695,7 +692,7 @@ def impact_parameter(
     method="classical",
 ):
     r"""
-    Impact parameters for classical and quantum Coulomb collision
+    Impact parameters for classical and quantum Coulomb collision.
 
     Parameters
     ----------
@@ -822,7 +819,8 @@ def impact_parameter(
     ):
         if np.isnan(z_mean):
             raise ValueError(
-                'Must provide a z_mean for "ls_full_interp", "hls_max_interp", and "hls_full_interp" methods.'
+                'Must provide a z_mean for "ls_full_interp", '
+                '"hls_max_interp", and "hls_full_interp" methods.'
             )
     # Debye length
     lambdaDe = parameters.Debye_length(T, n_e)
@@ -924,7 +922,8 @@ def collision_frequency(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Hz:
-    r"""Collision frequency of particles in a plasma.
+    r"""
+    Collision frequency of particles in a plasma.
 
     Parameters
     ----------
@@ -963,8 +962,9 @@ def collision_frequency(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -981,7 +981,8 @@ def collision_frequency(
         If the units on any of the inputs are incorrect
 
     `TypeError`
-        If the n_e, T, or V are not Quantities.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
         If the input velocity is same or greater than the speed
@@ -1026,7 +1027,6 @@ def collision_frequency(
     .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
        <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -1116,7 +1116,6 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     ----------
     .. [1] `Cross Section: Collision among gas particles
        <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
-
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1148,10 +1147,10 @@ def fundamental_electron_collision_freq(
     Parameters
     ----------
     T_e : `~astropy.units.Quantity`
-        The electron temperature of the Maxwellian test electrons
+        The electron temperature of the Maxwellian test electrons.
 
     n_e : `~astropy.units.Quantity`
-        The number density of the Maxwellian test electrons
+        The number density of the Maxwellian test electrons.
 
     ion : `str`
         String signifying a particle type of the field ions, including
@@ -1163,7 +1162,6 @@ def fundamental_electron_collision_freq(
         :math:`μ` is the reduced mass.
 
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
-
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
         using the `~plasmapy.formulary.Coulomb_logarithm` function.
@@ -1197,7 +1195,7 @@ def fundamental_electron_collision_freq(
     :math:`v_{Te}` is the electron thermal velocity (the average, for a
     Maxwellian distribution).
 
-    This implementation of the average collision frequency is is equivalent to:
+    This implementation of the average collision frequency is equivalent to:
     * :math:`1/τ_e` from ref [1]_ eqn (2.5e) pp. 215,
     * :math:`ν_e` from ref [2]_ pp. 33,
 
@@ -1233,8 +1231,8 @@ def fundamental_electron_collision_freq(
 
     See Also
     --------
-    collision_frequency
-    fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.collision_frequency
+    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     """
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
@@ -1377,8 +1375,8 @@ def fundamental_ion_collision_freq(
 
     See Also
     --------
-    collision_frequency
-    fundamental_electron_collision_freq
+    `~plasmapy.formulary.collisions.collision_frequency`
+    `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`
     """
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
@@ -1463,8 +1461,9 @@ def mean_free_path(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -1589,8 +1588,9 @@ def Spitzer_resistivity(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -1617,7 +1617,7 @@ def Spitzer_resistivity(
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
@@ -1695,8 +1695,7 @@ def mobility(
         target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic
-        meter.
+        The electron number density in units convertible to m\ :sup:`-3`.
 
     species : `tuple`
         A tuple containing string representations of the test particle
@@ -1707,7 +1706,7 @@ def mobility(
         macroscopic description is valid. This parameter is used to
         compute the average ion density (given the average ionization
         and electron density) for calculating the ion sphere radius for
-        non-classical impact parameters. It is also used the obtain the
+        non-classical impact parameters. It is also used to obtain the
         average mobility of a plasma with multiple charge state
         species. When ``z_mean`` is not given, the average charge
         between the two particles is used instead. ``z_mean`` is a
@@ -1726,8 +1725,9 @@ def mobility(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -1836,8 +1836,7 @@ def Knudsen_number(
         target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic
-        meter.
+        The electron number density in units convertible to m\ :sup:`-3`.
 
     species : `tuple`
         A tuple containing string representations of the test particle
@@ -1864,8 +1863,9 @@ def Knudsen_number(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
@@ -1906,11 +1906,11 @@ def Knudsen_number(
         Kn = \frac{λ_{mfp}}{L}
 
     where :math:`λ_{mfp}` is the collisional mean free path for
-    particles in a plasma and :math`L` is the characteristic scale
+    particles in a plasma and :math:`L` is the characteristic scale
     length of interest.
 
-    Typically the characteristic scale length is the plasma size or the
-    size of a diagnostic (such a the length or radius of a Langmuir
+    The characteristic scale length is typically the plasma size or the
+    size of a diagnostic (such as the length or radius of a Langmuir
     probe tip). The Knudsen number tells us whether collisional effects
     are important on this scale length.
 
@@ -1994,8 +1994,9 @@ def coupling_parameter(
         methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
         ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
         ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of `Coulomb_logarithm` for more information
-        about these methods.
+        to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
 
     Returns
     -------
