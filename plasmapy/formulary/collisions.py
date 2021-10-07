@@ -102,8 +102,7 @@ def Coulomb_logarithm(
         target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic
-        meter.
+        The electron number density in units convertible to m\ :sup:`-3`.
 
     species : `tuple`
         A tuple containing string representations of the test particle
