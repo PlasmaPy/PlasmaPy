@@ -38,11 +38,12 @@ def two_fluid(
     z_mean: Union[float, int] = None,
 ):
     r"""
-    Using the solution provided by :cite:t:`bellan:2012`, calculate the analytical
-    solution to the two fluid, low-frequency (:math:`\omega/kc \ll 1`) dispersion
-    relation presented by :cite:t:`stringer:1963`.  This dispersion relation also
-    assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
-    field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
+    Using the solution provided by :cite:t:`bellan:2012`, calculate the
+    analytical solution to the two fluid, low-frequency
+    (:math:`\omega/kc \ll 1`) dispersion relation presented by
+    :cite:t:`stringer:1963`.  This dispersion relation also assummes a
+    uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric field
+    :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
 
     Parameters
@@ -94,18 +95,20 @@ def two_fluid(
     Raises
     ------
     TypeError
-        If applicable arguments are not instances of `~astropy.units.Quantity` or
-        cannot be converted into one.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        or `float`.
 
     ~astropy.units.UnitTypeError
-        If applicable arguments do not have units convertible to the expected
-        units.
+        If applicable arguments do not have units convertible to the
+        expected units.
 
     ValueError
         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
@@ -153,12 +156,13 @@ def two_fluid(
         \cos \theta &= \frac{k_z}{k} \\
         \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber, :math:`v_A`
-    is the Alfvén velocity, :math:`c_s` is the sound speed, :math:`\omega_{ci}` is
-    the ion gyrofrequency, and :math:`\omega_{pe}` is the electron plasma frequency.
-    This relation does additionally assume low-frequency waves
-    :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
-    quasi-neutrality.
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`v_A` is the Alfvén velocity, :math:`c_s` is the sound speed,
+    :math:`\omega_{ci}` is the ion gyrofrequency, and
+    :math:`\omega_{pe}` is the electron plasma frequency. This relation
+    does additionally assume low-frequency waves
+    :math:`\omega/kc \ll 1`, no D.C. electric field
+    :math:`\mathbf{E_o}=0` and quasi-neutrality.
 
     Following section 5 of :cite:t:`bellan:2012` the exact roots of the
     above dispersion equation can be derived and expressed as one
@@ -175,8 +179,9 @@ def two_fluid(
             + \frac{\Lambda A}{3}
         }
 
-    where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
-    Alfvén mode, and :math:`j = 2` represents the acoustic mode.  Additionally,
+    where :math:`j = 0` represents the fast mode, :math:`j = 1`
+    represents the Alfvén mode, and :math:`j = 2` represents the
+    acoustic mode.  Additionally,
 
     .. math::
         p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
