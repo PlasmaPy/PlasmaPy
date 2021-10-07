@@ -469,7 +469,7 @@ def Coulomb_logarithm(
 
     See Also
     --------
-    `~plasmapy.formulary.collisions.impact_parameter` :
+    ~plasmapy.formulary.collisions.impact_parameter :
         Computes :math:`b_{min}` and :math:`b_{max}`.
 
     """
@@ -1375,8 +1375,8 @@ def fundamental_ion_collision_freq(
 
     See Also
     --------
-    `~plasmapy.formulary.collisions.collision_frequency`
-    `~plasmapy.formulary.collisions.fundamental_electron_collision_freq`
+    ~plasmapy.formulary.collisions.collision_frequency
+    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
     """
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
