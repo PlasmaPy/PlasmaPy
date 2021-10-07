@@ -103,7 +103,7 @@ def two_fluid(
         `~plasmapy.particles.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
         or `float`.
 
     ~astropy.units.UnitTypeError
