@@ -103,7 +103,9 @@
 .. _pip: https://pip.pypa.io
 .. _PlasmaPy: https://www.plasmapy.org
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
-.. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable/
+.. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable
+.. _`pre-commit`: https://pre-commit.com
+.. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org/
 .. _pytest: https://docs.pytest.org
 .. _Python: https://www.python.org/
@@ -115,6 +117,7 @@
 .. _Sphinx: https://www.sphinx-doc.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
+.. _sphinxcontrib-bibtex: https://sphinxcontrib-bibtex.readthedocs.io
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs
 .. _tox: https://tox.readthedocs.io/

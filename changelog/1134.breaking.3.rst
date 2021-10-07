@@ -1,4 +1,4 @@
-Removed the ``Tracker.synthetic_radiograph()`` method and created the
+Removed the ``Tracker.synthetic_radiograph`` method and created the
 standalone function
 :func:`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`
 in its place.  This new function takes either a

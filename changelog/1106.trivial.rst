@@ -1,4 +1,4 @@
-Move our custom ``pre-commit`` style testing suite to ``pre-commit.ci``,
+Move our custom `pre-commit`_ style testing suite to ``pre-commit.ci``,
 taking advantage of the new ``pre-commit.ci autofix`` command that
 allows manually calling for pre-commit to be run by typing
 that command as a comment to a pull request.

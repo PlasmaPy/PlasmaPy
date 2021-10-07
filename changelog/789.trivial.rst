@@ -1,4 +1,4 @@
-Simplified handling of package dependencies.  Removed duplicated requirements
-files and centralized them instead.
-Developer dependencies can now be installed
-with either ``pip install plasmapy[developer]`` or ``pip install -r requirements.txt``.
+Simplified handling of package dependencies.  Removed duplicated
+requirements files and centralized them instead. Developer dependencies
+can now be installed with either ``pip install plasmapy[developer]`` or
+``pip install -r requirements.txt``.
