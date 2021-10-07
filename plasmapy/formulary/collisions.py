@@ -1,32 +1,35 @@
 """Functions to calculate transport coefficients.
 
-This module includes a number of functions for handling Coulomb collisions
-spanning weakly coupled (low density) to strongly coupled (high density)
-regimes.
+This module includes a number of functions for handling Coulomb
+collisions spanning weakly coupled (low density) to strongly coupled
+(high density) regimes.
 
 Coulomb collisions
 ==================
 
-Coulomb collisions are collisions where the interaction force is conveyed
-via the electric field, instead of any kind of contact force. They usually
-result in relatively small deflections of particle trajectories. However,
-given that there are many charged particles in a plasma, one has to take
-into account the cumulative effects of many such collisions.
+Coulomb collisions are collisions where the interaction force is
+conveyed via the electric field, instead of any kind of contact
+force. They usually result in relatively small deflections of particle
+trajectories. However, given that there are many charged particles in a
+plasma, one has to take into account the cumulative effects of many such
+collisions.
 
 Coulomb logarithms
 ==================
 
-Please read the documentation of `Coulomb_logarithm` below for an explanation of the
-seven PlasmaPy-supported methods of computing the Coulomb logarithm.
+Please read the documentation of `Coulomb_logarithm` below for an
+explanation of the seven PlasmaPy-supported methods of computing the
+Coulomb logarithm.
 
 Collision rates
 ===============
 
 The module gathers a few functions helpful for calculating collision
-rates between particles. The most general of these is `collision_frequency`,
-while if you need average values for a Maxwellian distribution, try
-out `collision_rate_electron_ion` and `collision_rate_ion_ion`. These
-use `collision_frequency` under the hood.
+rates between particles. The most general of these is
+`collision_frequency`, while if you need average values for a Maxwellian
+distribution, try out `collision_rate_electron_ion` and
+`collision_rate_ion_ion`. These use `collision_frequency` under the
+hood.
 
 Macroscopic properties
 ======================
@@ -93,38 +96,42 @@ def Coulomb_logarithm(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
+
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where `μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        `μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the Notes section of this docstring for more
-        information, including about abbreviated aliases of these names.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the Notes section of this docstring for more information,
+        including about abbreviated aliases of these names.
 
     Returns
     -------
@@ -134,8 +141,8 @@ def Coulomb_logarithm(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect, or if any of
@@ -145,8 +152,8 @@ def Coulomb_logarithm(
         If the result is smaller than 1.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -154,8 +161,7 @@ def Coulomb_logarithm(
         If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
@@ -171,48 +177,60 @@ def Coulomb_logarithm(
     6. ``"hls_max_interp"`` or ``"GMS-5"``
     7. ``"hls_full_interp"`` or ``"GMS-6"``
 
-    Options 1–4 are straight-line Landau-Spitzer (``"ls..."``) methods in which the trajectory of a
-    Coulomb collision is modeled as a straight line. For the straight-line Landau-Spitzer methods, the Coulomb
-    logarithm (:math:`\ln{Λ}`) is defined to be:
+    Options 1–4 are straight-line Landau-Spitzer (``"ls..."``) methods
+    in which the trajectory of a Coulomb collision is modeled as a
+    straight line. For the straight-line Landau-Spitzer methods, the
+    Coulomb logarithm (:math:`\ln{Λ}`) is defined to be:
 
     .. math::
+
         \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
-    Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in which the trajectory of a
-    Coulomb collision is modeled as a hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb
+    Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in
+    which the trajectory of a Coulomb collision is modeled as a
+    hyperbola. For the hyperbolic Landau-Spitzer methods, the Coulomb
     logarithm (:math:`\ln{Λ}`) is defined to be:
 
     .. math::
+
         \ln{Λ} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
-    For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner impact parameter and the outer
-    impact parameter, respectively, for Coulomb collisions [1]_;
-    :math:`b_{min}` and :math:`b_{max}` are each computed by `impact_parameter`, another function.
+    For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner
+    impact parameter and the outer impact parameter, respectively, for
+    Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are
+    each computed by `impact_parameter`, another function.
 
-    The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first initials of the three authors
-    of Reference [4]_.
+    The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first
+    initials of the three authors of Reference [4]_.
 
     .. note::
-        For strongly-coupled plasma, PlasmaPy recommends Option 7, ``"hls_full_interp"`` or ``"GMS-6"``,
-        because of its high accuracy regardless of a plasma's strength of coupling.
+
+        For strongly-coupled plasma, PlasmaPy recommends Option 7,
+        ``"hls_full_interp"`` or ``"GMS-6"``, because of its high
+        accuracy regardless of a plasma's strength of coupling.
 
     **Explanation of Supported Methods of Computing the Coulomb Logarithm**
 
-    In this section, further information about each method, such as about
-    interpolation and other special features, is documented. Please refer
-    to Reference [1]_ and Reference [4]_ for additional information about
-    these methods.
+    In this section, further information about each method, such as
+    about interpolation and other special features, is
+    documented. Please refer to Reference [1]_ and Reference [4]_ for
+    additional information about these methods.
 
     Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
-        The classical straight-line Landau-Spitzer method in which :math:`b_{min}` is defined to be the
-        higher of the de Broglie wavelength (:math:`λ_{de Broglie}`) and the distance of closest
-        approach (:math:`ρ_⟂`) if they are not equal (and either of the two if they are equal) and
-        :math:`b_{max}` is defined to be the Debye length (:math:`λ_{Debye}`).
+
+        The classical straight-line Landau-Spitzer method in which
+        :math:`b_{min}` is defined to be the higher of the de Broglie
+        wavelength (:math:`λ_{de Broglie}`) and the distance of closest
+        approach (:math:`ρ_⟂`) if they are not equal (and either of the
+        two if they are equal) and :math:`b_{max}` is defined to be the
+        Debye length (:math:`λ_{Debye}`).
 
         .. math::
+
             \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
+
             b_{min} \equiv
             \left\{
                 \begin{array}{ll}
@@ -222,151 +240,210 @@ def Coulomb_logarithm(
             \right.
 
         .. math::
+
             b_{max} \equiv λ_{Debye}
 
-        The inner impact parameter (:math:`b_{min}`) is the higher of :math:`λ_{de Broglie}`
-        and :math:`ρ_⟂` because for impact parameters lower than :math:`λ_{de Broglie}`,
-        quantum effects cause the collision to be non-Coulombic [2]_ [3]_.
+        The inner impact parameter (:math:`b_{min}`) is the higher of
+        :math:`λ_{de Broglie}` and :math:`ρ_⟂` because for impact
+        parameters lower than :math:`λ_{de Broglie}`, quantum effects
+        cause the collision to be non-Coulombic [2]_ [3]_.
 
-        The outer impact parameter (:math:`b_{max}`) is defined to be the Debye length
-        (:math:`λ_{Debye}`) because at distances higher than the
-        Debye length, the electric fields created by other particles are
-        screened out by the electrons rearranging themselves.
+        The outer impact parameter (:math:`b_{max}`) is defined to be
+        the Debye length (:math:`λ_{Debye}`) because at distances higher
+        than the Debye length, the electric fields created by other
+        particles are screened out by the electrons rearranging
+        themselves.
 
-        The uncertainty of the classical straight-line Landau-Spitzer method is on the order
-        of its reciprocal.
+        The uncertainty of the classical straight-line Landau-Spitzer
+        method is on the order of its reciprocal.
 
-        This method is invalid if :math:`\ln{Λ} < 2` because of the uncertainty of this method
-        and is invalid if :math:`\ln{Λ} < 0`, which may be true if the
-        coupling parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is invalid if :math:`\ln{Λ} < 2` because of the
+        uncertainty of this method and is invalid if :math:`\ln{Λ} < 0`,
+        which may be true if the coupling parameter is high (such as for
+        nonideal, dense, cold plasmas).
 
-        Please refer to Reference [1]_ for additional information about this method.
+        Please refer to Reference [1]_ for additional information about
+        this method.
 
-    Option 2: ``"ls_min_interp"`` or ``"GMS-1"`` (Landau-Spitzer, interpolation of :math:`b_{min}`)
-        A straight-line Landau-Spitzer method in which :math:`b_{min}` is interpolated between the
-        de Broglie wavelength (:math:`λ_{de Broglie}`) and the distance of closest approach
-        (:math:`ρ_⟂`) and :math:`b_{max}` is defined to be the Debye length (:math:`λ_{Debye}`).
+    Option 2: ``"ls_min_interp"`` or ``"GMS-1"`` (Landau-Spitzer,
+    interpolation of :math:`b_{min}`)
+
+        A straight-line Landau-Spitzer method in which :math:`b_{min}`
+        is interpolated between the de Broglie wavelength (:math:`λ_{de
+        Broglie}`) and the distance of closest approach (:math:`ρ_⟂`)
+        and :math:`b_{max}` is defined to be the Debye length
+        (:math:`λ_{Debye}`).
 
         .. math::
+
             \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
+
             b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
+
             b_{max} \equiv λ_{Debye}
 
-        This method is invalid if :math:`\ln{Λ} < 0`, which may be true if the coupling
-        parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is invalid if :math:`\ln{Λ} < 0`, which may be true
+        if the coupling parameter is high (such as for nonideal, dense,
+        cold plasmas).
 
         Note: This is the first method in Table 1 of Reference [4]_.
 
-    Option 3: ``"ls_full_interp"`` or ``"GMS-2"`` (Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
-        A straight-line Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
-        are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
-        (:math:`λ_{de Broglie}`) and the distance of closest approach (:math:`ρ_⟂`).
-        :math:`b_{max}` is interpolated between the Debye length (:math:`λ_{Debye}`)
-        and the ion sphere radius (:math:`a_i`).
+    Option 3: ``"ls_full_interp"`` or ``"GMS-2"`` (Landau-Spitzer,
+    interpolation of :math:`b_{min}` and :math:`b_{max}`)
+
+        A straight-line Landau-Spitzer method in which :math:`b_{min}`
+        and :math:`b_{max}` are each interpolated. :math:`b_{min}` is
+        interpolated between the de Broglie wavelength (:math:`λ_{de
+        Broglie}`) and the distance of closest approach (:math:`ρ_⟂`).
+        :math:`b_{max}` is interpolated between the Debye length
+        (:math:`λ_{Debye}`) and the ion sphere radius (:math:`a_i`).
 
         .. math::
+
             \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
+
             b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
+
             b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
 
-        This method is invalid if :math:`\ln{Λ} < 0`, which may be true if the coupling
-        parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is invalid if :math:`\ln{Λ} < 0`, which may be true
+        if the coupling parameter is high (such as for nonideal, dense,
+        cold plasmas).
 
         Note: This is the second method in Table 1 of Reference [4]_.
 
-    Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer with a clamp, interpolation of :math:`b_{min}`)
-        A straight-line Landau-Spitzer method in which the value of :math:`\ln{Λ}` is clamped at
-        a minimum of :math:`2` so that it is impossible for :math:`\ln{Λ} < 0` (which is possible by the
-        classical Landau-Spitzer method). :math:`b_{min}` is interpolated between the de Broglie
-        wavelength (:math:`λ_{de Broglie}`) and the distance of closest approach
-        (:math:`ρ_⟂`). :math:`b_{max}` is defined to be the Debye length (:math:`λ_{Debye}`).
+    Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer
+    with a clamp, interpolation of :math:`b_{min}`)
+
+        A straight-line Landau-Spitzer method in which the value of
+        :math:`\ln{Λ}` is clamped at a minimum of :math:`2` so that it
+        is impossible for :math:`\ln{Λ} < 0` (which is possible by the
+        classical Landau-Spitzer method). :math:`b_{min}` is
+        interpolated between the de Broglie wavelength (:math:`λ_{de
+        Broglie}`) and the distance of closest approach
+        (:math:`ρ_⟂`). :math:`b_{max}` is defined to be the Debye length
+        (:math:`λ_{Debye}`).
 
         .. math::
+
             \ln{Λ} \equiv
             \left\{
-                \begin{array}{ll}
-                           \ln\left( \frac{b_{max}}{b_{min}} \right) & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \geq 2 \\
-                           2                                         & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right) \leq 2
+               \begin{array}{ll}
+                  \ln\left(\frac{b_{max}}{b_{min}} \right)
+                     & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}}\right)
+                  \geq 2 \\
+                  2 & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right)
+                  \leq 2
                 \end{array}
             \right.
 
         .. math::
+
             b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
+
             b_{max} \equiv λ_{Debye}
 
-        This method is valid for any plasma because it is impossible for :math:`\ln{Λ} < 0` by this
-        method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is valid for any plasma because it is impossible for
+        :math:`\ln{Λ} < 0` by this method, even if the coupling
+        parameter is high (such as for nonideal, dense, cold plasmas).
 
         Note: This is the third method in Table 1 of Reference [4]_.
 
-    Option 5: ``"hls_min_interp"`` or ``"GMS-4"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is interpolated between the
-        de Broglie wavelength (:math:`λ_{de Broglie}`) and the distance of closest approach
-        (:math:`ρ_⟂`) and :math:`b_{max}` is defined to be the Debye length (:math:`λ_{Debye}`).
+    Option 5: ``"hls_min_interp"`` or ``"GMS-4"`` (Hyperbolic
+    Landau-Spitzer, interpolation of :math:`b_{min}`)
+
+        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` is
+        interpolated between the de Broglie wavelength (:math:`λ_{de
+        Broglie}`) and the distance of closest approach (:math:`ρ_⟂`)
+        and :math:`b_{max}` is defined to be the Debye length
+        (:math:`λ_{Debye}`).
 
         .. math::
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+
+            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
+
             b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
+
             b_{max} \equiv λ_{Debye}
 
-        This method is valid for any plasma because it is impossible for :math:`\ln{Λ} < 0` by this
-        method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is valid for any plasma because it is impossible for
+        :math:`\ln{Λ} < 0` by this method, even if the coupling
+        parameter is high (such as for nonideal, dense, cold plasmas).
 
         Note: This is the fourth method in Table 1 of Reference [4]_.
 
-    Option 6: ``"hls_max_interp"`` or ``"GMS-5"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{max}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is interpolated between
-        the Debye length (:math:`λ_{Debye}`) and the ion sphere radius (:math:`a_i`)
-        and :math:`b_{min}` is defined to be the distance of closest approach (:math:`ρ_⟂`).
+    Option 6: ``"hls_max_interp"`` or ``"GMS-5"`` (Hyperbolic
+    Landau-Spitzer, interpolation of :math:`b_{max}`)
+
+        A hyperbolic Landau-Spitzer method in which :math:`b_{max}` is
+        interpolated between the Debye length (:math:`λ_{Debye}`) and
+        the ion sphere radius (:math:`a_i`) and :math:`b_{min}` is
+        defined to be the distance of closest approach (:math:`ρ_⟂`).
 
         .. math::
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+
+            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
+
             b_{min} \equiv ρ_⟂
 
         .. math::
+
             b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
 
-        This method is valid for any plasma because it is impossible for :math:`\ln{Λ} < 0` by this
-        method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is valid for any plasma because it is impossible for
+        :math:`\ln{Λ} < 0` by this method, even if the coupling
+        parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Caution: This method overestimates :math:`\ln{Λ}` at high temperatures.
+        Caution: This method overestimates :math:`\ln{Λ}` at high
+        temperatures.
 
         Note: This is the fifth method in Table 1 of Reference [4]_.
 
-    Option 7: ``"hls_full_interp"`` or ``"GMS-6"`` (Hyperbolic Landau-Spitzer, interpolation of :math:`b_{min}` and :math:`b_{max}`)
-        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and :math:`b_{max}`
-        are each interpolated. :math:`b_{min}` is interpolated between the de Broglie wavelength
-        (:math:`λ_{de Broglie}`) and the distance of closest approach (:math:`ρ_⟂`).
-        :math:`b_{max}` is interpolated between the Debye length (:math:`λ_{Debye}`)
-        and the ion sphere radius (:math:`a_i`).
+    Option 7: ``"hls_full_interp"`` or ``"GMS-6"`` (Hyperbolic
+    Landau-Spitzer, interpolation of :math:`b_{min}` and
+    :math:`b_{max}`)
+
+        A hyperbolic Landau-Spitzer method in which :math:`b_{min}` and
+        :math:`b_{max}` are each interpolated. :math:`b_{min}` is
+        interpolated between the de Broglie wavelength (:math:`λ_{de
+        Broglie}`) and the distance of closest approach (:math:`ρ_⟂`).
+        :math:`b_{max}` is interpolated between the Debye length
+        (:math:`λ_{Debye}`) and the ion sphere radius (:math:`a_i`).
 
         .. math::
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+
+            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
+
             b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
+
             b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
 
-        This method is valid for any plasma because it is impossible for :math:`\ln{Λ} < 0` by this
-        method, even if the coupling parameter is high (such as for nonideal, dense, cold plasmas).
+        This method is valid for any plasma because it is impossible for
+        :math:`\ln{Λ} < 0` by this method, even if the coupling
+        parameter is high (such as for nonideal, dense, cold plasmas).
 
         Note: This is the sixth method in Table 1 of Reference [4]_.
 
@@ -398,6 +475,7 @@ def Coulomb_logarithm(
     See Also
     --------
     impact_parameter : Computes :math:`b_{min}` and :math:`b_{max}`.
+
     """
     # fetching impact min and max impact parameters
     bmin, bmax = impact_parameter(
@@ -431,7 +509,11 @@ def Coulomb_logarithm(
         ln_Lambda = 0.5 * np.log(1 + bmax ** 2 / bmin ** 2)
     else:
         raise ValueError(
-            'Unknown method. Choose from "classical", "ls_min_interp", "ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", "hls_max_interp", "hls_full_interp", and their aliases. Please refer to the documentation of this function for more information.'
+            'Unknown method. Choose from "classical", "ls_min_interp", '
+            '"ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", '
+            '"hls_max_interp", "hls_full_interp", and their aliases. '
+            "Please refer to the documentation of this function for "
+            "more information."
         )
 
     # applying dimensionless units
@@ -448,7 +530,8 @@ def Coulomb_logarithm(
             "GMS-2",
         ]:
             warnings.warn(
-                f'The Coulomb logarithm is {ln_Lambda}, and the specified method, "{method}", depends on weak coupling.',
+                f"The Coulomb logarithm is {ln_Lambda}, and the specified "
+                + f'method, "{method}", depends on weak coupling.',
                 utils.CouplingWarning,
             )
         elif np.any(ln_Lambda < 4):
@@ -485,9 +568,9 @@ def _boilerPlate(T: u.K, species: (particles.Particle, particles.Particle), V):
 
 def _replaceNanVwithThermalV(V, T, m):
     """
-    Get thermal velocity of system if no velocity is given, for a given mass.
-    Handles vector checks for ``V``, you must already know that ``T`` and ``m``
-    are okay.
+    Get thermal velocity of system if no velocity is given, for a given
+    mass.  Handles vector checks for ``V``, you must already know that
+    ``T`` and ``m`` are okay.
     """
     if np.any(V == 0):
         raise utils.PhysicsError("You cannot have a collision for zero velocity!")
@@ -523,8 +606,8 @@ def impact_parameter_perp(
     ----------
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle
+        which is assumed to be equal for both the test particle and the
+        target particle
 
     species : `tuple`
         A tuple containing string representations of the test particle
@@ -532,8 +615,8 @@ def impact_parameter_perp(
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     Returns
     -------
@@ -553,8 +636,8 @@ def impact_parameter_perp(
         If either of ``T`` or ``V`` is not a `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -567,9 +650,11 @@ def impact_parameter_perp(
 
     Notes
     -----
-    The distance of closest approach, impact_parameter_perp, is given by [1]_
+    The distance of closest approach, impact_parameter_perp, is given by
+    [1]_
 
     .. math::
+
         b_⟂ = \frac{Z_1 Z_2}{4 π \epsilon_0 m v^2}
 
     Examples
@@ -584,6 +669,7 @@ def impact_parameter_perp(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -609,43 +695,47 @@ def impact_parameter(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ):
-    r"""Impact parameters for classical and quantum Coulomb collision
+    r"""
+    Impact parameters for classical and quantum Coulomb collision
 
     Parameters
     ----------
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -656,18 +746,19 @@ def impact_parameter(
     Raises
     ------
     ValueError
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     UnitConversionError
         If the units on any of the inputs are incorrect.
 
     TypeError
-        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -675,28 +766,29 @@ def impact_parameter(
         If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The minimum and maximum impact parameters may be calculated in a
-    variety of ways. The maximum impact parameter is typically
-    the Debye length.
+    variety of ways. The maximum impact parameter is typically the Debye
+    length.
 
     For quantum plasmas the maximum impact parameter can be the
     quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
 
     .. math::
+
         b_{max} = \left(λ_{De}^2 + a_i^2\right)^{1/2}
 
     The minimum impact parameter is typically some combination of the
     thermal de Broglie wavelength and the distance of closest approach
-    for a 90° Coulomb collision. A quadratic sum is used for
-    all GMS methods, except for GMS-5, where ``b_min`` is simply set to
-    the distance of closest approach [1]_.
+    for a 90° Coulomb collision. A quadratic sum is used for all GMS
+    methods, except for GMS-5, where ``b_min`` is simply set to the
+    distance of closest approach [1]_.
 
     .. math::
+
         b_{min} = \left(Λ_{de Broglie}^2 + ρ_⟂^2\right)^{1/2}
 
     Examples
@@ -715,6 +807,7 @@ def impact_parameter(
     .. [1] Dense plasma temperature equilibration in the binary collision
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -837,14 +930,13 @@ def collision_frequency(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of temperature.
-        This should be the electron temperature for electron-electron
-        and electron-ion collisions, and the ion temperature for
-        ion-ion collisions.
+        Temperature in units of temperature.  This should be the
+        electron temperature for electron-electron and electron-ion
+        collisions, and the ion temperature for ion-ion collisions.
 
     n : `~astropy.units.Quantity`
-        The density in units convertible to per cubic meter.
-        This should be the electron density for electron-electron collisions,
+        The density in units convertible to per cubic meter.  This
+        should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
     species : `tuple`
@@ -852,26 +944,28 @@ def collision_frequency(
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -881,8 +975,8 @@ def collision_frequency(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect
@@ -900,20 +994,20 @@ def collision_frequency(
         If units are not provided, SI units are assumed
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The collision frequency is given by [1]_
 
     .. math::
+
         ν = n σ v \ln{Λ}
 
-    where :math:`n` is the particle density, :math:`σ` is the collisional
-    cross-section, :math:`v` is the inter-particle velocity (typically
-    taken as the thermal velocity), and :math:`\ln{Λ}` is the Coulomb
-    logarithm accounting for small angle collisions.
+    where :math:`n` is the particle density, :math:`σ` is the
+    collisional cross-section, :math:`v` is the inter-particle velocity
+    (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
+    Coulomb logarithm accounting for small angle collisions.
 
     See Equation (2.14) in [2]_.
 
@@ -985,7 +1079,8 @@ def collision_frequency(
 
 @validate_quantities(impact_param={"can_be_negative": False})
 def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
-    r"""Cross section for a large angle Coulomb collision.
+    r"""
+    Cross section for a large angle Coulomb collision.
 
     Parameters
     ----------
@@ -999,16 +1094,17 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     Notes
     -----
-    The collisional cross-section (see [1]_ for a graphical demonstration)
-    for a 90° Coulomb collision is obtained by
+    The collisional cross-section (see [1]_ for a graphical
+    demonstration) for a 90° Coulomb collision is obtained by
 
     .. math::
+
         σ = π (2 * ρ_⟂)^2
 
-    where :math:`ρ_⟂` is the distance of closest approach for
-    a 90° Coulomb collision. This function is a generalization of that
-    calculation. Please note that it is not guaranteed to return the correct
-    results for small angle collisions.
+    where :math:`ρ_⟂` is the distance of closest approach for a 90°
+    Coulomb collision. This function is a generalization of that
+    calculation. Please note that it is not guaranteed to return the
+    correct results for small angle collisions.
 
     Examples
     --------
@@ -1021,6 +1117,7 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     ----------
     .. [1] `Cross Section: Collision among gas particles
        <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
+
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1039,13 +1136,15 @@ def fundamental_electron_collision_freq(
     coulomb_log_method="classical",
 ) -> u.s ** -1:
     r"""
-    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of electrons.
+    Average momentum relaxation rate for a slowly flowing Maxwellian
+    distribution of electrons.
 
-    [3]_ provides a derivation of this as an average collision frequency between electrons
-    and ions for a Maxwellian distribution. It is thus a special case of the collision
-    frequency with an averaging factor, and is on many occasions in transport theory
-    the most relevant collision frequency that has to be considered. It is heavily
-    related to diffusion and resistivity in plasmas.
+    [3]_ provides a derivation of this as an average collision frequency
+    between electrons and ions for a Maxwellian distribution. It is thus
+    a special case of the collision frequency with an averaging factor,
+    and is on many occasions in transport theory the most relevant
+    collision frequency that has to be considered. It is heavily related
+    to diffusion and resistivity in plasmas.
 
     Parameters
     ----------
@@ -1056,27 +1155,29 @@ def fundamental_electron_collision_freq(
         The number density of the Maxwellian test electrons
 
     ion : `str`
-        String signifying a particle type of the field ions, including charge
-        state information.
+        String signifying a particle type of the field ions, including
+        charge state information.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Option to specify a Coulomb logarithm of the electrons on the ions.
-        If not specified, the Coulomb log will is calculated using the
-        `~plasmapy.formulary.Coulomb_logarithm` function.
+
+        Option to specify a Coulomb logarithm of the electrons on the
+        ions.  If not specified, the Coulomb log will is calculated
+        using the `~plasmapy.formulary.Coulomb_logarithm` function.
 
     coulomb_log_method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1084,15 +1185,18 @@ def fundamental_electron_collision_freq(
 
     Notes
     -----
-    Equations (2.17) and (2.120) in [3]_ provide the original source used
-    to implement this formula, however, the simplest form that connects our average
-    collision frequency to the general collision frequency is is this (from 2.17):
+    Equations (2.17) and (2.120) in [3]_ provide the original source
+    used to implement this formula, however, the simplest form that
+    connects our average collision frequency to the general collision
+    frequency is is this (from 2.17):
 
     .. math::
+
         ν_e = \frac{4}{3 \sqrt{π}} ν(v_{Te})
 
-    Where :math:`ν` is the general collision frequency and :math:`v_{Te}`
-    is the electron thermal velocity (the average, for a Maxwellian distribution).
+    Where :math:`ν` is the general collision frequency and
+    :math:`v_{Te}` is the electron thermal velocity (the average, for a
+    Maxwellian distribution).
 
     This implementation of the average collision frequency is is equivalent to:
     * :math:`1/τ_e` from ref [1]_ eqn (2.5e) pp. 215,
@@ -1132,6 +1236,7 @@ def fundamental_electron_collision_freq(
     --------
     collision_frequency
     fundamental_ion_collision_freq
+
     """
     # specify to use electron thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_e, m_e)
@@ -1172,43 +1277,45 @@ def fundamental_ion_collision_freq(
     coulomb_log_method="classical",
 ) -> u.s ** -1:
     r"""
-    Average momentum relaxation rate for a slowly flowing Maxwellian distribution of ions.
+    Average momentum relaxation rate for a slowly flowing Maxwellian
+    distribution of ions.
 
-    [3]_ provides a derivation of this as an average collision frequency between ions
-    and ions for a Maxwellian distribution. It is thus a special case of the collision
-    frequency with an averaging factor.
+    [3]_ provides a derivation of this as an average collision frequency
+    between ions and ions for a Maxwellian distribution. It is thus a
+    special case of the collision frequency with an averaging factor.
 
     Parameters
     ----------
     T_i : `~astropy.units.Quantity`
-        The electron temperature of the Maxwellian test ions
+        The electron temperature of the Maxwellian test ions.
 
     n_i : `~astropy.units.Quantity`
-        The number density of the Maxwellian test ions
+        The number density of the Maxwellian test ions.
 
     ion : `str`
         String signifying a particle type of the test and field ions,
-        including charge state information. This function assumes the test
-        and field ions are the same species.
+        including charge state information. This function assumes the
+        test and field ions are the same species.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles.  If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Option to specify a Coulomb logarithm of the electrons on the ions.
-        If not specified, the Coulomb log will is calculated using the
-        ~plasmapy.formulary.Coulomb_logarithm function.
+        Option to specify a Coulomb logarithm of the electrons on the
+        ions.  If not specified, the Coulomb log will is calculated
+        using the ~plasmapy.formulary.Coulomb_logarithm function.
 
     coulomb_log_method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1216,21 +1323,23 @@ def fundamental_ion_collision_freq(
 
     Notes
     -----
-    Equations (2.36) and (2.122) in [3]_ provide the original source used
-    to implement this formula, however, in our implementation we use the very
-    same process that leads to the fundamental electron collison rate (2.17),
-    gaining simply a different coefficient:
+    Equations (2.36) and (2.122) in [3]_ provide the original source
+    used to implement this formula, however, in our implementation we
+    use the very same process that leads to the fundamental electron
+    collison rate (2.17), gaining simply a different coefficient:
 
     .. math::
+
         ν_i = \frac{8}{3 * 4 * \sqrt{π}} ν(v_{Ti})
 
-    Where :math:`ν` is the general collision frequency and :math:`v_{Ti}`
-    is the ion thermal velocity (the average, for a Maxwellian distribution).
+    Where :math:`ν` is the general collision frequency and
+    :math:`v_{Ti}` is the ion thermal velocity (the average, for a
+    Maxwellian distribution).
 
-    Note that in the derivation, it is assumed that electrons are present
-    in such numbers as to establish quasineutrality, but the effects of the
-    test ions colliding with them are not considered here. This is a very
-    typical approximation in transport theory.
+    Note that in the derivation, it is assumed that electrons are
+    present in such numbers as to establish quasineutrality, but the
+    effects of the test ions colliding with them are not considered
+    here. This is a very typical approximation in transport theory.
 
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
@@ -1271,6 +1380,7 @@ def fundamental_ion_collision_freq(
     --------
     collision_frequency
     fundamental_electron_collision_freq
+
     """
     m_i = particles.particle_mass(ion)
     species = [ion, ion]
@@ -1316,43 +1426,47 @@ def mean_free_path(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.m:
-    r"""Collisional mean free path (m)
+    r"""
+    Collisional mean free path (m).
 
     Parameters
     ----------
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1362,18 +1476,19 @@ def mean_free_path(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
     `TypeError`
-        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -1381,18 +1496,18 @@ def mean_free_path(
         If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The collisional mean free path is given by [1]_
 
     .. math::
+
         λ_{mfp} = \frac{v}{ν}
 
-    where :math:`v` is the inter-particle velocity (typically taken to be
-    the thermal velocity) and :math:`ν` is the collision frequency.
+    where :math:`v` is the inter-particle velocity (typically taken to
+    be the thermal velocity) and :math:`ν` is the collision frequency.
 
     Examples
     --------
@@ -1408,6 +1523,7 @@ def mean_free_path(
     ----------
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
+
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1442,23 +1558,23 @@ def Spitzer_resistivity(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of temperature.
-        This should be the electron temperature for electron-electron
-        and electron-ion collisions, and the ion temperature for
-        ion-ion collisions.
+        Temperature in units of temperature.  This should be the
+        electron temperature for electron-electron and electron-ion
+        collisions, and the ion temperature for ion-ion collisions.
 
     n : `~astropy.units.Quantity`
-        The density in units convertible to per cubic meter.
-        This should be the electron density for electron-electron collisions,
+        The density in units convertible to per cubic meter.  This
+        should be the electron density for electron-electron collisions,
         and the ion density for electron-ion and ion-ion collisions.
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     species : `tuple`
         A tuple containing string representations of the test particle
@@ -1466,17 +1582,18 @@ def Spitzer_resistivity(
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1486,18 +1603,19 @@ def Spitzer_resistivity(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
     `TypeError`
-        If any of ``n_e``, ``T``, or ``V`` are not of type `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` are not of type
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -1505,24 +1623,24 @@ def Spitzer_resistivity(
         If units are not provided, SI units are assumed
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The Spitzer resistivity is given by [1]_ [2]_
 
     .. math::
+
         η = \frac{m}{n Z_1 Z_2 q_e^2} ν_{1,2}
 
-    where :math:`m` is the ion mass or the reduced mass, :math:`n` is the
-    ion density, :math:`Z` is the particle charge state, :math:`q_e` is the
-    charge of an electron, :math:`ν_{1,2}` is the collisional frequency
-    between particle species 1 and 2.
+    where :math:`m` is the ion mass or the reduced mass, :math:`n` is
+    the ion density, :math:`Z` is the particle charge state, :math:`q_e`
+    is the charge of an electron, :math:`ν_{1,2}` is the collisional
+    frequency between particle species 1 and 2.
 
     Typically, particle species 1 and 2 are selected to be an electron
-    and an ion, since electron-ion collisions are inelastic and therefore
-    produce resistivity in the plasma.
+    and an ion, since electron-ion collisions are inelastic and
+    therefore produce resistivity in the plasma.
 
     Examples
     --------
@@ -1540,6 +1658,7 @@ def Spitzer_resistivity(
     .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
     .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
+
     """
     # collisional frequency
     freq = collision_frequency(
@@ -1575,40 +1694,43 @@ def mobility(
     ----------
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. It is also used the obtain the average mobility
-        of a plasma with multiple charge state species. When ``z_mean``
-        is not given, the average charge between the two particles is
-        used instead. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. It is also used the obtain the
+        average mobility of a plasma with multiple charge state
+        species. When ``z_mean`` is not given, the average charge
+        between the two particles is used instead. ``z_mean`` is a
+        required parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where `μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        `μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1618,18 +1740,19 @@ def mobility(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
     `TypeError`
-        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -1637,24 +1760,24 @@ def mobility(
         If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The mobility is given by [1]_
 
     .. math::
+
         μ = \frac{q}{m ν}
 
-    where :math:`q` is the particle charge, :math:`m` is the particle mass
-    and :math:`ν` is the collisional frequency of the particle in the
-    plasma.
+    where :math:`q` is the particle charge, :math:`m` is the particle
+    mass and :math:`ν` is the collisional frequency of the particle in
+    the plasma.
 
-    The mobility describes the forced diffusion of a particle in a collisional
-    plasma which is under the influence of an electric field. The mobility
-    is essentially the ratio of drift velocity due to collisions and the
-    electric field driving the forced diffusion.
+    The mobility describes the forced diffusion of a particle in a
+    collisional plasma which is under the influence of an electric
+    field. The mobility is essentially the ratio of drift velocity due
+    to collisions and the electric field driving the forced diffusion.
 
     Examples
     --------
@@ -1670,6 +1793,7 @@ def mobility(
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
+
     """
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
@@ -1701,46 +1825,51 @@ def Knudsen_number(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.dimensionless_unscaled:
-    r"""Knudsen number (dimensionless)
+    r"""
+    Knudsen number (dimensionless).
 
     Parameters
     ----------
     characteristic_length : `~astropy.units.Quantity`
-        Rough order-of-magnitude estimate of the relevant size of the system.
+        Rough order-of-magnitude estimate of the relevant size of the
+        system.
 
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1750,33 +1879,34 @@ def Knudsen_number(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
-        If the units on any of the inputs are incorrect
+        If the units on any of the inputs are incorrect.
 
     `TypeError`
-        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
     : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed
+        If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The Knudsen number is given by [1]_
 
     .. math::
+
         Kn = \frac{λ_{mfp}}{L}
 
     where :math:`λ_{mfp}` is the collisional mean free path for
@@ -1836,37 +1966,40 @@ def coupling_parameter(
     ----------
     T : `~astropy.units.Quantity`
         Temperature in units of temperature or energy per particle,
-        which is assumed to be equal for both the test particle and
-        the target particle.
+        which is assumed to be equal for both the test particle and the
+        target particle.
 
     n_e : `~astropy.units.Quantity`
-        The electron number density in units convertible to per cubic meter.
+        The electron number density in units convertible to per cubic
+        meter.
 
     species : `tuple`
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
     z_mean : `~astropy.units.Quantity`, optional
-        The average ionization (arithmetic mean) of a plasma for which
-        a macroscopic description is valid. This parameter is used to compute the
-        average ion density (given the average ionization and electron
-        density) for calculating the ion sphere radius for non-classical
-        impact parameters. ``z_mean`` is a required parameter if ``method`` is
-        ``"ls_full_interp"``, ``"hls_max_interp"``, or ``"hls_full_interp"``.
+        The average ionization (arithmetic mean) of a plasma for which a
+        macroscopic description is valid. This parameter is used to
+        compute the average ion density (given the average ionization
+        and electron density) for calculating the ion sphere radius for
+        non-classical impact parameters. ``z_mean`` is a required
+        parameter if ``method`` is ``"ls_full_interp"``,
+        ``"hls_max_interp"``, or ``"hls_full_interp"``.
 
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
-        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-        where :math:`μ` is the reduced mass.
+        thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.
-        The default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported methods
-        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
-        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
-        Please refer to the docstring of `Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the Coulomb logarithm.  The
+        default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported
+        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
+        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
+        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
+        to the docstring of `Coulomb_logarithm` for more information
+        about these methods.
 
     Returns
     -------
@@ -1876,18 +2009,19 @@ def coupling_parameter(
     Raises
     ------
     `ValueError`
-        If the mass or charge of either particle cannot be found, or
-        any of the inputs contain incorrect values.
+        If the mass or charge of either particle cannot be found, or any
+        of the inputs contain incorrect values.
 
     `~astropy.units.UnitConversionError`
         If the units on any of the inputs are incorrect.
 
     `TypeError`
-        If any of ``n_e``, ``T``, or ``V`` is not a `~astropy.units.Quantity`.
+        If any of ``n_e``, ``T``, or ``V`` is not a
+        `~astropy.units.Quantity`.
 
     `~plasmapy.utils.exceptions.RelativityError`
-        If the input velocity is same or greater than the speed
-        of light.
+        If the input velocity is same or greater than the speed of
+        light.
 
     Warns
     -----
@@ -1895,37 +2029,40 @@ def coupling_parameter(
         If units are not provided, SI units are assumed.
 
     : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the input velocity is greater than 5% of the speed of
-        light.
+        If the input velocity is greater than 5% of the speed of light.
 
     Notes
     -----
     The coupling parameter is given by
 
     .. math::
+
         Γ = \frac{E_{Coulomb}}{E_{Kinetic}}
 
     The Coulomb energy is given by
 
     .. math::
+
         E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 π \epsilon_0 r}
 
     where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
     particle species 1 and 2 between which we want to determine the
     coupling.
 
-    In the classical case the kinetic energy is simply the thermal energy
+    In the classical case the kinetic energy is the thermal energy:
 
     .. math::
+
         E_{kinetic} = k_B T_e
 
     The quantum case is more complex. The kinetic energy is dominated by
     the Fermi energy, modulated by a correction factor based on the
-    ideal chemical potential. This is obtained more precisely
-    by taking the the thermal kinetic energy and dividing by
-    the degeneracy parameter, modulated by the Fermi integral [1]_
+    ideal chemical potential. This is obtained more precisely by taking
+    the the thermal kinetic energy and dividing by the degeneracy
+    parameter, modulated by the Fermi integral [1]_
 
     .. math::
+
         E_{kinetic} = 2 k_B T_e / χ f_{3/2} (μ_{ideal} / k_B T_e)
 
     where :math:`χ` is the degeneracy parameter, :math:`f_{3/2}` is the
@@ -1935,13 +2072,14 @@ def coupling_parameter(
     The degeneracy parameter is given by
 
     .. math::
+
         χ = n_e Λ_{de Broglie} ^ 3
 
     where :math:`n_e` is the electron density and :math:`Λ_{de Broglie}`
     is the thermal de Broglie wavelength.
 
-    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the ideal
-    chemical potential.
+    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the
+    ideal chemical potential.
 
     Examples
     --------
@@ -1960,6 +2098,7 @@ def coupling_parameter(
        approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
        DOI: 10.1103/PhysRevE.65.036418
     .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
+
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
