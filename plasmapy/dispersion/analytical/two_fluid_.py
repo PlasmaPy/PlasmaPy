@@ -38,9 +38,9 @@ def two_fluid(
     z_mean: Union[float, int] = None,
 ):
     r"""
-    Using the solution provided by Bellan 2012, calculate the analytical
+    Using the solution provided by :cite:t:`bellan:2012`, calculate the analytical
     solution to the two fluid, low-frequency (:math:`\omega/kc \ll 1`) dispersion
-    relation presented by Stringer 1963.  This dispersion relation also
+    relation presented by :cite:t:`stringer:1963`.  This dispersion relation also
     assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
     field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
@@ -132,8 +132,8 @@ def two_fluid(
     Notes
     -----
 
-    The complete dispersion equation presented by Springer 1963 [2]_ (equation 1
-    of Bellan 2012 [1]_) is:
+    The complete dispersion equation presented by :cite:t:`stringer:1963`
+    (equation 1 of :cite:t:`bellan:2012`) is:
 
     .. math::
         \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
@@ -160,9 +160,9 @@ def two_fluid(
     :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
     quasi-neutrality.
 
-    Following section 5 of Bellan 2012 [1]_ the exact roots of the above dispersion
-    equation can be derived and expressed as one analytical solution (equation 38
-    of Bellan 2012 [1]_):
+    Following section 5 of :cite:t:`bellan:2012` the exact roots of the
+    above dispersion equation can be derived and expressed as one
+    analytical solution (equation 38 of :cite:t:`bellan:2012`):
 
     .. math::
         \frac{\omega}{\omega_{ci}} = \sqrt{
@@ -186,16 +186,6 @@ def two_fluid(
         \alpha &= \cos^2 \theta \;
             , \; \beta = \left( \frac{c_s}{v_A}\right)^2 \;
             , \; \Lambda = \left( \frac{k v_{A}}{\omega_{ci}}\right)^2
-
-    References
-    ----------
-    .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
-       JGR, 117, A12219, doi: `10.1029/2012JA017856
-       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
-
-    .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
-       Part C, doi: `10.1088/0368-3281/5/2/304
-       <https://doi.org/10.1088/0368-3281/5/2/304>`_
 
     Examples
     --------
