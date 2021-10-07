@@ -48,21 +48,21 @@ def two_fluid(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`T`.
+        The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
-        charge state information is provided, then the ions are assumed to be
-        singly ionized.
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        Wavenumber in units convertible to rad/m`.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Ion number density in units convertible to m\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`
-        The electron temperature in units of :math:`K` or :math:`eV`.
+        The electron temperature in units of K or eV.
     T_i : `~astropy.units.Quantity`
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        The ion temperature in units of K or eV.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the
         magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
@@ -78,16 +78,18 @@ def two_fluid(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
     z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  Will override any charge state defined by argument ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
 
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+        A dictionary of computed wave frequencies in units rad/s.  The
+        dictionary contains three keys: ``'fast_mode'`` for the fast
+        mode, ``'alfven_mode'`` for the Alfvén mode, and
+        ``'acoustic_mode'`` for the ion-acoustic mode.  The value for
+        each key will be a :math:`N x M` array.
 
     Raises
     ------
