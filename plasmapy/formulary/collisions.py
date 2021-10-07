@@ -1342,6 +1342,7 @@ def fundamental_ion_collision_freq(
 
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
+
     * :math:`1/τ_i` from ref [1]_, equation (2.5i) pp. 215,
     * :math:`ν_i` from ref [2]_ pp. 33,
 
@@ -1790,7 +1791,6 @@ def mobility(
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
-
     """
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
