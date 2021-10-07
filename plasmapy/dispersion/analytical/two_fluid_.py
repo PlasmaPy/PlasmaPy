@@ -32,7 +32,7 @@ def two_fluid(
     n_i: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
-    theta: u.deg,
+    theta: u.rad,
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
@@ -64,9 +64,10 @@ def two_fluid(
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
-        Either single valued or 1-D array of size :math:`M`.
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+        convertible to radians. Either single valued or 1-D array of
+        size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
