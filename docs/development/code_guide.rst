@@ -173,6 +173,39 @@ to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
 
+Comments
+--------
+
+Stuff to add here...
+
+* Make sure to future proof comments. For example, if we have a comment
+  that refers to an equation by its number in the docstring, that comment
+  will become out-of-date if another equation is added beforehand.
+  Comments should be self-contained when possible. Best to refer to original
+  sources.
+
+* Extract method refactoring pattern. Suppose we have a section of code
+  that has comments that define sections.  This refactoring pattern involves
+  creating a function with the name of that comment, and putting the corresponding
+  code in that new function.
+
+   .. code-block::
+
+      def f(x):
+          # calibrate data
+          ...
+          # process data
+          ...
+
+   could become...
+
+   .. code-block::
+
+      def f(x):
+          calibrated_data = calibrate_data(raw_data)
+          processed_data = process_data(calibrated_data)
+
+
 Commit Messages
 ---------------
 Good commit messages communicate context and intention to other
