@@ -2038,7 +2038,7 @@ def coupling_parameter(
 
     .. math::
 
-        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 π \epsilon_0 r}
+        E_{Coulomb} = \frac{Z_1 Z_2 q_e^2}{4 π ε_0 r}
 
     where :math:`r` is the Wigner-Seitz radius, and 1 and 2 refer to
     particle species 1 and 2 between which we want to determine the
@@ -2053,8 +2053,8 @@ def coupling_parameter(
     The quantum case is more complex. The kinetic energy is dominated by
     the Fermi energy, modulated by a correction factor based on the
     ideal chemical potential. This is obtained more precisely by taking
-    the the thermal kinetic energy and dividing by the degeneracy
-    parameter, modulated by the Fermi integral [1]_
+    the thermal kinetic energy and dividing by the degeneracy
+    parameter, modulated by the Fermi integral :cite:p:`gericke:2002`\ :
 
     .. math::
 
@@ -2073,8 +2073,8 @@ def coupling_parameter(
     where :math:`n_e` is the electron density and :math:`Λ_{de Broglie}`
     is the thermal de Broglie wavelength.
 
-    See equations 1.2, 1.3 and footnote 5 in [2]_ for details on the
-    ideal chemical potential.
+    See equations 1.2, 1.3 and footnote 5 in :cite:t:`bonitz:1998` for
+    details on the ideal chemical potential.
 
     Examples
     --------
@@ -2086,13 +2086,6 @@ def coupling_parameter(
     <Quantity 5.8033...e-05>
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
-
-    References
-    ----------
-    .. [1] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
-    .. [2] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
