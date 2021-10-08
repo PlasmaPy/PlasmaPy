@@ -1917,8 +1917,8 @@ def Knudsen_number(
     --------
     >>> import astropy.units as u
     >>> L = 1e-3 * u.m
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> Knudsen_number(L, T, n, species)
     <Quantity 7839.5...>
