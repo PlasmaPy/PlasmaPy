@@ -1759,7 +1759,9 @@ def mobility(
 
     Notes
     -----
-    The mobility is given by [1]_
+    The `mobility
+    <https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase>`_
+    is given by
 
     .. math::
 
@@ -1777,17 +1779,13 @@ def mobility(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> mobility(T, n, species)
     <Quantity 250505... m2 / (s V)>
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 1921.2784... m2 / (s V)>
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Electrical_mobility#Mobility_in_gas_phase
     """
     freq = collision_frequency(
         T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
