@@ -192,11 +192,12 @@ def Coulomb_logarithm(
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner
     impact parameter and the outer impact parameter, respectively, for
-    Coulomb collisions [1]_; :math:`b_{min}` and :math:`b_{max}` are
-    each computed by `~plasmapy.formulary.collisions.impact_parameter`.
+    Coulomb collisions :cite:p:`spitzer:1962`\ ; :math:`b_{min}` and
+    :math:`b_{max}` are each computed by
+    `~plasmapy.formulary.collisions.impact_parameter`.
 
     The abbreviations of Options 2–7 (``"GMS-..."``) refer to the first
-    initials of the three authors of Reference [4]_.
+    initials of the three authors of :cite:t:`gericke:2002`.
 
     .. note::
 
@@ -207,8 +208,8 @@ def Coulomb_logarithm(
     **Explanation of Supported Methods of Computing the Coulomb Logarithm**
 
     In this section, further information about each method, such as
-    about interpolation and other special features, is
-    documented. Please refer to Reference [1]_ and Reference [4]_ for
+    about interpolation and other special features, is documented.
+    Please refer to Reference [1]_ and :cite:t:`gericke:2002` for
     additional information about these methods.
 
     Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
@@ -257,8 +258,8 @@ def Coulomb_logarithm(
         which may be true if the coupling parameter is high (such as for
         nonideal, dense, cold plasmas).
 
-        Please refer to Reference [1]_ for additional information about
-        this method.
+        Please refer to :cite:t:`spitzer:1962` for additional
+        information about this method.
 
     Option 2: ``"ls_min_interp"`` or ``"GMS-1"`` (Landau-Spitzer,
     interpolation of :math:`b_{min}`)
@@ -285,7 +286,8 @@ def Coulomb_logarithm(
         if the coupling parameter is high (such as for nonideal, dense,
         cold plasmas).
 
-        Note: This is the first method in Table 1 of Reference [4]_.
+        Note: This is the first method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 3: ``"ls_full_interp"`` or ``"GMS-2"`` (Landau-Spitzer,
     interpolation of :math:`b_{min}` and :math:`b_{max}`)
@@ -313,7 +315,8 @@ def Coulomb_logarithm(
         if the coupling parameter is high (such as for nonideal, dense,
         cold plasmas).
 
-        Note: This is the second method in Table 1 of Reference [4]_.
+        Note: This is the second method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 4: ``"ls_clamp_mininterp"`` or ``"GMS-3"`` (Landau-Spitzer
     with a clamp, interpolation of :math:`b_{min}`)
@@ -352,7 +355,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the third method in Table 1 of Reference [4]_.
+        Note: This is the third method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 5: ``"hls_min_interp"`` or ``"GMS-4"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{min}`)
@@ -380,7 +384,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the fourth method in Table 1 of Reference [4]_.
+        Note: This is the fourth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 6: ``"hls_max_interp"`` or ``"GMS-5"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{max}`)
@@ -410,7 +415,8 @@ def Coulomb_logarithm(
         Caution: This method overestimates :math:`\ln{Λ}` at high
         temperatures.
 
-        Note: This is the fifth method in Table 1 of Reference [4]_.
+        Note: This is the fifth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Option 7: ``"hls_full_interp"`` or ``"GMS-6"`` (Hyperbolic
     Landau-Spitzer, interpolation of :math:`b_{min}` and
@@ -440,7 +446,8 @@ def Coulomb_logarithm(
         :math:`\ln{Λ} < 0` by this method, even if the coupling
         parameter is high (such as for nonideal, dense, cold plasmas).
 
-        Note: This is the sixth method in Table 1 of Reference [4]_.
+        Note: This is the sixth method in Table 1 of
+        :cite:t:`gericke:2002`.
 
     Examples
     --------
@@ -454,7 +461,6 @@ def Coulomb_logarithm(
 
     References
     ----------
-    .. [1] Physics of Fully Ionized Gases, L. Spitzer (1962)
 
     .. [2] Francis, F. Chen. Introduction to plasma physics and controlled
        fusion 3rd edition. Ch 5 (Springer 2015).
@@ -462,10 +468,6 @@ def Coulomb_logarithm(
     .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
        and Magnetically Confined Fusion Literature, W. Fundamenski and
        O.E. Garcia, EFDA–JET–R(07)01
-
-    .. [4] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
 
     See Also
     --------
@@ -646,7 +648,7 @@ def impact_parameter_perp(
     Notes
     -----
     The distance of closest approach, impact_parameter_perp, is given by
-    [1]_\ :
+    (see Ch. 5 of :cite:t:`chen:2016`):
 
     .. math::
 
@@ -659,11 +661,6 @@ def impact_parameter_perp(
     >>> species = ('e', 'p')
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -769,7 +766,8 @@ def impact_parameter(
     length.
 
     For quantum plasmas the maximum impact parameter can be the
-    quadratic sum of the debye length and ion radius (Wigner_Seitz) [1]_
+    quadratic sum of the debye length and ion radius (Wigner_Seitz)
+    :cite:p:`gericke:2002`
 
     .. math::
 
@@ -779,7 +777,7 @@ def impact_parameter(
     thermal de Broglie wavelength and the distance of closest approach
     for a 90° Coulomb collision. A quadratic sum is used for all GMS
     methods, except for GMS-5, where ``b_min`` is simply set to the
-    distance of closest approach [1]_.
+    distance of closest approach :cite:p:`gericke:2002`.
 
     .. math::
 
@@ -795,13 +793,6 @@ def impact_parameter(
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
-
-    References
-    ----------
-    .. [1] Dense plasma temperature equilibration in the binary collision
-       approximation. D. O. Gericke et. al. PRE,  65, 036418 (2002).
-       DOI: 10.1103/PhysRevE.65.036418
-
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
@@ -996,7 +987,8 @@ def collision_frequency(
 
     Notes
     -----
-    The collision frequency is given by [1]_
+    The collision frequency (see Ch. 5 of :cite:t:`chen:2016`) is given
+    by
 
     .. math::
 
@@ -1007,7 +999,7 @@ def collision_frequency(
     (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
     Coulomb logarithm accounting for small angle collisions.
 
-    See Equation (2.14) in [2]_.
+    See Equation (2.14) in [1]_.
 
     Examples
     --------
@@ -1020,9 +1012,7 @@ def collision_frequency(
 
     References
     ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] `Draft Material for "Fundamentals of Plasma Physics" Book
+    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
        <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
     """
@@ -1135,7 +1125,7 @@ def fundamental_electron_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
 
-    [3]_ provides a derivation of this as an average collision frequency
+    [1]_ provides a derivation of this as an average collision frequency
     between electrons and ions for a Maxwellian distribution. It is thus
     a special case of the collision frequency with an averaging factor,
     and is on many occasions in transport theory the most relevant
@@ -1180,10 +1170,10 @@ def fundamental_electron_collision_freq(
 
     Notes
     -----
-    Equations (2.17) and (2.120) in [3]_ provide the original source
+    Equations (2.17) and (2.120) in [1]_ provide the original source
     used to implement this formula, however, the simplest form that
     connects our average collision frequency to the general collision
-    frequency is is this (from 2.17):
+    frequency is this (from 2.17):
 
     .. math::
 
@@ -1194,19 +1184,13 @@ def fundamental_electron_collision_freq(
     Maxwellian distribution).
 
     This implementation of the average collision frequency is equivalent to:
-    * :math:`1/τ_e` from ref [1]_ eqn (2.5e) pp. 215,
-    * :math:`ν_e` from ref [2]_ pp. 33,
+    * :math:`1/τ_e` from equation (2.5e) on page 215 of
+      :cite:t:`braginskii:1965`
+    * :math:`ν_e` from page 33 of :cite:t:`nrlformulary:2019`
 
     References
     ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
-       plasma physics 1 (1965): 205.
-
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
-       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
-
-    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
        <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
@@ -1274,7 +1258,7 @@ def fundamental_ion_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
 
-    [3]_ provides a derivation of this as an average collision frequency
+    [1]_ provides a derivation of this as an average collision frequency
     between ions and ions for a Maxwellian distribution. It is thus a
     special case of the collision frequency with an averaging factor.
 
@@ -1317,7 +1301,7 @@ def fundamental_ion_collision_freq(
 
     Notes
     -----
-    Equations (2.36) and (2.122) in [3]_ provide the original source
+    Equations (2.36) and (2.122) in [1]_ provide the original source
     used to implement this formula, however, in our implementation we
     use the very same process that leads to the fundamental electron
     collison rate (2.17), gaining simply a different coefficient:
@@ -1338,19 +1322,13 @@ def fundamental_ion_collision_freq(
     This result is an ion momentum relaxation rate, and is used in many
     classical transport expressions. It is equivalent to:
 
-    * :math:`1/τ_i` from ref [1]_, equation (2.5i) pp. 215,
-    * :math:`ν_i` from ref [2]_ pp. 33,
+    * :math:`1/τ_i` from equation (2.5i) on page 215 of
+      :cite:t:`braginskii:1965`
+    * :math:`ν_i` from page 33 of :cite:t:`nrlformulary:2019`
 
     References
     ----------
-    .. [1] Braginskii, S. I. "Transport processes in a plasma." Reviews of
-       plasma physics 1 (1965): 205.
-
-    .. [2] Huba, J. D. "NRL (Naval Research Laboratory) Plasma Formulary,
-       revised." Naval Research Lab. Report NRL/PU/6790-16-614 (2016).
-       https://www.nrl.navy.mil/News-Media/Publications/NRL-Plasma-Formulary
-
-    .. [3] `Draft Material for "Fundamentals of Plasma Physics" Book
+    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
        <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
        by James D. Callen
 
@@ -1495,7 +1473,7 @@ def mean_free_path(
 
     Notes
     -----
-    The collisional mean free path is given by [1]_
+    The collisional mean free path (see :cite:t:`chen:2016`) is given by:
 
     .. math::
 
@@ -1513,11 +1491,6 @@ def mean_free_path(
     <Quantity 7.839... m>
     >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
     """
     # collisional frequency
     freq = collision_frequency(
