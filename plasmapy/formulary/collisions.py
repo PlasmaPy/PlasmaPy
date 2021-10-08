@@ -1547,7 +1547,8 @@ def Spitzer_resistivity(
     V: u.m / u.s = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Ohm * u.m:
-    r"""Spitzer resistivity of a plasma
+    r"""
+    Spitzer resistivity of a plasma.
 
     Parameters
     ----------
@@ -1622,7 +1623,8 @@ def Spitzer_resistivity(
 
     Notes
     -----
-    The Spitzer resistivity is given by [1]_ [2]_
+    The Spitzer resistivity (see Ch. 5 of :cite:t:`chen:2016`) is given
+    by:
 
     .. math::
 
@@ -1640,20 +1642,13 @@ def Spitzer_resistivity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19*u.m**-3
-    >>> T = 1e6*u.K
+    >>> n = 1e19 * u.m ** -3
+    >>> T = 1e6 * u.K
     >>> species = ('e', 'p')
     >>> Spitzer_resistivity(T, n, species)
     <Quantity 2.4915...e-06 m Ohm>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 0.000324... m Ohm>
-
-    References
-    ----------
-    .. [1] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-    .. [2] https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view
-
     """
     # collisional frequency
     freq = collision_frequency(
