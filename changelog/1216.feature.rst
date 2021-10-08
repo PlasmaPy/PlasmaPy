@@ -1,0 +1,1 @@
+Implemented ``__eq__``, ``__ne__`` and ``__hash__`` to allow |CustomParticle| instances to be used as `dict` keys.

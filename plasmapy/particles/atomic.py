@@ -51,9 +51,9 @@ def atomic_number(element: Particle) -> Integral:
 
     Parameters
     ----------
-    element: `str` or `~plasmapy.particles.Particle`
+    element: `str` or `~plasmapy.particles.particle_class.Particle`
         A string representing an element, isotope, or ion; or an
-        instance of the `~plasmapy.particles.Particle` class.
+        instance of the `~plasmapy.particles.particle_class.Particle` class.
 
     Returns
     -------
@@ -97,9 +97,9 @@ def mass_number(isotope: Particle) -> Integral:
 
     Parameters
     ----------
-    isotope : `str` or `~plasmapy.particles.Particle`
+    isotope : `str` or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or a neutron; or an instance of
-        the `plasmapy.particles.Particle` class.
+        the `plasmapy.particles.particle_class.Particle` class.
 
     Returns
     -------
@@ -144,7 +144,7 @@ def standard_atomic_weight(element: Particle) -> u.Quantity:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.Particle`
+    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an element or an integer representing an
         atomic number, or an instance of the Particle class.
 
@@ -205,7 +205,7 @@ def particle_mass(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an element, isotope, ion, or special
         particle; an integer representing an atomic number; or an
         instance of the Particle class.
@@ -431,7 +431,7 @@ def is_stable(particle: Particle, mass_numb: Optional[Integral] = None) -> bool:
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
@@ -484,7 +484,7 @@ def half_life(particle: Particle, mass_numb: Optional[Integral] = None) -> u.Qua
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A string representing an isotope or particle, an integer
         representing an atomic number, or an instance of the Particle
         class.
@@ -847,11 +847,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     Parameters
     ----------
-    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.Particle`,
+    test_particle, target_particle : `str`, `int`, `~plasmapy.particles.particle_class.Particle`,
     `~astropy.units.Quantity`, or `~astropy.constants.Constant`
 
         The test particle as represented by a string, an integer
-        representing atomic number, a `~plasmapy.particles.Particle`
+        representing atomic number, a `~plasmapy.particles.particle_class.Particle`
         object, or a `~astropy.units.Quantity` or
         `~astropy.constants.Constant` with units of mass.
 
@@ -874,11 +874,11 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
 
     `TypeError`
         If either argument is not a `str`, `int`,
-        `~plasmapy.particles.Particle`, `~astropy.units.Quantity`, or
-        `~astropy.constants.Constant`.
+        `~plasmapy.particles.particle_class.Particle`,
+        `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> reduced_mass('p+', 'e-')
     <Quantity 9.104425e-31 kg>

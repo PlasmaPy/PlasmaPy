@@ -248,6 +248,7 @@ class Test__Characteristic_inherited_methods:
         assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
+@pytest.mark.slow
 class Test__swept_probe_analysis:
     r"""Test the swept_probe_analysis function in langmuir.py"""
 

@@ -1,8 +1,6 @@
 import astropy.units as u
 import collections
 import numpy as np
-import os
-import pickle
 import pytest
 
 from astropy.tests.helper import assert_quantity_allclose
@@ -12,11 +10,12 @@ from plasmapy.particles import (
     atomic_symbol,
     charge_number,
     isotope_symbol,
-    Particle,
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.particles.ionization_state import IonicLevel, IonizationState
+from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
@@ -354,7 +353,7 @@ class Test_IonizationState:
             instance.tol = tol
 
     @pytest.mark.parametrize("test_name", test_cases.keys())
-    def test_particle_instances(self, test_name):
+    def test_as_particle_list(self, test_name):
         """
         Test that `IonizationState` returns the correct `Particle`
         instances.
@@ -363,10 +362,11 @@ class Test_IonizationState:
         atom = instance.base_particle
         nstates = instance.atomic_number + 1
         expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
-        assert expected_particles == instance._particle_instances, (
+        actual_particles = instance.to_list()
+        assert expected_particles == actual_particles, (
             f"The expected Particle instances of {expected_particles} "
             f"are not all equal to the IonizationState particles of "
-            f"{instance._particle_instances} for test {test_name}."
+            f"{actual_particles} for test {test_name}."
         )
 
     @pytest.mark.parametrize(
@@ -408,7 +408,7 @@ class Test_IonizationState:
 
         charge_numbers = np.arange(instance.atomic_number + 1)
         symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
-        particles = instance._particle_instances
+        particles = instance.to_list()
 
         errors = []
 
@@ -796,5 +796,86 @@ def test_iteration_with_nested_iterator():
 def test_ionization_state_inequality_and_identity():
     deuterium_states = IonizationState("D+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
     tritium_states = IonizationState("T+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
-    assert deuterium_states is not tritium_states
     assert deuterium_states != tritium_states
+
+
+physical_properties = ["charge", "mass"]
+
+particles_and_ionfracs = [
+    ("H-1", np.array([1, 0])),
+    ("H-1", np.array([0, 1])),
+    ("H-1", np.array([0.3, 0.7])),
+    ("He-4", np.array([0.2, 0.5, 0.3])),
+    ("Li-7", np.array([0.21, 0.01, 0.28, 0.5])),
+]
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
+def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property):
+    """
+    Test that `IonizationState.average_ion` gives a |CustomParticle|
+    instance with the expected mass or charge when calculating the
+    weighted mean.
+    """
+    ionization_state = IonizationState(base_particle, ionic_fractions)
+    ions = ionic_levels(base_particle)
+    physical_quantity = getattr(ions, physical_property)
+    expected_mean_quantity = np.average(physical_quantity, weights=ionic_fractions)
+    mean_ion = ionization_state.average_ion()
+    actual_mean_quantity = getattr(mean_ion, physical_property)
+    assert_quantity_allclose(actual_mean_quantity, expected_mean_quantity)
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
+def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property):
+    """
+    Test that `IonizationState.average_ion` gives a |CustomParticle|
+    instances with the expected mass or charge when calculating the
+    weighted root mean square.
+    """
+    ionization_state = IonizationState(base_particle, ionic_fractions)
+    ions = ionic_levels(base_particle)
+    physical_quantity = getattr(ions, physical_property)
+    expected_rms_quantity = np.sqrt(
+        np.average(physical_quantity ** 2, weights=ionic_fractions)
+    )
+    kwargs = {f"use_rms_{physical_property}": True}
+    rms_ion = ionization_state.average_ion(**kwargs)
+    actual_rms_quantity = getattr(rms_ion, physical_property)
+    assert_quantity_allclose(actual_rms_quantity, expected_rms_quantity)
+
+
+def test_exclude_neutrals_from_average_ion():
+    """
+    Test that the `IonizationState.average_ion` method returns a
+    |CustomParticle| that does not include neutrals in the averaging
+    when the ``include_neutrals`` keyword is `False`.
+    """
+    base_particle = Particle("He-4")
+    ionization_state_without_neutrals = IonizationState(base_particle, [0, 0.2, 0.8])
+    expected_average_ion = ionization_state_without_neutrals.average_ion()
+    ionization_state_with_neutrals = IonizationState(base_particle, [0.50, 0.1, 0.4])
+    actual_average_ion = ionization_state_with_neutrals.average_ion(
+        include_neutrals=False
+    )
+    assert actual_average_ion == expected_average_ion
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("use_rms", [True, False])
+def test_comparison_to_equivalent_particle_list(physical_property, use_rms):
+    """
+    Test that `IonizationState.average_ion` gives consistent results with
+    `ParticleList.average_particle` when the ratios of different particles
+    is the same between the `IonizationState` and the `ParticleList`.
+    """
+    particles = ParticleList(2 * ["He-4 0+"] + 3 * ["He-4 1+"] + 5 * ["He-4 2+"])
+    ionization_state = IonizationState("He-4", [0.2, 0.3, 0.5])
+    kwargs = {f"use_rms_{physical_property}": True}
+    expected_average_particle = particles.average_particle(**kwargs)
+    expected_average_quantity = getattr(expected_average_particle, physical_property)
+    actual_average_particle = ionization_state.average_ion(**kwargs)
+    actual_average_quantity = getattr(actual_average_particle, physical_property)
+    assert_quantity_allclose(actual_average_quantity, expected_average_quantity)

@@ -1,0 +1,2 @@
+Updated documentation guide to describe where formulae should go in
+docstrings and how to use glossary entries.

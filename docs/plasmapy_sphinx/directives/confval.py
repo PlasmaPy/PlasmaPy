@@ -9,7 +9,7 @@ of the `sphinx` and `sphinx_rtd_theme` packages.
 
     | A directive used for documenting `Sphinx configuration values
       <https://www.sphinx-doc.org/en/master/usage/configuration.html>`_.  While
-      this directive is not provide by Sphinx, it is used by Sphinx and, thus,
+      this directive is not provided by Sphinx, it is used by Sphinx and, thus,
       cross-linking is provided through the :confval:`intersphinx_mapping`
       configuration value with the `sphinx.ext.intersphinx` extension.
 

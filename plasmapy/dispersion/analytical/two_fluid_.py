@@ -1,4 +1,8 @@
-__all__ = ["two_fluid_dispersion_solution"]
+"""
+This module contains functionality for calculating various analytical
+solutions to the two fluid dispersion relation.
+"""
+__all__ = ["two_fluid"]
 
 import astropy.units as u
 import numpy as np
@@ -20,7 +24,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid_dispersion_solution(
+def two_fluid(
     *,
     B: u.T,
     ion: Union[str, Particle],
@@ -28,41 +32,43 @@ def two_fluid_dispersion_solution(
     n_i: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
-    theta: u.deg,
+    theta: u.rad,
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
 ):
     r"""
-    Using the solution provided by Bellan 2012, calculate the analytical
-    solution to the two fluid, low-frequency (:math:`\omega/kc \ll 1`) dispersion
-    relation presented by Stringer 1963.  This dispersion relation also
-    assummes a uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric
-    field :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
+    Using the solution provided by :cite:t:`bellan:2012`, calculate the
+    analytical solution to the two fluid, low-frequency
+    (:math:`\omega/kc \ll 1`) dispersion relation presented by
+    :cite:t:`stringer:1963`.  This dispersion relation also assummes a
+    uniform magnetic field :math:`\mathbf{B_o}`, no D.C. electric field
+    :math:`\mathbf{E_o}=0`, and quasi-neutrality.  For more information
     see the **Notes** section below.
 
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`T`.
+        The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
-        charge state information is provided, then the ions are assumed to be
-        singly ionized.
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        Wavenumber in units convertible to rad/m`.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Ion number density in units convertible to m\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`
-        The electron temperature in units of :math:`K` or :math:`eV`.
+        The electron temperature in units of K or eV.
     T_i : `~astropy.units.Quantity`
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        The ion temperature in units of K or eV.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
-        Either single valued or 1-D array of size :math:`M`.
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units must be
+        convertible to radians. Either single valued or 1-D array of
+        size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
@@ -73,32 +79,36 @@ def two_fluid_dispersion_solution(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
     z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  Will override any charge state defined by argument ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
 
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+        A dictionary of computed wave frequencies in units rad/s.  The
+        dictionary contains three keys: ``'fast_mode'`` for the fast
+        mode, ``'alfven_mode'`` for the Alfvén mode, and
+        ``'acoustic_mode'`` for the ion-acoustic mode.  The value for
+        each key will be a :math:`N × M` array.
 
     Raises
     ------
     TypeError
-        If applicable arguments are not instances of `~astropy.units.Quantity` or
-        cannot be converted into one.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
+        or `float`.
 
     ~astropy.units.UnitTypeError
-        If applicable arguments do not have units convertible to the expected
-        units.
+        If applicable arguments do not have units convertible to the
+        expected units.
 
     ValueError
         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
@@ -125,8 +135,8 @@ def two_fluid_dispersion_solution(
     Notes
     -----
 
-    The complete dispersion equation presented by Springer 1963 [2]_ (equation 1
-    of Bellan 2012 [1]_) is:
+    The complete dispersion equation presented by :cite:t:`stringer:1963`
+    (equation 1 of :cite:t:`bellan:2012`) is:
 
     .. math::
         \left( \cos^2 \theta - Q \frac{\omega^2}{k^2 {v_A}^2} \right) &
@@ -146,16 +156,17 @@ def two_fluid_dispersion_solution(
         \cos \theta &= \frac{k_z}{k} \\
         \mathbf{B_o} &= B_{o} \mathbf{\hat{z}}
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber, :math:`v_A`
-    is the Alfvén velocity, :math:`c_s` is the sound speed, :math:`\omega_{ci}` is
-    the ion gyrofrequency, and :math:`\omega_{pe}` is the electron plasma frequency.
-    This relation does additionally assume low-frequency waves
-    :math:`\omega/kc \ll 1`, no D.C. electric field :math:`\mathbf{E_o}=0` and
-    quasi-neutrality.
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`v_A` is the Alfvén velocity, :math:`c_s` is the sound speed,
+    :math:`\omega_{ci}` is the ion gyrofrequency, and
+    :math:`\omega_{pe}` is the electron plasma frequency. This relation
+    does additionally assume low-frequency waves
+    :math:`\omega/kc \ll 1`, no D.C. electric field
+    :math:`\mathbf{E_o}=0` and quasi-neutrality.
 
-    Following section 5 of Bellan 2012 [1]_ the exact roots of the above dispersion
-    equation can be derived and expressed as one analytical solution (equation 38
-    of Bellan 2012 [1]_):
+    Following section 5 of :cite:t:`bellan:2012` the exact roots of the
+    above dispersion equation can be derived and expressed as one
+    analytical solution (equation 38 of :cite:t:`bellan:2012`):
 
     .. math::
         \frac{\omega}{\omega_{ci}} = \sqrt{
@@ -168,8 +179,9 @@ def two_fluid_dispersion_solution(
             + \frac{\Lambda A}{3}
         }
 
-    where :math:`j = 0` represents the fast mode, :math:`j = 1` represents the
-    Alfvén mode, and :math:`j = 2` represents the acoustic mode.  Additionally,
+    where :math:`j = 0` represents the fast mode, :math:`j = 1`
+    represents the Alfvén mode, and :math:`j = 2` represents the
+    acoustic mode.  Additionally,
 
     .. math::
         p &= \frac{3B-A^2}{3} \; , \; q = \frac{9AB-2A^3-27C}{27} \\
@@ -180,20 +192,10 @@ def two_fluid_dispersion_solution(
             , \; \beta = \left( \frac{c_s}{v_A}\right)^2 \;
             , \; \Lambda = \left( \frac{k v_{A}}{\omega_{ci}}\right)^2
 
-    References
-    ----------
-    .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
-       JGR, 117, A12219, doi: `10.1029/2012JA017856
-       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
-
-    .. [2] TE Stringer, Low-frequency waves in an unbounded plasma, 1963, JNE,
-       Part C, doi: `10.1088/0368-3281/5/2/304
-       <https://doi.org/10.1088/0368-3281/5/2/304>`_
-
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion import two_fluid_dispersion
+    >>> from plasmapy.dispersion.analytical import two_fluid
     >>> inputs = {
     ...     "k": 0.01 * u.rad / u.m,
     ...     "theta": 30 * u.deg,
@@ -203,7 +205,7 @@ def two_fluid_dispersion_solution(
     ...     "T_i": 4.0e5 * u.K,
     ...     "ion": "p+",
     ... }
-    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas = two_fluid(**inputs)
     >>> omegas
     {'fast_mode': <Quantity 1520.57... rad / s>,
      'alfven_mode': <Quantity 1261.75... rad / s>,
@@ -218,7 +220,7 @@ def two_fluid_dispersion_solution(
     ...     "T_i": 4.0e5 * u.K,
     ...     "ion": "He+",
     ... }
-    >>> omegas = two_fluid_dispersion_solution(**inputs)
+    >>> omegas = two_fluid(**inputs)
     >>> omegas['fast_mode']
     <Quantity [[0.00767..., 0.00779... ],
                [0.01534..., 0.01558...]] rad / s>
@@ -278,7 +280,6 @@ def two_fluid_dispersion_solution(
 
     # validate argument theta
     theta = theta.squeeze()
-    theta = theta.to(u.radian)
     if not (theta.ndim == 0 or theta.ndim == 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "

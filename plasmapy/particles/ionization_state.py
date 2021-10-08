@@ -3,7 +3,7 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
-__all__ = ["IonizationState", "IonicLevel"]
+__all__ = ["IonicLevel", "IonizationState"]
 
 import numpy as np
 import warnings
@@ -18,7 +18,8 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -219,8 +220,9 @@ class IonizationState:
         ions.
 
     tol: `float` or integer, keyword-only, optional
-        The absolute tolerance used by `~numpy.isclose` when testing
-        normalizations and making comparisons.  Defaults to ``1e-15``.
+        The absolute tolerance used by `~numpy.isclose` and similar
+        functions when testing normalizations and making comparisons.
+        Defaults to ``1e-15``.
 
     Raises
     ------
@@ -344,7 +346,7 @@ class IonizationState:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, value) -> IonicLevel:
+    def __getitem__(self, value) -> List[IonicLevel]:
         """Return information for a single ionization level."""
         if isinstance(value, slice):
             return [
@@ -475,8 +477,8 @@ class IonizationState:
     @property
     def ionic_fractions(self) -> np.ndarray:
         """
-        Return the ionic fractions, where the index corresponds to
-        the charge number.
+        The ionic fractions, where the index corresponds to the charge
+        number.
 
         Examples
         --------
@@ -534,8 +536,8 @@ class IonizationState:
 
     def _is_normalized(self, tol: Optional[Real] = None) -> bool:
         """
-        Return `True` if the sum of the ionization fractions is equal to
-        one within the allowed tolerance, and `False` otherwise.
+        `True` if the sum of the ionization fractions is equal to
+        ``1`` within the allowed tolerance, and `False` otherwise.
         """
         tol = tol if tol is not None else self.tol
         if not isinstance(tol, Real):
@@ -559,15 +561,14 @@ class IonizationState:
     @validate_quantities
     def n_e(self) -> u.m ** -3:
         """
-        Return the electron number density assuming a single species
-        plasma.
+        The electron number density assuming a single species plasma.
         """
         return np.sum(self._n_elem * self.ionic_fractions * self.charge_numbers)
 
     @property
     @validate_quantities
     def n_elem(self) -> u.m ** -3:
-        """Return the total number density of neutrals and all ions."""
+        """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m ** -3)
 
     @n_elem.setter
@@ -584,7 +585,7 @@ class IonizationState:
     @property
     @validate_quantities
     def number_densities(self) -> u.m ** -3:
-        """Return the number densities for each state."""
+        """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m ** -3)
         except Exception:
@@ -607,7 +608,7 @@ class IonizationState:
 
     @property
     def T_e(self) -> u.K:
-        """Return the electron temperature."""
+        """The electron temperature."""
         if self._T_e is None:
             raise ParticleError("No electron temperature has been specified.")
         return self._T_e.to(u.K, equivalencies=u.temperature_energy())
@@ -663,17 +664,16 @@ class IonizationState:
             )
 
             if value.size == 5 and self._number_of_particles != 5:
-                error_str += " For {self.base_particle}, five is right out."
+                error_str += f" For {self.base_particle}, five is right out."
             raise ParticleError(error_str)
 
     @property
     def kappa(self) -> np.real:
         """
-        Return the kappa parameter for a kappa distribution function
-        for electrons.
+        The κ parameter for a kappa distribution function for electrons.
 
         The value of ``kappa`` must be greater than ``1.5`` in order to
-        have a valid distribution function.  If ``kappa`` equals
+        have a valid distribution function.  If ``kappa`` is
         `~numpy.inf`, then the distribution function reduces to a
         Maxwellian.
 
@@ -695,49 +695,46 @@ class IonizationState:
 
     @property
     def element(self) -> str:
-        """Return the atomic symbol of the element."""
+        """The atomic symbol of the element."""
         return self._particle.element
 
     @property
     def isotope(self) -> Optional[str]:
         """
-        Return the isotope symbol for an isotope, or `None` if the
-        particle is not an isotope.
+        The isotope symbol for an isotope, or `None` if the particle is
+        not an isotope.
         """
         return self._particle.isotope
 
     @property
     def base_particle(self) -> str:
-        """Return the symbol of the element or isotope."""
+        """The symbol of the element or isotope."""
         return self.isotope if self.isotope else self.element
+
+    def to_list(self) -> ParticleList:
+        """
+        Return a `~plasmapy.particles.particle_collections.ParticleList`
+        of the ionic levels.
+        """
+        return ionic_levels(self.base_particle)
 
     @property
     def atomic_number(self) -> int:
-        """Return the atomic number of the element."""
+        """The atomic number of the element."""
         return self._particle.atomic_number
 
     def __len__(self):
         return self._number_of_particles
 
     @property
-    def _particle_instances(self) -> List[Particle]:
-        """
-        Return a list of the `~plasmapy.particles.particle_class.Particle` class
-        instances corresponding to each ion.
-        """
-        return [
-            Particle(self._particle.symbol, Z=i) for i in range(self.atomic_number + 1)
-        ]
-
-    @property
     def ionic_symbols(self) -> List[str]:
         """The ionic symbols for all charge states."""
-        return [particle.ionic_symbol for particle in self._particle_instances]
+        return self.to_list().symbols
 
     @property
     def charge_numbers(self) -> np.ndarray:
         """An array of the charge numbers."""
-        return np.arange(0, self.atomic_number + 1, dtype=int)
+        return self.to_list().charge_number
 
     @property
     @deprecated(
@@ -762,20 +759,17 @@ class IonizationState:
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
             )
-        return np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1))
+        return np.sum(self.ionic_fractions * self.charge_numbers)
 
     @property
     def Z_rms(self) -> np.float64:
-        """Return the root mean square for the charge number."""
-        return np.sqrt(
-            np.sum(self.ionic_fractions * np.arange(self.atomic_number + 1) ** 2)
-        )
+        """The root mean square charge number."""
+        return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers ** 2))
 
     @property
     def Z_most_abundant(self) -> List[Integral]:
         """
-        Return a `list` of the charge numbers with the highest ionic
-        fractions.
+        A `list` of the charge numbers with the highest ionic fractions.
 
         Examples
         --------
@@ -785,7 +779,6 @@ class IonizationState:
         >>> Li = IonizationState('Li', [0.4, 0.4, 0.2, 0.0])
         >>> Li.Z_most_abundant
         [0, 1]
-
         """
         if np.any(np.isnan(self.ionic_fractions)):
             raise ParticleError(
@@ -799,7 +792,14 @@ class IonizationState:
 
     @property
     def tol(self) -> Real:
-        """Return the absolute tolerance for comparisons."""
+        """
+        The absolute tolerance for comparisons.
+
+        This attribute is used as the ``atol`` parameter in
+        `numpy.isclose`, `numpy.allclose`,
+        `astropy.units.isclose`, and `astropy.units.allclose`
+        when testing normalizations and making comparisons.
+        """
         return self._tol
 
     @tol.setter
@@ -847,6 +847,62 @@ class IonizationState:
 
         return states_info
 
+    def average_ion(
+        self,
+        *,
+        include_neutrals: bool = True,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> CustomParticle:
+        """
+        Return a |CustomParticle| instance representing the average
+        particle in this ionization state.
+
+        By default, the weighted mean will be used as the average, with
+        the ionic fractions as the weights. If ``use_rms_charge`` or
+        ``use_rms_mass`` is `True`, then this method will return the root
+        mean square of the charge or mass, respectively.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional, keyword-only
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, exclude neutrals.
+            Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
+
+        Returns
+        -------
+        ~plasmapy.particles.particle_class.CustomParticle
+
+        Examples
+        --------
+        >>> state = IonizationState("He", [0.1, 0.9, 0.0])
+        >>> state.average_ion()
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.44...e-19 C)
+        >>> state.average_ion(include_neutrals=False)
+        CustomParticle(mass=6.6455660...e-27 kg, charge=1.602...e-19 C)
+        >>> state.average_ion(use_rms_charge=True, use_rms_mass=True)
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.519958...e-19 C)
+        """
+        min_charge = 0 if include_neutrals else 1
+
+        particle_list = self.to_list()[min_charge:]
+        abundances = self.ionic_fractions[min_charge:]
+
+        return particle_list.average_particle(
+            abundances=abundances,
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+        )
+
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
@@ -859,8 +915,8 @@ class IonizationState:
             below this level, then information for it will not be
             printed.  Defaults to 0.01.
 
-        Example
-        -------
+        Examples
+        --------
         >>> He_states = IonizationState(
         ...     'He',
         ...     [0.941, 0.058, 0.001],
@@ -883,17 +939,8 @@ class IonizationState:
         """
         separator_line = [64 * "-"]
 
-        scientific = "{:.2e}"
-        floaty = "{:.2f}"
-
-        n_elem = scientific.format(self.n_elem.value)
-        n_e = scientific.format(self.n_e.value)
-        T_e = scientific.format(self.T_e.value)
-        kappa = floaty.format(self.kappa)
-        Z_mean = floaty.format(self.Z_mean)
-
         output = [
-            f"IonizationState instance for {self.base_particle} with Z_mean = {Z_mean}"
+            f"IonizationState instance for {self.base_particle} with Z_mean = {self.Z_mean:.2f}"
         ]
         attributes = []
 
@@ -904,12 +951,12 @@ class IonizationState:
             # TODO add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
-            attributes.append(f"n_elem = {n_elem} m**-3")
-            attributes.append(f"n_e = {n_e} m**-3")
+            attributes.append(f"n_elem = {self.n_elem.value:.2e} m**-3")
+            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
         if not np.isnan(self.T_e):
-            attributes.append(f"T_e = {T_e} K")
+            attributes.append(f"T_e = {self.T_e.value:.2f} K")
         if np.isfinite(self.kappa):
-            attributes.append(f"kappa = {kappa}")
+            attributes.append(f"kappa = {self.kappa:.2f}")
 
         if attributes:
             attributes += separator_line

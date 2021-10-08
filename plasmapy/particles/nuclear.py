@@ -20,7 +20,7 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -79,7 +79,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 

@@ -1,0 +1,3 @@
+Added using [dlint](https://github.com/dlint-py/dlint)
+to the ``linters`` testing environment in :file:`tox.ini`
+as a static analysis tool to search for security issues.

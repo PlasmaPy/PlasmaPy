@@ -65,7 +65,7 @@ from plasmapy.utils.decorators import (
     preserve_signature,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning
+from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
 __all__ += __aliases__ + __lite_funcs__
 
@@ -205,7 +205,7 @@ def mass_density(
 
 
 rho_ = mass_density
-""" Alias to :func:`mass_density`. """
+"""Alias to `~plasmapy.formulary.parameters.mass_density`."""
 
 
 @check_relativistic
@@ -229,7 +229,7 @@ def Alfven_speed(
     where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
     is the total mass density (:math:`n_i` is the ion number density,
     :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass).
+    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
@@ -241,7 +241,7 @@ def Alfven_speed(
     density : `~astropy.units.Quantity`
         Either the ion number density :math:`n_i` in units convertible to
         m\ :sup:`-3` or the total mass density :math:`ρ` in units
-        convertible to kg / m\ :sup:`-3`\ .
+        convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.Particle`, optional
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
@@ -260,7 +260,7 @@ def Alfven_speed(
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units :math:`m/s`.
+        The Alfvén speed in units of m s\ :sup:`-1`.
 
     Raises
     ------
@@ -349,7 +349,7 @@ def Alfven_speed(
 
 
 va_ = Alfven_speed
-""" Alias to :func:`Alfven_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.Alfven_speed`."""
 
 
 @check_relativistic
@@ -479,8 +479,8 @@ def ion_sound_speed(
     :math:`\sqrt{γ_e k_B T_e / m_i}`. Ion acoustic waves can
     therefore occur even when the ion temperature is zero.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> n = 5e19*u.m**-3
     >>> k_1 = 3e1*u.m**-1
@@ -537,7 +537,7 @@ def ion_sound_speed(
 
 
 cs_ = ion_sound_speed
-""" Alias to :func:`ion_sound_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.ion_sound_speed`."""
 
 
 # -----                                                             thermal_speed  -----
@@ -939,7 +939,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
 
 pth_ = thermal_pressure
-""" Alias to :func:`thermal_pressure`. """
+"""Alias to `~plasmapy.formulary.parameters.thermal_pressure`."""
 
 
 @check_relativistic
@@ -1053,7 +1053,7 @@ def kappa_thermal_speed(
 
 
 vth_kappa_ = kappa_thermal_speed
-""" Alias to :func:`kappa_thermal_speed`. """
+"""Alias to `~plasmapy.formulary.parameters.kappa_thermal_speed`."""
 
 
 @validate_quantities(
@@ -1172,7 +1172,7 @@ def Hall_parameter(
 
 
 betaH_ = Hall_parameter
-""" Alias to :func:`Hall_parameter`. """
+"""Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
 
 
 @validate_quantities(
@@ -1239,7 +1239,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{ci} = \frac{Z e B}{m_i}
+        ω_{c} = \frac{Z e B}{m}
 
     The particle gyrofrequency is also known as the particle cyclotron
     frequency or the particle Larmor frequency.
@@ -1276,26 +1276,27 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    m_i = particles.particle_mass(particle)
+    m = particles.particle_mass(particle)
     Z = _grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 
-    omega_ci = u.rad * (Z * e * np.abs(B) / m_i).to(1 / u.s)
+    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
-    return omega_ci
+    return omega_c
 
 
 oc_ = gyrofrequency
-""" Alias to :func:`gyrofrequency`. """
+"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
 
 wc_ = gyrofrequency
-""" Alias to :func:`gyrofrequency`. """
+"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
 
 
 @validate_quantities(
     Vperp={"can_be_nan": True},
     T_i={"can_be_nan": True, "equivalencies": u.temperature_energy()},
+    T={"can_be_nan": True, "equivalencies": u.temperature_energy()},
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 def gyroradius(
@@ -1304,6 +1305,7 @@ def gyroradius(
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
     T_i: u.K = np.nan * u.K,
+    T: u.K = np.nan * u.K,
 ) -> u.m:
     r"""Return the particle gyroradius.
 
@@ -1324,8 +1326,12 @@ def gyroradius(
         The component of particle velocity that is perpendicular to the
         magnetic field in units convertible to meters per second.
 
+    T : `~astropy.units.Quantity`, optional, keyword-only
+        The particle temperature in units convertible to kelvin.
+
     T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
+        Note: Deprecated. Use T instead.
 
     Returns
     -------
@@ -1354,9 +1360,9 @@ def gyroradius(
 
     Notes
     -----
-    One but not both of ``Vperp`` and ``T_i`` must be inputted.
+    One but not both of ``Vperp`` and ``T`` must be inputted.
 
-    If any of ``B``, ``Vperp``, or ``T_i`` is a number rather than a
+    If any of ``B``, ``Vperp``, or ``T`` is a number rather than a
     `~astropy.units.Quantity`, then SI units will be assumed and a
     warning will be raised.
 
@@ -1375,69 +1381,78 @@ def gyroradius(
     Examples
     --------
     >>> from astropy import units as u
-    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(0.2*u.T, particle='p+', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, particle='p+', T=1e5*u.K)
     <Quantity 0.002120... m>
-    >>> gyroradius(5*u.uG, particle='alpha', T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, particle='alpha', T=1*u.eV)
     <Quantity 288002.38... m>
     >>> gyroradius(400*u.G, particle='Fe+++', Vperp=1e7*u.m/u.s)
     <Quantity 48.23129... m>
-    >>> gyroradius(B=0.01*u.T, particle='e-', T_i=1e6*u.K)
+    >>> gyroradius(B=0.01*u.T, particle='e-', T=1e6*u.K)
     <Quantity 0.003130... m>
     >>> gyroradius(0.01*u.T, 'e-', Vperp=1e6*u.m/u.s)
     <Quantity 0.000568... m>
-    >>> gyroradius(0.2*u.T, 'e-', T_i=1e5*u.K)
+    >>> gyroradius(0.2*u.T, 'e-', T=1e5*u.K)
     <Quantity 4.94949...e-05 m>
-    >>> gyroradius(5*u.uG, 'e-', T_i=1*u.eV)
+    >>> gyroradius(5*u.uG, 'e-', T=1*u.eV)
     <Quantity 6744.25... m>
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001421... m>
     """
 
-    isfinite_Ti = np.isfinite(T_i)
+    # Backwards Compatibility and Deprecation check for keyword T_i
+    if not np.isnan(T_i):
+        warnings.warn(
+            "Keyword T_i is deprecated, use T instead.",
+            PlasmaPyFutureWarning,
+        )
+        if np.isnan(T):
+            T = T_i
+
+    isfinite_T = np.isfinite(T)
     isfinite_Vperp = np.isfinite(Vperp)
 
-    # check 1: ensure either Vperp or T_i invalid, keeping in mind that
+    # check 1: ensure either Vperp or T invalid, keeping in mind that
     # the underlying values of the astropy quantity may be numpy arrays
-    if np.any(np.logical_not(np.logical_xor(isfinite_Vperp, isfinite_Ti))):
+    if np.any(np.logical_and(isfinite_Vperp, isfinite_T)):
         raise ValueError(
-            "Must give Vperp or T_i, but not both, as arguments to gyroradius"
+            "Must give Vperp or T, but not both, as arguments to gyroradius"
         )
 
     # check 2: get Vperp as the thermal speed if is not already a valid input
     if np.isscalar(Vperp.value) and np.isscalar(
-        T_i.value
-    ):  # both T_i and Vperp are scalars
+        T.value
+    ):  # both T and Vperp are scalars
         # we know exactly one of them is nan from check 1
-        if isfinite_Ti:
-            # T_i is valid, so use it to determine Vperp
-            Vperp = thermal_speed(T_i, particle=particle)
+        if isfinite_T:
+            # T is valid, so use it to determine Vperp
+            Vperp = thermal_speed(T, particle=particle)
         # else: Vperp is already valid, do nothing
-    elif np.isscalar(Vperp.value):  # only T_i is an array
-        # this means either Vperp must be nan, or T_i must be array of all nan,
+    elif np.isscalar(Vperp.value):  # only T is an array
+        # this means either Vperp must be nan, or T must be array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_Vperp:
-            # Vperp is valid, T_i is a vector that is all nan
+            # Vperp is valid, T is a vector that is all nan
             # uh...
-            Vperp = np.repeat(Vperp, len(T_i))
+            Vperp = np.repeat(Vperp, len(T))
         else:
-            # normal case where Vperp is scalar nan and T_i is valid array
-            Vperp = thermal_speed(T_i, particle=particle)
-    elif np.isscalar(T_i.value):  # only Vperp is an array
-        # this means either T_i must be nan, or V_perp must be array of all nan,
+            # normal case where Vperp is scalar nan and T is valid array
+            Vperp = thermal_speed(T, particle=particle)
+    elif np.isscalar(T.value):  # only Vperp is an array
+        # this means either T must be nan, or V_perp must be array of all nan,
         # or else we couldn't have gotten through check 1
-        if isfinite_Ti:
-            # T_i is valid, V_perp is an array of all nan
+        if isfinite_T:
+            # T is valid, V_perp is an array of all nan
             # uh...
-            Vperp = thermal_speed(np.repeat(T_i, len(Vperp)), particle=particle)
-        # else: normal case where T_i is scalar nan and Vperp is already a valid array
+            Vperp = thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
+        # else: normal case where T is scalar nan and Vperp is already a valid array
         # so, do nothing
-    else:  # both T_i and Vperp are arrays
+    else:  # both T and Vperp are arrays
         # we know all the elementwise combinations have one nan and one finite, due to check 1
-        # use the valid Vperps, and replace the others with those calculated from T_i
+        # use the valid Vperps, and replace the others with those calculated from T
         Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
-        Vperp[isfinite_Ti] = thermal_speed(T_i[isfinite_Ti], particle=particle)
+        Vperp[isfinite_T] = thermal_speed(T[isfinite_T], particle=particle)
 
     omega_ci = gyrofrequency(B, particle)
 
@@ -1447,10 +1462,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-""" Alias to :func:`gyroradius`. """
+"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
 
 rhoc_ = gyroradius
-""" Alias to :func:`gyroradius`. """
+"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
 
 
 @validate_quantities(
@@ -1521,8 +1536,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     :math:`2π`\ . The alternatives are to convert to cycle/second or to
     do the conversion manually, as shown in the examples.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> plasma_frequency(1e19*u.m**-3, particle='p')
     <Quantity 4.16329...e+09 rad / s>
@@ -1559,7 +1574,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
 
 wp_ = plasma_frequency
-""" Alias to :func:`plasma_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
 
 
 @validate_quantities(
@@ -1621,8 +1636,8 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     --------
     Debye_number
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
     <Quantity 0.002182... m>
@@ -1633,7 +1648,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-""" Alias to :func:`Debye_length`. """
+"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
 
 
 @validate_quantities(
@@ -1692,8 +1707,8 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     --------
     Debye_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
     <Quantity 2.17658...e+08>
@@ -1707,7 +1722,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
 
 nD_ = Debye_number
-""" Alias to :func:`Debye_number`. """
+"""Alias to `~plasmapy.formulary.parameters.Debye_number`."""
 
 
 @validate_quantities(
@@ -1765,8 +1780,8 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
     The inertial length is also known as the skin depth.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> inertial_length(5 * u.m ** -3, 'He+')
     <Quantity 2.02985...e+08 m>
@@ -1781,9 +1796,9 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to :func:`inertial_length`.
+Alias to `~plasmapy.formulary.parameters.inertial_length`.
 
-* Name is shorthand for :math:`c / \\omega_p`.
+* Name is shorthand for :math:`c / ω_p`.
 """
 
 
@@ -1838,8 +1853,8 @@ def magnetic_pressure(B: u.T) -> u.Pa:
     magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
         except in units of joules per cubic meter.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> magnetic_pressure(0.1*u.T).to(u.Pa)
     <Quantity 3978.87... Pa>
@@ -1849,7 +1864,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
 
 pmag_ = magnetic_pressure
-""" Alias to :func:`magnetic_pressure`. """
+"""Alias to `~plasmapy.formulary.parameters.magnetic_pressure`."""
 
 
 @validate_quantities
@@ -1903,8 +1918,8 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
     magnetic_pressure : Returns an equivalent `~astropy.units.Quantity`,
         except in units of pascals.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> magnetic_energy_density(0.1*u.T)
     <Quantity 3978.87... J / m3>
@@ -1914,7 +1929,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
 
 ub_ = magnetic_energy_density
-""" Alias to :func:`magnetic_energy_density`. """
+"""Alias to `~plasmapy.formulary.parameters.magnetic_energy_density`."""
 
 
 @validate_quantities(
@@ -1971,8 +1986,18 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     where :math:`ω_{ce}` is the electron gyrofrequency and
     :math:`ω_{pe}` is the electron plasma frequency.
 
-    Example
-    -------
+    The upper hybrid frequency is a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are
+    waves with their wave electric field being perpendicular to
+    the background magnetic field. In the cold plasma model, i.e.
+    without any finite temperature effects, the resonance acts
+    merely as a resonance such that power can be deposited there.
+    If finite temperature effects are considered, mode conversion
+    can occur at the upper hybrid resonance, coupling to the
+    electrostatic electron Bernstein wave.
+
+    Examples
+    --------
     >>> from astropy import units as u
     >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
     <Quantity 4.00459...e+11 rad / s>
@@ -1988,7 +2013,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
 
 wuh_ = upper_hybrid_frequency
-""" Alias to :func:`upper_hybrid_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.upper_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -2055,8 +2080,16 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
 
-    Example
-    -------
+    The lower hybrid frequency consitutes a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are waves
+    with their wave electric field being perpendicular to the background
+    magnetic field. For the lower hybrid frequency, ion and electron
+    dynamics both play a role. As the name suggests, it has a lower frequency
+    compared to the upper hybrid frequency. It can play an important role
+    for heating and current drive in fusion plasmas.
+
+    Examples
+    --------
     >>> from astropy import units as u
     >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
     <Quantity 5.78372...e+08 rad / s>
@@ -2083,7 +2116,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
 
 wlh_ = lower_hybrid_frequency
-""" Alias to :func:`lower_hybrid_frequency`. """
+"""Alias to `~plasmapy.formulary.parameters.lower_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -2096,9 +2129,10 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     The Bohm diffusion coefficient was conjectured to follow Bohm model
     of the diffusion of plasma across a magnetic field and describe the
-    diffusion of early fusion energy machines. The rate predicted by
-    Bohm diffusion is much higher than classical diffusion, and if there
-    were no exceptions, magnetically confined fusion would be impractical.
+    diffusion of early fusion energy machines :cite:p:`bohm:1949`. The
+    rate predicted by Bohm diffusion is much higher than classical
+    diffusion, and if there were no exceptions, magnetically confined
+    fusion would be impractical.
 
     .. math::
 
@@ -2146,7 +2180,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
     Returns
     -------
     D_B : `~astropy.units.Quantity`
-    The Bohm diffusion coefficient in meters squared per second.
+        The Bohm diffusion coefficient in meters squared per second.
 
     """
     D_B = k_B * T_e / (16 * e * B)
@@ -2154,4 +2188,4 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
 
 DB_ = Bohm_diffusion
-""" Alias to :func:`Bohm_diffusion`. """
+"""Alias to `~plasmapy.formulary.parameters.Bohm_diffusion`."""

@@ -13,8 +13,8 @@ __all__ = [
 from numbers import Integral
 from typing import Optional
 
-from .decorators import particle_input
-from .particle_class import Particle
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle
 
 # The @particle_input decorator takes the inputs for a function or
 # method and passes through the corresponding instance of the Particle
@@ -33,7 +33,7 @@ def atomic_symbol(element: Particle) -> str:
 
     Parameters
     ----------
-    element: `str`, `int`, or `~plasmapy.particles.Particle`
+    element: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A `str` representing an element, isotope, or ion; or an
         `int` or `str` representing an atomic number.
 
@@ -103,7 +103,7 @@ def isotope_symbol(isotope: Particle, mass_numb: Optional[Integral] = None) -> s
 
     Parameters
     ----------
-    isotope: `str`, `int`, or `~plasmapy.particles.Particle`
+    isotope: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -165,7 +165,7 @@ def ionic_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
@@ -193,8 +193,9 @@ def ionic_symbol(
 
     `TypeError`
         If `particle` is not a `str`, `int`, or
-        `~plasmapy.particles.Particle`; or if either of ``mass_numb`` or
-        ``Z`` is not an `int` or `str` representing an integer.
+        `~plasmapy.particles.particle_class.Particle`; or if either of
+        ``mass_numb`` or ``Z`` is not an `int` or `str` representing an
+        integer.
 
     Warns
     -----
@@ -233,7 +234,7 @@ def particle_symbol(
 
     Parameters
     ----------
-    particle: `int`, `str`, or `~plasmapy.particles.Particle`
+    particle: `int`, `str`, or `~plasmapy.particles.particle_class.Particle`
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
@@ -258,9 +259,10 @@ def particle_symbol(
         contradictory information is provided.
 
     `TypeError`
-        If ion is not a `str`, `int`, or `~plasmapy.particles.Particle`; or
-        if either of ``mass_numb`` or ``Z`` is not an `int` or a `str`
-        representing an integer.
+        If ion is not a `str`, `int`, or
+        `~plasmapy.particles.particle_class.Particle`; or if either of
+        ``mass_numb`` or ``Z`` is not an `int` or a `str` representing
+        an integer.
 
     Warns
     -----
@@ -294,7 +296,7 @@ def element_name(element: Particle) -> str:
 
     Parameters
     ----------
-    argument : `str`, `int`, or `~plasmapy.particles.Particle`
+    argument : `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
