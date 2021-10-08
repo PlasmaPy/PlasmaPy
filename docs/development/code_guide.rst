@@ -196,17 +196,6 @@ Suggestions on `how to write a git commit message
 
 * Use the body to explain what and why vs. how
 
-Documentation
-=============
-
-* All public classes, methods, and functions should have docstrings
-  using the numpydoc format.
-
-* Docstrings may be checked locally using
-  `pydocstyle <http://www.pydocstyle.org/en/latest/>`_.
-
-* These docstrings should include usage examples.
-
 Warnings and Exceptions
 =======================
 
