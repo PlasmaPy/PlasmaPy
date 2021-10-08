@@ -1897,7 +1897,8 @@ def Knudsen_number(
 
     Notes
     -----
-    The Knudsen number is given by [1]_
+    The `Knudsen number <https://en.wikipedia.org/wiki/Knudsen_number>`_
+    is given by
 
     .. math::
 
@@ -1923,10 +1924,6 @@ def Knudsen_number(
     <Quantity 7839.5...>
     >>> Knudsen_number(L, T, n, species, V=1e6 * u.m / u.s)
     <Quantity 10.91773...>
-
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Knudsen_number
     """
     path_length = mean_free_path(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
