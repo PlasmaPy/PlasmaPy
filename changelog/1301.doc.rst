@@ -1,0 +1,3 @@
+Incorporated citations in the
+`~plasmapy.dispersion.analytical.two_fluid_.two_fluid` docstring into
+the PlasmaPy bibliography framework.
