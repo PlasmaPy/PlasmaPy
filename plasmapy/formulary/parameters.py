@@ -59,7 +59,7 @@ from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
-    mark_has_lite_func,
+    bind_lite_func,
     angular_freq_to_hz,
     check_relativistic,
     preserve_signature,
@@ -672,7 +672,7 @@ def thermal_speed_lite(
     return coeff * np.sqrt(k_B_si_unitless * T / mass)
 
 
-@mark_has_lite_func(
+@bind_lite_func(
     thermal_speed_lite,
     attrs=[("coefficients", thermal_speed_coefficients)],
 )

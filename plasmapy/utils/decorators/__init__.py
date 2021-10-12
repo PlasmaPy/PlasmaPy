@@ -7,7 +7,7 @@ __all__ = [
     "check_values",
     "check_units",
     "deprecated",
-    "mark_has_lite_func",
+    "bind_lite_func",
     "modify_docstring",
     "preserve_signature",
     "validate_quantities",
@@ -31,5 +31,5 @@ from plasmapy.utils.decorators.helpers import (
     modify_docstring,
     preserve_signature,
 )
-from plasmapy.utils.decorators.lite_func import mark_has_lite_func
+from plasmapy.utils.decorators.lite_func import bind_lite_func
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities

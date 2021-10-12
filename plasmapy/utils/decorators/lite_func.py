@@ -1,7 +1,7 @@
 """
 Module for defining functionality that marks and handle Lite-Function creation.
 """
-__all__ = ["mark_has_lite_func"]
+__all__ = ["bind_lite_func"]
 
 import functools
 import inspect
@@ -22,7 +22,7 @@ class LiteFuncList(list):
     """
 
 
-def mark_has_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
+def bind_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind lightweight "lite" versions of formulary functions to the full
     formulary function.
