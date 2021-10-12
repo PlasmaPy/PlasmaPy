@@ -22,7 +22,7 @@ class LiteFuncList(list):
     """
 
 
-def bind_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
+def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind lightweight "lite" versions of formulary functions to the full
     formulary function.
@@ -30,7 +30,7 @@ def bind_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
     if attrs is None:
         attrs = []
 
-    if not inspect.isfunction(flite) or inspect.isbuiltin(flite):
+    if not inspect.isfunction(lite_func) or inspect.isbuiltin(lite_func):
         raise ValueError(f"The lite-function passed is not a user-defined function.")
 
     def decorator(f):
@@ -41,7 +41,7 @@ def bind_lite_func(flite, attrs: List[Tuple[str, Callable]] = None):
             return f(*args, **kwargs)
 
         __has_lite_func__ = LiteFuncList()
-        attrs.append(("lite", flite))
+        attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
 
             # skip objects that are not allowed
