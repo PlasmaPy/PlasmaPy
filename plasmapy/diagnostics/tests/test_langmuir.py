@@ -118,7 +118,7 @@ class Test__characteristic_errors:
 
         ab_sum = a + b
 
-        errStr = f"Addition of characteristic objects is not behaving as it should."
+        errStr = "Addition of characteristic objects is not behaving as it should."
         assert (a.current + b.current == ab_sum.current).all(), errStr
 
     def test_subtraction(self):
@@ -129,7 +129,7 @@ class Test__characteristic_errors:
 
         ab_sub = a - b
 
-        errStr = f"Subtraction of characteristic objects is not behaving as it should."
+        errStr = "Subtraction of characteristic objects is not behaving as it should."
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
@@ -248,6 +248,7 @@ class Test__Characteristic_inherited_methods:
         assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
+@pytest.mark.slow
 class Test__swept_probe_analysis:
     r"""Test the swept_probe_analysis function in langmuir.py"""
 
@@ -293,7 +294,7 @@ class Test__swept_probe_analysis:
             bimaxwellian=bimaxwellian,
         )
 
-        errStr = f"Analysis should be invariant to the ordering of the input data."
+        errStr = "Analysis should be invariant to the ordering of the input data."
         for key in sim_result:
             assert (sim_result[key] == sim_result_shuffled[key]).all(), errStr
 

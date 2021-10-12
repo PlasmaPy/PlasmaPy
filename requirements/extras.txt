@@ -3,5 +3,6 @@
 h5py
 lmfit
 mpmath
-pytest >= 5.1
+numba
 setuptools_scm
+tox

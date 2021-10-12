@@ -1,18 +1,21 @@
 """Tests for particle collections."""
-
 import astropy.units as u
+import numpy as np
 import pytest
+
+from typing import Dict
 
 from plasmapy.particles import alpha, electron, neutron, proton
 from plasmapy.particles.atomic import atomic_number
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.nuclear import nuclear_reaction_energy
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
+    ParticleLike,
 )
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 
 custom_particle = CustomParticle(mass=1e-25 * u.kg, charge=1e-18 * u.C)
 dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
@@ -21,7 +24,7 @@ dimensionless_particle = DimensionlessParticle(mass=1.25, charge=1.58)
 attributes = [
     "charge",
     "half_life",
-    "integer_charge",
+    "charge_number",
     "mass",
     "mass_energy",
 ]
@@ -322,3 +325,167 @@ def test_particle_multiplication(method, particle):
     """
     particle_list = getattr(particle, method)(3)
     assert particle_list == [particle, particle, particle]
+
+
+def test_mean_particle():
+    """
+    Test that ``ParticleList.average_particle()`` returns a particle with
+    the mean mass and mean charge of a |ParticleList|.
+    """
+    massless_uncharged_particle = CustomParticle(mass=0 * u.kg, charge=0 * u.C)
+    particle_list = ParticleList([proton, electron, alpha, massless_uncharged_particle])
+    expected_mass = (proton.mass + electron.mass + alpha.mass) / 4
+    expected_charge = (proton.charge + electron.charge + alpha.charge) / 4
+    average_particle = particle_list.average_particle()
+    assert u.isclose(average_particle.mass, expected_mass, rtol=1e-14)
+    assert u.isclose(average_particle.charge, expected_charge, rtol=1e-14)
+
+
+def test_weighted_mean_particle():
+    """
+    Test that ``ParticleList.average_particle()`` returns a particle with
+    the weighted mean.
+    """
+    custom_proton = CustomParticle(mass=proton.mass, charge=proton.charge)
+    particle_list = ParticleList([proton, electron, alpha, custom_proton])
+    abundances = [1, 2, 0, 1]
+    expected_mass = (proton.mass + electron.mass) / 2
+    expected_charge = 0 * u.C
+    average_particle = particle_list.average_particle(abundances=abundances)
+    assert u.isclose(average_particle.mass, expected_mass, rtol=1e-14)
+    assert u.isclose(average_particle.charge, expected_charge, rtol=1e-14)
+
+
+boolean_pairs = [(False, False), (True, False), (False, True), (True, True)]
+
+
+@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+def test_root_mean_square_particle(use_rms_charge, use_rms_mass):
+    """
+    Test that ``ParticleList.average_particle`` returns the mean or root
+    mean square of the charge and mass, as appropriate.
+    """
+
+    particle_list = ParticleList(["p+", "e-"])
+    average_particle = particle_list.average_particle(
+        use_rms_charge=use_rms_charge, use_rms_mass=use_rms_mass
+    )
+
+    expected_average_charge = (1 if use_rms_charge else 0) * proton.charge
+    assert u.isclose(average_particle.charge, expected_average_charge, rtol=1e-14)
+
+    if use_rms_mass:
+        expected_average_mass = np.sqrt((proton.mass ** 2 + electron.mass ** 2) / 2)
+    else:
+        expected_average_mass = (proton.mass + electron.mass) / 2
+
+    assert u.isclose(average_particle.mass, expected_average_mass, atol=1e-35 * u.kg)
+
+
+particle_multiplicities = [
+    {"e-": 1},
+    {"p+": 5, "e-": 11, "Fe-56 5+": 2},
+    {"p+": 4},
+    {CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
+    {"p+": 5, CustomParticle(mass=1 * u.kg, charge=1 * u.C): 1},
+    {CustomParticle(): 1},
+    {"p+": 2, "p+": 1},
+]
+
+
+@pytest.mark.parametrize("particle_multiplicities", particle_multiplicities)
+@pytest.mark.parametrize("use_rms_charge, use_rms_mass", boolean_pairs)
+def test_weighted_averages_of_particles(
+    particle_multiplicities: Dict[ParticleLike, int],
+    use_rms_charge,
+    use_rms_mass,
+):
+    """
+    Compare the mass and charge of the average particle for two |ParticleList|
+    instances.
+
+    The first |ParticleList| contains repeated particles.
+
+    The second |ParticleList| contains only one of each kind of particle
+    present in the first list, with the number of each particle recorded
+    in a separate array.
+
+    The unweighted averages of the first |ParticleList| should equal the
+    weighted averages of the second |ParticleList|, with the number of
+    each particle provided as the abundances.
+    """
+    all_particles = ParticleList([])
+    for particle, multiplicity in particle_multiplicities.items():
+        all_particles.extend(ParticleList(multiplicity * [particle]))
+
+    unique_particles = ParticleList(particle_multiplicities.keys())
+    number_of_each_particle = list(particle_multiplicities.values())
+
+    unweighted_mean_of_all_particles = all_particles.average_particle(
+        use_rms_charge=use_rms_charge,
+        use_rms_mass=use_rms_mass,
+    )
+
+    weighted_mean_of_unique_particles = unique_particles.average_particle(
+        use_rms_charge=use_rms_charge,
+        use_rms_mass=use_rms_mass,
+        abundances=number_of_each_particle,
+    )
+
+    assert u.isclose(
+        unweighted_mean_of_all_particles.mass,
+        weighted_mean_of_unique_particles.mass,
+        rtol=1e-14,
+        equal_nan=True,
+    )
+
+    assert u.isclose(
+        unweighted_mean_of_all_particles.charge,
+        weighted_mean_of_unique_particles.charge,
+        rtol=1e-14,
+        equal_nan=True,
+    )
+
+    if len(unique_particles) == 1 and isinstance(unique_particles[0], Particle):
+        assert isinstance(unweighted_mean_of_all_particles, Particle)
+        assert isinstance(weighted_mean_of_unique_particles, Particle)
+
+
+def test_particle_list_with_no_arguments():
+    """Test that `ParticleList()` returns an empty `ParticleList`."""
+    empty_particle_list = ParticleList()
+    assert isinstance(empty_particle_list, ParticleList)
+    assert len(empty_particle_list) == 0
+
+
+def test_ion_list_example():
+    ions = ionic_levels("He-4")
+    np.testing.assert_equal(ions.charge_number, [0, 1, 2])
+    assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
+
+
+@pytest.mark.parametrize(
+    "particle, min_charge, max_charge, expected_charge_numbers",
+    [
+        ("H-1", 0, 1, [0, 1]),
+        ("p+", 1, 1, [1]),
+        (Particle("p+"), 0, 0, [0]),
+        ("C", 3, 5, [3, 4, 5]),
+    ],
+)
+def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+    """Test that inputs to ionic_levels are interpreted correctly."""
+    particle = Particle(particle)
+    ions = ionic_levels(particle, min_charge, max_charge)
+    np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
+    assert ions[0].element == particle.element
+    if particle.is_category("isotope"):
+        assert ions[0].isotope == particle.isotope
+
+
+@pytest.mark.parametrize(
+    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+)
+def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+    with pytest.raises(ChargeError):
+        ionic_levels(element, min_charge, max_charge)

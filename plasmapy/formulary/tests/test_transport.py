@@ -38,7 +38,7 @@ from plasmapy.formulary.braginskii import (
 )
 from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.parameters import Hall_parameter
-from plasmapy.particles.atomic import integer_charge, particle_mass
+from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityWarning
 
@@ -49,7 +49,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-# test class for ClassicalTransport class:
+@pytest.mark.slow
 class Test_classical_transport:
     @classmethod
     def setup_class(self):
@@ -58,7 +58,7 @@ class Test_classical_transport:
         self.n_e = 2e13 / u.cm ** 3
         self.ion = "D +1"
         self.m_i = particle_mass(self.ion)
-        self.Z = integer_charge(self.ion)
+        self.Z = charge_number(self.ion)
         self.T_i = self.T_e
         self.n_i = self.n_e / self.Z
         self.B = 0.01 * u.T

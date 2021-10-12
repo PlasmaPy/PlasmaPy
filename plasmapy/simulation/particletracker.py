@@ -10,9 +10,8 @@ import scipy.interpolate as interp
 from astropy import constants
 
 from plasmapy.particles import atomic
+from plasmapy.simulation import particle_integrators
 from plasmapy.utils.decorators import validate_quantities
-
-from . import particle_integrators
 
 
 class ParticleTracker:
@@ -38,10 +37,10 @@ class ParticleTracker:
         and macroparticles.
 
     dt : `astropy.units.Quantity`
-        Duration of timestep
+        Duration of timestep.
 
     nt : `int`
-        Number of timesteps
+        Number of timesteps.
 
     Attributes
     ----------
@@ -97,7 +96,7 @@ class ParticleTracker:
         if np.isinf(dt) and np.isinf(nt):  # coverage: ignore
             raise ValueError("Both dt and nt are infinite.")
 
-        self.q = atomic.integer_charge(particle_type) * constants.e.si
+        self.q = atomic.charge_number(particle_type) * constants.e.si
         self.m = atomic.particle_mass(particle_type)
         self.N = int(n_particles)
         self.scaling = scaling
@@ -161,7 +160,7 @@ class ParticleTracker:
         Implement the Boris algorithm for moving particles and updating their
         velocities.
 
-        Arguments
+        Parameters
         ----------
         init : `bool`, optional
             If `True`, does not change the particle positions and sets ``dt``
@@ -241,7 +240,6 @@ class ParticleTracker:
         import matplotlib.pyplot as plt
 
         from astropy.visualization import quantity_support
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig = plt.figure()
@@ -269,7 +267,6 @@ class ParticleTracker:
         import matplotlib.pyplot as plt
 
         from astropy.visualization import quantity_support
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig, ax = plt.subplots()

@@ -89,20 +89,20 @@ def find_mod_objs(modname: str, app: Sphinx = None) -> Dict[str, Dict[str, Any]]
         'functions': {
             'names': ['find_mod_objs', 'get_custom_grouping_info'],
             'qualnames': [
-                'docs.plasmapy_sphinx.utils.find_mod_objs',
-                'docs.plasmapy_sphinx.utils.get_custom_grouping_info',
+                'plasmapy_sphinx.utils.find_mod_objs',
+                'plasmapy_sphinx.utils.get_custom_grouping_info',
             ],
             'objs': [
-                <function docs.plasmapy_sphinx.utils.find_mod_objs>,
-                <function docs.plasmapy_sphinx.utils.get_custom_grouping_info>,
+                <function plasmapy_sphinx.utils.find_mod_objs>,
+                <function plasmapy_sphinx.utils.get_custom_grouping_info>,
             ]
         },
         'variables': {
             'names': ['default_grouping_info', 'package_dir', 'templates_dir'],
             'qualnames': [
-                'docs.plasmapy_sphinx.utils.default_grouping_info',
-                'docs.plasmapy_sphinx.utils.package_dir',
-                'docs.plasmapy_sphinx.utils.templates_dir',
+                'plasmapy_sphinx.utils.default_grouping_info',
+                'plasmapy_sphinx.utils.package_dir',
+                'plasmapy_sphinx.utils.templates_dir',
             ],
             'objs': [
                 OrderedDict(...),

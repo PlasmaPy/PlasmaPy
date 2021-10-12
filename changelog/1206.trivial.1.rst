@@ -1,0 +1,2 @@
+Updated tox_ test environments for building the documentation. Added the
+``build_docs_nitpicky`` environment to check for broken reST_ links.

@@ -6,15 +6,12 @@ gases and warm dense matter.
 __all__ = [
     "chemical_potential",
     "deBroglie_wavelength",
-    "Ef_",
     "Fermi_energy",
-    "lambdaDB_",
-    "lambdaDB_th_",
     "Thomas_Fermi_length",
     "thermal_deBroglie_wavelength",
     "Wigner_Seitz_radius",
 ]
-__aliases__ = ["Ef_"]
+__aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
@@ -26,6 +23,8 @@ from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.utils import RelativityError
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ += __aliases__
 
 
 # TODO: Use @check_relativistic and @particle_input
@@ -136,7 +135,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
 
 lambdaDB_ = deBroglie_wavelength
-""" Alias to :func:`deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -184,8 +183,8 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
        λ_{dbTh} = \frac{h}{\sqrt{2 π m_e k_B T_e}}
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.9193675e-10 m>
@@ -195,7 +194,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
 
 lambdaDB_th_ = thermal_deBroglie_wavelength
-""" Alias to :func:`thermal_deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.thermal_deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -250,8 +249,8 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     --------
     Thomas_Fermi_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
     <Quantity 1.2586761e-18 J>
@@ -262,7 +261,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
 
 Ef_ = Fermi_energy
-""" Alias to :func:`Fermi_energy`. """
+"""Alias to `~plasmapy.formulary.quantum.Fermi_energy`."""
 
 
 @validate_quantities(
@@ -324,8 +323,8 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     Fermi_energy
     plasmapy.formulary.Debye_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
     <Quantity 5.37991409e-11 m>
@@ -390,8 +389,8 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     --------
     Fermi_energy
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Wigner_Seitz_radius(1e29 * u.m**-3)
     <Quantity 1.33650462e-10 m>
@@ -474,8 +473,8 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     ----------
     .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
     <Quantity 2.00039985e-12>
@@ -587,8 +586,8 @@ def _chemical_potential_interp(n_e, T):
     .. [2] Gregori, G., et al. "Theoretical model of x-ray scattering as a
        dense matter probe." Physical Review E 67.2 (2003): 026412.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
     <Quantity 8.17649>

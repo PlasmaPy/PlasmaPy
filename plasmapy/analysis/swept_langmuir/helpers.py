@@ -93,7 +93,7 @@ def check_sweep(
             f"{voltage.ndim} dimensions.",
         )
     elif not np.all(np.diff(voltage) >= 0):
-        raise ValueError(f"The voltage array is not monotonically increasing.")
+        raise ValueError("The voltage array is not monotonically increasing.")
 
     # strip units
     if isinstance(voltage, u.Quantity) and strip_units:
