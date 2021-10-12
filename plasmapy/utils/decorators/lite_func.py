@@ -1,5 +1,6 @@
 """
-Module for defining functionality that marks and handle Lite-Function creation.
+Module for defining functionality that marks and handle Lite-Function
+creation.
 """
 __all__ = ["bind_lite_func"]
 
@@ -16,9 +17,9 @@ _litefunc_registry = {}
 class LiteFuncList(list):
     """
     A list containing which attributions have been bound as part of the
-    "Lite-Function" functionality.  Each entry is a 2-element tuple where the
-    first element is the bound name and the second element is the fully
-    qualified name of the original object.
+    "Lite-Function" functionality.  Each entry is a 2-element tuple
+    where the first element is the bound name and the second element is
+    the fully qualified name of the original object.
     """
 
 
