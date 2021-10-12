@@ -10,6 +10,7 @@ import inspect
 from typing import Callable, List, Tuple
 from warnings import warn
 
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 _litefunc_registry = {}
 
@@ -62,7 +63,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         attrs = []
 
     if not inspect.isfunction(lite_func) or inspect.isbuiltin(lite_func):
-        raise ValueError(f"The lite-function passed is not a user-defined function.")
+        raise ValueError(f"The given lite-function is not a user-defined function.")
 
     def decorator(f):
         parent_qualname = f"{f.__module__}.{f.__name__}"
@@ -72,15 +73,16 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             return f(*args, **kwargs)
 
         __has_lite_func__ = LiteFuncList()
+
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
-
             # skip objects that are not allowed
             # - only allow functions
             if not inspect.isfunction(attr):
                 warn(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
-                    f"  Only functions are allowed to be bound. Skipping."
+                    f"  Only functions are allowed to be bound. Skipping.",
+                    PlasmaPyWarning
                 )
                 continue
 
@@ -88,13 +90,16 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             if hasattr(attr, "__module__"):
                 modname = attr.__module__
             else:
-                modname = wrapper.__module___
+                # assume attr is defined in the module the function being
+                # decorated is defined in
+                modname = wrapper.__module__
             origin = f"{modname}.{attr.__name__}"
             __has_lite_func__.append((bound_name, origin))
 
             # bind
             setattr(wrapper, bound_name, attr)
 
+            # add to lite function registry
             reg_entry = {
                 f"{parent_qualname}.{bound_name}" : {
                     "is_parent": False,
@@ -107,7 +112,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
 
         if len(__has_lite_func__) == 0:
             raise ValueError(
-                f"Lite-function marking of '{wrapper.__name__}' resulting in NO"
+                f"Lite-function binding to '{wrapper.__name__}' resulting in NO"
                 f" attributes being bound."
             )
 
