@@ -24,8 +24,38 @@ class LiteFuncList(list):
 
 def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     """
-    Decorator to bind lightweight "lite" versions of formulary functions to the full
-    formulary function.
+    Decorator to bind a lightweight "lite" version of a formulary
+    function to the full formulary function, as well as any supporting
+    attributes.
+
+    Parameters
+    ----------
+    lite_func: Callable
+        The lightweight function to be bound as the ``lite`` attribute
+        to the function being decorated.
+
+    attrs: List[Tuple[str, Callable]]
+        A list of 2-element tuples where the second element is a
+        function to be bound and the first element is a string giving
+        the name for binding.
+
+    Examples
+    --------
+
+    .. code-block:: python
+
+        def foo_lite(x)
+            return x
+
+        def bar():
+            print("Supporting function")
+
+        @bind_lite_func(foo_lite, attrs=[("bar", bar),])
+        def foo(x):
+            if not isinstance(x, float):
+                raise TypeError("Argument x can only be a float.")
+            return x
+
     """
     if attrs is None:
         attrs = []
