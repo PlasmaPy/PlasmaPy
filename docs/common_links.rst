@@ -1,6 +1,5 @@
 .. These are ReST substitutions and links that can be used throughout the docs
 .. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
-
 .. ------------------
 .. plasmapy.formulary
 .. ------------------
@@ -105,6 +104,7 @@
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable
 .. _`pre-commit`: https://pre-commit.com
+.. _pydocstyle: https://github.com/PyCQA/pydocstyle
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org/
 .. _pytest: https://docs.pytest.org
