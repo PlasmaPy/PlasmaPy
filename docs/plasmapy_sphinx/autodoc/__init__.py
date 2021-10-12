@@ -57,7 +57,7 @@ to control the default behavior Sphinx and Sphinx extension packages like
 """
 from sphinx.application import Sphinx
 
-from . import automodapi
+from . import automodapi, documenters
 
 
 def setup(app: Sphinx):
@@ -66,5 +66,6 @@ def setup(app: Sphinx):
     functionality, this includes `plasmapy_sphinx.automodsumm` functionality.
     """
     rtn = automodapi.setup(app)
+    documenters.setup(app)
 
     return rtn
