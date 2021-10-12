@@ -49,6 +49,11 @@ div.graphviz {
     white-space: normal;
     line-height: 140%;
 }
+
+/* Reduce top/bottom margin for equations in tables */
+table div.MathJax_Display {
+    margin: 0.5em 0;
+}
 /* -----------------------------------------------------------------------------
  * RTD layout styling additions
  */

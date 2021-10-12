@@ -44,7 +44,49 @@ automodapi_custom_groups = {
         ),
         "dunder": "__aliases__",
     },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            Much of PlasmaPy's functionality incorporates `Astropy units
+            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+            to mitigate calculation errors from inappropriate units, but this
+            comes at the sacrifice of speed.  While this penalty is not significant
+            for typical use, it can become substantial during intensive numerical
+            calculations. **Lite-Functions** are introduced for the specific case
+            where speed matters, but **[USER NOTICE]** this comes with the
+            reduction of safe-guards so a user needs to know what they are doing!
+            A few things to know about **Lite-Functions**:
+            
+            - Lite-functions are a flavor of existing PlasmaPy functionality and
+              are denoted with a trailing ``_lite`` to the name, for example
+              `~plasmapy.formulary.parameters.thermal_speed_lite` is the
+              lite-function associated with
+              `~plasmapy.formulary.parameters.thermal_speed`.
+            - Lite-functions are typically bound to their normal version as the
+              ``lite`` attribute.  For example, 
+              `~plasmapy.formulary.parameters.thermal_speed_lite` can be accessed
+              as ``thermal_speed.lite``.
+            - Inputs and outputs to lite-functions are strictly given in SI units.
+            - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
+              the user to pass in parameters with the correct units.
+            - For the added speed boost, lite-functions are decorated with
+              `numba.jit` (or the like).
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    }
 }
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -89,6 +131,7 @@ intersphinx_mapping = {
         None,
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 
 autoclass_content = "both"
