@@ -92,6 +92,8 @@ class LiteDataDocumenter(DataDocumenter):
         return []
 
     def get_module_comment(self, attrname: str) -> Optional[List[str]]:
+        # TODO: design this so the __bound_lite_func__ dunder of the parent
+        #       function is sought out to find the origin
         modname = self.modname
 
         self.set_option_origin()
@@ -246,15 +248,13 @@ class LiteFuncDocumenter(FunctionDocumenter):
     ) -> bool:
         rtn = super().can_document_member(member, membername, isattr, parent)
 
-        has_litefunc = hasattr(member, "__has_litefunc__")
-        if not has_litefunc:
-            return False
+        has_lite_func = hasattr(member, "__bound_lite_func__")
 
-        return rtn and has_litefunc
+        return rtn and has_lite_func
 
     @property
-    def has_litefunc(self):
-        return hasattr(self.object, "__has_litefunc__")
+    def has_lite_func(self):
+        return hasattr(self.object, "__bound_lite_func__")
 
     @property
     def is_alias(self):
@@ -264,27 +264,27 @@ class LiteFuncDocumenter(FunctionDocumenter):
             return False
 
     @property
-    def __has_litefunc__(self) -> LiteFuncTupleEntry:
-        return self.object.__has_litefunc__
+    def object_bound_lite_func(self) -> LiteFuncTupleEntry:
+        return self.object.__bound_lite_func__
 
     def generate_more_content(self):
-        if not self.has_litefunc or self.is_alias:
+        if not self.has_lite_func or self.is_alias:
             return []
 
-        if len(self.__has_litefunc__) == 0:
+        if len(self.object_bound_lite_func) == 0:
             return []
 
         bound_names = []
         origins = []
-        for item in self.__has_litefunc__:
-            bound_names.append(item.name)
-            origins.append(item.origin)
-        __has_litefunc__ = sorted(
+        for name, origin in self.object_bound_lite_func:
+            bound_names.append(name)
+            origins.append(origin)
+        bound_lite_func = sorted(
             zip(bound_names, origins), key=lambda x: str.casefold(x[0])
         )
         bound_names = []
         origins = []
-        for bname, origin in __has_litefunc__:
+        for bname, origin in bound_lite_func:
             if bname == "lite":
                 bound_names.insert(0, bname)
                 origins.insert(0, origin)
@@ -365,7 +365,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
             f"          name = {self.name}\n"
             f"  real_modname = {real_modname}\n"
             f"        object = {self.object}\n"
-            f"    lite func? = {self.has_litefunc}\n"
+            f"    lite func? = {self.has_lite_func}\n"
             f"         alias = {self.is_alias}\n"
             f"        module = {self.module}."
         )
