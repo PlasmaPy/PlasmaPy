@@ -41,13 +41,20 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             return x
 
         def bar():
-            print("Supporting function")
+            print("Supporting function.")
 
         @bind_lite_func(foo_lite, attrs=[("bar", bar),])
         def foo(x):
             if not isinstance(x, float):
                 raise TypeError("Argument x can only be a float.")
             return x
+
+        >>> foo(5)
+        5
+        >>> foo.lite(5)
+        5
+        >>> foo.bar()
+        Supporting function.
 
     """
     if attrs is None:
