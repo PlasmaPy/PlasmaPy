@@ -3,7 +3,7 @@ import sys
 
 from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
-from plasmapy.utils.decorators.lite_func import LiteFuncList, _litefunc_registry
+from plasmapy.utils.decorators.lite_func import _litefunc_registry
 from sphinx.application import Sphinx
 from sphinx.ext.autodoc import (
     AttributeDocumenter,
@@ -14,7 +14,7 @@ from sphinx.ext.autodoc import (
 from sphinx.locale import __
 from sphinx.pycode import ModuleAnalyzer, PycodeError
 from sphinx.util import logging
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 if sys.version_info >= (3, 0):
     text_type = str
@@ -22,8 +22,6 @@ else:
     text_type = unicode  # noqa
 
 logger = logging.getLogger(__name__)
-
-# TODO: drop the named tuple entries (LiteFuncList) for __has_lite_func__
 
 
 class LiteDataDocumenter(DataDocumenter):
@@ -264,7 +262,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
             return False
 
     @property
-    def object_bound_lite_func(self) -> LiteFuncList:
+    def object_bound_lite_func(self) -> Dict[str, str]:
         return self.object.__bound_lite_func__
 
     def generate_more_content(self):
@@ -276,7 +274,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
 
         bound_names = []
         origins = []
-        for name, origin in self.object_bound_lite_func:
+        for name, origin in self.object_bound_lite_func.items():
             bound_names.append(name)
             origins.append(origin)
         bound_lite_func = sorted(
