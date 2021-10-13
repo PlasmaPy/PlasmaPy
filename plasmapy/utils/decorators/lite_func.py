@@ -19,6 +19,17 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 _litefunc_registry = {}
 
 
+class _LiteFuncDict(dict):
+    """
+    Dictionary of Lite-Function functionality bound to the parent
+    function.  The dictionary key is a string indicating the name
+    the functionality was bound with and the dictionary value is a
+    string containing the fully qualified path of the original
+    functionality.
+    """
+    # This is only to give __bound_lite_func__ a docstring.
+
+
 def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
@@ -45,7 +56,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             return x
 
         def bar():
-            print("Supporting function")
+            print("Supporting function.")
 
         @bind_lite_func(foo_lite, attrs=[("bar", bar),])
         def foo(x):
@@ -53,6 +64,22 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
                 raise TypeError("Argument x can only be a float.")
             return x
 
+        >>> foo(5)
+        5
+        >>> foo.lite(5)
+        5
+        >>> foo.bar()
+        Supporting function.
+
+    Notes
+    -----
+
+    In addition to binding the functionality defined by the inputs, a
+    ``__bound_lite_func__`` dunder is bound.  This dunder is a
+    dictionary where a key is a string representing the bound name of
+    the bound  functionality and the associate value is a string
+    representing the fully qualified path of the original bound
+    functionality.
     """
     if attrs is None:
         attrs = []
@@ -67,7 +94,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __bound_lite_func__ = {}
+        __bound_lite_func__ = _LiteFuncDict()
 
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
