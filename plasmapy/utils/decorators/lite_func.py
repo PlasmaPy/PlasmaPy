@@ -12,8 +12,6 @@ from warnings import warn
 
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-_litefunc_registry = {}
-
 
 class _LiteFuncDict(dict):
     """
@@ -122,28 +120,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             # bind
             setattr(wrapper, bound_name, attr)
 
-            # add to lite function registry
-            reg_entry = {
-                f"{parent_qualname}.{bound_name}" : {
-                    "is_parent": False,
-                    "parent": parent_qualname,
-                    "shortname": bound_name,
-                    "origin": origin,
-                },
-            }
-            _litefunc_registry.update(reg_entry)
-
         setattr(wrapper, "__bound_lite_func__", __bound_lite_func__)
-
-        reg_entry = {
-            f"{parent_qualname}": {
-                "is_parent": True,
-                "parent": None,
-                "shortname": parent_qualname.split(".")[-1],
-                "origin": parent_qualname,
-            },
-        }
-        _litefunc_registry.update(reg_entry)
 
         return wrapper
 
