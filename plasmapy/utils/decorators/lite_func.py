@@ -72,7 +72,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __has_lite_func__ = LiteFuncList()
+        __bound_lite_func__ = LiteFuncList()
 
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
@@ -94,7 +94,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
                 # decorated is defined in
                 modname = wrapper.__module__
             origin = f"{modname}.{attr.__name__}"
-            __has_lite_func__.append((bound_name, origin))
+            __bound_lite_func__.append((bound_name, origin))
 
             # bind
             setattr(wrapper, bound_name, attr)
@@ -110,13 +110,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             }
             _litefunc_registry.update(reg_entry)
 
-        # if len(__has_lite_func__) == 0:
-        #     raise ValueError(
-        #         f"Lite-function binding to '{wrapper.__name__}' resulting in NO"
-        #         f" attributes being bound."
-        #     )
-
-        setattr(wrapper, "__has_lite_func__", __has_lite_func__)
+        setattr(wrapper, "__bound_lite_func__", __bound_lite_func__)
 
         reg_entry = {
             f"{parent_qualname}": {
