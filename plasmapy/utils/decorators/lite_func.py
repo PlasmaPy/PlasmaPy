@@ -110,12 +110,6 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
             }
             _litefunc_registry.update(reg_entry)
 
-        # if len(__has_lite_func__) == 0:
-        #     raise ValueError(
-        #         f"Lite-function binding to '{wrapper.__name__}' resulting in NO"
-        #         f" attributes being bound."
-        #     )
-
         setattr(wrapper, "__bound_lite_func__", __bound_lite_func__)
 
         reg_entry = {
