@@ -114,8 +114,8 @@ class LiteDataDocumenter(DataDocumenter):
 
         return None
 
-    def get_doc(self, encoding: str = None, ignore: int = None) -> List[List[str]]:
-        docstrings = super().get_doc(encoding=encoding, ignore=ignore)
+    def get_doc(self, ignore: int = None) -> List[List[str]]:
+        docstrings = super().get_doc(ignore=ignore)
 
         origin = self.options.get("origin", None)
         if origin is not None:
