@@ -111,7 +111,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
             # build origin name
             if hasattr(attr, "__module__"):
                 modname = attr.__module__
-            else:
+            else:  # coverage: ignore
                 # assume attr is defined in the module the function being
                 # decorated is defined in
                 modname = wrapper.__module__
