@@ -15,6 +15,17 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 _litefunc_registry = {}
 
 
+class _LiteFuncDict(dict):
+    """
+    Dictionary of Lite-Function functionality bound to the parent
+    function.  The dictionary key is a string indicating the name
+    the functionality was bound with and the dictionary value is a
+    string containing the fully qualified path of the original
+    functionality.
+    """
+    # This is only to give __bound_lite_func__ a docstring.
+
+
 def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
@@ -70,7 +81,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __bound_lite_func__ = {}
+        __bound_lite_func__ = _LiteFuncDict()
 
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
