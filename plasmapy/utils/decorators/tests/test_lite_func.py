@@ -48,12 +48,19 @@ def test_raises(lite_func, attrs, _error):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs, _warning",
+    "lite_func, attrs, _warning, skipped_bind",
     [
-        (foo_lite, {"bar": "not a functions"}, PlasmaPyWarning),
+        (foo_lite, {"bar": "not a functions"}, PlasmaPyWarning, ["bar", ]),
     ],
 )
-def test_warns(lite_func, attrs, _warning):
+def test_warns(lite_func, attrs, _warning, skipped_bind):
     """Test scenarios that will issue a Warning."""
     with pytest.warns(_warning):
-        bind_lite_func(lite_func, attrs=attrs)(foo)
+        dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
+
+    if skipped_bind is None:
+        return
+
+    for skipped in skipped_bind:
+        assert not hasattr(dfoo, skipped)
+        assert skipped not in dfoo.__bound_lite_func__
