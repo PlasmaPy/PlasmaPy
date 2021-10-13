@@ -19,15 +19,6 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 _litefunc_registry = {}
 
 
-class LiteFuncList(list):
-    """
-    A list containing which attributions have been bound as part of the
-    "Lite-Function" functionality.  Each entry is a 2-element tuple
-    where the first element is the bound name and the second element is
-    the fully qualified name of the original object.
-    """
-
-
 def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
@@ -76,7 +67,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __bound_lite_func__ = LiteFuncList()
+        __bound_lite_func__ = {}
 
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
@@ -98,7 +89,12 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
                 # decorated is defined in
                 modname = wrapper.__module__
             origin = f"{modname}.{attr.__name__}"
-            __bound_lite_func__.append((bound_name, origin))
+            if bound_name in __bound_lite_func__:
+                raise ValueError(
+                    f"Can NOT bind the same attribute name '{bound_name}' more"
+                    f" than once."
+                )
+            __bound_lite_func__[bound_name] = origin
 
             # bind
             setattr(wrapper, bound_name, attr)
