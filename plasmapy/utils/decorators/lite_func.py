@@ -76,7 +76,7 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
-        __bound_lite_func__ = {}
+        __bound_lite_func__ = LiteFuncList()
 
         attrs.append(("lite", lite_func))
         for bound_name, attr in attrs:
