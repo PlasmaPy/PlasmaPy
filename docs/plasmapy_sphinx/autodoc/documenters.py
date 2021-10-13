@@ -3,7 +3,7 @@ import sys
 
 from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
-from plasmapy.utils.decorators.helpers import LiteFuncTupleEntry, _litefunc_registry
+from plasmapy.utils.decorators.lite_func import LiteFuncList, _litefunc_registry
 from sphinx.application import Sphinx
 from sphinx.ext.autodoc import (
     AttributeDocumenter,
@@ -23,7 +23,7 @@ else:
 
 logger = logging.getLogger(__name__)
 
-# TODO: drop the named tuple entries (LiteFuncTupleEntry) for __has_litefunc__
+# TODO: drop the named tuple entries (LiteFuncList) for __has_lite_func__
 
 
 class LiteDataDocumenter(DataDocumenter):
@@ -264,7 +264,7 @@ class LiteFuncDocumenter(FunctionDocumenter):
             return False
 
     @property
-    def object_bound_lite_func(self) -> LiteFuncTupleEntry:
+    def object_bound_lite_func(self) -> LiteFuncList:
         return self.object.__bound_lite_func__
 
     def generate_more_content(self):
