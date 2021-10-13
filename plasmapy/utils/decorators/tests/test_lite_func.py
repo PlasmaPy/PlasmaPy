@@ -64,3 +64,58 @@ def test_warns(lite_func, attrs, _warning, skipped_bind):
     for skipped in skipped_bind:
         assert not hasattr(dfoo, skipped)
         assert skipped not in dfoo.__bound_lite_func__
+
+
+@pytest.mark.parametrize(
+    "lite_func, attrs",
+    [
+        (foo_lite, None),
+        (foo_lite, {"bar": bar}),
+    ],
+)
+def test_binding(lite_func, attrs):
+    """Test that the expected members are bound to the decorated function."""
+    dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
+
+    if attrs is None:
+        attrs = {"lite": lite_func}
+    elif isinstance(attrs, dict):
+        attrs["lite"] = lite_func
+    else:
+        pytest.fail(
+            "Parametrization was not setup correctly!  The value for 'attrs' must"
+            "be None or a dictionary."
+        )
+
+    for name, func in attrs.items():
+        assert hasattr(dfoo, name)
+        assert getattr(dfoo, name) == func
+
+
+@pytest.mark.parametrize(
+    "lite_func, attrs",
+    [
+        (foo_lite, None),
+        (foo_lite, {"bar": bar}),
+    ],
+)
+def test_lite_func_dunder(lite_func, attrs):
+    """Test that the ``__bound_lite_func__`` dunder is properly defined."""
+    dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
+
+    if attrs is None:
+        attrs = {"lite": lite_func}
+    elif isinstance(attrs, dict):
+        attrs["lite"] = lite_func
+    else:
+        pytest.fail(
+            "Parametrization was not setup correctly!  The value for 'attrs' must"
+            "be None or a dictionary."
+        )
+
+    for name, func in attrs.items():
+        assert hasattr(dfoo, "__bound_lite_func__")
+        assert name in dfoo.__bound_lite_func__
+
+        origin = f"{func.__module__}.{func.__name__}"
+        assert dfoo.__bound_lite_func__[name] == origin
