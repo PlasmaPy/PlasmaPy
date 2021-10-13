@@ -7,7 +7,7 @@ __all__ = ["bind_lite_func"]
 import functools
 import inspect
 
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Dict
 from warnings import warn
 
 from plasmapy.utils.exceptions import PlasmaPyWarning
