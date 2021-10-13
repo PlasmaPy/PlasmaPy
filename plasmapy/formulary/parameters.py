@@ -674,7 +674,7 @@ def thermal_speed_lite(
 
 @bind_lite_func(
     thermal_speed_lite,
-    attrs=[("coefficients", thermal_speed_coefficients)],
+    attrs={"coefficients": thermal_speed_coefficients},
 )
 @check_relativistic
 @validate_quantities(
