@@ -12,6 +12,10 @@ from warnings import warn
 
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
+# TODO:  when pt1 is merged in the registry will disappear but is currently needed
+#        for the autodoc to work...the registry needs to remain or the autodoc
+#        updated to not use it...the issue is the autosummary needs the registry
+#        to search out the description needed for the table
 _litefunc_registry = {}
 
 
