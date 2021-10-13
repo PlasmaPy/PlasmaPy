@@ -67,6 +67,15 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         >>> foo.bar()
         Supporting function.
 
+    Notes
+    -----
+
+    In addition to binding the functionality defined by the inputs, a
+    ``__bound_lite_func__`` dunder is bound.  This dunder is a
+    dictionary where a key is a string representing the bound name of
+    the bound  functionality and the associate value is a string
+    representing the fully qualified path of the original bound
+    functionality.
     """
     if attrs is None:
         attrs = []
