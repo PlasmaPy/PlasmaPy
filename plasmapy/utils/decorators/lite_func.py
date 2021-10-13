@@ -7,7 +7,7 @@ __all__ = ["bind_lite_func"]
 import functools
 import inspect
 
-from typing import Callable, List, Tuple
+from typing import Callable, Dict, List, Tuple
 from warnings import warn
 
 from plasmapy.utils.exceptions import PlasmaPyWarning
@@ -24,7 +24,7 @@ class _LiteFuncDict(dict):
     # This is only to give __bound_lite_func__ a docstring.
 
 
-def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
+def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
     function to the full formulary function, as well as any supporting
@@ -36,10 +36,9 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
         The lightweight function to be bound as the ``lite`` attribute
         to the function being decorated.
 
-    attrs: List[Tuple[str, Callable]]
-        A list of 2-element tuples where the second element is a
-        function to be bound and the first element is a string giving
-        the name for binding.
+    attrs: Dict[str, Callable]
+        A dictionary where the key is a string defining the bound name
+        and the associated value is the functionality to be bound.
 
     Examples
     --------
@@ -76,22 +75,28 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
     functionality.
     """
     if attrs is None:
-        attrs = []
+        attrs = {}
+    elif not isinstance(attrs, dict):
+        raise TypeError(
+            f"Argument 'attrs' is a type '{type(attrs)}', expected a dictionary."
+        )
+    elif "lite" in attrs:
+        raise ValueError(
+            f"Argument 'attr' can NOT define key 'lite', this is reserved for"
+            f" the 'lite_func' argument.")
 
     if not inspect.isfunction(lite_func) or inspect.isbuiltin(lite_func):
         raise ValueError(f"The given lite-function is not a user-defined function.")
 
     def decorator(f):
-        parent_qualname = f"{f.__module__}.{f.__name__}"
-
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return f(*args, **kwargs)
 
         __bound_lite_func__ = _LiteFuncDict()
 
-        attrs.append(("lite", lite_func))
-        for bound_name, attr in attrs:
+        attrs["lite"] = lite_func
+        for bound_name, attr in attrs.items():
             # skip objects that are not allowed
             # - only allow functions
             if not inspect.isfunction(attr):
@@ -110,11 +115,6 @@ def bind_lite_func(lite_func, attrs: List[Tuple[str, Callable]] = None):
                 # decorated is defined in
                 modname = wrapper.__module__
             origin = f"{modname}.{attr.__name__}"
-            if bound_name in __bound_lite_func__:
-                raise ValueError(
-                    f"Can NOT bind the same attribute name '{bound_name}' more"
-                    f" than once."
-                )
             __bound_lite_func__[bound_name] = origin
 
             # bind
