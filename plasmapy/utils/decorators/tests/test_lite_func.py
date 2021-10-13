@@ -91,6 +91,9 @@ def test_binding(lite_func, attrs):
         assert hasattr(dfoo, name)
         assert getattr(dfoo, name) == func
 
+    assert dfoo(5.0) == 5.0
+    assert dfoo.lite(5.0) == 5.0
+
 
 @pytest.mark.parametrize(
     "lite_func, attrs",
