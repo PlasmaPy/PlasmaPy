@@ -12,6 +12,8 @@ import astropy.units as u
 import numpy as np
 import pytest
 
+from astropy.constants.si import k_B
+
 from plasmapy.formulary.parameters import (
     kappa_thermal_speed,
     thermal_speed,
@@ -116,6 +118,108 @@ class TestThermalSpeed:
             origin = f"{attr.__module__}.{attr.__name__}"
             assert origin == bound_origin
 
+    @pytest.mark.parametrize(
+        "args, kwargs, expected",
+        [
+            # Note the mass kwarg is overriding particle="e-"
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 1, "method": "most_probable"},
+                0,
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 2, "method": "most_probable"},
+                1.0,
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 3, "method": "most_probable"},
+                np.sqrt(2),
+            ),  # same as default kwarg values
+            (((1/k_B.value) * u.K, "e-"), {"mass": 1 * u.kg}, np.sqrt(2)),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 1, "method": "rms"},
+                1,
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 2, "method": "rms"},
+                np.sqrt(2),
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 3, "method": "rms"},
+                np.sqrt(3),
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 1, "method": "mean_magnitude"},
+                np.sqrt(2/np.pi),
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 2, "method": "mean_magnitude"},
+                np.sqrt(np.pi/2),
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 3, "method": "mean_magnitude"},
+                np.sqrt(8/np.pi),
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 1, "method": "nrl"},
+                1.0,
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 2, "method": "nrl"},
+                1.0,
+            ),
+            (
+                ((1 / k_B.value) * u.K, "e-"),
+                {"mass": 1 * u.kg, "ndim": 3, "method": "nrl"},
+                1.0,
+            ),
+            ((1 * u.MK, "e-"), {}, 5505694.743141063),
+            ((1 * u.MK, "p"), {}, 128486.56960876315),
+            ((1e6 * u.K, "e-"), {"method": "rms", "ndim": 1}, 3893114.2008620175),
+            (
+                (1e6 * u.K, "e-"),
+                {"method": "mean_magnitude", "ndim": 1},
+                3106255.714310189,
+            ),
+            (
+                (1e6 * u.K, "e-"),
+                {"method": "most_probable", "ndim": 2},
+                3893114.2008620175,
+            ),
+            ((1e6 * u.K, "e-"), {"method": "rms", "ndim": 2}, 5505694.902726359),
+            (
+                (1e6 * u.K, "e-"),
+                {"method": "mean_magnitude", "ndim": 2},
+                4879295.066124102,
+            ),
+            (
+                (1e6 * u.K, "e-"),
+                {"method": "most_probable", "ndim": 3},
+                5505694.902726359,
+            ),
+            ((1e6 * u.K, "e-"), {"method": "rms", "ndim": 3}, 6743071.595560921),
+            (
+                (1e6 * u.K, "e-"),
+                {"method": "mean_magnitude", "ndim": 3},
+                6212511.428620378,
+            ),
+        ],
+    )
+    def test_values(self, args, kwargs, expected):
+        vth = thermal_speed(*args, **kwargs)
+        assert np.allclose(vth.value, expected)
+        assert vth.unit == u.m / u.s
+
 
 @pytest.mark.skip
 class TestThermalSpeedLite:
@@ -153,10 +257,6 @@ def test_thermal_speed():
 
     assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
 
-    # The NRL Plasma Formulary uses a definition of the electron
-    # thermal speed that differs by a factor of sqrt(2).
-    assert np.isclose(thermal_speed(1 * u.MK, "e-").value, 5505694.743141063)
-
     with pytest.raises(u.UnitTypeError):
         thermal_speed(5 * u.m, "e-")
 
@@ -173,58 +273,6 @@ def test_thermal_speed():
         assert thermal_speed(1e5, "e-") == thermal_speed(1e5 * u.K, "e-")
 
     assert thermal_speed(T_i, particle="p").unit.is_equivalent(u.m / u.s)
-
-    # The NRL Plasma Formulary uses a definition of the particle thermal
-    # speed that differs by a factor of sqrt(2).
-    assert np.isclose(
-        thermal_speed(1 * u.MK, particle="p").si.value, 128486.56960876315
-    )
-
-    # Explicitly check all three modes and dimensionalities
-    # ndim = 1
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=1).si.value, 0.0
-    )
-
-    # Regression tests start here!
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=1).si.value, 3893114.2008620175
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=1).si.value,
-        3106255.714310189,
-    )
-
-    # ndim = 2
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=2).si.value,
-        3893114.2008620175,
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=2).si.value, 5505694.902726359
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=2).si.value,
-        4879295.066124102,
-    )
-
-    # ndim = 3
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=3).si.value,
-        5505694.902726359,
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=3).si.value, 6743071.595560921
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=3).si.value,
-        6212511.428620378,
-    )
 
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
@@ -250,15 +298,6 @@ def test_thermal_speed():
         assert thermal_speed(1e6, particle="p") == thermal_speed(
             1e6 * u.K, particle="p"
         )
-
-    assert np.isclose(
-        thermal_speed(1e6 * u.K, "e-", method="mean_magnitude").si.value,
-        6212510.3969422,
-    )
-
-    assert np.isclose(
-        thermal_speed(1e6 * u.K, "e-", method="rms").si.value, 6743070.475775486
-    )
 
     # Test invalid method
     with pytest.raises(ValueError):
