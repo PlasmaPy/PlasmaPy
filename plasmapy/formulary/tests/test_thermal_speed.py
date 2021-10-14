@@ -229,7 +229,7 @@ class TestThermalSpeed:
             (
                 (1 * u.eV, "He"),
                 {},
-                thermal_speed(1 * u.eV, "He+", mass=Particle("He").mass).value
+                thermal_speed(1 * u.eV, "He+", mass=Particle("He").mass).value,
             ),
         ],
     )
@@ -261,7 +261,12 @@ class TestThermalSpeed:
         "args, kwargs, _warning, expected",
         [
             ((), {"T": 1e9 * u.K, "particle": "e-"}, RelativityWarning, None),
-            ((1e5, ), {"particle": "e-"}, u.UnitsWarning, thermal_speed(1e5*u.K, "e-")),
+            (
+                (1e5,),
+                {"particle": "e-"},
+                u.UnitsWarning,
+                thermal_speed(1e5 * u.K, "e-"),
+            ),
             ((1e11 * u.K, "p"), {}, RelativityWarning, None),
             ((1e6, "p"), {}, u.UnitsWarning, thermal_speed(1e6 * u.K, "p")),
         ],
