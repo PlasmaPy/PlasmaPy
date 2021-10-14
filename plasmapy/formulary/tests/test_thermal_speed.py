@@ -3,10 +3,12 @@ Module for testing functionality associated with calculating the
 thermal speed.
 
 
+- `~plasmapy.formulary.parameters.kappa_thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed_lite`
 - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
 - `~plasmapy.formulary.parameters.vth_`
+- `~plasmapy.formulary.parameters.vth_kappa_`
 """
 import astropy.units as u
 import numpy as np
@@ -26,9 +28,6 @@ from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
-
-T_e = 1e6 * u.K
-T_i = 1e6 * u.K
 
 
 @pytest.mark.parametrize(
