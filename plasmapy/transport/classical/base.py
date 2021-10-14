@@ -212,7 +212,7 @@ class AbstractClassicalTransportCoefficients(ABC):
                 )
             wce = gyrofrequency(self.B, "e-")
 
-            self.chi_e = wce / self.e_collision_freq
+            self.chi_e = (wce / self.e_collision_freq).to(u.rad).value
             self.alpha_normalization = (
                 self.particle.mass * self.ne * self.e_collision_freq
             )
@@ -234,7 +234,7 @@ class AbstractClassicalTransportCoefficients(ABC):
                 )
             wci = gyrofrequency(self.B, self.particle)
 
-            self.chi_i = wci / self.i_collision_freq
+            self.chi_i = (wci / self.i_collision_freq).to(u.rad).value
             self.kappa_i_normalization = (
                 self.ni * self.Ti / self.i_collision_freq / self.particle.mass
             )
@@ -284,7 +284,12 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     @validate_object(properties=["ne", "Te", "B", "particle"])
     def kappa_e(self):
-        return self.norm_kappa_e * self.kappa_e_normalization
+        # Outer product necessary if norm arrays are not scalars, eg
+        # if computing for many values at once
+        return (
+            np.outer(self.norm_kappa_e, self.kappa_e_normalization.value)
+            * self.kappa_e_normalization.unit
+        )
 
     # **********************************************************************
     # Ion Thermal Conductivity (kappa_i)

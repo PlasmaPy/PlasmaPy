@@ -164,7 +164,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
     def _norm_kappa_e_perp(self):
         i = self._find_nearest_Z(self.Z)
         return (
-            self._c["gamma1p"] * self.chi_e ** 2 + self._c["gamma0p"]
+            self._c["gamma1p"][i] * self.chi_e ** 2 + self._c["gamma0p"][i]
         ) / self._Delta(i)
 
     @property
@@ -172,7 +172,7 @@ class BraginskiiPolynomialFit(AbstractPolynomialCoefficients):
         i = self._find_nearest_Z(self.Z)
         return (
             self.chi_e
-            * (self._c["gamma1pp"] * self.chi_e ** 2 + self._c["gamma0pp"])
+            * (self._c["gamma1pp"][i] * self.chi_e ** 2 + self._c["gamma0pp"][i])
             / self._Delta(i)
         )
 
