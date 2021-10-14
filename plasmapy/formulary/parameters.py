@@ -540,7 +540,6 @@ cs_ = ion_sound_speed
 """Alias to `~plasmapy.formulary.parameters.ion_sound_speed`."""
 
 
-# -----                                                             thermal_speed  -----
 def thermal_speed_coefficients(method: str, ndim: int) -> float:
     r"""
     Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
@@ -883,9 +882,6 @@ def thermal_speed(
 
 vth_ = thermal_speed
 """ Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
-
-
-# -----                                                          thermal_pressure  -----
 
 
 @validate_quantities(
