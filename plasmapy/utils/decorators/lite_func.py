@@ -58,11 +58,11 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
                 raise TypeError("Argument x can only be a float.")
             return x
 
-        >>> foo(5)
+        >>> foo(5)  # doctest: +SKIP
         5
-        >>> foo.lite(5)
+        >>> foo.lite(5)  # doctest: +SKIP
         5
-        >>> foo.bar()
+        >>> foo.bar()  # doctest: +SKIP
         Supporting function.
 
     Notes
