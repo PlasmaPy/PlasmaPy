@@ -1,0 +1,2 @@
+Replaced usage of ``distutils.version.StrictVersion`` with
+``packaging.version.Version`` because ``distutils`` has been deprecated.
