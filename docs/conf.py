@@ -57,7 +57,7 @@ automodapi_custom_groups = {
             where speed matters, but **[USER NOTICE]** this comes with the
             reduction of safe-guards so a user needs to know what they are doing!
             A few things to know about **Lite-Functions**:
-            
+
             - Lite-functions are a flavor of existing PlasmaPy functionality and
               are denoted with a trailing ``_lite`` to the name, for example
               `~plasmapy.formulary.parameters.thermal_speed_lite` is the
