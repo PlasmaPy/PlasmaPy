@@ -92,6 +92,7 @@ class TestThermalSpeed:
         - `~plasmapy.formulary.parameters.thermal_speed_lite`
         - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
     """
+
     @pytest.mark.parametrize(
         "bound_name, bound_attr",
         [
@@ -137,7 +138,7 @@ class TestThermalSpeed:
                 {"mass": 1 * u.kg, "ndim": 3, "method": "most_probable"},
                 np.sqrt(2),
             ),  # same as default kwarg values
-            (((1/k_B.value) * u.K, "e-"), {"mass": 1 * u.kg}, np.sqrt(2)),
+            (((1 / k_B.value) * u.K, "e-"), {"mass": 1 * u.kg}, np.sqrt(2)),
             (
                 ((1 / k_B.value) * u.K, "e-"),
                 {"mass": 1 * u.kg, "ndim": 1, "method": "rms"},
@@ -156,17 +157,17 @@ class TestThermalSpeed:
             (
                 ((1 / k_B.value) * u.K, "e-"),
                 {"mass": 1 * u.kg, "ndim": 1, "method": "mean_magnitude"},
-                np.sqrt(2/np.pi),
+                np.sqrt(2 / np.pi),
             ),
             (
                 ((1 / k_B.value) * u.K, "e-"),
                 {"mass": 1 * u.kg, "ndim": 2, "method": "mean_magnitude"},
-                np.sqrt(np.pi/2),
+                np.sqrt(np.pi / 2),
             ),
             (
                 ((1 / k_B.value) * u.K, "e-"),
                 {"mass": 1 * u.kg, "ndim": 3, "method": "mean_magnitude"},
-                np.sqrt(8/np.pi),
+                np.sqrt(8 / np.pi),
             ),
             (
                 ((1 / k_B.value) * u.K, "e-"),
@@ -251,7 +252,7 @@ class TestThermalSpeedLite:
     @pytest.mark.parametrize(
         "inputs",
         [
-            dict(T=5 * u.eV, particle=Particle("p"), method= "most_probable", ndim=3),
+            dict(T=5 * u.eV, particle=Particle("p"), method="most_probable", ndim=3),
             dict(T=3000 * u.K, particle=Particle("e"), method="nrl", ndim=2),
             dict(
                 T=5000 * u.K, particle=Particle("He+"), method="mean_magnitude", ndim=1

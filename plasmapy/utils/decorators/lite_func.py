@@ -22,6 +22,7 @@ class _LiteFuncDict(dict):
     string containing the fully qualified path of the original
     functionality.
     """
+
     # This is only to give __bound_lite_func__ a docstring.
 
 
@@ -88,7 +89,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
         )
 
     if inspect.isbuiltin(lite_func) or not (
-            is_jitted(lite_func) or inspect.isfunction(lite_func)
+        is_jitted(lite_func) or inspect.isfunction(lite_func)
     ):
         raise ValueError(f"The given lite-function is not a user-defined function.")
 
@@ -107,7 +108,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
                 warn(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
                     f"  Only functions are allowed to be bound. Skipping.",
-                    PlasmaPyWarning
+                    PlasmaPyWarning,
                 )
                 continue
 

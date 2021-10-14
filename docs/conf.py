@@ -75,7 +75,7 @@ automodapi_custom_groups = {
             """
         ),
         "dunder": "__lite_funcs__",
-    }
+    },
 }
 automodapi_group_order = (
     "modules",

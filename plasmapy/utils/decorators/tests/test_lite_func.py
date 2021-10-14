@@ -26,9 +26,7 @@ def bar():
     Test support function for the Lite-Function framework.  To be bound
     to foo.
     """
-    print(
-        "I am a helper function that support the Lite-Function 'foo_lite'."
-    )
+    print("I am a helper function that support the Lite-Function 'foo_lite'.")
 
 
 @pytest.mark.parametrize(
@@ -52,7 +50,7 @@ def test_raises(lite_func, attrs, _error):
 @pytest.mark.parametrize(
     "lite_func, attrs, _warning, skipped_bind",
     [
-        (foo_lite, {"bar": "not a functions"}, PlasmaPyWarning, ["bar", ]),
+        (foo_lite, {"bar": "not a functions"}, PlasmaPyWarning, ["bar"]),
     ],
 )
 def test_warns(lite_func, attrs, _warning, skipped_bind):
