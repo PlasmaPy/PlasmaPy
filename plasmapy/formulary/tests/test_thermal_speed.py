@@ -286,10 +286,8 @@ class TestThermalSpeed:
         assert_can_handle_nparray(thermal_speed)
 
 
-@pytest.mark.skip
 class TestThermalSpeedLite:
-    def test_thermal_speed_lite(self):
-        ...
+    """Test class for `thermal_speed_lite`."""
 
     @pytest.mark.parametrize(
         "inputs",
@@ -310,8 +308,9 @@ class TestThermalSpeedLite:
         T_unitless = inputs["T"].to(u.K, equivalencies=u.temperature_energy()).value
         m_unitless = inputs["particle"].mass.value
 
-        normal = thermal_speed(**inputs)
         coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
+
+        normal = thermal_speed(**inputs)
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
         assert np.isclose(normal.value, lite)
 
