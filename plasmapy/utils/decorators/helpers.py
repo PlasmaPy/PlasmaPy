@@ -127,18 +127,9 @@ def preserve_signature(f):
     ...
     ...     return wrapper
     """
-    # add '__signature__' to methods that are copied from
-    # f onto wrapper
-    assigned = list(functools.WRAPPER_ASSIGNMENTS)
-    assigned.append("__signature__")
-
-    @functools.wraps(f, assigned=assigned)
-    def wrapper(*args, **kwargs):
-        return f(*args, **kwargs)
-
     # add '__signature__' if it does not exist
     # - this will preserve parameter hints in IDE's
-    if not hasattr(wrapper, "__signature__"):
-        wrapper.__signature__ = inspect.signature(f)
+    if not hasattr(f, "__signature__"):
+        f.__signature__ = inspect.signature(f)
 
-    return wrapper
+    return f
