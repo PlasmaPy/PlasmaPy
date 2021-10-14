@@ -1,3 +1,4 @@
 Replaced usage of ``distutils.version.StrictVersion`` with
-``packaging.version.Version`` because ``distutils`` has been deprecated
-(see `packaging <https://packaging.pypa.io>`__ for details).
+``packaging.version.Version`` because ``distutils`` has been deprecated.
+As part of this change, `packaging <https://packaging.pypa.io>`__ has been
+added as a dependency.
