@@ -262,6 +262,13 @@ class TestThermalSpeed:
             if expected is not None:
                 assert vth == expected
 
+    def test_electron_vs_proton(self):
+        """
+        Ensure the electron thermal speed is larger that the proton
+        thermal speed for the same parameters.
+        """
+        assert thermal_speed(1e6 * u.K, "e-") > thermal_speed(1e6 * u.K, "p")
+
     def test_can_handle_numpy_arrays(self):
         assert_can_handle_nparray(thermal_speed)
 
@@ -298,10 +305,6 @@ class TestThermalSpeedLite:
 
 def test_thermal_speed():
     r"""Test the thermal_speed function in parameters.py"""
-    assert thermal_speed(T_e, "e-").unit.is_equivalent(u.m / u.s)
-
-    assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
-
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
