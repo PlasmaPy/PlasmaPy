@@ -238,6 +238,7 @@ class EpperleinHainesInterpolated(AbstractInterpolatedCoefficients):
 
 if __name__ == "__main__":
 
+    """
     import matplotlib.pyplot as plt
 
     chi = np.linspace(-2, 2, num=50)
@@ -309,6 +310,8 @@ if __name__ == "__main__":
     ax.set_ylim(0.01, 10)
     ax.plot(chi, coef1.norm_kappa_e[2])
     ax.plot(chi, coef2.norm_kappa_e[2])
+    """
+
 
     """
     import astropy.units as u
@@ -318,3 +321,32 @@ if __name__ == "__main__":
 
     print(coef.norm_alpha.shape)
     """
+    
+    
+    
+    import matplotlib.pyplot as plt
+
+    chi = np.linspace(-1, 1, num=50)
+    chi = 10 ** chi
+    # Instantiate the object
+    coef = EpperleinHainesPolynomialFit(chi_e=chi, Z=1)
+    para, perp, wedge = coef.norm_kappa_e
+    
+    mag_heatflux = np.sqrt(para**2 + perp**2 + wedge**2)
+    
+    fig, ax = plt.subplots()
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_xlabel("$\chi_e$")
+    ax.set_ylabel("Normalized Transport Coefficient")
+    
+    ax.plot(chi, para, label='$\kappa_\\parallel$')
+    ax.plot(chi, perp, label='$\kappa_\\perp$')
+    ax.plot(chi, wedge, label='$\kappa_\\wedge$')
+    ax.plot(chi, mag_heatflux, label='|$q_e$| (norm.)')
+    
+    
+    ax.legend()
+
+    
+    
