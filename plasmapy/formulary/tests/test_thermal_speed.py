@@ -81,7 +81,6 @@ class TestThermalSpeedCoefficients:
         assert np.isclose(val, expected)
 
 
-
 class TestThermalSpeed:
     """
     Test class for functionality around calculating the thermal speed.  This
@@ -91,81 +90,35 @@ class TestThermalSpeed:
         - `~plasmapy.formulary.parameters.thermal_speed_lite`
         - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
     """
-    _bound_attrs = [
-        ("lite", thermal_speed_lite),
-        ("coefficients", thermal_speed_coefficients),
-    ]
-
-    @pytest.mark.parametrize("alias", [vth_])
-    def test_aliases(self, alias):
-        """Test alias is properly defined."""
-        assert alias is thermal_speed
-
     @pytest.mark.parametrize(
         "bound_name, bound_attr",
-        _bound_attrs,
+        [
+            ("lite", thermal_speed_lite),
+            ("coefficients", thermal_speed_coefficients),
+        ],
     )
     def test_lite_function_binding(self, bound_name, bound_attr):
         """Test expected attributes are bound correctly."""
         assert hasattr(thermal_speed, bound_name)
-        attr = getattr(thermal_speed, bound_name)
-        assert attr is bound_attr
+        assert getattr(thermal_speed, bound_name) is bound_attr
 
     def test_lite_function_marking(self):
         """
-        Test thermal_speed is marked as having a Lite-Function and that its
-        __has_lite_func__ attribute is defined correctly.
+        Test thermal_speed is marked as having a Lite-Function.
         """
-        assert hasattr(thermal_speed, "__has_lite_func__")
-        assert len(thermal_speed.__has_lite_func__) == len(self._bound_attrs)
+        assert hasattr(thermal_speed, "__bound_lite_func__")
+        assert isinstance(thermal_speed.__bound_lite_func__, dict)
 
-        bound_names, bound_qualnames = zip(*thermal_speed.__has_lite_func__)
-        for name, attr in self._bound_attrs:
-            assert name in bound_names
+        for bound_name, bound_origin in thermal_speed.__bound_lite_func__.items():
+            assert hasattr(thermal_speed, bound_name)
 
-            index = bound_names.index(name)
-            qualname = f"{attr.__module__}.{attr.__name__}"
-            assert qualname == bound_qualnames[index]
+            attr = getattr(thermal_speed, bound_name)
+            origin = f"{attr.__module__}.{attr.__name__}"
+            assert origin == bound_origin
 
-    @pytest.mark.parametrize(
-        "method, ndim, expected",
-        [
-            ("most_probable", 1, 0),
-            ("most_probable", 2, 1),
-            ("most_probable", 3, np.sqrt(2)),
-            ("rms", 1, 1),
-            ("rms", 2, np.sqrt(2)),
-            ("rms", 3, np.sqrt(3)),
-            ("mean_magnitude", 1, np.sqrt(2 / np.pi)),
-            ("mean_magnitude", 2, np.sqrt(np.pi / 2)),
-            ("mean_magnitude", 3, np.sqrt(8 / np.pi)),
-            ("nrl", 1, 1),
-            ("nrl", 2, 1),
-            ("nrl", 3, 1),
-        ],
-    )
-    def test_thermal_speed_coefficient_values(self, method, ndim, expected):
-        """Test values returned by thermal_speed_coefficients."""
-        assert np.isclose(
-            thermal_speed_coefficients(method=method, ndim=ndim), expected
-        )
 
-    @pytest.mark.parametrize(
-        "method, ndim, _raises",
-        [
-            ("most_probably", -1, ValueError),
-            ("most_probably", 4, ValueError),
-            ("most_probably", "not an int", ValueError),
-            ("wrong method", 3, ValueError),
-            (5, 1, ValueError),
-            ({"wrong": 1}, "wrong", TypeError),
-        ],
-    )
-    def test_thermal_speed_coefficients_raises(self, method, ndim, _raises):
-        """Test raise Exception cases for thermal_speed_coefficients."""
-        with pytest.raises(_raises):
-            thermal_speed_coefficients(method=method, ndim=ndim)
-
+@pytest.mark.skip
+class TestThermalSpeedLite:
     def test_thermal_speed_lite(self):
         ...
 
@@ -182,7 +135,7 @@ class TestThermalSpeed:
     )
     def test_normal_vs_lite_values(self, inputs):
         """
-        Test that thermal_speed and thermal_speed_lite calulate the same values
+        Test that thermal_speed and thermal_speed_lite calculate the same values
         for the same inputs.
         """
         T_unitless = inputs["T"].to(u.K, equivalencies=u.temperature_energy()).value
