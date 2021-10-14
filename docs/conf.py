@@ -64,7 +64,7 @@ automodapi_custom_groups = {
               lite-function associated with
               `~plasmapy.formulary.parameters.thermal_speed`.
             - Lite-functions are typically bound to their normal version as the
-              ``lite`` attribute.  For example, 
+              ``lite`` attribute.  For example,
               `~plasmapy.formulary.parameters.thermal_speed_lite` can be accessed
               as ``thermal_speed.lite``.
             - Inputs and outputs to lite-functions are strictly given in SI units.
