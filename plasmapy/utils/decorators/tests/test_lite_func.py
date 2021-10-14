@@ -3,6 +3,8 @@ Test module  for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
 import pytest
 
+from numba import jit, njit
+
 from plasmapy.utils.decorators.lite_func import bind_lite_func
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
@@ -70,6 +72,8 @@ def test_warns(lite_func, attrs, _warning, skipped_bind):
     "lite_func, attrs",
     [
         (foo_lite, None),
+        (jit(foo_lite), None),
+        (njit(foo_lite), None),
         (foo_lite, {"bar": bar}),
     ],
 )
