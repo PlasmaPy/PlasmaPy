@@ -284,12 +284,8 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     @validate_object(properties=["ne", "Te", "B", "particle"])
     def kappa_e(self):
-        # Outer product necessary if norm arrays are not scalars, eg
-        # if computing for many values at once
-        return (
-            np.outer(self.norm_kappa_e, self.kappa_e_normalization.value)
-            * self.kappa_e_normalization.unit
-        )
+        # newaxis is necessary if ne, B etc. are not scalars
+        return self.norm_kappa_e * self.kappa_e_normalization[..., np.newaxis]
 
     # **********************************************************************
     # Ion Thermal Conductivity (kappa_i)
@@ -304,7 +300,7 @@ class AbstractClassicalTransportCoefficients(ABC):
     @property
     @validate_object(properties=["ni", "Ti", "B", "particle"])
     def kappa_i(self):
-        return self.norm_kappa_i * self.kappa_i_normalization
+        return self.norm_kappa_i * self.kappa_i_normalization[..., np.newaxis]
 
     # **********************************************************************
     # Electron Viscosity (eta_e)
