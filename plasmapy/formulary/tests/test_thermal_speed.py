@@ -239,6 +239,9 @@ class TestThermalSpeed:
         with pytest.raises(_error):
             thermal_speed(*args, **kwargs)
 
+    def test_can_handle_numpy_arrays(self):
+        assert_can_handle_nparray(thermal_speed)
+
 
 @pytest.mark.skip
 class TestThermalSpeedLite:
@@ -294,8 +297,6 @@ def test_thermal_speed():
         assert thermal_speed(1e6, particle="p") == thermal_speed(
             1e6 * u.K, particle="p"
         )
-
-    assert_can_handle_nparray(thermal_speed)
 
 
 # test class for kappa_thermal_speed() function:
