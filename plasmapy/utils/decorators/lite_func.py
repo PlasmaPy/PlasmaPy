@@ -7,6 +7,7 @@ __all__ = ["bind_lite_func"]
 import functools
 import inspect
 
+from numba.extending import is_jitted
 from typing import Callable, Dict
 from warnings import warn
 
@@ -86,7 +87,9 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
             f" the 'lite_func' argument."
         )
 
-    if not inspect.isfunction(lite_func) or inspect.isbuiltin(lite_func):
+    if inspect.isbuiltin(lite_func) or not (
+            is_jitted(lite_func) or inspect.isfunction(lite_func)
+    ):
         raise ValueError(f"The given lite-function is not a user-defined function.")
 
     def decorator(f):
@@ -100,7 +103,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
         for bound_name, attr in attrs.items():
             # skip objects that are not allowed
             # - only allow functions
-            if not inspect.isfunction(attr):
+            if not (inspect.isfunction(attr) or is_jitted(attr)):
                 warn(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
                     f"  Only functions are allowed to be bound. Skipping.",
