@@ -2,7 +2,6 @@
 The `~plasmapy.formulary` subpackage contains commonly used formulae
 from plasma science.
 """
-# __all__, __aliases__, & __lite_funcs__ will be auto populated below
 __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
@@ -43,7 +42,7 @@ for modname in (
 ):
     try:
         obj = globals()[modname]
-    except KeyError:
+    except KeyError:  # coverage: ignore
         continue
 
     try:
