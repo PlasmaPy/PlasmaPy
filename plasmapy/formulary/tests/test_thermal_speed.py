@@ -85,12 +85,16 @@ class TestThermalSpeedCoefficients:
 
 class TestThermalSpeed:
     """
-    Test class for functionality around calculating the thermal speed.  This
-    covers the functionality
+    Test class for functionality of
+    `plasmapy.formulary.parameters.thermal_speed`, which include...
 
-        - `~plasmapy.formulary.parameters.thermal_speed`
-        - `~plasmapy.formulary.parameters.thermal_speed_lite`
-        - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    - Scenarios for raised exceptions
+    - Scenarios for issued warnings
+    - Basic behavior of `thermal_speed`
+    - Proper binding of Lite-Function functionality
+
+    Note: Testing of `thermal_speed_coefficients` and
+    `thermal_speed_lite` are done in separate test classes.
     """
 
     @pytest.mark.parametrize(
@@ -240,6 +244,24 @@ class TestThermalSpeed:
         with pytest.raises(_error):
             thermal_speed(*args, **kwargs)
 
+    @pytest.mark.parametrize(
+        "args, kwargs, _warning, expected",
+        [
+            ((), {"T": 1e9 * u.K, "particle": "e-"}, RelativityWarning, None),
+            ((1e5, ), {"particle": "e-"}, u.UnitsWarning, thermal_speed(1e5*u.K, "e-")),
+            ((1e11 * u.K, "p"), {}, RelativityWarning, None),
+            ((1e6, "p"), {}, u.UnitsWarning, thermal_speed(1e6 * u.K, "p")),
+        ],
+    )
+    def test_warns(self, args, kwargs, _warning, expected):
+        """Test scenarios where `thermal_speed` issues warnings."""
+        with pytest.warns(_warning):
+            vth = thermal_speed(*args, **kwargs)
+            assert vth.unit == u.m / u.s
+
+            if expected is not None:
+                assert vth == expected
+
     def test_can_handle_numpy_arrays(self):
         assert_can_handle_nparray(thermal_speed)
 
@@ -280,24 +302,10 @@ def test_thermal_speed():
 
     assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
 
-    with pytest.warns(RelativityWarning):
-        thermal_speed(1e9 * u.K, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        assert thermal_speed(1e5, "e-") == thermal_speed(1e5 * u.K, "e-")
-
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
     assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK, "e-")
-
-    with pytest.warns(RelativityWarning):
-        thermal_speed(1e11 * u.K, particle="p")
-
-    with pytest.warns(u.UnitsWarning):
-        assert thermal_speed(1e6, particle="p") == thermal_speed(
-            1e6 * u.K, particle="p"
-        )
 
 
 # test class for kappa_thermal_speed() function:
