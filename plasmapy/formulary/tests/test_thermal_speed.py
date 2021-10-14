@@ -216,9 +216,28 @@ class TestThermalSpeed:
         ],
     )
     def test_values(self, args, kwargs, expected):
+        """Test scenarios with known calculated values."""
         vth = thermal_speed(*args, **kwargs)
         assert np.allclose(vth.value, expected)
         assert vth.unit == u.m / u.s
+
+    @pytest.mark.parametrize(
+        "args, kwargs, _error",
+        [
+            ((5 * u.m, "e-"), {}, u.UnitTypeError),
+            ((5 * u.m, "He+"), {}, u.UnitTypeError),
+            ((-5 * u.K, "e-"), {}, ValueError),
+            ((-5 * u.eV, "e-"), {}, ValueError),
+            ((5e19 * u.K, "e-"), {}, RelativityError),
+            ((1e6 * u.K,), {"particle": "not a valid particle"}, InvalidParticleError),
+            ((1e6 * u.K, "e-"), {"method": "not valid"}, ValueError),
+            ((1e6 * u.K, "e-"), {"ndim": 4}, ValueError),
+        ],
+    )
+    def test_raises(self, args, kwargs, _error):
+        """Test scenarios that cause an Exception to be raised."""
+        with pytest.raises(_error):
+            thermal_speed(*args, **kwargs)
 
 
 @pytest.mark.skip
@@ -257,55 +276,24 @@ def test_thermal_speed():
 
     assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
 
-    with pytest.raises(u.UnitTypeError):
-        thermal_speed(5 * u.m, "e-")
-
-    with pytest.raises(ValueError):
-        thermal_speed(-T_e, "e-")
-
     with pytest.warns(RelativityWarning):
         thermal_speed(1e9 * u.K, "e-")
 
-    with pytest.raises(RelativityError):
-        thermal_speed(5e19 * u.K, "e-")
-
     with pytest.warns(u.UnitsWarning):
         assert thermal_speed(1e5, "e-") == thermal_speed(1e5 * u.K, "e-")
-
-    assert thermal_speed(T_i, particle="p").unit.is_equivalent(u.m / u.s)
 
     # Case when Z=1 is assumed
     assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
 
     assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK, "e-")
 
-    with pytest.raises(u.UnitTypeError):
-        thermal_speed(5 * u.m, particle="p")
-
-    with pytest.raises(ValueError):
-        thermal_speed(-T_e, particle="p")
-
     with pytest.warns(RelativityWarning):
         thermal_speed(1e11 * u.K, particle="p")
-
-    with pytest.raises(RelativityError):
-        thermal_speed(1e14 * u.K, particle="p")
-
-    with pytest.raises(InvalidParticleError):
-        thermal_speed(T_i, particle="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
         assert thermal_speed(1e6, particle="p") == thermal_speed(
             1e6 * u.K, particle="p"
         )
-
-    # Test invalid method
-    with pytest.raises(ValueError):
-        thermal_speed(T_i, "e-", method="sadks")
-
-    # Test invalid ndim
-    with pytest.raises(ValueError):
-        thermal_speed(T_i, "e-", ndim=4)
 
     assert_can_handle_nparray(thermal_speed)
 
