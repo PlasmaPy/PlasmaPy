@@ -38,7 +38,48 @@ def test_aliases(alias, parent):
 
 
 class TestThermalSpeedCoefficients:
-    ...
+    """
+    Test class for
+    `plasmapy.formulary.parameters.thermal_speed_coefficients`.
+    """
+
+    @pytest.mark.parametrize(
+        "ndim, method, _error",
+        [
+            (0, "most_probable", ValueError),
+            (4, "most_probable", ValueError),
+            ("not an int", "most_probable", ValueError),
+            (1, "not a valid method", ValueError),
+            (1, 2, ValueError),
+        ],
+    )
+    def test_raises(self, ndim, method, _error):
+        """Test scenarios that raise Exceptions."""
+        with pytest.raises(_error):
+            thermal_speed_coefficients(ndim=ndim, method=method)
+
+    @pytest.mark.parametrize(
+        "ndim, method, expected",
+        [
+            (1, "most_probable", 0),
+            (2, "most_probable", 1),
+            (3, "most_probable", np.sqrt(2)),
+            (1, "rms", 1),
+            (2, "rms", np.sqrt(2)),
+            (3, "rms", np.sqrt(3)),
+            (1, "mean_magnitude", np.sqrt(2 / np.pi)),
+            (2, "mean_magnitude", np.sqrt(np.pi / 2)),
+            (3, "mean_magnitude", np.sqrt(8 / np.pi)),
+            (1, "nrl", 1),
+            (2, "nrl", 1),
+            (3, "nrl", 1),
+        ],
+    )
+    def test_values(self, ndim, method, expected):
+        """Test that the correct values are returned."""
+        val = thermal_speed_coefficients(ndim=ndim, method=method)
+        assert np.isclose(val, expected)
+
 
 
 class TestThermalSpeed:
