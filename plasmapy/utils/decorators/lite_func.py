@@ -84,14 +84,14 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
         )
     elif "lite" in attrs:
         raise ValueError(
-            f"Argument 'attr' can NOT define key 'lite', this is reserved for"
-            f" the 'lite_func' argument."
+            "Argument 'attr' can NOT define key 'lite', this is reserved for"
+            " the 'lite_func' argument."
         )
 
     if inspect.isbuiltin(lite_func) or not (
         is_jitted(lite_func) or inspect.isfunction(lite_func)
     ):
-        raise ValueError(f"The given lite-function is not a user-defined function.")
+        raise ValueError("The given lite-function is not a user-defined function.")
 
     def decorator(f):
         @functools.wraps(f)
