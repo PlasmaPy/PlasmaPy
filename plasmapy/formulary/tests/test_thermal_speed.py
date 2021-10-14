@@ -126,7 +126,9 @@ class TestThermalSpeed:
     @pytest.mark.parametrize(
         "args, kwargs, expected",
         [
-            # Note the mass kwarg is overriding particle="e-"
+            # Parameters that should return the value of the thermal
+            # speed coefficient.
+            #  - note the mass kwarg is overriding particle="e-"
             (
                 ((1 / k_B.value) * u.K, "e-"),
                 {"mass": 1 * u.kg, "ndim": 1, "method": "most_probable"},
@@ -188,6 +190,8 @@ class TestThermalSpeed:
                 {"mass": 1 * u.kg, "ndim": 3, "method": "nrl"},
                 1.0,
             ),
+            #
+            # Select values for proton and electron thermal speeds.
             ((1 * u.MK, "e-"), {}, 5505694.743141063),
             ((1 * u.MK, "p"), {}, 128486.56960876315),
             ((1e6 * u.K, "e-"), {"method": "rms", "ndim": 1}, 3893114.2008620175),
@@ -217,6 +221,15 @@ class TestThermalSpeed:
                 (1e6 * u.K, "e-"),
                 {"method": "mean_magnitude", "ndim": 3},
                 6212511.428620378,
+            ),
+            #
+            # Cases that assume Z=1
+            ((1e6 * u.K, "p"), {}, thermal_speed(1e6 * u.K, "H-1+").value),
+            ((5 * u.eV, "e+"), {}, thermal_speed(5 * u.eV, "e-").value),
+            (
+                (1 * u.eV, "He"),
+                {},
+                thermal_speed(1 * u.eV, "He+", mass=Particle("He").mass).value
             ),
         ],
     )
@@ -301,14 +314,6 @@ class TestThermalSpeedLite:
         coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
         assert np.isclose(normal.value, lite)
-
-
-def test_thermal_speed():
-    r"""Test the thermal_speed function in parameters.py"""
-    # Case when Z=1 is assumed
-    assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
-
-    assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK, "e-")
 
 
 # test class for kappa_thermal_speed() function:
