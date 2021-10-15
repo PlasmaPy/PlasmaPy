@@ -747,59 +747,93 @@ class Test_gyroradius:
         assert_quantity_allclose(Vperp1, Vperp2)
 
 
-def test_plasma_frequency():
-    r"""Test the plasma_frequency function in parameters.py."""
+class TestPlasmaFrequency:
+    """
+    Test class for `plasmapy.formulary.parameters.plasma_frequency`.
+    """
 
-    assert plasma_frequency(n_e, "e-").unit.is_equivalent(u.rad / u.s)
+    def test_alias(self):
+        """Test the alias for `plasma_frequency`."""
+        assert wp_ is plasma_frequency
 
-    assert plasma_frequency(n_e, "e-", to_hz=True).unit.is_equivalent(u.Hz)
-
-    assert np.isclose(plasma_frequency(1 * u.cm ** -3, "e-").value, 5.64e4, rtol=1e-2)
-
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N").value, 3.53e2, rtol=1e-1
+    @pytest.mark.parametrize(
+        "args, kwargs, _error",
+        [
+            ((u.m**-3, "e-"), {}, TypeError),
+            (("not a density", "e-"), {}, TypeError),
+            ((5 * u.s, "e-"), {}, u.UnitTypeError),
+            ((5 * u.m ** -2, "e-"), {}, u.UnitTypeError),
+            ((), {"n": 5 * u.m ** -3, "particle": "not a particle"}, ValueError),
+        ],
     )
+    def test_raises(self, args, kwargs, _error):
+        """
+        Test scenarios that cause plasma_frequency to raise an
+        Exception.
+        """
+        with pytest.raises(_error):
+            plasma_frequency(*args, **kwargs)
 
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N", to_hz=True).value,
-        56.19000195094519,
+    @pytest.mark.parametrize(
+        "args, kwargs, _warning, expected",
+        [
+            ((1e19, "e-"), {}, u.UnitsWarning, plasma_frequency(1e19 * u.m ** -3, "e-")),
+            ((1e19, "p"), {}, u.UnitsWarning, plasma_frequency(1e19 * u.m ** -3, "p")),
+        ],
     )
+    def test_warns(self, args, kwargs, _warning, expected):
+        """
+        Test scenarios the cause plasma_frequency to issue a warning.
+        """
+        with pytest.warns(_warning):
+            wp = plasma_frequency(*args, **kwargs)
+            assert isinstance(wp, u.Quantity)
+            assert wp.unit == u.rad / u.s
 
-    with pytest.raises(TypeError):
-        plasma_frequency(u.m ** -3, "e-")
+        if expected is not None:
+            assert np.allclose(wp, expected)
 
-    with pytest.raises(u.UnitTypeError):
-        plasma_frequency(5 * u.m ** -2, "e-")
-
-    assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
-
-    with pytest.warns(u.UnitsWarning):
-        assert plasma_frequency(1e19, "e-") == plasma_frequency(1e19 * u.m ** -3, "e-")
-
-        assert plasma_frequency(n_i, particle="p").unit.is_equivalent(u.rad / u.s)
-
-    # Case where Z=1 is assumed
-    assert plasma_frequency(n_i, particle="H-1+") == plasma_frequency(n_i, particle="p")
-
-    assert np.isclose(
-        plasma_frequency(mu * u.cm ** -3, particle="p").value, 1.32e3, rtol=1e-2
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, rtol",
+        [
+            ((1 * u.cm ** -3, "e-"), {}, 5.64e4, 1.e-2),
+            ((1 * u.cm ** -3, "N"), {}, 3.53e2, 1.e-1),
+            ((1e17 * u.cm ** -3, "p"), {"z_mean": 0.8}, 333063562455.4028, 1.e-6),
+            (
+                (5e19 * u.m ** -3, "p"),
+                {},
+                plasma_frequency(5e19 * u.m ** -3, particle="H-1+").value,
+                1.e-5,
+            ),
+            ((m_p.to(u.u).value * u.cm ** -3,), {"particle": "p"}, 1.32e3, 1e-2),
+        ],
     )
+    def test_values(self, args, kwargs, expected, rtol):
+        """Test various expected values."""
+        wp = plasma_frequency(*args, **kwargs)
 
-    with pytest.raises(ValueError):
-        plasma_frequency(n=5 * u.m ** -3, particle="sdfas")
+        assert isinstance(wp, u.Quantity)
+        assert wp.unit == u.rad / u.s
+        assert np.allclose(wp.value, expected, rtol=rtol)
 
-    with pytest.warns(u.UnitsWarning):
-        plasma_freq_no_units = plasma_frequency(1e19, particle="p")
-        assert plasma_freq_no_units == plasma_frequency(1e19 * u.m ** -3, particle="p")
+    @pytest.mark.parametrize(
+        "args, kwargs",
+        [((1 * u.cm ** -3, "N"), {}), ((1e12 * u.cm ** -3,), {"particle": "p"})],
+    )
+    def test_to_hz(self, args, kwargs):
+        """Test behavior of the ``to_hz`` keyword."""
+        wp = plasma_frequency(*args, **kwargs)
+        fp = plasma_frequency(*args, to_hz=True, **kwargs)
 
-    plasma_frequency(1e17 * u.cm ** -3, particle="p")
-    # testing for user input z_mean
-    testMeth1 = plasma_frequency(1e17 * u.cm ** -3, particle="p", z_mean=0.8).si.value
-    testTrue1 = 333063562455.4028
-    errStr = f"plasma_frequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-6), errStr
+        assert isinstance(fp, u.Quantity)
+        assert fp.unit == u.Hz
+        assert fp.value == wp.value / (2.0 * np.pi)
 
-    assert_can_handle_nparray(plasma_frequency)
+    def test_nans(self):
+        assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
+
+    def test_can_handle_numpy_arrays(self):
+        assert_can_handle_nparray(plasma_frequency)
 
 
 def test_Debye_length():
@@ -1100,7 +1134,6 @@ def test_Bohm_diffusion():
         (wc_, gyrofrequency),
         (rc_, gyroradius),
         (rhoc_, gyroradius),
-        (wp_, plasma_frequency),
         (lambdaD_, Debye_length),
         (nD_, Debye_number),
         (cwp_, inertial_length),
