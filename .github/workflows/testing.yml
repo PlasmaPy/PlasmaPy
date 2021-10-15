@@ -3,11 +3,13 @@ name: CI
 on:
   push:
     branches:
-      - master
-      - v0.*.x
+    - main
+    - stable
+    - v0.*.x
     tags:
-      - "v*"
+    - v*
   pull_request:
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -18,66 +20,52 @@ jobs:
       matrix:
         include:
 
-          - name: Python 3.7 with minimal dependencies
-            os: ubuntu-latest
-            python: 3.7
-            toxenv: py37-minimal
+        - name: Python 3.7 with minimal dependencies
+          os: ubuntu-latest
+          python: 3.7
+          toxenv: py37-minimal
 
-          - name: Python 3.7
-            os: ubuntu-latest
-            python: 3.7
-            toxenv: py37
+        - name: Python 3.7
+          os: ubuntu-latest
+          python: 3.7
+          toxenv: py37
 
-          - name: Python 3.7 with Astropy dev
-            os: ubuntu-latest
-            python: 3.7
-            toxenv: py37-astropydev
+        - name: Python 3.8 with code coverage
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-cov
 
-          - name: Python 3.8 with code coverage
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-cov
+        - name: Python 3.8, slow tests with code coverage
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-slow-cov
 
-          - name: Python 3.8, slow tests with code coverage
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-slow-cov
+        - name: Python 3.9
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39
 
-          - name: Python 3.8 with Numpy dev
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: py38-numpydev
+        - name: Python 3.8 (Windows)
+          os: windows-latest
+          python: 3.8
+          toxenv: py38
+          toxposargs: --durations=50
 
-          - name: Python 3.9 with Xarray dev
-            os: ubuntu-latest
-            python: 3.9
-            toxenv: py39-numpydev
+        - name: Python 3.8 (MacOS X)
+          os: macos-latest
+          python: 3.8
+          toxenv: py38
 
-          - name: Python 3.9
-            os: ubuntu-latest
-            python: 3.9
-            toxenv: py39
+        - name: Documentation
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: build_docs
+          toxposargs: -q
 
-          - name: Python 3.8 (Windows)
-            os: windows-latest
-            python: 3.8
-            toxenv: py38
-            toxposargs: --durations=50
-
-          - name: Python 3.8 (MacOS X)
-            os: macos-latest
-            python: 3.8
-            toxenv: py38
-
-          - name: Documentation
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: build_docs
-
-          - name: Linters
-            os: ubuntu-latest
-            python: 3.8
-            toxenv: linters
+        - name: Linters
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: linters
 
     steps:
     - name: Checkout code
@@ -97,7 +85,7 @@ jobs:
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
-      uses: codecov/codecov-action@v2.0.3
+      uses: codecov/codecov-action@v2.1.0
       with:
         file: ./coverage.xml
   build-n-publish:
