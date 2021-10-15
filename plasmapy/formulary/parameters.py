@@ -1479,6 +1479,7 @@ def plasma_frequency_lite(
     return omega_p
 
 
+@bind_lite_func(plasma_frequency_lite)
 @validate_quantities(
     n={"can_be_negative": False},
     validations_on_return={
@@ -1563,7 +1564,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     """
 
     try:
-        m = particles.particle_mass(particle)
+        m = particles.particle_mass(particle).value
+
         if z_mean is None:
             # warnings.warn("No z_mean given, defaulting to atomic charge",
             #               PhysicsWarning)
@@ -1579,9 +1581,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
 
-    omega_p = u.rad * Z * e * np.sqrt(n / (eps0 * m))
-
-    return omega_p.si
+    omega_p = plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
+    return omega_p
 
 
 wp_ = plasma_frequency
