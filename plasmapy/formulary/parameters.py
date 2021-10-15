@@ -1493,6 +1493,8 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     **Aliases:** `wp_`
 
+    **Lite Version:** `~plasmapy.formulary.parameters.plasma_frequency_lite`
+
     Parameters
     ----------
     n : `~astropy.units.Quantity`
@@ -1561,6 +1563,17 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     <Quantity 1.78398...e+11 rad / s>
     >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
+
+    For user convienence
+    `~plasmapy.formulary.parameters.plasma_frequency_lite` is bound to
+    this function and can be used as follows.
+
+    >>> from plasmapy.particles import Particle
+    >>> mass = Particle("p").mass.value
+    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1)
+    416329...
+    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
+    662608...
     """
 
     try:
