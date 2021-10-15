@@ -1,0 +1,1 @@
+Created lite-function `~plasmapy.formulary.parameters.plasmapy_frequency_lite`.
