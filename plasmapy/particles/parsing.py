@@ -475,9 +475,9 @@ def _parse_and_check_atomic_input(
     return nomenclature_dict
 
 
-def _parse_and_check_molecule_input(arg: str, Z: Integral = None):
+def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     """
-    Separates the constitutives elements and charge of a molecule symbol.
+    Separates the constitutive elements and charge of a molecule symbol.
 
     Parameters
     ----------
@@ -486,9 +486,9 @@ def _parse_and_check_molecule_input(arg: str, Z: Integral = None):
 
     Returns
     -------
-    a dictionnary with identified element symbols as keys and amont of each as values.
+    a dictionary with identified element symbols as keys and amount of each as values.
     """
-    molecule_info, Z_from_arg = _extract_charge(arg)
+    molecule_info, z_from_arg = _extract_charge(argument)
 
     elements_dict = {}
     for match in re.finditer(r"([A-Z][a-z]?)(\d+)?", molecule_info):
@@ -498,8 +498,8 @@ def _parse_and_check_molecule_input(arg: str, Z: Integral = None):
         else:
             elements_dict[element] = int(amount)
 
-    if Z is not None and Z_from_arg is not None:
-        if Z != Z_from_arg:
+    if Z is not None and z_from_arg is not None:
+        if Z != z_from_arg:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
                 f"'{argument}' is inconsistent with the keyword Z = {Z}."
@@ -511,6 +511,6 @@ def _parse_and_check_molecule_input(arg: str, Z: Integral = None):
                 ParticleWarning,
             )
 
-    if Z_from_arg is not None:
-        Z = Z_from_arg
+    if z_from_arg is not None:
+        Z = z_from_arg
     return elements_dict, Z

@@ -2220,7 +2220,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
 def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
     """
-    Parses molecules symboles into a |CustomParticle| ot |Particle| if possible.
+    Parses molecules symbols into a |CustomParticle| ot |Particle| if possible.
 
     Parameters
     ----------
