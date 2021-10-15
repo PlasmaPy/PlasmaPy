@@ -38,8 +38,8 @@ automodapi_custom_groups = {
             "PlasmaPy provides short-named (alias) versions of the most "
             "common plasma functionality.  These aliases are only given to "
             "functionality where there is a common lexicon in the community, "
-            "for example `~plasmapy.formulary.parameters.plasma_frequency` "
-            " has the alias `~plasmapy.formulary.parameters.wp_`.  All aliases "
+            "for example `~plasmapy.formulary.parameters.parameters_.plasma_frequency` "
+            " has the alias `~plasmapy.formulary.parameters.parameters_.wp_`.  All aliases "
             "in PlasmaPy are denoted with a trailing underscore ``_``."
         ),
         "dunder": "__aliases__",
@@ -60,12 +60,12 @@ automodapi_custom_groups = {
             
             - Lite-functions are a flavor of existing PlasmaPy functionality and
               are denoted with a trailing ``_lite`` to the name, for example
-              `~plasmapy.formulary.parameters.thermal_speed_lite` is the
+              `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite` is the
               lite-function associated with
-              `~plasmapy.formulary.parameters.thermal_speed`.
+              `~plasmapy.formulary.parameters.parameters_.thermal_speed`.
             - Lite-functions are typically bound to their normal version as the
               ``lite`` attribute.  For example, 
-              `~plasmapy.formulary.parameters.thermal_speed_lite` can be accessed
+              `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite` can be accessed
               as ``thermal_speed.lite``.
             - Inputs and outputs to lite-functions are strictly given in SI units.
             - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to

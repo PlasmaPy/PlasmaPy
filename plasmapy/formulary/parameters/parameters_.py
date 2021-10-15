@@ -205,7 +205,7 @@ def mass_density(
 
 
 rho_ = mass_density
-"""Alias to `~plasmapy.formulary.parameters.mass_density`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.mass_density`."""
 
 
 @check_relativistic
@@ -349,7 +349,7 @@ def Alfven_speed(
 
 
 va_ = Alfven_speed
-"""Alias to `~plasmapy.formulary.parameters.Alfven_speed`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.Alfven_speed`."""
 
 
 @check_relativistic
@@ -537,7 +537,7 @@ def ion_sound_speed(
 
 
 cs_ = ion_sound_speed
-"""Alias to `~plasmapy.formulary.parameters.ion_sound_speed`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.ion_sound_speed`."""
 
 
 # -----                                                             thermal_speed  -----
@@ -545,7 +545,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     r"""
     Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
     based on the given ``method`` and ``ndim``.  (See the
-    `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
+    `~plasmapy.formulary.parameters.parameters_.thermal_speed` :ref:`Notes <thermal-speed-notes>`
     section for further details.)
 
     Parameters
@@ -568,7 +568,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     For a detailed explanation of the different coefficients used to calculate
     the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for  `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    for  `~plasmapy.formulary.parameters.parameters_.thermal_speed`.  The possible return
     values are listed the table
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
@@ -627,9 +627,9 @@ def thermal_speed_lite(
     T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
 ) -> numbers.Real:
     r"""
-    The "Lite-Function" version of `~plasmapy.formulary.parameters.thermal_speed`.
+    The "Lite-Function" version of `~plasmapy.formulary.parameters.parameters_.thermal_speed`.
     Performs the same thermal speed calculations as
-    `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
+    `~plasmapy.formulary.parameters.parameters_.thermal_speed`, but is intended for
     computational use and, thus, has data conditioning safe-guards removed.
 
     .. math::
@@ -640,7 +640,7 @@ def thermal_speed_lite(
     proportionality determined by the method in which :math:`v_{th}` is
     calculated and the dimensionality of the system (1D, 2D, 3D).  For further
     details see the :ref:`Notes <thermal-speed-notes>` section in the
-    `~plasmapy.formulary.parameters.thermal_speed` documentation.
+    `~plasmapy.formulary.parameters.parameters_.thermal_speed` documentation.
 
     Parameters
     ----------
@@ -653,7 +653,7 @@ def thermal_speed_lite(
     coeff : `~numbers.Real`
         The coefficient :math:`C_o` associated with the method used for
         calculating the thermal speed, see :ref:`Notes <thermal-speed-notes>`
-        section in the `~plasmapy.formulary.parameters.thermal_speed`
+        section in the `~plasmapy.formulary.parameters.parameters_.thermal_speed`
         documentation.
 
     Returns
@@ -694,9 +694,9 @@ def thermal_speed(
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
     details.)
 
-    **Aliases:** `~plasmapy.formulary.parameters.vth_`
+    **Aliases:** `~plasmapy.formulary.parameters.parameters_.vth_`
 
-    **Lite Version:** `~plasmapy.formulary.parameters.thermal_speed_lite`
+    **Lite Version:** `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite`
 
     Parameters
     ----------
@@ -790,7 +790,7 @@ def thermal_speed(
        +--------------+------------+---------------+---------------+---------------+
 
     The coefficents can be directly retrieved using
-    `~plasmapy.formulary.parameters.thermal_speed_coefficients`.
+    `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`.
 
         .. rubric:: The Methods
 
@@ -862,8 +862,8 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
-    For user convienece `~plasmapy.formulary.parameters.thermal_speed_coefficients`
-    and `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
+    For user convienece `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`
+    and `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite` are bound to this function
     and can be used as follows.
 
     >>> from plasmapy.particles import Particle
@@ -882,7 +882,7 @@ def thermal_speed(
 
 
 vth_ = thermal_speed
-""" Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+""" Alias to :func:`~plasmapy.formulary.parameters.parameters_.thermal_speed`. """
 
 # -----                                                          thermal_pressure  -----
 
@@ -938,7 +938,7 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
 
 pth_ = thermal_pressure
-"""Alias to `~plasmapy.formulary.parameters.thermal_pressure`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.thermal_pressure`."""
 
 
 @check_relativistic
@@ -1052,7 +1052,7 @@ def kappa_thermal_speed(
 
 
 vth_kappa_ = kappa_thermal_speed
-"""Alias to `~plasmapy.formulary.parameters.kappa_thermal_speed`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.kappa_thermal_speed`."""
 
 
 @validate_quantities(
@@ -1112,7 +1112,7 @@ def Hall_parameter(
     V : `~astropy.units.quantity.Quantity`
         The relative velocity between ``particle`` and ``ion``.  If not provided,
         then the ``particle`` thermal velocity is assumed
-        (`~plasmapy.formulary.parameters.thermal_speed`).
+        (`~plasmapy.formulary.parameters.parameters_.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
@@ -1126,7 +1126,7 @@ def Hall_parameter(
 
     See Also
     --------
-    ~plasmapy.formulary.parameters.gyrofrequency
+    ~plasmapy.formulary.parameters.parameters_.gyrofrequency
     ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
     ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
     ~plasmapy.formulary.collisions.Coulomb_logarithm
@@ -1171,7 +1171,7 @@ def Hall_parameter(
 
 
 betaH_ = Hall_parameter
-"""Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.Hall_parameter`."""
 
 
 @validate_quantities(
@@ -1286,10 +1286,10 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
 
 oc_ = gyrofrequency
-"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.gyrofrequency`."""
 
 wc_ = gyrofrequency
-"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.gyrofrequency`."""
 
 
 @validate_quantities(
@@ -1461,10 +1461,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.gyroradius`."""
 
 rhoc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.gyroradius`."""
 
 
 @validate_quantities(
@@ -1573,7 +1573,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
 
 wp_ = plasma_frequency
-"""Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.plasma_frequency`."""
 
 
 @validate_quantities(
@@ -1647,7 +1647,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.Debye_length`."""
 
 
 @validate_quantities(
@@ -1721,7 +1721,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
 
 nD_ = Debye_number
-"""Alias to `~plasmapy.formulary.parameters.Debye_number`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.Debye_number`."""
 
 
 @validate_quantities(
@@ -1795,7 +1795,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to `~plasmapy.formulary.parameters.inertial_length`.
+Alias to `~plasmapy.formulary.parameters.parameters_.inertial_length`.
 
 * Name is shorthand for :math:`c / ω_p`.
 """
@@ -1863,7 +1863,7 @@ def magnetic_pressure(B: u.T) -> u.Pa:
 
 
 pmag_ = magnetic_pressure
-"""Alias to `~plasmapy.formulary.parameters.magnetic_pressure`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.magnetic_pressure`."""
 
 
 @validate_quantities
@@ -1928,7 +1928,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
 
 ub_ = magnetic_energy_density
-"""Alias to `~plasmapy.formulary.parameters.magnetic_energy_density`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.magnetic_energy_density`."""
 
 
 @validate_quantities(
@@ -2012,7 +2012,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
 
 wuh_ = upper_hybrid_frequency
-"""Alias to `~plasmapy.formulary.parameters.upper_hybrid_frequency`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.upper_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -2115,7 +2115,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
 
 wlh_ = lower_hybrid_frequency
-"""Alias to `~plasmapy.formulary.parameters.lower_hybrid_frequency`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.lower_hybrid_frequency`."""
 
 
 @validate_quantities(
@@ -2187,4 +2187,4 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
 
 DB_ = Bohm_diffusion
-"""Alias to `~plasmapy.formulary.parameters.Bohm_diffusion`."""
+"""Alias to `~plasmapy.formulary.parameters.parameters_.Bohm_diffusion`."""

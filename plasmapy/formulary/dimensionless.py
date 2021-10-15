@@ -129,8 +129,8 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    ~plasmapy.formulary.parameters.thermal_pressure
-    ~plasmapy.formulary.parameters.magnetic_pressure
+    ~plasmapy.formulary.parameters.parameters_.thermal_pressure
+    ~plasmapy.formulary.parameters.parameters_.magnetic_pressure
     """
     thermal_pressure = parameters.thermal_pressure(T, n)
     magnetic_pressure = parameters.magnetic_pressure(B)

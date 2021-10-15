@@ -7,7 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary.parameters import (
+from plasmapy.formulary.parameters.parameters_ import (
     Alfven_speed,
     betaH_,
     Bohm_diffusion,
@@ -152,7 +152,7 @@ class Test_mass_density:
 
 
 class TestAlfvenSpeed:
-    """Test `~plasmapy.formulary.parameters.Alfven_speed`."""
+    """Test `~plasmapy.formulary.parameters.parameters_.Alfven_speed`."""
 
     @pytest.mark.parametrize("alias", [va_])
     def test_aliases(self, alias):
@@ -509,9 +509,9 @@ class TestThermalSpeed:
     Test class for functionality around calculating the thermal speed.  This
     covers the functionality
 
-        - `~plasmapy.formulary.parameters.thermal_speed`
-        - `~plasmapy.formulary.parameters.thermal_speed_lite`
-        - `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+        - `~plasmapy.formulary.parameters.parameters_.thermal_speed`
+        - `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite`
+        - `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`
     """
     _bound_attrs = [
         ("lite", thermal_speed_lite),

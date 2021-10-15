@@ -145,7 +145,7 @@ from plasmapy.formulary.collisions import (
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )
-from plasmapy.formulary.parameters import _grab_charge, Hall_parameter
+from plasmapy.formulary.parameters.parameters_ import _grab_charge, Hall_parameter
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities

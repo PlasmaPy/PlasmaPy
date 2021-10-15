@@ -663,7 +663,7 @@ def assert_can_handle_nparray(
 
     Examples
     --------
-    >>> from plasmapy.formulary.parameters import Alfven_speed, gyrofrequency
+    >>> from plasmapy.formulary.parameters.parameters_ import Alfven_speed, gyrofrequency
     >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})

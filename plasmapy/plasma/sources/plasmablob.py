@@ -8,7 +8,7 @@ import warnings
 
 from plasmapy.formulary.collisions import coupling_parameter
 from plasmapy.formulary.dimensionless import quantum_theta
-from plasmapy.formulary.parameters import _grab_charge
+from plasmapy.formulary.parameters.parameters_ import _grab_charge
 from plasmapy.particles import particle_mass
 from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils import code_repr
