@@ -154,7 +154,7 @@ Improved Documentation
 ----------------------
 
 - Add narrative documentation on ionization state functionality. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
-- Added description to :func:`~plasmapy.formulary.parameters.Hall_parameter`
+- Added description to :func:`~plasmapy.formulary.parameters.parameters_.Hall_parameter`
   signature and equation in docstrings. (`#934 <https://github.com/plasmapy/plasmapy/pull/934>`__)
 - Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages. (`#942 <https://github.com/plasmapy/plasmapy/pull/942>`__)
 - Improves documentation of `plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
@@ -216,7 +216,7 @@ Backwards Incompatible Changes
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the `ion` and `particle` arguments of functions contained in `plasmapy.formulary.parameters`, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
 - Moved test helper exceptions from `plasmapy.utils.pytest_helpers` to `plasmapy.tests.helpers`. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
-- Update :func:`plasmapy.formulary.parameters.mass_density` so it calculates the mass
+- Update :func:`plasmapy.formulary.parameters.parameters_.mass_density` so it calculates the mass
   density for a specific particle from a given number density.  Original function
   calculated the total mass density (ion + electron). (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
 
@@ -242,8 +242,8 @@ Bug Fixes
 ---------
 
 - Allowed implicit conversions of AstroPy units in inputs and outputs of validated functions to happen without warnings. Most notably, this removes warnings on eV inputs to temperature fields. (`#886 <https://github.com/plasmapy/plasmapy/pull/886>`__)
-- Update :func:`plasmapy.formulary.parameters.Alfven_speed` to properly use the updated
-  :func:`~plasmapy.formulary.parameters.mass_density` and maintain the same behavior.
+- Update :func:`plasmapy.formulary.parameters.parameters_.Alfven_speed` to properly use the updated
+  :func:`~plasmapy.formulary.parameters.parameters_.mass_density` and maintain the same behavior.
   Also add handling of the ``ion`` input keyword, so `~plasmapy.particles.Particle` and
   the `~plasmapy.particles.Particle` convertible representations can be used as inputs. (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
 
@@ -305,7 +305,7 @@ Features
 - Create :func:`~plasmapy.formulary.relativity.relativistic_energy` function, which uses the established :func:`~plamsapy.formulary.relativity.Lorentz_factor` function to aid in the calculation of the relativistic energy of an object. (`#805 <https://github.com/plasmapy/plasmapy/pull/805>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function. (`#815 <https://github.com/plasmapy/plasmapy/pull/815>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Mag_Reynolds` function. (`#820 <https://github.com/plasmapy/plasmapy/pull/820>`__)
-- Create :func:`~plasmapy.formulary.parameters.Bohm_diffusion` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
+- Create :func:`~plasmapy.formulary.parameters.parameters_.Bohm_diffusion` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
 - Added a new diagnostics module `thomson` containing a function
   `spectral_density` that calculates Thomson scattering spectra for
   Maxwellian plasmas in both the collective and non-collective regimes. As
@@ -321,16 +321,16 @@ Features
       * `plasmapy.formulary.dimensionless.Mag_Reynolds` -> `~plasmapy.formulary.dimensionless.Rm_`
       * `plasmapy.formulary.drifts.ExB_drift` -> `~plasmapy.formulary.drifts.veb_`
       * `plasmapy.formulary.drifts.force_drift` -> `~plasmapy.formulary.drifts.vfd_`
-      * `plasmapy.formulary.parameters.mass_density` -> `~plasmapy.formulary.parameters.rho_`
-      * `plasmapy.formulary.parameters.Afven_speed` -> `~plasmapy.formulary.parameters.va_`
-      * `plasmapy.formulary.parameters.ion_sound_speed` -> `~plasmapy.formulary.parameters.cs_`
-      * `plasmapy.formulary.parameters.thermal_speed` -> `~plasmapy.formulary.parameters.vth_`
-      * `plasmapy.formulary.parameters.thermal_pressure` -> `~plasmapy.formulary.parameters.pth_`
-      * `plasmapy.formulary.parameters.kappa_thermal_speed` -> `~plasmapy.formulary.parameters.vth_kappa_`
-      * `plasmapy.formulary.parameters.inertial_length` -> `~plasmapy.formulary.parameters.cwp_`
-      * `plasmapy.formulary.parameters.Hall_parameter` -> `~plasmapy.formulary.parameters.betaH_`
-      * `plasmapy.formulary.parameters.gyrofrequency` -> `~plasmapy.formulary.parameters.oc_`, `~plasmapy.formulary.parameters.wc_`
-      * `plasmapy.formulary.parameters.gyroradius` -> `~plasmapy.formulary.parameters.rc_`, `~plasmapy.formulary.parameters.rhoc_`
+      * `plasmapy.formulary.parameters.parameters_.mass_density` -> `~plasmapy.formulary.parameters.parameters_.rho_`
+      * `plasmapy.formulary.parameters.parameters_.Afven_speed` -> `~plasmapy.formulary.parameters.parameters_.va_`
+      * `plasmapy.formulary.parameters.parameters_.ion_sound_speed` -> `~plasmapy.formulary.parameters.parameters_.cs_`
+      * `plasmapy.formulary.parameters.parameters_.thermal_speed` -> `~plasmapy.formulary.parameters.parameters_.vth_`
+      * `plasmapy.formulary.parameters.parameters_.thermal_pressure` -> `~plasmapy.formulary.parameters.parameters_.pth_`
+      * `plasmapy.formulary.parameters.parameters_.kappa_thermal_speed` -> `~plasmapy.formulary.parameters.parameters_.vth_kappa_`
+      * `plasmapy.formulary.parameters.parameters_.inertial_length` -> `~plasmapy.formulary.parameters.parameters_.cwp_`
+      * `plasmapy.formulary.parameters.parameters_.Hall_parameter` -> `~plasmapy.formulary.parameters.parameters_.betaH_`
+      * `plasmapy.formulary.parameters.parameters_.gyrofrequency` -> `~plasmapy.formulary.parameters.parameters_.oc_`, `~plasmapy.formulary.parameters.parameters_.wc_`
+      * `plasmapy.formulary.parameters.parameters_.gyroradius` -> `~plasmapy.formulary.parameters.parameters_.rc_`, `~plasmapy.formulary.parameters.rhoc_`
       * `plasmapy.formulary.parameters.plasma_frequency` -> `~plasmapy.formulary.parameters.wp_`
       * `plasmapy.formulary.parameters.Debye_length` -> `~plasmapy.formulary.parameters.lambdaD_`
       * `plasmapy.formulary.parameters.Debye_number` -> `~plasmapy.formulary.parameters.nD_`

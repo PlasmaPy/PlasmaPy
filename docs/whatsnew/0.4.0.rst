@@ -38,7 +38,7 @@ Features
 - Create :func:`~plasmapy.formulary.relativity.relativistic_energy` function, which uses the established :func:`~plasmapy.formulary.relativity.Lorentz_factor` function to aid in the calculation of the relativistic energy of an object. (`#805 <https://github.com/plasmapy/plasmapy/pull/805>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function. (`#815 <https://github.com/plasmapy/plasmapy/pull/815>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Mag_Reynolds` function. (`#820 <https://github.com/plasmapy/plasmapy/pull/820>`__)
-- Create :func:`~plasmapy.formulary.parameters.Bohm_diffusion` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
+- Create :func:`~plasmapy.formulary.parameters.parameters_.Bohm_diffusion` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
 - Added a new diagnostics module ``thomson`` containing a function
   ``spectral_density`` that calculates Thomson scattering spectra for
   Maxwellian plasmas in both the collective and non-collective regimes. As
@@ -54,24 +54,24 @@ Features
       * `plasmapy.formulary.dimensionless.Mag_Reynolds` -> `~plasmapy.formulary.dimensionless.Rm_`
       * `plasmapy.formulary.drifts.ExB_drift` -> `~plasmapy.formulary.drifts.veb_`
       * `plasmapy.formulary.drifts.force_drift` -> `~plasmapy.formulary.drifts.vfd_`
-      * `plasmapy.formulary.parameters.mass_density` -> `~plasmapy.formulary.parameters.rho_`
-      * `plasmapy.formulary.parameters.Alfven_speed` -> `~plasmapy.formulary.parameters.va_`
-      * `plasmapy.formulary.parameters.ion_sound_speed` -> `~plasmapy.formulary.parameters.cs_`
-      * `plasmapy.formulary.parameters.thermal_speed` -> `~plasmapy.formulary.parameters.vth_`
-      * `plasmapy.formulary.parameters.thermal_pressure` -> `~plasmapy.formulary.parameters.pth_`
-      * `plasmapy.formulary.parameters.kappa_thermal_speed` -> `~plasmapy.formulary.parameters.vth_kappa_`
-      * `plasmapy.formulary.parameters.inertial_length` -> `~plasmapy.formulary.parameters.cwp_`
-      * `plasmapy.formulary.parameters.Hall_parameter` -> `~plasmapy.formulary.parameters.betaH_`
-      * `plasmapy.formulary.parameters.gyrofrequency` -> `~plasmapy.formulary.parameters.oc_`, `~plasmapy.formulary.parameters.wc_`
-      * `plasmapy.formulary.parameters.gyroradius` -> `~plasmapy.formulary.parameters.rc_`, `~plasmapy.formulary.parameters.rhoc_`
-      * `plasmapy.formulary.parameters.plasma_frequency` -> `~plasmapy.formulary.parameters.wp_`
-      * `plasmapy.formulary.parameters.Debye_length` -> `~plasmapy.formulary.parameters.lambdaD_`
-      * `plasmapy.formulary.parameters.Debye_number` -> `~plasmapy.formulary.parameters.nD_`
-      * `plasmapy.formulary.parameters.magnetic_pressure` -> `~plasmapy.formulary.parameters.pmag_`
-      * `plasmapy.formulary.parameters.magnetic_energy_density` -> `~plasmapy.formulary.parameters.ub_`
-      * `plasmapy.formulary.parameters.upper_hybrid_frequency` -> `~plasmapy.formulary.parameters.wuh_`
-      * `plasmapy.formulary.parameters.lower_hybrid_frequency` -> `~plasmapy.formulary.parameters.wlh_`
-      * `plasmapy.formulary.parameters.Bohm_diffusion` -> `~plasmapy.formulary.parameters.DB_`
+      * `plasmapy.formulary.parameters.parameters_.mass_density` -> `~plasmapy.formulary.parameters.parameters_.rho_`
+      * `plasmapy.formulary.parameters.parameters_.Alfven_speed` -> `~plasmapy.formulary.parameters.parameters_.va_`
+      * `plasmapy.formulary.parameters.parameters_.ion_sound_speed` -> `~plasmapy.formulary.parameters.parameters_.cs_`
+      * `plasmapy.formulary.parameters.parameters_.thermal_speed` -> `~plasmapy.formulary.parameters.parameters_.vth_`
+      * `plasmapy.formulary.parameters.parameters_.thermal_pressure` -> `~plasmapy.formulary.parameters.parameters_.pth_`
+      * `plasmapy.formulary.parameters.parameters_.kappa_thermal_speed` -> `~plasmapy.formulary.parameters.parameters_.vth_kappa_`
+      * `plasmapy.formulary.parameters.parameters_.inertial_length` -> `~plasmapy.formulary.parameters.parameters_.cwp_`
+      * `plasmapy.formulary.parameters.parameters_.Hall_parameter` -> `~plasmapy.formulary.parameters.parameters_.betaH_`
+      * `plasmapy.formulary.parameters.parameters_.gyrofrequency` -> `~plasmapy.formulary.parameters.parameters_.oc_`, `~plasmapy.formulary.parameters.parameters_.wc_`
+      * `plasmapy.formulary.parameters.parameters_.gyroradius` -> `~plasmapy.formulary.parameters.parameters_.rc_`, `~plasmapy.formulary.parameters.parameters_.rhoc_`
+      * `plasmapy.formulary.parameters.parameters_.plasma_frequency` -> `~plasmapy.formulary.parameters.parameters_.wp_`
+      * `plasmapy.formulary.parameters.parameters_.Debye_length` -> `~plasmapy.formulary.parameters.parameters_.lambdaD_`
+      * `plasmapy.formulary.parameters.parameters_.Debye_number` -> `~plasmapy.formulary.parameters.parameters_.nD_`
+      * `plasmapy.formulary.parameters.parameters_.magnetic_pressure` -> `~plasmapy.formulary.parameters.parameters_.pmag_`
+      * `plasmapy.formulary.parameters.parameters_.magnetic_energy_density` -> `~plasmapy.formulary.parameters.parameters_.ub_`
+      * `plasmapy.formulary.parameters.parameters_.upper_hybrid_frequency` -> `~plasmapy.formulary.parameters.parameters_.wuh_`
+      * `plasmapy.formulary.parameters.parameters_.lower_hybrid_frequency` -> `~plasmapy.formulary.parameters.parameters_.wlh_`
+      * `plasmapy.formulary.parameters.parameters_.Bohm_diffusion` -> `~plasmapy.formulary.parameters.DB_`
       * `plasmapy.formulary.quantum.deBroglie_wavelength` -> `~plasmapy.formulary.quantum.lambdaDB_`
       * `plasmapy.formulary.quantum.thermal_deBroglie_wavelength` -> `~plasmapy.formulary.quantum.lambdaDB_th_`
       * `plasmapy.formulary.quantum.Fermi_energy` -> `~plasmapy.formulary.quantum.Ef_` (`#865 <https://github.com/plasmapy/plasmapy/pull/865>`__)

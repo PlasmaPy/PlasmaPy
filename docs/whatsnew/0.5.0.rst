@@ -25,7 +25,7 @@ Backwards Incompatible Changes
   `plasmapy.formulary` to `plasmapy.dispersion`. (`#910 <https://github.com/plasmapy/plasmapy/pull/910>`__)
 - Removed default values for the ``ion`` and ``particle`` arguments of functions contained in `plasmapy.formulary.parameters`, in accordance with issue [#453](https://github.com/PlasmaPy/PlasmaPy/issues/453), and updated all relevant calls to modified functionality. (`#911 <https://github.com/plasmapy/plasmapy/pull/911>`__)
 - Moved test helper exceptions from `plasmapy.utils.pytest_helpers` to `plasmapy.tests.helpers`. (`#919 <https://github.com/plasmapy/plasmapy/pull/919>`__)
-- Update :func:`plasmapy.formulary.parameters.mass_density` so it calculates the mass
+- Update :func:`plasmapy.formulary.parameters.parameters_.mass_density` so it calculates the mass
   density for a specific particle from a given number density.  Original function
   calculated the total mass density (ion + electron). (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)
 
@@ -51,7 +51,7 @@ Bug Fixes
 ---------
 
 - Allowed implicit conversions of AstroPy units in inputs and outputs of validated functions to happen without warnings. Most notably, this removes warnings on eV inputs to temperature fields. (`#886 <https://github.com/plasmapy/plasmapy/pull/886>`__)
-- Update :func:`plasmapy.formulary.parameters.Alfven_speed` to properly use the updated
+- Update :func:`plasmapy.formulary.parameters.parameters_.Alfven_speed` to properly use the updated
   :func:`~plasmapy.formulary.parameters.mass_density` and maintain the same behavior.
   Also add handling of the ``ion`` input keyword, so `~plasmapy.particles.particle_class.Particle` and
   the `~plasmapy.particles.particle_class.Particle` convertible representations can be used as inputs. (`#957 <https://github.com/plasmapy/plasmapy/pull/957>`__)

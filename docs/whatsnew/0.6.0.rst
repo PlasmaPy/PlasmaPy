@@ -170,7 +170,7 @@ Improved Documentation
 ----------------------
 
 - Add narrative documentation on ionization state functionality. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
-- Added description to :func:`~plasmapy.formulary.parameters.Hall_parameter`
+- Added description to :func:`~plasmapy.formulary.parameters.parameters_.Hall_parameter`
   signature and equation in docstrings. (`#934 <https://github.com/plasmapy/plasmapy/pull/934>`__)
 - Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages. (`#942 <https://github.com/plasmapy/plasmapy/pull/942>`__)
 - Improves documentation of :file:`plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
