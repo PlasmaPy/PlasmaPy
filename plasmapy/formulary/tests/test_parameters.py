@@ -29,6 +29,7 @@ from plasmapy.formulary.parameters import (
     nD_,
     oc_,
     plasma_frequency,
+    plasma_frequency_lite,
     pmag_,
     pth_,
     rc_,
@@ -834,6 +835,44 @@ class TestPlasmaFrequency:
 
     def test_can_handle_numpy_arrays(self):
         assert_can_handle_nparray(plasma_frequency)
+
+
+class TestPlasmaFrequencyLite:
+    """Test class for `plasma_frequency_lite`."""
+
+    @pytest.mark.parametrize(
+        "inputs",
+        [
+            {"n": 1e12 * u.cm ** -3, "particle": "e-"},
+            {"n": 1e12 * u.cm ** -3, "particle": "e-", "to_hz": True},
+            {"n": 1e11 * u.cm ** -3, "particle": "He", "z_mean": 0.8},
+        ],
+    )
+    def test_normal_vs_lite_values(self, inputs):
+        """
+        Test that plasma_frquency and plasma_frequency_lite calculate
+        the same values.
+        """
+        particle = Particle(inputs["particle"])
+        inputs_unitless = {
+            "n": inputs["n"].to(u.m**-3).value,
+            "mass": particle.mass.value,
+        }
+        if "z_mean" in inputs:
+            inputs_unitless["z_mean"] = inputs["z_mean"]
+        else:
+            try:
+                inputs_unitless["z_mean"] = np.abs(particle.charge_number)
+            except Exception:
+                inputs_unitless["z_mean"] = 1
+        if "to_hz" in inputs:
+            inputs_unitless["to_hz"] = inputs["to_hz"]
+
+        normal = plasma_frequency(**inputs)
+        lite = plasma_frequency_lite(**inputs_unitless)
+        assert np.allclose(normal.value, lite)
+
+
 
 
 def test_Debye_length():
