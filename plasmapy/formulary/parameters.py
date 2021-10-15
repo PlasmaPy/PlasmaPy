@@ -43,7 +43,7 @@ __aliases__ = [
     "wlh_",
     "wuh_",
 ]
-__lite_funcs__ = ["thermal_speed_lite"]
+__lite_funcs__ = ["thermal_speed_lite", "plasma_frequency_lite"]
 
 import astropy.units as u
 import numbers
