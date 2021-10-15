@@ -2237,7 +2237,7 @@ def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
         return Particle(symbol, Z=Z)
     except ParticleError:
 
-        element_dict, Z = _parse_and_check_molecule_input(symbol, Z)
+        element_dict, bare_symbol, Z = _parse_and_check_molecule_input(symbol, Z)
         if not element_dict:
             raise InvalidParticleError(f"No element recognized in {symbol}")
         mass = 0 * u.kg
@@ -2256,7 +2256,8 @@ def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
             charge = 0 * u.C
         else:
             charge = Z * const.e.si
-        return CustomParticle(mass=mass, charge=charge, symbol=symbol)
+            bare_symbol += f" {-Z}-" if Z < 0 else f" {Z}+"
+        return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
