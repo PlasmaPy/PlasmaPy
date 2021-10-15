@@ -10,7 +10,6 @@ __all__ = [
     "inertial_length",
     "ion_sound_speed",
     "kappa_thermal_speed",
-    "lower_hybrid_frequency",
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
@@ -35,7 +34,6 @@ __aliases__ = [
     "va_",
     "vth_",
     "vth_kappa_",
-    "wlh_",
     "wuh_",
 ]
 __lite_funcs__ = ["thermal_speed_lite"]
@@ -1780,109 +1778,6 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
 wuh_ = upper_hybrid_frequency
 """Alias to `~plasmapy.formulary.parameters.parameters_.upper_hybrid_frequency`."""
-
-
-@validate_quantities(
-    n_i={"can_be_negative": False},
-    validations_on_return={
-        "units": [u.rad / u.s, u.Hz],
-        "equivalencies": [(u.cy / u.s, u.Hz)],
-    },
-)
-@angular_freq_to_hz
-def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s:
-    r"""
-    Return the lower hybrid frequency.
-
-    **Aliases:** `wlh_`
-
-    Parameters
-    ----------
-    B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to tesla.
-
-    n_i : `~astropy.units.Quantity`
-        Ion number density.
-
-    ion : `~plasmapy.particles.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
-        charge state information is provided, then the ions are assumed to
-        be singly charged.
-
-    Returns
-    -------
-    omega_lh : `~astropy.units.Quantity`
-        The lower hybrid frequency in radians per second.
-
-    Raises
-    ------
-    `TypeError`
-        If either of ``B`` or ``n_i`` is not a `~astropy.units.Quantity`,
-        or ion is of an inappropriate type.
-
-    `~astropy.units.UnitConversionError`
-        If either of ``B`` or ``n_i`` is in incorrect units.
-
-    `ValueError`
-        If either of ``B`` or ``n_i`` contains invalid values or are of
-        incompatible dimensions, or ion cannot be used to identify an
-        ion or isotope.
-
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The lower hybrid frequency is given through the relation
-
-    .. math::
-        \frac{1}{ω_{lh}^2} = \frac{1}{ω_{ci}^2 + ω_{pi}^2} +
-        \frac{1}{ω_{ci}ω_{ce}}
-
-    where :math:`ω_{ci}` is the ion gyrofrequency,
-    :math:`ω_{ce}` is the electron gyrofrequency, and
-    :math:`ω_{pi}` is the ion plasma frequency.
-
-    The lower hybrid frequency consitutes a resonance for electromagnetic
-    waves in magnetized plasmas, namely for the X-mode. These are waves
-    with their wave electric field being perpendicular to the background
-    magnetic field. For the lower hybrid frequency, ion and electron
-    dynamics both play a role. As the name suggests, it has a lower frequency
-    compared to the upper hybrid frequency. It can play an important role
-    for heating and current drive in fusion plasmas.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+')
-    <Quantity 5.78372...e+08 rad / s>
-    >>> lower_hybrid_frequency(0.2*u.T, n_i=5e19*u.m**-3, ion='D+', to_hz = True)
-    <Quantity 92050879.3... Hz>
-
-    """
-
-    # We do not need a charge state here, so the sole intent is to
-    # catch invalid ions.
-    try:
-        particles.charge_number(ion)
-    except Exception:
-        raise ValueError("Invalid ion in lower_hybrid_frequency.")
-
-    omega_ci = gyrofrequency(B, particle=ion)
-    omega_pi = plasma_frequency(n_i, particle=ion)
-    omega_ce = gyrofrequency(B, particle="e-")
-    omega_lh = ((omega_ci * omega_ce) ** -1 + omega_pi ** -2) ** -0.5
-    # TODO possibly optimize the above line via np.sqrt
-    omega_lh = omega_lh
-
-    return omega_lh
-
-
-wlh_ = lower_hybrid_frequency
-"""Alias to `~plasmapy.formulary.parameters.parameters_.lower_hybrid_frequency`."""
 
 
 @validate_quantities(
