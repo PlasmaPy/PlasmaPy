@@ -132,8 +132,8 @@ class AbstractClassicalTransportCoefficients(ABC):
         ni: u.cm ** -3 = None,
         Te: u.K = None,
         Ti: u.K = None,
-        e_collision_freq=None,
-        i_collision_freq=None,
+        e_collision_freq: u.Hz=None,
+        i_collision_freq: u.Hz=None,
     ):
 
         self.chi_e = chi_e
@@ -151,19 +151,21 @@ class AbstractClassicalTransportCoefficients(ABC):
         # Ensure that only one set of keywords is being used
         # This code block checks to ensure that one of the sets of
         # keywords is all None, and raises an exception otherwise
-        dim = [
-            self.particle,
-            self.B,
-            self.ne,
-            self.ni,
-            self.Te,
-            self.Ti,
-            self.e_collision_freq,
-            self.i_collision_freq,
-        ]
-        nodim = [self.chi_e, self.chi_i, self.Z]
-        dim_none = all([v is None for v in dim])
-        nodim_none = all([v is None for v in nodim])
+        self._dim_vars = {
+            'particle':self.particle,
+            'B':self.B,
+            'ne':self.ne,
+            'ni':self.ni,
+            'Te':self.Te,
+            'Ti':self.Ti,
+            'e_collision_freq':self.e_collision_freq,
+            'i_collision_freq':self.i_collision_freq,
+        }
+        self._nodim_vars = {'chi_e':self.chi_e, 
+                            'chi_i':self.chi_i, 
+                            'Z':self.Z}
+        dim_none = all([v is None for v in self._dim_vars.values()])
+        nodim_none = all([v is None for v in self._nodim_vars.values()])
 
         # Enforce that only one set of coefficents or the other is used
         if not dim_none and not nodim_none:
@@ -218,12 +220,33 @@ class AbstractClassicalTransportCoefficients(ABC):
 
 
     def _constructor_dimensional(self):
-        # Normalizations are defined such that multiplying the dimensionless
-        # quantity by the normalization constant will return the dimensional
-        # quantity
-
+        # particle and B keyword arguments are always required
+        if self.particle is None:
+            raise ValueError("The 'particle' keyword is required in dimensional "
+                             "mode")
+        
+        if self.B is None:
+            raise ValueError("The 'B' keyword is required in dimensional "
+                             "mode.")
+        
+        
+        # Validate that input arrays have the same shape
+        shape = self.B.shape
+        array_quantities = ['ne', 'ni', 'Te', 'Ti', 
+                            'e_collision_freq',
+                            'i_collision_freq',
+                            ]
+        for q in array_quantities:
+            if self._dim_vars[q] is not None and  \
+                self._dim_vars[q].shape != shape:
+                    raise ValueError("Shape of arrays must be equal, but "
+                                     f"B: {self.B.shape} and "
+                                     f"{q}:{self._dim_vars[q].shape} are not.")
+                    
+        
+     
         self.Z = self.particle.integer_charge
-
+        # If all the electron quantities are provided, calculate chi_e
         if all(v is not None for v in [self.ne, self.Te]):
 
             if self.e_collision_freq is None:
@@ -236,7 +259,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         else:
             self.chi_e = None
 
-
+        # If all the ion quantities are provided, calculate chi_i
         if all(v is not None for v in [self.ni, self.Ti]):
 
             if self.i_collision_freq is None:
@@ -252,6 +275,9 @@ class AbstractClassicalTransportCoefficients(ABC):
     # **********************************************************************
     # Normalization Constants
     # (defaults, overwritable by child classes)
+    # Normalizations are defined such that multiplying the dimensionless
+    # quantity by the normalization constant will return the dimensional
+    # quantity
     # **********************************************************************    
     @property
     def alpha_normalization(self):
