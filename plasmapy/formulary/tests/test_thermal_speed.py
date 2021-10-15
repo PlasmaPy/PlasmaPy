@@ -3,12 +3,12 @@ Module for testing functionality associated with calculating the
 thermal speed.
 
 
-- `~plasmapy.formulary.parameters.kappa_thermal_speed`
-- `~plasmapy.formulary.parameters.thermal_speed`
-- `~plasmapy.formulary.parameters.thermal_speed_lite`
-- `~plasmapy.formulary.parameters.thermal_speed_coefficients`
-- `~plasmapy.formulary.parameters.vth_`
-- `~plasmapy.formulary.parameters.vth_kappa_`
+- `~plasmapy.formulary.parameters.parameters_.kappa_thermal_speed`
+- `~plasmapy.formulary.parameters.parameters_.thermal_speed`
+- `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite`
+- `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`
+- `~plasmapy.formulary.parameters.parameters_.vth_`
+- `~plasmapy.formulary.parameters.parameters_.vth_kappa_`
 """
 import astropy.units as u
 import numpy as np
@@ -41,7 +41,7 @@ def test_aliases(alias, parent):
 class TestThermalSpeedCoefficients:
     """
     Test class for
-    `plasmapy.formulary.parameters.thermal_speed_coefficients`.
+    `plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`.
     """
 
     @pytest.mark.parametrize(
@@ -85,7 +85,7 @@ class TestThermalSpeedCoefficients:
 class TestThermalSpeed:
     """
     Test class for functionality of
-    `plasmapy.formulary.parameters.thermal_speed`, which include...
+    `plasmapy.formulary.parameters.parameters_.thermal_speed`, which include...
 
     - Scenarios for raised exceptions
     - Scenarios for issued warnings
