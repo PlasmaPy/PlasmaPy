@@ -3,7 +3,6 @@
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
-    "Debye_length",
     "Debye_number",
     "gyroradius",
     "Hall_parameter",
@@ -22,7 +21,6 @@ __aliases__ = [
     "cs_",
     "cwp_",
     "DB_",
-    "lambdaD_",
     "nD_",
     "pmag_",
     "pth_",
@@ -47,11 +45,11 @@ from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.formulary.parameters.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.parameters.lengths import Debye_length
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
-    angular_freq_to_hz,
     bind_lite_func,
     check_relativistic,
     preserve_signature,
@@ -1337,80 +1335,6 @@ rc_ = gyroradius
 
 rhoc_ = gyroradius
 """Alias to `~plasmapy.formulary.parameters.parameters_.gyroradius`."""
-
-
-@validate_quantities(
-    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    n_e={"can_be_negative": False},
-)
-def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
-    r"""Calculate the characteristic decay length for electric fields,
-     due to charge screening.
-
-    **Aliases:** `lambdaD_`
-
-    Parameters
-    ----------
-    T_e : `~astropy.units.Quantity`
-        Electron temperature.
-
-    n_e : `~astropy.units.Quantity`
-        Electron number density.
-
-    Returns
-    -------
-    lambda_D : `~astropy.units.Quantity`
-        The Debye length in meters.
-
-    Raises
-    ------
-    `TypeError`
-        If either argument is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitConversionError`
-        If either argument is in incorrect units.
-
-    `ValueError`
-        If either argument contains invalid values.
-
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The Debye length is the exponential scale length for charge
-    screening and is given by
-
-    .. math::
-        λ_D = \sqrt{\frac{ε_0 k_b T_e}{n_e e^2}}
-
-    for an electron plasma with nearly stationary ions.
-
-    The electrical potential will drop by a factor of :math:`1/e` every Debye
-    length.
-
-    Plasmas will generally be quasineutral on length scales significantly
-    larger than the Debye length.
-
-    See Also
-    --------
-    Debye_number
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
-    <Quantity 0.002182... m>
-
-    """
-    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
-    return lambda_D
-
-
-lambdaD_ = Debye_length
-"""Alias to `~plasmapy.formulary.parameters.parameters_.Debye_length`."""
 
 
 @validate_quantities(
