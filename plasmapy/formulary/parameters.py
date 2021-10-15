@@ -69,6 +69,8 @@ from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
 __all__ += __aliases__ + __lite_funcs__
 
+e_si_unitless = e.value
+eps0_si_unitless = eps0.value
 k_B_si_unitless = k_B.value
 
 
@@ -1462,6 +1464,19 @@ rc_ = gyroradius
 
 rhoc_ = gyroradius
 """Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+
+
+@preserve_signature
+@njit
+def plasma_frequency_lite(
+    n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
+) -> numbers.Real:
+    omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
+
+    if to_hz:
+        return omega_p / (2.0 * np.pi)
+
+    return omega_p
 
 
 @validate_quantities(
