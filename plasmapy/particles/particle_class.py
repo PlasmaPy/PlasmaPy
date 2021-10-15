@@ -9,6 +9,7 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "molecule",
 ]
 
 import astropy.constants as const
@@ -40,6 +41,7 @@ from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
     _parse_and_check_atomic_input,
+    _parse_and_check_molecule_input,
 )
 from plasmapy.particles.special_particles import (
     _antiparticles,
@@ -2214,6 +2216,49 @@ class CustomParticle(AbstractPhysicalParticle):
         as a key in a `dict`.
         """
         return hash((self.__repr__(), self.symbol))
+
+
+def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
+    """
+    Parses molecules symboles into a |CustomParticle| ot |Particle| if possible.
+
+    Parameters
+    ----------
+    symbol Symbol of the molecule to be parsed.
+    Z charge number if not present in symbol.
+
+    Returns
+    -------
+    A |Particle| object if the input could be parsed as such,
+    or a |CustomParticle| with the provided symbol, charge,
+    and a mass corresponding to the sum of the molecule elements.
+    """
+    try:
+        return Particle(symbol, Z=Z)
+    except ParticleError:
+
+        element_dict, Z = _parse_and_check_molecule_input(symbol, Z)
+        if not element_dict:
+            raise InvalidParticleError(f"No element recognized in {symbol}")
+        mass = 0 * u.kg
+        for element_symbol, amount in element_dict.items():
+            try:
+                element = Particle(element_symbol)
+            except ParticleError as e:
+                raise InvalidParticleError(
+                    f"Could not identify {element_symbol}."
+                ) from e
+            if element.element is None:
+                raise InvalidElementError(
+                    f"{element} needs to be an element to belong in a molecule."
+                )
+            mass += amount * element.mass
+
+        if Z is None:
+            charge = 0 * u.C
+        else:
+            charge = Z * const.e.si
+        return CustomParticle(mass=mass, charge=charge, symbol=symbol)
 
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
