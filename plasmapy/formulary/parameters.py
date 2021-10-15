@@ -1523,9 +1523,9 @@ def plasma_frequency_lite(
 
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p").mass.value
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1)
+    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1)
     416329...
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
+    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
     662608...
     """
     omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
