@@ -758,6 +758,29 @@ class TestPlasmaFrequency:
         assert wp_ is plasma_frequency
 
     @pytest.mark.parametrize(
+        "bound_name, bound_attr",
+        [("lite", plasma_frequency_lite),],
+    )
+    def test_lite_function_binding(self, bound_name, bound_attr):
+        """Test expected attributes are bound correctly."""
+        assert hasattr(plasma_frequency, bound_name)
+        assert getattr(plasma_frequency, bound_name) is bound_attr
+
+    def test_lite_function_marking(self):
+        """
+        Test plasma_frequency is marked as having a Lite-Function.
+        """
+        assert hasattr(plasma_frequency, "__bound_lite_func__")
+        assert isinstance(plasma_frequency.__bound_lite_func__, dict)
+
+        for bound_name, bound_origin in plasma_frequency.__bound_lite_func__.items():
+            assert hasattr(plasma_frequency, bound_name)
+
+            attr = getattr(plasma_frequency, bound_name)
+            origin = f"{attr.__module__}.{attr.__name__}"
+            assert origin == bound_origin
+
+    @pytest.mark.parametrize(
         "args, kwargs, _error",
         [
             ((u.m**-3, "e-"), {}, TypeError),
