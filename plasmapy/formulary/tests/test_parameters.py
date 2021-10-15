@@ -21,7 +21,6 @@ from plasmapy.formulary.parameters.parameters_ import (
     Hall_parameter,
     inertial_length,
     ion_sound_speed,
-    kappa_thermal_speed,
     lambdaD_,
     lower_hybrid_frequency,
     magnetic_energy_density,
@@ -30,6 +29,7 @@ from plasmapy.formulary.parameters.parameters_ import (
     nD_,
     oc_,
     plasma_frequency,
+    plasma_frequency_lite,
     pmag_,
     pth_,
     rc_,
@@ -37,13 +37,9 @@ from plasmapy.formulary.parameters.parameters_ import (
     rhoc_,
     thermal_pressure,
     thermal_speed,
-    thermal_speed_lite,
-    thermal_speed_coefficients,
     ub_,
     upper_hybrid_frequency,
     va_,
-    vth_,
-    vth_kappa_,
     wc_,
     wlh_,
     wp_,
@@ -504,331 +500,11 @@ def test_ion_sound_speed():
     assert_can_handle_nparray(ion_sound_speed)
 
 
-class TestThermalSpeed:
-    """
-    Test class for functionality around calculating the thermal speed.  This
-    covers the functionality
-
-        - `~plasmapy.formulary.parameters.parameters_.thermal_speed`
-        - `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite`
-        - `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`
-    """
-    _bound_attrs = [
-        ("lite", thermal_speed_lite),
-        ("coefficients", thermal_speed_coefficients),
-    ]
-
-    @pytest.mark.parametrize("alias", [vth_])
-    def test_aliases(self, alias):
-        """Test alias is properly defined."""
-        assert alias is thermal_speed
-
-    @pytest.mark.parametrize(
-        "bound_name, bound_attr",
-        _bound_attrs,
-    )
-    def test_lite_function_binding(self, bound_name, bound_attr):
-        """Test expected attributes are bound correctly."""
-        assert hasattr(thermal_speed, bound_name)
-        attr = getattr(thermal_speed, bound_name)
-        assert attr is bound_attr
-
-    def test_lite_function_marking(self):
-        """
-        Test thermal_speed is marked as having a Lite-Function and that its
-        __has_lite_func__ attribute is defined correctly.
-        """
-        assert hasattr(thermal_speed, "__has_lite_func__")
-        assert len(thermal_speed.__has_lite_func__) == len(self._bound_attrs)
-
-        bound_names, bound_qualnames = zip(*thermal_speed.__has_lite_func__)
-        for name, attr in self._bound_attrs:
-            assert name in bound_names
-
-            index = bound_names.index(name)
-            qualname = f"{attr.__module__}.{attr.__name__}"
-            assert qualname == bound_qualnames[index]
-
-    @pytest.mark.parametrize(
-        "method, ndim, expected",
-        [
-            ("most_probable", 1, 0),
-            ("most_probable", 2, 1),
-            ("most_probable", 3, np.sqrt(2)),
-            ("rms", 1, 1),
-            ("rms", 2, np.sqrt(2)),
-            ("rms", 3, np.sqrt(3)),
-            ("mean_magnitude", 1, np.sqrt(2 / np.pi)),
-            ("mean_magnitude", 2, np.sqrt(np.pi / 2)),
-            ("mean_magnitude", 3, np.sqrt(8 / np.pi)),
-            ("nrl", 1, 1),
-            ("nrl", 2, 1),
-            ("nrl", 3, 1),
-        ],
-    )
-    def test_thermal_speed_coefficient_values(self, method, ndim, expected):
-        """Test values returned by thermal_speed_coefficients."""
-        assert np.isclose(
-            thermal_speed_coefficients(method=method, ndim=ndim), expected
-        )
-
-    @pytest.mark.parametrize(
-        "method, ndim, _raises",
-        [
-            ("most_probably", -1, ValueError),
-            ("most_probably", 4, ValueError),
-            ("most_probably", "not an int", ValueError),
-            ("wrong method", 3, ValueError),
-            (5, 1, ValueError),
-            ({"wrong": 1}, "wrong", TypeError),
-        ],
-    )
-    def test_thermal_speed_coefficients_raises(self, method, ndim, _raises):
-        """Test raise Exception cases for thermal_speed_coefficients."""
-        with pytest.raises(_raises):
-            thermal_speed_coefficients(method=method, ndim=ndim)
-
-    def test_thermal_speed_lite(self):
-        ...
-
-    @pytest.mark.parametrize(
-        "inputs",
-        [
-            dict(T=5 * u.eV, particle=Particle("p"), method= "most_probable", ndim=3),
-            dict(T=3000 * u.K, particle=Particle("e"), method="nrl", ndim=2),
-            dict(
-                T=5000 * u.K, particle=Particle("He+"), method="mean_magnitude", ndim=1
-            ),
-            dict(T=1 * u.eV, particle=Particle("Ar+"), method="rms", ndim=3),
-        ],
-    )
-    def test_normal_vs_lite_values(self, inputs):
-        """
-        Test that thermal_speed and thermal_speed_lite calulate the same values
-        for the same inputs.
-        """
-        T_unitless = inputs["T"].to(u.K, equivalencies=u.temperature_energy()).value
-        m_unitless = inputs["particle"].mass.value
-
-        normal = thermal_speed(**inputs)
-        coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
-        lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
-        assert np.isclose(normal.value, lite)
-
-
-def test_thermal_speed():
-    r"""Test the thermal_speed function in parameters_.py"""
-    assert thermal_speed(T_e, "e-").unit.is_equivalent(u.m / u.s)
-
-    assert thermal_speed(T_e, "e-") > thermal_speed(T_e, "p")
-
-    # The NRL Plasma Formulary uses a definition of the electron
-    # thermal speed that differs by a factor of sqrt(2).
-    assert np.isclose(thermal_speed(1 * u.MK, "e-").value, 5505694.743141063)
-
-    with pytest.raises(u.UnitTypeError):
-        thermal_speed(5 * u.m, "e-")
-
-    with pytest.raises(ValueError):
-        thermal_speed(-T_e, "e-")
-
-    with pytest.warns(RelativityWarning):
-        thermal_speed(1e9 * u.K, "e-")
-
-    with pytest.raises(RelativityError):
-        thermal_speed(5e19 * u.K, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        assert thermal_speed(1e5, "e-") == thermal_speed(1e5 * u.K, "e-")
-
-    assert thermal_speed(T_i, particle="p").unit.is_equivalent(u.m / u.s)
-
-    # The NRL Plasma Formulary uses a definition of the particle thermal
-    # speed that differs by a factor of sqrt(2).
-    assert np.isclose(
-        thermal_speed(1 * u.MK, particle="p").si.value, 128486.56960876315
-    )
-
-    # Explicitly check all three modes and dimensionalities
-    # ndim = 1
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=1).si.value, 0.0
-    )
-
-    # Regression tests start here!
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=1).si.value, 3893114.2008620175
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=1).si.value,
-        3106255.714310189,
-    )
-
-    # ndim = 2
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=2).si.value,
-        3893114.2008620175,
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=2).si.value, 5505694.902726359
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=2).si.value,
-        4879295.066124102,
-    )
-
-    # ndim = 3
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="most_probable", ndim=3).si.value,
-        5505694.902726359,
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="rms", ndim=3).si.value, 6743071.595560921
-    )
-
-    assert np.isclose(
-        thermal_speed(T_e, "e-", method="mean_magnitude", ndim=3).si.value,
-        6212511.428620378,
-    )
-
-    # Case when Z=1 is assumed
-    assert thermal_speed(T_i, particle="p") == thermal_speed(T_i, particle="H-1+")
-
-    assert thermal_speed(1 * u.MK, particle="e+") == thermal_speed(1 * u.MK, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        thermal_speed(5 * u.m, particle="p")
-
-    with pytest.raises(ValueError):
-        thermal_speed(-T_e, particle="p")
-
-    with pytest.warns(RelativityWarning):
-        thermal_speed(1e11 * u.K, particle="p")
-
-    with pytest.raises(RelativityError):
-        thermal_speed(1e14 * u.K, particle="p")
-
-    with pytest.raises(InvalidParticleError):
-        thermal_speed(T_i, particle="asdfasd")
-
-    with pytest.warns(u.UnitsWarning):
-        assert thermal_speed(1e6, particle="p") == thermal_speed(
-            1e6 * u.K, particle="p"
-        )
-
-    assert np.isclose(
-        thermal_speed(1e6 * u.K, "e-", method="mean_magnitude").si.value,
-        6212510.3969422,
-    )
-
-    assert np.isclose(
-        thermal_speed(1e6 * u.K, "e-", method="rms").si.value, 6743070.475775486
-    )
-
-    # Test invalid method
-    with pytest.raises(ValueError):
-        thermal_speed(T_i, "e-", method="sadks")
-
-    # Test invalid ndim
-    with pytest.raises(ValueError):
-        thermal_speed(T_i, "e-", ndim=4)
-
-    assert_can_handle_nparray(thermal_speed)
-
-
 def test_thermal_pressure():
     assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
 
     # TODO: may be array issues with arg "mass"
     assert_can_handle_nparray(thermal_pressure)
-
-
-# test class for kappa_thermal_speed() function:
-
-
-class Test_kappa_thermal_speed(object):
-    @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T_e = 5 * u.eV
-        self.kappaInvalid = 3 / 2
-        self.kappa = 4
-        self.particle = "p"
-        self.probable1True = 24467.878463594963
-        self.rms1True = 37905.474322612165
-        self.mean1True = 34922.98563039583
-
-    def test_invalid_kappa(self):
-        """
-        Checks if function raises error when kappa <= 3/2 is passed as an
-        argument.
-        """
-        with pytest.raises(ValueError):
-            kappa_thermal_speed(self.T_e, self.kappaInvalid, particle=self.particle)
-        return
-
-    def test_invalid_method(self):
-        """
-        Checks if function raises error when invalid method is passed as an
-        argument.
-        """
-        with pytest.raises(ValueError):
-            kappa_thermal_speed(
-                self.T_e, self.kappa, particle=self.particle, method="invalid"
-            )
-        return
-
-    def test_probable1(self):
-        """
-        Tests if expected value is returned for a set of regular inputs.
-        """
-        known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="most_probable"
-        )
-        errStr = (
-            f"Kappa thermal velocity should be {self.probable1True} "
-            f"and not {known1.si.value}."
-        )
-        assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errStr
-        return
-
-    def test_rms1(self):
-        """
-        Tests if expected value is returned for a set of regular inputs.
-        """
-        known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="rms"
-        )
-        errStr = (
-            f"Kappa thermal velocity should be {self.rms1True} "
-            f"and not {known1.si.value}."
-        )
-        assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errStr
-        return
-
-    def test_mean1(self):
-        """
-        Tests if expected value is returned for a set of regular inputs.
-        """
-        known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="mean_magnitude"
-        )
-        errStr = (
-            f"Kappa thermal velocity should be {self.mean1True} "
-            f"and not {known1.si.value}."
-        )
-        assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errStr
-        return
-
-    def test_handle_nparrays(self, kwargs=None):
-        """Test for ability to handle numpy array quantities"""
-        if kwargs is None:
-            kwargs = {"kappa": 2}
-        assert_can_handle_nparray(kappa_thermal_speed, kwargs=kwargs)
 
 
 def test_gyrofrequency():
@@ -1072,59 +748,157 @@ class Test_gyroradius:
         assert_quantity_allclose(Vperp1, Vperp2)
 
 
-def test_plasma_frequency():
-    r"""Test the plasma_frequency function in parameters_.py."""
+class TestPlasmaFrequency:
+    """
+    Test class for `plasmapy.formulary.parameters.parameters_.plasma_frequency`.
+    """
 
-    assert plasma_frequency(n_e, "e-").unit.is_equivalent(u.rad / u.s)
+    def test_alias(self):
+        """Test the alias for `plasma_frequency`."""
+        assert wp_ is plasma_frequency
 
-    assert plasma_frequency(n_e, "e-", to_hz=True).unit.is_equivalent(u.Hz)
-
-    assert np.isclose(plasma_frequency(1 * u.cm ** -3, "e-").value, 5.64e4, rtol=1e-2)
-
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N").value, 3.53e2, rtol=1e-1
+    @pytest.mark.parametrize(
+        "bound_name, bound_attr",
+        [("lite", plasma_frequency_lite)],
     )
+    def test_lite_function_binding(self, bound_name, bound_attr):
+        """Test expected attributes are bound correctly."""
+        assert hasattr(plasma_frequency, bound_name)
+        assert getattr(plasma_frequency, bound_name) is bound_attr
 
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N", to_hz=True).value,
-        56.19000195094519,
+    def test_lite_function_marking(self):
+        """
+        Test plasma_frequency is marked as having a Lite-Function.
+        """
+        assert hasattr(plasma_frequency, "__bound_lite_func__")
+        assert isinstance(plasma_frequency.__bound_lite_func__, dict)
+
+        for bound_name, bound_origin in plasma_frequency.__bound_lite_func__.items():
+            assert hasattr(plasma_frequency, bound_name)
+
+            attr = getattr(plasma_frequency, bound_name)
+            origin = f"{attr.__module__}.{attr.__name__}"
+            assert origin == bound_origin
+
+    @pytest.mark.parametrize(
+        "args, kwargs, _error",
+        [
+            ((u.m ** -3, "e-"), {}, TypeError),
+            (("not a density", "e-"), {}, TypeError),
+            ((5 * u.s, "e-"), {}, u.UnitTypeError),
+            ((5 * u.m ** -2, "e-"), {}, u.UnitTypeError),
+            ((), {"n": 5 * u.m ** -3, "particle": "not a particle"}, ValueError),
+        ],
     )
+    def test_raises(self, args, kwargs, _error):
+        """
+        Test scenarios that cause plasma_frequency to raise an
+        Exception.
+        """
+        with pytest.raises(_error):
+            plasma_frequency(*args, **kwargs)
 
-    with pytest.raises(TypeError):
-        plasma_frequency(u.m ** -3, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        plasma_frequency(5 * u.m ** -2, "e-")
-
-    assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
-
-    with pytest.warns(u.UnitsWarning):
-        assert plasma_frequency(1e19, "e-") == plasma_frequency(1e19 * u.m ** -3, "e-")
-
-        assert plasma_frequency(n_i, particle="p").unit.is_equivalent(u.rad / u.s)
-
-    # Case where Z=1 is assumed
-    assert plasma_frequency(n_i, particle="H-1+") == plasma_frequency(n_i, particle="p")
-
-    assert np.isclose(
-        plasma_frequency(mu * u.cm ** -3, particle="p").value, 1.32e3, rtol=1e-2
+    @pytest.mark.parametrize(
+        "args, kwargs, _warning, expected",
+        [
+            (
+                (1e19, "e-"),
+                {},
+                u.UnitsWarning,
+                plasma_frequency(1e19 * u.m ** -3, "e-"),
+            ),
+            ((1e19, "p"), {}, u.UnitsWarning, plasma_frequency(1e19 * u.m ** -3, "p")),
+        ],
     )
+    def test_warns(self, args, kwargs, _warning, expected):
+        """
+        Test scenarios the cause plasma_frequency to issue a warning.
+        """
+        with pytest.warns(_warning):
+            wp = plasma_frequency(*args, **kwargs)
+            assert isinstance(wp, u.Quantity)
+            assert wp.unit == u.rad / u.s
 
-    with pytest.raises(ValueError):
-        plasma_frequency(n=5 * u.m ** -3, particle="sdfas")
+        if expected is not None:
+            assert np.allclose(wp, expected)
 
-    with pytest.warns(u.UnitsWarning):
-        plasma_freq_no_units = plasma_frequency(1e19, particle="p")
-        assert plasma_freq_no_units == plasma_frequency(1e19 * u.m ** -3, particle="p")
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, rtol",
+        [
+            ((1 * u.cm ** -3, "e-"), {}, 5.64e4, 1e-2),
+            ((1 * u.cm ** -3, "N"), {}, 3.53e2, 1e-1),
+            ((1e17 * u.cm ** -3, "p"), {"z_mean": 0.8}, 333063562455.4028, 1e-6),
+            (
+                (5e19 * u.m ** -3, "p"),
+                {},
+                plasma_frequency(5e19 * u.m ** -3, particle="H-1+").value,
+                1e-5,
+            ),
+            ((m_p.to(u.u).value * u.cm ** -3,), {"particle": "p"}, 1.32e3, 1e-2),
+        ],
+    )
+    def test_values(self, args, kwargs, expected, rtol):
+        """Test various expected values."""
+        wp = plasma_frequency(*args, **kwargs)
 
-    plasma_frequency(1e17 * u.cm ** -3, particle="p")
-    # testing for user input z_mean
-    testMeth1 = plasma_frequency(1e17 * u.cm ** -3, particle="p", z_mean=0.8).si.value
-    testTrue1 = 333063562455.4028
-    errStr = f"plasma_frequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-6), errStr
+        assert isinstance(wp, u.Quantity)
+        assert wp.unit == u.rad / u.s
+        assert np.allclose(wp.value, expected, rtol=rtol)
 
-    assert_can_handle_nparray(plasma_frequency)
+    @pytest.mark.parametrize(
+        "args, kwargs",
+        [((1 * u.cm ** -3, "N"), {}), ((1e12 * u.cm ** -3,), {"particle": "p"})],
+    )
+    def test_to_hz(self, args, kwargs):
+        """Test behavior of the ``to_hz`` keyword."""
+        wp = plasma_frequency(*args, **kwargs)
+        fp = plasma_frequency(*args, to_hz=True, **kwargs)
+
+        assert isinstance(fp, u.Quantity)
+        assert fp.unit == u.Hz
+        assert fp.value == wp.value / (2.0 * np.pi)
+
+    def test_nans(self):
+        assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
+
+    def test_can_handle_numpy_arrays(self):
+        assert_can_handle_nparray(plasma_frequency)
+
+
+class TestPlasmaFrequencyLite:
+    """Test class for `plasma_frequency_lite`."""
+
+    @pytest.mark.parametrize(
+        "inputs",
+        [
+            {"n": 1e12 * u.cm ** -3, "particle": "e-"},
+            {"n": 1e12 * u.cm ** -3, "particle": "e-", "to_hz": True},
+            {"n": 1e11 * u.cm ** -3, "particle": "He", "z_mean": 0.8},
+        ],
+    )
+    def test_normal_vs_lite_values(self, inputs):
+        """
+        Test that plasma_frequency and plasma_frequency_lite calculate
+        the same values.
+        """
+        particle = Particle(inputs["particle"])
+        inputs_unitless = {
+            "n": inputs["n"].to(u.m ** -3).value,
+            "mass": particle.mass.value,
+        }
+        if "z_mean" in inputs:
+            inputs_unitless["z_mean"] = inputs["z_mean"]
+        else:
+            try:
+                inputs_unitless["z_mean"] = np.abs(particle.charge_number)
+            except Exception:
+                inputs_unitless["z_mean"] = 1
+        if "to_hz" in inputs:
+            inputs_unitless["to_hz"] = inputs["to_hz"]
+
+        normal = plasma_frequency(**inputs)
+        lite = plasma_frequency_lite(**inputs_unitless)
+        assert np.allclose(normal.value, lite)
 
 
 def test_Debye_length():
@@ -1413,26 +1187,28 @@ def test_Bohm_diffusion():
         Bohm_diffusion(2.2 * u.kg, B)
 
 
-def test_parameters_aliases():
-    r"""Test all aliases defined in parameters_.py"""
-
-    assert rho_ is mass_density
-    assert va_ is Alfven_speed
-    assert cs_ is ion_sound_speed
-    # assert vth_ is thermal_speed
-    assert pth_ is thermal_pressure
-    assert vth_kappa_ is kappa_thermal_speed
-    assert betaH_ is Hall_parameter
-    assert oc_ is gyrofrequency
-    assert wc_ is gyrofrequency
-    assert rc_ is gyroradius
-    assert rhoc_ is gyroradius
-    assert wp_ is plasma_frequency
-    assert lambdaD_ is Debye_length
-    assert nD_ is Debye_number
-    assert cwp_ is inertial_length
-    assert pmag_ is magnetic_pressure
-    assert ub_ is magnetic_energy_density
-    assert wuh_ is upper_hybrid_frequency
-    assert wlh_ is lower_hybrid_frequency
-    assert DB_ is Bohm_diffusion
+@pytest.mark.parametrize(
+    "alias, parent",
+    [
+        (rho_, mass_density),
+        (va_, Alfven_speed),
+        (cs_, ion_sound_speed),
+        (pth_, thermal_pressure),
+        (betaH_, Hall_parameter),
+        (oc_, gyrofrequency),
+        (wc_, gyrofrequency),
+        (rc_, gyroradius),
+        (rhoc_, gyroradius),
+        (lambdaD_, Debye_length),
+        (nD_, Debye_number),
+        (cwp_, inertial_length),
+        (pmag_, magnetic_pressure),
+        (ub_, magnetic_energy_density),
+        (wuh_, upper_hybrid_frequency),
+        (wlh_, lower_hybrid_frequency),
+        (DB_, Bohm_diffusion),
+    ],
+)
+def test_parameters_aliases(alias, parent):
+    """Test all aliases defined in parameters.py"""
+    assert alias is parent

@@ -1,0 +1,3 @@
+Streamlined `~plasmapy.utils.decorators.helpers.preserve_signature` such that it only
+binds ``__signature__`` to the wrapped function, i.e. it not longer touches
+any other attribute of the wrapped function.
