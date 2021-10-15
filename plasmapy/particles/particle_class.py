@@ -2249,9 +2249,7 @@ def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
                     f"Could not identify {element_symbol}."
                 ) from e
             if element.element is None:
-                raise InvalidElementError(
-                    f"{element} needs to be an element to belong in a molecule."
-                )
+                raise InvalidElementError(_category_errmsg(element, "element"))
             mass += amount * element.mass
 
         if Z is None:
