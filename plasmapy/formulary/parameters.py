@@ -1471,6 +1471,63 @@ rhoc_ = gyroradius
 def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
+    r"""
+    The "Lite-Function" version of
+    `~plasmapy.formulary.parameters.plasma_frequency`.  Performs the
+    same plasma frequency calculation as
+    `~plasmapy.formulary.parameters.plasma_frequency`, but is intended
+    for computational use and, thus, has all data conditioning
+    safe-guards removed.
+
+    Parameters
+    ----------
+    n : `~numbers.Real`
+        Particle number density, in units of m\ :sup:`-3`.
+
+    mass : `~numbers.Real`
+        Mass of the particle, in units of kg.
+
+    z_mean : `~numbers.Real`
+        The average ionization (arithmetic mean) for the particle
+        species in the plasma.  For example, an electron would have a
+        value of ``z_mean=1``.
+
+    to_hz : `bool`
+        (Default `False`) Set `True` to apply the factor of
+        :math:`1/2π` and return a value in units of Hz.
+
+    Returns
+    -------
+    wp : `~numbers.Real`
+        The particle plasma frequency in radians per second.  Setting
+        keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
+        and yield a value in Hz.
+
+    Notes
+    -----
+
+    The particle plasma frequency is
+
+    .. math::
+        ω_{p} = Z |e| \sqrt{\frac{n}{\epsilon_0 m}}
+
+    where :math:`m` is the mass of the particle, :math:`e` is the
+    fundamental unit of charge, :math:`Z` is the average charge state
+    ``z_mean`` of the particle species, :math:`n` is the particle number
+    density.  This form of the plasma frequency has units of
+    radians / s, but using the ``to_hz`` will apply the factor of
+    :math:`1/2π` to give a value in Hz.
+
+    Examples
+    --------
+
+    >>> from plasmapy.particles import Particle
+    >>> mass = Particle("p").mass.value
+    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1)
+    416329...
+    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
+    662608...
+    """
     omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
     if to_hz:
