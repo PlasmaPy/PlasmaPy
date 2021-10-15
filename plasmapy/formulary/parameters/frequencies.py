@@ -2,7 +2,10 @@
 __all__ = [
     "gyrofrequency",
 ]
-__aliases__ = []
+__aliases__ = [
+    "wc_",
+    "oc_"
+]
 __lite_funcs__ = []
 
 import astropy.units as u
