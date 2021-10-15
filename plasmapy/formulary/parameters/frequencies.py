@@ -3,12 +3,14 @@ __all__ = [
     "gyrofrequency",
     "lower_hybrid_frequency",
     "plasma_frequency",
+    "upper_hybrid_frequency",
 ]
 __aliases__ = [
     "oc_",
     "wc_",
     "wlh_"
     "wp_",
+    "wuh_"
 ]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
@@ -448,3 +450,87 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
 wlh_ = lower_hybrid_frequency
 """Alias to `~plasmapy.formulary.parameters.parameters_.lower_hybrid_frequency`."""
+
+
+@validate_quantities(
+    n_e={"can_be_negative": False},
+    validations_on_return={
+        "units": [u.rad / u.s, u.Hz],
+        "equivalencies": [(u.cy / u.s, u.Hz)],
+    },
+)
+@angular_freq_to_hz
+def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
+    r"""
+    Return the upper hybrid frequency.
+
+    **Aliases:** `wuh_`
+
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field magnitude in units convertible to tesla.
+
+    n_e : `~astropy.units.Quantity`
+        The electron number density.
+
+    Returns
+    -------
+    omega_uh : `~astropy.units.Quantity`
+        The upper hybrid frequency in radians per second.
+
+    Raises
+    ------
+    `TypeError`
+        If either of ``B`` or ``n_e`` is not a `~astropy.units.Quantity`.
+
+    `~astropy.units.UnitConversionError`
+        If either of ``B`` or ``n_e`` is in incorrect units.
+
+    `ValueError`
+        If either of ``B`` or ``n_e`` contains invalid values or are of
+        incompatible dimensions.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Notes
+    -----
+    The upper hybrid frequency is given through the relation
+
+    .. math::
+        ω_{uh}^2 = ω_{ce}^2 + ω_{pe}^2
+
+    where :math:`ω_{ce}` is the electron gyrofrequency and
+    :math:`ω_{pe}` is the electron plasma frequency.
+
+    The upper hybrid frequency is a resonance for electromagnetic
+    waves in magnetized plasmas, namely for the X-mode. These are
+    waves with their wave electric field being perpendicular to
+    the background magnetic field. In the cold plasma model, i.e.
+    without any finite temperature effects, the resonance acts
+    merely as a resonance such that power can be deposited there.
+    If finite temperature effects are considered, mode conversion
+    can occur at the upper hybrid resonance, coupling to the
+    electrostatic electron Bernstein wave.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3)
+    <Quantity 4.00459...e+11 rad / s>
+    >>> upper_hybrid_frequency(0.2*u.T, n_e=5e19*u.m**-3, to_hz = True)
+    <Quantity 6.37350...e+10 Hz>
+
+    """
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
+    omega_ce = gyrofrequency(B, "e-")
+    omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
+
+    return omega_uh
+
+
+wuh_ = upper_hybrid_frequency
+"""Alias to `~plasmapy.formulary.parameters.parameters_.upper_hybrid_frequency`."""
