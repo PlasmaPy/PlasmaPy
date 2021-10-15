@@ -128,8 +128,8 @@ class AbstractClassicalTransportCoefficients(ABC):
         Z=None,
         particle: Particle = None,
         B: u.T = None,
-        ne: u.m ** -3 = None,
-        ni: u.m ** -3 = None,
+        ne: u.cm ** -3 = None,
+        ni: u.cm ** -3 = None,
         Te: u.K = None,
         Ti: u.K = None,
         e_collision_freq=None,
@@ -165,6 +165,7 @@ class AbstractClassicalTransportCoefficients(ABC):
         dim_none = all([v is None for v in dim])
         nodim_none = all([v is None for v in nodim])
 
+        # Enforce that only one set of coefficents or the other is used
         if not dim_none and not nodim_none:
             raise ValueError(
                 "The dimensionless keywords [chi_e, chi_i, Z] and "
@@ -180,22 +181,41 @@ class AbstractClassicalTransportCoefficients(ABC):
         # coefficients can be used.
         # If the dimensional constructor is used, both the normalized
         # and dimensional forms of the coefficients can be used.
-        if Z is not None:
-            self._constructor_normalized()
+        if dim_none:
+            self._dimensional = False
+            self._constructor_dimensionless()
+            
 
         else:
             self._constructor_dimensional()
+            self._dimensional = True
+            
+    def _constructor_dimensionless(self):
+        
+        # Verify that Z is a number
+        # TODO: Ensure support for arrays of Z
+        if not isinstance(self.Z, (int,float, np.ndarray)):
+            raise ValueError("Z must be a dimensionless number or "
+                             "`~numpy.ndarray`.")
+            
+            
+        # TODO: handle chi_e and chi_i mistakenly entered as a quantity array,
+        # with or without dimensional units.
+            
+        # chi_e and chi_i must be a number or None, but both cannot be None
+        if not (isinstance(self.chi_e, np.ndarray) or self.chi_e is None):
+            raise ValueError("chi_e must be either a dimensionless "
+                             "`~numpy.ndarray` or None.")
+            
+        if not (isinstance(self.chi_i, np.ndarray) or self.chi_i is None):
+            raise ValueError("chi_i must be either a dimensionless "
+                             "`~numpy.ndarray` or None.")
+            
+        if (self.chi_e is None) and (self.chi_i is None):
+            raise ValueError("chi_e and chi_i cannot both be None when "
+                             "using the dimensionless mode.")
+            
 
-    def _constructor_normalized(self):
-        # Set the normalization coefficients to None, since the required
-        # plasma parameters were not provided. This will cause the
-        # dimensional coefficent functions to raise an error
-        self.alpha_normalization = None
-        self.beta_normalization = None
-        self.kappa_e_normalization = None
-        self.kappa_i_normalization = None
-        self.eta_e_normalization = None
-        self.eta_i_normalization = None
 
     def _constructor_dimensional(self):
         # Normalizations are defined such that multiplying the dimensionless
@@ -211,20 +231,11 @@ class AbstractClassicalTransportCoefficients(ABC):
                     self.Te, self.ne, self.particle
                 )
             wce = gyrofrequency(self.B, "e-")
-
             self.chi_e = (wce / self.e_collision_freq).to(u.rad).value
-            self.alpha_normalization = (
-                self.particle.mass * self.ne * self.e_collision_freq
-            )
-            self.beta_normalization = 1.0
-            self.kappa_e_normalization = self.ne * self.Te / self.e_collision_freq / m_e
-            self.eta_e_normalization = self.ne * self.Te / self.e_collision_freq
+
         else:
             self.chi_e = None
-            self.alpha_normalization = None
-            self.beta_normalization = None
-            self.kappa_e_normalization = None
-            self.eta_e_normalization = None
+
 
         if all(v is not None for v in [self.ni, self.Ti]):
 
@@ -235,14 +246,90 @@ class AbstractClassicalTransportCoefficients(ABC):
             wci = gyrofrequency(self.B, self.particle)
 
             self.chi_i = (wci / self.i_collision_freq).to(u.rad).value
-            self.kappa_i_normalization = (
-                self.ni * self.Ti / self.i_collision_freq / self.particle.mass
-            )
-            self.eta_i_normalization = self.ni * self.Ti / self.i_collision_freq
         else:
             self.chi_i = None
-            self.kappa_i_normalization = None
-            self.eta_i_normalization = None
+            
+    # **********************************************************************
+    # Normalization Constants
+    # (defaults, overwritable by child classes)
+    # **********************************************************************    
+    @property
+    def alpha_normalization(self):
+        """
+        The normalization constant for alpha. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return self.particle.mass * self.ne * self.e_collision_freq
+        else:
+            return None
+    
+    @property
+    def beta_normalization(self):
+        """
+        The normalization constant for beta. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return 1.0
+        else:
+            return None
+        
+    @property
+    def kappa_e_normalization(self):
+        """
+        The normalization constant for kappa_e. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return self.ne * self.Te / self.e_collision_freq / m_e
+        else:
+            return None
+        
+    @property
+    def eta_e_normalization(self):
+        """
+        The normalization constant for eta_e. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return self.ne * self.Te / self.e_collision_freq
+        else:
+            return None
+        
+    @property
+    def kappa_i_normalization(self):
+        """
+        The normalization constant for kappa_i. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return self.ni * self.Ti / self.i_collision_freq / self.particle.mass
+        else:
+            return None
+        
+    @property
+    def eta_i_normalization(self):
+        """
+        The normalization constant for eta_i. 
+        
+        Defined such that multiplying the dimensionless quantity by the
+        normalization constnat will return the dimensional quantity.
+        """
+        if self._dimensional:
+            return self.ni * self.Ti / self.i_collision_freq
+        else:
+            return None
 
     # **********************************************************************
     # Resistivity (alpha)
