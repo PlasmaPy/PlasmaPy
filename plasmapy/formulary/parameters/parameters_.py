@@ -23,7 +23,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import e, eps0, k_B, mu0
+from astropy.constants.si import e, k_B, mu0
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -33,10 +33,6 @@ from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
-
-e_si_unitless = e.value
-eps0_si_unitless = eps0.value
-k_B_si_unitless = k_B.value
 
 
 def _grab_charge(ion: Particle, z_mean=None):
