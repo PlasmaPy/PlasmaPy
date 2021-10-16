@@ -3,22 +3,28 @@ Functions to calculated fundamental plasma speed/veolcity parameters.
 """
 __all__ = [
     "Alfven_speed",
+    "ion_sound_speed",
 ]
 __aliases__ = [
+    "cs_",
     "va_",
 ]
 
 import astropy.units as u
 import numbers
 import numpy as np
+import warnings
 
-from astropy.constants.si import mu0
+from astropy.constants.si import k_B, mu0
 from typing import Optional
 
-from plasmapy.formulary.parameters.parameters_ import mass_density
+from plasmapy import particles
+from plasmapy.formulary.parameters.lengths import Debye_length
+from plasmapy.formulary.parameters.parameters_ import mass_density, _grab_charge
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import check_relativistic, validate_quantities
+from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 
 __all__ += __aliases__
 
@@ -165,3 +171,191 @@ def Alfven_speed(
 
 va_ = Alfven_speed
 """Alias to `~plasmapy.formulary.parameters.parameters_.Alfven_speed`."""
+
+
+@check_relativistic
+@validate_quantities(
+    T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False, "none_shall_pass": True},
+    k={"can_be_negative": False, "none_shall_pass": True},
+)
+def ion_sound_speed(
+    T_e: u.K,
+    T_i: u.K,
+    ion: Particle,
+    n_e: u.m ** -3 = None,
+    k: u.m ** -1 = None,
+    gamma_e=1,
+    gamma_i=3,
+    z_mean=None,
+) -> u.m / u.s:
+    r"""
+    Return the ion sound speed for an electron-ion plasma.
+
+    **Aliases:** `cs_`
+
+    Parameters
+    ----------
+    T_e : `~astropy.units.Quantity`
+        Electron temperature in units of temperature or energy per
+        particle. If this is not given, then the electron temperature
+        is assumed to be zero.
+
+    T_i : `~astropy.units.Quantity`
+        Ion temperature in units of temperature or energy per
+        particle.  If this is not given, then the ion temperature is
+        assumed to be zero.
+
+    ion : `~plasmapy.particles.Particle`
+        Representation of the ion species (e.g., `'p'` for protons,
+        `'D+'` for deuterium, or 'He-4 +1' for singly ionized
+        helium-4). If no charge state information is provided, then the
+        ions are assumed to be singly charged.
+
+    n_e : `~astropy.units.Quantity`
+        Electron number density. If this is not given, then ion_sound_speed
+        will be approximated in the non-dispersive limit
+        (:math:`k^2 λ_{D}^2` will be assumed zero). If ``n_e`` is given,
+        a value for ``k`` must also be given.
+
+    k : `~astropy.units.Quantity`
+        Wavenumber (in units of inverse length, e.g. m\ :sup:`-1`\ ). If this
+        is not given, then ion_sound_speed will be approximated in the
+        non-dispersive limit (:math:`k^2 λ_{D}^2` will be assumed zero).
+        If ``k`` is given, a value for ``n_e`` must also be given.
+
+    gamma_e : `float` or `int`
+        The adiabatic index for electrons, which defaults to 1.  This
+        value assumes that the electrons are able to equalize their
+        temperature rapidly enough that the electrons are effectively
+        isothermal.
+
+    gamma_i : `float` or `int`
+        The adiabatic index for ions, which defaults to 3.  This value
+        assumes that ion motion has only one degree of freedom, namely
+        along magnetic field lines.
+
+    z_mean : `~astropy.units.Quantity`, optional
+        The average ionization (arithmetic mean) for a plasma where the
+        a macroscopic description is valid. If this quantity is not
+        given then the charge number of the ion
+        is used. This is effectively an average ion sound speed for the
+        plasma where multiple charge states are present.
+
+    Returns
+    -------
+    V_S : `~astropy.units.Quantity`
+        The ion sound speed in units of meters per second.
+
+    Raises
+    ------
+    `TypeError`
+        If any of the arguments are not entered as keyword arguments
+        or are of an incorrect type.
+
+    `ValueError`
+        If the ion mass, adiabatic index, or temperature are invalid.
+
+    `~plasmapy.utils.exceptions.PhysicsError`
+        If an adiabatic index is less than one.
+
+    `~astropy.units.UnitConversionError`
+        If the temperature, electron number density, or wavenumber
+        is in incorrect units.
+
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the ion sound speed exceeds 5% of the speed of light.
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        If only one of ``k`` or ``n_e`` is given, the non-dispersive
+        limit is assumed.
+
+    Notes
+    -----
+    The ion sound speed :math:`V_S` is given by
+
+    .. math::
+
+        V_S = \sqrt{\frac{γ_e Z k_B T_e + γ_i k_B T_i}{m_i (1 + k^2 λ_{D}^2)}}
+
+    where :math:`γ_e` and :math:`γ_i` are the electron and
+    ion adiabatic indices, :math:`k_B` is the Boltzmann constant,
+    :math:`T_e` and :math:`T_i` are the electron and ion temperatures,
+    :math:`Z` is the charge state of the ion, :math:`m_i` is the
+    ion mass, :math:`λ_D` is the Debye length, and :math:`k` is the
+    wavenumber.
+
+    In the non-dispersive limit (:math:`k^2 λ_D^2` is small) the
+    equation for :math:`V_S` is approximated (the denominator reduces
+    to :math:`m_i`).
+
+    When the electron temperature is much greater than the ion
+    temperature, the ion sound velocity reduces to
+    :math:`\sqrt{γ_e k_B T_e / m_i}`. Ion acoustic waves can
+    therefore occur even when the ion temperature is zero.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> n = 5e19*u.m**-3
+    >>> k_1 = 3e1*u.m**-1
+    >>> k_2 = 3e7*u.m**-1
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 203155... m / s>
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 203155... m / s>
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_2, ion='p', gamma_e=1, gamma_i=3)
+    <Quantity 310.31... m / s>
+    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
+    <Quantity 203155... m / s>
+    >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
+    <Quantity 229585... m / s>
+
+    """
+
+    m_i = particles.particle_mass(ion)
+    Z = _grab_charge(ion, z_mean)
+
+    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
+        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
+            raise TypeError(
+                f"The adiabatic index gamma for {species} must be a float or int"
+            )
+        if gamma < 1:
+            raise PhysicsError(
+                f"The adiabatic index for {species} must be between "
+                f"one and infinity"
+            )
+
+    # Assume non-dispersive limit if values for n_e (or k) are not specified
+    klD2 = 0.0
+    if (n_e is None) ^ (k is None):
+        warnings.warn(
+            "The non-dispersive limit has been assumed for "
+            "this calculation. To prevent this, values must "
+            "be specified for both n_e and k.",
+            PhysicsWarning,
+        )
+    elif n_e is not None and k is not None:
+        lambda_D = Debye_length(T_e, n_e)
+        klD2 = (k * lambda_D) ** 2
+
+    try:
+        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (
+            m_i * (1 + klD2)
+        )
+        V_S = np.sqrt(V_S_squared).to(u.m / u.s)
+    except Exception:
+        raise ValueError("Unable to find ion sound speed.")
+
+    return V_S
+
+
+cs_ = ion_sound_speed
+"""Alias to `~plasmapy.formulary.parameters.parameters_.ion_sound_speed`."""
