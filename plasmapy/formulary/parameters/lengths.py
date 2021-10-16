@@ -8,7 +8,7 @@ __aliases__ = [
     "cwp_",
     "lambdaD_",
     "rc_",
-    "rhoc_"
+    "rhoc_",
 ]
 
 import astropy.units as u
