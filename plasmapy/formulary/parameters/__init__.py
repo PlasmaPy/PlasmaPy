@@ -7,7 +7,10 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
+from plasmapy.formulary.parameters.frequencies import *
+from plasmapy.formulary.parameters.lengths import *
 from plasmapy.formulary.parameters.parameters_ import *
+from plasmapy.formulary.parameters.speeds import *
 
 # auto populate __all__
 for obj_name in list(globals()):
@@ -17,7 +20,10 @@ __all__.sort()
 
 # auto populate __aliases__ & __lite_funcs__
 for modname in (
+    "frequencies",
+    "lengths",
     "parameters_",
+    "speeds",
 ):
     try:
         obj = globals()[modname]
