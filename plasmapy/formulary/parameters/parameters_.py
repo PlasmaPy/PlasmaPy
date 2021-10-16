@@ -4,25 +4,20 @@ __all__ = [
     "Bohm_diffusion",
     "Debye_number",
     "Hall_parameter",
-    "ion_sound_speed",
     "kappa_thermal_speed",
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
     "thermal_pressure",
-    "thermal_speed",
-    "thermal_speed_coefficients",
 ]
 __aliases__ = [
     "betaH_",
-    "cs_",
     "DB_",
     "nD_",
     "pmag_",
     "pth_",
     "rho_",
     "ub_",
-    "vth_",
     "vth_kappa_",
 ]
 __lite_funcs__ = ["thermal_speed_lite"]
@@ -30,24 +25,19 @@ __lite_funcs__ = ["thermal_speed_lite"]
 import astropy.units as u
 import numbers
 import numpy as np
-import warnings
 
 from astropy.constants.si import e, eps0, k_B, mu0
-from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.formulary.parameters.frequencies import gyrofrequency
 from plasmapy.formulary.parameters.lengths import Debye_length
+from plasmapy.formulary.parameters.speeds import thermal_speed
 from plasmapy.particles import Particle
-from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
-    bind_lite_func,
     check_relativistic,
-    preserve_signature,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning
 
 __all__ += __aliases__ + __lite_funcs__
 
@@ -191,349 +181,6 @@ def mass_density(
 rho_ = mass_density
 """Alias to `~plasmapy.formulary.parameters.parameters_.mass_density`."""
 
-
-def thermal_speed_coefficients(method: str, ndim: int) -> float:
-    r"""
-    Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
-    based on the given ``method`` and ``ndim``.  (See the
-    `~plasmapy.formulary.parameters.parameters_.thermal_speed` :ref:`Notes <thermal-speed-notes>`
-    section for further details.)
-
-    Parameters
-    ----------
-    method : `str`
-        Method to be used for calculating the thermal speed. Valid values are
-        ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``, and ``"nrl"``.
-
-    ndim : `int`
-        Dimensionality (1D, 2D, 3D) of space in which to calculate thermal
-        speed. Valid values are ``1``, ``2``, or ``3``.
-
-    Raises
-    ------
-    `ValueError`
-        If ``method`` or ``ndim`` are not a valid value.
-
-    Notes
-    -----
-
-    For a detailed explanation of the different coefficients used to calculate
-    the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for  `~plasmapy.formulary.parameters.parameters_.thermal_speed`.  The possible return
-    values are listed the table
-
-    .. table:: Thermal speed :math:`v_{th}` coefficients.
-       :widths: 2 1 1 1 1
-       :width: 100%
-
-       +--------------+------------+---------------+---------------+---------------+
-       | ↓ **method** | **ndim** → | ``1``         | ``2``         | ``3``         |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"most_probable"``       | .. math::     | .. math::     | .. math::     |
-       |                           |    0          |    1          |    \sqrt{2}   |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"rms"``                 | .. math::     | .. math::     | .. math::     |
-       |                           |    1          |    \sqrt{2}   |    \sqrt{3}   |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"mean_magnitude"``      | .. math::     | .. math::     | .. math::     |
-       |                           |    \sqrt{2/π} |    \sqrt{π/2} |    \sqrt{8/π} |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"nrl"``                 | .. math::                                     |
-       |                           |    1                                          |
-       +--------------+------------+---------------+---------------+---------------+
-
-    Examples
-    --------
-    >>> thermal_speed_coefficients(method="most_probable", ndim=3)
-    1.414213...
-    """
-    _coefficients = {
-        (1, "most_probable"): 0,
-        (2, "most_probable"): 1,
-        (3, "most_probable"): np.sqrt(2),
-        (1, "rms"): 1,
-        (2, "rms"): np.sqrt(2),
-        (3, "rms"): np.sqrt(3),
-        (1, "mean_magnitude"): np.sqrt(2 / np.pi),
-        (2, "mean_magnitude"): np.sqrt(np.pi / 2),
-        (3, "mean_magnitude"): np.sqrt(8 / np.pi),
-        (1, "nrl"): 1,
-        (2, "nrl"): 1,
-        (3, "nrl"): 1,
-    }
-
-    try:
-        coeff = _coefficients[(ndim, method)]
-    except KeyError:
-        raise ValueError(
-            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
-        )
-
-    return coeff
-
-
-@preserve_signature
-@njit
-def thermal_speed_lite(
-    T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
-) -> numbers.Real:
-    r"""
-    The "Lite-Function" version of `~plasmapy.formulary.parameters.parameters_.thermal_speed`.
-    Performs the same thermal speed calculations as
-    `~plasmapy.formulary.parameters.parameters_.thermal_speed`, but is intended for
-    computational use and, thus, has data conditioning safe-guards removed.
-
-    .. math::
-        v_{th} = C_o \sqrt{\frac{k_B T}{m}}
-
-    where :math:`T` is the temperature associated with the distribution,
-    :math:`m` is the particle's mass, and :math:`C_o` is a constant of
-    proportionality determined by the method in which :math:`v_{th}` is
-    calculated and the dimensionality of the system (1D, 2D, 3D).  For further
-    details see the :ref:`Notes <thermal-speed-notes>` section in the
-    `~plasmapy.formulary.parameters.parameters_.thermal_speed` documentation.
-
-    Parameters
-    ----------
-    T : `~numbers.Real`
-        The temperature of the particle distribution, in units of kelvin.
-
-    mass : `~numbers.Real`
-        Mass of the particle in kg.
-
-    coeff : `~numbers.Real`
-        The coefficient :math:`C_o` associated with the method used for
-        calculating the thermal speed, see :ref:`Notes <thermal-speed-notes>`
-        section in the `~plasmapy.formulary.parameters.parameters_.thermal_speed`
-        documentation.
-
-    Returns
-    -------
-    vth : `~numbers.Real`
-        Thermal speed of the Maxwellian distribution in units m/s.
-
-    Examples
-    --------
-    >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
-    >>> coeff = thermal_speed_coefficients(method="most_probable", ndim=3)
-    >>> thermal_speed_lite(T=1e6, mass=mass, coeff=coeff)
-    128486...
-    """
-    return coeff * np.sqrt(k_B_si_unitless * T / mass)
-
-
-@bind_lite_func(
-    thermal_speed_lite,
-    attrs={"coefficients": thermal_speed_coefficients},
-)
-@check_relativistic
-@validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    mass={"can_be_negative": False, "can_be_nan": True},
-)
-@particles.particle_input
-def thermal_speed(
-    T: u.K,
-    particle: Particle,
-    method="most_probable",
-    mass: u.kg = None,
-    ndim=3,
-) -> u.m / u.s:
-    r"""
-    Calculate the speed of thermal motion for particles with a Maxwellian
-    distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
-    details.)
-
-    **Aliases:** `~plasmapy.formulary.parameters.parameters_.vth_`
-
-    **Lite Version:** `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite`
-
-    Parameters
-    ----------
-    T : `~astropy.units.Quantity`
-        The temperature of the particle distribution, in units of kelvin or
-        energy.
-
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., ``"p"`` for protons,
-        ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
-
-    method : `str`, optional
-        (Default ``"most_probable"``) Method to be used for calculating the
-        thermal speed. Valid values are ``"most_probable"``, ``"rms"``,
-        ``"mean_magnitude"``, and ``"nrl"``.
-
-    mass : `~astropy.units.Quantity`
-        Mass override in units convertible to kg.  If given, then ``mass`` will
-        be used instead of the mass value associated with ``particle``.
-
-    ndim : `int`
-        (Default ``3``) Dimensionality (1D, 2D, 3D) of space in which to
-        calculate thermal speed. Valid values are ``1``, ``2``, or ``3``.
-
-    Returns
-    -------
-    vth : `~astropy.units.Quantity`
-        Thermal speed of the Maxwellian distribution.
-
-    Raises
-    ------
-    `TypeError`
-        The particle temperature is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitConversionError`
-        If the particle temperature is not in units of temperature or
-        energy per particle.
-
-    `ValueError`
-        The particle temperature is invalid or particle cannot be used to
-        identify an isotope or particle.
-
-    Warns
-    -----
-    : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the ion sound speed exceeds 5% of the speed of light.
-
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-
-    .. _thermal-speed-notes:
-
-    Notes
-    -----
-
-    There are multiple methods (or definitions) for calculating the thermal
-    speed, all of which give the expression
-
-    .. math::
-        v_{th} = C_o \sqrt{\frac{k_B T}{m}}
-
-    where :math:`T` is the temperature associated with the distribution,
-    :math:`m` is the particle's mass, and :math:`C_o` is a constant of
-    proportionality determined by the method in which :math:`v_{th}` is
-    calculated and the dimensionality of the system (1D, 2D, 3D).  The
-    :math:`C_o` used for the ``thermal_speed`` calculation is determined from
-    the input arguments ``method`` and ``ndim``, and the values can be seen in
-    the table below:
-
-    .. table:: Values for :math:`C_o`
-       :widths: 2 1 1 1 1
-       :width: 100%
-
-       +--------------+------------+---------------+---------------+---------------+
-       | ↓ **method** | **ndim** → | ``1``         | ``2``         | ``3``         |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"most_probable"``       | .. math::     | .. math::     | .. math::     |
-       |                           |    0          |    1          |    \sqrt{2}   |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"rms"``                 | .. math::     | .. math::     | .. math::     |
-       |                           |    1          |    \sqrt{2}   |    \sqrt{3}   |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"mean_magnitude"``      | .. math::     | .. math::     | .. math::     |
-       |                           |    \sqrt{2/π} |    \sqrt{π/2} |    \sqrt{8/π} |
-       +--------------+------------+---------------+---------------+---------------+
-       | ``"nrl"``                 | .. math::                                     |
-       |                           |    1                                          |
-       +--------------+------------+---------------+---------------+---------------+
-
-    The coefficents can be directly retrieved using
-    `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`.
-
-        .. rubric:: The Methods
-
-        In the following discussion the Maxwellian distribution
-        :math:`f(\mathbf{v})` is assumed to be 3D, but similar expressions can
-        be given for 1D and 2D.
-
-        - **Most Probable** ``method = "most_probable"``
-
-          This method expresses the thermal speed of the distribution by expressing
-          it as the most probable speed a particle in the distribution may have.
-          To do this we first define another function :math:`g(v)` given by
-
-          .. math::
-             \int_{0}^{\infty} g(v) dv
-                = \int_{-\infty}^{\infty} f(\mathbf{v}) d^3\mathbf{v}
-                \quad \rightarrow \quad
-                g(v) = 4 \pi v^2 f(v)
-
-          then
-
-          .. math::
-             g^{\prime}(v_{th}) = \left.\frac{dg}{dv}\right|_{v_{th}} = 0\\
-             \implies v_{th} = \sqrt{\frac{2 k_B T}{m}}
-
-        - **Root Mean Square** ``method = "rms"``
-
-          This method uses the root mean square to calculate an expression for
-          the thermal speed of the particle distribution, which is given by
-          defines the thermal speed as
-
-          .. math::
-             v_{th} = \left[\int v^2 f(\mathbf{v}) d^3 \mathbf{v}\right]^{1/2}
-                        = \sqrt{\frac{3 k_B T}{m}}
-
-        - **Mean Magnitude** ``method = "mean_magnitude"``
-
-          This method uses the mean speed of the particle distribution to
-          calcuate an expression for the thermal speed, which is given by
-
-          .. math::
-             v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
-                         = \sqrt{\frac{8 k_B T}{\pi m}}
-
-
-        - **NRL Formulary** ``method = "nrl"``
-
-          The `NRL Plasma Formulary
-          <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
-          uses the square root of the Normal distribution's variance
-          :math:`\sigma^2` as the expression for thermal speed.
-
-          .. math::
-             v_{th} = \sqrt{\frac{k_B T}{m}}
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> thermal_speed(5*u.eV, 'p')
-    <Quantity 30949.6... m / s>
-    >>> thermal_speed(1e6*u.K, particle='p')
-    <Quantity 128486... m / s>
-    >>> thermal_speed(5*u.eV, particle='e-')
-    <Quantity 132620... m / s>
-    >>> thermal_speed(1e6*u.K, particle='e-')
-    <Quantity 550569... m / s>
-    >>> thermal_speed(1e6*u.K, "e-", method="rms")
-    <Quantity 674307... m / s>
-    >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
-    <Quantity 621251... m / s>
-
-    For user convienece `~plasmapy.formulary.parameters.parameters_.thermal_speed_coefficients`
-    and `~plasmapy.formulary.parameters.parameters_.thermal_speed_lite` are bound to this function
-    and can be used as follows.
-
-    >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
-    >>> coeff = thermal_speed.coefficients(method="most_probable", ndim=3)
-    >>> thermal_speed.lite(T=1e6, mass=mass, coeff=coeff)
-    128486...
-    """
-    if mass is None:
-        mass = particles.particle_mass(particle)
-
-    coeff = thermal_speed_coefficients(method=method, ndim=ndim)
-
-    speed = thermal_speed_lite(T=T.value, mass=mass.value, coeff=coeff)
-    return speed * u.m / u.s
-
-
-vth_ = thermal_speed
-""" Alias to :func:`~plasmapy.formulary.parameters.parameters_.thermal_speed`. """
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
