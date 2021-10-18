@@ -9,7 +9,7 @@ from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
-from plasmapy.particles import json_load_particle, json_loads_particle
+from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -1382,3 +1382,16 @@ def test_CustomParticle_cmp():
 
     assert not particle1 == 1
     assert particle1 != 1
+
+
+def test_molecule():
+    """Test ``molecule`` function."""
+    assert CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2") == molecule("I2")
+    assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2 1+")
+    assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2", Z=1)
+    assert Particle("I") == molecule("I")
+
+    with pytest.raises(InvalidParticleError):
+        m = molecule("Zz")
+        m = molecule("")
+        m = molecule("I2+", Z=2)
