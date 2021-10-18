@@ -1393,5 +1393,9 @@ def test_molecule():
 
     with pytest.raises(InvalidParticleError):
         m = molecule("Zz")
+    with pytest.raises(InvalidParticleError):
         m = molecule("")
+    with pytest.raises(InvalidParticleError):
         m = molecule("I2+", Z=2)
+    with pytest.raises(InvalidParticleError):
+        m = molecule("Iii")
