@@ -1389,7 +1389,13 @@ def test_molecule():
     assert CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2") == molecule("I2")
     assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2 1+")
     assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2", Z=1)
+    assert CustomParticle(2 * 126.90447 * u.u, e.si, "II 1+") == molecule("II", Z=1)
     assert Particle("I") == molecule("I")
+
+    with pytest.warns(ParticleWarning):
+        assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
+            "I2 1+", Z=1
+        )
 
     with pytest.raises(InvalidParticleError):
         m = molecule("Zz")

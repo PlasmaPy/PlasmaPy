@@ -2238,8 +2238,6 @@ def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
     except ParticleError:
 
         element_dict, bare_symbol, Z = _parse_and_check_molecule_input(symbol, Z)
-        if not element_dict:
-            raise InvalidParticleError(f"No element recognized in {symbol}")
         mass = 0 * u.kg
         for element_symbol, amount in element_dict.items():
             try:
@@ -2248,8 +2246,6 @@ def molecule(symbol: str, Z: Integral = None) -> Particle | CustomParticle:
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
                 ) from e
-            if element.element is None:
-                raise InvalidElementError(_category_errmsg(element, "element"))
             mass += amount * element.mass
 
         if Z is None:
