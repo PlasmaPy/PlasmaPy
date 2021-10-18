@@ -2212,14 +2212,12 @@ class CustomParticle(AbstractPhysicalParticle):
 
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
-        and return `False` if ``other`` differs on any of these attributes.
+        and return `False` if ``other`` differs on any of these attributes,
+        or an other type.
         """
 
         if not isinstance(other, self.__class__):
-            raise TypeError(
-                f"The equality of a CustomParticle object with a {type(other)} is undefined."
-            )
-
+            return False
         return (
             self.symbol.__eq__(other.symbol)
             and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
