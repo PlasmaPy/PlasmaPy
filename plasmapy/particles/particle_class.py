@@ -624,7 +624,7 @@ class Particle(AbstractPhysicalParticle):
                 return False
 
         if not isinstance(other, self.__class__):
-            return False
+            return NotImplemented
 
         no_symbol_attr = "symbol" not in dir(self) or "symbol" not in dir(other)
         no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(
@@ -661,22 +661,6 @@ class Particle(AbstractPhysicalParticle):
             )
 
         return same_particle
-
-    def __ne__(self, other) -> bool:
-        """
-        Test whether or not two objects are different particles.
-
-        This method will return `False` if ``other`` is an identical
-        |Particle| instance or a `str` representing the same particle,
-        and return `True` if ``other`` is a different |Particle| or a
-        `str` representing a different particle.
-
-        If ``other`` is not a `str` or |Particle| instance, then this
-        method will raise a `TypeError`.  If ``other.symbol`` equals
-        ``self.symbol`` but the attributes differ, then this method
-        will raise a `~plasmapy.particles.exceptions.ParticleError`.
-        """
-        return not self.__eq__(other)
 
     def __hash__(self) -> int:
         """
@@ -2217,22 +2201,12 @@ class CustomParticle(AbstractPhysicalParticle):
         """
 
         if not isinstance(other, self.__class__):
-            return False
+            return NotImplemented
         return (
             self.symbol.__eq__(other.symbol)
             and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
             and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
         )
-
-    def __ne__(self, other) -> bool:
-        """
-        Test whether or not two objects are different particles.
-
-        This method will return `False` if ``other`` is an identical
-        |CustomParticle| instance, and return `True` if ``other`` is
-        a different |CustomParticle|.
-        """
-        return not self.__eq__(other)
 
     def __hash__(self) -> int:
         """
