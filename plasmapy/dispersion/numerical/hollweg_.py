@@ -291,7 +291,7 @@ def hollweg(
         # a3*x^3 + a2*x^2 + a1*x + a0 = 0
         for (a3, a2, a1, a0) in zip(c3, c2, c1, c0):
 
-            w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
+            w = np.emath.sqrt(np.roots([a3.value, a2.value, a1.value, a0.value]))
             fast_mode.append(np.max(w))
             alfven_mode.append(np.median(w))
             acoustic_mode.append(np.min(w))
