@@ -288,8 +288,8 @@ def hollweg(
 
     # If mutliple k values are given
     else:
-        # a0*x^3 + a1*x^2 + a2*x^3 + a3 = 0
-        for (a0, a1, a2, a3) in zip(c3, c2, c1, c0):
+        # a3*x^3 + a2*x^2 + a1*x + a0 = 0
+        for (a3, a2, a1, a0) in zip(c3, c2, c1, c0):
 
             w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
             fast_mode.append(np.max(w))
