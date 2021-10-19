@@ -459,9 +459,44 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-  def test_proof_if_riemann(truth_value, expected):
+   @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
+   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
+
+Parametrizing with argument unpacking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Suppose we want to test a function called ``add``:
+
+.. code-block:: python
+
+   def add(x, y, reverse_order = False):
+       if reverse_order:
+           return y + x
+       return x + y
+
+This function accepts ``x`` and ``y`` as positional arguments and
+``reverse_order`` as an optional keyword argument. We want to test
+`add`` while *specifying* or *not specifying* ``reverse_order``.
+
+When the number of arguments passed to a function varies, we can use
+argument unpacking_ in conjunction with test parametrization.
+
+.. code-block:: python
+
+   @pytest.mark.parametrize(
+       "args, kwargs, expected",
+       [
+           # test that add("1", "2", reverse_order=False) == "12"
+           (["1", "2"], {"reverse_order": False}, "12"),
+           # test that add("1", "2", reverse_order=True) == "21"
+           (["1", "2"], {"reverse_order": True}, "21"),
+           # test that add("1", "2") == "12"
+           (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
+       ]
+   )
+   def test_add(args, kwargs, expected):
+       assert add(*args, **kwargs) == expected
 
 Fixtures
 --------
@@ -682,4 +717,5 @@ should be balanced with each other rather than absolute principles.
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com/
