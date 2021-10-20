@@ -1,0 +1,4 @@
+Renamed file ``two_fluid_dispersion.py`` to ``two_fluid_.py`` and moved into
+the `plasmapy.dispersion.analytical` subpackage.  The contained function
+``two_fluid_dispersion_solutions()`` was also renamed to
+`~plasmapy.dispersion.analytical.two_fluid_.two_fluid`.

@@ -4,13 +4,11 @@ when possible).
 """
 import inspect
 import pytest
-import warnings
 
 from astropy import units as u
 from typing import Any, Dict, List
 from unittest import mock
 
-from plasmapy.formulary.parameters import Debye_number
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import validate_quantities, ValidateQuantities
 

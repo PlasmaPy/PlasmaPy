@@ -6,7 +6,8 @@ original fields (under some set of assumptions).
 """
 
 __all__ = [
-    "SyntheticProtonRadiograph",
+    "Tracker",
+    "synthetic_radiograph",
 ]
 
 import astropy.constants as const
@@ -70,7 +71,7 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
-class SyntheticProtonRadiograph:
+class Tracker:
     r"""
     Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
@@ -140,6 +141,9 @@ class SyntheticProtonRadiograph:
         # Particles that would hit these meshes will be removed at runtime
         # by _apply_wire_mesh
         self.mesh_list = []
+
+        # This flag records whether the simulation has been run
+        self._has_run = False
 
         # ************************************************************************
         # Setup the source and detector geometries
@@ -346,6 +350,9 @@ class SyntheticProtonRadiograph:
             between the source and the object grid.
 
         """
+
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
 
         location = _coerce_to_cartesian_si(location)
         wire_radius = wire_diameter.si.value / 2
@@ -556,6 +563,9 @@ class SyntheticProtonRadiograph:
         particles to be neglected to focus computational resources on the
         particles who will actually hit the detector.
 
+        Parameters
+        ----------
+
         nparticles : integer
             The number of particles to include in the simulation. The default
             is 1e5.
@@ -597,6 +607,9 @@ class SyntheticProtonRadiograph:
 
         """
         self._log("Creating Particles")
+
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
 
         # Load inputs
         self.nparticles = int(nparticles)
@@ -653,6 +666,9 @@ class SyntheticProtonRadiograph:
         r"""
         Load arrays of particle positions and velocities
 
+        Parameters
+        ----------
+
         x : `~astropy.units.Quantity`, shape (N,3)
             Positions for N particles
 
@@ -680,6 +696,9 @@ class SyntheticProtonRadiograph:
 
 
         """
+        # Raise an error if the run method has already been called.
+        self._enforce_order()
+
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -877,6 +896,14 @@ class SyntheticProtonRadiograph:
                 "B_z",
                 persistent=True,
             )
+
+        # Interpret any NaN values (points off the grid) as zero
+        Ex = np.nan_to_num(Ex, nan=0.0 * u.V / u.m)
+        Ey = np.nan_to_num(Ey, nan=0.0 * u.V / u.m)
+        Ez = np.nan_to_num(Ez, nan=0.0 * u.V / u.m)
+        Bx = np.nan_to_num(Bx, nan=0.0 * u.T)
+        By = np.nan_to_num(By, nan=0.0 * u.T)
+        Bz = np.nan_to_num(Bz, nan=0.0 * u.T)
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
@@ -1080,11 +1107,147 @@ class SyntheticProtonRadiograph:
             f"{self.fract_deflected*100}%"
         )
 
+        # Simulation has not run, because creating new particles changes the simulation
+        self._has_run = True
+
+    @property
+    def results_dict(self):
+        r"""
+        A dictionary containing the results of the simulation.
+
+        .. list-table:: Dictionary keys and descriptions.
+           :width: 100%
+           :widths: 1 1 4
+           :header-rows: 1
+
+           * - Key
+             - Type
+             - Description
+           * - ``"source"``
+             - `~numpy.ndarray`
+             - The source location vector, in meters.
+           * - ``"detector"``
+             - `~numpy.ndarray`
+             - The detector location vector, in meters.
+           * - ``"mag"``
+             - `float`
+             - The system magnification.
+           * - ``"nparticles"``
+             - `int`
+             - Number of particles in the simulation.
+           * - ``"max_deflection"``
+             - `~numpy.ndarray`
+             - The maximum deflection experienced by a particle in the
+               simulation, in radians.
+           * - ``"x"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The x-coordinate location where each particle hit the
+               detector plane, in meters.
+           * - ``"y"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The y-coordinate location where each particle hit the
+               detector plane, in meters.
+           * - ``"v"``
+             - `~numpy.ndarray`, [``nparticles``, 3]
+             - The velocity of each particle when it hits the detector
+               plane, in meters per second. The velocity is in a
+               coordinate system relative to the detector plane. The
+               components are [normal, horizontal, vertical] relative
+               to the detector plane coordinates.
+           * - ``"x0"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The x-coordinate location where each particle would have
+               hit the detector plane if the grid fields were zero, in
+               meters. Useful for calculating the source profile.
+           * - ``"y0"``
+             - `~numpy.ndarray`, [``nparticles``,]
+             - The y-coordinate location where each particle would have
+               hit the detector plane if the grid fields were zero, in
+               meters. Useful for calculating the source profile.
+           * - ``"v0"``
+             - `~numpy.ndarray`, [``nparticles``, 3]
+             - The velocity of each particle when it hit the detector
+               plan if the grid fields were zero, in meters per second.
+               The velocity is in a coordinate system relative to the
+               detector plane. The components are [normal, horizontal,
+               vertical] relative to the detector plane coordinates.
+
+        """
+
+        if not self._has_run:
+            raise RuntimeError(
+                "The simulation must be run before a results "
+                "dictionary can be created."
+            )
+
+        # Determine locations of points in the detector plane using unit
+        # vectors
+        xloc = np.dot(self.x - self.detector, self.det_hdir)
+        yloc = np.dot(self.x - self.detector, self.det_vdir)
+
+        x0loc = np.dot(self.x0 - self.detector, self.det_hdir)
+        y0loc = np.dot(self.x0 - self.detector, self.det_vdir)
+
+        # Determine the velocity components of each particle in the
+        # coordinate frame of the detector, eg. the components of v are
+        # now [normal, det_hdir, det_vdir]
+        v = np.zeros(self.v.shape)
+        v[:, 0] = np.dot(self.v, self.det_n)
+        v[:, 1] = np.dot(self.v, self.det_hdir)
+        v[:, 2] = np.dot(self.v, self.det_vdir)
+
+        v0 = np.zeros(self.v.shape)
+        v0[:, 0] = np.dot(self.v_init, self.det_n)
+        v0[:, 1] = np.dot(self.v_init, self.det_hdir)
+        v0[:, 2] = np.dot(self.v_init, self.det_vdir)
+
+        # Store output values in a dictionary
+        result_dict = dict(
+            source=self.source,
+            detector=self.detector,
+            mag=self.mag,
+            nparticles=self.nparticles,
+            max_deflection=self.max_deflection.to(u.rad).value,
+            x=xloc,
+            y=yloc,
+            v=v,
+            x0=x0loc,
+            y0=y0loc,
+            v0=v0,
+        )
+
+        return result_dict
+
+    def save_results(self, path):
+        """
+        Save the simulations results :attr:`results_dict` to a `numpy`
+        ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
+
+        Parameters
+        ----------
+
+        path : `str` or `os.path`
+            Either the filename (string) or an open file (file-like object)
+            where the data will be saved. If file is a string or a Path,
+            the ``.npz`` extension will be appended to the filename if
+            it is not already there.
+
+        Notes
+        -----
+
+        Useful for saving the results from a simulation so they can be
+        loaded at a later time and passed into
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
+
+        """
+
+        np.savez(path, **self.results_dict)
+
     @property
     def max_deflection(self):
         """
         The maximum deflection experienced by one of the particles, determined
-        by comparing their initial and final velocitiy vectors.
+        by comparing their initial and final velocity vectors.
 
         This value can be used to determine the charged particle radiography regime
         using the dimensionless number defined by Kugland et al. 2012
@@ -1107,118 +1270,158 @@ class SyntheticProtonRadiograph:
 
         return max_deflection * u.rad
 
-    # *************************************************************************
-    # Synthetic diagnostic methods (creating output)
-    # *************************************************************************
-
-    def synthetic_radiograph(
-        self, size=None, bins=[200, 200], ignore_grid=False, optical_density=False
-    ):
+    def _enforce_order(self):
         r"""
-        Calculate a "synthetic radiograph" (particle count histogram in the
-        image plane).
+        The `Tracker` methods could give strange results if setup methods
+        are used again after the simulation has run. This method
+        raises an error if the simulation has already been run.
 
-        Parameters
-        ----------
-        size : `~astropy.units.Quantity`, shape (2,2)
-            The size of the detector array, specified as the minimum
-            and maximum values included in both the horizontal and vertical
-            directions in the detector plane coordinates. Shape is
-            [[hmin,hmax], [vmin, vmax]]. Units must be convertable to meters.
-
-        bins : array of integers, shape (2)
-            The number of bins in each direction in the format [hbins, vbins].
-            The default is [200,200].
-
-        ignore_grid: bool
-            If True, returns the intensity in the image plane in the absence
-            of simulated fields.
-
-        optical_density: bool
-            If True, return the optical density rather than the intensity
-
-            .. math::
-                OD = -log_{10}(Intensity/I_0)
-
-            where I_O is the intensity on the detector plane in the absence of
-            simulated fields. Default is False.
-
-        Returns
-        -------
-        hax : `~astropy.units.Quantity` array shape (hbins,)
-            The horizontal axis of the synthetic radiograph in meters.
-
-        vax : `~astropy.units.Quantity` array shape (vbins, )
-            The vertical axis of the synthetic radiograph in meters.
-
-        intensity : ndarray, shape (hbins, vbins)
-            The number of particles counted in each bin of the histogram.
         """
 
-        # Note that, at the end of the simulation, all particles were moved
-        # into the image plane.
-
-        # If ignore_grid is True, use the predicted positions in the absence of
-        # simulated fields
-        if ignore_grid:
-            x = self.x0
-        else:
-            x = self.x
-
-        # Determine locations of points in the detector plane using unit
-        # vectors
-        xloc = np.dot(x - self.detector, self.det_hdir)
-        yloc = np.dot(x - self.detector, self.det_vdir)
-
-        if size is None:
-            # If a detector size is not given, choose lengths based on the
-            # dimensions of the grid
-            w = self.mag * np.max(
-                [
-                    np.max(np.abs(self.grid.pts0.to(u.m).value)),
-                    np.max(np.abs(self.grid.pts1.to(u.m).value)),
-                    np.max(np.abs(self.grid.pts2.to(u.m).value)),
-                ]
+        if self._has_run:
+            raise RuntimeError(
+                "Modifying the `Tracker` object after running the "
+                "simulation is not supported. Create a new `Tracker` "
+                "object for a new simulation."
             )
 
-            # The factor of 5 here is somewhat arbitrary: we just want a
-            # region a few times bigger than the image of the grid on the
-            # detector, since particles could be deflected out
-            size = 5 * np.array([[-w, w], [-w, w]]) * u.m
 
-        # Generate the histogram
-        intensity, h, v = np.histogram2d(
-            xloc, yloc, range=size.to(u.m).value, bins=bins
+# *************************************************************************
+# Synthetic diagnostic methods (creating output)
+# *************************************************************************
+
+
+def synthetic_radiograph(
+    obj, size=None, bins=None, ignore_grid=False, optical_density=False
+):
+    r"""
+    Calculate a "synthetic radiograph" (particle count histogram in the
+    image plane).
+
+    Parameters
+    ----------
+
+    obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+        Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
+        object that has been run, or a dictionary equivalent to
+        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
+
+    size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
+        The size of the detector array, specified as the minimum
+        and maximum values included in both the horizontal and vertical
+        directions in the detector plane coordinates. Shape is
+        ``((hmin, hmax), (vmin, vmax))``. If not specified, the size will be
+        set to include all particles on the detector. Units must be convertable
+        to meters.
+
+    bins : array of integers, shape ``(2)``
+        The number of bins in each direction in the format
+        ``(hbins, vbins)``.  The default is ``(200, 200)``.
+
+    ignore_grid: `bool`
+        If `True`, returns the intensity in the image plane in the absence
+        of simulated fields.
+
+    optical_density: `bool`
+        If `True`, return the optical density rather than the intensity
+
+        .. math::
+            OD = -log_{10}(Intensity/I_0)
+
+        where :math:`Intensity` is the simulation intensity on the
+        detector plane and :math:`I_0` is the intensity on the detector
+        plane in the absence of simulated fields. Default is `False`.
+        If the :math:`Intensity` histogram contains zeros, then the
+        corresponding values in :math:`OD` will be `numpy.inf`. When
+        plotting :math:`OD` the `~numpy.inf` values can be replaced
+        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
+
+    Returns
+    -------
+    hax : `~astropy.units.Quantity` array shape ``(hbins,)``
+        The horizontal axis of the synthetic radiograph in meters.
+
+    vax : `~astropy.units.Quantity` array shape ``(vbins, )``
+        The vertical axis of the synthetic radiograph in meters.
+
+    intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
+        The number of particles counted in each bin of the histogram.
+    """
+
+    # condition `obj` input
+    if isinstance(obj, Tracker):
+        # results_dict raises an error if the simulation has not been run.
+        d = obj.results_dict
+    elif isinstance(obj, dict):
+        d = obj
+    else:
+        raise TypeError(
+            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"got type {type(obj)}."
         )
 
-        # h, v are the bin edges: compute the centers to produce arrays
-        # of the right length (then trim off the extra point)
-        h = ((h + np.roll(h, -1)) / 2)[0:-1]
-        v = ((v + np.roll(v, -1)) / 2)[0:-1]
+    if bins is None:
+        bins = [200, 200]
 
-        # Throw a warning if < 50% of the particles are included on the
-        # histogram
-        percentage = np.sum(intensity) / self.nparticles
-        if percentage < 0.5:
-            warnings.warn(
-                f"Only {percentage:.2%} of the particles are shown "
-                "on this synthetic radiograph. Consider increasing "
-                "the size to include more.",
-                RuntimeWarning,
-            )
+    # Note that, at the end of the simulation, all particles were moved
+    # into the image plane.
 
-        if optical_density:
-            # Generate the null radiograph
-            x, y, I0 = self.synthetic_radiograph(size=size, bins=bins, ignore_grid=True)
+    # If ignore_grid is True, use the predicted positions in the absence of
+    # simulated fields
+    if ignore_grid:
+        xloc = d["x0"]
+        yloc = d["y0"]
+    else:
+        xloc = d["x"]
+        yloc = d["y"]
 
-            # Calculate I0 as the mean of the non-zero values in the null
-            # histogram. Zeros are just outside of the illuminate area.
-            I0 = np.mean(I0[I0 != 0])
+    if size is None:
+        # If a detector size is not given, choose a size based on the
+        # particle positions
+        w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
+        size = np.array([[-w, w], [-w, w]]) * u.m
+    elif not isinstance(size, u.Quantity):
+        raise TypeError(
+            "Argument `size` must be an astropy.units.Quantity object with "
+            "units convertable to meters."
+        )
+    elif not size.unit.is_equivalent(u.m):
+        raise ValueError("Argument `size` must have units convertible to meters.")
+    elif size.shape != (2, 2):
+        raise ValueError(
+            f"Argument `size` must have shape (2, 2), but got {size.shape}."
+        )
 
-            # Overwrite any zeros in intensity to avoid log10(0)
-            intensity[intensity == 0] = 1
+    # Generate the histogram
+    intensity, h, v = np.histogram2d(xloc, yloc, range=size.to(u.m).value, bins=bins)
 
-            # Calculate the optical_density
+    # h, v are the bin edges: compute the centers to produce arrays
+    # of the right length (then trim off the extra point)
+    h = ((h + np.roll(h, -1)) / 2)[:-1]
+    v = ((v + np.roll(v, -1)) / 2)[:-1]
+
+    # Throw a warning if < 50% of the particles are included on the
+    # histogram
+    percentage = np.sum(intensity) / d["nparticles"]
+    if percentage < 0.5:
+        warnings.warn(
+            f"Only {percentage:.2%} of the particles are shown "
+            "on this synthetic radiograph. Consider increasing "
+            "the size to include more.",
+            RuntimeWarning,
+        )
+
+    if optical_density:
+        # Generate the null radiograph
+        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
+
+        # Calculate I0 as the mean of the non-zero values in the null
+        # histogram. Zeros are just outside of the illuminate area.
+        I0 = np.mean(I0[I0 != 0])
+
+        # Calculate the optical_density
+        # ignore any errors resulting from zero values in intensity
+        with np.errstate(divide="ignore"):
             intensity = -np.log10(intensity / I0)
 
-        return h * u.m, v * u.m, intensity
+    return h * u.m, v * u.m, intensity

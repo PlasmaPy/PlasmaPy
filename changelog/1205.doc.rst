@@ -1,0 +1,4 @@
+Included a step in the release guide to update Binder requirements
+so that the release of PlasmaPy on PyPI_ gets installed when opening
+example notebooks from the stable and release branches of the online
+documentation.

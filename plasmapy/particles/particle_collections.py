@@ -1,14 +1,16 @@
 """Collections of `~plasmapy.particles.particle_class.Particle` objects."""
 
-__all__ = ["ParticleList"]
+__all__ = ["ionic_levels", "ParticleList"]
 
 import astropy.units as u
 import collections
 import numpy as np
 
-from typing import Callable, Iterable, List, Union
+from numbers import Integral
+from typing import Callable, Iterable, List, Optional, Union
 
-from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -25,7 +27,7 @@ class ParticleList(collections.UserList):
 
     Parameters
     ----------
-    particles : iterable
+    particles : iterable, optional
         An iterable that provides a sequence of
         `~plasmapy.particles.particle_class.ParticleLike` objects.
         Objects that are not a `~plasmapy.particles.particle_class.Particle`
@@ -109,7 +111,7 @@ class ParticleList(collections.UserList):
 
     @staticmethod
     def _list_of_particles_and_custom_particles(
-        particles: Iterable[ParticleLike],
+        particles: Optional[Iterable[ParticleLike]],
     ) -> List[Union[Particle, CustomParticle]]:  # TODO #687
         """
         Convert an iterable that provides
@@ -117,7 +119,9 @@ class ParticleList(collections.UserList):
         `list` containing `~plasmapy.particles.particle_class.Particle`
         and `~plasmapy.particles.particle_class.CustomParticle` instances.
         """
-        new_particles = []
+        new_particles = list()
+        if particles is None:
+            return new_particles
         for obj in particles:
             if isinstance(obj, (Particle, CustomParticle)):
                 new_particles.append(obj)
@@ -136,7 +140,7 @@ class ParticleList(collections.UserList):
 
         return new_particles
 
-    def __init__(self, particles: Iterable):
+    def __init__(self, particles: Optional[Iterable] = None):
         self._data = self._list_of_particles_and_custom_particles(particles)
 
     @staticmethod
@@ -290,6 +294,69 @@ class ParticleList(collections.UserList):
         """A `list` of the symbols of the particles."""
         return self._get_particle_attribute("symbol")
 
+    def average_particle(
+        self,
+        abundances=None,
+        *,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> Union[CustomParticle, Particle]:
+        """
+        Return a particle with the average mass and charge.
+
+        By default, the mean will be used as the average. If the ``abundances``
+        are provided, then this method will return the weighted mean. If
+        ``use_rms_charge`` or ``use_rms_mass`` is `True`, then this method will
+        return the root mean square of the charge or mass, respectively. If all
+        items in the |ParticleList| are the same, then this method will return
+        that item.
+
+        Parameters
+        ----------
+        abundances : array-like, optional
+            Real numbers representing relative abundances of the particles in
+            the |ParticleList|. Must have the same number of elements as the
+            |ParticleList|. This parameter gets passed to `numpy.average` via
+            that function's ``weights`` parameter. If not provided, the
+            particles contained in the |ParticleList| are assumed to be
+            equally abundant.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the mean
+            charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean mass.
+            Defaults to `False`.
+
+        Examples
+        --------
+        >>> reactants = ParticleList(["electron", "positron"])
+        >>> reactants.average_particle()
+        CustomParticle(mass=9.109383...e-31 kg, charge=0.0 C)
+        >>> reactants.average_particle(abundances=[1, 0.5])
+        CustomParticle(mass=9.109383...e-31 kg, charge=-5.34058...e-20 C)
+        >>> reactants.average_particle(use_rms_charge=True)
+        CustomParticle(mass=9.109383...e-31 kg, charge=1.6021766...-19 C)
+        >>> protons = ParticleList(["p+", "p+", "p+"])
+        >>> protons.average_particle()
+        Particle("p+")
+        """
+        # If all items in the ParticleList are the same, return that item.
+        if len(set(self)) == 1:
+            return self[0]
+
+        def _average(array, weights, use_rms):
+            if use_rms:
+                return np.sqrt(np.average(array ** 2, weights=weights))
+            else:
+                return np.average(array, weights=weights)
+
+        new_mass = _average(self.mass, weights=abundances, use_rms=use_rms_mass)
+        new_charge = _average(self.charge, weights=abundances, use_rms=use_rms_charge)
+
+        return CustomParticle(mass=new_mass, charge=new_charge)
+
 
 # Override the docstrings for the parent class
 
@@ -329,3 +396,56 @@ Remove the first occurrence of a
 """
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
+
+
+@particle_input(any_of={"element", "isotope", "ion"})
+def ionic_levels(
+    particle: Particle,
+    min_charge: Integral = 0,
+    max_charge: Optional[Integral] = None,
+) -> ParticleList:
+    """
+    Return a |ParticleList| that includes different ionic levels of a
+    base atom.
+
+    Parameters
+    ----------
+    particle : `~plasmapy.particles.particle_class.ParticleLike`
+        Representation of an element, ion, or isotope.
+
+    min_charge : integer, optional
+        The starting charge number. Defaults to ``0``.
+
+    max_charge : integer, optional
+        The ending charge number, which will be included in the
+        |ParticleList|.  Defaults to the atomic number.
+
+    Returns
+    -------
+    `~plasmapy.particles.particle_collections.ParticleList`
+        The ionic levels of the atom provided from ``min_charge`` to
+        ``max_charge``.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import ionic_levels
+    >>> ionic_levels("He")
+    ParticleList(['He 0+', 'He 1+', 'He 2+'])
+    >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
+    ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
+    """
+    base_particle = Particle(particle.isotope if particle.isotope else particle.element)
+
+    if max_charge is None:
+        max_charge = particle.atomic_number
+
+    if not min_charge <= max_charge <= particle.atomic_number:
+        raise ChargeError(
+            f"Need min_charge ({min_charge}) "
+            f"≤ max_charge ({max_charge}) "
+            f"≤ atomic number ({base_particle.atomic_number})."
+        )
+
+    return ParticleList(
+        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
+    )

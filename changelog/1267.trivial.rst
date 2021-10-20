@@ -1,0 +1,2 @@
+Defined redirects to allow and anchors to avoid checking when using Sphinx_
+to verify that hyperlinks are correct via ``make linkcheck``.
