@@ -1,0 +1,2 @@
+Added `flake8-absolute-import <https://github.com/bskinn/flake8-absolute-import>`_ to the
+``linters`` tox_ environment.

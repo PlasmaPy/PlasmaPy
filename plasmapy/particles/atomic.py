@@ -877,8 +877,8 @@ def reduced_mass(test_particle, target_particle) -> u.Quantity:
         `~plasmapy.particles.particle_class.Particle`,
         `~astropy.units.Quantity`, or `~astropy.constants.Constant`.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> reduced_mass('p+', 'e-')
     <Quantity 9.104425e-31 kg>

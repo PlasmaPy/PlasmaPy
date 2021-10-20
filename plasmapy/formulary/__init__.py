@@ -6,18 +6,18 @@ from plasma science.
 __all__ = []
 __aliases__ = []
 
-from .braginskii import *
-from .collisions import *
-from .dielectric import *
-from .dimensionless import *
-from .distribution import *
-from .drifts import *
-from .ionization import *
-from .magnetostatics import *
-from .mathematics import *
-from .parameters import *
-from .quantum import *
-from .relativity import *
+from plasmapy.formulary.braginskii import *
+from plasmapy.formulary.collisions import *
+from plasmapy.formulary.dielectric import *
+from plasmapy.formulary.dimensionless import *
+from plasmapy.formulary.distribution import *
+from plasmapy.formulary.drifts import *
+from plasmapy.formulary.ionization import *
+from plasmapy.formulary.magnetostatics import *
+from plasmapy.formulary.mathematics import *
+from plasmapy.formulary.parameters import *
+from plasmapy.formulary.quantum import *
+from plasmapy.formulary.relativity import *
 
 # auto populate __all__
 for obj_name in list(globals()):
