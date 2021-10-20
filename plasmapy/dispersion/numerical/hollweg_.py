@@ -242,8 +242,15 @@ def hollweg(
 
     # Single k value case
     if np.isscalar(k.value):
-        k = np.array([inputs["k"].value,]) * u.rad / u.m
-
+        k = (
+            np.array(
+                [
+                    inputs["k"].value,
+                ]
+            )
+            * u.rad
+            / u.m
+        )
     # Calc needed plasma parameters
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
