@@ -6,7 +6,7 @@
 version: 2
 
 formats:
-  - htmlzip
+- htmlzip
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
