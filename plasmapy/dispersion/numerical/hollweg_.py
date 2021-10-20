@@ -240,6 +240,10 @@ def hollweg(
             f"Quantity, got array of shape {k.shape}."
         )
 
+    # Single k value case
+    if np.isscalar(k.value):
+        k = np.array([inputs["k"].value,]) * u.rad / u.m
+
     # Calc needed plasma parameters
     n_e = z_mean * n_i
     c_s = pfp.ion_sound_speed(
@@ -279,26 +283,21 @@ def hollweg(
     alfven_mode = []
     acoustic_mode = []
 
-    # If a single k value is given
-    if np.isscalar(k.value) is True:
-        w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
-        fast_mode = np.max(w)
-        alfven_mode = np.median(w)
-        acoustic_mode = np.min(w)
+    # a3*x^3 + a2*x^2 + a1*x + a0 = 0
+    for (a3, a2, a1, a0) in zip(c3, c2, c1, c0):
 
-    # If mutliple k values are given
-    else:
-        # a3*x^3 + a2*x^2 + a1*x + a0 = 0
-        for (a3, a2, a1, a0) in zip(c3, c2, c1, c0):
-
-            w = np.emath.sqrt(np.roots([a3.value, a2.value, a1.value, a0.value]))
-            fast_mode.append(np.max(w))
-            alfven_mode.append(np.median(w))
-            acoustic_mode.append(np.min(w))
+        w = np.emath.sqrt(np.roots([a3.value, a2.value, a1.value, a0.value]))
+        fast_mode.append(np.max(w))
+        alfven_mode.append(np.median(w))
+        acoustic_mode.append(np.min(w))
 
     omega["fast_mode"] = fast_mode * u.rad / u.s
     omega["alfven_mode"] = alfven_mode * u.rad / u.s
     omega["acoustic_mode"] = acoustic_mode * u.rad / u.s
+
+    omega["fast_mode"] = omega["fast_mode"].squeeze()
+    omega["alfven_mode"] = omega["alfven_mode"].squeeze()
+    omega["acoustic_mode"] = omega["acoustic_mode"].squeeze()
 
     # check the low-frequency limit
 
