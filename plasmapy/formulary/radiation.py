@@ -127,7 +127,7 @@ def thermal_bremsstrahlung(
 
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
-            "hbar*ω/kT_e = {rj_const.value:.2e} > 0.1. "
+            f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
             "Try lower ω or higher T_e."
         )
 
