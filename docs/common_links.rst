@@ -110,7 +110,6 @@
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
-
 .. A workaround for nested inline literals so that the filename will get
    formatted like a file but will be a link. In the text, these get used
    with the syntax for a substitution followed by an underscore to
