@@ -1,2 +1,2 @@
-Reworked the `flake8_ configuration in CI, which was previously only
+Reworked the flake8_ configuration in CI, which was previously only
 checking a few errors due to a misconfiguration.

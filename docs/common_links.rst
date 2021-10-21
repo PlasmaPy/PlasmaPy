@@ -104,7 +104,7 @@
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable
 .. _`pre-commit`: https://pre-commit.com
-.. _pydocstyle: https://github.com/PyCQA/pydocstyle
+.. _pydocstyle: https://www.pydocstyle.org/en/stable/
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org/
 .. _pytest: https://docs.pytest.org
