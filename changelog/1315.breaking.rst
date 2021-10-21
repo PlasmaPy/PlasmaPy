@@ -1,1 +1,3 @@
-Changed the behaviour of `~plasmapy.particles.particle_class.CustomParticle.__eq__` to return `False` when used against an other type insted of raising a `TypeError`.
+Changed the behavior of `~plasmapy.particles.particle_class.CustomParticle`
+so that it returns `False` when compared for equality with another type.
+Previously, a `TypeError` was raised.

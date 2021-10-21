@@ -3,4 +3,4 @@ supports making changes to an instantiated object and
 re-running the simulation.  Subsequent simulations should be performed
 by instantiating a new
 `~plasmapy.diagnostics.charged_particle_radiography.Tracker` object and
-running.
+running it instead.

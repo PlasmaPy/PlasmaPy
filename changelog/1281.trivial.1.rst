@@ -1,3 +1,4 @@
-Enabled using `flake8-use-fstring <https://github.com/MichaelKim0407/flake8-use-fstring>`__
-to the ``linters`` testing environment in :file:`tox.ini` to enforce
+Enabled using
+`flake8-use-fstring <https://github.com/MichaelKim0407/flake8-use-fstring>`__
+in the ``linters`` testing environment in :file:`tox.ini` to enforce
 usage of formatted string literals (f-strings).

@@ -1,1 +1,1 @@
-Updated hyperlinks in documentation.
+Updated and fixed hyperlinks in the documentation.
