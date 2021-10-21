@@ -463,8 +463,8 @@ functions or pass in tuples containing inputs and expected values.
    def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
 
-Parametrizing with argument unpacking
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Test parametrization with argument unpacking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the number of arguments passed to a function varies, we can use
 argument unpacking_ in conjunction with test parametrization.
