@@ -105,7 +105,7 @@
 .. _Sphinx: https://www.sphinx-doc.org
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 .. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs
-.. _tox: https://tox.readthedocs.io/
+.. _tox: https://tox.readthedocs.io
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
