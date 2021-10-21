@@ -1,6 +1,0 @@
-|IonicLevel| and |IonizationState| now accept an additional, optional ion
-temperature argument for each of the ionic levels.  |IonizationState| can
-now be sliced, returning a list of |IonicLevel| instances.
-|IonizationState| now implements `len` (it's what you'd expect!).
-|IonizationState| instances can now be compared to an
-|IonizationState| of a different element without raising an exception.
