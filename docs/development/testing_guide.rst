@@ -100,10 +100,10 @@ The following checks are performed with each pull request.
 
   .. tip::
 
-    `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
-    `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
-    include (or will include) significant improvements to common error
-    messages.
+     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
+     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
+     include (or will include) significant improvements to common error
+     messages.
 
 * Checks with labels like **CI / Python 3.x with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
@@ -333,10 +333,10 @@ to help us find the cause of a particular test failure.
 
 .. code-block:: python
 
-  def test_addition():
-      result = 2 + 2
-      expected = 4
-      assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+   def test_addition():
+       result = 2 + 2
+       expected = 4
+       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
 
 .. tip::
 
@@ -347,9 +347,9 @@ Floating point comparisons
 
 .. caution::
 
-  Using ``==`` to compare floating point numbers can lead to brittle
-  tests because of slight differences due to limited precision, rounding
-  errors, and revisions to fundamental constants.
+   Using ``==`` to compare floating point numbers can lead to brittle
+   tests because of slight differences due to limited precision,
+   rounding errors, and revisions to fundamental constants.
 
 In order to avoid these difficulties, use `numpy.testing.assert_allclose`
 when comparing floating point numbers and arrays, and
@@ -375,14 +375,14 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-  import pytest, warnings
+   import pytest, warnings
 
-  def issue_warning():
-      warnings.warn("warning message", UserWarning)
+   def issue_warning():
+       warnings.warn("warning message", UserWarning)
 
-  def test_that_a_warning_is_issued():
-      with pytest.warns(UserWarning):
-          issue_warning()
+   def test_that_a_warning_is_issued():
+       with pytest.warns(UserWarning):
+           issue_warning()
 
 To test that a function raises an appropriate exception, use
 `pytest.raises`.
@@ -391,12 +391,12 @@ To test that a function raises an appropriate exception, use
 
   import pytest
 
-  def raise_exception():
-      raise Exception
+   def raise_exception():
+       raise Exception
 
-  def test_that_an_exception_is_raised():
-      with pytest.raises(Exception):
-          raise_exception()
+   def test_that_an_exception_is_raised():
+       with pytest.raises(Exception):
+           raise_exception()
 
 Test independence and parametrization
 -------------------------------------
@@ -420,9 +420,9 @@ function.
 
 .. code-block:: python
 
-  def test_proof_by_riemann_hypothesis():
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # will only be run if the previous test passes
+   def test_proof_by_riemann_hypothesis():
+        assert proof_by_riemann(False)
+        assert proof_by_riemann(True)  # will only be run if the previous test passes
 
 If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
@@ -431,11 +431,11 @@ both will be run.
 
 .. code-block:: python
 
-  def test_proof_if_riemann_false():
-       assert proof_by_riemann(False)
+   def test_proof_if_riemann_false():
+        assert proof_by_riemann(False)
 
-  def test_proof_if_riemann_true():
-       assert proof_by_riemann(True)
+   def test_proof_if_riemann_true():
+        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -444,9 +444,9 @@ tests for the same function, the preferred method is to use the
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth_value", [True, False])
-  def test_proof_if_riemann(truth_value):
-       assert proof_by_riemann(truth_value)
+   @pytest.mark.parametrize("truth_value", [True, False])
+   def test_proof_if_riemann(truth_value):
+        assert proof_by_riemann(truth_value)
 
 This code snippet will run ``proof_by_riemann(truth_value)`` for each
 ``truth_value`` in ``[True, False]``. Both of the above
