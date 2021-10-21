@@ -481,9 +481,9 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
        return a + b
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
-`list` (commonly named :term:`args`) and keyword arguments in a `dict`
-(commonly named :term:`kwargs`). Unpacking_ occurs when ``args`` is
-preceded by ``*`` and ``kwargs`` is preceded by ``**``.
+`list` (commonly referred to as :term:`args`) and keyword arguments in a
+`dict` (commonly referred to as :term:`kwargs`). Unpacking_ occurs when
+``args`` is preceded by ``*`` and ``kwargs`` is preceded by ``**``.
 
 .. code-block:: pycon
 
