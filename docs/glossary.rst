@@ -88,11 +88,12 @@ Glossary
 
    unit test
       A **unit test** verifies a single unit of behavior, does it
-      quickly, and does it in isolation from other tests [Khorikov2020]_.
+      quickly, and does it in isolation from other tests
+      :cite:p:`khorikov:2020`.
 
       Unit tests are intended to provide fast feedback that help pinpoint
       the locations of errors. Unit tests often abide by the following
-      pattern [Osherove2013]_:
+      pattern :cite:p:`osherove:2013`:
 
       1. *Arrange*: gather inputs and get the system to the state in which
          the test is expected to run.
