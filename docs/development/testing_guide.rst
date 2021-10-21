@@ -466,7 +466,10 @@ functions or pass in tuples containing inputs and expected values.
 Parametrizing with argument unpacking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Suppose we want to test a function called ``add``:
+When the number of arguments passed to a function varies, we can use
+argument unpacking_ along with test parametrization.  Suppose we want to
+test a function called ``add`` that accepts two positional arguments
+(``x`` and ``y``) and one optional keyword argument (``reverse_order``).
 
 .. code-block:: python
 
@@ -475,12 +478,18 @@ Suppose we want to test a function called ``add``:
            return y + x
        return x + y
 
-This function accepts ``x`` and ``y`` as positional arguments and
-``reverse_order`` as an optional keyword argument. We want to test
-`add`` while *specifying* or *not specifying* ``reverse_order``.
+We want to test ``add`` for three cases:
+
+* ``reverse_order`` is `True`,
+* ``reverse_order`` is `False`, and
+* `` reverse_order`` is *not specified*.
+
+To pass different styles
 
 When the number of arguments passed to a function varies, we can use
 argument unpacking_ in conjunction with test parametrization.
+Positional arguments are given in a `tuple` or `list` named ``args`` and
+keyword arguments are given in a `dict` named ``kwargs``.
 
 .. code-block:: python
 
