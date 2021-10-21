@@ -467,29 +467,39 @@ Parametrizing with argument unpacking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When the number of arguments passed to a function varies, we can use
-argument unpacking_ along with test parametrization.  Suppose we want to
-test a function called ``add`` that accepts two positional arguments
-(``x`` and ``y``) and one optional keyword argument (``reverse_order``).
+argument unpacking_ in conjunction with test parametrization.
+
+Suppose we want to test a function called ``add`` that accepts two
+positional arguments (``a`` and ``b``) and one optional keyword argument
+(``reverse_order``).
 
 .. code-block:: python
 
-   def add(x, y, reverse_order = False):
+   def add(a, b, reverse_order = False):
        if reverse_order:
-           return y + x
-       return x + y
+           return a + b
+       return a + b
+
+Argument unpacking_ lets us provide positional arguments in a `tuple` or
+`list` (commonly named :term:`args`) and keyword arguments in a `dict`
+(commonly named :term:`kwargs`). Unpacking_ occurs when ``args`` is
+preceded by ``*`` and ``kwargs`` is preceded by ``**``.
+
+.. code-block:: pycon
+
+   >>> args = ("1", "2")
+   >>> kwargs = {"reverse_order": True}
+   >>> add(*args, **kwargs)  # equivalent to add("1", "2", reverse_order=True)
+   '21'
 
 We want to test ``add`` for three cases:
 
 * ``reverse_order`` is `True`,
 * ``reverse_order`` is `False`, and
-* `` reverse_order`` is *not specified*.
+* ``reverse_order`` is *not specified*.
 
-To pass different styles
-
-When the number of arguments passed to a function varies, we can use
-argument unpacking_ in conjunction with test parametrization.
-Positional arguments are given in a `tuple` or `list` named ``args`` and
-keyword arguments are given in a `dict` named ``kwargs``.
+We can do this by parametrizing the test over ``args`` and ``kwargs``,
+and unpacking_ them inside of the test function.
 
 .. code-block:: python
 
