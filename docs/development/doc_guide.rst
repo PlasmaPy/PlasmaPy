@@ -960,18 +960,9 @@ Narrative documentation guidelines
 .. _nested inline markup: https://docutils.sphinx-users.jp/docutils/docs/dev/rst/alternatives.html#nested-inline-markup
 .. _options to sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html#options
 .. _paywall: https://en.wikipedia.org/wiki/Paywall
-.. _`raise an issue`: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
-.. _`raw string`: https://docs.python.org/3/reference/lexical_analysis.html#literals
-.. _`Read the Docs Sphinx Theme`: https://sphinx-rtd-theme.readthedocs.io/
-.. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
-.. _`sphinx_copybutton`: https://sphinx-copybutton.readthedocs.io
-.. _`sphinx_gallery.load_style`: https://sphinx-gallery.github.io/stable/advanced.html?highlight=load_style#using-only-sphinx-gallery-styles
-.. _`Sphinx's templating page`: https://www.sphinx-doc.org/en/master/templating.html
-.. _`style overrides`: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _raise an issue: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Improve+documentation+for...&labels=Documentation
 .. _raw string: https://docs.python.org/3/reference/lexical_analysis.html#literals
 .. _Read the Docs Sphinx Theme: https://sphinx-rtd-theme.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/templating.html
 .. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
->>>>>>> d28c7c581dc7c05e08f7ee3f4933e321ee4523a9
