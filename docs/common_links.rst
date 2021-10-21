@@ -52,12 +52,13 @@
 
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
-.. _BibTeX: http://www.bibtex.org/
+.. _BibTeX: http://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _Conda: https://conda.io/en/latest
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
-.. _DOI: https://www.doi.org/
+.. _DOI: https://www.doi.org
+.. _flake8: https://flake8.pycqa.org
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _GitHub: https://github.com
@@ -86,8 +87,8 @@
 .. _black: https://black.readthedocs.io
 .. _`docs/common_links.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/common_links.rst
 .. _Conda: https://conda.io/en/latest/
-.. _git: https://git-scm.com/
-.. _GitHub: https://github.com/
+.. _git: https://git-scm.com
+.. _GitHub: https://github.com
 .. _`GitHub Actions`: https://docs.github.com/en/actions
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
@@ -104,7 +105,7 @@
 .. _`PlasmaPy's GitHub repository`: https://github.com/PlasmaPy/plasmapy
 .. _`PlasmaPy's documentation`: https://docs.plasmapy.org/en/stable
 .. _`pre-commit`: https://pre-commit.com
-.. _pydocstyle: https://www.pydocstyle.org/en/stable/
+.. _pydocstyle: https://www.pydocstyle.org
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org/
 .. _pytest: https://docs.pytest.org
