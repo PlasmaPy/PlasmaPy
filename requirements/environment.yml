@@ -30,3 +30,4 @@ dependencies:
   - towncrier >= 19.2.0
   - pytest-regressions
   - notebook
+  - packaging
