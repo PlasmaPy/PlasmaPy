@@ -31,7 +31,7 @@ wheels/
 *.egg
 
 # Downloaded files
-plasmapy/data/downloads/
+plasmapy/utils/data/downloads/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
