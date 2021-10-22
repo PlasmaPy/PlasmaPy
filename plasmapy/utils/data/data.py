@@ -15,9 +15,11 @@ __all__ = ["get_file"]
 # _BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
 # _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/sample-data/main/data/"
 
+# TODO: A more permanent fix for this issue?
 # This service fixes the GitHub headers...
 _BASE_URL = "https://gitcdn.link/repo/PlasmaPy/sample-data/main/data/"
 
+# TODO: use a config file variable to allow users to set a location for this folder?
 _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 

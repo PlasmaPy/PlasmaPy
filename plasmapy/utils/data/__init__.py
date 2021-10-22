@@ -3,4 +3,4 @@ The data subpackage contains functionality for downloading and retrieving data f
 """
 __all__ = ["data"]
 
-from plasmapy.data import data
+from plasmapy.utils.data import data

@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-from plasmapy.data import data
+from plasmapy.utils.data import data
 
 
 def test_get_file():
