@@ -1,0 +1,2 @@
+Added `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io>`__
+as a Sphinx extension to enable references to be stored in a BibTeX file.

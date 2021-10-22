@@ -1,5 +1,6 @@
-Added the `~plasmapy.diagnostics.charged_particle_radiography.Tracker.save_results` method to `~plasmapy.diagnostics.charged_particle_radiography.Tracker` to save results to a NumPy file:`.npz` file.
-`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph` is now a separate
-function in the `~plasmapy.diagnostics.charged_particle_radiography` module that takes either a
-`~plasmapy.diagnostics.charged_particle_radiography.Tracker` object or a result dictionary as an
-argument.
+`~plasmapy.diagnostics.charged_particle_radiography.Tracker` no longer
+supports making changes to an instantiated object and
+re-running the simulation.  Subsequent simulations should be performed
+by instantiating a new
+`~plasmapy.diagnostics.charged_particle_radiography.Tracker` object and
+running.

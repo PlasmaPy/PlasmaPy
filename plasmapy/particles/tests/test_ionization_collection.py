@@ -4,6 +4,7 @@ import itertools
 import numpy as np
 import pytest
 
+from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
 from typing import Dict
 
@@ -17,6 +18,7 @@ from plasmapy.particles import (
     particle_symbol,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.pytest_helpers import run_test
 
 
@@ -925,3 +927,106 @@ def test_iteration_with_nested_iterator():
 @pytest.mark.xfail()
 def test_hydrogen_deuterium():
     instance = IonizationStateCollection(["H", "D"])
+
+
+example_ionic_fractions = [
+    ("H-1", [0, 1]),
+    ("H-1", [0.2, 0.8]),
+    ("He-4", [0.2, 0.3, 0.5]),
+]
+
+
+physical_properties = ["charge", "mass"]
+
+
+@pytest.mark.parametrize("include_neutrals", [True, False])
+@pytest.mark.parametrize("use_rms_mass", [False, True])
+@pytest.mark.parametrize("use_rms_charge", [False, True])
+@pytest.mark.parametrize("base_particle, ionic_fractions", example_ionic_fractions)
+@pytest.mark.parametrize("physical_type", physical_properties)
+def test_average_ion_consistency(
+    base_particle,
+    ionic_fractions,
+    include_neutrals,
+    use_rms_mass,
+    use_rms_charge,
+    physical_type,
+):
+    """
+    Make sure that the average ions returned from equivalent `IonizationState`
+    and `IonizationStateCollection` instances are consistent with each other.
+    """
+    ionization_state = IonizationState(base_particle, ionic_fractions)
+    ionization_state_collection = IonizationStateCollection(
+        {base_particle: ionic_fractions}
+    )
+
+    options = {
+        "include_neutrals": include_neutrals,
+        "use_rms_charge": use_rms_charge,
+        "use_rms_mass": use_rms_mass,
+    }
+
+    average_ion_from_ionization_state = ionization_state.average_ion(**options)
+    average_ion_from_ionization_state_collection = (
+        ionization_state_collection.average_ion(**options)
+    )
+
+    quantity_from_ion_state = getattr(average_ion_from_ionization_state, physical_type)
+    quantity_from_ion_collection = getattr(
+        average_ion_from_ionization_state_collection, physical_type
+    )
+
+    assert_quantity_allclose(
+        quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
+    )
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("use_rms", [True, False])
+@pytest.mark.parametrize("include_neutrals", [True, False])
+def test_comparison_to_equivalent_particle_list(
+    physical_property, use_rms, include_neutrals
+):
+    """
+    Test that `IonizationState.average_ion` gives consistent results with
+    `ParticleList.average_particle` when the ratios of different particles
+    is the same between the `IonizationState` and the `ParticleList`.
+    """
+
+    neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
+    ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
+    particles = ParticleList(neutrals + ions)
+
+    ionic_fractions = {
+        "H-1": [0.6, 0.4],
+        "He-4": [0.2, 0.3, 0.5],
+    }
+
+    abundances = {"H-1": 1, "He-4": 2}
+    ionization_state_collection = IonizationStateCollection(
+        ionic_fractions, abundances=abundances
+    )
+
+    kwarg = {f"use_rms_{physical_property}": True}
+    expected_average_particle = particles.average_particle(**kwarg)
+    expected_average_quantity = getattr(expected_average_particle, physical_property)
+
+    actual_average_particle = ionization_state_collection.average_ion(
+        include_neutrals=include_neutrals, **kwarg
+    )
+    actual_average_quantity = getattr(actual_average_particle, physical_property)
+
+    assert_quantity_allclose(actual_average_quantity, expected_average_quantity)
+
+
+def test_average_particle_exception():
+    """
+    Test that `IonizationStateCollection.average_ion` raises the
+    appropriate exception when abundances are undefined and there is more
+    than one base element or isotope.
+    """
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+
+    with pytest.raises(ParticleError):
+        ionization_states.average_ion()

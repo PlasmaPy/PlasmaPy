@@ -8,8 +8,6 @@ original fields (under some set of assumptions).
 __all__ = [
     "Tracker",
     "synthetic_radiograph",
-    "Layer",
-    "Stack",
 ]
 
 import astropy.constants as const
@@ -18,7 +16,6 @@ import numpy as np
 import sys
 import warnings
 
-from scipy.interpolate import interp1d
 from tqdm import tqdm
 
 from plasmapy import particles
@@ -1139,14 +1136,14 @@ class Tracker:
              - `int`
              - Number of particles in the simulation.
            * - ``"max_deflection"``
-             - `~astropy.units.Quantity`
+             - `~numpy.ndarray`
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
-           * - ``"xloc"``
+           * - ``"x"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle hit the
                detector plane, in meters.
-           * - ``"yloc"``
+           * - ``"y"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle hit the
                detector plane, in meters.
@@ -1157,12 +1154,12 @@ class Tracker:
                coordinate system relative to the detector plane. The
                components are [normal, horizontal, vertical] relative
                to the detector plane coordinates.
-           * - ``"xloc0"``
+           * - ``"x0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The x-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
-           * - ``"yloc0"``
+           * - ``"y0"``
              - `~numpy.ndarray`, [``nparticles``,]
              - The y-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
@@ -1210,7 +1207,7 @@ class Tracker:
             detector=self.detector,
             mag=self.mag,
             nparticles=self.nparticles,
-            max_deflection=self.max_deflection,
+            max_deflection=self.max_deflection.to(u.rad).value,
             x=xloc,
             y=yloc,
             v=v,
@@ -1224,16 +1221,23 @@ class Tracker:
     def save_results(self, path):
         """
         Save the simulations results :attr:`results_dict` to a `numpy`
-        :file:`.npz` file format (see `numpy.lib.format`) using `numpy.savez`.
+        ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
 
         Parameters
         ----------
 
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
-            where the data will be saved. If file is a string or a path,
-            the :file:`.npz` extension will be appended to the filename if
+            where the data will be saved. If file is a string or a Path,
+            the ``.npz`` extension will be appended to the filename if
             it is not already there.
+
+        Notes
+        -----
+
+        Useful for saving the results from a simulation so they can be
+        loaded at a later time and passed into
+        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiograph`.
 
         """
 
@@ -1299,8 +1303,8 @@ def synthetic_radiograph(
 
     obj: `dict` or `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
         Either a `~plasmapy.diagnostics.charged_particle_radiography.Tracker`
-        object that has been run, or an output dictionary created by
-        running `~plasmapy.diagnostics.charged_particle_radiography.Tracker`.
+        object that has been run, or a dictionary equivalent to
+        `~plasmapy.diagnostics.charged_particle_radiography.Tracker.results_dict`.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1327,14 +1331,10 @@ def synthetic_radiograph(
         where :math:`Intensity` is the simulation intensity on the
         detector plane and :math:`I_0` is the intensity on the detector
         plane in the absence of simulated fields. Default is `False`.
-
-        If the ``Intensity`` histogram contains zeros, ``OD`` will contain
-        -`~numpy.inf` values. These can be easily replaced with zeros
-        if desired for plotting using `~numpy.nan_to_num`
-
-        .. code-block::
-
-           OD = np.nan_to_num(OD, neginf=0)
+        If the :math:`Intensity` histogram contains zeros, then the
+        corresponding values in :math:`OD` will be `numpy.inf`. When
+        plotting :math:`OD` the `~numpy.inf` values can be replaced
+        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
 
     Returns
     -------
@@ -1348,18 +1348,16 @@ def synthetic_radiograph(
         The number of particles counted in each bin of the histogram.
     """
 
-    # results_dict will raise an error if the simulation has not been run.
+    # condition `obj` input
     if isinstance(obj, Tracker):
+        # results_dict raises an error if the simulation has not been run.
         d = obj.results_dict
-
-    # Check if dictionary-like (dict or npz file)
     elif isinstance(obj, dict):
         d = obj
     else:
-        raise ValueError(
-            "The first argument of synthetic_radiograph must be "
-            "either a cpr.Tracker or an "
-            "output dictionary from cpr.Tracker"
+        raise TypeError(
+            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"got type {type(obj)}."
         )
 
     if bins is None:
@@ -1382,15 +1380,16 @@ def synthetic_radiograph(
         # particle positions
         w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
         size = np.array([[-w, w], [-w, w]]) * u.m
-    elif not isinstance(size, u.Quantity) or not size.unit.is_equivalent(u.m):
+    elif not isinstance(size, u.Quantity):
         raise TypeError(
-            "``size`` must be an `~astropy.units.Quantity` "
-            "object with units convertable to meters."
+            "Argument `size` must be an astropy.units.Quantity object with "
+            "units convertable to meters."
         )
+    elif not size.unit.is_equivalent(u.m):
+        raise ValueError("Argument `size` must have units convertible to meters.")
     elif size.shape != (2, 2):
         raise ValueError(
-            "``size`` must have shape ``(2,2)`` corresponding to "
-            "``[[xmin, xmax], [ymin, ymax]]``."
+            f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
     # Generate the histogram
@@ -1426,247 +1425,3 @@ def synthetic_radiograph(
             intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity
-
-
-# *************************************************************************
-# Film Stack & Layers
-# *************************************************************************
-
-
-class Layer:
-    def __init__(self, thickness, energy_axis, stopping_power, active=True, name=""):
-        r"""
-        A layer in a detector film stack. The layer could either be an active
-        layer (the actual film medium) or an inactive layer (a filter or
-        inactive part of the film, such as a substrate.)
-
-        Tabulated stopping powers for protons and electrons can be found at
-        https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html
-        and
-        https://physics.nist.gov/PhysRefData/Star/Text/ESTAR.html
-
-        Parameters
-        ----------
-
-        thickness : `~astropy.units.Quantity`
-            The thickness of the layer, in units convertable to meters.
-
-        energy_axis : `~astropy.units.Quantity`
-            The energies corresponding to the stopping power array.
-
-        stopping_power : `~astropy.units.Quantity`
-            The stopping power in the material, multiplied by the material
-            mass density. The stopping power is tabulated in units of
-            MeV cm\ :sup:`^2` / g, so this variable has units of MeV/cm.
-
-        active : `bool`, optional
-            If `True`, this layer is marked as an active layer. The default is `True`.
-
-        name : `str`, optional
-            An optional name for the layer.
-
-        """
-        self.thickness = thickness
-        self.energy_axis = energy_axis
-        self.stopping_power = stopping_power
-        self.active = active
-        self.name = name
-
-
-class Stack:
-    r"""
-    A `~plasmapy.diagnostic.charged_particle_radiography.Stack` is an ordered
-    list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects.
-
-
-    Parameters
-    ----------
-
-    layers : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-        A list of the `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects that make up the film stack.
-    """
-
-    def __init__(self, layers):
-        self._layers = layers
-        self._energy_bands = None
-
-    @property
-    def nlayers(self):
-        r"""
-        The number of layers in the stack.
-        """
-
-        return len(self._layers)
-
-    @property
-    def nactive(self):
-        r"""
-        The number of layers in the stack marked 'active'
-        """
-
-        return len([layer for layer in self._layers if layer.active])
-
-    @property
-    def thickness(self):
-        r"""
-        The total thickness of the stack.
-        """
-        thickness = np.array([layer.thickness.to(u.mm).value for layer in self._layers])
-        return np.sum(thickness) * u.mm
-
-    def deposition_curves(self, energies: u.MeV, dx=1 * u.um, return_only_active=True):
-        """
-        Calculates the deposition of an ensemble of particles over a range of
-        energies in a stack of films and filters.
-
-        Parameters
-        ----------
-
-        stack : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostic.charged_particle_radiography.Layer`
-            objects defines the composition of the film stack.
-
-        energies : `~astropy.units.Quantity` array, shape [nenergies,]
-            Energies axis over which to calculate the deposition. Units convertable
-            to eV.
-
-        dx : `~astropy.units.Quantity`, optional
-            The spatial resolution of the numerical integration of the stopping power.
-            Defaults to 1 um.
-
-        return_only_active : `bool`, optional
-            If `True`, only the deposition in layers in which the `active` property
-            is `True` will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If `False`, deposition in
-            all layers of the stack are returned. The default is `True`.
-
-        Returns
-        -------
-
-        deposited : `~numpy.ndarray`, shape [nlayers, nenergies]
-            The fraction of an ensemble of each energy that will be deposited in
-            each layer of film. The array is normalized such that the sum
-            along the first dimension (all of the layers) for each population
-            is unity.
-
-        """
-
-        energies = energies.to(u.MeV).value
-
-        # Deposited energy in MeV
-        deposited = np.zeros([len(self._layers), energies.size])
-
-        for i, layer in enumerate(self._layers):
-
-            # Interpolate stopping power for each energy
-            # stopping power here is in MeV/cm
-            sp_fcn = interp1d(
-                layer.energy_axis.to(u.MeV).value,
-                layer.stopping_power.to(u.MeV / u.cm).value,
-                fill_value=(0, np.inf),
-                bounds_error=False,
-            )
-
-            # Slice the layer into sublayer dx thick
-            nsublayers = int(
-                np.floor(layer.thickness.to(u.um).value / dx.to(u.um).value)
-            )
-            sublayers = np.ones(nsublayers) * dx.to(u.um)
-            # Include any remainder in the last sublayer
-            sublayers[-1] += layer.thickness.to(u.um) % dx.to(u.um)
-
-            # Calculate the energy deposited in each sublayer
-            # This is essentially numerically integrating the stopping power
-            for ds in sublayers:
-                # Interpolate the stopping power at the current energies
-                interpolated_stopping_power = sp_fcn(energies)
-                # dE is in MeV
-                dE = interpolated_stopping_power * ds.to(u.cm).value
-
-                # If dE > E for a given energy, set dE=E (stop the particle)
-                dE = np.where(dE > energies, energies, dE)
-
-                energies += -dE
-                deposited[i, :] += dE
-
-        # Normalize the deposited energy array so that each number represents
-        # the fraction of a population of particles of that energy stopped
-        # in that layer.
-        deposited = deposited / np.sum(deposited, axis=0)
-
-        # If this flag is set, return only the layers that correspond to active
-        # medium, ignoring the filter and substrate layers
-        if return_only_active:
-            active_ind = [i for i in range(len(self._layers)) if self._layers[i].active]
-            deposited = deposited[active_ind, :]
-
-        return deposited
-
-    def energy_bands(self, energy_range, dE, dx=1 * u.um, return_only_active=True):
-        """
-        Calculate the energy bands in each of the active layers of a film stack.
-
-        Parameters
-        ----------
-        stack : list of `~plasmapy.diagnostic.charged_particle_radiography.Layer` objects
-            This list of `~plasmapy.diagnostic.charged_particle_radiography.Layer`
-            objects defines the composition of the film stack.
-
-        energy_range : `~astropy.units.Quantity` list, shape [2,]
-            A range of energies to include in the calculation. Units convertable
-            to eV.
-
-        dE :  `~astropy.units.Quantity`
-            Spacing between energy bins in the calculation. Units convertable
-            to eV.
-
-        dx : `~astropy.units.Quantity`, optional
-            The spatial resolution of the numerical integration of the stopping power.
-            Passed directly to the `~deposition_curves` method. Defaults to 1 um.
-
-        return_only_active : `bool`, optional
-            If `True`, only the energy bands of layers in which the `active` property
-            is `True` will be returned. This is usually desirable, since particles
-            captured in other layers will not be measured. If `False`, energy bands in
-            all layers of the stack are returned. The default is `True`.
-
-        Returns
-        -------
-
-        energy_bands : `~astropy.units.Quantity`, shape [nlayers, 2]
-            The full-width-half-max energy range of the Bragg peak in each
-            active layer of the film stack, in MeV.
-
-        """
-
-        energies = (
-            np.arange(
-                energy_range[0].to(u.MeV).value,
-                energy_range[1].to(u.MeV).value,
-                dE.to(u.MeV).value,
-            )
-            * u.MeV
-        )
-
-        deposited = self.deposition_curves(
-            energies, return_only_active=return_only_active
-        )
-
-        energy_bands = np.zeros([deposited.shape[0], 2]) * u.MeV
-
-        for i in range(deposited.shape[0]):
-            bragg_curve = deposited[i, :]
-
-            # Find the indices corresponding to half the maximum value
-            # on either side of the peak
-            halfmax = np.max(bragg_curve) / 2
-
-            inds = np.argwhere(bragg_curve > halfmax)
-            # Store those energies
-
-            energy_bands[i, 0] = energies[inds[0][0]]
-            energy_bands[i, 1] = energies[inds[-1][0]]
-
-        self._energy_bands = energy_bands
-
-        return energy_bands

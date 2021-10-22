@@ -67,7 +67,12 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
     "plasmapy_sphinx",
+    "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ["bibliography.bib"]
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update

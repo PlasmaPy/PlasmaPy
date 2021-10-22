@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
@@ -846,6 +846,62 @@ class IonizationState:
                 states_info.append(state_info)
 
         return states_info
+
+    def average_ion(
+        self,
+        *,
+        include_neutrals: bool = True,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> CustomParticle:
+        """
+        Return a |CustomParticle| instance representing the average
+        particle in this ionization state.
+
+        By default, the weighted mean will be used as the average, with
+        the ionic fractions as the weights. If ``use_rms_charge`` or
+        ``use_rms_mass`` is `True`, then this method will return the root
+        mean square of the charge or mass, respectively.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional, keyword-only
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, exclude neutrals.
+            Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
+
+        Returns
+        -------
+        ~plasmapy.particles.particle_class.CustomParticle
+
+        Examples
+        --------
+        >>> state = IonizationState("He", [0.1, 0.9, 0.0])
+        >>> state.average_ion()
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.44...e-19 C)
+        >>> state.average_ion(include_neutrals=False)
+        CustomParticle(mass=6.6455660...e-27 kg, charge=1.602...e-19 C)
+        >>> state.average_ion(use_rms_charge=True, use_rms_mass=True)
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.519958...e-19 C)
+        """
+        min_charge = 0 if include_neutrals else 1
+
+        particle_list = self.to_list()[min_charge:]
+        abundances = self.ionic_fractions[min_charge:]
+
+        return particle_list.average_particle(
+            abundances=abundances,
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+        )
 
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
