@@ -176,36 +176,182 @@ def test_grid_methods():
     assert np.all(out == np.array([True, False]))
 
 
-@pytest.mark.slow
-def test_uniform_cartesian_nearest_neighbor_interpolator():
+
+
+# **********************************************************************
+# Uniform Cartesian grid tests
+# **********************************************************************
+
+@pytest.fixture
+def uniform_cartesian_grid():
+    """
+    A `pytest` fixture that generates a CartesianGrid that spans
+    -1 cm to 1 cm in all dimensions.  Three quantities are added to the
+    grid:
+
+    1. "x" which is the x position at each point in the grid [in cm]
+    2. "y" which is the y position at each point in the grid [in cm]
+    3. "z" which is the z position at each point in the grid [in cm]
+    4. "rho" which is a mass density at each point in the grid [kg/m^-3]
+    """
     # Create grid
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=50)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=21)
     # Add some data to the grid
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
+    grid.add_quantities(z=grid.grids[2])
+    
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
+    
+    return grid
 
-    # One position
-    pos = np.array([0.1, -0.3, 0]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x")
-    assert np.allclose(pos[0], pout, atol=0.1)
+@pytest.mark.parametrize('pos,quantities,expected', 
+                         [   # Test one point   
+                             (np.array([0.1, -0.3, 0]) * u.cm, ['x'], np.array([0.1])*u.cm),
+                             # Test two points and two quantities
+                             (np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm, 
+                              ['x','y'], 
+                              np.array([[0.1, 0.2], [-0.3, 0.5]]) * u.cm),
+                             # Test an out of bounds point   
+                             (np.array([2, -0.3, 0]) * u.cm, ['x'], np.array([np.nan])*u.cm),
+                            ])
+def test_uniform_cartesian_NN_interp(pos, quantities, expected,
+                                           uniform_cartesian_grid):
+    """
+    Test that the uniform Cartesian NN interpolator returns the correct values
+    at various points to within the grid tolerance.
 
-    # Test quantity key not present in dataset
-    with pytest.raises(KeyError):
-        pout = grid.nearest_neighbor_interpolator(pos, "B_x")
+    """
+    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
+  
+    # Should be correct to within dx/2, so 0.6 leaves some room
+    assert np.allclose(pout, expected, atol=0.6*uniform_cartesian_grid.dax0,
+                       equal_nan=True)
 
-    # Two positions, two quantities
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x", "y")
+    
+@pytest.mark.parametrize('pos,quantities,error', 
+                         [   # Quantity not in
+                             (np.array([0.1, -0.3, 0]) * u.cm, ['not_a_quantity'], KeyError),
+                            ])
+def test_uniform_cartesian_NN_interp_errors(pos, quantities, error,
+                                                  uniform_cartesian_grid):
+    """
+    Test that the uniform cartesian NN interpolator returns the expected
+    errors.
 
-    # Contains out-of-bounds values (must handle NaNs correctly)
-    pos = np.array([5, -0.3, 0]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x")
-    assert np.isnan(pout)
+    """
+    with pytest.raises(error):
+        uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
+    
 
-    # Test persistence
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
-    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
+
+def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid):
+    """
+    Checks that the uniform Cartesian NN interpolator persistence feature
+    performs correctly. Especially, this test ensures that changing the
+    list of quantities while persistent==True doesn't crash the code.
+
+    """
+    pos = np.array([[0.1, -0.3, 0.1], [-0.5, 0, -0.6]]) * u.cm
+    
+    # Test with one set of quantities
+    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, "x", "y", 
+                                                                persistent=True)
+ 
+    # Transpose of pos is required because pout is ordered first by quantity
+    # (axis in this case) while pos is [N,3]
+    assert np.allclose(pout, pos[:,[0,1]].T, atol=0.6*uniform_cartesian_grid.dax0)
+    
+    # Change quantities with persistent still True
+    # Code should detect this and automatically run as
+    # persistent==False for the first iteration to create the new
+    # persistent arrays.
+    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, "x", "z", 
+                                                                persistent=True)
+
+    assert np.allclose(pout, pos[:,[0,2]].T, atol=0.6*uniform_cartesian_grid.dax0)
+
+
+
+# **********************************************************************
+# Non-uniform Cartesian grid tests
+# **********************************************************************
+
+@pytest.fixture
+def nonuniform_cartesian_grid():
+    """
+    A `pytest` fixture that generates a NonUniformCartesianGrid that spans
+    -1 cm to 1 cm in all dimensions.  Three quantities are added to the
+    grid:
+
+    1. "x" which is the x position at each point in the grid [in cm]
+    2. "y" which is the y position at each point in the grid [in cm]
+    3. "z" which is the z position at each point in the grid [in cm]
+    4. "rho" which is a mass density at each point in the grid [kg/m^-3]
+    
+    For testing purposes, we generate a special grid that is non-uniform
+    but also has the following additional properties:
+        - High resolution in x (for interpolation), low resolution in
+         y and z to keep the array size down.
+        - Points are created at the min and max of the range to ensure
+          that out of bounds tests work correctly.
+    
+    """
+    
+    ax0 = np.sort(np.random.uniform(low=-1, high=1, size=51))*u.cm
+    ax0[0], ax0[-1] = -1,1
+    ax1 = np.sort(np.random.uniform(low=-1, high=1, size=5))
+    ax1[0], ax1[-1] = -1,1
+	ax2 = np.sort(np.random.uniform(low=-1, high=1, size=5))
+    ax2[0], ax2[-1] = -1,1
+	x,y,z = np.meshgrid(ax0, ax1, ax2, indexing='ij')
+    
+    # Create grid
+    grid = grids.NonUniformCartesianGrid(x,y,z)
+    # Add some data to the grid
+    grid.add_quantities(x=x)
+    grid.add_quantities(y=y)
+    grid.add_quantities(z=z)
+    
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
+    
+    return grid
+
+@pytest.mark.parametrize('pos,quantities,expected', 
+                         [   # Test one point   
+                             (np.array([0.1, -0.3, 0]) * u.cm, ['x'], np.array([0.1])*u.cm),
+                             # Test two points and two quantities
+                             (np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm, 
+                              ['x','y'], 
+                              np.array([[0.1, 0.2], [-0.3, 0.5]]) * u.cm),
+                             # Test an out of bounds point   
+                             (np.array([2, -0.3, 0]) * u.cm, ['x'], np.array([np.nan])*u.cm),
+                            ])
+def test_nonuniform_cartesian_NN_interp(pos, quantities, expected,
+                                           nonuniform_cartesian_grid):
+    """
+    Test that the uniform Cartesian NN interpolator returns the correct values
+    at various points to within the grid tolerance.
+    """
+    pout = nonuniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
+    
+    # Determine the maximum grid spacing in x in order to set the tolerance
+    # for this test
+    dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:,0]))
+    
+    print(nonuniform_cartesian_grid.shape)
+    print(nonuniform_cartesian_grid.grid[:,0])
+    print(expected)
+    print(pout)
+
+    # Should be correct to within dx/2, so 0.6 leaves some room
+    assert np.allclose(pout, expected, atol=0.6*dx_max,
+                       equal_nan=True)
+
 
 
 @pytest.mark.slow
@@ -236,30 +382,6 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     pout2 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
     assert np.allclose(pout1, pout2)
 
-
-@pytest.fixture
-def example_grid():
-    """
-    A `pytest` fixture that generates a CartesianGrid that spans
-    -1 cm to 1 cm in all dimensions.  Three quantities are added to the
-    grid:
-
-    1. "x" which is the x position at each point in the grid [in cm]
-    2. "y" which is the y position at each point in the grid [in cm]
-    3. "rho" which is a mass density at each point in the grid [kg/m^-3]
-    """
-    # Create grid
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
-
-    # Add some data to the grid
-    grid.add_quantities(x=grid.grids[0])
-    grid.add_quantities(y=grid.grids[1])
-
-    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
-    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
-    grid.add_quantities(rho=rho)
-
-    return grid
 
 
 @pytest.mark.parametrize(
@@ -299,9 +421,9 @@ def example_grid():
     ],
 )
 def test_volume_averaged_interpolator_at_several_positions(
-    pos, what, expected, example_grid
+    pos, what, expected, uniform_cartesian_grid
 ):
-    pout = example_grid.volume_averaged_interpolator(pos, *what)
+    pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, *what)
     if len(what) == 1:
         assert np.allclose(pout, expected)
     else:
@@ -311,11 +433,11 @@ def test_volume_averaged_interpolator_at_several_positions(
             assert np.allclose(pout[ii], expected[ii])
 
 
-def test_volume_averaged_interpolator_missing_key(example_grid):
+def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid):
     # Test quantity key not present in dataset
     pos = np.array([0.1, -0.3, 0.2]) * u.cm
     with pytest.raises(KeyError):
-        example_grid.volume_averaged_interpolator(pos, "B_x")
+        uniform_cartesian_grid.volume_averaged_interpolator(pos, "B_x")
 
 
 @pytest.mark.parametrize(
@@ -336,9 +458,9 @@ def test_volume_averaged_interpolator_missing_key(example_grid):
         ),
     ],
 )
-def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, example_grid):
+def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, uniform_cartesian_grid):
     # Contains out-of-bounds values (must handle NaNs correctly)
-    pout = example_grid.volume_averaged_interpolator(pos, "x")
+    pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x")
     if nan_mask is None:
         assert np.all(np.isnan(pout.value))
     else:
@@ -346,14 +468,14 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, exampl
         assert np.all(~np.isnan(pout.value[~nan_mask]))
 
 
-def test_volume_averaged_interpolator_persistence(example_grid):
+def test_volume_averaged_interpolator_persistence(uniform_cartesian_grid):
     # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
-    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
     # Try changing the arg list, make sure it catches this and auto-reverts
     # to non-persistent interpolation in that case
-    p1, p2 = example_grid.volume_averaged_interpolator(pos, "x", persistent=True)
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", persistent=True)
     assert p1.size == 1
 
 
@@ -381,7 +503,7 @@ def test_volume_averaged_interpolator_known_solutions():
     )
 
 
-def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
+def test_volume_averaged_interpolator_compare_NN_1D(uniform_cartesian_grid):
     # Create a low resolution test grid and check that the volume-avg
     # interpolator returns a higher resolution version
     npts = 150
@@ -393,8 +515,8 @@ def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
 
     interp_hax = interp_pts[:, 0].to(u.mm).value
 
-    va_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
-    nn_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    va_rho = uniform_cartesian_grid.volume_averaged_interpolator(interp_pts, "rho")
+    nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     a, b = np.argmin(np.abs(interp_hax + 9)), np.argmin(np.abs(interp_hax - 9))
     analytic = interp_hax ** 4
@@ -406,7 +528,7 @@ def test_volume_averaged_interpolator_compare_NN_1D(example_grid):
     assert va_error < nn_error
 
 
-def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
+def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid):
     # Do the same computation as the NN_1D test but in 3D
 
     npts = 150
@@ -427,8 +549,8 @@ def test_volume_averaged_interpolator_compare_NN_3D(example_grid):
     zax = interp_pts[:, 2].to(u.mm).value
     analytic = np.sqrt(xax ** 2 + yax ** 2 + zax ** 2)
 
-    va_rho = example_grid.volume_averaged_interpolator(interp_pts, "rho")
-    nn_rho = example_grid.nearest_neighbor_interpolator(interp_pts, "rho")
+    va_rho = uniform_cartesian_grid.volume_averaged_interpolator(interp_pts, "rho")
+    nn_rho = uniform_cartesian_grid.nearest_neighbor_interpolator(interp_pts, "rho")
 
     va_error = np.sum(np.abs(analytic - va_rho.value))
     nn_error = np.sum(np.abs(analytic - nn_rho.value))

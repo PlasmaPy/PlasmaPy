@@ -1355,7 +1355,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         indgrid = np.arange(self.grid.shape[0])
 
-        interpolator = interp.NearestNDInterpolator(self.grid, indgrid)
+        interpolator = interp.NearestNDInterpolator(self.grid.to(u.m).value, indgrid)
         return interpolator
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
@@ -1376,7 +1376,7 @@ class NonUniformCartesianGrid(AbstractGrid):
                 del self._nearest_neighbor_interpolator
             except AttributeError:
                 pass
-
+            
         pts0 = self.pts0.to(u.m).value
         pts1 = self.pts1.to(u.m).value
         pts2 = self.pts2.to(u.m).value
