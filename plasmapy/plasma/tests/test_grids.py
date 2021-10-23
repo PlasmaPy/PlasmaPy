@@ -177,48 +177,9 @@ def test_grid_methods():
 
 
 @pytest.mark.slow
-def test_interpolate_indices():
+def test_uniform_cartesian_nearest_neighbor_interpolator():
     # Create grid
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
-
-    # One position
-    pos = np.array([0.1, -0.3, 0]) * u.cm
-    i = grid.interpolate_indices(pos)[0]
-    # Assert that nearest grid cell was found
-    pout = grid.grid[int(i[0]), int(i[1]), int(i[2])]
-    assert np.allclose(pos, pout, atol=0.1)
-
-    # One position, no units
-    pos = np.array([0.1, -0.3, 0])
-    i = grid.interpolate_indices(pos)[0]
-
-    # Two positions
-    pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    i = grid.interpolate_indices(pos)[0]
-
-    # Contains out-of-bounds values (index array should contain NaNs)
-    pos = np.array([5, -0.3, 0]) * u.cm
-    i = grid.interpolate_indices(pos)[0]
-    assert np.sum(np.isnan(i)) > 0
-
-    # ***********************************************************************
-
-    # Create a non-uniform grid
-    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
-
-    # One position
-    pos = np.array([0.1, -0.3, 0]) * u.cm
-    i = grid.interpolate_indices(pos)[0]
-
-    # Assert that nearest grid cell was found
-    pout = grid.grid[int(i)]
-    assert np.allclose(pos, pout, atol=0.5)
-
-
-@pytest.mark.slow
-def test_nearest_neighbor_interpolator():
-    # Create grid
-    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=50)
     # Add some data to the grid
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
@@ -239,29 +200,41 @@ def test_nearest_neighbor_interpolator():
     # Contains out-of-bounds values (must handle NaNs correctly)
     pos = np.array([5, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x")
-    assert np.allclose(pout, 0 * u.cm, atol=0.1)
+    assert np.isnan(pout)
 
     # Test persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
     pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
 
-    # ***********************************************************************
 
+@pytest.mark.slow
+def test_nonuniform_cartesian_nearest_neighbor_interpolator():
+    """
+    Note that this test is running on a very small grid, because otherwise it is
+    very slow.
+
+    """
     # Create a non-uniform grid
-    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=100)
+    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=20)
 
     grid.add_quantities(x=grid.grids[0], y=grid.grids[1])
 
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x")
+    pout = grid.nearest_neighbor_interpolator(pos, "x", persistent=True)
     assert np.allclose(pos[0], pout, atol=0.5)
+
+    # Test out of bounds
+    pos = np.array([-2, -0.3, 0]) * u.cm
+    pout = grid.nearest_neighbor_interpolator(pos, "x", persistent=True)
+    assert np.isnan(pout)
 
     # Test persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
-    pout = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
+    pout1 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=False)
+    pout2 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
+    assert np.allclose(pout1, pout2)
 
 
 @pytest.fixture
@@ -579,4 +552,6 @@ def test_fast_nearest_neighbor_interpolate():
 
 if __name__ == "__main__":
     # test_volume_averaged_interpolator_known_solutions()
-    test_fast_nearest_neighbor_interpolate()
+    # test_fast_nearest_neighbor_interpolate()
+    # test_uniform_cartesian_nearest_neighbor_interpolator()
+    test_nonuniform_cartesian_nearest_neighbor_interpolator()

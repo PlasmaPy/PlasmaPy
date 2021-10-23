@@ -921,106 +921,6 @@ class AbstractGrid(ABC):
 
         return _interp_units
 
-    @property
-    def interpolator(self):
-        r"""
-        A nearest-neighbor interpolator that returns the nearest grid index
-        to a position.
-        """
-        if self._interpolator is None:
-            if self.is_uniform:
-                self._make_uniform_grid_interpolator()
-            else:
-                self._make_nonuniform_grid_interpolator()
-
-        return self._interpolator
-
-    def _make_uniform_grid_interpolator(self):
-        r"""
-        Initializes a nearest-neighbor interpolator that returns the nearest
-        grid indices for a given position (given in SI units).
-
-        This function works on a uniformly spaced grid.
-        """
-        # Create a grid of indices for use in interpolation
-        n0, n1, n2 = self.shape
-        indgrid = np.indices([n0, n1, n2])
-        indgrid = np.moveaxis(indgrid, 0, -1)
-
-        # Create an input array of grid positions
-        pts = (
-            self.ax0.si.value,
-            self.ax1.si.value,
-            self.ax2.si.value,
-        )
-
-        self._interpolator = interp.RegularGridInterpolator(
-            pts, indgrid, method="nearest", bounds_error=False, fill_value=np.nan
-        )
-
-    def _make_nonuniform_grid_interpolator(self):
-        r"""
-        Initializes a nearest-neighbor interpolator that returns the nearest
-        grid indices for a given position (given in SI units).
-
-        This function works on unstructured (non-uniform) data.
-        """
-
-        # Make an array of point positions
-        pts0, pts1, pts2 = self.pts0.si.value, self.pts1.si.value, self.pts2.si.value
-        pts = np.array([pts0, pts1, pts2])
-        pts = np.moveaxis(pts, 0, 1)
-
-        # Create a flat array of indices corresponding to those positions
-        indgrid = np.arange(self.shape[0])
-
-        self._interpolator = interp.NearestNDInterpolator(pts, indgrid)
-
-    def interpolate_indices(self, pos: Union[np.ndarray, u.Quantity]):
-        r"""
-        Interpolate the nearest grid indices to a position using a
-        nearest-neighbor interpolator.
-
-        Parameters
-        ----------
-        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
-            An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If a
-            `~numpy.ndarray` is provided, units will be assumed to match
-            those of the grid.
-
-        Returns
-        -------
-        i : `~numpy.ndarray`, shape (n,3)
-            An array of indices corresponding to the positions such that
-            ``i[n,:] = ix,iy,iz`` such that ``grid[ix,iy,iz,:]`` ∼ ``pos[n,:]``
-
-        """
-        # Condition pos
-        # If a single point was given, add empty dimension
-        if pos.ndim == 1:
-            pos = np.reshape(pos, [1, 3])
-        pos2 = np.zeros(pos.shape)
-        # Convert position to SI and then strip units
-        if hasattr(pos, "unit"):
-            pos2 = pos.si.value
-        else:
-            for i in range(3):
-                pos2[:, i] = (pos[:, i] * self.units[i]).si.value
-
-        # Interpolate indices
-        i = self.interpolator(pos2)
-
-        # TODO: Check interpolated positions and reject any (set to NaN)
-        # that are above a certain tolerance distance?
-        # currently the nonuniform interpolator can't tell when a value
-        # is out of bounds...
-
-        # Note: i contains nan values which must be replaced with 0's with
-        # appropriate units in the second layer interpolator functions.
-
-        return i
-
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
@@ -1047,80 +947,10 @@ class AbstractGrid(ABC):
             ``persistent`` overrides to `False` if the arguments list
             has changed since the last call.
         """
-        # pos is validated in interpolate_indices
-
-        # Validate args
-        # must be np.ndarray or u.Quantity arrays of same shape as grid
-        for arg in args:
-
-            if arg not in self.quantities:
-                raise KeyError(
-                    "Quantity arguments must correspond to "
-                    "DataArrays in the DataSet. "
-                    f"{arg} was not found. "
-                    f"Existing keys are: {self.quantities}"
-                )
-
-        # If persistent, double check the arguments list hasn't changed
-        # If they have, run as non-persistent this time
-        if persistent and args != self._interp_args:
-            persistent = False
-
-        # Update _interp_args variable
-        self._interp_args = args
-
-        # Interpolate the nearest-neighbor indices
-        i = self.interpolate_indices(pos)
-        nargs = len(args)
-
-        # Get the indices that are equal to nan (fill values), then set
-        # their values to 0. They will be over-written after the interpolation
-
-        # Nan array is shape [n] and is 1 if none of the indices for a
-        # position are NaN, and 0 otherwise.
-
-        # i has different shape for non-uniform grids
-        if self.is_uniform:
-            nan_mask = np.where(np.isnan(np.sum(i, axis=1)), 0, 1)
-        else:
-            nan_mask = np.where(np.isnan(i), 0, 1)
-
-        # Replace all NaNs temporarily with 0
-        i = np.where(np.isnan(i), 0, i)
-        i = i.astype(np.int32)  # Cast as integers
-
-        # If not persistent, clear the cached properties so they are re-created
-        # when called below
-        if not persistent:
-            try:
-                del self._interp_quantities
-            except AttributeError:
-                pass
-            try:
-                del self._interp_units
-            except AttributeError:
-                pass
-
-        # Fetch the values at those indices from each quantity
-        if self.is_uniform:
-            values = self._interp_quantities[i[:, 0], i[:, 1], i[:, 2], :]
-        else:
-            values = self._interp_quantities[i]
-
-        # Apply the NaN mask (set any values that were out of bounds
-        # to zero)
-        values *= np.outer(nan_mask, np.ones(nargs))
-
-        # Split output array into arrays with units
-        # Apply units to output arrays
-        output = []
-        for i in range(nargs):
-            output.append(values[:, i] * self._interp_units[i])
-
-        if len(output) == 1:
-            return output[0]
-        else:
-            return tuple(output)
+        raise NotImplementedError(
+            "Nearest-neighbor interpolator is not yet "
+            "implemented for this grid type."
+        )
 
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1152,6 +982,97 @@ class AbstractGrid(ABC):
         raise NotImplementedError(
             "Volume-averaged interpolator is not yet " "implemented for this grid type."
         )
+
+    def _persistent_interpolator_setup(self, pos, args, persistent):
+        r"""
+        Setup common to all persistent interpolators.
+
+        Parameters
+        ----------
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
+
+        args : `str`
+            Strings that correspond to DataArrays in the dataset
+
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
+
+        Returns
+        -------
+
+        pos: `~numpy.ndarray`
+            Position array with dimensions fixed, units converted to
+            standard and stripped.
+
+        args : `str`
+            Strings that correspond to DataArrays in the dataset
+
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
+
+        Raises
+        ------
+
+        KeyError
+            A KeyError is raised if one of the args does not corrrespond
+            to a DataArray in the DataSet.
+        """
+
+        # Condition pos
+        if isinstance(pos, u.Quantity):
+            pos = pos.to(u.m).value
+        elif self.unit != u.m:
+            pos *= self.unit.si.scale
+        # If a single point was given, add empty dimension
+        if pos.ndim == 1:
+            pos = np.reshape(pos, [1, 3])
+
+        # -- Validate args --
+        # must be np.ndarray or u.Quantity arrays of same shape as grid
+        for arg in args:
+            if arg not in self.quantities:
+                raise KeyError(
+                    "Quantity arguments must correspond to "
+                    "DataArrays in the DataSet. "
+                    f"{arg} was not found. "
+                    f"Existing keys are: {self.quantities}"
+                )
+
+        # If persistent, double check the arguments list hasn't changed
+        # If they have, run as non-persistent this time
+        if persistent and args != self._interp_args:
+            persistent = False
+
+        # Update _interp_args variable
+        self._interp_args = args
+
+        # If not persistent, clear the cached properties so they are re-created
+        # when called below
+        if not persistent:
+            try:
+                del self._interp_quantities
+            except AttributeError:
+                pass
+            try:
+                del self._interp_units
+            except AttributeError:
+                pass
+
+        return pos, args, persistent
 
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
@@ -1193,6 +1114,50 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
+    @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
+    def nearest_neighbor_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    ):
+        r""" """
+
+        # Shared setup
+        pos, args, persistent = self._persistent_interpolator_setup(
+            pos, args, persistent
+        )
+
+        ax0, ax1, ax2 = self._ax0_si, self._ax1_si, self._ax2_si
+
+        # Find particles that are off the grid
+        mask_particle_off = (
+            (pos[:, 0] < ax0.min())
+            | (pos[:, 0] > ax0.max())
+            | (pos[:, 1] < ax1.min())
+            | (pos[:, 1] > ax1.max())
+            | (pos[:, 2] < ax2.min())
+            | (pos[:, 2] > ax2.max())
+        )
+
+        # Interpolate nearest index to each point along each axis
+        i0 = _fast_nearest_neighbor_interpolate(pos[:, 0], ax0)
+        i1 = _fast_nearest_neighbor_interpolate(pos[:, 1], ax1)
+        i2 = _fast_nearest_neighbor_interpolate(pos[:, 2], ax2)
+
+        vals = self._interp_quantities[i0, i1, i2, :]
+
+        # Replace values of off-grid particles with NaN
+        vals[mask_particle_off, :] = np.nan
+
+        # Split output array into arrays with units
+        # Apply units to output arrays
+        output = []
+        for arg in range(len(args)):
+            output.append(vals[..., arg] * self._interp_units[arg])
+
+        if len(output) == 1:
+            return output[0]
+        else:
+            return tuple(output)
+
     @modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1215,48 +1180,10 @@ class CartesianGrid(AbstractGrid):
         This implementation of this algorithm assumes that the grid is uniformly
         spaced and Cartesian.
         """
-
-        if isinstance(pos, u.Quantity):
-            pos = pos.to(u.m).value
-        elif self.unit != u.m:
-            pos *= self.unit.si.scale
-
-        # If a single point was given, add empty dimension
-        if pos.ndim == 1:
-            pos = np.reshape(pos, [1, 3])
-
-        # -- Validate args --
-        # must be np.ndarray or u.Quantity arrays of same shape as grid
-        for arg in args:
-            if arg not in self.quantities:
-                raise KeyError(
-                    "Quantity arguments must correspond to "
-                    "DataArrays in the DataSet. "
-                    f"{arg} was not found. "
-                    f"Existing keys are: {self.quantities}"
-                )
-
-        # If persistent, double check the arguments list hasn't changed
-        # If they have, run as non-persistent this time
-        if persistent and args != self._interp_args:
-            persistent = False
-
-        # Update _interp_args variable
-        self._interp_args = args
-
-        # If not persistent, clear the cached properties so they are re-created
-        # when called below
-        if not persistent:
-            try:
-                del self._interp_quantities
-            except AttributeError:
-                pass
-            try:
-                del self._interp_units
-            except AttributeError:
-                pass
-
-        # -- begin averaging --
+        # Shared setup
+        pos, args, persistent = self._persistent_interpolator_setup(
+            pos, args, persistent
+        )
 
         nparticles = pos.shape[0]
         nargs = len(args)
@@ -1417,3 +1344,63 @@ class NonUniformCartesianGrid(AbstractGrid):
         arr0, arr1, arr2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
 
         return arr0, arr1, arr2
+
+    @cached_property
+    def _nearest_neighbor_interpolator(self):
+        """
+        Creates a nearest neighbor interpolator object for this grid, which can
+        then be called repeatedly.
+
+        """
+
+        indgrid = np.arange(self.grid.shape[0])
+
+        interpolator = interp.NearestNDInterpolator(self.grid, indgrid)
+        return interpolator
+
+    @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
+    def nearest_neighbor_interpolator(
+        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
+    ):
+        r""" """
+        # Shared setup
+        pos, args, persistent = self._persistent_interpolator_setup(
+            pos, args, persistent
+        )
+
+        # Clear additional property that is not handled in the
+        # _persistant_interpolator_setup function because it is unique
+        # to this non_uniform grid.
+        if not persistent:
+            try:
+                del self._nearest_neighbor_interpolator
+            except AttributeError:
+                pass
+
+        pts0 = self.pts0.to(u.m).value
+        pts1 = self.pts1.to(u.m).value
+        pts2 = self.pts2.to(u.m).value
+
+        i = self._nearest_neighbor_interpolator(pos)
+
+        vals = self._interp_quantities[i, :]
+
+        mask_particle_off = (
+            (pos[:, 0] < pts0.min())
+            | (pos[:, 0] > pts0.max())
+            | (pos[:, 1] < pts1.min())
+            | (pos[:, 1] > pts1.max())
+            | (pos[:, 2] < pts2.min())
+            | (pos[:, 2] > pts2.max())
+        )
+
+        vals[mask_particle_off] = np.nan
+
+        output = []
+        for arg in range(len(args)):
+            output.append(vals[:, arg] * self._interp_units[arg])
+
+        if len(output) == 1:
+            return output[0]
+        else:
+            return tuple(output)
