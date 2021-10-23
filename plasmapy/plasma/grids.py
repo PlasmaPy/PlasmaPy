@@ -1376,7 +1376,7 @@ class NonUniformCartesianGrid(AbstractGrid):
                 del self._nearest_neighbor_interpolator
             except AttributeError:
                 pass
-            
+
         pts0 = self.pts0.to(u.m).value
         pts1 = self.pts1.to(u.m).value
         pts2 = self.pts2.to(u.m).value

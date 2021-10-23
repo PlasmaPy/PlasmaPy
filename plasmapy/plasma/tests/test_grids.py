@@ -176,11 +176,10 @@ def test_grid_methods():
     assert np.all(out == np.array([True, False]))
 
 
-
-
 # **********************************************************************
 # Uniform Cartesian grid tests
 # **********************************************************************
+
 
 @pytest.fixture
 def uniform_cartesian_grid():
@@ -200,43 +199,51 @@ def uniform_cartesian_grid():
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
     grid.add_quantities(z=grid.grids[2])
-    
+
     radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
     rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
     grid.add_quantities(rho=rho)
-    
+
     return grid
 
-@pytest.mark.parametrize('pos,quantities,expected', 
-                         [   # Test one point   
-                             (np.array([0.1, -0.3, 0]) * u.cm, ['x'], np.array([0.1])*u.cm),
-                             # Test two points and two quantities
-                             (np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm, 
-                              ['x','y'], 
-                              np.array([[0.1, 0.2], [-0.3, 0.5]]) * u.cm),
-                             # Test an out of bounds point   
-                             (np.array([2, -0.3, 0]) * u.cm, ['x'], np.array([np.nan])*u.cm),
-                            ])
-def test_uniform_cartesian_NN_interp(pos, quantities, expected,
-                                           uniform_cartesian_grid):
+
+@pytest.mark.parametrize(
+    "pos,quantities,expected",
+    [  # Test one point
+        (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
+        # Test two points and two quantities
+        (
+            np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm,
+            ["x", "y"],
+            np.array([[0.1, 0.2], [-0.3, 0.5]]) * u.cm,
+        ),
+        # Test an out of bounds point
+        (np.array([2, -0.3, 0]) * u.cm, ["x"], np.array([np.nan]) * u.cm),
+    ],
+)
+def test_uniform_cartesian_NN_interp(pos, quantities, expected, uniform_cartesian_grid):
     """
     Test that the uniform Cartesian NN interpolator returns the correct values
     at various points to within the grid tolerance.
 
     """
     pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
-  
-    # Should be correct to within dx/2, so 0.6 leaves some room
-    assert np.allclose(pout, expected, atol=0.6*uniform_cartesian_grid.dax0,
-                       equal_nan=True)
 
-    
-@pytest.mark.parametrize('pos,quantities,error', 
-                         [   # Quantity not in
-                             (np.array([0.1, -0.3, 0]) * u.cm, ['not_a_quantity'], KeyError),
-                            ])
-def test_uniform_cartesian_NN_interp_errors(pos, quantities, error,
-                                                  uniform_cartesian_grid):
+    # Should be correct to within dx/2, so 0.6 leaves some room
+    assert np.allclose(
+        pout, expected, atol=0.6 * uniform_cartesian_grid.dax0, equal_nan=True
+    )
+
+
+@pytest.mark.parametrize(
+    "pos,quantities,error",
+    [  # Quantity not in
+        (np.array([0.1, -0.3, 0]) * u.cm, ["not_a_quantity"], KeyError),
+    ],
+)
+def test_uniform_cartesian_NN_interp_errors(
+    pos, quantities, error, uniform_cartesian_grid
+):
     """
     Test that the uniform cartesian NN interpolator returns the expected
     errors.
@@ -244,7 +251,6 @@ def test_uniform_cartesian_NN_interp_errors(pos, quantities, error,
     """
     with pytest.raises(error):
         uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
-    
 
 
 def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid):
@@ -255,29 +261,31 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid):
 
     """
     pos = np.array([[0.1, -0.3, 0.1], [-0.5, 0, -0.6]]) * u.cm
-    
+
     # Test with one set of quantities
-    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, "x", "y", 
-                                                                persistent=True)
- 
+    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(
+        pos, "x", "y", persistent=True
+    )
+
     # Transpose of pos is required because pout is ordered first by quantity
     # (axis in this case) while pos is [N,3]
-    assert np.allclose(pout, pos[:,[0,1]].T, atol=0.6*uniform_cartesian_grid.dax0)
-    
+    assert np.allclose(pout, pos[:, [0, 1]].T, atol=0.6 * uniform_cartesian_grid.dax0)
+
     # Change quantities with persistent still True
     # Code should detect this and automatically run as
     # persistent==False for the first iteration to create the new
     # persistent arrays.
-    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, "x", "z", 
-                                                                persistent=True)
+    pout = uniform_cartesian_grid.nearest_neighbor_interpolator(
+        pos, "x", "z", persistent=True
+    )
 
-    assert np.allclose(pout, pos[:,[0,2]].T, atol=0.6*uniform_cartesian_grid.dax0)
-
+    assert np.allclose(pout, pos[:, [0, 2]].T, atol=0.6 * uniform_cartesian_grid.dax0)
 
 
 # **********************************************************************
 # Non-uniform Cartesian grid tests
 # **********************************************************************
+
 
 @pytest.fixture
 def nonuniform_cartesian_grid():
@@ -290,68 +298,69 @@ def nonuniform_cartesian_grid():
     2. "y" which is the y position at each point in the grid [in cm]
     3. "z" which is the z position at each point in the grid [in cm]
     4. "rho" which is a mass density at each point in the grid [kg/m^-3]
-    
+
     For testing purposes, we generate a special grid that is non-uniform
     but also has the following additional properties:
         - High resolution in x (for interpolation), low resolution in
          y and z to keep the array size down.
         - Points are created at the min and max of the range to ensure
           that out of bounds tests work correctly.
-    
+
     """
-    
-    ax0 = np.sort(np.random.uniform(low=-1, high=1, size=51))*u.cm
-    ax0[0], ax0[-1] = -1,1
-    ax1 = np.sort(np.random.uniform(low=-1, high=1, size=5))
-    ax1[0], ax1[-1] = -1,1
-	ax2 = np.sort(np.random.uniform(low=-1, high=1, size=5))
-    ax2[0], ax2[-1] = -1,1
-	x,y,z = np.meshgrid(ax0, ax1, ax2, indexing='ij')
-    
+
+    ax0 = np.sort(np.random.uniform(low=-1, high=1, size=100)) * u.cm
+    ax0[0], ax0[-1] = -1 * u.cm, 1 * u.cm
+    ax1 = np.linspace(-1, 1, num=5) * u.cm
+    ax2 = np.linspace(-1, 1, num=5) * u.cm
+    x, y, z = np.meshgrid(ax0, ax1, ax2, indexing="ij")
+
     # Create grid
-    grid = grids.NonUniformCartesianGrid(x,y,z)
+    grid = grids.NonUniformCartesianGrid(x, y, z)
     # Add some data to the grid
     grid.add_quantities(x=x)
     grid.add_quantities(y=y)
     grid.add_quantities(z=z)
-    
+
     radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
     rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
     grid.add_quantities(rho=rho)
-    
+
     return grid
 
-@pytest.mark.parametrize('pos,quantities,expected', 
-                         [   # Test one point   
-                             (np.array([0.1, -0.3, 0]) * u.cm, ['x'], np.array([0.1])*u.cm),
-                             # Test two points and two quantities
-                             (np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm, 
-                              ['x','y'], 
-                              np.array([[0.1, 0.2], [-0.3, 0.5]]) * u.cm),
-                             # Test an out of bounds point   
-                             (np.array([2, -0.3, 0]) * u.cm, ['x'], np.array([np.nan])*u.cm),
-                            ])
-def test_nonuniform_cartesian_NN_interp(pos, quantities, expected,
-                                           nonuniform_cartesian_grid):
+
+@pytest.mark.parametrize(
+    "pos,quantities,expected",
+    [  # Test one point
+        (np.array([0.1, -0.3, 0]) * u.cm, ["x"], np.array([0.1]) * u.cm),
+        # Test two points and two quantities
+        # Same axis, since only x is dense
+        (
+            np.array([[0.1, -0.3, 0], [0.2, 0.5, 0.2]]) * u.cm,
+            ["x", "x"],
+            np.array([[0.1, 0.2], [0.1, 0.2]]) * u.cm,
+        ),
+        # Test an out of bounds point
+        (np.array([2, -0.3, 0]) * u.cm, ["x"], np.array([np.nan]) * u.cm),
+    ],
+)
+def test_nonuniform_cartesian_NN_interp(
+    pos, quantities, expected, nonuniform_cartesian_grid
+):
     """
     Test that the uniform Cartesian NN interpolator returns the correct values
     at various points to within the grid tolerance.
     """
     pout = nonuniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
-    
+
     # Determine the maximum grid spacing in x in order to set the tolerance
     # for this test
-    dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:,0]))
-    
+    dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:, 0]))
+
     print(nonuniform_cartesian_grid.shape)
-    print(nonuniform_cartesian_grid.grid[:,0])
+    print(nonuniform_cartesian_grid.grid[:, 0])
     print(expected)
     print(pout)
-
-    # Should be correct to within dx/2, so 0.6 leaves some room
-    assert np.allclose(pout, expected, atol=0.6*dx_max,
-                       equal_nan=True)
-
+    assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
 @pytest.mark.slow
@@ -381,7 +390,6 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator():
     pout1 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=False)
     pout2 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
     assert np.allclose(pout1, pout2)
-
 
 
 @pytest.mark.parametrize(
@@ -458,7 +466,9 @@ def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid):
         ),
     ],
 )
-def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, uniform_cartesian_grid):
+def test_volume_averaged_interpolator_handle_out_of_bounds(
+    pos, nan_mask, uniform_cartesian_grid
+):
     # Contains out-of-bounds values (must handle NaNs correctly)
     pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x")
     if nan_mask is None:
@@ -471,11 +481,17 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(pos, nan_mask, unifor
 def test_volume_averaged_interpolator_persistence(uniform_cartesian_grid):
     # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", "y", persistent=True)
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos, "x", "y", persistent=True
+    )
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos, "x", "y", persistent=True
+    )
     # Try changing the arg list, make sure it catches this and auto-reverts
     # to non-persistent interpolation in that case
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x", persistent=True)
+    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos, "x", persistent=True
+    )
     assert p1.size == 1
 
 
