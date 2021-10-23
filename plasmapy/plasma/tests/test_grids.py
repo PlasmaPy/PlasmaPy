@@ -355,11 +355,7 @@ def test_nonuniform_cartesian_NN_interp(
     # Determine the maximum grid spacing in x in order to set the tolerance
     # for this test
     dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:, 0]))
-
-    print(nonuniform_cartesian_grid.shape)
-    print(nonuniform_cartesian_grid.grid[:, 0])
-    print(expected)
-    print(pout)
+    
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
