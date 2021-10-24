@@ -557,23 +557,6 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=2)
 
-    @property
-    def grid_resolution(self):
-        r"""
-        A scalar estimate of the grid resolution.
-
-        For uniform grids, this is the minima of [dax0, dax1, dax2].
-
-        For non-uniform grids, it is the closest spacing between any two points.
-        """
-
-        if self.is_uniform:
-            return min(self.dax0, self.dax1, self.dax2)
-        else:
-            distances = distance.cdist(self.grid, self.grid)
-            np.fill_diagonal(distances, np.inf)
-            return np.min(distances)
-
     # *************************************************************************
     # Loading and creating grids
     # *************************************************************************
@@ -1114,6 +1097,15 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 )
 
+    @property
+    def grid_resolution(self):
+        r"""
+        A scalar estimate of the grid resolution, calculated as the
+        the minima of [dax0, dax1, dax2].
+
+        """
+        return min(self.dax0, self.dax1, self.dax2)
+
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1327,6 +1319,16 @@ class NonUniformCartesianGrid(AbstractGrid):
                     "Units of grid are not valid for a Cartesian "
                     f"grid: {self.units}."
                 )
+
+    @property
+    def grid_resolution(self):
+        r"""
+        A scalar estimate of the grid resolution, calculated as the
+        closest spacing between any two points.
+        """
+        distances = distance.cdist(self.grid, self.grid)
+        np.fill_diagonal(distances, np.inf)
+        return np.min(distances) * self.unit
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
