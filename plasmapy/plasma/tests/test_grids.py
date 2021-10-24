@@ -116,6 +116,19 @@ def test_AbstractGrid():
     print(grid)
 
 
+def test_abstract_grid_non_monotonic_axes_is_interpreted_as_nonuniform_grid():
+    # Test grid that with a non-sorted axis is identified as a
+    # non-uniform grid.
+    ax0 = np.array([-1, 2, 0, 0.5, 1])
+    ax1 = np.array([-1, -0.5, 0, 0.5, 1])
+    ax2 = np.array([-1, -0.5, 0, 0.5, 1])
+    x, y, z = np.meshgrid(ax0, ax1, ax2)
+
+    grid = grids.AbstractGrid(x * u.cm, y * u.cm, z * u.cm)
+
+    assert not grid.is_uniform
+
+
 def test_CartesianGrid():
 
     grid = grids.CartesianGrid(
@@ -355,7 +368,7 @@ def test_nonuniform_cartesian_NN_interp(
     # Determine the maximum grid spacing in x in order to set the tolerance
     # for this test
     dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:, 0]))
-    
+
     assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
 
 
