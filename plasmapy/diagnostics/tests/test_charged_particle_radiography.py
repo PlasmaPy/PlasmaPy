@@ -863,18 +863,6 @@ def test_add_wire_mesh():
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
-def temp_profiling():
-
-    grid = _test_grid("electrostatic_gaussian_sphere", num=100)
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
-    sim.create_particles(int(1e5), 3 * u.MeV, max_theta=10 * u.deg)
-
-    sim.run()
-
-
 if __name__ == "__main__":
     """
     test_coordinate_systems()
@@ -889,5 +877,4 @@ if __name__ == "__main__":
     test_gaussian_sphere_analytical_comparison()
     test_cannot_modify_simulation_after_running()
     """
-    temp_profiling()
     pass
