@@ -66,23 +66,6 @@ def abstract_grid_nonuniform():
     return grid
 
 
-@pytest.fixture
-def abstract_grid_not_cartesian():
-    """
-    A `pytest` fixture that generates an abstract grid that has different
-    units in different dimensions. This could represent a grid in cylindrical
-    coordinates.
-    """
-
-    grid = grids.AbstractGrid(
-        [-1 * u.cm, 0 * u.rad, -2 * u.cm],
-        [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm],
-        num=(5, 5, 5),
-    )
-
-    return grid
-
-
 create_args = [
     # Same start, stop and num for each axis
     ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
@@ -113,6 +96,22 @@ create_args = [
         (10, 5, 3),
         None,
     ),
+    # Start is a list of a single element, stop is a single u.Quantity
+    (
+        [
+            [
+                -1 * u.cm,
+            ],
+            1 * u.cm,
+        ],
+        {"num": 10},
+        (10, 10, 10),
+        None,
+    ),
+    # num is a list of a single element
+    ([-1 * u.cm, 1 * u.cm], {"num": [10]}, (10, 10, 10), None),
+    # num is a list of three elements
+    ([-1 * u.cm, 1 * u.cm], {"num": [10, 5, 2]}, (10, 5, 2), None),
     # Test wrong number of positional arguments: too few
     ([1 * u.cm], {"num": 10}, None, TypeError),
     # Test wrong number of positional arguments: too nmany
@@ -217,6 +216,19 @@ abstract_attrs = [
 ]
 
 
+def test_AbstractGrid_interpolators_not_implemented(abstract_grid_uniform):
+    """
+    Verifies that interpolators raise a not implemented error
+    """
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+
+    with pytest.raises(NotImplementedError):
+        abstract_grid_uniform.nearest_neighbor_interpolator(pos, "x")
+
+    with pytest.raises(NotImplementedError):
+        abstract_grid_uniform.volume_averaged_interpolator(pos, "x")
+
+
 @pytest.mark.parametrize("fixture,attr,type,type_in_iter,value", abstract_attrs)
 def test_AbstractGrid_attributes(
     fixture,
@@ -264,6 +276,21 @@ quantities = [
     ("B_x", np.ones([21, 21, 21]) * u.kg, ValueError, None, None),
     ("not_recognized_quantity", np.ones([21, 21, 21]) * u.kg, None, UserWarning, None),
 ]
+
+
+def test_unit_attribute_error_case():
+    """
+    Verify that the unit attribute raises an exception if the units on all
+    axes are not the same.
+    """
+    grid = grids.AbstractGrid(
+        [-1 * u.cm, 0 * u.rad, -2 * u.cm],
+        [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm],
+        num=5,
+    )
+
+    with pytest.raises(ValueError):
+        grid.unit
 
 
 @pytest.mark.parametrize("key,value,error,warning,match", quantities)
