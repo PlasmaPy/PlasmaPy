@@ -9,10 +9,155 @@ import pytest
 from plasmapy.plasma import grids as grids
 
 
+@pytest.fixture
+def abstract_grid_uniform():
+    """
+    A `pytest` fixture that generates an abstract grid that spans
+    -1 cm to 1 cm in all dimensions. The grid mesh would be a valid
+    CartesianGrid. Three quantities are added to the grid:
+
+    1. "x" which is the x position at each point in the grid [in cm]
+    2. "y" which is the y position at each point in the grid [in cm]
+    3. "z" which is the z position at each point in the grid [in cm]
+    4. "rho" which is a mass density at each point in the grid [kg/m^-3]
+    """
+    # Create grid
+    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=21)
+    # Add some data to the grid
+    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(y=grid.grids[1])
+    grid.add_quantities(z=grid.grids[2])
+
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
+
+    return grid
+
+
+@pytest.fixture
+def abstract_grid_nonuniform():
+    """
+    A `pytest` fixture that generates an abstract grid that spans
+    -1 cm to 1 cm in all dimensions. The grid mesh would be a
+    NonUniformCartesian grid. Three quantities are added to the grid:
+
+    1. "x" which is the x position at each point in the grid [in cm]
+    2. "y" which is the y position at each point in the grid [in cm]
+    3. "z" which is the z position at each point in the grid [in cm]
+    4. "rho" which is a mass density at each point in the grid [kg/m^-3]
+    """
+    ax0 = np.array([-1, 2, 0, 0.5, 1])
+    ax1 = np.array([-1, -0.5, 0, 0.5, 1])
+    ax2 = np.array([-1, -0.5, 0, 0.5, 1])
+    x, y, z = np.meshgrid(ax0, ax1, ax2)
+
+    grid = grids.AbstractGrid(x * u.cm, y * u.cm, z * u.cm)
+
+    # Add some data to the grid
+    grid.add_quantities(x=grid.grids[0])
+    grid.add_quantities(y=grid.grids[1])
+    grid.add_quantities(z=grid.grids[2])
+
+    radius = np.sqrt(grid.pts0 ** 2 + grid.pts1 ** 2 + grid.pts2 ** 2)
+    rho = radius.to(u.mm).value ** 4 * u.kg * u.m ** -3
+    grid.add_quantities(rho=rho)
+
+    return grid
+
+
+abstract_attrs = [
+    ("uniform", "is_uniform", bool, None, True),
+    ("nonuniform", "is_uniform", bool, None, False),
+    ("uniform", "shape", tuple, int, (21, 21, 21)),
+    ("nonuniform", "shape", tuple, int, (125,)),
+    ("uniform", "grid", u.Quantity, None, None),
+    ("uniform", "grids", tuple, u.Quantity, None),
+    (
+        "uniform",
+        "units",
+        list,
+        u.core.Unit,
+        [
+            u.cm,
+        ]
+        * 3,
+    ),
+    ("uniform", "unit0", u.core.Unit, None, u.cm),
+    ("uniform", "unit1", u.core.Unit, None, u.cm),
+    ("uniform", "unit2", u.core.Unit, None, u.cm),
+    ("uniform", "unit", u.core.Unit, None, u.cm),
+    ("uniform", "pts0", u.Quantity, None, None),
+    ("uniform", "pts1", u.Quantity, None, None),
+    ("uniform", "pts2", u.Quantity, None, None),
+    ("uniform", "ax0", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("uniform", "ax1", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("uniform", "ax2", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("uniform", "dax0", u.Quantity, None, 0.1 * u.cm),
+    ("uniform", "dax1", u.Quantity, None, 0.1 * u.cm),
+    ("uniform", "dax2", u.Quantity, None, 0.1 * u.cm),
+    ("uniform", "si_scale_factors", list, float, [0.01, 0.01, 0.01]),
+    ("uniform", "_ax0_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("uniform", "_ax1_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("uniform", "_ax2_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("uniform", "_dax0_si", float, None, 0.001),
+    ("uniform", "_dax1_si", float, None, 0.001),
+    ("uniform", "_dax2_si", float, None, 0.001),
+    ("uniform", "grid_resolution", u.Quantity, None, 0.1 * u.cm),
+    ("nonuniform", "grid_resolution", u.Quantity, None, 0.5 * u.cm),
+]
+
+
+@pytest.mark.parametrize("fixture,attr,type,type_in_iter,value", abstract_attrs)
+def test_abstract_grid_attributes(
+    fixture,
+    attr,
+    type,
+    type_in_iter,
+    value,
+    abstract_grid_uniform,
+    abstract_grid_nonuniform,
+):
+    """
+    Tests that the attributes of AbstractGrid have the correct type and
+    values for the fixture abstract_grid_uniform.
+    """
+
+    # Chose which of the two fixtures to used based on this parameter
+    if fixture == "uniform":
+        grid = abstract_grid_uniform
+    else:
+        grid = abstract_grid_nonuniform
+
+    attr = getattr(grid, attr)
+    assert isinstance(attr, type)
+
+    # If the attribute is an iterable, check the type inside too
+    if type_in_iter is not None:
+        for elem in attr:
+            isinstance(elem, type_in_iter)
+
+    if value is not None:
+        if isinstance(value, np.ndarray):
+            assert np.allclose(attr, value, rtol=0.1)
+        elif isinstance(value, (float, int)):
+            assert np.isclose(attr, value, rtol=0.1)
+        else:
+            assert attr == value
+
+
+
+create_args = [
+    ([-1 * u.cm, 1 * u.cm], {'num':10}, None)]
+
+# @pytest.mark.parameterize()
+# def test_abstract_grid_creation(args, kwargs, is_uniform, )
+
+
 def test_AbstractGrid():
 
     # Create grid with single u.Quantity args
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=10)
+    grid = grids.AbstractGrid(, num=10)
     assert grid.is_uniform
 
     # Create grid with lists of  u.Quantity args
@@ -30,11 +175,6 @@ def test_AbstractGrid():
     assert grid.is_uniform
 
     print(grid)
-
-    array = grid.grid
-    units = grid.units
-
-    pts0, pts1, pts2 = grid.pts0, grid.pts1, grid.pts2
 
     # Test wrong number of positional arguments: 1 or more than 3
     with pytest.raises(TypeError):
@@ -116,17 +256,7 @@ def test_AbstractGrid():
     print(grid)
 
 
-def test_abstract_grid_non_monotonic_axes_is_interpreted_as_nonuniform_grid():
-    # Test grid that with a non-sorted axis is identified as a
-    # non-uniform grid.
-    ax0 = np.array([-1, 2, 0, 0.5, 1])
-    ax1 = np.array([-1, -0.5, 0, 0.5, 1])
-    ax2 = np.array([-1, -0.5, 0, 0.5, 1])
-    x, y, z = np.meshgrid(ax0, ax1, ax2)
 
-    grid = grids.AbstractGrid(x * u.cm, y * u.cm, z * u.cm)
-
-    assert not grid.is_uniform
 
 
 def test_CartesianGrid():
@@ -134,16 +264,6 @@ def test_CartesianGrid():
     grid = grids.CartesianGrid(
         np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
     )
-
-    x_arr, y_arr, z_arr = grid.grids
-    x_axis, y_axis, z_axis = grid.ax0, grid.ax1, grid.ax2
-    d_x, d_y, d_z = grid.dax0, grid.dax1, grid.dax2
-    is_uniform = grid.is_uniform
-    shape = grid.shape
-    unit = grid.units
-
-    # Grid should be uniform
-    assert grid.is_uniform
 
     # Test initializing with a provided grid and a quantity
     q = np.zeros(grid.shape)
