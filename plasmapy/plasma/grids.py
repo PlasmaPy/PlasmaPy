@@ -715,23 +715,51 @@ class AbstractGrid(ABC):
             `numpy.linspace`.
         """
 
-        # If array of quantities are given instead of a list, convert
-        if isinstance(stop, u.Quantity) and stop.size == 3:
-            stop = list(stop)
-        elif isinstance(stop, u.Quantity) and stop.size == 1:
-            stop = [stop] * 3
+        # Store variables in dict for validation
+        var = {"stop": stop, "start": start, "num": num}
 
-        if isinstance(start, u.Quantity) and start.size > 1:
-            start = list(start)
-        elif isinstance(start, u.Quantity) and start.size == 1:
-            start = [start] * 3
+        # Ensure that start and stop end up as a list of three u.Quantity objs
+        # and num a list of three integers
+        for k in ["start", "stop"]:
+            if isinstance(var[k], list):
+                if len(var[k]) == 1:
+                    var[k] = var[k] * 3
 
-        if isinstance(num, (int, float)):
-            num = [int(num)] * 3
+                # Make sure it's a list of quantities
+                if not all(isinstance(v, u.Quantity) for v in var[k]):
+                    raise ValueError(
+                        f"The argument `{k}` must be an "
+                        "`astropy.units.Quantity` or a list of same, "
+                        f"but a {type(var[k])} was given."
+                    )
+            elif isinstance(var[k], u.Quantity):
+                # Extend to 3 elements if only one is given
+                # Case of >1 but != 3 is handled later
+                if var[k].size == 1:
+                    var[k] = [var[k]] * 3
+                else:
+                    var[k] = list(var[k])
+
+            else:
+                raise ValueError(
+                    f"The argument `{k}` must be an "
+                    "`astropy.units.Quantity` or a list of same, "
+                    f"but a {type(var[k])} was given."
+                )
+
+        if isinstance(var["num"], list):
+            if len(var["num"]) == 1:
+                var["num"] = var["num"] * 3
+        elif isinstance(var["num"], int):
+            var["num"] = [var["num"]] * 3
+        else:
+            raise ValueError(
+                f"The argument `num` must be an int or list of "
+                f"same, but a {type(var[k])} was given."
+            )
 
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
-        var = {"stop": stop, "start": start, "num": num}
         for k in var.keys():
             if len(var[k]) != 3:
                 raise ValueError(
@@ -739,6 +767,11 @@ class AbstractGrid(ABC):
                     "list of three values, but "
                     f"({len(var[k])} values were given)."
                 )
+
+        # Take variables back out of dict
+        start = var["start"]
+        stop = var["stop"]
+        num = var["num"]
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
@@ -755,10 +788,6 @@ class AbstractGrid(ABC):
             except u.UnitConversionError:
                 raise ValueError(
                     f"Units of {stop[i]} and " f" {unit} are not compatible"
-                )
-            except AttributeError:
-                raise AttributeError(
-                    "Start and stop values must be u.Quantity instances."
                 )
 
             # strip units
