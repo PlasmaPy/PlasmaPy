@@ -112,6 +112,8 @@ create_args = [
     ([-1 * u.cm, 1 * u.cm], {"num": [10]}, (10, 10, 10), None),
     # num is a list of three elements
     ([-1 * u.cm, 1 * u.cm], {"num": [10, 5, 2]}, (10, 5, 2), None),
+    # start, stop, and num are tuples
+    ([(-1 * u.cm), (1 * u.cm)], {"num": (10, 5, 2)}, (10, 5, 2), None),
     # Test wrong number of positional arguments: too few
     ([1 * u.cm], {"num": 10}, None, TypeError),
     # Test wrong number of positional arguments: too nmany

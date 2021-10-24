@@ -697,15 +697,17 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        start : number (`~astropy.units.Quantity`) or array of three of the same
+        start : number (`~astropy.units.Quantity`) or an array, list, or
+            tupleof three of the same.
             Starting values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        stop : number (`~astropy.units..Quantity`) or array of three of the same
+        stop : number (`~astropy.units..Quantity`) or an array, list, or
+            tuple of three of the same.
             End values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
-        num : `int` or `list` of three `int` objects, optional
+        num : `int` or `list` or `tuple` of three `int` objects, optional
             The number of points in each dimension. If a single integer is
             given, the same number of points will be used in each dimension.
             The default is 100.
@@ -721,6 +723,10 @@ class AbstractGrid(ABC):
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
         for k in ["start", "stop"]:
+            # Convert tuple to list
+            if isinstance(var[k], tuple):
+                var[k] = list(var[k])
+
             if isinstance(var[k], list):
                 if len(var[k]) == 1:
                     var[k] = var[k] * 3
@@ -746,6 +752,10 @@ class AbstractGrid(ABC):
                     "`astropy.units.Quantity` or a list of same, "
                     f"but a {type(var[k])} was given."
                 )
+
+        # Convert tuple to list
+        if isinstance(var["num"], tuple):
+            var["num"] = list(var["num"])
 
         if isinstance(var["num"], list):
             if len(var["num"]) == 1:
