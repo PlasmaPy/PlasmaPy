@@ -218,19 +218,6 @@ abstract_attrs = [
 ]
 
 
-def test_AbstractGrid_interpolators_not_implemented(abstract_grid_uniform):
-    """
-    Verifies that interpolators raise a not implemented error
-    """
-    pos = np.array([0.1, -0.3, 0]) * u.cm
-
-    with pytest.raises(NotImplementedError):
-        abstract_grid_uniform.nearest_neighbor_interpolator(pos, "x")
-
-    with pytest.raises(NotImplementedError):
-        abstract_grid_uniform.volume_averaged_interpolator(pos, "x")
-
-
 @pytest.mark.parametrize("fixture,attr,type,type_in_iter,value", abstract_attrs)
 def test_AbstractGrid_attributes(
     fixture,
@@ -267,6 +254,19 @@ def test_AbstractGrid_attributes(
             assert np.isclose(attr, value, rtol=0.1)
         else:
             assert attr == value
+
+
+def test_AbstractGrid_interpolators_not_implemented(abstract_grid_uniform):
+    """
+    Verifies that interpolators raise a not implemented error
+    """
+    pos = np.array([0.1, -0.3, 0]) * u.cm
+
+    with pytest.raises(NotImplementedError):
+        abstract_grid_uniform.nearest_neighbor_interpolator(pos, "x")
+
+    with pytest.raises(NotImplementedError):
+        abstract_grid_uniform.volume_averaged_interpolator(pos, "x")
 
 
 quantities = [
@@ -989,10 +989,3 @@ def test_fast_nearest_neighbor_interpolate():
     result = grids._fast_nearest_neighbor_interpolate(pos, ax)
 
     assert np.allclose(expected, result)
-
-
-if __name__ == "__main__":
-    # test_volume_averaged_interpolator_known_solutions()
-    # test_fast_nearest_neighbor_interpolate()
-    # test_uniform_cartesian_nearest_neighbor_interpolator()
-    test_nonuniform_cartesian_nearest_neighbor_interpolator()
