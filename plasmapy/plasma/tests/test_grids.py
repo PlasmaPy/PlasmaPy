@@ -66,6 +66,23 @@ def abstract_grid_nonuniform():
     return grid
 
 
+@pytest.fixture
+def abstract_grid_not_cartesian():
+    """
+    A `pytest` fixture that generates an abstract grid that has different
+    units in different dimensions. This could represent a grid in cylindrical
+    coordinates.
+    """
+
+    grid = grids.AbstractGrid(
+        [-1 * u.cm, 0 * u.rad, -2 * u.cm],
+        [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm],
+        num=(5, 5, 5),
+    )
+
+    return grid
+
+
 create_args = [
     # Same start, stop and num for each axis
     ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
@@ -86,6 +103,16 @@ create_args = [
         (5, 5, 5),
         None,
     ),
+    # Array of quantities instead of a list
+    (
+        [
+            np.array([-1, -2, -3]) * u.cm,
+            np.array([1, 3, 2]) * u.cm,
+        ],
+        {"num": [10, 5, 3]},
+        (10, 5, 3),
+        None,
+    ),
     # Test wrong number of positional arguments: too few
     ([1 * u.cm], {"num": 10}, None, TypeError),
     # Test wrong number of positional arguments: too nmany
@@ -103,8 +130,21 @@ create_args = [
         None,
         ValueError,
     ),
+    # Start and stop must be quantities
+    (
+        [
+            [-1, -2, -3],
+            [1, 3, 2],
+        ],
+        {"num": [10, 5, 3]},
+        (10, 5, 3),
+        ValueError,
+    ),
+    ([-1, 1], {"num": 10}, (10, 10, 10), ValueError),
     # Test incompatible grid units
     ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
+    # Non-integer num
+    ([-1 * u.cm, 1 * u.cm], {"num": 10.1}, (10, 10, 10), ValueError),
 ]
 
 
@@ -126,6 +166,15 @@ def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
     """
     print(abstract_grid_uniform)
     print(abstract_grid_nonuniform)
+
+    # Test printing a grid with no quantities
+    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=3)
+    print(grid)
+
+    # Test printing a grid with unrecognized quantities
+    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=3)
+    grid.add_quantities(unrecognized_quantity=np.ones([3, 3, 3]) * u.T)
+    print(grid)
 
 
 abstract_attrs = [
@@ -386,6 +435,31 @@ def uniform_cartesian_grid():
     return grid
 
 
+create_args_uniform_cartesian = [
+    # Same start, stop and num for each axis
+    ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
+    # Incompatible units raises an exception
+    (
+        [[-1 * u.cm, 0 * u.rad, -2 * u.cm], [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm]],
+        {"num": 3},
+        (3, 3, 3),
+        ValueError,
+    ),
+]
+
+
+@pytest.mark.parametrize("args,kwargs,shape,error", create_args_uniform_cartesian)
+def test_CartesianGrid_creation(args, kwargs, shape, error):
+    # If no exception is expected, create the grid and check its shape
+    if error is None:
+        grid = grids.CartesianGrid(*args, **kwargs)
+        assert grid.shape == shape
+    # If an exception is expected, verify that it is raised
+    else:
+        with pytest.raises(error):
+            grid = grids.CartesianGrid(*args, **kwargs)
+
+
 @pytest.mark.parametrize(
     "pos,quantities,expected",
     [  # Test one point
@@ -505,6 +579,31 @@ def nonuniform_cartesian_grid():
     grid.add_quantities(rho=rho)
 
     return grid
+
+
+create_args_nonuniform_cartesian = [
+    # Same start, stop and num for each axis
+    ([-1 * u.cm, 1 * u.cm], {"num": 3}, (27,), None),
+    # Incompatible units raises an exception
+    (
+        [[-1 * u.cm, 0 * u.rad, -2 * u.cm], [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm]],
+        {"num": 3},
+        (27,),
+        ValueError,
+    ),
+]
+
+
+@pytest.mark.parametrize("args,kwargs,shape,error", create_args_nonuniform_cartesian)
+def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error):
+    # If no exception is expected, create the grid and check its shape
+    if error is None:
+        grid = grids.NonUniformCartesianGrid(*args, **kwargs)
+        assert grid.shape == shape
+    # If an exception is expected, verify that it is raised
+    else:
+        with pytest.raises(error):
+            grid = grids.NonUniformCartesianGrid(*args, **kwargs)
 
 
 @pytest.mark.parametrize(
