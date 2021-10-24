@@ -66,6 +66,68 @@ def abstract_grid_nonuniform():
     return grid
 
 
+create_args = [
+    # Same start, stop and num for each axis
+    ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
+    # Different start, stop, and num for each axis
+    (
+        [
+            [-1 * u.cm, -2 * u.cm, -3 * u.cm],
+            [1 * u.cm, 3 * u.cm, 2 * u.cm],
+        ],
+        {"num": [10, 5, 3]},
+        (10, 5, 3),
+        None,
+    ),
+    # Explicit arrays of points
+    (
+        np.meshgrid(*[np.linspace(-1, 1, num=5) * u.cm] * 3, indexing="ij"),
+        {},
+        (5, 5, 5),
+        None,
+    ),
+    # Test wrong number of positional arguments: too few
+    ([1 * u.cm], {"num": 10}, None, TypeError),
+    # Test wrong number of positional arguments: too nmany
+    ([1 * u.cm] * 4, {"num": 10}, None, TypeError),
+    # Test unequal lengths of arguments raises error
+    ([1 * u.cm, [2 * u.m, 3 * u.m]], {"num": 10}, None, ValueError),
+    # Test arrays of points that are different shapes
+    (
+        [
+            np.random.randn(2, 5, 3) * u.m,
+            np.random.randn(2, 5, 3) * u.m,
+            np.random.randn(2, 5, 4) * u.m,
+        ],
+        {},
+        None,
+        ValueError,
+    ),
+    # Test incompatible grid units
+    ([1 * u.cm, 1 * u.eV], {"num": 10}, None, ValueError),
+]
+
+
+@pytest.mark.parametrize("args,kwargs,shape,error", create_args)
+def test_AbstractGrid_creation(args, kwargs, shape, error):
+    # If no exception is expected, create the grid and check its shape
+    if error is None:
+        grid = grids.AbstractGrid(*args, **kwargs)
+        assert grid.shape == shape
+    # If an exception is expected, verify that it is raised
+    else:
+        with pytest.raises(error):
+            grid = grids.AbstractGrid(*args, **kwargs)
+
+
+def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
+    """
+    Verify that both __str__ methods can be called without errors
+    """
+    print(abstract_grid_uniform)
+    print(abstract_grid_nonuniform)
+
+
 abstract_attrs = [
     ("uniform", "is_uniform", bool, None, True),
     ("nonuniform", "is_uniform", bool, None, False),
@@ -103,13 +165,11 @@ abstract_attrs = [
     ("uniform", "_dax0_si", float, None, 0.001),
     ("uniform", "_dax1_si", float, None, 0.001),
     ("uniform", "_dax2_si", float, None, 0.001),
-    ("uniform", "grid_resolution", u.Quantity, None, 0.1 * u.cm),
-    ("nonuniform", "grid_resolution", u.Quantity, None, 0.5 * u.cm),
 ]
 
 
 @pytest.mark.parametrize("fixture,attr,type,type_in_iter,value", abstract_attrs)
-def test_abstract_grid_attributes(
+def test_AbstractGrid_attributes(
     fixture,
     attr,
     type,
@@ -122,7 +182,6 @@ def test_abstract_grid_attributes(
     Tests that the attributes of AbstractGrid have the correct type and
     values for the fixture abstract_grid_uniform.
     """
-
     # Chose which of the two fixtures to used based on this parameter
     if fixture == "uniform":
         grid = abstract_grid_uniform
@@ -137,6 +196,7 @@ def test_abstract_grid_attributes(
         for elem in attr:
             isinstance(elem, type_in_iter)
 
+    # If an expected value is given, verify the attribute matches
     if value is not None:
         if isinstance(value, np.ndarray):
             assert np.allclose(attr, value, rtol=0.1)
@@ -146,167 +206,153 @@ def test_abstract_grid_attributes(
             assert attr == value
 
 
+quantities = [
+    # Test adding one quantity
+    ("B_x", np.ones([21, 21, 21]) * u.T, None, None, None),
+    # Quantity shape does not match grid shape
+    ("B_x", np.ones([10, 10, 10]) * u.T, ValueError, None, None),
+    # Adding quantity with units not matching recognized quantities
+    ("B_x", np.ones([21, 21, 21]) * u.kg, ValueError, None, None),
+    ("not_recognized_quantity", np.ones([21, 21, 21]) * u.kg, None, UserWarning, None),
+]
 
-create_args = [
-    ([-1 * u.cm, 1 * u.cm], {'num':10}, None)]
 
-# @pytest.mark.parameterize()
-# def test_abstract_grid_creation(args, kwargs, is_uniform, )
+@pytest.mark.parametrize("key,value,error,warning,match", quantities)
+def test_AbstractGrid_add_quantities(
+    abstract_grid_uniform, key, value, error, warning, match
+):
+    """
+    Tests the add_quantities method of AbstractGrid
+    """
+    # If an error is expected, make sure it is raised
+    if error is not None:
+        with pytest.raises(error):
+            abstract_grid_uniform.add_quantities(**{key: value})
+    # If a warning is expected, make sure it occurs
+    elif warning is not None:
+        with pytest.warns(warning, match=match):
+            abstract_grid_uniform.add_quantities(**{key: value})
+    # Ensure that the quantity was correctly added and can be accessed
+    else:
+        abstract_grid_uniform.add_quantities(**{key: value})
+
+        # Quantity is accessible and matches values in dataset
+        assert np.all(abstract_grid_uniform[key] == value)
+        assert np.all(abstract_grid_uniform.ds[key].data == value.value)
+        # Quantity is correct type and unit
+        assert isinstance(abstract_grid_uniform[key], u.Quantity)
+        assert abstract_grid_uniform[key].unit == value.unit
+        # Quantity has same shape as grid
+        assert abstract_grid_uniform[key].shape == abstract_grid_uniform.shape
 
 
-def test_AbstractGrid():
+req_q = [
+    # Requiring an existing keyword
+    (["x"], False, None, None, None),
+    # Requiring a keyword that does not exist raises an exception
+    (["key_does_not_exist"], False, KeyError, None, None),
+    # Requiring a recognized keyword that isn't defined
+    # only raises a warning if replace_with_zeros is True, but
+    # an error if replace_with_zeros is False
+    (["E_x"], True, None, RuntimeWarning, "This quantity will be assumed to be zero"),
+    (["E_x"], False, KeyError, None, None),
+    # Cannot replace an unrecognized key with zeros
+    # (because we don't know the units to use)
+    (["key_does_not_exist"], True, KeyError, None, None),
+]
 
-    # Create grid with single u.Quantity args
-    grid = grids.AbstractGrid(, num=10)
-    assert grid.is_uniform
 
-    # Create grid with lists of  u.Quantity args
-    grid = grids.AbstractGrid(
-        [-1 * u.cm, -1 * u.cm, -1 * u.cm],
-        [1 * u.cm, 1 * u.cm, 1 * u.cm],
-        num=[10, 10, 10],
-    )
-    assert grid.is_uniform
-
-    # Create grid with arrays of u.quantities
-    grid = grids.AbstractGrid(
-        np.array([-1] * 3) * u.cm, np.array([1] * 3) * u.cm, num=[10, 10, 10]
-    )
-    assert grid.is_uniform
-
-    print(grid)
-
-    # Test wrong number of positional arguments: 1 or more than 3
-    with pytest.raises(TypeError):
-        grid = grids.AbstractGrid(1 * u.cm, num=10)
-    with pytest.raises(TypeError):
-        grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, 1 * u.cm, 1 * u.cm)
-
-    # Test unequal lengths of arguments raises error
-    with pytest.raises(ValueError):
-        grid = grids.AbstractGrid(-1 * u.m, [2 * u.m, 3 * u.m], num=10)
-
-    with pytest.raises(ValueError):
-        grid = grids.AbstractGrid(
-            np.random.randn(2, 5, 3) * u.m,
-            np.random.randn(2, 5, 3) * u.m,
-            np.random.randn(2, 5, 4) * u.m,
+@pytest.mark.parametrize("required,replace_with_zeros,error,warning,match", req_q)
+def test_AbstractGrid_require_quantities(
+    abstract_grid_uniform, required, replace_with_zeros, error, warning, match
+):
+    """
+    Tests the AbstractGrid require_quantities method
+    """
+    # If an error is expected, make sure it is raised
+    if error is not None:
+        with pytest.raises(error):
+            abstract_grid_uniform.require_quantities(
+                required, replace_with_zeros=replace_with_zeros
+            )
+    # If a warning is expected, make sure it occurs
+    elif warning is not None:
+        with pytest.warns(warning, match=match):
+            abstract_grid_uniform.require_quantities(
+                required, replace_with_zeros=replace_with_zeros
+            )
+    # Ensure the quantities do exist
+    else:
+        abstract_grid_uniform.require_quantities(
+            required, replace_with_zeros=replace_with_zeros
         )
 
-    # Test incompatible units
-    with pytest.raises(ValueError):
-        grid = grids.AbstractGrid(1 * u.cm, 1 * u.eV, num=10)
+        assert all(k in abstract_grid_uniform.quantities for k in required)
 
-    # Test adding a quantity
-    q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantities(B_x=q)
 
+def test_AbstractGrid_indexing(abstract_grid_uniform):
+    """
+    Tests using indexing to directly get and set quantity array elements
+    """
     # Test setting a subset of a quantity array
-    grid["B_x"][0, 0, 0] = 21 * u.T
-    assert grid["B_x"][0, 0, 0] == 21 * u.T
-
-    # Test accessing a quantity using __getitem__ or directly
-    Bx = grid.ds["B_x"]
-    Bx = grid["B_x"]
-    # Assert that the array returned is a u.Quantity
-    assert isinstance(Bx, u.Quantity)
-    # Assert that the array returned has the right shape
-    assert Bx.shape == grid.shape
-
-    # Test require_quantities
-    # Test with a key that is there
-    req_q = ["B_x"]
-    grid.require_quantities(req_q, replace_with_zeros=False)
-    req_q = ["B_x", "B_y"]
-    # Test with a key that is not there, but can be replaced
-    # Do not replace
-    with pytest.raises(KeyError):
-        grid.require_quantities(req_q, replace_with_zeros=False)
-    # Do replace
-    with pytest.warns(RuntimeWarning, match="This quantity will be assumed to be zero"):
-        grid.require_quantities(req_q, replace_with_zeros=True)
-    req_q = ["B_x", "B_y"]
-    # Test with a key that is not there, but cannot be replaced because
-    # it's not a recognized key
-    req_q = ["B_x", "not_a_recognized_key"]
-    with pytest.raises(KeyError):
-        with pytest.warns(
-            RuntimeWarning, match="This quantity will be assumed to be zero"
-        ):
-            grid.require_quantities(req_q, replace_with_zeros=True)
-
-    # Test adding a quantity with wrong units
-    q = np.random.randn(10, 10, 10) * u.kg
-    with pytest.raises(ValueError):
-        grid.add_quantities(B_x=q)
-
-    # Testing adding a quantity with an unrecognized key name
-    with pytest.warns(UserWarning):
-        grid.add_quantities(not_a_recognized_key=q)
-
-    # Test adding a quantity of incompatible size
-    q = np.random.randn(5, 20, 5) * u.T
-    with pytest.raises(ValueError):
-        grid.add_quantities(B_x=q)
-
-    # Test adding multiple quantities at once
-    q = np.random.randn(10, 10, 10) * u.T
-    grid.add_quantities(B_x=q, B_y=q, B_z=q)
-
-    print(grid)
+    abstract_grid_uniform["x"][0, 0, 0] = 2 * u.cm
+    assert abstract_grid_uniform["x"][0, 0, 0] == 2 * u.cm
 
 
+on_grid = [
+    # Test with two points: one on and one off
+    (
+        "uniform",
+        np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm,
+        np.array([True, False]),
+    ),
+    (
+        "nonuniform",
+        np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm,
+        np.array([True, False]),
+    ),
+]
 
 
+@pytest.mark.parametrize("fixture,pos,result", on_grid)
+def test_AbstractGrid_on_grid(
+    abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
+):
+    # Select one of the grid fixtures
+    if fixture == "uniform":
+        grid = abstract_grid_uniform
+    else:
+        grid = abstract_grid_nonuniform
 
-def test_CartesianGrid():
-
-    grid = grids.CartesianGrid(
-        np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
-    )
-
-    # Test initializing with a provided grid and a quantity
-    q = np.zeros(grid.shape)
-    grid2 = grids.CartesianGrid(
-        grid.grids[0], grid.grids[1], grid.grids[2], test_quantity=q
-    )
-
-    # Test that input with the wrong units will raise an exception
-    L0 = [-1 * u.mm, 0 * u.rad, -1 * u.mm]
-    L1 = [1 * u.mm, 2 * np.pi * u.rad, 1 * u.mm]
-    with pytest.raises(ValueError):
-        grid = grids.CartesianGrid(L0, L1, num=10)
-
-
-def test_grid_methods():
-    # ************ UNIFORM CARTESIAN ****************************
-    grid = grids.CartesianGrid(
-        np.array([-1, -1, -1]) * u.cm, np.array([1, 1, 1]) * u.cm, num=(10, 10, 10)
-    )
-
-    # Test on-grid
-    pos = np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm
     out = grid.on_grid(pos)
-    assert np.all(out == np.array([True, False]))
+    assert np.all(out == result)
 
-    # Test vector_intersects
-    # This vector passes through the grid
-    p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm
-    assert grid.vector_intersects(p1, p2)
-    # Test going backwards yields the same result
-    assert grid.vector_intersects(p2, p1)
+
+vector_intersect = [
+    # This vector goes through the grid
+    ("uniform", np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm, True),
     # This one doesn't
-    p1, p2 = np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm
-    assert not grid.vector_intersects(p1, p2)
-    assert not grid.vector_intersects(p2, p1)
+    ("uniform", np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm, False),
+    # Nonuniform grid: This vector goes through the grid
+    ("nonuniform", np.array([0, -5, 0]) * u.cm, np.array([0, 5, 0]) * u.cm, True),
+    # Nonuniform grid: This one doesn't
+    ("nonuniform", np.array([0, -5, 0]) * u.cm, np.array([0, -5, 10]) * u.cm, False),
+]
 
-    # ************ NON-UNIFORM CARTESIAN ****************************
 
-    grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
+@pytest.mark.parametrize("fixture,p1,p2,result", vector_intersect)
+def test_AbstractGrid_vector_intersects(
+    abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
+):
+    # Select one of the grid fixtures
+    if fixture == "uniform":
+        grid = abstract_grid_uniform
+    else:
+        grid = abstract_grid_nonuniform
 
-    pos = np.array([[0.1, -0.3, 0], [3, -0.3, 0]]) * u.cm
-    out = grid.on_grid(pos)
-    assert np.all(out == np.array([True, False]))
+    assert grid.vector_intersects(p1, p2) == result
+    # Test going backwards yields the same result
+    assert grid.vector_intersects(p2, p1) == result
 
 
 # **********************************************************************
@@ -724,7 +770,7 @@ def test_NonUniformCartesianGrid():
     grid.add_quantities(rho=q1)
 
     # Test grid resolution for non-uniform grids
-    assert 0 < grid.grid_resolution < 2
+    assert 0 * u.cm < grid.grid_resolution < 2 * u.cm
 
     # Test volume interpolator not implemented yet
     pos = np.array([5, -0.3, 0]) * u.cm
