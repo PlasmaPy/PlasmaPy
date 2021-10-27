@@ -15,9 +15,9 @@ from sympy.solvers import solve
 ) 
 def stix(
     B: u.T,
-    k: u.rad/u.m,
+    k: u.rad / u.m,
     ions: str,
-    omega_ions:u.rad/u.s,
+    omega_ions: u.rad / u.s,
     theta: u.rad,
 ):
     
@@ -73,8 +73,8 @@ def stix(
     of Bellan 2012 [1] presented here:
     
     ..math::
-        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() + 
-        PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
+        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
+         PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
     
     where,
     
@@ -91,8 +91,8 @@ def stix(
     as follows.
     
     ..math::
-        R = S + D \hspace{1cm} L = S - D 
-        
+        R = S + D \hspace{1cm} L = S - D
+
     The equation is valid for all :math:'\omega' and :math:'\k' providing that 
     :math:'\frac{\omega}{k_{z}} >> \nu_{Te}' with :math:'\nu_{Ti}' and :math:'k_{x}r_{Le,i} << 1'.
     The prediction of :math:'k \to 0' occurs when P, R or L cut off and predicts
@@ -104,8 +104,8 @@ def stix(
        JGR, 117, A12219, doi: `10.1029/2012JA017856
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
-    .. [2] TH Strix, 1992, Waves in Plasmas, Illustrated, 
-        Springer Science & Business Media, 1992, New York 
+    .. [2] TH Strix, 1992, Waves in Plasmas, Illustrated,
+        Springer Science & Business Media, 1992, New York
        Part C, doi: `10.1088/0368-3281/5/2/304
        <https://doi.org/10.1088/0368-3281/5/2/304>`_
     
@@ -125,7 +125,7 @@ def stix(
 
     """
     
-    for arg_name in ("B"):
+    for arg_name in "B":
         value = locals()[arg_name].squeeze()
         if not (value.ndim == 0):
             raise TypeError(
@@ -154,7 +154,7 @@ def stix(
             )
     
     k = k.squeeze()
-    if not (k.ndim == 0  or k.ndim == 1):
+    if not (k.ndim == 0 or k.ndim == 1):
         raise TypeError(
             f"Argument 'k' needs to be a single value or a 1D array astropy Quantity,"
             f"got a value of shape {k.shpae}."
@@ -178,15 +178,15 @@ def stix(
     k_dim = k.ndim
     if k_dim == 0:
         ck = np.zeros(1)
-        val = k*const.c
-        ck[0] =  val.value
+        val = k * const.c
+        ck[0] = val.value
     elif k_dim == 1:
         ck = np.zeros(len(k))
         for i in range(len(k)):
-            val = k[i]*const.c
+            val = k[i] * const.c
             ck[i] = val.value
     else:
-       raise TypeError(
+        raise TypeError(
             f"Argument 'k' needs to be a single value or 1D array astropy Quantity,"
             f"got value of shape {k.shape}."
         )
@@ -195,7 +195,7 @@ def stix(
 
     plasma_freq = np.zeros(sum_len)
 
-    component_frequency = np.tile(0*u.rad/u.s, sum_len)
+    component_frequency = np.tile(0 * u.rad / u.s, sum_len)
     for i in range(sum_len):
         component_frequency[i] = pfp.gyrofrequency(B=B, particle=ions[i], signed=True)
     
@@ -210,7 +210,7 @@ def stix(
             f"got value of shape {omega_ions.shape}."
         )
     
-    w = Symbol('w')
+    w = Symbol("w")
 
     S = 1
     P = 1
@@ -219,30 +219,30 @@ def stix(
     omegas = {}
 
     for i in range(sum_len):
-        S =+ ((plasma_freq[i]**2)/(w**2+(component_frequency[i].value)**2)) 
-        P =+ ((plasma_freq[i]**2)/(w**2))
-        D =+ ((plasma_freq[i]**2)/(w**2+(component_frequency[i].value)**2))*((component_frequency[i].value)/(w)) 
+        S = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2))
+        P = +((plasma_freq[i] ** 2) / (w ** 2))
+        D = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2)) * ((component_frequency[i].value) / (w))
 
     R = S + D
     L = S - D
     
-    A = S*(np.sin(theta.value)**2) + P*(np.cos(theta.value)**2)
-    B = R*L*(np.sin(theta.value)**2) + P*S*(1 + np.cos(theta.value)**2)
-    C = P*R*L
+    A = S * (np.sin(theta.value) ** 2) + P * (np.cos(theta.value) ** 2)
+    B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
+    C = P * R * L
     
     for i in range(len(ck)):
-        eq = A*((ck[i]/w)**4) - B*((ck[i]/w)**2) + C
+        eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
 
         sol = solve(eq, w, warn=True)
 
         sol_omega = []
     
         for j in range(len(sol)):
-            val = complex(sol[j])*u.rad/u.s
+            val = complex(sol[j]) * u.rad / u.s
             sol_omega.append(val)
             
         omegas[i] = sol_omega
-        val = (ck[i]/const.c.value)
+        val = ck[i] / const.c.value
         omegas[val] = omegas.pop(i)
     
     return omegas
