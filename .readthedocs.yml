@@ -10,11 +10,7 @@ formats:
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-<<<<<<< HEAD
-  version: "3.8"
-=======
   version: '3.8'
->>>>>>> _PP/main
   install:
   - requirements: requirements/install.txt
   - requirements: requirements/docs.txt
