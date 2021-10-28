@@ -182,8 +182,10 @@ class _FunctionInfo:
                     self.error_message(self.sig)
 
 
-def _create_label(label,color="black"):
-    return widgets.HTML(f"<h3 style='margin:0px;color:{color}'>{label}<h3>")
+def _create_label(label, color="black"):
+    ## This is done so voila switches colors according to theme
+    color_param = f"color:{color}" if color != "black" else ""
+    return widgets.HTML(f"<h3 style='margin:0px;{color_param}'>{label}<h3>")
 
 def _create_button():
     button = widgets.Button(description="Calculate Properties",button_style="info")
