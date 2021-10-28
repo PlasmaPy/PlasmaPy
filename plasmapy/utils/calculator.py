@@ -32,4 +32,7 @@ def main():
 
     command = f"voila {no_browser} --port={args.port} --theme={theme} {computed_calculator_path} \
         --VoilaConfiguration.file_whitelist=\"['favicon.ico']\""
-    subprocess.run(shlex.split(command))
+    try:
+        subprocess.call(shlex.split(command))
+    except KeyboardInterrupt:
+        print("Stopping calculator! Bye")
