@@ -1,6 +1,8 @@
 """ Script file to launch the notebook as a standalone clean app """
 
 import os
+import subprocess
+import shlex
 import argparse
 import plasmapy
 
@@ -18,4 +20,6 @@ def main():
     theme = 'dark' if args.dark else 'light'
     no_browser = "--no-browser" if args.no_browser else ""
 
-    os.system(f'voila {no_browser} --port={args.port} --theme={theme} {computed_calculator_path} --VoilaConfiguration.file_whitelist="[\'favicon.ico\']"')
+    command = f'voila {no_browser} --port={args.port} --theme={theme} {computed_calculator_path} \
+        --VoilaConfiguration.file_whitelist="[\'favicon.ico\']"'
+    subprocess.Popen(shlex.split(command))
