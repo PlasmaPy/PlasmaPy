@@ -32,4 +32,4 @@ def main():
 
     command = f"voila {no_browser} --port={args.port} --theme={theme} {computed_calculator_path} \
         --VoilaConfiguration.file_whitelist=\"['favicon.ico']\""
-    subprocess.Popen(shlex.split(command))
+    subprocess.run(shlex.split(command))
