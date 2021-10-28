@@ -1,0 +1,4 @@
+Revert most of #1084 and #1125, removing our implementation of the
+Chandrasekhar G function (for now!). This function may get brought
+back at a later date, once we have an implementation we numerically
+trust.

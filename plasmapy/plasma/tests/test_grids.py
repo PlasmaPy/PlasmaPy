@@ -176,6 +176,7 @@ def test_grid_methods():
     assert np.all(out == np.array([True, False]))
 
 
+@pytest.mark.slow
 def test_interpolate_indices():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
@@ -214,6 +215,7 @@ def test_interpolate_indices():
     assert np.allclose(pos, pout, atol=0.5)
 
 
+@pytest.mark.slow
 def test_nearest_neighbor_interpolator():
     # Create grid
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=25)
