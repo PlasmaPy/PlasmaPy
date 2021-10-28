@@ -1,2 +1,3 @@
 Fixed the normalization of the wavevector in the Thomson spectral density function,
-:func:`~plasmapy.diagnostics.thomson.spectral_density`.
+:func:`~plasmapy.diagnostics.thomson.spectral_density`.  The previous version was not
+properly normalizing the wavevector to unity.
