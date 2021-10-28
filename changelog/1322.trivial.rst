@@ -1,0 +1,3 @@
+Parametrized the tests for the ion_sound_speed function
+in test_parameters.py
+
