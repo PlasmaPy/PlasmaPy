@@ -1,0 +1,6 @@
+Re-enabled several flake8 checks by removing the following codes from
+the flake8.extend-ignore configuration in setup.cfg: ``D100``, ``D102``,
+``D103``, ``D104``, ``D200``, ``D210``, ``D301``, ``D401``, ``D407``,
+``D409``, ``D412``, ``E712``, ``E713``, ``F403``, ``F541``, ``RST213``,
+``RST306``, and ``RST902``. Addressed any failed linter checks from this
+modification.

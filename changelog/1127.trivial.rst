@@ -1,4 +1,0 @@
-Enabled some flake8_ checks that were being ignored. Fixed the majority
-of the flake8_ errors that popped up after removal in various files.
-Re-added error codes ``W605`` and ``RST210`` to the ignored list under
-flake8_ checks in :file:`setup.cfg`.
