@@ -47,7 +47,7 @@ def hollweg(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`T`.
+        The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
