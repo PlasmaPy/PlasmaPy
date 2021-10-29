@@ -230,7 +230,7 @@ def hollweg(
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
         raise ValueError(
-            f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
+            f"Argument 'k' needs to be single valued or a 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
         )
     if np.any(k <= 0):
