@@ -213,7 +213,7 @@ def hollweg(
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
-                f"Argument '{arg_name}' must a single value and not an array of "
+                f"Argument '{arg_name}' must be single valued and not an array of "
                 f"shape {val.shape}."
             )
         locals()[arg_name] = val
