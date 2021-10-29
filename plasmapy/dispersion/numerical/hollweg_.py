@@ -31,7 +31,7 @@ def hollweg(
     n_i: u.m ** -3,
     T_e: u.K,
     T_i: u.K,
-    theta: u.deg,
+    theta: u.rad,
     gamma_e: Union[float, int] = 1,
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
