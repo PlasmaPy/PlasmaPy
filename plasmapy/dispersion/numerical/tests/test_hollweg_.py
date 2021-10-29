@@ -78,7 +78,7 @@ class TestHollweg:
             ),
         ],
     )
-    def test_warning(self, kawrgs, _warning):
+    def test_warning(self, kwargs, _warning):
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
