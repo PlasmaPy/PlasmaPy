@@ -156,8 +156,8 @@ def hollweg(
 
     References
     ----------
-    .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
-       JGR, 117, A12219, doi: `10.1029/2012JA017856
+    .. [1] PM Bellan, Improved basis set for low frequency plasma waves,
+       2012, JGR, 117, A12219, doi: `10.1029/2012JA017856
        <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
     .. [2] JV Hollweg, Kinetic Alfven wave revisited, 1999, JGR, 104(A7),
