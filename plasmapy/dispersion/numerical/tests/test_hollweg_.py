@@ -20,7 +20,7 @@ class TestHollweg:
         "B": 2.2e-8 * u.T,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
-        "ion": Particle("p+")
+        "ion": Particle("p+"),
     }
 
     @pytest.mark.parametrize(
