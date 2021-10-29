@@ -132,8 +132,8 @@ def hollweg(
     Notes
     -----
 
-    The equation presented in Hollweg 1999 [2]_ (equation 3 in Bellan 2012
-    [1]_) is:
+    The equation presented in Hollweg 1999 [2]_ (equation 3 in Bellan
+    2012 [1]_) is:
 
     .. math::
         \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
