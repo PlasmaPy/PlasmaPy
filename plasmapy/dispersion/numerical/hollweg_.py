@@ -42,7 +42,7 @@ def hollweg(
     calculates the numerical solution to the two fluid dispersion relation
     presented by Hollweg 1999. This dispersion relation assumes
     :math:`\omega/\omega_{\rm ci} \ll 1`, a uniform magnetic field
-    :math: `\mathbf{B_0}`, and quasi-neutrality.
+    :math:`\mathbf{B_0}`, and quasi-neutrality.
 
     Parameters
     ----------
