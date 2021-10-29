@@ -54,7 +54,7 @@ def hollweg(
         charge state information is provided, then the ions are assumed to be
         singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
         Ion number density in units convertible to :math:`m^{-3}`.
