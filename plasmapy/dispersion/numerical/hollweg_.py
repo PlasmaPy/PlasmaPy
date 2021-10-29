@@ -57,7 +57,8 @@ def hollweg(
         Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Ion number density in units convertible to
+        :math:`\text{m}^{-3}`.
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of :math:`K` or :math:`eV`.
     T_i : `~astropy.units.Quantity`
