@@ -63,9 +63,9 @@ def hollweg(
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
-        The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
-        Either single valued or 1-D array of size :math:`M`.
+        The angle of propagation of the wave with respect to the magnetic
+        field, :math:`\cos^{-1}(k_z / k)`, in units convertible to
+        radians.  Either single valued or 1-D array of size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
         value assumes that the electrons are able to equalize their
