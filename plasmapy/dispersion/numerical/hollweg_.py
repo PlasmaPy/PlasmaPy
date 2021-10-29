@@ -60,7 +60,7 @@ def hollweg(
         Ion number density in units convertible to
         :math:`\text{m}^{-3}`.
     T_e : `~astropy.units.Quantity`
-        The electron temperature in units of :math:`K` or :math:`eV`.
+        The electron temperature in units of K or eV.
     T_i : `~astropy.units.Quantity`
         The ion temperature in units of :math:`K` or :math:`eV`.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
