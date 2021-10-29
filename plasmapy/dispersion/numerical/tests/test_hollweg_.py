@@ -14,7 +14,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
 class TestHollweg:
     _kwargs_single_valued = {
         # Values may need to be changed
-        "k": .01 * u.rad / u.m,
+        "k": 0.01 * u.rad / u.m,
         "theta": 88 * u.deg,
         "n_i": 5 * u.cm ** -3,
         "B": 2.2e-8 * u.T,
@@ -57,7 +57,7 @@ class TestHollweg:
     )
     def test_raises(self, kwargs, _error):
         """Test scenarios that raise an `Exception`."""
-        with pytest.raises(error_):
+        with pytest.raises(_error):
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
