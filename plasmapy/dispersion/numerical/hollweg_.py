@@ -126,7 +126,8 @@ def hollweg(
     -----
     : `~plasmapy.utils.exceptions.PhysicsWarning`
         When the computed wave frequencies violate the
-        :math:`\omega/\omega_{\rm ci} \ll 1` assumption of the dispersion relation.
+        :math:`\omega/\omega_{\rm ci} \ll 1` assumption of the
+        dispersion relation.
 
     Notes
     -----
