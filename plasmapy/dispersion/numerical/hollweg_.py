@@ -106,7 +106,8 @@ def hollweg(
         expected units.
 
     ValueError
-        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is
+        negative.
 
     ValueError
         If ``k`` is negative or zero.
