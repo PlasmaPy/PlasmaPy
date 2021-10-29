@@ -98,10 +98,12 @@ def hollweg(
         If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        or `float`.
+
     ~astropy.units.UnitTypeError
-        If applicable arguments do not have units convertible to the expected
-        units.
+        If applicable arguments do not have units convertible to the
+        expected units.
 
     ValueError
         If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
