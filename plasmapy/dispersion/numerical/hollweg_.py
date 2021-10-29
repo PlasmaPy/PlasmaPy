@@ -249,7 +249,7 @@ def hollweg(
         k = (
             np.array(
                 [
-                    inputs["k"].value,
+                    k.value,
                 ]
             )
             * u.rad
