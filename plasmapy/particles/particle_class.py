@@ -2224,14 +2224,17 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
 
     Parameters
     ----------
-    symbol Symbol of the molecule to be parsed.
-    Z charge number if not present in symbol.
+    symbol : 'str'
+        Symbol of the molecule to be parsed.
+
+    Z : 'Integral', optional
+        Charge number if not present in symbol.
 
     Returns
     -------
-    A |Particle| object if the input could be parsed as such,
-    or a |CustomParticle| with the provided symbol, charge,
-    and a mass corresponding to the sum of the molecule elements.
+        A |Particle| object if the input could be parsed as such,
+        or a |CustomParticle| with the provided symbol, charge,
+        and a mass corresponding to the sum of the molecule elements.
     """
     try:
         return Particle(symbol, Z=Z)

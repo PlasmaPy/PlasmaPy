@@ -481,14 +481,31 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
 
     Parameters
     ----------
-    argument The molecule symbol to be parsed
-    Z the provided charge number
+    argument : 'str'
+        The molecule symbol to be parsed.
+    Z : 'Integral', optional
+        the provided charge number.
 
     Returns
     -------
-    A dictionary with identified element symbols as keys and amount of each as values.
-    The molecule symbol stripped of the charge.
-    The integer charge.
+    elements_dict : 'dict'
+        A dictionary with identified element symbols as keys and amount of each as values.
+        The molecule symbol stripped of the charge.
+        The integer charge.
+    molecule_info : 'str'
+        The molecule symbol stripped of its charge.
+    Z : 'int'
+        The molecule charge.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If the Symbol couldn't be parsed.
+    Warns
+    -----
+    `ParticleWarning`
+       If The charge is given both as an argument and in the symbol.
+
     """
     molecule_info, z_from_arg = _extract_charge(argument)
     if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):
