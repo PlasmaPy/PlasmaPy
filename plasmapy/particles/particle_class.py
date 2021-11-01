@@ -2235,6 +2235,16 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
         A |Particle| object if the input could be parsed as such,
         or a |CustomParticle| with the provided symbol, charge,
         and a mass corresponding to the sum of the molecule elements.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If the Symbol couldn't be parsed.
+
+    Warns
+    -----
+    `ParticleWarning`
+        If The charge is given both as an argument and in the symbol.
     """
     try:
         return Particle(symbol, Z=Z)
