@@ -508,7 +508,7 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
         if Z != z_from_arg:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
-                f"'{argument}' is inconsistent with the keyword Z = {Z}."
+                f"{argument!r} is inconsistent with the keyword Z = {Z}."
             )
         else:
             warnings.warn(
