@@ -1384,24 +1384,35 @@ def test_CustomParticle_cmp():
     assert particle1 != 1
 
 
-def test_molecule():
+test_molecule_table = [
+    (2 * 126.90447 * u.u, 0 * u.C, "I2", "I2", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2 1+", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
+    (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
+]
+
+
+@pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
+def test_molecule(m, Z, symbol, m_symbol, m_Z):
     """Test ``molecule`` function."""
-    assert CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2") == molecule("I2")
-    assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2 1+")
-    assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule("I2", Z=1)
-    assert CustomParticle(2 * 126.90447 * u.u, e.si, "II 1+") == molecule("II", Z=1)
+    assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
+
+
+test_molecule_error_table = [("Zz", None), ("", None), ("I2+", 2), ("Iii", None)]
+
+
+@pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
+def test_molecule_error(symbol, Z):
+    """Test the error raised in case of a bad molecule symbol."""
+    with pytest.raises(InvalidParticleError):
+        m = molecule(symbol, Z)
+
+
+def tes_molecule_other():
+    """Test fallback to |Particle| object and warning in case of redundant charge."""
     assert Particle("I") == molecule("I")
 
     with pytest.warns(ParticleWarning):
         assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
             "I2 1+", Z=1
         )
-
-    with pytest.raises(InvalidParticleError):
-        m = molecule("Zz")
-    with pytest.raises(InvalidParticleError):
-        m = molecule("")
-    with pytest.raises(InvalidParticleError):
-        m = molecule("I2+", Z=2)
-    with pytest.raises(InvalidParticleError):
-        m = molecule("Iii")
