@@ -65,24 +65,23 @@ on our
 [Matrix](https://app.element.io/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. Both of these are the same chat channel; Gitter uses a bridge to link the two.
 
-## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://meet.jit.si/plasmapy)
+## [Community events](https://www.plasmapy.org/meetings)
 
-We have weekly community meetings in the
-[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
-The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
-agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
-Any last minute changes will be discussed on
+We have several recurring community events on topics related to PlasmaPy.
+
+ - Our [weekly community
+   meetings](https://www.plasmapy.org/meetings/weekly) are held to
+   discuss issues related to code development. As of November 2021,
+   these meetings are held on Tuesdays at 2 pm ET.
+ - Our [weekly office hours](https://www.plasmapy.org/meetings/office_hours/)
+   are an opportunity to chat with active members of the PlasmaPy
+   community about the package and project. As of November 2021, these
+   meetings are held on Thursdays at 3 pm ET.
+
+For the most up-to-date information, please go to the [PlasmaPy meetings
+page](https://www.plasmapy.org/meetings/). Any cancellations or last
+minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of January 2021, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/6pm).
-Come discuss plasma software with us!
-
-## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)
-
-PlasmaPy's weekly [office hours](http://www.plasmapy.org/meetings/office_hours/)
-on Thursdays at [19:00 UTC](http://time.unitarium.com/utc/6pm)
-are an opportunity to chat with active members of the PlasmaPy
-community about the package and project.
 
 ## [GitHub discussions](https://github.com/PlasmaPy/PlasmaPy/discussions)
 
@@ -127,9 +126,8 @@ instructions](./docs/about/citation.rst).
 
 # Acknowledgements
 
-Early development on PlasmaPy was supported in part by the U.S.
-Department of Energy, the Smithsonian Institution, and Google Summer of
-Code. Ongoing PlasmaPy development is being supported through a
-collaborative award from the U.S. National Science Foundation's
-Cyberinfrastructure for Sustained Scientific Innovation program and a
-NASA Heliophysics Data Environment Enhancements award.
+Work on PlasmaPy has been supported in part by the U.S. Department of
+Energy, NASA, the Smithsonian Institution, and Google Summer of Code.
+Ongoing PlasmaPy development is being supported through a collaborative
+award from the U.S. National Science Foundation's Cyberinfrastructure
+for Sustained Scientific Innovation program.
