@@ -91,7 +91,6 @@ class TestHollweg:
                     **_kwargs_single_valued,
                     "ion": Particle("He"),
                     "z_mean": 2.0,
-                    "theta": 0 * u.deg,
                 },
                 {**_kwargs_single_valued, "ion": Particle("He +2")},
             ),
