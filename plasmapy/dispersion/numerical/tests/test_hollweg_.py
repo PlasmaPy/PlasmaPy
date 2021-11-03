@@ -108,7 +108,7 @@ class TestHollweg:
         ws_expected = hollweg(**expected)
 
         for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=0.5, rtol=1.7e-4)
+            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
