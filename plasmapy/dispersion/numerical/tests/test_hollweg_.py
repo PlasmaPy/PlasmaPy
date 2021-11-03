@@ -20,7 +20,7 @@ class TestHollweg:
         "B": 2.2e-8 * u.T,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
-        "ion": Particle("p+"),
+        "ion": Particle("He+"),
     }
 
     @pytest.mark.parametrize(
@@ -82,3 +82,56 @@ class TestHollweg:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                {
+                    **_kwargs_single_valued,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                    "theta": 0 * u.deg,
+                },
+                {**_kwargs_single_valued, "ion": Particle("He +2")},
+            ),
+            #
+            # z_mean defaults to 1
+            (
+                {**_kwargs_single_valued, "ion": Particle("He")},
+                {**_kwargs_single_valued, "ion": Particle("He+")},
+            ),
+        ],
+    )
+    def test_z_mean_override(self, kwargs, expected):
+        """Test overriding behavior of kw 'z_mean'."""
+        ws = hollweg(**kwargs)
+        ws_expected = hollweg(**expected)
+
+        for mode in ws:
+            assert np.isclose(ws[mode], ws_expected[mode], atol=0, rtol=1.7e-4)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            ({**_kwargs_single_valued}, {"shape": ()}),
+            (
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
+                {"shape": (3,)},
+            ),
+        ],
+    )
+    def test_return_structure(self, kwargs, expected):
+        """Test the structure of the returned values."""
+        ws = hollweg(**kwargs)
+
+        assert isinstance(ws, dict)
+        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
+
+        for mode, val in ws.items():
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.rad / u.s
+            assert val.shape == expected["shape"]
