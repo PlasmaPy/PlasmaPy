@@ -504,7 +504,7 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     Warns
     -----
     `ParticleWarning`
-       If The charge is given both as an argument and in the symbol.
+        If The charge is given both as an argument and in the symbol.
     """
 
     molecule_info, z_from_arg = _extract_charge(argument)
