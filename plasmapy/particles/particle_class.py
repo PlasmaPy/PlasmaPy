@@ -2248,26 +2248,26 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
 
     Examples
     --------
-    >>>from plasmapy.particles import molecule
+    >>> from plasmapy.particles import molecule
     >>> molecule("I2")
     CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C)
 
     Charge information is given either wint the symbol or as a second parameter.
 
-    >>>molecule("I2+")
+    >>> molecule("I2+")
     CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
 
-    >>>molecule("I2", 1)
+    >>> molecule("I2", 1)
     CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
 
     Inputs that can pe interpreted as |Particle| instances are returned as such.
 
-    >>>molecule("Xe")
+    >>> molecule("Xe")
     Particle("Xe")
 
     The given symbol is preserved in the |CustomParticle| instance. This permits to differentiate between isomers
 
-    >>>molecule("CH4O2") == molecule("CH3OOH")
+    >>> molecule("CH4O2") == molecule("CH3OOH")
     False
 
     """
