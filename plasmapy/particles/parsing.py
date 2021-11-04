@@ -501,12 +501,12 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     ------
     'InvalidParticleError'
         If the Symbol couldn't be parsed.
+
     Warns
     -----
     `ParticleWarning`
         If The charge is given both as an argument and in the symbol.
     """
-
     molecule_info, z_from_arg = _extract_charge(argument)
     if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):
         raise InvalidParticleError(
