@@ -120,6 +120,7 @@ grid_data = [
     ],
 ]
 
+
 def _create_interactive_layout():
     """
     Interactive grid layout for input parameters populated in grid_data

@@ -1,4 +1,4 @@
-""" 
+"""
 Script and utilities to launch the plasma calculator
 """
 
@@ -8,6 +8,7 @@ import shlex
 import subprocess
 
 import plasmapy
+
 
 def main():
     """

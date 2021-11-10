@@ -41,7 +41,7 @@ class _GenericWidget:
         This value is key for the values_container.
 
     property_alias: `str`
-        Alias of the property, Useful to display in validation 
+        Alias of the property, Useful to display in validation
         error messages.
 
     values_cont: `dict`
@@ -52,6 +52,7 @@ class _GenericWidget:
     `NotImplementedError`
         If the method `create_widget` is not implemented.
     """
+
     def __init__(self, property_name, property_alias="", values_cont=values_container):
         self.property_name = property_name
         self.property_alias = property_alias or property_name
@@ -61,7 +62,7 @@ class _GenericWidget:
         self.units_dropdown = None
 
     def set_unit(self, unit):
-        """ 
+        """
         Set unit for the value of widget, defaults to None
 
         Parameters
@@ -72,8 +73,8 @@ class _GenericWidget:
         self.unit = unit
 
     def get_widget(self):
-        """ 
-        Get current widget object reference 
+        """
+        Get current widget object reference
 
         Returns
         -------
@@ -84,7 +85,7 @@ class _GenericWidget:
 
     def get_dropdown_widget(self):
         """
-        Get dropdown widget associated with current widget, defaults to none 
+        Get dropdown widget associated with current widget, defaults to none
 
         Returns
         -------
@@ -95,7 +96,7 @@ class _GenericWidget:
 
     def set_place_holder(self, text):
         """
-        Set place holder text of the widget, defaults to '' 
+        Set place holder text of the widget, defaults to ''
 
         Parameters
         ----------
@@ -105,8 +106,8 @@ class _GenericWidget:
         self.widget.placeholder = text
 
     def create_widget(self):
-        """ 
-        virtual method to create widget 
+        """
+        virtual method to create widget
 
         Raises
         ------
@@ -116,7 +117,7 @@ class _GenericWidget:
         raise NotImplementedError()
 
     def post_creation(self):
-        """ 
+        """
         default method that is called after widget creation,
         Attaches change listener to the widget.
         """
@@ -197,7 +198,7 @@ class _GenericWidget:
         """
         Special method that attaches dropdown widget to the input widget,
         and handles the change event of the dropdown widget.
-        
+
         Parameters
         ----------
         options: `list`
@@ -255,13 +256,14 @@ class _FloatBox(_GenericWidget):
     ----------
     property_name: `str`
         Name of the property the widget is associated with.
-    
+
     min: `float`
         Minimum value the widget can take
 
     max: `float`
         Maximum value the widget can take
     """
+
     def __init__(self, property_name, min=-1e50, max=1e50):
         super().__init__(property_name)
         self.min = min
@@ -292,6 +294,7 @@ class _CheckBox(_GenericWidget):
     property_name: `str`
         Name of the property the widget is associated with.
     """
+
     def __init__(self, property_name):
         super().__init__(property_name)
 
@@ -317,6 +320,7 @@ class _ParticleBox(_GenericWidget):
         Alias of the property the widget is associated with.
         (particle_type in this case)
     """
+
     def __init__(self, property_name, property_alias=None):
         super().__init__(property_name, property_alias=property_alias)
 
@@ -387,6 +391,7 @@ class _IonBox(_ParticleBox):
     property_alias: `str`
         Alias of the property the widget is associated with.
     """
+
     def __init__(self, property_name, property_alias=None):
         super().__init__(property_name, property_alias=property_alias)
 
@@ -432,6 +437,7 @@ class _FunctionInfo:
     values_container: `dict`
         Reference to global dictionary of values to be passed to the function
     """
+
     def __init__(self, module_name, function_name, values_cont=values_container):
         self.module = module_name
         self.fname = function_name
@@ -453,7 +459,7 @@ class _FunctionInfo:
         ----------
         spec_combo: `list`
             List of parameters to be used in the function
-        
+
         Example:
         -------
         For plasmapy.formulary.gyroradius the specific combo's are as follows:
@@ -500,7 +506,7 @@ class _FunctionInfo:
     def error_message(self, spec):
         """
         Generates an error message for the function when parameters are missing
-        
+
         Parameters
         ----------
         spec: `list`
