@@ -243,7 +243,7 @@ class _GenericWidget:
         else:
             try:
                 self.try_change_value(value)
-            except:
+            except Exception:
                 self.display_error(value)
 
 
@@ -460,7 +460,7 @@ class _FunctionInfo:
         spec_combo: `list`
             List of parameters to be used in the function
 
-        Example:
+        Example
         -------
         For plasmapy.formulary.gyroradius the specific combo's are as follows:
         ["B","particle","Vperp"] and ["B","particle","T"]
@@ -564,7 +564,7 @@ def _create_label(label, color="black"):
     color: `str`
         Color of the label, defaults to black
     """
-    ## This is done so voila switches colors according to theme
+    # This is done so voila switches colors according to theme
     color_param = f"color:{color}" if color != "black" else ""
     return widgets.HTML(f"<h3 style='margin:0px;{color_param}'>{label}<h3>")
 
@@ -603,9 +603,7 @@ def _colored_text(color, text):
     `str`
         Colored text
     """
-    return "\033[38;2;{};{};{}m{} \033[38;2;255;255;255m".format(
-        color[0], color[1], color[2], text
-    )
+    return f"\033[38;2;{color[0]};{color[1]};{color[2]}m{text} \033[38;2;255;255;255m"
 
 
 _calculate_button = widgets.Button(

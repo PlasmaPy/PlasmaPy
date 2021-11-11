@@ -4,7 +4,6 @@ Collection of private functions to load properties and construct widgets
 
 import astropy.units as units
 import json
-import os
 
 from ipywidgets import widgets
 
@@ -23,8 +22,6 @@ from plasmapy.utils.calculator.widget_helpers import (
 
 light_blue = "#00BFD8"
 light_gray = "#A9A9A9"
-
-__all__ = ["_create_interactive_layout", "_create_output_layout", "test"]
 
 """
 Grid Data specifies how the input section is layed out
