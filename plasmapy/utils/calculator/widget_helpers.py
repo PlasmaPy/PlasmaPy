@@ -463,8 +463,7 @@ class _FunctionInfo:
         Example:
         -------
         For plasmapy.formulary.gyroradius the specific combo's are as follows:
-        >>> self.add_combo(["B","particle","Vperp"])
-        >>> self.add_combo(["B","particle","T"])
+        ["B","particle","Vperp"] and ["B","particle","T"]
         """
         if not self.spec_combo:
             self.spec_combo = []
