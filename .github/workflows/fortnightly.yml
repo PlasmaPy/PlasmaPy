@@ -20,31 +20,31 @@ jobs:
           python: 3.8
           toxenv: py38-astropydev
 
+        - name: Python 3.8 with matplotlib dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-matplotlibdev
+
         - name: Python 3.8 with NumPy dev
           os: ubuntu-latest
           python: 3.8
           toxenv: py38-numpydev
 
-        - name: Python 3.8 with xarray dev
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-xarraydev
-
         - name: Python 3.8 with SciPy dev
           os: ubuntu-latest
           python: 3.8
-          toxenv: py38-dev
-
-        - name: Python 3.8 with matplotlib dev
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-matplotlibdev
+          toxenv: py38-scipydev
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
           python: 3.8
           toxenv: build_docs-sphinxdev
           toxposargs: -q
+
+        - name: Python 3.8 with xarray dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-xarraydev
 
     steps:
     - name: Checkout code
