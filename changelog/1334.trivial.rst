@@ -1,0 +1,2 @@
+Increased the minimum version of matplotlib to 3.3.0 and enabled
+compatibility with matplotlib 3.5.0.
