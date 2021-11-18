@@ -1,1 +1,0 @@
-Allowed `len` to be used on |IonizationState| instances.

@@ -1,2 +1,0 @@
-Updated the documentation guide to include updates to tox_ environments
-for building the documentation.

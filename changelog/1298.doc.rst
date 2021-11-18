@@ -1,2 +1,0 @@
-Added a screenshot of the link for the `Read the Docs`_ preview of the
-documentation for a pull request.

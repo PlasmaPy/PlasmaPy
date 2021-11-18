@@ -1,1 +1,0 @@
-Updated and fixed hyperlinks in the documentation.

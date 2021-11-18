@@ -1,2 +1,0 @@
-Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
-to be stored in a BibTeX_ file.

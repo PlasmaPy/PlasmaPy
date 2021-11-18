@@ -1,2 +1,0 @@
-Improved consistency of documentation style and made
-reST_ fixes in several subpackages.

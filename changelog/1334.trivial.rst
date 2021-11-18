@@ -1,3 +1,0 @@
-Increased the minimum version of matplotlib to 3.3.0 and updated
-`plasmapy.diagnostics.langmuir.swept_probe_analysis` to be compatible
-with matplotlib 3.5.0.

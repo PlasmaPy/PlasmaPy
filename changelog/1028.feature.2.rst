@@ -1,3 +1,0 @@
-Added the
-`~plasmapy.particles.ionization_state_collection.IonizationStateCollection.average_ion`
-method to |IonizationStateCollection|.
