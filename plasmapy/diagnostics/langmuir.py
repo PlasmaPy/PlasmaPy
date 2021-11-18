@@ -415,7 +415,7 @@ def swept_probe_analysis(
                 c="c",
             )
             ax2.plot(tot_current.bias, np.abs(tot_current.current), c="g")
-            ax2.set_yscale("log", nonposy="clip")
+            ax2.set_yscale("log", nonpositive="clip")
             ax1.legend(loc="best")
             ax2.legend(loc="best")
 
