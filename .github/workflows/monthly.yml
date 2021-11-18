@@ -1,8 +1,8 @@
-name: weekly tests
+name: monthly tests
 
 on:
   schedule:
-  - cron: 17 7 * * 1
+  - cron: 17 7 1 * *
   workflow_dispatch:
 
 jobs:
@@ -29,6 +29,16 @@ jobs:
           os: ubuntu-latest
           python: 3.8
           toxenv: py38-xarraydev
+
+        - name: Python 3.8 with SciPy dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-dev
+
+        - name: Python 3.8 with matplotlib dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-matplotlibdev
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
