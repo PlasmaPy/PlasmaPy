@@ -1,2 +1,2 @@
 Improved consistency of documentation style and made
-reStructuredText fixes in several subpackages.
+reST_ fixes in several subpackages.
