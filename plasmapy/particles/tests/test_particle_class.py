@@ -1380,5 +1380,5 @@ def test_CustomParticle_cmp():
     ), "CustomParticle instances that should be equal are not."
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
-    with pytest.raises(TypeError):
-        particle1 == 1
+    assert not particle1 == 1
+    assert particle1 != 1
