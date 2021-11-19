@@ -3,16 +3,18 @@ Changelog Guide
 ***************
 
 .. This directory contains "news fragments" which are files that contain
-    a short description of the changes that will be added to the
-    changelog for the next release.  The rendered version of this
-    document is in PlasmaPy's online documentation at:
-    https://docs.plasmapy.org/en/latest/development/changelog_guide.html
+   a short description of the changes that will be added to the
+   changelog for the next release.
+
+.. The rendered version of this document is in PlasmaPy's online
+   documentation at:
+   https://docs.plasmapy.org/en/latest/development/changelog_guide.html
 
 A changelog tells users and contributors what notable changes have been
 made between each release. Pull requests to PlasmaPy need changelog
 entries before they can be merged, except when the changes are very
 minor. PlasmaPy uses towncrier_ to convert the changelog entries into
-the full changelog.  An example changelog entry would be:
+the full changelog. An example changelog entry would be:
 
 .. code-block:: rst
 
@@ -30,15 +32,14 @@ pull request to PlasmaPy's ``main`` branch.
    pull request number and ``⟨type⟩`` is replaced with one of the
    following changelog types:
 
-   * ``breaking``: A change which requires users to change code and is
-     not backwards compatible. (Not to be used for removal of deprecated
-     features.)
-   * ``bugfix``: Fixes a bug.
-   * ``doc``: Documentation addition or improvement, like rewording a
-     section or adding missing docs.
-   * ``feature``: New user facing features and any new behavior.
-   * ``removal``: Feature deprecation and/or feature removal.
-   * ``trivial``: A change which has no user-facing effect or is tiny.
+   * ``breaking``: For backwards incompatible changes that would require
+     users to change code. Not to be used for removal of deprecated
+     features.
+   * ``bugfix``: For changes that fix bugs or problems with the code.
+   * ``doc``: For changes to the documentation.
+   * ``feature``: For new user-facing features and any new behavior.
+   * ``removal``: For feature deprecation and/or removal.
+   * ``trivial``: For changes that have no user-facing effects.
 
    Pull request `#1198 <https://github.com/PlasmaPy/PlasmaPy/pull/1198>`__
    includes an update to the documentation, so the file should be named
@@ -58,8 +59,6 @@ pull request to PlasmaPy's ``main`` branch.
 
       For multiple changes in a single category, use filenames like
       :file:`1208.trivial.1.rst` and :file:`1208.trivial.2.rst`.
-
-
 
 #. Open that file and write a short description of the changes that were
    made. As an example, :file:`1198.doc.rst` might include:
@@ -93,15 +92,16 @@ Changelog guidelines
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
   ```~plasmapy.particles.particle_class.Particle``` to refer to
-  |Particle|. The tilde is used to hide all but the name of the object.
+  |Particle|. The tilde may be used to hide all but the name of the
+  object.
 
-* Show the full namespace for objects that have been removed or moved,
-  and use double back ticks so that the name is rendered as code without
-  attempting to create a link.
+* Show the full former namespace for objects that have been removed or
+  moved, and use double back ticks so that the name is rendered as code
+  without attempting to create a link.
 
   .. code-block:: rst
 
-     Removed the ``plasmapy.physics`` subpackage. The functionality in
+     Removed the ``plasmapy.physics`` subpackage. The functionality from
      that subpackage is now in `plasmapy.formulary`.
 
 * Substitutions as defined in :file:`common_links.rst` may be used in
@@ -120,8 +120,9 @@ Changelog guidelines
 Building the changelog
 ======================
 
-To install towncrier_ and the other packages needed to develop PlasmaPy,
-go to the top-level directory of your local clone of PlasmaPy and run:
+During the release cycle, towncrier_ is used to build the changelog. To
+install towncrier_ and the other packages needed to develop PlasmaPy, go
+to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
