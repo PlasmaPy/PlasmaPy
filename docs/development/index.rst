@@ -11,7 +11,7 @@ Contributor Guide
    ../CODE_OF_CONDUCT
    install_dev
    code_guide
-   ../changelog/README.rst
+   changelog_guide
    testing_guide
    doc_guide
    release_guide
