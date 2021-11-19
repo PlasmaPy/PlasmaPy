@@ -1,0 +1,2 @@
+Enabled slicing of |IonizationState| instances to return a list of
+|IonicLevel| instances.

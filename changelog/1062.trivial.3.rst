@@ -1,3 +1,3 @@
-Add flake8-rst-docstrings to catch RST formatting
+Added ``flake8-rst-docstrings`` to catch reST_ formatting
 errors in documentation in the linter stage of
-continuous integration.
+CI.
