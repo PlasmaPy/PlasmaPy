@@ -1,0 +1,3 @@
+Changed the behavior of |Particle| in equality comparisons. Comparing a
+|Particle| with an object that is not :term:`particle-like` will now
+return `False` instead of raising a `TypeError`.

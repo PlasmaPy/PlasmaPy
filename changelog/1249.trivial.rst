@@ -1,0 +1,2 @@
+Refactored :file:`plasmapy/dispersion/tests/test_dispersion.py` to use
+hypothesis_ for property based testing.

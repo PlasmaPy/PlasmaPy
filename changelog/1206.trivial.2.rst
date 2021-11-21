@@ -1,0 +1,3 @@
+Added the ``--keep-going`` flag to the ``build_docs*`` tox_ environments with
+the ``-W`` option so that test failures will not stop after the first warning
+(that is treated as an error).

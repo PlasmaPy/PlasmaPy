@@ -1,2 +1,2 @@
-Add pydocstyle to continuous integration, to
-hopefully make writing prettier docstrings easier.
+Added pydocstyle_ to continuous integration (CI), to hopefully make
+writing prettier docstrings easier.

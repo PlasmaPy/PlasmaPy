@@ -11,9 +11,9 @@ from plasmapy.utils.exceptions import CouplingWarning
 @pytest.mark.parametrize(
     "grid_dimensions, expected_size",
     [
-        ((100, 1, 1), 100),  # Test 1D setup
-        ((128, 128, 1), 16384),  # 2D
-        ((64, 64, 64), 262144),  # 3D
+        pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
+        pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D
+        pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
 def test_Plasma3D_setup(grid_dimensions, expected_size):
@@ -32,11 +32,6 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     expected_size : int
         Product of grid dimensions.
-
-    Examples
-    --------
-    >>> test_Plasma3D_setup((10, 10, 10), 1000)
-    >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
     test_plasma = plasma3d.Plasma3D(
@@ -68,7 +63,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-# @pytest.mark.parametrize([()])
+@pytest.mark.slow
 def test_Plasma3D_derived_vars():
     r"""Function to test derived variables of the Plasma3D class.
 

@@ -1,0 +1,2 @@
+Added the `~plasmapy.particles.particle_collections.ionic_levels` function to create a
+|ParticleList| initialized with different ionic levels of an element or isotope.
