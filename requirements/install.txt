@@ -2,6 +2,7 @@
 # ought to mirror 'install_requires' under 'options' in setup.cfg
 astropy >= 4.0
 cached-property >= 1.5.2
+ipywidgets >= 7.6.5
 matplotlib >= 3.3.0
 numpy >= 1.18.1
 packaging
