@@ -1,14 +1,14 @@
 """
 Script and utilities to launch the plasma calculator
 """
+__all__ = [
+    "main",
+]
 
 import argparse
 import os
 import shlex
 import subprocess
-
-import plasmapy
-
 
 def main():
     """
@@ -25,9 +25,10 @@ def main():
         "--no-browser", action="store_true", help="Do not open the browser"
     )
 
-    module_path = plasmapy.__path__[0]
+    # module_path = plasmapy.__path__[0]
+    module_path = os.path.dirname(os.path.abspath(__file__))
     computed_calculator_path = os.path.join(
-        module_path, "utils", "calculator", "plasma_calculator.ipynb"
+        module_path, "plasma_calculator.ipynb"
     )
 
     args = parser.parse_args()

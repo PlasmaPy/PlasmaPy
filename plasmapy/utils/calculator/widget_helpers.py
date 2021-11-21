@@ -2,6 +2,27 @@
 Contains functions that create widgets and process properties for the calculator
 """
 
+__all__ = [
+    "BLACK",
+    "DARK_RED",
+    "LIGHT_GREEN",
+    "ERROR_STYLE",
+    "EQUAL_SPACING_CONFIG",
+    "values_container",
+    "_process_queue",
+    "_GenericWidget",
+    "_FloatBox",
+    "_ParticleBox",
+    "_CheckBox",
+    "_IonBox",
+    "_FunctionInfo",
+    "_create_label",
+    "_handle_button_click",
+    "_handle_clear_click",
+    "_colored_text",
+    "_create_widget",
+]
+
 import astropy.units as units
 import importlib
 import ipywidgets as widgets
@@ -12,11 +33,29 @@ from inspect import signature, trace
 from plasmapy.particles import Particle
 
 BLACK = (0, 0, 0)
+"""
+BLACK: RGB Constant for black color 000
+"""
+
 DARK_RED = (255, 0, 0)
+"""
+DARK_RED: RGB Constant for dark red color 255,0,0
+"""
+
 LIGHT_GREEN = (0, 128, 0)
+"""
+LIGHT_GREEN: RGB Constant for light green color 0,128,0
+"""
 
 ERROR_STYLE = "2px solid red"
+"""
+ERROR_STYLE: Constant for error style = 2px solid red
+"""
+
 EQUAL_SPACING_CONFIG = "10px 10px 10px 10px"
+"""
+EQUAL_SPACING_CONFIG: Constant for equal spacing config among widgets = 10px 10px 10px 10px
+"""
 
 values_container = dict()
 """values_container: stores the values of widget with corresponding ``property_name``."""

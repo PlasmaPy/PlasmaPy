@@ -1,6 +1,13 @@
 """
 Collection of private functions to load properties and construct widgets
 """
+__all__ = [
+    "grid_data",
+    "LIGHT_BLUE",
+    "LIGHT_GRAY",
+    "_create_interactive_layout",
+    "_create_output_layout",
+]
 
 import astropy.units as units
 import json
@@ -20,14 +27,20 @@ from plasmapy.utils.calculator.widget_helpers import (
     _process_queue,
 )
 
-light_blue = "#00BFD8"
-light_gray = "#A9A9A9"
+LIGHT_BLUE = "#00BFD8"
+"""
+LIGHT_BLUE: Constant for light blue color 00BFD8
+"""
+LIGHT_GRAY = "#A9A9A9"
+"""
+LIGHT_GRAY: Constant for light gray color A9A9A9
+"""
 
 grid_data = [
     [
-        _create_label("Parameter", color=light_blue),
-        _create_label("Value", color=light_blue),
-        _create_label("Unit", color=light_blue),
+        _create_label("Parameter", color=LIGHT_BLUE),
+        _create_label("Value", color=LIGHT_BLUE),
+        _create_label("Unit", color=LIGHT_BLUE),
     ],
     [
         _create_label("B - Magnetic Field Magnitude:"),
@@ -61,9 +74,9 @@ grid_data = [
         _create_widget(_CheckBox, property_name="to_hz"),
     ],
     [
-        _create_label("_" * 20, color=light_blue),
+        _create_label("_" * 20, color=LIGHT_BLUE),
         _create_label("Density Number"),
-        _create_label("_" * 20, color=light_blue),
+        _create_label("_" * 20, color=LIGHT_BLUE),
     ],
     [
         _create_label("n - Standard Density Number:"),
@@ -93,24 +106,24 @@ grid_data = [
         ),
     ],
     [
-        _create_label("_" * 20, color=light_blue),
+        _create_label("_" * 20, color=LIGHT_BLUE),
         _create_label("Temperature"),
-        _create_label("_" * 20, color=light_blue),
+        _create_label("_" * 20, color=LIGHT_BLUE),
     ],
     [
         _create_label("T - Standard Temperature:"),
         _create_widget(_FloatBox, property_name="T", min=0, unit=units.K),
-        _create_label("K", color=light_gray),
+        _create_label("K", color=LIGHT_GRAY),
     ],
     [
         _create_label("T<sub>e</sub> - Electron Temperature:"),
         _create_widget(_FloatBox, property_name="T_e", min=0, unit=units.K),
-        _create_label("K", color=light_gray),
+        _create_label("K", color=LIGHT_GRAY),
     ],
     [
         _create_label("T<sub>i</sub> - Ion Temperature:"),
         _create_widget(_FloatBox, property_name="T_i", min=0, unit=units.K),
-        _create_label("K", color=light_gray),
+        _create_label("K", color=LIGHT_GRAY),
     ],
 ]
 """
