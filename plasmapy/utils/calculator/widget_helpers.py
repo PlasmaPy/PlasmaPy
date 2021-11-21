@@ -18,17 +18,12 @@ LIGHT_GREEN = (0, 128, 0)
 ERROR_STYLE = "2px solid red"
 EQUAL_SPACING_CONFIG = "10px 10px 10px 10px"
 
-"""
-values_container: stores the values of widget with corresponding property_name.
-"""
 values_container = dict()
+"""values_container: stores the values of widget with corresponding ``property_name``."""
 
-"""
-_process_queue: stores the functions to be processed,
-This data is gathered from properties_metadata.json.
-"""
 _process_queue = []
-
+"""_process_queue: stores the functions to be processed,
+This data is gathered from ``properties_metadata.json``."""
 
 class _GenericWidget:
     """
@@ -41,8 +36,7 @@ class _GenericWidget:
         This value is key for the values_container.
 
     property_alias: `str`
-        Alias of the property, Useful to display in validation
-        error messages.
+        Alias of the property. Useful to display in validation error messages.
 
     values_cont: `dict`
         Reference to global dictionary to store the values of the widgets.
@@ -63,7 +57,7 @@ class _GenericWidget:
 
     def set_unit(self, unit):
         """
-        Set unit for the value of widget, defaults to None
+        Set unit for the value of widget, defaults to `None`.
 
         Parameters
         ----------
@@ -85,7 +79,7 @@ class _GenericWidget:
 
     def get_dropdown_widget(self):
         """
-        Get dropdown widget associated with current widget, defaults to none
+        Get dropdown widget associated with current widget, defaults to `None`.
 
         Returns
         -------
@@ -96,7 +90,7 @@ class _GenericWidget:
 
     def set_place_holder(self, text):
         """
-        Set place holder text of the widget, defaults to ''
+        Set place holder text of the widget, defaults to empty string
 
         Parameters
         ----------
@@ -107,18 +101,18 @@ class _GenericWidget:
 
     def create_widget(self):
         """
-        virtual method to create widget
+        Virtual method to create widget
 
         Raises
         ------
         `NotImplementedError`
-            If the method `create_widget` is not implemented.
+            If the method ``create_widget`` is not implemented.
         """
         raise NotImplementedError()
 
     def post_creation(self):
         """
-        default method that is called after widget creation,
+        Default method that is called after widget creation.
         Attaches change listener to the widget.
         """
         self.set_place_holder("")
@@ -147,7 +141,7 @@ class _GenericWidget:
         Returns
         -------
         `bool`
-            True if the value is an edge case, False otherwise
+            `True` if the value is an edge case, `False` otherwise
         """
         return False
 
@@ -336,14 +330,14 @@ class _ParticleBox(_GenericWidget):
         Returns
         -------
         `bool`
-            True if the value is empty, False otherwise
+            `True` if the value is empty, `False` otherwise
         """
         return value is None or value == ""
 
     def edge_case(self, value):
         """
         Edge case to handle empty value of particle box
-        resets the container value to none, and resets the error status
+        resets the container value to `None`, and resets the error status
         """
         self.values_cont[self.property_name] = None
         self.widget.description = ""
@@ -579,8 +573,8 @@ def _handle_button_click(event):
 
 def _handle_clear_click(event):
     """
-    Handles the click event of the clear properties button
-    Clears output of all functions
+    Handles the click event of the clear properties button.
+    Clears output of all functions.
     """
     for fn in _process_queue:
         fn.output_widget.clear_output()
@@ -617,8 +611,8 @@ _clear_button.on_click(_handle_clear_click)
 
 def _create_widget(widget_type, **kwargs):
     """
-    Creates a widget of the given type with the given parameters,
-    Widget can be with/without units dropdown
+    Creates a widget of the given type with the given parameters.
+    Widget can be with/without units dropdown.
 
     Parameters
     ----------

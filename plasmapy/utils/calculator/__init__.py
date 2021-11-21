@@ -12,7 +12,7 @@ import plasmapy
 
 def main():
     """
-    Stub function for commandline tool that launches the plasma calculator notebook.
+    Stub function for command line tool that launches the plasma calculator notebook.
     """
     parser = argparse.ArgumentParser(description="Plasma calculator")
     parser.add_argument(

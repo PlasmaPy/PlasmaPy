@@ -23,9 +23,6 @@ from plasmapy.utils.calculator.widget_helpers import (
 light_blue = "#00BFD8"
 light_gray = "#A9A9A9"
 
-"""
-Grid Data specifies how the input section is layed out
-"""
 grid_data = [
     [
         _create_label("Parameter", color=light_blue),
@@ -87,7 +84,7 @@ grid_data = [
         ),
     ],
     [
-        _create_label("n<sub>i</sub> - Ion Density Number:"),
+        _create_label("n<sub>i</sub> - Ion Number Density:"),
         *_create_widget(
             _FloatBox,
             property_name="n_i",
@@ -116,6 +113,9 @@ grid_data = [
         _create_label("K", color=light_gray),
     ],
 ]
+"""
+grid_data: Contains widgets layout for input parameters
+"""
 
 
 def _create_interactive_layout():
