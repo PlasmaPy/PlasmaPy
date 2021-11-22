@@ -10,6 +10,7 @@ import os
 import shlex
 import subprocess
 
+
 def main():
     """
     Stub function for command line tool that launches the plasma calculator notebook.
@@ -27,9 +28,7 @@ def main():
 
     # module_path = plasmapy.__path__[0]
     module_path = os.path.dirname(os.path.abspath(__file__))
-    computed_calculator_path = os.path.join(
-        module_path, "plasma_calculator.ipynb"
-    )
+    computed_calculator_path = os.path.join(module_path, "plasma_calculator.ipynb")
 
     args = parser.parse_args()
     theme = "dark" if args.dark else "light"

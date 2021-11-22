@@ -64,6 +64,7 @@ _process_queue = []
 """_process_queue: stores the functions to be processed,
 This data is gathered from ``properties_metadata.json``."""
 
+
 class _GenericWidget:
     """
     Generic widget class
