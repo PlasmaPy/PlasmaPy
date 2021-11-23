@@ -1,3 +1,0 @@
-Added to :file:`setup.cfg` the configuration
-``flake8.per-file-ignores=plasmapy/formulary/__init__.py:F403`` to
-ignore warnings resulting from imports like ``from xx import *``.

@@ -1,3 +1,0 @@
-Added a pre-release section to the release guide.
-This section now includes steps for having a feature freeze about a week before the release,
-followed by a code freeze about two days before the release.

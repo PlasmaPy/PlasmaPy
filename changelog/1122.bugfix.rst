@@ -1,1 +1,0 @@
-Made |Particle| instances pickleable.
