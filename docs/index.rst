@@ -58,6 +58,7 @@ Example highlights
 
    Overview <development/index>
    development/code_guide
+   ../changelog/README.rst
    development/doc_guide
    development/testing_guide
 
