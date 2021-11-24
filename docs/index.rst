@@ -58,7 +58,7 @@ Example highlights
 
    Overview <development/index>
    development/code_guide
-   development/changelog
+   development/changelog_guide
    development/doc_guide
    development/testing_guide
 
