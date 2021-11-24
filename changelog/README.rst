@@ -92,7 +92,7 @@ Changelog guidelines
 * Use intersphinx_ links to refer to objects within PlasmaPy, and
   include the full namespace. For example, use
   ```~plasmapy.particles.particle_class.Particle``` to refer to
-  |Particle|. The tilde may be used to hide all but the name of the
+  |Particle|. The tilde is included to hide all but the name of the
   object.
 
 * Show the full former namespace for objects that have been removed or
@@ -147,3 +147,16 @@ release, run:
 This will create :file:`CHANGELOG.rst` in the top-level directory, with
 the option to delete the individual changelog entry files. The full
 steps to update the changelog are described in the :ref:`Release Guide`.
+
+.. tip::
+
+   Towncrier_ can be used to create a new changelog entry and open it
+   for editing using a command like:
+
+   .. code-block:: shell
+
+      towncrier create --edit ⟨number⟩.⟨type⟩.rst
+
+   Here, ``⟨number⟩`` is replaced with the pull request number and
+   ``⟨type⟩`` is replaced with the one of the changelog types as
+   described above.
