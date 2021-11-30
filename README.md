@@ -66,16 +66,20 @@ on our
 [Matrix](https://app.element.io/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. Both of these are the same chat channel; Gitter uses a bridge to link the two.
 
-## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://meet.jit.si/plasmapy)
+## [Weekly](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York) [community meetings](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success)
 
-We have weekly community meetings in the
-[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
-The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
+Updated information about our community meetings can be found on [plasmapy.org](https://www.plasmapy.org/meetings/weekly/).
+
+As of now, PlasmaPy hosts its weekly online community meeting every Tuesday to cover topics related to code development. This call is hosted on [Zoom](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success).
+
+The schedule of our community meetings is on our
+[calendar](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York),
+and you may access the [minutes and
 agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of January 2021, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/6pm).
+As of November 2021, our meetings are on Tuesdays at
+[19:00 UTC](http://time.unitarium.com/utc/7pm).
 Come discuss plasma software with us!
 
 ## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)
