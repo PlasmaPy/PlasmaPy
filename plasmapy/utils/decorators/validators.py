@@ -58,6 +58,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
         can_be_zero            `bool`  [DEFAULT `True`] values can be zero
+        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
@@ -336,6 +337,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
         #
+        #_none_shall_pass = arg["none_shall_pass"]
         if arg is None or hasattr(arg, "unit"):
             pass
         elif len(arg_validations["units"]) != 1:
@@ -346,15 +348,21 @@ class ValidateQuantities(CheckUnits, CheckValues):
             except (TypeError, ValueError):
                 raise TypeError(typeerror_msg)
             else:
-                warnings.warn(
-                    u.UnitsWarning(
+                #if none can pass, there's no need for validating units
+                none_can_pass = arg_validations["none_shall_pass"]
+                if none_can_pass:
+                    pass
+                else:
+                    warnings.warn(
+                        """u.UnitsWarning(
                         f"{err_msg} has no specified units. Assuming units of "
                         f"{arg_validations['units'][0]}. To silence this warning, "
                         f"explicitly pass in an astropy Quantity "
                         f"(e.g. 5. * astropy.units.cm) "
                         f"(see http://docs.astropy.org/en/stable/units/)"
+                    )"""
+                        
                     )
-                )
 
         # check units
         arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_validations)
