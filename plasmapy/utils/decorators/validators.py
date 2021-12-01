@@ -354,13 +354,13 @@ class ValidateQuantities(CheckUnits, CheckValues):
                     pass
                 else:
                     warnings.warn(
-                        """u.UnitsWarning(
+                        u.UnitsWarning(
                         f"{err_msg} has no specified units. Assuming units of "
                         f"{arg_validations['units'][0]}. To silence this warning, "
                         f"explicitly pass in an astropy Quantity "
                         f"(e.g. 5. * astropy.units.cm) "
                         f"(see http://docs.astropy.org/en/stable/units/)"
-                    )"""
+                    )
                         
                     )
 
