@@ -1,8 +1,8 @@
 from astropy import units as u
+from stix_ import stix
 import numpy as np
 import pytest
 
-import *
 #from plasmapy.dispersion.numerical import stix_ as stix
 
 class StixTest:
