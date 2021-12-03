@@ -36,7 +36,7 @@ Current functionality is described in [PlasmaPy's online
 documentation](http://docs.plasmapy.org/en/latest/).
 
 We created a guide on [contributing to PlasmaPy](http://docs.plasmapy.org/en/stable/CONTRIBUTING.html)
-and have a [code of conduct](http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html).
+and have a [code of conduct](http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html).
 New contributors are very welcome!
 
 # Installation
