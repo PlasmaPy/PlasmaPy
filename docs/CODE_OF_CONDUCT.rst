@@ -3,8 +3,8 @@
 Contributor Covenant Code of Conduct
 ====================================
 
-*We adopt the `Contributor Covenant`_, version 2.1, which is reproduced
-below.*
+We adopt the `Contributor Covenant`_, version 2.1, which is reproduced
+below.
 
 Our Pledge
 ----------
