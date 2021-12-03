@@ -1,5 +1,5 @@
 from astropy import units as u
-from stix_ import stix
+from .stix_ import stix
 import numpy as np
 import pytest
 
