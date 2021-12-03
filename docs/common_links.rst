@@ -55,6 +55,7 @@
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
 .. _Conda: https://conda.io
+.. _Contributor Covenant: https://www.contributor-covenant.org
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org

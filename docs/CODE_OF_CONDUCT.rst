@@ -3,7 +3,8 @@
 Contributor Covenant Code of Conduct
 ====================================
 
-We adopt `Contributor Covenant 2.1 <https://www.contributor-covenant.org/version/2/1/code_of_conduct/>`_ which is reproduced below.
+*We adopt the `Contributor Covenant`_, version 2.1, which is reproduced
+below.*
 
 Our Pledge
 ----------
@@ -135,8 +136,8 @@ within the community.
 Attribution
 -----------
 
-This Code of Conduct is adapted from the `Contributor Covenant
-<https://www.contributor-covenant.org>`__, version 2.1, available at
+This Code of Conduct is adapted from the `Contributor Covenant`_,
+version 2.1, available at
 https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.
 
 Community Impact Guidelines were inspired by `Mozilla’s code of conduct
