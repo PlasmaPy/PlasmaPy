@@ -5,7 +5,7 @@ import pytest
 
 #from plasmapy.dispersion.numerical import stix_ as stix
 
-class StixTest:
+class TestStix:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "k": 0.001 * u.rad / u.m,
@@ -48,8 +48,6 @@ class StixTest:
                 {**_kwargs_single_valued, "k": [10, 20, 30] * u.rad/u.m},
                 {"shape": (3,)},
             ),
-        ],
-        [
             ({**_kwargs_single_valued, "ions": "He+"}, {"shape": ()}),
             (
                 {
@@ -59,9 +57,6 @@ class StixTest:
                 },
 		{"shape": (1,)},
 	    ),
-        	
-        ],
-        [
             ({**_kwargs_single_valued, "ions": "He+"}, {"shape": ()}),
 	    (
 		{
@@ -74,7 +69,6 @@ class StixTest:
         	
         ],
     )
-    
     def test_return_structure(self, kwargs, expected):
         
         w = stix(**kwargs)
@@ -90,7 +84,7 @@ class StixTest:
     @pytest.mark.parametrize(
         "kwargs, _warning",
             [
-            	({**_kwargs_single_valued, "k": 0*u.rad / u.m}, u.UnitTypeError),
+            	({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, u.UnitTypeError),
             ],
     )
     def test_warns(self, kwargs, _warning):
