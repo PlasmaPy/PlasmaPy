@@ -283,8 +283,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             validations[arg_name].update(value_checks[arg_name])
 
         if "checks_on_return" in validations:
-            validations["validations_on_return"] = validations.pop(
-                "checks_on_return")
+            validations["validations_on_return"] = validations.pop("checks_on_return")
 
         return validations
 
@@ -360,8 +359,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 )
 
         # check units
-        arg, unit, equiv, err = self._check_unit_core(
-            arg, arg_name, arg_validations)
+        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_validations)
 
         # convert quantity
         if (

@@ -60,7 +60,11 @@ from plasmapy.utils.decorators import (
     check_relativistic,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning, RelativityWarning
+from plasmapy.utils.exceptions import (
+    PhysicsWarning,
+    PlasmaPyFutureWarning,
+    RelativityWarning,
+)
 
 __all__ += __aliases__
 
