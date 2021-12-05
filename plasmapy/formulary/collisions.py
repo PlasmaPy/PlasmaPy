@@ -1236,7 +1236,7 @@ def fundamental_electron_collision_freq(
     V = _replaceNanVwithThermalV(V, T_e, m_e)
 
     species = [ion, "e-"]
-    Z_i = particles.charge_number(ion)
+    Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
     nu = collision_frequency(
         T_e, n_e, species, z_mean=Z_i, V=V, method=coulomb_log_method
     )
@@ -1382,7 +1382,7 @@ def fundamental_ion_collision_freq(
     # specify to use ion thermal velocity (most probable), not based on reduced mass
     V = _replaceNanVwithThermalV(V, T_i, m_i)
 
-    Z_i = particles.charge_number(ion)
+    Z_i = particles.charge_number(ion) * u.dimensionless_unscaled
 
     nu = collision_frequency(
         T_i, n_i, species, z_mean=Z_i, V=V, method=coulomb_log_method

@@ -348,22 +348,16 @@ class ValidateQuantities(CheckUnits, CheckValues):
                 arg = arg * arg_validations["units"][0]
             except (TypeError, ValueError):
                 raise TypeError(typeerror_msg)
-            else:
-                # if none can pass, there's no need for validating units
-                none_can_pass = arg_validations["none_shall_pass"]
-                if none_can_pass:
-                    pass
-                else:
-                    warnings.warn(
-                        u.UnitsWarning(
-                            f"{err_msg} has no specified units. Assuming units of "
-                            f"{arg_validations['units'][0]}. To silence this warning, "
-                            f"explicitly pass in an astropy Quantity "
-                            f"(e.g. 5. * astropy.units.cm) "
-                            f"(see http://docs.astropy.org/en/stable/units/)"
-                        )
-
+            else:            
+                warnings.warn(
+                    u.UnitsWarning(
+                        f"{err_msg} has no specified units. Assuming units of "
+                        f"{arg_validations['units'][0]}. To silence this warning, "
+                        f"explicitly pass in an astropy Quantity "
+                        f"(e.g. 5. * astropy.units.cm) "
+                        f"(see http://docs.astropy.org/en/stable/units/)"
                     )
+                )
 
         # check units
         arg, unit, equiv, err = self._check_unit_core(
