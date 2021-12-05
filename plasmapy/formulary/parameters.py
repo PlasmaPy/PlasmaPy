@@ -60,7 +60,7 @@ from plasmapy.utils.decorators import (
     check_relativistic,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning, RelativityWarning
 
 __all__ += __aliases__
 
@@ -948,9 +948,10 @@ def Hall_parameter(
     Examples
     --------
     >>> from astropy import units as u
-    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    >>> import pytest
+    >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 7.26446...e+16>
-    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
     """
     from plasmapy.formulary.collisions import (
