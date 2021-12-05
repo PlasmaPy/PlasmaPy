@@ -339,7 +339,7 @@ class TestAlfvenSpeed:
         else:
             nan_arr = np.isnan(val)
             assert np.all(nan_arr[nan_mask])
-            assert np.all(not nan_arr[np.logical_not(nan_mask)])
+            assert np.all(np.logical_not(nan_arr[np.logical_not(nan_mask)]))
 
     def test_handle_nparrays(self):
         """Test for ability to handle numpy array quantities"""
@@ -739,7 +739,8 @@ def test_gyrofrequency():
     assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
 
     with pytest.raises(TypeError):
-        gyrofrequency(u.m, "e-")
+        with pytest.warns(u.UnitsWarning):
+            gyrofrequency(u.m, "e-")
 
     with pytest.raises(u.UnitTypeError):
         gyrofrequency(u.m * 1, "e-")
@@ -817,7 +818,8 @@ def test_gyroradius():
     assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
 
     with pytest.raises(TypeError):
-        gyroradius(u.T, "e-")
+        with pytest.warns(u.UnitsWarning):
+            gyroradius(u.T, "e-")
 
     with pytest.raises(u.UnitTypeError):
         gyroradius(5 * u.A, "e-", Vperp=8 * u.m / u.s)
@@ -885,7 +887,8 @@ def test_gyroradius():
     assert explicit_positron_gyro == gyroradius(1 * u.T, "e-", T=1 * u.MK)
 
     with pytest.raises(TypeError):
-        gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
+        with pytest.warns(u.UnitsWarning):
+            gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
 
     with pytest.raises(ValueError):
         gyroradius(B, particle="p", T=-1 * u.K)
@@ -977,7 +980,8 @@ def test_plasma_frequency():
     )
 
     with pytest.raises(TypeError):
-        plasma_frequency(u.m ** -3, "e-")
+        with pytest.warns(u.UnitsWarning):
+            plasma_frequency(u.m ** -3, "e-")
 
     with pytest.raises(u.UnitTypeError):
         plasma_frequency(5 * u.m ** -2, "e-")
