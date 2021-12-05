@@ -339,7 +339,7 @@ class TestAlfvenSpeed:
         else:
             nan_arr = np.isnan(val)
             assert np.all(nan_arr[nan_mask])
-            assert np.all(not nan_arr[np.logical_not(nan_mask)])
+            assert np.all(np.logical_not(nan_arr[np.logical_not(nan_mask)]))
 
     def test_handle_nparrays(self):
         """Test for ability to handle numpy array quantities"""
