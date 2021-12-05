@@ -366,7 +366,7 @@ class ClassicalTransport:
                 )
         else:
             self.m_i = m_i
-        self.Z = _grab_charge(ion, Z)
+        self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
         if self.Z < 0:
             raise ValueError("Z is not allowed to be negative!")  # TODO remove?
 
