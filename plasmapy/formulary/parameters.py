@@ -953,8 +953,8 @@ def Hall_parameter(
     --------
     >>> from astropy import units as u
     >>> import pytest
-    >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
-    <Quantity 7.26446...e+16>
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    <Quantity 2.5000023e+15>
     >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
     """

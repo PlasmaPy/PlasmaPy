@@ -58,7 +58,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
         can_be_nan             `bool`  [DEFAULT `True`] values can be :data:`~numpy.nan`
         none_shall_pass        `bool`  [DEFAULT `False`] values can be a python `None`
         can_be_zero            `bool`  [DEFAULT `True`] values can be zero
-        can_be_zero            `bool`  [DEFAULT `True`] values can be zero
         ====================== ======= ================================================
 
     Notes
@@ -337,7 +336,6 @@ class ValidateQuantities(CheckUnits, CheckValues):
         # add units to arg if possible
         # * a None value will be taken care of by `_check_unit_core`
         #
-
         if arg is None or hasattr(arg, "unit"):
             pass
         elif len(arg_validations["units"]) != 1:
