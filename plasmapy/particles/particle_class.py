@@ -2014,6 +2014,13 @@ class CustomParticle(AbstractPhysicalParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
+    >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C, symbol="Ξ")
+    >>> custom_particle.mass
+    <Quantity 1.2e-26 kg>
+    >>> custom_particle.charge
+    <Quantity 9.2e-19 C>
+    >>> custom_particle.symbol
+    'Ξ'
     >>> import pytest
     >>> with pytest.warns(UserWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
     >>> custom_particle.mass
@@ -2221,7 +2228,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
-ParticleLike.__doc__ = """
+ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
