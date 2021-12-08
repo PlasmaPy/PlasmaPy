@@ -12,9 +12,41 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests:
+  initial-tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+
+        - name: Python 3.9
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39
+
+        - name: Linters
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: linters
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2.4.0
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v2.3.0
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install Python dependencies
+      run: python -m pip install --progress-bar off --upgrade tox codecov
+    - name: Run tests
+      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+  comprehensive-tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    needs: initial-tests
     strategy:
       fail-fast: false
       matrix:
@@ -23,49 +55,34 @@ jobs:
         - name: Python 3.7 with minimal dependencies
           os: ubuntu-latest
           python: 3.7
-          toxenv: py37-minimal
+          toxenv: py37-all-minimal
 
         - name: Python 3.7
           os: ubuntu-latest
           python: 3.7
-          toxenv: py37
+          toxenv: py37-all
 
-        - name: Python 3.8 with code coverage
+        - name: Python 3.8, all tests, code coverage
           os: ubuntu-latest
           python: 3.8
-          toxenv: py38-cov
-
-        - name: Python 3.8, slow tests with code coverage
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-slow-cov
-
-        - name: Python 3.9
-          os: ubuntu-latest
-          python: 3.9
-          toxenv: py39
+          toxenv: py38-all-cov
 
         - name: Python 3.8 (Windows)
           os: windows-latest
           python: 3.8
-          toxenv: py38
+          toxenv: py38-all
           toxposargs: --durations=50
 
         - name: Python 3.8 (MacOS X)
           os: macos-latest
           python: 3.8
-          toxenv: py38
+          toxenv: py38-all
 
         - name: Documentation
           os: ubuntu-latest
           python: 3.8
           toxenv: build_docs
           toxposargs: -q
-
-        - name: Linters
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: linters
 
     steps:
     - name: Checkout code
@@ -91,7 +108,7 @@ jobs:
   build-n-publish:
     name: Packaging
     runs-on: ubuntu-18.04
-    needs: tests
+    needs: comprehensive-tests
     steps:
     - uses: actions/checkout@v2.4.0
     - name: Get history and tags for SCM versioning to work
