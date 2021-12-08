@@ -77,7 +77,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
-      run: python -m pip install --upgrade tox codecov
+      run: python -m pip install --progress-bar off --upgrade tox codecov
     - name: Install language-pack-fr and tzdata
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install graphviz pandoc
@@ -104,8 +104,8 @@ jobs:
         python-version: 3.7
     - name: Install requirements
       run: |
-        pip install --upgrade pip
-        pip install setuptools numpy wheel setuptools_scm twine
+        pip install --progress-bar off --upgrade pip
+        pip install --progress-bar off setuptools numpy wheel setuptools_scm twine
     - name: Build a binary wheel
       run: python setup.py bdist_wheel
     - name: Build a source tarball
@@ -115,7 +115,7 @@ jobs:
     - name: Install PlasmaPy in all variants
       run: |
         pip install --progress-bar off .[all,dev]
-        pip install -e .[all,dev]
+        pip install --progress-bar off -e .[all,dev]
         python setup.py develop
     - name: Publish distribution, if tagged, 📦 to PyPI
       if: ${{ startsWith(github.ref, 'refs/tags') && !endsWith(github.ref, 'dev') }}
