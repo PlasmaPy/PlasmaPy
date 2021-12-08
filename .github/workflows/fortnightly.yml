@@ -1,8 +1,8 @@
-name: weekly tests
+name: fortnightly tests
 
 on:
   schedule:
-  - cron: 17 7 * * 1
+  - cron: 17 7 1,15 * *
   workflow_dispatch:
 
 jobs:
@@ -20,15 +20,20 @@ jobs:
           python: 3.8
           toxenv: py38-astropydev
 
+        - name: Python 3.8 with matplotlib dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-matplotlibdev
+
         - name: Python 3.8 with NumPy dev
           os: ubuntu-latest
           python: 3.8
           toxenv: py38-numpydev
 
-        - name: Python 3.8 with xarray dev
+        - name: Python 3.8 with SciPy dev
           os: ubuntu-latest
           python: 3.8
-          toxenv: py38-xarraydev
+          toxenv: py38-scipydev
 
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
@@ -36,13 +41,18 @@ jobs:
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
+        - name: Python 3.8 with xarray dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-xarraydev
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2.4.0
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v2.3.0
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies

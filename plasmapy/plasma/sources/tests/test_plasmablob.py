@@ -142,7 +142,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 2.0
+        Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -167,7 +167,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 3.0
+        Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -193,7 +193,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm ** -3
-        Z = 2.5
+        Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         with pytest.warns(
             CouplingWarning, match="you might have strong coupling effects"
@@ -219,7 +219,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm ** -3
-        Z = 2.5
+        Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -247,7 +247,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 3.0
+        Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -273,7 +273,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 5 * 15e3 * u.K
         n_e = 1e25 * u.cm ** -3
-        Z = 2.0
+        Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -295,7 +295,7 @@ class Test_PlasmaBlob:
         """initializing parameters for tests"""
         self.T_e = 5 * 11e3 * u.K
         self.n_e = 1e23 * u.cm ** -3
-        self.Z = 2.5
+        self.Z = 2.5 * u.dimensionless_unscaled
         self.particle = "p"
         self.blob = plasmablob.PlasmaBlob(
             T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle=self.particle

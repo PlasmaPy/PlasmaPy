@@ -1,2 +1,0 @@
-|IonizationState| instances can now be compared to an |IonizationState|
-of a different element without raising an exception.

@@ -1,2 +1,0 @@
-Fixed a minor error in the :math:`\mathbf{E} × \mathbf{B}` drift
-notebook.

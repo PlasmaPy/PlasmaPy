@@ -1,2 +1,0 @@
-Added brief description about the physics of the upper-hybrid resonance
-to the docstring of the function `~plasmapy.formulary.parameters.upper_hybrid_frequency`.

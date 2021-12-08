@@ -1,3 +1,0 @@
-Changed the behavior of `~plasmapy.particles.particle_class.CustomParticle`
-so that it returns `False` when compared for equality with another type.
-Previously, a `TypeError` was raised.
