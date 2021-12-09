@@ -30,7 +30,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     Magnetized cold plasma dielectric permittivity tensor elements.
 
     Elements (S, D, P) are given in the "Stix" frame, i.e. with
-    :math:`B ∥ \hat{z}`\ .
+    :math:`B ∥ \hat{z}` :cite:p:`stix:1992`.
 
     The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
@@ -86,10 +86,6 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     where :math:`ω_{p,s}` is the plasma frequency and
     :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
-
-    References
-    ----------
-    - T.H. Stix, Waves in Plasma, 1992.
 
     Examples
     --------
