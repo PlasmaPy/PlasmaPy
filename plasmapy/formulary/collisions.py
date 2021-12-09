@@ -243,7 +243,7 @@ def Coulomb_logarithm(
         :math:`λ_{de Broglie}` and :math:`ρ_⟂` because for impact
         parameters lower than :math:`λ_{de Broglie}`, quantum effects
         cause the collision to be non-Coulombic
-        :cite:p:`chen:2015,fundamenski:2007`.
+        :cite:p:`chen:2016,fundamenski:2007`.
 
         The outer impact parameter (:math:`b_{max}`) is defined to be
         the Debye length (:math:`λ_{Debye}`) because at distances higher
