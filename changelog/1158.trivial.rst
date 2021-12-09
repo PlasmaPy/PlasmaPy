@@ -1,3 +1,2 @@
-Made minor corrections to variable namespaces and ReST formatting
-in docstrings and narrative documentation and added a ReST substitution
-for |ParticleTracker|.
+Applied reST_ substitutions for `plasmapy.particles` and
+|ParticleTracker| in the narrative documentation.
