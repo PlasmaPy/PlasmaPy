@@ -12,8 +12,8 @@ Symbols and names
 =================
 
 Several functions in `plasmapy.particles` return string representations
-of particles, including |atomic_symbol|, |isotope_symbol|, |ionic_symbol|,
-and |element_name|.
+of particles, including |atomic_symbol|, |isotope_symbol|,
+|ionic_symbol|, and |element_name|.
 
 >>> from plasmapy.particles import *
 >>> atomic_symbol('alpha')
