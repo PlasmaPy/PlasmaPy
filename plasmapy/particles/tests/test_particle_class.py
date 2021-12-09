@@ -3,8 +3,6 @@ import inspect
 import io
 import json
 import numpy as np
-import os
-import pickle
 import pytest
 
 from astropy import constants as const
@@ -702,6 +700,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         )
 
 
+@pytest.mark.slow
 def test_particle_half_life_string():
     """
     Find the first isotope where the half-life is stored as a string
@@ -1381,5 +1380,5 @@ def test_CustomParticle_cmp():
     ), "CustomParticle instances that should be equal are not."
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
-    with pytest.raises(TypeError):
-        particle1 == 1
+    assert not particle1 == 1
+    assert particle1 != 1

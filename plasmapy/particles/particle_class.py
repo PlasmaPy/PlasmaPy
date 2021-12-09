@@ -624,7 +624,7 @@ class Particle(AbstractPhysicalParticle):
                 return False
 
         if not isinstance(other, self.__class__):
-            return False
+            return NotImplemented
 
         no_symbol_attr = "symbol" not in dir(self) or "symbol" not in dir(other)
         no_attributes_attr = "_attributes" not in dir(self) or "_attributes" not in dir(
@@ -661,22 +661,6 @@ class Particle(AbstractPhysicalParticle):
             )
 
         return same_particle
-
-    def __ne__(self, other) -> bool:
-        """
-        Test whether or not two objects are different particles.
-
-        This method will return `False` if ``other`` is an identical
-        |Particle| instance or a `str` representing the same particle,
-        and return `True` if ``other`` is a different |Particle| or a
-        `str` representing a different particle.
-
-        If ``other`` is not a `str` or |Particle| instance, then this
-        method will raise a `TypeError`.  If ``other.symbol`` equals
-        ``self.symbol`` but the attributes differ, then this method
-        will raise a `~plasmapy.particles.exceptions.ParticleError`.
-        """
-        return not self.__eq__(other)
 
     def __hash__(self) -> int:
         """
@@ -1311,7 +1295,7 @@ class Particle(AbstractPhysicalParticle):
         >>> D.isotopic_abundance
         0.000115
         """
-        from .atomic import common_isotopes
+        from plasmapy.particles.atomic import common_isotopes
 
         if not self.isotope or self.is_ion:  # coverage: ignore
             raise InvalidIsotopeError(_category_errmsg(self.symbol, "isotope"))
@@ -1915,7 +1899,8 @@ class DimensionlessParticle(AbstractParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
-        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
+        >>> import pytest
+        >>> with pytest.warns(MissingParticleDataWarning): dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2029,7 +2014,15 @@ class CustomParticle(AbstractPhysicalParticle):
     --------
     >>> from astropy import units as u
     >>> from plasmapy.particles import CustomParticle
-    >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
+    >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C, symbol="Ξ")
+    >>> custom_particle.mass
+    <Quantity 1.2e-26 kg>
+    >>> custom_particle.charge
+    <Quantity 9.2e-19 C>
+    >>> custom_particle.symbol
+    'Ξ'
+    >>> import pytest
+    >>> with pytest.warns(UserWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg, charge=-1, symbol="Ξ")
     >>> custom_particle.mass
     <Quantity 1.5e-26 kg>
     >>> custom_particle.charge
@@ -2078,7 +2071,8 @@ class CustomParticle(AbstractPhysicalParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
             'symbol': 'ξ'}}}}
-        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
+        >>> import pytest
+        >>> with pytest.warns(MissingParticleDataWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2212,29 +2206,17 @@ class CustomParticle(AbstractPhysicalParticle):
 
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
-        and return `False` if ``other`` differs on any of these attributes.
+        and return `False` if ``other`` differs on any of these attributes,
+        or an other type.
         """
 
         if not isinstance(other, self.__class__):
-            raise TypeError(
-                f"The equality of a CustomParticle object with a {type(other)} is undefined."
-            )
-
+            return NotImplemented
         return (
             self.symbol.__eq__(other.symbol)
             and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
             and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
         )
-
-    def __ne__(self, other) -> bool:
-        """
-        Test whether or not two objects are different particles.
-
-        This method will return `False` if ``other`` is an identical
-        |CustomParticle| instance, and return `True` if ``other`` is
-        a different |CustomParticle|.
-        """
-        return not self.__eq__(other)
 
     def __hash__(self) -> int:
         """
@@ -2246,7 +2228,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
 
-ParticleLike.__doc__ = """
+ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.

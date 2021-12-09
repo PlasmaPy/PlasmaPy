@@ -291,8 +291,8 @@ def permittivity_1D_Maxwellian(
        Plasma scattering of electromagnetic radiation: theory and measurement
        techniques. Chapter 5 Pg 106 (Academic Press, 2010).
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> from numpy import pi
     >>> from astropy.constants import c

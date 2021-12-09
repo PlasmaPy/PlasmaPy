@@ -35,8 +35,8 @@ Bug Fixes
 Improved Documentation
 ----------------------
 
-- Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly. (`#448 <https://github.com/plasmapy/plasmapy/pull/448>`__)
-- Add examples images to the top of the main doc page in ``docs\index.rst`` (`#655 <https://github.com/plasmapy/plasmapy/pull/655>`__)
+- Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly. (`#721 <https://github.com/plasmapy/plasmapy/pull/721>`__)
+- Add examples images to the top of the main doc page in :file:`docs\index.rst` (`#655 <https://github.com/plasmapy/plasmapy/pull/655>`__)
 - Added examples to the documentation to ``mass_density``
    and ``Hall_parameter`` functions (`#709 <https://github.com/plasmapy/plasmapy/pull/709>`__)
 - Add docstrings to decorator :func:`plasmapy.utils.decorators.converter.angular_freq_to_hz`. (`#729 <https://github.com/plasmapy/plasmapy/pull/729>`__)
@@ -59,7 +59,7 @@ Trivial/Internal Changes
 - Patch ``sphinx_gallery.binder`` to output custom links to Binder instance (`#658 <https://github.com/plasmapy/plasmapy/pull/658>`__)
 - Remove the now unnecessary ``astropy_helpers`` submodule (`#663 <https://github.com/plasmapy/plasmapy/pull/663>`__)
 - Followup PR to CI overhaul (`#664 <https://github.com/plasmapy/plasmapy/pull/664>`__)
-- Add a Codemeta file (``codemeta.json``) (`#676 <https://github.com/plasmapy/plasmapy/pull/676>`__)
+- Add a Codemeta file (:file:`codemeta.json`) (`#676 <https://github.com/plasmapy/plasmapy/pull/676>`__)
 - Overhaul and simplify CI, add Python 3.8 to tests, bump minimal required package versions, fix docs. (`#712 <https://github.com/plasmapy/plasmapy/pull/712>`__)
 - Update communication channels in docs (`#715 <https://github.com/plasmapy/plasmapy/pull/715>`__)
 - Code style fixes to the ``atomic`` subpackage (`#716 <https://github.com/plasmapy/plasmapy/pull/716>`__)
@@ -76,5 +76,5 @@ Trivial/Internal Changes
   :class:`~plasmapy.utils.decorators.checks.CheckUnits`, and
   :class:`~plasmapy.utils.decorators.validators.ValidateQuantities`. (`#648 <https://github.com/plasmapy/plasmapy/pull/648>`__)
 - Create a decorator to change output of physics functions from "radians/s" to "hz" (`#667 <https://github.com/plasmapy/plasmapy/pull/667>`__)
-- Added pytest.mark.slow to pytest markers.
+- Added ``pytest.mark.slow`` to pytest markers.
   Updated documentation to notify developers of functionality. (`#677 <https://github.com/plasmapy/plasmapy/pull/677>`__)
