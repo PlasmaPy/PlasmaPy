@@ -68,6 +68,7 @@ extensions = [
     "sphinx_changelog",
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
+    "sphinx-hoverxref",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -185,6 +186,8 @@ linkcheck_anchors_ignore = [
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "xcode"
+
+hoverxref_auto_ref = True
 
 # -- Options for HTML output ----------------------------------------------
 
