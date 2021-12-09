@@ -209,8 +209,8 @@ def Coulomb_logarithm(
 
     In this section, further information about each method, such as
     about interpolation and other special features, is documented.
-    Please refer to Reference [1]_ and :cite:t:`gericke:2002` for
-    additional information about these methods.
+    Please refer to :cite:t:`spitzer:1962` and :cite:t:`gericke:2002`
+    for additional information about these methods.
 
     Option 1: ``"classical"`` or ``"ls"`` (Landau-Spitzer)
 
@@ -242,7 +242,8 @@ def Coulomb_logarithm(
         The inner impact parameter (:math:`b_{min}`) is the higher of
         :math:`λ_{de Broglie}` and :math:`ρ_⟂` because for impact
         parameters lower than :math:`λ_{de Broglie}`, quantum effects
-        cause the collision to be non-Coulombic [2]_ [3]_.
+        cause the collision to be non-Coulombic
+        :cite:p:`chen:2015,fundamenski:2007`.
 
         The outer impact parameter (:math:`b_{max}`) is defined to be
         the Debye length (:math:`λ_{Debye}`) because at distances higher
@@ -458,16 +459,6 @@ def Coulomb_logarithm(
     14.545527...
     >>> Coulomb_logarithm(T, n, ('e-', 'p+'), V = 1e6 * u.m / u.s)
     11.363478...
-
-    References
-    ----------
-
-    .. [2] Francis, F. Chen. Introduction to plasma physics and controlled
-       fusion 3rd edition. Ch 5 (Springer 2015).
-
-    .. [3] Comparison of Coulomb Collision Rates in the Plasma Physics
-       and Magnetically Confined Fusion Literature, W. Fundamenski and
-       O.E. Garcia, EFDA–JET–R(07)01
 
     See Also
     --------
@@ -999,7 +990,7 @@ def collision_frequency(
     (typically taken as the thermal velocity), and :math:`\ln{Λ}` is the
     Coulomb logarithm accounting for small angle collisions.
 
-    See Equation (2.14) in [1]_.
+    See Equation (2.14) in :cite:t:`callen:unpublished`.
 
     Examples
     --------
@@ -1009,12 +1000,6 @@ def collision_frequency(
     >>> species = ('e', 'p')
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
-
-    References
-    ----------
-    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V_r = _boilerPlate(T=T, species=species, V=V)
@@ -1081,8 +1066,9 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
 
     Notes
     -----
-    The collisional cross-section (see [1]_ for a graphical
-    demonstration) for a 90° Coulomb collision is obtained by
+    The `collisional cross-section
+    <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
+    for a 90° Coulomb collision is obtained by
 
     .. math::
 
@@ -1099,11 +1085,6 @@ def Coulomb_cross_section(impact_param: u.m) -> u.m ** 2:
     <Quantity 6.157...e-18 m2>
     >>> Coulomb_cross_section(0.5*u.m)
     <Quantity 3.141... m2>
-
-    References
-    ----------
-    .. [1] `Cross Section: Collision among gas particles
-       <https://en.wikipedia.org/w/index.php?title=Cross_section_(physics)&oldid=1037954726#Collision_among_gas_particles>`__
     """
     sigma = np.pi * (2 * impact_param) ** 2
     return sigma
@@ -1125,12 +1106,13 @@ def fundamental_electron_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
 
-    [1]_ provides a derivation of this as an average collision frequency
-    between electrons and ions for a Maxwellian distribution. It is thus
-    a special case of the collision frequency with an averaging factor,
-    and is on many occasions in transport theory the most relevant
-    collision frequency that has to be considered. It is heavily related
-    to diffusion and resistivity in plasmas.
+    :cite:t:`braginskii:1965` provides a derivation of this as an
+    average collision frequency between electrons and ions for a
+    Maxwellian distribution. It is thus a special case of the collision
+    frequency with an averaging factor, and is on many occasions
+    in transport theory the most relevant collision frequency that has
+    to be considered. It is heavily related to diffusion and resistivity
+    in plasmas.
 
     Parameters
     ----------
@@ -1170,10 +1152,10 @@ def fundamental_electron_collision_freq(
 
     Notes
     -----
-    Equations (2.17) and (2.120) in [1]_ provide the original source
-    used to implement this formula, however, the simplest form that
-    connects our average collision frequency to the general collision
-    frequency is this (from 2.17):
+    Equations (2.17) and (2.120) in :cite:t:`callen:unpublished` provide
+    the original source used to implement this formula, however, the
+    simplest form that connects our average collision frequency to the
+    general collision frequency is this (from 2.17):
 
     .. math::
 
@@ -1187,12 +1169,6 @@ def fundamental_electron_collision_freq(
     * :math:`1/τ_e` from equation (2.5e) on page 215 of
       :cite:t:`braginskii:1965`
     * :math:`ν_e` from page 33 of :cite:t:`nrlformulary:2019`
-
-    References
-    ----------
-    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
 
     Examples
     --------
@@ -1258,9 +1234,10 @@ def fundamental_ion_collision_freq(
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.
 
-    [1]_ provides a derivation of this as an average collision frequency
-    between ions and ions for a Maxwellian distribution. It is thus a
-    special case of the collision frequency with an averaging factor.
+    :cite:t:`braginskii:1965` provides a derivation of this as an
+    average collision frequency between ions and ions for a Maxwellian
+    distribution. It is thus a special case of the collision frequency
+    with an averaging factor.
 
     Parameters
     ----------
@@ -1301,10 +1278,11 @@ def fundamental_ion_collision_freq(
 
     Notes
     -----
-    Equations (2.36) and (2.122) in [1]_ provide the original source
-    used to implement this formula, however, in our implementation we
-    use the very same process that leads to the fundamental electron
-    collison rate (2.17), gaining simply a different coefficient:
+    Equations (2.36) and (2.122) in :cite:t:`callen:unpublished` provide
+    the original source used to implement this formula, however, in our
+    implementation we use the very same process that leads to the
+    fundamental electron collison rate (2.17), gaining simply a
+    different coefficient:
 
     .. math::
 
@@ -1325,12 +1303,6 @@ def fundamental_ion_collision_freq(
     * :math:`1/τ_i` from equation (2.5i) on page 215 of
       :cite:t:`braginskii:1965`
     * :math:`ν_i` from page 33 of :cite:t:`nrlformulary:2019`
-
-    References
-    ----------
-    .. [1] `Draft Material for "Fundamentals of Plasma Physics" Book
-       <https://drive.google.com/file/d/1mSpES1BDTbrD0L124pwH5s0c7t41L6g5/view>`__,
-       by James D. Callen
 
     Examples
     --------
