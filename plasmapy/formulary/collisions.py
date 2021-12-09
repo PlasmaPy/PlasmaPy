@@ -1166,6 +1166,7 @@ def fundamental_electron_collision_freq(
     Maxwellian distribution).
 
     This implementation of the average collision frequency is equivalent to:
+
     * :math:`1/τ_e` from equation (2.5e) on page 215 of
       :cite:t:`braginskii:1965`
     * :math:`ν_e` from page 33 of :cite:t:`nrlformulary:2019`
