@@ -58,15 +58,9 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
         \vec{v} = -\frac{ ∇ p \times \vec{B} }{ q n |B|^2 }
 
-    This is the velocity component of a fluid element perpendicular to the
-    magnetic field.
-
-    References
-    ----------
-    - Chen, Introduction to Plasma Physics and Controlled Fusion, 3.65
-
+    This is the velocity component of a fluid element perpendicular to
+    the magnetic field.
     """
-
     cross = np.cross(dp, B)
     return -cross / q / n / (B * B).sum(-1)
 
@@ -108,18 +102,13 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
     Notes
     -----
-    The E cross B drift is given by
+    The E × B drift is given by
 
     .. math::
 
         \vec{v} = \frac{\vec{E} \times \vec{B}}{|B|^2}
 
     and is independent of particle charge.
-
-    References
-    ----------
-    - PM Bellan, Fundamentals of Plasma Physics, 3.57
-
     """
 
     # np.cross drops units right now, thus this hack: see
@@ -176,11 +165,6 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
         \vec{v} = \frac{\vec{F} \times \vec{B}}{q |B|^2}
 
     Note the charge dependency.
-
-    References
-    ----------
-    - PM Bellan, Fundamentals of Plasma Physics, 3.58
-
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
     return cross / (q * (B * B).sum(-1))
