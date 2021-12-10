@@ -976,6 +976,8 @@ def test_fast_nearest_neighbor_interpolate():
     the np.argmin(np.abs(x-y)) search method for ordered arrays
     """
     ax = 100 * np.linspace(0, 1, num=100)
+    # Seed random number generator for repeatability
+    np.random.seed(seed=120921)
     pos = np.random.random([300])
     # Make sure values outside the axis on either end are included
     pos[0] = -2
