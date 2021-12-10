@@ -202,8 +202,7 @@ Documentation
 * All public classes, methods, and functions should have docstrings
   using the numpydoc format.
 
-* Docstrings may be checked locally using
-  `pydocstyle <http://www.pydocstyle.org/en/latest/>`_.
+* Docstrings may be checked locally using pydocstyle_.
 
 * These docstrings should include usage examples.
 

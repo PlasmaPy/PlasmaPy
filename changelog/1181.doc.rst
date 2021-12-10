@@ -1,2 +1,0 @@
-A brief description about the physics of the lower-hybrid resonance has been
-added to the docstring of the function `~plasmapy.formulary.parameters.lower_hybrid_frequency`.

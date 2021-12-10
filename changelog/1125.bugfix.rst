@@ -1,1 +1,0 @@
-Fixed the behavior of `~plasmapy.formulary.mathematics.Chandrasekhar_G` at very small and very large argument values.

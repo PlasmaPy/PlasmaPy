@@ -10,7 +10,7 @@ dependencies:
 - scipy
 - astropy
 - h5py
-- matplotlib
+- matplotlib >= 3.3.0
 - mpmath
 - pandas
 - pillow
