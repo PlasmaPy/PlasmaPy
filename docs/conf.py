@@ -68,7 +68,7 @@ extensions = [
     "sphinx_changelog",
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
-    "sphinx-hoverxref",
+    "hoverxref.extension",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
