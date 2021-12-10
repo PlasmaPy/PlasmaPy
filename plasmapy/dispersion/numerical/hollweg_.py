@@ -49,10 +49,10 @@ def hollweg(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
-        for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
-        charge state information is provided, then the ions are assumed to be
-        singly ionized.
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
         Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
@@ -62,7 +62,7 @@ def hollweg(
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of K or eV.
     T_i : `~astropy.units.Quantity`
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        The ion temperature in units of K or eV.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the magnetic
         field, :math:`\cos^{-1}(k_z / k)`, in units convertible to
@@ -77,25 +77,28 @@ def hollweg(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
     z_mean : `float` or int, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  Will override any charge state defined by argument ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma.  Will override any charge state defined
+        by argument ``ion``.
 
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
-        dictionary contains three keys: ``'fast_mode'`` for the fast mode,
-        ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
-        ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
+        A dictionary of computed wave frequencies in units rad/s.  The
+        dictionary contains three keys: ``'fast_mode'`` for the fast
+        mode, ``'alfven_mode'`` for the Alfvén mode, and
+        ``'acoustic_mode'`` for the ion-acoustic mode.  The value for
+        each key will be a :math:`N x M` array.
 
     Raises
     ------
     TypeError
-        If applicable arguments are not instances of `~astropy.units.Quantity` or
-        cannot be converted into one.
+        If applicable arguments are not instances of
+        `~astropy.units.Quantity` or cannot be converted into one.
 
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
 
     TypeError
         If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
