@@ -92,7 +92,7 @@ class TestHollweg:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
-    
+
    """ 
    @pytest.mark.parametrize(
         "kwargs, expected",
