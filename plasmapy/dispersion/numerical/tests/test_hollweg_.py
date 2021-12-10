@@ -22,6 +22,16 @@ class TestHollweg:
         "T_i": 4.0e5 * u.K,
         "ion": Particle("p+"),
     }
+    
+    _kwargs_hollweg1999 = {
+        "k": 10e-2 * u.rad / u.m,
+        "theta": 88 * u.deg,
+        "n_i": 5 * u.cm ** -3,
+        "B": 6.98e-8 * u.T,
+        "T_e": 1.6e6 * u.K,
+        "T_i": 4.0e5 * u.K,
+        "ion": Particle("p+"),
+    }
 
     @pytest.mark.parametrize(
         "kwargs, _error",
@@ -82,7 +92,27 @@ class TestHollweg:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
-
+    
+   """ 
+   @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            
+        ]
+    )
+    def test_on_hollweg1999_vals(self, kwargs, expected):
+        """
+        Test calculated values based on Figure 2 of Hollweg 1999
+        (DOI: https://doi.org/10.1029/1998JA900132).
+        """
+        beta = []
+        B_vals = [6.97178e-7, 6.971e-8, 2.205e-8, 1.097e-8]
+        for x in range(0,4):
+            # Need different cs and va values for different betas. Just with B changed.
+            cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"])
+            va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"])
+            beta[x] = (cs / va).value ** 2
+    """
     @pytest.mark.parametrize(
         "kwargs, expected",
         [

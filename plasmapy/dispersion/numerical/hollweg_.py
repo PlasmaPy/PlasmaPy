@@ -269,7 +269,8 @@ def hollweg(
     v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
     omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
-
+    cs_vA = c_s / v_A
+    
     # Parameters kx and kz
     kz = np.cos(theta.value) * k
     kx = np.sqrt(k ** 2 - kz ** 2)
@@ -318,7 +319,17 @@ def hollweg(
 
     w_max = max(m1, m2, m3)
     w_wci_max = w_max / omega_ci
-
+    
+    # Warnings
+    
+    if c_s / v_A > 0.1:
+        warnings.warn(
+            f" This solver is valid in the regime c_s/v_A << 1. "
+            f"A c_s/v_A value of {cs_vA:.2f} was calculated which "
+            f"may affect the validity of the solution.",
+            PhysicsWarning,
+        )
+    
     # dispersion relation is only valid in the regime w << w_ci
     if w_max / omega_ci > 0.1:
         warnings.warn(
