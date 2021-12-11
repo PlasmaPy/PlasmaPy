@@ -344,9 +344,9 @@ def hollweg(
         )
 
     omegas = {
-        "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
-        "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
+        "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
+        "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
     }
 
     return omegas
