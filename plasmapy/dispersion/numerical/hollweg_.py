@@ -316,8 +316,18 @@ def hollweg(
         warnings.warn(
             f"This solver is valid in the low-beta regime, "
             f"c_s/v_A << 1 according to Bellan, 2012, Sec. 1.7 "
-            f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} was"
-            f"calculated which may affect the validity of the solution.",
+            f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} "
+            f"was calculated which may affect the validity of the solution.",
+            PhysicsWarning,
+        )
+
+    # Warn about theta not nearly perpendicular
+    if theta < 0.5 * np.pi - 0.1 or theta > 0.5 * np.pi + 0.1:
+        warnings.warn(
+            f"This solver is valid in the regime where propogation is "
+            f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
+            f"(see documentation for DOI). A theta value of {theta:.2f} was "
+            f" entered which may affect the validity of the solution.",
             PhysicsWarning,
         )
 
