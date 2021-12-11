@@ -146,7 +146,7 @@ class _GenericWidget(abc.ABC):
         Virtual method to create widget
 
         Property
-        ------
+        --------
         `abstractmethod`
             Protected by abc.abstractmethod wrapper to ensure the method is implemented.
         """
