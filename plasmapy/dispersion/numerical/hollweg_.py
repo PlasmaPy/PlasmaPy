@@ -202,7 +202,7 @@ def hollweg(
     # validate z_mean
     if z_mean is None:
         try:
-            z_mean = abs(ion.integer_charge)
+            z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
     else:
@@ -253,87 +253,81 @@ def hollweg(
         k = np.array([k.value,]) * u.rad / u.m
 
     # Calc needed plasma parameters
-    n_e = z_mean * n_i
-    c_s = pfp.ion_sound_speed(
-        T_e=T_e,
-        T_i=T_i,
-        ion=ion,
-        n_e=n_e,
-        gamma_e=gamma_e,
-        gamma_i=gamma_i,
-        z_mean=z_mean,
-    )
-    v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
-    omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=PhysicsWarning)
+        n_e = z_mean * n_i
+        c_s = pfp.ion_sound_speed(
+            T_e=T_e,
+            T_i=T_i,
+            ion=ion,
+            n_e=n_e,
+            gamma_e=gamma_e,
+            gamma_i=gamma_i,
+            z_mean=z_mean,
+        ).value
+        v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
+        omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+        omega_pe = pfp.plasma_frequency(n=n_e, particle="e-").value
+
+    # strip units from select input args
+    k = k.value
+    theta = theta.value
     cs_vA = c_s / v_A
 
     # Parameters kx and kz
-    kz = np.cos(theta.value) * k
-    kx = np.sqrt(k ** 2 - kz ** 2)
+    kz = np.cos(theta) * k
+    kx = np.sin(theta) * k
 
-    # Bellan2012JGR beta param equation 3
+    # Define helpful parameters
     beta = (c_s / v_A) ** 2
-
-    # Parameters D, F, sigma, and alpha to simplify equation 3
-    D = (c_s / omega_ci) ** 2
-    F = (c / omega_pe) ** 2
+    alpha_A = (k * v_A) ** 2
+    alpha_s = (k * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
-    alpha = (k * v_A) ** 2
+    D = (c_s / omega_ci) ** 2
+    F = (c_si_unitless / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = F * kx ** 2 + 1
-    c2 = -sigma * ((alpha / sigma) * (1 + beta + F * kx ** 2) + D * kx ** 2 + 1)
-    c1 = sigma * alpha * (1 + 2 * beta + D * kx ** 2)
-    c0 = -beta * alpha * sigma ** 2
+    c2 = -alpha_A * (1 + beta + F * kx ** 2) - sigma * (1 + D * kx ** 2)
+    c1 = sigma * alpha_A * (1 + 2 * beta + D * kx ** 2)
+    c0 = -alpha_s * sigma ** 2
 
-    omega = {}
-    fast_mode = []
-    alfven_mode = []
-    acoustic_mode = []
+    # Find roots to polynomial
+    coefficients = np.array([c3, c2, c1, c0], ndmin=2)
+    nroots = coefficients.shape[0] - 1  # 3
+    nks = coefficients.shape[1]
+    roots = np.empty((nroots, nks), dtype=np.complex128)
+    for ii in range(nks):
+        roots[:, ii] = np.roots(coefficients[:, ii])[:]
 
-    # a3*x^3 + a2*x^2 + a1*x + a0 = 0
-    for (a3, a2, a1, a0) in zip(c3, c2, c1, c0):
+    roots = np.sqrt(roots)
+    roots = np.sort(roots, axis=0)
 
-        w = np.emath.sqrt(np.roots([a3.value, a2.value, a1.value, a0.value]))
-        fast_mode.append(np.max(w))
-        alfven_mode.append(np.median(w))
-        acoustic_mode.append(np.min(w))
-
-    omega["fast_mode"] = fast_mode * u.rad / u.s
-    omega["alfven_mode"] = alfven_mode * u.rad / u.s
-    omega["acoustic_mode"] = acoustic_mode * u.rad / u.s
-
-    omega["fast_mode"] = omega["fast_mode"].squeeze()
-    omega["alfven_mode"] = omega["alfven_mode"].squeeze()
-    omega["acoustic_mode"] = omega["acoustic_mode"].squeeze()
-
-    # check the low-frequency limit
-
-    m1 = np.max(omega["fast_mode"])
-    m2 = np.max(omega["alfven_mode"])
-    m3 = np.max(omega["acoustic_mode"])
-
-    w_max = max(m1, m2, m3)
-    w_wci_max = w_max / omega_ci
-
-    # Warnings
-
+    # Warn about NOT low-beta
     if c_s / v_A > 0.1:
         warnings.warn(
-            f" This solver is valid in the regime c_s/v_A << 1. "
-            f"A c_s/v_A value of {cs_vA:.2f} was calculated which "
-            f"may affect the validity of the solution.",
+            f"This solver is valid in the low-beta regime, "
+            f"c_s/v_A << 1. A c_s/v_A value of {cs_vA:.2f} was"
+            f"calculated which may affect the validity of the "
+            f"solution.",
             PhysicsWarning,
         )
 
     # dispersion relation is only valid in the regime w << w_ci
-    if w_max / omega_ci > 0.1:
+    w_max = np.max(roots)
+    w_wci_max = w_max / omega_ci
+    if w_WCI_MAX > 0.1:
         warnings.warn(
-            f"This solver is valid in the regime w/w_ci << 1. "
-            f"A w value of {w_max:.2f} and a w/w_ci value of {w_wci_max:.2f} "
-            f"were calculated which may affect the validity of the solution.",
+            f"This solver is valid in the regime w/w_ci << 1.  A w "
+            f"value of {w_max:.2f} and a w/w_ci value of "
+            f"{w_wci_max:.2f} were calculated which may affect the "
+            f"validity of the solution.",
             PhysicsWarning,
         )
 
-    return omega
+    omegas = {
+        "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
+        "alfven_mode": roots[1, :].squeeze()  * u.rad / u.s,
+        "fast_mode": roots[2, :].squeeze()  * u.rad / u.s,
+    }
+    return omegas
