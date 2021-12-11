@@ -284,7 +284,7 @@ def hollweg(
     alpha_s = (k * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
-    F = (c_si_unitless / omega_pe) ** 2
+    F = (c / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = F * kx ** 2 + 1
@@ -307,16 +307,16 @@ def hollweg(
     if c_s / v_A > 0.1:
         warnings.warn(
             f"This solver is valid in the low-beta regime, "
-            f"c_s/v_A << 1. A c_s/v_A value of {cs_vA:.2f} was"
-            f"calculated which may affect the validity of the "
-            f"solution.",
+            f"c_s/v_A << 1 according to Bellan, 2012, Sec. 1.7 "
+            f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} was"
+            f"calculated which may affect the validity of the solution.",
             PhysicsWarning,
         )
 
     # dispersion relation is only valid in the regime w << w_ci
     w_max = np.max(roots)
     w_wci_max = w_max / omega_ci
-    if w_WCI_MAX > 0.1:
+    if w_wci_max > 0.1:
         warnings.warn(
             f"This solver is valid in the regime w/w_ci << 1.  A w "
             f"value of {w_max:.2f} and a w/w_ci value of "
