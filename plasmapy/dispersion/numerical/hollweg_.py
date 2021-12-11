@@ -250,7 +250,15 @@ def hollweg(
 
     # Single k value case
     if np.isscalar(k.value):
-        k = np.array([k.value,]) * u.rad / u.m
+        k = (
+            np.array(
+                [
+                    k.value,
+                ]
+            )
+            * u.rad
+            / u.m
+        )
 
     # Calc needed plasma parameters
     with warnings.catch_warnings():
@@ -330,4 +338,5 @@ def hollweg(
         "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
     }
+
     return omegas

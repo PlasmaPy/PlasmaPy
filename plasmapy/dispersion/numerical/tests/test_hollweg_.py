@@ -97,7 +97,11 @@ class TestHollweg:
         "kwargs, expected",
         [
             (
-                {**_kwargs_single_valued, "ion": Particle("He"), "z_mean": 2.0,},
+                {
+                    **_kwargs_single_valued,
+                    "ion": Particle("He"),
+                    "z_mean": 2.0,
+                },
                 {**_kwargs_single_valued, "ion": Particle("He +2")},
             ),
             #
@@ -121,7 +125,10 @@ class TestHollweg:
         [
             ({**_kwargs_single_valued}, {"shape": ()}),
             (
-                {**_kwargs_single_valued, "k": [1, 2, 3] * u.rad / u.m,},
+                {
+                    **_kwargs_single_valued,
+                    "k": [1, 2, 3] * u.rad / u.m,
+                },
                 {"shape": (3,)},
             ),
         ],
