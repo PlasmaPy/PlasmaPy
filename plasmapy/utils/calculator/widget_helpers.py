@@ -26,6 +26,7 @@ __all__ = [
 import astropy.units as units
 import importlib
 import ipywidgets as widgets
+import abc
 
 from astropy.constants.si import m_e, m_p
 from inspect import signature, trace
@@ -64,8 +65,7 @@ _process_queue = []
 """_process_queue: stores the functions to be processed,
 This data is gathered from ``properties_metadata.json``."""
 
-
-class _GenericWidget:
+class _GenericWidget(abc.ABC):
     """
     Generic widget class
 
@@ -139,16 +139,17 @@ class _GenericWidget:
         """
         self.widget.placeholder = text
 
+    @abc.abstractmethod
     def create_widget(self):
         """
         Virtual method to create widget
 
-        Raises
+        Property
         ------
-        `NotImplementedError`
-            If the method ``create_widget`` is not implemented.
+        `abstractmethod`
+            Protected by abc.abstractmethod wrapper to ensure the method is implemented.
         """
-        raise NotImplementedError()
+        pass
 
     def post_creation(self):
         """
@@ -160,7 +161,7 @@ class _GenericWidget:
 
     def edge_case(self, value):
         """
-        Edge case handling for the widget. This is called within handle_change
+        Edge case handling for the widget. This is called within handle_change.
 
         Parameters
         ----------
@@ -187,7 +188,7 @@ class _GenericWidget:
 
     def try_change_value(self, value):
         """
-        Set property_name in values_container to value
+        Set property_name in values_container to value.
 
         Parameters
         ----------
@@ -198,7 +199,7 @@ class _GenericWidget:
 
     def display_error(self, value):
         """
-        Handle invalid input provide realtime validation
+        Handle invalid input provide realtime validation.
 
         Parameters
         ----------
@@ -212,7 +213,7 @@ class _GenericWidget:
 
     def convert_to_unit(self, change):
         """
-        Convert the value of the widget to the unit specified by the dropdown
+        Convert the value of the widget to the unit specified by the dropdown.
 
         Parameters
         ----------
@@ -245,7 +246,7 @@ class _GenericWidget:
 
     def handle_dropdown_change(self, change):
         """
-        Handle change event of the dropdown widget
+        Handle change event of the dropdown widget.
 
         Parameters
         ----------
@@ -321,7 +322,7 @@ class _FloatBox(_GenericWidget):
 
 class _CheckBox(_GenericWidget):
     """
-    Derived from _GenericWidget, a CheckBox input widget
+    Derived from _GenericWidget, a CheckBox input widget.
 
     Parameters
     ----------
@@ -360,7 +361,7 @@ class _ParticleBox(_GenericWidget):
 
     def edge_case_condition(self, value):
         """
-        Edge case for particle box, checks if value is empty
+        Edge case for particle box, checks if value is empty.
 
         Parameters
         ----------
@@ -377,7 +378,7 @@ class _ParticleBox(_GenericWidget):
     def edge_case(self, value):
         """
         Edge case to handle empty value of particle box
-        resets the container value to `None`, and resets the error status
+        resets the container value to `None`, and resets the error status.
         """
         self.values_cont[self.property_name] = None
         self.widget.description = ""
@@ -386,7 +387,7 @@ class _ParticleBox(_GenericWidget):
     def try_change_value(self, value):
         """
         Set property_name in values_container to value,
-        and resets the error status
+        and resets the error status.
 
         Parameters
         ----------
@@ -415,7 +416,7 @@ class _ParticleBox(_GenericWidget):
 
 class _IonBox(_ParticleBox):
     """
-    Derived from _ParticleBox, input widget specific for ion
+    Derived from _ParticleBox, input widget specific for ion.
 
     Parameters
     ----------
@@ -431,7 +432,7 @@ class _IonBox(_ParticleBox):
 
     def try_change_value(self, value):
         """
-        Set property_name in values_container to value on validating input
+        Set property_name in values_container to value on validating input.
 
         Parameters
         ----------
@@ -458,7 +459,7 @@ class _IonBox(_ParticleBox):
 class _FunctionInfo:
     """
     Class to store information about a function. Gets the function's parameters,
-    and uses to process input based on function signature
+    and uses to process input based on function signature.
 
     Parameters
     ----------
@@ -505,7 +506,7 @@ class _FunctionInfo:
 
     def get_output_widget(self):
         """
-        Returns the output widget of the function
+        Returns the output widget of the function.
 
         Returns
         -------
@@ -517,7 +518,7 @@ class _FunctionInfo:
     def produce_arg(self, spec):
         """
         Prepares a dictionary of arguments that is present in both values_container,
-        and in spec
+        and in spec.
 
         Parameters
         ----------
@@ -538,7 +539,7 @@ class _FunctionInfo:
 
     def error_message(self, spec):
         """
-        Generates an error message for the function when parameters are missing
+        Generates an error message for the function when parameters are missing.
 
         Parameters
         ----------
@@ -588,7 +589,7 @@ class _FunctionInfo:
 
 def _create_label(label, color="black"):
     """
-    Creates a label widget with the given text and color
+    Creates a label widget with the given text and color.
 
     Parameters
     ----------
@@ -605,7 +606,7 @@ def _create_label(label, color="black"):
 
 def _handle_button_click(event):
     """
-    Handles the click event of the calculate properties button
+    Handles the click event of the calculate properties button.
     """
     for fn in _process_queue:
         fn.process()
@@ -622,7 +623,7 @@ def _handle_clear_click(event):
 
 def _colored_text(color, text):
     """
-    Prepares an inline string with the given color
+    Prepares an inline string with the given color.
 
     Parameters
     ----------
