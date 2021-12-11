@@ -292,7 +292,7 @@ def hollweg(
     alpha_s = (k * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
-    F = (c / omega_pe) ** 2
+    F = (c.value / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = F * kx ** 2 + 1

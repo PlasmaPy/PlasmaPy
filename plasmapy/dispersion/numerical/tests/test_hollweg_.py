@@ -73,7 +73,7 @@ class TestHollweg:
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            # check the low-frequency limit (w<<w_ci)
+            # check the low-frequency limit (w<<w_ci) (more warnings to come)
             (
                 {
                     "k": 0.01 * u.rad / u.m,
