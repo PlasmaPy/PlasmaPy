@@ -23,10 +23,10 @@ __all__ = [
     "_create_widget",
 ]
 
+import abc
 import astropy.units as units
 import importlib
 import ipywidgets as widgets
-import abc
 
 from astropy.constants.si import m_e, m_p
 from inspect import signature, trace
@@ -64,6 +64,7 @@ values_container = dict()
 _process_queue = []
 """_process_queue: stores the functions to be processed,
 This data is gathered from ``properties_metadata.json``."""
+
 
 class _GenericWidget(abc.ABC):
     """
