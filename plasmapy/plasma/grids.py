@@ -698,7 +698,7 @@ class AbstractGrid(ABC):
         Parameters
         ----------
         start : number (`~astropy.units.Quantity`) or an array, list, or
-            tupleof three of the same.
+            tuple of three of the same.
             Starting values for each dimension. If one value is given,
             the same value will be used for all three dimensions.
 
@@ -722,6 +722,7 @@ class AbstractGrid(ABC):
 
         # Ensure that start and stop end up as a list of three u.Quantity objs
         # and num a list of three integers
+        # TODO python3.10: simplify using structural pattern matching
         for k in ["start", "stop"]:
             # Convert tuple to list
             if isinstance(var[k], tuple):
@@ -1099,10 +1100,10 @@ class AbstractGrid(ABC):
 
 def _fast_nearest_neighbor_interpolate(pos, ax):
     """
-    This function finds the indices in the axis 'ax' that are closet to the
+    This function finds the indices in the axis 'ax' that are closest to the
     values in the array 'pos'
 
-    Assumes the axis 'ax' is sorted in accending order.
+    Assumes the axis 'ax' is sorted in ascending order.
 
     """
     # Find the index where each position would be inserted into the axis.
