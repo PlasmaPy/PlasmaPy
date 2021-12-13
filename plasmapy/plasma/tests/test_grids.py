@@ -8,6 +8,8 @@ import pytest
 
 from plasmapy.plasma import grids as grids
 
+rs = np.random.RandomState(120921)
+
 
 @pytest.fixture
 def abstract_grid_uniform():
@@ -123,9 +125,9 @@ create_args = [
     # Test arrays of points that are different shapes
     (
         [
-            np.random.randn(2, 5, 3) * u.m,
-            np.random.randn(2, 5, 3) * u.m,
-            np.random.randn(2, 5, 4) * u.m,
+            rs.randn(2, 5, 3) * u.m,
+            rs.randn(2, 5, 3) * u.m,
+            rs.randn(2, 5, 4) * u.m,
         ],
         {},
         None,
@@ -590,7 +592,7 @@ def nonuniform_cartesian_grid():
 
     """
 
-    ax0 = np.sort(np.random.uniform(low=-1, high=1, size=100)) * u.cm
+    ax0 = np.sort(rs.uniform(low=-1, high=1, size=100)) * u.cm
     ax0[0], ax0[-1] = -1 * u.cm, 1 * u.cm
     ax1 = np.linspace(-1, 1, num=5) * u.cm
     ax2 = np.linspace(-1, 1, num=5) * u.cm
@@ -894,7 +896,7 @@ def test_NonUniformCartesianGrid():
     assert not grid.is_uniform
 
     # Test assigning a quantity
-    q1 = np.random.randn(10, 10, 10) * u.kg / u.cm ** 3
+    q1 = rs.randn(10, 10, 10) * u.kg / u.cm ** 3
     grid.add_quantities(rho=q1)
 
     # Test grid resolution for non-uniform grids
@@ -977,8 +979,7 @@ def test_fast_nearest_neighbor_interpolate():
     """
     ax = 100 * np.linspace(0, 1, num=100)
     # Seed random number generator for repeatability
-    np.random.seed(seed=120921)
-    pos = np.random.random([300])
+    pos = rs.random([300])
     # Make sure values outside the axis on either end are included
     pos[0] = -2
     pos[1] = 102
