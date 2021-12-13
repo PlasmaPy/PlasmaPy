@@ -1,4 +1,4 @@
-r"""
+"""
 Functions to calculate classical transport coefficients.
 
 .. nbgallery::
@@ -152,7 +152,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 class ClassicalTransport:
-    r"""
+    """
     Classical transport coefficients (e.g. Braginskii, 1965).
 
     Notes
@@ -459,7 +459,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def resistivity(self) -> u.Ohm * u.m:
-        r"""
+        """
         Calculate the resistivity.
 
         The resistivity (:math:`α`) of a plasma is defined by
@@ -504,7 +504,7 @@ class ClassicalTransport:
 
     @property
     def thermoelectric_conductivity(self):
-        r"""
+        """
         Calculate the thermoelectric conductivity.
 
         .. todo::
@@ -527,7 +527,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
-        r"""
+        """
         Calculate the thermal conductivity for ions.
 
         The ion thermal conductivity (:math:`κ`) of a plasma is defined by
@@ -580,7 +580,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
-        r"""
+        """
         Calculate the thermal conductivity for electrons.
 
         The electron thermal conductivity (:math:`κ`) of a plasma is defined by
@@ -645,7 +645,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def ion_viscosity(self) -> u.Pa * u.s:
-        r"""
+        """
         Calculate the ion viscosity.
 
         .. todo::
@@ -693,7 +693,7 @@ class ClassicalTransport:
     @property
     @validate_quantities
     def electron_viscosity(self) -> u.Pa * u.s:
-        r"""
+        """
         Calculate the electron viscosity.
 
         .. todo::
@@ -798,7 +798,7 @@ def resistivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Ohm * u.m:
-    r"""
+    """
     Calculate the resistivity.
 
     The resistivity (:math:`α`) of a plasma is defined by
@@ -866,7 +866,7 @@ def thermoelectric_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ):
-    r"""
+    """
     Calculate the thermoelectric conductivity.
 
     .. todo::
@@ -906,7 +906,7 @@ def ion_thermal_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.W / u.m / u.K:
-    r"""
+    """
     Calculate the thermal conductivity for ions.
 
     The ion thermal conductivity (:math:`κ`) of a plasma is defined by
@@ -976,7 +976,7 @@ def electron_thermal_conductivity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.W / u.m / u.K:
-    r"""
+    """
     Calculate the thermal conductivity for electrons.
 
     The electron thermal conductivity (:math:`κ`) of a plasma is defined by
@@ -1058,7 +1058,7 @@ def ion_viscosity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Pa * u.s:
-    r"""
+    """
     Calculate the ion viscosity.
 
     .. todo::
@@ -1115,7 +1115,7 @@ def electron_viscosity(
     theta=None,
     coulomb_log_method="classical",
 ) -> u.Pa * u.s:
-    r"""
+    """
     Calculate the electron viscosity.
 
     .. todo::
