@@ -16,13 +16,13 @@ __all__ = [
     "Reynolds_number",
     "Rm_",
 ]
+__aliases__ = ["Re_", "Rm_"]
 
 from astropy import constants
 from astropy import units as u
-from astropy.constants import c
 from astropy.constants.codata2010 import mu0
 
-from plasmapy.formulary import electron_viscosity, parameters, quantum
+from plasmapy.formulary import parameters, quantum
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -214,7 +214,7 @@ def Reynolds_number(
 
 
 Re_ = Reynolds_number
-""" Alias to :func:`Reynolds_number`. """
+"""Alias to `~plasmapy.formulary.dimensionless.Reynolds_number`."""
 
 
 @validate_quantities(U={"can_be_negative": True})
@@ -288,4 +288,4 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
 
 
 Rm_ = Mag_Reynolds
-""" Alias to :func:`Mag_Reynolds`. """
+"""Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""

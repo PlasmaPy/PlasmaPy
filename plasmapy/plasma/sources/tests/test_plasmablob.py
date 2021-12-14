@@ -11,9 +11,9 @@ from plasmapy.utils.exceptions import CouplingWarning
 @pytest.mark.parametrize(
     "grid_dimensions, expected_size",
     [
-        ((100, 1, 1), 100),  # Test 1D setup
-        ((128, 128, 1), 16384),  # 2D
-        ((64, 64, 64), 262144),  # 3D
+        pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
+        pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D
+        pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
 def test_Plasma3D_setup(grid_dimensions, expected_size):
@@ -32,11 +32,6 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
 
     expected_size : int
         Product of grid dimensions.
-
-    Examples
-    --------
-    >>> test_Plasma3D_setup((10, 10, 10), 1000)
-    >>> test_Plasma3D_setup((100, 10, 1), 1000)
     """
     x, y, z = grid_dimensions
     test_plasma = plasma3d.Plasma3D(
@@ -68,7 +63,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-# @pytest.mark.parametrize([()])
+@pytest.mark.slow
 def test_Plasma3D_derived_vars():
     r"""Function to test derived variables of the Plasma3D class.
 
@@ -147,7 +142,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 2.0
+        Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -172,7 +167,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 3.0
+        Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -198,7 +193,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm ** -3
-        Z = 2.5
+        Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         with pytest.warns(
             CouplingWarning, match="you might have strong coupling effects"
@@ -224,7 +219,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm ** -3
-        Z = 2.5
+        Z = 2.5 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -252,7 +247,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm ** -3
-        Z = 3.0
+        Z = 3.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -278,7 +273,7 @@ class Test_PlasmaBlobRegimes:
 
         T_e = 5 * 15e3 * u.K
         n_e = 1e25 * u.cm ** -3
-        Z = 2.0
+        Z = 2.0 * u.dimensionless_unscaled
         particle = "p"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -297,10 +292,10 @@ class Test_PlasmaBlobRegimes:
 class Test_PlasmaBlob:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_e = 5 * 11e3 * u.K
         self.n_e = 1e23 * u.cm ** -3
-        self.Z = 2.5
+        self.Z = 2.5 * u.dimensionless_unscaled
         self.particle = "p"
         self.blob = plasmablob.PlasmaBlob(
             T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle=self.particle
@@ -318,7 +313,7 @@ class Test_PlasmaBlob:
             )
 
     def test_electron_temperature(self):
-        """Testing if we get the same electron temperature we put in """
+        """Testing if we get the same electron temperature we put in"""
         testTrue = self.T_e == self.blob.electron_temperature
         errStr = (
             f"Input electron temperature {self.T_e} should be equal to "
@@ -328,7 +323,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_electron_density(self):
-        """Testing if we get the same electron density we put in """
+        """Testing if we get the same electron density we put in"""
         testTrue = self.n_e == self.blob.electron_density
         errStr = (
             f"Input electron density {self.n_e} should be equal to "
@@ -338,7 +333,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_ionization(self):
-        """Testing if we get the same ionization we put in """
+        """Testing if we get the same ionization we put in"""
         testTrue = self.Z == self.blob.ionization
         errStr = (
             f"Input ionization {self.Z} should be equal to "
@@ -348,7 +343,7 @@ class Test_PlasmaBlob:
         assert testTrue, errStr
 
     def test_composition(self):
-        """Testing if we get the same composition (particle) we put in """
+        """Testing if we get the same composition (particle) we put in"""
         testTrue = self.particle == self.blob.composition
         errStr = (
             f"Input particle {self.particle} should be equal to "

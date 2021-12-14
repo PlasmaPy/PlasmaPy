@@ -298,7 +298,7 @@ class CheckValues(CheckBase):
 
         """
         if arg_name == "checks_on_return":
-            valueerror_msg = f"The return value "
+            valueerror_msg = "The return value "
         else:
             valueerror_msg = f"The argument '{arg_name}' "
         valueerror_msg += f"to function {self.f.__name__}() can not contain"
@@ -627,9 +627,9 @@ class CheckUnits(CheckBase):
                 continue
             elif _units is None and _units_anno is None:
                 # checks specified, but NO unit checks
-                msg = f"No astropy.units specified for "
+                msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
-                    msg += f"return value "
+                    msg += "return value "
                 else:
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
@@ -678,9 +678,9 @@ class CheckUnits(CheckBase):
                 continue
             elif len(_units) == 0 and len(_units_anno) == 0:
                 # checks specified, but NO unit checks
-                msg = f"No astropy.units specified for "
+                msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
-                    msg += f"return value "
+                    msg += "return value "
                 else:
                     msg += f"argument {param.name} "
                 msg += f"of function {self.f.__name__}()."
@@ -824,7 +824,7 @@ class CheckUnits(CheckBase):
         """
         # initialize str for error messages
         if arg_name == "checks_on_return":
-            err_msg = f"The return value "
+            err_msg = "The return value "
         else:
             err_msg = f"The argument '{arg_name}' "
         err_msg += f"to function {self.f.__name__}()"

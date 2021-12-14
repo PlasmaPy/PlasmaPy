@@ -119,7 +119,7 @@ def from_roman(s: str) -> Integral:
     Returns
     -------
     result : `int`
-        The integer corresponding to the Roman numeral.
+        The positive integer corresponding to the Roman numeral.
 
     Raises
     ------
@@ -144,7 +144,7 @@ def from_roman(s: str) -> Integral:
     if not isinstance(s, str):
         raise TypeError("The argument to from_roman must be a string.")
     if not _romanNumeralPattern.search(s):
-        raise InvalidRomanNumeralError("Invalid Roman numeral: %s" % s)
+        raise InvalidRomanNumeralError(f"Invalid Roman numeral: {s}")
 
     result = 0
     index = 0

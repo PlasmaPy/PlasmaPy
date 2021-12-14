@@ -49,7 +49,8 @@ class TestModifyDocstring:
         assert wfoo.__original_doc__ == original_doc
 
     @pytest.mark.parametrize(
-        "prepend, append, expected", [(5, None, TypeError), (None, 5, TypeError)],
+        "prepend, append, expected",
+        [(5, None, TypeError), (None, 5, TypeError)],
     )
     def test_raises(self, prepend, append, expected):
         with pytest.raises(expected):

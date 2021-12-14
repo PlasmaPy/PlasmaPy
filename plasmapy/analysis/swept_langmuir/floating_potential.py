@@ -1,5 +1,6 @@
 """Functionality for determining the floating potential of a Langmuir sweep."""
 __all__ = ["find_floating_potential", "find_vf_"]
+__aliases__ = ["find_vf_"]
 
 import numbers
 import numpy as np
@@ -13,7 +14,8 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 FloatingPotentialResults = namedtuple(
-    "FloatingPotentialResults", ("vf", "vf_err", "rsq", "func", "islands", "indices"),
+    "FloatingPotentialResults",
+    ("vf", "vf_err", "rsq", "func", "islands", "indices"),
 )
 
 

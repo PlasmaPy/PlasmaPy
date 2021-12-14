@@ -114,7 +114,7 @@ class Test_ColdPlasmaPermittivity(object):
 class Test_permittivity_1D_Maxwellian:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 30 * 11600 * u.K
         self.n = 1e18 * u.cm ** -3
         self.particle = "Ne"

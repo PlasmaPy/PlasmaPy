@@ -1,10 +1,12 @@
+:orphan:
+
 .. currentmodule:: plasmapy.simulation.particle_integrators
 
 *****************************
 Particle movement integrators
 *****************************
 
-Reference/API
-=============
+API
+===
 
 .. automodapi:: plasmapy.simulation.particle_integrators

@@ -20,7 +20,7 @@ def nuclear_binding_energy(
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -79,7 +79,7 @@ def mass_energy(particle: Particle, mass_numb: Optional[int] = None) -> u.Quanti
 
     Parameters
     ----------
-    particle: `str`, `int`, or `~plasmapy.particles.Particle`
+    particle: `str`, `int`, or `~plasmapy.particles.particle_class.Particle`
         A Particle object, a string representing an element or isotope,
         or an integer representing the atomic number of an element.
 
@@ -188,7 +188,7 @@ def nuclear_reaction_energy(*args, **kwargs):
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.
 
-    errmsg = f"Invalid nuclear reaction."
+    errmsg = "Invalid nuclear reaction."
 
     def process_particles_list(
         unformatted_particles_list: List[Union[str, Particle]]
@@ -253,7 +253,7 @@ def nuclear_reaction_energy(*args, **kwargs):
 
     def total_charge(particles: List[Particle]) -> int:
         """
-        Find the total integer charge in a list of nuclides
+        Find the total charge number in a list of nuclides
         (excluding bound electrons) and other particles.
         """
         total_charge = 0
@@ -261,7 +261,7 @@ def nuclear_reaction_energy(*args, **kwargs):
             if particle.isotope:
                 total_charge += particle.atomic_number
             elif not particle.element:
-                total_charge += particle.integer_charge
+                total_charge += particle.charge_number
         return total_charge
 
     def add_mass_energy(particles: List[Particle]) -> u.Quantity:

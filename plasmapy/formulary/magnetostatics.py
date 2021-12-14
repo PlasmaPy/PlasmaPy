@@ -40,7 +40,6 @@ class MagnetoStatics(abc.ABC):
         -------
         B : `~astropy.units.Quantity`
             Magnetic field at the specified position.
-
         """
 
 
@@ -55,7 +54,6 @@ class MagneticDipole(MagnetoStatics):
 
     p0: `~astropy.units.Quantity`
         Position of the dipole.
-
     """
 
     @validate_quantities
@@ -66,13 +64,12 @@ class MagneticDipole(MagnetoStatics):
         self._p0_u = p0.unit
 
     def __repr__(self):
-        return "{name}(moment={moment}{moment_u}, p0={p0}{p0_u})".format(
-            name=self.__class__.__name__,
-            moment=self.moment,
-            p0=self.p0,
-            moment_u=self._moment_u,
-            p0_u=self._p0_u,
-        )
+        name = self.__class__.__name__
+        moment = self.moment
+        p0 = self.p0
+        moment_u = self._moment_u
+        p0_u = self._p0_u
+        return f"{name}(moment={moment}{moment_u}, p0={p0}{p0_u})"
 
     def magnetic_field(self, p: u.m) -> u.T:
         r"""
@@ -87,7 +84,6 @@ class MagneticDipole(MagnetoStatics):
         -------
         B : `~astropy.units.Quantity`
             Magnetic field at the specified position.
-
         """
         r = p - self.p0
         m = self.moment
@@ -125,7 +121,6 @@ class GeneralWire(Wire):
 
     current: `~astropy.units.Quantity`
         Electric current.
-
     """
 
     @validate_quantities
@@ -143,16 +138,15 @@ class GeneralWire(Wire):
         self._current_u = current.unit
 
     def __repr__(self):
+        name = self.__class__.__name__
+        parametric_eq = self.parametric_eq.__name__
+        t1 = self.t1
+        t2 = self.t2
+        current = self.current
+        current_u = self._current_u
         return (
-            "{name}(parametric_eq={parametric_eq}, t1={t1}, t2={t2}, "
-            "current={current}{current_u})".format(
-                name=self.__class__.__name__,
-                parametric_eq=self.parametric_eq.__name__,
-                t1=self.t1,
-                t2=self.t2,
-                current=self.current,
-                current_u=self._current_u,
-            )
+            f"{name}(parametric_eq={parametric_eq}, t1={t1}, t2={t2}, "
+            f"current={current}{current_u})"
         )
 
     def magnetic_field(self, p: u.m, n: numbers.Integral = 1000) -> u.T:
@@ -185,7 +179,6 @@ class GeneralWire(Wire):
             \left[\vec p - \frac{\vec l(t_{i}) + \vec l(t_{i-1})}{2}\right]}
             {\left|\vec p - \frac{\vec l(t_{i}) + \vec l(t_{i-1})}{2}\right|^3},
             \quad \text{where}\, t_i = t_{\min}+i/n*(t_{\max}-t_{\min})
-
         """
 
         p1 = self.parametric_eq(self.t1)
@@ -219,7 +212,6 @@ class FiniteStraightWire(Wire):
 
     current : `astropy.units.Quantity`
         Electric current.
-
     """
 
     @validate_quantities
@@ -267,7 +259,6 @@ class FiniteStraightWire(Wire):
             \vec B = \frac{(\overrightarrow{P_2P_1}\times\overrightarrow{PP_f})^0}
                      {|\overrightarrow{PP_f}|}
                      \frac{μ_0 I}{4π} (\cos θ_1 - \cos θ_2)
-
         """
         # foot of perpendicular
         p1, p2 = self.p1, self.p2
@@ -319,7 +310,6 @@ class InfiniteStraightWire(Wire):
 
     current : `~astropy.units.Quantity`
         Electric current.
-
     """
 
     @validate_quantities
@@ -331,13 +321,15 @@ class InfiniteStraightWire(Wire):
         self._current_u = current.unit
 
     def __repr__(self):
-        return "{name}(direction={direction}, p0={p0}{p0_u}, current={current}{current_u})".format(
-            name=self.__class__.__name__,
-            direction=self.direction,
-            p0=self.p0,
-            current=self.current,
-            p0_u=self._p0_u,
-            current_u=self._current_u,
+        name = self.__class__.__name__
+        direction = self.direction
+        p0 = self.p0
+        current = self.current
+        p0_u = self._p0_u
+        current_u = self._current_u
+        return (
+            f"{name}(direction={direction}, p0={p0}{p0_u}, "
+            f"current={current}{current_u})"
         )
 
     def magnetic_field(self, p) -> u.T:
@@ -360,7 +352,6 @@ class InfiniteStraightWire(Wire):
             \vec B = \frac{μ_0 I}{2π r}*(\vec l^0\times \vec{PP_0})^0,
             \text{where}\, \vec l^0\, \text{is the unit vector of current direction},
             r\, \text{is the perpendicular distance between} P_0 \text{and the infinite wire}
-
         """
         r = np.cross(self.direction, p - self.p0)
         B_unit = r / np.linalg.norm(r)
@@ -386,22 +377,20 @@ class CircularWire(Wire):
 
     current: `~astropy.units.Quantity`
         Electric current.
-
     """
 
     def __repr__(self):
+        name = self.__class__.__name__
+        normal = self.normal
+        center = self.center
+        radius = self.radius
+        current = self.current
+        center_u = self._center_u
+        radius_u = self._radius_u
+        current_u = self._current_u
         return (
-            "{name}(normal={normal}, center={center}{center_u}, "
-            "radius={radius}{radius_u}, current={current}{current_u})".format(
-                name=self.__class__.__name__,
-                normal=self.normal,
-                center=self.center,
-                radius=self.radius,
-                current=self.current,
-                center_u=self._center_u,
-                radius_u=self._radius_u,
-                current_u=self._current_u,
-            )
+            f"{name}(normal={normal}, center={center}{center_u}, "
+            f"radius={radius}{radius_u}, current={current}{current_u})"
         )
 
     @validate_quantities
@@ -477,9 +466,7 @@ class CircularWire(Wire):
 
         We use ``n`` points using Gauss-Legendre quadrature to compute
         the integral. The default ``n`` is 300.
-
         """
-
         x, w = self.roots_legendre
         t = x * np.pi
         pt = self.curve(t)

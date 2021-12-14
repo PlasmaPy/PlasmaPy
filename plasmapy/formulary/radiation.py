@@ -99,7 +99,7 @@ def thermal_bremsstrahlung(
 
     # Default n_i is n_e/Z:
     if n_i is None:
-        n_i = n_e / ion_species.integer_charge
+        n_i = n_e / ion_species.charge_number
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -127,7 +127,7 @@ def thermal_bremsstrahlung(
 
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
-            "hbar*ω/kT_e = {rj_const.value:.2e} > 0.1. "
+            f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
             "Try lower ω or higher T_e."
         )
 
@@ -140,7 +140,7 @@ def thermal_bremsstrahlung(
         / (const.m_e.si * const.c.si ** 2) ** 1.5
     )
 
-    Zi = ion_species.integer_charge
+    Zi = ion_species.charge_number
     c2 = (
         np.sqrt(1 - ω_pe ** 2 / ω ** 2)
         * Zi ** 2

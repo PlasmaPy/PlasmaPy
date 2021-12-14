@@ -16,10 +16,8 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    Notes
-    -----
-    This interface is incomplete and unstable, and is thus subject to
-    change at any time.
+    .. warning::
+        This interface is unstable and subject to change.
     """
 
     @abstractmethod

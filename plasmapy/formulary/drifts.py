@@ -8,6 +8,7 @@ __all__ = [
     "veb_",
     "vfd_",
 ]
+__aliases__ = ["vd_", "veb_", "vfd_"]
 
 import astropy.units as u
 import numpy as np
@@ -71,7 +72,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
 
 vd_ = diamagnetic_drift
-""" Alias to :func:`diamagnetic_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.diamagnetic_drift`."""
 
 
 @validate_quantities
@@ -128,7 +129,7 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
 
 veb_ = ExB_drift
-""" Alias to :func:`ExB_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.ExB_drift`."""
 
 
 @validate_quantities
@@ -186,4 +187,4 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
 
 vfd_ = force_drift
-""" Alias to :func:`force_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.force_drift`."""

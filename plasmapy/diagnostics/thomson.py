@@ -233,7 +233,7 @@ def spectral_density(
     vTi, ion_z = [], []
     for T, ion in zip(Ti, ion_species):
         vTi.append(thermal_speed(T, particle=ion).value)
-        ion_z.append(ion.integer_charge * u.dimensionless_unscaled)
+        ion_z.append(ion.charge_number * u.dimensionless_unscaled)
     vTi = vTi * vTe.unit
     zbar = np.sum(ifract * ion_z)
     ne = efract * n
@@ -258,8 +258,9 @@ def spectral_density(
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
     # Eq. 1.7.10 in Sheffield
     k = np.sqrt(ks ** 2 + kl ** 2 - 2 * ks * kl * np.cos(scattering_angle))
-    # Normal vector along k
+    # Normalized vector along k
     k_vec = (scatter_vec - probe_vec) * u.dimensionless_unscaled
+    k_vec = k_vec / np.linalg.norm(k_vec)
 
     # Compute Doppler-shifted frequencies for both the ions and electrons
     # Matmul is simultaneously conducting dot product over all wavelengths

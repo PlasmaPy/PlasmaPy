@@ -4,8 +4,6 @@
 Formulary (`plasmapy.formulary`)
 ********************************
 
-.. currentmodule:: plasmapy.formulary
-
 `plasmapy.formulary` provides theoretical formulas for calculation of
 physical quantities helpful for plasma physics.
 
@@ -94,3 +92,8 @@ The docstrings for plasma parameter methods should describe the
 physics associated with these quantities in ways that are
 understandable to students who are taking their first course in plasma
 physics while still being useful to experienced plasma physicists.
+
+API
+===
+
+.. automodapi:: plasmapy.formulary

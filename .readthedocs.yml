@@ -1,12 +1,19 @@
+# .readthedocs.yml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
 version: 2
 
 formats:
-  - htmlzip
+- htmlzip
 
+# Optionally set the version of Python and requirements required to build your docs
 python:
-  version: 3.7
+  version: '3.8'
   install:
-    - requirements: requirements/automated-documentation-tests.txt
-    - method: setuptools
-      path: .
+  - requirements: requirements/install.txt
+  - requirements: requirements/docs.txt
+  - method: setuptools
+    path: .
   system_packages: true

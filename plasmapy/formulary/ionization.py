@@ -1,6 +1,7 @@
 """Functions related to ionization states and the properties thereof."""
 
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
+__aliases__ = ["Z_bal_"]
 
 import astropy.units as u
 
@@ -90,7 +91,7 @@ def ionization_balance(n: u.m ** -3, T_e: u.K) -> u.dimensionless_unscaled:
 
 
 Z_bal_ = ionization_balance
-"""Alias for :func:`ionization_balance`."""
+"""Alias for `~plasmapy.formulary.ionization.ionization_balance`."""
 
 
 @validate_quantities(

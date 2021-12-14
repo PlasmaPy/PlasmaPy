@@ -28,7 +28,7 @@ from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 class Test_Coulomb_logarithm:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.temperature1 = 10 * 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.density1 = 1e20 * u.cm ** -3
@@ -951,7 +951,7 @@ class Test_Coulomb_logarithm:
 class Test_impact_parameter_perp:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.particles = ("e", "p")
         self.V = 1e4 * u.km / u.s
@@ -1006,7 +1006,7 @@ class Test_impact_parameter_perp:
 class Test_impact_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_e = 1e17 * u.cm ** -3
@@ -1106,7 +1106,7 @@ class Test_impact_parameter:
 class Test_collision_frequency:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1245,7 +1245,7 @@ class Test_collision_frequency:
 class Test_fundamental_electron_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1264,7 +1264,7 @@ class Test_fundamental_electron_collision_freq:
 class Test_fundamental_ion_collision_freq:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T_arr = np.array([1, 2]) * u.eV
         self.n_arr = np.array([1e20, 2e20]) * u.cm ** -3
         self.ion = "p"
@@ -1283,7 +1283,7 @@ class Test_fundamental_ion_collision_freq:
 class Test_mean_free_path:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1346,7 +1346,7 @@ class Test_mean_free_path:
 class Test_Spitzer_resistivity:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n = 1e12 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1424,7 +1424,7 @@ class Test_Spitzer_resistivity:
 class Test_mobility:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
         self.particles = ("e", "p")
@@ -1504,7 +1504,7 @@ class Test_mobility:
 class Test_Knudsen_number:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.length = 1 * u.nm
         self.T = 11604 * u.K
         self.n_e = 1e17 * u.cm ** -3
@@ -1572,7 +1572,7 @@ class Test_Knudsen_number:
 class Test_coupling_parameter:
     @classmethod
     def setup_class(self):
-        """initializing parameters for tests """
+        """initializing parameters for tests"""
         self.T = 11604 * u.K
         self.n_e = 1e21 * u.cm ** -3
         self.particles = ("e", "p")
