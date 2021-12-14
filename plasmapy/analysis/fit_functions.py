@@ -39,6 +39,8 @@ class AbstractFitFunction(ABC):
         param_errors: Tuple[float, ...] = None,
     ):
         """
+        Create an instance of the class.
+
         Parameters
         ----------
         params: Tuple[float, ...], optional
