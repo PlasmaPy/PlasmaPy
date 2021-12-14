@@ -48,7 +48,6 @@ class AbstractFitFunction(ABC):
         param_errors: Tuple[float, ...], optional
             Tuple of values for the errors associated with the function
             parameters.  Equal in size to :attr:`param_names`.
-
         """
 
         self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
@@ -203,7 +202,6 @@ class AbstractFitFunction(ABC):
             J. R. Taylor.  *An Introduction to Error Analysis: The Study of
             Uncertainties in Physical Measurements.* University Science Books,
             second edition, August 1996 (ISBN: 093570275X)
-
         """
         ...
 
