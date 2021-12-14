@@ -108,7 +108,6 @@ jobs:
   documentation:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    needs: initial-tests
     strategy:
       fail-fast: false
       matrix:
