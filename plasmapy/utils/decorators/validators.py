@@ -165,7 +165,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     def __call__(self, f):
         """
-        Wrap the function.
+        Decorate a function.
 
         Parameters
         ----------
