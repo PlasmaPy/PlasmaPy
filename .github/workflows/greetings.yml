@@ -10,7 +10,7 @@ jobs:
     - uses: actions/first-interaction@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        pr-message: >+
+        pr-message: >
           Thank you for making your first contribution to PlasmaPy! The project's future depends on contributors like you, so we deeply appreciate it! 🌱
 
           To make sure that you get credit for this pull request (PR), please add yourself to the list of contributors in [`docs/about/credits.rst`](https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/credits.rst).
