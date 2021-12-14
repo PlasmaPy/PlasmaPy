@@ -29,6 +29,16 @@ class AbstractFitFunction(ABC):
     """
     Abstract class for defining fit functions :math:`f(x)` and the tools for
     fitting the function to a set of data.
+
+    Parameters
+    ----------
+    params: Tuple[float, ...], optional
+        Tuple of values for the function parameters. Equal in size to
+        :attr:`param_names`.
+
+    param_errors: Tuple[float, ...], optional
+        Tuple of values for the errors associated with the function
+        parameters.  Equal in size to :attr:`param_names`.
     """
 
     _param_names = NotImplemented  # type: Tuple[str, ...]
@@ -38,19 +48,6 @@ class AbstractFitFunction(ABC):
         params: Tuple[float, ...] = None,
         param_errors: Tuple[float, ...] = None,
     ):
-        """
-        Create an instance of the class.
-
-        Parameters
-        ----------
-        params: Tuple[float, ...], optional
-            Tuple of values for the function parameters. Equal in size to
-            :attr:`param_names`.
-
-        param_errors: Tuple[float, ...], optional
-            Tuple of values for the errors associated with the function
-            parameters.  Equal in size to :attr:`param_names`.
-        """
 
         self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
 
