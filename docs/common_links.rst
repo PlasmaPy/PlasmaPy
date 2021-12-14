@@ -156,3 +156,6 @@
 
 .. _`sphinx_changelog`: https://sphinx-changelog.readthedocs.io
 .. |sphinx_changelog| replace:: `sphinx_changelog`
+
+.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
+.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
