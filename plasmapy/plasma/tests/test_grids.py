@@ -181,14 +181,11 @@ def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
 
 
 abstract_attrs = [
-    ("uniform", "is_uniform", bool, None, True),
-    ("nonuniform", "is_uniform", bool, None, False),
-    ("uniform", "shape", tuple, int, (21, 21, 21)),
-    ("nonuniform", "shape", tuple, int, (125,)),
-    ("uniform", "grid", u.Quantity, None, None),
-    ("uniform", "grids", tuple, u.Quantity, None),
+    ("is_uniform", bool, None, True),
+    ("shape", tuple, int, (21, 21, 21)),
+    ("grid", u.Quantity, None, None),
+    ("grids", tuple, u.Quantity, None),
     (
-        "uniform",
         "units",
         list,
         u.core.Unit,
@@ -197,50 +194,79 @@ abstract_attrs = [
         ]
         * 3,
     ),
-    ("uniform", "unit0", u.core.Unit, None, u.cm),
-    ("uniform", "unit1", u.core.Unit, None, u.cm),
-    ("uniform", "unit2", u.core.Unit, None, u.cm),
-    ("uniform", "unit", u.core.Unit, None, u.cm),
-    ("uniform", "pts0", u.Quantity, None, None),
-    ("uniform", "pts1", u.Quantity, None, None),
-    ("uniform", "pts2", u.Quantity, None, None),
-    ("uniform", "ax0", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
-    ("uniform", "ax1", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
-    ("uniform", "ax2", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
-    ("uniform", "dax0", u.Quantity, None, 0.1 * u.cm),
-    ("uniform", "dax1", u.Quantity, None, 0.1 * u.cm),
-    ("uniform", "dax2", u.Quantity, None, 0.1 * u.cm),
-    ("uniform", "si_scale_factors", list, float, [0.01, 0.01, 0.01]),
-    ("uniform", "_ax0_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
-    ("uniform", "_ax1_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
-    ("uniform", "_ax2_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
-    ("uniform", "_dax0_si", float, None, 0.001),
-    ("uniform", "_dax1_si", float, None, 0.001),
-    ("uniform", "_dax2_si", float, None, 0.001),
+    ("unit0", u.core.Unit, None, u.cm),
+    ("unit1", u.core.Unit, None, u.cm),
+    ("unit2", u.core.Unit, None, u.cm),
+    ("unit", u.core.Unit, None, u.cm),
+    ("pts0", u.Quantity, None, None),
+    ("pts1", u.Quantity, None, None),
+    ("pts2", u.Quantity, None, None),
+    ("ax0", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("ax1", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("ax2", u.Quantity, None, np.linspace(-1, 1, num=21) * u.cm),
+    ("dax0", u.Quantity, None, 0.1 * u.cm),
+    ("dax1", u.Quantity, None, 0.1 * u.cm),
+    ("dax2", u.Quantity, None, 0.1 * u.cm),
+    ("si_scale_factors", list, float, [0.01, 0.01, 0.01]),
+    ("_ax0_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("_ax1_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("_ax2_si", np.ndarray, None, 0.01 * np.linspace(-1, 1, num=21)),
+    ("_dax0_si", float, None, 0.001),
+    ("_dax1_si", float, None, 0.001),
+    ("_dax2_si", float, None, 0.001),
 ]
 
 
-@pytest.mark.parametrize("fixture,attr,type,type_in_iter,value", abstract_attrs)
-def test_AbstractGrid_attributes(
-    fixture,
+@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+def test_AbstractGrid_uniform_attributes(
     attr,
     type,
     type_in_iter,
     value,
     abstract_grid_uniform,
+):
+    """
+    Tests that the attributes of AbstractGrid have the correct type and
+    values for the fixture abstract_grid_uniform.
+    """
+    attr = getattr(abstract_grid_uniform, attr)
+    assert isinstance(attr, type)
+
+    # If the attribute is an iterable, check the type inside too
+    if type_in_iter is not None:
+        for elem in attr:
+            isinstance(elem, type_in_iter)
+
+    # If an expected value is given, verify the attribute matches
+    if value is not None:
+        if isinstance(value, np.ndarray):
+            assert np.allclose(attr, value, rtol=0.1)
+        elif isinstance(value, (float, int)):
+            assert np.isclose(attr, value, rtol=0.1)
+        else:
+            assert attr == value
+
+
+abstract_attrs = [
+    ("is_uniform", bool, None, False),
+    ("shape", tuple, int, (125,)),
+]
+
+
+@pytest.mark.parametrize("attr,type,type_in_iter,value", abstract_attrs)
+def test_AbstractGrid_nonuniform_attributes(
+    attr,
+    type,
+    type_in_iter,
+    value,
     abstract_grid_nonuniform,
 ):
     """
     Tests that the attributes of AbstractGrid have the correct type and
     values for the fixture abstract_grid_uniform.
     """
-    # Chose which of the two fixtures to used based on this parameter
-    if fixture == "uniform":
-        grid = abstract_grid_uniform
-    else:
-        grid = abstract_grid_nonuniform
 
-    attr = getattr(grid, attr)
+    attr = getattr(abstract_grid_nonuniform, attr)
     assert isinstance(attr, type)
 
     # If the attribute is an iterable, check the type inside too
