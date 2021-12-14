@@ -172,6 +172,9 @@ class AbstractFitFunction(ABC):
     )
     def func_err(self, x, x_err=None, rety=False):
         """
+        Return calculated uncertainties of the independent variables and
+        the associated dependent variables.
+
         Parameters
         ----------
         x: array_like
