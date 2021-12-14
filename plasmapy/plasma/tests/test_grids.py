@@ -24,7 +24,7 @@ def abstract_grid_uniform():
     4. "rho" which is a mass density at each point in the grid [kg/m^-3]
     """
     # Create grid
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=21)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=21)
     # Add some data to the grid
     grid.add_quantities(x=grid.grids[0])
     grid.add_quantities(y=grid.grids[1])
@@ -54,7 +54,7 @@ def abstract_grid_nonuniform():
     ax2 = np.array([-1, -0.5, 0, 0.5, 1])
     x, y, z = np.meshgrid(ax0, ax1, ax2)
 
-    grid = grids.AbstractGrid(x * u.cm, y * u.cm, z * u.cm)
+    grid = grids.NonUniformCartesianGrid(x * u.cm, y * u.cm, z * u.cm)
 
     # Add some data to the grid
     grid.add_quantities(x=grid.grids[0])
@@ -153,14 +153,20 @@ create_args = [
 
 @pytest.mark.parametrize("args,kwargs,shape,error", create_args)
 def test_AbstractGrid_creation(args, kwargs, shape, error):
+    """
+    Test the creation of AbstractGrids
+
+    Use CartesianGrid as the test example
+
+    """
     # If no exception is expected, create the grid and check its shape
     if error is None:
-        grid = grids.AbstractGrid(*args, **kwargs)
+        grid = grids.CartesianGrid(*args, **kwargs)
         assert grid.shape == shape
     # If an exception is expected, verify that it is raised
     else:
         with pytest.raises(error):
-            grid = grids.AbstractGrid(*args, **kwargs)
+            grid = grids.CartesianGrid(*args, **kwargs)
 
 
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
@@ -171,11 +177,11 @@ def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform):
     print(abstract_grid_nonuniform)
 
     # Test printing a grid with no quantities
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=3)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=3)
     print(grid)
 
     # Test printing a grid with unrecognized quantities
-    grid = grids.AbstractGrid(-1 * u.cm, 1 * u.cm, num=3)
+    grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=3)
     grid.add_quantities(unrecognized_quantity=np.ones([3, 3, 3]) * u.T)
     print(grid)
 
@@ -284,19 +290,6 @@ def test_AbstractGrid_nonuniform_attributes(
             assert attr == value
 
 
-def test_AbstractGrid_interpolators_not_implemented(abstract_grid_uniform):
-    """
-    Verifies that interpolators raise a not implemented error
-    """
-    pos = np.array([0.1, -0.3, 0]) * u.cm
-
-    with pytest.raises(NotImplementedError):
-        abstract_grid_uniform.nearest_neighbor_interpolator(pos, "x")
-
-    with pytest.raises(NotImplementedError):
-        abstract_grid_uniform.volume_averaged_interpolator(pos, "x")
-
-
 quantities = [
     # Test adding one quantity
     ("B_x", np.ones([21, 21, 21]) * u.T, None, None, None),
@@ -308,6 +301,7 @@ quantities = [
 ]
 
 
+@pytest.mark.skip("Not testable until cylindrical or spherical grids are implemented")
 def test_unit_attribute_error_case():
     """
     Verify that the unit attribute raises an exception if the units on all
@@ -927,11 +921,6 @@ def test_NonUniformCartesianGrid():
 
     # Test grid resolution for non-uniform grids
     assert 0 * u.cm < grid.grid_resolution < 2 * u.cm
-
-    # Test volume interpolator not implemented yet
-    pos = np.array([5, -0.3, 0]) * u.cm
-    with pytest.raises(NotImplementedError):
-        pout = grid.volume_averaged_interpolator(pos, "x")
 
     # Test that many properties are unavailable
     with pytest.raises(ValueError):

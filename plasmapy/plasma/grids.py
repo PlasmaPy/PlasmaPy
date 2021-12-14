@@ -15,7 +15,7 @@ import scipy.interpolate as interp
 import warnings
 import xarray as xr
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from cached_property import cached_property
 from collections import namedtuple
 from scipy.spatial import distance
@@ -877,35 +877,16 @@ class AbstractGrid(ABC):
 
         return np.where(on_grid == 0, True, False)
 
+    @abstractmethod
     def vector_intersects(self, p1, p2):
         r"""
         `True` if the vector from ``p1`` to ``p2`` intersects the grid,
         and `False` otherwise.
 
-        This is a standard ray-box intersection algorithm.
+        The definition of 'intersects' is determined by the implementation
+        for each subclass.
         """
-        p1, p2 = p1.si.value, p2.si.value
-        # Caclulate the minimum and maximum of each
-        Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
-        Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
-        Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
-        A = np.array([Ax, Ay, Az])
-        B = np.array([Bx, By, Bz])
-
-        # Calculate the equation of the line from p1 to p2 such that
-        # r = p1 + t*D
-        D = np.abs(p2 - p1)
-
-        # Calculate the intersection points. These operations are just vectorized
-        # for convenience. Ignore div-by-zero: outputting infty's here is fine.
-        with np.errstate(divide="ignore"):
-            Tmin = (A - p1) / D
-            Tmax = (B - p1) / D
-
-        Tmin = np.max(Tmin)
-        Tmax = np.min(Tmax)
-
-        return Tmin < Tmax
+        ...
 
     # *************************************************************************
     # Interpolators
@@ -944,6 +925,7 @@ class AbstractGrid(ABC):
 
         return _interp_units
 
+    @abstractmethod
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
@@ -970,41 +952,7 @@ class AbstractGrid(ABC):
             ``persistent`` overrides to `False` if the arguments list
             has changed since the last call.
         """
-        raise NotImplementedError(
-            "Nearest-neighbor interpolator is not yet "
-            "implemented for this grid type."
-        )
-
-    def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
-    ):
-        r"""
-        Interpolate values on the grid using a volume-averaged scheme with
-        no higher-order weighting.
-
-        Parameters
-        ----------
-        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
-            An array of positions in space, where the second dimension
-            corresponds to the three dimensions of the grid. If a
-            `~numpy.ndarray` is provided, units will be assumed to match
-            those of the grid.
-
-        *args : `str`
-            Strings that correspond to DataArrays in the dataset
-
-        persistent : `bool`
-            If `True`, the interpolator will assume the grid and its
-            contents have not changed since the last interpolation. This
-            substantially speeds up the interpolation when many
-            interpolations are performed on the same grid in a loop.
-            ``persistent`` overrides to `False` if the arguments list
-            has changed since the last call.
-        """
-
-        raise NotImplementedError(
-            "Volume-averaged interpolator is not yet " "implemented for this grid type."
-        )
+        ...
 
     def _persistent_interpolator_setup(self, pos, args, persistent):
         r"""
@@ -1146,6 +1094,36 @@ class CartesianGrid(AbstractGrid):
         """
         return min(self.dax0, self.dax1, self.dax2)
 
+    def vector_intersects(self, p1, p2):
+        r"""
+        `True` if the vector from ``p1`` to ``p2`` intersects the grid,
+        and `False` otherwise.
+
+        This is a standard ray-box intersection algorithm.
+        """
+        p1, p2 = p1.si.value, p2.si.value
+        # Caclulate the minimum and maximum of each
+        Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
+        Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
+        Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
+        A = np.array([Ax, Ay, Az])
+        B = np.array([Bx, By, Bz])
+
+        # Calculate the equation of the line from p1 to p2 such that
+        # r = p1 + t*D
+        D = np.abs(p2 - p1)
+
+        # Calculate the intersection points. These operations are just vectorized
+        # for convenience. Ignore div-by-zero: outputting infty's here is fine.
+        with np.errstate(divide="ignore"):
+            Tmin = (A - p1) / D
+            Tmax = (B - p1) / D
+
+        Tmin = np.max(Tmin)
+        Tmax = np.min(Tmax)
+
+        return Tmin < Tmax
+
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
@@ -1190,11 +1168,32 @@ class CartesianGrid(AbstractGrid):
         else:
             return tuple(output)
 
-    @modify_docstring(prepend=AbstractGrid.volume_averaged_interpolator.__doc__)
     def volume_averaged_interpolator(
         self, pos: Union[np.ndarray, u.Quantity], *args, persistent=False
     ):
-        """
+        r"""
+        Interpolate values on the grid using a volume-averaged scheme with
+        no higher-order weighting.
+
+        Parameters
+        ----------
+        pos : `~numpy.ndarray` or `~astropy.units.Quantity` array, shape (n,3)
+            An array of positions in space, where the second dimension
+            corresponds to the three dimensions of the grid. If a
+            `~numpy.ndarray` is provided, units will be assumed to match
+            those of the grid.
+
+        *args : `str`
+            Strings that correspond to DataArrays in the dataset
+
+        persistent : `bool`
+            If `True`, the interpolator will assume the grid and its
+            contents have not changed since the last interpolation. This
+            substantially speeds up the interpolation when many
+            interpolations are performed on the same grid in a loop.
+            ``persistent`` overrides to `False` if the arguments list
+            has changed since the last call.
+
         Notes
         -----
 
@@ -1369,6 +1368,38 @@ class NonUniformCartesianGrid(AbstractGrid):
         distances = distance.cdist(self.grid, self.grid)
         np.fill_diagonal(distances, np.inf)
         return np.min(distances) * self.unit
+
+    def vector_intersects(self, p1, p2):
+        r"""
+        `True` if the vector from ``p1`` to ``p2`` intersects the grid,
+        and `False` otherwise. The grid is defined by a cube extending in
+        each dimension from the minimum value of the grid to the maximum value
+        of the grid in that dimension.
+
+        This is a standard ray-box intersection algorithm.
+        """
+        p1, p2 = p1.si.value, p2.si.value
+        # Caclulate the minimum and maximum of each
+        Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
+        Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
+        Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
+        A = np.array([Ax, Ay, Az])
+        B = np.array([Bx, By, Bz])
+
+        # Calculate the equation of the line from p1 to p2 such that
+        # r = p1 + t*D
+        D = np.abs(p2 - p1)
+
+        # Calculate the intersection points. These operations are just vectorized
+        # for convenience. Ignore div-by-zero: outputting infty's here is fine.
+        with np.errstate(divide="ignore"):
+            Tmin = (A - p1) / D
+            Tmax = (B - p1) / D
+
+        Tmin = np.max(Tmin)
+        Tmax = np.min(Tmax)
+
+        return Tmin < Tmax
 
     def _make_mesh(self, start, stop, num, **kwargs):
         r"""
