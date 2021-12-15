@@ -1,13 +1,7 @@
 """
 Collection of private functions to load properties and construct widgets
 """
-__all__ = [
-    "grid_data",
-    "LIGHT_BLUE",
-    "LIGHT_GRAY",
-    "_create_interactive_layout",
-    "_create_output_layout",
-]
+__all__ = []
 
 import astropy.units as units
 import json

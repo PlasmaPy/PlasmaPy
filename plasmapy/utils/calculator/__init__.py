@@ -1,9 +1,7 @@
 """
 Script and utilities to launch the plasma calculator
 """
-__all__ = [
-    "main",
-]
+__all__ = ["main"]
 
 import argparse
 import os

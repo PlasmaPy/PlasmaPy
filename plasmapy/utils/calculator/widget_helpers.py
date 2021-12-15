@@ -2,26 +2,7 @@
 Contains functions that create widgets and process properties for the calculator
 """
 
-__all__ = [
-    "BLACK",
-    "DARK_RED",
-    "LIGHT_GREEN",
-    "ERROR_STYLE",
-    "EQUAL_SPACING_CONFIG",
-    "values_container",
-    "_process_queue",
-    "_GenericWidget",
-    "_FloatBox",
-    "_ParticleBox",
-    "_CheckBox",
-    "_IonBox",
-    "_FunctionInfo",
-    "_create_label",
-    "_handle_button_click",
-    "_handle_clear_click",
-    "_colored_text",
-    "_create_widget",
-]
+__all__ = []
 
 import abc
 import astropy.units as units
@@ -144,11 +125,6 @@ class _GenericWidget(abc.ABC):
     def create_widget(self):
         """
         Virtual method to create widget
-
-        Property
-        --------
-        `abstractmethod`
-            Protected by abc.abstractmethod wrapper to ensure the method is implemented.
         """
         pass
 
