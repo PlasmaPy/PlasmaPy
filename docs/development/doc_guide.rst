@@ -446,7 +446,7 @@ Bibliography
 PlasmaPy uses |sphinxcontrib-bibtex|_ to manage references for its
 documentation. This Sphinx_ extension allows us to store references
 in a BibTeX_ file which is then used to generate the
-:doc:`../bibliography`.  References in the :doc:`../bibliography` are then
+:doc:`../bibliography`. References in the :doc:`../bibliography` are then
 citable from anywhere in the documentation.
 
 To add a new reference to the :doc:`../bibliography`, open
@@ -456,7 +456,7 @@ case) followed by a colon and the year. A letter should be added after
 the year when needed to disambiguate multiple references. Include the
 DOI_ if the reference has one. If the reference does not have a DOI_,
 then include the URL. The ISBN or ISSN number should be included for
-books.  The ``misc`` field type should be used when citing data sets and
+books. The ``misc`` field type should be used when citing data sets and
 software. Please follow the existing style in |docs/bibliography.bib|_
 and alphabetize references by the surname of the first author. To
 preserve capitalization, enclose words or phrases within curly brackets
@@ -654,7 +654,7 @@ Using the :rst:role:`term` |role| allows us to link to the
 definitions of terms. Using ``:term:`kwargs``` will link to
 :term:`kwargs` in the :doc:`glossary`. We can also refer to terms
 defined in the projects connected via intersphinx_ if they have not
-already been defined in PlasmaPy's :ref:`glossary`.  Using
+already been defined in PlasmaPy's :ref:`glossary`. Using
 ``:term:`role``` will link to |role| and ``:term:`directive``` will link
 to |directive| in `Sphinx's glossary`_.
 
@@ -795,6 +795,17 @@ documentation for PlasmaPy and affiliated packages.
      The symbol for an electron is e\ :sup:`-`.
 
      An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
+
+* Begin each :file:`.py` file with a docstring that provides a
+  high-level overview of what is contained in that module.
+
+* Place the ``__all__`` dunder immediately after the docstring that
+  begins a module and before the import statements. This dunder should
+  be a `list` that contains the names of all of the objects in that
+  module intended for use by the end user. Private objects (i.e. objects
+  with names that begin with an underscore) should not be included in
+  ``__all__``. Only objects contained within ``__all__`` will show up in
+  the online documentation.
 
 Docstring guidelines
 --------------------
