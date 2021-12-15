@@ -1196,7 +1196,6 @@ class CartesianGrid(AbstractGrid):
 
         Notes
         -----
-
         This interpolator approximates the value of a quantity at a given
         interpolation point using a weighted sum of the values at the eight grid
         vertices that surround the point. The weighting factors are calculated by
