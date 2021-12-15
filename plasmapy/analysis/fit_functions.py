@@ -29,16 +29,6 @@ class AbstractFitFunction(ABC):
     """
     Abstract class for defining fit functions :math:`f(x)` and the tools for
     fitting the function to a set of data.
-
-    Parameters
-    ----------
-    params: Tuple[float, ...], optional
-        Tuple of values for the function parameters. Equal in size to
-        :attr:`param_names`.
-
-    param_errors: Tuple[float, ...], optional
-        Tuple of values for the errors associated with the function
-        parameters.  Equal in size to :attr:`param_names`.
     """
 
     _param_names = NotImplemented  # type: Tuple[str, ...]
@@ -48,6 +38,18 @@ class AbstractFitFunction(ABC):
         params: Tuple[float, ...] = None,
         param_errors: Tuple[float, ...] = None,
     ):
+        """
+        Parameters
+        ----------
+        params: Tuple[float, ...], optional
+            Tuple of values for the function parameters. Equal in size to
+            :attr:`param_names`.
+
+        param_errors: Tuple[float, ...], optional
+            Tuple of values for the errors associated with the function
+            parameters.  Equal in size to :attr:`param_names`.
+
+        """
 
         self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
 
@@ -171,9 +173,6 @@ class AbstractFitFunction(ABC):
     )
     def func_err(self, x, x_err=None, rety=False):
         """
-        Return calculated uncertainties of the independent variables and
-        the associated dependent variables.
-
         Parameters
         ----------
         x: array_like
@@ -204,6 +203,7 @@ class AbstractFitFunction(ABC):
             J. R. Taylor.  *An Introduction to Error Analysis: The Study of
             Uncertainties in Physical Measurements.* University Science Books,
             second edition, August 1996 (ISBN: 093570275X)
+
         """
         ...
 
