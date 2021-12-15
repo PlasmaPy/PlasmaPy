@@ -5,7 +5,7 @@ __aliases__ = ["Z_bal_"]
 
 import astropy.units as u
 
-from astropy.constants import a0, k_B
+from astropy.constants import a0, k_B, m_p
 from numpy import exp, log, pi, sqrt
 
 from plasmapy.utils.decorators import validate_quantities
@@ -192,3 +192,93 @@ def Saha(g_j, g_k, n_e: u.m ** -3, E_jk: u.J, T_e: u.K) -> u.dimensionless_unsca
     ratio = degeneracy_factor * physical_constants * boltzmann_factor
 
     return ratio
+
+
+@validate_quantities(
+    n_e={"can_be_negative": False},
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
+def thomas_fermi_ionization_state(
+    Z, n_e: u.m ** (-3), T_e: u.K
+) -> u.dimensionless_unscaled:
+    r"""
+    Return the finite temperature Thomas-Fermi mean ionization state using fit provided in
+    R.M. More, "Pressure Ionization, Resonances, and the
+    Continuity of Bound and Free States", Adv. in Atomic
+    Mol. Phys., Vol. 21, p. 332 (Table IV).
+
+    Parameters
+    ----------
+    Z : int
+        Ion charge number
+
+    n_e : `~astropy.units.Quantity`
+        Electron number density in 1/m**3
+
+    T_e : `~astropy.units.Quantity`
+        Electon temperature in K
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    `TypeError`
+        If either of ``T_e`` or ``n_e`` is not a `~astropy.units.Quantity`
+        and cannot be converted into a `~astropy.units.Quantity`.
+
+    `~astropy.units.UnitConversionError`
+        If either of ``T_e`` or ``n_e`` is not in appropriate units.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 1.16e7*u.K
+    >>> n_e = 1e29*u.m**(-3)
+    >>> Z = 6
+    >>> thomas_fermi_ionization_state(Z, n_e, T_e)
+    <Quantity 5.84965421>
+    >>> T_e = 1e3 * u.eV
+    >>> thomas_fermi_ionization_state(Z, n_e, T_e)
+    <Quantity 5.84971587>
+
+    Returns
+    -------
+    Z : `~astropy.units.Quantity`
+        The Thomas-Fermi ionization state of the ion in the plasma.
+
+    """
+
+    alpha = 14.3139
+    beta = 0.6624
+    a1 = 0.003323
+    a2 = 0.9718
+    a3 = 9.26148e-5
+    a4 = 3.10165
+    b0 = -1.7630
+    b1 = 1.43175
+    b2 = 0.31546
+    c1 = -0.366667
+    c2 = 0.983333
+
+    # Convert density to g/cc and temperature to eV
+    n_cc_u = n_e.to(u.cm ** (-3)) * m_p.cgs
+    n_cc = n_cc_u.value
+    T_eV = T_e.to(u.eV, equivalencies=u.temperature_energy()).value
+
+    R = n_cc / Z
+    T0 = T_eV / Z ** (4.0 / 3.0)
+    Tf = T0 / (1 + T0)
+
+    A = a1 * T0 ** a2 + a3 * T0 ** a4
+    B = -exp(b0 + b1 * Tf + b2 * Tf ** 7)
+    C = c1 * Tf + c2
+    Q1 = A * R ** B
+    Q = (R ** C + Q1 ** C) ** (1 / C)
+    x = alpha * Q ** beta
+
+    TF_Z = Z * x / (1 + x + sqrt(1 + 2.0 * x)) * u.dimensionless_unscaled
+
+    return TF_Z
