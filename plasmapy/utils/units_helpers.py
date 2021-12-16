@@ -1,54 +1,75 @@
 """Helper functionality for `astropy.units`."""
 
-from astropy.units.physical import get_physical_type
+from __future__ import annotations
+
+__all__ = ["get_physical_type_dict"]
+
+import astropy.units as u
+
+from numbers import Number
+from typing import Dict, Iterable
 
 
-def get_physical_type_dict(quantities, *, quantities_only: bool = True):
+def get_physical_type_dict(
+    collection: Iterable,
+    *,
+    only_quantities=False,
+    numbers_become_quantities=False,
+) -> Dict[u.PhysicalType, u.Quantity]:
     """
-    Return a `dict` that contains physical types as keys and
-    ``quantities`` as the values.
+    Return a `dict` that contains `~astropy.units.PhysicalType` objects
+    as keys and the corresponding objects in ``collection`` as values.
+
+    Objects in ``collection`` that do not correspond to a |PhysicalType|
+    are skipped.
 
     Parameters
     ----------
-    quantities : iterable of `~astropy.units.Quantity`
-        An
+    collection : iterable
+        A collection that is expected to contain objects with physical
+        types.
 
-    quantities_only : bool
-        If `True` (default), allow only `~astropy.units.Quantity`
-        instances. If `False`, allow any `object` that has a valid
-        physical type.
+    only_quantities : bool, keyword-only, optional
+        If `True`, only `~astropy.units.Quantity` instances in
+        ``collection`` will be passed into the resulting `dict`.
+        Defaults to `False`.
+
+    numbers_become_quantities : bool, keyword-only, optional
+        If `True`, `~numbers.Number` objects will be converted into
+        dimensionless |Quantity| instances. If `False`,
+        `~numbers.Number` objects will be skipped. Defaults to `False`.
 
     Returns
     -------
+    physical_types : dict
+        A mapping from |PhysicalType| instances to the corresponding
+        objects in ``collection``.
 
-    Raises
-    ------
-    `TypeError`
-        If ``quantities`` contains something other than a |Quantity| and
-        ``quantities_only`` is `True`.  T
-
-    `ValueError`
-        If a `~astropy.units.Quantity` is
-
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.utils.units_helpers import get_physical_type_dict
+    >>> quantities = [1 * u.m, 2 * u.kg]
+    >>> get_physical_type_dict(quantities)
+    {PhysicalType('length'): <Quantity 1. m>, PhysicalType('mass'): <Quantity 2. kg>}
     """
+    physical_types = {}
 
-    if quantities_only:
-        all_are_quantities = all(isinstance(quantity) for quantity in quantities)
-        if not all_are_quantities:
-            raise TypeError("Not all values in iterable are Quantity instances.")
+    for obj in collection:
 
-    physical_types = [get_physical_type(quantity) for quantity in quantities]
+        if isinstance(obj, Number) and numbers_become_quantities:
+            obj = u.Quantity(obj, u.dimensionless_unscaled)
 
-    return {
-        physical_type: quantity
-        for physical_type, quantity in zip(physical_types, quantities)
-    }
+        if only_quantities and not isinstance(obj, u.Quantity):
+            continue
 
-    physical_type_dict = {}
-    for value in values:
-        physical_type = get_physical_type(value)
-        if physical_type in physical_type_dict:
-            raise ValueError(f"Duplicate physical type: {physical_type}")
-        physical_type_dict[physical_type] = value
+        try:
+            physical_type = u.get_physical_type(obj)
+        except TypeError:
+            pass
+        else:
+            if physical_type in physical_types:
+                raise ValueError(f"Duplicate physical type: {physical_type}")
+            physical_types[physical_type] = obj
 
-    return physical_type_dict
+    return physical_types
