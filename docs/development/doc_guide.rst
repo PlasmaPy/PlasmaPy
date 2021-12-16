@@ -802,8 +802,8 @@ documentation for PlasmaPy and affiliated packages.
 * Place the ``__all__`` dunder immediately after the docstring that
   begins a module and before the import statements. This dunder should
   be a `list` that contains the names of all of the objects in that
-  module intended for use by the end user. Private objects (i.e. objects
-  with names that begin with an underscore) should not be included in
+  module intended for use by users. Private objects (i.e. objects with
+  names that begin with an underscore) should not be included in
   ``__all__``. Only objects contained within ``__all__`` will show up in
   the online documentation.
 
