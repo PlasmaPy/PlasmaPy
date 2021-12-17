@@ -2,3 +2,8 @@
 
 # any file, anywhere
 *                                                        @PlasmaPy/plasmapy-reviewers
+
+# any conftest.py, anywhere
+conftest.py                                              @StanczakDominik
+
+plasmapy/diagnostics/proton_radiography.py               @pheuer
