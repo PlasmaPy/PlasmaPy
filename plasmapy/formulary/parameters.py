@@ -811,8 +811,8 @@ def kappa_thermal_speed(
         V_{th,i} = \sqrt{(2 κ - 3)\frac{2 k_B T_i}{κ m_i}}
 
     For more discussion on the ``'mean_magnitude'`` calculation method,
-    see [1]_.
-
+    see `PlasmaPy issue #186
+    <https://github.com/PlasmaPy/PlasmaPy/issues/186>`__.
 
     Examples
     --------
@@ -823,10 +823,6 @@ def kappa_thermal_speed(
     <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
     <Quantity 34922.98... m / s>
-
-    References
-    ----------
-    .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
 
     See Also
     --------
