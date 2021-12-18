@@ -16,6 +16,8 @@ from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
 
+c_si_unitless = c.value
+
 
 @validate_quantities(
     B={"can_be_negative": False},
@@ -36,13 +38,11 @@ def hollweg(
     gamma_i: Union[float, int] = 3,
     z_mean: Union[float, int] = None,
 ):
-
     r"""
-    Using the equation provided by Bellan 2012, this function
-    calculates the numerical solution to the two fluid dispersion relation
-    presented by Hollweg 1999. This dispersion relation assumes
-    :math:`\omega/\omega_{\rm ci} \ll 1`, a uniform magnetic field
-    :math:`\mathbf{B_0}`, and quasi-neutrality.
+    Calculate the two fluid dispersion relation presented by
+    :cite:t:`hollweg:1999`, and discussed by :cite:t:`bellan:2012`.
+    This is a numberical solver of equation 3 in :cite:t:`bellan:2012`.
+    See the **Notes** section below for additional details.
 
     Parameters
     ----------
@@ -57,8 +57,7 @@ def hollweg(
         Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to
-        :math:`\text{m}^{-3}`.
+        Ion number density in units convertible to m\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`
         The electron temperature in units of K or eV.
     T_i : `~astropy.units.Quantity`
@@ -102,7 +101,7 @@ def hollweg(
         `~plasmapy.particles.Particle`.
 
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        If ``gamma_e``, ``gamma_i``, or ``z_mean`` are not of type `int`
         or `float`.
 
     ~astropy.units.UnitTypeError
@@ -129,15 +128,21 @@ def hollweg(
     Warns
     -----
     : `~plasmapy.utils.exceptions.PhysicsWarning`
-        When the computed wave frequencies violate the
-        :math:`\omega/\omega_{\rm ci} \ll 1` assumption of the
-        dispersion relation.
+        When :math:`\omega / \omega_{\rm ci} > 0.1`, violation of the
+        low-frequency assumption.
+
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When :math:`c_{\rm s} / v_{\rm A} > 0.1`, violation of low-β.
+
+    : `~plasmapy.utils.exceptions.PhysicsWarning`
+        When :math:`|θ - π/2| > 0.1`, violation of quasi-perpendicular
+        propagation.
 
     Notes
     -----
 
-    The equation presented in Hollweg 1999 [2]_ (equation 3 in Bellan
-    2012 [1]_) is:
+    The dispersion relation presented in :cite:t:`hollweg:1999`
+    (equation 3 in :cite:t:`bellan:2012`) is:
 
     .. math::
         \left( \frac{\omega^2}{k_{\rm z}^2 v_{\rm A}^2} - 1 \right) &
@@ -156,17 +161,28 @@ def hollweg(
     where
 
     .. math::
-        k_{\rm x} = \mathbf{k} \cdot \hat{x}
+        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
+        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
 
-    References
-    ----------
-    .. [1] PM Bellan, Improved basis set for low frequency plasma waves,
-       2012, JGR, 117, A12219, doi: `10.1029/2012JA017856
-       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
+    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
+    :math:`\omega_{\rm pe}` is the electron plasma frequency. In the
+    derivation of this relation Hollweg assumed low-frequency waves
+    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
+    :math:`\mathbf{E_o}=0`, and quasi-neutrality.
 
-    .. [2] JV Hollweg, Kinetic Alfven wave revisited, 1999, JGR, 104(A7),
-       14811–14819, doi: `10.1029/1998JA900132
-       <https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/1998JA900132>`_
+    :cite:t:`hollweg:1999` asserts this expression is valid for
+    arbitrary :math:`c_{\rm s} / v_{\rm A}` (β) and
+    :math:`k_{\rm z} / k` (θ).  Contrarily, :cite:t:`bellan:2012`
+    states in §1.7 that due to the inconsistent retention of the
+    :math:`\omega / \omega_{\rm ci} \ll 1` terms the expression can
+    only be valid if both :math:`c_{\rm s} \ll v_{\rm A}` (low-β) and
+    the wave propgation is nearly perpendicular to the magnetic field.
+
+    This routine solves for ω for given :math:`k` values by numerically
+    solving for the roots of the above expression.
 
     Examples
     --------
@@ -250,15 +266,7 @@ def hollweg(
 
     # Single k value case
     if np.isscalar(k.value):
-        k = (
-            np.array(
-                [
-                    k.value,
-                ]
-            )
-            * u.rad
-            / u.m
-        )
+        k = np.array([k.value]) * u.rad / u.m
 
     # Calc needed plasma parameters
     with warnings.catch_warnings():
@@ -292,7 +300,7 @@ def hollweg(
     alpha_s = (k * c_s) ** 2  # == alpha_A * beta
     sigma = (kz * v_A) ** 2
     D = (c_s / omega_ci) ** 2
-    F = (c.value / omega_pe) ** 2
+    F = (c_si_unitless / omega_pe) ** 2
 
     # Polynomial coefficients: c3*x^3 + c2*x^2 + c1*x + c0 = 0
     c3 = F * kx ** 2 + 1
@@ -322,12 +330,12 @@ def hollweg(
         )
 
     # Warn about theta not nearly perpendicular
-    if theta < 0.5 * np.pi - 0.1 or theta > 0.5 * np.pi + 0.1:
+    if np.abs(theta - np.pi / 2) > 0.1:
         warnings.warn(
             f"This solver is valid in the regime where propogation is "
             f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
             f"(see documentation for DOI). A theta value of {theta:.2f} was "
-            f" entered which may affect the validity of the solution.",
+            f"entered which may affect the validity of the solution.",
             PhysicsWarning,
         )
 
