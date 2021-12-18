@@ -73,13 +73,39 @@ class TestHollweg:
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            # check the low-frequency limit (w<<w_ci) (more warnings to come)
+            # w/w_ci << 1 PhysicsWarning
             (
                 {
                     "k": 0.01 * u.rad / u.m,
                     "theta": 88 * u.deg,
-                    "n_i": 5 * u.cm ** -3,
+                    "n_i": 0.05 * u.cm ** -3,
                     "B": 2.2e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+            # c_s/v_A << 1 PhysicsWarning
+            (
+                {
+                    "k": 10e-8 * u.rad / u.m,
+                    "theta": 88 * u.deg,
+                    "n_i": 5 * u.cm ** -3,
+                    "B": 6.98e-8 * u.T,
+                    "T_e": 1.6e6 * u.K,
+                    "T_i": 4.0e5 * u.K,
+                    "ion": Particle("p+"),
+                },
+                PhysicsWarning,
+            ),
+            # theta nearly perpendicular PhysicsWarning
+            (
+                {
+                    "k": 10e-8 * u.rad / u.m,
+                    "theta": 84 * u.deg,
+                    "n_i": 1 * u.cm ** -3,
+                    "B": 6.98e-8 * u.T,
                     "T_e": 1.6e6 * u.K,
                     "T_i": 4.0e5 * u.K,
                     "ion": Particle("p+"),
