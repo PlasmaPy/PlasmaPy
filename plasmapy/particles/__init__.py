@@ -49,26 +49,26 @@ from plasmapy.particles.symbols import (
 )
 
 proton = Particle("p+")
-"""A `Particle` instance representing a proton."""
+"""A |Particle| instance representing a proton."""
 
 electron = Particle("e-")
-"""A `Particle` instance representing an electron."""
+"""A |Particle| instance representing an electron."""
 
 neutron = Particle("n")
-"""A `Particle` instance representing a neutron."""
+"""A |Particle| instance representing a neutron."""
 
 positron = Particle("e+")
-"""A `Particle` instance representing a positron."""
+"""A |Particle| instance representing a positron."""
 
 deuteron = Particle("D 1+")
-"""A `Particle` instance representing a positively charged deuterium ion."""
+"""A |Particle| instance representing a positively charged deuterium ion."""
 
 triton = Particle("T 1+")
-"""A `Particle` instance representing a positively charged tritium ion."""
+"""A |Particle| instance representing a positively charged tritium ion."""
 
 alpha = Particle("He-4 2+")
 """
-A `Particle` instance representing an alpha particle (doubly charged
+A |Particle| instance representing an alpha particle (doubly charged
 helium-4).
 """
 
