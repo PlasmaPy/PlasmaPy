@@ -360,6 +360,8 @@ extensions:
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
 * |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
+* |sphinx-hoverxref|_ for showing floating windows on cross references
+  of the documentation.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
