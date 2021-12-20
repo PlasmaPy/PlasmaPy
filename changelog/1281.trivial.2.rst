@@ -1,2 +1,0 @@
-Switched usage of `str.format` to formatted string literals (f-strings)
-in several files.

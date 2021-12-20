@@ -67,7 +67,13 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
     "plasmapy_sphinx",
+    "sphinxcontrib.bibtex",
+    "hoverxref.extension",
 ]
+
+bibtex_bibfiles = ["bibliography.bib"]
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
@@ -180,6 +186,8 @@ linkcheck_anchors_ignore = [
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "xcode"
+
+hoverxref_auto_ref = True
 
 # -- Options for HTML output ----------------------------------------------
 

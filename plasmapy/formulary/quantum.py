@@ -443,7 +443,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is given by [1]_:
+    The ideal chemical potential is given by :cite:p:`bonitz:1998`\ :
 
     .. math::
         χ_a = I_{1/2}(β μ_a^{ideal})
@@ -468,10 +468,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     arguments due to limitations in the `~mpmath` package's implementation
     of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
     integral.
-
-    References
-    ----------
-    .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
 
     Examples
     --------

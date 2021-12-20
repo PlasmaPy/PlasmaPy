@@ -146,6 +146,8 @@ class CheckValues(CheckBase):
 
     def __call__(self, f):
         """
+        Decorate a function.
+
         Parameters
         ----------
         f
@@ -478,6 +480,8 @@ class CheckUnits(CheckBase):
 
     def __call__(self, f):
         """
+        Decorate a function.
+
         Parameters
         ----------
         f

@@ -4,7 +4,7 @@ import astropy.units as u
 import numpy as np
 import os
 
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -30,9 +30,9 @@ def _fetch_units(openPMD_dims):
 def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VERSION):
     """Checks if the passed version is supported or not."""
 
-    parsed_version = StrictVersion(openPMD_version)
-    outdated_version = StrictVersion(outdated)
-    newer_version = StrictVersion(newer)
+    parsed_version = Version(openPMD_version)
+    outdated_version = Version(outdated)
+    newer_version = Version(newer)
     return outdated_version <= parsed_version < newer_version
 
 

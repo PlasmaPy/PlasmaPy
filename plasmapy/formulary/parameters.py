@@ -60,7 +60,11 @@ from plasmapy.utils.decorators import (
     check_relativistic,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import (
+    PhysicsWarning,
+    PlasmaPyFutureWarning,
+    RelativityWarning,
+)
 
 __all__ += __aliases__
 
@@ -222,7 +226,7 @@ def Alfven_speed(
     where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
     is the total mass density (:math:`n_i` is the ion number density,
     :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass).
+    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
@@ -253,7 +257,7 @@ def Alfven_speed(
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units m s\ :sup:`-1`.
+        The Alfvén speed in units of m s\ :sup:`-1`.
 
     Raises
     ------
@@ -807,8 +811,8 @@ def kappa_thermal_speed(
         V_{th,i} = \sqrt{(2 κ - 3)\frac{2 k_B T_i}{κ m_i}}
 
     For more discussion on the ``'mean_magnitude'`` calculation method,
-    see [1]_.
-
+    see `PlasmaPy issue #186
+    <https://github.com/PlasmaPy/PlasmaPy/issues/186>`__.
 
     Examples
     --------
@@ -819,10 +823,6 @@ def kappa_thermal_speed(
     <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
     <Quantity 34922.98... m / s>
-
-    References
-    ----------
-    .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
 
     See Also
     --------
@@ -948,9 +948,10 @@ def Hall_parameter(
     Examples
     --------
     >>> from astropy import units as u
-    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
-    <Quantity 7.26446...e+16>
-    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    >>> import pytest
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    <Quantity 2.500...e+15>
+    >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
     """
     from plasmapy.formulary.collisions import (
@@ -1927,9 +1928,10 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
     The Bohm diffusion coefficient was conjectured to follow Bohm model
     of the diffusion of plasma across a magnetic field and describe the
-    diffusion of early fusion energy machines. The rate predicted by
-    Bohm diffusion is much higher than classical diffusion, and if there
-    were no exceptions, magnetically confined fusion would be impractical.
+    diffusion of early fusion energy machines :cite:p:`bohm:1949`. The
+    rate predicted by Bohm diffusion is much higher than classical
+    diffusion, and if there were no exceptions, magnetically confined
+    fusion would be impractical.
 
     .. math::
 

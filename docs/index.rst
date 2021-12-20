@@ -20,7 +20,7 @@ Example highlights
 .. nbgallery::
    :hidden:
 
-   notebooks/diagnostics/proton_radiography_particle_tracing
+   notebooks/diagnostics/charged_particle_radiography_particle_tracing
    notebooks/dispersion/two_fluid_dispersion
    notebooks/diagnostics/thomson
    notebooks/analysis/swept_langmuir/find_floating_potential
@@ -58,6 +58,7 @@ Example highlights
 
    Overview <development/index>
    development/code_guide
+   development/changelog_guide
    development/doc_guide
    development/testing_guide
 
@@ -66,6 +67,7 @@ Example highlights
    :caption: All the Rest
 
    about/credits
+   bibliography
    glossary
    whatsnew/index
    about/stability
