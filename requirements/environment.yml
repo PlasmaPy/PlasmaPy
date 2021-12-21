@@ -23,7 +23,7 @@ dependencies:
   - numpydoc
   - pytest
   - lmfit
-  - pygments >= 2.4.1
+  - pygments >= 2.11.0
   - sphinx >= 3.2.0
   - sphinx-gallery
   - sphinx-hoverxref >= 1.0.0
