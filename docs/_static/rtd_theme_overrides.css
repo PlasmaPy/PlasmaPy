@@ -83,12 +83,17 @@ div.pkgnav ul li a:hover {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-code.literal {
-    color: #000065 !important;
-    background-color: #fffff7 !important;
+code.xref code.py code.py-obj code.docutils code.literal {
+    color: #29000f;
+    background-color: #fffff7;
 }
 
-code.file {
-    color: #006500 !important;
-    background-color: #fffff7 !important;
+code.docutils code.literal {
+    color: #150029;
+    background-color: #fffff7;
+}
+
+code.file code.docutils code.literal {
+    color: #006500;
+    background-color: #fffff7;
 }
