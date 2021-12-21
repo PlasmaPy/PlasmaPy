@@ -83,17 +83,21 @@ div.pkgnav ul li a:hover {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-code.xref.py.py-obj.docutils.literal {
-    color: #29390f;
-    background-color: #fffff7;
-}
-
+/* Style of generic code literals. */
 code.docutils.literal {
-    color: #150029;
-    background-color: #fffff7;
+    color: #0000ff;
+    background-color: #f6f6f6;
 }
 
+/* Styles for code literals that link to a Python object. */
+code.xref.py.docutils.literal {
+    color: #0000ff;
+    background-color: #f6f6f6;
+    font-weight: bold;
+}
+
+/* Styles for literal text that points to the location of a file. */
 code.file.docutils.literal {
-    color: #556530;
-    background-color: #fffff7;
+    color: #150029;
+    background-color: #f6f6f6;
 }
