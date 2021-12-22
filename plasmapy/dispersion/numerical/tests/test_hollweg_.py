@@ -13,7 +13,6 @@ from plasmapy.utils.exceptions import PhysicsWarning
 
 class TestHollweg:
     _kwargs_single_valued = {
-        # Values may need to be changed
         "k": 0.01 * u.rad / u.m,
         "theta": 88 * u.deg,
         "n_i": 5 * u.cm ** -3,
@@ -24,10 +23,8 @@ class TestHollweg:
     }
 
     _kwargs_hollweg1999 = {
-        "k": 10e-2 * u.rad / u.m,
-        "theta": 88 * u.deg,
+        "theta": 90 * u.deg,
         "n_i": 5 * u.cm ** -3,
-        "B": 6.98e-8 * u.T,
         "T_e": 1.6e6 * u.K,
         "T_i": 4.0e5 * u.K,
         "ion": Particle("p+"),
@@ -118,6 +115,83 @@ class TestHollweg:
         """Test scenarios that raise a `Warning`."""
         with pytest.warns(_warning):
             hollweg(**kwargs)
+
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (  # beta = 1/20 for kx*L = 0
+                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
+                {1 + 0j},
+            ),
+            (  # beta = 1/20 for kx*L = 1
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 0.0000439223874624874 * u.rad / u.m,
+                    "B": 6.971e-8 * u.T,
+                },
+                {1.4018 + 0j},
+            ),
+            (  # beta = 1/2 for kx*L = 0
+                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 2.205e-8 * u.T},
+                {1 + 0j},
+            ),
+            (  # beta = 1/2 for kx*L = 1
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 0.000013893109303101 * u.rad / u.m,
+                    "B": 2.205e-8 * u.T,
+                },
+                {1.3536 + 0j},
+            ),
+            (  # beta = 2 for kx*L = 0
+                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.097e-8 * u.T},
+                {1 + 0j},
+            ),
+            (  # beta = 2 for kx*L = 1
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 0.00000691190063354451 * u.rad / u.m,
+                    "B": 1.097e-8 * u.T,
+                },
+                {1.2607 + 0j},
+            ),
+            (
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 1e-14 * u.rad / u.m,
+                    "B": 6.97178e-7 * u.T,
+                },
+                {1 + 0j},
+            ),
+            (  # beta = 1/2000 for kx*L = 1
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 0.000439273010336778 * u.rad / u.m,
+                    "B": 6.97178e-7 * u.T,
+                },
+                {0.98929 + 0j},
+            ),
+        ],
+    )
+    def test_hollweg1999_vals(self, kwargs, expected):
+        """
+        Test calculated values based on Figure 2 of Hollweg1999
+        (DOI: https://doi.org/10.1029/1998JA900132).
+        """
+        # k values need to be single valued for this test to function correctly
+
+        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"])
+        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"])
+        wci = pfp.wc_(kwargs["B"], kwargs["ion"])
+
+        L = (cs / np.abs(wci)).value
+        kx = (np.sin(kwargs["theta"]) * kwargs["k"]).value
+        kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
+
+        w_alfven = hollweg(**kwargs)["alfven_mode"]
+        big_omega = np.abs(w_alfven.value / (kz * va))
+
+        assert np.isclose(big_omega, expected, atol=1e-1)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
