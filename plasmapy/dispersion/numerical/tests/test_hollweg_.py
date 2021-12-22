@@ -184,7 +184,7 @@ class TestHollweg:
         va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
         wci = pfp.wc_(kwargs["B"], kwargs["ion"]).value
 
-        L = (cs / np.abs(wci)).value
+        L = cs / np.abs(wci)
         kx = (np.sin(kwargs["theta"]) * kwargs["k"]).value
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
 
