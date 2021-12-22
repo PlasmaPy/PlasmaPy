@@ -191,7 +191,7 @@ class TestHollweg:
         w_alfven = (hollweg(**kwargs)["alfven_mode"]).value
         big_omega = np.abs(w_alfven / (kz * va))
 
-        assert np.isclose(big_omega, expected, atol=1e-1)
+        assert np.isclose(big_omega, expected, atol=1e-2)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
