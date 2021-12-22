@@ -1,5 +1,8 @@
-/* -----------------------------------------------------------------------------
- * RTD Overrides
+/* This file contains style overrides for the Read the Docs theme for
+ * PlasmaPy's documentation.
+ *
+ *
+ * CSS can be validated at: https://jigsaw.w3.org/css-validator/validator
  */
 
 /* Style for toctree in a table */
@@ -83,20 +86,31 @@ div.pkgnav ul li a:hover {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-/* Style of generic code literals. */
+/* -----------------------------------------------------------------------------
+ * Font colors and backgrounds for reST roles and the like.
+ */
+
+/* Style for generic code literals.
+ *
+ */
+
+/* Generic code literals that show up in-line in text. This includes
+ * text that is enclosed in double back ticks in a .rst file (e.g.,
+ * ``make -j 32``).
+ */
 code.docutils.literal {
     color: #0000ff;
     background-color: #f6f6f6;
 }
 
-/* Styles for code literals that link to a Python object. */
+/* Links to Python objects. */
 code.xref.py.docutils.literal {
     color: #0000ff;
     background-color: #f6f6f6;
     font-weight: bold;
 }
 
-/* Styles for literal text that points to the location of a file. */
+/* Literal text that represents the location of a file. */
 code.file.docutils.literal {
     color: #150029;
     background-color: #f6f6f6;
