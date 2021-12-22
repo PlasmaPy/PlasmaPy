@@ -180,16 +180,16 @@ class TestHollweg:
         """
         # k values need to be single valued for this test to function correctly
 
-        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"])
-        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"])
-        wci = pfp.wc_(kwargs["B"], kwargs["ion"])
+        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
+        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
+        wci = pfp.wc_(kwargs["B"], kwargs["ion"]).value
 
         L = (cs / np.abs(wci)).value
         kx = (np.sin(kwargs["theta"]) * kwargs["k"]).value
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
 
         w_alfven = hollweg(**kwargs)["alfven_mode"]
-        big_omega = np.abs(w_alfven / (kz * va)).value[0]
+        big_omega = np.abs(w_alfven / (kz * va))
 
         assert np.isclose(big_omega, expected, atol=1e-1)
 
