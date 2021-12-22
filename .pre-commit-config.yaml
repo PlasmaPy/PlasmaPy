@@ -54,3 +54,8 @@ repos:
     args: [--autofix]
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
+
+- repo: https://github.com/pre-commit/mirrors-csslint
+  rev: v1.0.5
+  hooks:
+  - id: csslint
