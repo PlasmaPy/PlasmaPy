@@ -121,7 +121,7 @@ class TestHollweg:
         [
             (  # beta = 1/20 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
-                {1 + 0j},
+                1 + 0j,
             ),
             (  # beta = 1/20 for kx*L = 1
                 {
@@ -129,11 +129,11 @@ class TestHollweg:
                     "k": 0.0000439223874624874 * u.rad / u.m,
                     "B": 6.971e-8 * u.T,
                 },
-                {1.4018 + 0j},
+                1.4018 + 0j,
             ),
             (  # beta = 1/2 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 2.205e-8 * u.T},
-                {1 + 0j},
+                1 + 0j,
             ),
             (  # beta = 1/2 for kx*L = 1
                 {
@@ -141,11 +141,11 @@ class TestHollweg:
                     "k": 0.000013893109303101 * u.rad / u.m,
                     "B": 2.205e-8 * u.T,
                 },
-                {1.3536 + 0j},
+                1.3536 + 0j,
             ),
             (  # beta = 2 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.097e-8 * u.T},
-                {1 + 0j},
+                1 + 0j,
             ),
             (  # beta = 2 for kx*L = 1
                 {
@@ -153,7 +153,7 @@ class TestHollweg:
                     "k": 0.00000691190063354451 * u.rad / u.m,
                     "B": 1.097e-8 * u.T,
                 },
-                {1.2607 + 0j},
+                1.2607 + 0j,
             ),
             (
                 {
@@ -161,7 +161,7 @@ class TestHollweg:
                     "k": 1e-14 * u.rad / u.m,
                     "B": 6.97178e-7 * u.T,
                 },
-                {1 + 0j},
+                1 + 0j,
             ),
             (  # beta = 1/2000 for kx*L = 1
                 {
@@ -169,7 +169,7 @@ class TestHollweg:
                     "k": 0.000439273010336778 * u.rad / u.m,
                     "B": 6.97178e-7 * u.T,
                 },
-                {0.98750 + 0j},
+                0.98750 + 0j,
             ),
         ],
     )
