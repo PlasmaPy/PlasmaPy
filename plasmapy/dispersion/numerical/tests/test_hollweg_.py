@@ -169,7 +169,7 @@ class TestHollweg:
                     "k": 0.000439273010336778 * u.rad / u.m,
                     "B": 6.97178e-7 * u.T,
                 },
-                {0.98929 + 0j},
+                {0.98750 + 0j},
             ),
         ],
     )
@@ -189,7 +189,7 @@ class TestHollweg:
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
 
         w_alfven = hollweg(**kwargs)["alfven_mode"]
-        big_omega = np.abs(w_alfven / (kz * va)).value
+        big_omega = np.abs(w_alfven / (kz * va)).value[0]
 
         assert np.isclose(big_omega, expected, atol=1e-1)
 
