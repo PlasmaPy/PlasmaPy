@@ -7,10 +7,10 @@
 
 /* Style for toctree in a table */
 td .toctree-wrapper ul {
-    margin-bottom: 0 !important;
+    font-size: 16px;
     line-height: 18px !important;
     list-style: none !important;
-    font-size: 16px;
+    margin-bottom: 0 !important;
 }
 
 td .toctree-wrapper ul li {
@@ -32,7 +32,8 @@ div.graphviz {
  * Remove bottom margin for the autosummary table in a directive:option::
  * section
  */
-.rst-content dl.rst table p, .rst-content dl.std table p,
+.rst-content dl.rst table p,
+.rst-content dl.std table p,l
 .rst-content dl.py table p {
     margin-bottom: 0 !important;
 }
@@ -58,10 +59,10 @@ div.graphviz {
 
 /* Style for module/index links in sidebar below the search field. */
 div.pkgnav {
-    text-align: center;
-    font-size: 1em;
     color: white;
+    font-size: 1em;
     margin-top: 12px;
+    text-align: center;
 }
 
 div.pkgnav ul {
@@ -74,11 +75,11 @@ div.pkgnav ul li {
 }
 
 div.pkgnav ul li a {
-    margin: 0;
-    /*padding: 0 5px 0 5px;*/
-    /*line-height: 1.75em;*/
     color: #f9f9f0;
+    margin: 0;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    /*line-height: 1.75em;*/
+    /*padding: 0 5px 0 5px;*/
 }
 
 div.pkgnav ul li a:hover {
@@ -114,4 +115,5 @@ code.xref.py.docutils.literal {
 code.file.docutils.literal {
     color: #150029;
     background-color: #f6f6f6;
+    color: #000080;
 }
