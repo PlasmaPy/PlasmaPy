@@ -121,13 +121,10 @@ div.pkgnav ul li a:hover {
   https://webaim.org/resources/linkcontrastchecker
 */
 
-a:link {
-    color: #0069d6;
-}
-
-a:visited {
-    color: #9b59b6;
-}
+a:link { color: #2573a7 }
+a:hover { color: #277cb4 }
+a:visited { color: #954eb1 }
+a:visited a:hover { color: #9d58b6 }
 
 /*
   The style for generic code literals, in particular text that is
