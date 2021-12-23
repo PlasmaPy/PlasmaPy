@@ -121,13 +121,13 @@ div.pkgnav ul li a:hover {
   https://webaim.org/resources/linkcontrastchecker
 */
 
-a:link {
+.rst-content p a:link {
     color: #0069d6;
 }
-a:visited {
+.rst-content p a:visited  {
     color: #9151b6;
 }
-a:hover {
+.rst-content p a:hover {
     text-decoration:underline;
 }
 
