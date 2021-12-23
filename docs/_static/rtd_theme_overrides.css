@@ -115,6 +115,12 @@ div.pkgnav ul li a:hover {
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
+/* Styles for text in the footer chosen to improve contrast. */
+
+footer p {
+    color: #222222;
+}
+
 /*
   Styles for hyperlinks. The colors must meet the WCAG AA standard
   for contrast. Link colors can be tested for accessibility at:
