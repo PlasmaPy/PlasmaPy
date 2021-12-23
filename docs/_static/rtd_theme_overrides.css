@@ -121,10 +121,15 @@ div.pkgnav ul li a:hover {
   https://webaim.org/resources/linkcontrastchecker
 */
 
-a:link { color: #2573a7 }
-a:hover { color: #277cb4 }
-a:visited { color: #954eb1 }
-a:visited a:hover { color: #9d58b6 }
+a:link {
+    color: #0069d6;
+}
+a:visited {
+    color: #9151b6;
+}
+a:hover {
+    text-decoration:underline;
+}
 
 /*
   The style for generic code literals, in particular text that is
@@ -133,7 +138,7 @@ a:visited a:hover { color: #9d58b6 }
 
 .rst-content code.literal {
     background-color: #f6f6f6;
-    color: #000080;
+    color: #b70000;
 }
 
 /*
@@ -141,8 +146,7 @@ a:visited a:hover { color: #9d58b6 }
   single back ticks in reST (e.g., `~plasmapy.particles`).
 */
 
-.rst-content code.xref.literal {
-    background-color: #f6f6f6;
+.rst-content code.literal.xref {
     color: #0069d6;
     font-weight: bold;
 }
@@ -152,7 +156,6 @@ a:visited a:hover { color: #9d58b6 }
   particular when used by the reST role :file: (e.g.,
   :file:`docs/_static/rtd_theme_overrides`).
 */
-.rst-content code.file.literal {
-    background-color: #f6f6f6;
-    color: #000080;
+.rst-content code.literal.file {
+    color: #396f06;
 }
