@@ -111,37 +111,51 @@ div.pkgnav ul li a {
 }
 
 div.pkgnav ul li a:hover {
-    color: white;
+    color: #f50404;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-/* -----------------------------------------------------------------------------
- * Font colors and backgrounds for reST roles and the like.
- */
+/*
+  Styles for hyperlinks. The colors must meet the WCAG AA standard
+  for contrast. Link colors can be tested for accessibility at:
+  https://webaim.org/resources/linkcontrastchecker
+*/
 
-/* Style for generic code literals.
- *
- */
-
-/* Generic code literals that show up in-line in text. This includes
- * text that is enclosed in double back ticks in a .rst file (e.g.,
- * ``make -j 32``).
- */
-code.docutils.literal {
-    color: #0000ff;
-    background-color: #f6f6f6;
+a:link {
+    color: #0069d6;
 }
 
-/* Links to Python objects. */
-code.xref.py.docutils.literal {
-    color: #0000ff;
+a:visited {
+    color: #9b59b6;
+}
+
+/*
+  The style for generic code literals, in particular text that is
+  enclosed in double back ticks in reST (e.g., ``make -j 32``).
+*/
+
+.rst-content code.literal {
     background-color: #f6f6f6;
+    color: #000080;
+}
+
+/*
+  The style for links to Python objects, in particular text enclosed in
+  single back ticks in reST (e.g., `~plasmapy.particles`).
+*/
+
+.rst-content code.xref.literal {
+    background-color: #f6f6f6;
+    color: #0069d6;
     font-weight: bold;
 }
 
-/* Literal text that represents the location of a file. */
-code.file.docutils.literal {
-    color: #150029;
+/*
+  The style for literal text that shows the location of a file, in
+  particular when used by the reST role :file: (e.g.,
+  :file:`docs/_static/rtd_theme_overrides`).
+*/
+.rst-content code.file.literal {
     background-color: #f6f6f6;
     color: #000080;
 }
