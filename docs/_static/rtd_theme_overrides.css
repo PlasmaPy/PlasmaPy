@@ -136,7 +136,7 @@ div.wy-nav-content a:hover {
   enclosed in double back ticks in reST (e.g., ``make -j 32``).
 */
 
-div.document .rst-content code.literal {
+div.wy-nav-content .rst-content code.literal {
     background-color: #f6f6f6;
     color: #b70000;
 }
@@ -146,7 +146,7 @@ div.document .rst-content code.literal {
   single back ticks in reST (e.g., `~plasmapy.particles`).
 */
 
-div.document .rst-content code.literal.xref {
+div.wy-nav-content .rst-content code.literal.xref {
     color: #0069d6;
     font-weight: bold;
 }
@@ -156,6 +156,6 @@ div.document .rst-content code.literal.xref {
   particular when used by the reST role :file: (e.g.,
   :file:`docs/_static/rtd_theme_overrides`).
 */
-div.document .rst-content code.literal.file {
+div.wy-nav-content .rst-content code.literal.file {
     color: #396f06;
 }
