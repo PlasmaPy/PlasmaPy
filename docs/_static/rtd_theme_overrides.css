@@ -121,13 +121,13 @@ div.pkgnav ul li a:hover {
   https://webaim.org/resources/linkcontrastchecker
 */
 
-.rst-content p a:link {
+div.wy-nav-content a:link {
     color: #0069d6;
 }
-.rst-content p a:visited  {
+div.wy-nav-content a:visited  {
     color: #9151b6;
 }
-.rst-content p a:hover {
+div.wy-nav-content a:hover {
     text-decoration:underline;
 }
 
@@ -136,7 +136,7 @@ div.pkgnav ul li a:hover {
   enclosed in double back ticks in reST (e.g., ``make -j 32``).
 */
 
-.rst-content code.literal {
+div.document .rst-content code.literal {
     background-color: #f6f6f6;
     color: #b70000;
 }
@@ -146,7 +146,7 @@ div.pkgnav ul li a:hover {
   single back ticks in reST (e.g., `~plasmapy.particles`).
 */
 
-.rst-content code.literal.xref {
+div.document .rst-content code.literal.xref {
     color: #0069d6;
     font-weight: bold;
 }
@@ -156,6 +156,6 @@ div.pkgnav ul li a:hover {
   particular when used by the reST role :file: (e.g.,
   :file:`docs/_static/rtd_theme_overrides`).
 */
-.rst-content code.literal.file {
+div.document .rst-content code.literal.file {
     color: #396f06;
 }
