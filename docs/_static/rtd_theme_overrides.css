@@ -1,9 +1,37 @@
-/* This file contains style overrides for the Read the Docs theme for
- * PlasmaPy's documentation.
- *
- *
- * CSS can be validated at: https://jigsaw.w3.org/css-validator/validator
- */
+/*
+  This file contains styles rules to override styles from the Sphinx
+  Read the Docs theme. This file is used to further customize the style
+  of PlasmaPy's documentation.
+
+  The CSS style rule syntax is:
+
+    selectors-list {
+      properties-list
+    }
+
+  The code in selectors-list selects the patterns for the elements to be
+  styled. The code in properties-list sets the style of these elements.
+  The CSS rule to be applied is generally the one that has the most
+  specific selectors.
+
+  For more information on CSS, go to: https://www.w3schools.com/css
+
+  Most web browsers have inspection tools that help with adding new CSS
+  rules. Right-click or ctrl-click on an element of a website, and
+  choose "inspect" to see the HTML code along with CSS selectors and
+  properties.
+
+  Alternatively, style rules for PlasmaPy's documentation can be viewed
+  at: https://docs.plasmapy.org/en/latest/_static/css/theme.css
+
+  When creating a new rule, use increased specificity instead of
+  !important when possible. Using !important can make debugging more
+  difficult. Use relative units like rem (root font size) to help with
+  accessibility and scaling. Please add descriptive comments for new
+  rules that are understandable to someone who is unfamiliar with CSS.
+
+  This file can be validated at: https://jigsaw.w3.org/css-validator
+*/
 
 /* Style for toctree in a table */
 td .toctree-wrapper ul {
