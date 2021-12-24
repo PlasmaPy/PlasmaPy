@@ -176,7 +176,11 @@ class TestHollweg:
     def test_hollweg1999_vals(self, kwargs, expected):
         """
         Test calculated values based on Figure 2 of Hollweg1999
-        (DOI: https://doi.org/10.1029/1998JA900132).
+        (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of Bellan 2012
+        (DOI: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856).
+
+        The WebPlotDigitizer software (https://automeris.io/WebPlotDigitizer/)
+        was used to determine the values in Figure 2 of Hollweg1999.
         """
         # k values need to be single valued for this test to function correctly
 
