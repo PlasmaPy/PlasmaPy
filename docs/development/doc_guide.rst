@@ -800,12 +800,16 @@ documentation for PlasmaPy and affiliated packages.
   high-level overview of what is contained in that module.
 
 * Place the ``__all__`` dunder immediately after the docstring that
-  begins a module and before the import statements. This dunder should
-  be a `list` that contains the names of all of the objects in that
-  module intended for use by users. Private objects (i.e. objects with
-  names that begin with an underscore) should not be included in
-  ``__all__``. Only objects contained within ``__all__`` will show up in
-  the online documentation.
+  begins a module and before the import statements (but after any
+  ``from __future__`` imports that must be at the beginning of a file).
+  This dunder should be a `list` that contains the names of all objects
+  in that module intended for use by users. Private objects (i.e.,
+  objects with names that begin with an underscore) should not be
+  included in ``__all__``.  ``__all__`` is a leftover from the now
+  dissuaded practice of star imports (e.g.,
+  :samp:`from {package} import *`\ ), but is still used by Sphinx_ for
+  selecting objects to document. Only objects contained within
+  ``__all__`` will show up in the online documentation.
 
 Docstring guidelines
 --------------------
