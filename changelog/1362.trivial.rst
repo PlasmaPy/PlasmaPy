@@ -1,0 +1,2 @@
+Refactored all test functions to be parameterized with
+`pytest.mark.parametrize`.
