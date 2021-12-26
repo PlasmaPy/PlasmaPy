@@ -4,10 +4,10 @@ import pytest
 from collections import namedtuple
 
 from plasmapy.particles import deuteron, electron, proton
+from plasmapy.particles.factory import particle
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
-    particle,
     Particle,
 )
 from plasmapy.particles.particle_collections import ParticleList
