@@ -2011,7 +2011,8 @@ class CustomParticle(AbstractPhysicalParticle):
     will be set to ``numpy.nan`` in the appropriate units.
 
     If the first argument to |CustomParticle| has units of electrical
-    charge, then the arguments ``mass`` and ``charge`` will be switched.
+    charge, then the arguments ``mass`` and ``charge`` will be switched
+    to have the appropriate units.
 
     Examples
     --------
