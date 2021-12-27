@@ -2041,7 +2041,7 @@ class CustomParticle(AbstractPhysicalParticle):
             isinstance(mass, u.Quantity)
             and u.get_physical_type(mass) == "electrical charge"
         ):
-            mass, charge = charge, mass
+            charge, mass = mass, charge
 
         try:
             self.mass = mass

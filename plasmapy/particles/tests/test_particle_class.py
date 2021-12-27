@@ -990,13 +990,13 @@ customized_particle_errors = [
 
 
 @pytest.mark.parametrize(
-    "mass, charge",
+    "charge, mass",
     [
-        (1 * u.kg, None),
+        (1 * u.C, None),
         (1 * u.C, 1 * u.kg),
     ],
 )
-def test_custom_particle_switched_order(mass, charge):
+def test_custom_particle_switched_order(charge, mass):
     """
     Verify that the first two arguments can be switched if they have
     switched physical types.
