@@ -4,7 +4,7 @@ for |Particle|, |CustomParticle|, or |ParticleList| and returns the
 appropriate instance of one of those three classes.
 """
 
-__all__ = ["physical_particle_factory"]
+__all__ = []
 
 from typing import Union
 
@@ -17,7 +17,7 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.particle_collections import ParticleList
 
 
-def physical_particle_factory(
+def _physical_particle_factory(
     *args, **kwargs
 ) -> Union[Particle, CustomParticle, ParticleList]:
     """
@@ -55,15 +55,14 @@ def physical_particle_factory(
 
     Examples
     --------
-    >>> from plasmapy.particles.factory import physical_particle_factory
+    >>> from plasmapy.particles.factory import _physical_particle_factory
     >>> import astropy.units as u
-    >>> physical_particle_factory("p+")
+    >>> _physical_particle_factory("p+")
     Particle("p+")
-    >>> physical_particle_factory(mass = 9e-26 * u.kg, charge = 8e20 * u.C)
+    >>> _physical_particle_factory(mass = 9e-26 * u.kg, charge = 8e20 * u.C)
     CustomParticle(mass=9e-26 kg, charge=8e+20 C)
-    >>> physical_particle_factory(["p+", "e-"])
+    >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])
-
     """
     if (
         len(args) == 1

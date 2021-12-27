@@ -2,8 +2,8 @@ import astropy.units as u
 import pytest
 
 from plasmapy.particles import deuteron, electron, proton
+from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.factory import physical_particle_factory
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -37,7 +37,7 @@ test_cases = [
 
 @pytest.mark.parametrize("args, kwargs, expected", test_cases)
 def test_physical_particle_factory(args, kwargs, expected):
-    result = physical_particle_factory(*args, **kwargs)
+    result = _physical_particle_factory(*args, **kwargs)
     assert result == expected
     assert type(result) == type(expected)
 
@@ -53,4 +53,4 @@ test_cases_for_exceptions = [
 @pytest.mark.parametrize("args, kwargs, expected", test_cases_for_exceptions)
 def test_particle_factory_exceptions(args, kwargs, expected):
     with pytest.raises(expected):
-        physical_particle_factory(*args, **kwargs)
+        _physical_particle_factory(*args, **kwargs)
