@@ -9,7 +9,6 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
-    "particle",
 ]
 
 import astropy.constants as const
@@ -2011,9 +2010,6 @@ class CustomParticle(AbstractPhysicalParticle):
     If the charge or mass is not specified, then the corresponding value
     will be set to ``numpy.nan`` in the appropriate units.
 
-    If the first argument to |CustomParticle| has units of electrical
-    charge, then the arguments ``mass`` and ``charge`` will be switched.
-
     Examples
     --------
     >>> from astropy import units as u
@@ -2036,13 +2032,6 @@ class CustomParticle(AbstractPhysicalParticle):
     """
 
     def __init__(self, mass: u.kg = None, charge: (u.C, Real) = None, symbol=None):
-
-        if (
-            isinstance(mass, u.Quantity)
-            and u.get_physical_type(mass) == "electrical charge"
-        ):
-            charge, mass = mass, charge
-
         try:
             self.mass = mass
             self.charge = charge
