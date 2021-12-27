@@ -465,6 +465,15 @@ class Particle(AbstractPhysicalParticle):
 
         particle_symbol = _dealias_particle_aliases(argument)
 
+        if any(
+            [
+                particle_symbol == "H" and Z == 1 and mass_numb == 1,
+                particle_symbol == "H-1" and Z == 1 and mass_numb is None,
+                particle_symbol == "H+" and Z is None and mass_numb == 1,
+            ]
+        ):
+            particle_symbol, Z, mass_numb = "p+", None, None
+
         if particle_symbol in _Particles.keys():  # special particles
 
             attributes["symbol"] = particle_symbol
