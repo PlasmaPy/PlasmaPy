@@ -469,7 +469,7 @@ class Particle(AbstractPhysicalParticle):
             [
                 particle_symbol == "H" and Z == 1 and mass_numb == 1,
                 particle_symbol == "H-1" and Z == 1 and mass_numb is None,
-                particle_symbol == "H+" and Z is None and mass_numb == 1,
+                particle_symbol == "H 1+" and Z is None and mass_numb == 1,
             ]
         ):
             particle_symbol, Z, mass_numb = "p+", None, None
