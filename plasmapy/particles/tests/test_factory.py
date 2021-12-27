@@ -21,7 +21,7 @@ test_cases = [
     (["p+"], {}, proton),
     (["H"], {"Z": 1, "mass_numb": 2}, deuteron),
     (["muon"], {}, Particle("muon")),
-    ([charge, mass], {}, custom_particle),
+    pytest.param([charge, mass], {}, custom_particle, marks=[pytest.mark.xfail]),
     ([mass, charge], {}, custom_particle),
     ([], {"symbol": "ξ"}, CustomParticle(symbol="ξ")),
     ([[proton, electron]], {}, ParticleList([proton, electron])),
