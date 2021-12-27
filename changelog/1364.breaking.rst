@@ -1,0 +1,6 @@
+If the first argument to |CustomParticle| (named ``mass``) is a |Quantity|
+with units of charge, then the arguments ``charge`` and ``mass`` will be
+switched. This allows |CustomParticle| to accept the charge and mass as the
+first two positional arguments in either order, or to accept the charge as
+the sole argument. Previously, providing the arguments in the incorrect
+order resulted in an |InvalidParticleError|.
