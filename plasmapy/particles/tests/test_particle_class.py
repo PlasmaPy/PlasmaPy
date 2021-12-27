@@ -637,6 +637,18 @@ def test_Particle_cmp():
     assert electron != "dfasdf"
 
 
+@pytest.mark.parametrize("particle", ["p+", "D+", "T+", "alpha"])
+def test_particle_equality_special_nuclides(particle):
+    particle_from_string = Particle(particle)
+    particle_from_numbers = Particle(
+        particle_from_string.element_name,
+        Z=particle_from_string.charge_number,
+        mass_numb=particle_from_string.mass_number,
+    )
+    assert particle_from_string == particle_from_numbers
+    assert particle_from_string._attributes == particle_from_numbers._attributes
+
+
 nuclide_mass_and_mass_equiv_table = [
     ("n", "neutron"),
     ("p+", "proton"),
