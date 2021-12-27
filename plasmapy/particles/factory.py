@@ -1,59 +1,94 @@
 """A factory function for creating particle objects."""
 
-import astropy.units as u
+__all__ = ["physical_particle_factory"]
 
-from numbers import Integral, Real
-from typing import Optional, Union
+from typing import Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.particles.particle_class import (
+    CustomParticle,
+    DimensionlessParticle,
+    Particle,
+)
 from plasmapy.particles.particle_collections import ParticleList
 
 
-def particle(
-    *args,
-    Z: Optional[Real] = None,
-    mass_numb: Optional[Integral] = None,
-    mass: Optional[Union[u.Quantity, Real]] = None,
-    charge: Optional[Union[u.Quantity, Real]] = None,
-):
+def physical_particle_factory(
+    *args, **kwargs
+) -> Union[Particle, CustomParticle, ParticleList]:
     """
-    Return a representation of a physical particle.
+    Return a representation of one or more physical particles.
+
+    This function will select the appropriate type among
+    `~plasmapy.particles.particle_class.Particle`,
+    `~plasmapy.particles.particle_class.CustomParticle`, and
+    `~plasmapy.particle_collections.particle_class.ParticleList`.
 
     Parameters
     ----------
-    Z : `~numbers.Real`, keyword-only, optional
+    *args
+        Positional arguments to be supplied to the appropriate particle
+        class.
 
-    mass_numb : `~numbers.Real`, keyword-only, optional
+    Z : array-like, keyword-only, optional
+        The charge number of the particle.
 
-    mass : `~astropy.units.Quantity` or `~numbers.Real`, keyword-only, optional
+    mass_numb : integer or array of integers, keyword-only, optional
+        The mass number of an isotope.
 
-    charge : `~astropy.units.Quantity` or `~numbers.Real`, keyword-only, optional
+    mass : `~astropy.units.Quantity`, keyword-only, optional
+        The mass of the particle.
+
+    charge : array-like, keyword-only, optional
+        The electrical charge of the particle.
 
     Raises
     ------
     `InvalidParticleError`
+        If an appropriate particle could not be constructed.
+
+    `TypeError`
+        If no positional arguments and no keyword arguments were
+        provided.
+
+    See Also
+    --------
+    ~plasmapy.particles.particle_class.Particle
+    ~plasmapy.particles.particle_class.CustomParticle
+    ~plasmapy.particles.particle_class.ParticleList
+
+    Examples
+    --------
+    >>> from plasmapy.particles.factory import physical_particle_factory
+    >>> import astropy.units as u
+    >>> physical_particle_factory("p+")
+    Particle("p+")
+    >>> physical_particle_factory(mass = 9e-26 * u.kg, charge = 8e20 * u.C)
+    CustomParticle(mass=9e-26 kg, charge=8e+20 C)
+    >>> physical_particle_factory(["p+", "e-"])
+    ParticleList(['p+', 'e-'])
 
     """
-    particle_types = [Particle, CustomParticle, ParticleList]
-
-    # Should DimensionlessParticle be included?
-
-    atomic_info_in_kwargs = Z is not None or mass_numb is not None
-    custom_info_in_kwargs = mass is not None or charge is not None
-
-    if atomic_info_in_kwargs and custom_info_in_kwargs:
-        raise InvalidParticleError("Cannot provide ")
-
-    no_kwargs = not atomic_info_in_kwargs and not custom_info_in_kwargs
-
-    # Return the original object if it is already an instance of one of
-    # the appropriate particle classes.
-    if all([no_kwargs, len(args) == 1, isinstance(args[0], particle_types)]):
+    if (
+        len(args) == 1
+        and not kwargs
+        and isinstance(args[0], (Particle, CustomParticle, ParticleList))
+    ):
         return args[0]
 
-    if atomic_info_in_kwargs and custom_info_in_kwargs:
-        raise InvalidParticleError("...")
+    if args and isinstance(args[0], DimensionlessParticle):
+        raise TypeError("Unable to create a ")
 
-    if not args and no_kwargs:
-        return CustomParticle(mass=np.nan * u.kg, charge=np.nan * u.C)
+    if not args and not kwargs:
+        raise TypeError("No particle information has been provided.")
+
+    for particle_type in (Particle, CustomParticle, ParticleList):
+        try:
+            return particle_type(*args, **kwargs)
+        except (TypeError, InvalidParticleError):
+            pass
+
+    raise InvalidParticleError(
+        f"Unable to create an appropriate particle object with "
+        f"args={args} and kwargs={kwargs}."
+    )
