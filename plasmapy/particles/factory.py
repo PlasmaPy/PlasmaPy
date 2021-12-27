@@ -1,4 +1,8 @@
-"""A factory function for creating particle objects."""
+"""
+A module containing an interface function that accepts inputs intended
+for |Particle|, |CustomParticle|, or |ParticleList| and returns the
+appropriate instance of one of those three classes.
+"""
 
 __all__ = ["physical_particle_factory"]
 
@@ -27,20 +31,12 @@ def physical_particle_factory(
     Parameters
     ----------
     *args
-        Positional arguments to be supplied to the appropriate particle
-        class.
+        Positional arguments to be supplied to |Particle|,
+        |CustomParticle|, or |ParticleList|.
 
-    Z : array-like, keyword-only, optional
-        The charge number of the particle.
-
-    mass_numb : integer or array of integers, keyword-only, optional
-        The mass number of an isotope.
-
-    mass : `~astropy.units.Quantity`, keyword-only, optional
-        The mass of the particle.
-
-    charge : array-like, keyword-only, optional
-        The electrical charge of the particle.
+    **kwargs
+        Keyword arguments to be supplied to |Particle|,
+        |CustomParticle|, or |ParticleList|.
 
     Raises
     ------
