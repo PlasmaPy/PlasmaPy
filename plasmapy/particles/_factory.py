@@ -23,10 +23,8 @@ def _physical_particle_factory(
     """
     Return a representation of one or more physical particles.
 
-    This function will select the appropriate type among
-    `~plasmapy.particles.particle_class.Particle`,
-    `~plasmapy.particles.particle_class.CustomParticle`, and
-    `~plasmapy.particle_collections.particle_class.ParticleList`.
+    This function will select the appropriate type among |Particle|,
+    |CustomParticle|, and |ParticleList|.
 
     Parameters
     ----------
@@ -55,7 +53,7 @@ def _physical_particle_factory(
 
     Examples
     --------
-    >>> from plasmapy.particles.factory import _physical_particle_factory
+    >>> from plasmapy.particles._factory import _physical_particle_factory
     >>> import astropy.units as u
     >>> _physical_particle_factory("p+")
     Particle("p+")
@@ -71,11 +69,8 @@ def _physical_particle_factory(
     ):
         return args[0]
 
-    if args and isinstance(args[0], DimensionlessParticle):
-        raise TypeError("Unable to create a ")
-
     if not args and not kwargs:
-        raise TypeError("No particle information has been provided.")
+        raise TypeError("Particle information has not been provided.")
 
     for particle_type in (Particle, CustomParticle, ParticleList):
         try:

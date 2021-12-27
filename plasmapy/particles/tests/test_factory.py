@@ -44,9 +44,8 @@ def test_physical_particle_factory(args, kwargs, expected):
 
 test_cases_for_exceptions = [
     ([], {}, TypeError),
-    ([DimensionlessParticle()], {}, TypeError),
-    ("...", {}, InvalidParticleError),
-    (["..."], {}, InvalidParticleError),
+    ("not a valid Particle", {}, InvalidParticleError),
+    (["not valid for a ParticleList"], {}, InvalidParticleError),
 ]
 
 
