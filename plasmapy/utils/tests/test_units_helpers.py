@@ -50,6 +50,11 @@ test_cases = [
         kwargs={"only_quantities": False, "numbers_become_quantities": False},
         expected={velocity: c, dimensionless: 5},
     ),
+    test_case(
+        collection=("...", "....", set()),
+        kwargs={"only_quantities": False, "numbers_become_quantities": False},
+        expected={},
+    ),
 ]
 
 

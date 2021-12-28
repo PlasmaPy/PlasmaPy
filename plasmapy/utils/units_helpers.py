@@ -31,8 +31,10 @@ def _get_physical_type_dict(
 
     only_quantities : `bool`, keyword-only, optional
         If `True`, only `~astropy.units.Quantity` instances in
-        ``iterable`` will be passed into the resulting `dict`.
-        Defaults to `False`.
+        ``iterable`` will be passed into the resulting `dict`. If
+        `False`, then any unit, |PhysicalType|, or object that can be
+        converted to a |Quantity| or that has a physical type will be
+        included in the `dict`. Defaults to `False`.
 
     numbers_become_quantities : `bool`, keyword-only, optional
         If `True`, `~numbers.Number` objects will be converted into
@@ -65,7 +67,7 @@ def _get_physical_type_dict(
 
         try:
             physical_type = u.get_physical_type(obj)
-        except TypeError:
+        except (TypeError, ValueError):
             pass
         else:
             if physical_type in physical_types:
