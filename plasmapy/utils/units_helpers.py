@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__all__ = ["get_physical_type_dict"]
+__all__ = ["_get_physical_type_dict"]
 
 import astropy.units as u
 
@@ -10,7 +10,7 @@ from numbers import Number
 from typing import Dict, Iterable
 
 
-def get_physical_type_dict(
+def _get_physical_type_dict(
     collection: Iterable,
     *,
     only_quantities=False,
@@ -48,9 +48,9 @@ def get_physical_type_dict(
     Examples
     --------
     >>> import astropy.units as u
-    >>> from plasmapy.utils.units_helpers import get_physical_type_dict
+    >>> from plasmapy.utils.units_helpers import _get_physical_type_dict
     >>> quantities = [1 * u.m, 2 * u.kg]
-    >>> get_physical_type_dict(quantities)
+    >>> _get_physical_type_dict(quantities)
     {PhysicalType('length'): <Quantity 1. m>, PhysicalType('mass'): <Quantity 2. kg>}
     """
     physical_types = {}
