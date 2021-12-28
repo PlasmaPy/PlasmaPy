@@ -38,58 +38,50 @@ from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
-tests_for_exceptions_IonizationState = [
-    (
-        "too few nstates",
+tests_for_exceptions = {
+    "too few nstates": (
         IonizationState,
         [],
         {"particle": "H", "ionic_fractions": [1.0]},
         ParticleError,
     ),
-    (
-        "too many nstates",
+    "too many nstates": (
         IonizationState,
         [],
         {"particle": "H", "ionic_fractions": [1, 0, 0, 0]},
         ParticleError,
     ),
-    (
-        "ionic fraction < 0",
+    "ionic fraction < 0": (
         IonizationState,
         [],
         {"particle": "He", "ionic_fractions": [-0.1, 0.1, 1]},
         ParticleError,
     ),
-    (
-        "ionic fraction > 1",
+    "ionic fraction > 1": (
         IonizationState,
         [],
         {"particle": "He", "ionic_fractions": [1.1, 0.0, 0.0]},
         ParticleError,
     ),
-    (
-        "invalid ionic fraction",
+    "invalid ionic fraction": (
         IonizationState,
         [],
         {"particle": "He", "ionic_fractions": [1.0, 0.0, "a"]},
         ParticleError,
     ),
-    (
-        "bad n_elem units",
+    "bad n_elem units": (
         IonizationState,
         [],
         {"particle": "H", "ionic_fractions": [0, 1], "n_elem": 3 * u.m ** 3},
         u.UnitTypeError,
     ),
-    (
-        "bad T_e units",
+    "bad T_e units": (
         IonizationState,
         [],
         {"particle": "H", "ionic_fractions": [0, 1], "T_e": 1 * u.m},
         u.UnitTypeError,
     ),
-    (
-        "negative n_elem",
+    "negative n_elem": (
         IonizationState,
         [],
         {
@@ -99,15 +91,13 @@ tests_for_exceptions_IonizationState = [
         },
         ParticleError,
     ),
-    (
-        "negative T_e",
+    "negative T_e": (
         IonizationState,
         [],
         {"particle": "He", "ionic_fractions": [1.0, 0.0, 0.0], "T_e": -1 * u.K},
         ParticleError,
     ),
-    (
-        "redundant ndens",
+    "redundant ndens": (
         IonizationState,
         [],
         {
@@ -117,48 +107,38 @@ tests_for_exceptions_IonizationState = [
         },
         ParticleError,
     ),
-]
-
-
-tests_for_exceptions_IonizationStateCollection = [
-    ("wrong type", IonizationStateCollection, [], {"inputs": None}, ParticleError),
-    (
-        "not normalized",
+    "wrong type": (IonizationStateCollection, [], {"inputs": None}, ParticleError),
+    "not normalized": (
         IonizationStateCollection,
         [],
         {"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9},
         ParticleError,
     ),
-    (
-        "negative ionfrac",
+    "negative ionfrac": (
         IonizationStateCollection,
         [],
         {"inputs": {"H": [-0.1, 1.1]}},
         ParticleError,
     ),
-    (
-        "ion",
+    "ion": (
         IonizationStateCollection,
         [],
         {"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}},
         ParticleError,
     ),
-    (
-        "repeat elements",
+    "repeat elements": (
         IonizationStateCollection,
         [],
         {"inputs": {"H": [0.1, 0.9], "hydrogen": [0.2, 0.8]}},
         ParticleError,
     ),
-    (
-        "isotope of element",
+    "isotope of element": (
         IonizationStateCollection,
         [],
         {"inputs": {"H": [0.1, 0.9], "D": [0.2, 0.8]}},
         ParticleError,
     ),
-    (
-        "negative abundance",
+    "negative abundance": (
         IonizationStateCollection,
         [],
         {
@@ -167,8 +147,7 @@ tests_for_exceptions_IonizationStateCollection = [
         },
         ParticleError,
     ),
-    (
-        "imaginary abundance",
+    "imaginary abundance": (
         IonizationStateCollection,
         [],
         {
@@ -177,8 +156,7 @@ tests_for_exceptions_IonizationStateCollection = [
         },
         ParticleError,
     ),
-    (
-        "wrong density units",
+    "wrong density units": (
         IonizationStateCollection,
         [],
         {
@@ -187,8 +165,7 @@ tests_for_exceptions_IonizationStateCollection = [
         },
         ParticleError,
     ),
-    (
-        "abundance redundance",
+    "abundance redundance": (
         IonizationStateCollection,
         [],
         {
@@ -197,8 +174,7 @@ tests_for_exceptions_IonizationStateCollection = [
         },
         ParticleError,
     ),
-    (
-        "abundance contradiction",
+    "abundance contradiction": (
         IonizationStateCollection,
         [],
         {
@@ -207,58 +183,41 @@ tests_for_exceptions_IonizationStateCollection = [
         },
         ParticleError,
     ),
-    (
-        "kappa too small",
+    "kappa too small": (
         IonizationStateCollection,
         [],
         {"inputs": ["H"], "kappa": 1.499999},
         ParticleError,
     ),
-    (
-        "negative n",
+    "negative n": (
         IonizationStateCollection,
         [],
         {"inputs": ["H"], "n0": -1 * u.cm ** -3},
         ParticleError,
     ),
-    (
-        "negative T_e",
+    "negative T_e for collection": (
         IonizationStateCollection,
         [],
         {"inputs": ["H-1"], "T_e": -1 * u.K},
         ParticleError,
     ),
-]
-
-tests_for_exceptions = (
-    tests_for_exceptions_IonizationState
-    + tests_for_exceptions_IonizationStateCollection
-)
+}
 
 
 @pytest.mark.parametrize(
-    ["test_name", "tested_object", "args", "kwargs", "expected_exception"],
-    tests_for_exceptions,
+    ["tested_object", "args", "kwargs", "expected_exception"],
+    tests_for_exceptions.values(),
+    ids=tests_for_exceptions.keys(),
 )
-def test_named_tests_for_exceptions(
-    test_name, tested_object, args, kwargs, expected_exception
-):
+def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_exception):
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState` or `IonizationStateCollection`
     """
-    print(test_name)  # TODO find better ways for this
     with pytest.raises(expected_exception) as exc_info:
         tested_object(*args, **kwargs)
 
     assert expected_exception == exc_info.type
-
-    # TODO tbh given how ugly this is I don't think we should even be doing this check
-    if hasattr(exc_info, "expected_warning"):
-        for expected_warning, recorded_warning in zip(
-            exc_info.expected_warning, exc_info.list
-        ):
-            assert expected_warning == recorded_warning.category
 
 
 tests_from_nuclear = [
