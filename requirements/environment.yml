@@ -5,10 +5,10 @@ channels:
 - conda-forge
 
 dependencies:
-- python=3.7
+- python=3.9
 - numpy
 - scipy
-- astropy
+- astropy >= 4.3.1
 - h5py
 - matplotlib >= 3.3.0
 - mpmath
