@@ -57,6 +57,11 @@ jobs:
           python: 3.7
           toxenv: py37-all-minimal
 
+        - name: Python 3.8 with scipy dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-scipydev
+
         - name: Python 3.7
           os: ubuntu-latest
           python: 3.7
