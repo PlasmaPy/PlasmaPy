@@ -475,8 +475,73 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _initialize_atom(self, special_particle, Z, mass_numb):
-        pass
+    def _initialize_atom(self, argument, Z, mass_numb):
+
+        attributes = self._attributes
+        categories = self._categories
+
+        try:
+            nomenclature = _parse_and_check_atomic_input(
+                argument, mass_numb=mass_numb, Z=Z
+            )
+        except Exception as exc:
+            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
+            raise InvalidParticleError(errmsg) from exc
+
+        for key in nomenclature.keys():
+            attributes[key] = nomenclature[key]
+
+        element = attributes["element"]
+        isotope = attributes["isotope"]
+        ion = attributes["ion"]
+
+        if element:
+            categories.add("element")
+        if isotope:
+            categories.add("isotope")
+        if self.element and self._attributes["charge number"]:
+            categories.add("ion")
+
+        # Element properties
+
+        Element = _elements[element]
+
+        attributes["atomic number"] = Element["atomic number"]
+        attributes["element name"] = Element["element name"]
+
+        # Set the lepton number to zero for elements, isotopes, and
+        # ions.  The lepton number will probably come up primarily
+        # during nuclear reactions.
+
+        attributes["lepton number"] = 0
+
+        if isotope:
+
+            Isotope = _isotopes[isotope]
+
+            attributes["baryon number"] = Isotope["mass number"]
+            attributes["isotope mass"] = Isotope.get("mass", None)
+            attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
+
+            if Isotope["stable"]:
+                attributes["half-life"] = np.inf * u.s
+            else:
+                attributes["half-life"] = Isotope.get("half-life", None)
+
+        if element and not isotope:
+            attributes["standard atomic weight"] = Element.get("atomic mass", None)
+
+        if ion in _special_ion_masses.keys():
+            attributes["mass"] = _special_ion_masses[ion]
+
+        attributes["periodic table"] = _PeriodicTable(
+            group=Element["group"],
+            period=Element["period"],
+            block=Element["block"],
+            category=Element["category"],
+        )
+
+        categories.add(Element["category"])
 
     def __init__(
         self,
@@ -508,70 +573,7 @@ class Particle(AbstractPhysicalParticle):
         if particle_symbol in _Particles.keys():  # special particles
             self._initialize_special_particle(particle_symbol, Z, mass_numb)
         else:  # elements, isotopes, and ions (besides protons)
-            self._initialize_atom(argument, mass_numb, Z)
-
-            try:
-                nomenclature = _parse_and_check_atomic_input(
-                    argument, mass_numb=mass_numb, Z=Z
-                )
-            except Exception as exc:
-                errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
-                raise InvalidParticleError(errmsg) from exc
-
-            for key in nomenclature.keys():
-                attributes[key] = nomenclature[key]
-
-            element = attributes["element"]
-            isotope = attributes["isotope"]
-            ion = attributes["ion"]
-
-            if element:
-                categories.add("element")
-            if isotope:
-                categories.add("isotope")
-            if self.element and self._attributes["charge number"]:
-                categories.add("ion")
-
-            # Element properties
-
-            Element = _elements[element]
-
-            attributes["atomic number"] = Element["atomic number"]
-            attributes["element name"] = Element["element name"]
-
-            # Set the lepton number to zero for elements, isotopes, and
-            # ions.  The lepton number will probably come up primarily
-            # during nuclear reactions.
-
-            attributes["lepton number"] = 0
-
-            if isotope:
-
-                Isotope = _isotopes[isotope]
-
-                attributes["baryon number"] = Isotope["mass number"]
-                attributes["isotope mass"] = Isotope.get("mass", None)
-                attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
-
-                if Isotope["stable"]:
-                    attributes["half-life"] = np.inf * u.s
-                else:
-                    attributes["half-life"] = Isotope.get("half-life", None)
-
-            if element and not isotope:
-                attributes["standard atomic weight"] = Element.get("atomic mass", None)
-
-            if ion in _special_ion_masses.keys():
-                attributes["mass"] = _special_ion_masses[ion]
-
-            attributes["periodic table"] = _PeriodicTable(
-                group=Element["group"],
-                period=Element["period"],
-                block=Element["block"],
-                category=Element["category"],
-            )
-
-            categories.add(Element["category"])
+            self._initialize_atom(argument, Z, mass_numb)
 
         if attributes["charge number"] == 1:
             attributes["charge"] = const.e.si
