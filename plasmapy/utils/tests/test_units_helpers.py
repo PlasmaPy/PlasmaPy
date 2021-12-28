@@ -1,3 +1,5 @@
+"""Tests of `plasmapy.utils.units_helpers`."""
+
 import astropy.units as u
 import pytest
 
