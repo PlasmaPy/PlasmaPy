@@ -543,6 +543,25 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(Element["category"])
 
+    def _add_charge_information(self):
+        if self._attributes["charge number"] == 1:
+            self._attributes["charge"] = const.e.si
+        elif self._attributes["charge number"] is not None:
+            self._attributes["charge"] = self._attributes["charge number"] * const.e.si
+        if self._attributes["charge number"]:
+            self._categories.add("charged")
+        elif self._attributes["charge number"] == 0:
+            self._categories.add("uncharged")
+
+    def _add_half_life_information(self):
+        if self._attributes["half-life"] is not None:
+            if isinstance(self._attributes["half-life"], str):
+                self._categories.add("unstable")
+            elif self._attributes["half-life"] == np.inf * u.s:
+                self._categories.add("stable")
+            else:
+                self._categories.add("unstable")
+
     def __init__(
         self,
         argument: ParticleLike,
@@ -558,40 +577,24 @@ class Particle(AbstractPhysicalParticle):
         if isinstance(argument, Particle):
             argument = argument.symbol
 
-        self._validate_arguments(argument, Z, mass_numb)
+        self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
         self._initialize_attrs_categories()
-
-        attributes = self._attributes
-        categories = self._categories
-
-        # If the argument corresponds to one of the case-sensitive or
-        # case-insensitive aliases for particles, return the standard
-        # symbol. Otherwise, return the original argument.
 
         particle_symbol = _dealias_particle_aliases(argument)
 
-        if particle_symbol in _Particles.keys():  # special particles
-            self._initialize_special_particle(particle_symbol, Z, mass_numb)
-        else:  # elements, isotopes, and ions (besides protons)
-            self._initialize_atom(argument, Z, mass_numb)
+        #        is_special_particle = particle_symbol not in _Particles.keys()
+        #        should_be_atom = not is_special_particle
 
-        if attributes["charge number"] == 1:
-            attributes["charge"] = const.e.si
-        elif attributes["charge number"] is not None:
-            attributes["charge"] = attributes["charge number"] * const.e.si
+        #        if should_be_atom:
+        #            self._initialize_atom(argument, Z=Z, mass_numb=mass_numb)
 
-        if attributes["charge number"]:
-            categories.add("charged")
-        elif attributes["charge number"] == 0:
-            categories.add("uncharged")
+        if particle_symbol in _Particles.keys():
+            self._initialize_special_particle(particle_symbol, Z=Z, mass_numb=mass_numb)
+        else:
+            self._initialize_atom(argument, Z=Z, mass_numb=mass_numb)
 
-        if attributes["half-life"] is not None:
-            if isinstance(attributes["half-life"], str):
-                categories.add("unstable")
-            elif attributes["half-life"] == np.inf * u.s:
-                categories.add("stable")
-            else:
-                categories.add("unstable")
+        self._add_charge_information()
+        self._add_half_life_information()
 
         self.__name__ = self.__repr__()
 
