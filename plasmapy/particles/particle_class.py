@@ -440,6 +440,41 @@ class Particle(AbstractPhysicalParticle):
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
+    def _initialize_special_particle(self, particle_symbol, Z, mass_numb):
+        attributes = self._attributes
+        categories = self._categories
+
+        attributes["symbol"] = particle_symbol
+
+        for attribute in _Particles[particle_symbol].keys():
+            attributes[attribute] = _Particles[particle_symbol][attribute]
+
+        particle_taxonomy = ParticleZoo._taxonomy_dict
+        all_categories = particle_taxonomy.keys()
+
+        for category in all_categories:
+            if particle_symbol in particle_taxonomy[category]:
+                categories.add(category)
+
+        if attributes["name"] in _specific_particle_categories:
+            categories.add(attributes["name"])
+
+        if particle_symbol == "p+":
+            categories.update({"element", "isotope", "ion"})
+
+        if mass_numb is not None or Z is not None:
+            if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
+                warnings.warn(
+                    "Redundant mass number or charge information.", ParticleWarning
+                )
+            else:
+                raise InvalidParticleError(
+                    "The keywords 'mass_numb' and 'Z' cannot be used when "
+                    "creating Particle objects for special particles. To "
+                    f"create a Particle object for {attributes['name']}s, "
+                    f"use:  Particle({repr(attributes['particle'])})"
+                )
+
     def __init__(
         self,
         argument: ParticleLike,
@@ -468,38 +503,7 @@ class Particle(AbstractPhysicalParticle):
         particle_symbol = _dealias_particle_aliases(argument)
 
         if particle_symbol in _Particles.keys():  # special particles
-
-            attributes["symbol"] = particle_symbol
-
-            for attribute in _Particles[particle_symbol].keys():
-                attributes[attribute] = _Particles[particle_symbol][attribute]
-
-            particle_taxonomy = ParticleZoo._taxonomy_dict
-            all_categories = particle_taxonomy.keys()
-
-            for category in all_categories:
-                if particle_symbol in particle_taxonomy[category]:
-                    categories.add(category)
-
-            if attributes["name"] in _specific_particle_categories:
-                categories.add(attributes["name"])
-
-            if particle_symbol == "p+":
-                categories.update({"element", "isotope", "ion"})
-
-            if mass_numb is not None or Z is not None:
-                if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
-                    warnings.warn(
-                        "Redundant mass number or charge information.", ParticleWarning
-                    )
-                else:
-                    raise InvalidParticleError(
-                        "The keywords 'mass_numb' and 'Z' cannot be used when "
-                        "creating Particle objects for special particles. To "
-                        f"create a Particle object for {attributes['name']}s, "
-                        f"use:  Particle({repr(attributes['particle'])})"
-                    )
-
+            self._initialize_special_particle(particle_symbol, Z, mass_numb)
         else:  # elements, isotopes, and ions (besides protons)
             try:
                 nomenclature = _parse_and_check_atomic_input(
