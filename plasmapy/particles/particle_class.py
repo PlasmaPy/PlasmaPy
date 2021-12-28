@@ -475,6 +475,9 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
+    def _initialize_atom(self, special_particle, Z, mass_numb):
+        pass
+
     def __init__(
         self,
         argument: ParticleLike,
@@ -505,6 +508,8 @@ class Particle(AbstractPhysicalParticle):
         if particle_symbol in _Particles.keys():  # special particles
             self._initialize_special_particle(particle_symbol, Z, mass_numb)
         else:  # elements, isotopes, and ions (besides protons)
+            self._initialize_atom(argument, mass_numb, Z)
+
             try:
                 nomenclature = _parse_and_check_atomic_input(
                     argument, mass_numb=mass_numb, Z=Z
