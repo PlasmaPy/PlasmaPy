@@ -34,6 +34,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
 
@@ -412,9 +413,9 @@ tests_from_atomic = [
     [integer_charge, ["d+",], {}, pytest.raises(InvalidParticleError),],
     [integer_charge, ["Fe 29+",], {}, pytest.raises(InvalidParticleError),],
     [integer_charge, ["H-1",], {}, pytest.raises(ChargeError),],
-    [integer_charge, ["H---",], {}, pytest.warns(ParticleWarning),],
-    [integer_charge, ["Fe -26",], {}, pytest.warns(ParticleWarning),],
-    [integer_charge, ["Og 10-",], {}, pytest.warns(ParticleWarning),],
+    [integer_charge, ["H---",], {}, pytest.warns(PlasmaPyFutureWarning),],
+    [integer_charge, ["Fe -26",], {}, pytest.warns(PlasmaPyFutureWarning),],
+    [integer_charge, ["Og 10-",], {}, pytest.warns(PlasmaPyFutureWarning),],
     [
         isotope_symbol,
         ("Md-260",),
