@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__all__ = ["_get_physical_type_dict"]
+__all__ = []
 
 import astropy.units as u
 
@@ -11,39 +11,39 @@ from typing import Dict, Iterable
 
 
 def _get_physical_type_dict(
-    collection: Iterable,
+    iterable: Iterable,
     *,
     only_quantities=False,
     numbers_become_quantities=False,
 ) -> Dict[u.PhysicalType, u.Quantity]:
     """
     Return a `dict` that contains `~astropy.units.PhysicalType` objects
-    as keys and the corresponding objects in ``collection`` as values.
+    as keys and the corresponding objects in ``iterable`` as values.
 
-    Objects in ``collection`` that do not correspond to a |PhysicalType|
+    Objects in ``iterable`` that do not correspond to a |PhysicalType|
     are skipped.
 
     Parameters
     ----------
-    collection : iterable
-        A collection that is expected to contain objects with physical
+    iterable : iterable
+        A iterable that is expected to contain objects with physical
         types.
 
-    only_quantities : bool, keyword-only, optional
+    only_quantities : `bool`, keyword-only, optional
         If `True`, only `~astropy.units.Quantity` instances in
-        ``collection`` will be passed into the resulting `dict`.
+        ``iterable`` will be passed into the resulting `dict`.
         Defaults to `False`.
 
-    numbers_become_quantities : bool, keyword-only, optional
+    numbers_become_quantities : `bool`, keyword-only, optional
         If `True`, `~numbers.Number` objects will be converted into
         dimensionless |Quantity| instances. If `False`,
         `~numbers.Number` objects will be skipped. Defaults to `False`.
 
     Returns
     -------
-    physical_types : dict
+    physical_types : `dict`
         A mapping from |PhysicalType| instances to the corresponding
-        objects in ``collection``.
+        objects in ``iterable``.
 
     Examples
     --------
@@ -55,7 +55,7 @@ def _get_physical_type_dict(
     """
     physical_types = {}
 
-    for obj in collection:
+    for obj in iterable:
 
         if isinstance(obj, Number) and numbers_become_quantities:
             obj = u.Quantity(obj, u.dimensionless_unscaled)
