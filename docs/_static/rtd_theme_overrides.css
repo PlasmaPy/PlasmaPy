@@ -30,7 +30,7 @@
   accessibility and scaling. Please add descriptive comments for new
   rules that are understandable to someone who is unfamiliar with CSS.
 
-  This file can be validated at: https://jigsaw.w3.org/css-validator
+  CSS files can be validated at: https://jigsaw.w3.org/css-validator
 */
 
 /* Style for toctree in a table */
@@ -167,9 +167,11 @@ div.wy-nav-content .rst-content code.literal.file {
 }
 
 /*
-  Sphinx admonitions. The following sections were adapted from:
-  https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast/blob/master/sphinx_rtd_theme_ext_color_contrast/_static/sphinx_rtd_theme_ext_color_contrast.css
-  See the license in our licenses/ directory.
+  Sphinx admonitions. The following sections were adapted from the file
+  sphinx_rtd_theme_ext_color_contrast/_static/sphinx_rtd_theme_ext_color_contrast.css
+  in the following repository:
+  https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast
+  The license is in our licenses directory
 */
 
 /* warning */
