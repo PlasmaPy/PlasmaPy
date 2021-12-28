@@ -6,7 +6,9 @@ import numpy as np
 
 
 def check_sweep(
-    voltage: np.ndarray, current: np.ndarray, strip_units: bool = True,
+    voltage: np.ndarray,
+    current: np.ndarray,
+    strip_units: bool = True,
 ) -> (np.ndarray, np.ndarray):
     """
     Function for checking that the voltage and current arrays are properly
@@ -91,7 +93,7 @@ def check_sweep(
             f"{voltage.ndim} dimensions.",
         )
     elif not np.all(np.diff(voltage) >= 0):
-        raise ValueError(f"The voltage array is not monotonically increasing.")
+        raise ValueError("The voltage array is not monotonically increasing.")
 
     # strip units
     if isinstance(voltage, u.Quantity) and strip_units:

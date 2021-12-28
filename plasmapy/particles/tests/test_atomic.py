@@ -14,11 +14,13 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
 from ..atomic import (
     _is_electron,
     atomic_number,
+    charge_number,
     common_isotopes,
     electric_charge,
     half_life,
@@ -45,7 +47,14 @@ from ..symbols import atomic_symbol, element_name, isotope_symbol
 # The following lists (with the name of a function
 
 table_functions_args_kwargs_output = [
-    [atomic_symbol, [1,], {}, "H"],
+    [
+        atomic_symbol,
+        [
+            1,
+        ],
+        {},
+        "H",
+    ],
     [atomic_symbol, [1], {}, "H"],
     [atomic_symbol, ["H"], {}, "H"],
     [atomic_symbol, ["p"], {}, "H"],
@@ -201,26 +210,26 @@ table_functions_args_kwargs_output = [
     [is_stable, ["Lead-209"], {}, False],
     [is_stable, ("Pb",), {"mass_numb": 209}, False],
     [is_stable, [82, 209], {}, False],
-    [integer_charge, ["H+"], {}, 1],
-    [integer_charge, ["D +1"], {}, 1],
-    [integer_charge, ["tritium 1+"], {}, 1],
-    [integer_charge, ["H-"], {}, -1],
-    [integer_charge, ["Fe -2"], {}, -2],
-    [integer_charge, ["Fe 2-"], {}, -2],
-    [integer_charge, ["N--"], {}, -2],
-    [integer_charge, ["N++"], {}, 2],
-    [integer_charge, ["alpha"], {}, 2],
-    [integer_charge, ["proton"], {}, 1],
-    [integer_charge, ["deuteron"], {}, 1],
-    [integer_charge, ["triton"], {}, 1],
-    [integer_charge, ["electron"], {}, -1],
-    [integer_charge, ["e-"], {}, -1],
-    [integer_charge, ["e+"], {}, 1],
-    [integer_charge, ["positron"], {}, 1],
-    [integer_charge, ["n"], {}, 0],
-    [integer_charge, ["neutron"], {}, 0],
-    [integer_charge, ["p-"], {}, -1],
-    [integer_charge, ["antiproton"], {}, -1],
+    [charge_number, ["H+"], {}, 1],
+    [charge_number, ["D +1"], {}, 1],
+    [charge_number, ["tritium 1+"], {}, 1],
+    [charge_number, ["H-"], {}, -1],
+    [charge_number, ["Fe -2"], {}, -2],
+    [charge_number, ["Fe 2-"], {}, -2],
+    [charge_number, ["N--"], {}, -2],
+    [charge_number, ["N++"], {}, 2],
+    [charge_number, ["alpha"], {}, 2],
+    [charge_number, ["proton"], {}, 1],
+    [charge_number, ["deuteron"], {}, 1],
+    [charge_number, ["triton"], {}, 1],
+    [charge_number, ["electron"], {}, -1],
+    [charge_number, ["e-"], {}, -1],
+    [charge_number, ["e+"], {}, 1],
+    [charge_number, ["positron"], {}, 1],
+    [charge_number, ["n"], {}, 0],
+    [charge_number, ["neutron"], {}, 0],
+    [charge_number, ["p-"], {}, -1],
+    [charge_number, ["antiproton"], {}, -1],
     [electric_charge, ["p"], {}, u.C],
     [electric_charge, ["p"], {}, 1.6021766208e-19 * u.C],
     [electric_charge, ["e"], {}, -1.6021766208e-19 * u.C],
@@ -338,6 +347,7 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
         )
 
 
+@pytest.mark.slow
 def test_known_common_stable_isotopes():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -416,6 +426,7 @@ def test_known_common_stable_isotopes_cases():
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
+@pytest.mark.slow
 def test_known_common_stable_isotopes_len():
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
@@ -531,3 +542,8 @@ str_electron_table = [
 @pytest.mark.parametrize("particle, electron", str_electron_table)
 def test_is_electron(particle, electron):
     assert _is_electron(particle) == electron
+
+
+def test_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert integer_charge("Fe 20+") == 20

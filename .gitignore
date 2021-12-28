@@ -118,6 +118,12 @@ ENV/
 *.swp
 VIRTUAL/
 
+# LaTeX and bibtex auxiliary files
+
+*.aux
+*.bbl
+*.blg
+
 # Miscellaneous files
 .idea/
 Untitled*

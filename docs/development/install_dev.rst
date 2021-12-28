@@ -7,9 +7,8 @@ Installing PlasmaPy for Development
 Obtaining PlasmaPy source code
 ==============================
 
-After creating your GitHub account, go to the `PlasmaPy repository on
-GitHub <https://github.com/PlasmaPy/plasmapy>`_ and **fork a copy of
-PlasmaPy to your account**.
+After creating your GitHub account, go to `PlasmaPy's GitHub repository`_
+and **fork a copy of PlasmaPy to your account**.
 
 To access Git commands on Windows, try `Git Bash
 <https://git-scm.com/downloads>`_.
@@ -25,7 +24,7 @@ up), then run:
    git clone https://github.com/your-username/PlasmaPy.git
 
 SSH is a more secure option, but requires you to `set up an SSH key
-<https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/>`_
+<https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls>`_
 beforehand.  The equivalent SSH command is:
 
 .. code-block:: bash
@@ -60,7 +59,7 @@ Conda
 -----
 
 To set up a development environment for PlasmaPy, we strongly recommend
-the `Anaconda distribution <https://www.anaconda.com/download/>`_.
+the `Anaconda distribution <https://www.anaconda.com/products/individual>`_.
 
 Activate Anaconda
 ~~~~~~~~~~~~~~~~~
@@ -76,9 +75,8 @@ activate via
 where ``/home/user/anaconda3/`` can be swapped to wherever your anaconda
 installation resides.
 
-On `newer versions of Anaconda <https://conda.io/docs/release-notes
-.html#recommended-change-to-enable-conda-in-your-shell>`_ the
-recommended activation process has changed to:
+On newer versions of Anaconda the recommended activation process has
+changed to:
 
 .. code-block:: bash
 

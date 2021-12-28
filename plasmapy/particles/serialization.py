@@ -65,7 +65,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
                 return particle
             except KeyError:
                 raise InvalidElementError(
-                    f"json file does not define a valid plasmapy particle"
+                    "json file does not define a valid plasmapy particle"
                 )
         else:
             return json_dict
