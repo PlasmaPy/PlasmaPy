@@ -423,7 +423,8 @@ class Particle(AbstractPhysicalParticle):
 
     @staticmethod
     def _validate_arguments(argument, Z, mass_numb):
-        if not isinstance(argument, (Integral, np.integer, str)):
+        """Raise appropriate exceptions when inputs are invalid."""
+        if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a "
                 "Particle object must be either an integer, string, or "
@@ -437,10 +438,13 @@ class Particle(AbstractPhysicalParticle):
             raise TypeError("Z is not an integer.")
 
     def _initialize_attrs_categories(self):
+        """Create empty collections for attributes & categories."""
+
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
     def _initialize_special_particle(self, particle_symbol, Z, mass_numb):
+        """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
 
@@ -476,7 +480,7 @@ class Particle(AbstractPhysicalParticle):
                 )
 
     def _initialize_atom(self, argument, Z, mass_numb):
-
+        """Assign attributes and categories to atoms."""
         attributes = self._attributes
         categories = self._categories
 
@@ -544,6 +548,7 @@ class Particle(AbstractPhysicalParticle):
         categories.add(Element["category"])
 
     def _add_charge_information(self):
+        """Assign attributes and categories related to charge information."""
         if self._attributes["charge number"] == 1:
             self._attributes["charge"] = const.e.si
         elif self._attributes["charge number"] is not None:
@@ -554,6 +559,7 @@ class Particle(AbstractPhysicalParticle):
             self._categories.add("uncharged")
 
     def _add_half_life_information(self):
+        """Assign categories related to stability."""
         if self._attributes["half-life"] is not None:
             if isinstance(self._attributes["half-life"], str):
                 self._categories.add("unstable")
@@ -582,16 +588,12 @@ class Particle(AbstractPhysicalParticle):
 
         particle_symbol = _dealias_particle_aliases(argument)
 
-        #        is_special_particle = particle_symbol not in _Particles.keys()
-        #        should_be_atom = not is_special_particle
+        is_special_particle = particle_symbol in _Particles.keys()
 
-        #        if should_be_atom:
-        #            self._initialize_atom(argument, Z=Z, mass_numb=mass_numb)
-
-        if particle_symbol in _Particles.keys():
+        if is_special_particle:
             self._initialize_special_particle(particle_symbol, Z=Z, mass_numb=mass_numb)
         else:
-            self._initialize_atom(argument, Z=Z, mass_numb=mass_numb)
+            self._initialize_atom(particle_symbol, Z=Z, mass_numb=mass_numb)
 
         self._add_charge_information()
         self._add_half_life_information()
