@@ -16,6 +16,7 @@ from plasmapy.particles import (
     mass_number,
     Particle,
     particle_symbol,
+    ParticleList,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 from plasmapy.utils.pytest_helpers import run_test
