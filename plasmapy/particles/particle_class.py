@@ -553,7 +553,7 @@ class Particle(AbstractPhysicalParticle):
             self._attributes["charge"] = const.e.si
         elif self._attributes["charge number"] is not None:
             self._attributes["charge"] = self._attributes["charge number"] * const.e.si
-            
+
         if self._attributes["charge number"]:
             self._categories.add("charged")
         elif self._attributes["charge number"] == 0:
