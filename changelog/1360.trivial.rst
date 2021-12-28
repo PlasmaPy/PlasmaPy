@@ -1,0 +1,3 @@
+Added a helper function that takes an iterable and creates a `dict` with
+physical types as keys and the corresponding objects from that iterable
+as values.
