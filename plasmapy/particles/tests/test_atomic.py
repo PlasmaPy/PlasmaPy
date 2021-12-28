@@ -14,6 +14,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
+from plasmapy.utils.pytest_helpers import run_test
 
 from ..atomic import (
     _is_electron,
@@ -236,15 +237,7 @@ table_functions_args_kwargs_output = [
     table_functions_args_kwargs_output,
 )
 def test_functions_and_values(tested_function, args, kwargs, expected_output):
-    actual_output = tested_function(*args, **kwargs)
-    if isinstance(expected_output, u.Quantity):
-        assert_quantity_allclose(actual_output, expected_output)
-    elif isinstance(expected_output, u.UnitBase):
-        assert actual_output.unit == expected_output
-    elif isinstance(expected_output, (int, float, str)):
-        assert expected_output == actual_output
-    else:
-        pytest.fail("Other types!")
+    run_test(tested_function, args, kwargs, expected_output)
 
 
 class TestInvalidPeriodicElement:

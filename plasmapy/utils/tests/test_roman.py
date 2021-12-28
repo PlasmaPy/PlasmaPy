@@ -3,6 +3,8 @@ import pytest
 
 import plasmapy.utils.roman as roman
 
+from plasmapy.utils.pytest_helpers import run_test
+
 ints_and_roman_numerals = [
     (1, "I"),
     (2, "II"),
@@ -156,8 +158,8 @@ def test_to_roman(integer, roman_numeral):
     Test that `~plasmapy.utils.roman.to_roman` correctly converts
     integers to Roman numerals, and that the inverse is true as well.
     """
-    assert roman.to_roman(integer) == roman_numeral
-    assert roman.from_roman(roman_numeral) == int(integer)
+    run_test(func=roman.to_roman, args=integer, expected_outcome=roman_numeral)
+    run_test(func=roman.from_roman, args=roman_numeral, expected_outcome=int(integer))
 
 
 @pytest.mark.parametrize("function, argument, expected_exception", exceptions_table)
@@ -166,8 +168,7 @@ def test_to_roman_exceptions(function, argument, expected_exception):
     Test that `~plasmapy.utils.roman` functions raise the correct
     exceptions when necessary.
     """
-    with pytest.raises(expected_exception):
-        function(argument)
+    run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)
 
 
 test_is_roman_numeral_table = [
@@ -182,4 +183,4 @@ test_is_roman_numeral_table = [
 
 @pytest.mark.parametrize("argument, expected", test_is_roman_numeral_table)
 def test_is_roman_numeral(argument, expected):
-    assert roman.is_roman_numeral(argument) == expected
+    run_test(func=roman.is_roman_numeral, args=argument, expected_outcome=expected)

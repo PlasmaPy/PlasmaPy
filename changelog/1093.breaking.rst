@@ -1,3 +1,1 @@
-Remove `~plasmapy.utils.pytest_helpers.run_test` and
-`~plasmapy.utils.pytest_helpers.run_test_equivalent_calls`. Refactor tests
-accordingly.
+Refactor particle tests.
