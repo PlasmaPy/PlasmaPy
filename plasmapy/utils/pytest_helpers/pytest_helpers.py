@@ -218,7 +218,7 @@ def run_test(
     if kwargs is None:
         kwargs = {}
 
-    if not isinstance(args, tuple):
+    if not type(args) in [tuple, list]:
         args = (args,)
 
     if not callable(func):
