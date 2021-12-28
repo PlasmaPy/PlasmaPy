@@ -30,6 +30,11 @@ jobs:
           python: 3.8
           toxenv: py38-numpydev
 
+        - name: Python 3.8 with SciPy dev
+          os: ubuntu-latest
+          python: 3.8
+          toxenv: py38-scipydev
+
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
           python: 3.8
