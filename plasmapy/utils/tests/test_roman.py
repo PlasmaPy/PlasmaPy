@@ -168,7 +168,7 @@ def test_to_roman_exceptions(function, argument, expected_exception):
     Test that `~plasmapy.utils.roman` functions raise the correct
     exceptions when necessary.
     """
-    run_test(func=roman.from_roman, args=input, expected_outcome=expected_exception)
+    run_test(func=function, args=argument, expected_outcome=expected_exception)
 
 
 test_is_roman_numeral_table = [
