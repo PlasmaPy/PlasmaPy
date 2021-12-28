@@ -34,9 +34,9 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.particles.nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 tests_for_exceptions_IonizationState = [
     (
@@ -328,94 +328,630 @@ tests_from_nuclear = [
 ]
 
 tests_from_atomic = [
-    [atomic_symbol, ["H-0",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, [3.14159,], {}, pytest.raises(TypeError),],
-    [atomic_symbol, ["Og-294b",], {}, pytest.raises(InvalidParticleError),],
     [
         atomic_symbol,
-        ["H-934361079326356530741942970523610389",],
+        [
+            "H-0",
+        ],
         {},
         pytest.raises(InvalidParticleError),
     ],
-    [atomic_symbol, ["Fe 2+4",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["Fe+24",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["Fe +59",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["C++++++++++++++++",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["C-++++",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["neutron",], {}, pytest.raises(InvalidElementError),],
-    [atomic_symbol, ["n",], {}, pytest.raises(InvalidElementError),],
-    [atomic_symbol, ["n-1",], {}, pytest.raises(InvalidElementError),],
-    [atomic_symbol, ["h",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["d",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["he",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["au",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["p-",], {}, pytest.raises(InvalidElementError),],
-    [atomic_symbol, [0,], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, [119,], {}, pytest.raises(InvalidParticleError),],
-    [atomic_symbol, ["antiproton",], {}, pytest.raises(InvalidElementError),],
-    [atomic_number, ["H-3934",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_number, ["C-12b",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_number, [-1.5,], {}, pytest.raises(TypeError),],
-    [atomic_number, ["n",], {}, pytest.raises(InvalidElementError),],
-    [atomic_number, ["n-1",], {}, pytest.raises(InvalidElementError),],
-    [atomic_number, ["neutron",], {}, pytest.raises(InvalidElementError),],
-    [atomic_number, ["Neutron",], {}, pytest.raises(InvalidElementError),],
-    [atomic_number, ["d",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_number, ["t",], {}, pytest.raises(InvalidParticleError),],
-    [atomic_number, ["s-36",], {}, pytest.raises(InvalidParticleError),],
-    [mass_number, ["H-359",], {}, pytest.raises(InvalidParticleError),],
-    [mass_number, ["C-12b",], {}, pytest.raises(InvalidParticleError),],
-    [mass_number, [-1.5,], {}, pytest.raises(TypeError),],
-    [mass_number, ["N-13+-+-",], {}, pytest.raises(InvalidParticleError),],
-    [mass_number, ["h-3",], {}, pytest.raises(InvalidParticleError),],
-    [mass_number, ["n",], {}, pytest.raises(InvalidIsotopeError),],
-    [mass_number, ["n-1",], {}, pytest.raises(InvalidIsotopeError),],
-    [element_name, ["vegancupcakes",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["C-+-",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, [1.24,], {}, pytest.raises(TypeError),],
-    [element_name, ["n",], {}, pytest.raises(InvalidElementError),],
-    [element_name, ["neutron",], {}, pytest.raises(InvalidElementError),],
-    [element_name, [0,], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["H++",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["t",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["pb",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["d",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["h-3",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["Pb-9",], {}, pytest.raises(InvalidParticleError),],
-    [element_name, ["H 2+",], {}, pytest.raises(InvalidParticleError),],
-    [standard_atomic_weight, ["H-1",], {}, pytest.raises(ParticleError),],
+    [
+        atomic_symbol,
+        [
+            3.14159,
+        ],
+        {},
+        pytest.raises(TypeError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "Og-294b",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "H-934361079326356530741942970523610389",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "Fe 2+4",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "Fe+24",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "Fe +59",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "C++++++++++++++++",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "C-++++",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "neutron",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "n",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "n-1",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "h",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "d",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "he",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "au",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "p-",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_symbol,
+        [
+            0,
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            119,
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_symbol,
+        [
+            "antiproton",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_number,
+        [
+            "H-3934",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_number,
+        [
+            "C-12b",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_number,
+        [
+            -1.5,
+        ],
+        {},
+        pytest.raises(TypeError),
+    ],
+    [
+        atomic_number,
+        [
+            "n",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_number,
+        [
+            "n-1",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_number,
+        [
+            "neutron",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_number,
+        [
+            "Neutron",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        atomic_number,
+        [
+            "d",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_number,
+        [
+            "t",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        atomic_number,
+        [
+            "s-36",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        mass_number,
+        [
+            "H-359",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        mass_number,
+        [
+            "C-12b",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        mass_number,
+        [
+            -1.5,
+        ],
+        {},
+        pytest.raises(TypeError),
+    ],
+    [
+        mass_number,
+        [
+            "N-13+-+-",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        mass_number,
+        [
+            "h-3",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        mass_number,
+        [
+            "n",
+        ],
+        {},
+        pytest.raises(InvalidIsotopeError),
+    ],
+    [
+        mass_number,
+        [
+            "n-1",
+        ],
+        {},
+        pytest.raises(InvalidIsotopeError),
+    ],
+    [
+        element_name,
+        [
+            "vegancupcakes",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "C-+-",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            1.24,
+        ],
+        {},
+        pytest.raises(TypeError),
+    ],
+    [
+        element_name,
+        [
+            "n",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        element_name,
+        [
+            "neutron",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        element_name,
+        [
+            0,
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "H++",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "t",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "pb",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "d",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "h-3",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "Pb-9",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        element_name,
+        [
+            "H 2+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
     [
         standard_atomic_weight,
-        ["help i'm trapped in a unit test",],
+        [
+            "H-1",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "help i'm trapped in a unit test",
+        ],
         {},
         pytest.raises(InvalidParticleError),
     ],
-    [standard_atomic_weight, [1.1,], {}, pytest.raises(TypeError),],
-    [standard_atomic_weight, ["n",], {}, pytest.raises(InvalidElementError),],
-    [standard_atomic_weight, ["p",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["alpha",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["deuteron",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["tritium",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["Au+",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["Fe -2",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["Og 2+",], {}, pytest.raises(ParticleError),],
-    [standard_atomic_weight, ["h",], {}, pytest.raises(InvalidParticleError),],
-    [standard_atomic_weight, ["fe",], {}, pytest.raises(InvalidParticleError),],
-    [electric_charge, ["badinput",], {}, pytest.raises(InvalidParticleError),],
-    [electric_charge, ["h+",], {}, pytest.raises(InvalidParticleError),],
-    [electric_charge, ["Au 81+",], {}, pytest.raises(InvalidParticleError),],
-    [electric_charge, ["Au 81-",], {}, pytest.warns(ParticleWarning),],
-    [electric_charge, ["H---",], {}, pytest.warns(ParticleWarning),],
-    [integer_charge, ["fads",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["H++",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["h+",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["fe 1+",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["d+",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["Fe 29+",], {}, pytest.raises(InvalidParticleError),],
-    [integer_charge, ["H-1",], {}, pytest.raises(ChargeError),],
-    [integer_charge, ["H---",], {}, pytest.warns(PlasmaPyFutureWarning),],
-    [integer_charge, ["Fe -26",], {}, pytest.warns(PlasmaPyFutureWarning),],
-    [integer_charge, ["Og 10-",], {}, pytest.warns(PlasmaPyFutureWarning),],
+    [
+        standard_atomic_weight,
+        [
+            1.1,
+        ],
+        {},
+        pytest.raises(TypeError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "n",
+        ],
+        {},
+        pytest.raises(InvalidElementError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "p",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "alpha",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "deuteron",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "tritium",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "Au+",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "Fe -2",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "Og 2+",
+        ],
+        {},
+        pytest.raises(ParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "h",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        standard_atomic_weight,
+        [
+            "fe",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        electric_charge,
+        [
+            "badinput",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        electric_charge,
+        [
+            "h+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        electric_charge,
+        [
+            "Au 81+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        electric_charge,
+        [
+            "Au 81-",
+        ],
+        {},
+        pytest.warns(ParticleWarning),
+    ],
+    [
+        electric_charge,
+        [
+            "H---",
+        ],
+        {},
+        pytest.warns(ParticleWarning),
+    ],
+    [
+        integer_charge,
+        [
+            "fads",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "H++",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "h+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "fe 1+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "d+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "Fe 29+",
+        ],
+        {},
+        pytest.raises(InvalidParticleError),
+    ],
+    [
+        integer_charge,
+        [
+            "H-1",
+        ],
+        {},
+        pytest.raises(ChargeError),
+    ],
+    [
+        integer_charge,
+        [
+            "H---",
+        ],
+        {},
+        pytest.warns(PlasmaPyFutureWarning),
+    ],
+    [
+        integer_charge,
+        [
+            "Fe -26",
+        ],
+        {},
+        pytest.warns(PlasmaPyFutureWarning),
+    ],
+    [
+        integer_charge,
+        [
+            "Og 10-",
+        ],
+        {},
+        pytest.warns(PlasmaPyFutureWarning),
+    ],
     [
         isotope_symbol,
         ("Md-260",),
