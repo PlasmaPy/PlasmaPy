@@ -598,6 +598,8 @@ class Particle(AbstractPhysicalParticle):
     ):
         """Instantiate a |Particle| object and set private attributes."""
 
+        self._inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
+
         self._initialize_attrs_categories()
         self._assign_particle_symbol(argument, Z=Z, mass_numb=mass_numb)
 
@@ -610,6 +612,8 @@ class Particle(AbstractPhysicalParticle):
 
         self._add_charge_information()
         self._add_half_life_information()
+
+        delattr(self, "_inputs")
 
         self.__name__ = self.__repr__()
 
