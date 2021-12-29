@@ -421,8 +421,34 @@ class Particle(AbstractPhysicalParticle):
     ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
+    def __init__(
+        self,
+        argument: ParticleLike,
+        mass_numb: Integral = None,
+        Z: Integral = None,
+    ):
+        """Instantiate a |Particle| object and set private attributes."""
+
+        # If argument is a Particle instance, then construct a new
+        # Particle instance for the same particle.
+
+        if isinstance(argument, Particle):
+            argument = argument.symbol
+
+        self._inputs = argument, mass_numb, Z
+
+        self._initialize_attributes_and_categories()
+        self._store_particle_identity()
+        self._assign_particle_attributes()
+        self._add_charge_information()
+        self._add_half_life_information()
+
+        delattr(self, "_inputs")
+
+        self.__name__ = self.__repr__()
+
     def _initialize_attributes_and_categories(self):
-        """Create empty collections for attributes & categories."""
+        """Create empty collections for attributes and categories."""
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
@@ -444,16 +470,16 @@ class Particle(AbstractPhysicalParticle):
             raise TypeError("Z is not an integer.")
 
     def _store_particle_identity(self):
-        """Store the particle's symbol and other identifying information."""
+        """Store the particle's symbol and identifying information."""
         argument, mass_numb, Z = self._inputs
         self._validate_arguments()
         symbol = _dealias_particle_aliases(argument)
         if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
-            self._store_atom_identity(argument)
+            self._store_identity_of_atom(argument)
 
-    def _store_atom_identity(self, argument):
+    def _store_identity_of_atom(self, argument):
         """
         Store the particle's symbol, element, isotope, ion, mass number,
         and charge number.
@@ -475,7 +501,14 @@ class Particle(AbstractPhysicalParticle):
         for key in information_about_atom:
             self._attributes[key] = information_about_atom[key]
 
-    def _initialize_special_particle(self):
+    def _assign_particle_attributes(self):
+        """Assign the attributes and"""
+        if self.symbol in _special_particles:
+            self._assign_special_particle_attributes()
+        else:
+            self._assign_atom_attributes()
+
+    def _assign_special_particle_attributes(self):
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
@@ -511,14 +544,8 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _assign_attributes(self):
-        if self.symbol in _special_particles:
-            self._initialize_special_particle()
-        else:
-            self._assign_atom_attributes()
-
     def _assign_atom_attributes(self):
-        """Assign attributes and categories to atoms."""
+        """Assign attributes and categories to elements, isotopes, and ions."""
         attributes = self._attributes
         categories = self._categories
 
@@ -595,33 +622,6 @@ class Particle(AbstractPhysicalParticle):
                 self._categories.add("stable")
             else:
                 self._categories.add("unstable")
-
-    def __init__(
-        self,
-        argument: ParticleLike,
-        mass_numb: Integral = None,
-        Z: Integral = None,
-    ):
-        """Instantiate a |Particle| object and set private attributes."""
-
-        # If argument is a Particle instance, then construct a new
-        # Particle instance for the same particle.
-
-        if isinstance(argument, Particle):
-            argument = argument.symbol
-
-        self._inputs = argument, mass_numb, Z
-
-        self._initialize_attributes_and_categories()
-        self._store_particle_identity()
-        self._assign_attributes()
-        self._add_charge_information()
-        self._add_half_life_information()
-
-        delattr(self, "_inputs")
-
-        # The following might not be needed
-        self.__name__ = self.__repr__()
 
     def __repr__(self) -> str:
         """
