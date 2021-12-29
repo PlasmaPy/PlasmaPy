@@ -427,7 +427,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
-        """Instantiate a |Particle| object and set private attributes."""
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
@@ -502,7 +501,7 @@ class Particle(AbstractPhysicalParticle):
             self._attributes[key] = information_about_atom[key]
 
     def _assign_particle_attributes(self):
-        """Assign the attributes and"""
+        """Assign particle attributes and categories."""
         if self.symbol in _special_particles:
             self._assign_special_particle_attributes()
         else:
