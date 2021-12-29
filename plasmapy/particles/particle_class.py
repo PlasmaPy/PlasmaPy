@@ -452,16 +452,17 @@ class Particle(AbstractPhysicalParticle):
         if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
-            self._store_atom_identification(argument)
+            self._store_atom_identity(argument)
 
-    def _store_atom_identification(self, argument):
+    def _store_atom_identity(self, argument):
         """
-        Store information about the particle's symbol,
+        Store the particle's symbol, element, isotope, ion, mass number,
+        and charge number.
         """
         _, mass_numb, Z = self._inputs
 
         try:
-            nomenclature = _parse_and_check_atomic_input(
+            information_about_atom = _parse_and_check_atomic_input(
                 argument,
                 mass_numb=mass_numb,
                 Z=Z,
@@ -470,10 +471,10 @@ class Particle(AbstractPhysicalParticle):
             errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
             raise InvalidParticleError(errmsg) from exc
 
-        self._attributes["symbol"] = nomenclature["symbol"]
+        self._attributes["symbol"] = information_about_atom["symbol"]
 
-        for key in nomenclature.keys():
-            self._attributes[key] = nomenclature[key]
+        for key in information_about_atom:
+            self._attributes[key] = information_about_atom[key]
 
     def _initialize_special_particle(self):
         """Initialize special particles."""
