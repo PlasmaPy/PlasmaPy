@@ -464,7 +464,7 @@ def _parse_and_check_atomic_input(
     else:
         symbol = element
 
-    nomenclature_dict = {
+    return {
         "symbol": symbol,
         "element": element,
         "isotope": isotope,
@@ -472,5 +472,3 @@ def _parse_and_check_atomic_input(
         "mass number": mass_numb,
         "charge number": Z,
     }
-
-    return nomenclature_dict

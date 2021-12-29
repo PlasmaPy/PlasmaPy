@@ -445,13 +445,10 @@ class Particle(AbstractPhysicalParticle):
             raise TypeError("Z is not an integer.")
 
     def _store_particle_identity(self):
-
+        """Find and store the particle's identity"""
         argument, mass_numb, Z = self._inputs
-
         self._validate_arguments()
-
         symbol = _dealias_particle_aliases(argument)
-
         if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
@@ -459,7 +456,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _store_atom_identification(self, argument):
         """
-        Store information on
+        Store information about the particle's symbol,
         """
         _, mass_numb, Z = self._inputs
 
