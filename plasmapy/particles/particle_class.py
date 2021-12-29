@@ -453,7 +453,11 @@ class Particle(AbstractPhysicalParticle):
             errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
             raise InvalidParticleError(errmsg) from exc
 
-    def _assign_particle_symbol(self, argument, *, Z, mass_numb):
+    def _assign_particle_symbol(self):
+
+        argument = self._inputs["argument"]
+        Z = self._inputs["Z"]
+        mass_numb = self._inputs["mass_numb"]
 
         self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
 
@@ -601,7 +605,7 @@ class Particle(AbstractPhysicalParticle):
         self._inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
 
         self._initialize_attrs_categories()
-        self._assign_particle_symbol(argument, Z=Z, mass_numb=mass_numb)
+        self._assign_particle_symbol()
 
         is_special_particle = self.symbol in _Particles.keys()
 
