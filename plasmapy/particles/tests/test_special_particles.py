@@ -1,6 +1,6 @@
 import pytest
 
-from plasmapy.particles.special_particles import _Particles, ParticleZoo
+from plasmapy.particles.special_particles import _special_particles, ParticleZoo
 
 particle_antiparticle_pairs = [
     ("e-", "e+"),
@@ -19,11 +19,11 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
     """Test that particles and antiparticles have the same or exact
     opposite properties in the _Particles dictionary."""
 
-    assert not _Particles[particle][
+    assert not _special_particles[particle][
         "antimatter"
     ], f"{particle} is incorrectly marked as antimatter."
 
-    assert _Particles[antiparticle][
+    assert _special_particles[antiparticle][
         "antimatter"
     ], f"{antiparticle} is incorrectly marked as matter."
 
@@ -39,16 +39,18 @@ def test_particle_antiparticle_pairs(particle, antiparticle):
 
     for key in identical_keys:
         assert (
-            _Particles[particle][key] == _Particles[antiparticle][key]
+            _special_particles[particle][key] == _special_particles[antiparticle][key]
         ), f"{particle} and {antiparticle} do not have identical {key}."
 
     for key in opposite_keys:
         assert (
-            _Particles[particle][key] == -_Particles[antiparticle][key]
+            _special_particles[particle][key] == -_special_particles[antiparticle][key]
         ), f"{particle} and {antiparticle} do not have exact opposite {key}."
 
     if particle not in ["e-", "n"]:
-        assert _Particles[particle]["name"] == _Particles[antiparticle]["name"].replace(
+        assert _special_particles[particle]["name"] == _special_particles[antiparticle][
+            "name"
+        ].replace(
             "anti", ""
         ), f"{particle} and {antiparticle} do not have same name except for 'anti'."
 
@@ -74,7 +76,7 @@ def test__Particles_required_keys(particle):
 
     for key in required_keys:
         try:
-            _Particles[particle][key]
+            _special_particles[particle][key]
         except KeyError:
             missing_keys.append(key)
 

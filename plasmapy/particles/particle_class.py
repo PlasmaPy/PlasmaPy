@@ -43,8 +43,8 @@ from plasmapy.particles.parsing import (
 )
 from plasmapy.particles.special_particles import (
     _antiparticles,
-    _Particles,
     _special_ion_masses,
+    _special_particles,
     ParticleZoo,
 )
 from plasmapy.utils import roman
@@ -458,7 +458,7 @@ class Particle(AbstractPhysicalParticle):
 
         symbol = _dealias_particle_aliases(argument)
 
-        if symbol in _Particles.keys():
+        if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
             self._assign_symbol_for_an_atom(argument, Z=Z, mass_numb=mass_numb)
@@ -479,8 +479,8 @@ class Particle(AbstractPhysicalParticle):
         attributes = self._attributes
         categories = self._categories
 
-        for attribute in _Particles[self.symbol].keys():
-            attributes[attribute] = _Particles[self.symbol][attribute]
+        for attribute in _special_particles[self.symbol].keys():
+            attributes[attribute] = _special_particles[self.symbol][attribute]
 
         particle_taxonomy = ParticleZoo._taxonomy_dict
         all_categories = particle_taxonomy.keys()
@@ -512,7 +512,7 @@ class Particle(AbstractPhysicalParticle):
                 )
 
     def _initialize_particle(self):
-        is_special_particle = self.symbol in _Particles.keys()
+        is_special_particle = self.symbol in _special_particles.keys()
 
         if is_special_particle:
             self._initialize_special_particle()

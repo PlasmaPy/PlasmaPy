@@ -25,7 +25,7 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.particles.isotopes import _isotopes
-from plasmapy.particles.special_particles import _Particles, ParticleZoo
+from plasmapy.particles.special_particles import _special_particles, ParticleZoo
 from plasmapy.utils import roman
 
 
@@ -111,7 +111,9 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     return case_sensitive_aliases, case_insensitive_aliases
 
 
-_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(_Particles)
+_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(
+    _special_particles
+)
 
 
 def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
