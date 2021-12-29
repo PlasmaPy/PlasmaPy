@@ -481,29 +481,27 @@ class Particle(AbstractPhysicalParticle):
         attributes = self._attributes
         categories = self._categories
 
-        particle_symbol = self.symbol
-
-        for attribute in _Particles[particle_symbol].keys():
-            attributes[attribute] = _Particles[particle_symbol][attribute]
+        for attribute in _Particles[self.symbol].keys():
+            attributes[attribute] = _Particles[self.symbol][attribute]
 
         particle_taxonomy = ParticleZoo._taxonomy_dict
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
-            if particle_symbol in particle_taxonomy[category]:
+            if self.symbol in particle_taxonomy[category]:
                 categories.add(category)
 
         if attributes["name"] in _specific_particle_categories:
             categories.add(attributes["name"])
 
-        if particle_symbol == "p+":
+        if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
         Z = self._inputs["Z"]
         mass_numb = self._inputs["mass_numb"]
 
         if mass_numb is not None or Z is not None:
-            if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
+            if self.symbol == "p+" and (mass_numb == 1 or Z == 1):
                 warnings.warn(
                     "Redundant mass number or charge information.", ParticleWarning
                 )
@@ -614,15 +612,14 @@ class Particle(AbstractPhysicalParticle):
         """Instantiate a |Particle| object and set private attributes."""
 
         self._inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
-
         self._initialize_attrs_categories()
         self._assign_particle_symbol()
         self._initialize_particle()
         self._add_charge_information()
         self._add_half_life_information()
-
         delattr(self, "_inputs")
 
+        # The following might not be needed
         self.__name__ = self.__repr__()
 
     def __repr__(self) -> str:
