@@ -442,17 +442,6 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _assign_symbol_for_an_atom(self, argument, *, Z, mass_numb):
-        try:
-            self._nomenclature = _parse_and_check_atomic_input(
-                argument,
-                mass_numb=mass_numb,
-                Z=Z,
-            )
-        except Exception as exc:
-            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
-            raise InvalidParticleError(errmsg) from exc
-
     def _assign_particle_symbol(self):
 
         argument = self._inputs["argument"]
@@ -474,7 +463,16 @@ class Particle(AbstractPhysicalParticle):
         else:
             self._assign_symbol_for_an_atom(argument, Z=Z, mass_numb=mass_numb)
 
-        self._attributes["symbol"] = symbol
+    def _assign_symbol_for_an_atom(self, argument, *, Z, mass_numb):
+        try:
+            self._nomenclature = _parse_and_check_atomic_input(
+                argument,
+                mass_numb=mass_numb,
+                Z=Z,
+            )
+        except Exception as exc:
+            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
+            raise InvalidParticleError(errmsg) from exc
 
     def _initialize_special_particle(self):
         """Initialize special particles."""
