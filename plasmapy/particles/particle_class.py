@@ -429,9 +429,7 @@ class Particle(AbstractPhysicalParticle):
     def _validate_arguments(self):
         """Raise appropriate exceptions when inputs are invalid."""
 
-        argument = self._inputs["argument"]
-        Z = self._inputs["Z"]
-        mass_numb = self._inputs["mass_numb"]
+        argument, mass_numb, Z = self._inputs
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
@@ -448,9 +446,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _store_particle_identification_characteristics(self):
 
-        argument = self._inputs["argument"]
-        Z = self._inputs["Z"]
-        mass_numb = self._inputs["mass_numb"]
+        argument, mass_numb, Z = self._inputs
 
         self._validate_arguments()
 
@@ -507,8 +503,7 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        Z = self._inputs["Z"]
-        mass_numb = self._inputs["mass_numb"]
+        _, mass_numb, Z = self._inputs
 
         if mass_numb is not None or Z is not None:
             if self.symbol == "p+" and (mass_numb == 1 or Z == 1):
@@ -616,7 +611,8 @@ class Particle(AbstractPhysicalParticle):
     ):
         """Instantiate a |Particle| object and set private attributes."""
 
-        self._inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
+        self._old_inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
+        self._inputs = argument, mass_numb, Z
 
         self._initialize_attributes_and_categories()
         self._store_particle_identification_characteristics()
