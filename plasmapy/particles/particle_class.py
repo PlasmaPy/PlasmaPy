@@ -542,7 +542,7 @@ class Particle(AbstractPhysicalParticle):
             categories.add("element")
         if isotope:
             categories.add("isotope")
-        if self.element and self.charge_number:
+        if self.element and self._attributes["charge number"]:
             categories.add("ion")
 
         # Element properties
