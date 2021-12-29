@@ -426,9 +426,13 @@ class Particle(AbstractPhysicalParticle):
         self._attributes = defaultdict(type(None))
         self._categories = set()
 
-    @staticmethod
-    def _validate_arguments(argument, *, Z, mass_numb):
+    def _validate_arguments(self):
         """Raise appropriate exceptions when inputs are invalid."""
+
+        argument = self._inputs["argument"]
+        Z = self._inputs["Z"]
+        mass_numb = self._inputs["mass_numb"]
+
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a "
@@ -448,7 +452,7 @@ class Particle(AbstractPhysicalParticle):
         Z = self._inputs["Z"]
         mass_numb = self._inputs["mass_numb"]
 
-        self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
+        self._validate_arguments()
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
