@@ -444,7 +444,7 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _store_particle_identification_characteristics(self):
+    def _store_particle_identity(self):
 
         argument, mass_numb, Z = self._inputs
 
@@ -461,12 +461,14 @@ class Particle(AbstractPhysicalParticle):
         if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
-            self._store_atom_identification(argument, Z=Z, mass_numb=mass_numb)
+            self._store_atom_identification(argument)
 
-    def _store_atom_identification(self, argument, *, Z, mass_numb):
+    def _store_atom_identification(self, argument):
         """
         Store
         """
+        _, mass_numb, Z = self._inputs
+
         try:
             nomenclature = _parse_and_check_atomic_input(
                 argument,
@@ -615,7 +617,7 @@ class Particle(AbstractPhysicalParticle):
         self._inputs = argument, mass_numb, Z
 
         self._initialize_attributes_and_categories()
-        self._store_particle_identification_characteristics()
+        self._store_particle_identity()
         self._assign_attributes()
         self._add_charge_information()
         self._add_half_life_information()
