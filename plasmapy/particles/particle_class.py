@@ -481,7 +481,7 @@ class Particle(AbstractPhysicalParticle):
         attributes = self._attributes
         categories = self._categories
 
-        for attribute in _special_particles[self.symbol].keys():
+        for attribute in _special_particles[self.symbol]:
             attributes[attribute] = _special_particles[self.symbol][attribute]
 
         particle_taxonomy = ParticleZoo._taxonomy_dict
@@ -563,7 +563,7 @@ class Particle(AbstractPhysicalParticle):
         if element and not isotope:
             attributes["standard atomic weight"] = Element.get("atomic mass", None)
 
-        if ion in _special_ion_masses.keys():
+        if ion in _special_ion_masses:
             attributes["mass"] = _special_ion_masses[ion]
 
         attributes["periodic table"] = _PeriodicTable(
@@ -686,10 +686,10 @@ class Particle(AbstractPhysicalParticle):
         # TODO: create function in utils to account for equality between
         # defaultdicts, and implement it here
 
-        for attribute in self._attributes.keys():
+        for attribute in self._attributes:
             other._attributes[attribute]
 
-        for attribute in other._attributes.keys():
+        for attribute in other._attributes:
             self._attributes[attribute]
 
         same_attributes = self._attributes == other._attributes
