@@ -421,8 +421,13 @@ class Particle(AbstractPhysicalParticle):
     ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
+    def _initialize_attrs_categories(self):
+        """Create empty collections for attributes & categories."""
+        self._attributes = defaultdict(type(None))
+        self._categories = set()
+
     @staticmethod
-    def _validate_arguments(argument, Z, mass_numb):
+    def _validate_arguments(argument, *, Z, mass_numb):
         """Raise appropriate exceptions when inputs are invalid."""
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
@@ -437,17 +442,42 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _initialize_attrs_categories(self):
-        """Create empty collections for attributes & categories."""
-        self._attributes = defaultdict(type(None))
-        self._categories = set()
+    def _assign_symbol_for_an_atom(self, argument, *, Z, mass_numb):
+        try:
+            self._nomenclature = _parse_and_check_atomic_input(
+                argument,
+                mass_numb=mass_numb,
+                Z=Z,
+            )
+        except Exception as exc:
+            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
+            raise InvalidParticleError(errmsg) from exc
+
+    def _assign_particle_symbol(self, argument, *, Z, mass_numb):
+
+        self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
+
+        # If argument is a Particle instance, then construct a new
+        # Particle instance for the same particle.
+
+        if isinstance(argument, Particle):
+            argument = argument.symbol
+
+        symbol = _dealias_particle_aliases(argument)
+
+        if symbol in _Particles.keys():
+            self._attributes["symbol"] = symbol
+        else:
+            self._assign_symbol_for_an_atom(argument, Z=Z, mass_numb=mass_numb)
+
+        self._attributes["symbol"] = symbol
 
     def _initialize_special_particle(self, particle_symbol, Z, mass_numb):
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
 
-        attributes["symbol"] = particle_symbol
+        particle_symbol = self.symbol
 
         for attribute in _Particles[particle_symbol].keys():
             attributes[attribute] = _Particles[particle_symbol][attribute]
@@ -478,21 +508,13 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _initialize_atom(self, argument, Z, mass_numb):
+    def _initialize_atom(self):
         """Assign attributes and categories to atoms."""
         attributes = self._attributes
         categories = self._categories
 
-        try:
-            nomenclature = _parse_and_check_atomic_input(
-                argument, mass_numb=mass_numb, Z=Z
-            )
-        except Exception as exc:
-            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
-            raise InvalidParticleError(errmsg) from exc
-
-        for key in nomenclature.keys():
-            attributes[key] = nomenclature[key]
+        for key in self._nomenclature.keys():
+            attributes[key] = self._nomenclature[key]
 
         element = attributes["element"]
         isotope = attributes["isotope"]
@@ -576,24 +598,15 @@ class Particle(AbstractPhysicalParticle):
     ):
         """Instantiate a |Particle| object and set private attributes."""
 
-        # If argument is a Particle instance, then we will construct a
-        # new Particle instance for the same Particle (essentially a
-        # copy).
-
-        if isinstance(argument, Particle):
-            argument = argument.symbol
-
-        self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
         self._initialize_attrs_categories()
+        self._assign_particle_symbol(argument, Z=Z, mass_numb=mass_numb)
 
-        particle_symbol = _dealias_particle_aliases(argument)
-
-        is_special_particle = particle_symbol in _Particles.keys()
+        is_special_particle = self.symbol in _Particles.keys()
 
         if is_special_particle:
-            self._initialize_special_particle(particle_symbol, Z=Z, mass_numb=mass_numb)
+            self._initialize_special_particle(self.symbol, Z=Z, mass_numb=mass_numb)
         else:
-            self._initialize_atom(particle_symbol, Z=Z, mass_numb=mass_numb)
+            self._initialize_atom()
 
         self._add_charge_information()
         self._add_half_life_information()
