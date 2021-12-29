@@ -467,6 +467,8 @@ class Particle(AbstractPhysicalParticle):
         else:
             self._assign_symbol_for_an_atom(argument, Z=Z, mass_numb=mass_numb)
 
+        assert "symbol" in self._attributes, argument
+
     def _assign_symbol_for_an_atom(self, argument, *, Z, mass_numb):
         try:
             self._nomenclature = _parse_and_check_atomic_input(
@@ -477,6 +479,8 @@ class Particle(AbstractPhysicalParticle):
         except Exception as exc:
             errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
             raise InvalidParticleError(errmsg) from exc
+        else:
+            self._attributes["symbol"] = self._nomenclature["symbol"]
 
     def _initialize_special_particle(self):
         """Initialize special particles."""
