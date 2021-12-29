@@ -37,7 +37,7 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..isotopes import _isotopes
+from ..isotopes import _isotope_data
 from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from ..symbols import atomic_symbol, element_name, isotope_symbol
 
@@ -626,10 +626,10 @@ def test_half_life():
 def test_half_life_unstable_isotopes():
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
-    for isotope in _isotopes.keys():
+    for isotope in _isotope_data.keys():
         if (
-            "half_life" not in _isotopes[isotope].keys()
-            and not _isotopes[isotope].keys()
+            "half_life" not in _isotope_data[isotope].keys()
+            and not _isotope_data[isotope].keys()
         ):
             with pytest.raises(MissingParticleDataError):
 

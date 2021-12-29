@@ -23,7 +23,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles.elements import _elements, _PeriodicTable
+from plasmapy.particles.elements import _element_data, _PeriodicTable
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -35,7 +35,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotopes
+from plasmapy.particles.isotopes import _isotope_data
 from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
@@ -421,7 +421,7 @@ class Particle(AbstractPhysicalParticle):
     ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
-    def _initialize_attrs_categories(self):
+    def _initialize_attributes_and_categories(self):
         """Create empty collections for attributes & categories."""
         self._attributes = defaultdict(type(None))
         self._categories = set()
@@ -446,7 +446,7 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _assign_particle_symbol(self):
+    def _ascertain_particle_symbol(self):
 
         argument = self._inputs["argument"]
         Z = self._inputs["Z"]
@@ -465,13 +465,13 @@ class Particle(AbstractPhysicalParticle):
         if symbol in _special_particles:
             self._attributes["symbol"] = symbol
         else:
-            self._assign_symbol_for_an_atom(argument, Z=Z, mass_numb=mass_numb)
+            self._identify_atom(argument, Z=Z, mass_numb=mass_numb)
 
         assert "symbol" in self._attributes, argument
 
-    def _assign_symbol_for_an_atom(self, argument, *, Z, mass_numb):
+    def _identify_atom(self, argument, *, Z, mass_numb):
         try:
-            self._nomenclature = _parse_and_check_atomic_input(
+            nomenclature = _parse_and_check_atomic_input(
                 argument,
                 mass_numb=mass_numb,
                 Z=Z,
@@ -479,8 +479,11 @@ class Particle(AbstractPhysicalParticle):
         except Exception as exc:
             errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
             raise InvalidParticleError(errmsg) from exc
-        else:
-            self._attributes["symbol"] = self._nomenclature["symbol"]
+
+        self._attributes["symbol"] = nomenclature["symbol"]
+
+        for key in nomenclature.keys():
+            self._attributes[key] = nomenclature[key]
 
     def _initialize_special_particle(self):
         """Initialize special particles."""
@@ -519,21 +522,16 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _initialize_particle(self):
-        is_special_particle = self.symbol in _special_particles.keys()
-
-        if is_special_particle:
+    def _assign_attributes(self):
+        if self.symbol in _special_particles:
             self._initialize_special_particle()
         else:
-            self._initialize_atom()
+            self._assign_atom_attributes()
 
-    def _initialize_atom(self):
+    def _assign_atom_attributes(self):
         """Assign attributes and categories to atoms."""
         attributes = self._attributes
         categories = self._categories
-
-        for key in self._nomenclature.keys():
-            attributes[key] = self._nomenclature[key]
 
         element = attributes["element"]
         isotope = attributes["isotope"]
@@ -548,7 +546,7 @@ class Particle(AbstractPhysicalParticle):
 
         # Element properties
 
-        Element = _elements[element]
+        Element = _element_data[element]
 
         attributes["atomic number"] = Element["atomic number"]
         attributes["element name"] = Element["element name"]
@@ -561,7 +559,7 @@ class Particle(AbstractPhysicalParticle):
 
         if isotope:
 
-            Isotope = _isotopes[isotope]
+            Isotope = _isotope_data[isotope]
 
             attributes["baryon number"] = Isotope["mass number"]
             attributes["isotope mass"] = Isotope.get("mass", None)
@@ -618,11 +616,13 @@ class Particle(AbstractPhysicalParticle):
         """Instantiate a |Particle| object and set private attributes."""
 
         self._inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
-        self._initialize_attrs_categories()
-        self._assign_particle_symbol()
-        self._initialize_particle()
+
+        self._initialize_attributes_and_categories()
+        self._ascertain_particle_symbol()
+        self._assign_attributes()
         self._add_charge_information()
         self._add_half_life_information()
+
         delattr(self, "_inputs")
 
         # The following might not be needed
