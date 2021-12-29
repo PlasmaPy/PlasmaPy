@@ -450,12 +450,6 @@ class Particle(AbstractPhysicalParticle):
 
         self._validate_arguments()
 
-        # If argument is a Particle instance, then construct a new
-        # Particle instance for the same particle.
-
-        if isinstance(argument, Particle):
-            argument = argument.symbol
-
         symbol = _dealias_particle_aliases(argument)
 
         if symbol in _special_particles:
@@ -465,7 +459,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _store_atom_identification(self, argument):
         """
-        Store
+        Store information on
         """
         _, mass_numb, Z = self._inputs
 
@@ -613,7 +607,12 @@ class Particle(AbstractPhysicalParticle):
     ):
         """Instantiate a |Particle| object and set private attributes."""
 
-        self._old_inputs = {"argument": argument, "mass_numb": mass_numb, "Z": Z}
+        # If argument is a Particle instance, then construct a new
+        # Particle instance for the same particle.
+
+        if isinstance(argument, Particle):
+            argument = argument.symbol
+
         self._inputs = argument, mass_numb, Z
 
         self._initialize_attributes_and_categories()
