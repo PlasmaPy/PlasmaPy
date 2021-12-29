@@ -515,6 +515,14 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
+    def _initialize_particle(self):
+        is_special_particle = self.symbol in _Particles.keys()
+
+        if is_special_particle:
+            self._initialize_special_particle()
+        else:
+            self._initialize_atom()
+
     def _initialize_atom(self):
         """Assign attributes and categories to atoms."""
         attributes = self._attributes
@@ -596,14 +604,6 @@ class Particle(AbstractPhysicalParticle):
                 self._categories.add("stable")
             else:
                 self._categories.add("unstable")
-
-    def _initialize_particle(self):
-        is_special_particle = self.symbol in _Particles.keys()
-
-        if is_special_particle:
-            self._initialize_special_particle()
-        else:
-            self._initialize_atom()
 
     def __init__(
         self,
