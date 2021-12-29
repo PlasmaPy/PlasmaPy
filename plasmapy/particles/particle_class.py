@@ -476,7 +476,7 @@ class Particle(AbstractPhysicalParticle):
 
         self._attributes["symbol"] = symbol
 
-    def _initialize_special_particle(self, particle_symbol, Z, mass_numb):
+    def _initialize_special_particle(self):
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
@@ -498,6 +498,9 @@ class Particle(AbstractPhysicalParticle):
 
         if particle_symbol == "p+":
             categories.update({"element", "isotope", "ion"})
+
+        Z = self._inputs["Z"]
+        mass_numb = self._inputs["mass_numb"]
 
         if mass_numb is not None or Z is not None:
             if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
@@ -594,6 +597,14 @@ class Particle(AbstractPhysicalParticle):
             else:
                 self._categories.add("unstable")
 
+    def _initialize_particle(self):
+        is_special_particle = self.symbol in _Particles.keys()
+
+        if is_special_particle:
+            self._initialize_special_particle()
+        else:
+            self._initialize_atom()
+
     def __init__(
         self,
         argument: ParticleLike,
@@ -606,14 +617,7 @@ class Particle(AbstractPhysicalParticle):
 
         self._initialize_attrs_categories()
         self._assign_particle_symbol()
-
-        is_special_particle = self.symbol in _Particles.keys()
-
-        if is_special_particle:
-            self._initialize_special_particle(self.symbol, Z=Z, mass_numb=mass_numb)
-        else:
-            self._initialize_atom()
-
+        self._initialize_particle()
         self._add_charge_information()
         self._add_half_life_information()
 
