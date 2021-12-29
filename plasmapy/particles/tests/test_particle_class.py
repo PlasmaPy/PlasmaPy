@@ -517,7 +517,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
     errmsg = ""
 
     try:
-        Particle(arg, **kwargs)
+        particle = Particle(arg, **kwargs)
     except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
@@ -557,7 +557,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
             except Exception:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
-    if errmsg != "":
+    if errmsg:
         raise Exception(f"Problems with {call}:{errmsg}")
 
 
