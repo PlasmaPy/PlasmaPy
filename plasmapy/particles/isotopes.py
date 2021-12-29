@@ -32,7 +32,7 @@ def _isotope_obj_hook(obj):
 
 
 #: Dictionary of isotope data.
-_isotope_data = json.loads(
+_data_about_isotopes = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
     object_hook=_isotope_obj_hook,
 )

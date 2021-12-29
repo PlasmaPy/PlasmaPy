@@ -23,7 +23,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles.elements import _element_data, _PeriodicTable
+from plasmapy.particles.elements import _data_about_elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -35,7 +35,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotope_data
+from plasmapy.particles.isotopes import _data_about_isotopes
 from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
@@ -428,7 +428,6 @@ class Particle(AbstractPhysicalParticle):
 
     def _validate_arguments(self):
         """Raise appropriate exceptions when inputs are invalid."""
-
         argument, mass_numb, Z = self._inputs
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
@@ -445,7 +444,7 @@ class Particle(AbstractPhysicalParticle):
             raise TypeError("Z is not an integer.")
 
     def _store_particle_identity(self):
-        """Find and store the particle's identity"""
+        """Store the particle's symbol and other identifying information."""
         argument, mass_numb, Z = self._inputs
         self._validate_arguments()
         symbol = _dealias_particle_aliases(argument)
@@ -536,10 +535,10 @@ class Particle(AbstractPhysicalParticle):
 
         # Element properties
 
-        Element = _element_data[element]
+        this_element = _data_about_elements[element]
 
-        attributes["atomic number"] = Element["atomic number"]
-        attributes["element name"] = Element["element name"]
+        attributes["atomic number"] = this_element["atomic number"]
+        attributes["element name"] = this_element["element name"]
 
         # Set the lepton number to zero for elements, isotopes, and
         # ions.  The lepton number will probably come up primarily
@@ -549,31 +548,31 @@ class Particle(AbstractPhysicalParticle):
 
         if isotope:
 
-            Isotope = _isotope_data[isotope]
+            this_isotope = _data_about_isotopes[isotope]
 
-            attributes["baryon number"] = Isotope["mass number"]
-            attributes["isotope mass"] = Isotope.get("mass", None)
-            attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
+            attributes["baryon number"] = this_isotope["mass number"]
+            attributes["isotope mass"] = this_isotope.get("mass", None)
+            attributes["isotopic abundance"] = this_isotope.get("abundance", 0.0)
 
-            if Isotope["stable"]:
+            if this_isotope["stable"]:
                 attributes["half-life"] = np.inf * u.s
             else:
-                attributes["half-life"] = Isotope.get("half-life", None)
+                attributes["half-life"] = this_isotope.get("half-life", None)
 
         if element and not isotope:
-            attributes["standard atomic weight"] = Element.get("atomic mass", None)
+            attributes["standard atomic weight"] = this_element.get("atomic mass", None)
 
         if ion in _special_ion_masses:
             attributes["mass"] = _special_ion_masses[ion]
 
         attributes["periodic table"] = _PeriodicTable(
-            group=Element["group"],
-            period=Element["period"],
-            block=Element["block"],
-            category=Element["category"],
+            group=this_element["group"],
+            period=this_element["period"],
+            block=this_element["block"],
+            category=this_element["category"],
         )
 
-        categories.add(Element["category"])
+        categories.add(this_element["category"])
 
     def _add_charge_information(self):
         """Assign attributes and categories related to charge information."""

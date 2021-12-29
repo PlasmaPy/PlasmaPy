@@ -16,7 +16,7 @@ from typing import Dict, Union
 
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
-    _element_data,
+    _data_about_elements,
     _element_names_to_symbols,
 )
 from plasmapy.particles.exceptions import (
@@ -24,7 +24,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotope_data
+from plasmapy.particles.isotopes import _data_about_isotopes
 from plasmapy.particles.special_particles import _special_particles, ParticleZoo
 from plasmapy.utils import roman
 
@@ -340,7 +340,7 @@ def _parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in _isotope_data.keys():
+            if isotope not in _data_about_isotopes.keys():
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."
@@ -441,10 +441,10 @@ def _parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _element_data[element]["atomic number"]:
+        if Z > _data_about_elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {_element_data[element]['atomic number']}."
+                f"of {element}, which is {_data_about_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(
