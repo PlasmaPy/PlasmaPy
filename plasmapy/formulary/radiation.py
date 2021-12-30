@@ -91,10 +91,7 @@ def thermal_bremsstrahlung(
 
     Notes
     -----
-    For details, see "Radiation Processes in Plasmas" by
-    Bekefi. `ISBN 978\\-0471063506`_.
-
-    .. _`ISBN 978\\-0471063506`: https://ui.adsabs.harvard.edu/abs/1966rpp..book.....B/abstract
+    For details, see :cite:t:`bekefi:1966`\ .
     """
 
     # Default n_i is n_e/Z:
