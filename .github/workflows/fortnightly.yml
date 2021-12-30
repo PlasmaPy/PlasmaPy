@@ -41,6 +41,11 @@ jobs:
           python: 3.8
           toxenv: py38-xarraydev
 
+        - name: Documentation build (nitpicky)
+          os: ubunti-latest
+          python: 3.9
+          toxenv: build_docs_nitpicky
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2.4.0
