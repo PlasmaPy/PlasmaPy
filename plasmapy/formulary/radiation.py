@@ -76,9 +76,9 @@ def thermal_bremsstrahlung(
         Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
         to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
 
-    ion : `str` or `~plasmapy.particles.Particle`, optional
-        An instance of `~plasmapy.particles.Particle`, or a string
-        convertible to `~plasmapy.particles.Particle`.
+    ion : `str` or `~plasmapy.particles.particle_class.Particle`, optional
+        An instance of `~plasmapy.particles.particle_class.Particle`, or a string
+        convertible to `~plasmapy.particles.particle_class.Particle`.
 
     kmax :  `~astropy.units.Quantity`
         Cutoff wavenumber (convertible to radians per meter). Defaults
