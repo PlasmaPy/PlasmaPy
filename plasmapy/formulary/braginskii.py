@@ -166,8 +166,8 @@ class ClassicalTransport:
     ion : `str`
         Representation of the ion species (e.g., ``'p'`` for protons,
         ``'e'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
-        ionized helium-4). If no charge state information is provided,
-        then the particles are assumed to be singly charged.
+        for singly ionized helium-4). If no charge state information is
+        provided, then the particles are assumed to be singly charged.
 
     Z : `int` or `numpy.inf`, optional
         The ion charge state. Overrides particle charge state if included.
