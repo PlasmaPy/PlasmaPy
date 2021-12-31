@@ -168,7 +168,7 @@ class ParticleTracker:
 
         Notes
         ----------
-        The Boris algorithm is the standard energy conserving algorithm for
+        The Boris algorithm :cite:p:`boris:1970` is the standard energy
         particle movement in plasma physics. See pages 58–63 of
         :cite:t:`birdsall:2004` for more details.
 
