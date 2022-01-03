@@ -75,7 +75,7 @@ def _grab_charge(ion: Particle, z_mean=None):
 
     Parameters
     ----------
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         a string representing a charged particle, or a Particle object.
 
     z_mean : `float`
@@ -131,10 +131,10 @@ def mass_density(
         equivalent).  If ``density`` is a mass density, then it will be passed
         through and returned without modification.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         The particle for which the mass density is being calculated for.  Must
-        be a `~plasmapy.particles.Particle` or a value convertible to
-        a `~plasmapy.particles.Particle` (e.g., ``'p'`` for protons,
+        be a `~plasmapy.particles.particle_class.Particle` or a value convertible to
+        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
@@ -154,7 +154,7 @@ def mass_density(
 
     `TypeError`
         If ``particle`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_ratio`` is not of type `int` or `float`.
@@ -240,7 +240,7 @@ def Alfven_speed(
         m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
-    ion : `~plasmapy.particles.Particle`, optional
+    ion : `~plasmapy.particles.particle_class.Particle`, optional
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
         deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
@@ -269,7 +269,7 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -383,7 +383,7 @@ def ion_sound_speed(
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or 'He-4 +1' for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -571,7 +571,7 @@ def thermal_speed(
     T : `~astropy.units.Quantity`
         The particle temperature in either kelvin or energy per particle
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the particles are
@@ -767,7 +767,7 @@ def kappa_thermal_speed(
         of the Kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
@@ -895,10 +895,10 @@ def Hall_parameter(
     B : `~astropy.units.quantity.Quantity`
         The magnetic field.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         The type of ion ``particle`` is colliding with.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated for.
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
@@ -992,7 +992,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -1115,7 +1115,7 @@ def gyroradius(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
@@ -1285,7 +1285,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     n : `~astropy.units.Quantity`
         Particle number density in units convertible to per cubic meter.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -1540,7 +1540,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     n : `~astropy.units.Quantity`
         Particle number density in units convertible to m\ :sup:`-3`\ .
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
@@ -1837,7 +1837,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     n_i : `~astropy.units.Quantity`
         Ion number density.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
