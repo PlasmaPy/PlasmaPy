@@ -70,7 +70,7 @@ def spectral_density(
     and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
     distribution functions respectively. In this function the electron and ion
     velocity distribution functions are assumed to be Maxwellian, making this
-    function equivalent to Eq. 3.4.6 in `Sheffield`_.
+    function equivalent to Eq. 3.4.6 in :cite:p:`sheffield:2011`\ .
 
     Parameters
     ----------
@@ -140,17 +140,11 @@ def spectral_density(
 
     Notes
     -----
+    For details, see :cite:t:`sheffield:2011`\ . This code is a modified
+    version of the program described therein.
 
-    For details, see "Plasma Scattering of Electromagnetic Radiation" by
-    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version
-    of the program described therein.
-
-    For a concise summary of the relevant physics, see Chapter 5 of Derek
-    Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
-
-    .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
-    .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
-    .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
+    For a concise summary of the relevant physics, see Chapter 5 of
+    :cite:t:`schaeffer:2014`\ .
     """
     if efract is None:
         efract = np.ones(1)
