@@ -1,0 +1,1 @@
+Fixes the docstring of the coupling_parameter function in plasmapy/formulary/collisions.py.
