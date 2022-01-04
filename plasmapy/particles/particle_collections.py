@@ -250,6 +250,46 @@ class ParticleList(collections.UserList):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
+    def is_category(
+        self,
+        *category_tuple,
+        require: Union[str, Iterable[str]] = None,
+        any_of: Union[str, Iterable[str]] = None,
+        exclude: Union[str, Iterable[str]] = None,
+    ) -> List[bool]:
+        """
+        Determine element-wise if the particles in the |ParticleList|
+        meet categorization criteria.
+
+        Return a `list` in which each element will be `True` if the
+        corresponding particle is consistent with the categoziation
+        criteria, and `False` otherwise.
+
+        Please refer to the documentation of
+        `~plasmapy.particles.particle_class.Particle.is_category`
+        for information on the parameters, categories, and more
+        extensive examples.
+
+        Examples
+        --------
+        >>> particles = ParticleList(["proton", "electron", "tau neutrino"])
+        >>> particles.is_category("lepton")
+        [False, True, True]
+        >>> particles.is_category(require="lepton", exclude="neutrino")
+        [False, True, False]
+        >>> particles.is_category(any_of=["lepton", "charged"])
+        [True, True, True]
+        """
+        return [
+            particle.is_category(
+                *category_tuple,
+                require=require,
+                any_of=any_of,
+                exclude=exclude,
+            )
+            for particle in self
+        ]
+
     @property
     def charge_number(self) -> np.array:
         """
