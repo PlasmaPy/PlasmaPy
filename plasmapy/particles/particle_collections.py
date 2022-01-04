@@ -267,8 +267,8 @@ class ParticleList(collections.UserList):
 
         Please refer to the documentation of
         `~plasmapy.particles.particle_class.Particle.is_category`
-        for information on the parameters, categories, and more
-        extensive examples.
+        for information on the parameters and categories, as well as
+        more extensive examples.
 
         Examples
         --------
