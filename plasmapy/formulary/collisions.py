@@ -1923,7 +1923,7 @@ def coupling_parameter(
 
     method : `str`, optional
         The method by which to compute the coupling parameter: either
-        "classical" or "quantum". The default method is "classical".
+        ``"classical"`` or ``"quantum"``. The default method is ``"classical"``.
         The Notes section of this docstring has more information about
         these two methods.
 
