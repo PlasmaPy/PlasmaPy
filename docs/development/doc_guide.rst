@@ -303,9 +303,9 @@ Markdown
 A few of PlasmaPy's files are written using Markdown_, such as README
 files and licenses from other packages. Markdown_ is simpler but more
 limited than reST_. Markdown_ files use the file extension :file:`.md`.
-Posts on GitHub are written in `GitHub Flavored Markdown`_. The
-following code block contains a few common examples of Markdown_
-formatting.
+Posts on GitHub are written in `GitHub Flavored Markdown`_, and
+Markdown_ is also used in Jupyter notebooks. The following code block
+contains a few common examples of Markdown_ formatting.
 
 .. code-block:: markdown
 
@@ -660,6 +660,11 @@ defined in the projects connected via intersphinx_ if they have not
 already been defined in PlasmaPy's :ref:`glossary`. Using
 ``:term:`role``` will link to |role| and ``:term:`directive``` will link
 to |directive| in `Sphinx's glossary`_.
+
+Notebooks
+---------
+
+PlasmaPy's online documentation includes several example notebooks...
 
 Documentation guidelines
 ========================
