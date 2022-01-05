@@ -1,1 +1,2 @@
-Fixes the docstring of the coupling_parameter function in plasmapy/formulary/collisions.py.
+Fixed the docstring of the `~plasmapy.formulary.collisions.coupling_parameter`
+function in :file:`plasmapy/formulary/collisions.py`\ .
