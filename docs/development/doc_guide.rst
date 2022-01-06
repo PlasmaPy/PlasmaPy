@@ -665,7 +665,10 @@ Notebooks
 ---------
 
 PlasmaPy's online documentation includes :ref:`example notebooks
-<examples>`.
+<examples>`. These notebooks are and built using the |nbsphinx|_
+extension to Sphinx_. Adding an example notebook involves creating a
+Jupyter notebook, and then adding the :file:`.ipynb` file to
+:file:`docs/notebooks` or one of its subdirectories.
 
 Example of adding a link to a markdown cell...  This appears to need to
 be done in every cell that the link is used.
