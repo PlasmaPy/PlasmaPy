@@ -70,8 +70,8 @@ automodapi_custom_groups = {
             - Inputs and outputs to lite-functions are strictly given in SI units.
             - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
               the user to pass in parameters with the correct units.
-            - For the added speed boost, lite-functions are decorated with
-              `numba.jit` (or the like).
+            - When possible, lite-functions are decorated with `numba.jit`
+              (or the like) for an additional speed boost.
             """
         ),
         "dunder": "__lite_funcs__",
