@@ -977,50 +977,50 @@ def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
 """
 Testing and Examples
 """
-
-# def vector_Space_Func(x,y,z):
-#     return [2*y-z-5.5, 3*x+z-22, x**2-11*x+y+24.75]
-# def vector_Space_Func(x,y,z):
-#     return [(y-2.5)**2-0.01, (z-2.5)**2-0.01, (x-2.5)**2-0.01]
+#
+# # def vector_Space_Func(x,y,z):
+# #     return [2*y-z-5.5, 3*x+z-22, x**2-11*x+y+24.75]
+# # def vector_Space_Func(x,y,z):
+# #     return [(y-2.5)**2-0.01, (z-2.5)**2-0.01, (x-2.5)**2-0.01]
+# # def vector_Space_Func(x, y, z):
+# #     return [-1.80 - 2.57 * x + 6.92 * y + 0.44 * z + 0.02 * y * z + 0.46 * x * z - 1.40 * x * y-0.10472,
+# #             0.44 - 3.05 * x + 2.09 * y + 0.20 * z - 0.46 * y * z - 0.34 * x * z + 1.46 * x * y - 0.235314,
+# #             -0.67 - 2.30 * x + 8.69 * y + 0.48 * z + 1.40 * y * z - 1.46 * x * z - 8.29 * x * y - 0.510349]
 # def vector_Space_Func(x, y, z):
-#     return [-1.80 - 2.57 * x + 6.92 * y + 0.44 * z + 0.02 * y * z + 0.46 * x * z - 1.40 * x * y-0.10472,
-#             0.44 - 3.05 * x + 2.09 * y + 0.20 * z - 0.46 * y * z - 0.34 * x * z + 1.46 * x * y - 0.235314,
-#             -0.67 - 2.30 * x + 8.69 * y + 0.48 * z + 1.40 * y * z - 1.46 * x * z - 8.29 * x * y - 0.510349]
-def vector_Space_Func(x, y, z):
-    a = (
-        -1.80
-        - 2.57 * x
-        + 6.92 * y
-        + 0.44 * z
-        + 0.02 * y * z
-        + 0.46 * x * z
-        - 1.40 * x * y
-    )
-    b = (
-        0.44
-        - 3.05 * x
-        + 2.09 * y
-        + 0.20 * z
-        - 0.46 * y * z
-        - 0.34 * x * z
-        + 1.46 * x * y
-    )
-    c = (
-        -0.67
-        - 2.30 * x
-        + 8.69 * y
-        + 0.48 * z
-        + 1.40 * y * z
-        - 1.46 * x * z
-        - 8.29 * x * y
-    )
-    return [a, b, c]
-
-
-vspace1 = vector_space(vector_Space_Func, [0, 4], [0, 4], [0, 4], [1, 1, 1])
-npoints = nullpoint(vspace1)
-if len(npoints) == 0:
-    print("No Nullpoints Found.")
-# print(vspace1[2])
-for points in npoints:
-    print(points.getLoc())
+#     a = (
+#         -1.80
+#         - 2.57 * x
+#         + 6.92 * y
+#         + 0.44 * z
+#         + 0.02 * y * z
+#         + 0.46 * x * z
+#         - 1.40 * x * y
+#     )
+#     b = (
+#         0.44
+#         - 3.05 * x
+#         + 2.09 * y
+#         + 0.20 * z
+#         - 0.46 * y * z
+#         - 0.34 * x * z
+#         + 1.46 * x * y
+#     )
+#     c = (
+#         -0.67
+#         - 2.30 * x
+#         + 8.69 * y
+#         + 0.48 * z
+#         + 1.40 * y * z
+#         - 1.46 * x * z
+#         - 8.29 * x * y
+#     )
+#     return [a, b, c]
+#
+#
+# vspace1 = vector_space(vector_Space_Func, [0, 4], [0, 4], [0, 4], [1, 1, 1])
+# npoints = nullpoint(vspace1)
+# if len(npoints) == 0:
+#     print("No Nullpoints Found.")
+# # print(vspace1[2])
+# for points in npoints:
+#     print(points.getLoc())
