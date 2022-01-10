@@ -542,20 +542,23 @@ cs_ = ion_sound_speed
 
 def thermal_speed_coefficients(method: str, ndim: int) -> float:
     r"""
-    Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
-    based on the given ``method`` and ``ndim``.  (See the
-    `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
-    section for further details.)
+    Get the thermal speed coefficient corresponding to the desired
+    thermal speed definition.
+
+    See the `~plasmapy.formulary.parameters.thermal_speed`
+    :ref:`Notes <thermal-speed-notes>` section for further details of
+    the various thermal speed definitions.
 
     Parameters
     ----------
     method : `str`
-        Method to be used for calculating the thermal speed. Valid values are
-        ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``, and ``"nrl"``.
+        Method to be used for calculating the thermal speed. Valid
+        values are ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``,
+        and ``"nrl"``.
 
     ndim : `int`
-        Dimensionality (1D, 2D, 3D) of space in which to calculate thermal
-        speed. Valid values are ``1``, ``2``, or ``3``.
+        Dimensionality (1D, 2D, 3D) of space in which to calculate
+        thermal speed. Valid values are ``1``, ``2``, or ``3``.
 
     Raises
     ------
@@ -564,9 +567,10 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     Notes
     -----
-    For a detailed explanation of the different coefficients used to calculate
-    the thermal speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    For a detailed explanation of the different coefficients used to
+    calculate the thermal speed, then look to the
+    :ref:`Notes <thermal-speed-notes>` section for
+    `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
     values are listed the following table:
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
