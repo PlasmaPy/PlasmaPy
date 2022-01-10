@@ -1,8 +1,6 @@
 """
 Module for testing functionality associated with calculating the
 thermal speed.
-
-
 - `~plasmapy.formulary.parameters.kappa_thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed_lite`
@@ -55,7 +53,7 @@ class TestThermalSpeedCoefficients:
         ],
     )
     def test_raises(self, ndim, method, _error):
-        """Test scenarios that raise Exceptions."""
+        """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             thermal_speed_coefficients(ndim=ndim, method=method)
 
@@ -252,7 +250,7 @@ class TestThermalSpeed:
         ],
     )
     def test_raises(self, args, kwargs, _error):
-        """Test scenarios that cause an Exception to be raised."""
+        """Test scenarios that cause an `Exception` to be raised."""
         with pytest.raises(_error):
             thermal_speed(*args, **kwargs)
 

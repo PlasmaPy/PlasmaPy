@@ -564,11 +564,10 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     Notes
     -----
-
     For a detailed explanation of the different coefficients used to calculate
-    the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for  `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
-    values are listed the table
+    the thermal speed, then look to the :ref:`Notes <thermal-speed-notes>` section
+    for `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    values are listed the following table:
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
        :widths: 2 1 1 1 1
@@ -629,7 +628,7 @@ def thermal_speed_lite(
     The "Lite-Function" version of `~plasmapy.formulary.parameters.thermal_speed`.
     Performs the same thermal speed calculations as
     `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
-    computational use and, thus, has data conditioning safe-guards removed.
+    computational use and, thus, has data conditioning safeguards removed.
 
     .. math::
         v_{th} = C_o \sqrt{\frac{k_B T}{m}}
@@ -658,7 +657,7 @@ def thermal_speed_lite(
     Returns
     -------
     vth : `~numbers.Real`
-        Thermal speed of the Maxwellian distribution in units m/s.
+        Thermal speed of the Maxwellian distribution in units of m/s.
 
     Examples
     --------
@@ -819,7 +818,6 @@ def thermal_speed(
 
           This method uses the root mean square to calculate an expression for
           the thermal speed of the particle distribution, which is given by
-          defines the thermal speed as
 
           .. math::
              v_{th} = \left[\int v^2 f(\mathbf{v}) d^3 \mathbf{v}\right]^{1/2}
@@ -828,7 +826,7 @@ def thermal_speed(
         - **Mean Magnitude** ``method = "mean_magnitude"``
 
           This method uses the mean speed of the particle distribution to
-          calcuate an expression for the thermal speed, which is given by
+          calculate an expression for the thermal speed, which is given by
 
           .. math::
              v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
@@ -861,7 +859,7 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
-    For user convienece `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    For user convenience `~plasmapy.formulary.parameters.thermal_speed_coefficients`
     and `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
     and can be used as follows.
 
@@ -881,7 +879,7 @@ def thermal_speed(
 
 
 vth_ = thermal_speed
-""" Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+"""Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`."""
 
 
 @validate_quantities(
