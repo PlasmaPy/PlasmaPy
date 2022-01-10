@@ -53,9 +53,9 @@ def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
     # ax = plt.figure().add_subplot(projection='3d')
     # ax.quiver(x, y, z, u, v, w, length=0.2, normalize=True)
     # plt.show()
-    dx = np.float128((x_range[1] - x_range[0]) / (x_den - 1))
-    dy = np.float128((y_range[1] - y_range[0]) / (y_den - 1))
-    dz = np.float128((z_range[1] - z_range[0]) / (z_den - 1))
+    dx = np.double((x_range[1] - x_range[0]) / (x_den - 1))
+    dy = np.double((y_range[1] - y_range[0]) / (y_den - 1))
+    dz = np.double((z_range[1] - z_range[0]) / (z_den - 1))
 
     return np.array([x, y, z]), np.array([u, v, w]), np.array([dx, dy, dz])
 
