@@ -192,3 +192,11 @@ class Test_locate_null_point:
         assert np.isclose(
             locate_null_point(**kwargs).reshape(1, 3), expected, atol=ATOL
         ).all()
+
+
+def test_nullpoint():
+    vspace = vector_space(vspace_func_1, [5, 6], [5, 6], [5, 6], [1, 1, 1])
+    npoints = nullpoint(vspace)
+    loc = npoints[0].getLoc().reshape(1, 3)
+    assert len(npoints) == 1
+    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=ATOL).all()
