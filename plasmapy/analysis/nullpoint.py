@@ -446,7 +446,7 @@ def trillinear_analysis(vspace, cell):
         fy + hy * yConst1,
     )
 
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((root1[0], yConst1, root1[1]))
         else:
@@ -464,7 +464,7 @@ def trillinear_analysis(vspace, cell):
         dz + gz * yConst1,
         fz + hz * yConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((root1[0], yConst1, root1[1]))
         else:
@@ -481,7 +481,7 @@ def trillinear_analysis(vspace, cell):
         dz + gz * yConst1,
         fz + hz * yConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((root1[0], yConst1, root1[1]))
         else:
@@ -503,7 +503,7 @@ def trillinear_analysis(vspace, cell):
         dy + gy * yConst2,
         fy + hy * yConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((root1[0], yConst2, root1[1]))
         else:
@@ -520,7 +520,7 @@ def trillinear_analysis(vspace, cell):
         dz + gz * yConst2,
         fz + hz * yConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((root1[0], yConst2, root1[1]))
         else:
@@ -537,7 +537,7 @@ def trillinear_analysis(vspace, cell):
         dz + gz * yConst2,
         fz + hz * yConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((root1[0], yConst2, root1[1]))
         else:
@@ -558,7 +558,7 @@ def trillinear_analysis(vspace, cell):
         gy + hy * xConst1,
     )
 
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((xConst1, root1[0], root1[1]))
         else:
@@ -576,7 +576,7 @@ def trillinear_analysis(vspace, cell):
         dz + fz * xConst1,
         gz + hz * xConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((xConst1, root1[0], root1[1]))
         else:
@@ -594,7 +594,7 @@ def trillinear_analysis(vspace, cell):
         dz + fz * xConst1,
         gz + hz * xConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((xConst1, root1[0], root1[1]))
         else:
@@ -614,7 +614,7 @@ def trillinear_analysis(vspace, cell):
         dy + fy * xConst2,
         gy + hy * xConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((xConst2, root1[0], root1[1]))
         else:
@@ -631,7 +631,7 @@ def trillinear_analysis(vspace, cell):
         dz + fz * xConst2,
         gz + hz * xConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((xConst2, root1[0], root1[1]))
         else:
@@ -649,7 +649,7 @@ def trillinear_analysis(vspace, cell):
         dz + fz * xConst2,
         gz + hz * xConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((xConst2, root1[0], root1[1]))
         else:
@@ -669,7 +669,7 @@ def trillinear_analysis(vspace, cell):
         cy + gy * zConst1,
         ey + hy * zConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((root1[0], root1[1], zConst1))
         else:
@@ -686,7 +686,7 @@ def trillinear_analysis(vspace, cell):
         cz + gz * zConst1,
         ez + hz * zConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((root1[0], root1[1], zConst1))
         else:
@@ -703,7 +703,7 @@ def trillinear_analysis(vspace, cell):
         cz + gz * zConst1,
         ez + hz * zConst1,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((root1[0], root1[1], zConst1))
         else:
@@ -723,7 +723,7 @@ def trillinear_analysis(vspace, cell):
         cy + gy * zConst2,
         ey + hy * zConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxByEndpoints.append((root1[0], root1[1], zConst2))
         else:
@@ -740,7 +740,7 @@ def trillinear_analysis(vspace, cell):
         cz + gz * zConst2,
         ez + hz * zConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             BxBzEndpoints.append((root1[0], root1[1], zConst2))
         else:
@@ -757,7 +757,7 @@ def trillinear_analysis(vspace, cell):
         cz + gz * zConst2,
         ez + hz * zConst2,
     )
-    if root1 != None:
+    if root1 is not None:
         if is_close(root1, root2):
             ByBzEndpoints.append((root1[0], root1[1], zConst2))
         else:
@@ -967,7 +967,7 @@ def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
                 if reduction(vspace, [i, j, k]):
                     if trillinear_analysis(vspace, [i, j, k]):
                         loc = locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
-                        if type(loc) != type(None):
+                        if not isinstance(loc, type(None)):
                             p = NullPoint(loc, "V")
                             if not inNullList(p, nullpoints):
                                 nullpoints.append(p)
