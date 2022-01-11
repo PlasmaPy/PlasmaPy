@@ -2,7 +2,6 @@
 Module for testing functionality associated with calculating the
 thermal speed.
 
-
 - `~plasmapy.formulary.parameters.kappa_thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed_lite`
@@ -15,6 +14,7 @@ import numpy as np
 import pytest
 
 from astropy.constants.si import k_B
+from numba.extending import is_jitted
 
 from plasmapy.formulary.parameters import (
     kappa_thermal_speed,
@@ -55,7 +55,7 @@ class TestThermalSpeedCoefficients:
         ],
     )
     def test_raises(self, ndim, method, _error):
-        """Test scenarios that raise Exceptions."""
+        """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             thermal_speed_coefficients(ndim=ndim, method=method)
 
@@ -252,7 +252,7 @@ class TestThermalSpeed:
         ],
     )
     def test_raises(self, args, kwargs, _error):
-        """Test scenarios that cause an Exception to be raised."""
+        """Test scenarios that cause an `Exception` to be raised."""
         with pytest.raises(_error):
             thermal_speed(*args, **kwargs)
 
@@ -293,6 +293,10 @@ class TestThermalSpeed:
 class TestThermalSpeedLite:
     """Test class for `thermal_speed_lite`."""
 
+    def test_is_jitted(self):
+        """Ensure `thermal_speed_lite` was jitted by `numba`."""
+        assert is_jitted(thermal_speed_lite)
+
     @pytest.mark.parametrize(
         "inputs",
         [
@@ -314,8 +318,11 @@ class TestThermalSpeedLite:
 
         coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
 
-        normal = thermal_speed(**inputs)
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
+        pylite = thermal_speed_lite.py_func(T=T_unitless, mass=m_unitless, coeff=coeff)
+        assert pylite == lite
+
+        normal = thermal_speed(**inputs)
         assert np.isclose(normal.value, lite)
 
 
@@ -359,11 +366,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="most_probable"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.probable1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_rms1(self):
@@ -373,11 +380,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="rms"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.rms1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_mean1(self):
@@ -387,11 +394,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="mean_magnitude"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.mean1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_handle_nparrays(self, kwargs=None):

@@ -1,2 +1,0 @@
-Changed |ParticleList| so that if it is provided with no arguments, then it creates
-an empty |ParticleList|.  This behavior is analogous to how `list` and `tuple` work.

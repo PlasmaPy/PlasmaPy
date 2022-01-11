@@ -53,25 +53,11 @@ automodapi_custom_groups = {
             to mitigate calculation errors from inappropriate units, but this
             comes at the sacrifice of speed.  While this penalty is not significant
             for typical use, it can become substantial during intensive numerical
-            calculations. **Lite-Functions** are introduced for the specific case
+            calculations. **Lite-functions** are introduced for the specific case
             where speed matters, but **[USER NOTICE]** this comes with the
-            reduction of safe-guards so a user needs to know what they are doing!
-            A few things to know about **Lite-Functions**:
-
-            - Lite-functions are a flavor of existing PlasmaPy functionality and
-              are denoted with a trailing ``_lite`` to the name, for example
-              `~plasmapy.formulary.parameters.thermal_speed_lite` is the
-              lite-function associated with
-              `~plasmapy.formulary.parameters.thermal_speed`.
-            - Lite-functions are typically bound to their normal version as the
-              ``lite`` attribute.  For example,
-              `~plasmapy.formulary.parameters.thermal_speed_lite` can be accessed
-              as ``thermal_speed.lite``.
-            - Inputs and outputs to lite-functions are strictly given in SI units.
-            - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
-              the user to pass in parameters with the correct units.
-            - For the added speed boost, lite-functions are decorated with
-              `numba.jit` (or the like).
+            reduction of safeguards so a user needs to know what they are doing!
+            For additional details look to the glossary entry for
+            :term:`lite-function`.
             """
         ),
         "dunder": "__lite_funcs__",
@@ -110,6 +96,7 @@ extensions = [
     "sphinx_changelog",
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
+    "hoverxref.extension",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -227,7 +214,9 @@ linkcheck_anchors_ignore = [
 ]
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
-pygments_style = "xcode"
+pygments_style = "default"
+
+hoverxref_auto_ref = True
 
 # -- Options for HTML output ----------------------------------------------
 

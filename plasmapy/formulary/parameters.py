@@ -65,7 +65,11 @@ from plasmapy.utils.decorators import (
     preserve_signature,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import (
+    PhysicsWarning,
+    PlasmaPyFutureWarning,
+    RelativityWarning,
+)
 
 __all__ += __aliases__ + __lite_funcs__
 
@@ -80,7 +84,7 @@ def _grab_charge(ion: Particle, z_mean=None):
 
     Parameters
     ----------
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         a string representing a charged particle, or a Particle object.
 
     z_mean : `float`
@@ -136,10 +140,10 @@ def mass_density(
         equivalent).  If ``density`` is a mass density, then it will be passed
         through and returned without modification.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         The particle for which the mass density is being calculated for.  Must
-        be a `~plasmapy.particles.Particle` or a value convertible to
-        a `~plasmapy.particles.Particle` (e.g., ``'p'`` for protons,
+        be a `~plasmapy.particles.particle_class.Particle` or a value convertible to
+        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
@@ -159,7 +163,7 @@ def mass_density(
 
     `TypeError`
         If ``particle`` is not of type or convertible to
-        `~plasmapy.particles.Particle`.
+        `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_ratio`` is not of type `int` or `float`.
@@ -245,7 +249,7 @@ def Alfven_speed(
         m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
-    ion : `~plasmapy.particles.Particle`, optional
+    ion : `~plasmapy.particles.particle_class.Particle`, optional
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
         deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
@@ -274,7 +278,7 @@ def Alfven_speed(
         or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to `~plasmapy.particles.particle_class.Particle`.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -388,7 +392,7 @@ def ion_sound_speed(
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., `'p'` for protons,
         `'D+'` for deuterium, or 'He-4 +1' for singly ionized
         helium-4). If no charge state information is provided, then the
@@ -544,20 +548,23 @@ cs_ = ion_sound_speed
 
 def thermal_speed_coefficients(method: str, ndim: int) -> float:
     r"""
-    Get the appropriate coefficient for calculating the thermal speed :math:`v_{th}`
-    based on the given ``method`` and ``ndim``.  (See the
-    `~plasmapy.formulary.parameters.thermal_speed` :ref:`Notes <thermal-speed-notes>`
-    section for further details.)
+    Get the thermal speed coefficient corresponding to the desired
+    thermal speed definition.
+
+    See the `~plasmapy.formulary.parameters.thermal_speed`
+    :ref:`Notes <thermal-speed-notes>` section for further details of
+    the various thermal speed definitions.
 
     Parameters
     ----------
     method : `str`
-        Method to be used for calculating the thermal speed. Valid values are
-        ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``, and ``"nrl"``.
+        Method to be used for calculating the thermal speed. Valid
+        values are ``"most_probable"``, ``"rms"``, ``"mean_magnitude"``,
+        and ``"nrl"``.
 
     ndim : `int`
-        Dimensionality (1D, 2D, 3D) of space in which to calculate thermal
-        speed. Valid values are ``1``, ``2``, or ``3``.
+        Dimensionality (1D, 2D, 3D) of space in which to calculate
+        thermal speed. Valid values are ``1``, ``2``, or ``3``.
 
     Raises
     ------
@@ -566,11 +573,11 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
     Notes
     -----
-
-    For a detailed explanation of the different coefficients used to calculate
-    the therml speed, then look to the :ref:`Notes <thermal-speed-notes>` section
-    for  `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
-    values are listed the table
+    For a detailed explanation of the different coefficients used to
+    calculate the thermal speed, then look to the
+    :ref:`Notes <thermal-speed-notes>` section for
+    `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    values are listed the following table:
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
        :widths: 2 1 1 1 1
@@ -631,7 +638,7 @@ def thermal_speed_lite(
     The "Lite-Function" version of `~plasmapy.formulary.parameters.thermal_speed`.
     Performs the same thermal speed calculations as
     `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
-    computational use and, thus, has data conditioning safe-guards removed.
+    computational use and, thus, has data conditioning safeguards removed.
 
     .. math::
         v_{th} = C_o \sqrt{\frac{k_B T}{m}}
@@ -660,7 +667,7 @@ def thermal_speed_lite(
     Returns
     -------
     vth : `~numbers.Real`
-        Thermal speed of the Maxwellian distribution in units m/s.
+        Thermal speed of the Maxwellian distribution in units of m/s.
 
     Examples
     --------
@@ -821,7 +828,6 @@ def thermal_speed(
 
           This method uses the root mean square to calculate an expression for
           the thermal speed of the particle distribution, which is given by
-          defines the thermal speed as
 
           .. math::
              v_{th} = \left[\int v^2 f(\mathbf{v}) d^3 \mathbf{v}\right]^{1/2}
@@ -830,7 +836,7 @@ def thermal_speed(
         - **Mean Magnitude** ``method = "mean_magnitude"``
 
           This method uses the mean speed of the particle distribution to
-          calcuate an expression for the thermal speed, which is given by
+          calculate an expression for the thermal speed, which is given by
 
           .. math::
              v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
@@ -842,10 +848,11 @@ def thermal_speed(
           The `NRL Plasma Formulary
           <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
           uses the square root of the Normal distribution's variance
-          :math:`\sigma^2` as the expression for thermal speed.
+          as the expression for thermal speed.
 
           .. math::
-             v_{th} = \sqrt{\frac{k_B T}{m}}
+             v_{th} = σ = \sqrt{\frac{k_B T}{m}} \quad
+             \text{where} \quad f(v) \sim e^{v^2 / 2 σ^2}
 
     Examples
     --------
@@ -863,7 +870,7 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
-    For user convienece `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    For user convenience `~plasmapy.formulary.parameters.thermal_speed_coefficients`
     and `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
     and can be used as follows.
 
@@ -883,7 +890,7 @@ def thermal_speed(
 
 
 vth_ = thermal_speed
-""" Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`. """
+"""Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`."""
 
 
 @validate_quantities(
@@ -963,7 +970,7 @@ def kappa_thermal_speed(
         of the Kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are
@@ -1007,8 +1014,8 @@ def kappa_thermal_speed(
         V_{th,i} = \sqrt{(2 κ - 3)\frac{2 k_B T_i}{κ m_i}}
 
     For more discussion on the ``'mean_magnitude'`` calculation method,
-    see [1]_.
-
+    see `PlasmaPy issue #186
+    <https://github.com/PlasmaPy/PlasmaPy/issues/186>`__.
 
     Examples
     --------
@@ -1019,10 +1026,6 @@ def kappa_thermal_speed(
     <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
     <Quantity 34922.98... m / s>
-
-    References
-    ----------
-    .. [1] PlasmaPy Issue #186, https://github.com/PlasmaPy/PlasmaPy/issues/186
 
     See Also
     --------
@@ -1095,10 +1098,10 @@ def Hall_parameter(
     B : `~astropy.units.quantity.Quantity`
         The magnetic field.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         The type of ion ``particle`` is colliding with.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated for.
         Representation of the particle species (e.g., ``'p'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
@@ -1148,9 +1151,10 @@ def Hall_parameter(
     Examples
     --------
     >>> from astropy import units as u
-    >>> Hall_parameter(1e10 * u.m**-3, 2.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
-    <Quantity 7.26446...e+16>
-    >>> Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    >>> import pytest
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    <Quantity 2.500...e+15>
+    >>> with pytest.warns(RelativityWarning): Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
     <Quantity 2.11158...e+17>
     """
     from plasmapy.formulary.collisions import (
@@ -1191,7 +1195,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p' for protons, 'D+'
         for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
         charge state information is provided, then the particles are assumed
@@ -1314,7 +1318,7 @@ def gyroradius(
     B : `~astropy.units.Quantity`
         The magnetic field magnitude in units convertible to tesla.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., `'p'` for protons, `'D+'`
         for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
@@ -1557,7 +1561,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     n : `~astropy.units.Quantity`
         Particle number density in units convertible to m\ :sup:`-3`.
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``"p"`` for
         protons, ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly
         ionized helium-4). If no charge state information is provided,
@@ -1824,7 +1828,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     n : `~astropy.units.Quantity`
         Particle number density in units convertible to m\ :sup:`-3`\ .
 
-    particle : `~plasmapy.particles.Particle`
+    particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
@@ -2121,7 +2125,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     n_i : `~astropy.units.Quantity`
         Ion number density.
 
-    ion : `~plasmapy.particles.Particle`
+    ion : `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for singly ionized helium-4). If no
         charge state information is provided, then the ions are assumed to
