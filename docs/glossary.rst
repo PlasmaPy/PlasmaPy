@@ -86,6 +86,18 @@ Glossary
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
 
+   temperature
+      Most functions in PlasmaPy accept temperature :math:`T` as a
+      `~astropy.units.Quantity` with units of temperature (e.g., kelvin)
+      or energy (e.g., electron-volts).
+
+Most functions in PlasmaPy accept temperature either in units of
+      temperature (e.g., kelvin) or energy (e.g., electron-volts). When
+
+
+When
+      the temperature is provided as an energy,
+
    unit test
       A **unit test** verifies a single unit of behavior, does it
       quickly, and does it in isolation from other tests
