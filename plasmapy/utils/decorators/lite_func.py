@@ -117,7 +117,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
                 modname = attr.__module__
             else:  # coverage: ignore
                 # assume attr is defined in the module the function being
-                # decorated is defined in
+                # decorated in
                 modname = wrapper.__module__
             origin = f"{modname}.{attr.__name__}"
             __bound_lite_func__[bound_name] = origin
