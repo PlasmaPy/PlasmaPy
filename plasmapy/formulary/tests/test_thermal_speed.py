@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from astropy.constants.si import k_B
+from numba.extending import is_jitted
 
 from plasmapy.formulary.parameters import (
     kappa_thermal_speed,
@@ -290,6 +291,10 @@ class TestThermalSpeed:
 
 class TestThermalSpeedLite:
     """Test class for `thermal_speed_lite`."""
+
+    def test_is_jitted(self):
+        """Ensure `thermal_speed_lite` was jitted by `numba`."""
+        assert is_jitted(thermal_speed_lite)
 
     @pytest.mark.parametrize(
         "inputs",
