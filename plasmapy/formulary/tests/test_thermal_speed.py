@@ -317,8 +317,11 @@ class TestThermalSpeedLite:
 
         coeff = thermal_speed_coefficients(method=inputs["method"], ndim=inputs["ndim"])
 
-        normal = thermal_speed(**inputs)
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
+        pylite = thermal_speed_lite.py_func(T=T_unitless, mass=m_unitless, coeff=coeff)
+        assert pylite == lite
+
+        normal = thermal_speed(**inputs)
         assert np.isclose(normal.value, lite)
 
 
