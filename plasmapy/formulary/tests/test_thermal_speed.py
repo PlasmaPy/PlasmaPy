@@ -357,11 +357,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="most_probable"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.probable1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.probable1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_rms1(self):
@@ -371,11 +371,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="rms"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.rms1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.rms1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_mean1(self):
@@ -385,11 +385,11 @@ class Test_kappa_thermal_speed(object):
         known1 = kappa_thermal_speed(
             self.T_e, self.kappa, particle=self.particle, method="mean_magnitude"
         )
-        errStr = (
+        errstr = (
             f"Kappa thermal velocity should be {self.mean1True} "
             f"and not {known1.si.value}."
         )
-        assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errStr
+        assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
         return
 
     def test_handle_nparrays(self, kwargs=None):
