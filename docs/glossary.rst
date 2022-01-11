@@ -44,6 +44,7 @@ Glossary
       An abbreviation for `keyword arguments`_.
 
    lite-function
+   lite-functions
       A lite weight version of an existing `plasmapy` function,
       typically a formulary function.  These functions are intended for
       computational use where speed matters more than anything else, and
