@@ -9,9 +9,6 @@ import inspect
 
 from numba.extending import is_jitted
 from typing import Callable, Dict
-from warnings import warn
-
-from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 class _LiteFuncDict(dict):
@@ -102,15 +99,12 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
 
         attrs["lite"] = lite_func
         for bound_name, attr in attrs.items():
-            # skip objects that are not allowed
-            # - only allow functions
+            # only allow functions or jitted functions
             if not (inspect.isfunction(attr) or is_jitted(attr)):
-                warn(
+                raise ValueError(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
-                    f"  Only functions are allowed to be bound. Skipping.",
-                    PlasmaPyWarning,
+                    f"  Only functions are allowed to be bound. Skipping."
                 )
-                continue
 
             # build origin name
             if hasattr(attr, "__module__"):

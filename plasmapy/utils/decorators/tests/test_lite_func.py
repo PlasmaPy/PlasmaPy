@@ -35,6 +35,7 @@ def bar():
         # conditions on attrs kwarg
         (foo_lite, "not a dictionary", TypeError),
         (foo_lite, {"lite": lambda x: x}, ValueError),
+        (foo_lite, {"bar": "not a functions"}, ValueError),
         #
         # conditions on lite_func arg
         (6, None, ValueError),  # not a function
@@ -45,25 +46,6 @@ def test_raises(lite_func, attrs, _error):
     """Test scenarios that will raise an Exception."""
     with pytest.raises(_error):
         bind_lite_func(lite_func, attrs=attrs)(foo)
-
-
-@pytest.mark.parametrize(
-    "lite_func, attrs, _warning, skipped_bind",
-    [
-        (foo_lite, {"bar": "not a functions"}, PlasmaPyWarning, ["bar"]),
-    ],
-)
-def test_warns(lite_func, attrs, _warning, skipped_bind):
-    """Test scenarios that will issue a Warning."""
-    with pytest.warns(_warning):
-        dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
-
-    if skipped_bind is None:
-        return
-
-    for skipped in skipped_bind:
-        assert not hasattr(dfoo, skipped)
-        assert skipped not in dfoo.__bound_lite_func__
 
 
 @pytest.mark.parametrize(
