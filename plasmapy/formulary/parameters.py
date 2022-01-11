@@ -846,10 +846,11 @@ def thermal_speed(
           The `NRL Plasma Formulary
           <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
           uses the square root of the Normal distribution's variance
-          :math:`\sigma^2` as the expression for thermal speed.
+          σ as the expression for thermal speed.
 
           .. math::
-             v_{th} = \sqrt{\frac{k_B T}{m}}
+             v_{th} = σ = \sqrt{\frac{k_B T}{m}} \quad
+             \text{where} \quad f(v) \sim e^{v^2 / 2 σ^2}
 
     Examples
     --------
