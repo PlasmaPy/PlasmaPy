@@ -635,10 +635,12 @@ def thermal_speed_lite(
     T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
 ) -> numbers.Real:
     r"""
-    The "Lite-Function" version of `~plasmapy.formulary.parameters.thermal_speed`.
-    Performs the same thermal speed calculations as
+    The ":term:`lite-function`" version of
+    `~plasmapy.formulary.parameters.thermal_speed`.  Performs the same
+    thermal speed calculations as
     `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
-    computational use and, thus, has data conditioning safeguards removed.
+    computational use and, thus, has data conditioning safeguards
+    removed.
 
     .. math::
         v_{th} = C_o \sqrt{\frac{k_B T}{m}}
@@ -646,9 +648,9 @@ def thermal_speed_lite(
     where :math:`T` is the temperature associated with the distribution,
     :math:`m` is the particle's mass, and :math:`C_o` is a constant of
     proportionality determined by the method in which :math:`v_{th}` is
-    calculated and the dimensionality of the system (1D, 2D, 3D).  For further
-    details see the :ref:`Notes <thermal-speed-notes>` section in the
-    `~plasmapy.formulary.parameters.thermal_speed` documentation.
+    calculated and the dimensionality of the system (1D, 2D, 3D).  For
+    further details see the :ref:`Notes <thermal-speed-notes>` section
+    in the `~plasmapy.formulary.parameters.thermal_speed` documentation.
 
     Parameters
     ----------
@@ -660,9 +662,9 @@ def thermal_speed_lite(
 
     coeff : `~numbers.Real`
         The coefficient :math:`C_o` associated with the method used for
-        calculating the thermal speed, see :ref:`Notes <thermal-speed-notes>`
-        section in the `~plasmapy.formulary.parameters.thermal_speed`
-        documentation.
+        calculating the thermal speed, see
+        :ref:`Notes <thermal-speed-notes>` section in the
+        `~plasmapy.formulary.parameters.thermal_speed` documentation.
 
     Returns
     -------
@@ -1476,7 +1478,7 @@ def plasma_frequency_lite(
     n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
 ) -> numbers.Real:
     r"""
-    The "Lite-Function" version of
+    The ":term:`lite-function`" version of
     `~plasmapy.formulary.parameters.plasma_frequency`.  Performs the
     same plasma frequency calculation as
     `~plasmapy.formulary.parameters.plasma_frequency`, but is intended
