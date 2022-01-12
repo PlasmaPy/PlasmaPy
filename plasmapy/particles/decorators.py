@@ -90,21 +90,21 @@ def _get_args_to_become_particles(
         annotations as values for a function.
     """
     args_to_become_particles = []
-    for argname in annotations.keys():
+    for argname, annotation in annotations.items():
         if isinstance(annotations[argname], tuple):
             if argname == "return":
                 continue
             annotated_argnames = annotations[argname]
             expected_params = len(annotated_argnames)
             received_params = len(arguments[argname])
-            if not expected_params == received_params:
+            if expected_params != received_params:
                 raise ValueError(
                     f"Number of parameters allowed in the tuple "
                     f"({expected_params} parameters) are "
                     f"not equal to number of parameters passed in "
                     f"the tuple ({received_params} parameters)."
                 )
-        elif isinstance(annotations[argname], list):
+        elif isinstance(annotation, list):
             annotated_argnames = annotations[argname]
             expected_params = len(annotated_argnames)
             if expected_params > 1:
