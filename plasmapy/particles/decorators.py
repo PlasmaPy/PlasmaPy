@@ -72,7 +72,23 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
     return category_errmsg
 
 
-def _get_args_to_become_particles(arguments, annotations: Dict[str, Any]):
+def _get_args_to_become_particles(
+    arguments: Dict[str, Any], annotations: Dict[str, Any]
+) -> List[str]:
+    """
+    Return a `list` that contains the arguments that need to be
+    processed by `~plasmapy.particles.decorators.particle_input`.
+
+    Parameters
+    ----------
+    arguments : `dict`
+        A `dict` with argument names as keys the arguments themselves as
+        values.k
+
+    annotations : `dict`
+        A `dict` with argument names as keys and the corresponding
+        annotations as values for a function.
+    """
     args_to_become_particles = []
     for argname in annotations.keys():
         if isinstance(annotations[argname], tuple):
