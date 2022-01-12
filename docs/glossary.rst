@@ -87,16 +87,11 @@ Glossary
       real number is often assumed to have the appropriate SI units.
 
    temperature
-      Most functions in PlasmaPy accept temperature :math:`T` as a
+      Most functions in PlasmaPy accept temperature, :math:`T`, as a
       `~astropy.units.Quantity` with units of temperature (e.g., kelvin)
-      or energy (e.g., electron-volts).
-
-Most functions in PlasmaPy accept temperature either in units of
-      temperature (e.g., kelvin) or energy (e.g., electron-volts). When
-
-
-When
-      the temperature is provided as an energy,
+      or energy (e.g., electron-volts). A value for energy that is
+      provided will be divided by the Boltzmann constant, :math:`k_B`,
+      to be converted into units of temperature.
 
    unit test
       A **unit test** verifies a single unit of behavior, does it
