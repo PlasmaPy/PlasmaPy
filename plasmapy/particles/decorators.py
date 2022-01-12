@@ -10,7 +10,7 @@ import functools
 import inspect
 import numbers
 
-from typing import Any, Callable, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -70,6 +70,42 @@ def _category_errmsg(particle, require, exclude, any_of, funcname) -> str:
             )
 
     return category_errmsg
+
+
+def _get_args_to_become_particles(arguments, annotations: Dict[str, Any]):
+    args_to_become_particles = []
+    for argname in annotations.keys():
+        if isinstance(annotations[argname], tuple):
+            if argname == "return":
+                continue
+            annotated_argnames = annotations[argname]
+            expected_params = len(annotated_argnames)
+            received_params = len(arguments[argname])
+            if not expected_params == received_params:
+                raise ValueError(
+                    f"Number of parameters allowed in the tuple "
+                    f"({expected_params} parameters) are "
+                    f"not equal to number of parameters passed in "
+                    f"the tuple ({received_params} parameters)."
+                )
+        elif isinstance(annotations[argname], list):
+            annotated_argnames = annotations[argname]
+            expected_params = len(annotated_argnames)
+            if expected_params > 1:
+                raise TypeError(
+                    "Put in [Particle] as the annotation to "
+                    "accept arbitrary number of Particle arguments."
+                )
+        else:
+            annotated_argnames = (annotations[argname],)
+
+        for annotated_argname in annotated_argnames:
+            is_particle = (
+                annotated_argname is Particle or annotated_argname is Optional[Particle]
+            )
+            if is_particle and argname != "return":
+                args_to_become_particles.append(argname)
+    return args_to_become_particles
 
 
 def particle_input(
@@ -269,39 +305,9 @@ def particle_input(
 
             funcname = wrapped_function.__name__
 
-            args_to_become_particles = []
-            for argname in annotations.keys():
-                if isinstance(annotations[argname], tuple):
-                    if argname == "return":
-                        continue
-                    annotated_argnames = annotations[argname]
-                    expected_params = len(annotated_argnames)
-                    received_params = len(arguments[argname])
-                    if not expected_params == received_params:
-                        raise ValueError(
-                            f"Number of parameters allowed in the tuple "
-                            f"({expected_params} parameters) are "
-                            f"not equal to number of parameters passed in "
-                            f"the tuple ({received_params} parameters)."
-                        )
-                elif isinstance(annotations[argname], list):
-                    annotated_argnames = annotations[argname]
-                    expected_params = len(annotated_argnames)
-                    if expected_params > 1:
-                        raise TypeError(
-                            "Put in [Particle] as the annotation to "
-                            "accept arbitrary number of Particle arguments."
-                        )
-                else:
-                    annotated_argnames = (annotations[argname],)
-
-                for annotated_argname in annotated_argnames:
-                    is_particle = (
-                        annotated_argname is Particle
-                        or annotated_argname is Optional[Particle]
-                    )
-                    if is_particle and argname != "return":
-                        args_to_become_particles.append(argname)
+            args_to_become_particles = _get_args_to_become_particles(
+                arguments, annotations
+            )
 
             if not args_to_become_particles:
                 raise ParticleError(
