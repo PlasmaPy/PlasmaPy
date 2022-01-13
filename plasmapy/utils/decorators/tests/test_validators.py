@@ -404,7 +404,7 @@ class TestValidateQuantities:
                 "output": (2 * u.kg * u.m / u.s ** 2).to(u.N),
                 "extra assert": lambda x: x.unit.to_string() == u.N.to_string(),
             },
-        ]
+        ],
     )
     def test_vq_called_as_decorator(self, case):
         """
@@ -507,7 +507,7 @@ class TestValidateQuantities:
                 },
                 "output": -3 * u.cm,
             },
-        ]
+        ],
     )
     def test_decorator_func_def(self, mock_vq_class, case):
         """
