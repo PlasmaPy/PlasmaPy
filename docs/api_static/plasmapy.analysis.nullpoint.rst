@@ -1,8 +1,9 @@
 :orphan:
 
-`plasmapy.analysis.nullpoint`
+'plasmapy.analysis.nullpoint'
 ===========================
 
 .. currentmodule:: plasmapy.analysis.nullpoint
 
 .. automodapi::  plasmapy.analysis.nullpoint
+
