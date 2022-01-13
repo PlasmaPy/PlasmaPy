@@ -124,6 +124,71 @@ def _get_args_to_become_particles(
     return args_to_become_particles
 
 
+def _validate_arguments_and_annotations(
+    args_to_become_particles: List[str],
+    funcname: str,
+    annotations: Dict[str, Any],
+    arguments: Dict[str, Any],
+    *,
+    Z: Optional[numbers.Integral],
+    mass_numb: Optional[numbers.Integral],
+):
+    """
+    Raise exceptions for invalid inputs to `particle_input`.
+
+    Parameters
+    ----------
+    args_to_become_particles : `list`
+        The arguments to be processed by `@particle_input`.
+
+    funcname : `str`
+        The name of the function.
+
+    annotations : `dict`
+        A `dict` with argument names as keys and the corresponding
+        annotations as values for a function.
+
+    arguments : `dict`
+        A `dict` with argument names as keys the arguments themselves as
+        values.k
+
+    Z : integer, optional, keyword-only
+        The charge number of an ionic level.
+
+    mass_numb : integer, optional, keyword-only
+        The mass number of an isotope.
+    """
+    if not args_to_become_particles:
+        raise ParticleError(
+            f"None of the arguments or keywords to {funcname} "
+            f"have been annotated with Particle, as required "
+            f"by the @particle_input decorator."
+        )
+    if len(args_to_become_particles) > 1 and (Z or mass_numb):
+        raise ParticleError(
+            f"The arguments Z and mass_numb in {funcname} are not "
+            f"allowed when more than one argument or keyword is "
+            f"annotated with Particle in functions decorated "
+            f"with @particle_input."
+        )
+
+    for x in args_to_become_particles:
+        if (
+            annotations[x] is Particle
+            and isinstance(arguments[x], (tuple, list))
+            and len(arguments[x]) > 1
+        ):
+            raise TypeError(
+                f"You cannot pass a tuple or list containing "
+                f"Particles when only single Particle was "
+                f"expected, instead found {arguments[x]}. If you "
+                f"intend to pass more than 1 Particle instance, "
+                f"use a tuple or a list type. "
+                f"That is use (Particle, Particle, ...) or "
+                f"[Particle] in function declaration."
+            )
+
+
 def particle_input(
     wrapped_function: Callable = None,
     require: Union[str, Set, List, Tuple] = None,
@@ -325,43 +390,21 @@ def particle_input(
                 arguments, annotations
             )
 
-            if not args_to_become_particles:
-                raise ParticleError(
-                    f"None of the arguments or keywords to {funcname} "
-                    f"have been annotated with Particle, as required "
-                    f"by the @particle_input decorator."
-                )
-            elif len(args_to_become_particles) > 1:
-                if "Z" in argnames or "mass_numb" in argnames:
-                    raise ParticleError(
-                        f"The arguments Z and mass_numb in {funcname} are not "
-                        f"allowed when more than one argument or keyword is "
-                        f"annotated with Particle in functions decorated "
-                        f"with @particle_input."
-                    )
-
-            for x in args_to_become_particles:
-                if (
-                    annotations[x] is Particle
-                    and isinstance(arguments[x], (tuple, list))
-                    and len(arguments[x]) > 1
-                ):
-                    raise TypeError(
-                        f"You cannot pass a tuple or list containing "
-                        f"Particles when only single Particle was "
-                        f"expected, instead found {arguments[x]}. If you "
-                        f"intend to pass more than 1 Particle instance, "
-                        f"use a tuple or a list type. "
-                        f"That is use (Particle, Particle, ...) or "
-                        f"[Particle] in function declaration."
-                    )
-
             # If the number of arguments and keywords annotated with
             # Particle is exactly one, then the Z and mass_numb keywords
             # can be used without potential for ambiguity.
 
             Z = arguments.get("Z", None)
             mass_numb = arguments.get("mass_numb", None)
+
+            _validate_arguments_and_annotations(
+                args_to_become_particles,
+                funcname,
+                annotations,
+                arguments,
+                Z=Z,
+                mass_numb=mass_numb,
+            )
 
             # Go through the argument names and check whether or not they are
             # annotated with Particle.  If they aren't, include the name and
@@ -376,7 +419,7 @@ def particle_input(
                 raw_argval = arguments[argname]
                 if isinstance(raw_argval, (tuple, list)):
                     # Input argument value is a tuple or list
-                    # of correspoding particles or atomic values.
+                    # of corresponding particles or atomic values.
                     argval_tuple = raw_argval
                     particles = []
                 else:
