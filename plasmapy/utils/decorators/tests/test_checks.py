@@ -39,17 +39,51 @@ class TestCheckBase:
     def test_for_members(self):
         assert hasattr(CheckUnits, "checks")
 
-    def test_checks(self):
-        _cases = [
+    @pytest.mark.parametrize(
+        "case",
+        [
             {"input": (None, {"x": 1, "y": 2}), "output": {"x": 1, "y": 2}},
             {
                 "input": (6, {"x": 1, "y": 2}),
                 "output": {"x": 1, "y": 2, "checks_on_return": 6},
             },
-        ]
-        for case in _cases:
-            cb = CheckBase(checks_on_return=case["input"][0], **case["input"][1])
-            assert cb.checks == case["output"]
+        ],
+    )
+    def test_checks(self, case):
+        cb = CheckBase(checks_on_return=case["input"][0], **case["input"][1])
+        assert cb.checks == case["output"]
+
+
+def _foo_no_anno(x, y):
+    return x + y
+
+
+def _foo_partial_anno(x: u.Quantity, y: u.cm) -> u.Quantity:
+    return x.value + y.value
+
+
+def _foo_return_anno(x, y) -> u.um:
+    return x.value + y.value
+
+
+def _foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):
+    return x.value + y.value
+
+
+def _foo_stars_no_anno(x, *args, y=3, **kwargs):
+    return x + y
+
+
+def _foo_with_none(x: u.Quantity, y: u.cm = None):
+    return x.value + y.value
+
+
+_equivs = [
+    # list of astropy Equivalency objects
+    [u.temperature_energy(), u.temperature()],
+    # list of equivalencies (pre astropy v3.2.1 style)
+    list(u.temperature()),
+]
 
 
 # ----------------------------------------------------------------------------------------
@@ -63,50 +97,33 @@ class TestCheckUnits:
 
     check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
 
-    @staticmethod
-    def foo_no_anno(x, y):
-        return x + y
-
-    @staticmethod
-    def foo_partial_anno(x: u.Quantity, y: u.cm) -> u.Quantity:
-        return x.value + y.value
-
-    @staticmethod
-    def foo_return_anno(x, y) -> u.um:
-        return x.value + y.value
-
-    @staticmethod
-    def foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):
-        return x.value + y.value
-
-    @staticmethod
-    def foo_with_none(x: u.Quantity, y: u.cm = None):
-        return x.value + y.value
-
     def test_inheritance(self):
         assert issubclass(CheckUnits, CheckBase)
 
-    def test_cu_default_check_values(self):
-        """Test the default check dictionary for CheckUnits."""
-        cu = CheckUnits()
-        assert hasattr(cu, "_CheckUnits__check_defaults")
-        assert isinstance(cu._CheckUnits__check_defaults, dict)
-        _defaults = [
+    @pytest.mark.parametrize(
+        "key,val",
+        [
             ("units", None),
             ("equivalencies", None),
             ("pass_equivalent_units", False),
             ("none_shall_pass", False),
-        ]
-        for key, val in _defaults:
-            assert cu._CheckUnits__check_defaults[key] == val
+        ],
+    )
+    def test_cu_default_check_values(self, key, val):
+        """Test the default check dictionary for CheckUnits."""
+        cu = CheckUnits()
+        assert hasattr(cu, "_CheckUnits__check_defaults")
+        assert isinstance(cu._CheckUnits__check_defaults, dict)
+        assert cu._CheckUnits__check_defaults[key] == val
 
-    def test_cu_method__flatten_equivalencies_list(self):
+    @pytest.mark.parametrize(
+        "pair", [([1, 2, 4], [1, 2, 4]), ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])]
+    )
+    def test_cu_method__flatten_equivalencies_list(self, pair):
         assert hasattr(CheckUnits, "_flatten_equivalencies_list")
 
         cu = CheckUnits()
-        pairs = [([1, 2, 4], [1, 2, 4]), ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])]
-        for pair in pairs:
-            assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
+        assert cu._flatten_equivalencies_list(pair[0]) == pair[1]
 
     def test_cu_method__condition_target_units(self):
         """Test method `CheckUnits._condition_target_units`."""
@@ -127,7 +144,8 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._condition_target_units(["five"])
 
-    def test_cu_method__normalize_equivalencies(self):
+    @pytest.mark.parametrize("val", [-20.0, 50.0, 195.0])
+    def test_cu_method__normalize_equivalencies(self, val):
         """Test method `CheckUnits._normalize_equivalencies`."""
         assert hasattr(CheckUnits, "_normalize_equivalencies")
 
@@ -168,9 +186,8 @@ class TestCheckUnits:
         assert norme[0][1] == u.deg_C
         assert isinstance(norme[0][2], LambdaType)
         assert isinstance(norme[0][3], LambdaType)
-        for val in [-20.0, 50.0, 195.0]:
-            assert norme[0][2](val) == (lambda x: x - 273.15)(val)
-            assert norme[0][3](val) == (lambda x: x + 273.15)(val)
+        assert norme[0][2](val) == (lambda x: x - 273.15)(val)
+        assert norme[0][3](val) == (lambda x: x + 273.15)(val)
 
         # not a 2, 3, or 4-tuple
         with pytest.raises(ValueError):
@@ -180,46 +197,26 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([("cm", u.cm)])
 
-    def test_cu_method__get_unit_checks(self):
-        """
-        Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
-        This method reviews the decorator `checks` arguments and wrapped function
-        annotations to build a complete checks dictionary.
-        """
-        # methods must exist
-        assert hasattr(CheckUnits, "_get_unit_checks")
-
-        # setup default checks
-        default_checks = {
-            **self.check_defaults.copy(),
-            "units": [self.check_defaults["units"]],
-        }
-
-        # setup test cases
-        # 'setup' = arguments for `_get_unit_checks`
-        # 'output' = expected return from `_get_unit_checks`
-        # 'raises' = if `_get_unit_checks` raises an Exception
-        # 'warns' = if `_get_unit_checks` issues a warning
-        #
-        equivs = [
-            # list of astropy Equivalency objects
-            [u.temperature_energy(), u.temperature()],
-            # list of equivalencies (pre astropy v3.2.1 style)
-            list(u.temperature()),
-        ]
-        _cases = [
+    # setup test cases
+    # 'setup' = arguments for `_get_unit_checks`
+    # 'output' = expected return from `_get_unit_checks`
+    # 'raises' = if `_get_unit_checks` raises an Exception
+    # 'warns' = if `_get_unit_checks` issues a warning
+    @pytest.mark.parametrize(
+        "case",
+        [
             {
                 "descr": "x units are defined via decorator kwarg of CheckUnits\n"
                 "y units are defined via decorator annotations, additional\n"
                 "  checks thru CheckUnits kwarg",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
-                    "checks": {"x": {"units": [u.cm], "equivalencies": equivs[0][0]}},
+                    "checks": {"x": {"units": [u.cm], "equivalencies": _equivs[0][0]}},
                 },
                 "output": {
-                    "x": {"units": [u.cm], "equivalencies": equivs[0][0]},
+                    "x": {"units": [u.cm], "equivalencies": _equivs[0][0]},
                     "y": {"units": [u.cm]},
                 },
             },
@@ -228,18 +225,18 @@ class TestCheckUnits:
                 "y units are defined via function annotations, additional\n"
                 "  checks thru CheckUnits kwarg",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {
-                        "x": {"units": [u.cm], "equivalencies": equivs[0]},
+                        "x": {"units": [u.cm], "equivalencies": _equivs[0]},
                         "y": {"pass_equivalent_units": False},
                     },
                 },
                 "output": {
                     "x": {
                         "units": [u.cm],
-                        "equivalencies": equivs[0][0] + equivs[0][1],
+                        "equivalencies": _equivs[0][0] + _equivs[0][1],
                     },
                     "y": {"units": [u.cm], "pass_equivalent_units": False},
                 },
@@ -247,23 +244,23 @@ class TestCheckUnits:
             {
                 "descr": "equivalencies are a list instead of astropy Equivalency objects",
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.K, 3 * u.K),
                     "kwargs": {},
                     "checks": {
-                        "x": {"units": [u.K], "equivalencies": equivs[1][0]},
-                        "y": {"units": [u.K], "equivalencies": equivs[1]},
+                        "x": {"units": [u.K], "equivalencies": _equivs[1][0]},
+                        "y": {"units": [u.K], "equivalencies": _equivs[1]},
                     },
                 },
                 "output": {
-                    "x": {"units": [u.K], "equivalencies": [equivs[1][0]]},
-                    "y": {"units": [u.K], "equivalencies": equivs[1]},
+                    "x": {"units": [u.K], "equivalencies": [_equivs[1][0]]},
+                    "y": {"units": [u.K], "equivalencies": _equivs[1]},
                 },
             },
             {
                 "descr": "number of checked arguments exceed number of function arguments",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {
@@ -278,7 +275,7 @@ class TestCheckUnits:
             {
                 "descr": "arguments passed via *args and **kwargs are ignored",
                 "setup": {
-                    "function": self.foo_stars,
+                    "function": _foo_stars,
                     "args": (2 * u.cm, "hello"),
                     "kwargs": {"z": None},
                     "checks": {
@@ -293,7 +290,7 @@ class TestCheckUnits:
             {
                 "descr": "arguments can be None values",
                 "setup": {
-                    "function": self.foo_with_none,
+                    "function": _foo_with_none,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"units": [u.cm, None]}},
@@ -306,7 +303,7 @@ class TestCheckUnits:
             {
                 "descr": "checks and annotations do not specify units",
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"pass_equivalent_units": True}},
@@ -316,7 +313,7 @@ class TestCheckUnits:
             {
                 "descr": "units are directly assigned to the check kwarg",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": u.cm},
@@ -326,7 +323,7 @@ class TestCheckUnits:
             {
                 "descr": "return units are assigned via checks",
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.km, 3 * u.km),
                     "kwargs": {},
                     "checks": {"checks_on_return": u.km},
@@ -336,7 +333,7 @@ class TestCheckUnits:
             {
                 "descr": "return units are assigned via annotations",
                 "setup": {
-                    "function": self.foo_return_anno,
+                    "function": _foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {},
@@ -347,7 +344,7 @@ class TestCheckUnits:
                 "descr": "return units are assigned via annotations and checks arg, but"
                 "are not consistent",
                 "setup": {
-                    "function": self.foo_return_anno,
+                    "function": _foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"units": u.km}},
@@ -357,7 +354,7 @@ class TestCheckUnits:
             {
                 "descr": "return units are not specified but other checks are",
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"pass_equivalent_units": True}},
@@ -368,7 +365,7 @@ class TestCheckUnits:
                 "descr": "no parameter checks for x are defined, but a non-unit annotation"
                 "is used",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {},
@@ -380,7 +377,7 @@ class TestCheckUnits:
                 "function annotations. Function annotations do NOT define "
                 "a proper unit type.",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"pass_equivalent_units": True}},
@@ -392,73 +389,76 @@ class TestCheckUnits:
                 "calculated from function annotations. Function annotations do "
                 "NOT define a proper unit type.",
                 "setup": {
-                    "function": self.foo_partial_anno,
+                    "function": _foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"pass_equivalent_units": True}},
                 },
                 "raises": ValueError,
             },
-        ]
-
-        # perform tests
-        for ii, case in enumerate(_cases):
-            sig = inspect.signature(case["setup"]["function"])
-            bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
-
-            cu = CheckUnits(**case["setup"]["checks"])
-            cu.f = case["setup"]["function"]
-            if "warns" in case:
-                with pytest.warns(case["warns"]):
-                    checks = cu._get_unit_checks(bound_args)
-            elif "raises" in case:
-                with pytest.raises(case["raises"]):
-                    cu._get_unit_checks(bound_args)
-                continue
-            else:
-                checks = cu._get_unit_checks(bound_args)
-
-            # only expected argument checks exist
-            assert sorted(checks.keys()) == sorted(case["output"].keys())
-
-            # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
-                arg_checks = checks[arg_name]
-
-                for key in default_checks.keys():
-                    if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
-                    else:
-                        val = default_checks[key]
-
-                    assert arg_checks[key] == val
-
-    def test_cu_method__check_unit(self):
+        ],
+    )
+    def test_cu_method__get_unit_checks(self, case):
         """
-        Test functionality/behavior of the methods `_check_unit` and `_check_unit_core`
-        on `CheckUnits`.  These methods do the actual checking of the argument units
-        and should be called by `CheckUnits.__call__()`.
+        Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
+        This method reviews the decorator `checks` arguments and wrapped function
+        annotations to build a complete checks dictionary.
         """
         # methods must exist
-        assert hasattr(CheckUnits, "_check_unit")
-        assert hasattr(CheckUnits, "_check_unit_core")
+        assert hasattr(CheckUnits, "_get_unit_checks")
 
         # setup default checks
-        check = {**self.check_defaults, "units": [u.cm]}
-        # check = self.check_defaults.copy()
-        # check['units'] = [u.cm]
-        # check['equivalencies'] = [None]
+        default_checks = {
+            **self.check_defaults.copy(),
+            "units": [self.check_defaults["units"]],
+        }
 
-        # make a class w/ improper units
-        class MyQuantity:
-            unit = None
+        # perform test
+        sig = inspect.signature(case["setup"]["function"])
+        bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
-        # setup test cases
-        # 'input' = arguments for `_check_unit_core` and `_check_unit`
-        # 'output' = expected return from `_check_unit_core`
-        #
-        # add cases for 'units' checks
-        _cases = [
+        cu = CheckUnits(**case["setup"]["checks"])
+        cu.f = case["setup"]["function"]
+        if "warns" in case:
+            with pytest.warns(case["warns"]):
+                checks = cu._get_unit_checks(bound_args)
+        elif "raises" in case:
+            with pytest.raises(case["raises"]):
+                cu._get_unit_checks(bound_args)
+            pytest.skip()
+        else:
+            checks = cu._get_unit_checks(bound_args)
+
+        # only expected argument checks exist
+        assert sorted(checks.keys()) == sorted(case["output"].keys())
+
+        # if check key-value not specified then default is assumed
+        for arg_name in case["output"].keys():
+            arg_checks = checks[arg_name]
+
+            for key in default_checks.keys():
+                if key in case["output"][arg_name]:
+                    val = case["output"][arg_name][key]
+                else:
+                    val = default_checks[key]
+
+                assert arg_checks[key] == val
+
+    # setup test cases
+    # 'input' = arguments for `_check_unit_core` and `_check_unit`
+    # 'output' = expected return from `_check_unit_core`
+    # setup default checks
+    check = {**check_defaults, "units": [u.cm]}
+    # check = self.check_defaults.copy()
+    # check['units'] = [u.cm]
+    # check['equivalencies'] = [None]
+    # make a class w/ improper units
+    class MyQuantity:
+        unit = None
+
+    @pytest.mark.parametrize(
+        "case",
+        [
             # argument does not have units
             {"input": (5.0, "arg", check), "output": (None, None, None, TypeError)},
             # argument does match desired units
@@ -489,85 +489,81 @@ class TestCheckUnits:
                 "input": (MyQuantity, "arg", check),
                 "output": (None, None, None, TypeError),
             },
-        ]
-
-        # add cases for 'none_shall_pass' checks
-        _cases.extend(
-            [
-                # argument is None and none_shall_pass = False
-                {
-                    "input": (None, "arg", {**check, "none_shall_pass": False}),
-                    "output": (None, None, None, ValueError),
-                },
-                # argument is None and none_shall_pass = True
-                {
-                    "input": (None, "arg", {**check, "none_shall_pass": True}),
-                    "output": (None, None, None, None),
-                },
-            ]
-        )
-
-        # add cases for 'pass_equivalent_units' checks
-        _cases.extend(
-            [
-                # argument is equivalent to 1 to unit,
-                # does NOT exactly match the unit,
-                # and 'pass_equivalent_units' = True and argument
-                {
-                    "input": (
-                        5.0 * u.km,
-                        "arg",
-                        {**check, "pass_equivalent_units": True},
-                    ),
-                    "output": (5.0 * u.km, u.cm, None, None),
-                },
-                # argument is equivalent to more than 1 unit,
-                # does NOT exactly match any unit,
-                # and 'pass_equivalent_units' = True and argument
-                {
-                    "input": (
-                        5.0 * u.km,
-                        "arg",
-                        {**check, "units": [u.cm, u.m], "pass_equivalent_units": True},
-                    ),
-                    "output": (5.0 * u.km, None, None, None),
-                },
-            ]
-        )
+            # cases for 'none_shall_pass' checks
+            # argument is None and none_shall_pass = False
+            {
+                "input": (None, "arg", {**check, "none_shall_pass": False}),
+                "output": (None, None, None, ValueError),
+            },
+            # argument is None and none_shall_pass = True
+            {
+                "input": (None, "arg", {**check, "none_shall_pass": True}),
+                "output": (None, None, None, None),
+            },
+            # cases for 'pass_equivalent_units' checks
+            # argument is equivalent to 1 to unit,
+            # does NOT exactly match the unit,
+            # and 'pass_equivalent_units' = True and argument
+            {
+                "input": (
+                    5.0 * u.km,
+                    "arg",
+                    {**check, "pass_equivalent_units": True},
+                ),
+                "output": (5.0 * u.km, u.cm, None, None),
+            },
+            # argument is equivalent to more than 1 unit,
+            # does NOT exactly match any unit,
+            # and 'pass_equivalent_units' = True and argument
+            {
+                "input": (
+                    5.0 * u.km,
+                    "arg",
+                    {**check, "units": [u.cm, u.m], "pass_equivalent_units": True},
+                ),
+                "output": (5.0 * u.km, None, None, None),
+            },
+        ],
+    )
+    def test_cu_method__check_unit(self, case):
+        """
+        Test functionality/behavior of the methods `_check_unit` and `_check_unit_core`
+        on `CheckUnits`.  These methods do the actual checking of the argument units
+        and should be called by `CheckUnits.__call__()`.
+        """
+        # methods must exist
+        assert hasattr(CheckUnits, "_check_unit")
+        assert hasattr(CheckUnits, "_check_unit_core")
 
         # setup wrapped function
         cu = CheckUnits()
-        cu.f = self.foo_no_anno
+        cu.f = _foo_no_anno
 
-        # perform tests
-        for ii, case in enumerate(_cases):
-            arg, arg_name, arg_checks = case["input"]
-            _results = cu._check_unit_core(arg, arg_name, arg_checks)
-            assert _results[0:3] == case["output"][0:3]
+        # perform test
+        arg, arg_name, arg_checks = case["input"]
+        _results = cu._check_unit_core(arg, arg_name, arg_checks)
+        assert _results[0:3] == case["output"][0:3]
 
-            if _results[3] is None:
-                assert _results[3] is case["output"][3]
-                assert cu._check_unit(arg, arg_name, arg_checks) is None
-            else:
-                assert isinstance(_results[3], case["output"][3])
-                with pytest.raises(case["output"][3]):
-                    cu._check_unit(arg, arg_name, arg_checks)
+        if _results[3] is None:
+            assert _results[3] is case["output"][3]
+            assert cu._check_unit(arg, arg_name, arg_checks) is None
+        else:
+            assert isinstance(_results[3], case["output"][3])
+            with pytest.raises(case["output"][3]):
+                cu._check_unit(arg, arg_name, arg_checks)
 
-    def test_cu_called_as_decorator(self):
-        """
-        Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
-        """
-        # setup test cases
-        # 'setup' = arguments for `CheckUnits` and wrapped function
-        # 'output' = expected return from wrapped function
-        # 'raises' = if an Exception is expected to be raised
-        # 'warns' = if a warning is expected to be issued
-        #
-        _cases = [
+    # setup test cases
+    # 'setup' = arguments for `CheckUnits` and wrapped function
+    # 'output' = expected return from wrapped function
+    # 'raises' = if an Exception is expected to be raised
+    # 'warns' = if a warning is expected to be issued
+    @pytest.mark.parametrize(
+        "case",
+        [
             # clean execution
             {
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": u.cm, "y": u.cm, "checks_on_return": u.cm},
@@ -577,7 +573,7 @@ class TestCheckUnits:
             # argument fails checks
             {
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": u.g, "y": u.cm, "checks_on_return": u.cm},
@@ -587,27 +583,31 @@ class TestCheckUnits:
             # return fails checks
             {
                 "setup": {
-                    "function": self.foo_no_anno,
+                    "function": _foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": u.cm, "y": u.cm, "checks_on_return": u.km},
                 },
                 "raises": u.UnitTypeError,
             },
-        ]
+        ],
+    )
+    def test_cu_called_as_decorator(self, case):
+        """
+        Test behavior of `CheckUnits.__call__` (i.e. used as a decorator).
+        """
 
         # test
-        for case in _cases:
-            wfoo = CheckUnits(**case["setup"]["checks"])(case["setup"]["function"])
+        wfoo = CheckUnits(**case["setup"]["checks"])(case["setup"]["function"])
 
-            args = case["setup"]["args"]
-            kwargs = case["setup"]["kwargs"]
+        args = case["setup"]["args"]
+        kwargs = case["setup"]["kwargs"]
 
-            if "raises" in case:
-                with pytest.raises(case["raises"]):
-                    wfoo(*args, **kwargs)
-            else:
-                assert wfoo(*args, **kwargs) == case["output"]
+        if "raises" in case:
+            with pytest.raises(case["raises"]):
+                wfoo(*args, **kwargs)
+        else:
+            assert wfoo(*args, **kwargs) == case["output"]
 
         # test on class method
         class Foo:
@@ -626,34 +626,23 @@ class TestCheckUnits:
         """Test `CheckValues` preserves signature of wrapped function."""
         # I'd like to directly test the @preserve_signature is used (??)
 
-        wfoo = CheckUnits()(self.foo_no_anno)
+        wfoo = CheckUnits()(_foo_no_anno)
         assert hasattr(wfoo, "__signature__")
-        assert wfoo.__signature__ == inspect.signature(self.foo_no_anno)
+        assert wfoo.__signature__ == inspect.signature(_foo_no_anno)
 
+    # setup test cases
+    # 'setup' = arguments for `check_units` and wrapped function
+    # 'output' = expected return from wrapped function
+    # 'raises' = a raised Exception is expected
+    # 'warns' = an issued warning is expected
     @mock.patch(
         CheckUnits.__module__ + "." + CheckUnits.__qualname__,
         side_effect=CheckUnits,
         autospec=True,
     )
-    def test_decorator_func_def(self, mock_cu_class):
-        """
-        Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
-        properly defined.
-        """
-        # create mock function (mock_foo) from function to mock (self.foo_no_anno)
-        mock_foo = mock.Mock(
-            side_effect=self.foo_no_anno, name="mock_foo", autospec=True
-        )
-        mock_foo.__name__ = "mock_foo"
-        mock_foo.__signature__ = inspect.signature(self.foo_no_anno)
-
-        # setup test cases
-        # 'setup' = arguments for `check_units` and wrapped function
-        # 'output' = expected return from wrapped function
-        # 'raises' = a raised Exception is expected
-        # 'warns' = an issued warning is expected
-        #
-        _cases = [
+    @pytest.mark.parametrize(
+        "case",
+        [
             # only argument checks
             {
                 "setup": {
@@ -672,43 +661,54 @@ class TestCheckUnits:
                 },
                 "output": 5 * u.cm,
             },
-        ]
-        for case in _cases:
-            for ii in range(2):
-                # decorate
-                if ii == 0:
-                    # functional decorator call
-                    wfoo = check_units(mock_foo, **case["setup"]["checks"])
-                elif ii == 1:
-                    # sugar decorator call
-                    #
-                    #  @check_units(x=check)
-                    #      def foo(x):
-                    #          return x
-                    #
-                    wfoo = check_units(**case["setup"]["checks"])(mock_foo)
-                else:
-                    continue
+        ],
+    )
+    def test_decorator_func_def(self, mock_cu_class, case):
+        """
+        Test that :func:`~plasmapy.utils.decorators.checks.check_units` is
+        properly defined.
+        """
+        # create mock function (mock_foo) from function to mock (self.foo_no_anno)
+        mock_foo = mock.Mock(side_effect=_foo_no_anno, name="mock_foo", autospec=True)
+        mock_foo.__name__ = "mock_foo"
+        mock_foo.__signature__ = inspect.signature(_foo_no_anno)
 
-                # test
-                args = case["setup"]["args"]
-                kwargs = case["setup"]["kwargs"]
-                assert wfoo(*args, **kwargs) == case["output"]
+        # test
+        for ii in range(2):
+            # decorate
+            if ii == 0:
+                # functional decorator call
+                wfoo = check_units(mock_foo, **case["setup"]["checks"])
+            elif ii == 1:
+                # sugar decorator call
+                #
+                #  @check_units(x=check)
+                #      def foo(x):
+                #          return x
+                #
+                wfoo = check_units(**case["setup"]["checks"])(mock_foo)
+            else:
+                continue
 
-                assert mock_cu_class.called
-                assert mock_foo.called
+            # test
+            args = case["setup"]["args"]
+            kwargs = case["setup"]["kwargs"]
+            assert wfoo(*args, **kwargs) == case["output"]
 
-                assert mock_cu_class.call_args[0] == ()
-                assert sorted(mock_cu_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys()
-                )
+            assert mock_cu_class.called
+            assert mock_foo.called
 
-                for arg_name, checks in case["setup"]["checks"].items():
-                    assert mock_cu_class.call_args[1][arg_name] == checks
+            assert mock_cu_class.call_args[0] == ()
+            assert sorted(mock_cu_class.call_args[1].keys()) == sorted(
+                case["setup"]["checks"].keys()
+            )
 
-                # reset
-                mock_cu_class.reset_mock()
-                mock_foo.reset_mock()
+            for arg_name, checks in case["setup"]["checks"].items():
+                assert mock_cu_class.call_args[1][arg_name] == checks
+
+            # reset
+            mock_cu_class.reset_mock()
+            mock_foo.reset_mock()
 
 
 # ----------------------------------------------------------------------------------------
@@ -722,56 +722,39 @@ class TestCheckValues:
 
     check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, bool]
 
-    @staticmethod
-    def foo(x, y):
-        return x + y
-
-    @staticmethod
-    def foo_stars(x, *args, y=3, **kwargs):
-        return x + y
-
     def test_inheritance(self):
         assert issubclass(CheckValues, CheckBase)
 
-    def test_cv_default_check_values(self):
-        """Test the default check dictionary for CheckValues"""
-        cv = CheckValues()
-        assert hasattr(cv, "_CheckValues__check_defaults")
-        assert isinstance(cv._CheckValues__check_defaults, dict)
-        _defaults = [
+    @pytest.mark.parametrize(
+        "key,val",
+        [
             ("can_be_negative", True),
             ("can_be_complex", False),
             ("can_be_inf", True),
             ("can_be_nan", True),
             ("none_shall_pass", False),
             ("can_be_zero", True),
-        ]
-        for key, val in _defaults:
-            assert cv._CheckValues__check_defaults[key] == val
+        ],
+    )
+    def test_cv_default_check_values(self, key, val):
+        """Test the default check dictionary for CheckValues"""
+        cv = CheckValues()
+        assert hasattr(cv, "_CheckValues__check_defaults")
+        assert isinstance(cv._CheckValues__check_defaults, dict)
+        assert cv._CheckValues__check_defaults[key] == val
 
-    def test_cv_method__get_value_checks(self):
-        """
-        Test functionality/behavior of the method `_get_value_checks` on `CheckValues`.
-        This method reviews the decorator `checks` arguments to build a complete
-        checks dictionary.
-        """
-        # methods must exist
-        assert hasattr(CheckValues, "_get_value_checks")
-
-        # setup default checks
-        default_checks = self.check_defaults.copy()
-
-        # setup test cases
-        # 'setup' = arguments for `_get_value_checks`
-        # 'output' = expected return from `_get_value_checks`
-        # 'raises' = if `_get_value_checks` raises an Exception
-        # 'warns' = if `_get_value_checks` issues a warning
-        #
-        _cases = [
+    # setup test cases
+    # 'setup' = arguments for `_get_value_checks`
+    # 'output' = expected return from `_get_value_checks`
+    # 'raises' = if `_get_value_checks` raises an Exception
+    # 'warns' = if `_get_value_checks` issues a warning
+    @pytest.mark.parametrize(
+        "case",
+        [
             # define some checks
             {
                 "setup": {
-                    "function": self.foo,
+                    "function": _foo_no_anno,
                     "args": (2, 3),
                     "kwargs": {},
                     "checks": {
@@ -798,7 +781,7 @@ class TestCheckValues:
             # arguments passed via *args and **kwargs are ignored
             {
                 "setup": {
-                    "function": self.foo_stars,
+                    "function": _foo_stars_no_anno,
                     "args": (2, "hello"),
                     "kwargs": {"z": None},
                     "checks": {
@@ -813,71 +796,67 @@ class TestCheckValues:
             # check argument is not a dictionary (default is assumed)
             {
                 "setup": {
-                    "function": self.foo,
+                    "function": _foo_no_anno,
                     "args": (2, 3),
                     "kwargs": {},
                     "checks": {"x": u.cm},
                 },
                 "output": {"x": {}},
             },
-        ]
-
-        # perform tests
-        for case in _cases:
-            sig = inspect.signature(case["setup"]["function"])
-            args = case["setup"]["args"]
-            kwargs = case["setup"]["kwargs"]
-            bound_args = sig.bind(*args, **kwargs)
-
-            cv = CheckValues(**case["setup"]["checks"])
-            cv.f = case["setup"]["function"]
-            if "warns" in case:
-                with pytest.warns(case["warns"]):
-                    checks = cv._get_value_checks(bound_args)
-            elif "raises" in case:
-                with pytest.raises(case["raises"]):
-                    cv._get_value_checks(bound_args)
-                continue
-            else:
-                checks = cv._get_value_checks(bound_args)
-
-            # only expected keys exist
-            assert sorted(checks.keys()) == sorted(case["output"].keys())
-
-            # if check key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
-                arg_checks = checks[arg_name]
-
-                for key in default_checks.keys():
-                    if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
-                    else:
-                        val = default_checks[key]
-
-                    assert arg_checks[key] == val
-
-    def test_cv_method__check_value(self):
+        ],
+    )
+    def test_cv_method__get_value_checks(self, case):
         """
-        Test functionality/behavior of the `_check_value` method on `CheckValues`.
-        This method does the actual checking of the argument values and should be
-        called by `CheckValues.__call__()`.
+        Test functionality/behavior of the method `_get_value_checks` on `CheckValues`.
+        This method reviews the decorator `checks` arguments to build a complete
+        checks dictionary.
         """
-        # setup wrapped function
-        cv = CheckValues()
-        wfoo = cv(self.foo)
-
         # methods must exist
-        assert hasattr(cv, "_check_value")
+        assert hasattr(CheckValues, "_get_value_checks")
 
         # setup default checks
         default_checks = self.check_defaults.copy()
 
-        # setup test cases
-        # 'setup' = arguments for `CheckUnits` and wrapped function
-        # 'raises' = if an Exception is expected to be raised
-        # 'warns' = if a warning is expected to be issued
-        #
-        _cases = [
+        # perform test
+        sig = inspect.signature(case["setup"]["function"])
+        args = case["setup"]["args"]
+        kwargs = case["setup"]["kwargs"]
+        bound_args = sig.bind(*args, **kwargs)
+
+        cv = CheckValues(**case["setup"]["checks"])
+        cv.f = case["setup"]["function"]
+        if "warns" in case:
+            with pytest.warns(case["warns"]):
+                checks = cv._get_value_checks(bound_args)
+        elif "raises" in case:
+            with pytest.raises(case["raises"]):
+                cv._get_value_checks(bound_args)
+            pytest.skip()
+        else:
+            checks = cv._get_value_checks(bound_args)
+
+        # only expected keys exist
+        assert sorted(checks.keys()) == sorted(case["output"].keys())
+
+        # if check key-value not specified then default is assumed
+        for arg_name in case["output"].keys():
+            arg_checks = checks[arg_name]
+
+            for key in default_checks.keys():
+                if key in case["output"][arg_name]:
+                    val = case["output"][arg_name][key]
+                else:
+                    val = default_checks[key]
+
+                assert arg_checks[key] == val
+
+    # setup test cases
+    # 'setup' = arguments for `CheckUnits` and wrapped function
+    # 'raises' = if an Exception is expected to be raised
+    # 'warns' = if a warning is expected to be issued
+    @pytest.mark.parametrize(
+        "case",
+        [
             # tests for check 'can_be_negative'
             {
                 "input": {
@@ -890,7 +869,7 @@ class TestCheckValues:
                         np.array([-4.0, 3.0]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_negative": False},
+                    "checks": {"can_be_negative": False},
                 },
                 "raises": ValueError,
             },
@@ -905,7 +884,7 @@ class TestCheckValues:
                         np.array([-4.0, 3.0]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_negative": True},
+                    "checks": {"can_be_negative": True},
                 }
             },
             # tests for check 'can_be_complex'
@@ -919,7 +898,7 @@ class TestCheckValues:
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],
                     "arg_name": "checks_on_return",
-                    "checks": {**default_checks, "can_be_complex": False},
+                    "checks": {"can_be_complex": False},
                 },
                 "raises": ValueError,
             },
@@ -933,7 +912,7 @@ class TestCheckValues:
                         np.array([complex(4, 5), complex(1)]) * u.kg,
                     ],
                     "arg_name": "checks_on_return",
-                    "checks": {**default_checks, "can_be_complex": True},
+                    "checks": {"can_be_complex": True},
                 }
             },
             # tests for check 'can_be_inf'
@@ -946,7 +925,7 @@ class TestCheckValues:
                         np.array([1.0, 2.0, np.inf, np.inf]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_inf": False},
+                    "checks": {"can_be_inf": False},
                 },
                 "raises": ValueError,
             },
@@ -959,7 +938,7 @@ class TestCheckValues:
                         np.array([1.0, 2.0, np.inf, np.inf]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_inf": True},
+                    "checks": {"can_be_inf": True},
                 }
             },
             # tests for check 'can_be_nan'
@@ -972,7 +951,7 @@ class TestCheckValues:
                         np.array([1.0, 2.0, np.nan, np.nan]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_nan": False},
+                    "checks": {"can_be_nan": False},
                 },
                 "raises": ValueError,
             },
@@ -985,7 +964,7 @@ class TestCheckValues:
                         np.array([1.0, 2.0, np.nan, np.nan]) * u.kg,
                     ],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_nan": True},
+                    "checks": {"can_be_nan": True},
                 }
             },
             # tests for check 'none_shall_pass'
@@ -993,7 +972,7 @@ class TestCheckValues:
                 "input": {
                     "args": [None],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "none_shall_pass": False},
+                    "checks": {"none_shall_pass": False},
                 },
                 "raises": ValueError,
             },
@@ -1001,7 +980,7 @@ class TestCheckValues:
                 "input": {
                     "args": [None],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "none_shall_pass": True},
+                    "checks": {"none_shall_pass": True},
                 }
             },
             # tests for check 'can_be_zero'
@@ -1009,7 +988,7 @@ class TestCheckValues:
                 "input": {
                     "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_zero": False},
+                    "checks": {"can_be_zero": False},
                 },
                 "raises": ValueError,
             },
@@ -1017,41 +996,53 @@ class TestCheckValues:
                 "input": {
                     "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg],
                     "arg_name": "arg",
-                    "checks": {**default_checks, "can_be_zero": True},
+                    "checks": {"can_be_zero": True},
                 }
             },
-        ]
+        ],
+    )
+    def test_cv_method__check_value(self, case):
+        """
+        Test functionality/behavior of the `_check_value` method on `CheckValues`.
+        This method does the actual checking of the argument values and should be
+        called by `CheckValues.__call__()`.
+        """
+        # setup wrapped function
+        cv = CheckValues()
+        wfoo = cv(_foo_no_anno)
+
+        # methods must exist
+        assert hasattr(cv, "_check_value")
+
+        # setup default checks
+        default_checks = self.check_defaults.copy()
 
         # test
-        for case in _cases:
-            arg_name = case["input"]["arg_name"]
-            checks = case["input"]["checks"]
+        arg_name = case["input"]["arg_name"]
+        checks = dict(default_checks, **case["input"]["checks"])
 
-            for arg in case["input"]["args"]:
-                if "raises" in case:
-                    with pytest.raises(case["raises"]):
-                        cv._check_value(arg, arg_name, checks)
-                elif "warns" in case:
-                    with pytest.warns(case["warns"]):
-                        cv._check_value(arg, arg_name, checks)
-                else:
-                    assert cv._check_value(arg, arg_name, checks) is None
+        for arg in case["input"]["args"]:
+            if "raises" in case:
+                with pytest.raises(case["raises"]):
+                    cv._check_value(arg, arg_name, checks)
+            elif "warns" in case:
+                with pytest.warns(case["warns"]):
+                    cv._check_value(arg, arg_name, checks)
+            else:
+                assert cv._check_value(arg, arg_name, checks) is None
 
-    def test_cv_called_as_decorator(self):
-        """
-        Test behavior of `CheckValues.__call__` (i.e. used as a decorator).
-        """
-        # setup test cases
-        # 'setup' = arguments for `CheckUnits` and wrapped function
-        # 'output' = expected return from wrapped function
-        # 'raises' = if an Exception is expected to be raised
-        # 'warns' = if a warning is expected to be issued
-        #
-        _cases = [
+    # setup test cases
+    # 'setup' = arguments for `CheckUnits` and wrapped function
+    # 'output' = expected return from wrapped function
+    # 'raises' = if an Exception is expected to be raised
+    # 'warns' = if a warning is expected to be issued
+    @pytest.mark.parametrize(
+        "case",
+        [
             # clean execution
             {
                 "setup": {
-                    "function": self.foo,
+                    "function": _foo_no_anno,
                     "args": (2, -3),
                     "kwargs": {},
                     "checks": {
@@ -1065,7 +1056,7 @@ class TestCheckValues:
             # argument fails checks
             {
                 "setup": {
-                    "function": self.foo,
+                    "function": _foo_no_anno,
                     "args": (2, -3),
                     "kwargs": {},
                     "checks": {
@@ -1079,7 +1070,7 @@ class TestCheckValues:
             # return fails checks
             {
                 "setup": {
-                    "function": self.foo,
+                    "function": _foo_no_anno,
                     "args": (2, -3),
                     "kwargs": {},
                     "checks": {
@@ -1090,20 +1081,24 @@ class TestCheckValues:
                 },
                 "raises": ValueError,
             },
-        ]
+        ],
+    )
+    def test_cv_called_as_decorator(self, case):
+        """
+        Test behavior of `CheckValues.__call__` (i.e. used as a decorator).
+        """
 
         # test on function
-        for case in _cases:
-            wfoo = CheckValues(**case["setup"]["checks"])(case["setup"]["function"])
+        wfoo = CheckValues(**case["setup"]["checks"])(case["setup"]["function"])
 
-            args = case["setup"]["args"]
-            kwargs = case["setup"]["kwargs"]
+        args = case["setup"]["args"]
+        kwargs = case["setup"]["kwargs"]
 
-            if "raises" in case:
-                with pytest.raises(case["raises"]):
-                    wfoo(*args, **kwargs)
-            else:
-                assert wfoo(*args, **kwargs) == case["output"]
+        if "raises" in case:
+            with pytest.raises(case["raises"]):
+                wfoo(*args, **kwargs)
+        else:
+            assert wfoo(*args, **kwargs) == case["output"]
 
         # test on class method
         class Foo:
@@ -1126,32 +1121,18 @@ class TestCheckValues:
         """Test CheckValues preserves signature of wrapped function."""
         # I'd like to directly test the @preserve_signature is used (??)
 
-        wfoo = CheckValues()(self.foo)
+        wfoo = CheckValues()(_foo_no_anno)
         assert hasattr(wfoo, "__signature__")
-        assert wfoo.__signature__ == inspect.signature(self.foo)
+        assert wfoo.__signature__ == inspect.signature(_foo_no_anno)
 
-    @mock.patch(
-        CheckValues.__module__ + "." + CheckValues.__qualname__,
-        side_effect=CheckValues,
-        autospec=True,
-    )
-    def test_decorator_func_def(self, mock_cv_class):
-        """
-        Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
-        properly defined.
-        """
-        # create mock function (mock_foo) from function to mock (self.foo)
-        mock_foo = mock.Mock(side_effect=self.foo, name="mock_foo", autospec=True)
-        mock_foo.__name__ = "mock_foo"
-        mock_foo.__signature__ = inspect.signature(self.foo)
-
-        # setup test cases
-        # 'setup' = arguments for `check_units` and wrapped function
-        # 'output' = expected return from wrapped function
-        # 'raises' = a raised Exception is expected
-        # 'warns' = an issued warning is expected
-        #
-        _cases = [
+    # setup test cases
+    # 'setup' = arguments for `check_units` and wrapped function
+    # 'output' = expected return from wrapped function
+    # 'raises' = a raised Exception is expected
+    # 'warns' = an issued warning is expected
+    @pytest.mark.parametrize(
+        "case",
+        [
             # only argument checks
             {
                 "setup": {
@@ -1176,43 +1157,58 @@ class TestCheckValues:
                 },
                 "output": -1,
             },
-        ]
-        for case in _cases:
-            for ii in range(2):
-                # decorate
-                if ii == 0:
-                    # functional decorator call
-                    wfoo = check_values(mock_foo, **case["setup"]["checks"])
-                elif ii == 1:
-                    # sugar decorator call
-                    #
-                    #  @check_values(x=check)
-                    #      def foo(x):
-                    #          return x
-                    #
-                    wfoo = check_values(**case["setup"]["checks"])(mock_foo)
-                else:
-                    continue
+        ],
+    )
+    @mock.patch(
+        CheckValues.__module__ + "." + CheckValues.__qualname__,
+        side_effect=CheckValues,
+        autospec=True,
+    )
+    def test_decorator_func_def(self, mock_cv_class, case):
+        """
+        Test that :func:`~plasmapy.utils.decorators.checks.check_values` is
+        properly defined.
+        """
+        # create mock function (mock_foo) from function to mock (_foo_no_anno)
+        mock_foo = mock.Mock(side_effect=_foo_no_anno, name="mock_foo", autospec=True)
+        mock_foo.__name__ = "mock_foo"
+        mock_foo.__signature__ = inspect.signature(_foo_no_anno)
 
-                # test
-                args = case["setup"]["args"]
-                kwargs = case["setup"]["kwargs"]
-                assert wfoo(*args, **kwargs) == case["output"]
+        for ii in range(2):
+            # decorate
+            if ii == 0:
+                # functional decorator call
+                wfoo = check_values(mock_foo, **case["setup"]["checks"])
+            elif ii == 1:
+                # sugar decorator call
+                #
+                #  @check_values(x=check)
+                #      def foo(x):
+                #          return x
+                #
+                wfoo = check_values(**case["setup"]["checks"])(mock_foo)
+            else:
+                continue
 
-                assert mock_cv_class.called
-                assert mock_foo.called
+            # test
+            args = case["setup"]["args"]
+            kwargs = case["setup"]["kwargs"]
+            assert wfoo(*args, **kwargs) == case["output"]
 
-                assert mock_cv_class.call_args[0] == ()
-                assert sorted(mock_cv_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys()
-                )
+            assert mock_cv_class.called
+            assert mock_foo.called
 
-                for arg_name, checks in case["setup"]["checks"].items():
-                    assert mock_cv_class.call_args[1][arg_name] == checks
+            assert mock_cv_class.call_args[0] == ()
+            assert sorted(mock_cv_class.call_args[1].keys()) == sorted(
+                case["setup"]["checks"].keys()
+            )
 
-                # reset
-                mock_cv_class.reset_mock()
-                mock_foo.reset_mock()
+            for arg_name, checks in case["setup"]["checks"].items():
+                assert mock_cv_class.call_args[1][arg_name] == checks
+
+            # reset
+            mock_cv_class.reset_mock()
+            mock_foo.reset_mock()
 
 
 # ----------------------------------------------------------------------------------------
