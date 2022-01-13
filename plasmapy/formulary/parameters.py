@@ -1483,7 +1483,7 @@ def plasma_frequency_lite(
     same plasma frequency calculation as
     `~plasmapy.formulary.parameters.plasma_frequency`, but is intended
     for computational use and, thus, has all data conditioning
-    safe-guards removed.
+    safeguards removed.
 
     Parameters
     ----------
@@ -1495,8 +1495,8 @@ def plasma_frequency_lite(
 
     z_mean : `~numbers.Real`
         The average ionization (arithmetic mean) for the particle
-        species in the plasma.  For example, an electron would have a
-        value of ``z_mean=1``.
+        species in the plasma.  For example, a proton would have a value
+        of ``z_mean=1``.
 
     to_hz : `bool`
         (Default `False`) Set `True` to apply the factor of
@@ -1521,8 +1521,8 @@ def plasma_frequency_lite(
     fundamental unit of charge, :math:`Z` is the average charge state
     ``z_mean`` of the particle species, :math:`n` is the particle number
     density.  This form of the plasma frequency has units of
-    radians / s, but using the ``to_hz`` will apply the factor of
-    :math:`1/2π` to give a value in Hz.
+    radians / s, but when using the ``to_hz`` keyword a factor of
+    :math:`1/2π` will be applied to give a value in Hz.
 
     Examples
     --------
