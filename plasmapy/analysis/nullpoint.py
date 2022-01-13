@@ -50,7 +50,7 @@ class NullPoint(Point):
 
 
 def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
-    """
+    r"""
         Returns a vector space in the form of a multi-dimensional array.
 
         Parameters
@@ -110,7 +110,7 @@ def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
 
 
 def trilinear_coeff_cal(vspace, cell):
-    """
+    r"""
     Returns the coefficients for the trilinear approximation function
     on a given grid cell in a given vector space.
 
@@ -230,7 +230,7 @@ def trilinear_coeff_cal(vspace, cell):
 
 
 def trilinear_approx(vspace, cell):
-    """
+    r"""
     Returns a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated vector value at that particular
     coordinate in that grid cell.
@@ -311,7 +311,7 @@ def trilinear_approx(vspace, cell):
 
 
 def jacobian(vspace, cell):
-    """
+    r"""
     Returns a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated jacobian matrix for that particular
     coordinate in that grid cell.
@@ -384,7 +384,7 @@ def jacobian(vspace, cell):
 
 
 def reduction(vspace, cell):
-    """
+    r"""
     Return a true or false based on weather
     a grid cell passes the reduction phase,
     meaning that they potentionally contain a null point.
@@ -467,7 +467,7 @@ def reduction(vspace, cell):
 
 
 def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
-    """
+    r"""
     Return the roots of a pair of bilinear equations of the following format.
     a1+b1x+c1y+d1xy=0
     a2+b2x+c2y+d2xy=0
@@ -550,7 +550,7 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
 
 def trillinear_analysis(vspace, cell):
-    """
+    r"""
     Return a true or false value based on weather
     a grid cell which has passed the reduction step,
     contains a null point, using trilinear analysis.
@@ -1039,7 +1039,7 @@ def trillinear_analysis(vspace, cell):
 
 
 def locate_null_point(vspace, cell, n, err):
-    """
+    r"""
     Return the coordinates of a nullpoint within
     a given grid cell in a vector space using the
     Newton-Rapshon method.
@@ -1199,7 +1199,7 @@ def locate_null_point(vspace, cell, n, err):
 
 
 def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
-    """
+    r"""
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
 
@@ -1263,9 +1263,9 @@ def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
     return nullpoints
 
 
-"""
-Testing and Examples
-"""
+# """
+# Testing and Examples
+# """
 #
 # # def vector_Space_Func(x,y,z):
 # #     return [2*y-z-5.5, 3*x+z-22, x**2-11*x+y+24.75]
