@@ -1,13 +1,17 @@
-import matplotlib.pyplot as plt
+"""Functions to find the nullpoints of a 3D vector space using a trilinear method."""
 import numpy as np
 import warnings
 
-# Declare Constants
+# Declare Constants & global variables
 ATOL = 10 ** (-10)
 MAX_DIVIDE = 10
-
+global divide
+divide = 0
 
 class Point:
+    """
+        Abstract class for defining a point in 3D space.
+    """
     def __init__(self, loc, field):
         self.loc = loc
         self.type = type
@@ -21,6 +25,9 @@ class Point:
 
 
 class NullPoint(Point):
+    """
+        A class for defining a null point in 3D space.
+    """
     def __init__(self, null_loc, type):
         super().__init__(null_loc, [0, 0, 0])
         self.type = type
@@ -40,6 +47,48 @@ class NullPoint(Point):
 
 
 def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
+    """
+        Returns a vector space in the form of a multi-dimensional array.
+
+        Parameters
+        ----------
+
+        x_range: 'float[]'
+        A 1 by 2 array containing the range of x-vlaues for the vector spaces.
+
+        y_range: 'float[]'
+        A 1 by 2 array containing the range of y-vlaues for the vector spaces.
+
+        z_range: 'float[]'
+        A 1 by 2 array containing the range of z-vlaues for the vector spaces.
+
+        precision: 'float[]'
+        A 1 by 3 array containing the approximate precision values for each dimension.
+        The default value is [0.01, 0.01, 0.01].
+
+        Returns
+        -------
+        ''
+            A 1 by 3 array with \
+            the first element containing the coordinates.
+            the second element containing the vector values.
+            and the third element containing the exact precisions for each dimension.
+
+        Raises
+        ------
+
+
+        Warns
+        -----
+
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+    """
     x_den = int(np.around((x_range[1] - x_range[0]) / precision[0]) + 1)
     y_den = int(np.around((y_range[1] - y_range[0]) / precision[1]) + 1)
     z_den = int(np.around((z_range[1] - z_range[0]) / precision[2]) + 1)
@@ -50,9 +99,6 @@ def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
         indexing="ij",
     )
     u, v, w = func(x, y, z)
-    # ax = plt.figure().add_subplot(projection='3d')
-    # ax.quiver(x, y, z, u, v, w, length=0.2, normalize=True)
-    # plt.show()
     dx = np.double((x_range[1] - x_range[0]) / (x_den - 1))
     dy = np.double((y_range[1] - y_range[0]) / (y_den - 1))
     dz = np.double((z_range[1] - z_range[0]) / (z_den - 1))
@@ -61,6 +107,47 @@ def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
 
 
 def trilinear_coeff_cal(vspace, cell):
+    """
+        Returns the coefficients for the trilinear approximation function
+        on a given grid cell in a given vector space.
+
+        Parameters
+        ----------
+
+        vspace: ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+
+        Returns
+        -------
+        ''
+        Returns a 1 by 3 array with
+        the first element containing the coefficients for the trilinear approximation function
+        for the x-component of the vector space,
+        the second element containing the coefficients for the trilinear approximation function
+        for the y-component of the vector space, and
+        the third element containing the coefficients for the trilinear approximation function
+        for the z-component of the vector space.
+
+
+        Raises
+        ------
+
+
+        Warns
+        -----
+
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+    """
     u, v, w = vspace[1]
     deltax, deltay, deltaz = vspace[2]
     f000 = cell
@@ -126,9 +213,9 @@ def trilinear_coeff_cal(vspace, cell):
         ]
     )
 
-    ax, bx, cx, dx, ex, fx, gx, hx = np.linalg.solve(A, sx)
-    ay, by, cy, dy, ey, fy, gy, hy = np.linalg.solve(A, sy)
-    az, bz, cz, dz, ez, fz, gz, hz = np.linalg.solve(A, sz)
+    ax, bx, cx, dx, ex, fx, gx, hx = np.linalg.solve(A, sx).reshape(1,8)[0]
+    ay, by, cy, dy, ey, fy, gy, hy = np.linalg.solve(A, sy).reshape(1,8)[0]
+    az, bz, cz, dz, ez, fz, gz, hz = np.linalg.solve(A, sz).reshape(1,8)[0]
 
     return np.array(
         [
@@ -140,6 +227,45 @@ def trilinear_coeff_cal(vspace, cell):
 
 
 def trilinear_approx(vspace, cell):
+    """
+        Returns a function whose input is a coordinate within a given grid cell
+        and returns the trilinearly approximated vector value at that particular
+        coordinate in that grid cell.
+
+
+        Parameters
+        ----------
+
+        vspace: ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+
+        Returns
+        -------
+        ''
+        A function whose input is a coordinate within a given grid cell
+        and returns the trilinearly approximated vector value at that particular
+        coordinate in that grid cell.
+
+
+        Raises
+        ------
+
+
+        Warns
+        -----
+
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+    """
     # Calculating coefficients
     ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
     ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
@@ -182,6 +308,45 @@ def trilinear_approx(vspace, cell):
 
 
 def jacobian(vspace, cell):
+    """
+        Returns a function whose input is a coordinate within a given grid cell
+        and returns the trilinearly approximated jacobian matrix for that particular
+        coordinate in that grid cell.
+
+
+        Parameters
+        ----------
+
+        vspace: ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+
+        Returns
+        -------
+        ''
+        A function whose input is a coordinate within a given grid cell
+        and returns the trilinearly approximated jacobian matrix for that particular
+        coordinate in that grid cell.
+
+
+        Raises
+        ------
+
+
+        Warns
+        -----
+
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+    """
     # Calculating coefficients
     ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
     ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
@@ -215,41 +380,44 @@ def jacobian(vspace, cell):
     return jacobian_func
 
 
-"""
-    Return a true or false based on weather
-    a grid cell passes the reduction phase.
-
-    Parameters
-    ----------
-
-    vspace :
-
-    cell:
-
-    Returns
-    -------
-    doesPassReduction : bool
-        True if a grid cell passes the reduction phase.
-        False, otherwise.
-
-    Raises
-    ------
-
-
-    Warns
-    -----
-
-
-    Notes
-    -----
-
-
-    Examples
-    --------
-"""
-
-
 def reduction(vspace, cell):
+    """
+        Return a true or false based on weather
+        a grid cell passes the reduction phase,
+        meaning that they potentionally contain a null point.
+
+        Parameters
+        ----------
+
+        vspace : ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+        Returns
+        -------
+        bool
+            True if a grid cell passes the reduction phase.
+            False, otherwise.
+
+        Raises
+        ------
+        This function does not raise any exceptions.
+
+        Warns
+        -----
+        This function does not raise any warnings.
+
+        Notes
+        -----
+        Depending on the grid resolution, a cell containing more than
+        one nullpoint may not pass reduction, so it would not be detected.
+
+        Examples
+        --------
+        N/A
+    """
     u, v, w = vspace[1]
     f000 = cell
     f001 = [cell[0], cell[1], cell[2] + 1]
@@ -295,45 +463,43 @@ def reduction(vspace, cell):
     return doesPassReduction
 
 
-"""
-    Return the roots of a pair of bilinear equations of the following format.
-    a1+b1x+c1y+d1xy=0
-    a2+b2x+c2y+d2xy=0
-
-    Parameters
-    ----------
-    a1: float
-    b1: float
-    c1: float
-    d1: float
-    a2: float
-    b2: float
-    c2: float
-    d2: float
-
-    Returns
-    -------
-    roots : float[]
-        A 1 by 2 array holding the two roots
-
-    Raises
-    ------
-
-
-    Warns
-    -----
-
-
-    Notes
-    -----
-
-
-    Examples
-    --------
-"""
-
-
 def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+    """
+        Return the roots of a pair of bilinear equations of the following format.
+        a1+b1x+c1y+d1xy=0
+        a2+b2x+c2y+d2xy=0
+
+        Parameters
+        ----------
+        a1: 'float'
+        b1: 'float'
+        c1: 'float'
+        d1: 'float'
+        a2: 'float'
+        b2: 'float'
+        c2: 'float'
+        d2: 'float'
+
+        Returns
+        -------
+        roots : float[]
+            A 1 by 2 array containing the two roots
+
+        Raises
+        ------
+
+
+        Warns
+        -----
+
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+    """
     m1 = np.array([[a1, a2], [c1, c2]])
     m2 = np.array([[a1, a2], [d1, d2]])
     m3 = np.array([[b1, b2], [c1, c2]])
@@ -381,6 +547,44 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
 
 def trillinear_analysis(vspace, cell):
+    """
+        Return a true or false value based on weather
+        a grid cell which has passed the reduction step,
+        contains a null point, using trilinear analysis.
+
+        Parameters
+        ----------
+
+        vspace : ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+        Returns
+        -------
+        bool
+            True if a grid cell contains a nullpoint using trilinear analysis.
+            False, otherwise.
+
+        Raises
+        ------
+        This function does not raise any exceptions.
+
+        Warns
+        -----
+        :'UserWarning'
+            If there is a possible lack of grid resolution, so
+            that a grid cell may contain more than one nullpoint.
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+        N/A
+    """
     # Helper Function
     def is_close(a, b):
         arr = np.isclose(a, b, atol=ATOL)
@@ -399,21 +603,6 @@ def trillinear_analysis(vspace, cell):
     ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
     ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
     az, bz, cz, dz, ez, fz, gz, hz = trilinear_coeff_cal(vspace, cell)[2]
-
-    # Normalizing coefficients
-    coeffs = [
-        [ax, bx, cx, dx, ex, fx, gx, hx],
-        [ay, by, cy, dy, ey, fy, gy, hy],
-        [az, bz, cz, dz, ez, fz, gz, hz],
-    ]
-    normalized_coeffs = []
-    for elem in coeffs:
-        normalized_coeffs.append(list(map(lambda arr: float(arr[0]), elem)))
-
-    ax, bx, cx, dx, ex, fx, gx, hx = normalized_coeffs[0]
-    ay, by, cy, dy, ey, fy, gy, hy = normalized_coeffs[1]
-    az, bz, cz, dz, ez, fz, gz, hz = normalized_coeffs[2]
-    # print(ax, bx, cx, dx, ex, fx, gx, hx)
 
     # Initial Position of the cell corner
     initial = np.array(
@@ -846,14 +1035,68 @@ def trillinear_analysis(vspace, cell):
     return isNullPoint
 
 
-global divide
-divide = 0
-
-
 def locate_null_point(vspace, cell, n, err):
-    global divide
-    # def get_starting_pos():
+    """
+        Return the coordinates of a nullpoint within
+        a given grid cell in a vector space using the
+        Newton-Rapshon method.
+        Multiple initial position are tried until either
+        one converges inside a the grid cell, or the maximum
+        iteration is reached.
+        If neither occurs, more starting positions are tried,
+        by breaking up the cell into 8 smaller sub-grid cells,
+        until one starting position does converge or stop inside
+        the grid cell.
+        This process is repeated a finite amount of times, after which
+        the function returns None.
 
+
+        Parameters
+        ----------
+
+        vspace : ''
+        The vector space
+
+        cell: ''
+        A grid cell
+
+        n: 'int'
+        The maximum number of times the iterative step
+        of the Newton-Raphson method is repeated.
+
+        err: 'float'
+        The threshold/error that determines if convergence has occured
+        using the Newton-Raphson method.
+
+        Returns
+        -------
+        'float[]'
+            A 1 by 3 array containing the converged coordinates of the
+            nullpoint.
+        'NoneType'
+            None if the coordinates of the nullpoint could not be converged
+            at a point inside the grid cell.
+
+        Raises
+        ------
+        This function does not raise any exceptions.
+
+        Warns
+        -----
+        :'UserWarning'
+            If the maximum number of iteration has been
+            reached, but convergence has not occurred.
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+        N/A
+    """
+
+    global divide
     # Calculating the Jacobian and trillinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = jacobian(vspace, cell)
@@ -952,14 +1195,59 @@ def locate_null_point(vspace, cell, n, err):
     return nullpoint(new_vspace)
 
 
-def inNullList(elem, lst):
-    for p in lst:
-        if p.isEqual(elem):
-            return True
-    return False
+
 
 
 def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
+    """
+        Returns an array of nullpoint object, representing
+        the nullpoints of the given vector space.
+
+
+        Parameters
+        ----------
+
+        vspace : ''
+        The vector space
+
+        MAX_ITERATIONS: 'int'
+        The maximum iterations of the Newton-Raphson method.
+        The default value is 500.
+
+        err: 'float'
+        The threshold/error that determines if convergence has occured
+        using the Newton-Raphson method.
+        The default value is 10**(-10).
+
+
+        Returns
+        -------
+        '<class '__main__.NullPoint'>[]'
+            An array of NullPoint objects representing the nullpoints
+            of the given vector space.
+
+        Raises
+        ------
+        This function does not raise any exceptions.
+
+        Warns
+        -----
+        This function does not raise any warnings.
+
+        Notes
+        -----
+
+
+        Examples
+        --------
+        N/A
+    """
+    #Helper Function
+    def in_null_list(elem, lst):
+        for p in lst:
+            if p.isEqual(elem):
+                return True
+        return False
     nullpoints = []
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
@@ -968,8 +1256,8 @@ def nullpoint(vspace, MAX_ITERATIONS=500, err=10 ** (-10)):
                     if trillinear_analysis(vspace, [i, j, k]):
                         loc = locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
                         if not isinstance(loc, type(None)):
-                            p = NullPoint(loc, "V")
-                            if not inNullList(p, nullpoints):
+                            p = NullPoint(loc, "N/A")
+                            if not in_null_list(p, nullpoints):
                                 nullpoints.append(p)
     return nullpoints
 
@@ -1017,7 +1305,7 @@ Testing and Examples
 #     return [a, b, c]
 #
 #
-# vspace1 = vector_space(vector_Space_Func, [0, 4], [0, 4], [0, 4], [1, 1, 1])
+# vspace1 = vector_space(vector_Space_Func, [0, 4], [0, 4], [0, 4], [0.1, 0.1, 0.1])
 # npoints = nullpoint(vspace1)
 # if len(npoints) == 0:
 #     print("No Nullpoints Found.")
