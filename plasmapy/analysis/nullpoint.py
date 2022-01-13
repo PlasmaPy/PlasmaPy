@@ -1,4 +1,19 @@
-"""Functions to find the nullpoints of a 3D vector space using a trilinear method."""
+"""Functions to find the null points of a 3D vector space using a trilinear method."""
+
+__all__ = ["Point",
+           "NullPoint",
+           "vector_space",
+           "bilinear_root",
+           "jacobian",
+           "locate_null_point",
+           "nullpoint",
+           "reduction",
+           "trilinear_approx",
+           "trilinear_coeff_cal",
+           "trillinear_analysis"
+           ]
+
+
 import numpy as np
 import warnings
 
@@ -72,7 +87,7 @@ def vector_space(func, x_range, y_range, z_range, precision=[0.01, 0.01, 0.01]):
         Returns
         -------
         ''
-            A 1 by 3 array with \
+            A 1 by 3 array with
             the first element containing the coordinates.
             the second element containing the vector values.
             and the third element containing the exact precisions for each dimension.
