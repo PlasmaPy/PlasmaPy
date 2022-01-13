@@ -1,1 +1,1 @@
-Created lite-function `~plasmapy.formulary.parameters.plasmapy_frequency_lite`.
+Created :term:`lite-function` `~plasmapy.formulary.parameters.plasmapy_frequency_lite`.
