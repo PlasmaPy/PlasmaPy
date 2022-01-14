@@ -189,7 +189,7 @@ def _validate_arguments_and_annotations(
             )
 
 
-def get_particle(
+def _get_particle(
     argname,
     params,
     already_particle,
@@ -339,7 +339,7 @@ def _get_new_kwargs(
                 particle = None
             else:
                 params = (argval, Z, mass_numb)
-                particle = get_particle(
+                particle = _get_particle(
                     argname,
                     params,
                     already_particle,
