@@ -1,8 +1,8 @@
 .. _plasmapy-calculator:
 
-===================
+=================
 Plasma Calculator
-===================
+=================
 
 .. currentmodule:: plasmapy.utils.calculator
 
