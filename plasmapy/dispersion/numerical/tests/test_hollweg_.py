@@ -148,7 +148,11 @@ class TestHollweg:
                 0.5,
             ),
             (  # beta = 2 for kx*L = 0
-                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.10232e-8 * u.T},
+                {
+                    **_kwargs_hollweg1999,
+                    "k": 1e-14 * u.rad / u.m,
+                    "B": 1.10232e-8 * u.T,
+                },
                 1 + 0j,
                 2,
             ),
@@ -191,7 +195,7 @@ class TestHollweg:
         The WebPlotDigitizer software was used to determine the test
         parameters for k, B, and expected omega from Figure 2 of
         Hollweg1999.
-        
+
         - GitHub: https://github.com/ankitrohatgi/WebPlotDigitizer
         - Web Version: https://automeris.io/WebPlotDigitizer/
         """
