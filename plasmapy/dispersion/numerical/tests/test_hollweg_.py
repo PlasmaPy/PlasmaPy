@@ -117,11 +117,12 @@ class TestHollweg:
             hollweg(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        "kwargs, expected, desired_beta",
         [
             (  # beta = 1/20 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
                 1 + 0j,
+                1/20,
             ),
             (  # beta = 1/20 for kx*L = 1
                 {
@@ -130,10 +131,12 @@ class TestHollweg:
                     "B": 6.971e-8 * u.T,
                 },
                 1.4018 + 0j,
+                1/20,
             ),
             (  # beta = 1/2 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 2.205e-8 * u.T},
                 1 + 0j,
+                0.5,
             ),
             (  # beta = 1/2 for kx*L = 1
                 {
@@ -142,10 +145,12 @@ class TestHollweg:
                     "B": 2.205e-8 * u.T,
                 },
                 1.3536 + 0j,
+                0.5,
             ),
             (  # beta = 2 for kx*L = 0
                 {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.097e-8 * u.T},
                 1 + 0j,
+                2,
             ),
             (  # beta = 2 for kx*L = 1
                 {
@@ -154,6 +159,7 @@ class TestHollweg:
                     "B": 1.097e-8 * u.T,
                 },
                 1.2607 + 0j,
+                2,
             ),
             (
                 {
@@ -162,6 +168,7 @@ class TestHollweg:
                     "B": 6.97178e-7 * u.T,
                 },
                 1 + 0j,
+                1/2000,
             ),
             (  # beta = 1/2000 for kx*L = 1
                 {
@@ -170,32 +177,42 @@ class TestHollweg:
                     "B": 6.97178e-7 * u.T,
                 },
                 0.98750 + 0j,
+                1/2000,
             ),
         ],
     )
     def test_hollweg1999_vals(self, kwargs, expected):
         """
         Test calculated values based on Figure 2 of Hollweg1999
-        (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of Bellan 2012
-        (DOI: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856).
+        (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of
+        Bellan 2012
+        (DOI: https://doi.org/10.1029/2012JA017856).
 
-        The WebPlotDigitizer software (https://automeris.io/WebPlotDigitizer/)
-        was used to determine the values in Figure 2 of Hollweg1999.
+        The WebPlotDigitizer software was used to determine the test
+        parameters for k, B, and expected omega from Figure 2 of
+        Hollweg1999.
+        
+        - GitHub: https://github.com/ankitrohatgi/WebPlotDigitizer
+        - Web Version: https://automeris.io/WebPlotDigitizer/
         """
         # k values need to be single valued for this test to function correctly
 
         cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
         va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
-        wci = pfp.wc_(kwargs["B"], kwargs["ion"]).value
 
-        L = cs / np.abs(wci)
-        kx = (np.sin(kwargs["theta"]) * kwargs["k"]).value
+        beta = (cs / va) ** 2
+        if not np.isclose(beta, desired_beta, atol=2e-4):
+            pytest.fail(
+                f"The Holweg 1999 paper requires a 'beta' value of {desired_beta:0.5f} "
+                f"and the test parameters yielded {beta:.6f}."
+            )
+
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
 
         w_alfven = (hollweg(**kwargs)["alfven_mode"]).value
         big_omega = np.abs(w_alfven / (kz * va))
 
-        assert np.isclose(big_omega, expected, atol=1e-2)
+        np.testing.assert_allclose(big_omega, expected, rtol=1e-2)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
