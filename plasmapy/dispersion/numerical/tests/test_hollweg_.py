@@ -148,7 +148,7 @@ class TestHollweg:
                 0.5,
             ),
             (  # beta = 2 for kx*L = 0
-                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.097e-8 * u.T},
+                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 1.10232e-8 * u.T},
                 1 + 0j,
                 2,
             ),
@@ -156,12 +156,12 @@ class TestHollweg:
                 {
                     **_kwargs_hollweg1999,
                     "k": 0.00000691190063354451 * u.rad / u.m,
-                    "B": 1.097e-8 * u.T,
+                    "B": 1.10232e-8 * u.T,
                 },
                 1.2607 + 0j,
                 2,
             ),
-            (
+            (  # beta = 1/2000 for kx*L = 0
                 {
                     **_kwargs_hollweg1999,
                     "k": 1e-14 * u.rad / u.m,
@@ -181,7 +181,7 @@ class TestHollweg:
             ),
         ],
     )
-    def test_hollweg1999_vals(self, kwargs, expected):
+    def test_hollweg1999_vals(self, kwargs, expected, desired_beta):
         """
         Test calculated values based on Figure 2 of Hollweg1999
         (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of
@@ -212,7 +212,7 @@ class TestHollweg:
         w_alfven = (hollweg(**kwargs)["alfven_mode"]).value
         big_omega = np.abs(w_alfven / (kz * va))
 
-        np.testing.assert_allclose(big_omega, expected, rtol=1e-2)
+        assert np.allclose(big_omega, expected, atol=1e-2)
 
     @pytest.mark.parametrize(
         "kwargs, expected",
