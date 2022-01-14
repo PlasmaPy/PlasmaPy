@@ -276,6 +276,94 @@ def get_particle(
     return particle
 
 
+def _get_new_kwargs(
+    funcname,
+    require,
+    exclude,
+    any_of,
+    argnames,
+    arguments,
+    annotations,
+    none_shall_pass,
+    mass_numb,
+    Z,
+    args_to_become_particles,
+):
+
+    # Go through the argument names and check whether or not they are
+    # annotated with Particle.  If they aren't, include the name and
+    # value of the argument as an item in the new keyword arguments
+    # dictionary unchanged.  If they are annotated with Particle, then
+    # either convert the representation of a Particle to a Particle if
+    # it is not already a Particle and then do error checks.
+
+    new_kwargs = {}
+
+    for argname in argnames:
+        raw_argval = arguments[argname]
+        if isinstance(raw_argval, (tuple, list)):
+            # Input argument value is a tuple or list
+            # of corresponding particles or atomic values.
+            argval_tuple = raw_argval
+            particles = []
+        else:
+            # Otherwise convert it to tuple anyway so it can work
+            # with loops too.
+            argval_tuple = (raw_argval,)
+
+        for pos, argval in enumerate(argval_tuple):
+            should_be_particle = argname in args_to_become_particles
+            already_particle = isinstance(argval, Particle)
+
+            # If the argument is not annotated with Particle, then we just
+            # pass it through to the new keywords without doing anything.
+
+            if not should_be_particle:
+                new_kwargs[argname] = raw_argval
+                continue
+
+            # Occasionally there will be functions where it will be
+            # useful to allow None as an argument.
+
+            # In case annotations[argname] is a collection (which looks
+            # like (Particle, Optional[Particle], ...) or [Particle])
+            if isinstance(annotations[argname], tuple):
+                optional_particle = annotations[argname][pos] is Optional[Particle]
+            elif isinstance(annotations[argname], list):
+                optional_particle = annotations[argname] == [Optional[Particle]]
+            else:
+                # Otherwise annotations[argname] must be a Particle itself
+                optional_particle = annotations[argname] is Optional[Particle]
+
+            if (optional_particle or none_shall_pass) and argval is None:
+                particle = None
+            else:
+                params = (argval, Z, mass_numb)
+                particle = get_particle(
+                    argname,
+                    params,
+                    already_particle,
+                    funcname,
+                    require,
+                    exclude,
+                    any_of,
+                )
+
+            if isinstance(raw_argval, (tuple, list)):
+                # If passed argument is a tuple or list, keep
+                # appending them.
+                particles.append(particle)
+                # Set appended values if current iteration is the
+                # last iteration.
+                if (pos + 1) == len(argval_tuple):
+                    new_kwargs[argname] = tuple(particles)
+                    del particles
+            else:
+                # Otherwise directly set values
+                new_kwargs[argname] = particle
+    return new_kwargs
+
+
 def particle_input(
     wrapped_function: Callable = None,
     require: Union[str, Set, List, Tuple] = None,
@@ -493,79 +581,19 @@ def particle_input(
                 mass_numb=mass_numb,
             )
 
-            # Go through the argument names and check whether or not they are
-            # annotated with Particle.  If they aren't, include the name and
-            # value of the argument as an item in the new keyword arguments
-            # dictionary unchanged.  If they are annotated with Particle, then
-            # either convert the representation of a Particle to a Particle if
-            # it is not already a Particle and then do error checks.
-
-            new_kwargs = {}
-
-            for argname in argnames:
-                raw_argval = arguments[argname]
-                if isinstance(raw_argval, (tuple, list)):
-                    # Input argument value is a tuple or list
-                    # of corresponding particles or atomic values.
-                    argval_tuple = raw_argval
-                    particles = []
-                else:
-                    # Otherwise convert it to tuple anyway so it can work
-                    # with loops too.
-                    argval_tuple = (raw_argval,)
-
-                for pos, argval in enumerate(argval_tuple):
-                    should_be_particle = argname in args_to_become_particles
-                    already_particle = isinstance(argval, Particle)
-
-                    # If the argument is not annotated with Particle, then we just
-                    # pass it through to the new keywords without doing anything.
-
-                    if not should_be_particle:
-                        new_kwargs[argname] = raw_argval
-                        continue
-
-                    # Occasionally there will be functions where it will be
-                    # useful to allow None as an argument.
-
-                    # In case annotations[argname] is a collection (which looks
-                    # like (Particle, Optional[Particle], ...) or [Particle])
-                    if isinstance(annotations[argname], tuple):
-                        optional_particle = (
-                            annotations[argname][pos] is Optional[Particle]
-                        )
-                    elif isinstance(annotations[argname], list):
-                        optional_particle = annotations[argname] == [Optional[Particle]]
-                    else:
-                        # Otherwise annotations[argname] must be a Particle itself
-                        optional_particle = annotations[argname] is Optional[Particle]
-
-                    if (optional_particle or none_shall_pass) and argval is None:
-                        particle = None
-                    else:
-                        params = (argval, Z, mass_numb)
-                        particle = get_particle(
-                            argname,
-                            params,
-                            already_particle,
-                            funcname,
-                            require,
-                            exclude,
-                            any_of,
-                        )
-
-                    if isinstance(raw_argval, (tuple, list)):
-                        # If passed argument is a tuple or list, keep
-                        # appending them.
-                        particles.append(particle)
-                        # Set appended values if current iteration is the
-                        # last iteration.
-                        if (pos + 1) == len(argval_tuple):
-                            new_kwargs[argname] = tuple(particles)
-                            del particles
-                    else:
-                        # Otherwise directly set values
-                        new_kwargs[argname] = particle
+            new_kwargs = _get_new_kwargs(
+                funcname,
+                require,
+                exclude,
+                any_of,
+                argnames,
+                arguments,
+                annotations,
+                none_shall_pass,
+                mass_numb,
+                Z,
+                args_to_become_particles,
+            )
 
             return wrapped_function(**new_kwargs)
 
