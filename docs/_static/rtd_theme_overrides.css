@@ -49,6 +49,26 @@ div.graphviz {
     white-space: normal;
     line-height: 140%;
 }
+
+/* Reduce top/bottom margin for equations in tables */
+table div.MathJax_Display {
+    margin: 0.5em 0;
+}
+
+/*
+ * Adjustments to the Glossary styling
+ */
+dl.glossary dd ul {
+    margin-bottom: 12px !important;
+}
+dl.glossary dd {
+    margin-top: 4px;
+    margin-bottom: 18px;
+}
+dl.glossary dt {
+    margin-bottom: 2px;
+}
+
 /* -----------------------------------------------------------------------------
  * RTD layout styling additions
  */
