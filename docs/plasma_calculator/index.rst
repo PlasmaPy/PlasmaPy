@@ -17,7 +17,7 @@ various functions at once.
 Using Plasma Calculator
 -----------------------
 
-To invoke the app use ``plasma_calculator`` in the command line. 
+To invoke the app use ``plasma-calculator`` in the command line. 
 By default this opens the app in a browser, bootstrapping
 the notebook in a light theme and using port 8866 by default.
 
