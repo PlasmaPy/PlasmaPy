@@ -1,1 +1,1 @@
-Described the |plasma-calculator| in the narrative documentation
+Described the |plasma-calculator| in the narrative documentation.
