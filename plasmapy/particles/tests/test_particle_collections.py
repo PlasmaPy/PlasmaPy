@@ -327,6 +327,43 @@ def test_particle_multiplication(method, particle):
     assert particle_list == [particle, particle, particle]
 
 
+@pytest.mark.parametrize(
+    "particles, args, kwargs, expected",
+    [
+        [
+            ["electron", "proton", "neutron"],
+            ["lepton"],
+            {},
+            [True, False, False],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"require": "lepton"},
+            [True, False, False],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"exclude": "lepton"},
+            [False, True, True],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"any_of": {"lepton", "charged"}},
+            [True, True, False],
+        ],
+    ],
+)
+def test_particle_list_is_category(particles, args, kwargs, expected):
+    """
+    Test that ``ParticleList.is_category()`` behaves as expected.
+    """
+    sample_list = ParticleList(particles)
+    assert sample_list.is_category(*args, **kwargs) == expected
+
+
 def test_mean_particle():
     """
     Test that ``ParticleList.average_particle()`` returns a particle with

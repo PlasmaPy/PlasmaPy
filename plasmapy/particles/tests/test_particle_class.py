@@ -921,7 +921,12 @@ customized_particle_tests = [
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
-    instance = cls(**kwargs)
+
+    if "mass" not in kwargs or "charge" not in kwargs:
+        with pytest.warns(MissingParticleDataWarning):
+            instance = cls(**kwargs)
+    else:
+        instance = cls(**kwargs)
     value = getattr(instance, attr)
 
     if not u.isclose(value, expected, equal_nan=True):
@@ -941,8 +946,9 @@ def test_customized_particles(cls, kwargs, attr, expected):
     ],
 )
 def test_custom_particle_symbol(cls, symbol, expected):
-    instance = cls(symbol=symbol)
-    assert instance.symbol == expected
+    with pytest.warns(MissingParticleDataWarning):
+        instance = cls(symbol=symbol)
+        assert instance.symbol == expected
 
 
 customized_particle_errors = [
@@ -990,7 +996,11 @@ def test_customized_particles_errors(cls, kwargs, exception):
     results in an InvalidParticleError.
     """
     with pytest.raises(exception):
-        cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                cls(**kwargs)
+        else:
+            cls(**kwargs)
         pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
 
 
@@ -1028,7 +1038,8 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str):
     """Test that the symbol attribute cannot be set to something besides a string"""
-    instance = cls()
+    with pytest.warns(MissingParticleDataWarning):
+        instance = cls()
     with pytest.raises(TypeError):
         instance.symbol = not_a_str
 
@@ -1127,7 +1138,11 @@ def test_custom_particles_from_json_string(
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        instance = cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                instance = cls(**kwargs)
+        else:
+            instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
         assert u.isclose(
             instance.mass, instance_from_json.mass, equal_nan=True
@@ -1157,7 +1172,11 @@ def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exce
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        instance = cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                instance = cls(**kwargs)
+        else:
+            instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
         assert u.isclose(

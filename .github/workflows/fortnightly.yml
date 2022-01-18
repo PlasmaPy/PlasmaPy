@@ -30,11 +30,6 @@ jobs:
           python: 3.8
           toxenv: py38-numpydev
 
-        - name: Python 3.8 with SciPy dev
-          os: ubuntu-latest
-          python: 3.8
-          toxenv: py38-scipydev
-
         - name: Documentation with Sphinx dev
           os: ubuntu-latest
           python: 3.8
@@ -52,7 +47,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.0
+      uses: actions/setup-python@v2.3.1
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
