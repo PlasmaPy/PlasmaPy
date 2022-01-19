@@ -483,7 +483,7 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     ----------
     argument : 'str'
         The molecule symbol to be parsed.
-        
+
     Z : 'Integral', optional
         The provided charge number.
 
@@ -493,10 +493,10 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
         A dictionary with identified element symbols as keys and amount of each as values.
         The molecule symbol stripped of the charge.
         The integer charge.
-        
+
     molecule_info : 'str'
         The molecule symbol stripped of its charge.
-        
+
     Z : 'int'
         The molecule charge.
 
