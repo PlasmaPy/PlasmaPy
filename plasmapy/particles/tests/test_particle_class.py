@@ -1398,7 +1398,13 @@ def test_molecule(m, Z, symbol, m_symbol, m_Z):
     assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
 
 
-test_molecule_error_table = [("Zz", None), ("", None), ("I2+", 2), ("Iii", None), ("e2H3", None)]
+test_molecule_error_table = [
+    ("Zz", None),
+    ("", None),
+    ("I2+", 2),
+    ("Iii", None),
+    ("e2H3", None),
+]
 
 
 @pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
@@ -1408,7 +1414,7 @@ def test_molecule_error(symbol, Z):
         m = molecule(symbol, Z)
 
 
-def tes_molecule_other():
+def test_molecule_other():
     """Test fallback to |Particle| object and warning in case of redundant charge."""
     assert Particle("I") == molecule("I")
 

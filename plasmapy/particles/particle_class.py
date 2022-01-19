@@ -2218,7 +2218,9 @@ class CustomParticle(AbstractPhysicalParticle):
         return hash((self.__repr__(), self.symbol))
 
 
-def molecule(symbol: str, Z: Optional[Integral] = None) -> Union[Particle, CustomParticle]:
+def molecule(
+    symbol: str, Z: Optional[Integral] = None
+) -> Union[Particle, CustomParticle]:
     """
     Parse a molecule symbol into a |CustomParticle| or |Particle|.
 
@@ -2265,7 +2267,7 @@ def molecule(symbol: str, Z: Optional[Integral] = None) -> Union[Particle, Custo
     >>> molecule("Xe")
     Particle("Xe")
 
-    The given symbol is preserved in the |CustomParticle| instance. This permits 
+    The given symbol is preserved in the |CustomParticle| instance. This permits
     us to differentiate between isomers:
 
     >>> molecule("CH4O2") == molecule("CH3OOH")
@@ -2285,6 +2287,10 @@ def molecule(symbol: str, Z: Optional[Integral] = None) -> Union[Particle, Custo
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
                 ) from e
+            if not element.is_category("element"):
+                raise InvalidParticleError(
+                    f"Molecule symbol contains a particle that is not an ellement :{element.symbol}"
+                )
             mass += amount * element.mass
 
         if Z is None:
