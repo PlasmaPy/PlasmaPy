@@ -1398,7 +1398,7 @@ def test_molecule(m, Z, symbol, m_symbol, m_Z):
     assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
 
 
-test_molecule_error_table = [("Zz", None), ("", None), ("I2+", 2), ("Iii", None)]
+test_molecule_error_table = [("Zz", None), ("", None), ("I2+", 2), ("Iii", None), ("e2H3", None)]
 
 
 @pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
