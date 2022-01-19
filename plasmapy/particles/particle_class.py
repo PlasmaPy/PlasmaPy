@@ -2239,12 +2239,12 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
     Raises
     ------
     'InvalidParticleError'
-        If the Symbol couldn't be parsed.
+        If ``symbol`` couldn't be parsed.
 
     Warns
     -----
     `ParticleWarning`
-        If The charge is given both as an argument and in the symbol.
+        If the charge is given both as an argument and in the symbol.
 
     Examples
     --------
@@ -2252,7 +2252,7 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
     >>> molecule("I2")
     CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C)
 
-    Charge information is given either wint the symbol or as a second parameter.
+    Charge information is given either within the symbol or as a second parameter.
 
     >>> molecule("I2+")
     CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
@@ -2260,12 +2260,13 @@ def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]
     >>> molecule("I2", 1)
     CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
 
-    Inputs that can pe interpreted as |Particle| instances are returned as such.
+    Inputs that can be interpreted as |Particle| instances are returned as such.
 
     >>> molecule("Xe")
     Particle("Xe")
 
-    The given symbol is preserved in the |CustomParticle| instance. This permits to differentiate between isomers
+    The given symbol is preserved in the |CustomParticle| instance. This permits 
+    us to differentiate between isomers:
 
     >>> molecule("CH4O2") == molecule("CH3OOH")
     False

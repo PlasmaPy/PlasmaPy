@@ -477,14 +477,15 @@ def _parse_and_check_atomic_input(
 
 def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     """
-    Separates the constitutive elements and charge of a molecule symbol.
+    Separate the constitutive elements and charge of a molecule symbol.
 
     Parameters
     ----------
     argument : 'str'
         The molecule symbol to be parsed.
+        
     Z : 'Integral', optional
-        the provided charge number.
+        The provided charge number.
 
     Returns
     -------
@@ -492,8 +493,10 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
         A dictionary with identified element symbols as keys and amount of each as values.
         The molecule symbol stripped of the charge.
         The integer charge.
+        
     molecule_info : 'str'
         The molecule symbol stripped of its charge.
+        
     Z : 'int'
         The molecule charge.
 
