@@ -2218,7 +2218,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return hash((self.__repr__(), self.symbol))
 
 
-def molecule(symbol: str, Z: Integral = None) -> Union[Particle, CustomParticle]:
+def molecule(symbol: str, Z: Optional[Integral] = None) -> Union[Particle, CustomParticle]:
     """
     Parse a molecule symbol into a |CustomParticle| or |Particle|.
 
