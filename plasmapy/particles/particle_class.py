@@ -9,6 +9,7 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "molecule",
 ]
 
 import astropy.constants as const
@@ -40,6 +41,7 @@ from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
     _parse_and_check_atomic_input,
+    _parse_and_check_molecule_input,
 )
 from plasmapy.particles.special_particles import (
     _antiparticles,
@@ -2243,6 +2245,88 @@ class CustomParticle(AbstractPhysicalParticle):
         as a key in a `dict`.
         """
         return hash((self.__repr__(), self.symbol))
+
+
+def molecule(
+    symbol: str, Z: Optional[Integral] = None
+) -> Union[Particle, CustomParticle]:
+    """
+    Parse a molecule symbol into a |CustomParticle| or |Particle|.
+
+    Parameters
+    ----------
+    symbol : 'str'
+        Symbol of the molecule to be parsed.
+
+    Z : 'Integral', optional
+        Charge number if not present in symbol.
+
+    Returns
+    -------
+        A |Particle| object if the input could be parsed as such,
+        or a |CustomParticle| with the provided symbol, charge,
+        and a mass corresponding to the sum of the molecule elements.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If ``symbol`` couldn't be parsed.
+
+    Warns
+    -----
+    `ParticleWarning`
+        If the charge is given both as an argument and in the symbol.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import molecule
+    >>> molecule("I2")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C)
+
+    Charge information is given either within the symbol or as a second parameter.
+
+    >>> molecule("I2+")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
+
+    >>> molecule("I2", 1)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
+
+    Inputs that can be interpreted as |Particle| instances are returned as such.
+
+    >>> molecule("Xe")
+    Particle("Xe")
+
+    The given symbol is preserved in the |CustomParticle| instance. This permits
+    us to differentiate between isomers:
+
+    >>> molecule("CH4O2") == molecule("CH3OOH")
+    False
+    """
+    try:
+        return Particle(symbol, Z=Z)
+    except ParticleError:
+        element_dict, bare_symbol, Z = _parse_and_check_molecule_input(symbol, Z)
+        mass = 0 * u.kg
+        for element_symbol, amount in element_dict.items():
+            try:
+                element = Particle(element_symbol)
+            except ParticleError as e:
+                raise InvalidParticleError(
+                    f"Could not identify {element_symbol}."
+                ) from e
+            if not element.is_category("element"):
+                raise InvalidParticleError(
+                    f"Molecule symbol contains a particle that is not an element: {element.symbol}"
+                )
+            mass += amount * element.mass
+
+        if Z is None:
+            charge = 0 * u.C
+        else:
+            charge = Z * const.e.si
+            bare_symbol += f" {-Z}-" if Z < 0 else f" {Z}+"
+
+        return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
