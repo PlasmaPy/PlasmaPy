@@ -2272,12 +2272,10 @@ def molecule(
 
     >>> molecule("CH4O2") == molecule("CH3OOH")
     False
-
     """
     try:
         return Particle(symbol, Z=Z)
     except ParticleError:
-
         element_dict, bare_symbol, Z = _parse_and_check_molecule_input(symbol, Z)
         mass = 0 * u.kg
         for element_symbol, amount in element_dict.items():
@@ -2289,7 +2287,7 @@ def molecule(
                 ) from e
             if not element.is_category("element"):
                 raise InvalidParticleError(
-                    f"Molecule symbol contains a particle that is not an ellement :{element.symbol}"
+                    f"Molecule symbol contains a particle that is not an element: {element.symbol}"
                 )
             mass += amount * element.mass
 
@@ -2298,6 +2296,7 @@ def molecule(
         else:
             charge = Z * const.e.si
             bare_symbol += f" {-Z}-" if Z < 0 else f" {Z}+"
+
         return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
