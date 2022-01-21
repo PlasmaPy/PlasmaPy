@@ -358,4 +358,4 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("rtd_theme_overrides.css")
+    app.add_css_file("css/plasmapy.css")
