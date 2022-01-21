@@ -2072,8 +2072,18 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
         >>> repr(custom_particle)
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+
+        If present, the symbol is displayed as well.
+
+        >>> custom_particle = CustomParticle(mass=4.21e-25 * u.kg, charge=1.6e-19 * u.C, symbol="I2+")
+        >>> repr(custom_particle)
+        'CustomParticle(mass=4.21e-25 kg, charge=1.6e-19 C, symbol=I2+)'
         """
-        return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+        return (
+            f"CustomParticle(mass={self.mass}, charge={self.charge})"
+            if self._symbol is None
+            else f"CustomParticle(mass={self.mass}, charge={self.charge}, symbol={self.symbol})"
+        )
 
     @property
     def json_dict(self) -> dict:
@@ -2210,12 +2220,12 @@ class CustomParticle(AbstractPhysicalParticle):
 
         If no symbol was defined, then return the value given by `repr`.
         """
-        return self._symbol
+        return repr(self) if self._symbol is None else self._symbol
 
     @symbol.setter
     def symbol(self, new_symbol: str):
         if new_symbol is None:
-            self._symbol = repr(self)
+            self._symbol = None
         elif isinstance(new_symbol, str):
             self._symbol = new_symbol
         else:
@@ -2244,7 +2254,7 @@ class CustomParticle(AbstractPhysicalParticle):
         Allow use of `hash` so that a |CustomParticle| instance may be used
         as a key in a `dict`.
         """
-        return hash((self.__repr__(), self.symbol))
+        return hash(self.__repr__())
 
 
 def molecule(
@@ -2281,15 +2291,15 @@ def molecule(
     --------
     >>> from plasmapy.particles import molecule
     >>> molecule("I2")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C, symbol=I2)
 
     Charge information is given either within the symbol or as a second parameter.
 
     >>> molecule("I2+")
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
 
     >>> molecule("I2", 1)
-    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
 
     Inputs that can be interpreted as |Particle| instances are returned as such.
 
