@@ -1,3 +1,0 @@
-Changed the color of in-line literals to be consistent with the
-`Web Content Accessibility Guidelines 2 Level AA Conformance
-<https://www.w3.org/WAI/WCAG2AA-Conformance>`__ for contrast.
