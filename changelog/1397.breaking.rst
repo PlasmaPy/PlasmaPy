@@ -1,0 +1,1 @@
+Changed the behaviour of `~plasmapy.particles.particle_class.CustomParticle.__repr__` to display the symbol as well if it was provided.
