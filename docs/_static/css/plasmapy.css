@@ -145,7 +145,7 @@ footer p {
   https://webaim.org/resources/linkcontrastchecker
 */
 
-div.wy-nav-content a:link { /* still changing links in sidebar!!!! */
+div.wy-nav-content a:link {
     color: #0069d6;
 }
 div.wy-nav-content a:visited  {
