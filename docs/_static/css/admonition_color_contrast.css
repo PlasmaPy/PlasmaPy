@@ -1,9 +1,12 @@
 /*
-  Sphinx admonitions. The following sections were adapted from the file
+  The following sections were adapted from the file
   sphinx_rtd_theme_ext_color_contrast/_static/sphinx_rtd_theme_ext_color_contrast.css
   in the following repository:
   https://github.com/AaltoSciComp/sphinx_rtd_theme_ext_color_contrast
   The license is in our licenses directory.
+
+  These customizations will be able to be removed if sphinx_rtd_theme
+  defaults end up getting changed to meet accessibility guidelines.
 */
 
 
