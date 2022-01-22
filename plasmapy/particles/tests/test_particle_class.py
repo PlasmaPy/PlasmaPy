@@ -921,14 +921,8 @@ customized_particle_tests = [
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
-
-    if "mass" not in kwargs or "charge" not in kwargs:
-        with pytest.warns(MissingParticleDataWarning):
-            instance = cls(**kwargs)
-    else:
-        instance = cls(**kwargs)
+    instance = cls(**kwargs)
     value = getattr(instance, attr)
-
     if not u.isclose(value, expected, equal_nan=True):
         pytest.fail(
             f"{call_string(cls, kwargs=kwargs)}.{attr} should return a value "
