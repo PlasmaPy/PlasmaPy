@@ -61,7 +61,7 @@ div.graphviz {
  * section
  */
 .rst-content dl.rst table p,
-.rst-content dl.std table p,l
+.rst-content dl.std table p,
 .rst-content dl.py table p {
     margin-bottom: 0 !important;
 }
