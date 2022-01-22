@@ -136,7 +136,7 @@ div.pkgnav ul li a:hover {
 /* Styles for text in the footer chosen to improve contrast. */
 
 footer p {
-    color: #222222;
+    color: #141414;
 }
 
 /*
@@ -162,7 +162,7 @@ div.wy-nav-content a:hover {
 
 div.wy-nav-content .rst-content code.literal {
     background-color: #f6f6f6;
-    color: #b70000;
+    color: #e62525;
 }
 
 /*
