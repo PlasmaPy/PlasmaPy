@@ -1956,10 +1956,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The mass of a dimensionless particle must be a real "
                 f"number that is greater than or equal to zero, not: {m}"
             ) from None
-        if self._mass is np.nan:
-            warnings.warn(
-                "DimensionlessParticle mass set to NaN", MissingParticleDataWarning
-            )
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
@@ -1970,10 +1966,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The charge of a dimensionless particle must be a real "
                 f"number, not: {q}"
             ) from None
-        if self._charge is np.nan:
-            warnings.warn(
-                "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
-            )
 
     @property
     def symbol(self) -> str:
@@ -2118,9 +2110,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
             q = np.nan * u.C
-            warnings.warn(
-                "CustomParticle charge set to NaN C", MissingParticleDataWarning
-            )
         elif isinstance(q, str):
             q = u.Quantity(q)
 
@@ -2162,9 +2151,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn(
-                "CustomParticle mass set to NaN kg", MissingParticleDataWarning
-            )
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
