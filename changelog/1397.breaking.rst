@@ -1,1 +1,2 @@
-Changed the behaviour of `~plasmapy.particles.particle_class.CustomParticle.__repr__` to display the symbol as well if it was provided.
+Changed the behaviour of the ``__repr__`` method of |CustomParticle| to
+display the symbol as well if it was provided.
