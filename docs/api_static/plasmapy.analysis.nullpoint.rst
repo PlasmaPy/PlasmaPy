@@ -6,4 +6,3 @@
 .. currentmodule:: plasmapy.analysis.nullpoint
 
 .. automodapi:: plasmapy.analysis.nullpoint
-

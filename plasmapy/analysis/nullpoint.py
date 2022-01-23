@@ -1,17 +1,18 @@
 """Functions to find the null points of a 3D vector space using a trilinear method."""
 
-__all__ = ["Point",
-           "NullPoint",
-           "vector_space",
-           "bilinear_root",
-           "jacobian",
-           "locate_null_point",
-           "nullpoint",
-           "reduction",
-           "trilinear_approx",
-           "trilinear_coeff_cal",
-           "trillinear_analysis"
-           ]
+__all__ = [
+    "Point",
+    "NullPoint",
+    "vector_space",
+    "bilinear_root",
+    "jacobian",
+    "locate_null_point",
+    "nullpoint",
+    "reduction",
+    "trilinear_approx",
+    "trilinear_coeff_cal",
+    "trillinear_analysis"
+]
 
 import numpy as np
 import warnings
@@ -66,92 +67,103 @@ class NullPoint(Point):
         )
 
 
-def vector_space(x_arr=None, y_arr=None, z_arr=None,
-                 x_range=[0, 1], y_range=[0, 1], z_range=[0, 1],
-                 u_arr=None, v_arr=None, w_arr=None,
-                 func=(lambda x, y, z: [x, y, z]),
-                 precision=[0.05, 0.05, 0.05]):
+def vector_space(
+    x_arr=None,
+    y_arr=None,
+    z_arr=None,
+    x_range=[0, 1],
+    y_range=[0, 1],
+    z_range=[0, 1],
+    u_arr=None,
+    v_arr=None,
+    w_arr=None,
+    func=(lambda x, y, z: [x, y, z]),
+    precision=[0.05, 0.05, 0.05]):
     r"""
-        Returns a vector space in the form of a multi-dimensional array.
+    Returns a vector space in the form of a multi-dimensional array.
 
-        Parameters
-        ----------
+    Parameters
+    ----------
 
-        x_arr: array_like
-            The array representing the coordinates in the x-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    x_arr: array_like
+        The array representing the coordinates in the x-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        y_arr: array_like
-            The array representing the coordinates in the y-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    y_arr: array_like
+        The array representing the coordinates in the y-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        z_arr: array_like
-            The array representing the coordinates in the z-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    z_arr: array_like
+        The array representing the coordinates in the z-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        x_range: array_like
-            A 1 by 2 array containing the range of x-vlaues for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    x_range: array_like
+        A 1 by 2 array containing the range of x-vlaues for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        y_range: array_like
-            A 1 by 2 array containing the range of y-vlaues for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    y_range: array_like
+        A 1 by 2 array containing the range of y-vlaues for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        z_range: array_like
-            A 1 by 2 array containing the range of z-vlaues for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    z_range: array_like
+        A 1 by 2 array containing the range of z-vlaues for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        u_arr: array_like
-            A 3D array containing the x-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    u_arr: array_like
+        A 3D array containing the x-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        v_arr: array_like
-            A 3D array containing the y-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    v_arr: array_like
+        A 3D array containing the y-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        w_arr: array_like
-            A 3D array containing the z-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    w_arr: array_like
+        A 3D array containing the z-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        func: <class 'function'>
-            A function that takes in 3 arguments, respectively representing a x, y, and z
-            coordinate of a point and returns the vector value for that point in the form
-            of a 1 by 3 array.
+    func: <class 'function'>
+        A function that takes in 3 arguments, respectively representing a x, y, and z
+        coordinate of a point and returns the vector value for that point in the form
+        of a 1 by 3 array.
 
-        precision: array_like
-            A 1 by 3 array containing the approximate precision values for each dimension,
-            in the case where uniform arrays are being used.
-            The default value is [0.05, 0.05, 0.05].
+    precision: array_like
+        A 1 by 3 array containing the approximate precision values for each dimension,
+        in the case where uniform arrays are being used.
+        The default value is [0.05, 0.05, 0.05].
 
-        Returns
-        -------
-        ndarray
-            A 1 by 3 array with
-            the first element containing the coordinates.
-            the second element containing the vector values.
-            and the third element containing the delta values for each dimension.
+    Returns
+    -------
+    ndarray
+        A 1 by 3 array with
+        the first element containing the coordinates.
+        the second element containing the vector values.
+        and the third element containing the delta values for each dimension.
 
-        Raises
-        ------
-        This function does not raise any exceptions.
+    Raises
+    ------
+    This function does not raise any exceptions.
 
-        Warns
-        -----
-        This function does not raise any warnings.
+    Warns
+    -----
+    This function does not raise any warnings.
 
 
-        Notes
-        -----
-        N/A
+    Notes
+    -----
+    N/A
     """
     # Constructing the Meshgrid
-    if not isinstance(x_arr, type(None)) and not isinstance(y_arr, type(None)) and not isinstance(z_arr, type(None)):
+    if (
+        not isinstance(x_arr, type(None))
+        and not isinstance(y_arr, type(None))
+        and not isinstance(z_arr, type(None))
+    ):
         x, y, z = np.meshgrid(
             x_arr,
             y_arr,
@@ -178,7 +190,11 @@ def vector_space(x_arr=None, y_arr=None, z_arr=None,
             indexing="ij",
         )
     # Calculating the vector values
-    if not isinstance(u_arr, type(None)) and not isinstance(v_arr, type(None)) and not isinstance(w_arr, type(None)):
+    if (
+        not isinstance(u_arr, type(None))
+        and not isinstance(v_arr, type(None))
+        and not isinstance(w_arr, type(None))
+    ):
         u = u_arr
         v = v_arr
         w = w_arr
@@ -1289,11 +1305,21 @@ def locate_null_point(vspace, cell, n, err):
     return nullpoint(new_vspace)
 
 
-def nullpoint(x_arr=None, y_arr=None, z_arr=None,
-              x_range=[0, 1], y_range=[0, 1], z_range=[0, 1],
-              u_arr=None, v_arr=None, w_arr=None,
-              func=(lambda x, y, z: [x, y, z]),
-              precision=[0.05, 0.05, 0.05], MAX_ITERATIONS=500, err=10 ** (-10)):
+
+def nullpoint(
+    x_arr=None,
+    y_arr=None,
+    z_arr=None,
+    x_range=[0, 1],
+    y_range=[0, 1],
+    z_range=[0, 1],
+    u_arr=None,
+    v_arr=None,
+    w_arr=None,
+    func=(lambda x, y, z: [x, y, z]),
+    precision=[0.05, 0.05, 0.05],
+    MAX_ITERATIONS=500,
+    err=10 ** (-10)):
     r"""
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
@@ -1382,12 +1408,18 @@ def nullpoint(x_arr=None, y_arr=None, z_arr=None,
     N/A
     """
     # Constructing the vspace
-    vspace = vector_space(x_arr, y_arr, z_arr,
-                          x_range, y_range, z_range,
-                          u_arr, v_arr, w_arr,
-                          func,
-                          precision)
-
+    vspace = vector_space(
+        x_arr,
+        y_arr,
+        z_arr,
+        x_range,
+        y_range,
+        z_range,
+        u_arr,
+        v_arr,
+        w_arr,
+        func,
+        precision)
     # Helper Function
     def in_null_list(elem, lst):
         for p in lst:
