@@ -13,7 +13,6 @@ __all__ = ["Point",
            "trillinear_analysis"
            ]
 
-
 import numpy as np
 import warnings
 
@@ -61,16 +60,16 @@ class NullPoint(Point):
         False otherwise.
         """
         return (
-            np.isclose(self.getLoc()[0], point.getLoc()[0])
-            and np.isclose(self.getLoc()[1], point.getLoc()[1])
-            and np.isclose(self.getLoc()[2], point.getLoc()[2])
+                np.isclose(self.getLoc()[0], point.getLoc()[0])
+                and np.isclose(self.getLoc()[1], point.getLoc()[1])
+                and np.isclose(self.getLoc()[2], point.getLoc()[2])
         )
 
 
 def vector_space(x_arr=None, y_arr=None, z_arr=None,
-                 x_range=[0,1], y_range=[0,1], z_range=[0,1],
+                 x_range=[0, 1], y_range=[0, 1], z_range=[0, 1],
                  u_arr=None, v_arr=None, w_arr=None,
-                 func= (lambda x,y,z : [x,y,z]),
+                 func=(lambda x, y, z: [x, y, z]),
                  precision=[0.05, 0.05, 0.05]):
     r"""
         Returns a vector space in the form of a multi-dimensional array.
@@ -361,34 +360,34 @@ def trilinear_approx(vspace, cell):
 
     def approx_func(xInput, yInput, zInput):
         Bx = (
-            ax
-            + bx * xInput
-            + cx * yInput
-            + dx * zInput
-            + ex * xInput * yInput
-            + fx * xInput * zInput
-            + gx * yInput * zInput
-            + hx * xInput * yInput * zInput
+                ax
+                + bx * xInput
+                + cx * yInput
+                + dx * zInput
+                + ex * xInput * yInput
+                + fx * xInput * zInput
+                + gx * yInput * zInput
+                + hx * xInput * yInput * zInput
         )
         By = (
-            ay
-            + by * xInput
-            + cy * yInput
-            + dy * zInput
-            + ey * xInput * yInput
-            + fy * xInput * zInput
-            + gy * yInput * zInput
-            + hy * xInput * yInput * zInput
+                ay
+                + by * xInput
+                + cy * yInput
+                + dy * zInput
+                + ey * xInput * yInput
+                + fy * xInput * zInput
+                + gy * yInput * zInput
+                + hy * xInput * yInput * zInput
         )
         Bz = (
-            az
-            + bz * xInput
-            + cz * yInput
-            + dz * zInput
-            + ez * xInput * yInput
-            + fz * xInput * zInput
-            + gz * yInput * zInput
-            + hz * xInput * yInput * zInput
+                az
+                + bz * xInput
+                + cz * yInput
+                + dz * zInput
+                + ez * xInput * yInput
+                + fz * xInput * zInput
+                + gz * yInput * zInput
+                + hz * xInput * yInput * zInput
         )
         return np.array([Bx, By, Bz])
 
@@ -526,8 +525,8 @@ def reduction(vspace, cell):
     sign = np.sign(u[cell[0], cell[1], cell[2]])
     for point in corners:
         if (
-            u[point[0]][point[1]][point[2]] == 0
-            or np.sign(u[point[0]][point[1]][point[2]]) != sign
+                u[point[0]][point[1]][point[2]] == 0
+                or np.sign(u[point[0]][point[1]][point[2]]) != sign
         ):
             passX = True
 
@@ -535,8 +534,8 @@ def reduction(vspace, cell):
     sign = np.sign(v[cell[0], cell[1], cell[2]])
     for point in corners:
         if (
-            v[point[0]][point[1]][point[2]] == 0
-            or np.sign(v[point[0]][point[1]][point[2]]) != sign
+                v[point[0]][point[1]][point[2]] == 0
+                or np.sign(v[point[0]][point[1]][point[2]]) != sign
         ):
             passY = True
 
@@ -544,8 +543,8 @@ def reduction(vspace, cell):
     sign = np.sign(w[cell[0], cell[1], cell[2]])
     for point in corners:
         if (
-            w[point[0]][point[1]][point[2]] == 0
-            or np.sign(w[point[0]][point[1]][point[2]]) != sign
+                w[point[0]][point[1]][point[2]] == 0
+                or np.sign(w[point[0]][point[1]][point[2]]) != sign
         ):
             passZ = True
 
@@ -674,6 +673,7 @@ def trillinear_analysis(vspace, cell):
     -----
     N/A
     """
+
     # Helper Function
     def is_close(a, b):
         arr = np.isclose(a, b, atol=ATOL)
@@ -1048,13 +1048,13 @@ def trillinear_analysis(vspace, cell):
 
     def bound(epoint):
         a = (initial[0] < epoint[0] or is_close(initial[0], epoint[0])) and (
-            epoint[0] < xbound or is_close(epoint[0], xbound)
+                epoint[0] < xbound or is_close(epoint[0], xbound)
         )
         b = (initial[1] < epoint[1] or is_close(initial[1], epoint[1])) and (
-            epoint[1] < ybound or is_close(epoint[1], ybound)
+                epoint[1] < ybound or is_close(epoint[1], ybound)
         )
         c = (initial[2] < epoint[2] or is_close(initial[2], epoint[2])) and (
-            epoint[2] < zbound or is_close(epoint[2], zbound)
+                epoint[2] < zbound or is_close(epoint[2], zbound)
         )
         return a and b and c
 
@@ -1087,37 +1087,37 @@ def trillinear_analysis(vspace, cell):
 
     # Checking sign of third component for Bx=By=0
     if (
-        np.sign(
-            tlApprox(BxByEndpoints[0][0], BxByEndpoints[0][1], BxByEndpoints[0][2])[2]
-        )
-        * np.sign(
-            tlApprox(BxByEndpoints[1][0], BxByEndpoints[1][1], BxByEndpoints[1][2])[2]
-        )
-        > 0
+            np.sign(
+                tlApprox(BxByEndpoints[0][0], BxByEndpoints[0][1], BxByEndpoints[0][2])[2]
+            )
+            * np.sign(
+        tlApprox(BxByEndpoints[1][0], BxByEndpoints[1][1], BxByEndpoints[1][2])[2]
+    )
+            > 0
     ):
         isNullPoint = False
 
     # Checking sign of third component for Bx=Bz=0
     if (
-        np.sign(
-            tlApprox(BxBzEndpoints[0][0], BxBzEndpoints[0][1], BxBzEndpoints[0][2])[1]
-        )
-        * np.sign(
-            tlApprox(BxBzEndpoints[1][0], BxBzEndpoints[1][1], BxBzEndpoints[1][2])[1]
-        )
-        > 0
+            np.sign(
+                tlApprox(BxBzEndpoints[0][0], BxBzEndpoints[0][1], BxBzEndpoints[0][2])[1]
+            )
+            * np.sign(
+        tlApprox(BxBzEndpoints[1][0], BxBzEndpoints[1][1], BxBzEndpoints[1][2])[1]
+    )
+            > 0
     ):
         isNullPoint = False
 
     # Checking sign of third component for By=Bz=0
     if (
-        np.sign(
-            tlApprox(ByBzEndpoints[0][0], ByBzEndpoints[0][1], ByBzEndpoints[0][2])[0]
-        )
-        * np.sign(
-            tlApprox(ByBzEndpoints[1][0], ByBzEndpoints[1][1], ByBzEndpoints[1][2])[0]
-        )
-        > 0
+            np.sign(
+                tlApprox(ByBzEndpoints[0][0], ByBzEndpoints[0][1], ByBzEndpoints[0][2])[0]
+            )
+            * np.sign(
+        tlApprox(ByBzEndpoints[1][0], ByBzEndpoints[1][1], ByBzEndpoints[1][2])[0]
+    )
+            > 0
     ):
         isNullPoint = False
 
@@ -1190,7 +1190,7 @@ def locate_null_point(vspace, cell, n, err):
     # Calculating the Jacobian and trillinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = jacobian(vspace, cell)
-    #Calculatiung the deltas
+    # Calculatiung the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
     deltay = deltay[cell[1]]
@@ -1225,13 +1225,13 @@ def locate_null_point(vspace, cell, n, err):
     def inbound(pos):
         pos = pos.reshape(1, 3)[0]
         A = (np.isclose(pos_000[0], pos[0], atol=ATOL) or pos_000[0] < pos[0]) and (
-            np.isclose(pos[0], pos_111[0], atol=ATOL) or pos[0] < pos_111[0]
+                np.isclose(pos[0], pos_111[0], atol=ATOL) or pos[0] < pos_111[0]
         )
         B = (np.isclose(pos_000[1], pos[1], atol=ATOL) or pos_000[1] < pos[1]) and (
-            np.isclose(pos[1], pos_111[1], atol=ATOL) or pos[1] < pos_111[1]
+                np.isclose(pos[1], pos_111[1], atol=ATOL) or pos[1] < pos_111[1]
         )
         C = (np.isclose(pos_000[2], pos[2], atol=ATOL) or pos_000[2] < pos[2]) and (
-            np.isclose(pos[2], pos_111[2], atol=ATOL) or pos[2] < pos_111[2]
+                np.isclose(pos[2], pos_111[2], atol=ATOL) or pos[2] < pos_111[2]
         )
         return A and B and C
 
@@ -1290,10 +1290,10 @@ def locate_null_point(vspace, cell, n, err):
 
 
 def nullpoint(x_arr=None, y_arr=None, z_arr=None,
-                 x_range=[0,1], y_range=[0,1], z_range=[0,1],
-                 u_arr=None, v_arr=None, w_arr=None,
-                 func= (lambda x,y,z : [x,y,z]),
-                 precision=[0.05, 0.05, 0.05], MAX_ITERATIONS=500, err=10 ** (-10)):
+              x_range=[0, 1], y_range=[0, 1], z_range=[0, 1],
+              u_arr=None, v_arr=None, w_arr=None,
+              func=(lambda x, y, z: [x, y, z]),
+              precision=[0.05, 0.05, 0.05], MAX_ITERATIONS=500, err=10 ** (-10)):
     r"""
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
@@ -1381,12 +1381,13 @@ def nullpoint(x_arr=None, y_arr=None, z_arr=None,
     -----
     N/A
     """
-    #Constructing the vspace
+    # Constructing the vspace
     vspace = vector_space(x_arr, y_arr, z_arr,
-                 x_range, y_range, z_range,
-                 u_arr, v_arr, w_arr,
-                 func,
-                 precision)
+                          x_range, y_range, z_range,
+                          u_arr, v_arr, w_arr,
+                          func,
+                          precision)
+
     # Helper Function
     def in_null_list(elem, lst):
         for p in lst:
@@ -1406,7 +1407,6 @@ def nullpoint(x_arr=None, y_arr=None, z_arr=None,
                             if not in_null_list(p, nullpoints):
                                 nullpoints.append(p)
     return nullpoints
-
 
 # """
 # Testing and Examples
