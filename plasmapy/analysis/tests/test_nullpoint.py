@@ -1,5 +1,5 @@
 """
-Tests for the nullpoint finder class defined in `plasmapy.analysis.nullpoint`.
+Tests for the null point finder class defined in `plasmapy.analysis.nullpoint`.
 """
 import numpy as np
 import pytest
@@ -27,12 +27,12 @@ def vspace_func_2(x, y, z):
 
 
 def test_trilinear_coeff_cal():
-    vspace1 = vector_space(
-        vspace_func_1, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
-    vspace2 = vector_space(
-        vspace_func_2, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
+    vspace1_args = {"x_range": [0,10],"y_range": [0,10],"z_range": [0,10],
+                   "precision":[10 / 46, 10 / 46, 10 / 46], "func":vspace_func_1}
+    vspace1 = vector_space(**vspace1_args)
+    vspace2_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                    "precision": [10 / 46, 10 / 46, 10 / 46], "func": vspace_func_2}
+    vspace2 = vector_space(**vspace2_args)
     test_trilinear_coeff_cal_values = [
         (
             {"vspace": vspace2, "cell": [25, 25, 25]},
@@ -63,7 +63,10 @@ def test_trilinear_coeff_cal():
 
 
 def test_jacobian():
-    vspace = vector_space(vspace_func_1, [0, 10], [0, 10], [0, 10], [1, 1, 1])
+    vspace_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                    "precision": [1, 1, 1], "func": vspace_func_1}
+    vspace = vector_space(**vspace_args)
+
     jcb = jacobian(vspace, [0, 0, 0])
     mtrx = jcb(0.5, 0.5, 0.5)
     assert np.isclose(mtrx[0][0], 0, atol=ATOL)
@@ -78,13 +81,16 @@ def test_jacobian():
 
 
 def test_trilinear_approx():
-    vspace1 = vector_space(
-        vspace_func_1, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
-    vspace2 = vector_space(
-        vspace_func_2, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
+    vspace1_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                    "precision": [10 / 46, 10 / 46, 10 / 46], "func": vspace_func_1}
+    vspace1 = vector_space(**vspace1_args)
+    vspace2_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                    "precision": [10 / 46, 10 / 46, 10 / 46], "func": vspace_func_2}
+    vspace2 = vector_space(**vspace2_args)
     dx, dy, dz = vspace2[2]
+    dx = dx[0]
+    dy = dy[0]
+    dz = dz[0]
     f000 = [0, 0, 0]
     f001 = [0, 0, dz]
     f010 = [0, dy, 0]
@@ -111,9 +117,9 @@ def test_trilinear_approx():
 
 
 class Test_reduction:
-    vspace = vector_space(
-        vspace_func_2, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
+    vspace_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                    "precision": [10 / 46, 10 / 46, 10 / 46], "func": vspace_func_2}
+    vspace = vector_space(**vspace_args)
 
     test_reduction_values = [
         ({"vspace": vspace, "cell": [25, 25, 25]}, True),
@@ -144,9 +150,9 @@ class Test_reduction:
 
 
 class Test_trillinear_analysis:
-    vspace = vector_space(
-        vspace_func_2, [0, 10], [0, 10], [0, 10], [10 / 46, 10 / 46, 10 / 46]
-    )
+    vspace_args = {"x_range": [0, 10], "y_range": [0, 10], "z_range": [0, 10],
+                   "precision": [10 / 46, 10 / 46, 10 / 46], "func": vspace_func_2}
+    vspace = vector_space(**vspace_args)
     test_trillinear_analysis_values = [
         ({"vspace": vspace, "cell": [25, 25, 25]}, True),
         ({"vspace": vspace, "cell": [32, 14, 4]}, True),
@@ -179,7 +185,10 @@ class Test_bilinear_root:
 
 
 class Test_locate_null_point:
-    vspace = vector_space(vspace_func_1, [5, 6], [5, 6], [5, 6], [1, 1, 1])
+    vspace_args = {"x_range": [5, 6], "y_range": [5, 6], "z_range": [5, 6],
+                   "precision": [1, 1, 1], "func": vspace_func_1}
+    vspace = vector_space(**vspace_args)
+
     test_locate_null_point_values = [
         (
             {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": ATOL},
@@ -195,8 +204,9 @@ class Test_locate_null_point:
 
 
 def test_nullpoint():
-    vspace = vector_space(vspace_func_1, [5, 6], [5, 6], [5, 6], [1, 1, 1])
-    npoints = nullpoint(vspace)
+    nullpoint_args = {"x_range": [5, 6], "y_range": [5, 6], "z_range": [5, 6],
+                   "precision": [1, 1, 1], "func": vspace_func_1}
+    npoints = nullpoint(**nullpoint_args)
     loc = npoints[0].getLoc().reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=ATOL).all()
