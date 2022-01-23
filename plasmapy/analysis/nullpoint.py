@@ -1107,9 +1107,7 @@ def trillinear_analysis(vspace, cell):
             np.sign(
                 tlApprox(BxByEndpoints[0][0], BxByEndpoints[0][1], BxByEndpoints[0][2])[2]
             )
-            * np.sign(
-        tlApprox(BxByEndpoints[1][0], BxByEndpoints[1][1], BxByEndpoints[1][2])[2]
-    )
+            * np.sign(tlApprox(BxByEndpoints[1][0], BxByEndpoints[1][1], BxByEndpoints[1][2])[2])
             > 0
     ):
         isNullPoint = False
@@ -1119,9 +1117,7 @@ def trillinear_analysis(vspace, cell):
             np.sign(
                 tlApprox(BxBzEndpoints[0][0], BxBzEndpoints[0][1], BxBzEndpoints[0][2])[1]
             )
-            * np.sign(
-        tlApprox(BxBzEndpoints[1][0], BxBzEndpoints[1][1], BxBzEndpoints[1][2])[1]
-    )
+            * np.sign(tlApprox(BxBzEndpoints[1][0], BxBzEndpoints[1][1], BxBzEndpoints[1][2])[1])
             > 0
     ):
         isNullPoint = False
@@ -1131,9 +1127,7 @@ def trillinear_analysis(vspace, cell):
             np.sign(
                 tlApprox(ByBzEndpoints[0][0], ByBzEndpoints[0][1], ByBzEndpoints[0][2])[0]
             )
-            * np.sign(
-        tlApprox(ByBzEndpoints[1][0], ByBzEndpoints[1][1], ByBzEndpoints[1][2])[0]
-    )
+            * np.sign(tlApprox(ByBzEndpoints[1][0], ByBzEndpoints[1][1], ByBzEndpoints[1][2])[0])
             > 0
     ):
         isNullPoint = False
