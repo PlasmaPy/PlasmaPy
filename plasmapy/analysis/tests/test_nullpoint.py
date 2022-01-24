@@ -9,7 +9,7 @@ from plasmapy.analysis.nullpoint import (
     bilinear_root,
     jacobian,
     locate_null_point,
-    nullpoint,
+    nullpoint_find,
     reduction,
     trilinear_approx,
     trilinear_coeff_cal,
@@ -252,7 +252,7 @@ def test_nullpoint():
         "precision": [1, 1, 1],
         "func": vspace_func_1,
     }
-    npoints = nullpoint(**nullpoint_args)
+    npoints = nullpoint_find(**nullpoint_args)
     loc = npoints[0].getLoc().reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=ATOL).all()
@@ -263,7 +263,7 @@ def test_nullpoint():
         "z_arr": [0, 2, 4, 6, 8],
         "func": vspace_func_1
     }
-    npoints2 = nullpoint(**nullpoint2_args)
+    npoints2 = nullpoint_find(**nullpoint2_args)
     loc2 = npoints2[0].getLoc().reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=ATOL).all()

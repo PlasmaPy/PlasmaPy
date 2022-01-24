@@ -3,15 +3,8 @@
 __all__ = [
     "Point",
     "NullPoint",
-    "vector_space",
-    "bilinear_root",
-    "jacobian",
-    "locate_null_point",
-    "nullpoint",
-    "reduction",
+    "nullpoint_find",
     "trilinear_approx",
-    "trilinear_coeff_cal",
-    "trillinear_analysis",
 ]
 
 import numpy as np
@@ -1290,17 +1283,14 @@ def locate_null_point(vspace, cell, n, err):
     if divide > MAX_DIVIDE:
         warnings.warn("Could Not Locate a possible Nullpoint")
         return None
-    new_vspace = vector_space(
-        tlApprox,
-        [pos_000[0], pos_111[0]],
-        [pos_000[1], pos_111[1]],
-        [pos_000[2], pos_111[2]],
-        [deltax / 2, deltay / 2, deltaz / 2],
-    )
-    return nullpoint(new_vspace)
+    null_point_args={"func": tlApprox, "x_range":[pos_000[0], pos_111[0]],
+                     "y_range":[pos_000[1], pos_111[1]], "z_range":[pos_000[2], pos_111[2]],
+                     "precision":[deltax / 2, deltay / 2, deltaz / 2] }
+
+    return nullpoint_find(**null_point_args)
 
 
-def nullpoint(
+def nullpoint_find(
         x_arr=None,
         y_arr=None,
         z_arr=None,
