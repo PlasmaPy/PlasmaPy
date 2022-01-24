@@ -10,7 +10,6 @@ The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 __all__ = []
 
 import astropy.units as u
-import collections
 import json
 import pkgutil
 

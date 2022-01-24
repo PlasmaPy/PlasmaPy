@@ -5,7 +5,7 @@ import pytest
 import scipy.integrate as spint
 
 from astropy import units as u
-from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
+from astropy.constants import k_B, m_e
 
 from ..distribution import (
     kappa_velocity_1D,

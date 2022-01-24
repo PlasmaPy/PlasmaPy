@@ -5,7 +5,6 @@ __all__ = ["Fermi_integral", "rot_a_to_b"]
 import numbers
 import numpy as np
 
-from scipy import special
 from typing import Union
 
 
@@ -37,7 +36,7 @@ def Fermi_integral(
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
-    ValueError
+    `ValueError`
         If the argument is not entirely finite.
 
     Notes
@@ -57,9 +56,10 @@ def Fermi_integral(
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
 
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's
-    implementation of `~mpmath.polylog`.
+    Warnings
+    --------
+    At present this function is limited to relatively small arguments
+    due to limitations in `mpmath` implementation of `~mpmath.polylog`.
 
     Examples
     --------
@@ -69,7 +69,6 @@ def Fermi_integral(
     (1.3132616875182228-0j)
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
-
     """
     try:
         from mpmath import polylog
@@ -147,7 +146,6 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     -------
     R : `~numpy.ndarray`, shape (3,3)
         The rotation matrix that will rotate vector ``a`` onto vector ``b``.
-
     """
 
     # Normalize and validate both vectors
