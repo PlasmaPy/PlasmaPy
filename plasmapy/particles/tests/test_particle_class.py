@@ -1031,8 +1031,7 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str):
     """Test that the symbol attribute cannot be set to something besides a string"""
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls()
+    instance = cls()
     with pytest.raises(TypeError):
         instance.symbol = not_a_str
 
@@ -1132,8 +1131,7 @@ def test_custom_particles_from_json_string(
     JSON representation"""
     if expected_exception is None:
         if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
+            instance = cls(**kwargs)
         else:
             instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
@@ -1165,11 +1163,7 @@ def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exce
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
-        else:
-            instance = cls(**kwargs)
+        instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
         assert u.isclose(
