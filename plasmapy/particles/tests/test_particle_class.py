@@ -940,9 +940,8 @@ def test_customized_particles(cls, kwargs, attr, expected):
     ],
 )
 def test_custom_particle_symbol(cls, symbol, expected):
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls(symbol=symbol)
-        assert instance.symbol == expected
+    instance = cls(symbol=symbol)
+    assert instance.symbol == expected
 
 
 customized_particle_errors = [
