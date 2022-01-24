@@ -1,8 +1,0 @@
-Fixed a bug in the volume-averaged interpolator for
-`~plasmapy.plasma.grids.CartesianGrid`
-(`~plasmapy.plasma.grids.CartesianGrid.volume_averaged_interpolator`).
-The old method miss interpreted where the interpolation point was
-inside the nearest neighbor cell volume.  So, if an interpolation point
-was at the lower bounds of the nearest neighbor cell volume, then the
-position was flipped and interpreted as being at the upper bounds of the
-cell volume, and visa-versa.

@@ -7,8 +7,8 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v3.4.0
   hooks:
-  - id: check-yaml
   - id: check-json
+  - id: check-yaml
   - id: check-symlinks
   - id: end-of-file-fixer
   - id: trailing-whitespace
@@ -52,5 +52,3 @@ repos:
     args: [--autofix]
   - id: pretty-format-toml
     args: [--autofix]
-  - id: pretty-format-yaml
-    args: [--autofix, --indent, '2']

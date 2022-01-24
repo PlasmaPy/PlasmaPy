@@ -1,2 +1,0 @@
-Use more generalized keyword argument ``T`` instead of ``T_i`` in `plasmapy.formulary.parameters.gyroradius`.
-The ``T_i`` argument has been deprecated and will be removed in a subsequent release.
