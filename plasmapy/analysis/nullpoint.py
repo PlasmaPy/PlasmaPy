@@ -1289,28 +1289,32 @@ def locate_null_point(vspace, cell, n, err):
     if divide > MAX_DIVIDE:
         warnings.warn("Could Not Locate a possible Nullpoint")
         return None
-    null_point_args={"func": tlApprox, "x_range":[pos_000[0], pos_111[0]],
-                     "y_range":[pos_000[1], pos_111[1]], "z_range":[pos_000[2], pos_111[2]],
-                     "precision":[deltax / 2, deltay / 2, deltaz / 2] }
+    null_point_args = {
+        "func": tlApprox,
+        "x_range": [pos_000[0], pos_111[0]],
+        "y_range": [pos_000[1], pos_111[1]],
+        "z_range": [pos_000[2], pos_111[2]],
+        "precision": [deltax / 2, deltay / 2, deltaz / 2],
+    }
 
     return nullpoint_find(**null_point_args)
 
 
 def nullpoint_find(
-        x_arr=None,
-        y_arr=None,
-        z_arr=None,
-        x_range=[0, 1],
-        y_range=[0, 1],
-        z_range=[0, 1],
-        u_arr=None,
-        v_arr=None,
-        w_arr=None,
-        func=(lambda x, y, z: [x, y, z]),
-        precision=[0.05, 0.05, 0.05],
-        MAX_ITERATIONS=500,
-        err=10 ** (-10),
-    ):
+    x_arr=None,
+    y_arr=None,
+    z_arr=None,
+    x_range=[0, 1],
+    y_range=[0, 1],
+    z_range=[0, 1],
+    u_arr=None,
+    v_arr=None,
+    w_arr=None,
+    func=(lambda x, y, z: [x, y, z]),
+    precision=[0.05, 0.05, 0.05],
+    MAX_ITERATIONS=500,
+    err=10 ** (-10),
+):
     r"""
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
