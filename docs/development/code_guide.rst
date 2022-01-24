@@ -1,8 +1,8 @@
 .. _code-development-guidelines:
 
-***************************
-Code Development Guidelines
-***************************
+************
+Coding Guide
+************
 
 This document describes the coding requirements and guidelines to be
 followed during the development of PlasmaPy and affiliated packages.
@@ -208,6 +208,7 @@ Stuff to add here...
 
 Commit Messages
 ---------------
+
 Good commit messages communicate context and intention to other
 developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
@@ -237,7 +238,7 @@ Warnings and Exceptions
   source of the problem.  Warnings and error messages must be helpful
   enough for new users to quickly understand any problems that arise.
 
-* "Errors should never pass silently."  Users should be notified when
+* "Errors should never pass silently." Users should be notified when
   problems arise by either issuing a warning or raising an exception.
 
 * The exceptions raised by a method should be described in the
