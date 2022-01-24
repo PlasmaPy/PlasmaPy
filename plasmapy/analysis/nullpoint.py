@@ -1400,7 +1400,7 @@ def nullpoint_find(
 
     Notes
     -----
-    N/A
+    This method is described by :cite:t:`haynes:2007`
     """
     # Constructing the vspace
     vspace = vector_space(
