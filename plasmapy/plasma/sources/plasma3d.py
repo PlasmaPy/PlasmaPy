@@ -24,12 +24,15 @@ class Plasma3D(GenericPlasma):
     domain_x : `~astropy.units.Quantity`
         1D array of x-coordinates for the plasma domain. Must have
         units convertible to length.
+
     domain_y : `~astropy.units.Quantity`
         1D array of y-coordinates for the plasma domain. Must have
         units convertible to length.
+
     domain_z : `~astropy.units.Quantity`
         1D array of z-coordinates for the plasma domain. Must have
         units convertible to length.
+
     **kwargs:
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`
     """

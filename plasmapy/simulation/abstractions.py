@@ -16,16 +16,14 @@ class AbstractSimulation(ABC):
     """
     A prototype abstract interface for numerical simulations.
 
-    Notes
-    -----
-    This interface is incomplete and unstable, and is thus subject to
-    change at any time.
+    .. warning::
+        This interface is unstable and subject to change.
     """
 
     @abstractmethod
     def summarize(self):
         """
-        Print out a summary of the simulation parameters and status.
+        Print a summary of the simulation parameters and status.
         """
         ...
 
@@ -36,12 +34,12 @@ class AbstractSimulation(ABC):
 
     @abstractmethod
     def simulate(self):
-        """Perform the actual simulation."""
+        """Perform the simulation."""
         ...
 
     @abstractmethod
     def finalize(self) -> NoReturn:
-        """Perform the steps to close the simulation and output data."""
+        """Perform the steps to close the simulation."""
         ...
 
 
@@ -49,10 +47,8 @@ class AbstractTimeDependentSimulation(AbstractSimulation):
     """
     A prototype abstract interface for time-dependent numerical simulations.
 
-    Notes
-    -----
-    This interface is incomplete and unstable, and is thus subject to
-    change at any time.
+    .. warning::
+        This interface is unstable and is subject to change.
     """
 
     ...
@@ -64,7 +60,7 @@ class AbstractNormalizations(ABC):
     systems of equations describing plasmas.
 
     .. warning::
-       This interface is unstable and is subject to change.
+        This interface is unstable and is subject to change.
     """
 
     @property

@@ -3,15 +3,13 @@ import inspect
 import io
 import json
 import numpy as np
-import os
-import pickle
 import pytest
 
 from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
-from plasmapy.particles import json_load_particle, json_loads_particle
+from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -24,7 +22,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _Isotopes
+from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
@@ -33,6 +31,7 @@ from plasmapy.particles.particle_class import (
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test_equivalent_calls
 
 # (arg, kwargs, results_dict)
@@ -49,7 +48,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "is_electron": False,
-            "integer_charge": 0,
+            "charge_number": 0,
             "atomic_number": InvalidElementError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": 1,
@@ -74,7 +73,7 @@ test_Particle_table = [
             "is_ion": True,
             "mass": m_p,
             "nuclide_mass": m_p,
-            "integer_charge": 1,
+            "charge_number": 1,
             "charge.value": e.si.value,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
@@ -112,7 +111,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_p,
-            "integer_charge": -1,
+            "charge_number": -1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -137,7 +136,7 @@ test_Particle_table = [
             "roman_symbol": None,
             "is_ion": False,
             "mass": m_e,
-            "integer_charge": -1,
+            "charge_number": -1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -166,7 +165,7 @@ test_Particle_table = [
             "mass": m_e,
             "mass_energy": (m_e * c ** 2).to("J"),
             "nuclide_mass": InvalidIsotopeError,
-            "integer_charge": 1,
+            "charge_number": 1,
             "spin": 1 / 2,
             "half_life": np.inf * u.s,
             "atomic_number": InvalidElementError,
@@ -196,7 +195,7 @@ test_Particle_table = [
             "roman_symbol": ChargeError,
             "is_ion": False,
             "charge": ChargeError,
-            "integer_charge": ChargeError,
+            "charge_number": ChargeError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": ParticleError,
             "lepton_number": 0,
@@ -220,7 +219,7 @@ test_Particle_table = [
             "ionic_symbol": "H 1-",
             "roman_symbol": roman.OutOfRangeError,
             "is_ion": True,
-            "integer_charge": -1,
+            "charge_number": -1,
             "mass_number": InvalidIsotopeError,
             "baryon_number": MissingParticleDataError,
             "lepton_number": 0,
@@ -244,7 +243,7 @@ test_Particle_table = [
             "roman_symbol": "H-1 I",
             "is_ion": False,
             "charge": 0 * u.C,
-            "integer_charge": 0,
+            "charge_number": 0,
             "mass_number": 1,
             "baryon_number": 1,
             "lepton_number": 0,
@@ -269,7 +268,7 @@ test_Particle_table = [
             "ionic_symbol": "D 1+",
             "roman_symbol": "D II",
             "is_ion": True,
-            "integer_charge": 1,
+            "charge_number": 1,
             "atomic_number": 1,
             "mass_number": 2,
             "baryon_number": 2,
@@ -293,7 +292,7 @@ test_Particle_table = [
             "ionic_symbol": "T 1+",
             "roman_symbol": "T II",
             "is_ion": True,
-            "integer_charge": 1,
+            "charge_number": 1,
             "atomic_number": 1,
             "mass_number": 3,
             "baryon_number": 3,
@@ -317,7 +316,7 @@ test_Particle_table = [
             "roman_symbol": "Fe-56 XVIII",
             "is_electron": False,
             "is_ion": True,
-            "integer_charge": 17,
+            "charge_number": 17,
             "atomic_number": 26,
             "mass_number": 56,
             "baryon_number": 56,
@@ -341,7 +340,7 @@ test_Particle_table = [
             "roman_symbol": "He-4 III",
             "mass_energy": 5.971919969131517e-10 * u.J,
             "is_ion": True,
-            "integer_charge": 2,
+            "charge_number": 2,
             "atomic_number": 2,
             "mass_number": 4,
             "baryon_number": 4,
@@ -372,7 +371,7 @@ test_Particle_table = [
             "ionic_symbol": None,
             "roman_symbol": ChargeError,
             "is_ion": False,
-            "integer_charge": ChargeError,
+            "charge_number": ChargeError,
             "atomic_number": 3,
             "mass_number": 7,
             "neutron_number": 4,
@@ -393,7 +392,7 @@ test_Particle_table = [
             "roman_symbol": "Cn-276 XXIII",
             "is_ion": True,
             "element_name": "copernicium",
-            "integer_charge": 22,
+            "charge_number": 22,
             "atomic_number": 112,
             "mass_number": 276,
             "neutron_number": 164,
@@ -412,7 +411,7 @@ test_Particle_table = [
             "ionic_symbol": None,
             "roman_symbol": None,
             "is_ion": False,
-            "integer_charge": -1,
+            "charge_number": -1,
             "atomic_number": InvalidElementError,
             "mass_number": InvalidIsotopeError,
             "baryon_number": 0,
@@ -429,7 +428,7 @@ test_Particle_table = [
             "isotope_name": InvalidElementError,
             "mass": MissingParticleDataError,
             "mass_energy": MissingParticleDataError,
-            "integer_charge": 0,
+            "charge_number": 0,
             "mass_number": InvalidIsotopeError,
             "element_name": InvalidElementError,
             "baryon_number": 0,
@@ -566,7 +565,7 @@ test_Particle_error_table = [
     ("H", {"Z": 0}, ".mass_number", InvalidIsotopeError),
     ("neutron", {}, ".mass_number", InvalidIsotopeError),
     ("He", {"mass_numb": 4}, ".charge", ChargeError),
-    ("He", {"mass_numb": 4}, ".integer_charge", ChargeError),
+    ("He", {"mass_numb": 4}, ".charge_number", ChargeError),
     ("Fe", {}, ".spin", MissingParticleDataError),
     ("nu_e", {}, ".mass", MissingParticleDataError),
     ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
@@ -633,11 +632,9 @@ def test_Particle_cmp():
     assert proton1 == proton2, "Particle('p+') == Particle('proton') is False."
     assert proton1 != electron, "Particle('p+') == Particle('e-') is True."
 
-    with pytest.raises(TypeError):
-        electron == 1
+    assert electron != 1
 
-    with pytest.raises(ParticleError):
-        electron == "dfasdf"
+    assert electron != "dfasdf"
 
 
 nuclide_mass_and_mass_equiv_table = [
@@ -691,7 +688,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
 
         assert Isotope.isotope and not Isotope.ion, inputerrmsg
         assert Isotope.isotope == Ion.isotope, inputerrmsg
-        assert Ion.integer_charge == Ion.atomic_number, inputerrmsg
+        assert Ion.charge_number == Ion.atomic_number, inputerrmsg
 
         assert Isotope.nuclide_mass == Ion.mass, (
             f"The nuclide mass of {isotope} does not equal the mass of {ion} "
@@ -703,6 +700,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str):
         )
 
 
+@pytest.mark.slow
 def test_particle_half_life_string():
     """
     Find the first isotope where the half-life is stored as a string
@@ -712,7 +710,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _Isotopes[isotope].get("half-life", None)
+        half_life = _isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -803,7 +801,7 @@ class Test_antiparticle_properties_inversion:
         Test that a particle and its antiparticle have the opposite
         charge.
         """
-        assert particle.integer_charge == -opposite.integer_charge, (
+        assert particle.charge_number == -opposite.charge_number, (
             f"The charges of {particle} and {opposite} are not "
             f"opposites, as expected of a particle/antiparticle pair."
         )
@@ -854,7 +852,10 @@ def test_particleing_a_particle(arg):
     )
 
 
-@pytest.mark.parametrize("key", [Particle("H"), Particle("e+")])
+@pytest.mark.parametrize(
+    "key",
+    [Particle("H"), Particle("e+"), CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")],
+)
 def test_that_object_can_be_dict_key(key):
     """
     Test that ``key`` can be used as the key of a `dict`.
@@ -920,7 +921,12 @@ customized_particle_tests = [
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
-    instance = cls(**kwargs)
+
+    if "mass" not in kwargs or "charge" not in kwargs:
+        with pytest.warns(MissingParticleDataWarning):
+            instance = cls(**kwargs)
+    else:
+        instance = cls(**kwargs)
     value = getattr(instance, attr)
 
     if not u.isclose(value, expected, equal_nan=True):
@@ -940,8 +946,9 @@ def test_customized_particles(cls, kwargs, attr, expected):
     ],
 )
 def test_custom_particle_symbol(cls, symbol, expected):
-    instance = cls(symbol=symbol)
-    assert instance.symbol == expected
+    with pytest.warns(MissingParticleDataWarning):
+        instance = cls(symbol=symbol)
+        assert instance.symbol == expected
 
 
 customized_particle_errors = [
@@ -989,7 +996,11 @@ def test_customized_particles_errors(cls, kwargs, exception):
     results in an InvalidParticleError.
     """
     with pytest.raises(exception):
-        cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                cls(**kwargs)
+        else:
+            cls(**kwargs)
         pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
 
 
@@ -1027,7 +1038,8 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str):
     """Test that the symbol attribute cannot be set to something besides a string"""
-    instance = cls()
+    with pytest.warns(MissingParticleDataWarning):
+        instance = cls()
     with pytest.raises(TypeError):
         instance.symbol = not_a_str
 
@@ -1126,7 +1138,11 @@ def test_custom_particles_from_json_string(
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        instance = cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                instance = cls(**kwargs)
+        else:
+            instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
         assert u.isclose(
             instance.mass, instance_from_json.mass, equal_nan=True
@@ -1156,7 +1172,11 @@ def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exce
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        instance = cls(**kwargs)
+        if "mass" not in kwargs or "charge" not in kwargs:
+            with pytest.warns(MissingParticleDataWarning):
+                instance = cls(**kwargs)
+        else:
+            instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
         assert u.isclose(
@@ -1361,3 +1381,63 @@ def test_particle_is_category_valid_categories():
         "uncharged",
     }
     assert some_valid_categories.issubset(Particle.is_category.valid_categories)
+
+
+def test_deprecated_integer_charge():
+    with pytest.warns(PlasmaPyFutureWarning):
+        assert Particle("e-").integer_charge == -1
+
+
+def test_CustomParticle_cmp():
+    """Test ``__eq__`` and ``__ne__`` in the CustomParticle class."""
+    particle1 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
+    particle2 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
+    other = CustomParticle(2 * 126.90447 * u.u, e.si, "I2 +")
+
+    assert (
+        particle1 == particle2
+    ), "CustomParticle instances that should be equal are not."
+    assert particle1 != other, "CustomParticle instances should not be equal, but are."
+
+    assert not particle1 == 1
+    assert particle1 != 1
+
+
+test_molecule_table = [
+    (2 * 126.90447 * u.u, 0 * u.C, "I2", "I2", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2 1+", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
+    (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
+]
+
+
+@pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
+def test_molecule(m, Z, symbol, m_symbol, m_Z):
+    """Test ``molecule`` function."""
+    assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
+
+
+test_molecule_error_table = [
+    ("Zz", None),
+    ("", None),
+    ("I2+", 2),
+    ("Iii", None),
+    ("e2H3", None),
+]
+
+
+@pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
+def test_molecule_error(symbol, Z):
+    """Test the error raised in case of a bad molecule symbol."""
+    with pytest.raises(InvalidParticleError):
+        m = molecule(symbol, Z)
+
+
+def test_molecule_other():
+    """Test fallback to |Particle| object and warning in case of redundant charge."""
+    assert Particle("I") == molecule("I")
+
+    with pytest.warns(ParticleWarning):
+        assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
+            "I2 1+", Z=1
+        )

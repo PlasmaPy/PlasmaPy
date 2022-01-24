@@ -2,8 +2,7 @@
 Module for loading isotope data from :file:`plasmapy/particles/data/isotopes.json`.
 
 .. attention::
-    This module only contains non-public functionality.  To learn more about the
-    package functionality, then examine the code itself.
+    This module is not part of PlasmaPy's public API.
 """
 __all__ = []
 
@@ -26,14 +25,14 @@ import pkgutil
 
 
 def _isotope_obj_hook(obj):
-    """An `object_hook` designed for `json.load` and `json.loads`."""
+    """Provide an `object_hook` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
 
 
 #: Dictionary of isotope data.
-_Isotopes = json.loads(
+_isotopes = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
     object_hook=_isotope_obj_hook,
 )

@@ -44,37 +44,36 @@ class BasicRegistrationFactory:
     Generalized registrable factory type.
 
     Widgets (classes) can be registered with an instance of this class.
-    Arguments to the factory's `__call__` method are then passed to a function
+    Arguments to the factory's ``__call__`` method are then passed to a function
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
     Attributes
     ----------
 
-    registry : dict
+    registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
 
-    default_widget_type : type
-        Class of the default widget.  Defaults to None.
+    default_widget_type : `type`
+        Class of the default widget.  Defaults to `None`.
 
-    validation_functions : list of strings
+    validation_functions : `list` of `str`
         List of function names that are valid validation functions.
 
     Parameters
     ----------
 
-    default_widget_type : type, optional
+    default_widget_type : `type`, optional
 
-    additional_validation_functions : list of strings, optional
-        List of strings corresponding to additional validation function names.
+    additional_validation_functions : `list` of `str`, optional
+        List of strings corresponding to additional validation function
+        names.
 
     Notes
     -----
-
-    * A valid validation function must be a classmethod of the registered widget
-      and it must return True or False.
-
+    A valid validation function must be a `classmethod` of the
+    registered widget and must return `True` or `False`.
     """
 
     def __init__(
@@ -99,7 +98,8 @@ class BasicRegistrationFactory:
         ] + additional_validation_functions
 
     def __call__(self, *args, **kwargs):
-        """Method for running the factory.
+        """
+        Method for running the factory.
 
         Arguments args and kwargs are passed through to the validation
         function and to the constructor for the final type.
@@ -131,9 +131,9 @@ class BasicRegistrationFactory:
         elif n_matches > 1:
             print(candidate_widget_types)
             raise MultipleMatchError(
-                "Too many candidate types identified ({0})."
+                f"Too many candidate types identified ({n_matches}). "
                 "Specify enough keywords to guarantee unique type "
-                "identification.".format(n_matches)
+                "identification."
             )
 
         # Only one is found
@@ -150,15 +150,14 @@ class BasicRegistrationFactory:
 
         Parameters
         ----------
-
-        WidgetType : type
+        WidgetType : `type`
             Widget to register.
 
         validation_function : function, optional
-            Function to validate against.  Defaults to None, which indicates
-            that a classmethod in validation_functions is used.
+            Function to validate against.  Defaults to `None`, which indicates
+            that a `classmethod` in `validation_functions` is used.
 
-        is_default : bool, optional
+        is_default : `bool`, optional
             Sets WidgetType to be the default widget.
 
         """
@@ -190,19 +189,17 @@ class BasicRegistrationFactory:
                         break
                     else:
                         raise ValidationFunctionError(
-                            "{0}.{1} must be a classmethod.".format(
-                                WidgetType.__name__, vfunc_str
-                            )
+                            f"{WidgetType.__name__}.{vfunc_str} must be a classmethod."
                         )
 
             if not found:
                 raise ValidationFunctionError(
-                    "No proper validation function for class {0} "
-                    "found.".format(WidgetType.__name__)
+                    "No proper validation function for class "
+                    f"{WidgetType.__name__} found."
                 )
 
     def unregister(self, WidgetType):
-        """ Remove a widget from the factory's registry."""
+        """Remove a widget from the factory's registry."""
         self.registry.pop(WidgetType)
 
 

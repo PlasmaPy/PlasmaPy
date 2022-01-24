@@ -1,5 +1,0 @@
-Add unicode particle aliases for electrons (``"β-"``, ``"β⁻"``), muons
-(``"μ-"``, ``"μ⁻"``), anti-muons (``"μ+"``, ``"μ⁺"``), tau particles
-(``"τ"``, ``"τ-"``, ``"τ⁻"``), anti-tau particles (``"τ+"``, ``"τ⁺"``)
-electron neutrinos (``"ν_e"``), muon neutrinos (``"ν_μ"``), tau neutrinos
-(``"ν_τ"``), and alpha particles (``"α"``).

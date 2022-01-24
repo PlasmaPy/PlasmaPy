@@ -1,2 +1,0 @@
--r automated-documentation-tests.txt
--r requirements.txt

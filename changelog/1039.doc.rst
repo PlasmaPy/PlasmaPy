@@ -1,2 +1,0 @@
-Put the docstring for `plasmapy.particles.Particle.is_category` into
-numpydoc format.

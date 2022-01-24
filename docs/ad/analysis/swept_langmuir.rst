@@ -19,17 +19,7 @@ Example Notebooks
 API
 ---
 
-Sub-Packages & Modules
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. autosummary::
-
-   floating_potential
-   helpers
-   ion_saturation_current
-
 .. automodapi:: plasmapy.analysis.swept_langmuir
-   :no-main-docstr:
-   :no-heading:
-   :include-all-objects:
-   :headings: "^-"
+   :noindex:
+   :no-main-docstring:
+   :heading-chars: ^~

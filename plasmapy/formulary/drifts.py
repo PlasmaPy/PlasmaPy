@@ -1,6 +1,5 @@
-"""
-Formulas for calculating particle drifts.
-"""
+"""Functions for calculating particle drifts."""
+
 __all__ = [
     "diamagnetic_drift",
     "ExB_drift",
@@ -9,6 +8,7 @@ __all__ = [
     "veb_",
     "vfd_",
 ]
+__aliases__ = ["vd_", "veb_", "vfd_"]
 
 import astropy.units as u
 import numpy as np
@@ -25,18 +25,18 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
     Parameters
     ----------
-    dp : ~astropy.units.Quantity
+    dp : `~astropy.units.Quantity`
         Pressure gradient vector
-    B  : ~astropy.units.Quantity
+    B  : `~astropy.units.Quantity`
         Magnetic field vector
-    n  : ~astropy.units.Quantity
+    n  : `~astropy.units.Quantity`
         Number density
-    q  : ~astropy.units.Quantity
+    q  : `~astropy.units.Quantity`
         Particle charge
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Examples
@@ -56,23 +56,17 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
 
     .. math::
 
-        \vec{v} = -\frac{ \nabla p \times \vec{B} }{ q n |B|^2 }
+        \vec{v} = -\frac{ ∇ p \times \vec{B} }{ q n |B|^2 }
 
-    This is the velocity component of a fluid element perpendicular to the
-    magnetic field.
-
-    References
-    ----------
-    - Chen, Introduction to Plasma Physics and Controlled Fusion, 3.65
-
+    This is the velocity component of a fluid element perpendicular to
+    the magnetic field.
     """
-
     cross = np.cross(dp, B)
     return -cross / q / n / (B * B).sum(-1)
 
 
 vd_ = diamagnetic_drift
-""" Alias to :func:`diamagnetic_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.diamagnetic_drift`."""
 
 
 @validate_quantities
@@ -84,14 +78,14 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
     Parameters
     ----------
-    E : ~astropy.units.Quantity
+    E : `~astropy.units.Quantity`
         Electric field vector
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field vector
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Examples
@@ -108,18 +102,13 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
     Notes
     -----
-    The E cross B drift is given by
+    The E × B drift is given by
 
     .. math::
 
         \vec{v} = \frac{\vec{E} \times \vec{B}}{|B|^2}
 
     and is independent of particle charge.
-
-    References
-    ----------
-    - PM Bellan, Fundamentals of Plasma Physics, 3.57
-
     """
 
     # np.cross drops units right now, thus this hack: see
@@ -129,7 +118,7 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
 
 
 veb_ = ExB_drift
-""" Alias to :func:`ExB_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.ExB_drift`."""
 
 
 @validate_quantities
@@ -141,11 +130,11 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
     Parameters
     ----------
-    F : ~astropy.units.Quantity
+    F : `~astropy.units.Quantity`
         Force acting on particle
-    B : ~astropy.units.Quantity
+    B : `~astropy.units.Quantity`
         Magnetic field
-    q : ~astropy.units.Quantity
+    q : `~astropy.units.Quantity`
         Particle charge
 
     Examples
@@ -163,7 +152,7 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
 
     Returns
     -------
-    v: ~astropy.units.Quantity
+    v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
     Notes
@@ -176,15 +165,10 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
         \vec{v} = \frac{\vec{F} \times \vec{B}}{q |B|^2}
 
     Note the charge dependency.
-
-    References
-    ----------
-    - PM Bellan, Fundamentals of Plasma Physics, 3.58
-
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
     return cross / (q * (B * B).sum(-1))
 
 
 vfd_ = force_drift
-""" Alias to :func:`force_drift`. """
+"""Alias to `~plasmapy.formulary.drifts.force_drift`."""

@@ -1,4 +1,5 @@
--r ../requirements/automated-documentation-tests.txt
+-r ../requirements/build.txt
+-r ../requirements/install.txt
+-r ../requirements/extras.txt
 .
 jupytext
-pytest

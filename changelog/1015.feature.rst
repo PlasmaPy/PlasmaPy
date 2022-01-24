@@ -1,3 +1,0 @@
-Both `plasmapy.particles.CustomParticle` and `plasmapy.particles.DimensionlessParticle`
-now allow users to define a custom symbol via the ``symbol`` keyword argument, which
-can then be accessed by the ``symbol`` attribute in each of these classes.

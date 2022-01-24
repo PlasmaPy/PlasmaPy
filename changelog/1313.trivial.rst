@@ -1,0 +1,1 @@
+Parametrized tests for ion_sound_speed

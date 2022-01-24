@@ -1,4 +1,4 @@
-<div align="center"><img src="https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-logo/master/exports/with-text-dark.png" width="600"/></div>
+<div align="center"><img src="https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-logo/main/exports/with-text-dark.png" width="600"/></div>
 
 # PlasmaPy
 
@@ -8,14 +8,16 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](./LICENSE.md)
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
-[![YouTube](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
+[![Twitter](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://twitter.com/plasmapy)
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
-[![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amaster)
-[![GitHub Actions — Style linters](https://github.com/PlasmaPy/PlasmaPy/workflows/Style%20linters/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3AStyle-linters+branch%3Amaster)
-[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/master/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
+[![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
+[![fortnightly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml)
+[![Style linters](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
+[![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/master?filepath=docs/notebooks)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/PlasmaPy/PlasmaPy/main?filepath=docs/notebooks)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
@@ -63,16 +65,20 @@ on our
 [Matrix](https://app.element.io/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. Both of these are the same chat channel; Gitter uses a bridge to link the two.
 
-## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://meet.jit.si/plasmapy)
+## [Weekly](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York) [community meetings](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success)
 
-We have weekly community meetings in the
-[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
-The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
+Updated information about our community meetings can be found on [plasmapy.org](https://www.plasmapy.org/meetings/weekly/).
+
+As of now, PlasmaPy hosts its weekly online community meeting every Tuesday to cover topics related to code development. This call is hosted on [Zoom](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success).
+
+The schedule of our community meetings is on our
+[calendar](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York),
+and you may access the [minutes and
 agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of January 2021, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/6pm).
+As of November 2021, our meetings are on Tuesdays at
+[19:00 UTC](http://time.unitarium.com/utc/7pm).
 Come discuss plasma software with us!
 
 ## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)

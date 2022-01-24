@@ -1,0 +1,16 @@
+# in decreasing order of priority
+
+# any file, anywhere
+*                                                        @PlasmaPy/plasmapy-reviewers
+
+plasmapy/particles/                                      @namurphy
+
+plasmapy/analysis/                                       @rocco8773
+plasmapy/diagnostics/                                    @rocco8773
+
+plasmapy/simulation/                                     @StanczakDominik
+
+# any conftest.py, anywhere
+conftest.py                                              @StanczakDominik
+
+plasmapy/diagnostics/proton_radiography.py               @pheuer

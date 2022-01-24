@@ -138,10 +138,12 @@ def _name_with_article(ex: Exception) -> str:
 
 def _object_name(obj: Any, showmodule=False) -> str:
     """
-    Return the name of an `object`.  If the `object` has a `__name__`
-    attribute and ``showmodule`` is `True`, then prepend the module
-    name if not in `builtins`.  Replace ``"numpy"`` with ``"np"`` and
-    substitute ``"u"`` for several modules in `astropy.units`.
+    Return the name of an `object`.
+
+    If the `object` has a `__name__` attribute and ``showmodule`` is
+    `True`, then prepend the module name if not in `builtins`.  Replace
+    ``"numpy"`` with ``"np"`` and substitute ``"u"`` for several modules
+    in `astropy.units`.
     """
 
     def substitute_module_shortcuts(module_name):
@@ -195,23 +197,23 @@ def call_string(
     Parameters
     ----------
     f : callable
-        A function, class, or other callable object
+        A function, class, or other callable object.
 
-    args : `tuple`, `list`, or any; optional
+    args : `tuple`, `list`, or any `object`; optional
         A `tuple` or `list` containing positional arguments, or any
-        other `object` if there is only one positional argument
+        other `object` if there is only one positional argument.
 
     kwargs : `dict`, optional
-        A `dict` containing keyword arguments
+        A `dict` containing keyword arguments.
 
-    max_items : int, optional
+    max_items : `int`, optional
         The maximum number of items to include in a `~numpy.ndarray` or
-        `~astropy.Quantity`; additional items will be truncated with an
-        ellipsis.  Defaults to 12.
+        `~astropy.units.Quantity`; additional items will be truncated
+        with an ellipsis.  Defaults to 12.
 
     Returns
     -------
-    str
+    `str`
         Approximation to a call of ``f`` with ``args`` as positional
         arguments and ``kwargs`` as keyword arguments.
 
@@ -257,28 +259,28 @@ def attribute_call_string(
     Parameters
     ----------
     cls : `class`
-        The class to be used in the string representation
+        The class to be used in the string representation.
 
     attr: `str`
-        The name of the attribute of class ``cls``
+        The name of the attribute of class ``cls``.
 
-    args_to_cls : `tuple`, `list`, or any; optional
+    args_to_cls : `tuple`, `list`, or any `object`; optional
         A `tuple` or `list` containing positional arguments, or any
         other type of `object` if there is only one positional argument,
         to be used during instantiation of ``cls``
 
     kwargs_to_cls: `dict`, optional
         A `dict` containing the keyword arguments to be used during
-        instantiation of ``cls``
+        instantiation of ``cls``.
 
-    max_items : int, optional
+    max_items : `int`, optional
         The maximum number of items to include in a `~numpy.ndarray` or
-        `~astropy.Quantity`; additional items will be truncated with an
-        ellipsis.  Defaults to 12.
+        `~astropy.units.Quantity`; additional items will be truncated
+        with an ellipsis.  Defaults to 12.
 
     Returns
     -------
-    str
+    `str`
         Approximation of a command to instantiate ``cls`` with
         ``args_to_cls`` as positional arguments and ``kwargs_to_cls`` as
         keyword arguments, and then access the attribute ``attr``.
@@ -338,32 +340,32 @@ def method_call_string(
     method: `str`
         The name of the method in class ``cls``
 
-    args_to_cls : `tuple`, `list`, or any; keyword-only, optional
+    args_to_cls : `tuple`, `list`, or any `object`; keyword-only, optional
         A `tuple` or `list` containing positional arguments, or any
         other type of `object` if there is only one positional argument,
-        to be used during instantiation of ``cls``
+        to be used during instantiation of ``cls``.
 
     kwargs_to_cls: `dict`, keyword-only optional
         A `dict` containing the keyword arguments to be used during
-        instantiation of ``cls``
+        instantiation of ``cls``.
 
-    args_to_method : `tuple`, `list`, or any; keyword-only, optional
+    args_to_method : `tuple`, `list`, or any `object`; keyword-only, optional
         A `tuple` or `list` containing the positional arguments to be
         used in the method call, or any other `object` if there is only
-        one positional argument
+        one positional argument.
 
     kwargs_to_method: `dict`, keyword-only, optional
         A `dict` containing the keyword arguments to be used during
-        the method call
+        the method call.
 
     max_items : int, keyword-only, optional
         The maximum number of items to include in a `~numpy.ndarray` or
-        `~astropy.Quantity`; additional items will be truncated with an
-        ellipsis.  Defaults to 12.
+        `~astropy.units.Quantity`; additional items will be truncated
+        with an ellipsis.  Defaults to 12.
 
     Returns
     -------
-    str
+    `str`
         Approximation of a command to instantiate ``cls`` with
         ``args_to_cls`` as positional arguments and ``kwargs_to_cls`` as
         keyword arguments, and then call a method of the resulting

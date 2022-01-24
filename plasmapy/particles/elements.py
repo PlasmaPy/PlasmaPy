@@ -2,22 +2,26 @@
 Module for loading atomic data for elements from
 :file:`plasmapy/particles/data/elements.json`.
 
-The periodic tabla data is from: http://periodic.lanl.gov/index.shtml
+The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 
 .. attention::
-    This module only contains non-public functionality.  To learn more about the
-    package functionality, examine the code itself.
+    This module is not part of PlasmaPy's public API.
 """
 __all__ = []
 
 import astropy.units as u
-import collections
 import json
 import pkgutil
 
-_PeriodicTable = collections.namedtuple(
-    "periodic_table", ["group", "category", "block", "period"]
-)
+from dataclasses import dataclass
+
+
+@dataclass
+class _PeriodicTable:
+    group: int
+    period: int
+    block: str
+    category: str
 
 
 def _element_obj_hook(obj):
@@ -41,16 +45,16 @@ def _element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-_Elements = json.loads(
+_elements = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/elements.json"),
     object_hook=_element_obj_hook,
 )
 
 
 _atomic_numbers_to_symbols = {
-    elemdict["atomic number"]: symb for (symb, elemdict) in _Elements.items()
+    elemdict["atomic number"]: symb for (symb, elemdict) in _elements.items()
 }
 
 _element_names_to_symbols = {
-    elemdict["element name"]: symb for (symb, elemdict) in _Elements.items()
+    elemdict["element name"]: symb for (symb, elemdict) in _elements.items()
 }
