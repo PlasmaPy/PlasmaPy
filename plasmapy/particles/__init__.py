@@ -30,6 +30,7 @@ from plasmapy.particles.particle_class import (
     AbstractPhysicalParticle,
     CustomParticle,
     DimensionlessParticle,
+    molecule,
     Particle,
     ParticleLike,
 )
