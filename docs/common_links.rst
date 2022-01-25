@@ -169,6 +169,8 @@
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
 
+.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`
+
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
 
