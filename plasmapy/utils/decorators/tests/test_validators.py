@@ -37,9 +37,9 @@ class TestValidateQuantities:
     )  # type: Dict[str, Any]
     check_defaults = {**unit_check_defaults, **value_check_defaults}
 
-    def test_inheritance(self):
-        assert issubclass(ValidateQuantities, CheckUnits)
-        assert issubclass(ValidateQuantities, CheckValues)
+    @pytest.mark.parametrize("_class", [CheckUnits, CheckValues])
+    def test_inheritance(self, _class):
+        assert issubclass(ValidateQuantities, _class)
 
     # set up test cases
     # 'setup' = arguments for `_get_validations`
