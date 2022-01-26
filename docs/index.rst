@@ -49,6 +49,7 @@ Example highlights
    Formulary <formulary/index>
    Particles <particles/index>
    Simulation <simulation/index>
+   Plasma Calculator <plasma_calculator/index>
    Plasma Objects <plasma/index>
    Package Utilities <utils/index>
 

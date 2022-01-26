@@ -44,7 +44,35 @@ automodapi_custom_groups = {
         ),
         "dunder": "__aliases__",
     },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            Much of PlasmaPy's functionality incorporates `Astropy units
+            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+            to mitigate calculation errors from inappropriate units, but this
+            comes at the sacrifice of speed.  While this penalty is not significant
+            for typical use, it can become substantial during intensive numerical
+            calculations. **Lite-functions** are introduced for the specific case
+            where speed matters, but **[USER NOTICE]** this comes with the
+            reduction of safeguards so a user needs to know what they are doing!
+            For additional details look to the glossary entry for
+            :term:`lite-function`.
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
 }
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -90,6 +118,7 @@ intersphinx_mapping = {
         None,
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 
 autoclass_content = "both"

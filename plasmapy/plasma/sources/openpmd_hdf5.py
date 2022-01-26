@@ -60,7 +60,7 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
         try:
             import h5py
-        except (ImportError, ModuleNotFoundError) as e:
+        except ImportError as e:
             from plasmapy.optional_deps import h5py_import_error
 
             raise ImportError(h5py_import_error) from e
@@ -162,7 +162,7 @@ class HDF5Reader(GenericPlasma):
         if "openPMD" not in kwargs:
             try:
                 import h5py
-            except (ImportError, ModuleNotFoundError) as e:
+            except ImportError as e:
                 from plasmapy.optional_deps import h5py_import_error
 
                 raise ImportError(h5py_import_error) from e
