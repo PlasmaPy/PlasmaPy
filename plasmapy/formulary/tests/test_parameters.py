@@ -41,7 +41,6 @@ from plasmapy.formulary.parameters import (
     va_,
     wc_,
     wlh_,
-    wp_,
     wuh_,
 )
 from plasmapy.particles import Particle
@@ -809,62 +808,6 @@ class Test_gyroradius:
         assert_quantity_allclose(Vperp1, Vperp2)
 
 
-def test_plasma_frequency():
-    r"""Test the plasma_frequency function in parameters.py."""
-
-    assert plasma_frequency(n_e, "e-").unit.is_equivalent(u.rad / u.s)
-
-    assert plasma_frequency(n_e, "e-", to_hz=True).unit.is_equivalent(u.Hz)
-
-    assert np.isclose(plasma_frequency(1 * u.cm ** -3, "e-").value, 5.64e4, rtol=1e-2)
-
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N").value, 3.53e2, rtol=1e-1
-    )
-
-    assert np.isclose(
-        plasma_frequency(1 * u.cm ** -3, particle="N", to_hz=True).value,
-        56.19000195094519,
-    )
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            plasma_frequency(u.m ** -3, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        plasma_frequency(5 * u.m ** -2, "e-")
-
-    assert np.isnan(plasma_frequency(np.nan * u.m ** -3, "e-"))
-
-    with pytest.warns(u.UnitsWarning):
-        assert plasma_frequency(1e19, "e-") == plasma_frequency(1e19 * u.m ** -3, "e-")
-
-        assert plasma_frequency(n_i, particle="p").unit.is_equivalent(u.rad / u.s)
-
-    # Case where Z=1 is assumed
-    assert plasma_frequency(n_i, particle="H-1+") == plasma_frequency(n_i, particle="p")
-
-    assert np.isclose(
-        plasma_frequency(mu * u.cm ** -3, particle="p").value, 1.32e3, rtol=1e-2
-    )
-
-    with pytest.raises(ValueError):
-        plasma_frequency(n=5 * u.m ** -3, particle="sdfas")
-
-    with pytest.warns(u.UnitsWarning):
-        plasma_freq_no_units = plasma_frequency(1e19, particle="p")
-        assert plasma_freq_no_units == plasma_frequency(1e19 * u.m ** -3, particle="p")
-
-    plasma_frequency(1e17 * u.cm ** -3, particle="p")
-    # testing for user input z_mean
-    testMeth1 = plasma_frequency(1e17 * u.cm ** -3, particle="p", z_mean=0.8).si.value
-    testTrue1 = 333063562455.4028
-    errStr = f"plasma_frequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-6), errStr
-
-    assert_can_handle_nparray(plasma_frequency)
-
-
 def test_Debye_length():
     r"""Test the Debye_length function in parameters.py."""
 
@@ -1163,7 +1106,6 @@ def test_Bohm_diffusion():
         (wc_, gyrofrequency),
         (rc_, gyroradius),
         (rhoc_, gyroradius),
-        (wp_, plasma_frequency),
         (lambdaD_, Debye_length),
         (nD_, Debye_number),
         (cwp_, inertial_length),

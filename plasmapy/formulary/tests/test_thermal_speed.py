@@ -1,6 +1,7 @@
 """
 Module for testing functionality associated with calculating the
 thermal speed.
+
 - `~plasmapy.formulary.parameters.kappa_thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed`
 - `~plasmapy.formulary.parameters.thermal_speed_lite`
