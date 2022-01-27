@@ -12,7 +12,6 @@ repos:
   - id: end-of-file-fixer
   - id: check-merge-conflict
   - id: requirements-txt-fixer
-  - id: debug-statements
   - id: check-symlinks
   - id: check-case-conflict
   - id: check-json
