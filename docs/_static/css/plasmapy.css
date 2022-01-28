@@ -30,6 +30,10 @@
   CSS files can be validated at: https://jigsaw.w3.org/css-validator
 */
 
+/* -----------------------------------------------------------------------------
+ * RTD Overrides
+ */
+ 
 /* Style for toctree in a table */
 td .toctree-wrapper ul {
     font-size: 16px;
