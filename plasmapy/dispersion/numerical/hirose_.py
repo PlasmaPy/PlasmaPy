@@ -37,30 +37,30 @@ def hirose(
 ):
 
     r"""
-    Using the equation provided in Bellan 201, this function
-    calculates the numerical solution to the two fluid dispersion relation
-    presented by Hirose 2004.
+    Calculate the two fluid dispersion relation presented by
+    :cite:t:`hirose:2004`, and discussed by :cite:t:`bellan:2012`.
+    This is a numberical solver of equation 7 in :cite:t:`bellan:2012`.
+    See the **Notes** section below for additional details.
+
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        The magnetic field magnitude in units convertible to :math:`T`.
+        The magnetic field magnitude in units convertible to T.
     ion : `str` or `~plasmapy.particles.particle_class.Particle`
         Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'``
         for deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no
         charge state information is provided, then the ions are assumed to be
         singly ionized.
     k : `~astropy.units.Quantity`, single valued or 1-D array
-        Wavenumber in units convertible to :math:`rad / m`.  Either single
+        Wavenumber in units convertible to rad/m.  Either single
         valued or 1-D array of length :math:`N`.
     n_i : `~astropy.units.Quantity`
-        Ion number density in units convertible to :math:`m^{-3}`.
+        Ion number density in units convertible to m\ :sup:`-3`.
     T_e : `~astropy.units.Quantity`
-        The electron temperature in units of :math:`K` or :math:`eV`.
-    T_i : `~astropy.units.Quantity`
-        The ion temperature in units of :math:`K` or :math:`eV`.
+        The electron temperature in units of K or eV.
     theta : `~astropy.units.Quantity`, single valued or 1-D array
         The angle of propagation of the wave with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to :math:`deg`.
+        :math:`\cos^{-1}(k_z / k)`, in units must be convertible to radians.
         Either single valued or 1-D array of size :math:`M`.
     gamma_e : `float` or `int`, optional
         The adiabatic index for electrons, which defaults to 1.  This
@@ -77,7 +77,7 @@ def hirose(
     Returns
     -------
     omega : Dict[str, `~astropy.units.Quantity`]
-        A dictionary of computed wave frequencies in units :math:`rad/s`.  The
+        A dictionary of computed wave frequencies in units rad/s.  The
         dictionary contains three keys: ``'fast_mode'`` for the fast mode,
         ``'alfven_mode'`` for the Alfvén mode, and ``'acoustic_mode'`` for the
         ion-acoustic mode.  The value for each key will be a :math:`N x M` array.
@@ -87,37 +87,59 @@ def hirose(
         If applicable arguments are not instances of `~astropy.units.Quantity` or
         cannot be converted into one.
     TypeError
-        If ``ion`` is not of type or convertible to `~plasmapy.particles.Particle`.
+        If ``ion`` is not of type or convertible to
+        `~plasmapy.particles.Particle`.
     TypeError
-        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int` or `float`.
+        If ``gamma_e``, ``gamma_i``, or``z_mean`` are not of type `int`
+        or `float`.
     ~astropy.units.UnitTypeError
-        If applicable arguments do not have units convertible to the expected
-        units.
+        If applicable arguments do not have units convertible to the
+        expected units.
     ValueError
-        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i`` is negative.
+        If any of ``B``, ``k``, ``n_i``, ``T_e``, or ``T_i``
+        is negative.
     ValueError
         If ``k`` is negative or zero.
     ValueError
         If ``ion`` is not of category ion or element.
     ValueError
-        If ``B``, ``n_i``, ``T_e``, or ``T_I`` are not single valued
+        If ``B``, ``n_i``, or ``T_e`` are not single valued
         `astropy.units.Quantity` (i.e. an array).
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
+
     Notes
     -----
     Solves equation 7 in Bellan2012JGR (originally from Hirose2004)
-    ..math::
+    .. math::
         \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right) &
         \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right) &
         + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right) &
         \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2 &
         \left(\omega^2 - k^2 c_{\rm s}^2 \right)
+    where
+
+    .. math::
+        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
+        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
+    
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
+    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
+    :math:`\omega_{\rm pe}` is the electron plasma frequency. In the
+    derivation of this relation Hirose assumed low-frequency waves
+    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
+    :math:`mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
+
+    This routine solves for ω for given :math:`k` values by numerically
+    solving for the roots of the above expression.
+
     #This Example needs to be udpdate with hirose eqn numbers!!!
     Examples
     --------
     >>> from astropy import units as u
-    >>> from plasmapy.dispersion.numerical import hollweg_
+    >>> from plasmapy.dispersion.numerical import hirose_
     >>> inputs = {
     ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
     ...    "theta": 30 * u.deg,
@@ -193,30 +215,40 @@ def hirose(
 
     # validate argument theta
     theta = theta.squeeze()
-    theta = theta.to(u.radian)
     if not (theta.ndim == 0 or theta.ndim == 1):
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
         )
-    n_e = z_mean * n_i
-    c_s = pfp.ion_sound_speed(
-        T_e=T_e,
-        T_i=0 * u.K,
-        ion=ion,
-        n_e=n_e,
-        gamma_e=gamma_e,
-        gamma_i=gamma_i,
-        z_mean=z_mean,
-    )
-    v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_pi = pfp.plasma_frequency(n=n_i, particle=ion)
+    # Single k value case
+    if np.isscalar(k.value):
+        k = np.array([k.value]) * u.rad / u.m
 
-    # Parameters kz
+    # Calc needed plasma parameters
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=PhysicsWarning)
+        n_e = z_mean * n_i
+        c_s = pfp.ion_sound_speed(
+            T_e=T_e,
+            T_i=0 * u.K,
+            ion=ion,
+            n_e=n_e,
+            gamma_e=gamma_e,
+            gamma_i=gamma_i,
+            z_mean=z_mean,
+        ).value
+        v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
+        omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+        omega_pe = pfp.plasma_frequency(n=n_e, particle="e-").value
 
-    kz = np.cos(theta.value) * k
+    # strip units from select input args
+    k = k.value
+    theta = theta.value
 
-    # Parameters sigma, D, and F to simplify equation 3
+    # Parameter kz
+    kz = np.cos(theta) * k
+
+    # Parameters sigma, D, and F to simplify equation 7
     A = (kz * v_A) ** 2
     B = (k * c_s) ** 2
     C = (k * v_A) ** 2
