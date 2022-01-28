@@ -1,0 +1,1 @@
+Added `sphinx-codeautolink <https://sphinx-codeautolink.readthedocs.io/en/latest/>`_ extension to make code examples clickable and give quick access to API documentations.
