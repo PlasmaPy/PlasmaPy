@@ -239,7 +239,7 @@ def hirose(
         ).value
         v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
         omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
-        omega_pe = pfp.plasma_frequency(n=n_e, particle="e-").value
+        omega_pi = pfp.plasma_frequency(n=n_i, particle=ion).value
 
     # strip units from select input args
     k = k.value
