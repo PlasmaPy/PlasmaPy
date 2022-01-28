@@ -1,7 +1,7 @@
 /*
-  This file contains styles rules to override styles from the Sphinx
-  Read the Docs theme. This file is used to further customize the style
-  of PlasmaPy's documentation.
+  This file contains styles rules for PlasmaPy's documentation, which
+  includes new rules as well as rules that override styles from the
+  Sphinx Read the Docs theme (sphinx_rtd_theme).
 
   The CSS style rule syntax is:
 
@@ -33,7 +33,7 @@
 /* -----------------------------------------------------------------------------
  * RTD Overrides
  */
- 
+
 /* Style for toctree in a table */
 td .toctree-wrapper ul {
     font-size: 16px;
