@@ -150,7 +150,8 @@ div.wy-nav-content .rst-content code.literal.xref {
   :file:`docs/_static/css/plasmapy.css`).
 */
 div.wy-nav-content .rst-content code.literal.file {
-    color: #396f06;
+    color: #b84d00;
+    background-color: #F9F1F0;
 }
 
 /* -----------------------------------------------------------------------------
