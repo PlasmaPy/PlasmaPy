@@ -101,37 +101,6 @@ dl.glossary dt {
     margin-bottom: 2px;
 }
 
-/* -----------------------------------------------------------------------------
- * RTD layout styling additions
- */
-
-/* Style for module/index links in sidebar below the search field. */
-div.pkgnav {
-    color: white;
-    font-size: 1em;
-    margin-top: 12px;
-    text-align: center;
-}
-
-div.pkgnav ul {
-    list-style: none;
-}
-
-div.pkgnav ul li {
-    display: inline;
-}
-
-div.pkgnav ul li a {
-    color: #f9f9f0;
-    margin: 0;
-    text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
-}
-
-div.pkgnav ul li a:hover {
-    color: #f50404;
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-}
-
 /* Styles for text in the footer chosen to improve contrast. */
 
 footer p {
@@ -177,8 +146,39 @@ div.wy-nav-content .rst-content code.literal.xref {
 /*
   The style for literal text that shows the location of a file, in
   particular when used by the reST role :file: (e.g.,
-  :file:`docs/_static/rtd_theme_overrides`).
+  :file:`docs/_static/css/plasmapy.css`).
 */
 div.wy-nav-content .rst-content code.literal.file {
     color: #396f06;
+}
+
+/* -----------------------------------------------------------------------------
+ * RTD layout styling additions
+ */
+
+/* Style for module/index links in sidebar below the search field. */
+div.pkgnav {
+    color: white;
+    font-size: 1em;
+    margin-top: 12px;
+    text-align: center;
+}
+
+div.pkgnav ul {
+    list-style: none;
+}
+
+div.pkgnav ul li {
+    display: inline;
+}
+
+div.pkgnav ul li a {
+    color: #f9f9f0;
+    margin: 0;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+div.pkgnav ul li a:hover {
+    color: #f50404;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
