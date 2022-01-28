@@ -21,9 +21,6 @@
   choose "inspect" to see the HTML code along with CSS selectors and
   properties.
 
-  Alternatively, style rules for PlasmaPy's documentation can be viewed
-  at: https://docs.plasmapy.org/en/latest/_static/css/theme.css
-
   When creating a new rule, use increased specificity instead of
   !important when possible. Using !important can make debugging more
   difficult. Use relative units like rem (root font size) to help with
@@ -33,6 +30,10 @@
   CSS files can be validated at: https://jigsaw.w3.org/css-validator
 */
 
+/* -----------------------------------------------------------------------------
+ * RTD Overrides
+ */
+ 
 /* Style for toctree in a table */
 td .toctree-wrapper ul {
     font-size: 16px;
