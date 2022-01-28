@@ -97,6 +97,7 @@ extensions = [
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
     "hoverxref.extension",
+    "sphinx_codeautolink"
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -107,6 +108,7 @@ bibtex_reference_style = "author_year"
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
+    "matplotlib": ("https://matplotlib.org/stable/", None),
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
