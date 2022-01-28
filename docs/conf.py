@@ -44,7 +44,35 @@ automodapi_custom_groups = {
         ),
         "dunder": "__aliases__",
     },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            Much of PlasmaPy's functionality incorporates `Astropy units
+            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+            to mitigate calculation errors from inappropriate units, but this
+            comes at the sacrifice of speed.  While this penalty is not significant
+            for typical use, it can become substantial during intensive numerical
+            calculations. **Lite-functions** are introduced for the specific case
+            where speed matters, but **[USER NOTICE]** this comes with the
+            reduction of safeguards so a user needs to know what they are doing!
+            For additional details look to the glossary entry for
+            :term:`lite-function`.
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
 }
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -90,6 +118,7 @@ intersphinx_mapping = {
         None,
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 
 autoclass_content = "both"
@@ -120,16 +149,13 @@ copyright = f"2015–{datetime.utcnow().year}, {author}"
 #        However, release needs to be a semantic style version number, so set
 #        the 'unknown' case to ''.
 release = "" if release == "unknown" else release
-if release == "unknown":
-    release = version = revision = ""
+pv = parse_version(release)
+release = pv.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+if pv.local is not None:
+    revision = pv.local[1:]  # revision number w/o the leading g
 else:
-    pv = parse_version(release)
-    release = pv.public
-    version = ".".join(release.split(".")[:2])  # short X.Y version
-    if pv.local is not None:
-        revision = pv.local[1:]  # revision number w/o the leading g
-    else:
-        revision = ""
+    revision = ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
@@ -185,7 +211,7 @@ linkcheck_anchors_ignore = [
 ]
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
-pygments_style = "xcode"
+pygments_style = "default"
 
 hoverxref_auto_ref = True
 
@@ -329,4 +355,5 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("rtd_theme_overrides.css")
+    app.add_css_file("css/admonition_color_contrast.css")
+    app.add_css_file("css/plasmapy.css", priority=600)

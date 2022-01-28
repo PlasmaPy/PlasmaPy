@@ -20,10 +20,10 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.9
+        - name: Python 3.10
           os: ubuntu-latest
-          python: 3.9
-          toxenv: py39
+          python: '3.10'
+          toxenv: py310
 
         - name: Linters
           os: ubuntu-latest
@@ -77,6 +77,12 @@ jobs:
           os: macos-latest
           python: 3.8
           toxenv: py38-all
+
+        - name: Python 3.9
+          os: ubuntu-latest
+          python: 3.9
+          toxenv: py39
+
 
     steps:
     - name: Checkout code

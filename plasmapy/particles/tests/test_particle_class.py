@@ -9,7 +9,7 @@ from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
-from plasmapy.particles import json_load_particle, json_loads_particle
+from plasmapy.particles import json_load_particle, json_loads_particle, molecule
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -921,14 +921,8 @@ customized_particle_tests = [
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
-
-    if "mass" not in kwargs or "charge" not in kwargs:
-        with pytest.warns(MissingParticleDataWarning):
-            instance = cls(**kwargs)
-    else:
-        instance = cls(**kwargs)
+    instance = cls(**kwargs)
     value = getattr(instance, attr)
-
     if not u.isclose(value, expected, equal_nan=True):
         pytest.fail(
             f"{call_string(cls, kwargs=kwargs)}.{attr} should return a value "
@@ -946,9 +940,8 @@ def test_customized_particles(cls, kwargs, attr, expected):
     ],
 )
 def test_custom_particle_symbol(cls, symbol, expected):
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls(symbol=symbol)
-        assert instance.symbol == expected
+    instance = cls(symbol=symbol)
+    assert instance.symbol == expected
 
 
 customized_particle_errors = [
@@ -1053,8 +1046,7 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str):
     """Test that the symbol attribute cannot be set to something besides a string"""
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls()
+    instance = cls()
     with pytest.raises(TypeError):
         instance.symbol = not_a_str
 
@@ -1154,8 +1146,7 @@ def test_custom_particles_from_json_string(
     JSON representation"""
     if expected_exception is None:
         if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
+            instance = cls(**kwargs)
         else:
             instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
@@ -1187,11 +1178,7 @@ def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exce
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
-        else:
-            instance = cls(**kwargs)
+        instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
         assert u.isclose(
@@ -1416,3 +1403,43 @@ def test_CustomParticle_cmp():
 
     assert not particle1 == 1
     assert particle1 != 1
+
+
+test_molecule_table = [
+    (2 * 126.90447 * u.u, 0 * u.C, "I2", "I2", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2 1+", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
+    (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
+]
+
+
+@pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
+def test_molecule(m, Z, symbol, m_symbol, m_Z):
+    """Test ``molecule`` function."""
+    assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
+
+
+test_molecule_error_table = [
+    ("Zz", None),
+    ("", None),
+    ("I2+", 2),
+    ("Iii", None),
+    ("e2H3", None),
+]
+
+
+@pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
+def test_molecule_error(symbol, Z):
+    """Test the error raised in case of a bad molecule symbol."""
+    with pytest.raises(InvalidParticleError):
+        m = molecule(symbol, Z)
+
+
+def test_molecule_other():
+    """Test fallback to |Particle| object and warning in case of redundant charge."""
+    assert Particle("I") == molecule("I")
+
+    with pytest.warns(ParticleWarning):
+        assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
+            "I2 1+", Z=1
+        )
