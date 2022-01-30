@@ -1,0 +1,2 @@
+Enabled the `sphinx-hoverxref <https://sphinx-hoverxref.readthedocs.io>`_
+extension to Sphinx.

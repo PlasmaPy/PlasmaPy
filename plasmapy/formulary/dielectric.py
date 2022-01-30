@@ -30,7 +30,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     Magnetized cold plasma dielectric permittivity tensor elements.
 
     Elements (S, D, P) are given in the "Stix" frame, i.e. with
-    :math:`B ∥ \hat{z}`\ .
+    :math:`B ∥ \hat{z}` :cite:p:`stix:1992`.
 
     The :math:`\exp(-i ω t)` time-harmonic convention is assumed.
 
@@ -86,10 +86,6 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     where :math:`ω_{p,s}` is the plasma frequency and
     :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
     for the species :math:`s`.
-
-    References
-    ----------
-    - T.H. Stix, Waves in Plasma, 1992.
 
     Examples
     --------
@@ -177,11 +173,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     where :math:`ω_{p,s}` is the plasma frequency and
     :math:`Ω_{c,s}` is the signed version of the cyclotron frequency
-    for the species :math:`s`.
-
-    References
-    ----------
-    - T.H. Stix, Waves in Plasma, 1992.
+    for the species :math:`s` :cite:p:`stix:1992`.
 
     Examples
     --------
@@ -267,7 +259,7 @@ def permittivity_1D_Maxwellian(
     Notes
     -----
     The dielectric permittivities for a Maxwellian plasma are described
-    by the following equations [1]_
+    by the following equations (see p. 106 of :cite:t:`froula:2011`):
 
     .. math::
         χ_e(k, ω) = - \frac{α_e^2}{2} Z'(x_e)
@@ -284,12 +276,6 @@ def permittivity_1D_Maxwellian(
     the difference between the collective and non-collective Thomson
     scattering regimes. :math:`x` is the dimensionless phase velocity
     of the electromagnetic wave propagating through the plasma.
-
-    References
-    ----------
-    .. [1] J. Sheffield, D. Froula, S. H. Glenzer, and N. C. Luhmann Jr,
-       Plasma scattering of electromagnetic radiation: theory and measurement
-       techniques. Chapter 5 Pg 106 (Academic Press, 2010).
 
     Examples
     --------

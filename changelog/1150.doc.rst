@@ -1,4 +1,0 @@
-Changed the default branch name to ``main``.  Locations in the code
-and documentation that referred to the default branch of PlasmaPy (and
-certain other packages) were changed to reflect the new name (including,
-for example, in the development guide in the documentation).
