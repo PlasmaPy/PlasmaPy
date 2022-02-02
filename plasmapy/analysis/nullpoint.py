@@ -1139,7 +1139,6 @@ def locate_null_point(vspace, cell, n, err):
     This process is repeated a finite amount of times, after which
     the function returns None.
 
-
     Parameters
     ----------
 
