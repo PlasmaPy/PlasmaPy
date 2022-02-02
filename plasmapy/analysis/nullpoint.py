@@ -630,10 +630,6 @@ def trilinear_analysis(vspace, cell):
     :`UserWarning`
         If there is a possible lack of grid resolution, so
         that a grid cell may contain more than one nullpoint.
-
-    Notes
-    -----
-    N/A
     """
 
     # Helper Function
