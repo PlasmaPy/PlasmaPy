@@ -1,4 +1,4 @@
-"""Functions to find the null points of a 3D vector space using a trilinear method."""
+"""Functionality to find and analyze 3D magnetic null points."""
 
 __all__ = [
     "Point",
