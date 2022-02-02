@@ -166,7 +166,7 @@ class Test_reduction:
     def test_reduction_vals(self, kwargs, expected):
         assert reduction(**kwargs) == expected
 
-    @pytest.mark.parametrize("kwargs, error", test_reduction_expections)
+    @pytest.mark.parametrize("kwargs, error", test_reduction_exceptions)
     def test_reduction_exp(self, kwargs, error):
         with pytest.raises(error):
             reduction(**kwargs)
