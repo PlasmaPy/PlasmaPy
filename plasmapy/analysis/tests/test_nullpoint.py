@@ -177,7 +177,7 @@ class Test_reduction:
             reduction(**kwargs)
 
 
-class Test_trillinear_analysis:
+class Test_trilinear_analysis:
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -186,7 +186,7 @@ class Test_trillinear_analysis:
         "func": vspace_func_2,
     }
     vspace = vector_space(**vspace_args)
-    test_trillinear_analysis_values = [
+    test_trilinear_analysis_values = [
         ({"vspace": vspace, "cell": [25, 25, 25]}, True),
         ({"vspace": vspace, "cell": [32, 14, 4]}, True),
         ({"vspace": vspace, "cell": [33, 12, 0]}, False),
@@ -194,9 +194,9 @@ class Test_trillinear_analysis:
         ({"vspace": vspace, "cell": [24, 25, 26]}, False),
     ]
 
-    @pytest.mark.parametrize("kwargs, expected", test_trillinear_analysis_values)
-    def test_trillinear_analysis_vals(self, kwargs, expected):
-        assert trillinear_analysis(**kwargs) == expected
+    @pytest.mark.parametrize("kwargs, expected", test_trilinear_analysis_values)
+    def test_trilinear_analysis_vals(self, kwargs, expected):
+        assert trilinear_analysis(**kwargs) == expected
 
 
 class Test_bilinear_root:
