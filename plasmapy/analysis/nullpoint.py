@@ -1302,7 +1302,7 @@ def nullpoint_find(
     func=(lambda x, y, z: [x, y, z]),
     precision=[0.05, 0.05, 0.05],
     MAX_ITERATIONS=500,
-    err=10 ** (-10),
+    err=1e-10,
 ):
     r"""
     Returns an array of nullpoint object, representing
