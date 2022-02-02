@@ -1340,9 +1340,9 @@ def nullpoint_find(
             The default value is 500.
 
         err: float
-        The threshold/error that determines if convergence has occured
-        using the Newton-Raphson method.
-        The default value is 10**(-10).
+            The threshold/error that determines if convergence has occured
+            using the Newton-Raphson method.
+            The default value is ``1e-10``.
 
 
     Returns
