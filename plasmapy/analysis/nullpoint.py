@@ -340,7 +340,6 @@ def trilinear_approx(vspace, cell):
         of integers, which correspond to a grid cell
         in the vector space.
 
-
     Returns
     -------
     <class 'function'>
