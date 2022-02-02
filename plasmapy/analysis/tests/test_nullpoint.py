@@ -132,8 +132,7 @@ def test_trilinear_approx():
         approx = tlApprox(p[0], p[1], p[2])
         exact = vspace_func_2(p[0], p[1], p[2])
         approx = approx.reshape(1, 3)
-        arr = np.isclose(approx, exact, atol=ATOL)
-        assert arr.all()
+        assert np.allclose(approx, exact, atol=ATOL)
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.reshape(1, 3)
