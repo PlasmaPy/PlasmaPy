@@ -634,7 +634,7 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
 def trilinear_analysis(vspace, cell):
     r"""
-    Return a true or false value based on weather
+    Return a true or false value based on whether
     a grid cell which has passed the reduction step,
     contains a null point, using trilinear analysis.
 
