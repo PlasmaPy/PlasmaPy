@@ -395,19 +395,6 @@ def jacobian(vspace, cell):
     A function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated jacobian matrix for that particular
     coordinate in that grid cell.
-
-
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
-    Notes
-    -----
-    N/A
     """
     # Calculating coefficients
     ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
