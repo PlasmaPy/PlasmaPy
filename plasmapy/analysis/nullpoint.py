@@ -1308,7 +1308,6 @@ def nullpoint_find(
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
 
-
     Parameters
     ----------
         x_arr: array_like
