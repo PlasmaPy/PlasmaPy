@@ -418,10 +418,9 @@ def jacobian(vspace, cell):
 
     Returns
     -------
-    <class 'function'>
-        A function whose input is a coordinate within a given grid cell
-        and returns the trilinearly approximated jacobian matrix for that particular
-        coordinate in that grid cell.
+    A function whose input is a coordinate within a given grid cell
+    and returns the trilinearly approximated jacobian matrix for that particular
+    coordinate in that grid cell.
 
 
     Raises
