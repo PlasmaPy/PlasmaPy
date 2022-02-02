@@ -1155,12 +1155,12 @@ def locate_null_point(vspace, cell, n, err):
         in the vector space.
 
     n: int
-    The maximum number of times the iterative step
-    of the Newton-Raphson method is repeated.
+        The maximum number of times the iterative step
+        of the Newton-Raphson method is repeated.
 
     err: float
-    The threshold/error that determines if convergence has occured
-    using the Newton-Raphson method.
+        The threshold/error that determines if convergence has occured
+        using the Newton-Raphson method.
 
     Returns
     -------
