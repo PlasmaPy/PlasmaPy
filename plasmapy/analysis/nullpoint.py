@@ -138,19 +138,6 @@ def vector_space(
         the first element containing the coordinates.
         the second element containing the vector values.
         and the third element containing the delta values for each dimension.
-
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
-
-    Notes
-    -----
-    N/A
     """
     # Constructing the Meshgrid
     if (
