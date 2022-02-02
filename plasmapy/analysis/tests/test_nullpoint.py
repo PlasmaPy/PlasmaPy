@@ -53,7 +53,7 @@ def test_trilinear_coeff_cal():
             ],
         )
     ]
-    test_trilinear_coeff_cal_expections = []
+    test_trilinear_coeff_cal_exceptions = []
 
     test_trilinear_coeff_cal_warnings = []
 
@@ -61,7 +61,7 @@ def test_trilinear_coeff_cal():
     def test_trilinear_coeff_cal_vals(kwargs, expected):
         assert trilinear_coeff_cal(**kwargs) == expected
 
-    @pytest.mark.parametrize("kwargs, error", test_trilinear_coeff_cal_expections)
+    @pytest.mark.parametrize("kwargs, error", test_trilinear_coeff_cal_exceptions)
     def test_trilinear_coeff_cal_exp(kwargs, error):
         with pytest.raises(error):
             trilinear_coeff_cal(**kwargs)
