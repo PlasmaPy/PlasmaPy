@@ -404,7 +404,6 @@ def jacobian(vspace, cell):
     and returns the trilinearly approximated jacobian matrix for that particular
     coordinate in that grid cell.
 
-
     Parameters
     ----------
 
