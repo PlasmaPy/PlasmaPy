@@ -1390,14 +1390,6 @@ def nullpoint_find(
             An array of NullPoint objects representing the nullpoints
             of the given vector space.
 
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
     Notes
     -----
     This method is described by :cite:t:`haynes:2007`
