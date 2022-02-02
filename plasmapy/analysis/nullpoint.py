@@ -1363,8 +1363,8 @@ def nullpoint_find(
             The default value is [0.05, 0.05, 0.05].
 
         MAX_ITERATIONS: int
-        The maximum iterations of the Newton-Raphson method.
-        The default value is 500.
+            The maximum iterations of the Newton-Raphson method.
+            The default value is 500.
 
         err: float
         The threshold/error that determines if convergence has occured
