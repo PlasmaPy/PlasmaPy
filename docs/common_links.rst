@@ -68,6 +68,7 @@
 .. Astropy replacements
 .. --------------------
 
+.. |astropy.units| replace:: https://docs.astropy.org/en/stable/units/index.html
 .. |Quantity| replace:: :class:`~astropy.units.Quantity`
 .. |Time| replace:: :class:`~astropy.time.Time`
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
