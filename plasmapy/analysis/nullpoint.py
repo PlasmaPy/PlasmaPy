@@ -11,7 +11,7 @@ import numpy as np
 import warnings
 
 # Declare Constants & global variables
-ATOL = 10 ** (-10)
+ATOL = 1e-10
 MAX_DIVIDE = 10
 global divide
 divide = 0
