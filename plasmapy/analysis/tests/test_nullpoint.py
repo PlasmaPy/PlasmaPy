@@ -158,7 +158,7 @@ class Test_reduction:
         ({"vspace": vspace, "cell": [31, 16, 8]}, True),
         ({"vspace": vspace, "cell": [24, 25, 26]}, True),
     ]
-    test_reduction_expections = []
+    test_reduction_exceptions = []
 
     test_reduction_warnings = []
 
