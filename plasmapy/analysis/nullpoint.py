@@ -322,7 +322,7 @@ def trilinear_coeff_cal(vspace, cell):
 
 def trilinear_approx(vspace, cell):
     r"""
-    Returns a function whose input is a coordinate within a given grid cell
+    Return a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated vector value at that particular
     coordinate in that grid cell.
 
