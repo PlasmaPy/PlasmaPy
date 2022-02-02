@@ -5,15 +5,15 @@ import numpy as np
 import pytest
 
 from plasmapy.analysis.nullpoint import (
-    ATOL,
+    _ATOL,
     bilinear_root,
-    jacobian,
     locate_null_point,
-    nullpoint_find,
+    null_point_find,
     reduction,
     trilinear_analysis,
     trilinear_approx,
     trilinear_coeff_cal,
+    trilinear_jacobian,
     vector_space,
 )
 
@@ -27,6 +27,7 @@ def vspace_func_2(x, y, z):
 
 
 def test_trilinear_coeff_cal():
+    r"""Test `~plasmapy.analysis.nullpoint.trilinear_coeff_cal`."""
     vspace1_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -59,20 +60,24 @@ def test_trilinear_coeff_cal():
 
     @pytest.mark.parametrize("kwargs, expected", test_trilinear_coeff_cal_values)
     def test_trilinear_coeff_cal_vals(kwargs, expected):
+        r"""Test expected values."""
         assert trilinear_coeff_cal(**kwargs) == expected
 
     @pytest.mark.parametrize("kwargs, error", test_trilinear_coeff_cal_exceptions)
     def test_trilinear_coeff_cal_exp(kwargs, error):
+        r"""Test possible exceptions raised by the function."""
         with pytest.raises(error):
             trilinear_coeff_cal(**kwargs)
 
     @pytest.mark.parametrize("kwargs, wrn", test_trilinear_coeff_cal_warnings)
     def test_trilinear_coeff_cal_wrns(kwargs, wrn):
+        r"""Test possible warnings raised by the function."""
         with pytest.warns(wrn):
             trilinear_coeff_cal(**kwargs)
 
 
-def test_jacobian():
+def test_trilinear_jacobian():
+    r"""Test `~plasmapy.analysis.nullpoint.trilinear_jacobian`."""
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -82,20 +87,14 @@ def test_jacobian():
     }
     vspace = vector_space(**vspace_args)
 
-    jcb = jacobian(vspace, [0, 0, 0])
+    jcb = trilinear_jacobian(vspace, [0, 0, 0])
     mtrx = jcb(0.5, 0.5, 0.5)
-    assert np.isclose(mtrx[0][0], 0, atol=ATOL)
-    assert np.isclose(mtrx[0][1], 1, atol=ATOL)
-    assert np.isclose(mtrx[0][2], 0, atol=ATOL)
-    assert np.isclose(mtrx[1][0], 0, atol=ATOL)
-    assert np.isclose(mtrx[1][1], 0, atol=ATOL)
-    assert np.isclose(mtrx[1][2], 1, atol=ATOL)
-    assert np.isclose(mtrx[2][0], 1, atol=ATOL)
-    assert np.isclose(mtrx[2][1], 0, atol=ATOL)
-    assert np.isclose(mtrx[2][2], 0, atol=ATOL)
+    exact_mtrx = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+    assert np.allclose(mtrx, exact_mtrx, atol=_ATOL)
 
 
 def test_trilinear_approx():
+    r"""Test `~plasmapy.analysis.nullpoint.trilinear_approx`."""
     vspace1_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -132,14 +131,15 @@ def test_trilinear_approx():
         approx = tlApprox(p[0], p[1], p[2])
         exact = vspace_func_2(p[0], p[1], p[2])
         approx = approx.reshape(1, 3)
-        assert np.allclose(approx, exact, atol=ATOL)
+        assert np.allclose(approx, exact, atol=_ATOL)
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.reshape(1, 3)
-    assert np.allclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=ATOL)
+    assert np.allclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=_ATOL)
 
 
 class Test_reduction:
+    r"""Test `~plasmapy.analysis.nullpoint.reduction`."""
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -164,20 +164,24 @@ class Test_reduction:
 
     @pytest.mark.parametrize("kwargs, expected", test_reduction_values)
     def test_reduction_vals(self, kwargs, expected):
+        r"""Test expected values."""
         assert reduction(**kwargs) == expected
 
     @pytest.mark.parametrize("kwargs, error", test_reduction_exceptions)
     def test_reduction_exp(self, kwargs, error):
+        r"""Test possible exceptions raised by the function."""
         with pytest.raises(error):
             reduction(**kwargs)
 
     @pytest.mark.parametrize("kwargs, wrn", test_reduction_warnings)
     def test_reduction_wrns(self, kwargs, wrn):
+        r"""Test possible warnings raised by the function."""
         with pytest.warns(wrn):
             reduction(**kwargs)
 
 
 class Test_trilinear_analysis:
+    r"""Test `~plasmapy.analysis.nullpoint.trilinear_analysis`."""
     vspace_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -196,10 +200,12 @@ class Test_trilinear_analysis:
 
     @pytest.mark.parametrize("kwargs, expected", test_trilinear_analysis_values)
     def test_trilinear_analysis_vals(self, kwargs, expected):
+        r"""Test expected values."""
         assert trilinear_analysis(**kwargs) == expected
 
 
 class Test_bilinear_root:
+    r"""Test `~plasmapy.analysis.nullpoint.bilinear_root`."""
     test_bilinear_root_values = [
         (
             {"a1": 1, "b1": 3, "c1": 5, "d1": 1, "a2": 2, "b2": 4, "c2": 6, "d2": 8},
@@ -209,15 +215,17 @@ class Test_bilinear_root:
 
     @pytest.mark.parametrize("kwargs, expected", test_bilinear_root_values)
     def test_bilinear_root_vals(self, kwargs, expected):
+        r"""Test expected values."""
         x1, y1 = bilinear_root(**kwargs)[0]
         x2, y2 = bilinear_root(**kwargs)[1]
-        assert np.isclose(x1, expected[0], atol=ATOL)
-        assert np.isclose(y1, expected[1], atol=ATOL)
-        assert np.isclose(x2, expected[2], atol=ATOL)
-        assert np.isclose(y2, expected[3], atol=ATOL)
+        assert np.isclose(x1, expected[0], atol=_ATOL)
+        assert np.isclose(y1, expected[1], atol=_ATOL)
+        assert np.isclose(x2, expected[2], atol=_ATOL)
+        assert np.isclose(y2, expected[3], atol=_ATOL)
 
 
 class Test_locate_null_point:
+    r"""Test `~plasmapy.analysis.nullpoint.locate_null_point`."""
     vspace_args = {
         "x_range": [5, 6],
         "y_range": [5, 6],
@@ -229,20 +237,22 @@ class Test_locate_null_point:
 
     test_locate_null_point_values = [
         (
-            {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": ATOL},
+            {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": _ATOL},
             np.array([5.5, 5.5, 5.5]),
         )
     ]
 
     @pytest.mark.parametrize("kwargs, expected", test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected):
+        r"""Test expected values."""
         assert np.isclose(
-            locate_null_point(**kwargs).reshape(1, 3), expected, atol=ATOL
+            locate_null_point(**kwargs).reshape(1, 3), expected, atol=_ATOL
         ).all()
 
 
-def test_nullpoint():
-    # Uniform
+def test_null_point_find():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Uniform grid
     nullpoint_args = {
         "x_range": [5, 6],
         "y_range": [5, 6],
@@ -250,18 +260,18 @@ def test_nullpoint():
         "precision": [1, 1, 1],
         "func": vspace_func_1,
     }
-    npoints = nullpoint_find(**nullpoint_args)
-    loc = npoints[0].getLoc().reshape(1, 3)
+    npoints = null_point_find(**nullpoint_args)
+    loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
-    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=ATOL).all()
-    # Non-uniform
+    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    # Non-uniform grid
     nullpoint2_args = {
         "x_arr": [0, 1, 2, 3, 4, 5, 6],
         "y_arr": [0, 2, 4, 6, 8],
         "z_arr": [0, 2, 4, 6, 8],
         "func": vspace_func_1,
     }
-    npoints2 = nullpoint_find(**nullpoint2_args)
-    loc2 = npoints2[0].getLoc().reshape(1, 3)
+    npoints2 = null_point_find(**nullpoint2_args)
+    loc2 = npoints2[0].loc.reshape(1, 3)
     assert len(npoints2) == 1
-    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=ATOL).all()
+    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_ATOL).all()

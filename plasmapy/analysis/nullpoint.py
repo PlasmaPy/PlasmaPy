@@ -3,7 +3,7 @@
 __all__ = [
     "Point",
     "NullPoint",
-    "nullpoint_find",
+    "null_point_find",
     "trilinear_approx",
 ]
 
@@ -11,8 +11,8 @@ import numpy as np
 import warnings
 
 # Declare Constants & global variables
-ATOL = 1e-10
-MAX_DIVIDE = 10
+_ATOL = 1e-10
+_MAX_DIVIDE = 10
 global divide
 divide = 0
 
@@ -23,14 +23,15 @@ class Point:
     """
 
     def __init__(self, loc):
-        self.loc = loc
-        self.type = type
+        self._loc = loc
 
-    def getLoc(self):
+    def get_loc(self):
         r"""
         Returns the coordinates of the point object.
         """
-        return self.loc
+        return self._loc
+
+    loc = property(get_loc)
 
 
 class NullPoint(Point):
@@ -42,21 +43,21 @@ class NullPoint(Point):
         super().__init__(null_loc)
         self.type = type
 
-    def getType(self):
+    def get_type(self):
         r"""
         Returns the type of the null point object.
         """
         return self.type
 
-    def isEqual(self, point):
+    def __eq__(self, point):
         r"""
         Returns True if two null point objects have the same coordinates.
         False otherwise.
         """
         return (
-            np.isclose(self.getLoc()[0], point.getLoc()[0])
-            and np.isclose(self.getLoc()[1], point.getLoc()[1])
-            and np.isclose(self.getLoc()[2], point.getLoc()[2])
+            np.isclose(self.loc()[0], point.loc()[0], atol=_ATOL)
+            and np.isclose(self.loc()[1], point.loc()[1], atol=_ATOL)
+            and np.isclose(self.loc()[2], point.loc()[2], atol=_ATOL)
         )
 
 
@@ -370,7 +371,7 @@ def trilinear_approx(vspace, cell):
     return approx_func
 
 
-def jacobian(vspace, cell):
+def trilinear_jacobian(vspace, cell):
     r"""
     Returns a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated jacobian matrix for that particular
@@ -481,30 +482,24 @@ def reduction(vspace, cell):
     passX = False
     passY = False
     passZ = False
-    # Check X-Component
-    sign = np.sign(u[cell[0], cell[1], cell[2]])
+    # Check reduction criteria
+    sign_x = np.sign(u[cell[0], cell[1], cell[2]])
+    sign_y = np.sign(v[cell[0], cell[1], cell[2]])
+    sign_z = np.sign(w[cell[0], cell[1], cell[2]])
     for point in corners:
         if (
             u[point[0]][point[1]][point[2]] == 0
-            or np.sign(u[point[0]][point[1]][point[2]]) != sign
+            or np.sign(u[point[0]][point[1]][point[2]]) != sign_x
         ):
             passX = True
-
-    # Check Y-Component
-    sign = np.sign(v[cell[0], cell[1], cell[2]])
-    for point in corners:
         if (
             v[point[0]][point[1]][point[2]] == 0
-            or np.sign(v[point[0]][point[1]][point[2]]) != sign
+            or np.sign(v[point[0]][point[1]][point[2]]) != sign_y
         ):
             passY = True
-
-    # Check Z-Component
-    sign = np.sign(w[cell[0], cell[1], cell[2]])
-    for point in corners:
         if (
             w[point[0]][point[1]][point[2]] == 0
-            or np.sign(w[point[0]][point[1]][point[2]]) != sign
+            or np.sign(w[point[0]][point[1]][point[2]]) != sign_z
         ):
             passZ = True
 
@@ -558,8 +553,8 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     b = np.linalg.det(m2) + np.linalg.det(m3)
     c = np.linalg.det(m1)
 
-    if np.isclose(a, 0, atol=ATOL):
-        if np.isclose(b, 0, atol=ATOL):
+    if np.isclose(a, 0, atol=_ATOL):
+        if np.isclose(b, 0, atol=_ATOL):
             return None, None
         else:
             x1 = (-1.0 * c) / b
@@ -579,8 +574,8 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     b = np.linalg.det(m2) - np.linalg.det(m3)
     c = np.linalg.det(m1)
 
-    if np.isclose(a, 0, atol=ATOL):
-        if np.isclose(b, 0, atol=ATOL):
+    if np.isclose(a, 0, atol=_ATOL):
+        if np.isclose(b, 0, atol=_ATOL):
             return None, None
         else:
             y1 = (-1.0 * c) / b
@@ -618,7 +613,7 @@ def trilinear_analysis(vspace, cell):
     Returns
     -------
     bool
-        True if a grid cell contains a nullpoint using trilinear analysis.
+        True if a grid cell contains a null point using trilinear analysis.
         False, otherwise.
 
     Raises
@@ -634,7 +629,7 @@ def trilinear_analysis(vspace, cell):
 
     # Helper Function
     def is_close(a, b):
-        arr = np.isclose(a, b, atol=ATOL)
+        arr = np.isclose(a, b, atol=_ATOL)
         if type(arr) == np.bool_:
             return arr
         res = True
@@ -1024,13 +1019,13 @@ def trilinear_analysis(vspace, cell):
 
     # Check on the Surfaces
     for p in BxByEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < ATOL:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
             return True
     for p in BxBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < ATOL:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
             return True
     for p in ByBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < ATOL:
+        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
             return True
 
     # Check Grid Resolution
@@ -1041,45 +1036,38 @@ def trilinear_analysis(vspace, cell):
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
         return False
 
-    isNullPoint = True
+    def endpoint_sign_check(curve_endpoints, curve_name):
+        if curve_name == "x":
+            index = 0
+        elif curve_name == "y":
+            index = 1
+        elif curve_name == "z":
+            index = 2
+        if (
+            np.sign(
+                tlApprox(
+                    curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
+                )[index]
+            )
+            * np.sign(
+                tlApprox(
+                    curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
+                )[index]
+            )
+            > 0
+        ):
+            return False
+        else:
+            return True
 
-    # Checking sign of third component for Bx=By=0
     if (
-        np.sign(
-            tlApprox(BxByEndpoints[0][0], BxByEndpoints[0][1], BxByEndpoints[0][2])[2]
-        )
-        * np.sign(
-            tlApprox(BxByEndpoints[1][0], BxByEndpoints[1][1], BxByEndpoints[1][2])[2]
-        )
-        > 0
+        (not endpoint_sign_check(BxByEndpoints, "z"))
+        or (not endpoint_sign_check(BxBzEndpoints, "y"))
+        or (not endpoint_sign_check(ByBzEndpoints, "x"))
     ):
-        isNullPoint = False
-
-    # Checking sign of third component for Bx=Bz=0
-    if (
-        np.sign(
-            tlApprox(BxBzEndpoints[0][0], BxBzEndpoints[0][1], BxBzEndpoints[0][2])[1]
-        )
-        * np.sign(
-            tlApprox(BxBzEndpoints[1][0], BxBzEndpoints[1][1], BxBzEndpoints[1][2])[1]
-        )
-        > 0
-    ):
-        isNullPoint = False
-
-    # Checking sign of third component for By=Bz=0
-    if (
-        np.sign(
-            tlApprox(ByBzEndpoints[0][0], ByBzEndpoints[0][1], ByBzEndpoints[0][2])[0]
-        )
-        * np.sign(
-            tlApprox(ByBzEndpoints[1][0], ByBzEndpoints[1][1], ByBzEndpoints[1][2])[0]
-        )
-        > 0
-    ):
-        isNullPoint = False
-
-    return isNullPoint
+        return False
+    else:
+        return True
 
 
 def locate_null_point(vspace, cell, n, err):
@@ -1146,7 +1134,7 @@ def locate_null_point(vspace, cell, n, err):
     global divide
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
-    jcb = jacobian(vspace, cell)
+    jcb = trilinear_jacobian(vspace, cell)
     # Calculatiung the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
@@ -1181,14 +1169,14 @@ def locate_null_point(vspace, cell, n, err):
 
     def inbound(pos):
         pos = pos.reshape(1, 3)[0]
-        A = (np.isclose(pos_000[0], pos[0], atol=ATOL) or pos_000[0] < pos[0]) and (
-            np.isclose(pos[0], pos_111[0], atol=ATOL) or pos[0] < pos_111[0]
+        A = (np.isclose(pos_000[0], pos[0], atol=_ATOL) or pos_000[0] < pos[0]) and (
+            np.isclose(pos[0], pos_111[0], atol=_ATOL) or pos[0] < pos_111[0]
         )
-        B = (np.isclose(pos_000[1], pos[1], atol=ATOL) or pos_000[1] < pos[1]) and (
-            np.isclose(pos[1], pos_111[1], atol=ATOL) or pos[1] < pos_111[1]
+        B = (np.isclose(pos_000[1], pos[1], atol=_ATOL) or pos_000[1] < pos[1]) and (
+            np.isclose(pos[1], pos_111[1], atol=_ATOL) or pos[1] < pos_111[1]
         )
-        C = (np.isclose(pos_000[2], pos[2], atol=ATOL) or pos_000[2] < pos[2]) and (
-            np.isclose(pos[2], pos_111[2], atol=ATOL) or pos[2] < pos_111[2]
+        C = (np.isclose(pos_000[2], pos[2], atol=_ATOL) or pos_000[2] < pos[2]) and (
+            np.isclose(pos[2], pos_111[2], atol=_ATOL) or pos[2] < pos_111[2]
         )
         return A and B and C
 
@@ -1233,8 +1221,8 @@ def locate_null_point(vspace, cell, n, err):
 
     # Break Up the Cell into 8 smaller cells and try again
     divide = divide + 1
-    if divide > MAX_DIVIDE:
-        warnings.warn("Could Not Locate a possible Nullpoint")
+    if divide > _MAX_DIVIDE:
+        warnings.warn("Could Not Locate a possible null point")
         return None
     null_point_args = {
         "func": tlApprox,
@@ -1244,10 +1232,10 @@ def locate_null_point(vspace, cell, n, err):
         "precision": [deltax / 2, deltay / 2, deltaz / 2],
     }
 
-    return nullpoint_find(**null_point_args)
+    return null_point_find(**null_point_args)
 
 
-def nullpoint_find(
+def null_point_find(
     x_arr=None,
     y_arr=None,
     z_arr=None,
@@ -1268,73 +1256,73 @@ def nullpoint_find(
 
     Parameters
     ----------
-        x_arr: array_like
-            The array representing the coordinates in the x-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    x_arr: array_like
+        The array representing the coordinates in the x-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        y_arr: array_like
-            The array representing the coordinates in the y-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    y_arr: array_like
+        The array representing the coordinates in the y-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        z_arr: array_like
-            The array representing the coordinates in the z-dimension.
-            If not given, then range values are used to construct a
-            uniform array on that interval.
+    z_arr: array_like
+        The array representing the coordinates in the z-dimension.
+        If not given, then range values are used to construct a
+        uniform array on that interval.
 
-        x_range: array_like
-            A 1 by 2 array containing the range of x-values for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    x_range: array_like
+        A 1 by 2 array containing the range of x-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        y_range: array_like
-            A 1 by 2 array containing the range of y-values for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    y_range: array_like
+        A 1 by 2 array containing the range of y-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        z_range: array_like
-            A 1 by 2 array containing the range of z-values for the vector spaces.
-            If not given, the default interval [0,1] is assumed.
+    z_range: array_like
+        A 1 by 2 array containing the range of z-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
 
-        u_arr: array_like
-            A 3D array containing the x-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    u_arr: array_like
+        A 3D array containing the x-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        v_arr: array_like
-            A 3D array containing the y-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    v_arr: array_like
+        A 3D array containing the y-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        w_arr: array_like
-            A 3D array containing the z-component of the vector values for the vector
-            space. If not given, the vector values are generated over the vector space
-            using the function func.
+    w_arr: array_like
+        A 3D array containing the z-component of the vector values for the vector
+        space. If not given, the vector values are generated over the vector space
+        using the function func.
 
-        func: <class 'function'>
-            A function that takes in 3 arguments, respectively representing a x, y, and z
-            coordinate of a point and returns the vector value for that point in the form
-            of a 1 by 3 array.
+    func: <class 'function'>
+        A function that takes in 3 arguments, respectively representing a x, y, and z
+        coordinate of a point and returns the vector value for that point in the form
+        of a 1 by 3 array.
 
-        precision: array_like
-            A 1 by 3 array containing the approximate precision values for each dimension,
-            in the case where uniform arrays are being used.
-            The default value is [0.05, 0.05, 0.05].
+    precision: array_like
+        A 1 by 3 array containing the approximate precision values for each dimension,
+        in the case where uniform arrays are being used.
+        The default value is [0.05, 0.05, 0.05].
 
-        MAX_ITERATIONS: int
-            The maximum iterations of the Newton-Raphson method.
-            The default value is 500.
+    MAX_ITERATIONS: int
+        The maximum iterations of the Newton-Raphson method.
+        The default value is 500.
 
-        err: float
-            The threshold/error that determines if convergence has occured
-            using the Newton-Raphson method.
-            The default value is ``1e-10``.
+    err: float
+        The threshold/error that determines if convergence has occured
+        using the Newton-Raphson method.
+        The default value is ``1e-10``.
 
 
     Returns
     -------
-        array_like of `~plasmapy.analysis.nullpoint.NullPoint`
-            An array of NullPoint objects representing the nullpoints
-            of the given vector space.
+    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+        An array of NullPoint objects representing the nullpoints
+        of the given vector space.
 
     Notes
     -----
@@ -1355,13 +1343,6 @@ def nullpoint_find(
         precision,
     )
 
-    # Helper Function
-    def in_null_list(elem, lst):
-        for p in lst:
-            if p.isEqual(elem):
-                return True
-        return False
-
     nullpoints = []
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
@@ -1371,6 +1352,6 @@ def nullpoint_find(
                         loc = locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
                         if not isinstance(loc, type(None)):
                             p = NullPoint(loc, "N/A")
-                            if not in_null_list(p, nullpoints):
+                            if p not in nullpoints:
                                 nullpoints.append(p)
     return nullpoints
