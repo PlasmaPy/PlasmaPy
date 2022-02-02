@@ -1176,7 +1176,7 @@ def locate_null_point(vspace, cell, n, err):
 
     Warns
     -----
-    :'UserWarning'
+    :`UserWarning`
         If the maximum number of iteration has been
         reached, but convergence has not occurred.
 
