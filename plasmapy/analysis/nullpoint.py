@@ -95,15 +95,15 @@ def vector_space(
         uniform array on that interval.
 
     x_range: array_like
-        A 1 by 2 array containing the range of x-vlaues for the vector spaces.
+        A 1 by 2 array containing the range of x-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
     y_range: array_like
-        A 1 by 2 array containing the range of y-vlaues for the vector spaces.
+        A 1 by 2 array containing the range of y-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
     z_range: array_like
-        A 1 by 2 array containing the range of z-vlaues for the vector spaces.
+        A 1 by 2 array containing the range of z-values for the vector spaces.
         If not given, the default interval [0,1] is assumed.
 
     u_arr: array_like
