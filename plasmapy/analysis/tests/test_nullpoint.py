@@ -136,8 +136,7 @@ def test_trilinear_approx():
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.reshape(1, 3)
-    arr = np.isclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=ATOL)
-    assert arr.all()
+    assert np.allclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=ATOL)
 
 
 class Test_reduction:
