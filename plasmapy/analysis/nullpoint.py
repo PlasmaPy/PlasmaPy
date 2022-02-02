@@ -1186,7 +1186,7 @@ def locate_null_point(vspace, cell, n, err):
     """
 
     global divide
-    # Calculating the Jacobian and trillinear approximation functions for the cell
+    # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = jacobian(vspace, cell)
     # Calculatiung the deltas
