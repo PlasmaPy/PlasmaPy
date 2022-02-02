@@ -208,7 +208,6 @@ def trilinear_coeff_cal(vspace, cell):
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-
     cell: array_like of integers
         A grid cell, represented by a 1 by 3 array
         of integers, which correspond to a grid cell
