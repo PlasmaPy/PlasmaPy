@@ -516,8 +516,10 @@ def reduction(vspace, cell):
 def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     r"""
     Return the roots of a pair of bilinear equations of the following format.
-    a1+b1x+c1y+d1xy=0
-    a2+b2x+c2y+d2xy=0
+
+    .. math::
+        a_1 + b_1 x + c_1 y + d_1 x y = 0 \\
+        a_2 + b_2 x + c_2 y + d_2 x y = 0
 
     Parameters
     ----------
