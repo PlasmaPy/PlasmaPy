@@ -1,2 +1,2 @@
-Created the analysis tool plasmapy.analysis.nullpoint for finding the nullpoints
+Created the analysis tool `plasmapy.analysis.nullpoint` for finding the null points
 in a vector space using a trilinear analysis method.
