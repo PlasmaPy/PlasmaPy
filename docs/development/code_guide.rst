@@ -4,291 +4,19 @@
 Coding Guide
 ************
 
-This document describes the coding requirements and guidelines to be
-followed during the development of PlasmaPy and affiliated packages.
 
-Code written for PlasmaPy must be compatible with Python 3.7 and
-later.
+Consistency
 
-Coding Style
-============
+The particular coding style does not matter
 
-TL;DR: use pre-commit
----------------------
+.. important::
 
-PlasmaPy has a configuration for the `pre-commit framework
-<https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with `pip install pre-commit`, then use `pre-commit install` within
-the repository.
+   Consistency improves the readability and understandability of code.
 
-This will cause pre-commit to download the right versions of linters we use,
-then run an automated style checking suite on every commit.  Do note that this
-works better with a `git add`, then `git commit` workflow than a `git commit
--a` workflow — that way, you can check via `git diff` what the automated
-changes actually did.
+The specific conventions do not matter as much as consistency.
 
-Note that the "Style linters / pre-commit (pull_request)" part of our
-Continuous Integration system can and will (metaphorically) shout at you if it
-finds you didn't apply the linters. Also note that the linters' output may vary
-with version, so, rather than apply black_ and isort_ manually, let
-pre-commit do the version management for you instead!
-
-Our pre-commit suite can be found in `.pre-commit-config.yaml
-<https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml>`_.
-It includes
-
-* black_ to automatically format code and ensure a consistent code style
-  throughout the package
-* isort_ to automatically sort imports.
-* `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
-  to example notebooks as well.
-* a few tools for `requirements.txt`, `.yml` files and the like.
-
-PlasmaPy Code Style Guide, codified
------------------------------------
-
-* PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
-  helps ensure that the code will be consistent and readable.
-
-  * Line lengths should be chosen to maximize the readability and
-    elegance of the code.  The maximum line length for Python code in
-    PlasmaPy is 88 characters.
-
-  * Docstrings and comments should generally be limited to
-    about 72 characters.
-
-* During code development, use black_ to automatically format code and
-  ensure a consistent code style throughout the package and isort_ to
-  automatically sort imports.
-
-* Follow the existing coding style within a subpackage.  This includes,
-  for example, variable naming conventions.
-
-* Use standard abbreviations for imported packages when possible, such
-  as ``import numpy as np``, ``import matplotlib as mpl``, ``import
-  matplotlib.pyplot as plt``, and ``import astropy.units as u``.
-
-* ``__init__.py`` files for modules should not contain any significant
-  implementation code, but it can contain a docstring describing the
-  module and code related to importing the module.  Any substantial
-  functionality should be put into a separate file.
-
-* Use absolute imports, such as
-  ``from plasmapy.particles import Particle``, rather than relative
-  imports such as ``from ..particles import Particle``.
-
-* Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of ``None``.
-
-* There should be at least one pun per 1284 lines of code.
-
-* Avoid using `lambda` to define functions, as this notation may be
-  unfamiliar to newcomers to Python.
-
-Branches, commits, and pull requests
-====================================
-
-Before making any changes, it is prudent to update your local
-repository with the most recent changes from the development
-repository:
-
-.. code-block:: bash
-
-  git fetch upstream
-
-Changes to PlasmaPy should be made using branches.  It is usually best
-to avoid making changes on your main branch so that it can be kept
-consistent with the upstream repository.  Instead we can create a new
-branch for the specific feature that you would like to work on:
-
-.. code-block:: bash
-
-  git branch *your-new-feature*
-
-Descriptive branch names such as `grad-shafranov` or
-`adding-eigenfunction-poetry` are helpful, while vague names like
-`edits` are considered harmful.  After creating your branch locally,
-let your fork of PlasmaPy know about it by running:
-
-.. code-block:: bash
-
-  git push --set-upstream origin *your-new-feature*
-
-It is also useful to configure git so that only the branch you are
-working on gets pushed to GitHub:
-
-.. code-block:: bash
-
-  git config --global push.default simple
-
-Once you have set up your fork and created a branch, you are ready to
-make edits to PlasmaPy.  Switch to your new branch by running:
-
-.. code-block:: bash
-
-  git checkout *your-new-feature*
-
-Go ahead and modify files with your favorite text editor.  Be sure to
-include tests and documentation with any new functionality.  We
-recommend reading about `best practices for scientific computing
-<https://doi.org/10.1371/journal.pbio.1001745>`_.  PlasmaPy uses the
-`PEP 8 style guide for Python code
-<https://www.python.org/dev/peps/pep-0008/>`_ and the `numpydoc format
-for docstrings
-<https://github.com/numpy/numpy/blob/main/doc/HOWTO_DOCUMENT.rst.txt>`_
-to maintain consistency and readability.  New contributors should not
-worry too much about precisely matching these styles when first
-submitting a pull request, GitHub Actions will check pull requests
-for :pep:`8` compatibility, and further changes to the style can be
-suggested during code review.
-
-You may periodically commit changes to your branch by running
-
-.. code-block:: bash
-
-  git add filename.py
-  git commit -m "*brief description of changes*"
-
-Committed changes may be pushed to the corresponding branch on your
-GitHub fork of PlasmaPy using
-
-.. code-block:: bash
-
-  git push origin *your-new-feature*
-
-or, more simply,
-
-.. code-block:: bash
-
-  git push
-
-Once you have completed your changes and pushed them to the branch on
-GitHub, you are ready to make a pull request.  Go to your fork of
-PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
-descriptive title and some details about your changes.  Then select
-"Create pull request".  Other contributors will then have a chance to
-review the code and offer contructive suggestions.  You can continue
-to edit the pull request by changing the corresponding branch on your
-PlasmaPy fork on GitHub.  After a pull request is merged into the
-code, you may delete the branch you created for that pull request.
-
-Comments
---------
-
-Stuff to add here...
-
-* Make sure to future proof comments. For example, if we have a comment
-  that refers to an equation by its number in the docstring, that comment
-  will become out-of-date if another equation is added beforehand.
-  Comments should be self-contained when possible. Best to refer to original
-  sources.
-
-* Extract method refactoring pattern. Suppose we have a section of code
-  that has comments that define sections.  This refactoring pattern involves
-  creating a function with the name of that comment, and putting the corresponding
-  code in that new function.
-
-   .. code-block::
-
-      def f(x):
-          # calibrate data
-          ...
-          # process data
-          ...
-
-   could become...
-
-   .. code-block::
-
-      def f(x):
-          calibrated_data = calibrate_data(raw_data)
-          processed_data = process_data(calibrated_data)
-
-
-Commit Messages
----------------
-
-Good commit messages communicate context and intention to other
-developers and to our future selves.  They provide insight into why we
-chose a particular implementation, and help us avoid past mistakes.
-
-Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
-
-* Separate subject from body with a blank line
-
-* Limit the subject line to 50 characters
-
-* Capitalize the subject line
-
-* Do not end the subject line with a period
-
-* Use the imperative mood in the subject line
-
-* Wrap the body at 72 characters
-
-* Use the body to explain what and why vs. how
-
-Documentation
-=============
-
-* All public classes, methods, and functions should have docstrings
-  using the numpydoc format.
-
-* Docstrings may be checked locally using pydocstyle_.
-
-* These docstrings should include usage examples.
-
-Warnings and Exceptions
-=======================
-
-* Debugging can be intensely frustrating when problems arise and the
-  associated error messages do not provide useful information on the
-  source of the problem.  Warnings and error messages must be helpful
-  enough for new users to quickly understand any problems that arise.
-
-* "Errors should never pass silently." Users should be notified when
-  problems arise by either issuing a warning or raising an exception.
-
-* The exceptions raised by a method should be described in the
-  method's docstring.  Documenting exceptions makes it easier for
-  future developers to plan exception handling.
-
-Units
+Names
 =====
-
-* Code within PlasmaPy must use SI units to minimize the chance of
-  ambiguity, and for consistency with the recognized international
-  standard.  Physical formulae and expressions should be in base SI
-  units.
-
-  * Functions should not accept floats when an Astropy Quantity is
-    expected.  In particular, functions should not accept floats and
-    make the assumption that the value will be in SI units.
-
-  * A common convention among plasma physicists is to use
-    electron-volts (eV) as a unit of temperature.  Strictly speaking,
-    this unit corresponds not to temperature but is rather a measure
-    of the thermal energy per particle.  Code within PlasmaPy must use
-    the kelvin (K) as the unit of temperature to avoid unnecessary
-    ambiguity.
-
-* PlasmaPy uses the astropy.units package to give physical units to
-  values.
-
-  * All units packages available in Python presently have some
-    limitations, including incompatibility with some NumPy and SciPy
-    functions.  These limitations are due to issues within NumPy
-    itself.  Many of these limitations are being resolved, but require
-    upstream fixes.
-
-* Dimensionless units may be used when appropriate, such as for
-  certain numerical simulations.  The conventions and normalizations
-  should be clearly described in docstrings.
-
-Equations and Physical Formulae
-===============================
 
 * If a quantity has several names, then the function name should be
   the one that provides the most physical insight into what the
@@ -297,6 +25,80 @@ Equations and Physical Formulae
   is somehow related to someone named Larmor.  Similarly, using
   ``omega_ce`` as a function name will make the code less readable to
   people who are unfamiliar with this particular notation.
+
+* Except as described below, use :pep:`8` conventions for naming
+  variables, functions, classes, and constants.
+
+  - Use lower case words separated by underscores for function and
+    variable names (e.g., ``function_name`` and ``variable_name``).
+
+  - Use capitalized words without separators when naming a :term:`class`
+    or an :term:`exception` (e.g., ``ClassName`` or ``ExceptionName``).
+    However, keep acronyms capitalized (e.g., ``MHDEquations``).
+
+  - Use capital letters words separated by underscores for constants
+    (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
+
+* Use a capital letter for a :term:`parameter` when it
+  (e.g., ``B`` for magnetic field strength and ``T`` for temperature).
+
+* Append ``_e`` to the name of a :term:`parameter` to indicate that it
+  refers to electrons and ``_i`` to indicate that it refers to ions
+  (e.g., ``T_e`` and ``T_i``).
+
+* Avoid non-ASCII characters in code that is part of the public API.
+
+* Avoid potentially ambiguous names such as ``temp`` and ``t``.
+
+* Avoid unnecessary abbreviations
+
+.. tip::
+
+   Measure the length of a variable not by the number of characters, but
+   rather by the time needed to understand what the variable means.
+
+Imports
+=======
+
+* Use absolute imports, such as
+
+* Do not use star imports (e.g., ``from package.subpackage import *``)
+  because
+
+* Use standard abbreviations for imported packages.
+
+  .. code-block::
+
+     import numpy as np
+     import astropy.units as u
+     import matplotlib as mpl
+     import matplotlib.pyplot as plt
+
+Units
+=====
+
+* PlasmaPy uses |astropy.units| to give physical units to values in the
+  form of a |Quantity|.
+
+* Use SI units within PlasmaPy, except when there is a strong
+  justification to do otherwise.
+
+  * Example notebooks may use non-SI units infrequently.
+
+* Avoid using electron-volts as a unit of temperature within PlasmaPy,
+  but allow arguments provided to a function
+
+* Do not capitalize the names of units except at the beginning of a
+  sentence, including when they are named after a person (except for
+  "degree Celsius").
+
+* Use operations between |Quantity| objects except when needed for
+  performance.
+
+.. _performance tips: https://docs.astropy.org/en/stable/units/index.html#performance-tips
+
+Equations and physical formulae
+===============================
 
 * Physical formulae should be inputted without first evaluating all of
   the physical constants.  For example, the following line of code
@@ -312,94 +114,83 @@ Equations and Physical Formulae
   The origins of numerical coefficients in formulae should be
   documented.
 
-* Docstrings should describe the physics associated with these
-  quantities in ways that are understandable to students who are
-  taking their first course in plasma physics while still being useful
-  to experienced plasma physicists.
-
-* SI units that were named after a person should not be capitalized
-  except at the beginning of a sentence.
-
-* Some plasma parameters depend on more than one quantity with
-  the same units.  In the following line, it is difficult to discern which
-  is the electron temperature and which is the ion temperature.
-
-  >>> ion_sound_speed(1e6*u.K, 2e6*u.K)  # doctest: +SKIP
-
-  Remembering that "explicit is better than implicit", it is more
-  readable and less prone to errors to write:
-
-  >>> ion_sound_speed(T_i=1e6*u.K, T_e=2e6*u.K)    # doctest: +SKIP
-
-* SI units that were named after a person should be lower case except at
-  the beginning of a sentence, even if their symbol is capitalized. For
-  example, kelvin is a unit while Kelvin was a scientist.
+Temperature/energy equivalency
+------------------------------
 
 
-Angular Frequencies
-===================
 
-Unit conversions involving angles must be treated with care.  Angles
-are dimensionless but do have units.  Angular velocity is often given
-in units of radians per second, though dimensionally this is
-equivalent to inverse seconds.  Astropy will treat radians
-dimensionlessly when using the ``dimensionless_angles`` equivalency,
-but ``dimensionless_angles`` does not account for the multiplicative
-factor of ``2*pi`` that is used when converting between frequency (1 /
-s) and angular frequency (rad / s).  An explicit way to do this
-conversion is to set up an equivalency between cycles/s and Hz:
-
->>> from astropy import units as u
->>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])   # doctest: +SKIP
-
-However, ``dimensionless_angles`` does work when dividing a velocity
-by an angular frequency to get a length scale:
-
->>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
-
-.. _example_notebooks:
-
-Examples
+Comments
 ========
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+* Remove commented out code before merging a pull request.
 
-Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
-takes care of executing them at documentation build time and including them
-in the documentation.
+Error messages
+==============
 
-Please note that it is necessary to store notebooks with their outputs stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
 
-1. helps with versioning the notebooks, as binary image data is not stored in
-   the notebook
-2. signals |nbsphinx|_ that it should execute the notebook.
+
+
+Coding style
+============
+
+* Do not include any significant implementation code in
+  :file:`__init__.py` files. Put any substantial functionality into a
+  separate file.
+
+* Use the `property` :term:`decorator` instead of getters and setters.
+
+* Use formatted string literals (f-strings) instead of legacy formatting
+  for strings.
+
+  >>> package_name = "PlasmaPy"
+  >>> print(f"The name of the package is {package_name}.")
+  The name of the package is PlasmaPy.
+  >>> print(f"{package_name=}")  # Python 3.8+ debugging shortcut
+  package_name='PlasmaPy'
+  >>> print(f"{package_name!r}")  # shortcut for f"{repr(package_name)}"
+  'PlasmaPy'
+
+* Do not use :term:`mutable` objects as default values in the function
+  or method declaration. This can lead to unexpected behavior.
+
+  .. code:: pycon
+
+     >>> def function(l=[]):
+     ...    l.append("x")
+     ...    print(l)
+     >>> function()
+     ['x']
+     >>> function()
+     ['x', 'x']
+
+* Limit usage of `lambda` functions to one-liners. For anything longer
+  than that, use a nested function.
+
+* Some plasma parameters depend on more than one |Quantity| of the same
+  physical type. For example, when reading the following line of code,
+  we cannot tell which is the electron temperature and which is the ion
+  temperature without going to the function itself.
+
+  .. code-block:: pycon
+
+     f(1e6 * u.K, 2e6 * u.K)
+
+  Spell out the :term:`parameter` names to improve readability and
+  reduce the likelihood of errors.
+
+  .. code-block::
+
+     f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
+
+  Similarly, when a function has parameters named ``T_e`` and ``T_i``,
+  these parameters should be make :term:`keyword-only`.
 
 .. note::
 
-  In the future, verifying and running this step may be automated via a GitHub bot.
-  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
-
-If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., `bokeh`) or runs some heavy
-computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
-`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
-
-Benchmarks
-==========
+   Add the license for the google style guide, maybe?
 
 
-.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
-.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
-.. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable/
+Dependencies
+============
 
-PlasmaPy has a set of `asv`_ benchmarks that monitor performance of its
-functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at `benchmarks`_. They're
-generated from results located in `benchmarks-repo`_. Detailed
-instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located in
-the README file of `benchmarks-repo`_.
+* Follow the
