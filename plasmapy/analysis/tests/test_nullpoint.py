@@ -11,9 +11,9 @@ from plasmapy.analysis.nullpoint import (
     locate_null_point,
     nullpoint_find,
     reduction,
+    trilinear_analysis,
     trilinear_approx,
     trilinear_coeff_cal,
-    trillinear_analysis,
     vector_space,
 )
 
@@ -265,3 +265,6 @@ def test_nullpoint():
     loc2 = npoints2[0].getLoc().reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=ATOL).all()
+
+
+var = 4
