@@ -210,19 +210,6 @@ def trilinear_coeff_cal(vspace, cell):
         for the y-component of the vector space, and
         the third element containing the coefficients for the trilinear approximation function
         for the z-component of the vector space.
-
-
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
-    Notes
-    -----
-    N/A
     """
     u, v, w = vspace[1]
     deltax, deltay, deltaz = vspace[2]
