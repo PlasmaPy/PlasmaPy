@@ -13,8 +13,8 @@ import warnings
 # Declare Constants & global variables
 _ATOL = 1e-10
 _MAX_DIVIDE = 10
-global divide
-divide = 0
+global _divide
+_divide = 0
 
 
 class Point:
@@ -1131,7 +1131,7 @@ def locate_null_point(vspace, cell, n, err):
     N/A
     """
 
-    global divide
+    global _divide
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = trilinear_jacobian(vspace, cell)
@@ -1220,9 +1220,9 @@ def locate_null_point(vspace, cell, n, err):
             return x0
 
     # Break Up the Cell into 8 smaller cells and try again
-    divide = divide + 1
-    if divide > _MAX_DIVIDE:
-        warnings.warn("Could Not Locate a possible null point")
+    _divide = _divide + 1
+    if _divide > _MAX_DIVIDE:
+        warnings.warn("Could not locate a possible null point")
         return None
     null_point_args = {
         "func": tlApprox,

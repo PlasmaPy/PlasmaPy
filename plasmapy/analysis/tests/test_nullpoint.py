@@ -54,26 +54,11 @@ def test_trilinear_coeff_cal():
             ],
         )
     ]
-    test_trilinear_coeff_cal_exceptions = []
-
-    test_trilinear_coeff_cal_warnings = []
 
     @pytest.mark.parametrize("kwargs, expected", test_trilinear_coeff_cal_values)
     def test_trilinear_coeff_cal_vals(kwargs, expected):
         r"""Test expected values."""
         assert trilinear_coeff_cal(**kwargs) == expected
-
-    @pytest.mark.parametrize("kwargs, error", test_trilinear_coeff_cal_exceptions)
-    def test_trilinear_coeff_cal_exp(kwargs, error):
-        r"""Test possible exceptions raised by the function."""
-        with pytest.raises(error):
-            trilinear_coeff_cal(**kwargs)
-
-    @pytest.mark.parametrize("kwargs, wrn", test_trilinear_coeff_cal_warnings)
-    def test_trilinear_coeff_cal_wrns(kwargs, wrn):
-        r"""Test possible warnings raised by the function."""
-        with pytest.warns(wrn):
-            trilinear_coeff_cal(**kwargs)
 
 
 def test_trilinear_jacobian():
@@ -126,7 +111,7 @@ def test_trilinear_approx():
     mid = [dx / 2, dy / 2, dz / 2]
     corners = [f000, f001, f010, f011, f100, f101, f110, f111]
     tlApprox = trilinear_approx(vspace2, [0, 0, 0])
-    # Testing Trilinear Approx function on the corners
+    # Testing trilinear approx function on the corners
     for p in corners:
         approx = tlApprox(p[0], p[1], p[2])
         exact = vspace_func_2(p[0], p[1], p[2])
@@ -158,26 +143,11 @@ class Test_reduction:
         ({"vspace": vspace, "cell": [31, 16, 8]}, True),
         ({"vspace": vspace, "cell": [24, 25, 26]}, True),
     ]
-    test_reduction_exceptions = []
-
-    test_reduction_warnings = []
 
     @pytest.mark.parametrize("kwargs, expected", test_reduction_values)
     def test_reduction_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert reduction(**kwargs) == expected
-
-    @pytest.mark.parametrize("kwargs, error", test_reduction_exceptions)
-    def test_reduction_exp(self, kwargs, error):
-        r"""Test possible exceptions raised by the function."""
-        with pytest.raises(error):
-            reduction(**kwargs)
-
-    @pytest.mark.parametrize("kwargs, wrn", test_reduction_warnings)
-    def test_reduction_wrns(self, kwargs, wrn):
-        r"""Test possible warnings raised by the function."""
-        with pytest.warns(wrn):
-            reduction(**kwargs)
 
 
 class Test_trilinear_analysis:
@@ -250,7 +220,7 @@ class Test_locate_null_point:
         ).all()
 
 
-def test_null_point_find():
+def test_null_point_find1():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Uniform grid
     nullpoint_args = {
@@ -264,6 +234,10 @@ def test_null_point_find():
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_ATOL).all()
+
+
+def test_null_point_find2():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
     nullpoint2_args = {
         "x_arr": [0, 1, 2, 3, 4, 5, 6],
