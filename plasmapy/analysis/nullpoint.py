@@ -1374,6 +1374,3 @@ def nullpoint_find(
                             if not in_null_list(p, nullpoints):
                                 nullpoints.append(p)
     return nullpoints
-
-
-var = 4

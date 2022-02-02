@@ -265,6 +265,3 @@ def test_nullpoint():
     loc2 = npoints2[0].getLoc().reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=ATOL).all()
-
-
-var = 4
