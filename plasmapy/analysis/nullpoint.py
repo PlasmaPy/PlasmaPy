@@ -1429,7 +1429,7 @@ def nullpoint_find(
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
                 if reduction(vspace, [i, j, k]):
-                    if trillinear_analysis(vspace, [i, j, k]):
+                    if trilinear_analysis(vspace, [i, j, k]):
                         loc = locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
                         if not isinstance(loc, type(None)):
                             p = NullPoint(loc, "N/A")
