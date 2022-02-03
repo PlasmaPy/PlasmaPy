@@ -54,6 +54,7 @@ if __name__ == "__main__":
     #
     if "clean" in sys.argv:
         from importlib.machinery import EXTENSION_SUFFIXES
+
         ext_suffixes = EXTENSION_SUFFIXES.copy()
         ext_suffixes.append(".c")
 
