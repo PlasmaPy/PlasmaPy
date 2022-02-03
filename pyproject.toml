@@ -35,6 +35,7 @@ include_trailing_comma = true
 force_alphabetical_sort_within_sections = true
 honor_noqa = true
 lines_between_types = 1
+skip = ["setup.py"]
 
 [tool.towncrier]
 package = "plasmapy"
