@@ -145,7 +145,7 @@ jobs:
       run: |
         pip install --progress-bar off --upgrade pip
         pip install --progress-bar off twine
-        pip install --progress-bar off -r requirments/build.txt
+        pip install --progress-bar off -r requirements/build.txt
     - name: Build a binary wheel
       run: python setup.py bdist_wheel
     - name: Build a source tarball
