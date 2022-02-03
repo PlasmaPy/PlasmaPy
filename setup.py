@@ -6,7 +6,7 @@ import sys
 
 from pathlib import Path
 from setuptools import setup
-from Cython.Build import cythonize
+from Cython.Build import cythonize  # has to happen after setup import
 
 site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
