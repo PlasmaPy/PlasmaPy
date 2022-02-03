@@ -1,5 +1,6 @@
 # these are dependencies required to build the package distribution for installation
 # ought to mirror 'build-system.requires' under in pyproject.toml
+Cython
 setuptools >= 41.2
 setuptools_scm
 wheel >= 0.29.0
