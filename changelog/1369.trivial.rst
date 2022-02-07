@@ -1,1 +1,1 @@
-Refactor particle tests.
+Refactored tests in `plasmapy.particles`.
