@@ -891,7 +891,6 @@ def thermal_speed(
     return speed * u.m / u.s
 
 
-
 vth_ = thermal_speed
 """Alias to :func:`~plasmapy.formulary.parameters.thermal_speed`."""
 
