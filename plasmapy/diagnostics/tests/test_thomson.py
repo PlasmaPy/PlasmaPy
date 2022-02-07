@@ -245,7 +245,7 @@ def test_non_collective_spectrum():
     # Check that alpha is correct
     assert np.isclose(
         alpha, 0.05707, atol=0.01
-    ), "Non-collective case alpha returns {alpha} instead of expected 0.05707"
+    ), f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
@@ -745,7 +745,7 @@ if __name__ == "__main__":
     # test_collective_spectrum()
     # test_non_collective_spectrum()
     # test_fit_with_minimal_parameters()
-    test_fit_epw_single_species()
+    # test_fit_epw_single_species()
     # test_fit_epw_multi_species()
     # test_fit_iaw_single_species()
     # test_fit_iaw_multi_species()

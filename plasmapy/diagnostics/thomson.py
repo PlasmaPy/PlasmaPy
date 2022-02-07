@@ -18,7 +18,11 @@ from lmfit import Model
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.dielectric import fast_permittivity_1D_Maxwellian
-from plasmapy.formulary.parameters import fast_plasma_frequency, fast_thermal_speed
+from plasmapy.formulary.parameters import (
+    plasma_frequency,
+    thermal_speed,
+    thermal_speed_coefficients,
+)
 from plasmapy.particles import Particle, particle_mass
 from plasmapy.utils.decorators import validate_quantities
 
@@ -75,8 +79,9 @@ def fast_spectral_density(
 
     # Calculate plasma parameters
     # Temperatures here in K!
-    vTe = fast_thermal_speed(Te, _m_e)
-    vTi = fast_thermal_speed(Ti, ion_mass)
+    th_coef = thermal_speed_coefficients("most_probable", 3)
+    vTe = thermal_speed.lite(Te, _m_e, th_coef)
+    vTi = thermal_speed.lite(Ti, ion_mass, th_coef)
     zbar = np.sum(ifract * ion_z)
 
     # Compute electron and ion densities
@@ -84,7 +89,7 @@ def fast_spectral_density(
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
-    wpe = fast_plasma_frequency(n, 1, _m_e)
+    wpe = plasma_frequency.lite(n, _m_e, 1)
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
@@ -123,14 +128,14 @@ def fast_spectral_density(
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
-        wpe = fast_plasma_frequency(ne[i], 1, _m_e)
+        wpe = plasma_frequency.lite(ne[i], _m_e, 1)
         chiE[i, :] = fast_permittivity_1D_Maxwellian(w_e[i, :], k, vTe[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(ifract):
-        wpi = fast_plasma_frequency(ni[i], ion_z[i], ion_mass[i])
+        wpi = plasma_frequency.lite(ni[i], ion_mass[i], ion_z[i])
         chiI[i, :] = fast_permittivity_1D_Maxwellian(w_i[i, :], k, vTi[i], wpi)
 
     # Calculate the longitudinal dielectric function
