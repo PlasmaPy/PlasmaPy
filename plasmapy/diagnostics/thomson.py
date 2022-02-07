@@ -10,9 +10,9 @@ __all__ = [
 
 import astropy.constants as const
 import astropy.units as u
+import numbers
 import numpy as np
 import re
-import warnings
 
 from lmfit import Model
 from typing import List, Tuple, Union
@@ -24,7 +24,11 @@ from plasmapy.formulary.parameters import (
     thermal_speed_coefficients,
 )
 from plasmapy.particles import Particle, particle_mass
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import (
+    bind_lite_func,
+    preserve_signature,
+    validate_quantities,
+)
 
 _c = const.c.si.value  # Make sure C is in SI units
 _e = const.e.si.value
@@ -43,28 +47,113 @@ _m_e = const.m_e.si.value
 # The probem is a lambda function used in the Particle class...
 
 
-def fast_spectral_density(
+@preserve_signature
+def spectral_density_lite(
     wavelengths,
-    probe_wavelength,
-    n,
-    Te,
-    Ti,
+    probe_wavelength: numbers.Real,
+    n: numbers.Real,
+    Te: np.ndarray,
+    Ti: np.ndarray,
     efract: np.ndarray = np.array([1.0]),
     ifract: np.ndarray = np.array([1.0]),
     ion_z=np.array([1]),
     ion_mass=np.array([1]),
-    ion_vel=None,
     electron_vel=None,
+    ion_vel=None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
     inst_fcn_arr=None,
 ):
 
-    """
+    r"""
+
+    The ":term:`lite-function`" version of
+    `~plasmapy.formulary.parameters.thermal_speed`.  Performs the same
+    thermal speed calculations as
+    `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
+    computational use and, thus, has data conditioning safeguards
+    removed.
 
 
-    Te : np.ndarray
-        Temperature in Kelvin
+    Parameters
+    ----------
+
+    wavelengths : `~numpy.ndarray`, shape (Nwavelengths,)
+        Array of wavelengths in meters over which the spectral density function
+        will be calculated.
+
+    probe_wavelength : real number
+        Wavelength of the probe laser in meters.
+
+    n : real number
+        Mean (0th order) density of all plasma components combined in m^-3.
+
+    Te : `~numpy.ndarray`, shape (Ne, )
+        Temperature of each electron component in Kelvin. Shape (Ne, ) must be
+        equal to the number of electron populations Ne.
+
+    Ti : `~numpy.ndarray`, shape (Ni, )
+        Temperature of each ion component in Kelvin. Shape (Ni, ) must be
+        equal to the number of ion populations Ni.
+
+    efract : `~numpy.ndarray`, shape (Ne, ), optional
+        An np.ndarray where each element represents the fraction (or ratio)
+        of the electron population number density to the total electron number density.
+        Must sum to 1.0. Default is a single electron component.
+
+    ifract : `~numpy.ndarray`, shape (Ni, ), optional
+        An np.ndarray object where each element represents the fraction (or ratio)
+        of the ion population number density to the total ion number density.
+        Must sum to 1.0. Default is a single ion species.
+
+    ion_z : `~numpy.ndarray`, shape (Ni,), optional
+        An np.ndarray of the charge number Z of each ion species.
+
+    ion_mu : `~numpy.ndarray`, shape (Ni,), optional
+        An np.ndarray of the mass number :math:`\mu` of each ion species.
+
+    electron_vel : `~numpy.ndarray`, shape (Ne, 3), optional
+        Velocity of each electron population in the rest frame (in m/s).
+        If set, overrides electron_vdir and electron_speed.
+        Defaults to a stationary plasma [0, 0, 0] m/s.
+
+    ion_vel : `~numpy.ndarray`, shape (Ni, 3), optional
+        Velocity vectors for each electron population in the rest frame
+        (in  m/s). If set, overrides ion_vdir and ion_speed.
+        Defaults zero drift for all specified ion species.
+
+    probe_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector in the direction of the probe laser. Defaults to
+        ``[1, 0, 0]``.
+
+    scatter_vec : float `~numpy.ndarray`, shape (3, )
+        Unit vector pointing from the scattering volume to the detector.
+        Defaults to [0, 1, 0] which, along with the default `probe_vec`,
+        corresponds to a 90 degree scattering angle geometry.
+
+    inst_fcn_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
+
+        The insturment function evaluated at a linearly spaced range of
+        wavelengths ranging from :math:`-W` to :math:`W`, where
+
+        .. math::
+            W = 0.5*(\text(Max)(\lambda) - \text(Min)(\lambda))
+
+        Where :math:`\lambda` is the wavelengths array. This array will be
+        convolved with the spectral density function
+        before it is returned.
+
+
+    Returns
+    -------
+    alpha : float
+        Mean scattering parameter, where `alpha` > 1 corresponds to collective
+        scattering and `alpha` < 1 indicates non-collective scattering. The
+        scattering parameter is calculated based on the total plasma density n.
+
+    Skw : `~numpy.ndarray`
+        Computed spectral density function over the input `wavelengths` array
+        with units of s/rad.
 
 
     """
@@ -181,6 +270,7 @@ def fast_spectral_density(
     Te={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     Ti={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
+@bind_lite_func(spectral_density_lite)
 def spectral_density(
     wavelengths: u.nm,
     probe_wavelength: u.nm,
@@ -400,7 +490,7 @@ def spectral_density(
     else:
         inst_fcn_arr = None
 
-    alpha, Skw = fast_spectral_density(
+    alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
         probe_wavelength.to(u.m).value,
         n.to(u.m ** -3).value,
@@ -504,7 +594,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     Te *= 11605
     Ti *= 11605
 
-    alpha, model_Skw = fast_spectral_density(
+    alpha, model_Skw = spectral_density.lite(
         wavelengths,
         probe_wavelength,
         n,
