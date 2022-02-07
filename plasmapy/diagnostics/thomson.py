@@ -434,7 +434,14 @@ def spectral_density(
     if Ti.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Ti.size != len(ion_species), assume same temp. for all species
-        Ti = np.array([Ti.value,]) * Ti.unit
+        Ti = (
+            np.array(
+                [
+                    Ti.value,
+                ]
+            )
+            * Ti.unit
+        )
 
     # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match
     if (
@@ -452,7 +459,14 @@ def spectral_density(
     if Te.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Te.size != len(efract), assume same temp. for all species
-        Te = np.array([Te.value,]) * Te.unit
+        Te = (
+            np.array(
+                [
+                    Te.value,
+                ]
+            )
+            * Te.unit
+        )
 
     # Make sure the sizes of efract, electron_vel, and Te all match
     if (electron_vel.shape[0] != efract.size) or (Te.size != efract.size):

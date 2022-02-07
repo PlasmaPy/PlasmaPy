@@ -25,6 +25,7 @@ def example_inst_fcn(w):
 
 
 def width_at_value(x, y, val):
+
     """
     Calculates the width of a curve at a given value.
     """
@@ -32,187 +33,74 @@ def width_at_value(x, y, val):
     return np.abs(np.nanmax(above) - np.nanmin(above))
 
 
-def gen_collective_spectrum():
+def spectral_density_args_kwargs(kwargs):
+    """
+    This helper function separates positional arguments and keyword arguments
+    for the spectral_density function from a dictionary of both that is
+    easy to use in parameterized tests.
+    """
+
+    # Pull out the non-keyword arguments
+    args = (
+        kwargs["wavelengths"],
+        kwargs["probe_wavelength"],
+        kwargs["n"],
+        kwargs["Te"],
+        kwargs["Ti"],
+    )
+
+    del kwargs["wavelengths"]
+    del kwargs["probe_wavelength"]
+    del kwargs["n"]
+    del kwargs["Te"]
+    del kwargs["Ti"]
+
+    return args, kwargs
+
+
+@pytest.fixture()
+def single_species_collective_args():
+    """
+    Standard args
+
+    Includes both kwargs and args: separated by the function
+
+    spectral_density_args_kwargs
+
+    """
+    kwargs = {}
+    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
+    kwargs["probe_wavelength"] = 532 * u.nm
+    kwargs["n"] = 5e17 * u.cm ** -3
+    kwargs["Te"] = 10 * u.eV
+    kwargs["Ti"] = 10 * u.eV
+    kwargs["ion_species"] = ["C-12 5+"]
+    kwargs["probe_vec"] = np.array([1, 0, 0])
+    kwargs["scatter_vec"] = np.array([0, 1, 0])
+
+    return kwargs
+
+
+@pytest.fixture()
+def single_species_collective_spectrum(single_species_collective_args):
     """
     Generates an example Thomson scattering spectrum in the collective regime
     """
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    Te = 10 * u.eV
-    Ti = 10 * u.eV
-    ion_species = ["C-12 5+"]
 
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
+    wavelengths = single_species_collective_args["wavelengths"]
 
-    return alpha, wavelengths, Skw
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+
+    alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+    return (alpha, wavelengths, Skw)
 
 
-def gen_multiple_ion_species_spectrum():
-    """
-    Generates an example Thomson scattering spectrum for multiple ion species
-    that also have drift velocities. Parameters are set to be in the
-    collective regime where ion species are important.
-    """
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    ifract = np.array([0.7, 0.3])
-    Te = 10 * u.eV
-    Ti = np.array([5, 5]) * u.eV
-    electron_vel = np.array([[300, 0, 0]]) * u.km / u.s
-    ion_vel = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
-
-    # Use this to also test passing in ion species as Particle objects
-    ion_species = [Particle("p+"), Particle("C-12 5+")]
-
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        ifract=ifract,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-        electron_vel=electron_vel,
-        ion_vel=ion_vel,
-    )
-
-    return alpha, wavelengths, Skw
-
-
-def gen_non_collective_spectrum():
-    """
-    Generates an example Thomson scattering spectrum in the non-collective
-    regime
-    """
-    wavelengths = np.arange(500, 570, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e15 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    Te = 100 * u.eV
-    Ti = np.array([10]) * u.eV
-    ion_species = ["H+"]
-
-    alpha, Skw = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
-
-    return alpha, wavelengths, Skw
-
-
-def test_different_input_types():
-
-    # Define some constants
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    ifract = np.array([1.0])
-    Te = np.array([10]) * u.eV
-    Ti = np.array([10]) * u.eV
-    ion_species = "C-12 5+"
-
-    # Raise a ValueError with inconsistent ion array lengths
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            Ti,
-            ifract=np.array([0.5, 0.5]),
-            ion_species=ion_species,
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-    # Raise a ValueError with inconsistent ion temperature array
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            np.array([5, 5]) * u.eV,
-            ifract=ifract,
-            ion_species=ion_species,
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-    # Raise a ValueError with empty ion_species
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            Ti,
-            ifract=ifract,
-            ion_species=[],
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-    # Raise a Value Error with inconsistent electron array lengths
-    # Te.size != efract.size
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            np.array([1, 10]) * u.eV,
-            Ti,
-            efract=np.array([0.5, 0.2, 0.3]),
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-    # Electron vel shape not compatible with efract.size
-    with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(
-            wavelengths,
-            probe_wavelength,
-            n,
-            Te,
-            Ti,
-            efract=np.array([0.5, 0.5]),
-            electron_vel=np.array([[100, 0, 0]]) * u.km / u.s,
-            probe_vec=probe_vec,
-            scatter_vec=scatter_vec,
-        )
-
-
-def test_collective_spectrum():
+def test_single_species_collective_spectrum(single_species_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
     """
-    alpha, wavelength, Skw = gen_collective_spectrum()
+    alpha, wavelength, Skw = single_species_collective_spectrum
 
     # Check that alpha is correct
     assert np.isclose(
@@ -236,33 +124,56 @@ def test_collective_spectrum():
     )
 
 
-def test_non_collective_spectrum():
+@pytest.fixture()
+def multiple_species_collective_args():
+    """
+    Standard args
+
+    Includes both kwargs and args: separated by the function
+
+    spectral_density_args_kwargs
+
+    """
+    kwargs = {}
+    kwargs["wavelengths"] = np.arange(520, 545, 0.01) * u.nm
+    kwargs["probe_wavelength"] = 532 * u.nm
+    kwargs["n"] = 5e17 * u.cm ** -3
+    kwargs["Te"] = 10 * u.eV
+    kwargs["Ti"] = np.array([5, 5]) * u.eV
+    kwargs["ion_species"] = [Particle("p+"), Particle("C-12 5+")]
+    kwargs["probe_vec"] = np.array([1, 0, 0])
+    kwargs["scatter_vec"] = np.array([0, 1, 0])
+    kwargs["ifract"] = np.array([0.7, 0.3])
+    kwargs["electron_vel"] = np.array([[300, 0, 0]]) * u.km / u.s
+    kwargs["ion_vel"] = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
+
+    return kwargs
+
+
+@pytest.fixture()
+def multiple_species_collective_spectrum(multiple_species_collective_args):
+
+    """
+    Generates an example Thomson scattering spectrum for multiple ion species
+    that also have drift velocities. Parameters are set to be in the
+    collective regime where ion species are important.
+    """
+
+    wavelengths = multiple_species_collective_args["wavelengths"]
+
+    args, kwargs = spectral_density_args_kwargs(multiple_species_collective_args)
+
+    alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+    return (alpha, wavelengths, Skw)
+
+
+def test_multiple_species_collective_spectrum(multiple_species_collective_spectrum):
     """
     Compares the generated spectrum to previously determined values
     """
-    alpha, wavelength, Skw = gen_non_collective_spectrum()
 
-    # Check that alpha is correct
-    assert np.isclose(
-        alpha, 0.05707, atol=0.01
-    ), f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
-
-    e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
-
-    # Check that the widts of the electron feature matchs expectations
-    assert np.isclose(e_width, 22.6699, 1e-3), (
-        "Non-collective case electron "
-        f"feature width is {e_width} "
-        "instead of expected 22.6699"
-    )
-
-
-def test_multiple_ion_species_spectrum():
-    """
-    Compares the generated spectrum to previously determined values
-    """
-
-    alpha, wavelength, Skw = gen_multiple_ion_species_spectrum()
+    alpha, wavelength, Skw = multiple_species_collective_spectrum
 
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
@@ -287,6 +198,143 @@ def test_multiple_ion_species_spectrum():
         "Multiple ion species case spectrum peak wavelength is "
         f"{max_wavelength} instead of expected 530.79"
     )
+
+
+@pytest.fixture()
+def single_species_non_collective_args():
+    """
+    Standard args
+
+    Includes both kwargs and args: separated by the function
+
+    spectral_density_args_kwargs
+
+    """
+    kwargs = {}
+    kwargs["wavelengths"] = np.arange(500, 570, 0.01) * u.nm
+    kwargs["probe_wavelength"] = 532 * u.nm
+    kwargs["n"] = 5e15 * u.cm ** -3
+    kwargs["Te"] = 100 * u.eV
+    kwargs["Ti"] = np.array([10]) * u.eV
+    kwargs["ion_species"] = ["H+"]
+    kwargs["probe_vec"] = np.array([1, 0, 0])
+    kwargs["scatter_vec"] = np.array([0, 1, 0])
+
+    return kwargs
+
+
+@pytest.fixture()
+def single_species_non_collective_spectrum(single_species_non_collective_args):
+    """
+    Generates an example Thomson scattering spectrum in the non-collective
+    regime
+    """
+
+    wavelengths = single_species_non_collective_args["wavelengths"]
+
+    args, kwargs = spectral_density_args_kwargs(single_species_non_collective_args)
+
+    alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+    return (alpha, wavelengths, Skw)
+
+
+def test_single_species_non_collective_spectrum(single_species_non_collective_spectrum):
+    """
+    Compares the generated spectrum to previously determined values
+    """
+    alpha, wavelength, Skw = single_species_non_collective_spectrum
+
+    # Check that alpha is correct
+    assert np.isclose(
+        alpha, 0.05707, atol=0.01
+    ), f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
+
+    e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
+
+    # Check that the widts of the electron feature matchs expectations
+    assert np.isclose(e_width, 22.6699, 1e-3), (
+        "Non-collective case electron "
+        f"feature width is {e_width} "
+        "instead of expected 22.6699"
+    )
+
+
+@pytest.mark.parametrize(
+    "kwargs,error,msg",
+    [
+        # Ion species provided but empty
+        (
+            {"ion_species": []},
+            ValueError,
+            "At least one ion species needs to be defined.",
+        ),
+        # Inconsistent number of ion parameters
+        (
+            {
+                "ifract": [0.5, 0.5],
+                "Ti": 5 * u.eV,
+            },
+            ValueError,
+            "Inconsistent number of ion species in ifract",
+        ),
+        (
+            {"ifract": [0.5, 0.5], "ion_vel": np.array([[100, 0, 0]]) * u.km / u.s},
+            ValueError,
+            "Inconsistent number of ion species in ifract",
+        ),
+        # Inconsistent number of electron parameters
+        (
+            {
+                "efract": [0.5, 0.5],
+                "Te": np.array(
+                    [
+                        5,
+                    ]
+                )
+                * u.eV,
+            },
+            ValueError,
+            "number of electron populations",
+        ),
+        (
+            {
+                "efract": [0.5, 0.5],
+                "electron_vel": np.array([[100, 0, 0]]) * u.km / u.s,
+            },
+            ValueError,
+            "number of electron populations",
+        ),
+    ],
+)
+def test_spectral_density_input_errors(
+    kwargs, error, msg, single_species_collective_args
+):
+    """
+    This test validates errors with invalid argument and keyword arguments in
+    spectral_density
+    """
+
+    args = single_species_collective_args
+
+    # Replace any modified keys
+    for key, value in kwargs.items():
+        args[key] = value
+
+    # Separate the arguments into args and kwargs for spectral_density
+    args, kwargs = spectral_density_args_kwargs(args)
+
+    if error is None:
+        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+    else:
+        with pytest.raises(error) as excinfo:
+            alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+        # If msg is not None, check that this string is a subset of the
+        # error message
+        if msg is not None:
+            assert msg in str(excinfo.value)
 
 
 def test_split_populations():
@@ -349,42 +397,20 @@ def test_split_populations():
     assert np.all(deviation < 1e-6), "Failed split populations test"
 
 
-def test_thomson_with_insturment_function():
+def test_thomson_with_insturment_function(single_species_collective_args):
     """
     Generates an example Thomson scattering spectrum with an insturment
     function applied
     """
-    wavelengths = np.arange(520, 545, 0.01) * u.nm
-    probe_wavelength = 532 * u.nm
-    n = 5e17 * u.cm ** -3
-    probe_vec = np.array([1, 0, 0])
-    scatter_vec = np.array([0, 1, 0])
-    Te = 10 * u.eV
-    Ti = np.array([10]) * u.eV
-    ion_species = ["C-12 5+"]
+    wavelengths = single_species_collective_args["wavelengths"]
+
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
     alpha, Skw_with = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-        inst_fcn=example_inst_fcn,
+        *args, **kwargs, inst_fcn=example_inst_fcn
     )
 
-    alpha, Skw_without = thomson.spectral_density(
-        wavelengths,
-        probe_wavelength,
-        n,
-        Te,
-        Ti,
-        ion_species=ion_species,
-        probe_vec=probe_vec,
-        scatter_vec=scatter_vec,
-    )
+    alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
 
     # Assert that the insturment function has made the IAW peak wider
     w1 = width_at_value(wavelengths.value, Skw_with.value, 2e-13)
@@ -710,11 +736,12 @@ def test_fit_with_minimal_parameters():
     settings["ion_species"] = ion_species
 
     params = Parameters()
-    params.add("n", value=n.to(u.m ** -3).value, vary=False)
+
+    params.add("Te_0", value=Te.value, vary=False, min=5, max=20)
     params.add("Ti_0", value=Ti.value, vary=True, min=5, max=70)
 
     # Try creating model: will raise exception because required values
-    # are missing
+    # are missing in settings, eg. 'probe_wavelength'
     with pytest.raises(KeyError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
@@ -725,7 +752,7 @@ def test_fit_with_minimal_parameters():
     with pytest.raises(KeyError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
-    params.add("Te_0", value=Te.value, vary=False, min=5, max=20)
+    params.add("n", value=n.to(u.m ** -3).value, vary=False)
 
     # Make the model, then perform the fit
     model = thomson.spectral_density_model(wavelengths.to(u.m).value, settings, params)
