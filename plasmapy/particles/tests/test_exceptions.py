@@ -206,8 +206,8 @@ tests_for_exceptions = {
 
 @pytest.mark.parametrize(
     ["tested_object", "args", "kwargs", "expected_exception"],
-    tests_for_exceptions.values(),
-    ids=tests_for_exceptions.keys(),
+    list(tests_for_exceptions.values()),
+    ids=list(tests_for_exceptions.keys()),
 )
 def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_exception):
     """
