@@ -434,11 +434,7 @@ def spectral_density(
     if Ti.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Ti.size != len(ion_species), assume same temp. for all species
-        Ti = [Ti.value] * len(ion_species) * Ti.unit
-    elif Ti.size != len(ion_species):
-        raise ValueError(
-            f"Got {Ti.size} ion temperatures and expected {len(ion_species)}."
-        )
+        Ti = np.array([Ti.value,]) * Ti.unit
 
     # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match
     if (
@@ -447,7 +443,7 @@ def spectral_density(
         or (Ti.size != ifract.size)
     ):
         raise ValueError(
-            f"Inconsistent number of species in ifract ({ifract}), "
+            f"Inconsistent number of ion species in ifract ({ifract}), "
             f"ion_species ({len(ion_species)}), Ti ({Ti.size}), "
             f"and/or ion_vel ({ion_vel.shape[0]})."
         )
@@ -456,11 +452,7 @@ def spectral_density(
     if Te.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Te.size != len(efract), assume same temp. for all species
-        Te = [Te.value] * len(efract) * Te.unit
-    elif Te.size != len(efract):
-        raise ValueError(
-            f"Got {Te.size} electron temperatures and expected {len(efract)}."
-        )
+        Te = np.array([Te.value,]) * Te.unit
 
     # Make sure the sizes of efract, electron_vel, and Te all match
     if (electron_vel.shape[0] != efract.size) or (Te.size != efract.size):
