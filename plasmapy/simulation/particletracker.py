@@ -10,9 +10,8 @@ import scipy.interpolate as interp
 from astropy import constants
 
 from plasmapy.particles import atomic
+from plasmapy.simulation import particle_integrators
 from plasmapy.utils.decorators import validate_quantities
-
-from . import particle_integrators
 
 
 class ParticleTracker:
@@ -161,7 +160,7 @@ class ParticleTracker:
         Implement the Boris algorithm for moving particles and updating their
         velocities.
 
-        Arguments
+        Parameters
         ----------
         init : `bool`, optional
             If `True`, does not change the particle positions and sets ``dt``
@@ -169,8 +168,9 @@ class ParticleTracker:
 
         Notes
         ----------
-        The Boris algorithm is the standard energy conserving algorithm for
-        particle movement in plasma physics. See [1]_ for more details.
+        The Boris algorithm :cite:p:`boris:1970` is the standard energy
+        particle movement in plasma physics. See pages 58–63 of
+        :cite:t:`birdsall:2004` for more details.
 
         Conceptually, the algorithm has three phases:
 
@@ -181,11 +181,6 @@ class ParticleTracker:
 
         This ends up causing the magnetic field action to be properly
         "centered" in time, and the algorithm conserves energy.
-
-        References
-        ----------
-        .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
-               Simulation", 2004, p. 58-63
         """
         b, e = self._interpolate_fields()
 
@@ -241,7 +236,6 @@ class ParticleTracker:
         import matplotlib.pyplot as plt
 
         from astropy.visualization import quantity_support
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig = plt.figure()
@@ -269,7 +263,6 @@ class ParticleTracker:
         import matplotlib.pyplot as plt
 
         from astropy.visualization import quantity_support
-        from mpl_toolkits.mplot3d import Axes3D
 
         quantity_support()
         fig, ax = plt.subplots()

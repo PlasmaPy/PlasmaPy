@@ -542,9 +542,10 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         assert err == 0
 
         ff_obj.params = (3.0, 0.5, 5.0)
-        root, err = ff_obj.root_solve()
-        assert np.isnan(root)
-        assert np.isnan(err)
+        with pytest.warns(RuntimeWarning, match="invalid value encountered in log"):
+            root, err = ff_obj.root_solve()
+            assert np.isnan(root)
+            assert np.isnan(err)
 
 
 class TestFFLinear(BaseFFTests):

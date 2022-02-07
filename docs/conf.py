@@ -1,5 +1,4 @@
 #!/usr/bin/env python3.7
-# -*- coding: utf-8 -*-
 #
 # PlasmaPy documentation build configuration file, created by
 # sphinx-quickstart on Wed May 31 18:16:46 2017.
@@ -16,7 +15,6 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 
 import os
 import sys
@@ -46,7 +44,35 @@ automodapi_custom_groups = {
         ),
         "dunder": "__aliases__",
     },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            Much of PlasmaPy's functionality incorporates `Astropy units
+            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+            to mitigate calculation errors from inappropriate units, but this
+            comes at the sacrifice of speed.  While this penalty is not significant
+            for typical use, it can become substantial during intensive numerical
+            calculations. **Lite-functions** are introduced for the specific case
+            where speed matters, but **[USER NOTICE]** this comes with the
+            reduction of safeguards so a user needs to know what they are doing!
+            For additional details look to the glossary entry for
+            :term:`lite-function`.
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
 }
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -54,7 +80,8 @@ automodapi_custom_groups = {
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# ones. When extensions are removed or added, please update the section
+# in docs/doc_guide.rst on Sphinx extensions.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
@@ -68,19 +95,30 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_changelog",
     "plasmapy_sphinx",
+    "sphinxcontrib.bibtex",
+    "hoverxref.extension",
 ]
 
+bibtex_bibfiles = ["bibliography.bib"]
+bibtex_default_style = "plain"
+bibtex_reference_style = "author_year"
+
+# Intersphinx generates automatic links to the documentation of objects
+# in other packages. When mappings are removed or added, please update
+# the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
+    "pytest": ("https://docs.pytest.org/en/stable", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
     ),
-    "spihnx": ("https://www.sphinx-doc.org/en/master/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 
 autoclass_content = "both"
@@ -102,7 +140,6 @@ project = "PlasmaPy"
 author = "PlasmaPy Community"
 copyright = f"2015–{datetime.utcnow().year}, {author}"
 
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -112,16 +149,13 @@ copyright = f"2015–{datetime.utcnow().year}, {author}"
 #        However, release needs to be a semantic style version number, so set
 #        the 'unknown' case to ''.
 release = "" if release == "unknown" else release
-if release == "unknown":
-    release = version = revision = ""
+pv = parse_version(release)
+release = pv.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+if pv.local is not None:
+    revision = pv.local[1:]  # revision number w/o the leading g
 else:
-    pv = parse_version(release)
-    release = pv.public
-    version = ".".join(release.split(".")[:2])  # short X.Y version
-    if pv.local is not None:
-        revision = pv.local[1:]  # revision number w/o the leading g
-    else:
-        revision = ""
+    revision = ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
@@ -149,11 +183,37 @@ exclude_patterns = [
     "common_links.rst",
 ]
 
-
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 default_role = "obj"
+
+# Customizations for make linkcheck using regular expressions
+linkcheck_allowed_redirects = {
+    r"https://doi\.org/.+": r"https://.+",  # DOI links are more persistent
+    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
+    r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
+    r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
+    r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
+    r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
+    r"https://.+/github\.io": r"https://.+/github\.io/en/.+",
+    r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
+    r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
+    r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
+}
+
+linkcheck_anchors = True
+linkcheck_anchors_ignore = [
+    "/room",
+    r".+openastronomy.+",
+    "L[0-9].+",
+    "!forum/plasmapy",
+]
+
+# Use a code highlighting style that meets the WCAG AA contrast standard
+pygments_style = "default"
+
+hoverxref_auto_ref = True
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -193,7 +253,6 @@ modindex_common_prefix = ["plasmapy."]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "PlasmaPydoc"
 
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
@@ -223,13 +282,11 @@ latex_documents = [
     )
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [(root_doc, "plasmapy", "PlasmaPy Documentation", [author], 1)]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -249,7 +306,6 @@ texinfo_documents = [
 ]
 
 html_favicon = "./_static/icon.ico"
-
 
 # -- NBSphinx options
 
@@ -299,4 +355,5 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("rtd_theme_overrides.css")
+    app.add_css_file("css/admonition_color_contrast.css")
+    app.add_css_file("css/plasmapy.css", priority=600)

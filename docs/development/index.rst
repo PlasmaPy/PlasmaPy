@@ -1,7 +1,7 @@
-.. _plasmapy-development-guide:
+.. _plasmapy-contributor-guide:
 
 *****************
-Development Guide
+Contributor Guide
 *****************
 
 .. toctree::
@@ -10,8 +10,8 @@ Development Guide
    ../CONTRIBUTING
    ../CODE_OF_CONDUCT
    install_dev
-   workflow
    code_guide
+   changelog_guide
    testing_guide
    doc_guide
    release_guide

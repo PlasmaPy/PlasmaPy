@@ -52,6 +52,7 @@ class PlasmaBlob(GenericPlasma):
 
     def __repr__(self):
         """
+        Return a string representation of this instance.
 
         Returns
         -------

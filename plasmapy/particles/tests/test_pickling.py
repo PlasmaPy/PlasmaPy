@@ -1,7 +1,6 @@
 """Test that objects in `plasmapy.particles` can be pickled."""
 
 import astropy.units as u
-import os
 import pickle
 import pytest
 

@@ -53,7 +53,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     V : `~astropy.units.Quantity`
         Particle velocity in units convertible to meters per second.
 
-    particle : `str`, `~plasmapy.particles.Particle`, or `~astropy.units.Quantity`
+    particle : `str`, `~plasmapy.particles.particle_class.Particle`, or `~astropy.units.Quantity`
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
@@ -135,7 +135,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
 
 lambdaDB_ = deBroglie_wavelength
-""" Alias to :func:`deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -183,8 +183,8 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
        λ_{dbTh} = \frac{h}{\sqrt{2 π m_e k_B T_e}}
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> thermal_deBroglie_wavelength(1 * u.eV)
     <Quantity 6.9193675e-10 m>
@@ -194,7 +194,7 @@ def thermal_deBroglie_wavelength(T_e: u.K) -> u.m:
 
 
 lambdaDB_th_ = thermal_deBroglie_wavelength
-""" Alias to :func:`thermal_deBroglie_wavelength`. """
+"""Alias to `~plasmapy.formulary.quantum.thermal_deBroglie_wavelength`."""
 
 
 @validate_quantities(
@@ -249,8 +249,8 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
     --------
     Thomas_Fermi_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Fermi_energy(1e23 * u.cm**-3)
     <Quantity 1.2586761e-18 J>
@@ -261,7 +261,7 @@ def Fermi_energy(n_e: u.m ** -3) -> u.J:
 
 
 Ef_ = Fermi_energy
-""" Alias to :func:`Fermi_energy`. """
+"""Alias to `~plasmapy.formulary.quantum.Fermi_energy`."""
 
 
 @validate_quantities(
@@ -320,11 +320,11 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Fermi_energy
-    plasmapy.formulary.Debye_length
+    ~plasmapy.formulary.quantum.Fermi_energy
+    ~plasmapy.formulary.parameters.Debye_length
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
     <Quantity 5.37991409e-11 m>
@@ -363,7 +363,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     Raises
     ------
     `TypeError`
-        If argument is not a ~astropy.units.Quantity.
+        If argument is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
@@ -387,10 +387,10 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Fermi_energy
+    ~plasmapy.formulary.quantum.Fermi_energy
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> Wigner_Seitz_radius(1e29 * u.m**-3)
     <Quantity 1.33650462e-10 m>
@@ -416,7 +416,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     n_e : `~astropy.units.Quantity`
         Electron number density.
 
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature.
 
     Returns
@@ -443,7 +443,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     Notes
     -----
-    The ideal chemical potential is given by [1]_:
+    The ideal chemical potential is given by :cite:p:`bonitz:1998`\ :
 
     .. math::
         χ_a = I_{1/2}(β μ_a^{ideal})
@@ -456,29 +456,26 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
-    returned from the Fermi_integral are complex, a nonlinear
-    Levenberg-Marquardt least squares method is used to iteratively approach
-    a value of :math:`μ` which minimizes
+    returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
+    are complex, a nonlinear Levenberg-Marquardt least squares method is
+    used to iteratively approach a value of :math:`μ` which minimizes
     :math:`I_{1/2}(β μ_a^{ideal}) - χ_a`
 
     This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
 
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's implementation
-    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
+    Warnings
+    --------
+    At present this function is limited to relatively small arguments
+    due to limitations in the `mpmath` implementation of
+    `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
     integral.
 
-    References
-    ----------
-    .. [1] Bonitz, Michael. Quantum kinetic theory. Stuttgart: Teubner, 1998.
-
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
     <Quantity 2.00039985e-12>
-
     """
 
     raise NotImplementedError(
@@ -504,7 +501,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     alphaGuess = 1 * u.dimensionless_unscaled
     try:
         from lmfit import minimize, Parameters
-    except (ImportError, ModuleNotFoundError) as e:
+    except ImportError as e:
         from plasmapy.optional_deps import lmfit_import_error
 
         raise lmfit_import_error from e
@@ -586,8 +583,8 @@ def _chemical_potential_interp(n_e, T):
     .. [2] Gregori, G., et al. "Theoretical model of x-ray scattering as a
        dense matter probe." Physical Review E 67.2 (2003): 026412.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from astropy import units as u
     >>> _chemical_potential_interp(n_e=1e23*u.cm**-3, T=11000*u.K)  # doctest: +SKIP
     <Quantity 8.17649>
