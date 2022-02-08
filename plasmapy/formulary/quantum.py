@@ -53,7 +53,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
     V : `~astropy.units.Quantity`
         Particle velocity in units convertible to meters per second.
 
-    particle : `str`, `~plasmapy.particles.Particle`, or `~astropy.units.Quantity`
+    particle : `str`, `~plasmapy.particles.particle_class.Particle`, or `~astropy.units.Quantity`
         An instance of `~plasmapy.particles.particle_class.Particle`, or
         an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
@@ -320,8 +320,8 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Fermi_energy
-    plasmapy.formulary.Debye_length
+    ~plasmapy.formulary.quantum.Fermi_energy
+    ~plasmapy.formulary.parameters.Debye_length
 
     Examples
     --------
@@ -363,7 +363,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
     Raises
     ------
     `TypeError`
-        If argument is not a ~astropy.units.Quantity.
+        If argument is not a `~astropy.units.Quantity`.
 
     `~astropy.units.UnitConversionError`
         If argument is in incorrect units.
@@ -387,7 +387,7 @@ def Wigner_Seitz_radius(n: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Fermi_energy
+    ~plasmapy.formulary.quantum.Fermi_energy
 
     Examples
     --------
@@ -416,7 +416,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     n_e : `~astropy.units.Quantity`
         Electron number density.
 
-    T : ~astropy.units.Quantity
+    T : `~astropy.units.Quantity`
         The temperature.
 
     Returns
@@ -456,17 +456,19 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     The definition for the ideal chemical potential is implicit, so it must
     be obtained numerically by solving for the Fermi integral for values
     of chemical potential approaching the degeneracy parameter. Since values
-    returned from the Fermi_integral are complex, a nonlinear
-    Levenberg-Marquardt least squares method is used to iteratively approach
-    a value of :math:`μ` which minimizes
+    returned from the `~plasmapy.formulary.mathematics.Fermi_integral`
+    are complex, a nonlinear Levenberg-Marquardt least squares method is
+    used to iteratively approach a value of :math:`μ` which minimizes
     :math:`I_{1/2}(β μ_a^{ideal}) - χ_a`
 
     This function returns :math:`β μ^{ideal}` the dimensionless
     ideal chemical potential.
 
-    Warning: at present this function is limited to relatively small
-    arguments due to limitations in the `~mpmath` package's implementation
-    of `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
+    Warnings
+    --------
+    At present this function is limited to relatively small arguments
+    due to limitations in the `mpmath` implementation of
+    `~mpmath.polylog`, which PlasmaPy uses in calculating the Fermi
     integral.
 
     Examples
@@ -474,7 +476,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     >>> from astropy import units as u
     >>> chemical_potential(n_e=1e21*u.cm**-3,T=11000*u.K)  # doctest: +SKIP
     <Quantity 2.00039985e-12>
-
     """
 
     raise NotImplementedError(
@@ -500,7 +501,7 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
     alphaGuess = 1 * u.dimensionless_unscaled
     try:
         from lmfit import minimize, Parameters
-    except (ImportError, ModuleNotFoundError) as e:
+    except ImportError as e:
         from plasmapy.optional_deps import lmfit_import_error
 
         raise lmfit_import_error from e
