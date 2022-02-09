@@ -928,7 +928,7 @@ def _trilinear_analysis(vspace, cell):
         else:
             BxByEndpoints.append((root1[0], root1[1], zConst2))
             BxByEndpoints.append((root2[0], root2[1], zConst2))
-    # Bx=BZ=0 Curve Endpoint
+    # Bx=Bz=0 Curve Endpoint
     root1, root2 = _bilinear_root(
         ax + dx * zConst2,
         bx + fx * zConst2,
