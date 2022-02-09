@@ -141,11 +141,8 @@ def _vector_space(
         and the third element containing the delta values for each dimension.
     """
     # Constructing the Meshgrid
-    if (
-        not isinstance(x_arr, type(None))
-        and not isinstance(y_arr, type(None))
-        and not isinstance(z_arr, type(None))
-    ):
+
+    if x_arr is not None and y_arr is not None and z_arr is not None:
         x, y, z = np.meshgrid(
             x_arr,
             y_arr,
@@ -169,11 +166,7 @@ def _vector_space(
             indexing="ij",
         )
     # Calculating the vector values
-    if (
-        not isinstance(u_arr, type(None))
-        and not isinstance(v_arr, type(None))
-        and not isinstance(w_arr, type(None))
-    ):
+    if u_arr is not None and v_arr is not None and w_arr is not None:
         u = u_arr
         v = v_arr
         w = w_arr
@@ -1310,7 +1303,7 @@ def null_point_find(
                 if _reduction(vspace, [i, j, k]):
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
-                        if not isinstance(loc, type(None)):
+                        if loc is not None:
                             p = NullPoint(loc, "N/A")
                             if p not in nullpoints:
                                 nullpoints.append(p)
