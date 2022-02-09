@@ -1072,7 +1072,7 @@ def _trilinear_analysis(vspace, cell):
 
 def _locate_null_point(vspace, cell, n, err):
     r"""
-    Return the coordinates of a nullpoint within
+    Return the coordinates of a null point within
     a given grid cell in a vector space using the
     Newton-Rapshon method.
     Multiple initial position are tried until either
