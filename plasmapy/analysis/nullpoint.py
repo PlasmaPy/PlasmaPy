@@ -444,14 +444,6 @@ def _reduction(vspace, cell):
         True if a grid cell passes the reduction phase.
         False, otherwise.
 
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
     Notes
     -----
     Depending on the grid resolution, a cell containing more than
