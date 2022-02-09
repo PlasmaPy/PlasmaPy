@@ -519,18 +519,6 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     -------
     roots : array_like of floats
         A 1 by 2 array containing the two roots
-
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
-    Notes
-    -----
-    N/A
     """
     m1 = np.array([[a1, a2], [c1, c2]])
     m2 = np.array([[a1, a2], [d1, d2]])
