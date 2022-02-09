@@ -1063,7 +1063,7 @@ def _locate_null_point(vspace, cell, n, err):
     Return the coordinates of a null point within
     a given grid cell in a vector space using the
     Newton-Rapshon method.
-    Multiple initial position are tried until either
+    Multiple initial positions are tried until either
     one converges inside a the grid cell, or the maximum
     iteration is reached.
     If neither occurs, more starting positions are tried,
