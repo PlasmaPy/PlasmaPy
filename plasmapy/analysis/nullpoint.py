@@ -1116,10 +1116,6 @@ def _locate_null_point(vspace, cell, n, err):
         None if the coordinates of the null point could not be converged
         at a point inside the grid cell.
 
-    Raises
-    ------
-    This function does not raise any exceptions.
-
     Warns
     -----
     :`UserWarning`
