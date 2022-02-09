@@ -12,9 +12,9 @@ import warnings
 
 # Declare Constants & global variables
 _ATOL = 1e-10
-_MAX_DIVIDE = 10
-global _divide
-_divide = 0
+_MAX_RECURSION_LEVEL = 10
+global _recursion_level
+_recursion_level = 0
 
 
 class Point:
@@ -1131,7 +1131,7 @@ def locate_null_point(vspace, cell, n, err):
     N/A
     """
 
-    global _divide
+    global _recursion_level
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = trilinear_jacobian(vspace, cell)
@@ -1220,8 +1220,8 @@ def locate_null_point(vspace, cell, n, err):
             return x0
 
     # Break Up the Cell into 8 smaller cells and try again
-    _divide = _divide + 1
-    if _divide > _MAX_DIVIDE:
+    _recursion_level = _recursion_level + 1
+    if _recursion_level > _MAX_RECURSION_LEVEL:
         warnings.warn("Could not locate a possible null point")
         return None
     null_point_args = {
