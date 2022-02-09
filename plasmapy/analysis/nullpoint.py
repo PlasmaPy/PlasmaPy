@@ -61,7 +61,7 @@ class NullPoint(Point):
         )
 
 
-def vector_space(
+def _vector_space(
     x_arr=None,
     y_arr=None,
     z_arr=None,
@@ -182,7 +182,7 @@ def vector_space(
     return np.array([x, y, z]), np.array([u, v, w]), np.array([dx, dy, dz])
 
 
-def trilinear_coeff_cal(vspace, cell):
+def _trilinear_coeff_cal(vspace, cell):
     r"""
     Return the coefficients for the trilinear approximation function.
     on a given grid cell in a given vector space.
@@ -331,9 +331,9 @@ def trilinear_approx(vspace, cell):
     N/A
     """
     # Calculating coefficients
-    ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
-    ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
-    az, bz, cz, dz, ez, fz, gz, hz = trilinear_coeff_cal(vspace, cell)[2]
+    ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
+    ay, by, cy, dy, ey, fy, gy, hy = _trilinear_coeff_cal(vspace, cell)[1]
+    az, bz, cz, dz, ez, fz, gz, hz = _trilinear_coeff_cal(vspace, cell)[2]
 
     def approx_func(xInput, yInput, zInput):
         Bx = (
@@ -371,7 +371,7 @@ def trilinear_approx(vspace, cell):
     return approx_func
 
 
-def trilinear_jacobian(vspace, cell):
+def _trilinear_jacobian(vspace, cell):
     r"""
     Returns a function whose input is a coordinate within a given grid cell
     and returns the trilinearly approximated jacobian matrix for that particular
@@ -398,9 +398,9 @@ def trilinear_jacobian(vspace, cell):
     coordinate in that grid cell.
     """
     # Calculating coefficients
-    ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
-    ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
-    az, bz, cz, dz, ez, fz, gz, hz = trilinear_coeff_cal(vspace, cell)[2]
+    ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
+    ay, by, cy, dy, ey, fy, gy, hy = _trilinear_coeff_cal(vspace, cell)[1]
+    az, bz, cz, dz, ez, fz, gz, hz = _trilinear_coeff_cal(vspace, cell)[2]
 
     def jacobian_func(xInput, yInput, zInput):
         dBxdx = bx + ex * yInput + fx * zInput + hx * yInput * zInput
@@ -430,7 +430,7 @@ def trilinear_jacobian(vspace, cell):
     return jacobian_func
 
 
-def reduction(vspace, cell):
+def _reduction(vspace, cell):
     r"""
     Return a true or false based on weather
     a grid cell passes the reduction phase,
@@ -508,7 +508,7 @@ def reduction(vspace, cell):
     return doesPassReduction
 
 
-def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     r"""
     Return the roots of a pair of bilinear equations of the following format.
 
@@ -590,7 +590,7 @@ def bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     return [(x1, y1), (x2, y2)]
 
 
-def trilinear_analysis(vspace, cell):
+def _trilinear_analysis(vspace, cell):
     r"""
     Return a true or false value based on whether
     a grid cell which has passed the reduction step,
@@ -642,9 +642,9 @@ def trilinear_analysis(vspace, cell):
     f111 = [cell[0] + 1, cell[1] + 1, cell[2] + 1]
 
     # Calculating coefficients
-    ax, bx, cx, dx, ex, fx, gx, hx = trilinear_coeff_cal(vspace, cell)[0]
-    ay, by, cy, dy, ey, fy, gy, hy = trilinear_coeff_cal(vspace, cell)[1]
-    az, bz, cz, dz, ez, fz, gz, hz = trilinear_coeff_cal(vspace, cell)[2]
+    ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
+    ay, by, cy, dy, ey, fy, gy, hy = _trilinear_coeff_cal(vspace, cell)[1]
+    az, bz, cz, dz, ez, fz, gz, hz = _trilinear_coeff_cal(vspace, cell)[2]
 
     # Initial Position of the cell corner
     initial = np.array(
@@ -666,7 +666,7 @@ def trilinear_analysis(vspace, cell):
     ]  # y-coordinate of the front surface
     # Bx=By=0 Curve Endpoint
 
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
         dx + gx * yConst1,
@@ -685,7 +685,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((root2[0], yConst1, root2[1]))
 
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
         dx + gx * yConst1,
@@ -702,7 +702,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((root1[0], yConst1, root1[1]))
             BxBzEndpoints.append((root2[0], yConst1, root2[1]))
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + cy * yConst1,
         by + ey * yConst1,
         dy + gy * yConst1,
@@ -724,7 +724,7 @@ def trilinear_analysis(vspace, cell):
         f111[2]
     ]  # y-coordinate of the front surface
     # Bx=By=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + cx * yConst2,
         bx + ex * yConst2,
         dx + gx * yConst2,
@@ -741,7 +741,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((root1[0], yConst2, root1[1]))
             BxByEndpoints.append((root2[0], yConst2, root2[1]))
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + cx * yConst2,
         bx + ex * yConst2,
         dx + gx * yConst2,
@@ -758,7 +758,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((root1[0], yConst2, root1[1]))
             BxBzEndpoints.append((root2[0], yConst2, root2[1]))
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + cy * yConst2,
         by + ey * yConst2,
         dy + gy * yConst2,
@@ -778,7 +778,7 @@ def trilinear_analysis(vspace, cell):
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + bx * xConst1,
         cx + ex * xConst1,
         dx + fx * xConst1,
@@ -797,7 +797,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((xConst1, root2[0], root2[1]))
 
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + bx * xConst1,
         cx + ex * xConst1,
         dx + fx * xConst1,
@@ -815,7 +815,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((xConst1, root2[0], root2[1]))
 
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + by * xConst1,
         cy + ey * xConst1,
         dy + fy * xConst1,
@@ -835,7 +835,7 @@ def trilinear_analysis(vspace, cell):
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + bx * xConst2,
         cx + ex * xConst2,
         dx + fx * xConst2,
@@ -852,7 +852,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((xConst2, root1[0], root1[1]))
             BxByEndpoints.append((xConst2, root2[0], root2[1]))
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + bx * xConst2,
         cx + ex * xConst2,
         dx + fx * xConst2,
@@ -870,7 +870,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((xConst2, root2[0], root2[1]))
 
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + by * xConst2,
         cy + ey * xConst2,
         dy + fy * xConst2,
@@ -890,7 +890,7 @@ def trilinear_analysis(vspace, cell):
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + dx * zConst1,
         bx + fx * zConst1,
         cx + gx * zConst1,
@@ -907,7 +907,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((root1[0], root1[1], zConst1))
             BxByEndpoints.append((root2[0], root2[1], zConst1))
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + dx * zConst1,
         bx + fx * zConst1,
         cx + gx * zConst1,
@@ -924,7 +924,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((root1[0], root1[1], zConst1))
             BxBzEndpoints.append((root2[0], root2[1], zConst1))
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + dy * zConst1,
         by + fy * zConst1,
         cy + gy * zConst1,
@@ -944,7 +944,7 @@ def trilinear_analysis(vspace, cell):
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + dx * zConst2,
         bx + fx * zConst2,
         cx + gx * zConst2,
@@ -961,7 +961,7 @@ def trilinear_analysis(vspace, cell):
             BxByEndpoints.append((root1[0], root1[1], zConst2))
             BxByEndpoints.append((root2[0], root2[1], zConst2))
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ax + dx * zConst2,
         bx + fx * zConst2,
         cx + gx * zConst2,
@@ -978,7 +978,7 @@ def trilinear_analysis(vspace, cell):
             BxBzEndpoints.append((root1[0], root1[1], zConst2))
             BxBzEndpoints.append((root2[0], root2[1], zConst2))
     # By=Bz=0 Curve Endpoint
-    root1, root2 = bilinear_root(
+    root1, root2 = _bilinear_root(
         ay + dy * zConst2,
         by + fy * zConst2,
         cy + gy * zConst2,
@@ -1070,7 +1070,7 @@ def trilinear_analysis(vspace, cell):
         return True
 
 
-def locate_null_point(vspace, cell, n, err):
+def _locate_null_point(vspace, cell, n, err):
     r"""
     Return the coordinates of a nullpoint within
     a given grid cell in a vector space using the
@@ -1134,7 +1134,7 @@ def locate_null_point(vspace, cell, n, err):
     global _recursion_level
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
-    jcb = trilinear_jacobian(vspace, cell)
+    jcb = _trilinear_jacobian(vspace, cell)
     # Calculatiung the deltas
     deltax, deltay, deltaz = vspace[2]
     deltax = deltax[cell[0]]
@@ -1329,7 +1329,7 @@ def null_point_find(
     This method is described by :cite:t:`haynes:2007`.
     """
     # Constructing the vspace
-    vspace = vector_space(
+    vspace = _vector_space(
         x_arr,
         y_arr,
         z_arr,
@@ -1347,9 +1347,9 @@ def null_point_find(
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if reduction(vspace, [i, j, k]):
-                    if trilinear_analysis(vspace, [i, j, k]):
-                        loc = locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
+                if _reduction(vspace, [i, j, k]):
+                    if _trilinear_analysis(vspace, [i, j, k]):
+                        loc = _locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
                         if not isinstance(loc, type(None)):
                             p = NullPoint(loc, "N/A")
                             if p not in nullpoints:

@@ -6,15 +6,15 @@ import pytest
 
 from plasmapy.analysis.nullpoint import (
     _ATOL,
-    bilinear_root,
-    locate_null_point,
+    _bilinear_root,
+    _locate_null_point,
+    _reduction,
+    _trilinear_analysis,
+    _trilinear_coeff_cal,
+    _trilinear_jacobian,
+    _vector_space,
     null_point_find,
-    reduction,
-    trilinear_analysis,
     trilinear_approx,
-    trilinear_coeff_cal,
-    trilinear_jacobian,
-    vector_space,
 )
 
 
@@ -35,7 +35,7 @@ def test_trilinear_coeff_cal():
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_1,
     }
-    vspace1 = vector_space(**vspace1_args)
+    vspace1 = _vector_space(**vspace1_args)
     vspace2_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -43,7 +43,7 @@ def test_trilinear_coeff_cal():
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace2 = vector_space(**vspace2_args)
+    vspace2 = _vector_space(**vspace2_args)
     test_trilinear_coeff_cal_values = [
         (
             {"vspace": vspace2, "cell": [25, 25, 25]},
@@ -58,7 +58,7 @@ def test_trilinear_coeff_cal():
     @pytest.mark.parametrize("kwargs, expected", test_trilinear_coeff_cal_values)
     def test_trilinear_coeff_cal_vals(kwargs, expected):
         r"""Test expected values."""
-        assert trilinear_coeff_cal(**kwargs) == expected
+        assert _trilinear_coeff_cal(**kwargs) == expected
 
 
 def test_trilinear_jacobian():
@@ -70,9 +70,9 @@ def test_trilinear_jacobian():
         "precision": [1, 1, 1],
         "func": vspace_func_1,
     }
-    vspace = vector_space(**vspace_args)
+    vspace = _vector_space(**vspace_args)
 
-    jcb = trilinear_jacobian(vspace, [0, 0, 0])
+    jcb = _trilinear_jacobian(vspace, [0, 0, 0])
     mtrx = jcb(0.5, 0.5, 0.5)
     exact_mtrx = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
     assert np.allclose(mtrx, exact_mtrx, atol=_ATOL)
@@ -87,7 +87,7 @@ def test_trilinear_approx():
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_1,
     }
-    vspace1 = vector_space(**vspace1_args)
+    vspace1 = _vector_space(**vspace1_args)
     vspace2_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -95,7 +95,7 @@ def test_trilinear_approx():
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace2 = vector_space(**vspace2_args)
+    vspace2 = _vector_space(**vspace2_args)
     dx, dy, dz = vspace2[2]
     dx = dx[0]
     dy = dy[0]
@@ -132,7 +132,7 @@ class Test_reduction:
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace = vector_space(**vspace_args)
+    vspace = _vector_space(**vspace_args)
 
     test_reduction_values = [
         ({"vspace": vspace, "cell": [25, 25, 25]}, True),
@@ -147,7 +147,7 @@ class Test_reduction:
     @pytest.mark.parametrize("kwargs, expected", test_reduction_values)
     def test_reduction_vals(self, kwargs, expected):
         r"""Test expected values."""
-        assert reduction(**kwargs) == expected
+        assert _reduction(**kwargs) == expected
 
 
 class Test_trilinear_analysis:
@@ -159,7 +159,7 @@ class Test_trilinear_analysis:
         "precision": [10 / 46, 10 / 46, 10 / 46],
         "func": vspace_func_2,
     }
-    vspace = vector_space(**vspace_args)
+    vspace = _vector_space(**vspace_args)
     test_trilinear_analysis_values = [
         ({"vspace": vspace, "cell": [25, 25, 25]}, True),
         ({"vspace": vspace, "cell": [32, 14, 4]}, True),
@@ -171,7 +171,7 @@ class Test_trilinear_analysis:
     @pytest.mark.parametrize("kwargs, expected", test_trilinear_analysis_values)
     def test_trilinear_analysis_vals(self, kwargs, expected):
         r"""Test expected values."""
-        assert trilinear_analysis(**kwargs) == expected
+        assert _trilinear_analysis(**kwargs) == expected
 
 
 class Test_bilinear_root:
@@ -186,8 +186,8 @@ class Test_bilinear_root:
     @pytest.mark.parametrize("kwargs, expected", test_bilinear_root_values)
     def test_bilinear_root_vals(self, kwargs, expected):
         r"""Test expected values."""
-        x1, y1 = bilinear_root(**kwargs)[0]
-        x2, y2 = bilinear_root(**kwargs)[1]
+        x1, y1 = _bilinear_root(**kwargs)[0]
+        x2, y2 = _bilinear_root(**kwargs)[1]
         assert np.isclose(x1, expected[0], atol=_ATOL)
         assert np.isclose(y1, expected[1], atol=_ATOL)
         assert np.isclose(x2, expected[2], atol=_ATOL)
@@ -203,7 +203,7 @@ class Test_locate_null_point:
         "precision": [1, 1, 1],
         "func": vspace_func_1,
     }
-    vspace = vector_space(**vspace_args)
+    vspace = _vector_space(**vspace_args)
 
     test_locate_null_point_values = [
         (
@@ -216,7 +216,7 @@ class Test_locate_null_point:
     def test_locate_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert np.isclose(
-            locate_null_point(**kwargs).reshape(1, 3), expected, atol=_ATOL
+            _locate_null_point(**kwargs).reshape(1, 3), expected, atol=_ATOL
         ).all()
 
 
