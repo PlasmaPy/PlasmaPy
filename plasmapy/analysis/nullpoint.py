@@ -1121,10 +1121,6 @@ def _locate_null_point(vspace, cell, n, err):
     :`UserWarning`
         If the maximum number of iteration has been
         reached, but convergence has not occurred.
-
-    Notes
-    -----
-    N/A
     """
 
     global _recursion_level
