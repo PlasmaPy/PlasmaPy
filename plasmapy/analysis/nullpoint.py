@@ -184,7 +184,7 @@ def _vector_space(
 
 def _trilinear_coeff_cal(vspace, cell):
     r"""
-    Return the coefficients for the trilinear approximation function.
+    Return the coefficients for the trilinear approximation function
     on a given grid cell in a given vector space.
 
     Parameters
