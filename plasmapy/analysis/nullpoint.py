@@ -317,18 +317,6 @@ def trilinear_approx(vspace, cell):
         and returns the trilinearly approximated vector value at that particular
         coordinate in that grid cell.
 
-    Raises
-    ------
-    This function does not raise any exceptions.
-
-    Warns
-    -----
-    This function does not raise any warnings.
-
-
-    Notes
-    -----
-    N/A
     """
     # Calculating coefficients
     ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
