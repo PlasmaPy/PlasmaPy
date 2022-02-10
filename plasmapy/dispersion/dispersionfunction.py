@@ -3,6 +3,7 @@ Module containing functionality focused on the plasma dispersion function
 :math:`Z(ζ)`.
 """
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
+__lite_funcs__ = ["plasma_dispersion_func_lite"]
 
 import astropy.units as u
 import numbers
@@ -10,6 +11,10 @@ import numpy as np
 
 from scipy.special import wofz as Faddeeva_function
 from typing import Union
+
+from plasmapy.dispersion._dispersionfunction import plasma_dispersion_func_lite
+
+__all__ += __lite_funcs__
 
 
 def plasma_dispersion_func(
@@ -90,7 +95,11 @@ def plasma_dispersion_func(
     if not np.all(np.isfinite(zeta)):
         raise ValueError("The argument to plasma_dispersion_function is not finite.")
 
-    Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
+    if not isinstance(zeta, np.ndarray):
+        zeta = np.array([zeta])
+
+    # Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
+    Z = plasma_dispersion_func_lite(zeta)
 
     return Z
 

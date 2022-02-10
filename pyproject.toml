@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools >= 41.2",
+requires = ["Cython",
+            "numpy >= 1.18.1",
+            "setuptools >= 41.2",
             "setuptools_scm",
             "wheel >= 0.29.0"]  # ought to mirror 'requirements/build.txt'
 build-backend = "setuptools.build_meta"
