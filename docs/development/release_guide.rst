@@ -1,3 +1,5 @@
+.. _Release Guide:
+
 *************
 Release Guide
 *************
@@ -8,7 +10,7 @@ The following is a partial list of tasks to be performed for each
 release.  This list is currently under development.  Developers should
 revise and expand the instructions while performing each release,
 and may refer to `Astropy's release procedures
-<http://docs.astropy.org/en/stable/development/releasing.html>`_ for
+<https://docs.astropy.org/en/stable/development/releasing.html>`_ for
 guidance.
 
 Throughout this guide, ``0.6.0`` denotes the version you're releasing,
@@ -25,6 +27,9 @@ Pre-release
 * Plan a code freeze beginning approximately two weekdays before the release.
   Only pull requests directly related to the release should be merged during
   during the code freeze.
+
+* Revise changelog entries to make sure that they are understandable and
+  that reST_ links are working correctly.
 
 Release
 -------
@@ -113,7 +118,7 @@ Post-release
 
 * If necessary (for MINOR+ and not for BUGFIX versions) activate the new
   branch's version `on Read the Docs
-  <https://readthedocs.org/projects/plasmapy/versions/>`_.
+  <https://readthedocs.org/projects/plasmapy/versions>`_.
 
 * In the ``0.6.x`` branch, change the line in :file:`binder/requirements.txt`
   that has ``.`` to ``plasmapy == 0.6``. Open one of the binder example
@@ -176,4 +181,4 @@ improvements or fixes to upstream functionality or when other required
 packages have stricter requirements.
 
 .. _`NumPy Enhancement Proposal 29`: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _ORCID: https://orcid.org/
+.. _ORCID: https://orcid.org

@@ -2,19 +2,19 @@
 #
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    reviewers:
-    - "StanczakDominik"
-    assignees:
-    - "StanczakDominik"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    reviewers:
-    - "StanczakDominik"
-    assignees:
-    - "StanczakDominik"
-    schedule:
-      interval: "daily"
+- package-ecosystem: pip
+  directory: /
+  reviewers:
+  - StanczakDominik
+  assignees:
+  - StanczakDominik
+  schedule:
+    interval: daily
+- package-ecosystem: github-actions
+  directory: /
+  reviewers:
+  - StanczakDominik
+  assignees:
+  - StanczakDominik
+  schedule:
+    interval: daily

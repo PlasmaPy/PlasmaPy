@@ -12,7 +12,7 @@ Particles: plasmapy/particles/**/*
 
 # Add Documentation label to any change in docs but notebooks
 Documentation:
-- any: ['docs/**/*']
+- any: [docs/**/*]
   all: ['!docs/notebooks/**/*']
 
 Notebooks: docs/notebooks/**/*

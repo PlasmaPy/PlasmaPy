@@ -1,2 +1,0 @@
-Added tox_ and removed `pytest <https://docs.pytest.org/>`_ as extra
-requirements.

@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleError,
 )
-from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.deprecation import deprecated
@@ -664,7 +664,7 @@ class IonizationState:
             )
 
             if value.size == 5 and self._number_of_particles != 5:
-                error_str += " For {self.base_particle}, five is right out."
+                error_str += f" For {self.base_particle}, five is right out."
             raise ParticleError(error_str)
 
     @property
@@ -847,6 +847,62 @@ class IonizationState:
 
         return states_info
 
+    def average_ion(
+        self,
+        *,
+        include_neutrals: bool = True,
+        use_rms_charge: bool = False,
+        use_rms_mass: bool = False,
+    ) -> CustomParticle:
+        """
+        Return a |CustomParticle| instance representing the average
+        particle in this ionization state.
+
+        By default, the weighted mean will be used as the average, with
+        the ionic fractions as the weights. If ``use_rms_charge`` or
+        ``use_rms_mass`` is `True`, then this method will return the root
+        mean square of the charge or mass, respectively.
+
+        Parameters
+        ----------
+        include_neutrals : `bool`, optional, keyword-only
+            If `True`, include neutrals when calculating the mean values
+            of the different particles.  If `False`, exclude neutrals.
+            Defaults to `True`.
+
+        use_rms_charge : `bool`, optional, keyword-only
+            If `True`, use the root mean square charge instead of the
+            mean charge. Defaults to `False`.
+
+        use_rms_mass : `bool`, optional, keyword-only
+            If `True`, use the root mean square mass instead of the mean
+            mass. Defaults to `False`.
+
+        Returns
+        -------
+        ~plasmapy.particles.particle_class.CustomParticle
+
+        Examples
+        --------
+        >>> state = IonizationState("He", [0.1, 0.9, 0.0])
+        >>> state.average_ion()
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.44...e-19 C)
+        >>> state.average_ion(include_neutrals=False)
+        CustomParticle(mass=6.6455660...e-27 kg, charge=1.602...e-19 C)
+        >>> state.average_ion(use_rms_charge=True, use_rms_mass=True)
+        CustomParticle(mass=6.645657...e-27 kg, charge=1.519958...e-19 C)
+        """
+        min_charge = 0 if include_neutrals else 1
+
+        particle_list = self.to_list()[min_charge:]
+        abundances = self.ionic_fractions[min_charge:]
+
+        return particle_list.average_particle(
+            abundances=abundances,
+            use_rms_charge=use_rms_charge,
+            use_rms_mass=use_rms_mass,
+        )
+
     def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
         """
         Print quicklook information for an
@@ -859,8 +915,8 @@ class IonizationState:
             below this level, then information for it will not be
             printed.  Defaults to 0.01.
 
-        Example
-        -------
+        Examples
+        --------
         >>> He_states = IonizationState(
         ...     'He',
         ...     [0.941, 0.058, 0.001],
@@ -883,17 +939,8 @@ class IonizationState:
         """
         separator_line = [64 * "-"]
 
-        scientific = "{:.2e}"
-        floaty = "{:.2f}"
-
-        n_elem = scientific.format(self.n_elem.value)
-        n_e = scientific.format(self.n_e.value)
-        T_e = scientific.format(self.T_e.value)
-        kappa = floaty.format(self.kappa)
-        Z_mean = floaty.format(self.Z_mean)
-
         output = [
-            f"IonizationState instance for {self.base_particle} with Z_mean = {Z_mean}"
+            f"IonizationState instance for {self.base_particle} with Z_mean = {self.Z_mean:.2f}"
         ]
         attributes = []
 
@@ -904,12 +951,12 @@ class IonizationState:
             # TODO add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
-            attributes.append(f"n_elem = {n_elem} m**-3")
-            attributes.append(f"n_e = {n_e} m**-3")
+            attributes.append(f"n_elem = {self.n_elem.value:.2e} m**-3")
+            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
         if not np.isnan(self.T_e):
-            attributes.append(f"T_e = {T_e} K")
+            attributes.append(f"T_e = {self.T_e.value:.2f} K")
         if np.isfinite(self.kappa):
-            attributes.append(f"kappa = {kappa}")
+            attributes.append(f"kappa = {self.kappa:.2f}")
 
         if attributes:
             attributes += separator_line
