@@ -109,8 +109,8 @@ def spectral_density_lite(
     ion_z : `~numpy.ndarray`, shape (Ni,), optional
         An np.ndarray of the charge number Z of each ion species.
 
-    ion_mu : `~numpy.ndarray`, shape (Ni,), optional
-        An np.ndarray of the mass number :math:`\mu` of each ion species.
+    ion_mass : `~numpy.ndarray`, shape (Ni,), optional
+        An np.ndarray of the mass of each ion species in kg.
 
     electron_vel : `~numpy.ndarray`, shape (Ne, 3), optional
         Velocity of each electron population in the rest frame (in m/s).
@@ -647,8 +647,8 @@ def spectral_density_model(wavelengths, settings, params):
         and may contain the following optional variables
             - electron_vdir : (e#, 3) array of electron velocity unit vectors
             - ion_vdir : (e#, 3) array of ion velocity unit vectors
-            - inst_fcn : A function that takes a wavelength array and represents
-                    a spectrometer insturment function.
+            - inst_fcn : A function that takes a wavelength u.Quantity array
+                        and represents a spectrometer insturment function.
 
         These quantities cannot be varied during the fit.
 
@@ -799,7 +799,7 @@ def spectral_density_model(wavelengths, settings, params):
         inst_fcn = settings["inst_fcn"]
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
-        inst_fcn_arr = inst_fcn(eval_w)
+        inst_fcn_arr = inst_fcn(eval_w * u.m)
         inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
         settings["inst_fcn_arr"] = inst_fcn_arr
 
