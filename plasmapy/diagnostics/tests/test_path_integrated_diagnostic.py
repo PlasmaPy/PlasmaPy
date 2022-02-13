@@ -1,3 +1,4 @@
+import astropy.constants as const
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +14,12 @@ from plasmapy.plasma.grids import CartesianGrid, NonUniformCartesianGrid
 
 
 @pytest.fixture
-def grid():
-    ax = np.linspace(-2, 2, num=200) * u.mm
+def cartesian_density_cylinder_grid():
+    """
+    A Cartesian grid with a cylinder of constant density aligned with
+    the z axis.
+    """
+    ax = np.linspace(-2, 2, num=50) * u.mm
     xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
     field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
@@ -24,18 +29,27 @@ def grid():
 
 
 @pytest.fixture
-def nonuniform_cartesian_grid():
-    # Make this grid intentionally narrow in Z so the line-integral has
-    # lots of particles per xy bin
-    grid = NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=(100, 100, 10))
-    xarr, yarr, zarr = grid.grids
+def cartesian_ne_cylinder_grid():
+    """
+
+    A Cartesian grid with a cylinder of constant electron density aligned
+    with the z-axis. The density is 3e19 cm^-3 and the cylinder radius
+    is 1 mm.
+    """
+
+    ax = np.linspace(-2, 2, num=50) * u.mm
+    xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
-    field = np.where(radius < 1 * u.mm, 1, 0) * u.kg / u.m ** 3
-    grid.add_quantities(rho=field)
+    n_e = np.where(radius < 1 * u.mm, 1, 0) * 3e19 / u.cm ** 3
+    grid = CartesianGrid(xarr, yarr, zarr)
+
+    grid.add_quantities(n_e=n_e)
+
     return grid
 
 
-def test_abstract_line_integrated_diagnostic(grid):
+def test_abstract_line_integrated_diagnostic(cartesian_density_cylinder_grid):
+    grid = cartesian_density_cylinder_grid
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
@@ -44,7 +58,8 @@ def test_abstract_line_integrated_diagnostic(grid):
         obj = LineIntegratedDiagnostic(grid, source, detector)
 
 
-def test_integrate_scalar_quantities(grid):
+def test_integrate_scalar_quantities(cartesian_density_cylinder_grid):
+    grid = cartesian_density_cylinder_grid
     source = (0 * u.mm, 0 * u.mm, -5 * u.mm)
     detector = (0 * u.mm, 0 * u.mm, 5 * u.mm)
 
@@ -56,32 +71,26 @@ def test_integrate_scalar_quantities(grid):
     h, v, i = obj.evaluate(25)
 
 
-@pytest.mark.parametrize("gridname", ["grid", "nonuniform_cartesian_grid"])
-def test_constant_cylinder(gridname, request):
-    # Load the grid fixture
-    grid = request.getfixturevalue(gridname)
+def test_constant_cylinder(cartesian_density_cylinder_grid):
+    """
+    Test that LineIntegratedScalarQuantities works on a simple known test
+    grid.
+    """
+    grid = cartesian_density_cylinder_grid
+    source = (-5 * u.mm, 0 * u.mm, 0 * u.mm)
+    detector = (5 * u.mm, 0 * u.mm, 0 * u.mm)
 
-    source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
-
-    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=True)
+    obj = LineIntegrateScalarQuantities(grid, source, detector, ["rho"], verbose=True)
 
     # Test that line-integrating with collimated = False yields
-    hax, vax, integral = obj._line_integral(100, bins=[100, 100], collimated=True)
+    hax, vax, integral = obj.evaluate(50, bins=[50, 10], collimated=True)
     hax = hax.to(u.mm).value
     vax = vax.to(u.mm).value
     integral = integral.to(u.kg / u.m ** 2).value
 
     line = np.mean(integral, axis=1)
 
-    """
-    theory = np.where(np.abs(hax) < 0.999, 2 * np.sqrt(np.abs(1 - hax ** 2)) * 1e-3, 0)
-    plt.plot(hax, line)
-    plt.plot(hax, theory)
-    plt.show()
-    """
-
-    height = np.max(line)
+    height = np.nanmax(line)
     wi = np.argmax(np.where(line > 0.00010, 1, 0))
     halfwidth = np.abs(hax[wi])
 
@@ -89,16 +98,15 @@ def test_constant_cylinder(gridname, request):
     assert np.isclose(halfwidth, 1, atol=0.25)
 
 
-def test_non_collimated(grid):
+def test_non_collimated(cartesian_density_cylinder_grid):
     """
     Tests line-integration with a point source by checking that the
     width of the feature scales with the magnification.
     """
+    grid = cartesian_density_cylinder_grid
     source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 10 * u.mm, 0 * u.mm)
     obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=False)
-
-    # Run the same test but with a point source (not collimated)
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.mm
     hax, vax, integral = obj._line_integral(
@@ -113,79 +121,49 @@ def test_non_collimated(grid):
     integral = integral.to(u.kg / u.m ** 2).value
     line = np.mean(integral, axis=1)
 
+    # Theoretical expected answer for line-integral through a cylinder
     theory = np.where(np.abs(hax) < 0.999, 2 * np.sqrt(np.abs(1 - hax ** 2)) * 1e-3, 0)
-
-    """
-    import matplotlib.pyplot as plt
-    plt.plot(hax, line)
-    plt.plot(hax, theory)
-    plt.show()
-    """
 
     assert np.allclose(line, theory, atol=5e-4)
 
+@pytest.mark.parametrize('unwrapped', [(True), (False)])
+def test_interferogram_density_cylinder(unwrapped, cartesian_ne_cylinder_grid):
 
-def test_constant_box(grid):
-    x, y, z = grid.grid.T
-    t1 = np.where(np.abs(x) < 1 * u.mm, 1, 0)
-    t2 = np.where(np.abs(z) < 1 * u.mm, 1, 0)
-    field = np.where(t1 * t2 != 0, 1, 0) * u.kg / u.m ** 3
-    grid.add_quantities(rho=field)
+    grid = cartesian_ne_cylinder_grid
 
-    source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
-    obj = LineIntegrateScalarQuantities(grid, source, detector, "rho", verbose=False)
-
-    # Test that line-integrating with collimated = False yields
-
-    size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    hax, vax, integral = obj._line_integral(
-        100, size=size, bins=[100, 100], collimated=True
-    )
-    hax = hax.to(u.mm).value
-    vax = vax.to(u.mm).value
-
-    line = np.mean(integral, axis=1)
-
-    # The value should be the density in the rectangular region times
-    # it's width, which is 2 mm
-    val = (1 * u.kg / u.m ** 3 * 2 * u.mm).to(integral.unit)
-    theory = np.where(np.abs(hax) < 1, val, 0 * integral.unit)
-
-    """
-    plt.plot(hax, line)
-    plt.plot(hax, theory)
-    plt.show()
-    """
-
-    assert np.allclose(line, theory, atol=2e-4)
-
-
-def test_interferogram_sphere(grid):
-    x, y, z = grid.grid.T
-    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
-    n_e = np.where(r < 1 * u.mm, 1, 0) * 3e19 / u.cm ** 3
-    grid.add_quantities(n_e=n_e)
-
-    source = (0 * u.mm, -5 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 5 * u.mm, 0 * u.mm)
+    source = ( -5 * u.mm, 0 * u.mm, 0 * u.mm)
+    detector = ( 5 * u.mm, 0 * u.mm, 0 * u.mm)
     obj = Interferometer(grid, source, detector, verbose=False)
 
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    bins = [350, 350]
+    bins = [50,5]
 
+    wprobe = 1.14e15 * u.Hz
     hax, vax, phase = obj.evaluate(
-        1.14e15 * u.Hz,
+        wprobe,
         100,
         size=size,
         bins=bins,
-        unwrapped=False,
+        unwrapped=unwrapped,
+        collimated=True,
     )
+    
+    if unwrapped:
+        # Assert the known value of the max
+        int_ne = (
+        -2 * const.c * const.eps0.si * const.m_e / const.e.si ** 2 * wprobe * phase
+        ).to(u.cm ** -2).value
+        
+        # Average along one axis
+        int_ne = np.mean(int_ne, axis=-1)
+        
+        max_ne = np.max(np.abs(int_ne))
+        
+        # Assert density is close to the known theoretical value
+        assert np.isclose(max_ne, 6e18, atol=1e18)
+            
+    else:
+        # Assert that the phase is less than pi
 
-    hax, vax, phase = obj.evaluate(
-        1.14e15 * u.Hz,
-        100,
-        size=size,
-        bins=bins,
-        unwrapped=True,
-    )
+        assert np.max(np.abs(phase)) < 1.1*np.pi
+        
