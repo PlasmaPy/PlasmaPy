@@ -10,8 +10,7 @@
    :maxdepth: 1
    :caption: Sub-Packages & Modules
 
-   path_integrated_diagnostic
-   proton_radiography
+   charged_particle_radiography
    Swept Langmuir (will be deprecated) <langmuir>
    thomson
 

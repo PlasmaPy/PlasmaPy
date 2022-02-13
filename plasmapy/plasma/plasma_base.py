@@ -32,7 +32,7 @@ class BasePlasma(ABC):
     # abstract methods.
 
     # For reference, see
-    # https://github.com/sunpy/ndcube/blob/master/ndcube/ndcube.py#L26
+    # https://github.com/sunpy/ndcube/blob/main/ndcube/ndcube.py#L26
 
     @property
     @abstractmethod

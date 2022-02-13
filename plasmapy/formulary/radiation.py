@@ -76,9 +76,9 @@ def thermal_bremsstrahlung(
         Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
         to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
 
-    ion : `str` or `~plasmapy.particles.Particle`, optional
-        An instance of `~plasmapy.particles.Particle`, or a string
-        convertible to `~plasmapy.particles.Particle`.
+    ion : `str` or `~plasmapy.particles.particle_class.Particle`, optional
+        An instance of `~plasmapy.particles.particle_class.Particle`, or a string
+        convertible to `~plasmapy.particles.particle_class.Particle`.
 
     kmax :  `~astropy.units.Quantity`
         Cutoff wavenumber (convertible to radians per meter). Defaults
@@ -91,15 +91,12 @@ def thermal_bremsstrahlung(
 
     Notes
     -----
-    For details, see "Radiation Processes in Plasmas" by
-    Bekefi. `ISBN 978\\-0471063506`_.
-
-    .. _`ISBN 978\\-0471063506`: https://ui.adsabs.harvard.edu/abs/1966rpp..book.....B/abstract
+    For details, see :cite:t:`bekefi:1966`\ .
     """
 
     # Default n_i is n_e/Z:
     if n_i is None:
-        n_i = n_e / ion_species.integer_charge
+        n_i = n_e / ion_species.charge_number
 
     # Default value of kmax is the electrom thermal de Broglie wavelength
     if kmax is None:
@@ -127,7 +124,7 @@ def thermal_bremsstrahlung(
 
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
-            "hbar*ω/kT_e = {rj_const.value:.2e} > 0.1. "
+            f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
             "Try lower ω or higher T_e."
         )
 
@@ -140,7 +137,7 @@ def thermal_bremsstrahlung(
         / (const.m_e.si * const.c.si ** 2) ** 1.5
     )
 
-    Zi = ion_species.integer_charge
+    Zi = ion_species.charge_number
     c2 = (
         np.sqrt(1 - ω_pe ** 2 / ω ** 2)
         * Zi ** 2
