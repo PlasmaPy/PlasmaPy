@@ -2,6 +2,7 @@
 Tests for Thomson scattering analysis functions
 """
 
+import astropy.constants as const
 import astropy.units as u
 import copy
 import numpy as np
@@ -10,7 +11,7 @@ import pytest
 from lmfit import Parameter, Parameters
 
 from plasmapy.diagnostics import thomson
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, particle_mass
 
 
 def example_inst_fcn(w):
@@ -56,6 +57,55 @@ def spectral_density_args_kwargs(kwargs):
     del kwargs["Ti"]
 
     return args, kwargs
+
+
+def args_to_lite_args(kwargs):
+    """
+    Converts a dict of args for the spectral density function and converts
+    them to input for the lite function.
+
+    Used to facilitate testing the two functions against each other.
+    """
+    keys = list(kwargs.keys())
+
+    if "wavelengths" in keys:
+        kwargs["wavelengths"] = kwargs["wavelengths"].to(u.m).value
+    if "probe_wavelength" in keys:
+        kwargs["probe_wavelength"] = kwargs["probe_wavelength"].to(u.m).value
+    if "n" in keys:
+        kwargs["n"] = kwargs["n"].to(u.m ** -3).value
+    if "Te" in keys:
+        kwargs["Te"] = (kwargs["Te"] / const.k_B).to(u.K).value
+    if "Ti" in keys:
+        kwargs["Ti"] = (kwargs["Ti"] / const.k_B).to(u.K).value
+    if "electron_vel" in keys:
+        kwargs["electron_vel"] = kwargs["electron_vel"].to(u.m / u.s).value
+    if "ion_vel" in keys:
+        kwargs["ion_vel"] = kwargs["ion_vel"].to(u.m / u.s).value
+
+    if kwargs["Te"].size == 1:
+        kwargs["Te"] = np.array(
+            [
+                kwargs["Te"],
+            ]
+        )
+    if kwargs["Ti"].size == 1:
+        kwargs["Ti"] = np.array(
+            [
+                kwargs["Ti"],
+            ]
+        )
+
+    ion_z = np.zeros(len(kwargs["ion_species"]))
+    ion_mass = np.zeros(len(kwargs["ion_species"]))
+    for i, particle in enumerate(kwargs["ion_species"]):
+        ion_z[i] = particle.charge_number
+        ion_mass[i] = particle_mass(particle).to(u.kg).value
+    kwargs["ion_z"] = ion_z
+    kwargs["ion_mass"] = ion_mass
+    del kwargs["ion_species"]
+
+    return kwargs
 
 
 @pytest.fixture()
@@ -122,6 +172,22 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
         f"feature width is {e_width} "
         "instead of expected 17.7899"
     )
+
+
+def test_single_species_collective_lite(single_species_collective_args):
+
+    # Make a copy of the input args
+    args_fixture_copy = copy.copy(single_species_collective_args)
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+    alpha1, Skw1 = thomson.spectral_density(*args, **kwargs)
+
+    lite_kwargs = args_to_lite_args(args_fixture_copy)
+    args, kwargs = spectral_density_args_kwargs(lite_kwargs)
+    alpha2, Skw2 = thomson.spectral_density.lite(*args, **kwargs)
+
+    assert np.isclose(alpha1, alpha2)
+
+    assert np.allclose(Skw1.to(u.s / u.rad).value, Skw2)
 
 
 @pytest.fixture()
@@ -824,6 +890,21 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params
     )
+
+    run_fit(wavelengths, params, settings)
+
+
+def test_fit_iaw_inst_fcn(iaw_single_species_settings_params):
+    """
+    Tests fitting with an insturment function
+
+    """
+
+    wavelengths, params, settings = spectral_density_model_settings_params(
+        iaw_single_species_settings_params
+    )
+
+    settings["inst_fcn"] = example_inst_fcn
 
     run_fit(wavelengths, params, settings)
 
