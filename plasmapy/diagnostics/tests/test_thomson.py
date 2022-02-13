@@ -96,9 +96,16 @@ def args_to_lite_args(kwargs):
             ]
         )
 
+    if not isinstance(kwargs["ion_species"], list):
+        kwargs["ion_species"] = [
+            kwargs["ion_species"],
+        ]
+
     ion_z = np.zeros(len(kwargs["ion_species"]))
     ion_mass = np.zeros(len(kwargs["ion_species"]))
     for i, particle in enumerate(kwargs["ion_species"]):
+        if not isinstance(particle, Particle):
+            particle = Particle(particle)
         ion_z[i] = particle.charge_number
         ion_mass[i] = particle_mass(particle).to(u.kg).value
     kwargs["ion_z"] = ion_z
@@ -124,7 +131,7 @@ def single_species_collective_args():
     kwargs["n"] = 5e17 * u.cm ** -3
     kwargs["Te"] = 10 * u.eV
     kwargs["Ti"] = 10 * u.eV
-    kwargs["ion_species"] = ["C-12 5+"]
+    kwargs["ion_species"] = "C-12 5+"
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
 
