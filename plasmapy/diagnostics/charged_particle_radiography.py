@@ -26,7 +26,6 @@ from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_integrators import boris_push
 
 
-
 class Tracker(PathIntegratedDiagnostic):
     r"""
     Represents a charged particle radiography experiment with simulated or
@@ -84,11 +83,10 @@ class Tracker(PathIntegratedDiagnostic):
         detector_hdir=None,
         verbose=True,
     ):
-        
+
         super().__init__(
             grid, source, detector, detector_hdir=detector_hdir, verbose=verbose
         )
-
 
         # A list of wire meshes added to the grid with add_wire_mesh
         # Particles that would hit these meshes will be removed at runtime
@@ -104,7 +102,6 @@ class Tracker(PathIntegratedDiagnostic):
         # velocities
         self.max_theta_hit_grid = self._max_theta_hit_grid()
 
-        
         # ************************************************************************
         # Validate the E and B fields
         # ************************************************************************

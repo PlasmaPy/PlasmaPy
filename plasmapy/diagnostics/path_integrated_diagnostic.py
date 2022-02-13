@@ -319,6 +319,10 @@ class LineIntegratedDiagnostic(PathIntegratedDiagnostic):
         # Integrate
         integral = []
         for integrand in integrands:
+
+            # Convert NaNs (off-grid values from interpolator) to zeros
+            integrand = np.nan_to_num(integrand, nan=0.0)
+
             # Integrate
             integral.append(np.trapz(integrand, axis=2) * (ds * u.m))
 
@@ -435,7 +439,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         # Continue with the rest of the parent class init
         super().__init__(grid, source, detector, verbose=verbose)
 
-    def _integrand(self, pts):
+    def _integrand(self, pts, interpolator="nearest_neighbor"):
         r"""
         Returns the scalar value of the quantity or quantities specified
         at each point.
@@ -446,6 +450,12 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         pts: `~astropy.units.Quantity` (nx*ny*nz, 3)
             Positions at which the integrand will be evaluated.
 
+        interpolator: str, optional
+            Determines which interpolator will be used. Must correspond to
+            one of the interpolators defined on the given grid, eg.
+                - nearest_neighbor
+                - volume_averaged
+
         Returns
         -------
 
@@ -453,6 +463,7 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
             Integrand value at each of the points provided. Some integrand
             functions may return multiple arrays of interpolated values as
             a list, each of which will then be integrated separately.
+
 
         """
         # Reshape the pts array from grid shape (nx, ny, nz, 3) to a list
@@ -463,10 +474,13 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         # If volume_averaged_interpolator not defined for this grid
         # (eg. for non-uniform grids)
         # use the nearest neighbor interpolator instead
-        try:
-            integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
-        except NotImplementedError:
+
+        if interpolator == "nearest_neighbor":
             integrand = self.grid.nearest_neighbor_interpolator(pts, *self.quantities)
+        elif interpolator == "volume_averaged":
+            integrand = self.grid.volume_averaged_interpolator(pts, *self.quantities)
+        else:
+            raise ValueError(f"Interpolator specified does not exist: {interpolator}")
 
         # Reshape the integrands from (nx*ny*nz) to (nx, ny, nz)
         integrand = np.reshape(integrand, (nx, ny, nz))
