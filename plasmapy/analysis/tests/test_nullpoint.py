@@ -249,3 +249,21 @@ def test_null_point_find2():
     loc2 = npoints2[0].loc.reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_ATOL).all()
+
+
+def test_null_point_find3():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Vector values passed by hand
+    nullpoint2_args = {
+        "x_range": [5, 6],
+        "y_range": [5, 6],
+        "z_range": [5, 6],
+        "precision": [1, 1, 1],
+        "u_arr": np.array([[[-0.5, -0.5], [0.5, 0.5]], [[-0.5, -0.5], [0.5, 0.5]]]),
+        "v_arr": np.array([[[-0.5, 0.5], [-0.5, 0.5]], [[-0.5, 0.5], [-0.5, 0.5]]]),
+        "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
+    }
+    npoints2 = null_point_find(**nullpoint2_args)
+    loc2 = npoints2[0].loc.reshape(1, 3)
+    assert len(npoints2) == 1
+    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_ATOL).all()
