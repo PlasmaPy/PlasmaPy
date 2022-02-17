@@ -444,8 +444,6 @@ class Particle(AbstractPhysicalParticle):
 
         delattr(self, "_inputs")
 
-        self.__name__ = self.__repr__()
-
     def _initialize_attributes_and_categories(self):
         """Create empty collections for attributes and categories."""
         self._attributes = defaultdict(type(None))
