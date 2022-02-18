@@ -652,11 +652,6 @@ def test_gyroradius():
 
     assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
-    # test for possiblity to allow nan for input values
-    assert np.isnan(gyroradius(np.nan * u.T, particle="e-", T=1 * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", T=np.nan * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", Vperp=np.nan * u.m / u.s))
-
     Vperp = 1e6 * u.m / u.s
     Bmag = 1 * u.T
     omega_ce = gyrofrequency(Bmag, "e-")
@@ -664,8 +659,6 @@ def test_gyroradius():
         u.m, equivalencies=u.dimensionless_angles()
     )
     assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
-
-    assert np.isnan(gyroradius(np.nan * u.T, "e-", Vperp=1 * u.m / u.s))
 
     with pytest.warns(u.UnitsWarning):
         assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
@@ -805,6 +798,38 @@ class TestGyroradius:
             warnings.simplefilter("ignore")
 
             gyroradius(*args, **kwargs)
+
+    @pytest.mark.parametrize(
+        "args, kwargs, nan_mask",
+        [
+            ((np.nan * u.T,), {"particle": "e-", "T": 1 * u.K}, None),
+            ((np.nan * u.T,), {"particle": "e-", "Vperp": 1 * u.m / u.s}, None),
+            ((1 * u.T,), {"particle": "e-", "T": np.nan * u.K}, None),
+            ((1 * u.T,), {"particle": "e-", "Vperp": np.nan * u.m / u.s}, None),
+            (
+                ([1, 2, np.nan] * u.T,),
+                {"particle": "e-", "T": 1 * u.K},
+                [False, False, True],
+            ),
+            (
+                ([1, 2, np.nan] * u.T,),
+                {"particle": "e-", "T": [np.nan, 1, 2] * u.K},
+                [True, False, True],
+            ),
+            (
+                ([1, np.nan, 2] * u.T,),
+                {"particle": "e-", "Vperp": [np.nan, 1, 2] * u.m / u.s},
+                [True, True, False],
+            ),
+        ],
+    )
+    def test_nan_values(self, args, kwargs, nan_mask):
+        if nan_mask is None:
+            assert np.all(np.isnan(gyroradius(*args, **kwargs)))
+        else:
+            rc_isnans = np.isnan(gyroradius(*args, **kwargs))
+            assert np.all(rc_isnans[nan_mask])
+            assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
 
 
 def test_Debye_length():
