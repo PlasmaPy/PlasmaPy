@@ -590,7 +590,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
         isotopes = []
-        for isotope in _data_about_isotopes.keys():
+        for isotope in _data_about_isotopes:
             if element + "-" in isotope and isotope[0 : len(element)] == element:
                 isotopes.append(isotope)
         if element == "H":
@@ -616,7 +616,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, len(_data_about_elements.keys()) + 1):
+        for atomic_numb in range(1, len(_data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list
@@ -702,7 +702,7 @@ def common_isotopes(
         CommonIsotopes = [
             isotope
             for isotope in isotopes
-            if "abundance" in _data_about_isotopes[isotope].keys()
+            if "abundance" in _data_about_isotopes[isotope]
         ]
 
         isotopic_abundances = [
