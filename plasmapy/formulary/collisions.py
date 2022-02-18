@@ -1922,15 +1922,10 @@ def coupling_parameter(
         :math:`μ` is the reduced mass.
 
     method : `str`, optional
-        The method by which to compute the Coulomb logarithm.  The
-        default method is the classical straight-line Landau-Spitzer
-        method (``"classical"`` or ``"ls"``). The other 6 supported
-        methods are ``"ls_min_interp"``, ``"ls_full_interp"``,
-        ``"ls_clamp_mininterp"``, ``"hls_min_interp"``,
-        ``"hls_max_interp"``, and ``"hls_full_interp"``.  Please refer
-        to the docstring of
-        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
-        information about these methods.
+        The method by which to compute the coupling parameter: either
+        ``"classical"`` or ``"quantum"``. The default method is ``"classical"``.
+        The Notes section of this docstring has more information about
+        these two methods.
 
     Returns
     -------

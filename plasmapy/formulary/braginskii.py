@@ -164,16 +164,16 @@ class ClassicalTransport:
         The ion number density in units convertible to per cubic meter.
 
     ion : `str`
-        Representation of the ion species (e.g., 'p' for protons,
-        'e' for electrons, 'D+' for deuterium, or 'He-4 +1' for singly
-        ionized helium-4). If no charge state information is provided,
-        then the particles are assumed to be singly charged.
+        Representation of the ion species (e.g., ``'p'`` for protons,
+        ``'e'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
+        for singly ionized helium-4). If no charge state information is
+        provided, then the particles are assumed to be singly charged.
 
-    Z : `int` or `np.inf`, optional
+    Z : `int` or `numpy.inf`, optional
         The ion charge state. Overrides particle charge state if included.
-        Different theories support different values of `Z`. For the original
-        Braginskii model, `Z` can be any of [1, 2, 3, 4, infinity]. The Ji-Held
-        model supports arbitrary `Z`. Average ionization states `Z_mean` can be
+        Different theories support different values of ``Z``. For the original
+        Braginskii model, ``Z`` can be any of [1, 2, 3, 4, infinity]. The Ji-Held
+        model supports arbitrary ``Z``. Average ionization states ``Z_mean`` can be
         input using this input and the Ji-Held model, although doing so may
         neglect effects caused by multiple ion populations.
 
@@ -202,7 +202,8 @@ class ClassicalTransport:
     coulomb_log_ei : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron-ion Coulomb
         logarithm (test electrons on field ions). If `None`,
-        `Coulomb_logarithm` will be used. Useful for comparing calculations.
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
+        Useful for comparing calculations.
 
     V_ei : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to `Coulomb_logarithm`
@@ -212,22 +213,24 @@ class ClassicalTransport:
     coulomb_log_ii : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion-ion Coulomb logarithm
         (test ions on field ions). If `None`, the PlasmaPy function
-        `Coulomb_logarithm` will be used. Useful for comparing calculations.
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` will be used.
+        Useful for comparing calculations.
 
     V_ii : `~astropy.units.Quantity`, optional
        The relative velocity between particles.  Supplied to
-       `Coulomb_logarithm` function, not otherwise used. If not provided,
-       thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T`
-       where :math`μ` is the reduced mass.
+       `~plasmapy.formulary.collisions.Coulomb_logarithm` function, not
+       otherwise used. If not provided, thermal velocity is assumed:
+       :math:`μ V^2 \sim 2 k_B T` where :math`μ` is the reduced mass.
 
     hall_e : `float` or dimensionless `~astropy.units.Quantity`, optional
-        Force a particular value to be used for the electron Hall parameter. If
-        `None`, `Hall_parameter` will be used. Useful for comparing calculations.
+        Force a particular value to be used for the electron Hall parameter.
+        If `None`, `~plasmapy.formulary.parameters.Hall_parameter` will
+        be used. Useful for comparing calculations.
 
     hall_i : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
-        `None`, `Hall_parameter` will be used. Useful for comparing
-        calculations.
+        `None`, `~plasmapy.formulary.parameters.Hall_parameter` will be
+        used. Useful for comparing calculations.
 
     mu : `float` or dimensionless `~astropy.units.Quantity`, optional
         Ji-Held model only, may be used to include ion-electron effects
@@ -450,10 +453,11 @@ class ClassicalTransport:
         cross-sectional area), you could calculate a DC resistance of the
         plasma in ohms as resistivity × length / cross-sectional area.
 
-        Experimentalists with plasma discharges may observe different V = IR
-        Ohm's law behavior than suggested by the resistance calculated here,
-        for reasons such as the occurrence of plasma sheath layers at the
-        electrodes or the plasma not satisfying the classical assumptions.
+        Experimentalists with plasma discharges may observe different
+        :math:`V = IR` Ohm's law behavior than suggested by the
+        resistance calculated here, for reasons such as the occurrence
+        of plasma sheath layers at the electrodes or the plasma not
+        satisfying the classical assumptions.
 
         Returns
         -------
@@ -623,9 +627,9 @@ class ClassicalTransport:
         -----
         This is the dynamic viscosity that you find for ions in the classical
         plasma, similar to the viscosity of air or water or honey. The big
-        effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
-        become dramatically more viscous. The ion viscosity typically dominates
-        over the electron viscosity.
+        effect is the :math:`T^{5/2}` dependence, so as classical plasmas
+        get hotter they become dramatically more viscous. The ion
+        viscosity typically dominates over the electron viscosity.
 
         Returns
         -------
@@ -671,9 +675,9 @@ class ClassicalTransport:
         -----
         This is the dynamic viscosity that you find for electrons in the
         classical plasma, similar to the viscosity of air or water or honey.
-        The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
-        hotter they become dramatically more viscous. The ion viscosity
-        typically dominates over the electron viscosity.
+        The big effect is the :math:`T^{5/2}` dependence, so as classical
+        plasmas get hotter they become dramatically more viscous. The
+        ion viscosity typically dominates over the electron viscosity.
 
         Returns
         -------
@@ -681,8 +685,7 @@ class ClassicalTransport:
 
         See Also
         --------
-        ion_viscosity
-
+        ~plasmapy.formulary.braginskii.ClassicalTransport.ion_viscosity
         """
         eta_hat = _nondim_viscosity(
             self.hall_e,
@@ -790,10 +793,11 @@ def resistivity(
     cross-sectional area), you could calculate a DC resistance of the
     plasma in ohms as resistivity × length / cross-sectional area.
 
-    Experimentalists with plasma discharges may observe different V = IR
-    Ohm's law behavior than suggested by the resistance calculated here,
-    for reasons such as the occurrence of plasma sheath layers at the
-    electrodes or the plasma not satisfying the classical assumptions.
+    Experimentalists with plasma discharges may observe different
+    :math:`V = IR` Ohm's law behavior than suggested by the resistance
+    calculated here, for reasons such as the occurrence of plasma sheath
+    layers at the electrodes or the plasma not satisfying the classical
+    assumptions.
 
     Returns
     -------
@@ -953,12 +957,13 @@ def electron_thermal_conductivity(
 
         κ = \hat{κ} \frac{n_e k_B^2 T_e τ_e}{m_e}
 
-    where :math:`\hat{κ}` is the non-dimensional electron thermal conductivity of the plasma,
+    where :math:`\hat{κ}` is the non-dimensional electron thermal
+    conductivity of the plasma,
     :math:`n_e` is the electron number density of the plasma,
     :math:`k_B` is the Boltzmann constant,
     :math:`T_e` is the electron temperature of the plasma,
-    :math:`τ_e` is the fundamental electron collision period of the plasma,
-    and :math:`m_e` is the mass of an electron.
+    :math:`τ_e` is the fundamental electron collision period of the
+    plasma, and :math:`m_e` is the mass of an electron.
 
     Notes
     -----
@@ -990,7 +995,6 @@ def electron_thermal_conductivity(
     See Also
     --------
     ion_thermal_conductivity
-
     """
     ct = ClassicalTransport(
         T_e,

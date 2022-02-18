@@ -9,6 +9,7 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "molecule",
 ]
 
 import astropy.constants as const
@@ -40,6 +41,7 @@ from plasmapy.particles.parsing import (
     _dealias_particle_aliases,
     _invalid_particle_errmsg,
     _parse_and_check_atomic_input,
+    _parse_and_check_molecule_input,
 )
 from plasmapy.particles.special_particles import (
     _antiparticles,
@@ -1938,7 +1940,7 @@ class DimensionlessParticle(AbstractParticle):
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
         >>> import pytest
-        >>> with pytest.warns(MissingParticleDataWarning): dimensionless_particle = DimensionlessParticle(mass=1.0)
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -1973,10 +1975,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The mass of a dimensionless particle must be a real "
                 f"number that is greater than or equal to zero, not: {m}"
             ) from None
-        if self._mass is np.nan:
-            warnings.warn(
-                "DimensionlessParticle mass set to NaN", MissingParticleDataWarning
-            )
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
@@ -1987,10 +1985,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The charge of a dimensionless particle must be a real "
                 f"number, not: {q}"
             ) from None
-        if self._charge is np.nan:
-            warnings.warn(
-                "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
-            )
 
     @property
     def symbol(self) -> str:
@@ -2089,8 +2083,18 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
         >>> repr(custom_particle)
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+
+        If present, the symbol is displayed as well.
+
+        >>> custom_particle = CustomParticle(mass=4.21e-25 * u.kg, charge=1.6e-19 * u.C, symbol="I2+")
+        >>> repr(custom_particle)
+        'CustomParticle(mass=4.21e-25 kg, charge=1.6e-19 C, symbol=I2+)'
         """
-        return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+        return (
+            f"CustomParticle(mass={self.mass}, charge={self.charge})"
+            if self._symbol is None
+            else f"CustomParticle(mass={self.mass}, charge={self.charge}, symbol={self.symbol})"
+        )
 
     @property
     def json_dict(self) -> dict:
@@ -2110,7 +2114,7 @@ class CustomParticle(AbstractPhysicalParticle):
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
             'symbol': 'ξ'}}}}
         >>> import pytest
-        >>> with pytest.warns(MissingParticleDataWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
+        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2135,9 +2139,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
             q = np.nan * u.C
-            warnings.warn(
-                "CustomParticle charge set to NaN C", MissingParticleDataWarning
-            )
         elif isinstance(q, str):
             q = u.Quantity(q)
 
@@ -2179,9 +2180,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn(
-                "CustomParticle mass set to NaN kg", MissingParticleDataWarning
-            )
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
@@ -2227,12 +2225,12 @@ class CustomParticle(AbstractPhysicalParticle):
 
         If no symbol was defined, then return the value given by `repr`.
         """
-        return self._symbol
+        return repr(self) if self._symbol is None else self._symbol
 
     @symbol.setter
     def symbol(self, new_symbol: str):
         if new_symbol is None:
-            self._symbol = repr(self)
+            self._symbol = None
         elif isinstance(new_symbol, str):
             self._symbol = new_symbol
         else:
@@ -2261,7 +2259,89 @@ class CustomParticle(AbstractPhysicalParticle):
         Allow use of `hash` so that a |CustomParticle| instance may be used
         as a key in a `dict`.
         """
-        return hash((self.__repr__(), self.symbol))
+        return hash(self.__repr__())
+
+
+def molecule(
+    symbol: str, Z: Optional[Integral] = None
+) -> Union[Particle, CustomParticle]:
+    """
+    Parse a molecule symbol into a |CustomParticle| or |Particle|.
+
+    Parameters
+    ----------
+    symbol : 'str'
+        Symbol of the molecule to be parsed.
+
+    Z : 'Integral', optional
+        Charge number if not present in symbol.
+
+    Returns
+    -------
+        A |Particle| object if the input could be parsed as such,
+        or a |CustomParticle| with the provided symbol, charge,
+        and a mass corresponding to the sum of the molecule elements.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If ``symbol`` couldn't be parsed.
+
+    Warns
+    -----
+    `ParticleWarning`
+        If the charge is given both as an argument and in the symbol.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import molecule
+    >>> molecule("I2")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C, symbol=I2)
+
+    Charge information is given either within the symbol or as a second parameter.
+
+    >>> molecule("I2+")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+
+    >>> molecule("I2", 1)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+
+    Inputs that can be interpreted as |Particle| instances are returned as such.
+
+    >>> molecule("Xe")
+    Particle("Xe")
+
+    The given symbol is preserved in the |CustomParticle| instance. This permits
+    us to differentiate between isomers:
+
+    >>> molecule("CH4O2") == molecule("CH3OOH")
+    False
+    """
+    try:
+        return Particle(symbol, Z=Z)
+    except ParticleError:
+        element_dict, bare_symbol, Z = _parse_and_check_molecule_input(symbol, Z)
+        mass = 0 * u.kg
+        for element_symbol, amount in element_dict.items():
+            try:
+                element = Particle(element_symbol)
+            except ParticleError as e:
+                raise InvalidParticleError(
+                    f"Could not identify {element_symbol}."
+                ) from e
+            if not element.is_category("element"):
+                raise InvalidParticleError(
+                    f"Molecule symbol contains a particle that is not an element: {element.symbol}"
+                )
+            mass += amount * element.mass
+
+        if Z is None:
+            charge = 0 * u.C
+        else:
+            charge = Z * const.e.si
+            bare_symbol += f" {-Z}-" if Z < 0 else f" {Z}+"
+
+        return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]

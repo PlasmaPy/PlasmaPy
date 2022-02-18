@@ -158,6 +158,65 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     return errmsg
 
 
+def _extract_charge(arg: str):
+    """
+    Receive a `str` representing an element, isotope, or ion.
+    Return a `tuple` containing a `str` that should represent an
+    element or isotope, and either an `int` representing the
+    charge or `None` if no charge information is provided.  Raise
+    an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
+    is inputted incorrectly.
+    """
+
+    invalid_charge_errmsg = (
+        f"Invalid charge information in the particle string '{arg}'."
+    )
+
+    if arg.count(" ") == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
+        isotope_info, charge_info = arg.split(" ")
+
+        sign_indicator_only_on_one_end = charge_info.endswith(
+            ("-", "+")
+        ) ^ charge_info.startswith(("-", "+"))
+
+        just_one_sign_indicator = (
+            charge_info.count("-") == 1 and charge_info.count("+") == 0
+        ) or (charge_info.count("-") == 0 and charge_info.count("+") == 1)
+
+        if not sign_indicator_only_on_one_end and just_one_sign_indicator:
+            raise InvalidParticleError(invalid_charge_errmsg) from None
+
+        charge_str = charge_info.strip("+-")
+
+        try:
+            if roman.is_roman_numeral(charge_info):
+                Z_from_arg = roman.from_roman(charge_info) - 1
+            elif "-" in charge_info:
+                Z_from_arg = -int(charge_str)
+            elif "+" in charge_info:
+                Z_from_arg = int(charge_str)
+            else:
+                raise InvalidParticleError(invalid_charge_errmsg) from None
+        except ValueError:
+            raise InvalidParticleError(invalid_charge_errmsg) from None
+
+    elif arg.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
+        char = arg[-1]
+        match = re.match(f"[{char}]*", arg[::-1])
+        Z_from_arg = match.span()[1]
+        isotope_info = arg[0 : len(arg) - match.span()[1]]
+
+        if char == "-":
+            Z_from_arg = -Z_from_arg
+        if isotope_info.endswith(("-", "+")):
+            raise InvalidParticleError(invalid_charge_errmsg) from None
+    else:
+        isotope_info = arg
+        Z_from_arg = None
+
+    return isotope_info, Z_from_arg
+
+
 def _parse_and_check_atomic_input(
     argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
 ):
@@ -216,64 +275,6 @@ def _parse_and_check_atomic_input(
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
-
-    def _extract_charge(arg: str):
-        """
-        Receive a `str` representing an element, isotope, or ion.
-        Return a `tuple` containing a `str` that should represent an
-        element or isotope, and either an `int` representing the
-        charge or `None` if no charge information is provided.  Raise
-        an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
-        is inputted incorrectly.
-        """
-
-        invalid_charge_errmsg = (
-            f"Invalid charge information in the particle string '{arg}'."
-        )
-
-        if arg.count(" ") == 1:  # Cases like 'H 1-' and 'Fe-56 1+'
-            isotope_info, charge_info = arg.split(" ")
-
-            sign_indicator_only_on_one_end = charge_info.endswith(
-                ("-", "+")
-            ) ^ charge_info.startswith(("-", "+"))
-
-            just_one_sign_indicator = (
-                charge_info.count("-") == 1 and charge_info.count("+") == 0
-            ) or (charge_info.count("-") == 0 and charge_info.count("+") == 1)
-
-            if not sign_indicator_only_on_one_end and just_one_sign_indicator:
-                raise InvalidParticleError(invalid_charge_errmsg) from None
-
-            charge_str = charge_info.strip("+-")
-
-            try:
-                if roman.is_roman_numeral(charge_info):
-                    Z_from_arg = roman.from_roman(charge_info) - 1
-                elif "-" in charge_info:
-                    Z_from_arg = -int(charge_str)
-                elif "+" in charge_info:
-                    Z_from_arg = int(charge_str)
-                else:
-                    raise InvalidParticleError(invalid_charge_errmsg) from None
-            except ValueError:
-                raise InvalidParticleError(invalid_charge_errmsg) from None
-
-        elif arg.endswith(("-", "+")):  # Cases like 'H-' and 'Pb-209+++'
-            char = arg[-1]
-            match = re.match(f"[{char}]*", arg[::-1])
-            Z_from_arg = match.span()[1]
-            isotope_info = arg[0 : len(arg) - match.span()[1]]
-
-            if char == "-":
-                Z_from_arg = -Z_from_arg
-            if isotope_info.endswith(("-", "+")):
-                raise InvalidParticleError(invalid_charge_errmsg) from None
-        else:
-            isotope_info = arg
-            Z_from_arg = None
-
-        return isotope_info, Z_from_arg
 
     def _extract_mass_number(isotope_info: str):
         """
@@ -472,3 +473,70 @@ def _parse_and_check_atomic_input(
         "mass number": mass_numb,
         "charge number": Z,
     }
+
+
+def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
+    """
+    Separate the constitutive elements and charge of a molecule symbol.
+
+    Parameters
+    ----------
+    argument : 'str'
+        The molecule symbol to be parsed.
+
+    Z : 'Integral', optional
+        The provided charge number.
+
+    Returns
+    -------
+    elements_dict : 'dict'
+        A dictionary with identified element symbols as keys and amount of each as values.
+        The molecule symbol stripped of the charge.
+        The integer charge.
+
+    molecule_info : 'str'
+        The molecule symbol stripped of its charge.
+
+    Z : 'int'
+        The molecule charge.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If the Symbol couldn't be parsed.
+
+    Warns
+    -----
+    `ParticleWarning`
+        If The charge is given both as an argument and in the symbol.
+    """
+    molecule_info, z_from_arg = _extract_charge(argument)
+    if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):
+        raise InvalidParticleError(
+            f"{molecule_info} is not recognized as a molecule symbol."
+        )
+
+    elements_dict = {}
+    for match in re.finditer(r"([A-Z][a-z]?)(\d+)?", molecule_info):
+        element, amount = match.groups(default="1")
+        if element in elements_dict:
+            elements_dict[element] += int(amount)
+        else:
+            elements_dict[element] = int(amount)
+
+    if Z is not None and z_from_arg is not None:
+        if Z != z_from_arg:
+            raise InvalidParticleError(
+                "The charge number extracted from the particle string "
+                f"{argument!r} is inconsistent with the keyword Z = {Z}."
+            )
+        else:
+            warnings.warn(
+                "Redundant charge information for particle "
+                f"'{argument}' with Z = {Z}.",
+                ParticleWarning,
+            )
+
+    if z_from_arg is not None:
+        Z = z_from_arg
+    return elements_dict, molecule_info, Z
