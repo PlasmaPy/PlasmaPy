@@ -649,16 +649,10 @@ def test_gyroradius():
     r"""Test the gyroradius function in parameters.py."""
 
     assert gyroradius(B, "e-", T=T_e).unit.is_equivalent(u.m)
+    assert gyroradius(B, particle="p", T=T_i).unit.is_equivalent(u.m)
 
     assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ce = gyrofrequency(Bmag, "e-")
-    analytical_result = (Vperp / omega_ce).to(
-        u.m, equivalencies=u.dimensionless_angles()
-    )
-    assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
+    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
     with pytest.warns(u.UnitsWarning):
         assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
@@ -672,38 +666,12 @@ def test_gyroradius():
     with pytest.warns(PlasmaPyFutureWarning):
         gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
 
-    assert gyroradius(B, particle="p", T=T_i).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    # Case when Z=1 is assumed
-    assert np.isclose(
-        gyroradius(B, particle="p", T=T_i),
-        gyroradius(B, particle="H+", T=T_i),
-        atol=1e-6 * u.m,
-    )
-
-    gyroPos = gyroradius(B, particle="p", Vperp=V)
-    gyroNeg = gyroradius(B, particle="p", Vperp=-V)
-    assert gyroPos == gyroNeg
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ci = gyrofrequency(Bmag, particle="p")
-    analytical_result = (Vperp / omega_ci).to(
-        u.m, equivalencies=u.dimensionless_angles()
-    )
-    assert gyroradius(Bmag, particle="p", Vperp=Vperp) == analytical_result
-
     T2 = 1.2 * u.MK
     B2 = 123 * u.G
     particle2 = "alpha"
     Vperp2 = thermal_speed(T2, particle=particle2)
     gyro_by_vperp = gyroradius(B2, particle="alpha", Vperp=Vperp2)
     assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
-
-    explicit_positron_gyro = gyroradius(1 * u.T, particle="positron", T=1 * u.MK)
-    assert explicit_positron_gyro == gyroradius(1 * u.T, "e-", T=1 * u.MK)
 
     with pytest.warns(u.UnitsWarning):
         gyro_without_units = gyroradius(1.0, particle="p", Vperp=1.0)
@@ -717,16 +685,6 @@ def test_gyroradius():
 
 
 class Test_gyroradius:
-
-    # some custom numpy array tests here, because of the T / Vperp situation
-    def test_handle_numpy_array(self):
-        # Tests to verify that can handle Quantities with numpy array as the value:
-        assert gyroradius(B_arr, "e-", Vperp=V_arr)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_arr[0]
-        )
-        assert gyroradius(B_arr, "e-", T=T_arr)[0] == gyroradius(
-            B_arr[0], "e-", T=T_arr[0]
-        )
 
     def test_handle_mixed_Qarrays(self):
         # If both Vperp or T are input as Qarrays, but only one of the two is valid
@@ -830,6 +788,60 @@ class TestGyroradius:
             rc_isnans = np.isnan(gyroradius(*args, **kwargs))
             assert np.all(rc_isnans[nan_mask])
             assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
+
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, atol",
+        [
+            (
+                (1 * u.T,),
+                {"particle": "e-", "Vperp": 1e6 * u.m / u.s},
+                5.6856301e-06 * u.m,
+                None,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "p", "Vperp": 1e6 * u.m / u.s},
+                0.01043968 * u.m,
+                None,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "positron", "T": 1 * u.MK},
+                gyroradius(1 * u.T, particle="e-", T=1 * u.MK),
+                None,
+            ),
+            (
+                (B,),
+                {"particle": "p", "T": T_i},
+                gyroradius(B, particle="H+", T=T_i),
+                1e-6,
+            ),
+            (
+                (B,),
+                {"particle": "p", "Vperp": V},
+                gyroradius(B, particle="p", Vperp=-V),
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "Vperp": V_arr},
+                [1.42140753e-07, 1.42140753e-07] * u.m,
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+        ],
+    )
+    def test_values(self, args, kwargs, expected, atol):
+        if atol is None:
+            atol = 1e-8
+
+        # note allclose() checks values and units
+        assert np.allclose(gyroradius(*args, **kwargs), expected, atol=atol)
 
 
 def test_Debye_length():
