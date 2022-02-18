@@ -26,6 +26,10 @@ def vspace_func_2(x, y, z):
     return [2 * y - z - 5.5, 3 * x + z - 22, x ** 2 - 11 * x + y + 24.75]
 
 
+def vspace_func_3(x, y, z):
+    return [(y - 5.3) * (y - 5.5), (z - 5.5), (x - 5.5)]
+
+
 def test_trilinear_coeff_cal():
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_coeff_cal`."""
     vspace1_args = {
@@ -254,7 +258,7 @@ def test_null_point_find2():
 def test_null_point_find3():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Vector values passed by hand
-    nullpoint2_args = {
+    nullpoint3_args = {
         "x_range": [5, 6],
         "y_range": [5, 6],
         "z_range": [5, 6],
@@ -263,7 +267,26 @@ def test_null_point_find3():
         "v_arr": np.array([[[-0.5, 0.5], [-0.5, 0.5]], [[-0.5, 0.5], [-0.5, 0.5]]]),
         "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
     }
-    npoints2 = null_point_find(**nullpoint2_args)
-    loc2 = npoints2[0].loc.reshape(1, 3)
-    assert len(npoints2) == 1
-    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    npoints3 = null_point_find(**nullpoint3_args)
+    loc3 = npoints3[0].loc.reshape(1, 3)
+    assert len(npoints3) == 1
+    assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    assert npoints3[0].get_type() == "N/A"
+
+
+def test_null_point_find4():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Two null points
+    nullpoint4_args = {
+        "x_range": [5, 6],
+        "y_range": [5, 6],
+        "z_range": [5, 6],
+        "precision": [0.07, 0.003, 0.07],
+        "func": vspace_func_3,
+    }
+    npoints4 = null_point_find(**nullpoint4_args)
+    first_loc4 = npoints4[0].loc.reshape(1, 3)
+    second_loc4 = npoints4[1].loc.reshape(1, 3)
+    assert len(npoints4) == 2
+    assert np.isclose(first_loc4, [5.5, 5.3, 5.5], atol=_ATOL).all()
+    assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_ATOL).all()

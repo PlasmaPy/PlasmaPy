@@ -55,9 +55,9 @@ class NullPoint(Point):
         False otherwise.
         """
         return (
-            np.isclose(self.loc()[0], point.loc()[0], atol=_ATOL)
-            and np.isclose(self.loc()[1], point.loc()[1], atol=_ATOL)
-            and np.isclose(self.loc()[2], point.loc()[2], atol=_ATOL)
+            np.isclose(self.loc[0], point.loc[0], atol=_ATOL)
+            and np.isclose(self.loc[1], point.loc[1], atol=_ATOL)
+            and np.isclose(self.loc[2], point.loc[2], atol=_ATOL)
         )
 
 
