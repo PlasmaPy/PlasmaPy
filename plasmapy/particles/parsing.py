@@ -42,7 +42,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
 
-    for symbol in Particles.keys():
+    for symbol in Particles:
         name = Particles[symbol]["name"]
         case_insensitive_aliases[name.lower()] = symbol
 
@@ -131,9 +131,9 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
         or alias in _case_insensitive_aliases.values()
     ):
         symbol = alias
-    elif alias in _case_sensitive_aliases.keys():
+    elif alias in _case_sensitive_aliases:
         symbol = _case_sensitive_aliases[alias]
-    elif alias.lower() in _case_insensitive_aliases.keys():
+    elif alias.lower() in _case_insensitive_aliases:
         symbol = _case_insensitive_aliases[alias.lower()]
     else:
         symbol = alias
@@ -271,7 +271,7 @@ def _parse_and_check_atomic_input(
         `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-        if atomic_numb in _atomic_numbers_to_symbols.keys():
+        if atomic_numb in _atomic_numbers_to_symbols:
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
@@ -313,7 +313,7 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-        if element_info.lower() in _element_names_to_symbols.keys():
+        if element_info.lower() in _element_names_to_symbols:
             element = _element_names_to_symbols[element_info.lower()]
         elif element_info in _atomic_numbers_to_symbols.values():
             element = element_info
@@ -341,7 +341,7 @@ def _parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in _data_about_isotopes.keys():
+            if isotope not in _data_about_isotopes:
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."
