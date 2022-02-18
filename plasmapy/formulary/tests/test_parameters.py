@@ -797,7 +797,7 @@ class TestGyroradius:
             ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
         ],
     )
-    def test_riases(self, args, kwargs, _error):
+    def test_raises(self, args, kwargs, _error):
         """Test scenarios that rais an exception."""
 
         with warnings.catch_warnings(), pytest.raises(_error):
