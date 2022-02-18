@@ -834,6 +834,12 @@ class TestGyroradius:
                 [0.03130334, 0.02213481] * u.m,
                 None,
             ),
+            (
+                ([0.4, 0.6, 0.8] * u.T,),
+                {"particle": "e-", "T": [6, 4, 2] * u.eV},
+                [2.06499941e-05, 1.12404331e-05, 5.96113984e-06] * u.m,
+                None,
+            ),
         ],
     )
     def test_values(self, args, kwargs, expected, atol):
