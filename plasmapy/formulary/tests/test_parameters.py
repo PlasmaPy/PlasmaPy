@@ -832,7 +832,9 @@ class TestGyroradius:
             atol = 1e-8
 
         # note allclose() checks values and units
-        assert np.allclose(gyroradius(*args, **kwargs), expected, atol=atol)
+        rc = gyroradius(*args, **kwargs)
+        assert np.allclose(rc, expected, atol=atol)
+        assert rc.unit == u.m
 
     @pytest.mark.parametrize(
         "args, kwargs, expected, _warns",
