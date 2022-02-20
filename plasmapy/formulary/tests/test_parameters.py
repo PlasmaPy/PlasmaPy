@@ -818,6 +818,13 @@ class TestGyroradius:
                 [2.06499941e-05, 1.12404331e-05, 5.96113984e-06] * u.m,
                 None,
             ),
+            ((0.4 * u.T, "p"), {"T": 5800 * u.K}, 0.00025539 * u.m, None),
+            (
+                (0.4 * u.T, "p"),
+                {"T": (5800 * u.K).to(u.eV, equivalencies=u.temperature_energy())},
+                0.00025539 * u.m,
+                None,
+            ),
         ],
     )
     def test_values(self, args, kwargs, expected, atol):
