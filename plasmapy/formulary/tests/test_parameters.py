@@ -654,34 +654,12 @@ def test_gyroradius():
     assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
     assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
 
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
-            1.0 * u.T, "e-", Vperp=1.0 * u.m / u.s
-        )
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, "e-", T=1.2) == gyroradius(1.1 * u.T, "e-", T=1.2 * u.K)
-
-    # Check for Deprecation warning when using T_i instead of T
-    with pytest.warns(PlasmaPyFutureWarning):
-        gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
-
     T2 = 1.2 * u.MK
     B2 = 123 * u.G
     particle2 = "alpha"
     Vperp2 = thermal_speed(T2, particle=particle2)
     gyro_by_vperp = gyroradius(B2, particle="alpha", Vperp=Vperp2)
     assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_without_units = gyroradius(1.0, particle="p", Vperp=1.0)
-        gyro_with_units = gyroradius(1.0 * u.T, particle="p", Vperp=1.0 * u.m / u.s)
-        assert gyro_without_units == gyro_with_units
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_t_without_units = gyroradius(1.1, particle="p", T=1.2)
-        gyro_t_with_units = gyroradius(1.1 * u.T, particle="p", T=1.2 * u.K)
-        assert gyro_t_with_units == gyro_t_without_units
 
 
 class Test_gyroradius:
@@ -848,6 +826,36 @@ class TestGyroradius:
 
         # note allclose() checks values and units
         assert np.allclose(gyroradius(*args, **kwargs), expected, atol=atol)
+
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, _warns",
+        [
+            ((1.0, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
+            ((1.0 * u.T, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
+            (
+                (1.0, "e-"),
+                {"Vperp": 1.0 * u.m / u.s},
+                5.6856301e-12 * u.m,
+                u.UnitsWarning,
+            ),
+            ((1.1, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            ((1.1 * u.T, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            ((1.1, "e-"), {"T": 1.2 * u.K}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            #
+            # Future warning for using T_i instead of T
+            (
+                (1.1 * u.T, "e-"),
+                {"T_i": 1.2 * u.K},
+                3.11737236e-08 * u.m,
+                PlasmaPyFutureWarning,
+            ),
+        ],
+    )
+    def test_warns(self, args, kwargs, expected, _warns):
+        with pytest.warns(_warns):
+            rc = gyroradius(*args, **kwargs)
+            if expected is not None:
+                assert np.allclose(rc, expected)
 
 
 def test_Debye_length():
