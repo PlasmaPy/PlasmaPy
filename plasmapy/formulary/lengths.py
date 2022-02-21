@@ -14,6 +14,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
 
+# TODO: move gyroradius over
 
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
