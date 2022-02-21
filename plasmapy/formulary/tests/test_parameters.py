@@ -683,6 +683,7 @@ class TestGyroradius:
             ((B_arr, "e-"), {"Vperp": V_arr, "T": T_i}, ValueError),
             ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
             ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
+            ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
         ],
     )
     def test_raises(self, args, kwargs, _error):
