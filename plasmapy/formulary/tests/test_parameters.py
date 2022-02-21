@@ -656,15 +656,6 @@ def test_gyroradius():
     assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
 
 
-class Test_gyroradius:
-
-    def test_scalar_and_nan_qarray(self):
-        # If either Vperp or T is a valid scalar and the other is a Qarray of all nans,
-        # should do something valid and not raise a ValueError
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V, T=T_allnanarr)))
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V_allnanarr, T=T_i)))
-
-
 class TestGyroradius:
     """Tests for `plasmapy.formulary.parameters.gyroradius`."""
 
@@ -811,6 +802,21 @@ class TestGyroradius:
                 ([0.001, 0.002] * u.T, "e-"),
                 {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
                 [1.42140753e-07, 2.21348073e-02] * u.m,
+                None,
+            ),
+            #
+            # If either Vperp or T is a valid scalar and the other is a Qarray of
+            # all nans, then the Qarray of nans should be ignored
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": 25.2 * u.m / u.s, "T": [np.nan, np.nan] * u.K},
+                [1.43277879e-07, 7.16389393e-08] * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
+                [0.03130334, 0.01565167] * u.m,
                 None,
             ),
         ],
