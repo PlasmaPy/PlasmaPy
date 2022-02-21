@@ -648,12 +648,6 @@ def test_gyrofrequency():
 def test_gyroradius():
     r"""Test the gyroradius function in parameters.py."""
 
-    assert gyroradius(B, "e-", T=T_e).unit.is_equivalent(u.m)
-    assert gyroradius(B, particle="p", T=T_i).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
     T2 = 1.2 * u.MK
     B2 = 123 * u.G
     particle2 = "alpha"
