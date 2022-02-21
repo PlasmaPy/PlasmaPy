@@ -55,7 +55,7 @@ from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.formulary.lengths import Debye_length
+from plasmapy.formulary.lengths import Debye_length, lambdaD_  # noqa
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
@@ -1665,9 +1665,6 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
 wp_ = plasma_frequency
 """Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
-
-
-
 
 
 @validate_quantities(

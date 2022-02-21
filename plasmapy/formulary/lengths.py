@@ -1,6 +1,6 @@
 """Functions to calculated fundamental plasma length parameters."""
-__all__ = []
-__aliases__ = []
+__all__ = ["Debye_length"]
+__aliases__ = ["lambdaD_"]
 
 import astropy.units as u
 import numpy as np
@@ -8,6 +8,8 @@ import numpy as np
 from astropy.constants.si import e, eps0, k_B
 
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ += __aliases__
 
 
 @validate_quantities(
