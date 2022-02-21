@@ -1,2 +1,2 @@
-Refactor tests (consolidate and parametrize) associated with
+Refactored tests (consolidate and parametrize) associated with
 `~plasmapy.formulary.parameters.gyroradius`.
