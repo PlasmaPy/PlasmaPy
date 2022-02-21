@@ -645,17 +645,6 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_gyroradius():
-    r"""Test the gyroradius function in parameters.py."""
-
-    T2 = 1.2 * u.MK
-    B2 = 123 * u.G
-    particle2 = "alpha"
-    Vperp2 = thermal_speed(T2, particle=particle2)
-    gyro_by_vperp = gyroradius(B2, particle="alpha", Vperp=Vperp2)
-    assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
-
-
 class TestGyroradius:
     """Tests for `plasmapy.formulary.parameters.gyroradius`."""
 
@@ -868,6 +857,19 @@ class TestGyroradius:
         gyroradius(B_arr, "e-", Vperp=Vperp1, T=T)
 
         assert_quantity_allclose(Vperp1, Vperp2)
+
+    def test_correct_thermal_speed_used(self):
+        """
+        Test the correct version of thermal_speed is used when
+        temperature is given.
+        """
+        B = 123 * u.G
+        T = 1.2 * u.MK
+        particle = "alpha"
+
+        vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
+
+        assert gyroradius(B, particle=particle, T=T) == gyroradius(B, particle=particle, Vperp=vperp)
 
 
 def test_Debye_length():
