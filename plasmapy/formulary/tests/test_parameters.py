@@ -869,7 +869,9 @@ class TestGyroradius:
 
         vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
 
-        assert gyroradius(B, particle=particle, T=T) == gyroradius(B, particle=particle, Vperp=vperp)
+        assert gyroradius(B, particle=particle, T=T) == gyroradius(
+            B, particle=particle, Vperp=vperp
+        )
 
 
 def test_Debye_length():
