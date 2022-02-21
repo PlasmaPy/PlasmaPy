@@ -658,13 +658,6 @@ def test_gyroradius():
 
 class Test_gyroradius:
 
-    def test_handle_mixed_Qarrays(self):
-        # If both Vperp or T are input as Qarrays, but only one of the two is valid
-        # at each element, then that's fine, the function should work:
-        assert gyroradius(B_arr, "e-", Vperp=V_nanarr, T=T_nanarr2)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_nanarr[0], T=T_nanarr2[0]
-        )
-
     def test_scalar_and_nan_qarray(self):
         # If either Vperp or T is a valid scalar and the other is a Qarray of all nans,
         # should do something valid and not raise a ValueError
@@ -809,6 +802,15 @@ class TestGyroradius:
                 (0.4 * u.T, "p"),
                 {"T": (5800 * u.K).to(u.eV, equivalencies=u.temperature_energy())},
                 0.00025539 * u.m,
+                None,
+            ),
+            #
+            # If both Vperp or T are given, but only one of the two is valid
+            # at each element, then the valid union is taken
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
+                [1.42140753e-07, 2.21348073e-02] * u.m,
                 None,
             ),
         ],
