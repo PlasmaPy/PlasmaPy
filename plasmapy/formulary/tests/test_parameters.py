@@ -677,14 +677,6 @@ class Test_gyroradius:
         assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V, T=T_allnanarr)))
         assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V_allnanarr, T=T_i)))
 
-    def test_keeps_arguments_unchanged(self):
-        Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
-        Vperp2 = u.Quantity([np.nan, 1], unit=u.m / u.s)  # an exact copy
-        T_i = u.Quantity([1, np.nan], unit=u.K)
-
-        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T_i)
-        assert_quantity_allclose(Vperp1, Vperp2)
-
 
 class TestGyroradius:
     """Tests for `plasmapy.formulary.parameters.gyroradius`."""
@@ -865,6 +857,15 @@ class TestGyroradius:
             rc = gyroradius(*args, **kwargs)
             if expected is not None:
                 assert np.allclose(rc, expected)
+
+    def test_keeps_arguments_unchanged(self):
+        Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
+        Vperp2 = Vperp1.copy()
+        T = u.Quantity([1, np.nan], unit=u.K)
+
+        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T)
+
+        assert_quantity_allclose(Vperp1, Vperp2)
 
 
 def test_Debye_length():
