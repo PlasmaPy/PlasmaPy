@@ -7,10 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary.lengths import cwp_ as cwp__parent
-from plasmapy.formulary.lengths import Debye_length as Debye_length_parent
-from plasmapy.formulary.lengths import inertial_length as inertial_length_parent
-from plasmapy.formulary.lengths import lambdaD_ as lambdaD__parent
+from plasmapy.formulary import lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
@@ -876,22 +873,37 @@ def test_parameters_aliases(alias, parent):
         (
             {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
             Debye_length,
-            Debye_length_parent,
+            lengths.Debye_length,
         ),
         (
             {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
             lambdaD_,
-            lambdaD__parent,
+            lengths.lambdaD_,
         ),
         (
             {"n": 1e18 * u.m ** -3, "particle": "p"},
             inertial_length,
-            inertial_length_parent,
+            lengths.inertial_length,
         ),
         (
             {"n": 1e18 * u.m ** -3, "particle": "p"},
             cwp_,
-            cwp__parent,
+            lengths.cwp_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            gyroradius,
+            lengths.gyroradius,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            rc_,
+            lengths.rc_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            rhoc_,
+            lengths.rhoc_,
         ),
     ],
 )
