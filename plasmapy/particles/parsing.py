@@ -25,7 +25,10 @@ from plasmapy.particles.exceptions import (
     ParticleWarning,
 )
 from plasmapy.particles.isotopes import _data_about_isotopes
-from plasmapy.particles.special_particles import _special_particles, ParticleZoo
+from plasmapy.particles.special_particles import (
+    _data_about_special_particles,
+    ParticleZoo,
+)
 from plasmapy.utils import roman
 
 
@@ -112,7 +115,7 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
 
 
 _case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(
-    _special_particles
+    _data_about_special_particles
 )
 
 
