@@ -32,6 +32,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Lengths <lengths>                         | `plasmapy.formulary.lengths`            |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Magnetostatics <magnetostatics>           | `plasmapy.formulary.magnetostatics`     |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
