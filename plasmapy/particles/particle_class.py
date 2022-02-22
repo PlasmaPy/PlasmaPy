@@ -789,7 +789,7 @@ class Particle(AbstractPhysicalParticle):
         >>> ~antineutron
         Particle("n")
         """
-        if self.symbol in _antiparticles.keys():
+        if self.symbol in _antiparticles:
             return Particle(_antiparticles[self.symbol])
         else:
             raise ParticleError(
