@@ -851,61 +851,6 @@ def test_Debye_number():
     assert_can_handle_nparray(Debye_number)
 
 
-def test_inertial_length():
-    r"""Test the inertial_length function in parameters.py."""
-
-    assert inertial_length(n_i, particle="p").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(mu * u.cm ** -3, particle="p").cgs.value, 2.28e7, rtol=0.01
-    )
-
-    inertial_length_electron_plus = inertial_length(5.351 * u.m ** -3, particle="e+")
-    assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m ** -3, particle="e"
-    )
-
-    assert inertial_length(n_i, particle="p") == inertial_length(n_i, particle="p")
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(4, particle="p")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(4 * u.m ** -2, particle="p")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, particle="p")
-
-    with pytest.raises(InvalidParticleError):
-        inertial_length(n_i, particle=-135)
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length_no_units = inertial_length(1e19, particle="p")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m ** -3, particle="p"
-        )
-
-    assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(1 * u.cm ** -3, "e-").cgs.value, 5.31e5, rtol=1e-3
-    )
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(5, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(5 * u.m, "e-")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        assert inertial_length(1e19, "e-") == inertial_length(1e19 * u.m ** -3, "e-")
-
-    assert_can_handle_nparray(inertial_length)
-
-
 def test_magnetic_pressure():
     r"""Test the magnetic_pressure function in parameters.py."""
 
@@ -1078,7 +1023,6 @@ def test_Bohm_diffusion():
         (rc_, gyroradius),
         (rhoc_, gyroradius),
         (nD_, Debye_number),
-        (cwp_, inertial_length),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
         (wuh_, upper_hybrid_frequency),
