@@ -7,6 +7,10 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
+from plasmapy.formulary.lengths import (
+    Debye_length as Debye_length_parent,
+    lambdaD_ as lambdaD__parent,
+)
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
@@ -1073,7 +1077,6 @@ def test_Bohm_diffusion():
         (wc_, gyrofrequency),
         (rc_, gyroradius),
         (rhoc_, gyroradius),
-        (lambdaD_, Debye_length),
         (nD_, Debye_number),
         (cwp_, inertial_length),
         (pmag_, magnetic_pressure),
@@ -1086,3 +1089,26 @@ def test_Bohm_diffusion():
 def test_parameters_aliases(alias, parent):
     """Test all aliases defined in parameters.py"""
     assert alias is parent
+
+
+@pytest.mark.parametrize(
+    "kwargs, deprecated_func, parent",
+    [
+        (
+            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_length,
+            Debye_length_parent,
+        ),
+(
+            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
+            lambdaD_,
+            lambdaD__parent,
+        ),
+    ],
+)
+def test_deprecated(kwargs, deprecated_func, parent):
+    assert hasattr(deprecated_func, "__wrapped__")
+    assert deprecated_func.__wrapped__ is parent
+
+    with pytest.warns(PlasmaPyFutureWarning):
+        deprecated_func(**kwargs)
