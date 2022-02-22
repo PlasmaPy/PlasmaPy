@@ -55,10 +55,7 @@ from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.formulary.lengths import cwp_ as _cwp_
-from plasmapy.formulary.lengths import Debye_length as _Debye_length
-from plasmapy.formulary.lengths import inertial_length as _inertial_length
-from plasmapy.formulary.lengths import lambdaD_ as _lambdaD_
+from plasmapy.formulary import lengths
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
@@ -89,7 +86,7 @@ Debye_length = deprecated(
         "The Debye_length() function has been moved to plasmapy.formulary.lengths."
         "  Update your import to get rid of this warning."
     ),
-)(_Debye_length)
+)(lengths.Debye_length)
 
 lambdaD_ = deprecated(
     since="0.7.0",
@@ -98,7 +95,7 @@ lambdaD_ = deprecated(
         "The lambdaD_() function has been moved to plasmapy.formulary.lengths."
         "  Update your import to get rid of this warning."
     ),
-)(_lambdaD_)
+)(lengths.lambdaD_)
 
 inertial_length = deprecated(
     since="0.7.0",
@@ -107,7 +104,7 @@ inertial_length = deprecated(
         "The inertial_length() function has been moved to plasmapy.formulary.lengths."
         "  Update your import to get rid of this warning."
     ),
-)(_inertial_length)
+)(lengths.inertial_length)
 
 cwp_ = deprecated(
     since="0.7.0",
@@ -116,7 +113,7 @@ cwp_ = deprecated(
         "The cwp_() function has been moved to plasmapy.formulary.lengths."
         "  Update your import to get rid of this warning."
     ),
-)(_cwp_)
+)(lengths.cwp_)
 
 
 def _grab_charge(ion: Particle, z_mean=None):
