@@ -154,6 +154,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     <Quantity 2376534.75... m>
 
     """
+    # TODO: remove when plasma_frequency moves to plasmapy.formulary.frequencies
     from plasmapy.formulary.parameters import plasma_frequency
 
     omega_p = plasma_frequency(n, particle=particle)
