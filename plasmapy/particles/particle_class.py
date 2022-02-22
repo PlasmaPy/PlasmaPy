@@ -444,8 +444,6 @@ class Particle(AbstractPhysicalParticle):
         self._add_charge_information()
         self._add_half_life_information()
 
-        delattr(self, "__inputs")
-
     def _initialize_attributes_and_categories(self):
         """Create empty collections for attributes and categories."""
         self._attributes = defaultdict(type(None))
