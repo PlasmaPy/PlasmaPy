@@ -1,4 +1,4 @@
-.. _parameters:
+.. _lengths:
 
 *******************************************************
 Length Plasma Parameters (`plasmapy.formulary.lengths`)
