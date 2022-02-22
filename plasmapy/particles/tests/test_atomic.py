@@ -383,10 +383,10 @@ def test_half_life():
 def test_half_life_unstable_isotopes():
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
-    for isotope in _data_about_isotopes.keys():
+    for isotope in _data_about_isotopes:
         if (
-            "half_life" not in _data_about_isotopes[isotope].keys()
-            and not _data_about_isotopes[isotope].keys()
+            "half_life" not in _data_about_isotopes[isotope]
+            and not _data_about_isotopes[isotope]
         ):
             with pytest.raises(MissingParticleDataError):
 

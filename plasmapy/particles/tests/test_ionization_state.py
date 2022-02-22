@@ -181,7 +181,7 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize(
         "test_name",
-        [name for name in test_names if "ionic_fractions" in test_cases[name].keys()],
+        [name for name in test_names if "ionic_fractions" in test_cases[name]],
     )
     def test_ionic_fractions(self, test_name):
         """
@@ -371,7 +371,7 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize(
         "test_name",
-        [name for name in test_names if "n_elem" in test_cases[name].keys()],
+        [name for name in test_names if "n_elem" in test_cases[name]],
     )
     def test_electron_density_from_n_elem_ionic_fractions(self, test_name):
         instance = self.instances[test_name]
