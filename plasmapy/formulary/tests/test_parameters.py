@@ -8,7 +8,9 @@ from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.lengths import (
+    cwp_ as cwp__parent,
     Debye_length as Debye_length_parent,
+    inertial_length as inertial_length_parent,
     lambdaD_ as lambdaD__parent,
 )
 from plasmapy.formulary.parameters import (
@@ -1043,10 +1045,20 @@ def test_parameters_aliases(alias, parent):
             Debye_length,
             Debye_length_parent,
         ),
-(
+        (
             {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
             lambdaD_,
             lambdaD__parent,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            inertial_length,
+            inertial_length_parent,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            cwp_,
+            cwp__parent,
         ),
     ],
 )
