@@ -436,7 +436,7 @@ class Particle(AbstractPhysicalParticle):
         if isinstance(argument, Particle):
             argument = argument.symbol
 
-        self._inputs = argument, mass_numb, Z
+        self.__inputs = argument, mass_numb, Z
 
         self._initialize_attributes_and_categories()
         self._store_particle_identity()
@@ -444,7 +444,7 @@ class Particle(AbstractPhysicalParticle):
         self._add_charge_information()
         self._add_half_life_information()
 
-        delattr(self, "_inputs")
+        delattr(self, "__inputs")
 
     def _initialize_attributes_and_categories(self):
         """Create empty collections for attributes and categories."""
@@ -453,7 +453,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _validate_arguments(self):
         """Raise appropriate exceptions when inputs are invalid."""
-        argument, mass_numb, Z = self._inputs
+        argument, mass_numb, Z = self.__inputs
 
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
@@ -470,7 +470,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _store_particle_identity(self):
         """Store the particle's symbol and identifying information."""
-        argument, mass_numb, Z = self._inputs
+        argument, mass_numb, Z = self.__inputs
         self._validate_arguments()
         symbol = _dealias_particle_aliases(argument)
         if symbol in _special_particles:
@@ -483,7 +483,7 @@ class Particle(AbstractPhysicalParticle):
         Store the particle's symbol, element, isotope, ion, mass number,
         and charge number.
         """
-        _, mass_numb, Z = self._inputs
+        _, mass_numb, Z = self.__inputs
 
         try:
             information_about_atom = _parse_and_check_atomic_input(
@@ -528,7 +528,7 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        _, mass_numb, Z = self._inputs
+        _, mass_numb, Z = self.__inputs
 
         if mass_numb is not None or Z is not None:
             if self.symbol == "p+" and (mass_numb == 1 or Z == 1):
