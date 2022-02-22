@@ -109,7 +109,7 @@ bibtex_reference_style = "author_year"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable", None),
@@ -149,16 +149,13 @@ copyright = f"2015–{datetime.utcnow().year}, {author}"
 #        However, release needs to be a semantic style version number, so set
 #        the 'unknown' case to ''.
 release = "" if release == "unknown" else release
-if release == "unknown":
-    release = version = revision = ""
+pv = parse_version(release)
+release = pv.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+if pv.local is not None:
+    revision = pv.local[1:]  # revision number w/o the leading g
 else:
-    pv = parse_version(release)
-    release = pv.public
-    version = ".".join(release.split(".")[:2])  # short X.Y version
-    if pv.local is not None:
-        revision = pv.local[1:]  # revision number w/o the leading g
-    else:
-        revision = ""
+    revision = ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
@@ -359,4 +356,5 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("rtd_theme_overrides.css")
+    app.add_css_file("css/admonition_color_contrast.css")
+    app.add_css_file("css/plasmapy.css", priority=600)
