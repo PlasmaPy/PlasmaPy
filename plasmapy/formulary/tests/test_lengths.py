@@ -5,12 +5,7 @@ import pytest
 
 from astropy.constants import m_p
 
-from plasmapy.formulary.lengths import (
-    cwp_,
-    Debye_length,
-    inertial_length,
-    lambdaD_,
-)
+from plasmapy.formulary.lengths import cwp_, Debye_length, inertial_length, lambdaD_
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 

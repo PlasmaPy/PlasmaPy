@@ -55,12 +55,10 @@ from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.formulary.lengths import (
-    cwp_ as _cwp_,
-    Debye_length as _Debye_length,
-    inertial_length as _inertial_length,
-    lambdaD_ as _lambdaD_,
-)
+from plasmapy.formulary.lengths import cwp_ as _cwp_
+from plasmapy.formulary.lengths import Debye_length as _Debye_length
+from plasmapy.formulary.lengths import inertial_length as _inertial_length
+from plasmapy.formulary.lengths import lambdaD_ as _lambdaD_
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError

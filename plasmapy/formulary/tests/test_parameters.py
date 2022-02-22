@@ -7,12 +7,10 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary.lengths import (
-    cwp_ as cwp__parent,
-    Debye_length as Debye_length_parent,
-    inertial_length as inertial_length_parent,
-    lambdaD_ as lambdaD__parent,
-)
+from plasmapy.formulary.lengths import cwp_ as cwp__parent
+from plasmapy.formulary.lengths import Debye_length as Debye_length_parent
+from plasmapy.formulary.lengths import inertial_length as inertial_length_parent
+from plasmapy.formulary.lengths import lambdaD_ as lambdaD__parent
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
