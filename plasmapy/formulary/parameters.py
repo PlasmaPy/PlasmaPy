@@ -571,7 +571,7 @@ def ion_sound_speed(
             PhysicsWarning,
         )
     elif n_e is not None and k is not None:
-        lambda_D = Debye_length(T_e, n_e)
+        lambda_D = _Debye_length(T_e, n_e)
         klD2 = (k * lambda_D) ** 2
 
     try:
@@ -1773,7 +1773,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     """
 
-    lambda_D = Debye_length(T_e, n_e)
+    lambda_D = _Debye_length(T_e, n_e)
     N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
 
     return N_D
