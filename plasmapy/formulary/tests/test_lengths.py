@@ -3,17 +3,23 @@ import astropy.units as u
 import numpy as np
 import pytest
 
+from astropy.constants import m_p
+
 from plasmapy.formulary.lengths import (
     cwp_,
     Debye_length,
     inertial_length,
     lambdaD_,
 )
+from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
 Z = 1
+n_i = 5e19 * u.m ** -3
 n_e = Z * 5e19 * u.m ** -3
 T_e = 1e6 * u.K
+
+mu = m_p.to(u.u).value
 
 
 def test_Debye_length():
