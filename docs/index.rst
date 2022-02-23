@@ -32,7 +32,6 @@ Example highlights
    :caption: First Steps
    :maxdepth: 1
 
-   Vision Statement <about/vision_statement>
    Installing <install>
    getting_started
    examples
@@ -72,6 +71,7 @@ Example highlights
    bibliography
    glossary
    whatsnew/index
+   Vision Statement <about/vision_statement>
    about/stability
    PlasmaPy.org <https://www.plasmapy.org>
 
