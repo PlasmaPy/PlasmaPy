@@ -1,1 +1,1 @@
-Configured the |Sphinx| extension `sphinx-hoverxref`.
+Configured the Sphinx_ extension `sphinx-hoverxref`.
