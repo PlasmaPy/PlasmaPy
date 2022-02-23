@@ -120,6 +120,17 @@ intersphinx_mapping = {
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
+hoverxref_intersphinx = [
+    "python",
+    "numpy",
+    "scipy",
+    "pandas",
+    "astropy",
+    "pytest",
+    "sphinx_automodapi",
+    "sphinx",
+    "numba",
+]
 
 autoclass_content = "both"
 
@@ -214,6 +225,33 @@ linkcheck_anchors_ignore = [
 pygments_style = "default"
 
 hoverxref_auto_ref = True
+hoverxref_mathjax = True
+hoverxref_sphinxtabs = True
+
+# hoverxref has to applied to these
+hoverxref_domains = ["py", "cite"]
+hoverxref_roles = ["confval", "term"]
+
+hoverxref_role_types = {
+    # roles with cite domain
+    "p": "tooltip",
+    "t": "tooltip",
+    #
+    # roles with py domain
+    "attr": "tooltip",
+    "class": "modal",
+    "exc": "modal",
+    "func": "tooltip",
+    "meth": "tooltip",
+    "mod": "modal",
+    "obj": "tooltip",
+    #
+    # roles with std domain
+    "confval": "tooltip",
+    "hoverxref": "tooltip",
+    "ref": "modal",
+    "term": "tooltip",
+}
 
 # -- Options for HTML output ----------------------------------------------
 
