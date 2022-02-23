@@ -63,11 +63,9 @@ temperature, although it is technically a unit of energy.
 `~astropy.units.Quantity`
 `Quantity <astropy.units.Quantity>`
 
-:func:`astropy.units.Quantity`
-:func:`~astropy.units.Quantity`
 
-:obj:`astropy.units.Quantity`
-:obj:`~astropy.units.Quantity`
+:py:obj:`astropy.units.Quantity`
+:py:obj:`~astropy.units.Quantity`
 
 :class:`astropy.units.Quantity`
 :class:`~astropy.units.Quantity`
