@@ -134,7 +134,11 @@ hoverxref_intersphinx = [
     "numba",
 ]
 hoverxref_intersphinx_types = {
-    "astropy": "tooltip",
+    "astropy": {
+        "ref": "tooltip",
+        "class": "tooltip",
+        "obj": "tooltip",
+    },
 }
 
 autoclass_content = "both"
