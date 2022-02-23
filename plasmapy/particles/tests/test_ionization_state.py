@@ -17,7 +17,6 @@ from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
-from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
