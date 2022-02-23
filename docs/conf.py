@@ -224,6 +224,7 @@ linkcheck_anchors_ignore = [
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
 
+hoverxref_tooltip_maxwidth = 550  # RTD main window is 696px
 hoverxref_auto_ref = True
 hoverxref_mathjax = True
 hoverxref_sphinxtabs = True
@@ -240,6 +241,8 @@ hoverxref_role_types = {
     # roles with py domain
     "attr": "tooltip",
     "class": "modal",
+    "const": "tooltip",
+    "data": "tooltip",
     "exc": "modal",
     "func": "tooltip",
     "meth": "tooltip",
