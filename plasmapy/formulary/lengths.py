@@ -1,4 +1,4 @@
-"""Functions to calculated fundamental plasma length parameters."""
+"""Functions to calculate fundamental plasma length parameters."""
 __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
