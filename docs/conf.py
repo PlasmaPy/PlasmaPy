@@ -226,11 +226,11 @@ linkcheck_anchors_ignore = [
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
 
-if os.environ.get("READTHEDOCS") is not None:
+if os.environ.get("READTHEDOCS"):
     # Building on Read the Docs
     hoverxref_api_host = "https://readthedocs.org"
 
-    if os.environ.get("PROXIED_API_ENDPOINT") is not None:
+    if os.environ.get("PROXIED_API_ENDPOINT"):
         # Use the proxied API endpoint
         hoverxref_api_host = "/_"
 
