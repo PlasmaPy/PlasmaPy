@@ -107,7 +107,7 @@ bibtex_reference_style = "author_year"
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
-    "readthedocs": ('https://docs.readthedocs.io/en/stable/', None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
