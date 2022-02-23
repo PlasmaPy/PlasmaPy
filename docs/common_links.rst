@@ -1,5 +1,6 @@
 .. These are ReST substitutions and links that can be used throughout the docs
 .. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+
 .. ------------------
 .. plasmapy.formulary
 .. ------------------
@@ -73,9 +74,22 @@
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
+.. ----------------------
+.. PlasmaPy documentation
+.. ----------------------
+
+.. |bibliography| replace:: :ref:`bibliography`
+.. |contributor guide| replace:: :ref:`contributor guide`
+.. |documentation guide| replace:: :ref:`documentation guide`
+.. |glossary| replace:: :ref:`glossary`
+.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`
+.. |release guide| replace:: :ref:`release guide`
+.. |testing guide| replace:: :ref:`testing guide`
+
 .. --------
 .. Websites
 .. --------
+
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -138,10 +152,14 @@
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
+.. ----------------------
+.. Nested inline literals
+.. ----------------------
+
 .. A workaround for nested inline literals so that the filename will get
-   formatted like a file but will be a link. In the text, these get used
-   with the syntax for a substitution followed by an underscore to
-   indicate that it's for a link: |docs/_static|_
+.. formatted like a file but will be a link. In the text, these get used
+.. with the syntax for a substitution followed by an underscore to
+.. indicate that it's for a link: |docs/_static|_
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
@@ -169,8 +187,6 @@
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
-
-.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`

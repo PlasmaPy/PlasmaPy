@@ -1,5 +1,7 @@
 .. currentmodule:: plasmapy
 
+.. _glossary:
+
 ********
 Glossary
 ********
