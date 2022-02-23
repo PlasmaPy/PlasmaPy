@@ -240,19 +240,19 @@ hoverxref_role_types = {
     #
     # roles with py domain
     "attr": "tooltip",
-    "class": "modal",
+    "class": "tooltip",
     "const": "tooltip",
     "data": "tooltip",
-    "exc": "modal",
+    "exc": "tooltip",
     "func": "tooltip",
     "meth": "tooltip",
-    "mod": "modal",
+    "mod": "tooltip",
     "obj": "tooltip",
     #
     # roles with std domain
     "confval": "tooltip",
     "hoverxref": "tooltip",
-    "ref": "modal",
+    "ref": "tooltip",
     "term": "tooltip",
 }
 
