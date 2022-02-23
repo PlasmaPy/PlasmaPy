@@ -133,6 +133,9 @@ hoverxref_intersphinx = [
     "sphinx",
     "numba",
 ]
+hoverxref_intersphinx_types = {
+    "astropy": "tooltip",
+}
 
 autoclass_content = "both"
 
@@ -225,6 +228,10 @@ linkcheck_anchors_ignore = [
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
+
+# if os.getenv("READTHEDOCS") is None:
+#     # use a localhost if build is not on readthedocs
+#     hoverxref_api_host = "https://localhost:63342/plasmapy/docs/_build/html"
 
 if os.environ.get("READTHEDOCS"):
     # Building on Read the Docs
