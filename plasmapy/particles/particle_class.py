@@ -444,6 +444,10 @@ class Particle(AbstractPhysicalParticle):
         self._add_charge_information()
         self._add_half_life_information()
 
+        # If __name__ is not defined here, then problems with the doc
+        # build arise related to the Particle instances that are
+        # defined in plasmapy/particles/__init__.py.
+
         self.__name__ = self.__repr__()
 
     def _initialize_attributes_and_categories(self):
