@@ -1610,7 +1610,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    Debye_length
+    ~plasmapy.formulary.lengths.Debye_length
 
     Examples
     --------
