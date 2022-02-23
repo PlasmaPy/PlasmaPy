@@ -30,6 +30,18 @@ def vspace_func_3(x, y, z):
     return [(y - 5.3) * (y - 5.5), (z - 5.5), (x - 5.5)]
 
 
+def vspace_func_4(x, y, z):
+    return [y - y, (z - 5.5), (x - 5.5)]
+
+
+def vspace_func_5(x, y, z):
+    return [(y - y), (z - z), (x - x)]
+
+
+def vspace_func_6(x, y, z):
+    return [(-1 - x - z), (-x - z - x * z), (y)]
+
+
 def test_trilinear_coeff_cal():
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_coeff_cal`."""
     vspace1_args = {
@@ -231,7 +243,7 @@ def test_null_point_find1():
         "x_range": [5, 6],
         "y_range": [5, 6],
         "z_range": [5, 6],
-        "precision": [1, 1, 1],
+        "precision": [0.1, 0.1, 0.1],
         "func": vspace_func_1,
     }
     npoints = null_point_find(**nullpoint_args)
@@ -243,10 +255,16 @@ def test_null_point_find1():
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
+    # nullpoint2_args = {
+    #     "x_arr": np.linspace(5,6, num=45),
+    #     "y_arr": np.logspace(np.log10(5),np.log10(6), num=45),
+    #     "z_arr": np.geomspace(5,6, num=40),
+    #     "func": vspace_func_1,
+    # }
     nullpoint2_args = {
-        "x_arr": [0, 1, 2, 3, 4, 5, 6],
-        "y_arr": [0, 2, 4, 6, 8],
-        "z_arr": [0, 2, 4, 6, 8],
+        "x_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
+        "y_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
+        "z_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "func": vspace_func_1,
     }
     npoints2 = null_point_find(**nullpoint2_args)
@@ -290,3 +308,45 @@ def test_null_point_find4():
     assert len(npoints4) == 2
     assert np.isclose(first_loc4, [5.5, 5.3, 5.5], atol=_ATOL).all()
     assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_ATOL).all()
+
+
+def test_null_point_find5():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Many null points because a y vector dimension is zero
+    nullpoint5_args = {
+        "x_range": [5.4, 5.6],
+        "y_range": [5.4, 5.6],
+        "z_range": [5.4, 5.6],
+        "precision": [0.01, 0.01, 0.01],
+        "func": vspace_func_4,
+    }
+    npoints5 = null_point_find(**nullpoint5_args)
+    assert len(npoints5) == 0
+
+
+def test_null_point_find6():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Many null points; All vector dimensions zero
+    nullpoint6_args = {
+        "x_range": [5, 6],
+        "y_range": [5, 6],
+        "z_range": [5, 6],
+        "precision": [0.08, 0.08, 0.08],
+        "func": vspace_func_5,
+    }
+    npoints6 = null_point_find(**nullpoint6_args)
+    assert len(npoints6) == 0
+
+
+def test_null_point_find7():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # No null points, discriminant less than zero
+    nullpoint7_args = {
+        "x_range": [-10, 10],
+        "y_range": [-10, 10],
+        "z_range": [-10, 10],
+        "precision": [1, 1, 1],
+        "func": vspace_func_6,
+    }
+    npoints7 = null_point_find(**nullpoint7_args)
+    assert len(npoints7) == 0

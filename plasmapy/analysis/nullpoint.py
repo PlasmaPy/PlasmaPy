@@ -11,7 +11,7 @@ import numpy as np
 import warnings
 
 # Declare Constants & global variables
-_ATOL = 1e-10
+_ATOL = 1e-15
 _MAX_RECURSION_LEVEL = 10
 global _recursion_level
 _recursion_level = 0
@@ -54,11 +54,12 @@ class NullPoint(Point):
         Returns True if two null point objects have the same coordinates.
         False otherwise.
         """
-        return (
-            np.isclose(self.loc[0], point.loc[0], atol=_ATOL)
-            and np.isclose(self.loc[1], point.loc[1], atol=_ATOL)
-            and np.isclose(self.loc[2], point.loc[2], atol=_ATOL)
+        d = np.sqrt(
+            (self.loc[0] - point.loc[0]) ** 2
+            + (self.loc[1] - point.loc[1]) ** 2
+            + (self.loc[2] - point.loc[2]) ** 2
         )
+        return np.isclose(d, 0, atol=_ATOL)
 
 
 def _vector_space(
@@ -456,9 +457,9 @@ def _reduction(vspace, cell):
     passY = False
     passZ = False
     # Check reduction criteria
-    sign_x = np.sign(u[cell[0], cell[1], cell[2]])
-    sign_y = np.sign(v[cell[0], cell[1], cell[2]])
-    sign_z = np.sign(w[cell[0], cell[1], cell[2]])
+    sign_x = np.sign(u[cell[0]][cell[1]][cell[2]])
+    sign_y = np.sign(v[cell[0]][cell[1]][cell[2]])
+    sign_z = np.sign(w[cell[0]][cell[1]][cell[2]])
     for point in corners:
         if (
             u[point[0]][point[1]][point[2]] == 0
@@ -520,6 +521,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
         else:
             x1 = (-1.0 * c) / b
             x2 = (-1.0 * c) / b
+
     else:
         if (b ** 2 - 4.0 * a * c) < 0:
             return None, None
@@ -527,28 +529,25 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             x1 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
             x2 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
-    m1 = np.array([[a1, a2], [b1, b2]])
-    m2 = np.array([[a1, a2], [d1, d2]])
-    m3 = np.array([[b1, b2], [c1, c2]])
-    m4 = np.array([[c1, c2], [d1, d2]])
-    a = np.linalg.det(m4)
-    b = np.linalg.det(m2) - np.linalg.det(m3)
-    c = np.linalg.det(m1)
+    y1 = None
+    y2 = None
+    if not (np.isclose((c1 + d1 * x1), 0, atol=_ATOL)):
+        y1 = (-a1 - b1 * x1) / (c1 + d1 * x1)
+    elif not (np.isclose((c2 + d2 * x1), 0, atol=_ATOL)):
+        y1 = (-a2 - b2 * x1) / (c2 + d2 * x1)
+    if not (np.isclose((c1 + d1 * x2), 0, atol=_ATOL)):
+        y2 = (-a1 - b1 * x2) / (c1 + d1 * x2)
+    elif not (np.isclose((c2 + d2 * x2), 0, atol=_ATOL)):
+        y2 = (-a2 - b2 * x2) / (c2 + d2 * x2)
 
-    if np.isclose(a, 0, atol=_ATOL):
-        if np.isclose(b, 0, atol=_ATOL):
-            return None, None
-        else:
-            y1 = (-1.0 * c) / b
-            y2 = (-1.0 * c) / b
+    if y1 is None and y2 is None:
+        return None, None
+    elif y1 is None:
+        return [(x2, y2), (x2, y2)]
+    elif y2 is None:
+        return [(x1, y1), (x1, y1)]
     else:
-        if (b ** 2 - 4.0 * a * c) < 0:
-            return None, None
-        else:
-            y1 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            y2 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-
-    return [(x1, y1), (x2, y2)]
+        return [(x1, y1), (x2, y2)]
 
 
 def _trilinear_analysis(vspace, cell):
@@ -1162,6 +1161,11 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
+            # Not sure what to do if det is zero
+            if np.isclose(np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_ATOL):
+                warnings.warn("Multiple null points")
+                return None
+            # Guess
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
