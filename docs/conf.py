@@ -107,12 +107,13 @@ bibtex_reference_style = "author_year"
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
+    "readthedocs": ('https://docs.readthedocs.io/en/stable/', None),
+    "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "pytest": ("https://docs.pytest.org/en/stable", None),
+    "pytest": ("https://docs.pytest.org/en/stable/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
@@ -121,6 +122,7 @@ intersphinx_mapping = {
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
 hoverxref_intersphinx = [
+    "readthedocs",
     "python",
     "numpy",
     "scipy",
