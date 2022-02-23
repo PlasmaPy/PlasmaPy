@@ -429,7 +429,6 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
-        """Instantiate a |Particle| object and set private attributes."""
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
