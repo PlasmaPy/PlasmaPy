@@ -36,7 +36,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v2.3.2
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -90,7 +90,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v2.3.2
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -116,7 +116,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v2.3.2
       with:
         python-version: 3.8
     - name: Install Python dependencies
@@ -138,7 +138,7 @@ jobs:
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python 3.7
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v2.3.2
       with:
         python-version: 3.7
     - name: Install requirements

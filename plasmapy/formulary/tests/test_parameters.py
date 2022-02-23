@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+import warnings
 
 from astropy import units as u
 from astropy.constants import m_e, m_p
@@ -644,168 +645,234 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_gyroradius():
-    r"""Test the gyroradius function in parameters.py."""
+class TestGyroradius:
+    """Tests for `plasmapy.formulary.parameters.gyroradius`."""
 
-    assert gyroradius(B, "e-", T=T_e).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    # test for possiblity to allow nan for input values
-    assert np.isnan(gyroradius(np.nan * u.T, particle="e-", T=1 * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", T=np.nan * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", Vperp=np.nan * u.m / u.s))
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ce = gyrofrequency(Bmag, "e-")
-    analytical_result = (Vperp / omega_ce).to(
-        u.m, equivalencies=u.dimensionless_angles()
+    @pytest.mark.parametrize(
+        "args, kwargs, _error",
+        [
+            ((u.T, "e-"), {}, TypeError),
+            ((5 * u.A, "e-"), {"Vperp": 8 * u.m / u.s}, u.UnitTypeError),
+            ((5 * u.T, "e-"), {"Vperp": 8 * u.m}, u.UnitTypeError),
+            (
+                (np.array([5, 6]) * u.T, "e-"),
+                {"Vperp": np.array([5, 6, 7]) * u.m / u.s},
+                ValueError,
+            ),
+            ((3.14159 * u.T, "e-"), {"T": -1 * u.K}, ValueError),
+            ((1.1 * u.T, "e-"), {"Vperp": 1 * u.m / u.s, "T": 1.2 * u.K}, ValueError),
+            ((1.1 * u.T, "e-"), {"Vperp": 1.1 * u.m, "T": 1.2 * u.K}, u.UnitTypeError),
+            ((u.T,), {"particle": "p", "Vperp": 8 * u.m / u.s}, TypeError),
+            ((B,), {"particle": "p", "T": -1 * u.K}, ValueError),
+            (
+                (1.1 * u.T,),
+                {"particle": "p", "Vperp": 1 * u.m / u.s, "T": 1.2 * u.K},
+                ValueError,
+            ),
+            (
+                (1.1 * u.T,),
+                {"particle": "p", "Vperp": 1.1 * u.m, "T": 1.2 * u.K},
+                u.UnitTypeError,
+            ),
+            (
+                (1.1 * u.T,),
+                {"particle": "p", "Vperp": 1.2 * u.m, "T": 1.1 * u.K},
+                u.UnitTypeError,
+            ),
+            ((B_arr, "e-"), {"Vperp": V, "T": T_arr}, ValueError),
+            ((B_arr, "e-"), {"Vperp": V_arr, "T": T_i}, ValueError),
+            ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
+            ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
+            ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
+        ],
     )
-    assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
+    def test_raises(self, args, kwargs, _error):
+        """Test scenarios that raise an exception."""
 
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyroradius(u.T, "e-")
+        with warnings.catch_warnings(), pytest.raises(_error):
+            # we don't care about warnings for these tests
+            warnings.simplefilter("ignore")
 
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.A, "e-", Vperp=8 * u.m / u.s)
+            gyroradius(*args, **kwargs)
 
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.T, "e-", Vperp=8 * u.m)
-
-    with pytest.raises(ValueError):
-        gyroradius(np.array([5, 6]) * u.T, "e-", Vperp=np.array([5, 6, 7]) * u.m / u.s)
-
-    assert np.isnan(gyroradius(np.nan * u.T, "e-", Vperp=1 * u.m / u.s))
-
-    with pytest.raises(ValueError):
-        gyroradius(3.14159 * u.T, "e-", T=-1 * u.K)
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
-            1.0 * u.T, "e-", Vperp=1.0 * u.m / u.s
-        )
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, "e-", T=1.2) == gyroradius(1.1 * u.T, "e-", T=1.2 * u.K)
-
-    with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, "e-", Vperp=1 * u.m / u.s, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, "e-", Vperp=1.1 * u.m, T=1.2 * u.K)
-
-    # Check for Deprecation warning when using T_i instead of T
-    with pytest.warns(PlasmaPyFutureWarning):
-        gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
-
-    assert gyroradius(B, particle="p", T=T_i).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    # Case when Z=1 is assumed
-    assert np.isclose(
-        gyroradius(B, particle="p", T=T_i),
-        gyroradius(B, particle="H+", T=T_i),
-        atol=1e-6 * u.m,
+    @pytest.mark.parametrize(
+        "args, kwargs, nan_mask",
+        [
+            ((np.nan * u.T,), {"particle": "e-", "T": 1 * u.K}, None),
+            ((np.nan * u.T,), {"particle": "e-", "Vperp": 1 * u.m / u.s}, None),
+            ((1 * u.T,), {"particle": "e-", "T": np.nan * u.K}, None),
+            ((1 * u.T,), {"particle": "e-", "Vperp": np.nan * u.m / u.s}, None),
+            (
+                ([1, 2, np.nan] * u.T,),
+                {"particle": "e-", "T": 1 * u.K},
+                [False, False, True],
+            ),
+            (
+                ([1, 2, np.nan] * u.T,),
+                {"particle": "e-", "T": [np.nan, 1, 2] * u.K},
+                [True, False, True],
+            ),
+            (
+                ([1, np.nan, 2] * u.T,),
+                {"particle": "e-", "Vperp": [np.nan, 1, 2] * u.m / u.s},
+                [True, True, False],
+            ),
+        ],
     )
+    def test_nan_values(self, args, kwargs, nan_mask):
+        if nan_mask is None:
+            assert np.all(np.isnan(gyroradius(*args, **kwargs)))
+        else:
+            rc_isnans = np.isnan(gyroradius(*args, **kwargs))
+            assert np.all(rc_isnans[nan_mask])
+            assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
 
-    gyroPos = gyroradius(B, particle="p", Vperp=V)
-    gyroNeg = gyroradius(B, particle="p", Vperp=-V)
-    assert gyroPos == gyroNeg
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ci = gyrofrequency(Bmag, particle="p")
-    analytical_result = (Vperp / omega_ci).to(
-        u.m, equivalencies=u.dimensionless_angles()
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, atol",
+        [
+            (
+                (1 * u.T,),
+                {"particle": "e-", "Vperp": 1e6 * u.m / u.s},
+                5.6856301e-06 * u.m,
+                None,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "p", "Vperp": 1e6 * u.m / u.s},
+                0.01043968 * u.m,
+                None,
+            ),
+            (
+                (1 * u.T,),
+                {"particle": "positron", "T": 1 * u.MK},
+                gyroradius(1 * u.T, particle="e-", T=1 * u.MK),
+                None,
+            ),
+            (
+                (B,),
+                {"particle": "p", "T": T_i},
+                gyroradius(B, particle="H+", T=T_i),
+                1e-6,
+            ),
+            (
+                (B,),
+                {"particle": "p", "Vperp": V},
+                gyroradius(B, particle="p", Vperp=-V),
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "Vperp": V_arr},
+                [1.42140753e-07, 1.42140753e-07] * u.m,
+                None,
+            ),
+            (
+                (B_arr,),
+                {"particle": "e-", "T": T_arr},
+                [0.03130334, 0.02213481] * u.m,
+                None,
+            ),
+            (
+                ([0.4, 0.6, 0.8] * u.T,),
+                {"particle": "e-", "T": [6, 4, 2] * u.eV},
+                [2.06499941e-05, 1.12404331e-05, 5.96113984e-06] * u.m,
+                None,
+            ),
+            ((0.4 * u.T, "p"), {"T": 5800 * u.K}, 0.00025539 * u.m, None),
+            (
+                (0.4 * u.T, "p"),
+                {"T": (5800 * u.K).to(u.eV, equivalencies=u.temperature_energy())},
+                0.00025539 * u.m,
+                None,
+            ),
+            #
+            # If both Vperp or T are given, but only one of the two is valid
+            # at each element, then the valid union is taken
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
+                [1.42140753e-07, 2.21348073e-02] * u.m,
+                None,
+            ),
+            #
+            # If either Vperp or T is a valid scalar and the other is a Qarray of
+            # all nans, then the Qarray of nans should be ignored
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": 25.2 * u.m / u.s, "T": [np.nan, np.nan] * u.K},
+                [1.43277879e-07, 7.16389393e-08] * u.m,
+                None,
+            ),
+            (
+                ([0.001, 0.002] * u.T, "e-"),
+                {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
+                [0.03130334, 0.01565167] * u.m,
+                None,
+            ),
+        ],
     )
-    assert gyroradius(Bmag, particle="p", Vperp=Vperp) == analytical_result
+    def test_values(self, args, kwargs, expected, atol):
+        if atol is None:
+            atol = 1e-8
 
-    T2 = 1.2 * u.MK
-    B2 = 123 * u.G
-    particle2 = "alpha"
-    Vperp2 = thermal_speed(T2, particle=particle2)
-    gyro_by_vperp = gyroradius(B2, particle="alpha", Vperp=Vperp2)
-    assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
+        # note allclose() checks values and units
+        rc = gyroradius(*args, **kwargs)
+        assert np.allclose(rc, expected, atol=atol)
+        assert rc.unit == u.m
 
-    explicit_positron_gyro = gyroradius(1 * u.T, particle="positron", T=1 * u.MK)
-    assert explicit_positron_gyro == gyroradius(1 * u.T, "e-", T=1 * u.MK)
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
-
-    with pytest.raises(ValueError):
-        gyroradius(B, particle="p", T=-1 * u.K)
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_without_units = gyroradius(1.0, particle="p", Vperp=1.0)
-        gyro_with_units = gyroradius(1.0 * u.T, particle="p", Vperp=1.0 * u.m / u.s)
-        assert gyro_without_units == gyro_with_units
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_t_without_units = gyroradius(1.1, particle="p", T=1.2)
-        gyro_t_with_units = gyroradius(1.1 * u.T, particle="p", T=1.2 * u.K)
-        assert gyro_t_with_units == gyro_t_without_units
-
-    with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1 * u.m / u.s, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1.1 * u.m, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T=1.1 * u.K)
-
-
-class Test_gyroradius:
-
-    # some custom numpy array tests here, because of the T / Vperp situation
-    def test_handle_numpy_array(self):
-        # Tests to verify that can handle Quantities with numpy array as the value:
-        assert gyroradius(B_arr, "e-", Vperp=V_arr)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_arr[0]
-        )
-        assert gyroradius(B_arr, "e-", T=T_arr)[0] == gyroradius(
-            B_arr[0], "e-", T=T_arr[0]
-        )
-
-    def test_handle_mixed_Qarrays(self):
-        # If both Vperp or T are input as Qarrays, but only one of the two is valid
-        # at each element, then that's fine, the function should work:
-        assert gyroradius(B_arr, "e-", Vperp=V_nanarr, T=T_nanarr2)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_nanarr[0], T=T_nanarr2[0]
-        )
-
-    def test_raise_two_valid_inputs(self):
-        # If both Vperp or T are nan-less, Qarrays or not, should raise ValueError:
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V, T=T_arr)
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V_arr, T=T_i)
-
-    def test_all_valid_and_one_valid(self):
-        # If one of (Vperp, T) is a valid and one is Qarray with at least one valid, ValueError:
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V, T=T_nanarr)
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V_nanarr, T=T_i)
-
-    def test_scalar_and_nan_qarray(self):
-        # If either Vperp or T is a valid scalar and the other is a Qarray of all nans,
-        # should do something valid and not raise a ValueError
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V, T=T_allnanarr)))
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V_allnanarr, T=T_i)))
+    @pytest.mark.parametrize(
+        "args, kwargs, expected, _warns",
+        [
+            ((1.0, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
+            ((1.0 * u.T, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
+            (
+                (1.0, "e-"),
+                {"Vperp": 1.0 * u.m / u.s},
+                5.6856301e-12 * u.m,
+                u.UnitsWarning,
+            ),
+            ((1.1, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            ((1.1 * u.T, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            ((1.1, "e-"), {"T": 1.2 * u.K}, 3.11737236e-08 * u.m, u.UnitsWarning),
+            #
+            # Future warning for using T_i instead of T
+            (
+                (1.1 * u.T, "e-"),
+                {"T_i": 1.2 * u.K},
+                3.11737236e-08 * u.m,
+                PlasmaPyFutureWarning,
+            ),
+        ],
+    )
+    def test_warns(self, args, kwargs, expected, _warns):
+        with pytest.warns(_warns):
+            rc = gyroradius(*args, **kwargs)
+            if expected is not None:
+                assert np.allclose(rc, expected)
 
     def test_keeps_arguments_unchanged(self):
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
-        Vperp2 = u.Quantity([np.nan, 1], unit=u.m / u.s)  # an exact copy
-        T_i = u.Quantity([1, np.nan], unit=u.K)
+        Vperp2 = Vperp1.copy()
+        T = u.Quantity([1, np.nan], unit=u.K)
 
-        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T_i)
+        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T)
+
         assert_quantity_allclose(Vperp1, Vperp2)
+
+    def test_correct_thermal_speed_used(self):
+        """
+        Test the correct version of thermal_speed is used when
+        temperature is given.
+        """
+        B = 123 * u.G
+        T = 1.2 * u.MK
+        particle = "alpha"
+
+        vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
+
+        assert gyroradius(B, particle=particle, T=T) == gyroradius(
+            B, particle=particle, Vperp=vperp
+        )
 
 
 def test_Debye_length():

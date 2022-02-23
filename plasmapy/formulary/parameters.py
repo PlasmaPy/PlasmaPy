@@ -1299,8 +1299,16 @@ wc_ = gyrofrequency
 
 @validate_quantities(
     Vperp={"can_be_nan": True},
-    T_i={"can_be_nan": True, "equivalencies": u.temperature_energy()},
-    T={"can_be_nan": True, "equivalencies": u.temperature_energy()},
+    T_i={
+        "can_be_nan": True,
+        "equivalencies": u.temperature_energy(),
+        "none_shall_pass": True,
+    },
+    T={
+        "can_be_nan": True,
+        "equivalencies": u.temperature_energy(),
+        "none_shall_pass": True,
+    },
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 def gyroradius(
@@ -1308,8 +1316,8 @@ def gyroradius(
     particle: Particle,
     *,
     Vperp: u.m / u.s = np.nan * u.m / u.s,
-    T_i: u.K = np.nan * u.K,
-    T: u.K = np.nan * u.K,
+    T_i: u.K = None,
+    T: u.K = None,
 ) -> u.m:
     r"""Return the particle gyroradius.
 
@@ -1406,13 +1414,21 @@ def gyroradius(
     """
 
     # Backwards Compatibility and Deprecation check for keyword T_i
-    if not np.isnan(T_i):
+    if T_i is not None:
         warnings.warn(
             "Keyword T_i is deprecated, use T instead.",
             PlasmaPyFutureWarning,
         )
-        if np.isnan(T):
+        if T is None:
             T = T_i
+        else:
+            raise ValueError(
+                "Keywords T_i and T are both given.  T_i is deprecated, "
+                "please use T only."
+            )
+
+    if T is None:
+        T = np.nan * u.K
 
     isfinite_T = np.isfinite(T)
     isfinite_Vperp = np.isfinite(Vperp)
