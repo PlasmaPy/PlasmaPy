@@ -181,7 +181,7 @@ Improved Documentation
 
 - Improved consistency of documentation style and made
   reST_ fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
-- Added a pre-release section to the release guide.
+- Added a pre-release section to the `release guide`_.
   This section now includes steps for having a feature freeze about a week before the release,
   followed by a code freeze about two days before the release. (`#1081 <https://github.com/plasmapy/plasmapy/pull/1081>`__)
 - Created the Sphinx_ extension package `plasmapy_sphinx` and used it to replace
@@ -215,11 +215,11 @@ Improved Documentation
 - Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
   property to fix the documentation build warning caused by the release
   of Sphinx_ ``v4.1.0``. (`#1199 <https://github.com/plasmapy/plasmapy/pull/1199>`__)
-- Included a step in the release guide to update Binder requirements
+- Included a step in the `release guide`_ to update Binder requirements
   so that the release of PlasmaPy on PyPI_ gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
-- Updated the documentation guide to include updates to tox_ environments
+- Updated the `documentation guide`_ to include updates to tox_ environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Fixed numerous broken reST_ links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
@@ -229,14 +229,14 @@ Improved Documentation
 - Fixed a typo in the docstring of `~plasmapy.formulary.parameters.Alfven_speed`. (`#1218 <https://github.com/plasmapy/plasmapy/pull/1218>`__)
 - Fixed broken reST_ links in docstrings for aliases in `plasmapy.formulary`. (`#1238 <https://github.com/plasmapy/plasmapy/pull/1238>`__)
 - Fixed multiple broken and redirected links. (`#1257 <https://github.com/plasmapy/plasmapy/pull/1257>`__)
-- Updated the documentation guide to include a description on how to
+- Updated the `documentation guide`_ to include a description on how to
   add and cite references to PlasmaPy's global bibliography BibTeX_ file,
   :file:`docs/bibliography.bib`. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
 - Added sphinxcontrib-bibtex_ as a Sphinx_ extension to enable references
   to be stored in a BibTeX_ file. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Began a documentation-wide bibliography page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
-- Updated documentation guide to describe where formulae should go in
-  docstrings and how to use glossary entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
+- Began a documentation-wide bibliography_ page. (`#1263 <https://github.com/plasmapy/plasmapy/pull/1263>`__)
+- Updated the `documentation guide`_ to describe where formulae should go in
+  docstrings and how to use glossary_ entries. (`#1264 <https://github.com/plasmapy/plasmapy/pull/1264>`__)
 - Updated and fixed hyperlinks in the documentation. (`#1267 <https://github.com/plasmapy/plasmapy/pull/1267>`__)
 - Adopted the ``"xcode"`` code highlighting style for
   pygments_ to increase color contrast and improve web accessibility. (`#1268 <https://github.com/plasmapy/plasmapy/pull/1268>`__)
