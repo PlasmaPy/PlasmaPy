@@ -226,7 +226,15 @@ linkcheck_anchors_ignore = [
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
 
-hoverxref_tooltip_maxwidth = 550  # RTD main window is 696px
+if os.environ.get("READTHEDOCS") is not None:
+    # Building on Read the Docs
+    hoverxref_api_host = "https://readthedocs.org"
+
+    if os.environ.get("PROXIED_API_ENDPOINT") is not None:
+        # Use the proxied API endpoint
+        hoverxref_api_host = "/_"
+
+hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
 hoverxref_auto_ref = True
 hoverxref_mathjax = True
 hoverxref_sphinxtabs = True
