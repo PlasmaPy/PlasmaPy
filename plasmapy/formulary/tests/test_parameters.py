@@ -852,8 +852,6 @@ def test_Bohm_diffusion():
         (betaH_, Hall_parameter),
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
-        (rc_, gyroradius),
-        (rhoc_, gyroradius),
         (nD_, Debye_number),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
