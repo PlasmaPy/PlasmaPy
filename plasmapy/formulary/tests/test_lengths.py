@@ -74,7 +74,7 @@ def test_Debye_length():
 
 
 class TestGyroradius:
-    """Tests for `plasmapy.formulary.parameters.gyroradius`."""
+    """Tests for `plasmapy.formulary.lengths.gyroradius`."""
 
     @pytest.mark.parametrize(
         "args, kwargs, _error",
