@@ -444,7 +444,7 @@ class Particle(AbstractPhysicalParticle):
         self._add_charge_information()
         self._add_half_life_information()
 
-        self.__name__ = "Particle"
+        self.__name__ = self.__repr__()
 
     def _initialize_attributes_and_categories(self):
         """Create empty collections for attributes and categories."""
