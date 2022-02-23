@@ -229,7 +229,7 @@ hoverxref_auto_ref = True
 hoverxref_mathjax = True
 hoverxref_sphinxtabs = True
 
-# hoverxref has to applied to these
+# hoverxref has to be applied to these
 hoverxref_domains = ["py", "cite"]
 hoverxref_roles = ["confval", "term"]
 
