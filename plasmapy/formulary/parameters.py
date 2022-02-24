@@ -5,7 +5,6 @@ __all__ = [
     "Bohm_diffusion",
     "Debye_length",
     "Debye_number",
-    "gyrofrequency",
     "gyroradius",
     "Hall_parameter",
     "inertial_length",
@@ -28,7 +27,6 @@ __aliases__ = [
     "DB_",
     "lambdaD_",
     "nD_",
-    "oc_",
     "pmag_",
     "pth_",
     "rc_",
@@ -38,7 +36,6 @@ __aliases__ = [
     "va_",
     "vth_",
     "vth_kappa_",
-    "wc_",
     "wp_",
     "wlh_",
     "wuh_",
@@ -74,7 +71,8 @@ from plasmapy.utils.exceptions import (
     RelativityWarning,
 )
 
-__all__ += __aliases__ + __lite_funcs__
+__aliases__ += frequencies.__aliases__
+__all__ += frequencies.__all__ + __aliases__ + __lite_funcs__
 
 e_si_unitless = e.value
 eps0_si_unitless = eps0.value
@@ -143,35 +141,21 @@ cwp_ = deprecated(
     ),
 )(lengths.cwp_)
 
-gyrofrequency = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The gyrofrequency() function has been moved to "
-        "plasmapy.formulary.frequencies.  Update your import to get rid"
-        " of this warning."
-    ),
-)(frequencies.gyrofrequency)
-
-oc_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The oc_() function has been moved to "
-        "plasmapy.formulary.frequencies.  Update your import to get rid"
-        " of this warning."
-    ),
-)(frequencies.oc_)
-
-wc_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The wc_() function has been moved to "
-        "plasmapy.formulary.frequencies.  Update your import to get rid"
-        " of this warning."
-    ),
-)(frequencies.wc_)
+funcs_to_deprecate_wrap = [  # (module_name, func_name)
+    ("frequencies", "gyrofrequency"),
+    ("frequencies", "oc_"),
+    ("frequencies", "wc_"),
+]
+for modname, name in funcs_to_deprecate_wrap:
+    globals()[name] = deprecated(
+        since="0.7.0",
+        warning_type=PlasmaPyFutureWarning,
+        message=(
+            f"The {name}() function has been moved to "
+            f"plasmapy.formulary.{modname}.  Update your import to get "
+            f"rid of this warning."
+        ),
+    )(getattr(globals()[f"{modname}"], name))
 
 
 def _grab_charge(ion: Particle, z_mean=None):
