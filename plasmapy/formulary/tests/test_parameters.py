@@ -7,6 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
+from plasmapy.formulary import lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
@@ -35,7 +36,6 @@ from plasmapy.formulary.parameters import (
     rho_,
     rhoc_,
     thermal_pressure,
-    thermal_speed,
     ub_,
     upper_hybrid_frequency,
     va_,
@@ -644,203 +644,6 @@ def test_gyrofrequency():
     assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
 
 
-def test_gyroradius():
-    r"""Test the gyroradius function in parameters.py."""
-
-    assert gyroradius(B, "e-", T=T_e).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, "e-", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    # test for possiblity to allow nan for input values
-    assert np.isnan(gyroradius(np.nan * u.T, particle="e-", T=1 * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", T=np.nan * u.K))
-    assert np.isnan(gyroradius(1 * u.T, particle="e-", Vperp=np.nan * u.m / u.s))
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ce = gyrofrequency(Bmag, "e-")
-    analytical_result = (Vperp / omega_ce).to(
-        u.m, equivalencies=u.dimensionless_angles()
-    )
-    assert gyroradius(Bmag, "e-", Vperp=Vperp) == analytical_result
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyroradius(u.T, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.A, "e-", Vperp=8 * u.m / u.s)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(5 * u.T, "e-", Vperp=8 * u.m)
-
-    with pytest.raises(ValueError):
-        gyroradius(np.array([5, 6]) * u.T, "e-", Vperp=np.array([5, 6, 7]) * u.m / u.s)
-
-    assert np.isnan(gyroradius(np.nan * u.T, "e-", Vperp=1 * u.m / u.s))
-
-    with pytest.raises(ValueError):
-        gyroradius(3.14159 * u.T, "e-", T=-1 * u.K)
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.0, "e-", Vperp=1.0) == gyroradius(
-            1.0 * u.T, "e-", Vperp=1.0 * u.m / u.s
-        )
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyroradius(1.1, "e-", T=1.2) == gyroradius(1.1 * u.T, "e-", T=1.2 * u.K)
-
-    with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, "e-", Vperp=1 * u.m / u.s, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, "e-", Vperp=1.1 * u.m, T=1.2 * u.K)
-
-    # Check for Deprecation warning when using T_i instead of T
-    with pytest.warns(PlasmaPyFutureWarning):
-        gyroradius(1.1 * u.T, "e-", T_i=1.2 * u.K)
-
-    assert gyroradius(B, particle="p", T=T_i).unit.is_equivalent(u.m)
-
-    assert gyroradius(B, particle="p", Vperp=25 * u.m / u.s).unit.is_equivalent(u.m)
-
-    # Case when Z=1 is assumed
-    assert np.isclose(
-        gyroradius(B, particle="p", T=T_i),
-        gyroradius(B, particle="H+", T=T_i),
-        atol=1e-6 * u.m,
-    )
-
-    gyroPos = gyroradius(B, particle="p", Vperp=V)
-    gyroNeg = gyroradius(B, particle="p", Vperp=-V)
-    assert gyroPos == gyroNeg
-
-    Vperp = 1e6 * u.m / u.s
-    Bmag = 1 * u.T
-    omega_ci = gyrofrequency(Bmag, particle="p")
-    analytical_result = (Vperp / omega_ci).to(
-        u.m, equivalencies=u.dimensionless_angles()
-    )
-    assert gyroradius(Bmag, particle="p", Vperp=Vperp) == analytical_result
-
-    T2 = 1.2 * u.MK
-    B2 = 123 * u.G
-    particle2 = "alpha"
-    Vperp2 = thermal_speed(T2, particle=particle2)
-    gyro_by_vperp = gyroradius(B2, particle="alpha", Vperp=Vperp2)
-    assert gyro_by_vperp == gyroradius(B2, particle="alpha", T=T2)
-
-    explicit_positron_gyro = gyroradius(1 * u.T, particle="positron", T=1 * u.MK)
-    assert explicit_positron_gyro == gyroradius(1 * u.T, "e-", T=1 * u.MK)
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyroradius(u.T, particle="p", Vperp=8 * u.m / u.s)
-
-    with pytest.raises(ValueError):
-        gyroradius(B, particle="p", T=-1 * u.K)
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_without_units = gyroradius(1.0, particle="p", Vperp=1.0)
-        gyro_with_units = gyroradius(1.0 * u.T, particle="p", Vperp=1.0 * u.m / u.s)
-        assert gyro_without_units == gyro_with_units
-
-    with pytest.warns(u.UnitsWarning):
-        gyro_t_without_units = gyroradius(1.1, particle="p", T=1.2)
-        gyro_t_with_units = gyroradius(1.1 * u.T, particle="p", T=1.2 * u.K)
-        assert gyro_t_with_units == gyro_t_without_units
-
-    with pytest.raises(ValueError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1 * u.m / u.s, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1.1 * u.m, T=1.2 * u.K)
-
-    with pytest.raises(u.UnitTypeError):
-        gyroradius(1.1 * u.T, particle="p", Vperp=1.2 * u.m, T=1.1 * u.K)
-
-
-class Test_gyroradius:
-
-    # some custom numpy array tests here, because of the T / Vperp situation
-    def test_handle_numpy_array(self):
-        # Tests to verify that can handle Quantities with numpy array as the value:
-        assert gyroradius(B_arr, "e-", Vperp=V_arr)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_arr[0]
-        )
-        assert gyroradius(B_arr, "e-", T=T_arr)[0] == gyroradius(
-            B_arr[0], "e-", T=T_arr[0]
-        )
-
-    def test_handle_mixed_Qarrays(self):
-        # If both Vperp or T are input as Qarrays, but only one of the two is valid
-        # at each element, then that's fine, the function should work:
-        assert gyroradius(B_arr, "e-", Vperp=V_nanarr, T=T_nanarr2)[0] == gyroradius(
-            B_arr[0], "e-", Vperp=V_nanarr[0], T=T_nanarr2[0]
-        )
-
-    def test_raise_two_valid_inputs(self):
-        # If both Vperp or T are nan-less, Qarrays or not, should raise ValueError:
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V, T=T_arr)
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V_arr, T=T_i)
-
-    def test_all_valid_and_one_valid(self):
-        # If one of (Vperp, T) is a valid and one is Qarray with at least one valid, ValueError:
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V, T=T_nanarr)
-        with pytest.raises(ValueError):
-            gyroradius(B_arr, "e-", Vperp=V_nanarr, T=T_i)
-
-    def test_scalar_and_nan_qarray(self):
-        # If either Vperp or T is a valid scalar and the other is a Qarray of all nans,
-        # should do something valid and not raise a ValueError
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V, T=T_allnanarr)))
-        assert np.all(np.isfinite(gyroradius(B_arr, "e-", Vperp=V_allnanarr, T=T_i)))
-
-    def test_keeps_arguments_unchanged(self):
-        Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
-        Vperp2 = u.Quantity([np.nan, 1], unit=u.m / u.s)  # an exact copy
-        T_i = u.Quantity([1, np.nan], unit=u.K)
-
-        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T_i)
-        assert_quantity_allclose(Vperp1, Vperp2)
-
-
-def test_Debye_length():
-    r"""Test the Debye_length function in parameters.py."""
-
-    assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
-
-    assert np.isclose(Debye_length(1 * u.eV, 1 * u.cm ** -3).value, 7.43, atol=0.005)
-
-    with pytest.warns(u.UnitsWarning):
-        Debye_length(5, 5 * u.m ** -3)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_length(56 * u.kg, 5 * u.m ** -3)
-
-    with pytest.raises(ValueError):
-        Debye_length(5 * u.eV, -5 * u.m ** -3)
-
-    with pytest.raises(ValueError):
-        Debye_length(-45 * u.K, 5 * u.m ** -3)
-
-    Tarr2 = np.array([1, 2]) * u.K
-    narr3 = np.array([1, 2, 3]) * u.m ** -3
-    with pytest.raises(ValueError):
-        Debye_length(Tarr2, narr3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0, 2.0) == Debye_length(2.0 * u.K, 2.0 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m ** -3)
-
-    assert_can_handle_nparray(Debye_length)
-
-
 def test_Debye_number():
     r"""Test the Debye_number function in parameters.py."""
 
@@ -878,61 +681,6 @@ def test_Debye_number():
         assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
 
     assert_can_handle_nparray(Debye_number)
-
-
-def test_inertial_length():
-    r"""Test the inertial_length function in parameters.py."""
-
-    assert inertial_length(n_i, particle="p").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(mu * u.cm ** -3, particle="p").cgs.value, 2.28e7, rtol=0.01
-    )
-
-    inertial_length_electron_plus = inertial_length(5.351 * u.m ** -3, particle="e+")
-    assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m ** -3, particle="e"
-    )
-
-    assert inertial_length(n_i, particle="p") == inertial_length(n_i, particle="p")
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(4, particle="p")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(4 * u.m ** -2, particle="p")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, particle="p")
-
-    with pytest.raises(InvalidParticleError):
-        inertial_length(n_i, particle=-135)
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length_no_units = inertial_length(1e19, particle="p")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m ** -3, particle="p"
-        )
-
-    assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(1 * u.cm ** -3, "e-").cgs.value, 5.31e5, rtol=1e-3
-    )
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(5, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(5 * u.m, "e-")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        assert inertial_length(1e19, "e-") == inertial_length(1e19 * u.m ** -3, "e-")
-
-    assert_can_handle_nparray(inertial_length)
 
 
 def test_magnetic_pressure():
@@ -1104,11 +852,7 @@ def test_Bohm_diffusion():
         (betaH_, Hall_parameter),
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
-        (rc_, gyroradius),
-        (rhoc_, gyroradius),
-        (lambdaD_, Debye_length),
         (nD_, Debye_number),
-        (cwp_, inertial_length),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
         (wuh_, upper_hybrid_frequency),
@@ -1119,3 +863,51 @@ def test_Bohm_diffusion():
 def test_parameters_aliases(alias, parent):
     """Test all aliases defined in parameters.py"""
     assert alias is parent
+
+
+@pytest.mark.parametrize(
+    "kwargs, deprecated_func, parent",
+    [
+        (
+            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_length,
+            lengths.Debye_length,
+        ),
+        (
+            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
+            lambdaD_,
+            lengths.lambdaD_,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            inertial_length,
+            lengths.inertial_length,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            cwp_,
+            lengths.cwp_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            gyroradius,
+            lengths.gyroradius,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            rc_,
+            lengths.rc_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
+            rhoc_,
+            lengths.rhoc_,
+        ),
+    ],
+)
+def test_deprecated(kwargs, deprecated_func, parent):
+    assert hasattr(deprecated_func, "__wrapped__")
+    assert deprecated_func.__wrapped__ is parent
+
+    with pytest.warns(PlasmaPyFutureWarning):
+        deprecated_func(**kwargs)
