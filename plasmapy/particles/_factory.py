@@ -9,11 +9,7 @@ __all__ = []
 from typing import Union
 
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import (
-    CustomParticle,
-    DimensionlessParticle,
-    Particle,
-)
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
 

@@ -15,16 +15,7 @@ import warnings
 from numbers import Integral
 from typing import Dict, Union
 
-from plasmapy.particles import _isotopes
-from plasmapy.particles._elements import (
-    atomic_numbers_to_symbols,
-    data_about_elements,
-    element_names_to_symbols,
-)
-from plasmapy.particles._special_particles import (
-    data_about_special_particles,
-    particle_zoo,
-)
+from plasmapy.particles import _elements, _isotopes, _special_particles
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
@@ -116,7 +107,7 @@ def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
 
 
 _case_sensitive_aliases, _case_insensitive_aliases = create_alias_dicts(
-    data_about_special_particles
+    _special_particles.data_about_special_particles
 )
 
 
@@ -275,8 +266,8 @@ def parse_and_check_atomic_input(
         `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-        if atomic_numb in atomic_numbers_to_symbols:
-            return atomic_numbers_to_symbols[atomic_numb]
+        if atomic_numb in _elements.atomic_numbers_to_symbols:
+            return _elements.atomic_numbers_to_symbols[atomic_numb]
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
@@ -317,9 +308,9 @@ def parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-        if element_info.lower() in element_names_to_symbols:
-            element = element_names_to_symbols[element_info.lower()]
-        elif element_info in atomic_numbers_to_symbols.values():
+        if element_info.lower() in _elements.element_names_to_symbols:
+            element = _elements.element_names_to_symbols[element_info.lower()]
+        elif element_info in _elements.atomic_numbers_to_symbols.values():
             element = element_info
         else:
             raise InvalidParticleError(
@@ -391,7 +382,7 @@ def parse_and_check_atomic_input(
 
     arg = dealias_particle_aliases(argument)
 
-    if arg in particle_zoo.everything - {"p+"}:
+    if arg in _special_particles.particle_zoo.everything - {"p+"}:
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError(
                 f"The keywords mass_numb and Z should not be specified "
@@ -446,10 +437,11 @@ def parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > data_about_elements[element]["atomic number"]:
+        if Z > _elements.data_about_elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {data_about_elements[element]['atomic number']}."
+                f"of {element}, which is "
+                f"{_elements.data_about_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(
