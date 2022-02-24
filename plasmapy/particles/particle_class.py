@@ -528,6 +528,9 @@ class Particle(AbstractPhysicalParticle):
         if attributes["name"] in _specific_particle_categories:
             categories.add(attributes["name"])
 
+        # Protons are treated specially because they can be considered
+        # both as special particles and atomic particles.
+
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
