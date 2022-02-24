@@ -9,6 +9,7 @@ import warnings
 from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -87,7 +88,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
+"""Alias to `~plasmapy.formulary.lengths.Debye_length`."""
 
 
 @validate_quantities(
@@ -206,9 +207,8 @@ def gyroradius(
     <Quantity 0.001421... m>
     """
 
-    # TODO: remove when gyrofrequncy moves to plasmapy.formulary.frequencies
     # TODO: remove when thermal_speed moves to plasmapy.formulary.speeds
-    from plasmapy.formulary.parameters import gyrofrequency, thermal_speed
+    from plasmapy.formulary.parameters import thermal_speed
 
     # Backwards Compatibility and Deprecation check for keyword T_i
     if T_i is not None:
@@ -280,10 +280,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 rhoc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 
 @validate_quantities(
@@ -350,9 +350,6 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     <Quantity 2376534.75... m>
 
     """
-    # TODO: remove when plasma_frequency moves to plasmapy.formulary.frequencies
-    from plasmapy.formulary.parameters import plasma_frequency
-
     omega_p = plasma_frequency(n, particle=particle)
 
     return c / omega_p
@@ -360,7 +357,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to `~plasmapy.formulary.parameters.inertial_length`.
+Alias to `~plasmapy.formulary.lengths.inertial_length`.
 
 * Name is shorthand for :math:`c / ω_p`.
 """
