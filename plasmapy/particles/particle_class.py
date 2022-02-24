@@ -24,8 +24,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles import _parsing
-from plasmapy.particles._elements import _PeriodicTable, data_about_elements
+from plasmapy.particles import _elements, _parsing
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -565,7 +564,7 @@ class Particle(AbstractPhysicalParticle):
 
         # Element properties
 
-        this_element = data_about_elements[element]
+        this_element = _elements.data_about_elements[element]
 
         attributes["atomic number"] = this_element["atomic number"]
         attributes["element name"] = this_element["element name"]
@@ -595,7 +594,7 @@ class Particle(AbstractPhysicalParticle):
         if ion in _special_ion_masses:
             attributes["mass"] = _special_ion_masses[ion]
 
-        attributes["periodic table"] = _PeriodicTable(
+        attributes["periodic table"] = _elements.PeriodicTable(
             group=this_element["group"],
             period=this_element["period"],
             block=this_element["block"],
@@ -2324,7 +2323,9 @@ def molecule(
     try:
         return Particle(symbol, Z=Z)
     except ParticleError:
-        element_dict, bare_symbol, Z = parsing.parse_and_check_molecule_input(symbol, Z)
+        element_dict, bare_symbol, Z = _parsing.parse_and_check_molecule_input(
+            symbol, Z
+        )
         mass = 0 * u.kg
         for element_symbol, amount in element_dict.items():
             try:
