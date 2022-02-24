@@ -1,0 +1,2 @@
+Renamed objects within the source code for `plasmapy.particles` to
+conform with :pep:`8` naming conventions.
