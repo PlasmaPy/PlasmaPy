@@ -10,8 +10,8 @@ import warnings
 from astropy.constants.si import c
 from typing import Union
 
-from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities

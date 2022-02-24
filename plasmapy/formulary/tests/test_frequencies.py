@@ -6,9 +6,9 @@ import pytest
 from plasmapy.formulary.frequencies import (
     gyrofrequency,
     lower_hybrid_frequency,
+    oc_,
     plasma_frequency,
     upper_hybrid_frequency,
-    oc_,
     wc_,
     wlh_,
     wuh_,

@@ -7,8 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary import frequencies
-from plasmapy.formulary import lengths
+from plasmapy.formulary import frequencies, lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,

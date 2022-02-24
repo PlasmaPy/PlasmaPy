@@ -39,8 +39,7 @@ from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.formulary import frequencies
-from plasmapy.formulary import lengths
+from plasmapy.formulary import frequencies, lengths
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
