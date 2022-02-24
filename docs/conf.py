@@ -226,6 +226,7 @@ linkcheck_anchors_ignore = [
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
 
+# adapted from sphinx-hoverxref conf.py
 if os.environ.get("READTHEDOCS"):
     # Building on Read the Docs
     hoverxref_api_host = "https://readthedocs.org"
