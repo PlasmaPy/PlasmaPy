@@ -10,7 +10,6 @@ __all__ = [
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
-    "plasma_frequency",
     "thermal_pressure",
     "thermal_speed",
     "thermal_speed_coefficients",
@@ -28,10 +27,9 @@ __aliases__ = [
     "va_",
     "vth_",
     "vth_kappa_",
-    "wp_",
     "wuh_",
 ]
-__lite_funcs__ = ["thermal_speed_lite", "plasma_frequency_lite"]
+__lite_funcs__ = ["thermal_speed_lite"]
 
 import astropy.units as u
 import numbers
@@ -63,6 +61,7 @@ from plasmapy.utils.exceptions import (
 )
 
 __aliases__ += frequencies.__aliases__ + lengths.__aliases__
+__lite_funcs__ += frequencies.__lite_funcs__
 __all__ += frequencies.__all__ + lengths.__all__ + __aliases__ + __lite_funcs__
 
 e_si_unitless = e.value
@@ -1198,200 +1197,6 @@ betaH_ = Hall_parameter
 """Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
 
 
-@preserve_signature
-@njit
-def plasma_frequency_lite(
-    n: numbers.Real, mass: numbers.Real, z_mean: numbers.Real, to_hz: bool = False
-) -> numbers.Real:
-    r"""
-    The ":term:`lite-function`" version of
-    `~plasmapy.formulary.parameters.plasma_frequency`.  Performs the
-    same plasma frequency calculation as
-    `~plasmapy.formulary.parameters.plasma_frequency`, but is intended
-    for computational use and, thus, has all data conditioning
-    safeguards removed.
-
-    Parameters
-    ----------
-    n : `~numbers.Real`
-        Particle number density, in units of m\ :sup:`-3`.
-
-    mass : `~numbers.Real`
-        Mass of the particle, in units of kg.
-
-    z_mean : `~numbers.Real`
-        The average ionization (arithmetic mean) for the particle
-        species in the plasma.  For example, a proton would have a value
-        of ``z_mean=1``.
-
-    to_hz : `bool`
-        (Default `False`) Set `True` to apply the factor of
-        :math:`1/2π` and return a value in units of Hz.
-
-    Returns
-    -------
-    wp : `~numbers.Real`
-        The particle plasma frequency in radians per second.  Setting
-        keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
-        and yield a value in Hz.
-
-    Notes
-    -----
-
-    The particle plasma frequency is
-
-    .. math::
-        ω_{p} = Z |e| \sqrt{\frac{n}{\epsilon_0 m}}
-
-    where :math:`m` is the mass of the particle, :math:`e` is the
-    fundamental unit of charge, :math:`Z` is the average charge state
-    ``z_mean`` of the particle species, :math:`n` is the particle number
-    density.  This form of the plasma frequency has units of
-    radians / s, but when using the ``to_hz`` keyword a factor of
-    :math:`1/2π` will be applied to give a value in Hz.
-
-    Examples
-    --------
-
-    >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
-    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1)
-    416329...
-    >>> plasma_frequency_lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
-    662608...
-    """
-    omega_p = z_mean * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
-
-    if to_hz:
-        return omega_p / (2.0 * np.pi)
-
-    return omega_p
-
-
-@bind_lite_func(plasma_frequency_lite)
-@validate_quantities(
-    n={"can_be_negative": False},
-    validations_on_return={
-        "units": [u.rad / u.s, u.Hz],
-        "equivalencies": [(u.cy / u.s, u.Hz)],
-    },
-)
-@angular_freq_to_hz
-def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u.s:
-    r"""Calculate the particle plasma frequency.
-
-    **Aliases:** `wp_`
-
-    **Lite Version:** `~plasmapy.formulary.parameters.plasma_frequency_lite`
-
-    Parameters
-    ----------
-    n : `~astropy.units.Quantity`
-        Particle number density in units convertible to m\ :sup:`-3`.
-
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., ``"p"`` for
-        protons, ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly
-        ionized helium-4). If no charge state information is provided,
-        then the particles are assumed to be singly charged.
-
-    z_mean : `~numbers.Real`, optional
-        The average ionization (arithmetic mean) for the particle
-        species in the plasma.  Typically the charge state will be
-        dervied from the ``particle`` argument, but this keyword will
-        override that behavior.
-
-    Returns
-    -------
-    omega_p : `~astropy.units.Quantity`
-        The particle plasma frequency in radians per second.  Setting
-        keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
-        and yield a value in Hz.
-
-    Raises
-    ------
-    `TypeError`
-        If ``n`` is not a `~astropy.units.Quantity` or particle is not
-        of an appropriate type.
-
-    `~astropy.units.UnitConversionError`
-        If ``n`` is not in correct units.
-
-    `ValueError`
-        If ``n`` contains invalid values or particle cannot be used to
-        identify an particle or isotope.
-
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The particle plasma frequency is
-
-    .. math::
-        ω_{p} = Z |e| \sqrt{\frac{n}{\epsilon_0 m}}
-
-    where :math:`m` is the mass of the particle, :math:`e` is the
-    fundamental unit of charge, :math:`Z` is the average charge state
-    ``z_mean`` of the particle species, :math:`n` is the particle number
-    density.  This form of the plasma frequency has units of
-    radians / s, but using the ``to_hz`` will apply the factor of
-    :math:`1/2π` to give a value in Hz.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> plasma_frequency(1e19*u.m**-3, particle='p')
-    <Quantity 4.16329...e+09 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, particle='p', to_hz=True)
-    <Quantity 6.62608...e+08 Hz>
-    >>> plasma_frequency(1e19*u.m**-3, particle='D+')
-    <Quantity 2.94462...e+09 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, 'e-')
-    <Quantity 1.78398...e+11 rad / s>
-    >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
-    <Quantity 2.83930...e+10 Hz>
-
-    For user convienence
-    `~plasmapy.formulary.parameters.plasma_frequency_lite` is bound to
-    this function and can be used as follows.
-
-    >>> from plasmapy.particles import Particle
-    >>> mass = Particle("p").mass.value
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1)
-    416329...
-    >>> plasma_frequency.lite(n=1e19, mass=mass, z_mean=1, to_hz=True)
-    662608...
-    """
-
-    try:
-        m = particles.particle_mass(particle).value
-
-        if z_mean is None:
-            # warnings.warn("No z_mean given, defaulting to atomic charge",
-            #               PhysicsWarning)
-            try:
-                Z = particles.charge_number(particle)
-            except Exception:
-                Z = 1
-        else:
-            # using user provided average ionization
-            Z = z_mean
-        Z = np.abs(Z)
-        # TODO REPLACE WITH Z = np.abs(_grab_charge(particle, z_mean)), some bugs atm
-    except Exception:
-        raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
-
-    omega_p = plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
-    return omega_p
-
-
-wp_ = plasma_frequency
-"""Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
-
-
 @validate_quantities(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
@@ -1669,7 +1474,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     <Quantity 6.37350...e+10 Hz>
 
     """
-    omega_pe = plasma_frequency(n=n_e, particle="e-")
+    omega_pe = frequencies.plasma_frequency(n=n_e, particle="e-")
     omega_ce = frequencies.gyrofrequency(B, "e-")
     omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
 
