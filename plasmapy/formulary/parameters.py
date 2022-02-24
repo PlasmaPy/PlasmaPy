@@ -77,6 +77,7 @@ funcs_to_deprecate_wrap = [  # (module_name, func_name)
     ("frequencies", "oc_"),
     ("frequencies", "wc_"),
     ("frequencies", "plasma_frequency"),
+    ("frequencies", "plasma_frequency_lite"),
     ("frequencies", "wp_"),
     ("frequencies", "lower_hybrid_frequency"),
     ("frequencies", "wlh_"),
