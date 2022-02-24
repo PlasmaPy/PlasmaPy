@@ -527,4 +527,4 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
 
 
 wuh_ = upper_hybrid_frequency
-"""Alias to `~plasmapy.formulary.parameters.upper_hybrid_frequency`."""
+"""Alias to `~plasmapy.formulary.frequencies.upper_hybrid_frequency`."""
