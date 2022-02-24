@@ -28,6 +28,27 @@ science.
    request. To propose a significant change, please raise an issue
    and/or bring this up at a community meeting for a discussion first.
 
+Automatic code formatters
+=========================
+
+PlasmaPy makes heavy use of automatic code formatters such as black_ and
+isort_. Using these tools helps us maintain a common code style without
+having to spend excessive time worrying about the formatting of a
+particular chunk of code or the order of import statements.
+
+
+
+
+The use of automatic code formatters can be considered an analogy to the
+effects of using the `Imperius Curse <>`__ described in the book *Harry
+Potter and the Something or Other*:
+
+   It was the most wonderful feeling. Harry felt a floating sensation as
+   every thought and worry in his head was wiped gently away, leaving
+   nothing but a vague, untraceable happiness. He stood there feeling
+   immensely relaxed, only dimly aware of everyone watching him.
+
+
 Names
 =====
 
