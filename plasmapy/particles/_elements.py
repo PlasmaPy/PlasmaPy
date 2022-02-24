@@ -27,6 +27,7 @@ class PeriodicTable:
 
 
 def element_obj_hook(obj):
+    """Provide an `object_hook` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
