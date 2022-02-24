@@ -27,8 +27,7 @@ import astropy.units as u
 from numbers import Integral, Real
 from typing import Any, List, Optional, Union
 
-from plasmapy.particles._elements import data_about_elements
-from plasmapy.particles._isotopes import data_about_isotopes
+from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     InvalidElementError,
@@ -590,7 +589,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
         isotopes = []
-        for isotope in data_about_isotopes:
+        for isotope in _isotopes.data_about_isotopes:
             if element + "-" in isotope and isotope[0 : len(element)] == element:
                 isotopes.append(isotope)
         if element == "H":
@@ -616,7 +615,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, len(data_about_elements) + 1):
+        for atomic_numb in range(1, len(_elements.data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list
@@ -702,11 +701,12 @@ def common_isotopes(
         CommonIsotopes = [
             isotope
             for isotope in isotopes
-            if "abundance" in data_about_isotopes[isotope]
+            if "abundance" in _isotopes.data_about_isotopes[isotope]
         ]
 
         isotopic_abundances = [
-            data_about_isotopes[isotope]["abundance"] for isotope in CommonIsotopes
+            _isotopes.data_about_isotopes[isotope]["abundance"]
+            for isotope in CommonIsotopes
         ]
 
         sorted_isotopes = [
@@ -820,7 +820,7 @@ def stable_isotopes(
         StableIsotopes = [
             isotope
             for isotope in KnownIsotopes
-            if data_about_isotopes[isotope]["stable"] == stable_only
+            if _isotopes.data_about_isotopes[isotope]["stable"] == stable_only
         ]
         return StableIsotopes
 
@@ -964,7 +964,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    period = data_about_elements[symbol]["period"]
+    period = _elements.data_about_elements[symbol]["period"]
     return period
 
 
@@ -1018,7 +1018,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    group = data_about_elements[symbol]["group"]
+    group = _elements.data_about_elements[symbol]["group"]
     return group
 
 
@@ -1072,7 +1072,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    block = data_about_elements[symbol]["block"]
+    block = _elements.data_about_elements[symbol]["block"]
     return block
 
 
@@ -1124,7 +1124,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    category = data_about_elements[symbol]["category"]
+    category = _elements.data_about_elements[symbol]["category"]
     return category
 
 
