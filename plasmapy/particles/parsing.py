@@ -32,7 +32,7 @@ from plasmapy.particles.special_particles import (
 from plasmapy.utils import roman
 
 
-def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
+def _create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -45,8 +45,8 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
 
-    for symbol in Particles:
-        name = Particles[symbol]["name"]
+    for symbol in particles:
+        name = particles[symbol]["name"]
         case_insensitive_aliases[name.lower()] = symbol
 
     case_sensitive_aliases_for_a_symbol = [
