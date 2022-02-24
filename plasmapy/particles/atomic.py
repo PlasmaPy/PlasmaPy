@@ -35,7 +35,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     MissingParticleDataError,
 )
-from plasmapy.particles.isotopes import _data_about_isotopes
+from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
 from plasmapy.utils.decorators.deprecation import deprecated
@@ -590,7 +590,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
     def known_isotopes_for_element(argument):
         element = atomic_symbol(argument)
         isotopes = []
-        for isotope in _data_about_isotopes:
+        for isotope in data_about_isotopes:
             if element + "-" in isotope and isotope[0 : len(element)] == element:
                 isotopes.append(isotope)
         if element == "H":
@@ -702,11 +702,11 @@ def common_isotopes(
         CommonIsotopes = [
             isotope
             for isotope in isotopes
-            if "abundance" in _data_about_isotopes[isotope]
+            if "abundance" in data_about_isotopes[isotope]
         ]
 
         isotopic_abundances = [
-            _data_about_isotopes[isotope]["abundance"] for isotope in CommonIsotopes
+            data_about_isotopes[isotope]["abundance"] for isotope in CommonIsotopes
         ]
 
         sorted_isotopes = [
@@ -820,7 +820,7 @@ def stable_isotopes(
         StableIsotopes = [
             isotope
             for isotope in KnownIsotopes
-            if _data_about_isotopes[isotope]["stable"] == stable_only
+            if data_about_isotopes[isotope]["stable"] == stable_only
         ]
         return StableIsotopes
 

@@ -25,7 +25,7 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _data_about_isotopes
+from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.special_particles import (
     _data_about_special_particles,
     ParticleZoo,
@@ -345,7 +345,7 @@ def parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in _data_about_isotopes:
+            if isotope not in data_about_isotopes:
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."

@@ -1,10 +1,11 @@
 """
-Module for loading isotope data from :file:`plasmapy/particles/data/isotopes.json`.
-
-.. attention::
-    This module is not part of PlasmaPy's public API.
+Module for loading isotope data from
+:file:`plasmapy/particles/data/isotopes.json`.
 """
-__all__ = []
+__all__ = [
+    "isotope_obj_hook",
+    "data_about_isotopes",
+]
 
 import astropy.units as u
 import json
@@ -24,7 +25,7 @@ import pkgutil
 #     json.dump(_Isotopes, f, default=plasma_default, indent=2)
 
 
-def _isotope_obj_hook(obj):
+def isotope_obj_hook(obj):
     """Provide an `object_hook` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
@@ -32,7 +33,7 @@ def _isotope_obj_hook(obj):
 
 
 #: Dictionary of isotope data.
-_data_about_isotopes = json.loads(
+data_about_isotopes = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
-    object_hook=_isotope_obj_hook,
+    object_hook=isotope_obj_hook,
 )

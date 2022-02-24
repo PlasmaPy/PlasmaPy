@@ -37,7 +37,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _data_about_isotopes
+from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.special_particles import (
     _antiparticles,
     _data_about_special_particles,
@@ -578,7 +578,7 @@ class Particle(AbstractPhysicalParticle):
 
         if isotope:
 
-            this_isotope = _data_about_isotopes[isotope]
+            this_isotope = data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
             attributes["isotope mass"] = this_isotope.get("mass", None)
