@@ -233,6 +233,8 @@ if os.environ.get("READTHEDOCS"):
 
     if os.environ.get("PROXIED_API_ENDPOINT"):
         # Use the proxied API endpoint
+        # - A RTD thing to avoid a CSRF block when docs are using a
+        #   custom domain
         hoverxref_api_host = "/_"
 
 hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
