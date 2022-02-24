@@ -59,20 +59,6 @@ conversions between different unit systems. This is especially important
 for electron-volts, commonly used in plasma physics to denote
 temperature, although it is technically a unit of energy.
 
-`astropy.units.Quantity`
-`~astropy.units.Quantity`
-`Quantity <astropy.units.Quantity>`
-
-
-:py:obj:`astropy.units.Quantity`
-:py:obj:`~astropy.units.Quantity`
-
-:class:`astropy.units.Quantity`
-:class:`~astropy.units.Quantity`
-
-:class:`Quantity <astropy.units.Quantity>`
-:py:class:`Quantity <astropy.units.Quantity>`
-
 Most functions expect `astropy.units.Quantity` as input, however some
 will use the `~plasmapy.utils.decorators.validate_quantities` decorator
 to automatically cast arguments to Quantities with appropriate units. If
