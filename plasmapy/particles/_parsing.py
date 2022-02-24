@@ -21,14 +21,14 @@ from plasmapy.particles._elements import (
     data_about_elements,
     element_names_to_symbols,
 )
+from plasmapy.particles._special_particles import (
+    data_about_special_particles,
+    particle_zoo,
+)
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
-)
-from plasmapy.particles.special_particles import (
-    _data_about_special_particles,
-    ParticleZoo,
 )
 from plasmapy.utils import roman
 
@@ -116,7 +116,7 @@ def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
 
 
 _case_sensitive_aliases, _case_insensitive_aliases = create_alias_dicts(
-    _data_about_special_particles
+    data_about_special_particles
 )
 
 
@@ -391,7 +391,7 @@ def parse_and_check_atomic_input(
 
     arg = dealias_particle_aliases(argument)
 
-    if arg in ParticleZoo.everything - {"p+"}:
+    if arg in particle_zoo.everything - {"p+"}:
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError(
                 f"The keywords mass_numb and Z should not be specified "

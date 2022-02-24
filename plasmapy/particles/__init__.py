@@ -5,6 +5,7 @@ atoms, isotopes, ions, and other particles.
 # __all__ will be auto populated below
 __all__ = []
 
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import (
     atomic_number,
     charge_number,
@@ -40,7 +41,6 @@ from plasmapy.particles.serialization import (
     json_loads_particle,
     ParticleJSONDecoder,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.particles.symbols import (
     atomic_symbol,
     element_name,

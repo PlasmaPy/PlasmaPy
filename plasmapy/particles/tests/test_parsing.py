@@ -7,12 +7,12 @@ from plasmapy.particles._parsing import (
     dealias_particle_aliases,
     parse_and_check_atomic_input,
 )
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils.code_repr import call_string
 
 aliases_and_symbols = [
@@ -331,7 +331,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
         )
 
 
-@pytest.mark.parametrize("arg", ParticleZoo.everything - {"p+"})
+@pytest.mark.parametrize("arg", particle_zoo.everything - {"p+"})
 def test_parse_InvalidElementErrors(arg):
     r"""Tests that _parse_and_check_atomic_input raises an
     InvalidElementError when the input corresponds to a valid
