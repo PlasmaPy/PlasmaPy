@@ -9,6 +9,7 @@ import warnings
 from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
+from plasmapy.formulary.frequencies import plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -350,9 +351,6 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     <Quantity 2376534.75... m>
 
     """
-    # TODO: remove when plasma_frequency moves to plasmapy.formulary.frequencies
-    from plasmapy.formulary.parameters import plasma_frequency
-
     omega_p = plasma_frequency(n, particle=particle)
 
     return c / omega_p

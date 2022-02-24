@@ -157,9 +157,9 @@ def plasma_frequency_lite(
 ) -> numbers.Real:
     r"""
     The ":term:`lite-function`" version of
-    `~plasmapy.formulary.parameters.plasma_frequency`.  Performs the
+    `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
     same plasma frequency calculation as
-    `~plasmapy.formulary.parameters.plasma_frequency`, but is intended
+    `~plasmapy.formulary.frequencies.plasma_frequency`, but is intended
     for computational use and, thus, has all data conditioning
     safeguards removed.
 
@@ -234,7 +234,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
     **Aliases:** `wp_`
 
-    **Lite Version:** `~plasmapy.formulary.parameters.plasma_frequency_lite`
+    **Lite Version:** `~plasmapy.formulary.frequencies.plasma_frequency_lite`
 
     Parameters
     ----------
@@ -307,7 +307,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     <Quantity 2.83930...e+10 Hz>
 
     For user convienence
-    `~plasmapy.formulary.parameters.plasma_frequency_lite` is bound to
+    `~plasmapy.formulary.frequencies.plasma_frequency_lite` is bound to
     this function and can be used as follows.
 
     >>> from plasmapy.particles import Particle
@@ -341,7 +341,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
 
 
 wp_ = plasma_frequency
-"""Alias to `~plasmapy.formulary.parameters.plasma_frequency`."""
+"""Alias to `~plasmapy.formulary.frequencies.plasma_frequency`."""
 
 
 @validate_quantities(

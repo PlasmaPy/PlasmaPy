@@ -2,9 +2,9 @@
 Module for testing functionality associated with calculating the
 plasma frequency.
 
-- `~plasmapy.formulary.parameters.plasma_frequency`
-- `~plasmapy.formulary.parameters.plasma_frequency_lite`
-- `~plasmapy.formulary.parameters.wp_`
+- `~plasmapy.formulary.frequencies.plasma_frequency`
+- `~plasmapy.formulary.frequencies.plasma_frequency_lite`
+- `~plasmapy.formulary.frequencies.wp_`
 """
 import astropy.units as u
 import numpy as np
@@ -28,7 +28,7 @@ def test_aliases(alias, parent):
 
 class TestPlasmaFrequency:
     """
-    Test class for `plasmapy.formulary.parameters.plasma_frequency`.
+    Test class for `plasmapy.formulary.frequencies.plasma_frequency`.
 
     Note: Testing of `plasma_frequency_lite` is done in a separate test
     class.
