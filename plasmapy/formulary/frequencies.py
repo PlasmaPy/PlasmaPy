@@ -443,7 +443,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
 
 
 wlh_ = lower_hybrid_frequency
-"""Alias to `~plasmapy.formulary.parameters.lower_hybrid_frequency`."""
+"""Alias to `~plasmapy.formulary.frequencies.lower_hybrid_frequency`."""
 
 
 @validate_quantities(
