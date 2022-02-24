@@ -810,6 +810,16 @@ def test_parameters_aliases(alias, parent):
             wp_,
             frequencies.wp_,
         ),
+        (
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            lower_hybrid_frequency,
+            frequencies.lower_hybrid_frequency,
+        ),
+        (
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            wlh_,
+            frequencies.wlh_,
+        ),
     ],
 )
 def test_deprecated(kwargs, deprecated_func, parent):
