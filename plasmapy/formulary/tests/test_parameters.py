@@ -7,6 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
+from plasmapy.formulary import frequencies
 from plasmapy.formulary import lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
@@ -30,6 +31,7 @@ from plasmapy.formulary.parameters import (
     nD_,
     oc_,
     plasma_frequency,
+    plasma_frequency_lite,
     pmag_,
     pth_,
     rc_,
@@ -41,6 +43,7 @@ from plasmapy.formulary.parameters import (
     va_,
     wc_,
     wlh_,
+    wp_,
     wuh_,
 )
 from plasmapy.particles import Particle
@@ -564,86 +567,6 @@ def test_thermal_pressure():
     assert_can_handle_nparray(thermal_pressure)
 
 
-def test_gyrofrequency():
-    r"""Test the gyrofrequency function in parameters.py."""
-
-    assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
-
-    assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
-
-    assert np.isclose(gyrofrequency(1 * u.T, "e-").value, 175882008784.72018)
-
-    assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
-
-    assert np.isclose(
-        gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206
-    )
-
-    assert np.isclose(
-        gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284
-    )
-
-    assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyrofrequency(u.m, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        gyrofrequency(u.m * 1, "e-")
-
-    assert np.isnan(gyrofrequency(B_nanarr, "e-")[-1])
-
-    # The following is a test to check that equivalencies from astropy
-    # are working.
-    omega_ce = gyrofrequency(2.2 * u.T, "e-")
-    f_ce = (omega_ce / (2 * np.pi)) / u.rad
-    f_ce_use_equiv = omega_ce.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
-    assert np.isclose(f_ce.value, f_ce_use_equiv.value)
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyrofrequency(5.0, "e-") == gyrofrequency(5.0 * u.T, "e-")
-
-    assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
-
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p").value, 95788335.834874)
-
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p").value, 229892006.00369796)
-
-    assert np.isclose(gyrofrequency(1 * u.G, particle="p").cgs.value, 9.58e3, rtol=2e-3)
-
-    assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
-
-    # Case when Z=1 is assumed
-    # assert gyrofrequency(B, particle='p+') == gyrofrequency(B, particle='H-1')
-
-    assert gyrofrequency(B, particle="e+") == gyrofrequency(B, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        gyrofrequency(8, "p")
-
-    with pytest.raises(u.UnitTypeError):
-        gyrofrequency(5 * u.m, "p")
-
-    with pytest.raises(InvalidParticleError):
-        gyrofrequency(8 * u.T, particle="asdfasd")
-
-    with pytest.warns(u.UnitsWarning):
-        # TODO this should be WARNS, not RAISES. and it's probably still raised
-        assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
-
-    gyrofrequency(1 * u.T, particle="p")
-    # testing for user input Z
-    testMeth1 = gyrofrequency(1 * u.T, particle="p", Z=0.8).si.value
-    testTrue1 = 76630665.79318453
-    errStr = f"gyrofrequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-5), errStr
-
-    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
-
-    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
-
-
 def test_Debye_number():
     r"""Test the Debye_number function in parameters.py."""
 
@@ -850,8 +773,6 @@ def test_Bohm_diffusion():
         (cs_, ion_sound_speed),
         (pth_, thermal_pressure),
         (betaH_, Hall_parameter),
-        (oc_, gyrofrequency),
-        (wc_, gyrofrequency),
         (nD_, Debye_number),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
@@ -868,6 +789,7 @@ def test_parameters_aliases(alias, parent):
 @pytest.mark.parametrize(
     "kwargs, deprecated_func, parent",
     [
+        # lengths
         (
             {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
             Debye_length,
@@ -903,6 +825,14 @@ def test_parameters_aliases(alias, parent):
             rhoc_,
             lengths.rhoc_,
         ),
+        # frequencies
+        (
+            {"B": 0.4 * u.T, "particle": "He+"},
+            gyrofrequency,
+            frequencies.gyrofrequency,
+        ),
+        ({"B": 0.4 * u.T, "particle": "He+"}, oc_, frequencies.oc_),
+        ({"B": 0.4 * u.T, "particle": "He+"}, wc_, frequencies.wc_),
     ],
 )
 def test_deprecated(kwargs, deprecated_func, parent):
