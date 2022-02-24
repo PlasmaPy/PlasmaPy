@@ -591,16 +591,6 @@ def _trilinear_analysis(vspace, cell):
         that a grid cell may contain more than one nullpoint.
     """
 
-    # Helper Function
-    def is_close(a, b):
-        arr = np.isclose(a, b, atol=_ATOL)
-        if type(arr) == np.bool_:
-            return arr
-        res = True
-        for b in arr:
-            res = res and b
-        return res
-
     # Critical Cell Corners
     f000 = cell
     f111 = [cell[0] + 1, cell[1] + 1, cell[2] + 1]
@@ -915,15 +905,15 @@ def _trilinear_analysis(vspace, cell):
     zbound = vspace[0][2][f111[0]][f111[1]][f111[2]]
 
     def bound(epoint):
-        a = (initial[0] < epoint[0] or is_close(initial[0], epoint[0])) and (
-            epoint[0] < xbound or is_close(epoint[0], xbound)
-        )
-        b = (initial[1] < epoint[1] or is_close(initial[1], epoint[1])) and (
-            epoint[1] < ybound or is_close(epoint[1], ybound)
-        )
-        c = (initial[2] < epoint[2] or is_close(initial[2], epoint[2])) and (
-            epoint[2] < zbound or is_close(epoint[2], zbound)
-        )
+        a = (
+            initial[0] < epoint[0] or np.isclose(initial[0], epoint[0], atol=_ATOL)
+        ) and (epoint[0] < xbound or np.isclose(epoint[0], xbound, atol=_ATOL))
+        b = (
+            initial[1] < epoint[1] or np.isclose(initial[1], epoint[1], atol=_ATOL)
+        ) and (epoint[1] < ybound or np.isclose(epoint[1], ybound, atol=_ATOL))
+        c = (
+            initial[2] < epoint[2] or np.isclose(initial[2], epoint[2], atol=_ATOL)
+        ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_ATOL))
         return a and b and c
 
     BxByEndpoints = list(filter(bound, BxByEndpoints))
