@@ -29,6 +29,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Drifts <drifts>                           | `plasmapy.formulary.drifts`             |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Frequencies <frequencies>                 | `plasmapy.formulary.frequencies`        |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
