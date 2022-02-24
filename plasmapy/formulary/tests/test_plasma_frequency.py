@@ -13,7 +13,7 @@ import pytest
 from astropy.constants.si import m_p
 from numba.extending import is_jitted
 
-from plasmapy.formulary.parameters import plasma_frequency, plasma_frequency_lite, wp_
+from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles import Particle
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
