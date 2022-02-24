@@ -12,6 +12,7 @@ from astropy.constants.si import c
 from typing import Union
 
 from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
@@ -300,8 +301,8 @@ def two_fluid(
             z_mean=z_mean,
         )
     v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean)
-    omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
-    omega_pe = pfp.plasma_frequency(n=n_e, particle="e-")
+    omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean)
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
 
     # Bellan2012JGR params equation 32
     alpha = np.cos(theta.value) ** 2

@@ -63,6 +63,7 @@ from numpy import pi
 
 from plasmapy import particles, utils
 from plasmapy.formulary import parameters
+from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
     chemical_potential,
@@ -803,7 +804,7 @@ def impact_parameter(
                 '"hls_max_interp", and "hls_full_interp" methods.'
             )
     # Debye length
-    lambdaDe = parameters.Debye_length(T, n_e)
+    lambdaDe = Debye_length(T, n_e)
     # de Broglie wavelength
     lambdaBroglie = hbar / (2 * reduced_mass * V)
     # distance of closest approach in 90° Coulomb collision
