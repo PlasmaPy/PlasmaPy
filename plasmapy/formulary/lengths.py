@@ -280,10 +280,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 rhoc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 
 @validate_quantities(
