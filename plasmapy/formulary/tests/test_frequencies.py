@@ -7,15 +7,19 @@ from plasmapy.formulary.frequencies import (
     gyrofrequency,
     lower_hybrid_frequency,
     plasma_frequency,
+    upper_hybrid_frequency,
     oc_,
     wc_,
     wlh_,
+    wuh_,
 )
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
 
+Z = 1
 ion = "p"
 n_i = 5e19 * u.m ** -3
+n_e = Z * 5e19 * u.m ** -3
 
 B = 1.0 * u.T
 B_nanarr = np.array([0.001, np.nan]) * u.T
@@ -27,6 +31,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (oc_, gyrofrequency),
         (wc_, gyrofrequency),
         (wlh_, lower_hybrid_frequency),
+        (wuh_, upper_hybrid_frequency),
     ],
 )
 def test_parameters_aliases(alias, parent):
@@ -149,3 +154,36 @@ def test_lower_hybrid_frequency():
             1.3 * u.T, 1e19 * u.m ** -3, "p+"
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
+
+
+def test_upper_hybrid_frequency():
+    r"""Test the upper_hybrid_frequency function in parameters.py."""
+
+    omega_uh = upper_hybrid_frequency(B, n_e=n_e)
+    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
+    omega_ce = gyrofrequency(B, "e-")
+    omega_pe = plasma_frequency(n=n_e, particle="e-")
+    assert omega_ce.unit.is_equivalent(u.rad / u.s)
+    assert omega_pe.unit.is_equivalent(u.rad / u.s)
+    assert omega_uh.unit.is_equivalent(u.rad / u.s)
+    assert omega_uh_hz.unit.is_equivalent(u.Hz)
+    left_hand_side = omega_uh ** 2
+    right_hand_side = omega_ce ** 2 + omega_pe ** 2
+    assert np.isclose(left_hand_side.value, right_hand_side.value)
+
+    assert np.isclose(omega_uh_hz.value, 69385868857.90918)
+
+    with pytest.raises(ValueError):
+        upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
+
+    with pytest.warns(u.UnitsWarning):
+        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
+            1.2 * u.T, 1.3 * u.m ** -3
+        )
+
+    with pytest.warns(u.UnitsWarning):
+        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
+            1.4, 1.3 * u.m ** -3
+        )
+
+    assert_can_handle_nparray(upper_hybrid_frequency)

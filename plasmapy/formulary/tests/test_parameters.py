@@ -680,39 +680,6 @@ def test_magnetic_energy_density():
     assert_can_handle_nparray(magnetic_energy_density)
 
 
-def test_upper_hybrid_frequency():
-    r"""Test the upper_hybrid_frequency function in parameters.py."""
-
-    omega_uh = upper_hybrid_frequency(B, n_e=n_e)
-    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
-    omega_ce = gyrofrequency(B, "e-")
-    omega_pe = plasma_frequency(n=n_e, particle="e-")
-    assert omega_ce.unit.is_equivalent(u.rad / u.s)
-    assert omega_pe.unit.is_equivalent(u.rad / u.s)
-    assert omega_uh.unit.is_equivalent(u.rad / u.s)
-    assert omega_uh_hz.unit.is_equivalent(u.Hz)
-    left_hand_side = omega_uh ** 2
-    right_hand_side = omega_ce ** 2 + omega_pe ** 2
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
-
-    assert np.isclose(omega_uh_hz.value, 69385868857.90918)
-
-    with pytest.raises(ValueError):
-        upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
-            1.2 * u.T, 1.3 * u.m ** -3
-        )
-
-    with pytest.warns(u.UnitsWarning):
-        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
-            1.4, 1.3 * u.m ** -3
-        )
-
-    assert_can_handle_nparray(upper_hybrid_frequency)
-
-
 def test_Bohm_diffusion():
     r"""Test Mag_Reynolds in dimensionless.py"""
 
@@ -739,7 +706,6 @@ def test_Bohm_diffusion():
         (nD_, Debye_number),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
-        (wuh_, upper_hybrid_frequency),
         (DB_, Bohm_diffusion),
     ],
 )
