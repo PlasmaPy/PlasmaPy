@@ -713,43 +713,6 @@ def test_upper_hybrid_frequency():
     assert_can_handle_nparray(upper_hybrid_frequency)
 
 
-def test_lower_hybrid_frequency():
-    r"""Test the lower_hybrid_frequency function in parameters.py."""
-
-    ion = "He-4 1+"
-    omega_ci = gyrofrequency(B, particle=ion)
-    omega_pi = plasma_frequency(n=n_i, particle=ion)
-    omega_ce = gyrofrequency(B, "e-")
-    omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
-    omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz=True)
-    assert omega_ci.unit.is_equivalent(u.rad / u.s)
-    assert omega_pi.unit.is_equivalent(u.rad / u.s)
-    assert omega_ce.unit.is_equivalent(u.rad / u.s)
-    assert omega_lh.unit.is_equivalent(u.rad / u.s)
-    left_hand_side = omega_lh ** -2
-    right_hand_side = (
-        1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
-    )
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
-
-    assert np.isclose(omega_lh_hz.value, 299878691.3223296)
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(np.nan * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.warns(u.UnitsWarning):
-        assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m ** -3, "p+"
-        )
-    assert_can_handle_nparray(lower_hybrid_frequency)
-
-
 def test_Bohm_diffusion():
     r"""Test Mag_Reynolds in dimensionless.py"""
 
@@ -777,7 +740,6 @@ def test_Bohm_diffusion():
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
         (wuh_, upper_hybrid_frequency),
-        (wlh_, lower_hybrid_frequency),
         (DB_, Bohm_diffusion),
     ],
 )
