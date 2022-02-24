@@ -3,11 +3,8 @@
 __all__ = [
     "Alfven_speed",
     "Bohm_diffusion",
-    "Debye_length",
     "Debye_number",
-    "gyroradius",
     "Hall_parameter",
-    "inertial_length",
     "ion_sound_speed",
     "kappa_thermal_speed",
     "lower_hybrid_frequency",
@@ -23,15 +20,11 @@ __all__ = [
 __aliases__ = [
     "betaH_",
     "cs_",
-    "cwp_",
     "DB_",
-    "lambdaD_",
     "nD_",
     "pmag_",
     "pth_",
-    "rc_",
     "rho_",
-    "rhoc_",
     "ub_",
     "va_",
     "vth_",
@@ -71,8 +64,8 @@ from plasmapy.utils.exceptions import (
     RelativityWarning,
 )
 
-__aliases__ += frequencies.__aliases__
-__all__ += frequencies.__all__ + __aliases__ + __lite_funcs__
+__aliases__ += frequencies.__aliases__ + lengths.__aliases__
+__all__ += frequencies.__all__ + lengths.__all__ + __aliases__ + __lite_funcs__
 
 e_si_unitless = e.value
 eps0_si_unitless = eps0.value
@@ -1203,9 +1196,6 @@ def Hall_parameter(
 
 betaH_ = Hall_parameter
 """Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
-
-
-
 
 
 @preserve_signature
