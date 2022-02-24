@@ -7,6 +7,7 @@ from astropy import units as u
 
 from plasmapy.dispersion.analytical.two_fluid_ import two_fluid
 from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import wc_
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -117,7 +118,7 @@ class TestTwoFluid:
 
         cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"])
         va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"])
-        wci = pfp.wc_(kwargs["B"], kwargs["ion"])
+        wci = wc_(kwargs["B"], kwargs["ion"])
 
         beta = (cs / va).value ** 2
         if not np.isclose(beta, 0.4, atol=1e-4):

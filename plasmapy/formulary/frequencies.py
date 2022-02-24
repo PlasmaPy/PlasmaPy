@@ -144,10 +144,10 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
 
 oc_ = gyrofrequency
-"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
+"""Alias to `~plasmapy.formulary.frequencies.gyrofrequency`."""
 
 wc_ = gyrofrequency
-"""Alias to `~plasmapy.formulary.parameters.gyrofrequency`."""
+"""Alias to `~plasmapy.formulary.frequencies.gyrofrequency`."""
 
 
 @preserve_signature
