@@ -10,7 +10,7 @@ import numpy as np
 
 from typing import Dict, Set
 
-from plasmapy.particles._elements import _PeriodicTable
+from plasmapy.particles._elements import PeriodicTable
 
 
 class _ParticleZooClass:
@@ -238,7 +238,7 @@ def _create_Particles_dict() -> Dict[str, dict]:
             "ion": "p+",
             "mass": const.m_p,
             "charge number": 1,
-            "periodic table": _PeriodicTable(
+            "periodic table": PeriodicTable(
                 group=1, period=1, block="s", category="nonmetal"
             ),
         },

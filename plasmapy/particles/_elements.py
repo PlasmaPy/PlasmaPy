@@ -19,7 +19,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class _PeriodicTable:
+class PeriodicTable:
     group: int
     period: int
     block: str
