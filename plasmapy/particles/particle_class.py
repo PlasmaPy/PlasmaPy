@@ -24,14 +24,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles import _elements, _parsing
-from plasmapy.particles._isotopes import data_about_isotopes
-from plasmapy.particles._special_particles import (
-    antiparticles,
-    data_about_special_particles,
-    particle_zoo,
-    special_ion_masses,
-)
+from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -471,7 +464,7 @@ class Particle(AbstractPhysicalParticle):
         self._validate_inputs()
         argument, mass_numb, Z = self.__inputs
         symbol = _parsing.dealias_particle_aliases(argument)
-        if symbol in data_about_special_particles:
+        if symbol in _special_particles.data_about_special_particles:
             self._attributes["symbol"] = symbol
         else:
             self._store_identity_of_atom(argument)
@@ -502,7 +495,7 @@ class Particle(AbstractPhysicalParticle):
 
     def _assign_particle_attributes(self):
         """Assign particle attributes and categories."""
-        if self.symbol in data_about_special_particles:
+        if self.symbol in _special_particles.data_about_special_particles:
             self._assign_special_particle_attributes()
         else:
             self._assign_atom_attributes()
@@ -512,10 +505,12 @@ class Particle(AbstractPhysicalParticle):
         attributes = self._attributes
         categories = self._categories
 
-        for attribute in data_about_special_particles[self.symbol]:
-            attributes[attribute] = data_about_special_particles[self.symbol][attribute]
+        for attribute in _special_particles.data_about_special_particles[self.symbol]:
+            attributes[attribute] = _special_particles.data_about_special_particles[
+                self.symbol
+            ][attribute]
 
-        particle_taxonomy = particle_zoo._taxonomy_dict
+        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
@@ -577,7 +572,7 @@ class Particle(AbstractPhysicalParticle):
 
         if isotope:
 
-            this_isotope = data_about_isotopes[isotope]
+            this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
             attributes["isotope mass"] = this_isotope.get("mass", None)
@@ -591,8 +586,8 @@ class Particle(AbstractPhysicalParticle):
         if element and not isotope:
             attributes["standard atomic weight"] = this_element.get("atomic mass", None)
 
-        if ion in special_ion_masses:
-            attributes["mass"] = special_ion_masses[ion]
+        if ion in _special_particles.special_ion_masses:
+            attributes["mass"] = _special_particles.special_ion_masses[ion]
 
         attributes["periodic table"] = _elements.PeriodicTable(
             group=this_element["group"],
@@ -792,8 +787,8 @@ class Particle(AbstractPhysicalParticle):
         >>> ~antineutron
         Particle("n")
         """
-        if self.symbol in antiparticles:
-            return Particle(antiparticles[self.symbol])
+        if self.symbol in _special_particles.antiparticles:
+            return Particle(_special_particles.antiparticles[self.symbol])
         else:
             raise ParticleError(
                 "The unary operator can only be used for elementary "
@@ -1115,9 +1110,9 @@ class Particle(AbstractPhysicalParticle):
         if self.isotope == "H-1":
             return const.m_p
         elif self.isotope == "D":
-            return special_ion_masses["D 1+"]
+            return _special_particles.special_ion_masses["D 1+"]
         elif self.isotope == "T":
-            return special_ion_masses["T 1+"]
+            return _special_particles.special_ion_masses["T 1+"]
         elif self.symbol == "n":
             return const.m_n
 
