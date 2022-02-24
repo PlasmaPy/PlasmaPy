@@ -20,12 +20,12 @@ from plasmapy.particles._elements import (
     data_about_elements,
     element_names_to_symbols,
 )
+from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.special_particles import (
     _data_about_special_particles,
     ParticleZoo,

@@ -17,6 +17,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import run_test
 
+from .._isotopes import data_about_isotopes
 from ..atomic import (
     _is_electron,
     atomic_number,
@@ -38,7 +39,6 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..isotopes import data_about_isotopes
 from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
 from ..symbols import atomic_symbol, element_name, isotope_symbol
 

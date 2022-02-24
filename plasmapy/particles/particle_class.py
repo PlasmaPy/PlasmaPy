@@ -25,6 +25,7 @@ from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles import _elements, _parsing
+from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -36,7 +37,6 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.special_particles import (
     _antiparticles,
     _data_about_special_particles,

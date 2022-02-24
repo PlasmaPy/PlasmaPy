@@ -28,6 +28,7 @@ from numbers import Integral, Real
 from typing import Any, List, Optional, Union
 
 from plasmapy.particles._elements import data_about_elements
+from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import (
     InvalidElementError,
@@ -35,7 +36,6 @@ from plasmapy.particles.exceptions import (
     InvalidParticleError,
     MissingParticleDataError,
 )
-from plasmapy.particles.isotopes import data_about_isotopes
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol
 from plasmapy.utils.decorators.deprecation import deprecated
