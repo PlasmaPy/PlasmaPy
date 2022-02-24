@@ -24,7 +24,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles import parsing
+from plasmapy.particles import _parsing
 from plasmapy.particles.elements import _data_about_elements, _PeriodicTable
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -471,7 +471,7 @@ class Particle(AbstractPhysicalParticle):
         """Store the particle's symbol and identifying information."""
         self._validate_inputs()
         argument, mass_numb, Z = self.__inputs
-        symbol = parsing._dealias_particle_aliases(argument)
+        symbol = parsing.dealias_particle_aliases(argument)
         if symbol in _data_about_special_particles:
             self._attributes["symbol"] = symbol
         else:
@@ -485,15 +485,13 @@ class Particle(AbstractPhysicalParticle):
         _, mass_numb, Z = self.__inputs
 
         try:
-            information_about_atom = parsing._parse_and_check_atomic_input(
+            information_about_atom = parsing.parse_and_check_atomic_input(
                 argument,
                 mass_numb=mass_numb,
                 Z=Z,
             )
         except Exception as exc:
-            errmsg = parsing._invalid_particle_errmsg(
-                argument, mass_numb=mass_numb, Z=Z
-            )
+            errmsg = parsing.invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
             raise InvalidParticleError(errmsg) from exc
 
         self._attributes["symbol"] = information_about_atom["symbol"]
@@ -2326,9 +2324,7 @@ def molecule(
     try:
         return Particle(symbol, Z=Z)
     except ParticleError:
-        element_dict, bare_symbol, Z = parsing._parse_and_check_molecule_input(
-            symbol, Z
-        )
+        element_dict, bare_symbol, Z = parsing.parse_and_check_molecule_input(symbol, Z)
         mass = 0 * u.kg
         for element_symbol, amount in element_dict.items():
             try:

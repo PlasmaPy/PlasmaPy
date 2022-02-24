@@ -1,11 +1,12 @@
-"""
-Functionality to parse representations of particles into standard form.
-
-.. attention::
-    This module is not part of PlasmaPy's public API.
-
-"""
-__all__ = []
+"""Functionality to parse representations of particles into standard form."""
+__all__ = [
+    "create_alias_dicts",
+    "dealias_particle_aliases",
+    "invalid_particle_errmsg",
+    "extract_charge",
+    "parse_and_check_atomic_input",
+    "parse_and_check_molecule_input",
+]
 
 import numpy as np
 import re
@@ -32,7 +33,7 @@ from plasmapy.particles.special_particles import (
 from plasmapy.utils import roman
 
 
-def _create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
+def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -114,12 +115,12 @@ def _create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
     return case_sensitive_aliases, case_insensitive_aliases
 
 
-_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(
+_case_sensitive_aliases, _case_insensitive_aliases = create_alias_dicts(
     _data_about_special_particles
 )
 
 
-def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
+def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     """
     Return the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
@@ -143,7 +144,7 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     return symbol
 
 
-def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
+def invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     """
     Return an appropriate error message for an
     `~plasmapy.particles.exceptions.InvalidParticleError`.
@@ -161,7 +162,7 @@ def _invalid_particle_errmsg(argument, mass_numb=None, Z=None):
     return errmsg
 
 
-def _extract_charge(arg: str):
+def extract_charge(arg: str):
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -220,7 +221,7 @@ def _extract_charge(arg: str):
     return isotope_info, Z_from_arg
 
 
-def _parse_and_check_atomic_input(
+def parse_and_check_atomic_input(
     argument: Union[str, Integral], mass_numb: Integral = None, Z: Integral = None
 ):
     """
@@ -388,7 +389,7 @@ def _parse_and_check_atomic_input(
     if not isinstance(argument, (str, Integral)):  # coverage: ignore
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
-    arg = _dealias_particle_aliases(argument)
+    arg = dealias_particle_aliases(argument)
 
     if arg in ParticleZoo.everything - {"p+"}:
         if (mass_numb is not None) or (Z is not None):
@@ -407,7 +408,7 @@ def _parse_and_check_atomic_input(
         Z_from_arg = None
         mass_numb_from_arg = None
     elif isinstance(arg, str):
-        isotope_info, Z_from_arg = _extract_charge(arg)
+        isotope_info, Z_from_arg = extract_charge(arg)
         element_info, mass_numb_from_arg = _extract_mass_number(isotope_info)
         element = _get_element(element_info)
 
@@ -478,7 +479,7 @@ def _parse_and_check_atomic_input(
     }
 
 
-def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
+def parse_and_check_molecule_input(argument: str, Z: Integral = None):
     """
     Separate the constitutive elements and charge of a molecule symbol.
 
@@ -513,7 +514,7 @@ def _parse_and_check_molecule_input(argument: str, Z: Integral = None):
     `ParticleWarning`
         If The charge is given both as an argument and in the symbol.
     """
-    molecule_info, z_from_arg = _extract_charge(argument)
+    molecule_info, z_from_arg = extract_charge(argument)
     if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):
         raise InvalidParticleError(
             f"{molecule_info} is not recognized as a molecule symbol."

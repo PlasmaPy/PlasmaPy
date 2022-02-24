@@ -1,16 +1,16 @@
 import pytest
 
 from plasmapy.particles import Particle
+from plasmapy.particles._parsing import (
+    _case_insensitive_aliases,
+    _case_sensitive_aliases,
+    dealias_particle_aliases,
+    parse_and_check_atomic_input,
+)
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
-)
-from plasmapy.particles.parsing import (
-    _case_insensitive_aliases,
-    _case_sensitive_aliases,
-    _dealias_particle_aliases,
-    _parse_and_check_atomic_input,
 )
 from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils.code_repr import call_string
@@ -54,7 +54,7 @@ def test_dealias_particle_aliases(alias, symbol):
     """Test that _dealias_particle_aliases correctly takes in aliases and
     returns the corresponding symbols, and returns the original argument
     if the argument does not correspond to an alias."""
-    result = _dealias_particle_aliases(alias)
+    result = dealias_particle_aliases(alias)
     assert result == symbol, (
         f"_dealias_particle_aliases({alias}) returns '{result}', which "
         f"differs from the expected symbol of '{symbol}'.\n\n"
@@ -270,7 +270,7 @@ parse_check_table = [
 
 @pytest.mark.parametrize("arg, kwargs, expected", parse_check_table)
 def test_parse_and_check_atomic_input(arg, kwargs, expected):
-    result = _parse_and_check_atomic_input(arg, **kwargs)
+    result = parse_and_check_atomic_input(arg, **kwargs)
     assert result == expected, (
         "Error in _parse_and_check_atomic_input.\n"
         "The resulting dictionary is:\n\n"
@@ -323,10 +323,10 @@ def test_parse_InvalidParticleErrors(arg, kwargs):
     InvalidParticleError when the input does not correspond
     to a real particle."""
     with pytest.raises(InvalidParticleError):
-        _parse_and_check_atomic_input(arg, **kwargs)
+        parse_and_check_atomic_input(arg, **kwargs)
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
-            f"{call_string(_parse_and_check_atomic_input, arg, kwargs)}, "
+            f"{call_string(parse_and_check_atomic_input, arg, kwargs)}, "
             f"but no exception was raised."
         )
 
@@ -337,10 +337,10 @@ def test_parse_InvalidElementErrors(arg):
     InvalidElementError when the input corresponds to a valid
     particle but not a valid element, isotope, or ion."""
     with pytest.raises(InvalidElementError):
-        _parse_and_check_atomic_input(arg)
+        parse_and_check_atomic_input(arg)
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
-            f"{call_string(_parse_and_check_atomic_input, arg)}, "
+            f"{call_string(parse_and_check_atomic_input, arg)}, "
             f"but no exception was raised."
         )
 
@@ -361,17 +361,17 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings):
     under the required conditions."""
 
     with pytest.warns(ParticleWarning) as record:
-        _parse_and_check_atomic_input(arg, **kwargs)
+        parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(
                 f"No AtomicWarning was issued by "
-                f"{call_string(_parse_and_check_atomic_input, arg, kwargs)} but the expected number "
+                f"{call_string(parse_and_check_atomic_input, arg, kwargs)} but the expected number "
                 f"of warnings was {num_warnings}"
             )
 
     assert len(record) == num_warnings, (
         f"The number of AtomicWarnings issued by "
-        f"{call_string(_parse_and_check_atomic_input, arg, kwargs)} "
+        f"{call_string(parse_and_check_atomic_input, arg, kwargs)} "
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )
