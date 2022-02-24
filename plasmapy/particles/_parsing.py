@@ -15,12 +15,12 @@ import warnings
 from numbers import Integral
 from typing import Dict, Union
 
+from plasmapy.particles import _isotopes
 from plasmapy.particles._elements import (
     atomic_numbers_to_symbols,
     data_about_elements,
     element_names_to_symbols,
 )
-from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
@@ -345,7 +345,7 @@ def parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in data_about_isotopes:
+            if isotope not in _isotopes.data_about_isotopes:
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."
