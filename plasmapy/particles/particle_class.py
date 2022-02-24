@@ -470,7 +470,7 @@ class Particle(AbstractPhysicalParticle):
         """Store the particle's symbol and identifying information."""
         self._validate_inputs()
         argument, mass_numb, Z = self.__inputs
-        symbol = parsing.dealias_particle_aliases(argument)
+        symbol = _parsing.dealias_particle_aliases(argument)
         if symbol in _data_about_special_particles:
             self._attributes["symbol"] = symbol
         else:
@@ -484,13 +484,15 @@ class Particle(AbstractPhysicalParticle):
         _, mass_numb, Z = self.__inputs
 
         try:
-            information_about_atom = parsing.parse_and_check_atomic_input(
+            information_about_atom = _parsing.parse_and_check_atomic_input(
                 argument,
                 mass_numb=mass_numb,
                 Z=Z,
             )
         except Exception as exc:
-            errmsg = parsing.invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
+            errmsg = _parsing.invalid_particle_errmsg(
+                argument, mass_numb=mass_numb, Z=Z
+            )
             raise InvalidParticleError(errmsg) from exc
 
         self._attributes["symbol"] = information_about_atom["symbol"]
