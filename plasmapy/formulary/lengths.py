@@ -88,7 +88,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
+"""Alias to `~plasmapy.formulary.lengths.Debye_length`."""
 
 
 @validate_quantities(
