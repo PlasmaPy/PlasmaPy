@@ -29,7 +29,13 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Drifts <drifts>                           | `plasmapy.formulary.drifts`             |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Frequencies <frequencies>                 | `plasmapy.formulary.frequencies`        |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Lengths <lengths>                         | `plasmapy.formulary.lengths`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Magnetostatics <magnetostatics>           | `plasmapy.formulary.magnetostatics`     |
@@ -57,9 +63,10 @@ for electron-volts, commonly used in plasma physics to denote
 temperature, although it is technically a unit of energy.
 
 Most functions expect `astropy.units.Quantity` as input, however some
-will use the `~plasmapy.utils.decorators.validate_quantities` decorator
-to automatically cast arguments to Quantities with appropriate units. If
-that happens, you will be notified via an `astropy.units.UnitsWarning`.
+will use the `~plasmapy.utils.decorators.validators.validate_quantities`
+decorator to automatically cast arguments to Quantities with appropriate
+units. If that happens, you will be notified via an
+`astropy.units.UnitsWarning`.
 
 Please note that well maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.

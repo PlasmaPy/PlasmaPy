@@ -11,6 +11,7 @@ from astropy.constants.si import c
 from typing import Union
 
 from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
@@ -282,8 +283,8 @@ def hollweg(
             z_mean=z_mean,
         ).value
         v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
-        omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
-        omega_pe = pfp.plasma_frequency(n=n_e, particle="e-").value
+        omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+        omega_pe = plasma_frequency(n=n_e, particle="e-").value
 
     # strip units from select input args
     k = k.value

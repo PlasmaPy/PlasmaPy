@@ -6,16 +6,20 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
+# parameters import must remain first so other imports can override
+# TODO: remove parameters import when issue #1433 is closed
+from plasmapy.formulary.parameters import *  # noqa
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.dielectric import *
 from plasmapy.formulary.dimensionless import *
 from plasmapy.formulary.distribution import *
 from plasmapy.formulary.drifts import *
+from plasmapy.formulary.frequencies import *
 from plasmapy.formulary.ionization import *
+from plasmapy.formulary.lengths import *
 from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
-from plasmapy.formulary.parameters import *
 from plasmapy.formulary.quantum import *
 from plasmapy.formulary.relativity import *
 
@@ -33,7 +37,9 @@ for modname in (
     "dimensionless",
     "distribution",
     "drifts",
+    "frequencies",
     "ionization",
+    "lengths",
     "magnetostatics",
     "mathematics",
     "parameters",
@@ -54,6 +60,9 @@ for modname in (
         __lite_funcs__.extend(obj.__lite_funcs__)
     except AttributeError:
         pass
+
+__aliases__ = list(sorted(set(__aliases__)))
+__lite_funcs__ = list(sorted(set(__lite_funcs__)))
 
 # cleanup namespace
 del modname, obj, obj_name
