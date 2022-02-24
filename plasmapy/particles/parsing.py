@@ -16,20 +16,23 @@ from typing import Dict, Union
 
 from plasmapy.particles.elements import (
     _atomic_numbers_to_symbols,
+    _data_about_elements,
     _element_names_to_symbols,
-    _elements,
 )
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotopes
-from plasmapy.particles.special_particles import _Particles, ParticleZoo
+from plasmapy.particles.isotopes import _data_about_isotopes
+from plasmapy.particles.special_particles import (
+    _data_about_special_particles,
+    ParticleZoo,
+)
 from plasmapy.utils import roman
 
 
-def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
+def _create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
     """
     Create dictionaries for case sensitive aliases and case
     insensitive aliases of special particles and antiparticles.
@@ -42,8 +45,8 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
 
-    for symbol in Particles.keys():
-        name = Particles[symbol]["name"]
+    for symbol in particles:
+        name = particles[symbol]["name"]
         case_insensitive_aliases[name.lower()] = symbol
 
     case_sensitive_aliases_for_a_symbol = [
@@ -111,7 +114,9 @@ def _create_alias_dicts(Particles: dict) -> (Dict[str, str], Dict[str, str]):
     return case_sensitive_aliases, case_insensitive_aliases
 
 
-_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(_Particles)
+_case_sensitive_aliases, _case_insensitive_aliases = _create_alias_dicts(
+    _data_about_special_particles
+)
 
 
 def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
@@ -129,9 +134,9 @@ def _dealias_particle_aliases(alias: Union[str, Integral]) -> str:
         or alias in _case_insensitive_aliases.values()
     ):
         symbol = alias
-    elif alias in _case_sensitive_aliases.keys():
+    elif alias in _case_sensitive_aliases:
         symbol = _case_sensitive_aliases[alias]
-    elif alias.lower() in _case_insensitive_aliases.keys():
+    elif alias.lower() in _case_insensitive_aliases:
         symbol = _case_insensitive_aliases[alias.lower()]
     else:
         symbol = alias
@@ -269,7 +274,7 @@ def _parse_and_check_atomic_input(
         `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-        if atomic_numb in _atomic_numbers_to_symbols.keys():
+        if atomic_numb in _atomic_numbers_to_symbols:
             return _atomic_numbers_to_symbols[atomic_numb]
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
@@ -311,7 +316,7 @@ def _parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-        if element_info.lower() in _element_names_to_symbols.keys():
+        if element_info.lower() in _element_names_to_symbols:
             element = _element_names_to_symbols[element_info.lower()]
         elif element_info in _atomic_numbers_to_symbols.values():
             element = element_info
@@ -339,7 +344,7 @@ def _parse_and_check_atomic_input(
             elif isotope == "H-3":
                 isotope = "T"
 
-            if isotope not in _isotopes.keys():
+            if isotope not in _data_about_isotopes:
                 raise InvalidParticleError(
                     f"The string '{isotope}' does not correspond to "
                     f"a valid isotope."
@@ -440,10 +445,10 @@ def _parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _elements[element]["atomic number"]:
+        if Z > _data_about_elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {_elements[element]['atomic number']}."
+                f"of {element}, which is {_data_about_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(
@@ -463,7 +468,7 @@ def _parse_and_check_atomic_input(
     else:
         symbol = element
 
-    nomenclature_dict = {
+    return {
         "symbol": symbol,
         "element": element,
         "isotope": isotope,
@@ -471,8 +476,6 @@ def _parse_and_check_atomic_input(
         "mass number": mass_numb,
         "charge number": Z,
     }
-
-    return nomenclature_dict
 
 
 def _parse_and_check_molecule_input(argument: str, Z: Integral = None):

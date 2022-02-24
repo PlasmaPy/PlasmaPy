@@ -251,11 +251,11 @@ def _create_Particles_dict() -> Dict[str, dict]:
         },
     }
 
-    for particle in special_attributes.keys():
+    for particle in special_attributes:
         Particles[particle] = {**special_attributes[particle], **Particles[particle]}
 
     for particle in ParticleZoo.everything:
-        if "half-life" not in Particles[particle].keys():
+        if "half-life" not in Particles[particle]:
             Particles[particle]["half-life"] = np.inf * u.s
 
     for particle in ParticleZoo.particles:
@@ -267,7 +267,7 @@ def _create_Particles_dict() -> Dict[str, dict]:
     return Particles
 
 
-_Particles = _create_Particles_dict()
+_data_about_special_particles = _create_Particles_dict()
 
 _special_ion_masses = {
     "p+": const.m_p,
@@ -298,4 +298,4 @@ if __name__ == "__main__":  # coverage: ignore
     from pprint import pprint
 
     print("Particles:")
-    pprint(_Particles)
+    pprint(_data_about_special_particles)
