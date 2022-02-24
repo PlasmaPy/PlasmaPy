@@ -15,6 +15,7 @@ from plasmapy.formulary.dielectric import *
 from plasmapy.formulary.dimensionless import *
 from plasmapy.formulary.distribution import *
 from plasmapy.formulary.drifts import *
+from plasmapy.formulary.frequencies import *
 from plasmapy.formulary.ionization import *
 from plasmapy.formulary.lengths import *
 from plasmapy.formulary.magnetostatics import *
@@ -36,6 +37,7 @@ for modname in (
     "dimensionless",
     "distribution",
     "drifts",
+    "frequencies",
     "ionization",
     "lengths",
     "magnetostatics",
