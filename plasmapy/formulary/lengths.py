@@ -357,7 +357,7 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
 
 cwp_ = inertial_length
 """
-Alias to `~plasmapy.formulary.parameters.inertial_length`.
+Alias to `~plasmapy.formulary.lengths.inertial_length`.
 
 * Name is shorthand for :math:`c / ω_p`.
 """
