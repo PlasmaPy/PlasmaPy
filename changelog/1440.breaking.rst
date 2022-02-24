@@ -1,0 +1,7 @@
+Changed ``plasmapy.particles.elements`` to ``plasmapy.particles._elements``,
+``plasmapy.particles.isotopes`` to ``plasmapy.particles._isotopes``,
+``plasmapy.particles.parsing`` to ``plasmapy.particles._parsing``, and
+``plasmapy.particles.special_particles`` to ``plasmapy.particles._special_particles``.
+Most of these modules did not contain any objects that were part of the
+public API, expect for ``plasmapy.particles.special_particles.ParticleZoo``
+which was removed from the public API.
