@@ -45,7 +45,6 @@ from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import (
-    angular_freq_to_hz,
     bind_lite_func,
     check_relativistic,
     deprecated,
