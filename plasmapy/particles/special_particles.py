@@ -10,7 +10,7 @@ import numpy as np
 
 from typing import Dict, Set
 
-from plasmapy.particles.elements import _PeriodicTable
+from plasmapy.particles._elements import _PeriodicTable
 
 
 class _ParticleZooClass:

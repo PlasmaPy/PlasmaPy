@@ -25,7 +25,7 @@ from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
 from plasmapy.particles import _parsing
-from plasmapy.particles.elements import _data_about_elements, _PeriodicTable
+from plasmapy.particles._elements import _PeriodicTable, data_about_elements
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -565,7 +565,7 @@ class Particle(AbstractPhysicalParticle):
 
         # Element properties
 
-        this_element = _data_about_elements[element]
+        this_element = data_about_elements[element]
 
         attributes["atomic number"] = this_element["atomic number"]
         attributes["element name"] = this_element["element name"]

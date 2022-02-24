@@ -15,10 +15,10 @@ import warnings
 from numbers import Integral
 from typing import Dict, Union
 
-from plasmapy.particles.elements import (
-    _atomic_numbers_to_symbols,
-    _data_about_elements,
-    _element_names_to_symbols,
+from plasmapy.particles._elements import (
+    atomic_numbers_to_symbols,
+    data_about_elements,
+    element_names_to_symbols,
 )
 from plasmapy.particles.exceptions import (
     InvalidElementError,
@@ -275,8 +275,8 @@ def parse_and_check_atomic_input(
         `~plasmapy.particles.exceptions.InvalidParticleError` if the atomic number does
         not represent a known element.
         """
-        if atomic_numb in _atomic_numbers_to_symbols:
-            return _atomic_numbers_to_symbols[atomic_numb]
+        if atomic_numb in atomic_numbers_to_symbols:
+            return atomic_numbers_to_symbols[atomic_numb]
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
@@ -317,9 +317,9 @@ def parse_and_check_atomic_input(
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
         """
-        if element_info.lower() in _element_names_to_symbols:
-            element = _element_names_to_symbols[element_info.lower()]
-        elif element_info in _atomic_numbers_to_symbols.values():
+        if element_info.lower() in element_names_to_symbols:
+            element = element_names_to_symbols[element_info.lower()]
+        elif element_info in atomic_numbers_to_symbols.values():
             element = element_info
         else:
             raise InvalidParticleError(
@@ -446,10 +446,10 @@ def parse_and_check_atomic_input(
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _data_about_elements[element]["atomic number"]:
+        if Z > data_about_elements[element]["atomic number"]:
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
-                f"of {element}, which is {_data_about_elements[element]['atomic number']}."
+                f"of {element}, which is {data_about_elements[element]['atomic number']}."
             )
         elif Z <= -3:
             warnings.warn(

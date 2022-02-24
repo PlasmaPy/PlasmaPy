@@ -27,8 +27,8 @@ import astropy.units as u
 from numbers import Integral, Real
 from typing import Any, List, Optional, Union
 
+from plasmapy.particles._elements import data_about_elements
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.elements import _data_about_elements
 from plasmapy.particles.exceptions import (
     InvalidElementError,
     InvalidIsotopeError,
@@ -616,7 +616,7 @@ def known_isotopes(argument: Union[str, Integral] = None) -> List[str]:
             raise InvalidParticleError("Invalid particle in known_isotopes.")
     elif argument is None:
         isotopes_list = []
-        for atomic_numb in range(1, len(_data_about_elements) + 1):
+        for atomic_numb in range(1, len(data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
     return isotopes_list
@@ -964,7 +964,7 @@ def periodic_table_period(argument: Union[str, Integral]) -> Integral:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    period = _data_about_elements[symbol]["period"]
+    period = data_about_elements[symbol]["period"]
     return period
 
 
@@ -1018,7 +1018,7 @@ def periodic_table_group(argument: Union[str, Integral]) -> Integral:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    group = _data_about_elements[symbol]["group"]
+    group = data_about_elements[symbol]["group"]
     return group
 
 
@@ -1072,7 +1072,7 @@ def periodic_table_block(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    block = _data_about_elements[symbol]["block"]
+    block = data_about_elements[symbol]["block"]
     return block
 
 
@@ -1124,7 +1124,7 @@ def periodic_table_category(argument: Union[str, Integral]) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    category = _data_about_elements[symbol]["category"]
+    category = data_about_elements[symbol]["category"]
     return category
 
 
