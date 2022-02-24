@@ -833,6 +833,21 @@ def test_parameters_aliases(alias, parent):
         ),
         ({"B": 0.4 * u.T, "particle": "He+"}, oc_, frequencies.oc_),
         ({"B": 0.4 * u.T, "particle": "He+"}, wc_, frequencies.wc_),
+        (
+            {"n": 1.0e18, "mass": 6.64556605e-27, "z_mean": 1.0},
+            plasma_frequency_lite,
+            frequencies.plasma_frequency_lite,
+        ),
+        (
+            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            plasma_frequency,
+            frequencies.plasma_frequency,
+        ),
+        (
+            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            wp_,
+            frequencies.wp_,
+        ),
     ],
 )
 def test_deprecated(kwargs, deprecated_func, parent):
