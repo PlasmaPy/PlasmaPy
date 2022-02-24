@@ -157,6 +157,8 @@ for modname, name in funcs_to_deprecate_wrap:
         ),
     )(getattr(globals()[f"{modname}"], name))
 
+del modname, name
+
 
 def _grab_charge(ion: Particle, z_mean=None):
     """
