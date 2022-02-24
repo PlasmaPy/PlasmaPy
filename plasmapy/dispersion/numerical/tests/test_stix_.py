@@ -1,9 +1,9 @@
+"Test functinality of Stix in plasmapy.dispersion.numerical.stix_"
 from astropy import units as u
-from .stix_ import stix
 import numpy as np
 import pytest
 
-#from plasmapy.dispersion.numerical import stix_ as stix
+from plasmapy.dispersion.numerical.stix_ import stix
 
 class TestStix:
     _kwargs_single_valued = {

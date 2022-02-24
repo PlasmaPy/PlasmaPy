@@ -198,10 +198,10 @@ def stix(
     for i in range(sum_len):
         component_frequency[i] = pfp.gyrofrequency(B=B, particle=ions[i], signed=True)
 
-    if omega_int == False:
+    if omega_int is False:
         for i in range(sum_len):
             plasma_freq[i] = float(omega_ions[i].value)
-    elif omega_int == True:
+    elif omega_int is True:
         plasma_freq[0] = float(omega_ions.value)
     else:
         raise TypeError(
