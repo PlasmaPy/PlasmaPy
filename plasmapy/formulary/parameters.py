@@ -78,70 +78,14 @@ e_si_unitless = e.value
 eps0_si_unitless = eps0.value
 k_B_si_unitless = k_B.value
 
-Debye_length = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The Debye_length() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.Debye_length)
-
-lambdaD_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The lambdaD_() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.lambdaD_)
-
-gyroradius = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The gyroradius() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.gyroradius)
-
-rc_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The rc_() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.rc_)
-
-rhoc_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The inertial_length() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.rhoc_)
-
-inertial_length = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The inertial_length() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.inertial_length)
-
-cwp_ = deprecated(
-    since="0.7.0",
-    warning_type=PlasmaPyFutureWarning,
-    message=(
-        "The cwp_() function has been moved to plasmapy.formulary.lengths."
-        "  Update your import to get rid of this warning."
-    ),
-)(lengths.cwp_)
-
 funcs_to_deprecate_wrap = [  # (module_name, func_name)
+    ("lengths", "Debye_length"),
+    ("lengths", "lambdaD_"),
+    ("lengths", "gyroradius"),
+    ("lengths", "rc_"),
+    ("lengths", "rhoc_"),
+    ("lengths", "inertial_length"),
+    ("lengths", "cwp_"),
     ("frequencies", "gyrofrequency"),
     ("frequencies", "oc_"),
     ("frequencies", "wc_"),
