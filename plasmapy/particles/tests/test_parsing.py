@@ -2,8 +2,8 @@ import pytest
 
 from plasmapy.particles import Particle
 from plasmapy.particles._parsing import (
-    _case_insensitive_aliases,
-    _case_sensitive_aliases,
+    case_insensitive_aliases,
+    case_sensitive_aliases,
     dealias_particle_aliases,
     parse_and_check_atomic_input,
 )
@@ -58,12 +58,12 @@ def test_dealias_particle_aliases(alias, symbol):
     assert result == symbol, (
         f"_dealias_particle_aliases({alias}) returns '{result}', which "
         f"differs from the expected symbol of '{symbol}'.\n\n"
-        f"_case_insensitive_aliases:\n{_case_insensitive_aliases}\n\n"
-        f"_case_sensitive_aliases:\n{_case_sensitive_aliases}"
+        f"_case_insensitive_aliases:\n{case_insensitive_aliases}\n\n"
+        f"_case_sensitive_aliases:\n{case_sensitive_aliases}"
     )
 
 
-alias_dictionaries = [_case_sensitive_aliases, _case_insensitive_aliases]
+alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 
 
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)

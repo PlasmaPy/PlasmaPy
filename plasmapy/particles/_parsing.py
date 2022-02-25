@@ -99,7 +99,7 @@ def create_alias_dicts(particles: dict) -> (Dict[str, str], Dict[str, str]):
     return case_sensitive_aliases, case_insensitive_aliases
 
 
-_case_sensitive_aliases, _case_insensitive_aliases = create_alias_dicts(
+case_sensitive_aliases, case_insensitive_aliases = create_alias_dicts(
     _special_particles.data_about_special_particles
 )
 
@@ -115,14 +115,14 @@ def dealias_particle_aliases(alias: Union[str, Integral]) -> str:
     if not isinstance(alias, str):
         symbol = alias
     elif (
-        alias in _case_sensitive_aliases.values()
-        or alias in _case_insensitive_aliases.values()
+        alias in case_sensitive_aliases.values()
+        or alias in case_insensitive_aliases.values()
     ):
         symbol = alias
-    elif alias in _case_sensitive_aliases:
-        symbol = _case_sensitive_aliases[alias]
-    elif alias.lower() in _case_insensitive_aliases:
-        symbol = _case_insensitive_aliases[alias.lower()]
+    elif alias in case_sensitive_aliases:
+        symbol = case_sensitive_aliases[alias]
+    elif alias.lower() in case_insensitive_aliases:
+        symbol = case_insensitive_aliases[alias.lower()]
     else:
         symbol = alias
     return symbol
@@ -192,7 +192,7 @@ def extract_charge(arg: str):
         char = arg[-1]
         match = re.match(f"[{char}]*", arg[::-1])
         Z_from_arg = match.span()[1]
-        isotope_info = arg[0 : len(arg) - match.span()[1]]
+        isotope_info = arg[: len(arg) - match.span()[1]]
 
         if char == "-":
             Z_from_arg = -Z_from_arg
@@ -252,7 +252,7 @@ def parse_and_check_atomic_input(
         correct type.
     """
 
-    def _atomic_number_to_symbol(atomic_numb: Integral):
+    def atomic_number_to_symbol(atomic_numb: Integral):
         """
         Return the atomic symbol associated with an integer
         representing an atomic number, or raises an
@@ -264,7 +264,7 @@ def parse_and_check_atomic_input(
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
-    def _extract_mass_number(isotope_info: str):
+    def extract_mass_number(isotope_info: str):
         """
         Receives a string representing an element or isotope.
         Return a tuple containing a string that should represent
@@ -296,7 +296,7 @@ def parse_and_check_atomic_input(
 
         return element_info, mass_numb
 
-    def _get_element(element_info: str) -> str:
+    def get_element(element_info: str) -> str:
         """
         Receive a `str` representing an element's symbol or
         name, and returns a `str` representing the atomic symbol.
@@ -312,7 +312,7 @@ def parse_and_check_atomic_input(
             )
         return element
 
-    def _reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
+    def reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
         """
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
@@ -340,7 +340,7 @@ def parse_and_check_atomic_input(
 
         return isotope
 
-    def _reconstruct_ion_symbol(
+    def reconstruct_ion_symbol(
         element: str, isotope: Integral = None, Z: Integral = None
     ):
         """
@@ -388,13 +388,13 @@ def parse_and_check_atomic_input(
         arg = int(arg)
 
     if isinstance(arg, Integral):
-        element = _atomic_number_to_symbol(arg)
+        element = atomic_number_to_symbol(arg)
         Z_from_arg = None
         mass_numb_from_arg = None
     elif isinstance(arg, str):
         isotope_info, Z_from_arg = extract_charge(arg)
-        element_info, mass_numb_from_arg = _extract_mass_number(isotope_info)
-        element = _get_element(element_info)
+        element_info, mass_numb_from_arg = extract_mass_number(isotope_info)
+        element = get_element(element_info)
 
     if mass_numb is not None and mass_numb_from_arg is not None:
         if mass_numb != mass_numb_from_arg:
@@ -444,8 +444,8 @@ def parse_and_check_atomic_input(
                 ParticleWarning,
             )
 
-    isotope = _reconstruct_isotope_symbol(element, mass_numb)
-    ion = _reconstruct_ion_symbol(element, isotope, Z)
+    isotope = reconstruct_isotope_symbol(element, mass_numb)
+    ion = reconstruct_ion_symbol(element, isotope, Z)
 
     if ion:
         symbol = ion
