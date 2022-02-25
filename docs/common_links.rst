@@ -78,13 +78,13 @@
 .. PlasmaPy documentation
 .. ----------------------
 
-.. |bibliography| replace:: bibliography_
-.. |contributor guide| replace:: `contributor guide`_
-.. |documentation guide| replace:: `documentation guide`_
-.. |glossary| replace:: glossary_
-.. |plasma-calculator| replace:: `plasmapy-calculator`_
-.. |release guide| replace:: `release guide`_
-.. |testing guide| replace:: `testing guide`_
+.. |bibliography| replace:: :ref:`bibliography`\
+.. |contributor guide| replace:: :ref:`contributor guide`\
+.. |documentation guide| replace:: :ref:`documentation guide`\
+.. |glossary| replace:: :ref:`glossary`\
+.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
+.. |release guide| replace:: :ref:`release guide`\
+.. |testing guide| replace:: :ref:`testing guide`\
 
 .. --------
 .. Websites
