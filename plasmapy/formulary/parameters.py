@@ -46,10 +46,7 @@ from plasmapy.utils.decorators import (
     preserve_signature,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import (
-    PhysicsWarning,
-    PlasmaPyFutureWarning,
-)
+from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
 __aliases__ += frequencies.__aliases__ + lengths.__aliases__
 __lite_funcs__ += frequencies.__lite_funcs__
