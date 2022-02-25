@@ -1,4 +1,4 @@
-.. _Release Guide:
+.. _release guide:
 
 *************
 Release Guide
