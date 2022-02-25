@@ -2,9 +2,9 @@ Renamed ``plasmapy.particles.elements`` to ``plasmapy.particles._elements``,
 ``plasmapy.particles.isotopes`` to ``plasmapy.particles._isotopes``,
 ``plasmapy.particles.parsing`` to ``plasmapy.particles._parsing``, and
 ``plasmapy.particles.special_particles`` to
-``plasmapy.particles._special_particles``. The leading underscore
-indicates that these modules are private (i.e. not considered part of
-PlasmaPy's public API). Most of these modules did not contain any public
-objects, except for ``plasmapy.particles.special_particles.ParticleZoo``
-which was renamed to ``plasmapy.particles._special_particles.particle_zoo``
-and removed from the public API.
+``plasmapy.particles._special_particles``. Consequently, these modules
+are no longer part of PlasmaPy's public API. Most of these modules did
+not contain any public objects, except for
+``plasmapy.particles.special_particles.ParticleZoo`` which was renamed
+to ``plasmapy.particles._special_particles.particle_zoo`` and removed
+from the public API.
