@@ -5,6 +5,8 @@ atoms, isotopes, ions, and other particles.
 # __all__ will be auto populated below
 __all__ = []
 
+import inspect
+
 from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import (
     atomic_number,
@@ -74,7 +76,14 @@ helium-4).
 """
 
 # auto populate __all__
-for obj_name in list(globals()):
-    if not (obj_name.startswith("__") or obj_name.endswith("__")):
-        __all__.append(obj_name)
+for name, obj in list(globals().items()):
+    if inspect.ismodule(obj):
+        continue
+    elif name.startswith("__") or name.endswith("__"):
+        continue
+
+    __all__.append(name)
+
 __all__.sort()
+
+del inspect, name, obj
