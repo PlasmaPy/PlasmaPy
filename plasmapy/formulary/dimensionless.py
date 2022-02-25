@@ -10,20 +10,223 @@ numbers.
 """
 __all__ = [
     "beta",
+    "Debye_number",
+    "Hall_parameter",
     "Mag_Reynolds",
     "quantum_theta",
-    "Re_",
     "Reynolds_number",
-    "Rm_",
 ]
-__aliases__ = ["Re_", "Rm_"]
+__aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
-from astropy import constants
-from astropy import units as u
-from astropy.constants.codata2010 import mu0
+import astropy.units as u
+import numpy as np
+
+from astropy.constants.si import k_B, mu0
 
 from plasmapy.formulary import parameters, quantum
+from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.formulary.lengths import Debye_length
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ += __aliases__
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
+    r"""Return the number of electrons within a sphere with a radius
+    of the Debye length.
+
+    **Aliases:** `nD_`
+
+    Parameters
+    ----------
+    T_e : `~astropy.units.Quantity`
+        Electron temperature.
+
+    n_e : `~astropy.units.Quantity`
+        Electron number density.
+
+    Raises
+    ------
+    `TypeError`
+        If either argument is not a `~astropy.units.Quantity`.
+
+    `astropy.units.UnitConversionError`
+        If either argument is in incorrect units.
+
+    `ValueError`
+        If either argument contains invalid values.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Returns
+    -------
+    N_D : `~astropy.units.Quantity`
+        Number of electrons within a sphere with a radius of the Debye
+        length.
+
+    Notes
+    -----
+    The Debye number is the number of electrons contained within a
+    sphere with a radius of a Debye length and is given by
+
+    .. math::
+        N_D = \frac{4π}{3} n_e λ_D^3
+
+    The Debye number is also known as the plasma parameter.
+
+    Collective behavior requires :math:`N_D ≫ 1`\ .
+
+    See Also
+    --------
+    ~plasmapy.formulary.lengths.Debye_length
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
+    <Quantity 2.17658...e+08>
+
+    """
+
+    lambda_D = Debye_length(T_e, n_e)
+    N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
+
+    return N_D
+
+
+nD_ = Debye_number
+"""Alias to `~plasmapy.formulary.dimensionless.Debye_number`."""
+
+
+@validate_quantities(
+    n={"can_be_negative": False},
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+)
+def Hall_parameter(
+    n: u.m ** -3,
+    T: u.K,
+    B: u.T,
+    ion: Particle,
+    particle: Particle,
+    coulomb_log=None,
+    V=None,
+    coulomb_log_method="classical",
+):
+    r"""
+    Calculate the ``particle`` Hall parameter for a plasma.
+
+    The Hall parameter for plasma species :math:`s` (``particle``) is given by:
+
+    .. math::
+
+        β_{s} = \frac{Ω_{c s}}{ν_{s s^{\prime}}}
+
+    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species :math:`s`
+    (``particle``) and :math:`ν_{s s^{\prime}}` is the collision frequency
+    between plasma species :math:`s` (``particle``) and species
+    :math:`s^{\prime}` (``ion``).
+
+    **Aliases:** `betaH_`
+
+    Parameters
+    ----------
+    n : `~astropy.units.quantity.Quantity`
+        The number density associated with ``particle``.
+
+    T : `~astropy.units.quantity.Quantity`
+        The temperature of associated with ``particle``.
+
+    B : `~astropy.units.quantity.Quantity`
+        The magnetic field.
+
+    ion : `~plasmapy.particles.particle_class.Particle`
+        The type of ion ``particle`` is colliding with.
+
+    particle : `~plasmapy.particles.particle_class.Particle`
+        The particle species for which the Hall parameter is calculated for.
+        Representation of the particle species (e.g., ``'p'`` for protons,
+        ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
+        If no charge state information is provided, then the particles are
+        assumed to be singly charged.
+
+    coulomb_log : `float`, optional
+        Preset value for the Coulomb logarithm. Used mostly for testing purposes.
+
+    V : `~astropy.units.quantity.Quantity`
+        The relative velocity between ``particle`` and ``ion``.  If not provided,
+        then the ``particle`` thermal velocity is assumed
+        (`~plasmapy.formulary.parameters.thermal_speed`).
+
+    coulomb_log_method : `str`, optional
+        The method by which to compute the Coulomb logarithm.
+        The default method is the classical straight-line Landau-Spitzer
+        method (``"classical"`` or ``"ls"``). The other 6 supported methods
+        are ``"ls_min_interp"``, ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
+        ``"hls_min_interp"``, ``"hls_max_interp"``, and ``"hls_full_interp"``.
+        Please refer to the docstring of
+        `~plasmapy.formulary.collisions.Coulomb_logarithm` for more
+        information about these methods.
+
+    See Also
+    --------
+    ~plasmapy.formulary.frequencies.gyrofrequency
+    ~plasmapy.formulary.collisions.fundamental_electron_collision_freq
+    ~plasmapy.formulary.collisions.fundamental_ion_collision_freq
+    ~plasmapy.formulary.collisions.Coulomb_logarithm
+
+    Returns
+    -------
+    `~astropy.units.quantity.Quantity`
+        Hall parameter for ``particle``.
+
+    Notes
+    -----
+    * For calculating the collision frequency
+      `~plasmapy.formulary.collisions.fundamental_electron_collision_freq` is used
+      when ``particle`` is an electron and
+      `~plasmapy.formulary.collisions.fundamental_ion_collision_freq` when
+      ``particle`` is an ion.
+    * The collision frequencies are calculated assuming a slowly moving
+      Maxwellian distribution.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import pytest
+    >>> from plasmapy.utils.exceptions import RelativityWarning
+
+    >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    <Quantity 2.500...e+15>
+    >>> with pytest.warns(RelativityWarning):
+    ...     Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, 'He-4 +1', 'e-')
+    <Quantity 2.11158...e+17>
+    """
+    from plasmapy.formulary.collisions import (
+        fundamental_electron_collision_freq,
+        fundamental_ion_collision_freq,
+    )
+
+    gyro_frequency = gyrofrequency(B, particle)
+    gyro_frequency = gyro_frequency / u.radian
+    if Particle(particle).symbol == "e-":
+        coll_rate = fundamental_electron_collision_freq(
+            T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
+        )
+    else:
+        coll_rate = fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
+    return gyro_frequency / coll_rate
+
+
+betaH_ = Hall_parameter
+"""Alias to `~plasmapy.formulary.dimensionless.Hall_parameter`."""
 
 
 @validate_quantities(
@@ -82,7 +285,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     ~plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
-    thermal_energy = constants.k_B * T
+    thermal_energy = k_B * T
     theta = thermal_energy / fermi_energy
     return theta
 

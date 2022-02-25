@@ -7,7 +7,7 @@ from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary import frequencies, lengths
+from plasmapy.formulary import dimensionless, frequencies, lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
@@ -566,45 +566,6 @@ def test_thermal_pressure():
     assert_can_handle_nparray(thermal_pressure)
 
 
-def test_Debye_number():
-    r"""Test the Debye_number function in parameters.py."""
-
-    assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
-
-    T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-    assert np.isclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value)
-
-    assert np.isclose(Debye_number(1 * u.eV, 1 * u.cm ** -3).value, 1720862385.43342)
-
-    with pytest.warns(u.UnitsWarning):
-        Debye_number(T_e, 4)
-
-    with pytest.raises(ValueError):
-        Debye_number(None, n_e)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_number(5 * u.m, 5 * u.m ** -3)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_number(5 * u.K, 5 * u.m ** 3)
-
-    with pytest.raises(ValueError):
-        Debye_number(5j * u.K, 5 * u.cm ** -3)
-
-    Tarr2 = np.array([1, 2]) * u.K
-    narr3 = np.array([1, 2, 3]) * u.m ** -3
-    with pytest.raises(ValueError):
-        Debye_number(Tarr2, narr3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_number(1.1, 1.1) == Debye_number(1.1 * u.K, 1.1 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
-
-    assert_can_handle_nparray(Debye_number)
-
-
 def test_magnetic_pressure():
     r"""Test the magnetic_pressure function in parameters.py."""
 
@@ -701,8 +662,6 @@ def test_Bohm_diffusion():
         (va_, Alfven_speed),
         (cs_, ion_sound_speed),
         (pth_, thermal_pressure),
-        (betaH_, Hall_parameter),
-        (nD_, Debye_number),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
         (DB_, Bohm_diffusion),
@@ -716,43 +675,43 @@ def test_parameters_aliases(alias, parent):
 @pytest.mark.parametrize(
     "kwargs, deprecated_func, parent",
     [
-        # lengths
+        # dimensionless
+        #
         (
-            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
-            Debye_length,
-            lengths.Debye_length,
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_number,
+            dimensionless.Debye_number,
         ),
         (
-            {"T_e": 5800 * u.K, "n_e": 1e18 * u.m ** -3},
-            lambdaD_,
-            lengths.lambdaD_,
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            nD_,
+            dimensionless.nD_,
         ),
         (
-            {"n": 1e18 * u.m ** -3, "particle": "p"},
-            inertial_length,
-            lengths.inertial_length,
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            Hall_parameter,
+            dimensionless.Hall_parameter,
         ),
         (
-            {"n": 1e18 * u.m ** -3, "particle": "p"},
-            cwp_,
-            lengths.cwp_,
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            betaH_,
+            dimensionless.betaH_,
         ),
-        (
-            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
-            gyroradius,
-            lengths.gyroradius,
-        ),
-        (
-            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
-            rc_,
-            lengths.rc_,
-        ),
-        (
-            {"B": 0.4 * u.T, "particle": "He+", "T": 5800 * u.K},
-            rhoc_,
-            lengths.rhoc_,
-        ),
+        #
         # frequencies
+        #
         (
             {"B": 0.4 * u.T, "particle": "He+"},
             gyrofrequency,
@@ -794,6 +753,44 @@ def test_parameters_aliases(alias, parent):
             {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
             wuh_,
             frequencies.wuh_,
+        ),
+        #
+        # lengths
+        #
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_length,
+            lengths.Debye_length,
+        ),
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            lambdaD_,
+            lengths.lambdaD_,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            inertial_length,
+            lengths.inertial_length,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            cwp_,
+            lengths.cwp_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            gyroradius,
+            lengths.gyroradius,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            rc_,
+            lengths.rc_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            rhoc_,
+            lengths.rhoc_,
         ),
     ],
 )
