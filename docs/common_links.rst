@@ -1,5 +1,5 @@
 .. These are ReST substitutions and links that can be used throughout the docs
-.. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+   (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
 
 .. ------------------
 .. plasmapy.formulary
@@ -78,13 +78,13 @@
 .. PlasmaPy documentation
 .. ----------------------
 
-.. |bibliography| replace:: :ref:`bibliography`
-.. |contributor guide| replace:: :ref:`contributor guide`
-.. |documentation guide| replace:: :ref:`documentation guide`
-.. |glossary| replace:: :ref:`glossary`
-.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`
-.. |release guide| replace:: :ref:`release guide`
-.. |testing guide| replace:: :ref:`testing guide`
+.. |bibliography| replace:: bibliography_
+.. |contributor guide| replace:: `contributor guide`_
+.. |documentation guide| replace:: `documentation guide`_
+.. |glossary| replace:: glossary_
+.. |plasma-calculator| replace:: `plasmapy-calculator`_
+.. |release guide| replace:: `release guide`_
+.. |testing guide| replace:: `testing guide`_
 
 .. --------
 .. Websites
@@ -157,9 +157,9 @@
 .. ----------------------
 
 .. A workaround for nested inline literals so that the filename will get
-.. formatted like a file but will be a link. In the text, these get used
-.. with the syntax for a substitution followed by an underscore to
-.. indicate that it's for a link: |docs/_static|_
+   formatted like a file but will be a link. In the text, these get used
+   with the syntax for a substitution followed by an underscore to
+   indicate that it's for a link: |docs/_static|_
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
