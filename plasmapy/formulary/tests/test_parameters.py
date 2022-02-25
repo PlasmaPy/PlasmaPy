@@ -677,6 +677,7 @@ def test_parameters_aliases(alias, parent):
     "kwargs, deprecated_func, parent",
     [
         # dimensionless
+        #
         (
             {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
             Debye_number,
@@ -687,7 +688,54 @@ def test_parameters_aliases(alias, parent):
             nD_,
             dimensionless.nD_,
         ),
+        #
+        # frequencies
+        #
+        (
+                {"B": 0.4 * u.T, "particle": "He+"},
+                gyrofrequency,
+                frequencies.gyrofrequency,
+        ),
+        ({"B": 0.4 * u.T, "particle": "He+"}, oc_, frequencies.oc_),
+        ({"B": 0.4 * u.T, "particle": "He+"}, wc_, frequencies.wc_),
+        (
+                {"n": 1.0e18, "mass": 6.64556605e-27, "z_mean": 1.0},
+                plasma_frequency_lite,
+                frequencies.plasma_frequency_lite,
+        ),
+        (
+                {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+                plasma_frequency,
+                frequencies.plasma_frequency,
+        ),
+        (
+                {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+                wp_,
+                frequencies.wp_,
+        ),
+        (
+                {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+                lower_hybrid_frequency,
+                frequencies.lower_hybrid_frequency,
+        ),
+        (
+                {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+                wlh_,
+                frequencies.wlh_,
+        ),
+        (
+                {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+                upper_hybrid_frequency,
+                frequencies.upper_hybrid_frequency,
+        ),
+        (
+                {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+                wuh_,
+                frequencies.wuh_,
+        ),
+        #
         # lengths
+        #
         (
             {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
             Debye_length,
@@ -722,49 +770,6 @@ def test_parameters_aliases(alias, parent):
             {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
             rhoc_,
             lengths.rhoc_,
-        ),
-        # frequencies
-        (
-            {"B": 0.4 * u.T, "particle": "He+"},
-            gyrofrequency,
-            frequencies.gyrofrequency,
-        ),
-        ({"B": 0.4 * u.T, "particle": "He+"}, oc_, frequencies.oc_),
-        ({"B": 0.4 * u.T, "particle": "He+"}, wc_, frequencies.wc_),
-        (
-            {"n": 1.0e18, "mass": 6.64556605e-27, "z_mean": 1.0},
-            plasma_frequency_lite,
-            frequencies.plasma_frequency_lite,
-        ),
-        (
-            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
-            plasma_frequency,
-            frequencies.plasma_frequency,
-        ),
-        (
-            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
-            wp_,
-            frequencies.wp_,
-        ),
-        (
-            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
-            lower_hybrid_frequency,
-            frequencies.lower_hybrid_frequency,
-        ),
-        (
-            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
-            wlh_,
-            frequencies.wlh_,
-        ),
-        (
-            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
-            upper_hybrid_frequency,
-            frequencies.upper_hybrid_frequency,
-        ),
-        (
-            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
-            wuh_,
-            frequencies.wuh_,
         ),
     ],
 )
