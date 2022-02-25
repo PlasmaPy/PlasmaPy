@@ -1,2 +1,2 @@
 Added a discussion of test parametrization with argument unpacking to
-the testing guide in the |contributor guide|.
+the |testing guide| in the |contributor guide|.
