@@ -662,7 +662,6 @@ def test_Bohm_diffusion():
         (va_, Alfven_speed),
         (cs_, ion_sound_speed),
         (pth_, thermal_pressure),
-        (betaH_, Hall_parameter),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
         (DB_, Bohm_diffusion),
@@ -687,6 +686,28 @@ def test_parameters_aliases(alias, parent):
             {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
             nD_,
             dimensionless.nD_,
+        ),
+        (
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            Hall_parameter,
+            dimensionless.Hall_parameter,
+        ),
+        (
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            betaH_,
+            dimensionless.betaH_,
         ),
         #
         # frequencies

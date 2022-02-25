@@ -6,7 +6,9 @@ import pytest
 
 from plasmapy.formulary.dimensionless import (
     beta,
+    betaH_,
     Debye_number,
+    Hall_parameter,
     Mag_Reynolds,
     nD_,
     quantum_theta,
@@ -31,6 +33,7 @@ T_e = 1e6 * u.K
     "alias, parent",
     [
         (nD_, Debye_number),
+        (betaH_, Hall_parameter),
         (Re_, Reynolds_number),
         (Rm_, Mag_Reynolds),
     ],
