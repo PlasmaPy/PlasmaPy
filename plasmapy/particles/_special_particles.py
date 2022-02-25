@@ -2,7 +2,14 @@
 Classes, sets, and dictionaries to store data and taxonomy information
 for special particles.
 """
-__all__ = []
+__all__ = [
+    "antiparticles",
+    "create_particles_dict",
+    "data_about_special_particles",
+    "particle_zoo",
+    "ParticleZoo",
+    "special_ion_masses",
+]
 
 import astropy.constants as const
 import astropy.units as u

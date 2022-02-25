@@ -4,7 +4,12 @@ Module for loading atomic data for elements from
 
 The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 """
-__all__ = []
+__all__ = [
+    "element_obj_hook",
+    "data_about_elements",
+    "atomic_numbers_to_symbols",
+    "element_names_to_symbols",
+]
 
 import astropy.units as u
 import json
