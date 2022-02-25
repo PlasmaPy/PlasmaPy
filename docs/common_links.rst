@@ -78,6 +78,9 @@
 .. PlasmaPy documentation
 .. ----------------------
 
+.. The backslash is needed for the substitution to work correctly when
+   used just before a period.
+
 .. |bibliography| replace:: :ref:`bibliography`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
