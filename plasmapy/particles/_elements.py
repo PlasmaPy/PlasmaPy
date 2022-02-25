@@ -20,6 +20,8 @@ from dataclasses import dataclass
 
 @dataclass
 class PeriodicTable:
+    """A data container for the periodic table information for an element."""
+
     group: int
     period: int
     block: str
