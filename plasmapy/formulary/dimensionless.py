@@ -103,7 +103,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
 
 nD_ = Debye_number
-"""Alias to `~plasmapy.formulary.parameters.Debye_number`."""
+"""Alias to `~plasmapy.formulary.dimensionless.Debye_number`."""
 
 
 @validate_quantities(
