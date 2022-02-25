@@ -7,7 +7,6 @@ __all__ = []
 
 import inspect
 
-from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import (
     atomic_number,
     charge_number,
