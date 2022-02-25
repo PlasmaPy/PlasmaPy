@@ -131,6 +131,12 @@ class ParticleZoo:
 
 
 particle_zoo = ParticleZoo()
+particle_zoo.__doc__ = """
+Data container for representations of "special" particles, like leptons
+and baryons.
+
+An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
+"""
 
 
 def create_particles_dict() -> Dict[str, dict]:
