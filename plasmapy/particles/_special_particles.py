@@ -24,7 +24,7 @@ class ParticleZoo:
     """
     Create an object with taxonomy information for special particles.
 
-    The `~plasmapy.particles.special_particles._ParticleZooClass._taxonomy_dict`
+    The `~plasmapy.particles._special_particles._ParticleZooClass._taxonomy_dict`
     attribute contains the name of each classification (e.g.,
     ``'lepton'``, ``'baryon'``, ``'matter'``, etc.) as the keys and a
     set of particle symbol strings of the particles belonging to that
@@ -35,12 +35,12 @@ class ParticleZoo:
 
     Examples
     --------
-    >>> ParticleZoo = ParticleZoo()
-    >>> 'e-' in ParticleZoo.leptons
+    >>> particle_zoo_ = ParticleZoo()
+    >>> 'e-' in particle_zoo_.leptons
     True
-    >>> 'nu_e' in ParticleZoo.antineutrinos
+    >>> 'nu_e' in particle_zoo_.antineutrinos
     False
-    >>> 'mu+' in ParticleZoo.antiparticles
+    >>> 'mu+' in particle_zoo_.antiparticles
     True
     """
 
