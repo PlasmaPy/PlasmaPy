@@ -3,22 +3,9 @@ import pytest
 
 from astropy import constants as const
 from astropy import units as u
-from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.particles.exceptions import (
-    ChargeError,
-    InvalidElementError,
-    InvalidIsotopeError,
-    InvalidParticleError,
-    MissingParticleDataError,
-    ParticleError,
-    ParticleWarning,
-)
-from plasmapy.utils.exceptions import PlasmaPyFutureWarning
-from plasmapy.utils.pytest_helpers import run_test
-
-from .._isotopes import data_about_isotopes
-from ..atomic import (
+from plasmapy.particles._isotopes import data_about_isotopes
+from plasmapy.particles.atomic import (
     _is_electron,
     atomic_number,
     charge_number,
@@ -39,8 +26,16 @@ from ..atomic import (
     stable_isotopes,
     standard_atomic_weight,
 )
-from ..nuclear import nuclear_binding_energy, nuclear_reaction_energy
-from ..symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.particles.exceptions import (
+    InvalidElementError,
+    InvalidIsotopeError,
+    InvalidParticleError,
+    MissingParticleDataError,
+    ParticleWarning,
+)
+from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
+from plasmapy.utils.pytest_helpers import run_test
 
 # function to be tested, argument(s), expected result/outcome
 

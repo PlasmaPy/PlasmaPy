@@ -1,5 +1,4 @@
 import astropy.units as u
-import collections
 import itertools
 import numpy as np
 import pytest
@@ -19,7 +18,6 @@ from plasmapy.particles import (
     ParticleList,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
-from plasmapy.utils.pytest_helpers import run_test
 
 
 def check_abundances_consistency(

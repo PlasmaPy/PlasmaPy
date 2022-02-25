@@ -4,11 +4,7 @@ import pytest
 from plasmapy.particles import deuteron, electron, proton
 from plasmapy.particles._factory import _physical_particle_factory
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.particles.particle_class import (
-    CustomParticle,
-    DimensionlessParticle,
-    Particle,
-)
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.particles.particle_collections import ParticleList
 
 mass = 1e-26 * u.kg
