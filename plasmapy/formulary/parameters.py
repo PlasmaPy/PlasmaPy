@@ -35,7 +35,6 @@ from numba import njit
 from typing import Optional, Union
 
 from plasmapy import particles
-from plasmapy.formulary import dimensionless, frequencies, lengths  # noqa
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils import PhysicsError
@@ -47,6 +46,8 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
+
+from plasmapy.formulary import dimensionless, frequencies, lengths  # noqa
 
 __aliases__ += frequencies.__aliases__ + lengths.__aliases__
 __lite_funcs__ += frequencies.__lite_funcs__
