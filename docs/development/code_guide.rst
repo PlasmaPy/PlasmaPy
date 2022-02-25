@@ -36,18 +36,14 @@ isort_. Using these tools helps us maintain a common code style without
 having to spend excessive time worrying about the formatting of a
 particular chunk of code or the order of import statements.
 
-
-
-
-The use of automatic code formatters can be considered an analogy to the
-effects of using the `Imperius Curse <>`__ described in the book *Harry
+The use of automatic code formatters can be considered analogous to the
+effects of using the `Imperius Curse <>`__ described in the novel *Harry
 Potter and the Something or Other*:
 
    It was the most wonderful feeling. Harry felt a floating sensation as
    every thought and worry in his head was wiped gently away, leaving
    nothing but a vague, untraceable happiness. He stood there feeling
    immensely relaxed, only dimly aware of everyone watching him.
-
 
 Names
 =====
@@ -73,18 +69,39 @@ Names
   - Use capital letters words separated by underscores for constants
     (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
 
-* Use a capital letter for a :term:`parameter` when it
-  (e.g., ``B`` for magnetic field strength and ``T`` for temperature).
+* Use a capital letter for a :term:`parameter` when it matches the
+  standard usage in plasma science.  For example, use ``B`` for magnetic
+  field strength and ``T`` for temperature.
 
 * Append ``_e`` to the name of a :term:`parameter` to indicate that it
   refers to electrons and ``_i`` to indicate that it refers to ions
   (e.g., ``T_e`` and ``T_i``).
 
-* Avoid non-ASCII characters in code that is part of the public API.
+* Python allows alphanumeric Unicode characters to be used in variable
+  names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
+  for internal code when doing so improves readability (i.e. to match a
+  symbol used in a paper or a standard symbol). Because non-ASCII
+  characters are often difficult to enter on a keyboard, they should be
+  avoided in sections of code that are under active development by
+  multiple contributors. However, do not include non-ASCII characters in
+  code that is part of the public API.
+
+* Use names that are pronounceable and searchable.
 
 * Avoid potentially ambiguous names such as ``temp`` and ``t``.
 
-* Avoid unnecessary abbreviations
+* To mark that an object is not part of PlasmaPy's public API, begin its
+  name with a leading underscore (e.g., ``_private_variable``. Private
+  variables should not be included in ``__all__``.
+
+* In most situations, avoid single character variable names. Single
+  character variable names may be used for standard plasma physics
+  symbols (i.e., ``B``) or as indices in `for` loops (though more
+  descriptive names are preferred).
+
+* Avoid unnecessary abbreviations, as these can make code more difficult
+  to read. Clarity is more important than brevity, except for code that
+  is frequently used interactively.
 
 .. tip::
 
@@ -94,9 +111,13 @@ Names
 Imports
 =======
 
-* Use absolute imports, such as
+* Use absolute imports (e.g., ``from plasmapy.particles import Particle``).
+  Relative imports (e.g., ``from ..particles import Particle``) are
+  not recommended because they
 
-* Do not use star imports (e.g., ``from package.subpackage import *``)
+* Avoid using star imports
+
+Do not use star imports (e.g., ``from package.subpackage import *``)
   because
 
 * Use standard abbreviations for imported packages.
@@ -105,8 +126,11 @@ Imports
 
      import numpy as np
      import astropy.units as u
-     import matplotlib as mpl
+     import astropy.constants as const
      import matplotlib.pyplot as plt
+     import numba as nb
+     import xarray as xr
+     import pandas as pd
 
 Units
 =====
