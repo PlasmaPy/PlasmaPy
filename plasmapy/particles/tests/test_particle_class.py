@@ -10,6 +10,8 @@ from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
+from plasmapy.particles._isotopes import data_about_isotopes
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -22,13 +24,11 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -62,6 +62,45 @@ test_Particle_table = [
     (
         "p+",
         {},
+        {
+            "symbol": "p+",
+            "element": "H",
+            "element_name": "hydrogen",
+            "isotope": "H-1",
+            "isotope_name": "hydrogen-1",
+            "ionic_symbol": "p+",
+            "roman_symbol": "H-1 II",
+            "is_ion": True,
+            "mass": m_p,
+            "nuclide_mass": m_p,
+            "charge_number": 1,
+            "charge.value": e.si.value,
+            "spin": 1 / 2,
+            "half_life": np.inf * u.s,
+            "atomic_number": 1,
+            "mass_number": 1,
+            "lepton_number": 0,
+            "baryon_number": 1,
+            "__str__()": "p+",
+            "__repr__()": 'Particle("p+")',
+            'is_category("fermion")': True,
+            'is_category(["fermion"])': True,
+            'is_category({"fermion"})': True,
+            'is_category(any_of=("boson", "fermion"))': True,
+            'is_category(require=["boson", "fermion"])': False,
+            'is_category(("element", "isotope", "ion"))': True,
+            'is_category("charged")': True,
+            "periodic_table.group": 1,
+            "periodic_table.block": "s",
+            "periodic_table.period": 1,
+            "periodic_table.category": "nonmetal",
+            "binding_energy": 0 * u.J,
+            "recombine()": "H-1 0+",
+        },
+    ),
+    (
+        "H",
+        {"Z": 1, "mass_numb": 1},
         {
             "symbol": "p+",
             "element": "H",
@@ -518,7 +557,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
             except Exception:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
-    if len(errmsg) > 0:
+    if errmsg:
         raise Exception(f"Problems with {call}:{errmsg}")
 
 
@@ -637,6 +676,18 @@ def test_Particle_cmp():
     assert electron != "dfasdf"
 
 
+@pytest.mark.parametrize("particle", ["p+", "D+", "T+", "alpha"])
+def test_particle_equality_special_nuclides(particle):
+    particle_from_string = Particle(particle)
+    particle_from_numbers = Particle(
+        particle_from_string.element_name,
+        Z=particle_from_string.charge_number,
+        mass_numb=particle_from_string.mass_number,
+    )
+    assert particle_from_string == particle_from_numbers
+    assert particle_from_string._attributes == particle_from_numbers._attributes
+
+
 nuclide_mass_and_mass_equiv_table = [
     ("n", "neutron"),
     ("p+", "proton"),
@@ -710,7 +761,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _isotopes[isotope].get("half-life", None)
+        half_life = data_about_isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -763,7 +814,7 @@ def test_unary_operator_for_elements():
         Particle("C").antiparticle
 
 
-@pytest.fixture(params=ParticleZoo.everything)
+@pytest.fixture(params=particle_zoo.everything)
 def particle(request):
     return Particle(request.param)
 

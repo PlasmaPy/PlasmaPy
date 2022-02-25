@@ -2,12 +2,12 @@
 
 import numpy as np
 import pytest
-import warnings
 
 from astropy import units as u
 from astropy.constants import m_e, m_p
 from astropy.tests.helper import assert_quantity_allclose
 
+from plasmapy.formulary import dimensionless, frequencies, lengths
 from plasmapy.formulary.parameters import (
     Alfven_speed,
     betaH_,
@@ -30,18 +30,19 @@ from plasmapy.formulary.parameters import (
     nD_,
     oc_,
     plasma_frequency,
+    plasma_frequency_lite,
     pmag_,
     pth_,
     rc_,
     rho_,
     rhoc_,
     thermal_pressure,
-    thermal_speed,
     ub_,
     upper_hybrid_frequency,
     va_,
     wc_,
     wlh_,
+    wp_,
     wuh_,
 )
 from plasmapy.particles import Particle
@@ -565,443 +566,6 @@ def test_thermal_pressure():
     assert_can_handle_nparray(thermal_pressure)
 
 
-def test_gyrofrequency():
-    r"""Test the gyrofrequency function in parameters.py."""
-
-    assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
-
-    assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
-
-    assert np.isclose(gyrofrequency(1 * u.T, "e-").value, 175882008784.72018)
-
-    assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
-
-    assert np.isclose(
-        gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206
-    )
-
-    assert np.isclose(
-        gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284
-    )
-
-    assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
-
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyrofrequency(u.m, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        gyrofrequency(u.m * 1, "e-")
-
-    assert np.isnan(gyrofrequency(B_nanarr, "e-")[-1])
-
-    # The following is a test to check that equivalencies from astropy
-    # are working.
-    omega_ce = gyrofrequency(2.2 * u.T, "e-")
-    f_ce = (omega_ce / (2 * np.pi)) / u.rad
-    f_ce_use_equiv = omega_ce.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
-    assert np.isclose(f_ce.value, f_ce_use_equiv.value)
-
-    with pytest.warns(u.UnitsWarning):
-        assert gyrofrequency(5.0, "e-") == gyrofrequency(5.0 * u.T, "e-")
-
-    assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
-
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p").value, 95788335.834874)
-
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p").value, 229892006.00369796)
-
-    assert np.isclose(gyrofrequency(1 * u.G, particle="p").cgs.value, 9.58e3, rtol=2e-3)
-
-    assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
-
-    # Case when Z=1 is assumed
-    # assert gyrofrequency(B, particle='p+') == gyrofrequency(B, particle='H-1')
-
-    assert gyrofrequency(B, particle="e+") == gyrofrequency(B, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        gyrofrequency(8, "p")
-
-    with pytest.raises(u.UnitTypeError):
-        gyrofrequency(5 * u.m, "p")
-
-    with pytest.raises(InvalidParticleError):
-        gyrofrequency(8 * u.T, particle="asdfasd")
-
-    with pytest.warns(u.UnitsWarning):
-        # TODO this should be WARNS, not RAISES. and it's probably still raised
-        assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
-
-    gyrofrequency(1 * u.T, particle="p")
-    # testing for user input Z
-    testMeth1 = gyrofrequency(1 * u.T, particle="p", Z=0.8).si.value
-    testTrue1 = 76630665.79318453
-    errStr = f"gyrofrequency() gave {testMeth1}, should be {testTrue1}."
-    assert np.isclose(testMeth1, testTrue1, atol=0.0, rtol=1e-5), errStr
-
-    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
-
-    assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
-
-
-class TestGyroradius:
-    """Tests for `plasmapy.formulary.parameters.gyroradius`."""
-
-    @pytest.mark.parametrize(
-        "args, kwargs, _error",
-        [
-            ((u.T, "e-"), {}, TypeError),
-            ((5 * u.A, "e-"), {"Vperp": 8 * u.m / u.s}, u.UnitTypeError),
-            ((5 * u.T, "e-"), {"Vperp": 8 * u.m}, u.UnitTypeError),
-            (
-                (np.array([5, 6]) * u.T, "e-"),
-                {"Vperp": np.array([5, 6, 7]) * u.m / u.s},
-                ValueError,
-            ),
-            ((3.14159 * u.T, "e-"), {"T": -1 * u.K}, ValueError),
-            ((1.1 * u.T, "e-"), {"Vperp": 1 * u.m / u.s, "T": 1.2 * u.K}, ValueError),
-            ((1.1 * u.T, "e-"), {"Vperp": 1.1 * u.m, "T": 1.2 * u.K}, u.UnitTypeError),
-            ((u.T,), {"particle": "p", "Vperp": 8 * u.m / u.s}, TypeError),
-            ((B,), {"particle": "p", "T": -1 * u.K}, ValueError),
-            (
-                (1.1 * u.T,),
-                {"particle": "p", "Vperp": 1 * u.m / u.s, "T": 1.2 * u.K},
-                ValueError,
-            ),
-            (
-                (1.1 * u.T,),
-                {"particle": "p", "Vperp": 1.1 * u.m, "T": 1.2 * u.K},
-                u.UnitTypeError,
-            ),
-            (
-                (1.1 * u.T,),
-                {"particle": "p", "Vperp": 1.2 * u.m, "T": 1.1 * u.K},
-                u.UnitTypeError,
-            ),
-            ((B_arr, "e-"), {"Vperp": V, "T": T_arr}, ValueError),
-            ((B_arr, "e-"), {"Vperp": V_arr, "T": T_i}, ValueError),
-            ((B_arr, "e-"), {"Vperp": V, "T": T_nanarr}, ValueError),
-            ((B_arr, "e-"), {"Vperp": V_nanarr, "T": T_i}, ValueError),
-            ((0.4 * u.T, "e-"), {"T": 5 * u.eV, "T_i": 7 * u.eV}, ValueError),
-        ],
-    )
-    def test_raises(self, args, kwargs, _error):
-        """Test scenarios that raise an exception."""
-
-        with warnings.catch_warnings(), pytest.raises(_error):
-            # we don't care about warnings for these tests
-            warnings.simplefilter("ignore")
-
-            gyroradius(*args, **kwargs)
-
-    @pytest.mark.parametrize(
-        "args, kwargs, nan_mask",
-        [
-            ((np.nan * u.T,), {"particle": "e-", "T": 1 * u.K}, None),
-            ((np.nan * u.T,), {"particle": "e-", "Vperp": 1 * u.m / u.s}, None),
-            ((1 * u.T,), {"particle": "e-", "T": np.nan * u.K}, None),
-            ((1 * u.T,), {"particle": "e-", "Vperp": np.nan * u.m / u.s}, None),
-            (
-                ([1, 2, np.nan] * u.T,),
-                {"particle": "e-", "T": 1 * u.K},
-                [False, False, True],
-            ),
-            (
-                ([1, 2, np.nan] * u.T,),
-                {"particle": "e-", "T": [np.nan, 1, 2] * u.K},
-                [True, False, True],
-            ),
-            (
-                ([1, np.nan, 2] * u.T,),
-                {"particle": "e-", "Vperp": [np.nan, 1, 2] * u.m / u.s},
-                [True, True, False],
-            ),
-        ],
-    )
-    def test_nan_values(self, args, kwargs, nan_mask):
-        if nan_mask is None:
-            assert np.all(np.isnan(gyroradius(*args, **kwargs)))
-        else:
-            rc_isnans = np.isnan(gyroradius(*args, **kwargs))
-            assert np.all(rc_isnans[nan_mask])
-            assert np.all(np.logical_not(rc_isnans[np.logical_not(nan_mask)]))
-
-    @pytest.mark.parametrize(
-        "args, kwargs, expected, atol",
-        [
-            (
-                (1 * u.T,),
-                {"particle": "e-", "Vperp": 1e6 * u.m / u.s},
-                5.6856301e-06 * u.m,
-                None,
-            ),
-            (
-                (1 * u.T,),
-                {"particle": "p", "Vperp": 1e6 * u.m / u.s},
-                0.01043968 * u.m,
-                None,
-            ),
-            (
-                (1 * u.T,),
-                {"particle": "positron", "T": 1 * u.MK},
-                gyroradius(1 * u.T, particle="e-", T=1 * u.MK),
-                None,
-            ),
-            (
-                (B,),
-                {"particle": "p", "T": T_i},
-                gyroradius(B, particle="H+", T=T_i),
-                1e-6,
-            ),
-            (
-                (B,),
-                {"particle": "p", "Vperp": V},
-                gyroradius(B, particle="p", Vperp=-V),
-                None,
-            ),
-            (
-                (B_arr,),
-                {"particle": "e-", "Vperp": V_arr},
-                [1.42140753e-07, 1.42140753e-07] * u.m,
-                None,
-            ),
-            (
-                (B_arr,),
-                {"particle": "e-", "T": T_arr},
-                [0.03130334, 0.02213481] * u.m,
-                None,
-            ),
-            (
-                ([0.4, 0.6, 0.8] * u.T,),
-                {"particle": "e-", "T": [6, 4, 2] * u.eV},
-                [2.06499941e-05, 1.12404331e-05, 5.96113984e-06] * u.m,
-                None,
-            ),
-            ((0.4 * u.T, "p"), {"T": 5800 * u.K}, 0.00025539 * u.m, None),
-            (
-                (0.4 * u.T, "p"),
-                {"T": (5800 * u.K).to(u.eV, equivalencies=u.temperature_energy())},
-                0.00025539 * u.m,
-                None,
-            ),
-            #
-            # If both Vperp or T are given, but only one of the two is valid
-            # at each element, then the valid union is taken
-            (
-                ([0.001, 0.002] * u.T, "e-"),
-                {"Vperp": [25, np.nan] * u.m / u.s, "T": [np.nan, 2e6] * u.K},
-                [1.42140753e-07, 2.21348073e-02] * u.m,
-                None,
-            ),
-            #
-            # If either Vperp or T is a valid scalar and the other is a Qarray of
-            # all nans, then the Qarray of nans should be ignored
-            (
-                ([0.001, 0.002] * u.T, "e-"),
-                {"Vperp": 25.2 * u.m / u.s, "T": [np.nan, np.nan] * u.K},
-                [1.43277879e-07, 7.16389393e-08] * u.m,
-                None,
-            ),
-            (
-                ([0.001, 0.002] * u.T, "e-"),
-                {"Vperp": [np.nan, np.nan] * u.m / u.s, "T": 1e6 * u.K},
-                [0.03130334, 0.01565167] * u.m,
-                None,
-            ),
-        ],
-    )
-    def test_values(self, args, kwargs, expected, atol):
-        if atol is None:
-            atol = 1e-8
-
-        # note allclose() checks values and units
-        rc = gyroradius(*args, **kwargs)
-        assert np.allclose(rc, expected, atol=atol)
-        assert rc.unit == u.m
-
-    @pytest.mark.parametrize(
-        "args, kwargs, expected, _warns",
-        [
-            ((1.0, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
-            ((1.0 * u.T, "e-"), {"Vperp": 1.0}, 5.6856301e-12 * u.m, u.UnitsWarning),
-            (
-                (1.0, "e-"),
-                {"Vperp": 1.0 * u.m / u.s},
-                5.6856301e-12 * u.m,
-                u.UnitsWarning,
-            ),
-            ((1.1, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
-            ((1.1 * u.T, "e-"), {"T": 1.2}, 3.11737236e-08 * u.m, u.UnitsWarning),
-            ((1.1, "e-"), {"T": 1.2 * u.K}, 3.11737236e-08 * u.m, u.UnitsWarning),
-            #
-            # Future warning for using T_i instead of T
-            (
-                (1.1 * u.T, "e-"),
-                {"T_i": 1.2 * u.K},
-                3.11737236e-08 * u.m,
-                PlasmaPyFutureWarning,
-            ),
-        ],
-    )
-    def test_warns(self, args, kwargs, expected, _warns):
-        with pytest.warns(_warns):
-            rc = gyroradius(*args, **kwargs)
-            if expected is not None:
-                assert np.allclose(rc, expected)
-
-    def test_keeps_arguments_unchanged(self):
-        Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
-        Vperp2 = Vperp1.copy()
-        T = u.Quantity([1, np.nan], unit=u.K)
-
-        gyroradius(B_arr, "e-", Vperp=Vperp1, T=T)
-
-        assert_quantity_allclose(Vperp1, Vperp2)
-
-    def test_correct_thermal_speed_used(self):
-        """
-        Test the correct version of thermal_speed is used when
-        temperature is given.
-        """
-        B = 123 * u.G
-        T = 1.2 * u.MK
-        particle = "alpha"
-
-        vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
-
-        assert gyroradius(B, particle=particle, T=T) == gyroradius(
-            B, particle=particle, Vperp=vperp
-        )
-
-
-def test_Debye_length():
-    r"""Test the Debye_length function in parameters.py."""
-
-    assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
-
-    assert np.isclose(Debye_length(1 * u.eV, 1 * u.cm ** -3).value, 7.43, atol=0.005)
-
-    with pytest.warns(u.UnitsWarning):
-        Debye_length(5, 5 * u.m ** -3)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_length(56 * u.kg, 5 * u.m ** -3)
-
-    with pytest.raises(ValueError):
-        Debye_length(5 * u.eV, -5 * u.m ** -3)
-
-    with pytest.raises(ValueError):
-        Debye_length(-45 * u.K, 5 * u.m ** -3)
-
-    Tarr2 = np.array([1, 2]) * u.K
-    narr3 = np.array([1, 2, 3]) * u.m ** -3
-    with pytest.raises(ValueError):
-        Debye_length(Tarr2, narr3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0, 2.0) == Debye_length(2.0 * u.K, 2.0 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_length(2.0 * u.K, 2.0) == Debye_length(2.0, 2.0 * u.m ** -3)
-
-    assert_can_handle_nparray(Debye_length)
-
-
-def test_Debye_number():
-    r"""Test the Debye_number function in parameters.py."""
-
-    assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
-
-    T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-    assert np.isclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value)
-
-    assert np.isclose(Debye_number(1 * u.eV, 1 * u.cm ** -3).value, 1720862385.43342)
-
-    with pytest.warns(u.UnitsWarning):
-        Debye_number(T_e, 4)
-
-    with pytest.raises(ValueError):
-        Debye_number(None, n_e)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_number(5 * u.m, 5 * u.m ** -3)
-
-    with pytest.raises(u.UnitTypeError):
-        Debye_number(5 * u.K, 5 * u.m ** 3)
-
-    with pytest.raises(ValueError):
-        Debye_number(5j * u.K, 5 * u.cm ** -3)
-
-    Tarr2 = np.array([1, 2]) * u.K
-    narr3 = np.array([1, 2, 3]) * u.m ** -3
-    with pytest.raises(ValueError):
-        Debye_number(Tarr2, narr3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_number(1.1, 1.1) == Debye_number(1.1 * u.K, 1.1 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert Debye_number(1.1 * u.K, 1.1) == Debye_number(1.1, 1.1 * u.m ** -3)
-
-    assert_can_handle_nparray(Debye_number)
-
-
-def test_inertial_length():
-    r"""Test the inertial_length function in parameters.py."""
-
-    assert inertial_length(n_i, particle="p").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(mu * u.cm ** -3, particle="p").cgs.value, 2.28e7, rtol=0.01
-    )
-
-    inertial_length_electron_plus = inertial_length(5.351 * u.m ** -3, particle="e+")
-    assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m ** -3, particle="e"
-    )
-
-    assert inertial_length(n_i, particle="p") == inertial_length(n_i, particle="p")
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(4, particle="p")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(4 * u.m ** -2, particle="p")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, particle="p")
-
-    with pytest.raises(InvalidParticleError):
-        inertial_length(n_i, particle=-135)
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length_no_units = inertial_length(1e19, particle="p")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m ** -3, particle="p"
-        )
-
-    assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
-
-    assert np.isclose(
-        inertial_length(1 * u.cm ** -3, "e-").cgs.value, 5.31e5, rtol=1e-3
-    )
-
-    with pytest.warns(u.UnitsWarning):
-        inertial_length(5, "e-")
-
-    with pytest.raises(u.UnitTypeError):
-        inertial_length(5 * u.m, "e-")
-
-    with pytest.raises(ValueError):
-        inertial_length(-5 * u.m ** -3, "e-")
-
-    with pytest.warns(u.UnitsWarning):
-        assert inertial_length(1e19, "e-") == inertial_length(1e19 * u.m ** -3, "e-")
-
-    assert_can_handle_nparray(inertial_length)
-
-
 def test_magnetic_pressure():
     r"""Test the magnetic_pressure function in parameters.py."""
 
@@ -1076,76 +640,6 @@ def test_magnetic_energy_density():
     assert_can_handle_nparray(magnetic_energy_density)
 
 
-def test_upper_hybrid_frequency():
-    r"""Test the upper_hybrid_frequency function in parameters.py."""
-
-    omega_uh = upper_hybrid_frequency(B, n_e=n_e)
-    omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
-    omega_ce = gyrofrequency(B, "e-")
-    omega_pe = plasma_frequency(n=n_e, particle="e-")
-    assert omega_ce.unit.is_equivalent(u.rad / u.s)
-    assert omega_pe.unit.is_equivalent(u.rad / u.s)
-    assert omega_uh.unit.is_equivalent(u.rad / u.s)
-    assert omega_uh_hz.unit.is_equivalent(u.Hz)
-    left_hand_side = omega_uh ** 2
-    right_hand_side = omega_ce ** 2 + omega_pe ** 2
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
-
-    assert np.isclose(omega_uh_hz.value, 69385868857.90918)
-
-    with pytest.raises(ValueError):
-        upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m ** -3)
-
-    with pytest.warns(u.UnitsWarning):
-        assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
-            1.2 * u.T, 1.3 * u.m ** -3
-        )
-
-    with pytest.warns(u.UnitsWarning):
-        assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
-            1.4, 1.3 * u.m ** -3
-        )
-
-    assert_can_handle_nparray(upper_hybrid_frequency)
-
-
-def test_lower_hybrid_frequency():
-    r"""Test the lower_hybrid_frequency function in parameters.py."""
-
-    ion = "He-4 1+"
-    omega_ci = gyrofrequency(B, particle=ion)
-    omega_pi = plasma_frequency(n=n_i, particle=ion)
-    omega_ce = gyrofrequency(B, "e-")
-    omega_lh = lower_hybrid_frequency(B, n_i=n_i, ion=ion)
-    omega_lh_hz = lower_hybrid_frequency(B, n_i=n_i, ion=ion, to_hz=True)
-    assert omega_ci.unit.is_equivalent(u.rad / u.s)
-    assert omega_pi.unit.is_equivalent(u.rad / u.s)
-    assert omega_ce.unit.is_equivalent(u.rad / u.s)
-    assert omega_lh.unit.is_equivalent(u.rad / u.s)
-    left_hand_side = omega_lh ** -2
-    right_hand_side = (
-        1 / (omega_ci ** 2 + omega_pi ** 2) + omega_ci ** -1 * omega_ce ** -1
-    )
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
-
-    assert np.isclose(omega_lh_hz.value, 299878691.3223296)
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(0.2 * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.raises(ValueError):
-        lower_hybrid_frequency(np.nan * u.T, n_i=-5e19 * u.m ** -3, ion="asdfasd")
-
-    with pytest.warns(u.UnitsWarning):
-        assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m ** -3, "p+"
-        )
-    assert_can_handle_nparray(lower_hybrid_frequency)
-
-
 def test_Bohm_diffusion():
     r"""Test Mag_Reynolds in dimensionless.py"""
 
@@ -1168,21 +662,141 @@ def test_Bohm_diffusion():
         (va_, Alfven_speed),
         (cs_, ion_sound_speed),
         (pth_, thermal_pressure),
-        (betaH_, Hall_parameter),
-        (oc_, gyrofrequency),
-        (wc_, gyrofrequency),
-        (rc_, gyroradius),
-        (rhoc_, gyroradius),
-        (lambdaD_, Debye_length),
-        (nD_, Debye_number),
-        (cwp_, inertial_length),
         (pmag_, magnetic_pressure),
         (ub_, magnetic_energy_density),
-        (wuh_, upper_hybrid_frequency),
-        (wlh_, lower_hybrid_frequency),
         (DB_, Bohm_diffusion),
     ],
 )
 def test_parameters_aliases(alias, parent):
     """Test all aliases defined in parameters.py"""
     assert alias is parent
+
+
+@pytest.mark.parametrize(
+    "kwargs, deprecated_func, parent",
+    [
+        # dimensionless
+        #
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_number,
+            dimensionless.Debye_number,
+        ),
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            nD_,
+            dimensionless.nD_,
+        ),
+        (
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            Hall_parameter,
+            dimensionless.Hall_parameter,
+        ),
+        (
+            {
+                "n": 1e18 * u.m ** -3,
+                "T": 58000 * u.K,
+                "B": 0.4 * u.T,
+                "ion": "He+",
+                "particle": "e-",
+            },
+            betaH_,
+            dimensionless.betaH_,
+        ),
+        #
+        # frequencies
+        #
+        (
+            {"B": 0.4 * u.T, "particle": "He+"},
+            gyrofrequency,
+            frequencies.gyrofrequency,
+        ),
+        ({"B": 0.4 * u.T, "particle": "He+"}, oc_, frequencies.oc_),
+        ({"B": 0.4 * u.T, "particle": "He+"}, wc_, frequencies.wc_),
+        (
+            {"n": 1.0e18, "mass": 6.64556605e-27, "z_mean": 1.0},
+            plasma_frequency_lite,
+            frequencies.plasma_frequency_lite,
+        ),
+        (
+            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            plasma_frequency,
+            frequencies.plasma_frequency,
+        ),
+        (
+            {"n": 1.0e18 * u.m ** -3, "particle": "He+"},
+            wp_,
+            frequencies.wp_,
+        ),
+        (
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            lower_hybrid_frequency,
+            frequencies.lower_hybrid_frequency,
+        ),
+        (
+            {"B": 0.4 * u.T, "n_i": 1.0e18 * u.m ** -3, "ion": "He+"},
+            wlh_,
+            frequencies.wlh_,
+        ),
+        (
+            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+            upper_hybrid_frequency,
+            frequencies.upper_hybrid_frequency,
+        ),
+        (
+            {"B": 0.4 * u.T, "n_e": 1.0e18 * u.m ** -3},
+            wuh_,
+            frequencies.wuh_,
+        ),
+        #
+        # lengths
+        #
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            Debye_length,
+            lengths.Debye_length,
+        ),
+        (
+            {"T_e": 58000 * u.K, "n_e": 1e18 * u.m ** -3},
+            lambdaD_,
+            lengths.lambdaD_,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            inertial_length,
+            lengths.inertial_length,
+        ),
+        (
+            {"n": 1e18 * u.m ** -3, "particle": "p"},
+            cwp_,
+            lengths.cwp_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            gyroradius,
+            lengths.gyroradius,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            rc_,
+            lengths.rc_,
+        ),
+        (
+            {"B": 0.4 * u.T, "particle": "He+", "T": 58000 * u.K},
+            rhoc_,
+            lengths.rhoc_,
+        ),
+    ],
+)
+def test_deprecated(kwargs, deprecated_func, parent):
+    assert hasattr(deprecated_func, "__wrapped__")
+    assert deprecated_func.__wrapped__ is parent
+
+    with pytest.warns(PlasmaPyFutureWarning):
+        deprecated_func(**kwargs)
