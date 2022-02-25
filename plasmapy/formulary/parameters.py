@@ -13,7 +13,6 @@ __all__ = [
     "thermal_speed_coefficients",
 ]
 __aliases__ = [
-    "betaH_",
     "cs_",
     "DB_",
     "pmag_",
