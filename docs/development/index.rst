@@ -1,3 +1,5 @@
+.. _Contributor Guide:
+
 *****************
 Contributor Guide
 *****************
