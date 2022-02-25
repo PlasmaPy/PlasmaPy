@@ -90,7 +90,8 @@ for modname, name in funcs_to_deprecate_wrap:
         message=(
             f"The {name}() function has been moved to "
             f"plasmapy.formulary.{modname}.  Update your import to get "
-            f"rid of this warning."
+            f"rid of this warning.  The 'plasmapy.formulary.parameters' module "
+            f"will be officially removed in release v0.9.0."
         ),
     )(getattr(globals()[f"{modname}"], name))
 
