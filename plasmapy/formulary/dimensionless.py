@@ -10,20 +10,97 @@ numbers.
 """
 __all__ = [
     "beta",
+    "Debye_number",
     "Mag_Reynolds",
     "quantum_theta",
-    "Re_",
     "Reynolds_number",
-    "Rm_",
 ]
-__aliases__ = ["Re_", "Rm_"]
+__aliases__ = ["nD_", "Re_", "Rm_"]
 
-from astropy import constants
-from astropy import units as u
-from astropy.constants.codata2010 import mu0
+import astropy.units as u
+import numpy as np
+
+from astropy.constants.si import k_B, mu0
 
 from plasmapy.formulary import parameters, quantum
+from plasmapy.formulary.lengths import Debye_length
 from plasmapy.utils.decorators import validate_quantities
+
+__all__ += __aliases__
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n_e={"can_be_negative": False},
+)
+def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
+    r"""Return the number of electrons within a sphere with a radius
+    of the Debye length.
+
+    **Aliases:** `nD_`
+
+    Parameters
+    ----------
+    T_e : `~astropy.units.Quantity`
+        Electron temperature.
+
+    n_e : `~astropy.units.Quantity`
+        Electron number density.
+
+    Raises
+    ------
+    `TypeError`
+        If either argument is not a `~astropy.units.Quantity`.
+
+    `astropy.units.UnitConversionError`
+        If either argument is in incorrect units.
+
+    `ValueError`
+        If either argument contains invalid values.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Returns
+    -------
+    N_D : `~astropy.units.Quantity`
+        Number of electrons within a sphere with a radius of the Debye
+        length.
+
+    Notes
+    -----
+    The Debye number is the number of electrons contained within a
+    sphere with a radius of a Debye length and is given by
+
+    .. math::
+        N_D = \frac{4π}{3} n_e λ_D^3
+
+    The Debye number is also known as the plasma parameter.
+
+    Collective behavior requires :math:`N_D ≫ 1`\ .
+
+    See Also
+    --------
+    ~plasmapy.formulary.lengths.Debye_length
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> Debye_number(5e6*u.K, 5e9*u.cm**-3)
+    <Quantity 2.17658...e+08>
+
+    """
+
+    lambda_D = Debye_length(T_e, n_e)
+    N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
+
+    return N_D
+
+
+nD_ = Debye_number
+"""Alias to `~plasmapy.formulary.parameters.Debye_number`."""
 
 
 @validate_quantities(
@@ -82,7 +159,7 @@ def quantum_theta(T: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
     ~plasmapy.formulary.quantum.Fermi_energy
     """
     fermi_energy = quantum.Fermi_energy(n_e)
-    thermal_energy = constants.k_B * T
+    thermal_energy = k_B * T
     theta = thermal_energy / fermi_energy
     return theta
 
