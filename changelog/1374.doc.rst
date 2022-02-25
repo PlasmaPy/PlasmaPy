@@ -1,1 +1,1 @@
-Moved references from individual docstrings to the |bibliography|.
+Moved references from individual docstrings to the |bibliography|\ .
