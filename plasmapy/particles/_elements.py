@@ -3,11 +3,13 @@ Module for loading atomic data for elements from
 :file:`plasmapy/particles/data/elements.json`.
 
 The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
-
-.. attention::
-    This module is not part of PlasmaPy's public API.
 """
-__all__ = []
+__all__ = [
+    "element_obj_hook",
+    "data_about_elements",
+    "atomic_numbers_to_symbols",
+    "element_names_to_symbols",
+]
 
 import astropy.units as u
 import json
@@ -17,14 +19,17 @@ from dataclasses import dataclass
 
 
 @dataclass
-class _PeriodicTable:
+class PeriodicTable:
+    """A data container for the periodic table information for an element."""
+
     group: int
     period: int
     block: str
     category: str
 
 
-def _element_obj_hook(obj):
+def element_obj_hook(obj):
+    """Provide an ``object_hook`` designed for `json.load` and `json.loads`."""
     if "unit" in obj:
         return obj["value"] * u.Unit(obj["unit"])
     return obj
@@ -45,16 +50,16 @@ def _element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-_data_about_elements = json.loads(
+data_about_elements = json.loads(
     pkgutil.get_data("plasmapy", "particles/data/elements.json"),
-    object_hook=_element_obj_hook,
+    object_hook=element_obj_hook,
 )
 
 
-_atomic_numbers_to_symbols = {
-    elemdict["atomic number"]: symb for (symb, elemdict) in _data_about_elements.items()
+atomic_numbers_to_symbols = {
+    elemdict["atomic number"]: symb for (symb, elemdict) in data_about_elements.items()
 }
 
-_element_names_to_symbols = {
-    elemdict["element name"]: symb for (symb, elemdict) in _data_about_elements.items()
+element_names_to_symbols = {
+    elemdict["element name"]: symb for (symb, elemdict) in data_about_elements.items()
 }

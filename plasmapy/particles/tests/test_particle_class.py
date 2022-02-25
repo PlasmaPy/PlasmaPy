@@ -10,6 +10,8 @@ from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
 from plasmapy.particles import json_load_particle, json_loads_particle, molecule
+from plasmapy.particles._isotopes import data_about_isotopes
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -22,13 +24,11 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _data_about_isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -761,7 +761,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _data_about_isotopes[isotope].get("half-life", None)
+        half_life = data_about_isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -814,7 +814,7 @@ def test_unary_operator_for_elements():
         Particle("C").antiparticle
 
 
-@pytest.fixture(params=ParticleZoo.everything)
+@pytest.fixture(params=particle_zoo.everything)
 def particle(request):
     return Particle(request.param)
 
