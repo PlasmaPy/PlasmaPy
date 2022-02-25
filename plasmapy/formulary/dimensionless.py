@@ -226,7 +226,7 @@ def Hall_parameter(
 
 
 betaH_ = Hall_parameter
-"""Alias to `~plasmapy.formulary.parameters.Hall_parameter`."""
+"""Alias to `~plasmapy.formulary.dimensionless.Hall_parameter`."""
 
 
 @validate_quantities(
