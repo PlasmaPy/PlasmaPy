@@ -22,6 +22,7 @@ from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
 from plasmapy.formulary.quantum import *
 from plasmapy.formulary.relativity import *
+from plasmapy.formulary.speeds import *
 
 # auto populate __all__
 for obj_name in list(globals()):
@@ -45,6 +46,7 @@ for modname in (
     "parameters",
     "quantum",
     "relativity",
+    "speeds",
 ):
     try:
         obj = globals()[modname]
