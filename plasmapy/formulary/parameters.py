@@ -47,6 +47,8 @@ from plasmapy.utils.decorators import (
 )
 from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
+from plasmapy.formulary import dimensionless, frequencies, lengths  # noqa
+
 __all__ += (
     dimensionless.__all__.copy()
     + frequencies.__all__.copy()
