@@ -812,7 +812,7 @@ def kappa_thermal_speed(
             "kappa distribution function to be valid."
         )
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    vTh = thermal_speed(T=T, particle=particle, method=method)
+    vth = thermal_speed(T=T, particle=particle, method=method)
 
     if method == "most_probable":
         # thermal velocity of Kappa distribution function is just Maxwellian
@@ -823,7 +823,7 @@ def kappa_thermal_speed(
     else:
         coeff = 1
 
-    return vTh * coeff
+    return vth * coeff
 
 
 vth_kappa_ = kappa_thermal_speed
