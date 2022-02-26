@@ -30,6 +30,8 @@ from plasmapy.utils.decorators import (
 )
 from plasmapy.utils.exceptions import PhysicsError, PhysicsWarning
 
+__all__ += __aliases__ + __lite_funcs__
+
 k_B_si_unitless = k_B.value
 
 
