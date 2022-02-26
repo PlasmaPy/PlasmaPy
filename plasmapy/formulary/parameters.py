@@ -73,7 +73,7 @@ for name in (
     "Re_",
     "Reynolds_number",
     "Rm_",
-):
+):  # coverage: ignore
     try:
         __aliases__.remove(name)
     except ValueError:
