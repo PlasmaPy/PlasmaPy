@@ -63,7 +63,8 @@ __aliases__ += (
 
 __lite_funcs__ += frequencies.__lite_funcs__.copy()
 
-# remove from __all__ added functionality that was not originally contained in parameters
+# remove from __all__ and __aliases__ added functionality that was not originally
+# contained in parameters
 for name in (
     "beta",
     "betaH_",
