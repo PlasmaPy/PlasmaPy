@@ -2,7 +2,6 @@
 
 __all__ = [
     "Bohm_diffusion",
-    "kappa_thermal_speed",
     "magnetic_energy_density",
     "magnetic_pressure",
     "mass_density",
@@ -14,7 +13,6 @@ __aliases__ = [
     "pth_",
     "rho_",
     "ub_",
-    "vth_kappa_",
 ]
 __lite_funcs__ = []
 
@@ -28,7 +26,6 @@ from typing import Optional, Union
 from plasmapy import particles
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import (
-    check_relativistic,
     deprecated,
     validate_quantities,
 )
@@ -88,6 +85,8 @@ funcs_to_deprecate_wrap = [  # (module_name, func_name)
     ("speeds", "thermal_speed_coefficients"),
     ("speeds", "thermal_speed_lite"),
     ("speeds", "vth_"),
+    ("speeds", "kappa_thermal_speed"),
+    ("speeds", "vth_kappa_"),
 ]
 for modname, name in funcs_to_deprecate_wrap:
     globals()[name] = deprecated(
@@ -292,116 +291,6 @@ def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
 
 pth_ = thermal_pressure
 """Alias to `~plasmapy.formulary.parameters.thermal_pressure`."""
-
-
-@check_relativistic
-@validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
-)
-def kappa_thermal_speed(
-    T: u.K, kappa, particle: Particle, method="most_probable"
-) -> u.m / u.s:
-    r"""Return the most probable speed for a particle within a Kappa
-    distribution.
-
-    **Aliases:** `vth_kappa_`
-
-    Parameters
-    ----------
-    T : `~astropy.units.Quantity`
-        The particle temperature in either kelvin or energy per particle
-
-    kappa: `float`
-        The ``kappa`` parameter is a dimensionless number which sets the slope
-        of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. ``kappa`` must be greater
-        than 3/2.
-
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are
-        assumed to be singly charged.
-
-    method : `str`, optional
-        Method to be used for calculating the thermal speed. Options are
-        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
-
-    Returns
-    -------
-    V : `~astropy.units.Quantity`
-        Particle thermal speed.
-
-    Raises
-    ------
-    `TypeError`
-        The particle temperature is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitConversionError`
-        If the particle temperature is not in units of temperature or
-        energy per particle.
-
-    `ValueError`
-        The particle temperature is invalid or particle cannot be used to
-        identify an isotope or particle.
-
-    Warns
-    -----
-    : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the particle thermal speed exceeds 5% of the speed of light.
-
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
-
-    Notes
-    -----
-    The particle thermal speed is given by:
-
-    .. math::
-        V_{th,i} = \sqrt{(2 κ - 3)\frac{2 k_B T_i}{κ m_i}}
-
-    For more discussion on the ``'mean_magnitude'`` calculation method,
-    see `PlasmaPy issue #186
-    <https://github.com/PlasmaPy/PlasmaPy/issues/186>`__.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
-    <Quantity 24467.87... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
-    <Quantity 37905.47... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
-    <Quantity 34922.98... m / s>
-
-    See Also
-    --------
-    ~plasmapy.formulary.kappa_thermal_speed
-    ~plasmapy.formulary.kappa_velocity_1D
-    """
-    # Checking thermal units
-    if kappa <= 3 / 2:
-        raise ValueError(
-            f"Must have kappa > 3/2, instead of {kappa}, for "
-            "kappa distribution function to be valid."
-        )
-    # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
-    vTh = thermal_speed(T=T, particle=particle, method=method)
-
-    if method == "most_probable":
-        # thermal velocity of Kappa distribution function is just Maxwellian
-        # thermal speed modulated by the following factor.
-        # This is only true for "most probable" case. RMS and mean
-        # magnitude velocities are same as Maxwellian.
-        coeff = np.sqrt((kappa - 3 / 2) / kappa)
-    else:
-        coeff = 1
-
-    return vTh * coeff
-
-
-vth_kappa_ = kappa_thermal_speed
-"""Alias to `~plasmapy.formulary.parameters.kappa_thermal_speed`."""
 
 
 @validate_quantities
