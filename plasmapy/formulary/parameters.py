@@ -38,7 +38,7 @@ from plasmapy.utils.decorators import (
     preserve_signature,
     validate_quantities,
 )
-from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
+from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 from plasmapy.formulary import dimensionless, frequencies, lengths, speeds  # noqa
 
