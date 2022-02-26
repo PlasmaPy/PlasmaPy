@@ -49,9 +49,44 @@ from plasmapy.utils.exceptions import PhysicsWarning, PlasmaPyFutureWarning
 
 from plasmapy.formulary import dimensionless, frequencies, lengths  # noqa
 
-__aliases__ += frequencies.__aliases__ + lengths.__aliases__
-__lite_funcs__ += frequencies.__lite_funcs__
-__all__ += frequencies.__all__ + lengths.__all__ + __aliases__ + __lite_funcs__
+__all__ += (
+    dimensionless.__all__.copy()
+    + frequencies.__all__.copy()
+    + lengths.__all__.copy()
+    + __aliases__
+    + __lite_funcs__
+)
+
+__aliases__ += (
+    dimensionless.__aliases__.copy()
+    + frequencies.__aliases__.copy()
+    + lengths.__aliases__.copy()
+)
+
+__lite_funcs__ += frequencies.__lite_funcs__.copy()
+
+# remove from __all__ and __aliases__ added functionality names that are not
+# actually in this file
+for name in (
+    "beta",
+    "betaH_",
+    "Mag_Reynolds",
+    "quantum_theta",
+    "Re_",
+    "Reynolds_number",
+    "Rm_",
+):  # coverage: ignore
+    try:
+        __aliases__.remove(name)
+    except ValueError:
+        # name was not in __aliases__
+        pass
+
+    try:
+        __all__.remove(name)
+    except ValueError:
+        # name was not in __all__
+        pass
 
 e_si_unitless = e.value
 eps0_si_unitless = eps0.value
