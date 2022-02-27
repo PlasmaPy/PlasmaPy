@@ -239,7 +239,7 @@ class TestAlfvenSpeed:
 
 
 class Test_Ion_Sound_Speed:
-    r"""Test the ion_sound_speed function in parameters.py."""
+    r"""Test the ion_sound_speed function in speeds.py."""
 
     @pytest.mark.parametrize(
         "args, kwargs, expected, isclose_kw",
