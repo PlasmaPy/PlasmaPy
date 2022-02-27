@@ -4,12 +4,7 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.speeds import (
-    Alfven_speed,
-    cs_,
-    ion_sound_speed,
-    va_,
-)
+from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import (

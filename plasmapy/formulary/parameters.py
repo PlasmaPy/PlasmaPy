@@ -25,10 +25,7 @@ from typing import Optional, Union
 
 from plasmapy import particles
 from plasmapy.particles import Particle
-from plasmapy.utils.decorators import (
-    deprecated,
-    validate_quantities,
-)
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
 from plasmapy.formulary import dimensionless, frequencies, lengths, speeds  # noqa
