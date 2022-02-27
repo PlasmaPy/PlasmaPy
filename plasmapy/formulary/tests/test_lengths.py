@@ -16,7 +16,7 @@ from plasmapy.formulary.lengths import (
     rc_,
     rhoc_,
 )
-from plasmapy.formulary.parameters import thermal_speed
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray

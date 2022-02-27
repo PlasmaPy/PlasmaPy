@@ -377,7 +377,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     Get the thermal speed coefficient corresponding to the desired
     thermal speed definition.
 
-    See the `~plasmapy.formulary.parameters.thermal_speed`
+    See the `~plasmapy.formulary.speeds.thermal_speed`
     :ref:`Notes <thermal-speed-notes>` section for further details of
     the various thermal speed definitions.
 
@@ -402,7 +402,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     For a detailed explanation of the different coefficients used to
     calculate the thermal speed, then look to the
     :ref:`Notes <thermal-speed-notes>` section for
-    `~plasmapy.formulary.parameters.thermal_speed`.  The possible return
+    `~plasmapy.formulary.speeds.thermal_speed`.  The possible return
     values are listed the following table:
 
     .. table:: Thermal speed :math:`v_{th}` coefficients.
@@ -463,9 +463,9 @@ def thermal_speed_lite(
 ) -> numbers.Real:
     r"""
     The ":term:`lite-function`" version of
-    `~plasmapy.formulary.parameters.thermal_speed`.  Performs the same
+    `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
     thermal speed calculations as
-    `~plasmapy.formulary.parameters.thermal_speed`, but is intended for
+    `~plasmapy.formulary.speeds.thermal_speed`, but is intended for
     computational use and, thus, has data conditioning safeguards
     removed.
 
@@ -477,7 +477,7 @@ def thermal_speed_lite(
     proportionality determined by the method in which :math:`v_{th}` is
     calculated and the dimensionality of the system (1D, 2D, 3D).  For
     further details see the :ref:`Notes <thermal-speed-notes>` section
-    in the `~plasmapy.formulary.parameters.thermal_speed` documentation.
+    in the `~plasmapy.formulary.speeds.thermal_speed` documentation.
 
     Parameters
     ----------
@@ -491,7 +491,7 @@ def thermal_speed_lite(
         The coefficient :math:`C_o` associated with the method used for
         calculating the thermal speed, see
         :ref:`Notes <thermal-speed-notes>` section in the
-        `~plasmapy.formulary.parameters.thermal_speed` documentation.
+        `~plasmapy.formulary.speeds.thermal_speed` documentation.
 
     Returns
     -------

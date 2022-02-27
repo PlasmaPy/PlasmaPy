@@ -163,7 +163,7 @@ def Hall_parameter(
     V : `~astropy.units.quantity.Quantity`
         The relative velocity between ``particle`` and ``ion``.  If not provided,
         then the ``particle`` thermal velocity is assumed
-        (`~plasmapy.formulary.parameters.thermal_speed`).
+        (`~plasmapy.formulary.speeds.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.

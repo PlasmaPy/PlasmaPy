@@ -62,7 +62,6 @@ from astropy.constants.si import e, eps0, hbar, k_B, m_e
 from numpy import pi
 
 from plasmapy import particles, utils
-from plasmapy.formulary import parameters
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.mathematics import Fermi_integral
 from plasmapy.formulary.quantum import (
@@ -70,6 +69,7 @@ from plasmapy.formulary.quantum import (
     thermal_deBroglie_wavelength,
     Wigner_Seitz_radius,
 )
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 
@@ -566,16 +566,16 @@ def _replaceNanVwithThermalV(V, T, m):
     # getting thermal velocity of system if no velocity is given
 
     if V is None:
-        V = parameters.thermal_speed(T, "e-", mass=m)
+        V = thermal_speed(T, "e-", mass=m)
     elif np.any(np.isnan(V)):
         if np.isscalar(V.value) or np.isscalar(T.value):
             if np.isscalar(V.value):
-                V = parameters.thermal_speed(T, "e-", mass=m)
+                V = thermal_speed(T, "e-", mass=m)
             if np.isscalar(T.value):
-                V[np.isnan(V)] = parameters.thermal_speed(T, "e-", mass=m)
+                V[np.isnan(V)] = thermal_speed(T, "e-", mass=m)
         else:
             V = V.copy()
-            V[np.isnan(V)] = parameters.thermal_speed(T[np.isnan(V)], "e-", mass=m)
+            V[np.isnan(V)] = thermal_speed(T[np.isnan(V)], "e-", mass=m)
 
     return V
 

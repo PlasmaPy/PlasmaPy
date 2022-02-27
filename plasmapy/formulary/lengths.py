@@ -10,6 +10,7 @@ from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -206,9 +207,6 @@ def gyroradius(
     >>> gyroradius(400*u.G, 'e-', Vperp=1e7*u.m/u.s)
     <Quantity 0.001421... m>
     """
-
-    # TODO: remove when thermal_speed moves to plasmapy.formulary.speeds
-    from plasmapy.formulary.parameters import thermal_speed
 
     # Backwards Compatibility and Deprecation check for keyword T_i
     if T_i is not None:
