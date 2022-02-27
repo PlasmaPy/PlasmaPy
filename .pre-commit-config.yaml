@@ -22,7 +22,6 @@ repos:
   hooks:
   - id: isort
     name: isort
-    language: system
     entry: python -m isort --color ./plasmapy
     additional_dependencies: [-r, ./requirements/extras.txt]
     files: \.py$
