@@ -46,7 +46,7 @@ def test_parameters_aliases(alias, parent):
 
 
 class TestAlfvenSpeed:
-    """Test `~plasmapy.formulary.parameters.Alfven_speed`."""
+    """Test `~plasmapy.formulary.speeds.Alfven_speed`."""
 
     @pytest.mark.parametrize(
         "args, kwargs, _error",
