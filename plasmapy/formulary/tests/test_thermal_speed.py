@@ -16,7 +16,7 @@ import pytest
 from astropy.constants.si import k_B
 from numba.extending import is_jitted
 
-from plasmapy.formulary.parameters import (
+from plasmapy.formulary.speeds import (
     kappa_thermal_speed,
     thermal_speed,
     thermal_speed_coefficients,
