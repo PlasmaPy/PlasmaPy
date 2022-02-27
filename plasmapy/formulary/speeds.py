@@ -803,8 +803,8 @@ def kappa_thermal_speed(
 
     See Also
     --------
-    ~plasmapy.formulary.kappa_thermal_speed
-    ~plasmapy.formulary.kappa_velocity_1D
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
+    ~plasmapy.formulary.distribution.kappa_velocity_1D
     """
     # Checking thermal units
     if kappa <= 3 / 2:
