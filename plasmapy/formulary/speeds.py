@@ -531,7 +531,7 @@ def thermal_speed(
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
     details.)
 
-    **Aliases:** `~plasmapy.formulary.parameters.vth_`
+    **Aliases:** `~plasmapy.formulary.speeds.vth_`
 
     **Lite Version:** `~plasmapy.formulary.parameters.thermal_speed_lite`
 
