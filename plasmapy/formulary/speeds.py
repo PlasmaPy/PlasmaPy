@@ -19,7 +19,7 @@ from astropy.constants.si import k_B, mu0
 from numba import njit
 from typing import Optional
 
-from plasmapy.formulary.lengths import Debye_length
+from plasmapy.formulary import lengths
 from plasmapy.particles import Particle, particle_input, particle_mass
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import (
@@ -354,7 +354,7 @@ def ion_sound_speed(
             PhysicsWarning,
         )
     elif n_e is not None and k is not None:
-        lambda_D = Debye_length(T_e, n_e)
+        lambda_D = lengths.Debye_length(T_e, n_e)
         klD2 = (k * lambda_D) ** 2
 
     try:
