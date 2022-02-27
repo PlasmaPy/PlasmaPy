@@ -20,10 +20,14 @@ repos:
 
 - repo: local
   hooks:
+  - id: requirements
+    name: Install Requirements
+    entry: pip install -r requirements/extras.txt
+    language: system
   - id: isort
     name: isort
     entry: python -m isort --color ./plasmapy
-    additional_dependencies: [-r, ./requirements/extras.txt]
+    language: system
     files: \.py$
 
 - repo: https://github.com/PyCQA/isort
