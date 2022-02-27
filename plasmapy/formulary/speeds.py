@@ -626,7 +626,7 @@ def thermal_speed(
        +--------------+------------+---------------+---------------+---------------+
 
     The coefficents can be directly retrieved using
-    `~plasmapy.formulary.parameters.thermal_speed_coefficients`.
+    `~plasmapy.formulary.speeds.thermal_speed_coefficients`.
 
         .. rubric:: The Methods
 
@@ -698,7 +698,7 @@ def thermal_speed(
     >>> thermal_speed(1e6*u.K, "e-", method="mean_magnitude")
     <Quantity 621251... m / s>
 
-    For user convenience `~plasmapy.formulary.parameters.thermal_speed_coefficients`
+    For user convenience `~plasmapy.formulary.speeds.thermal_speed_coefficients`
     and `~plasmapy.formulary.speeds.thermal_speed_lite` are bound to this function
     and can be used as follows.
 

@@ -41,7 +41,7 @@ def test_aliases(alias, parent):
 class TestThermalSpeedCoefficients:
     """
     Test class for
-    `plasmapy.formulary.parameters.thermal_speed_coefficients`.
+    `plasmapy.formulary.speeds.thermal_speed_coefficients`.
     """
 
     @pytest.mark.parametrize(
