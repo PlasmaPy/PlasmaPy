@@ -254,9 +254,7 @@ def Maxwellian_velocity_2D(
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in kelvin
-        vTh = thermal_speed(
-            T * u.K, particle=particle, method="most_probable"
-        ).si.value
+        vTh = thermal_speed(T * u.K, particle=particle, method="most_probable").si.value
     # accounting for thermal velocity in 2D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -404,9 +402,7 @@ def Maxwellian_velocity_3D(
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in kelvin
-        vTh = thermal_speed(
-            T * u.K, particle=particle, method="most_probable"
-        ).si.value
+        vTh = thermal_speed(T * u.K, particle=particle, method="most_probable").si.value
     # accounting for thermal velocity in 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
@@ -880,9 +876,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
             vTh = vTh.to(u.m / u.s)
     elif np.isnan(vTh) and units == "unitless":
         # assuming unitless temperature is in kelvin
-        vTh = (
-            kappa_thermal_speed(T * u.K, kappa, particle=particle)
-        ).si.value
+        vTh = (kappa_thermal_speed(T * u.K, kappa, particle=particle)).si.value
     # Get thermal velocity squared and accounting for 1D instead of 3D
     vThSq = vTh ** 2
     # Get square of relative particle velocity
