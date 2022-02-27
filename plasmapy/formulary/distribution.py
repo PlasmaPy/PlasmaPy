@@ -14,10 +14,9 @@ __all__ = [
     "kappa_velocity_3D",
 ]
 
-import astropy as astropy
+import astropy.units as u
 import numpy as np
 
-from astropy import units as u
 from scipy.special import gamma
 
 from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
@@ -25,7 +24,7 @@ from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 def _v_drift_units(v_drift):
     # Helper method to assign units to  v_drift if it takes a default value
-    if v_drift == 0 and not isinstance(v_drift, astropy.units.quantity.Quantity):
+    if v_drift == 0 and not isinstance(v_drift, u.quantity.Quantity):
         v_drift = v_drift * u.m / u.s
     else:
         v_drift = v_drift.to(u.m / u.s)
@@ -867,7 +866,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
         # catching case where drift velocities have default values, they
         # need to be assigned units
         if v_drift == 0:
-            if not isinstance(v_drift, astropy.units.quantity.Quantity):
+            if not isinstance(v_drift, u.quantity.Quantity):
                 v_drift = v_drift * u.m / u.s
         # checking units of drift velocities
         v_drift = v_drift.to(u.m / u.s)
