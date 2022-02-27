@@ -22,7 +22,7 @@ repos:
   hooks:
   - id: requirements
     name: Install Requirements
-    entry: pip install -r ./requirements/extras.txt
+    entry: python -m pip install -r ./requirements/extras.txt
     language: system
   - id: isort
     name: isort
