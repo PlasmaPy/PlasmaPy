@@ -57,7 +57,7 @@ Glossary
       - Lite-functions are a flavor of existing `plasmapy`
         functionality and are denoted with a trailing ``_lite`` to the
         name. For example,
-        `~plasmapy.formulary.parameters.thermal_speed_lite` is the
+        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
         lite-function associated with
         `~plasmapy.formulary.speeds.thermal_speed`.
       - Lite-functions are typically bound to their normal version as

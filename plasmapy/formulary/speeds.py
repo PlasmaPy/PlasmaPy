@@ -455,7 +455,6 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     return coeff
 
 
-
 @preserve_signature
 @njit
 def thermal_speed_lite(
@@ -533,7 +532,7 @@ def thermal_speed(
 
     **Aliases:** `~plasmapy.formulary.speeds.vth_`
 
-    **Lite Version:** `~plasmapy.formulary.parameters.thermal_speed_lite`
+    **Lite Version:** `~plasmapy.formulary.speeds.thermal_speed_lite`
 
     Parameters
     ----------
@@ -700,7 +699,7 @@ def thermal_speed(
     <Quantity 621251... m / s>
 
     For user convenience `~plasmapy.formulary.parameters.thermal_speed_coefficients`
-    and `~plasmapy.formulary.parameters.thermal_speed_lite` are bound to this function
+    and `~plasmapy.formulary.speeds.thermal_speed_lite` are bound to this function
     and can be used as follows.
 
     >>> from plasmapy.particles import Particle
