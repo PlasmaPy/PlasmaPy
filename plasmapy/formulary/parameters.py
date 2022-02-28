@@ -1,4 +1,20 @@
-"""Functions to calculate fundamental plasma parameters."""
+"""
+.. attention::
+   The `plasmapy.formulary.parameters` module is deprecated and will be
+   removed in the release of ``v0.9.0``.  Please update your code to
+   import directly from `plasmapy.formulary` or the specific submodule
+   the functionality is defined in.  For example,
+
+   .. code-block:: python
+
+      from plasmapy.formulary import Alfven_speed
+
+      # or
+
+      from plasmapy.formulary.speeds import Alfven_speed
+
+Functions to calculate fundamental plasma parameters.
+"""
 
 __all__ = []
 
