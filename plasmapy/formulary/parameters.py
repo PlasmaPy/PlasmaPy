@@ -1,5 +1,6 @@
 """
 .. attention::
+
    The `plasmapy.formulary.parameters` module is deprecated and will be
    removed in the release of ``v0.9.0``.  Please update your code to
    import directly from `plasmapy.formulary` or the specific submodule
