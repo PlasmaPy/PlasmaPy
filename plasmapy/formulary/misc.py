@@ -1,7 +1,12 @@
 """Functions to for miscellaneous plasma parameter calculations."""
 
-__all__ = ["Bohm_diffusion", "mass_density", "thermal_pressure"]
-__aliases__ = ["DB_", "rho_", "pth_"]
+__all__ = [
+    "Bohm_diffusion",
+    "magnetic_energy_density",
+    "mass_density",
+    "thermal_pressure",
+]
+__aliases__ = ["DB_", "pth_", "rho_", "ub_"]
 
 import astropy.units as u
 import numbers
@@ -115,6 +120,71 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
 
 DB_ = Bohm_diffusion
 """Alias to `~plasmapy.formulary.misc.Bohm_diffusion`."""
+
+
+@validate_quantities
+def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
+    r"""
+    Calculate the magnetic energy density.
+
+    **Aliases:** `ub_`
+
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field in units convertible to tesla.
+
+    Returns
+    -------
+    E_B : `~astropy.units.Quantity`
+        The magnetic energy density in units of joules per cubic meter.
+
+    Raises
+    ------
+    `TypeError`
+        If the input is not a `~astropy.units.Quantity`.
+
+    `~astropy.units.UnitConversionError`
+        If the input is not in units convertible to tesla.
+
+    `ValueError`
+        If the magnetic field strength does not have an appropriate.
+        value.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed
+
+    Notes
+    -----
+    The magnetic energy density is given by:
+
+    .. math::
+        E_B = \frac{B^2}{2 μ_0}
+
+    The motivation behind having two separate functions for magnetic
+    pressure and magnetic energy density is that it allows greater
+    insight into the physics that are being considered by the user and
+    thus more readable code.
+
+    See Also
+    --------
+    magnetic_pressure : Returns an equivalent `~astropy.units.Quantity`,
+        except in units of pascals.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> magnetic_energy_density(0.1*u.T)
+    <Quantity 3978.87... J / m3>
+
+    """
+    return magnetic_pressure(B)
+
+
+ub_ = magnetic_energy_density
+"""Alias to `~plasmapy.formulary.misc.magnetic_energy_density`."""
 
 
 @validate_quantities(
