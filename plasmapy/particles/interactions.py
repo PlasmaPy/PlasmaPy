@@ -140,5 +140,5 @@ class Collision(ParticleInteraction):
     pass
 
 
-class CoulombCollision(Interaction):
+class CoulombCollision(ParticleInteraction):
     pass
