@@ -413,10 +413,16 @@ class Particle(AbstractPhysicalParticle):
     def __init__(
         self,
         argument: ParticleLike,
-        *,
+        *args,
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
+
+        if args:
+            raise TypeError(
+                "The parameters mass_numb and Z to Particle are now "
+                "keyword-only [e.g., Particle('H', mass_numb=2, Z=1)]."
+            )
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
