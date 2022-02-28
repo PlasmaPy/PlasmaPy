@@ -23,9 +23,7 @@ import numpy as np
 
 from astropy.constants.si import k_B, mu0
 
-from plasmapy.formulary import parameters, quantum
-from plasmapy.formulary.frequencies import gyrofrequency
-from plasmapy.formulary.lengths import Debye_length
+from plasmapy.formulary import frequencies, lengths, parameters, quantum
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -96,7 +94,7 @@ def Debye_number(T_e: u.K, n_e: u.m ** -3) -> u.dimensionless_unscaled:
 
     """
 
-    lambda_D = Debye_length(T_e, n_e)
+    lambda_D = lengths.Debye_length(T_e, n_e)
     N_D = (4 / 3) * np.pi * n_e * lambda_D ** 3
 
     return N_D
@@ -163,7 +161,7 @@ def Hall_parameter(
     V : `~astropy.units.quantity.Quantity`
         The relative velocity between ``particle`` and ``ion``.  If not provided,
         then the ``particle`` thermal velocity is assumed
-        (`~plasmapy.formulary.parameters.thermal_speed`).
+        (`~plasmapy.formulary.speeds.thermal_speed`).
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.
@@ -214,7 +212,7 @@ def Hall_parameter(
         fundamental_ion_collision_freq,
     )
 
-    gyro_frequency = gyrofrequency(B, particle)
+    gyro_frequency = frequencies.gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
     if Particle(particle).symbol == "e-":
         coll_rate = fundamental_electron_collision_freq(
