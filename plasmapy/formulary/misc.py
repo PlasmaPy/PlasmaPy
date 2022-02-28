@@ -1,13 +1,13 @@
 """Functions to for miscellaneous plasma parameter calculations."""
 
-__all__ = ["mass_density", "thermal_pressure"]
-__aliases__ = ["rho_", "pth_"]
+__all__ = ["Bohm_diffusion", "mass_density", "thermal_pressure"]
+__aliases__ = ["DB_", "rho_", "pth_"]
 
 import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import k_B
+from astropy.constants.si import e, k_B
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -43,6 +43,78 @@ def _grab_charge(ion: Particle, z_mean=None):
         # using average ionization provided by user
         Z = z_mean
     return Z
+
+
+@validate_quantities(
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    B={"can_be_negative": False},
+)
+def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
+    r"""
+    Return the Bohm diffusion coefficient.
+
+    The Bohm diffusion coefficient was conjectured to follow Bohm model
+    of the diffusion of plasma across a magnetic field and describe the
+    diffusion of early fusion energy machines :cite:p:`bohm:1949`. The
+    rate predicted by Bohm diffusion is much higher than classical
+    diffusion, and if there were no exceptions, magnetically confined
+    fusion would be impractical.
+
+    .. math::
+
+        D_B = \frac{1}{16} \frac{k_B T}{e B}
+
+    where :math:`k_B` is the Boltzmann constant
+    and :math:`e` is the fundamental charge.
+
+    **Aliases:** `DB_`
+
+    Parameters
+    ----------
+    T_e : `~astropy.units.Quantity`
+        The electron temperature.
+
+    B : `~astropy.units.Quantity`
+        The magnitude of the magnetic field in the plasma.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Raises
+    ------
+    `TypeError`
+        ``T_e`` is not a `~astropy.units.Quantity` and cannot be
+        converted into one.
+
+    `~astropy.units.UnitConversionError`
+        If ``T_e`` is not in appropriate units.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> T_e = 5000 * u.K
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.00269292 m2 / s>
+    >>> T_e = 50 * u.eV
+    >>> B = 10 * u.T
+    >>> Bohm_diffusion(T_e, B)
+    <Quantity 0.3125 m2 / s>
+
+    Returns
+    -------
+    D_B : `~astropy.units.Quantity`
+        The Bohm diffusion coefficient in meters squared per second.
+
+    """
+    D_B = k_B * T_e / (16 * e * B)
+    return D_B
+
+
+DB_ = Bohm_diffusion
+"""Alias to `~plasmapy.formulary.misc.Bohm_diffusion`."""
 
 
 @validate_quantities(
