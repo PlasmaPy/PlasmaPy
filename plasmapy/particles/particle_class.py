@@ -2268,7 +2268,7 @@ def molecule(
 
     Parameters
     ----------
-    symbol : 'str'
+    symbol : `str`
         Symbol of the molecule to be parsed.
 
     Z : integer, optional
