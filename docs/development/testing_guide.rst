@@ -1,3 +1,5 @@
+.. _testing guide:
+
 *************
 Testing Guide
 *************
@@ -39,8 +41,8 @@ multiple software components work together as intended.
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
 names of the form :file:`test_*.py`. For example, tests for
-`plasmapy.formulary.parameters` are located at
-:file:`plasmapy/formulary/tests/test_parameters.py` relative to the top
+`plasmapy.formulary.speeds` are located at
+:file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
 make sure that the actual printed output matches what is in the
 docstring.

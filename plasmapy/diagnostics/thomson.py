@@ -14,7 +14,8 @@ import numpy as np
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
+from plasmapy.formulary.frequencies import plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -273,7 +274,7 @@ def spectral_density(
     # Calculate the susceptibilities
 
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, fract in enumerate(efract):
+    for i in range(len(efract)):
         chiE[i, :] = permittivity_1D_Maxwellian(w_e[i, :], k, Te[i], ne[i], "e-")
 
     # Treatment of multiple species is an extension of the discussion in
