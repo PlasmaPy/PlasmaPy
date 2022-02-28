@@ -2271,23 +2271,23 @@ def molecule(
     symbol : 'str'
         Symbol of the molecule to be parsed.
 
-    Z : 'Integral', optional
+    Z : integer, optional
         Charge number if not present in symbol.
 
     Returns
     -------
-        A |Particle| object if the input could be parsed as such,
-        or a |CustomParticle| with the provided symbol, charge,
-        and a mass corresponding to the sum of the molecule elements.
+    A |Particle| object if the input could be parsed as such, or a
+    |CustomParticle| with the provided symbol, charge, and a mass
+    corresponding to the sum of the molecule elements.
 
     Raises
     ------
-    'InvalidParticleError'
+    `InvalidParticleError`
         If ``symbol`` couldn't be parsed.
 
     Warns
     -----
-    `ParticleWarning`
+    : `ParticleWarning`
         If the charge is given both as an argument and in the symbol.
 
     Examples
