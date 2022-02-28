@@ -2272,7 +2272,7 @@ def molecule(
         Symbol of the molecule to be parsed.
 
     Z : integer, optional
-        Charge number if not present in symbol.
+        The charge number if not present in the symbol.
 
     Returns
     -------
@@ -2288,7 +2288,7 @@ def molecule(
 
     Warns
     -----
-    : `ParticleWarning`
+    : `~plasmapy.particles.exceptions.ParticleWarning`
         If the charge is given both as an argument and in the symbol.
 
     Examples
