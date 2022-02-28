@@ -132,7 +132,7 @@ from plasmapy.formulary.collisions import (
     fundamental_ion_collision_freq,
 )
 from plasmapy.formulary.dimensionless import Hall_parameter
-from plasmapy.formulary.parameters import _grab_charge
+from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
