@@ -6,8 +6,9 @@ import pytest
 from astropy import units as u
 from astropy.constants import m_e, m_p
 
-from plasmapy.formulary import dimensionless, frequencies, lengths, speeds
+from plasmapy.formulary import dimensionless, frequencies, lengths, misc, speeds
 from plasmapy.formulary.parameters import (
+    _grab_charge,
     Alfven_speed,
     betaH_,
     Bohm_diffusion,
@@ -206,6 +207,28 @@ mu = m_p.to(u.u).value
             rhoc_,
             lengths.rhoc_,
         ),
+        #
+        # misc
+        #
+        ({"ion": "He+", "z_mean": 1.32}, _grab_charge, misc._grab_charge),
+        ({"T_e": 58000 * u.K, "B": 0.4 * u.T}, Bohm_diffusion, misc.Bohm_diffusion),
+        ({"T_e": 58000 * u.K, "B": 0.4 * u.T}, DB_, misc.DB_),
+        ({"B": 0.4 * u.T}, magnetic_energy_density, misc.magnetic_energy_density),
+        ({"B": 0.4 * u.T}, ub_, misc.ub_),
+        ({"B": 0.4 * u.T}, magnetic_pressure, misc.magnetic_pressure),
+        ({"B": 0.4 * u.T}, pmag_, misc.pmag_),
+        (
+            {"density": 1e18 * u.m ** -3, "particle": "He+"},
+            mass_density,
+            misc.mass_density,
+        ),
+        ({"density": 1e18 * u.m ** -3, "particle": "He+"}, rho_, misc.rho_),
+        (
+            {"T": 5800 * u.K, "n": 1e18 * u.m ** -3},
+            thermal_pressure,
+            misc.thermal_pressure,
+        ),
+        ({"T": 5800 * u.K, "n": 1e18 * u.m ** -3}, pth_, misc.pth_),
         #
         # speeds
         #
