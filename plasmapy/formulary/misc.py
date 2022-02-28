@@ -149,7 +149,7 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
         If the input is not in units convertible to tesla.
 
     `ValueError`
-        If the magnetic field strength does not have an appropriate.
+        If the magnetic field strength does not have an appropriate
         value.
 
     Warns
