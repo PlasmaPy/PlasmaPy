@@ -40,8 +40,8 @@ T_e = 1e6 * u.K
         (pth_, thermal_pressure),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in misc.py"""
     assert alias is parent
 
 

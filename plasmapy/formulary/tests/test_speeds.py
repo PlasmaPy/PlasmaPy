@@ -35,8 +35,8 @@ T_negarr = np.array([1e6, -5151.0]) * u.K
         (cs_, ion_sound_speed),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in speeds.py"""
     assert alias is parent
 
 

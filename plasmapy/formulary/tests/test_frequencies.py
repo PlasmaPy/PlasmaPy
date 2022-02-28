@@ -34,13 +34,13 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wuh_, upper_hybrid_frequency),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in frequencies.py"""
     assert alias is parent
 
 
 def test_gyrofrequency():
-    r"""Test the gyrofrequency function in parameters.py."""
+    r"""Test the gyrofrequency function in frequencies.py."""
 
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
 
@@ -120,7 +120,7 @@ def test_gyrofrequency():
 
 
 def test_lower_hybrid_frequency():
-    r"""Test the lower_hybrid_frequency function in parameters.py."""
+    r"""Test the lower_hybrid_frequency function in frequencies.py."""
 
     ion = "He-4 1+"
     omega_ci = gyrofrequency(B, particle=ion)
@@ -157,7 +157,7 @@ def test_lower_hybrid_frequency():
 
 
 def test_upper_hybrid_frequency():
-    r"""Test the upper_hybrid_frequency function in parameters.py."""
+    r"""Test the upper_hybrid_frequency function in frequencies.py."""
 
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
