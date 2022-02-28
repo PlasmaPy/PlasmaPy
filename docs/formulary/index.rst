@@ -1,4 +1,4 @@
-.. _formular:
+.. _formulary:
 
 ********************************
 Formulary (`plasmapy.formulary`)
