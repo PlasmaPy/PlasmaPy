@@ -2296,13 +2296,6 @@ def molecule(
     : `~plasmapy.particles.exceptions.ParticleWarning`
         If the charge is given both as an argument and in the symbol.
 
-    Notes
-    -----
-    ``symbol`` should be a string that
-
-    ``symbol`` should be a string that contains a series of atomic
-    symbols optionally followed by a number representing the
-
     Examples
     --------
     >>> from plasmapy.particles import molecule
