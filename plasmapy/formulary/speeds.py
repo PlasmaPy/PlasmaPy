@@ -19,7 +19,7 @@ from astropy.constants.si import k_B, mu0
 from numba import njit
 from typing import Optional
 
-from plasmapy.formulary import lengths
+from plasmapy.formulary import lengths, misc
 from plasmapy.particles import Particle, particle_input, particle_mass
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import (
@@ -151,8 +151,6 @@ def Alfven_speed(
     >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
     <Quantity 21661.51... m / s>
     """
-    # TODO: remove mass_density import when migrated to plasmapy.formulary.misc
-    from plasmapy.formulary.parameters import mass_density
 
     if density.unit.is_equivalent(u.kg / u.m ** 3):
         rho = density
@@ -172,7 +170,10 @@ def Alfven_speed(
                 z_mean = 1
 
         z_mean = abs(z_mean)
-        rho = mass_density(density, ion) + mass_density(density, "e", z_ratio=z_mean)
+        rho = (
+            misc.mass_density(density, ion)
+            + misc.mass_density(density, "e", z_ratio=z_mean)
+        )
 
     V_A = np.abs(B) / np.sqrt(mu0 * rho)
     return V_A
