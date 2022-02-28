@@ -328,11 +328,9 @@ def ion_sound_speed(
     <Quantity 229585... m / s>
 
     """
-    # TODO: remove import of _grab_charge when it's moved to plasmapy.formulary.misc
-    from plasmapy.formulary.parameters import _grab_charge
 
     m_i = particle_mass(ion)
-    Z = _grab_charge(ion, z_mean)
+    Z = misc._grab_charge(ion, z_mean)
 
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
         if not isinstance(gamma, (numbers.Real, numbers.Integral)):
