@@ -1,10 +1,7 @@
 """Tests for functions that calculate plasma parameters."""
 
-import numpy as np
+import astropy.units as u
 import pytest
-
-from astropy import units as u
-from astropy.constants import m_e, m_p
 
 from plasmapy.formulary import dimensionless, frequencies, lengths, misc, speeds
 from plasmapy.formulary.parameters import (
@@ -52,39 +49,6 @@ from plasmapy.formulary.parameters import (
     wuh_,
 )
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
-
-B = 1.0 * u.T
-Z = 1
-ion = "p"
-m_i = m_p
-n_i = 5e19 * u.m ** -3
-n_e = Z * 5e19 * u.m ** -3
-rho = n_i * m_i + n_e * m_e
-T_e = 1e6 * u.K
-T_i = 1e6 * u.K
-k_1 = 3e1 * u.m ** -1
-k_2 = 3e7 * u.m ** -1
-
-B_arr = np.array([0.001, 0.002]) * u.T
-B_nanarr = np.array([0.001, np.nan]) * u.T
-B_allnanarr = np.array([np.nan, np.nan]) * u.T
-
-rho_arr = np.array([5e-10, 2e-10]) * u.kg / u.m ** 3
-rho_infarr = np.array([np.inf, 5e19]) * u.m ** -3
-rho_negarr = np.array([-5e19, 6e19]) * u.m ** -3
-
-T_arr = np.array([1e6, 2e6]) * u.K
-T_nanarr = np.array([1e6, np.nan]) * u.K
-T_nanarr2 = np.array([np.nan, 2e6]) * u.K
-T_allnanarr = np.array([np.nan, np.nan]) * u.K
-T_negarr = np.array([1e6, -5151.0]) * u.K
-
-V = 25.2 * u.m / u.s
-V_arr = np.array([25, 50]) * u.m / u.s
-V_nanarr = np.array([25, np.nan]) * u.m / u.s
-V_allnanarr = np.array([np.nan, np.nan]) * u.m / u.s
-
-mu = m_p.to(u.u).value
 
 
 @pytest.mark.parametrize(
