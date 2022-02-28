@@ -3,16 +3,17 @@
 __all__ = [
     "Bohm_diffusion",
     "magnetic_energy_density",
+    "magnetic_pressure",
     "mass_density",
     "thermal_pressure",
 ]
-__aliases__ = ["DB_", "pth_", "rho_", "ub_"]
+__aliases__ = ["DB_", "pmag_", "pth_", "rho_", "ub_"]
 
 import astropy.units as u
 import numbers
 import numpy as np
 
-from astropy.constants.si import e, k_B
+from astropy.constants.si import e, k_B, mu0
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -185,6 +186,71 @@ def magnetic_energy_density(B: u.T) -> u.J / u.m ** 3:
 
 ub_ = magnetic_energy_density
 """Alias to `~plasmapy.formulary.misc.magnetic_energy_density`."""
+
+
+@validate_quantities
+def magnetic_pressure(B: u.T) -> u.Pa:
+    r"""
+    Calculate the magnetic pressure.
+
+    **Aliases:** `pmag_`
+
+    Parameters
+    ----------
+    B : `~astropy.units.Quantity`
+        The magnetic field in units convertible to tesla.
+
+    Returns
+    -------
+    p_B : `~astropy.units.Quantity`
+        The magnetic pressure in units in pascals (newtons per square meter).
+
+    Raises
+    ------
+    `TypeError`
+        If the input is not a `~astropy.units.Quantity`.
+
+    `~astropy.units.UnitConversionError`
+        If the input is not in units convertible to tesla.
+
+    `ValueError`
+        If the magnetic field strength is not a real number between
+        :math:`±∞`\ .
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Notes
+    -----
+    The magnetic pressure is given by:
+
+    .. math::
+        p_B = \frac{B^2}{2 μ_0}
+
+    The motivation behind having two separate functions for magnetic
+    pressure and magnetic energy density is that it allows greater
+    insight into the physics that are being considered by the user and
+    thus more readable code.
+
+    See Also
+    --------
+    magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
+        except in units of joules per cubic meter.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> magnetic_pressure(0.1*u.T).to(u.Pa)
+    <Quantity 3978.87... Pa>
+
+    """
+    return (B ** 2) / (2 * mu0)
+
+
+pmag_ = magnetic_pressure
+"""Alias to `~plasmapy.formulary.misc.magnetic_pressure`."""
 
 
 @validate_quantities(
