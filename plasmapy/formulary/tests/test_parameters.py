@@ -243,21 +243,6 @@ def test_Bohm_diffusion():
 
 
 @pytest.mark.parametrize(
-    "alias, parent",
-    [
-        (rho_, mass_density),
-        (pth_, thermal_pressure),
-        (pmag_, magnetic_pressure),
-        (ub_, magnetic_energy_density),
-        (DB_, Bohm_diffusion),
-    ],
-)
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
-    assert alias is parent
-
-
-@pytest.mark.parametrize(
     "kwargs, deprecated_func, parent",
     [
         # dimensionless
