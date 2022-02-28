@@ -2276,9 +2276,10 @@ def molecule(
 
     Returns
     -------
-    A |Particle| object if the input could be parsed as such, or a
-    |CustomParticle| with the provided symbol, charge, and a mass
-    corresponding to the sum of the molecule elements.
+    |Particle| or |CustomParticle|
+        A |Particle| object if the input could be parsed as such, or a
+        |CustomParticle| with the provided symbol, charge, and a mass
+        corresponding to the sum of the molecule elements.
 
     Raises
     ------
