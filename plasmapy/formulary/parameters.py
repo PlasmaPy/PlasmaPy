@@ -4,7 +4,6 @@ __all__ = [
     "Bohm_diffusion",
     "magnetic_energy_density",
     "magnetic_pressure",
-    "thermal_pressure",
 ]
 __aliases__ = [
     "DB_",
@@ -97,6 +96,8 @@ funcs_to_deprecate_wrap = [  # (module_name, func_name)
     ("misc", "_grab_charge"),
     ("misc", "mass_density"),
     ("misc", "rho_"),
+    ("misc", "thermal_pressure"),
+    ("misc", "pth_"),
     ("speeds", "Alfven_speed"),
     ("speeds", "va_"),
     ("speeds", "ion_sound_speed"),
@@ -121,60 +122,6 @@ for modname, name in funcs_to_deprecate_wrap:
     )(getattr(globals()[f"{modname}"], name))
 
 del modname, name
-
-
-@validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
-    n={"can_be_negative": False},
-)
-def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
-    r"""
-    Return the thermal pressure for a Maxwellian distribution.
-
-    **Aliases:** `pth_`
-
-    Parameters
-    ----------
-    T : `~astropy.units.Quantity`
-        The particle temperature in either kelvin or energy per particle.
-
-    n : `~astropy.units.Quantity`
-        The particle number density in units convertible to m\ :sup:`-3`\ .
-
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
-    <Quantity 16.021... Pa>
-    >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
-    <Quantity 160.21... Pa>
-
-    Returns
-    -------
-    p_th : `~astropy.units.Quantity`
-        Thermal pressure.
-
-    Raises
-    ------
-    `TypeError`
-        The temperature or number density is not a `~astropy.units.Quantity`.
-
-    `~astropy.units.UnitConversionError`
-        If the particle temperature is not in units of temperature or
-        energy per particle.
-
-    Notes
-    -----
-    The thermal pressure is given by:
-
-    .. math::
-        T_{th} = n k_B T
-    """
-    return n * k_B * T
-
-
-pth_ = thermal_pressure
-"""Alias to `~plasmapy.formulary.parameters.thermal_pressure`."""
 
 
 @validate_quantities

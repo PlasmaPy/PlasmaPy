@@ -1,12 +1,13 @@
 """Functions to for miscellaneous plasma parameter calculations."""
 
-__all__ = ["mass_density"]
-__aliases__ = ["rho_"]
+__all__ = ["mass_density", "thermal_pressure"]
+__aliases__ = ["rho_", "pth_"]
 
 import astropy.units as u
 import numbers
 import numpy as np
 
+from astropy.constants.si import k_B
 from typing import Optional, Union
 
 from plasmapy import particles
@@ -148,3 +149,57 @@ def mass_density(
 
 rho_ = mass_density
 """Alias to `~plasmapy.formulary.misc.mass_density`."""
+
+
+@validate_quantities(
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
+    n={"can_be_negative": False},
+)
+def thermal_pressure(T: u.K, n: u.m ** -3) -> u.Pa:
+    r"""
+    Return the thermal pressure for a Maxwellian distribution.
+
+    **Aliases:** `pth_`
+
+    Parameters
+    ----------
+    T : `~astropy.units.Quantity`
+        The particle temperature in either kelvin or energy per particle.
+
+    n : `~astropy.units.Quantity`
+        The particle number density in units convertible to m\ :sup:`-3`\ .
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> thermal_pressure(1*u.eV, 1e20/u.m**3)
+    <Quantity 16.021... Pa>
+    >>> thermal_pressure(10*u.eV, 1e20/u.m**3)
+    <Quantity 160.21... Pa>
+
+    Returns
+    -------
+    p_th : `~astropy.units.Quantity`
+        Thermal pressure.
+
+    Raises
+    ------
+    `TypeError`
+        The temperature or number density is not a `~astropy.units.Quantity`.
+
+    `~astropy.units.UnitConversionError`
+        If the particle temperature is not in units of temperature or
+        energy per particle.
+
+    Notes
+    -----
+    The thermal pressure is given by:
+
+    .. math::
+        T_{th} = n k_B T
+    """
+    return n * k_B * T
+
+
+pth_ = thermal_pressure
+"""Alias to `~plasmapy.formulary.misc.thermal_pressure`."""
