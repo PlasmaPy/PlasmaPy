@@ -170,9 +170,8 @@ def Alfven_speed(
                 z_mean = 1
 
         z_mean = abs(z_mean)
-        rho = (
-            misc.mass_density(density, ion)
-            + misc.mass_density(density, "e", z_ratio=z_mean)
+        rho = misc.mass_density(density, ion) + misc.mass_density(
+            density, "e", z_ratio=z_mean
         )
 
     V_A = np.abs(B) / np.sqrt(mu0 * rho)
