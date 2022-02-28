@@ -23,7 +23,7 @@ import numpy as np
 
 from astropy.constants.si import k_B, mu0
 
-from plasmapy.formulary import frequencies, lengths, parameters, quantum
+from plasmapy.formulary import frequencies, lengths, misc, quantum
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
@@ -330,11 +330,11 @@ def beta(T: u.K, n: u.m ** -3, B: u.T) -> u.dimensionless_unscaled:
 
     See Also
     --------
-    ~plasmapy.formulary.parameters.thermal_pressure
-    ~plasmapy.formulary.parameters.magnetic_pressure
+    ~plasmapy.formulary.misc.thermal_pressure
+    ~plasmapy.formulary.misc.magnetic_pressure
     """
-    thermal_pressure = parameters.thermal_pressure(T, n)
-    magnetic_pressure = parameters.magnetic_pressure(B)
+    thermal_pressure = misc.thermal_pressure(T, n)
+    magnetic_pressure = misc.magnetic_pressure(B)
     return thermal_pressure / magnetic_pressure
 
 

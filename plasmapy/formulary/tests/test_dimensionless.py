@@ -38,8 +38,8 @@ T_e = 1e6 * u.K
         (Rm_, Mag_Reynolds),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in dimensionless.py"""
     assert alias is parent
 
 
@@ -100,7 +100,7 @@ def test_Mag_Reynolds():
 
 
 def test_Debye_number():
-    r"""Test the Debye_number function in parameters.py."""
+    r"""Test the Debye_number function in dimensionless.py."""
 
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
