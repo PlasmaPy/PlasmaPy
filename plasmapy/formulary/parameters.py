@@ -2,8 +2,6 @@
 
 __all__ = []
 
-from astropy.constants.si import e, eps0, k_B
-
 from plasmapy.utils.decorators import deprecated
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 
@@ -50,10 +48,6 @@ for name in (
     except ValueError:
         # name was not in __all__
         pass
-
-e_si_unitless = e.value
-eps0_si_unitless = eps0.value
-k_B_si_unitless = k_B.value
 
 funcs_to_deprecate_wrap = [  # (module_name, func_name)
     ("dimensionless", "Debye_number"),
