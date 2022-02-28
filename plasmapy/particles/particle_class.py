@@ -2269,7 +2269,12 @@ def molecule(
     Parameters
     ----------
     symbol : `str`
-        Symbol of the molecule to be parsed.
+        Symbol of the molecule to be parsed. This argument should be a
+        string representing the chemical formula where the subscript
+        numbers are not given as subscripts, followed by charge
+        information. For example, CO\ :sub:`2` can be represented as
+        ``"CO2"`` and CO\ :sup:`+` can be represented as ``"CO 1+"``,
+        ``"CO +1"``, or ``"CO+"``.
 
     Z : integer, optional
         The charge number if not present in the symbol.
@@ -2290,6 +2295,13 @@ def molecule(
     -----
     : `~plasmapy.particles.exceptions.ParticleWarning`
         If the charge is given both as an argument and in the symbol.
+
+    Notes
+    -----
+    ``symbol`` should be a string that
+
+    ``symbol`` should be a string that contains a series of atomic
+    symbols optionally followed by a number representing the
 
     Examples
     --------
@@ -2318,7 +2330,7 @@ def molecule(
     """
     try:
         return Particle(symbol, Z=Z)
-    except ParticleError:
+    except ParticleError as exc:
         element_dict, bare_symbol, Z = _parsing.parse_and_check_molecule_input(
             symbol, Z
         )
@@ -2326,14 +2338,15 @@ def molecule(
         for element_symbol, amount in element_dict.items():
             try:
                 element = Particle(element_symbol)
-            except ParticleError as e:
+            except ParticleError as exc:
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
-                ) from e
+                ) from exc
             if not element.is_category("element"):
                 raise InvalidParticleError(
                     f"Molecule symbol contains a particle that is not an element: {element.symbol}"
-                )
+                ) from exc
+
             mass += amount * element.mass
 
         if Z is None:
