@@ -1,0 +1,2 @@
+Officially deprecating `plasmapy.formulary.parameters` and scheduling its
+permanent removal for the `v0.9.0` release.
