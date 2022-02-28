@@ -6,9 +6,6 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
-# parameters import must remain first so other imports can override
-# TODO: remove parameters import when issue #1433 is closed
-from plasmapy.formulary.parameters import *  # noqa
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.dielectric import *
