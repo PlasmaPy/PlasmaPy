@@ -14,6 +14,41 @@ PlasmaPy Documentation
 PlasmaPy_ is an open source community-developed core Python_ 3.7+
 package for plasma physics currently under development.
 
+Testing `sphinx-hoverxref` linking
+----------------------------------
+
+Testing the following syntax...
+
+.. code-block:: rst
+
+   .. Originally no tooltip generated
+
+   `astropy.units.Quantity`
+   `~astropy.units.Quantity`
+   `Quantity <astropy.units.Quantity>`
+
+   .. Originally tooltip generated
+
+   :class:`astropy.units.Quantity`
+   :class:`~astropy.units.Quantity`
+   :class:`Quantity <astropy.units.Quantity>`
+   :py:class:`Quantity <astropy.units.Quantity>`
+
+Here are the links...
+
+.. Originally no tooltip generated
+
+`astropy.units.Quantity`
+`~astropy.units.Quantity`
+`Quantity <astropy.units.Quantity>`
+
+.. Originally tooltip generated
+
+:class:`astropy.units.Quantity`
+:class:`~astropy.units.Quantity`
+:class:`Quantity <astropy.units.Quantity>`
+:py:class:`Quantity <astropy.units.Quantity>`
+
 Example highlights
 ------------------
 
