@@ -1,3 +1,5 @@
+.. _example-gallery:
+
 Examples
 ========
 
