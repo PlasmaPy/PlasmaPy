@@ -34,7 +34,7 @@ Example highlights
 
    Vision Statement <about/vision_statement>
    Installing <install>
-   notebooks/getting_started
+   getting_started
    examples
    COMMUNICATION
    CONTRIBUTING
