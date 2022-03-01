@@ -20,7 +20,7 @@ Documentation`_ has more information on how to use Jupyter notebooks.
 
 .. _example Markdown cells: https://nbsphinx.readthedocs.io/en/latest/markdown-cells.html
 
-Need to discuss `example Markdown cells`_...
+*Need to discuss* `example Markdown cells`_...
 
 .. code-block:: markdown
 
@@ -34,6 +34,7 @@ Need to discuss `example Markdown cells`_...
 Markdown cells
 ==============
 
+*Add text here*
 
 Links
 -----
@@ -43,10 +44,15 @@ Note that links must be redefined in each Markdown_ cell.
 External links
 ~~~~~~~~~~~~~~
 
+*Add text here*
+
 .. code-block:: markdown
 
-   [cosmic latte]: https://en.wikipedia.org/wiki/Cosmic_latte
+   [astropy.units]: https://docs.astropy.org/en/stable/units/index.html
 
+   This is an example link to [astropy.units].
+
+.. [cosmic latte]: https://en.wikipedia.org/wiki/Cosmic_latte
    The average color of the universe is [cosmic latte].
 
 Internal links
@@ -58,6 +64,8 @@ when the documentation is built.
 
 If a notebook is included in :file:`docs/notebooks/getting_started`,
 then a link to |Particle| can be created as
+
+*Finish this section*
 
 .. code-block:: markdown
 
@@ -80,6 +88,9 @@ Glossary terms
 Table of contents
 ~~~~~~~~~~~~~~~~~
 
+Longer notebooks should include a table of contents to improve ease of
+navigation.
+
 .. code-block:: markdown
 
    ## Contents
@@ -91,10 +102,29 @@ Table of contents
 
    ## Second section
 
-Intentional exceptions
-----------------------
+Math
+----
+
+Math can be included in a Markdown_ with some common LaTeX_ commands.
+
+.. code-block:: markdown
+
+   In-line math is enclosed in dollar signs, like $\gamma = \frac{5}{3}$.
+
+   It is possible to include displayed math in a Markdown cell too.
+
+   \begin{equation}
+   \mathbf{E} + \mathbf{V} \times \mathbf{B} = \eta \mathbf{J}
+   \end{equation}
+
+Expected exceptions
+-------------------
 
 If a cell is expected to raise an exception, label it with
+``raises-exception``.
+
+*Add a link on how to label a cell in a notebook and/or instructions on
+how to use* ``raises-exception``.
 
 reStructuredText cells
 ======================
@@ -103,6 +133,7 @@ reStructuredText cells
 Pre-executing notebooks
 =======================
 
-Some of the notebooks in the example gallery are
+The most computationally intensive notebooks in the `example gallery`_
+have been pre-executed to save time during continuous integration.
 
-Some of the notebooks needed in
+These notebooks should be re-executed prior to releases
