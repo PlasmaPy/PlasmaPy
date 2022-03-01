@@ -14,4 +14,5 @@ Contributor Guide
    changelog_guide
    testing_guide
    doc_guide
+   notebook_guide
    release_guide
