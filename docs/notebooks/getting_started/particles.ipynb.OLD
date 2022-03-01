@@ -15,7 +15,7 @@
    "source": [
     "[plasmapy.particles]: ../../particles/index.rst\n",
     "\n",
-    "The [plasmapy.particles] subpackage contains functions to access basic particle data and classes to represent particles."
+    "The [plasmapy.particles] subpackage contains functions to access basic particle data and classes to represent one or more particles."
    ]
   },
   {
@@ -30,7 +30,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "650d57e8",
+   "id": "64636560",
    "metadata": {},
    "source": [
     "## Contents\n",
@@ -40,8 +40,7 @@
     "3. [Custom particles](#Custom-particles)\n",
     "4. [Molecules](#Molecules)\n",
     "5. [Particle lists](#Particle-lists)\n",
-    "6. [Dimensionless particles](#Dimensionless-particles)\n",
-    "7. [Nuclear reactions](#Nuclear-reactions)"
+    "6. [Dimensionless particles](#Dimensionless-particles)"
    ]
   },
   {
@@ -49,7 +48,7 @@
    "id": "e224284a",
    "metadata": {},
    "source": [
-    "## Particle properties"
+    "## Accessing particle properties"
    ]
   },
   {
@@ -137,7 +136,7 @@
    "source": [
     "[alpha particle]: https://en.wikipedia.org/wiki/Alpha_particle\n",
     "\n",
-    "The symbols for many particles can even be used directly, such as for an [alpha particle]. To create an \"α\" in a Jupyter notebook, type `\\alpha` and press tab."
+    "The symbols for many particles can even be used directly, such as for an [alpha particle]. In a Jupyter notebook, we can type `\\alpha` and press tab to create \"α\"."
    ]
   },
   {
@@ -156,11 +155,11 @@
    "metadata": {},
    "source": [
     "[mass number]: https://en.wikipedia.org/wiki/Mass_number\n",
-    "[half_life]: ../../api/plasmapy.particles.atomic.half_life.rst\n",
+    "[half_life]: ../api/plasmapy.particles.atomic.half_life.rst\n",
     "[Quantity]: https://docs.astropy.org/en/stable/units/quantity.html#quantity\n",
     "[astropy.units]: https://docs.astropy.org/en/stable/units/index.html\n",
     "\n",
-    "We can create isotopes by the atomic symbol followed by a hyphen and the [mass number]. In this example, [half_life] returns the time in seconds as a [Quantity] from [astropy.units]."
+    "We can represent isotopes by the atomic symbol followed by a hyphen and the [mass number]. In this example, [half_life] returns the time in seconds as a [Quantity] from [astropy.units]."
    ]
   },
   {
@@ -197,8 +196,9 @@
    "metadata": {},
    "source": [
     "[plasmapy.particles]: ../../particles/index.rst\n",
+    "[particle-like]: ../../glossary.rst#particle-like\n",
     "\n",
-    "Functions in [plasmapy.particles] are quite flexible in terms of string inputs representing particles. An input is *particle-like* if it can be transformed into a [Particle].  "
+    "Functions in [plasmapy.particles] are quite flexible in terms of string inputs representing particles. An input is [particle-like] if it can be transformed into a [Particle].  "
    ]
   },
   {
@@ -324,7 +324,7 @@
    "id": "8986cef8",
    "metadata": {},
    "source": [
-    "[Particle]: ../../api/plasmapy.particles.particle_class.Particle.rst\n",
+    "[Particle]: ../api/plasmapy.particles.particle_class.Particle.rst\n",
     "\n",
     "We can get antiparticles of fundamental particles by using the `antiparticle` attribute of a [Particle]."
    ]
@@ -344,7 +344,7 @@
    "id": "bf40e592",
    "metadata": {},
    "source": [
-    "[Particle]: ../../api/plasmapy.particles.particle_class.Particle.rst\n",
+    "[Particle]: ../api/plasmapy.particles.particle_class.Particle.rst\n",
     "\n",
     "We can also use the tilde operator on a [Particle] to get its antiparticle."
    ]
@@ -361,7 +361,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e5302bef",
+   "id": "b5830a8e",
    "metadata": {},
    "source": [
     "## Custom particles"
@@ -372,7 +372,7 @@
    "id": "4c8c2a63",
    "metadata": {},
    "source": [
-    "[CustomParticle]: ../../api/plasmapy.particles.particle_class.CustomParticle.rst\n",
+    "[CustomParticle]: ../api/plasmapy.particles.particle_class.CustomParticle\n",
     "\n",
     "Sometimes we want to use a particle with custom properties.  For that we can use [CustomParticle]."
    ]
@@ -387,18 +387,20 @@
     "from astropy import constants as const\n",
     "from astropy import units as u\n",
     "\n",
-    "custom_particle = CustomParticle(9.27e-26 * u.kg, 13.6 * const.e.si, symbol=\"Fe 13.6+\")"
+    "custom_particle = CustomParticle(\n",
+    "    9.27e-26 * u.kg, 13.6 * const.e.si, symbol=\"Fe 13.6+\"\n",
+    ")"
    ]
   },
   {
    "cell_type": "markdown",
-   "id": "dfc19404",
+   "id": "fa4e2f1c",
    "metadata": {},
    "source": [
-    "[CustomParticle]: ../../api/plasmapy.particles.particle_class.CustomParticle.rst\n",
-    "[Particle]: ../../api/plasmapy.particles.particle_class.Particle.rst\n",
+    "[CustomParticle]: ../api/plasmapy.particles.particle_class.CustomParticle\n",
+    "[Particle]: ../api/plasmapy.particles.particle_class.Particle\n",
     "\n",
-    "Many of the attributes of [CustomParticle] as the same as in [Particle]."
+    "Many of the attributes of [CustomParticle] mirror [Particle]."
    ]
   },
   {
@@ -453,66 +455,39 @@
   },
   {
    "cell_type": "markdown",
-   "id": "f1ed1dc2",
+   "id": "1aee3c26",
    "metadata": {},
    "source": [
     "## Molecules"
    ]
   },
   {
-   "cell_type": "markdown",
-   "id": "72bb94e5",
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5eab430c",
    "metadata": {},
-   "source": [
-    "[CustomParticle]: ../../api/plasmapy.particles.particle_class.CustomParticle.rst\n",
-    "[molecule]: ../../api/plasmapy.particles.particle_class.molecule.rst\n",
-    "\n",
-    "We can use [molecule] to create a [CustomParticle] based on a chemical formula. The first argument to [molecule] is a string that represents a chemical formula, except that the subscript numbers are not given as subscripts. For example, water is ``\"H20\"``.  "
-   ]
+   "outputs": [],
+   "source": []
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "da22120e",
+   "id": "bba9f7c9",
    "metadata": {},
    "outputs": [],
-   "source": [
-    "water = molecule(\"H20\")\n",
-    "water.symbol"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "ff5a6cf1",
-   "metadata": {},
-   "source": [
-    "The properties of the molecule are found automatically."
-   ]
+   "source": []
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "1ae6284a",
+   "id": "faf35459",
    "metadata": {},
    "outputs": [],
-   "source": [
-    "water.mass"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "23c42034",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "acetic_acid_anion = molecule(\"CH3COOH 1-\")\n",
-    "acetic_acid_anion.charge"
-   ]
+   "source": []
   },
   {
    "cell_type": "markdown",
-   "id": "e1dffb85",
+   "id": "ec7fd301",
    "metadata": {},
    "source": [
     "## Particle lists"
@@ -520,7 +495,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "0f2c5506",
+   "id": "9d91e8f6",
    "metadata": {},
    "source": [
     "[ParticleList]: ../../api/plasmapy.particles.particle_collections.ParticleList.rst\n",
@@ -533,7 +508,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "8f012669",
+   "id": "496d30f7",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -542,7 +517,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a42a4339",
+   "id": "6e25796d",
    "metadata": {},
    "source": [
     "[ParticleList]: ../../api/plasmapy.particles.particle_collections.ParticleList.rst\n",
@@ -553,7 +528,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "1e862689",
+   "id": "3753fe85",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -563,7 +538,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "f2acacfc",
+   "id": "7e848d2c",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -573,7 +548,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "3a1926a5",
+   "id": "b21c3558",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -582,7 +557,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "305e3c1e",
+   "id": "e11c355d",
    "metadata": {},
    "source": [
     "[ParticleList]: ../../api/plasmapy.particles.particle_collections.ParticleList.rst\n",
@@ -595,7 +570,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "f69c8ce6",
+   "id": "66b779d3",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -604,7 +579,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "df2415de",
+   "id": "fdd6e617",
    "metadata": {},
    "source": [
     "## Dimensionless particles"
@@ -612,7 +587,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "a1af4fc4",
+   "id": "466427a3",
    "metadata": {},
    "source": [
     "[DimensionlessParticle]: ../../api/plasmapy.particles.particle_class.DimensionlessParticle.rst\n",
@@ -623,16 +598,16 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "f57a0f64",
+   "id": "51148684",
    "metadata": {},
    "outputs": [],
    "source": [
-    "dimensionless_particle = DimensionlessParticle(mass=0.000545, charge=-1)"
+    "dimensionless_particle = DimensionlessParticle(mass = 0.000545, charge = -1)"
    ]
   },
   {
    "cell_type": "markdown",
-   "id": "cf598cb0",
+   "id": "483d443e",
    "metadata": {},
    "source": [
     "The properties of dimensionless particles may be accessed by its attributes."
@@ -641,7 +616,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "7b0f9755",
+   "id": "c4bd113b",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -651,7 +626,7 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "d4920b68",
+   "id": "b01f997b",
    "metadata": {},
    "outputs": [],
    "source": [
@@ -660,7 +635,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "29e23e5f",
+   "id": "a804ce00",
    "metadata": {},
    "source": [
     "[DimensionlessParticle]: ../../api/plasmapy.particles.particle_class.DimensionlessParticle.rst\n",
