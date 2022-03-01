@@ -420,7 +420,7 @@ class Particle(AbstractPhysicalParticle):
 
         # TODO: Remove the following block during or after the 0.9.0 release
 
-        if _:  # coverage: ignore
+        if _:
             raise TypeError(
                 "The parameters mass_numb and Z to Particle are now "
                 "keyword-only [e.g., Particle('H', mass_numb=2, Z=1)]."
