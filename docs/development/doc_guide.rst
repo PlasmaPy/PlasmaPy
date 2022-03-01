@@ -663,29 +663,6 @@ already been defined in PlasmaPy's :ref:`glossary`. Using
 ``:term:`role``` will link to |role| and ``:term:`directive``` will link
 to |directive| in `Sphinx's glossary`_.
 
-Notebooks
----------
-
-PlasmaPy's online documentation includes :ref:`example notebooks
-<examples>`. These notebooks are and built using the |nbsphinx|_
-extension to Sphinx_. Adding an example notebook involves creating a
-Jupyter notebook, and then adding the :file:`.ipynb` file to
-:file:`docs/notebooks` or one of its subdirectories.
-
-Example of adding a link to a markdown cell...  This appears to need to
-be done in every cell that the link is used.
-
-.. code-block:: markdown
-
-   [example notebooks]: https://docs.plasmapy.org/en/latest/examples.html
-   [`astropy.units`]: https://docs.astropy.org/en/stable/units/index.html
-
-   PlasmaPy's documentation includes [example notebooks]. We can refer
-   to code objects by using backticks, such as for [`astropy.units`].
-
-Need to discuss :file:`docs/api` directory contents and how to link to
-objects from PlasmaPy...
-
 Documentation guidelines
 ========================
 
