@@ -1,3 +1,5 @@
+.. _documentation guide:
+
 *******************
 Documentation Guide
 *******************
@@ -726,7 +728,7 @@ documentation for PlasmaPy and affiliated packages.
 * When referencing PlasmaPy functionality, write the full namespace path
   to where the functionality is defined, not where it is conveniently
   accessed. For example, write
-  ```~plasmapy.formulary.parameters.Alfven_speed``` rather than
+  ```~plasmapy.formulary.speeds.Alfven_speed``` rather than
   ```~plasmapy.formulary.Alfven_speed```.
 
   This does not necessarily need to be done when referencing external
