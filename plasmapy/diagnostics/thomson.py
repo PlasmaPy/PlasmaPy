@@ -14,7 +14,8 @@ import numpy as np
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
-from plasmapy.formulary.parameters import plasma_frequency, thermal_speed
+from plasmapy.formulary.frequencies import plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 

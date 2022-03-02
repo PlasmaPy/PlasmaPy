@@ -17,7 +17,6 @@ from plasmapy.particles.ionization_state import IonicLevel, IonizationState
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.particle_collections import ionic_levels, ParticleList
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
-from plasmapy.utils.pytest_helpers import run_test
 
 ionic_fraction_table = [
     ("Fe 6+", 0.52, 5.2e-6 * u.m ** -3),
@@ -181,7 +180,7 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize(
         "test_name",
-        [name for name in test_names if "ionic_fractions" in test_cases[name].keys()],
+        [name for name in test_names if "ionic_fractions" in test_cases[name]],
     )
     def test_ionic_fractions(self, test_name):
         """
@@ -371,7 +370,7 @@ class Test_IonizationState:
 
     @pytest.mark.parametrize(
         "test_name",
-        [name for name in test_names if "n_elem" in test_cases[name].keys()],
+        [name for name in test_names if "n_elem" in test_cases[name]],
     )
     def test_electron_density_from_n_elem_ionic_fractions(self, test_name):
         instance = self.instances[test_name]

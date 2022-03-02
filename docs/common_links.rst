@@ -1,5 +1,6 @@
 .. These are ReST substitutions and links that can be used throughout the docs
-.. (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+   (and docstrings) because they are added to ``docs/conf.py::rst_epilog``.
+
 .. ------------------
 .. plasmapy.formulary
 .. ------------------
@@ -74,9 +75,25 @@
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
 .. |Unit| replace:: :class:`~astropy.units.UnitBase`
 
+.. ----------------------
+.. PlasmaPy documentation
+.. ----------------------
+
+.. The backslash is needed for the substitution to work correctly when
+   used just before a period.
+
+.. |bibliography| replace:: :ref:`bibliography`\
+.. |contributor guide| replace:: :ref:`contributor guide`\
+.. |documentation guide| replace:: :ref:`documentation guide`\
+.. |glossary| replace:: :ref:`glossary`\
+.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`\
+.. |release guide| replace:: :ref:`release guide`\
+.. |testing guide| replace:: :ref:`testing guide`\
+
 .. --------
 .. Websites
 .. --------
+
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -106,6 +123,7 @@
 .. _MathJax: https://www.mathjax.org
 .. _matplotlib: https://matplotlib.org
 .. _Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
+.. _Numba: https://numba.pydata.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
 .. _pandas: https://pandas.pydata.org
@@ -138,6 +156,10 @@
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
 
+.. ----------------------
+.. Nested inline literals
+.. ----------------------
+
 .. A workaround for nested inline literals so that the filename will get
    formatted like a file but will be a link. In the text, these get used
    with the syntax for a substitution followed by an underscore to
@@ -169,8 +191,6 @@
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
-
-.. |plasma-calculator| replace:: :ref:`plasmapy-calculator`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
