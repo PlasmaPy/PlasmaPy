@@ -48,14 +48,6 @@ Potter and the Something or Other*:
 Names
 =====
 
-* If a quantity has several names, then the function name should be
-  the one that provides the most physical insight into what the
-  quantity represents.  For example, ``gyrofrequency`` indicates
-  gyration, whereas ``Larmor_frequency`` indicates that this frequency
-  is somehow related to someone named Larmor.  Similarly, using
-  ``omega_ce`` as a function name will make the code less readable to
-  people who are unfamiliar with this particular notation.
-
 * Except as described below, use :pep:`8` conventions for naming
   variables, functions, classes, and constants.
 
@@ -86,6 +78,14 @@ Names
   multiple contributors. However, do not include non-ASCII characters in
   code that is part of the public API.
 
+* If a quantity has several names, then the function name should be
+  the one that provides the most physical insight into what the
+  quantity represents.  For example, ``gyrofrequency`` indicates
+  gyration, whereas ``Larmor_frequency`` indicates that this frequency
+  is somehow related to someone named Larmor.  Similarly, using
+  ``omega_ce`` as a function name will make the code less readable to
+  people who are unfamiliar with this particular notation.
+
 * Use names that are pronounceable and searchable.
 
 * Avoid potentially ambiguous names such as ``temp`` and ``t``.
@@ -106,7 +106,7 @@ Names
 .. tip::
 
    Measure the length of a variable not by the number of characters, but
-   rather by the time needed to understand what the variable means.
+   rather by the time needed to understand its meaning.
 
 Imports
 =======
