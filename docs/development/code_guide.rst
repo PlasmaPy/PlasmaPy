@@ -99,6 +99,23 @@ Names
   symbols (i.e., ``B``) or as indices in `for` loops (though more
   descriptive names are preferred).
 
+* Intermediate variable names can provide additional context and
+  meaning. For example, suppose we have a conditional operating on a
+  complicated expression:
+
+  .. code-block:: python
+
+     if u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]: ...
+
+  Defining an intermediate variable allows us to communicate the meaning
+  and intent of the expression.
+
+  .. code-block:: python
+
+     point_in_grid_cell = u[0] < x < u[1] and v[0] < y < v[1] and w[0] < z < w[1]
+
+     if point_in_grid_cell: ...
+
 * Avoid unnecessary abbreviations, as these can make code more difficult
   to read. Clarity is more important than brevity, except for code that
   is frequently used interactively.
