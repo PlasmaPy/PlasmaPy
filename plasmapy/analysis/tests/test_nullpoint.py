@@ -5,8 +5,8 @@ import numpy as np
 import pytest
 
 from plasmapy.analysis.nullpoint import (
-    _ATOL,
     _bilinear_root,
+    _EQUALITY_ATOL,
     _locate_null_point,
     _reduction,
     _trilinear_analysis,
@@ -16,6 +16,10 @@ from plasmapy.analysis.nullpoint import (
     null_point_find,
     trilinear_approx,
 )
+
+# Defining tolerance level for tests where the accuracy
+# level can not rise too high due to run time issues.
+_TESTING_ATOL = 10 ** (-2)
 
 
 def vspace_func_1(x, y, z):
@@ -40,6 +44,10 @@ def vspace_func_5(x, y, z):
 
 def vspace_func_6(x, y, z):
     return [(-1 - x - z), (-x - z - x * z), (y)]
+
+
+def vspace_func_7(x, y, z):
+    return [(y - 5.5) * (y + 5.5), (z - 5.5), (x - 5.5)]
 
 
 def test_trilinear_coeff_cal():
@@ -91,19 +99,11 @@ def test_trilinear_jacobian():
     jcb = _trilinear_jacobian(vspace, [0, 0, 0])
     mtrx = jcb(0.5, 0.5, 0.5)
     exact_mtrx = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-    assert np.allclose(mtrx, exact_mtrx, atol=_ATOL)
+    assert np.allclose(mtrx, exact_mtrx, atol=_EQUALITY_ATOL)
 
 
 def test_trilinear_approx():
     r"""Test `~plasmapy.analysis.nullpoint.trilinear_approx`."""
-    vspace1_args = {
-        "x_range": [0, 10],
-        "y_range": [0, 10],
-        "z_range": [0, 10],
-        "precision": [10 / 46, 10 / 46, 10 / 46],
-        "func": vspace_func_1,
-    }
-    vspace1 = _vector_space(**vspace1_args)
     vspace2_args = {
         "x_range": [0, 10],
         "y_range": [0, 10],
@@ -132,11 +132,13 @@ def test_trilinear_approx():
         approx = tlApprox(p[0], p[1], p[2])
         exact = vspace_func_2(p[0], p[1], p[2])
         approx = approx.reshape(1, 3)
-        assert np.allclose(approx, exact, atol=_ATOL)
+        assert np.allclose(approx, exact, atol=_EQUALITY_ATOL)
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.reshape(1, 3)
-    assert np.allclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=_ATOL)
+    assert np.allclose(
+        approx, [-5.39130435, -21.5652174, 23.68667299], atol=_EQUALITY_ATOL
+    )
 
 
 class Test_reduction:
@@ -204,10 +206,10 @@ class Test_bilinear_root:
         r"""Test expected values."""
         x1, y1 = _bilinear_root(**kwargs)[0]
         x2, y2 = _bilinear_root(**kwargs)[1]
-        assert np.isclose(x1, expected[0], atol=_ATOL)
-        assert np.isclose(y1, expected[1], atol=_ATOL)
-        assert np.isclose(x2, expected[2], atol=_ATOL)
-        assert np.isclose(y2, expected[3], atol=_ATOL)
+        assert np.isclose(x1, expected[0], atol=_EQUALITY_ATOL)
+        assert np.isclose(y1, expected[1], atol=_EQUALITY_ATOL)
+        assert np.isclose(x2, expected[2], atol=_EQUALITY_ATOL)
+        assert np.isclose(y2, expected[3], atol=_EQUALITY_ATOL)
 
 
 class Test_locate_null_point:
@@ -223,7 +225,7 @@ class Test_locate_null_point:
 
     test_locate_null_point_values = [
         (
-            {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": _ATOL},
+            {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": _EQUALITY_ATOL},
             np.array([5.5, 5.5, 5.5]),
         )
     ]
@@ -232,7 +234,7 @@ class Test_locate_null_point:
     def test_locate_null_point_vals(self, kwargs, expected):
         r"""Test expected values."""
         assert np.isclose(
-            _locate_null_point(**kwargs).reshape(1, 3), expected, atol=_ATOL
+            _locate_null_point(**kwargs).reshape(1, 3), expected, atol=_EQUALITY_ATOL
         ).all()
 
 
@@ -249,7 +251,7 @@ def test_null_point_find1():
     npoints = null_point_find(**nullpoint_args)
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
-    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
 def test_null_point_find2():
@@ -270,7 +272,7 @@ def test_null_point_find2():
     npoints2 = null_point_find(**nullpoint2_args)
     loc2 = npoints2[0].loc.reshape(1, 3)
     assert len(npoints2) == 1
-    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
 def test_null_point_find3():
@@ -288,7 +290,7 @@ def test_null_point_find3():
     npoints3 = null_point_find(**nullpoint3_args)
     loc3 = npoints3[0].loc.reshape(1, 3)
     assert len(npoints3) == 1
-    assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
     assert npoints3[0].get_type() == "N/A"
 
 
@@ -306,8 +308,8 @@ def test_null_point_find4():
     first_loc4 = npoints4[0].loc.reshape(1, 3)
     second_loc4 = npoints4[1].loc.reshape(1, 3)
     assert len(npoints4) == 2
-    assert np.isclose(first_loc4, [5.5, 5.3, 5.5], atol=_ATOL).all()
-    assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_ATOL).all()
+    assert np.isclose(first_loc4, [5.5, 5.3, 5.5], atol=_EQUALITY_ATOL).all()
+    assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
 def test_null_point_find5():
@@ -350,3 +352,21 @@ def test_null_point_find7():
     }
     npoints7 = null_point_find(**nullpoint7_args)
     assert len(npoints7) == 0
+
+
+def test_null_point_find8():
+    r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
+    # Non-linear field
+    nullpoint8_args = {
+        "x_range": [-6, 6],
+        "y_range": [-6, 6],
+        "z_range": [-6, 6],
+        "precision": [0.3, 0.3, 0.3],
+        "func": vspace_func_7,
+    }
+    npoints8 = null_point_find(**nullpoint8_args)
+    assert len(npoints8) == 2
+    loc1 = npoints8[0].loc.reshape(1, 3)
+    loc2 = npoints8[1].loc.reshape(1, 3)
+    assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
+    assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
