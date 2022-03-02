@@ -234,10 +234,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional
+    mass_numb : `int`, optional, keyword-only
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional
+    Z : `int`, optional, keyword-only
         The charge number of the particle.
 
     Raises
@@ -413,9 +413,18 @@ class Particle(AbstractPhysicalParticle):
     def __init__(
         self,
         argument: ParticleLike,
+        *_,
         mass_numb: Integral = None,
         Z: Integral = None,
     ):
+
+        # TODO: Remove the following block during or after the 0.9.0 release
+
+        if _:
+            raise TypeError(
+                "The parameters mass_numb and Z to Particle are now "
+                "keyword-only [e.g., Particle('H', mass_numb=2, Z=1)]."
+            )
 
         # If argument is a Particle instance, then construct a new
         # Particle instance for the same particle.
