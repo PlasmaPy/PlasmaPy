@@ -586,14 +586,21 @@ def test_Particle_equivalent_cases(equivalent_particles):
 
 # args, kwargs, attribute, exception
 test_Particle_error_table = [
+    # instantiation
     (["a"], {}, "", InvalidParticleError),
-    (["d+"], {"mass_numb": 9}, "", InvalidParticleError),
-    (["H"], {"mass_numb": 99}, "", InvalidParticleError),
     (["Au-818"], {}, "", InvalidParticleError),
     (["Au-12"], {}, "", InvalidParticleError),
+    (["d+"], {"mass_numb": 9}, "", InvalidParticleError),
+    (["H"], {"mass_numb": 99}, "", InvalidParticleError),
     (["Au"], {"mass_numb": 13}, "", InvalidParticleError),
     (["Au"], {"mass_numb": 921}, "", InvalidParticleError),
+    ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
+    ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
     (["e-"], {"Z": -1}, "", InvalidParticleError),
+    ([[]], {}, "", TypeError),
+    (["H", 1], {}, "", TypeError),
+    (["H", 1, 1], {}, "", TypeError),
+    # properties
     (["e-"], {}, ".atomic_number", InvalidElementError),
     (["alpha"], {}, ".standard_atomic_weight", InvalidElementError),
     (["Fe-56"], {}, ".standard_atomic_weight", InvalidElementError),
@@ -608,9 +615,7 @@ test_Particle_error_table = [
     (["Fe"], {}, ".spin", MissingParticleDataError),
     (["nu_e"], {}, ".mass", MissingParticleDataError),
     (["Og"], {}, ".standard_atomic_weight", MissingParticleDataError),
-    ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
-    ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
-    ([[]], {}, "", TypeError),
+    # methods
     (["Fe"], {}, ".ionize()", ChargeError),
     (["D"], {}, ".recombine()", ChargeError),
     (["Fe 26+"], {}, ".ionize()", InvalidIonError),
@@ -620,8 +625,6 @@ test_Particle_error_table = [
     (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
     (["e-"], {}, ".ionize()", InvalidElementError),
     (["e+"], {}, ".recombine()", InvalidElementError),
-    (["H", 1], {}, "", TypeError),
-    (["H", 1, 1], {}, "", TypeError),
 ]
 
 
