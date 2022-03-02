@@ -11,7 +11,7 @@ import numpy as np
 import warnings
 
 # Declare Constants & global variables
-_ATOL = 1e-15
+_EQUALITY_ATOL = 1e-15
 _MAX_RECURSION_LEVEL = 10
 global _recursion_level
 _recursion_level = 0
@@ -59,7 +59,7 @@ class NullPoint(Point):
             + (self.loc[1] - point.loc[1]) ** 2
             + (self.loc[2] - point.loc[2]) ** 2
         )
-        return np.isclose(d, 0, atol=_ATOL)
+        return np.isclose(d, 0, atol=_EQUALITY_ATOL)
 
 
 def _vector_space(
@@ -515,8 +515,8 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     b = np.linalg.det(m2) + np.linalg.det(m3)
     c = np.linalg.det(m1)
 
-    if np.isclose(a, 0, atol=_ATOL):
-        if np.isclose(b, 0, atol=_ATOL):
+    if np.isclose(a, 0, atol=_EQUALITY_ATOL):
+        if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
         else:
             x1 = (-1.0 * c) / b
@@ -531,13 +531,13 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
 
     y1 = None
     y2 = None
-    if not (np.isclose((c1 + d1 * x1), 0, atol=_ATOL)):
+    if not (np.isclose((c1 + d1 * x1), 0, atol=_EQUALITY_ATOL)):
         y1 = (-a1 - b1 * x1) / (c1 + d1 * x1)
-    elif not (np.isclose((c2 + d2 * x1), 0, atol=_ATOL)):
+    elif not (np.isclose((c2 + d2 * x1), 0, atol=_EQUALITY_ATOL)):
         y1 = (-a2 - b2 * x1) / (c2 + d2 * x1)
-    if not (np.isclose((c1 + d1 * x2), 0, atol=_ATOL)):
+    if not (np.isclose((c1 + d1 * x2), 0, atol=_EQUALITY_ATOL)):
         y2 = (-a1 - b1 * x2) / (c1 + d1 * x2)
-    elif not (np.isclose((c2 + d2 * x2), 0, atol=_ATOL)):
+    elif not (np.isclose((c2 + d2 * x2), 0, atol=_EQUALITY_ATOL)):
         y2 = (-a2 - b2 * x2) / (c2 + d2 * x2)
 
     if y1 is None and y2 is None:
@@ -548,7 +548,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
         return np.array([(x1, y1)])
     else:
         d = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-        if np.isclose(d, 0, atol=_ATOL):
+        if np.isclose(d, 0, atol=_EQUALITY_ATOL):
             return np.array([(x1, y1)])
         else:
             return np.array([(x1, y1), (x2, y2)])
@@ -906,14 +906,17 @@ def _trilinear_analysis(vspace, cell):
 
     def bound(epoint):
         a = (
-            initial[0] < epoint[0] or np.isclose(initial[0], epoint[0], atol=_ATOL)
-        ) and (epoint[0] < xbound or np.isclose(epoint[0], xbound, atol=_ATOL))
+            initial[0] < epoint[0]
+            or np.isclose(initial[0], epoint[0], atol=_EQUALITY_ATOL)
+        ) and (epoint[0] < xbound or np.isclose(epoint[0], xbound, atol=_EQUALITY_ATOL))
         b = (
-            initial[1] < epoint[1] or np.isclose(initial[1], epoint[1], atol=_ATOL)
-        ) and (epoint[1] < ybound or np.isclose(epoint[1], ybound, atol=_ATOL))
+            initial[1] < epoint[1]
+            or np.isclose(initial[1], epoint[1], atol=_EQUALITY_ATOL)
+        ) and (epoint[1] < ybound or np.isclose(epoint[1], ybound, atol=_EQUALITY_ATOL))
         c = (
-            initial[2] < epoint[2] or np.isclose(initial[2], epoint[2], atol=_ATOL)
-        ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_ATOL))
+            initial[2] < epoint[2]
+            or np.isclose(initial[2], epoint[2], atol=_EQUALITY_ATOL)
+        ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_EQUALITY_ATOL))
         return a and b and c
 
     BxByEndpoints = list(filter(bound, BxByEndpoints))
@@ -922,16 +925,16 @@ def _trilinear_analysis(vspace, cell):
 
     tlApprox = trilinear_approx(vspace, cell)
 
-    # Check on the Surfaces
-    for p in BxByEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
-    for p in BxBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
-    for p in ByBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
+    # # Check on the Surfaces
+    # for p in BxByEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
+    # for p in BxBzEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
+    # for p in ByBzEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
 
     # Check Grid Resolution
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
@@ -1066,14 +1069,20 @@ def _locate_null_point(vspace, cell, n, err):
 
     def inbound(pos):
         pos = pos.reshape(1, 3)[0]
-        A = (np.isclose(pos_000[0], pos[0], atol=_ATOL) or pos_000[0] < pos[0]) and (
-            np.isclose(pos[0], pos_111[0], atol=_ATOL) or pos[0] < pos_111[0]
+        A = (
+            np.isclose(pos_000[0], pos[0], atol=_EQUALITY_ATOL) or pos_000[0] < pos[0]
+        ) and (
+            np.isclose(pos[0], pos_111[0], atol=_EQUALITY_ATOL) or pos[0] < pos_111[0]
         )
-        B = (np.isclose(pos_000[1], pos[1], atol=_ATOL) or pos_000[1] < pos[1]) and (
-            np.isclose(pos[1], pos_111[1], atol=_ATOL) or pos[1] < pos_111[1]
+        B = (
+            np.isclose(pos_000[1], pos[1], atol=_EQUALITY_ATOL) or pos_000[1] < pos[1]
+        ) and (
+            np.isclose(pos[1], pos_111[1], atol=_EQUALITY_ATOL) or pos[1] < pos_111[1]
         )
-        C = (np.isclose(pos_000[2], pos[2], atol=_ATOL) or pos_000[2] < pos[2]) and (
-            np.isclose(pos[2], pos_111[2], atol=_ATOL) or pos[2] < pos_111[2]
+        C = (
+            np.isclose(pos_000[2], pos[2], atol=_EQUALITY_ATOL) or pos_000[2] < pos[2]
+        ) and (
+            np.isclose(pos[2], pos_111[2], atol=_EQUALITY_ATOL) or pos[2] < pos_111[2]
         )
         return A and B and C
 
@@ -1106,11 +1115,13 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
-            # Not sure what to do if det is zero
-            if np.isclose(np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_ATOL):
+            # Too many null points if the jacobian is zero
+            if np.isclose(
+                np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
+            ):
                 warnings.warn("Multiple null points")
                 return None
-            # Guess
+            # Adjust position
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
