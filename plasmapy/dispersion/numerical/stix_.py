@@ -30,41 +30,41 @@ def stix(
     Parameters
     ----------
     B : '~astropy.units.Quantity'
-        Value of the magnitude of the magnetic field in units convertible to :math:'T'.
+    Value of the magnitude of the magnetic field in units convertible to :math:'T'.
 
     k : single value or 1 D array astropy ~astropy.units.Quantity
-        Value of the wavenumber in units convertible to :math:'rad/m'.
+    Value of the wavenumber in units convertible to :math:'rad/m'.
 
     ions: single
 
     omega_ions: single value or 1 D array astropy ~astropy.units.Quantity
-        Frequency value for the associated ion in units convertible to :math:'rad/s'.
+    Frequency value for the associated ion in units convertible to :math:'rad/s'.
 
     theta: single value or 1 D array astropy ~astropy.units.Quantity
-        Value of theta with respect to the magnetic field, :math:'\cos^{-1}(k_z/k)',
-        must be in units convertible to :math:'rad'.
+    Value of theta with respect to the magnetic field, :math:'\cos^{-1}(k_z/k)',
+    must be in units convertible to :math:'rad'.
 
     Returns
     -------
     omegas : Dictionary astropy ~astropy.units.Quantity
-        Presents the wavenumber used to find the value(s) of the cold plasma
-        frequencies, (omega), dispersion solver(s) and then the solutions
-        themselves.
+    Presents the wavenumber used to find the value(s) of the cold plasma
+    frequencies, (omega), dispersion solver(s) and then the solutions
+    themselves.
 
     Raises
     ------
     TypeError
-        If the argument is of an invalid type.
+    If the argument is of an invalid type.
 
-     ~astropy.units.UnitsError
-        If the argument is a `~astropy.units.Quantity` but is not
-        dimensionless.
+    ~astropy.units.UnitsError
+    If the argument is a `~astropy.units.Quantity` but is not
+    dimensionless.
 
     ValueError
-        If the number of frequencies for each ion isn't the same.
+    If the number of frequencies for each ion isn't the same.
 
     NoConvergence
-        If a solution cannot be found and the convergence failed to root.
+    If a solution cannot be found and the convergence failed to root.
 
     Notes
     -----
@@ -72,25 +72,25 @@ def stix(
     of Bellan 2012 [1] presented here:
 
     ..math::
-        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
-         PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
+    (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
+    PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
 
     where,
 
     ..math::
-        \mathbf{n} = \frac{c \mathbf{k}}{\omega}
+    \mathbf{n} = \frac{c \mathbf{k}}{\omega}
     ..math::
-        S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
+    S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
     ..math::
-        P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
+    P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
     ..math::
-        D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
+    D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
 
     Following on section 1.6 of Bellan 2012 [1] expresses following derived quantities
     as follows.
 
     ..math::
-        R = S + D \hspace{1cm} L = S - D
+    R = S + D \hspace{1cm} L = S - D
 
     The equation is valid for all :math:'\omega' and :math:'\k' providing that
     :math:'\frac{\omega}{k_{z}} >> \nu_{Te}' with :math:'\nu_{Ti}' and :math:'k_{x}r_{Le,i} << 1'.
@@ -100,13 +100,13 @@ def stix(
     References
     ----------
     .. [1] PM Bellan, Improved basis set for low frequency plasma waves, 2012,
-       JGR, 117, A12219, doi: `10.1029/2012JA017856
-       <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
+    JGR, 117, A12219, doi: `10.1029/2012JA017856
+    <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
 
     .. [2] TH Strix, 1992, Waves in Plasmas, Illustrated,
-        Springer Science & Business Media, 1992, New York
-       Part C, doi: `10.1088/0368-3281/5/2/304
-       <https://doi.org/10.1088/0368-3281/5/2/304>`_
+    Springer Science & Business Media, 1992, New York
+    Part C, doi: `10.1088/0368-3281/5/2/304
+    <https://doi.org/10.1088/0368-3281/5/2/304>`_
 
     Example
     -------
@@ -218,11 +218,11 @@ def stix(
     omegas = {}
 
     for i in range(sum_len):
-        S = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2))
-        P = +((plasma_freq[i] ** 2) / (w ** 2))
-        D = +(
-            (plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2)
-        ) * ((component_frequency[i].value) / (w))
+    S = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2))
+    P = +((plasma_freq[i] ** 2) / (w ** 2))
+    D = +(
+    (plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2)
+    ) * ((component_frequency[i].value) / (w))
 
     R = S + D
     L = S - D
