@@ -1,1 +1,1 @@
-Added Python 3.10 to the GitHub Actions test suite.
+Added Python 3.10 to the `GitHub Actions`_ test suite.

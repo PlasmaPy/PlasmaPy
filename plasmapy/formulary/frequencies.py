@@ -16,6 +16,7 @@ from astropy.constants.si import e, eps0
 from numba import njit
 
 from plasmapy import particles
+from plasmapy.formulary import misc
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
@@ -131,10 +132,8 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     279924... Hz
 
     """
-    from plasmapy.formulary.parameters import _grab_charge
-
     m = particles.particle_mass(particle)
-    Z = _grab_charge(particle, Z)
+    Z = misc._grab_charge(particle, Z)
     if not signed:
         Z = abs(Z)
 

@@ -11,8 +11,8 @@ from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
-from plasmapy.formulary import parameters
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import validate_quantities
 
 r"""
@@ -281,20 +281,20 @@ def permittivity_1D_Maxwellian(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from numpy import pi
     >>> from astropy.constants import c
+    >>> from numpy import pi
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'
     >>> z_mean = 8 * u.dimensionless_unscaled
-    >>> vTh = parameters.thermal_speed(T, particle, method="most_probable")
+    >>> vTh = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> kWave = omega / vTh
     >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
     """
     # thermal velocity
-    vTh = parameters.thermal_speed(T=T, particle=particle, method="most_probable")
+    vTh = thermal_speed(T=T, particle=particle, method="most_probable")
     # plasma frequency
     wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean)
     # scattering parameter alpha.

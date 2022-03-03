@@ -6,9 +6,6 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
-# parameters import must remain first so other imports can override
-# TODO: remove parameters import when issue #1433 is closed
-from plasmapy.formulary.parameters import *  # noqa
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.dielectric import *
@@ -22,6 +19,7 @@ from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
 from plasmapy.formulary.quantum import *
 from plasmapy.formulary.relativity import *
+from plasmapy.formulary.speeds import *
 
 # auto populate __all__
 for obj_name in list(globals()):
@@ -45,6 +43,7 @@ for modname in (
     "parameters",
     "quantum",
     "relativity",
+    "speeds",
 ):
     try:
         obj = globals()[modname]
