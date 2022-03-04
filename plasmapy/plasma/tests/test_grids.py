@@ -977,7 +977,7 @@ def debug_volume_avg_interpolator():
     analytic = interp_hax ** 4
 
     raw_hax = grid.ax0.to(u.mm).value
-    half = int(25 / 2)
+    half = 25 // 2
     raw_rho = grid["rho"][:, half, half]
     plt.plot(raw_hax, raw_rho, marker="*", label="Interpolated points")
     plt.plot(interp_hax, nn_rho, label="Nearest neighbor")
