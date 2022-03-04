@@ -9,6 +9,8 @@ Stability of Subpackages
 .. This document is derived from docs/stability.rst in Astropy.  See
    licenses/Astropy_LICENSE.rst in PlasmaPy's directory.
 
+.. This page is currently hidden because we keep forgetting to update it.
+
 This document summarizes the stability of PlasmaPy's subpackages so that
 users understand where they might expect changes in the future, and
 which subpackages they can safely use for production code.  Please note
