@@ -177,11 +177,11 @@ class Plasma3D(GenericPlasma):
 
     @classmethod
     def is_datasource_for(cls, **kwargs):
-        if len(kwargs) == 3:
-            match = all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
-        else:
-            match = False
-        return match
+        return (
+            all(f"domain_{direction}" in kwargs.keys() for direction in "xyz")
+            if len(kwargs) == 3
+            else False
+        )
 
     def add_magnetostatic(self, *mstats: MagnetoStatics):
         # for each MagnetoStatic argument
