@@ -2,6 +2,7 @@
 Contains functions that create widgets and process properties for the calculator
 """
 
+
 __all__ = []
 
 import abc
@@ -39,7 +40,7 @@ EQUAL_SPACING_CONFIG = "10px 10px 10px 10px"
 EQUAL_SPACING_CONFIG: Constant for equal spacing config among widgets = 10px 10px 10px 10px
 """
 
-values_container = dict()
+values_container = {}
 """values_container: stores the values of widget with corresponding ``property_name``."""
 
 _process_queue = []
@@ -202,9 +203,7 @@ class _GenericWidget(abc.ABC):
         `any`
             Value of the widget in the unit specified by the dropdown
         """
-        if self.unit:
-            return change.new * self.unit
-        return change.new
+        return change.new * self.unit if self.unit else change.new
 
     def attach_units_dropdown(self, options):
         """
@@ -425,12 +424,11 @@ class _IonBox(_ParticleBox):
             Raised when the input is not a valid ion
         """
         ion = Particle(value)
-        if ion.is_ion:
-            self.values_cont[self.property_name] = ion
-            self.widget.layout.border = ""
-            self.widget.description = ""
-        else:
+        if not ion.is_ion:
             raise ValueError(f"{ion} is not an ion")
+        self.values_cont[self.property_name] = ion
+        self.widget.layout.border = ""
+        self.widget.description = ""
 
 
 class _FunctionInfo:
@@ -507,12 +505,11 @@ class _FunctionInfo:
         `dict`
             Dictionary of arguments that is available
         """
-        args_dict = dict()
-        for arg in spec:
-            if arg in self.values_cont and self.values_cont[arg] is not None:
-                args_dict[arg] = self.values_cont[arg]
-
-        return args_dict
+        return {
+            arg: self.values_cont[arg]
+            for arg in spec
+            if arg in self.values_cont and self.values_cont[arg] is not None
+        }
 
     def error_message(self, spec):
         """
@@ -526,9 +523,9 @@ class _FunctionInfo:
         print(_colored_text(BLACK, "["), end="")
         for arg in spec:
             if arg in self.values_cont and self.values_cont[arg] is not None:
-                print(_colored_text(LIGHT_GREEN, arg + ":present,"), end="")
+                print(_colored_text(LIGHT_GREEN, f"{arg}:present,"), end="")
             else:
-                print(_colored_text(DARK_RED, arg + ":missing,"), end="")
+                print(_colored_text(DARK_RED, f"{arg}:missing,"), end="")
         print(_colored_text(BLACK, "]"))
 
     def process(self):
@@ -537,7 +534,7 @@ class _FunctionInfo:
         Spec_combo is prioritized over the function signature.
         """
         self.output_widget.clear_output()
-        args_dict = dict()
+        args_dict = {}
         if self.spec_combo:
             for spec in self.spec_combo:
                 args_dict = self.produce_arg(spec)
@@ -549,7 +546,7 @@ class _FunctionInfo:
         with self.output_widget:
             try:
                 self.output_widget.layout.border = "0px"
-                print(" : " + str(self.fattr(**args_dict)))
+                print(f" : {str(self.fattr(**args_dict))}")
 
             except Exception as e:
                 self.output_widget.layout.border = ERROR_STYLE
@@ -666,7 +663,6 @@ def _create_widget(widget_type, **kwargs):
 
     if opts:
         widget_element.attach_units_dropdown(opts)
-        widgets = [widget_element.get_widget(), widget_element.get_dropdown_widget()]
+        return [widget_element.get_widget(), widget_element.get_dropdown_widget()]
     else:
-        widgets = widget_element.get_widget()
-    return widgets
+        return widget_element.get_widget()
