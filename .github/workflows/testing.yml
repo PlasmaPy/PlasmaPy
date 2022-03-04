@@ -32,11 +32,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -86,11 +86,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -112,11 +112,11 @@ jobs:
       fail-fast: false
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
     - name: Install Python dependencies
@@ -132,13 +132,13 @@ jobs:
     - comprehensive-tests
     - documentation
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python 3.7
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.7
     - name: Install requirements

@@ -16,7 +16,7 @@ from plasmapy.formulary.lengths import (
     rc_,
     rhoc_,
 )
-from plasmapy.formulary.parameters import thermal_speed
+from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.exceptions import InvalidParticleError
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
 from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
@@ -41,7 +41,7 @@ mu = m_p.to(u.u).value
 
 
 def test_Debye_length():
-    r"""Test the Debye_length function in parameters.py."""
+    r"""Test the Debye_length function in lengths.py."""
 
     assert Debye_length(T_e, n_e).unit.is_equivalent(u.m)
 
@@ -304,7 +304,7 @@ class TestGyroradius:
 
 
 def test_inertial_length():
-    r"""Test the inertial_length function in parameters.py."""
+    r"""Test the inertial_length function in lengths.py."""
 
     assert inertial_length(n_i, particle="p").unit.is_equivalent(u.m)
 
@@ -367,6 +367,6 @@ def test_inertial_length():
         (rhoc_, gyroradius),
     ],
 )
-def test_parameters_aliases(alias, parent):
-    """Test all aliases defined in parameters.py"""
+def test_aliases(alias, parent):
+    """Test all aliases defined in lengths.py"""
     assert alias is parent

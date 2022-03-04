@@ -3,9 +3,7 @@ import pytest
 
 from astropy import constants as const
 from astropy import units as u
-from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.particles.exceptions import InvalidParticleError, ParticleError
 from plasmapy.particles.nuclear import (
     mass_energy,
     nuclear_binding_energy,

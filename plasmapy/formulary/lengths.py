@@ -9,6 +9,7 @@ import warnings
 from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy import particles
+from plasmapy.formulary import frequencies, speeds
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -87,7 +88,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
 
 lambdaD_ = Debye_length
-"""Alias to `~plasmapy.formulary.parameters.Debye_length`."""
+"""Alias to `~plasmapy.formulary.lengths.Debye_length`."""
 
 
 @validate_quantities(
@@ -206,10 +207,6 @@ def gyroradius(
     <Quantity 0.001421... m>
     """
 
-    # TODO: remove when gyrofrequncy moves to plasmapy.formulary.frequencies
-    # TODO: remove when thermal_speed moves to plasmapy.formulary.speeds
-    from plasmapy.formulary.parameters import gyrofrequency, thermal_speed
-
     # Backwards Compatibility and Deprecation check for keyword T_i
     if T_i is not None:
         warnings.warn(
@@ -244,7 +241,7 @@ def gyroradius(
         # we know exactly one of them is nan from check 1
         if isfinite_T:
             # T is valid, so use it to determine Vperp
-            Vperp = thermal_speed(T, particle=particle)
+            Vperp = speeds.thermal_speed(T, particle=particle)
         # else: Vperp is already valid, do nothing
     elif np.isscalar(Vperp.value):  # only T is an array
         # this means either Vperp must be nan, or T must be array of all nan,
@@ -255,14 +252,14 @@ def gyroradius(
             Vperp = np.repeat(Vperp, len(T))
         else:
             # normal case where Vperp is scalar nan and T is valid array
-            Vperp = thermal_speed(T, particle=particle)
+            Vperp = speeds.thermal_speed(T, particle=particle)
     elif np.isscalar(T.value):  # only Vperp is an array
         # this means either T must be nan, or V_perp must be array of all nan,
         # or else we couldn't have gotten through check 1
         if isfinite_T:
             # T is valid, V_perp is an array of all nan
             # uh...
-            Vperp = thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
+            Vperp = speeds.thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
         # else: normal case where T is scalar nan and Vperp is already a valid
         # array so, do nothing
     else:  # both T and Vperp are arrays
@@ -270,9 +267,9 @@ def gyroradius(
         # due to check 1 use the valid Vperps, and replace the others with those
         # calculated from T
         Vperp = Vperp.copy()  # avoid changing Vperp's value outside function
-        Vperp[isfinite_T] = thermal_speed(T[isfinite_T], particle=particle)
+        Vperp[isfinite_T] = speeds.thermal_speed(T[isfinite_T], particle=particle)
 
-    omega_ci = gyrofrequency(B, particle)
+    omega_ci = frequencies.gyrofrequency(B, particle)
 
     r_Li = np.abs(Vperp) / omega_ci
 
@@ -280,10 +277,10 @@ def gyroradius(
 
 
 rc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 rhoc_ = gyroradius
-"""Alias to `~plasmapy.formulary.parameters.gyroradius`."""
+"""Alias to `~plasmapy.formulary.lengths.gyroradius`."""
 
 
 @validate_quantities(
@@ -350,17 +347,14 @@ def inertial_length(n: u.m ** -3, particle: Particle) -> u.m:
     <Quantity 2376534.75... m>
 
     """
-    # TODO: remove when plasma_frequency moves to plasmapy.formulary.frequencies
-    from plasmapy.formulary.parameters import plasma_frequency
-
-    omega_p = plasma_frequency(n, particle=particle)
+    omega_p = frequencies.plasma_frequency(n, particle=particle)
 
     return c / omega_p
 
 
 cwp_ = inertial_length
 """
-Alias to `~plasmapy.formulary.parameters.inertial_length`.
+Alias to `~plasmapy.formulary.lengths.inertial_length`.
 
 * Name is shorthand for :math:`c / ω_p`.
 """
