@@ -71,7 +71,6 @@ Example highlights
    bibliography
    glossary
    whatsnew/index
-   about/stability
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would
