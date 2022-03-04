@@ -1,7 +1,6 @@
 """
-Contains functions that create widgets and process properties for the calculator
+Contains functions that create widgets and process properties for the calculator.
 """
-
 
 __all__ = []
 
