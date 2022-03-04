@@ -169,12 +169,10 @@ class BasicRegistrationFactory:
             for vfunc_str in self.validation_functions:
                 if hasattr(WidgetType, vfunc_str):
                     vfunc = getattr(WidgetType, vfunc_str)
-
-                    if not (
-                        _classmethod := (
-                            inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
-                        )
-                    ):
+                    is_not_classmethod = not (
+                        inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
+                    )
+                    if is_not_classmethod:
                         raise ValidationFunctionError(
                             f"{WidgetType.__name__}.{vfunc_str} must be a classmethod."
                         )
