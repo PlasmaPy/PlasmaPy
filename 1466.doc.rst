@@ -1,1 +1,0 @@
-Hid the subpackage stability matrix page from the documentation.
