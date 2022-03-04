@@ -375,7 +375,7 @@ nbsphinx_thumbnails = {
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
-    "notebooks/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
+    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from
