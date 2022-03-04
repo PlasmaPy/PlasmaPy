@@ -5,12 +5,10 @@ Contains functions that create widgets and process properties for the calculator
 __all__ = []
 
 import abc
-import astropy.units as units
 import importlib
 import ipywidgets as widgets
 
-from astropy.constants.si import m_e, m_p
-from inspect import signature, trace
+from inspect import signature
 
 from plasmapy.particles import Particle
 
