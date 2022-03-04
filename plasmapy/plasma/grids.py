@@ -176,6 +176,7 @@ class AbstractGrid(ABC):
             # Error check that grid contains E and B variables required
             if rq not in self.quantities:
 
+                # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
                         f"{rq} is not specified for the provided "
