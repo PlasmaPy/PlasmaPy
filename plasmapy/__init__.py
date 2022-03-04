@@ -21,7 +21,7 @@ __all__ = [
 import sys
 
 if sys.version_info < (3, 8):  # coverage: ignore
-    raise Exception("PlasmaPy does not support Python < 3.8")
+    raise ImportError("PlasmaPy does not support Python < 3.8")
 
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
