@@ -263,11 +263,7 @@ class CheckValues(CheckBase):
                     # during subclassing)
                     out_checks[param.name][v_name] = v_default
 
-        # Does `self.checks` indicate arguments not used by f?
-        missing_params = [
-            param for param in set(self.checks.keys()) - set(out_checks.keys())
-        ]
-        if len(missing_params) > 0:
+        if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
@@ -311,17 +307,7 @@ class CheckValues(CheckBase):
         ckeys.remove("none_shall_pass")
         ckeys = ("none_shall_pass",) + tuple(ckeys)
         for ckey in ckeys:
-            if ckey == "none_shall_pass":
-                if arg is None and arg_checks[ckey]:
-                    break
-                elif arg is None:
-                    raise ValueError(f"{valueerror_msg} Nones.")
-
-            elif ckey == "can_be_negative":
-                if not arg_checks[ckey] and np.any(arg < 0):
-                    raise ValueError(f"{valueerror_msg} negative numbers.")
-
-            elif ckey == "can_be_complex":
+            if ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
                     raise ValueError(f"{valueerror_msg} complex numbers.")
 
@@ -333,9 +319,19 @@ class CheckValues(CheckBase):
                 if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
                     raise ValueError(f"{valueerror_msg} NaNs.")
 
+            elif ckey == "can_be_negative":
+                if not arg_checks[ckey] and np.any(arg < 0):
+                    raise ValueError(f"{valueerror_msg} negative numbers.")
+
             elif ckey == "can_be_zero":
                 if not arg_checks[ckey] and np.any(arg == 0):
                     raise ValueError(f"{valueerror_msg} zeros.")
+
+            elif ckey == "none_shall_pass":
+                if arg is None and arg_checks[ckey]:
+                    break
+                elif arg is None:
+                    raise ValueError(f"{valueerror_msg} Nones.")
 
 
 class CheckUnits(CheckBase):
