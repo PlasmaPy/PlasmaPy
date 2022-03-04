@@ -72,7 +72,6 @@ Example highlights
    glossary
    whatsnew/index
    Vision Statement <about/vision_statement>
-   about/stability
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would
