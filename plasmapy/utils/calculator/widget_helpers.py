@@ -13,36 +13,28 @@ from inspect import signature
 from plasmapy.particles import Particle
 
 BLACK = (0, 0, 0)
-"""
-BLACK: RGB Constant for black color 000
-"""
+"""RGB constant for black."""
 
 DARK_RED = (255, 0, 0)
-"""
-DARK_RED: RGB Constant for dark red color 255,0,0
-"""
+"""RGB Constant for dark red."""
 
 LIGHT_GREEN = (0, 128, 0)
-"""
-LIGHT_GREEN: RGB Constant for light green color 0,128,0
-"""
+"""RGB Constant for light green."""
 
 ERROR_STYLE = "2px solid red"
-"""
-ERROR_STYLE: Constant for error style = 2px solid red
-"""
+"""Constant for error style."""
 
 EQUAL_SPACING_CONFIG = "10px 10px 10px 10px"
-"""
-EQUAL_SPACING_CONFIG: Constant for equal spacing config among widgets = 10px 10px 10px 10px
-"""
+"""Constant for equal spacing config among widgets."""
 
 values_container = {}
-"""values_container: stores the values of widget with corresponding ``property_name``."""
+"""stores the values of widget with corresponding ``property_name``."""
 
 _process_queue = []
-"""_process_queue: stores the functions to be processed,
-This data is gathered from ``properties_metadata.json``."""
+"""
+Stores the functions to be processed. This data is gathered from
+``properties_metadata.json``.
+"""
 
 
 class _GenericWidget(abc.ABC):
