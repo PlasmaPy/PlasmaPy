@@ -1,8 +1,15 @@
 """
-Classes, sets, and dictionaries to store data and taxonomy
-information for special particles.
+Classes, sets, and dictionaries to store data and taxonomy information
+for special particles.
 """
-__all__ = ["ParticleZoo", "_ParticleZooClass"]
+__all__ = [
+    "antiparticles",
+    "create_particles_dict",
+    "data_about_special_particles",
+    "particle_zoo",
+    "ParticleZoo",
+    "special_ion_masses",
+]
 
 import astropy.constants as const
 import astropy.units as u
@@ -10,14 +17,14 @@ import numpy as np
 
 from typing import Dict, Set
 
-from plasmapy.particles.elements import _PeriodicTable
+from plasmapy.particles import _elements
 
 
-class _ParticleZooClass:
+class ParticleZoo:
     """
     Create an object with taxonomy information for special particles.
 
-    The `~plasmapy.particles.special_particles._ParticleZooClass._taxonomy_dict`
+    The `~plasmapy.particles._special_particles._ParticleZooClass._taxonomy_dict`
     attribute contains the name of each classification (e.g.,
     ``'lepton'``, ``'baryon'``, ``'matter'``, etc.) as the keys and a
     set of particle symbol strings of the particles belonging to that
@@ -28,14 +35,13 @@ class _ParticleZooClass:
 
     Examples
     --------
-    >>> ParticleZoo = _ParticleZooClass()
-    >>> 'e-' in ParticleZoo.leptons
+    >>> particle_zoo_ = ParticleZoo()
+    >>> 'e-' in particle_zoo_.leptons
     True
-    >>> 'nu_e' in ParticleZoo.antineutrinos
+    >>> 'nu_e' in particle_zoo_.antineutrinos
     False
-    >>> 'mu+' in ParticleZoo.antiparticles
+    >>> 'mu+' in particle_zoo_.antiparticles
     True
-
     """
 
     def __init__(self):
@@ -124,11 +130,16 @@ class _ParticleZooClass:
         return self._taxonomy_dict["matter"] | self._taxonomy_dict["antimatter"]
 
 
-#: Instance of `_ParticleZooClass`.
-ParticleZoo = _ParticleZooClass()
+particle_zoo = ParticleZoo()
+particle_zoo.__doc__ = """
+Data container for representations of "special" particles, like leptons
+and baryons.
+
+An instance of `~plasmapy.particles._special_particles.ParticleZoo`.
+"""
 
 
-def _create_Particles_dict() -> Dict[str, dict]:
+def create_particles_dict() -> Dict[str, dict]:
     """
     Create a dictionary of dictionaries that contains physical
     information for particles and antiparticles that are not elements or
@@ -160,73 +171,73 @@ def _create_Particles_dict() -> Dict[str, dict]:
         ("antineutron", "antineutron"),
     ]
 
-    Particles = dict()
+    particles = dict()
 
-    for particle in ParticleZoo.everything:
-        Particles[particle] = dict()
+    for particle in particle_zoo.everything:
+        particles[particle] = dict()
 
     for symbol, name in symbols_and_names:
-        Particles[symbol]["name"] = name
+        particles[symbol]["name"] = name
 
-    for fermion in ParticleZoo.fermions:
-        Particles[fermion]["spin"] = 0.5
+    for fermion in particle_zoo.fermions:
+        particles[fermion]["spin"] = 0.5
 
-    for boson in ParticleZoo.bosons:  # coverage: ignore
-        Particles[boson]["spin"] = 0
+    for boson in particle_zoo.bosons:  # coverage: ignore
+        particles[boson]["spin"] = 0
 
-    for lepton in ParticleZoo.leptons:
-        Particles[lepton]["class"] = "lepton"
-        Particles[lepton]["lepton number"] = 1
-        Particles[lepton]["baryon number"] = 0
-        if lepton not in ParticleZoo.neutrinos:
-            Particles[lepton]["charge number"] = -1
+    for lepton in particle_zoo.leptons:
+        particles[lepton]["class"] = "lepton"
+        particles[lepton]["lepton number"] = 1
+        particles[lepton]["baryon number"] = 0
+        if lepton not in particle_zoo.neutrinos:
+            particles[lepton]["charge number"] = -1
         else:
-            Particles[lepton]["charge number"] = 0
+            particles[lepton]["charge number"] = 0
 
-    for antilepton in ParticleZoo.antileptons:
-        Particles[antilepton]["class"] = "antilepton"
-        Particles[antilepton]["lepton number"] = -1
-        Particles[antilepton]["baryon number"] = 0
-        if antilepton not in ParticleZoo.antineutrinos:
-            Particles[antilepton]["charge number"] = 1
+    for antilepton in particle_zoo.antileptons:
+        particles[antilepton]["class"] = "antilepton"
+        particles[antilepton]["lepton number"] = -1
+        particles[antilepton]["baryon number"] = 0
+        if antilepton not in particle_zoo.antineutrinos:
+            particles[antilepton]["charge number"] = 1
         else:
-            Particles[antilepton]["charge number"] = 0
+            particles[antilepton]["charge number"] = 0
 
-    for baryon in ParticleZoo.baryons:
-        Particles[baryon]["class"] = "baryon"
-        Particles[baryon]["lepton number"] = 0
-        Particles[baryon]["baryon number"] = 1
+    for baryon in particle_zoo.baryons:
+        particles[baryon]["class"] = "baryon"
+        particles[baryon]["lepton number"] = 0
+        particles[baryon]["baryon number"] = 1
 
-    for antibaryon in ParticleZoo.antibaryons:
-        Particles[antibaryon]["class"] = "antibaryon"
-        Particles[antibaryon]["lepton number"] = 0
-        Particles[antibaryon]["baryon number"] = -1
+    for antibaryon in particle_zoo.antibaryons:
+        particles[antibaryon]["class"] = "antibaryon"
+        particles[antibaryon]["lepton number"] = 0
+        particles[antibaryon]["baryon number"] = -1
 
-    for particle in ParticleZoo.leptons | ParticleZoo.antileptons:
+    for particle in particle_zoo.leptons | particle_zoo.antileptons:
         if "e" in particle:
-            Particles[particle]["generation"] = 1
+            particles[particle]["generation"] = 1
         elif "mu" in particle:
-            Particles[particle]["generation"] = 2
+            particles[particle]["generation"] = 2
         elif "tau" in particle:
-            Particles[particle]["generation"] = 3
+            particles[particle]["generation"] = 3
 
-    for particle in ParticleZoo.leptons | ParticleZoo.antileptons:
+    for particle in particle_zoo.leptons | particle_zoo.antileptons:
         if "nu" not in particle:
             if "e" in particle:
-                Particles[particle]["mass"] = const.m_e
+                particles[particle]["mass"] = const.m_e
             elif "mu" in particle:
-                Particles[particle]["mass"] = 1.883_531_594e-28 * u.kg
-                Particles[particle]["half-life"] = 2.1969811e-6 * u.s
+                particles[particle]["mass"] = 1.883_531_594e-28 * u.kg
+                particles[particle]["half-life"] = 2.1969811e-6 * u.s
             elif "tau" in particle:
-                Particles[particle]["mass"] = 3.167_47e-27 * u.kg
-                Particles[particle]["half-life"] = 2.906e-13 * u.s
+                particles[particle]["mass"] = 3.167_47e-27 * u.kg
+                particles[particle]["half-life"] = 2.906e-13 * u.s
 
     # Setting the neutrino mass to None reminds us that, while neutrinos
     # are not massless, we only have upper limits on what the neutrino
     # mass actually is.
 
-    for particle in ParticleZoo.neutrinos | ParticleZoo.antineutrinos:
-        Particles[particle]["mass"] = None
+    for particle in particle_zoo.neutrinos | particle_zoo.antineutrinos:
+        particles[particle]["mass"] = None
 
     special_attributes = {
         "p+": {
@@ -238,7 +249,7 @@ def _create_Particles_dict() -> Dict[str, dict]:
             "ion": "p+",
             "mass": const.m_p,
             "charge number": 1,
-            "periodic table": _PeriodicTable(
+            "periodic table": _elements.PeriodicTable(
                 group=1, period=1, block="s", category="nonmetal"
             ),
         },
@@ -251,31 +262,31 @@ def _create_Particles_dict() -> Dict[str, dict]:
         },
     }
 
-    for particle in special_attributes.keys():
-        Particles[particle] = {**special_attributes[particle], **Particles[particle]}
+    for particle in special_attributes:
+        particles[particle] = {**special_attributes[particle], **particles[particle]}
 
-    for particle in ParticleZoo.everything:
-        if "half-life" not in Particles[particle].keys():
-            Particles[particle]["half-life"] = np.inf * u.s
+    for particle in particle_zoo.everything:
+        if "half-life" not in particles[particle]:
+            particles[particle]["half-life"] = np.inf * u.s
 
-    for particle in ParticleZoo.particles:
-        Particles[particle]["antimatter"] = False
+    for particle in particle_zoo.particles:
+        particles[particle]["antimatter"] = False
 
-    for antiparticle in ParticleZoo.antiparticles:
-        Particles[antiparticle]["antimatter"] = True
+    for antiparticle in particle_zoo.antiparticles:
+        particles[antiparticle]["antimatter"] = True
 
-    return Particles
+    return particles
 
 
-_Particles = _create_Particles_dict()
+data_about_special_particles = create_particles_dict()
 
-_special_ion_masses = {
+special_ion_masses = {
     "p+": const.m_p,
     "D 1+": 3.343583719e-27 * u.kg,
     "T 1+": 5.007356665e-27 * u.kg,
 }
 
-_antiparticles = {
+antiparticles = {
     "p+": "p-",
     "n": "antineutron",
     "e-": "e+",
@@ -293,9 +304,3 @@ _antiparticles = {
     "anti_nu_mu": "nu_mu",
     "anti_nu_tau": "nu_tau",
 }
-
-if __name__ == "__main__":  # coverage: ignore
-    from pprint import pprint
-
-    print("Particles:")
-    pprint(_Particles)

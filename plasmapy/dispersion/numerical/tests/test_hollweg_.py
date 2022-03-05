@@ -6,7 +6,7 @@ import pytest
 from astropy import units as u
 
 from plasmapy.dispersion.numerical.hollweg_ import hollweg
-from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary import speeds
 from plasmapy.particles import Particle
 from plasmapy.utils.exceptions import PhysicsWarning
 
@@ -201,8 +201,8 @@ class TestHollweg:
         """
         # k values need to be single valued for this test to function correctly
 
-        cs = pfp.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
-        va = pfp.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
+        cs = speeds.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
+        va = speeds.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
 
         beta = (cs / va) ** 2
         if not np.isclose(beta, desired_beta, atol=2e-4):
