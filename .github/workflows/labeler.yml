@@ -6,7 +6,13 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@main
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        sync-labels: true
+    - name: Add Labels to PR
+        uses: actions/labeler@main
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          sync-labels: true
+    - name: Add Size Label to PR
+        uses: WizardOhio24/label-pr-size-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          size-label-color: '10, very small, ffaf65 | 50, small, ff9e58 | 80, medium, ff9654 | 200, large, ff905d | 400, massive, ff905d'
