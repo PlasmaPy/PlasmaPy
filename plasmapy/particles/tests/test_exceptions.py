@@ -4,13 +4,7 @@ import pytest
 
 from astropy import units as u
 
-from plasmapy.particles import (
-    atomic_symbol,
-    IonizationState,
-    IonizationStateCollection,
-    nuclear_binding_energy,
-    nuclear_reaction_energy,
-)
+from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.particles.atomic import (
     atomic_number,
     common_isotopes,

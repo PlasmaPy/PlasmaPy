@@ -321,7 +321,7 @@ def Thomas_Fermi_length(n_e: u.m ** -3) -> u.m:
     See Also
     --------
     ~plasmapy.formulary.quantum.Fermi_energy
-    ~plasmapy.formulary.parameters.Debye_length
+    ~plasmapy.formulary.lengths.Debye_length
 
     Examples
     --------

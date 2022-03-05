@@ -26,7 +26,7 @@ from sphinx.application import Sphinx
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("."))
 
-from plasmapy import __version__ as release
+from plasmapy import __version__ as release  # noqa
 
 # -- General configuration ------------------------------------------------
 
@@ -38,8 +38,8 @@ automodapi_custom_groups = {
             "PlasmaPy provides short-named (alias) versions of the most "
             "common plasma functionality.  These aliases are only given to "
             "functionality where there is a common lexicon in the community, "
-            "for example `~plasmapy.formulary.parameters.plasma_frequency` "
-            " has the alias `~plasmapy.formulary.parameters.wp_`.  All aliases "
+            "for example `~plasmapy.formulary.frequencies.plasma_frequency` "
+            " has the alias `~plasmapy.formulary.frequencies.wp_`.  All aliases "
             "in PlasmaPy are denoted with a trailing underscore ``_``."
         ),
         "dunder": "__aliases__",
@@ -107,12 +107,13 @@ bibtex_reference_style = "author_year"
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "pytest": ("https://docs.pytest.org/en/stable", None),
+    "pytest": ("https://docs.pytest.org/en/stable/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
@@ -120,6 +121,18 @@ intersphinx_mapping = {
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
+hoverxref_intersphinx = [
+    "readthedocs",
+    "python",
+    "numpy",
+    "scipy",
+    "pandas",
+    "astropy",
+    "pytest",
+    "sphinx_automodapi",
+    "sphinx",
+    "numba",
+]
 
 autoclass_content = "both"
 
@@ -213,7 +226,48 @@ linkcheck_anchors_ignore = [
 # Use a code highlighting style that meets the WCAG AA contrast standard
 pygments_style = "default"
 
+# adapted from sphinx-hoverxref conf.py
+if os.environ.get("READTHEDOCS"):
+    # Building on Read the Docs
+    hoverxref_api_host = "https://readthedocs.org"
+
+    if os.environ.get("PROXIED_API_ENDPOINT"):
+        # Use the proxied API endpoint
+        # - A RTD thing to avoid a CSRF block when docs are using a
+        #   custom domain
+        hoverxref_api_host = "/_"
+
+hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
 hoverxref_auto_ref = True
+hoverxref_mathjax = True
+hoverxref_sphinxtabs = True
+
+# hoverxref has to be applied to these
+hoverxref_domains = ["py", "cite"]
+hoverxref_roles = ["confval", "term"]
+
+hoverxref_role_types = {
+    # roles with cite domain
+    "p": "tooltip",
+    "t": "tooltip",
+    #
+    # roles with py domain
+    "attr": "tooltip",
+    "class": "tooltip",
+    "const": "tooltip",
+    "data": "tooltip",
+    "exc": "tooltip",
+    "func": "tooltip",
+    "meth": "tooltip",
+    "mod": "tooltip",
+    "obj": "tooltip",
+    #
+    # roles with std domain
+    "confval": "tooltip",
+    "hoverxref": "tooltip",
+    "ref": "tooltip",
+    "term": "tooltip",
+}
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -321,6 +375,7 @@ nbsphinx_thumbnails = {
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
+    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from
