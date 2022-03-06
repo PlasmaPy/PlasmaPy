@@ -14,6 +14,7 @@
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
    Swept Langmuir <swept_langmuir>
+   Null Point Finder </api_static/plasmapy.analysis.nullpoint>
 
 Notebooks
 ---------

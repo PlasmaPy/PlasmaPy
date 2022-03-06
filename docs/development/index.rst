@@ -1,4 +1,4 @@
-.. _plasmapy-contributor-guide:
+.. _contributor guide:
 
 *****************
 Contributor Guide
