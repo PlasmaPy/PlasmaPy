@@ -220,7 +220,9 @@ def stix(
     for i in range(sum_len):
         S = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2))
         P = +((plasma_freq[i] ** 2) / (w ** 2))
-        D = +((plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2)) * ((component_frequency[i].value) / (w))
+        D = +(
+            (plasma_freq[i] ** 2) / (w ** 2 + (component_frequency[i].value) ** 2)
+        ) * ((component_frequency[i].value) / (w))
 
     R = S + D
     L = S - D
