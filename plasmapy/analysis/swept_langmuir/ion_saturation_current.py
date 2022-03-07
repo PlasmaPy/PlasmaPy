@@ -86,6 +86,28 @@ def find_ion_saturation_current(
         satisfy ``voltage <= upper_bound`` are used in the fit.
         (DEFAULT ``None``)
 
+        |
+
+        If ``upper_bound`` is not specified, then the route will collect
+        indices based on a current bound relative to ``np.min(current)``
+        that is dependent on the ``fit_type`` specified.
+
+    Returns
+    -------
+    isat: `~plasmapy.analysis.fit_functions.Linear`
+        A :term:`fit-function` representing the linear portion of the
+        fitter curve.
+
+    extras: `ISatExtras`
+        Additional information from the curve fit:
+
+        * ``extras.fitted_func`` is the :term:`fit-function` (specified
+          by ``fit_type``) fitted to the IV-curve
+        * ``extras.rsq`` is the coefficient of determination
+          (r-squared) value of the ``extras.fitted_func`` to the IV-curve
+        * ``extras.fitted_indices`` is a `slice` object representing the
+          points used in the curve fit (i.e.
+          ``(voltage[extras.fitted_indices], current[extras.fitted_indices])``).
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
@@ -121,7 +143,6 @@ def find_ion_saturation_current(
         current_min = current.min()
         current_bound = (1.0 - default_ubound_frac) * current_min
         mask = np.where(current <= current_bound)[0]
-
     elif not isinstance(upper_bound, numbers.Real):
         raise TypeError(
             f"Keyword 'upper_bound' is of type {type(upper_bound)}, expected an "
