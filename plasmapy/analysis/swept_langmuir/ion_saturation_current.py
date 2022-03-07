@@ -44,7 +44,8 @@ def find_ion_saturation_current(
     current: np.ndarray,
     *,
     fit_type: str = "exp_plus_linear",
-    upper_bound: float = None,
+    current_bound: float = None,
+    voltage_bound: float = None,
 ) -> Tuple[ffuncs.Linear, ISatExtras]:
     """
     Determines the ion-saturation current (:math:`I_{sat}`) for a given
@@ -80,17 +81,31 @@ def find_ion_saturation_current(
         | ``"exp_plus_linear"`` | `~plasmapy.analysis.fit_functions.ExponentialPlusLinear` |
         +-----------------------+----------------------------------------------------------+
 
-    upper_bound: `float`
-        A bias voltage (in volts) that specifies an upper bound used to
-        collect the points for the curve fit.  That is, points that
-        satisfy ``voltage <= upper_bound`` are used in the fit.
-        (DEFAULT ``None``)
+    current_bound: `float`
+        A fraction representing a percentile window around the minimum
+        current for which to collect the points.  For example, a value
+        of ``0.1`` indicates to use all points within 10% of the
+        minimum current.  (DEFAULT ``None``)
 
         |
 
-        If ``upper_bound`` is not specified, then the route will collect
-        indices based on a current bound relative to ``np.min(current)``
-        that is dependent on the ``fit_type`` specified.
+        If neither ``current_bound`` or ``voltage_bound`` are specified,
+        then the routine will collect indices based on an internal
+        ``current_bound`` setting for the specified ``fit_type``.
+
+        +-----------------------+--------------------------------------+
+        | ``"linear"``          | 0.4                                  |
+        +-----------------------+--------------------------------------+
+        | ``"exponential"``     | 1.0                                  |
+        +-----------------------+--------------------------------------+
+        | ``"exp_plus_linear"`` | 1.0                                  |
+        +-----------------------+--------------------------------------+
+
+    voltage_bound: `float`
+        A bias voltage (in volts) that specifies an upper bound used to
+        collect the points for the curve fit.  That is, points that
+        satisfy ``voltage <= voltage_bound`` are used in the fit.
+        (DEFAULT ``None``)
 
     Returns
     -------
@@ -114,10 +129,9 @@ def find_ion_saturation_current(
     This routine works by:
 
     1. Selecting the points to be used in the fit as determined by
-       ``upper_bound``, or internal parameters if ``upper_bound` is
-       not specific.
+       ``voltage_bound`` or ``current_bound``.
     2. Fitting the selected points with the :term:`fit-function`
-       specified by ``fit_type`.
+       specified by ``fit_type``.
     3. Extracting the linear component of the fit and returning that as
        the ion-saturation current.
 
@@ -133,19 +147,19 @@ def find_ion_saturation_current(
     _settings = {
         "linear": {
             "func": ffuncs.Linear,
-            "default_ubound_frac": 0.4,
+            "current_bound": 0.4,
         },
         "exp_plus_linear": {
             "func": ffuncs.ExponentialPlusLinear,
-            "default_ubound_frac": 1.0,
+            "current_bound": 1.0,
         },
         "exp_plus_offset": {
             "func": ffuncs.ExponentialPlusOffset,
-            "default_ubound_frac": 1.0,
+            "current_bound": 1.0,
         },
     }
     try:
-        default_ubound_frac = _settings[fit_type]["default_ubound_frac"]
+        default_current_bound = _settings[fit_type]["current_bound"]
         fit_func = _settings[fit_type]["func"]()
         rtn_extras["fitted_func"] = fit_func
     except KeyError:
@@ -157,23 +171,41 @@ def find_ion_saturation_current(
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
-    # condition kwarg upper_bound
-    if upper_bound is None:
-        current_min = current.min()
-        current_bound = (1.0 - default_ubound_frac) * current_min
-        mask = np.where(current <= current_bound)[0]
-    elif not isinstance(upper_bound, numbers.Real):
-        raise TypeError(
-            f"Keyword 'upper_bound' is of type {type(upper_bound)}, expected an "
-            f"int or float."
+    # condition kwargs voltage_bound and current_bound
+    if voltage_bound is None and current_bound is None:
+        current_bound = default_current_bound
+    elif voltage_bound is not None and current_bound is not None:
+        raise ValueError(
+            "Both keywords 'current_bound' and `voltage_bound' are specified, "
+            "use only one."
         )
-    else:
-        mask = np.where(voltage <= upper_bound)[0]
-        if mask.size == 0:
-            raise ValueError(
-                f"The value for keyword 'upper_bound' ({upper_bound}) resulted in "
-                f"identifying a fit window of size 0."
+
+    if current_bound is not None:
+        if not isinstance(current_bound, numbers.Real):
+            raise TypeError(
+                f"Keyword 'current_bound' is of type {type(current_bound)}, "
+                f"expected an int or float."
             )
+
+        current_min = current.min()
+        current_bound = (1.0 - current_bound) * current_min
+        mask = np.where(current <= current_bound)[0]
+    else:  # voltage_bound is not None
+        if not isinstance(voltage_bound, numbers.Real):
+            raise TypeError(
+                f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
+                f"expected an int or float."
+            )
+
+        mask = np.where(voltage <= voltage_bound)[0]
+
+    if mask.size == 0:
+        raise ValueError(
+            f"The specified bounding keywords, 'voltage_bound' "
+            f"({voltage_bound}) and 'current_bound' ({current_bound}), "
+            f"resulted in a fit window containing no points."
+        )
+
     mask = slice(0, mask[-1] + 1)
     rtn_extras["fitted_indices"] = mask
 
