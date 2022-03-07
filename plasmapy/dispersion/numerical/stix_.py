@@ -22,27 +22,27 @@ def stix(
 ):
     r"""
     Calculate the cold plasma function solution by using Bellan 2012, this uses
-    the numerical method to find (:math:'\omega') dispersion relation provided
+    the numerical method to find (:math:`\omega`) dispersion relation provided
     by Stix 1992. This dispersion relation also assumes a uniform magnetic field
-    :math: '\mathbf{B_0}', theta is the angle between the magnetic and the normal
+    :math: `\mathbf{B_0}`, theta is the angle between the magnetic and the normal
     surface of the wave vector. For more information see the **Notes** section below.
 
     Parameters
     ----------
     B : '~astropy.units.Quantity'
-    Value of the magnitude of the magnetic field in units convertible to :math:'T'.
+    Value of the magnitude of the magnetic field in units convertible to :math:`T`.
 
     k : single value or 1 D array astropy ~astropy.units.Quantity
-    Value of the wavenumber in units convertible to :math:'rad/m'.
+    Value of the wavenumber in units convertible to :math:`rad/m`.
 
     ions: single
 
     omega_ions: single value or 1 D array astropy ~astropy.units.Quantity
-    Frequency value for the associated ion in units convertible to :math:'rad/s'.
+    Frequency value for the associated ion in units convertible to :math:`rad/s`.
 
     theta: single value or 1 D array astropy ~astropy.units.Quantity
-    Value of theta with respect to the magnetic field, :math:'\cos^{-1}(k_z/k)',
-    must be in units convertible to :math:'rad'.
+    Value of theta with respect to the magnetic field, :math:`\cos^{-1}(k_z/k)`,
+    must be in units convertible to :math:`rad`.
 
     Returns
     -------
@@ -54,17 +54,17 @@ def stix(
     Raises
     ------
     TypeError
-    If the argument is of an invalid type.
+        If the argument is of an invalid type.
 
     ~astropy.units.UnitsError
-    If the argument is a `~astropy.units.Quantity` but is not
-    dimensionless.
+        If the argument is a `~astropy.units.Quantity` but is not
+        dimensionless.
 
     ValueError
-    If the number of frequencies for each ion isn't the same.
+        If the number of frequencies for each ion isn't the same.
 
     NoConvergence
-    If a solution cannot be found and the convergence failed to root.
+        If a solution cannot be found and the convergence failed to root.
 
     Notes
     -----
@@ -72,30 +72,30 @@ def stix(
     of Bellan 2012 [1] presented here:
 
     ..math::
-    (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
-    PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
+    `(S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
+    PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0`
 
     where,
 
     ..math::
-    \mathbf{n} = \frac{c \mathbf{k}}{\omega}
+    `\mathbf{n} = \frac{c \mathbf{k}}{\omega}`
     ..math::
-    S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
+    `S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}`
     ..math::
-    P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
+    `P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }`
     ..math::
-    D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
+    `D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }`
 
     Following on section 1.6 of Bellan 2012 [1] expresses following derived quantities
     as follows.
 
     ..math::
-    R = S + D \hspace{1cm} L = S - D
+    `R = S + D \hspace{1cm} L = S - D`
 
-    The equation is valid for all :math:'\omega' and :math:'\k' providing that
-    :math:'\frac{\omega}{k_{z}} >> \nu_{Te}' with :math:'\nu_{Ti}' and :math:'k_{x}r_{Le,i} << 1'.
-    The prediction of :math:'k \to 0' occurs when P, R or L cut off and predicts
-    :math:'k \to \inf' for perpendicular propagation during wave resonance :math:'S \to 0'.
+    The equation is valid for all :math:`\omega` and :math:`\k` providing that
+    :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.
+    The prediction of :math:`k \to 0` occurs when P, R or L cut off and predicts
+    :math:`k \to \inf` for perpendicular propagation during wave resonance :math:`S \to 0`.
 
     References
     ----------

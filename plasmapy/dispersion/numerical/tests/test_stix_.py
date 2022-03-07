@@ -1,9 +1,10 @@
-"Test functinality of Stix in plasmapy.dispersion.numerical.stix_"
+"""Test functinality of Stix in `plasmapy.dispersion.numerical.stix_`."""
 from astropy import units as u
 import numpy as np
 import pytest
 
 from plasmapy.dispersion.numerical.stix_ import stix
+
 
 class TestStix:
     _kwargs_single_valued = {
