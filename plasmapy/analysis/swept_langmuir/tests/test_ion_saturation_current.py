@@ -40,6 +40,15 @@ class TestFindIonSaturationCurrent:
     `~plasmapy.analysis.swept_langmuir.ion_saturation_current.find_ion_saturation_current`.
     """
 
+    _null_result = (
+        None,
+        ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict(),
+    )
+    _voltage = np.linspace(-10.0, 15, 70)
+    _linear_current = np.linspace(-3.1, 4.1, 70)
+    _linear_p_sine_current = _linear_current + 1.2 * np.sin(1.2 * _voltage)
+    _exp_current = -1.3 + 2.2 * np.exp(_voltage)
+
     def test_alias(self):
         """Test the associated alias(es) is(are) defined correctly."""
         assert find_isat_ is find_ion_saturation_current
