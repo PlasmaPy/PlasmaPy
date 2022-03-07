@@ -13,7 +13,7 @@ from plasmapy.analysis import swept_langmuir as _sl
 from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
     find_ion_saturation_current,
     find_isat_,
-    IonSaturationCurrentResults,
+    ISatExtras,
 )
 
 
@@ -23,16 +23,15 @@ def test_ion_saturation_current_namedtuple():
     current data.
     """
 
-    assert issubclass(IonSaturationCurrentResults, tuple)
-    assert hasattr(IonSaturationCurrentResults, "_fields")
-    assert IonSaturationCurrentResults._fields == (
-        "isat_func",
+    assert issubclass(ISatExtras, tuple)
+    assert hasattr(ISatExtras, "_fields")
+    assert ISatExtras._fields == (
         "rsq",
-        "func",
-        "indices",
+        "fitted_func",
+        "fitted_indices",
     )
-    assert hasattr(IonSaturationCurrentResults, "_field_defaults")
-    assert IonSaturationCurrentResults._field_defaults == {}
+    assert hasattr(ISatExtras, "_field_defaults")
+    assert ISatExtras._field_defaults == {}
 
 
 class TestFindIonSaturationCurrent:
