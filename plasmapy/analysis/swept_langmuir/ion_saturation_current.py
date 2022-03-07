@@ -108,6 +108,25 @@ def find_ion_saturation_current(
         * ``extras.fitted_indices`` is a `slice` object representing the
           points used in the curve fit (i.e.
           ``(voltage[extras.fitted_indices], current[extras.fitted_indices])``).
+
+    Notes
+    -----
+    This routine works by:
+
+    1. Selecting the points to be used in the fit as determined by
+       ``upper_bound``, or internal parameters if ``upper_bound` is
+       not specific.
+    2. Fitting the selected points with the :term:`fit-function`
+       specified by ``fit_type`.
+    3. Extracting the linear component of the fit and returning that as
+       the ion-saturation current.
+
+    This routine opts to return a function representing a linear
+    ion-saturation current, since, while ideal planar Langmuir probes
+    reach a steady-state ion-saturation current, real world Langmuir
+    probes "suffer" from expanding sheaths as the bias voltage
+    increases.  This sheath expansion results the ion-saturation
+    current also increasing.
     """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
