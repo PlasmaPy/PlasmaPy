@@ -1,7 +1,8 @@
 """
 Functionality for determining the ion-saturation current of a Langmuir sweep.
 """
-__all__ = ["find_ion_saturation_current", "find_isat_"]
+__all__ = ["find_ion_saturation_current", "ISatExtras"]
+__aliases__ = ["find_isat_"]
 
 import numbers
 import numpy as np
