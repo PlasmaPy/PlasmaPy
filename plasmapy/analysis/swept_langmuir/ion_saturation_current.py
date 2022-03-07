@@ -22,14 +22,14 @@ class ISatExtras(NamedTuple):
     """
     rsq: Union[float, None]
     """
-    Alies for field number 0, the r-squared value of the ion-saturation
+    Alias for field number 0, the r-squared value of the ion-saturation
     curve fit.
     """
 
     fitted_func:  Union[ffuncs.AbstractFitFunction, None]
     """
     Alias for field number 1, the :term:`fit-function` fitted during
-    the ion-satuaration cureve fit.
+    the ion-saturation curve fit.
     """
 
     fitted_indices: Union[slice, None]
