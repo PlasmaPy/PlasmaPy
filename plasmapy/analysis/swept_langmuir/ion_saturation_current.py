@@ -45,8 +45,48 @@ def find_ion_saturation_current(
     *,
     fit_type: str = "exp_plus_linear",
     upper_bound: float = None,
-    fit_type: str = "exp_plus_linear",
 ) -> Tuple[ffuncs.Linear, ISatExtras]:
+    """
+    Determines the ion-saturation current (:math:`I_{sat}`) for a given
+    current-voltage (IV) curve obtained from a swept Langmuir probe.
+    The current collected by a Langmuir probe reaches ion-saturation
+    when the probe is sufficiently biased so the influx of electrons is
+    completely repelled leading to only the collection of ions.  (For
+    additional details see the **Notes** section below.)
+
+    **Aliases:** `find_isat_`
+
+    Parameters
+    ----------
+
+    voltage: `numpy.ndarray`
+        1-D numpy array of monotonically ascending/descending probe
+        biases (should be in volts).
+
+    current: `numpy.ndarray`
+        1-D numpy array of probe current (should be in amperes)
+        corresponding to the ``voltage`` array.
+
+    fit_type: `str`
+        The type of curve (:term:`fit-function`) to be fitted to the
+        Langmuir trace, valid options are listed below.
+        (DEFAULT ``"exp_plus_linear"``)
+
+        +-----------------------+----------------------------------------------------------+
+        | ``"linear"``          | `~plasmapy.analysis.fit_functions.Linear`                |
+        +-----------------------+----------------------------------------------------------+
+        | ``"exponential"``     | `~plasmapy.analysis.fit_functions.ExponentialPlusOffset` |
+        +-----------------------+----------------------------------------------------------+
+        | ``"exp_plus_linear"`` | `~plasmapy.analysis.fit_functions.ExponentialPlusLinear` |
+        +-----------------------+----------------------------------------------------------+
+
+    upper_bound: `float`
+        A bias voltage (in volts) that specifies an upper bound used to
+        collect the points for the curve fit.  That is, points that
+        satisfy ``voltage <= upper_bound`` are used in the fit.
+        (DEFAULT ``None``)
+
+    """
     rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
     _settings = {
