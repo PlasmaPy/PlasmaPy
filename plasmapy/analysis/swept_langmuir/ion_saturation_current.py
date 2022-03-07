@@ -42,6 +42,8 @@ class ISatExtras(NamedTuple):
 def find_ion_saturation_current(
     voltage: np.ndarray,
     current: np.ndarray,
+    *,
+    fit_type: str = "exp_plus_linear",
     upper_bound: float = None,
     fit_type: str = "exp_plus_linear",
 ) -> Tuple[ffuncs.Linear, ISatExtras]:
