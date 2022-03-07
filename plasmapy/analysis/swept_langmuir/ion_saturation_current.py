@@ -7,14 +7,12 @@ import numbers
 import numpy as np
 
 from collections import namedtuple
+from typing import Tuple
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 
-IonSaturationCurrentResults = namedtuple(
-    "FloatingPotentialResults",
-    ("isat_func", "rsq", "func", "indices"),
-)
+ISatExtras = namedtuple("ISatExtras", ("rsq", "fitted_func", "fitted_indices"))
 
 
 def find_ion_saturation_current(
@@ -22,26 +20,27 @@ def find_ion_saturation_current(
     current: np.ndarray,
     upper_bound: float = None,
     fit_type: str = "exp_plus_linear",
-):
-    rtn = IonSaturationCurrentResults(
-        isat_func=None, rsq=None, func=None, indices=None,
-    )._asdict()
+) -> Tuple[ffuncs.Linear, ISatExtras]:
+    rtn_extras = ISatExtras(rsq=None, fitted_func=None, fitted_indices=None)._asdict()
 
     _settings = {
         "linear": {
-            "func": ffuncs.Linear, "default_ubound_frac": 0.4,
+            "func": ffuncs.Linear,
+            "default_ubound_frac": 0.4,
         },
         "exp_plus_linear": {
-            "func": ffuncs.ExponentialPlusLinear, "default_ubound_frac": 1.0,
+            "func": ffuncs.ExponentialPlusLinear,
+            "default_ubound_frac": 1.0,
         },
         "exp_plus_offset": {
-            "func": ffuncs.ExponentialPlusOffset, "default_ubound_frac": 1.0,
+            "func": ffuncs.ExponentialPlusOffset,
+            "default_ubound_frac": 1.0,
         },
     }
     try:
         default_ubound_frac = _settings[fit_type]["default_ubound_frac"]
         fit_func = _settings[fit_type]["func"]()
-        rtn["func"] = fit_func
+        rtn_extras["fitted_func"] = fit_func
     except KeyError:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
@@ -70,22 +69,21 @@ def find_ion_saturation_current(
                 f"identifying a fit window of size 0."
             )
     mask = slice(0, mask[-1] + 1)
-    rtn["indices"] = mask
+    rtn_extras["fitted_indices"] = mask
 
     volt_sub = voltage[mask]
     curr_sub = current[mask]
     fit_func.curve_fit(volt_sub, curr_sub)
 
-    rtn["rsq"] = fit_func.rsq
+    rtn_extras["rsq"] = fit_func.rsq
 
     m = getattr(fit_func.params, "m", 0.0)
     b = getattr(fit_func.params, "b", 0.0)
     m_err = getattr(fit_func.param_errors, "m", 0.0)
     b_err = getattr(fit_func.param_errors, "b", 0.0)
     isat = ffuncs.Linear(params=(m, b), param_errors=(m_err, b_err))
-    rtn["isat_func"] = isat
 
-    return IonSaturationCurrentResults(**rtn)
+    return isat, ISatExtras(**rtn_extras)
 
 
 find_isat_ = find_ion_saturation_current
