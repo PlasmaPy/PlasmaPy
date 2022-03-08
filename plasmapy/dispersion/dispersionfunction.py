@@ -18,6 +18,10 @@ from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 __all__ += __lite_funcs__
 
 
+# TODO: Use cython to speed up the Faddeeva_function execution in
+# plasma_dispersion_func_lite
+
+
 @preserve_signature
 def plasma_dispersion_func_lite(
     zeta: Union[complex, int, float, np.ndarray]
