@@ -89,7 +89,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinx.ext.todo",
-    "nbsphinx",
+    "myst_nb",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "IPython.sphinxext.ipython_console_highlighting",
