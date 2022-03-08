@@ -182,21 +182,20 @@ class AbstractGrid(ABC):
                         f"{rq} is not specified for the provided "
                         "grid but is required."
                     )
-                warnings.warn(
-                    f"{rq} is not specified for the provided grid."
-                    "This quantity will be assumed to be zero.",
-                    RuntimeWarning,
-                )
-
-                if rq in self.recognized_quantities.keys():
-                    unit = self.recognized_quantities[rq].unit
-                else:
+                elif rq not in self.recognized_quantities:
                     raise KeyError(
                         f"{rq} is not a recognized key, and "
                         "so cannot be automatically assumed "
                         "to be zero."
                     )
 
+                warnings.warn(
+                    f"{rq} is not specified for the provided grid."
+                    "This quantity will be assumed to be zero.",
+                    RuntimeWarning,
+                )
+
+                unit = self.recognized_quantities[rq].unit
                 arg = {rq: np.zeros(self.shape) * unit}
                 self.add_quantities(**arg)
 
