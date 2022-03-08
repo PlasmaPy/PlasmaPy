@@ -14,6 +14,7 @@ Langmuir analysis
 .. automodapi:: plasmapy.diagnostics.langmuir
 
 .. toctree::
-    :caption: Examples
+   :caption: Examples
+   :maxdepth: 1
 
-    /notebooks/diagnostics/langmuir_analysis
+   /notebooks/diagnostics/langmuir_analysis

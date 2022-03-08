@@ -9,6 +9,7 @@ Particle drifts (`plasmapy.formulary.drifts`)
 .. automodapi:: plasmapy.formulary.drifts
 
 .. toctree::
-    :caption: Examples
+   :caption: Examples
+   :maxdepth: 1
 
-    /notebooks/ExB_drift
+   /notebooks/ExB_drift

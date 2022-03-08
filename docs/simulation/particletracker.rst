@@ -16,9 +16,10 @@ This module is highly unstable and is expected to change a lot in the
 future.
 
 .. toctree::
-    :caption: Examples
+   :caption: Examples
+   :maxdepth: 1
 
-    /notebooks/simulation/particle_stepper
+   /notebooks/simulation/particle_stepper
 
 API
 ===
