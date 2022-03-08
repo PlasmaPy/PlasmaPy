@@ -18,11 +18,8 @@ from lmfit import Model
 from typing import List, Tuple, Union
 
 from plasmapy.formulary.dielectric import fast_permittivity_1D_Maxwellian
-from plasmapy.formulary.parameters import (
-    plasma_frequency,
-    thermal_speed,
-    thermal_speed_coefficients,
-)
+from plasmapy.formulary.frequencies import plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed, thermal_speed_coefficients
 from plasmapy.particles import Particle, particle_mass
 from plasmapy.utils.decorators import (
     bind_lite_func,
@@ -40,11 +37,6 @@ _m_e = const.m_e.si.value
 # simplified using the plasmapy.classes.plasma_base class if that class
 # included ion and electron drift velocities and information about the ion
 # atomic species.
-
-
-# TODO: If we can make this object pickle-able then we can set
-# workers=-1 as a kw to differential_evolution to parallelize execution for fitting!
-# The probem is a lambda function used in the Particle class...
 
 
 @preserve_signature
