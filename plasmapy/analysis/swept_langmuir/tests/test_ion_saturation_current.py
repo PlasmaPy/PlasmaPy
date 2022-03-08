@@ -52,3 +52,87 @@ class TestFindIonSaturationCurrent:
     def test_alias(self):
         """Test the associated alias(es) is(are) defined correctly."""
         assert find_isat_ is find_ion_saturation_current
+
+    @pytest.mark.parametrize(
+        "kwargs, _error",
+        [
+            # errors on kwarg fit_type
+            (
+                {
+                    "voltage": np.array([1.0, 2, 3, 4]),
+                    "current": np.array([-1.0, 0, 1, 2]),
+                    "fit_type": "wrong",
+                },
+                ValueError,
+            ),
+            # #
+            # # errors on kwarg upper_bound
+            # (
+            #     {
+            #         "voltage": np.array([1.0, 2, 3, 4]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "min_points": "wrong",
+            #     },
+            #     TypeError,
+            # ),
+            # (
+            #     {
+            #         "voltage": np.array([1.0, 2, 3, 4]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "min_points": -1,
+            #     },
+            #     ValueError,
+            # ),
+            # (
+            #     {
+            #         "voltage": np.array([1.0, 2, 3, 4]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "min_points": 0,
+            #     },
+            #     ValueError,
+            # ),
+            # #
+            # # errors on kwarg threshold
+            # (
+            #     {
+            #         "voltage": np.array([1.0, 2, 3, 4]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "threshold": -1,
+            #     },
+            #     ValueError,
+            # ),
+            # (
+            #     {
+            #         "voltage": np.array([1.0, 2, 3, 4]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "threshold": "wrong type",
+            #     },
+            #     TypeError,
+            # ),
+            # #
+            # # TypeError on voltage/current arrays from check_sweep
+            # (
+            #     {
+            #         "voltage": "not an array",
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "fit_type": "linear",
+            #     },
+            #     TypeError,
+            # ),
+            # #
+            # # ValueError on voltage/current arrays from check_sweep
+            # #   (not linearly increasing)
+            # (
+            #     {
+            #         "voltage": np.array([2.0, 1, 0, -1]),
+            #         "current": np.array([-1.0, 0, 1, 2]),
+            #         "fit_type": "linear",
+            #     },
+            #     ValueError,
+            # ),
+        ],
+    )
+    def test_raises(self, kwargs, _error):
+        """Test scenarios that raise `Exception`s."""
+        with pytest.raises(_error):
+            find_ion_saturation_current(**kwargs)
