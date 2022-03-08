@@ -61,8 +61,8 @@ def find_ion_saturation_current(
     ----------
 
     voltage: `numpy.ndarray`
-        1-D numpy array of monotonically ascending/descending probe
-        biases (should be in volts).
+        1-D numpy array of monotonically increasing probe biases
+        (should be in volts).
 
     current: `numpy.ndarray`
         1-D numpy array of probe current (should be in amperes)
