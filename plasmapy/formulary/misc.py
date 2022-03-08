@@ -20,6 +20,8 @@ from plasmapy import particles
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
+__all__ += __aliases__
+
 
 def _grab_charge(ion: Particle, z_mean=None):
     """
