@@ -107,6 +107,6 @@ class TestFindIonSaturationCurrent:
         ],
     )
     def test_raises(self, kwargs, _error):
-        """Test scenarios that raise `Exception`s."""
+        """Test scenarios that raise exceptions."""
         with pytest.raises(_error):
             find_ion_saturation_current(**kwargs)
