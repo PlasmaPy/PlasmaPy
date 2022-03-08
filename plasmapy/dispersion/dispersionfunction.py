@@ -4,6 +4,8 @@ Module containing functionality focused on the plasma dispersion function
 """
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
+__lite_funcs__ = ["plasma_dispersion_func_lite", "plasma_dispersion_func_deriv_lite"]
+
 import astropy.units as u
 import numbers
 import numpy as np
@@ -11,7 +13,41 @@ import numpy as np
 from scipy.special import wofz as Faddeeva_function
 from typing import Union
 
+from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 
+__all__ += __lite_funcs__
+
+
+@preserve_signature
+def plasma_dispersion_func_lite(
+    zeta: Union[complex, int, float, np.ndarray]
+) -> Union[complex, int, float, np.ndarray]:
+
+    r"""
+    The ":term:`lite-function`" version of
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`.
+    Performs the same calculation as
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`, but is intended
+    for computational use and, thus, has all data conditioning
+    safeguards removed.
+
+    Parameters
+    ----------
+    zeta : complex, int, float, ~numpy.ndarray
+        Argument of plasma dispersion function. Zeta is assumed to be
+        dimensionless.
+
+    Returns
+    -------
+    Z : complex, float, or ~numpy.ndarray
+        Value of plasma dispersion function.
+
+    """
+
+    return 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
+
+
+@bind_lite_func(plasma_dispersion_func_lite)
 def plasma_dispersion_func(
     zeta: Union[complex, int, float, np.ndarray, u.Quantity]
 ) -> Union[complex, float, np.ndarray, u.Quantity]:
@@ -90,11 +126,40 @@ def plasma_dispersion_func(
     if not np.all(np.isfinite(zeta)):
         raise ValueError("The argument to plasma_dispersion_function is not finite.")
 
-    Z = 1j * np.sqrt(np.pi) * Faddeeva_function(zeta)
-
-    return Z
+    return plasma_dispersion_func_lite(zeta)
 
 
+@preserve_signature
+def plasma_dispersion_func_deriv_lite(
+    zeta: Union[complex, int, float, np.ndarray]
+) -> Union[complex, int, float, np.ndarray]:
+
+    r"""
+    The ":term:`lite-function`" version of
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`.
+    Performs the same calculation as
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv`,
+    but is intended
+    for computational use and, thus, has all data conditioning
+    safeguards removed.
+
+    Parameters
+    ----------
+    zeta : complex, int, float, ~numpy.ndarray
+        Argument of plasma dispersion function. Zeta is assumed to be
+        dimensionless.
+
+    Returns
+    -------
+    Zprime : complex, float, or ~numpy.ndarray
+        First derivative of plasma dispersion function.
+
+    """
+
+    return -2 * (1 + zeta * plasma_dispersion_func_lite(zeta))
+
+
+@bind_lite_func(plasma_dispersion_func_deriv_lite)
 def plasma_dispersion_func_deriv(
     zeta: Union[complex, int, float, np.ndarray, u.Quantity]
 ) -> Union[complex, float, np.ndarray, u.Quantity]:
@@ -171,6 +236,4 @@ def plasma_dispersion_func_deriv(
             "The argument to plasma_dispersion_function_deriv is not finite."
         )
 
-    Zprime = -2 * (1 + zeta * plasma_dispersion_func(zeta))
-
-    return Zprime
+    return plasma_dispersion_func_deriv_lite(zeta)
