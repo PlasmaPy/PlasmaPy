@@ -15,7 +15,7 @@ stepper implementing the Boris algorithm.
 This module is highly unstable and is expected to change a lot in the
 future.
 
-.. nbgallery::
+.. toctree::
     :caption: Examples
 
     /notebooks/simulation/particle_stepper

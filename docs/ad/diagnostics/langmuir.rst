@@ -13,7 +13,7 @@ Langmuir analysis
 
 .. automodapi:: plasmapy.diagnostics.langmuir
 
-.. nbgallery::
+.. toctree::
     :caption: Examples
 
     /notebooks/diagnostics/langmuir_analysis

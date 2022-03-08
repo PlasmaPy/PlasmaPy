@@ -6,7 +6,7 @@ Plasma parameters (`plasmapy.formulary.parameters`)
 
 .. automodapi:: plasmapy.formulary.parameters
 
-.. nbgallery::
+.. toctree::
     :caption: Examples
 
     /notebooks/distribution

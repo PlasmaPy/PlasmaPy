@@ -10,6 +10,6 @@
 Example Notebook
 ----------------
 
-.. nbgallery::
+.. toctree::
 
    /notebooks/analysis/fit_functions

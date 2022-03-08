@@ -10,6 +10,6 @@
 Example Notebooks
 -----------------
 
-.. nbgallery::
+.. toctree::
 
     /notebooks/dispersion/two_fluid_dispersion

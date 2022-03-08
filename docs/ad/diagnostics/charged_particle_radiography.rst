@@ -8,7 +8,7 @@ Charged particle radiography analysis
 
 .. automodapi:: plasmapy.diagnostics.charged_particle_radiography
 
-.. nbgallery::
+.. toctree::
     :caption: Examples
 
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing
