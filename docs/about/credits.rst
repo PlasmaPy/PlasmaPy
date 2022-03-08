@@ -21,6 +21,7 @@ PlasmaPy Contributors
 The people in the following list have contributed to PlasmaPy.  Included
 in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 
+* `Haman Bagherianlemraski <https://github.com/haman80>`__ (`0000-0001-7381-1996 <https://orcid.org/0000-0001-7381-1996>`__)
 * `Jasper Beckers <https://github.com/jasperbeckers>`__
 * `Manas Bedmutha <https://github.com/manasbedmutha98>`__
 * `Justin Bergeron <https://github.com/Justin-Bergeron>`__
