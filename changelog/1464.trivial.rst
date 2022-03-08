@@ -1,1 +1,2 @@
- Applied automated refactorings from Sourcery to `plasmapy.plasma`.
+ Applied automated refactorings from
+`Sourcery <https://sourcery.ai/>`__ to `plasmapy.plasma`.
