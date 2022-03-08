@@ -1141,7 +1141,9 @@ class CartesianGrid(AbstractGrid):
 
         # Split output array into arrays with units
         # Apply units to output arrays
-        output = [vals[..., index] * self._interp_units[index] for index, _ in enumerate(args))]
+        output = [
+            vals[..., index] * self._interp_units[index] for index, _ in enumerate(args)
+        ]
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
