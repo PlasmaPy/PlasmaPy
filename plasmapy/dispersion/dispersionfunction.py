@@ -23,9 +23,7 @@ __all__ += __lite_funcs__
 
 
 @preserve_signature
-def plasma_dispersion_func_lite(
-    zeta: Union[complex, int, float, np.ndarray]
-) -> Union[complex, int, float, np.ndarray]:
+def plasma_dispersion_func_lite(zeta: numbers.real) -> numbers.real:
 
     r"""
     The ":term:`lite-function`" version of
@@ -134,9 +132,7 @@ def plasma_dispersion_func(
 
 
 @preserve_signature
-def plasma_dispersion_func_deriv_lite(
-    zeta: Union[complex, int, float, np.ndarray]
-) -> Union[complex, int, float, np.ndarray]:
+def plasma_dispersion_func_deriv_lite(zeta: numbers.real) -> numbers.real:
 
     r"""
     The ":term:`lite-function`" version of
