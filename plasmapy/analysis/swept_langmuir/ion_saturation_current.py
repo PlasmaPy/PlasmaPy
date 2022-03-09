@@ -17,7 +17,7 @@ __all__ += __aliases__
 
 class ISatExtras(NamedTuple):
     """
-    Create a tuple containing the extra parameters calculated by
+    Create a `tuple` containing the extra parameters calculated by
     `find_ion_saturation_current`.
     """
     rsq: Union[float, None]
@@ -52,7 +52,7 @@ def find_ion_saturation_current(
     current-voltage (IV) curve obtained from a swept Langmuir probe.
     The current collected by a Langmuir probe reaches ion-saturation
     when the probe is sufficiently biased so the influx of electrons is
-    completely repelled leading to only the collection of ions.  (For
+    completely repelled, which leads to only the collection of ions.  (For
     additional details see the **Notes** section below.)
 
     **Aliases:** `find_isat_`
@@ -176,7 +176,7 @@ def find_ion_saturation_current(
         current_bound = default_current_bound
     elif voltage_bound is not None and current_bound is not None:
         raise ValueError(
-            "Both keywords 'current_bound' and `voltage_bound' are specified, "
+            "Both keywords 'current_bound' and 'voltage_bound' are specified, "
             "use only one."
         )
 
