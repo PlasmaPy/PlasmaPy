@@ -42,7 +42,8 @@ def stix(
     k : single value or 1 D array astropy `~astropy.units.Quantity`
        Value of the wavenumber in units convertible to radians / m.
 
-    ions: single
+    ions: single string value or 1 D array string, ion(s) composing
+        the plasma as expressed by chemical symbols.
 
     omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
        Frequency value for the associated ion in units convertible to
@@ -104,7 +105,7 @@ def stix(
     .. math::
         R = S + D \hspace{1cm} L = S - D
 
-    The equation is valid for all :math:`\omega` and :math:`\k`
+    The equation is valid for all :math:`\omega` and :math:`k`
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
     :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
     :math:`k \to 0` occurs when P, R or L cut off and predicts
