@@ -32,8 +32,8 @@ Example highlights
    :caption: First Steps
    :maxdepth: 1
 
-   Vision Statement <about/vision_statement>
    Installing <install>
+   getting_started
    examples
    COMMUNICATION
    CONTRIBUTING
@@ -71,7 +71,7 @@ Example highlights
    bibliography
    glossary
    whatsnew/index
-   about/stability
+   Vision Statement <about/vision_statement>
    PlasmaPy.org <https://www.plasmapy.org>
 
 .. The about PlasmaPy section has some important information that would
