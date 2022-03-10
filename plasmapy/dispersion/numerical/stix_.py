@@ -72,8 +72,8 @@ def stix(
 
     Notes
     -----
-    The cold plasma function is defined by Strix 1992 [2], this is equation  8
-    of Bellan 2012 [1] presented here:
+    The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
+    of :cite:t:`bellan:2012` presented here:
 
     ..math::
        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
@@ -93,7 +93,7 @@ def stix(
     ..math::
        `D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
 
-    Following on section 1.6 of Bellan 2012 [1] expresses following derived quantities
+    Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
     as follows.
 
     ..math::
