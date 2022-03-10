@@ -17,7 +17,7 @@ import re
 from lmfit import Model
 from typing import List, Tuple, Union
 
-from plasmapy.formulary.dielectric import fast_permittivity_1D_Maxwellian
+from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.formulary.frequencies import plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed, thermal_speed_coefficients
 from plasmapy.particles import Particle, particle_mass
@@ -210,14 +210,14 @@ def spectral_density_lite(
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
         wpe = plasma_frequency.lite(ne[i], _m_e, 1)
-        chiE[i, :] = fast_permittivity_1D_Maxwellian(w_e[i, :], k, vTe[i], wpe)
+        chiE[i, :] = permittivity_1D_Maxwellian.lite(w_e[i, :], k, vTe[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(ifract):
         wpi = plasma_frequency.lite(ni[i], ion_mass[i], ion_z[i])
-        chiI[i, :] = fast_permittivity_1D_Maxwellian(w_i[i, :], k, vTi[i], wpi)
+        chiI[i, :] = permittivity_1D_Maxwellian.lite(w_i[i, :], k, vTi[i], wpi)
 
     # Calculate the longitudinal dielectric function
     epsilon = 1 + np.sum(chiE, axis=0) + np.sum(chiI, axis=0)
