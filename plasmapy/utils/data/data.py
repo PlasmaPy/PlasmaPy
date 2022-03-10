@@ -43,7 +43,7 @@ def get_file(basename, base_url=_BASE_URL):
 
     """
     if not "." in str(basename):
-        raise ValueError("'filename' must include an extension.")
+        raise ValueError(f"'filename' ({basename}) must include an extension.")
 
     path = os.path.join(_DOWNLOADS_PATH, basename)
 
@@ -64,7 +64,3 @@ def get_file(basename, base_url=_BASE_URL):
             path = results[0]
 
     return path
-
-
-if __name__ == "__main__":
-    get_file("ex")
