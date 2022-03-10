@@ -1,5 +1,5 @@
 Created lite functions for `plasmapy.dispersion.dispersionfunction.plasma_dispersion_func`
 and `plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv` called
-`plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite` and 
+`plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite` and
 `plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
-respectively. 
+respectively.
