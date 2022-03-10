@@ -5,6 +5,9 @@ import numpy as np
 
 from astropy import units as u
 
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
+
 from ..dielectric import (
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
@@ -12,7 +15,6 @@ from ..dielectric import (
     RotatingTensorElements,
     StixTensorElements,
 )
-from ..parameters import gyrofrequency, plasma_frequency, thermal_speed
 
 B = 1.0 * u.T
 n = [1e18 / u.m ** 3]

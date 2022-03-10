@@ -29,13 +29,22 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Drifts <drifts>                           | `plasmapy.formulary.drifts`             |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Frequencies <frequencies>                 | `plasmapy.formulary.frequencies`        |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Lengths <lengths>                         | `plasmapy.formulary.lengths`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Magnetostatics <magnetostatics>           | `plasmapy.formulary.magnetostatics`     |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Mathematics <mathematics>                 | `plasmapy.formulary.mathematics`        |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Miscellaneous Parameters <misc>           | `plasmapy.formulary.misc`               |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Plasma Parameters <parameters>            | `plasmapy.formulary.parameters`         |
@@ -50,6 +59,9 @@ physical quantities helpful for plasma physics.
    | .. toctree:: Relativistic Relations <relativity>       | `plasmapy.formulary.relativity`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Speeds <speeds>                           | `plasmapy.formulary.speeds`             |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
 
 The subpackage makes heavy use of `astropy.units.Quantity` for handling
 conversions between different unit systems. This is especially important
@@ -57,9 +69,10 @@ for electron-volts, commonly used in plasma physics to denote
 temperature, although it is technically a unit of energy.
 
 Most functions expect `astropy.units.Quantity` as input, however some
-will use the `~plasmapy.utils.decorators.validate_quantities` decorator
-to automatically cast arguments to Quantities with appropriate units. If
-that happens, you will be notified via an `astropy.units.UnitsWarning`.
+will use the `~plasmapy.utils.decorators.validators.validate_quantities`
+decorator to automatically cast arguments to Quantities with appropriate
+units. If that happens, you will be notified via an
+`astropy.units.UnitsWarning`.
 
 Please note that well maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
