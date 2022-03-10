@@ -1,0 +1,2 @@
+Created lite functions for `plasmapy.formularly.dielectric.permittivity_1D_Maxwellian`
+called `plasmapy.formularly.dielectric.permittivity_1D_Maxwellian_lite`.
