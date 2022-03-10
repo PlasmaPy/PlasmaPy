@@ -111,17 +111,6 @@ def stix(
     :math:`k \to \inf` for perpendicular propagation during wave
     resonance :math:`S \to 0`.
 
-    References
-    ----------
-    .. [1] PM Bellan, Improved basis set for low frequency plasma waves,
-           2012, JGR, 117, A12219, doi: `10.1029/2012JA017856
-           <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012JA017856>`_.
-
-    .. [2] TH Strix, 1992, Waves in Plasmas, Illustrated, Springer
-           Science & Business Media, 1992, New York Part C,
-           doi: `10.1088/0368-3281/5/2/304
-           <https://doi.org/10.1088/0368-3281/5/2/304>`_
-
     Example
     -------
     >>>    from astropy import units as u
