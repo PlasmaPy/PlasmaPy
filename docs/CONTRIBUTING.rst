@@ -68,13 +68,13 @@ code contributions. Do note that you can usually find help in the
 chatroom <https://app.element.io/#/room/#plasmapy:openastronomy.org>`_.
 
 For actual guidelines for working on PlasmaPy, please see our
-:ref:`plasmapy-contributor-guide`.
+|contributor guide|.
 
 Towncrier changelog entries
 ---------------------------
 
 Every pull request should include a changelog entry. Please see
-`changelog/README.rst` for instructions.
+:file:`changelog/README.rst` for instructions.
 
 To summarize, put a file like ``<PULL REQUEST>.<TYPE>.rst``, where ``<PULL
 REQUEST>`` is a pull request number, and ``<TYPE>`` is one of ``breaking``,

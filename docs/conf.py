@@ -26,7 +26,7 @@ from sphinx.application import Sphinx
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("."))
 
-from plasmapy import __version__ as release
+from plasmapy import __version__ as release  # noqa
 
 # -- General configuration ------------------------------------------------
 
@@ -38,13 +38,41 @@ automodapi_custom_groups = {
             "PlasmaPy provides short-named (alias) versions of the most "
             "common plasma functionality.  These aliases are only given to "
             "functionality where there is a common lexicon in the community, "
-            "for example `~plasmapy.formulary.parameters.plasma_frequency` "
-            " has the alias `~plasmapy.formulary.parameters.wp_`.  All aliases "
+            "for example `~plasmapy.formulary.frequencies.plasma_frequency` "
+            " has the alias `~plasmapy.formulary.frequencies.wp_`.  All aliases "
             "in PlasmaPy are denoted with a trailing underscore ``_``."
         ),
         "dunder": "__aliases__",
     },
+    "lite-functions": {
+        "title": "Lite-Functions",
+        "description": (
+            """
+            Much of PlasmaPy's functionality incorporates `Astropy units
+            <https://docs.astropy.org/en/stable/units/>`_ for user convenience and
+            to mitigate calculation errors from inappropriate units, but this
+            comes at the sacrifice of speed.  While this penalty is not significant
+            for typical use, it can become substantial during intensive numerical
+            calculations. **Lite-functions** are introduced for the specific case
+            where speed matters, but **[USER NOTICE]** this comes with the
+            reduction of safeguards so a user needs to know what they are doing!
+            For additional details look to the glossary entry for
+            :term:`lite-function`.
+            """
+        ),
+        "dunder": "__lite_funcs__",
+    },
 }
+automodapi_group_order = (
+    "modules",
+    "classes",
+    "exceptions",
+    "warnings",
+    "functions",
+    "aliases",
+    "lite-functions",
+    "variables",
+)
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -68,6 +96,7 @@ extensions = [
     "sphinx_changelog",
     "plasmapy_sphinx",
     "sphinxcontrib.bibtex",
+    "hoverxref.extension",
 ]
 
 bibtex_bibfiles = ["bibliography.bib"]
@@ -78,18 +107,32 @@ bibtex_reference_style = "author_year"
 # in other packages. When mappings are removed or added, please update
 # the section in docs/doc_guide.rst on references to other packages.
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
+    "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
-    "pytest": ("https://docs.pytest.org/en/stable", None),
+    "pytest": ("https://docs.pytest.org/en/stable/", None),
     "sphinx_automodapi": (
         "https://sphinx-automodapi.readthedocs.io/en/latest/",
         None,
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+    "numba": ("https://numba.readthedocs.io/en/stable/", None),
 }
+hoverxref_intersphinx = [
+    "readthedocs",
+    "python",
+    "numpy",
+    "scipy",
+    "pandas",
+    "astropy",
+    "pytest",
+    "sphinx_automodapi",
+    "sphinx",
+    "numba",
+]
 
 autoclass_content = "both"
 
@@ -119,16 +162,13 @@ copyright = f"2015–{datetime.utcnow().year}, {author}"
 #        However, release needs to be a semantic style version number, so set
 #        the 'unknown' case to ''.
 release = "" if release == "unknown" else release
-if release == "unknown":
-    release = version = revision = ""
+pv = parse_version(release)
+release = pv.public
+version = ".".join(release.split(".")[:2])  # short X.Y version
+if pv.local is not None:
+    revision = pv.local[1:]  # revision number w/o the leading g
 else:
-    pv = parse_version(release)
-    release = pv.public
-    version = ".".join(release.split(".")[:2])  # short X.Y version
-    if pv.local is not None:
-        revision = pv.local[1:]  # revision number w/o the leading g
-    else:
-        revision = ""
+    revision = ""
 
 # This is added to the end of RST files — a good place to put substitutions to
 # be used globally.
@@ -184,7 +224,50 @@ linkcheck_anchors_ignore = [
 ]
 
 # Use a code highlighting style that meets the WCAG AA contrast standard
-pygments_style = "xcode"
+pygments_style = "default"
+
+# adapted from sphinx-hoverxref conf.py
+if os.environ.get("READTHEDOCS"):
+    # Building on Read the Docs
+    hoverxref_api_host = "https://readthedocs.org"
+
+    if os.environ.get("PROXIED_API_ENDPOINT"):
+        # Use the proxied API endpoint
+        # - A RTD thing to avoid a CSRF block when docs are using a
+        #   custom domain
+        hoverxref_api_host = "/_"
+
+hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
+hoverxref_auto_ref = True
+hoverxref_mathjax = True
+hoverxref_sphinxtabs = True
+
+# hoverxref has to be applied to these
+hoverxref_domains = ["py", "cite"]
+hoverxref_roles = ["confval", "term"]
+
+hoverxref_role_types = {
+    # roles with cite domain
+    "p": "tooltip",
+    "t": "tooltip",
+    #
+    # roles with py domain
+    "attr": "tooltip",
+    "class": "tooltip",
+    "const": "tooltip",
+    "data": "tooltip",
+    "exc": "tooltip",
+    "func": "tooltip",
+    "meth": "tooltip",
+    "mod": "tooltip",
+    "obj": "tooltip",
+    #
+    # roles with std domain
+    "confval": "tooltip",
+    "hoverxref": "tooltip",
+    "ref": "tooltip",
+    "term": "tooltip",
+}
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -292,6 +375,7 @@ nbsphinx_thumbnails = {
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
+    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from
@@ -326,4 +410,5 @@ nbsphinx_prolog = r"""
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", True)
-    app.add_css_file("rtd_theme_overrides.css")
+    app.add_css_file("css/admonition_color_contrast.css")
+    app.add_css_file("css/plasmapy.css", priority=600)

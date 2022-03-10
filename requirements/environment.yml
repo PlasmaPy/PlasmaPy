@@ -5,12 +5,12 @@ channels:
 - conda-forge
 
 dependencies:
-- python=3.7
+- python=3.9
 - numpy
 - scipy
-- astropy
+- astropy >= 4.3.1
 - h5py
-- matplotlib
+- matplotlib >= 3.3.0
 - mpmath
 - pandas
 - pillow
@@ -23,9 +23,10 @@ dependencies:
   - numpydoc
   - pytest
   - lmfit
-  - pygments >= 2.4.1
+  - pygments >= 2.11.0
   - sphinx >= 3.2.0
   - sphinx-gallery
+  - sphinx-hoverxref >= 1.0.0
   - sphinx_rtd_theme >= 1.0.0
   - towncrier >= 19.2.0
   - pytest-regressions
