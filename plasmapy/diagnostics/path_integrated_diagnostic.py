@@ -453,8 +453,8 @@ class LineIntegrateScalarQuantities(LineIntegratedDiagnostic):
         interpolator: str, optional
             Determines which interpolator will be used. Must correspond to
             one of the interpolators defined on the given grid, eg.
-                - nearest_neighbor
-                - volume_averaged
+            * ``nearest_neighbor``
+            * ``volume_averaged``
 
         Returns
         -------
