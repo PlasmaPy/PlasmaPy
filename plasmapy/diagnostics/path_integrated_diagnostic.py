@@ -577,7 +577,7 @@ class Interferometer(LineIntegrateScalarQuantities):
         Parameters
         ----------
         probe_freq : `~astropy.units.Quantity`
-            Angular frequency of the probe beam, in units convertable to Hz.
+            Frequency of the probe beam, in units convertable to Hz.
 
         num : int
             Number of integration points along the line (within the grid region).
@@ -617,10 +617,8 @@ class Interferometer(LineIntegrateScalarQuantities):
 
         # TODO: implement an actual critical density function for PlasmaPy
         # Critical density in cm^-3
-        n_c = (
-            (const.eps0.si * const.m_e / const.e.si ** 2)
-            * (2 * np.pi) ** 2
-            * probe_freq ** 2
+        n_c = (const.eps0.si * const.m_e / const.e.si ** 2) * (
+            2 * np.pi * probe_freq ** 2
         )
         n_c = n_c.to(u.cm ** -3)
 

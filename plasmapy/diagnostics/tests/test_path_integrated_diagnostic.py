@@ -40,7 +40,7 @@ def cartesian_ne_cylinder_grid():
     ax = np.linspace(-2, 2, num=50) * u.mm
     xarr, yarr, zarr = np.meshgrid(ax, ax, ax, indexing="ij")
     radius = np.sqrt(xarr ** 2 + yarr ** 2)
-    n_e = np.where(radius < 1 * u.mm, 1, 0) * 3e19 / u.cm ** 3
+    n_e = np.where(radius < 1 * u.mm, 1, 0) * 3e18 / u.cm ** 3
     grid = CartesianGrid(xarr, yarr, zarr)
 
     grid.add_quantities(n_e=n_e)
@@ -126,44 +126,54 @@ def test_non_collimated(cartesian_density_cylinder_grid):
 
     assert np.allclose(line, theory, atol=5e-4)
 
-@pytest.mark.parametrize('unwrapped', [(True), (False)])
+
+@pytest.mark.parametrize("unwrapped", [(True), (False)])
 def test_interferogram_density_cylinder(unwrapped, cartesian_ne_cylinder_grid):
 
     grid = cartesian_ne_cylinder_grid
 
-    source = ( -5 * u.mm, 0 * u.mm, 0 * u.mm)
-    detector = ( 5 * u.mm, 0 * u.mm, 0 * u.mm)
+    source = (-5 * u.mm, 0 * u.mm, 0 * u.mm)
+    detector = (5 * u.mm, 0 * u.mm, 0 * u.mm)
     obj = Interferometer(grid, source, detector, verbose=False)
 
     size = np.array([[-2, 2], [-2, 2]]) * u.mm
-    bins = [50,5]
+    bins = [50, 5]
 
-    wprobe = 1.14e15 * u.Hz
+    fprobe = 1.14e15 * u.Hz
     hax, vax, phase = obj.evaluate(
-        wprobe,
+        fprobe,
         100,
         size=size,
         bins=bins,
         unwrapped=unwrapped,
         collimated=True,
     )
-    
+
     if unwrapped:
         # Assert the known value of the max
         int_ne = (
-        -2 * const.c * const.eps0.si * const.m_e / const.e.si ** 2 * wprobe * phase
-        ).to(u.cm ** -2).value
-        
+            (
+                -2
+                * const.c
+                * const.eps0.si
+                * const.m_e
+                / const.e.si ** 2
+                * fprobe
+                * phase
+            )
+            .to(u.cm ** -2)
+            .value
+        )
+
         # Average along one axis
         int_ne = np.mean(int_ne, axis=-1)
-        
+
         max_ne = np.max(np.abs(int_ne))
-        
+
         # Assert density is close to the known theoretical value
-        assert np.isclose(max_ne, 6e18, atol=1e18)
-            
+        assert np.isclose(max_ne, 6e17, atol=1e17)
+
     else:
         # Assert that the phase is less than pi
 
-        assert np.max(np.abs(phase)) < 1.1*np.pi
-        
+        assert np.max(np.abs(phase)) < 1.1 * np.pi
