@@ -17,6 +17,7 @@ from plasmapy.formulary.ionization import *
 from plasmapy.formulary.lengths import *
 from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
+from plasmapy.formulary.misc import *
 from plasmapy.formulary.quantum import *
 from plasmapy.formulary.relativity import *
 from plasmapy.formulary.speeds import *
@@ -40,6 +41,7 @@ for modname in (
     "lengths",
     "magnetostatics",
     "mathematics",
+    "misc",
     "parameters",
     "quantum",
     "relativity",
