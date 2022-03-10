@@ -23,7 +23,7 @@ __all__ += __lite_funcs__
 
 
 @preserve_signature
-def plasma_dispersion_func_lite(zeta: numbers.real) -> numbers.real:
+def plasma_dispersion_func_lite(zeta: numbers.Real) -> numbers.Real:
 
     r"""
     The ":term:`lite-function`" version of
@@ -35,13 +35,13 @@ def plasma_dispersion_func_lite(zeta: numbers.real) -> numbers.real:
 
     Parameters
     ----------
-    zeta : complex, int, float, ~numpy.ndarray
+    zeta : `~numbers.Real`
         Argument of plasma dispersion function. Zeta is assumed to be
         dimensionless.
 
     Returns
     -------
-    Z : complex, float, or ~numpy.ndarray
+    Z : `~numbers.Real`
         Value of plasma dispersion function.
 
     """
@@ -132,7 +132,7 @@ def plasma_dispersion_func(
 
 
 @preserve_signature
-def plasma_dispersion_func_deriv_lite(zeta: numbers.real) -> numbers.real:
+def plasma_dispersion_func_deriv_lite(zeta: numbers.Real) -> numbers.Real:
 
     r"""
     The ":term:`lite-function`" version of
@@ -145,13 +145,13 @@ def plasma_dispersion_func_deriv_lite(zeta: numbers.real) -> numbers.real:
 
     Parameters
     ----------
-    zeta : complex, int, float, ~numpy.ndarray
+    zeta : `~numbers.Real`
         Argument of plasma dispersion function. Zeta is assumed to be
         dimensionless.
 
     Returns
     -------
-    Zprime : complex, float, or ~numpy.ndarray
+    Zprime : `~numbers.Real`
         First derivative of plasma dispersion function.
 
     """
