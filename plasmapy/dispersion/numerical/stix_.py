@@ -48,7 +48,7 @@ def stix(
        Frequency value for the associated ion in units convertible to
        radians / s.
 
-    theta: single value or 1 D array astropy ~astropy.units.Quantity
+    theta: single value or 1 D array astropy `~astropy.units.Quantity`
        Value of theta with respect to the magnetic field,
        :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
        radians.
