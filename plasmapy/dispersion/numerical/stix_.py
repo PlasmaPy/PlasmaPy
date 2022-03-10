@@ -115,10 +115,10 @@ def stix(
     Example
     -------
     >>>    from astropy import units as u
-    >>>    from plasmapy.dispersion.numerical import stix
+    >>>    from plasmapy.dispersion.numerical.stix_ import stix
     >>>    inputs = {
     ...           "B": 8.3e-9 * u.T,
-    ...           "k": 0.001* u.rad / u.m,
+    ...           "k": 0.001 * u.rad / u.m,
     ...           "ions": ['e-','H+'],
     ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
     ...           "theta": 30 * u.deg,
@@ -234,8 +234,6 @@ def stix(
     A = S * (np.sin(theta.value) ** 2) + P * (np.cos(theta.value) ** 2)
     B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
     C = P * R * L
-
-    return
 
     for i in range(len(ck)):
         eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
