@@ -1,5 +1,6 @@
 """
-Defines the LineIntegratedDiagnostic base class and subclasses
+Defines the PathIntegratedDiagnostic base class and subclasses, including
+LineIntegratedDiagnostic.
 """
 
 __all__ = [
