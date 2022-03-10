@@ -9,7 +9,7 @@ dependencies:
 - numpy
 - scipy
 - astropy >= 4.3.1
-- h5py
+- h5py >= 3.0.0
 - matplotlib >= 3.3.0
 - mpmath
 - pandas
