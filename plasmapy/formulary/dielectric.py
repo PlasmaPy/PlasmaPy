@@ -17,10 +17,11 @@ from collections import namedtuple
 from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
-
-from plasmapy.utils.decorators import (validate_quantities,
-                                       bind_lite_func, 
-                                       preserve_signature)
+from plasmapy.utils.decorators import (
+    bind_lite_func,
+    preserve_signature,
+    validate_quantities,
+)
 
 __all__ += __lite_funcs__
 
@@ -217,17 +218,17 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
 @preserve_signature
 def permittivity_1D_Maxwellian_lite(
-        omega: numbers.Real,
-        kWave: numbers.Real,
-        vTh: numbers.Real,
-        wp: numbers.Real,
-    ) -> numbers.Real:
+    omega: numbers.Real,
+    kWave: numbers.Real,
+    vTh: numbers.Real,
+    wp: numbers.Real,
+) -> numbers.Real:
     r"""
-    
+
     The ":term:`lite-function`" version of
     `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`.  Performs the
     same calculations as
-    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`, but is 
+    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`, but is
     intended for computational use and, thus, has data conditioning safeguards
     removed.
 
@@ -242,10 +243,10 @@ def permittivity_1D_Maxwellian_lite(
         propagating through the plasma. This is often modulated by the
         dispersion of the plasma or by relativistic effects. See em_wave.py
         for ways to calculate this.
-        
+
     vTh : `~numbers.Real`
         The thermal speed, in m/s.
-        
+
     wp : `~numbers.Real`
         The plasma frequency, in rad/s.
 
@@ -256,7 +257,7 @@ def permittivity_1D_Maxwellian_lite(
         This is a dimensionless quantity.
 
     """
-    
+
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * wp / (kWave * vTh)
@@ -357,9 +358,11 @@ def permittivity_1D_Maxwellian(
     vTh = thermal_speed(T=T, particle=particle, method="most_probable")
     # plasma frequency
     wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean)
-    
-    chi = permittivity_1D_Maxwellian(omega.to(u.rad/u.s),
-                                     kWave.to(u.rad/u.m),
-                                     vTh.to(u.m/u.s),
-                                     wp.to(u.rad/u.s))
+
+    chi = permittivity_1D_Maxwellian_lite(
+        omega.to(u.rad / u.s),
+        kWave.to(u.rad / u.m),
+        vTh.to(u.m / u.s),
+        wp.to(u.rad / u.s),
+    )
     return chi
