@@ -498,7 +498,7 @@ def parse_and_check_molecule_input(argument: str, Z: Integral = None):
     Raises
     ------
     `InvalidParticleError`
-        If the symbol couldn't be parsed.
+        If ``argument`` could not be parsed as a molecule.
 
     Warns
     -----
