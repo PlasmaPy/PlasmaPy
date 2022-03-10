@@ -5,14 +5,25 @@ __all__ = [
     "permittivity_1D_Maxwellian",
 ]
 
+__lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
+
+
+import numbers
 import numpy as np
 
 from astropy import units as u
 from collections import namedtuple
 
 from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
-from plasmapy.formulary import parameters
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import thermal_speed
+from plasmapy.utils.decorators import (
+    bind_lite_func,
+    preserve_signature,
+    validate_quantities,
+)
+
+__all__ += __lite_funcs__
 
 r"""
 Values should be returned as a `~astropy.units.Quantity` in SI units.
@@ -108,8 +119,8 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     S, D, P = 1, 0, 1
 
     for s, n_s in zip(species, n):
-        omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
-        omega_p = parameters.plasma_frequency(n=n_s, particle=s)
+        omega_c = gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = plasma_frequency(n=n_s, particle=s)
 
         S += -(omega_p ** 2) / (omega ** 2 - omega_c ** 2)
         D += omega_c / omega * omega_p ** 2 / (omega ** 2 - omega_c ** 2)
@@ -196,8 +207,8 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     L, R, P = 1, 1, 1
 
     for s, n_s in zip(species, n):
-        omega_c = parameters.gyrofrequency(B=B, particle=s, signed=True)
-        omega_p = parameters.plasma_frequency(n=n_s, particle=s)
+        omega_c = gyrofrequency(B=B, particle=s, signed=True)
+        omega_p = plasma_frequency(n=n_s, particle=s)
 
         L += -(omega_p ** 2) / (omega * (omega - omega_c))
         R += -(omega_p ** 2) / (omega * (omega + omega_c))
@@ -205,16 +216,57 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     return RotatingTensorElements(L, R, P)
 
 
-def fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp):
+@preserve_signature
+def permittivity_1D_Maxwellian_lite(
+    omega: numbers.Real,
+    kWave: numbers.Real,
+    vTh: numbers.Real,
+    wp: numbers.Real,
+) -> numbers.Real:
+    r"""
+
+    The ":term:`lite-function`" version of
+    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`.  Performs the
+    same calculations as
+    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`, but is
+    intended for computational use and, thus, has data conditioning safeguards
+    removed.
+
+    Parameters
+    ----------
+    omega : `~numbers.Real`
+        The frequency in rad/s of the electromagnetic wave propagating
+        through the plasma.
+
+    kWave : `~numbers.Real`
+        The corresponding wavenumber, in rad/m, of the electromagnetic wave
+        propagating through the plasma. This is often modulated by the
+        dispersion of the plasma or by relativistic effects. See em_wave.py
+        for ways to calculate this.
+
+    vTh : `~numbers.Real`
+        The thermal speed, in m/s.
+
+    wp : `~numbers.Real`
+        The plasma frequency, in rad/s.
+
+    Returns
+    -------
+    chi : `~numbers.Real`
+        The ion or the electron dielectric permittivity of the plasma.
+        This is a dimensionless quantity.
+
+    """
+
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * wp / (kWave * vTh)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = omega / (kWave * vTh)
-    chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta)
-    return chi
+    return alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv.lite(zeta)
 
 
+@bind_lite_func(permittivity_1D_Maxwellian_lite)
 @validate_quantities(
     kWave={"none_shall_pass": True}, validations_on_return={"can_be_complex": True}
 )
@@ -290,21 +342,27 @@ def permittivity_1D_Maxwellian(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from numpy import pi
     >>> from astropy.constants import c
+    >>> from numpy import pi
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'
     >>> z_mean = 8 * u.dimensionless_unscaled
-    >>> vTh = parameters.thermal_speed(T, particle, method="most_probable")
+    >>> vTh = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> kWave = omega / vTh
     >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
     """
     # thermal velocity
-    vTh = parameters.thermal_speed(T=T, particle=particle, method="most_probable")
+    vTh = thermal_speed(T=T, particle=particle, method="most_probable")
     # plasma frequency
-    wp = parameters.plasma_frequency(n=n, particle=particle, z_mean=z_mean)
+    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean)
 
-    return fast_permittivity_1D_Maxwellian(omega, kWave, vTh, wp)
+    chi = permittivity_1D_Maxwellian_lite(
+        omega.to(u.rad / u.s),
+        kWave.to(u.rad / u.m),
+        vTh.to(u.m / u.s),
+        wp.to(u.rad / u.s),
+    )
+    return chi
