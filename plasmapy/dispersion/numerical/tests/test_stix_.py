@@ -76,7 +76,7 @@ class TestStix:
 
         assert isinstance(w, dict)
 
-        for val in w.items():
+        for val in w.values():
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]

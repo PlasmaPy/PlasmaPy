@@ -235,6 +235,8 @@ def stix(
     B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
     C = P * R * L
 
+    return
+
     for i in range(len(ck)):
         eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
 
