@@ -3,7 +3,7 @@ This module contains functionality for calculating the numerical
 solutions to the Stix cold plasma function.
 """
 
-__all__ = ["nstix"]
+__all__ = ["stix"]
 
 import astropy.constants as const
 import astropy.units as u
