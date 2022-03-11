@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
 #
 # PlasmaPy documentation build configuration file, created by
 # sphinx-quickstart on Wed May 31 18:16:46 2017.
