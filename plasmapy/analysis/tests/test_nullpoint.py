@@ -257,12 +257,6 @@ def test_null_point_find1():
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
-    # nullpoint2_args = {
-    #     "x_arr": np.linspace(5,6, num=45),
-    #     "y_arr": np.logspace(np.log10(5),np.log10(6), num=45),
-    #     "z_arr": np.geomspace(5,6, num=40),
-    #     "func": vspace_func_1,
-    # }
     nullpoint2_args = {
         "x_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "y_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
