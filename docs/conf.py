@@ -407,6 +407,24 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
+myst_enable_extensions = [
+    "amsmath",
+    #    "colon_fence",
+    #    "deflist",
+    "dollarmath",
+    #    "fieldlist",
+    #    "html_admonition",
+    #    "html_image",
+    #    "linkify",
+    "replacements",
+    #    "smartquotes",
+    #    "strikethrough",
+    "substitution",
+    #    "tasklist",
+]
+
+jupyter_execute_notebooks = "cache"
+
 
 def hack_nbsphinx(app: Sphinx) -> None:
     from nbsphinx import (
