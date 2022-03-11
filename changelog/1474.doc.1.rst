@@ -1,0 +1,2 @@
+Example notebooks are now incorporated into the online documentation via
+MyST-NB. nbsphinx_ is now used only to create the thumbnail galleries.

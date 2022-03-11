@@ -1,0 +1,2 @@
+The source for the example notebook on `astropy.units` was
+converted from a Jupyter notebook to a MyST Markdown file.
