@@ -10,14 +10,15 @@ the various functionality contained in `plasmapy`.
 Getting started
 ---------------
 
-.. toctree::
+.. nbgallery::
+  :glob:
 
-  notebooks/getting_started/units
+  notebooks/getting_started/*
 
 General
 -------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/*
@@ -25,7 +26,7 @@ General
 Analyses & Diagnostics
 ----------------------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/analysis/*
@@ -35,7 +36,7 @@ Analyses & Diagnostics
 Dispersion
 ----------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/dispersion/*
@@ -43,7 +44,7 @@ Dispersion
 Formulary
 ---------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/formulary/*
@@ -54,7 +55,7 @@ Formulary
 Simulation
 ----------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/simulation/*
@@ -62,7 +63,7 @@ Simulation
 Plasma Objects
 --------------
 
-.. toctree::
+.. nbgallery::
    :glob:
 
    notebooks/plasma/*

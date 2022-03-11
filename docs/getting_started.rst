@@ -3,6 +3,6 @@ Getting Started
 
 This page includes example notebooks intended for new users of PlasmaPy.
 
-.. toctree::
+.. nbgallery::
 
   notebooks/getting_started/units
