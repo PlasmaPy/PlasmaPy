@@ -13,8 +13,10 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_coeff_cal,
     _trilinear_jacobian,
     _vector_space,
+    _vspace_iterator,
     null_point_find,
     trilinear_approx,
+    uniform_nullpoint_find,
 )
 
 # Defining tolerance level for tests where the accuracy
@@ -248,7 +250,7 @@ def test_null_point_find1():
         "precision": [0.1, 0.1, 0.1],
         "func": vspace_func_1,
     }
-    npoints = null_point_find(**nullpoint_args)
+    npoints = uniform_nullpoint_find(**nullpoint_args)
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -257,19 +259,14 @@ def test_null_point_find1():
 def test_null_point_find2():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
-    # nullpoint2_args = {
-    #     "x_arr": np.linspace(5,6, num=45),
-    #     "y_arr": np.logspace(np.log10(5),np.log10(6), num=45),
-    #     "z_arr": np.geomspace(5,6, num=40),
-    #     "func": vspace_func_1,
-    # }
-    nullpoint2_args = {
+    vspace_args = {
         "x_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "y_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "z_arr": np.logspace(np.log10(5.48), np.log10(5.52), num=30),
         "func": vspace_func_1,
     }
-    npoints2 = null_point_find(**nullpoint2_args)
+    vspace = _vector_space(**vspace_args)
+    npoints2 = _vspace_iterator(vspace)
     loc2 = npoints2[0].loc.reshape(1, 3)
     assert len(npoints2) == 1
     assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -279,10 +276,9 @@ def test_null_point_find3():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Vector values passed by hand
     nullpoint3_args = {
-        "x_range": [5, 6],
-        "y_range": [5, 6],
-        "z_range": [5, 6],
-        "precision": [1, 1, 1],
+        "x_arr": [5, 6],
+        "y_arr": [5, 6],
+        "z_arr": [5, 6],
         "u_arr": np.array([[[-0.5, -0.5], [0.5, 0.5]], [[-0.5, -0.5], [0.5, 0.5]]]),
         "v_arr": np.array([[[-0.5, 0.5], [-0.5, 0.5]], [[-0.5, 0.5], [-0.5, 0.5]]]),
         "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
@@ -304,7 +300,7 @@ def test_null_point_find4():
         "precision": [0.07, 0.003, 0.07],
         "func": vspace_func_3,
     }
-    npoints4 = null_point_find(**nullpoint4_args)
+    npoints4 = uniform_nullpoint_find(**nullpoint4_args)
     first_loc4 = npoints4[0].loc.reshape(1, 3)
     second_loc4 = npoints4[1].loc.reshape(1, 3)
     assert len(npoints4) == 2
@@ -322,7 +318,7 @@ def test_null_point_find5():
         "precision": [0.01, 0.01, 0.01],
         "func": vspace_func_4,
     }
-    npoints5 = null_point_find(**nullpoint5_args)
+    npoints5 = uniform_nullpoint_find(**nullpoint5_args)
     assert len(npoints5) == 0
 
 
@@ -336,7 +332,7 @@ def test_null_point_find6():
         "precision": [0.08, 0.08, 0.08],
         "func": vspace_func_5,
     }
-    npoints6 = null_point_find(**nullpoint6_args)
+    npoints6 = uniform_nullpoint_find(**nullpoint6_args)
     assert len(npoints6) == 0
 
 
@@ -350,7 +346,7 @@ def test_null_point_find7():
         "precision": [1, 1, 1],
         "func": vspace_func_6,
     }
-    npoints7 = null_point_find(**nullpoint7_args)
+    npoints7 = uniform_nullpoint_find(**nullpoint7_args)
     assert len(npoints7) == 0
 
 
@@ -364,7 +360,7 @@ def test_null_point_find8():
         "precision": [0.3, 0.3, 0.3],
         "func": vspace_func_7,
     }
-    npoints8 = null_point_find(**nullpoint8_args)
+    npoints8 = uniform_nullpoint_find(**nullpoint8_args)
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
