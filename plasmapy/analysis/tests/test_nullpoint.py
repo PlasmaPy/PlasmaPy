@@ -21,7 +21,7 @@ from plasmapy.analysis.nullpoint import (
 
 # Defining tolerance level for tests where the accuracy
 # level can not rise too high due to run time issues.
-_TESTING_ATOL = 10 ** (-2)
+_TESTING_ATOL = 1e-2
 
 
 def vspace_func_1(x, y, z):
