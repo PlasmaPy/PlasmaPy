@@ -4,7 +4,7 @@ __all__ = [
     "Point",
     "NullPoint",
     "null_point_find",
-    "trilinear_approx",
+    "uniform_nullpoint_find" "trilinear_approx",
 ]
 
 import numpy as np
@@ -1319,8 +1319,9 @@ def uniform_nullpoint_find(
         of the given vector space.
 
     Notes
-    -----
+    ----------
         This method is described by :cite:t:`haynes:2007`.
+
     """
     vspace = _vector_space(
         None,
