@@ -5,6 +5,7 @@ docutils
 ipykernel
 ipywidgets
 myst_nb
+nbsphinx
 numpydoc
 pillow
 pygments >= 2.11.0
