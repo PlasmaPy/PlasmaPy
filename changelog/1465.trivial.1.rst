@@ -1,3 +1,3 @@
-An attempt to import PlasmaPy from a version of Python below the
+An attempt to import `plasmapy` from a version of Python below the
 minimum supported value will now raise an `ImportError` instead of an
 `Exception`.
