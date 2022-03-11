@@ -11,7 +11,6 @@ Getting started
 ---------------
 
 .. toctree::
-  :maxdepth: 1
 
   notebooks/getting_started/units
 
@@ -19,7 +18,6 @@ General
 -------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/*
@@ -28,7 +26,6 @@ Analyses & Diagnostics
 ----------------------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/analysis/*
@@ -39,7 +36,6 @@ Dispersion
 ----------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/dispersion/*
@@ -48,7 +44,6 @@ Formulary
 ---------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/formulary/*
@@ -60,7 +55,6 @@ Simulation
 ----------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/simulation/*
@@ -69,7 +63,6 @@ Plasma Objects
 --------------
 
 .. toctree::
-   :maxdepth: 1
    :glob:
 
    notebooks/plasma/*

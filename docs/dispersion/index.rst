@@ -12,6 +12,5 @@ Example Notebooks
 .. toctree::
    :glob:
    :reversed:
-   :maxdepth: 1
 
    /notebooks/dispersion/*

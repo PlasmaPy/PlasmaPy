@@ -9,7 +9,6 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
 .. automodapi:: plasmapy.formulary.dielectric
 
 .. toctree::
-   :caption: Examples
-   :maxdepth: 1
+    :caption: Examples
 
-   /notebooks/cold_plasma_tensor_elements
+    /notebooks/cold_plasma_tensor_elements

@@ -9,7 +9,6 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 .. automodapi:: plasmapy.formulary.radiation
 
 .. toctree::
-   :caption: Examples
-   :maxdepth: 1
+    :caption: Examples
 
-   /notebooks/formulary/thermal_bremsstrahlung
+    /notebooks/formulary/thermal_bremsstrahlung

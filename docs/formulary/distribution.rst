@@ -9,8 +9,7 @@ Distribution functions (`plasmapy.formulary.distribution`)
 .. automodapi:: plasmapy.formulary.distribution
 
 .. toctree::
-   :caption: Examples
-   :maxdepth: 1
+    :caption: Examples
 
-   /notebooks/distribution
-   /notebooks/formulary/thermal_speed
+    /notebooks/distribution
+    /notebooks/formulary/thermal_speed

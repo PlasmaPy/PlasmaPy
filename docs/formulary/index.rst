@@ -85,9 +85,8 @@ Examples
 ========
 
 .. toctree::
-   :maxdepth: 1
 
-   /notebooks/physics
+    /notebooks/physics
 
 Notes for developers
 ====================
