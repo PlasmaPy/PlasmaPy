@@ -408,7 +408,42 @@ nbsphinx_prolog = r"""
 """
 
 
+def hack_nbsphinx(app: Sphinx) -> None:
+    from nbsphinx import (
+        depart_gallery_html,
+        doctree_resolved,
+        GalleryNode,
+        NbGallery,
+        patched_toctree_resolve,
+    )
+    from sphinx.environment.adapters import toctree
+
+    def builder_inited(app: Sphinx):
+        if not hasattr(app.env, "nbsphinx_thumbnails"):
+            app.env.nbsphinx_thumbnails = {}
+
+    def do_nothing(*node):
+        pass
+
+    app.add_config_value("nbsphinx_thumbnails", {}, rebuild="html")
+    app.add_directive("nbgallery", NbGallery)
+    app.add_node(
+        GalleryNode,
+        html=(do_nothing, depart_gallery_html),
+        latex=(do_nothing, do_nothing),
+        text=(do_nothing, do_nothing),
+    )
+    app.connect("builder-inited", builder_inited)
+    app.connect("doctree-resolved", doctree_resolved)
+
+    # Monkey-patch Sphinx TocTree adapter
+    toctree.TocTree.resolve = patched_toctree_resolve
+
+
 def setup(app: Sphinx) -> None:
+
+    hack_nbsphinx(app)
+
     app.add_config_value("revision", "", True)
     app.add_css_file("css/admonition_color_contrast.css")
     app.add_css_file("css/plasmapy.css", priority=600)
