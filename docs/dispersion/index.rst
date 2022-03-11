@@ -9,7 +9,7 @@ Dispersion (`plasmapy.dispersion`)
 Example Notebooks
 -----------------
 
-.. toctree::
+.. nbgallery::
    :glob:
    :reversed:
 

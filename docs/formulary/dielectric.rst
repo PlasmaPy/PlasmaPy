@@ -8,7 +8,7 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
 
 .. automodapi:: plasmapy.formulary.dielectric
 
-.. toctree::
+.. nbgallery::
     :caption: Examples
 
     /notebooks/cold_plasma_tensor_elements

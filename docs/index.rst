@@ -17,7 +17,7 @@ package for plasma physics currently under development.
 Example highlights
 ------------------
 
-.. toctree::
+.. nbgallery::
    :hidden:
 
    notebooks/diagnostics/charged_particle_radiography_particle_tracing

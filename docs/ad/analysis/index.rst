@@ -19,7 +19,7 @@
 Notebooks
 ---------
 
-.. toctree::
+.. nbgallery::
    :glob:
    :reversed:
 

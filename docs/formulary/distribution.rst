@@ -8,7 +8,7 @@ Distribution functions (`plasmapy.formulary.distribution`)
 
 .. automodapi:: plasmapy.formulary.distribution
 
-.. toctree::
+.. nbgallery::
     :caption: Examples
 
     /notebooks/distribution

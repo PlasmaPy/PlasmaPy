@@ -8,7 +8,7 @@ Thomson scattering
 
 .. automodapi:: plasmapy.diagnostics.thomson
 
-.. toctree::
+.. nbgallery::
     :caption: Examples
 
     /notebooks/diagnostics/thomson

@@ -10,7 +10,7 @@ Swept Langmuir Analysis Module
 Example Notebooks
 -----------------
 
-.. toctree::
+.. nbgallery::
    :glob:
    :reversed:
 

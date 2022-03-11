@@ -10,6 +10,6 @@
 Example Notebooks
 -----------------
 
-.. toctree::
+.. nbgallery::
 
     /notebooks/dispersion/dispersion_function

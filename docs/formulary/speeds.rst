@@ -6,7 +6,7 @@ Speed Plasma Parameters (`plasmapy.formulary.speeds`)
 
 .. automodapi:: plasmapy.formulary.speeds
 
-.. toctree::
+.. nbgallery::
     :caption: Examples
 
     /notebooks/distribution

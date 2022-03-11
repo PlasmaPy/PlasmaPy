@@ -84,7 +84,7 @@ following example:
 Examples
 ========
 
-.. toctree::
+.. nbgallery::
 
     /notebooks/physics
 

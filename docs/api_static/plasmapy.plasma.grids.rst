@@ -7,7 +7,7 @@
 
 .. automodapi::  plasmapy.plasma.grids
 
-.. toctree::
+.. nbgallery::
     :caption: Examples
 
     /notebooks/plasma/grids_cartesian
