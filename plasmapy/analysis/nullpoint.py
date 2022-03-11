@@ -905,19 +905,22 @@ def _trilinear_analysis(vspace, cell):
     zbound = vspace[0][2][f111[0]][f111[1]][f111[2]]
 
     def bound(epoint):
-        a = (
+        """
+        Checks if the endpoints are located in or on the cube.
+        """
+        is_x_in_bound = (
             initial[0] < epoint[0]
             or np.isclose(initial[0], epoint[0], atol=_EQUALITY_ATOL)
         ) and (epoint[0] < xbound or np.isclose(epoint[0], xbound, atol=_EQUALITY_ATOL))
-        b = (
+        is_y_in_bound = (
             initial[1] < epoint[1]
             or np.isclose(initial[1], epoint[1], atol=_EQUALITY_ATOL)
         ) and (epoint[1] < ybound or np.isclose(epoint[1], ybound, atol=_EQUALITY_ATOL))
-        c = (
+        is_z_in_bound = (
             initial[2] < epoint[2]
             or np.isclose(initial[2], epoint[2], atol=_EQUALITY_ATOL)
         ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_EQUALITY_ATOL))
-        return a and b and c
+        return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
     BxByEndpoints = list(filter(bound, BxByEndpoints))
     BxBzEndpoints = list(filter(bound, BxBzEndpoints))
@@ -1067,24 +1070,27 @@ def _locate_null_point(vspace, cell, n, err):
         ]
     )
 
-    def inbound(pos):
+    def in_bound(pos):
+        """
+        Checks if the estimated position is located inside the cube.
+        """
         pos = pos.reshape(1, 3)[0]
-        A = (
+        is_x_in_bound = (
             np.isclose(pos_000[0], pos[0], atol=_EQUALITY_ATOL) or pos_000[0] < pos[0]
         ) and (
             np.isclose(pos[0], pos_111[0], atol=_EQUALITY_ATOL) or pos[0] < pos_111[0]
         )
-        B = (
+        is_y_in_bound = (
             np.isclose(pos_000[1], pos[1], atol=_EQUALITY_ATOL) or pos_000[1] < pos[1]
         ) and (
             np.isclose(pos[1], pos_111[1], atol=_EQUALITY_ATOL) or pos[1] < pos_111[1]
         )
-        C = (
+        is_z_in_bound = (
             np.isclose(pos_000[2], pos[2], atol=_EQUALITY_ATOL) or pos_000[2] < pos[2]
         ) and (
             np.isclose(pos[2], pos_111[2], atol=_EQUALITY_ATOL) or pos[2] < pos_111[2]
         )
-        return A and B and C
+        return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
     starting_pos = []
     # Adding the Corners
@@ -1126,9 +1132,9 @@ def _locate_null_point(vspace, cell, n, err):
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            if np.abs(norm - prev_norm) < err and inbound(x0):
+            if np.abs(norm - prev_norm) < err and in_bound(x0):
                 return x0
-        if inbound(x0):
+        if in_bound(x0):
             warnings.warn("Max Iterations Reached")
             return x0
 
