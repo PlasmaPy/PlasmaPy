@@ -11,7 +11,7 @@ import numpy as np
 import warnings
 
 # Declare Constants & global variables
-_ATOL = 1e-10
+_EQUALITY_ATOL = 1e-15
 _MAX_RECURSION_LEVEL = 10
 global _recursion_level
 _recursion_level = 0
@@ -54,11 +54,12 @@ class NullPoint(Point):
         Returns True if two null point objects have the same coordinates.
         False otherwise.
         """
-        return (
-            np.isclose(self.loc()[0], point.loc()[0], atol=_ATOL)
-            and np.isclose(self.loc()[1], point.loc()[1], atol=_ATOL)
-            and np.isclose(self.loc()[2], point.loc()[2], atol=_ATOL)
+        d = np.sqrt(
+            (self.loc[0] - point.loc[0]) ** 2
+            + (self.loc[1] - point.loc[1]) ** 2
+            + (self.loc[2] - point.loc[2]) ** 2
         )
+        return np.isclose(d, 0, atol=_EQUALITY_ATOL)
 
 
 def _vector_space(
@@ -456,9 +457,9 @@ def _reduction(vspace, cell):
     passY = False
     passZ = False
     # Check reduction criteria
-    sign_x = np.sign(u[cell[0], cell[1], cell[2]])
-    sign_y = np.sign(v[cell[0], cell[1], cell[2]])
-    sign_z = np.sign(w[cell[0], cell[1], cell[2]])
+    sign_x = np.sign(u[cell[0]][cell[1]][cell[2]])
+    sign_y = np.sign(v[cell[0]][cell[1]][cell[2]])
+    sign_z = np.sign(w[cell[0]][cell[1]][cell[2]])
     for point in corners:
         if (
             u[point[0]][point[1]][point[2]] == 0
@@ -514,41 +515,43 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     b = np.linalg.det(m2) + np.linalg.det(m3)
     c = np.linalg.det(m1)
 
-    if np.isclose(a, 0, atol=_ATOL):
-        if np.isclose(b, 0, atol=_ATOL):
-            return None, None
+    if np.isclose(a, 0, atol=_EQUALITY_ATOL):
+        if np.isclose(b, 0, atol=_EQUALITY_ATOL):
+            return np.array([])
         else:
             x1 = (-1.0 * c) / b
             x2 = (-1.0 * c) / b
+
     else:
         if (b ** 2 - 4.0 * a * c) < 0:
-            return None, None
+            return np.array([])
         else:
             x1 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
             x2 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
-    m1 = np.array([[a1, a2], [b1, b2]])
-    m2 = np.array([[a1, a2], [d1, d2]])
-    m3 = np.array([[b1, b2], [c1, c2]])
-    m4 = np.array([[c1, c2], [d1, d2]])
-    a = np.linalg.det(m4)
-    b = np.linalg.det(m2) - np.linalg.det(m3)
-    c = np.linalg.det(m1)
+    y1 = None
+    y2 = None
+    if not (np.isclose((c1 + d1 * x1), 0, atol=_EQUALITY_ATOL)):
+        y1 = (-a1 - b1 * x1) / (c1 + d1 * x1)
+    elif not (np.isclose((c2 + d2 * x1), 0, atol=_EQUALITY_ATOL)):
+        y1 = (-a2 - b2 * x1) / (c2 + d2 * x1)
+    if not (np.isclose((c1 + d1 * x2), 0, atol=_EQUALITY_ATOL)):
+        y2 = (-a1 - b1 * x2) / (c1 + d1 * x2)
+    elif not (np.isclose((c2 + d2 * x2), 0, atol=_EQUALITY_ATOL)):
+        y2 = (-a2 - b2 * x2) / (c2 + d2 * x2)
 
-    if np.isclose(a, 0, atol=_ATOL):
-        if np.isclose(b, 0, atol=_ATOL):
-            return None, None
-        else:
-            y1 = (-1.0 * c) / b
-            y2 = (-1.0 * c) / b
+    if y1 is None and y2 is None:
+        return np.array([])
+    elif y1 is None:
+        return np.array([(x2, y2)])
+    elif y2 is None:
+        return np.array([(x1, y1)])
     else:
-        if (b ** 2 - 4.0 * a * c) < 0:
-            return None, None
+        d = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+        if np.isclose(d, 0, atol=_EQUALITY_ATOL):
+            return np.array([(x1, y1)])
         else:
-            y1 = (-1.0 * b - (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            y2 = (-1.0 * b + (b ** 2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-
-    return [(x1, y1), (x2, y2)]
+            return np.array([(x1, y1), (x2, y2)])
 
 
 def _trilinear_analysis(vspace, cell):
@@ -588,16 +591,6 @@ def _trilinear_analysis(vspace, cell):
         that a grid cell may contain more than one nullpoint.
     """
 
-    # Helper Function
-    def is_close(a, b):
-        arr = np.isclose(a, b, atol=_ATOL)
-        if type(arr) == np.bool_:
-            return arr
-        res = True
-        for b in arr:
-            res = res and b
-        return res
-
     # Critical Cell Corners
     f000 = cell
     f111 = [cell[0] + 1, cell[1] + 1, cell[2] + 1]
@@ -627,7 +620,7 @@ def _trilinear_analysis(vspace, cell):
     ]  # y-coordinate of the front surface
     # Bx=By=0 Curve Endpoint
 
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
         dx + gx * yConst1,
@@ -637,16 +630,11 @@ def _trilinear_analysis(vspace, cell):
         dy + gy * yConst1,
         fy + hy * yConst1,
     )
-
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((root1[0], yConst1, root1[1]))
-        else:
-            BxByEndpoints.append((root1[0], yConst1, root1[1]))
-            BxByEndpoints.append((root2[0], yConst1, root2[1]))
+    for root in root_list:
+        BxByEndpoints.append((root[0], yConst1, root[1]))
 
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + cx * yConst1,
         bx + ex * yConst1,
         dx + gx * yConst1,
@@ -656,14 +644,12 @@ def _trilinear_analysis(vspace, cell):
         dz + gz * yConst1,
         fz + hz * yConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((root1[0], yConst1, root1[1]))
-        else:
-            BxBzEndpoints.append((root1[0], yConst1, root1[1]))
-            BxBzEndpoints.append((root2[0], yConst1, root2[1]))
+
+    for root in root_list:
+        BxBzEndpoints.append((root[0], yConst1, root[1]))
+
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + cy * yConst1,
         by + ey * yConst1,
         dy + gy * yConst1,
@@ -673,19 +659,16 @@ def _trilinear_analysis(vspace, cell):
         dz + gz * yConst1,
         fz + hz * yConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((root1[0], yConst1, root1[1]))
-        else:
-            ByBzEndpoints.append((root1[0], yConst1, root1[1]))
-            ByBzEndpoints.append((root2[0], yConst1, root2[1]))
+
+    for root in root_list:
+        ByBzEndpoints.append((root[0], yConst1, root[1]))
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
         f111[2]
     ]  # y-coordinate of the front surface
     # Bx=By=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + cx * yConst2,
         bx + ex * yConst2,
         dx + gx * yConst2,
@@ -695,14 +678,12 @@ def _trilinear_analysis(vspace, cell):
         dy + gy * yConst2,
         fy + hy * yConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((root1[0], yConst2, root1[1]))
-        else:
-            BxByEndpoints.append((root1[0], yConst2, root1[1]))
-            BxByEndpoints.append((root2[0], yConst2, root2[1]))
+
+    for root in root_list:
+        BxByEndpoints.append((root[0], yConst2, root[1]))
+
     # Bx=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + cx * yConst2,
         bx + ex * yConst2,
         dx + gx * yConst2,
@@ -712,14 +693,12 @@ def _trilinear_analysis(vspace, cell):
         dz + gz * yConst2,
         fz + hz * yConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((root1[0], yConst2, root1[1]))
-        else:
-            BxBzEndpoints.append((root1[0], yConst2, root1[1]))
-            BxBzEndpoints.append((root2[0], yConst2, root2[1]))
+
+    for root in root_list:
+        BxBzEndpoints.append((root[0], yConst2, root[1]))
+
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + cy * yConst2,
         by + ey * yConst2,
         dy + gy * yConst2,
@@ -729,17 +708,14 @@ def _trilinear_analysis(vspace, cell):
         dz + gz * yConst2,
         fz + hz * yConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((root1[0], yConst2, root1[1]))
-        else:
-            ByBzEndpoints.append((root1[0], yConst2, root1[1]))
-            ByBzEndpoints.append((root2[0], yConst2, root2[1]))
+
+    for root in root_list:
+        ByBzEndpoints.append((root[0], yConst2, root[1]))
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + bx * xConst1,
         cx + ex * xConst1,
         dx + fx * xConst1,
@@ -750,15 +726,11 @@ def _trilinear_analysis(vspace, cell):
         gy + hy * xConst1,
     )
 
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((xConst1, root1[0], root1[1]))
-        else:
-            BxByEndpoints.append((xConst1, root1[0], root1[1]))
-            BxByEndpoints.append((xConst1, root2[0], root2[1]))
+    for root in root_list:
+        BxByEndpoints.append((xConst1, root[0], root[1]))
 
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + bx * xConst1,
         cx + ex * xConst1,
         dx + fx * xConst1,
@@ -768,15 +740,12 @@ def _trilinear_analysis(vspace, cell):
         dz + fz * xConst1,
         gz + hz * xConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((xConst1, root1[0], root1[1]))
-        else:
-            BxBzEndpoints.append((xConst1, root1[0], root1[1]))
-            BxBzEndpoints.append((xConst1, root2[0], root2[1]))
+
+    for root in root_list:
+        BxBzEndpoints.append((xConst1, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + by * xConst1,
         cy + ey * xConst1,
         dy + fy * xConst1,
@@ -786,17 +755,14 @@ def _trilinear_analysis(vspace, cell):
         dz + fz * xConst1,
         gz + hz * xConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((xConst1, root1[0], root1[1]))
-        else:
-            ByBzEndpoints.append((xConst1, root1[0], root1[1]))
-            ByBzEndpoints.append((xConst1, root2[0], root2[1]))
+
+    for root in root_list:
+        ByBzEndpoints.append((xConst1, root[0], root[1]))
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + bx * xConst2,
         cx + ex * xConst2,
         dx + fx * xConst2,
@@ -806,14 +772,12 @@ def _trilinear_analysis(vspace, cell):
         dy + fy * xConst2,
         gy + hy * xConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((xConst2, root1[0], root1[1]))
-        else:
-            BxByEndpoints.append((xConst2, root1[0], root1[1]))
-            BxByEndpoints.append((xConst2, root2[0], root2[1]))
+
+    for root in root_list:
+        BxByEndpoints.append((xConst2, root[0], root[1]))
+
     # Bx=BZ=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + bx * xConst2,
         cx + ex * xConst2,
         dx + fx * xConst2,
@@ -823,15 +787,12 @@ def _trilinear_analysis(vspace, cell):
         dz + fz * xConst2,
         gz + hz * xConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((xConst2, root1[0], root1[1]))
-        else:
-            BxBzEndpoints.append((xConst2, root1[0], root1[1]))
-            BxBzEndpoints.append((xConst2, root2[0], root2[1]))
+
+    for root in root_list:
+        BxBzEndpoints.append((xConst2, root[0], root[1]))
 
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + by * xConst2,
         cy + ey * xConst2,
         dy + fy * xConst2,
@@ -841,17 +802,14 @@ def _trilinear_analysis(vspace, cell):
         dz + fz * xConst2,
         gz + hz * xConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((xConst2, root1[0], root1[1]))
-        else:
-            ByBzEndpoints.append((xConst2, root1[0], root1[1]))
-            ByBzEndpoints.append((xConst2, root2[0], root2[1]))
+
+    for root in root_list:
+        ByBzEndpoints.append((xConst2, root[0], root[1]))
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + dx * zConst1,
         bx + fx * zConst1,
         cx + gx * zConst1,
@@ -861,14 +819,12 @@ def _trilinear_analysis(vspace, cell):
         cy + gy * zConst1,
         ey + hy * zConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((root1[0], root1[1], zConst1))
-        else:
-            BxByEndpoints.append((root1[0], root1[1], zConst1))
-            BxByEndpoints.append((root2[0], root2[1], zConst1))
-    # Bx=BZ=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+
+    for root in root_list:
+        BxByEndpoints.append((root[0], root[1], zConst1))
+
+    # Bx=Bz=0 Curve Endpoint
+    root_list = _bilinear_root(
         ax + dx * zConst1,
         bx + fx * zConst1,
         cx + gx * zConst1,
@@ -878,14 +834,12 @@ def _trilinear_analysis(vspace, cell):
         cz + gz * zConst1,
         ez + hz * zConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((root1[0], root1[1], zConst1))
-        else:
-            BxBzEndpoints.append((root1[0], root1[1], zConst1))
-            BxBzEndpoints.append((root2[0], root2[1], zConst1))
+
+    for root in root_list:
+        BxBzEndpoints.append((root[0], root[1], zConst1))
+
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + dy * zConst1,
         by + fy * zConst1,
         cy + gy * zConst1,
@@ -895,17 +849,14 @@ def _trilinear_analysis(vspace, cell):
         cz + gz * zConst1,
         ez + hz * zConst1,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((root1[0], root1[1], zConst1))
-        else:
-            ByBzEndpoints.append((root1[0], root1[1], zConst1))
-            ByBzEndpoints.append((root2[0], root2[1], zConst1))
+
+    for root in root_list:
+        ByBzEndpoints.append((root[0], root[1], zConst1))
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
     # Bx=By=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + dx * zConst2,
         bx + fx * zConst2,
         cx + gx * zConst2,
@@ -915,14 +866,12 @@ def _trilinear_analysis(vspace, cell):
         cy + gy * zConst2,
         ey + hy * zConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxByEndpoints.append((root1[0], root1[1], zConst2))
-        else:
-            BxByEndpoints.append((root1[0], root1[1], zConst2))
-            BxByEndpoints.append((root2[0], root2[1], zConst2))
+
+    for root in root_list:
+        BxByEndpoints.append((root[0], root[1], zConst2))
+
     # Bx=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ax + dx * zConst2,
         bx + fx * zConst2,
         cx + gx * zConst2,
@@ -932,14 +881,12 @@ def _trilinear_analysis(vspace, cell):
         cz + gz * zConst2,
         ez + hz * zConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            BxBzEndpoints.append((root1[0], root1[1], zConst2))
-        else:
-            BxBzEndpoints.append((root1[0], root1[1], zConst2))
-            BxBzEndpoints.append((root2[0], root2[1], zConst2))
+
+    for root in root_list:
+        BxBzEndpoints.append((root[0], root[1], zConst2))
+
     # By=Bz=0 Curve Endpoint
-    root1, root2 = _bilinear_root(
+    root_list = _bilinear_root(
         ay + dy * zConst2,
         by + fy * zConst2,
         cy + gy * zConst2,
@@ -949,28 +896,31 @@ def _trilinear_analysis(vspace, cell):
         cz + gz * zConst2,
         ez + hz * zConst2,
     )
-    if root1 is not None:
-        if is_close(root1, root2):
-            ByBzEndpoints.append((root1[0], root1[1], zConst2))
-        else:
-            ByBzEndpoints.append((root1[0], root1[1], zConst2))
-            ByBzEndpoints.append((root2[0], root2[1], zConst2))
+
+    for root in root_list:
+        ByBzEndpoints.append((root[0], root[1], zConst2))
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
     zbound = vspace[0][2][f111[0]][f111[1]][f111[2]]
 
     def bound(epoint):
-        a = (initial[0] < epoint[0] or is_close(initial[0], epoint[0])) and (
-            epoint[0] < xbound or is_close(epoint[0], xbound)
-        )
-        b = (initial[1] < epoint[1] or is_close(initial[1], epoint[1])) and (
-            epoint[1] < ybound or is_close(epoint[1], ybound)
-        )
-        c = (initial[2] < epoint[2] or is_close(initial[2], epoint[2])) and (
-            epoint[2] < zbound or is_close(epoint[2], zbound)
-        )
-        return a and b and c
+        """
+        Checks if the endpoints are located in or on the cube.
+        """
+        is_x_in_bound = (
+            initial[0] < epoint[0]
+            or np.isclose(initial[0], epoint[0], atol=_EQUALITY_ATOL)
+        ) and (epoint[0] < xbound or np.isclose(epoint[0], xbound, atol=_EQUALITY_ATOL))
+        is_y_in_bound = (
+            initial[1] < epoint[1]
+            or np.isclose(initial[1], epoint[1], atol=_EQUALITY_ATOL)
+        ) and (epoint[1] < ybound or np.isclose(epoint[1], ybound, atol=_EQUALITY_ATOL))
+        is_z_in_bound = (
+            initial[2] < epoint[2]
+            or np.isclose(initial[2], epoint[2], atol=_EQUALITY_ATOL)
+        ) and (epoint[2] < zbound or np.isclose(epoint[2], zbound, atol=_EQUALITY_ATOL))
+        return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
     BxByEndpoints = list(filter(bound, BxByEndpoints))
     BxBzEndpoints = list(filter(bound, BxBzEndpoints))
@@ -978,16 +928,16 @@ def _trilinear_analysis(vspace, cell):
 
     tlApprox = trilinear_approx(vspace, cell)
 
-    # Check on the Surfaces
-    for p in BxByEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
-    for p in BxBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
-    for p in ByBzEndpoints:
-        if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _ATOL:
-            return True
+    # # Check on the Surfaces
+    # for p in BxByEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
+    # for p in BxBzEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
+    # for p in ByBzEndpoints:
+    #     if np.linalg.norm(tlApprox(p[0], p[1], p[2])) < _EQUALITY_ATOL:
+    #         return True
 
     # Check Grid Resolution
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
@@ -1120,18 +1070,27 @@ def _locate_null_point(vspace, cell, n, err):
         ]
     )
 
-    def inbound(pos):
+    def in_bound(pos):
+        """
+        Checks if the estimated position is located inside the cube.
+        """
         pos = pos.reshape(1, 3)[0]
-        A = (np.isclose(pos_000[0], pos[0], atol=_ATOL) or pos_000[0] < pos[0]) and (
-            np.isclose(pos[0], pos_111[0], atol=_ATOL) or pos[0] < pos_111[0]
+        is_x_in_bound = (
+            np.isclose(pos_000[0], pos[0], atol=_EQUALITY_ATOL) or pos_000[0] < pos[0]
+        ) and (
+            np.isclose(pos[0], pos_111[0], atol=_EQUALITY_ATOL) or pos[0] < pos_111[0]
         )
-        B = (np.isclose(pos_000[1], pos[1], atol=_ATOL) or pos_000[1] < pos[1]) and (
-            np.isclose(pos[1], pos_111[1], atol=_ATOL) or pos[1] < pos_111[1]
+        is_y_in_bound = (
+            np.isclose(pos_000[1], pos[1], atol=_EQUALITY_ATOL) or pos_000[1] < pos[1]
+        ) and (
+            np.isclose(pos[1], pos_111[1], atol=_EQUALITY_ATOL) or pos[1] < pos_111[1]
         )
-        C = (np.isclose(pos_000[2], pos[2], atol=_ATOL) or pos_000[2] < pos[2]) and (
-            np.isclose(pos[2], pos_111[2], atol=_ATOL) or pos[2] < pos_111[2]
+        is_z_in_bound = (
+            np.isclose(pos_000[2], pos[2], atol=_EQUALITY_ATOL) or pos_000[2] < pos[2]
+        ) and (
+            np.isclose(pos[2], pos_111[2], atol=_EQUALITY_ATOL) or pos[2] < pos_111[2]
         )
-        return A and B and C
+        return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
     starting_pos = []
     # Adding the Corners
@@ -1162,13 +1121,20 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
+            # Too many null points if the jacobian is zero
+            if np.isclose(
+                np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
+            ):
+                warnings.warn("Multiple null points")
+                return None
+            # Adjust position
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            if np.abs(norm - prev_norm) < err and inbound(x0):
+            if np.abs(norm - prev_norm) < err and in_bound(x0):
                 return x0
-        if inbound(x0):
+        if in_bound(x0):
             warnings.warn("Max Iterations Reached")
             return x0
 
