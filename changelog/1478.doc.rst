@@ -1,1 +1,1 @@
-Added a discussion of doctests to the `documentation guide`_.
+Added a discussion of doctests to the |documentation guide|.
