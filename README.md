@@ -12,7 +12,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
-[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml)
+[![fortnightly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml)
 [![Style linters](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
@@ -25,7 +25,7 @@
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
 [PlasmaPy](https://www.plasmapy.org/) is an open source, community-developed
-Python 3.7+ package for plasma science. PlasmaPy intends to be for plasma
+Python 3.8+ package for plasma science. PlasmaPy intends to be for plasma
 science what [Astropy](https://github.com/astropy/astropy) is for astronomy
 — a collection of functionality commonly used and shared between plasma
 scientists and researchers globally, running within and leveraging the
@@ -65,16 +65,20 @@ on our
 [Matrix](https://app.element.io/#/room/#plasmapy:openastronomy.org)/[Gitter](https://gitter.im/PlasmaPy/Lobby)
 channel. Both of these are the same chat channel; Gitter uses a bridge to link the two.
 
-## [Weekly](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) [community meetings](https://meet.jit.si/plasmapy)
+## [Weekly](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York) [community meetings](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success)
 
-We have weekly community meetings in the
-[PlasmaPy room on Jitsi](https://meet.jit.si/plasmapy).
-The schedule of our community meetings is on our [calendar](https://calendar.google.com/calendar?cid=bzVsb3ZkcW0zaWxsam00ZTlrMDd2cmw5bWdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ), and you may access the [minutes and
+Updated information about our community meetings can be found on [plasmapy.org](https://www.plasmapy.org/meetings/weekly/).
+
+As of now, PlasmaPy hosts its weekly online community meeting every Tuesday to cover topics related to code development. This call is hosted on [Zoom](https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09#success).
+
+The schedule of our community meetings is on our
+[calendar](https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York),
+and you may access the [minutes and
 agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of January 2021, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/6pm).
+As of November 2021, our meetings are on Tuesdays at
+[19:00 UTC](http://time.unitarium.com/utc/7pm).
 Come discuss plasma software with us!
 
 ## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)

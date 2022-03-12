@@ -1,3 +1,5 @@
+.. _testing guide:
+
 *************
 Testing Guide
 *************
@@ -31,16 +33,16 @@ the bottom of each pull request. Click on *Details* next to each test
 run to find the reason for any test failures.
 
 A |unit test| verifies a single unit of behavior, does it quickly, and
-does it in isolation from other tests [Khorikov2020]_. A typical
+does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 |unit test| is broken up into three parts: *arrange*, *act*, and
-*assert* [Osherove2013]_. An |integration test| verifies that multiple
-software components work together as intended.
+*assert* :cite:p:`osherove:2013`. An |integration test| verifies that
+multiple software components work together as intended.
 
 PlasmaPy's tests are set up using the pytest_ framework. The tests for
 a subpackage are located in its :file:`tests` subdirectory in files with
 names of the form :file:`test_*.py`. For example, tests for
-`plasmapy.formulary.parameters` are located at
-:file:`plasmapy/formulary/tests/test_parameters.py` relative to the top
+`plasmapy.formulary.speeds` are located at
+:file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
 of the package. Example code contained within docstrings is tested to
 make sure that the actual printed output matches what is in the
 docstring.
@@ -100,10 +102,10 @@ The following checks are performed with each pull request.
 
   .. tip::
 
-    `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
-    `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
-    include (or will include) significant improvements to common error
-    messages.
+     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__ and
+     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__
+     include (or will include) significant improvements to common error
+     messages.
 
 * Checks with labels like **CI / Python 3.x with NumPy dev (pull
   request)** verify that PlasmaPy works the version of NumPy that is
@@ -333,10 +335,10 @@ to help us find the cause of a particular test failure.
 
 .. code-block:: python
 
-  def test_addition():
-      result = 2 + 2
-      expected = 4
-      assert result == expected, f"2 + 2 returns {result} instead of {expected}."
+   def test_addition():
+       result = 2 + 2
+       expected = 4
+       assert result == expected, f"2 + 2 returns {result} instead of {expected}."
 
 .. tip::
 
@@ -347,9 +349,9 @@ Floating point comparisons
 
 .. caution::
 
-  Using ``==`` to compare floating point numbers can lead to brittle
-  tests because of slight differences due to limited precision, rounding
-  errors, and revisions to fundamental constants.
+   Using ``==`` to compare floating point numbers can lead to brittle
+   tests because of slight differences due to limited precision,
+   rounding errors, and revisions to fundamental constants.
 
 In order to avoid these difficulties, use `numpy.testing.assert_allclose`
 when comparing floating point numbers and arrays, and
@@ -375,14 +377,14 @@ To test that a function issues an appropriate warning, use
 
 .. code-block:: python
 
-  import pytest, warnings
+   import pytest, warnings
 
-  def issue_warning():
-      warnings.warn("warning message", UserWarning)
+   def issue_warning():
+       warnings.warn("warning message", UserWarning)
 
-  def test_that_a_warning_is_issued():
-      with pytest.warns(UserWarning):
-          issue_warning()
+   def test_that_a_warning_is_issued():
+       with pytest.warns(UserWarning):
+           issue_warning()
 
 To test that a function raises an appropriate exception, use
 `pytest.raises`.
@@ -391,12 +393,12 @@ To test that a function raises an appropriate exception, use
 
   import pytest
 
-  def raise_exception():
-      raise Exception
+   def raise_exception():
+       raise Exception
 
-  def test_that_an_exception_is_raised():
-      with pytest.raises(Exception):
-          raise_exception()
+   def test_that_an_exception_is_raised():
+       with pytest.raises(Exception):
+           raise_exception()
 
 Test independence and parametrization
 -------------------------------------
@@ -420,9 +422,9 @@ function.
 
 .. code-block:: python
 
-  def test_proof_by_riemann_hypothesis():
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # will only be run if the previous test passes
+   def test_proof_by_riemann_hypothesis():
+        assert proof_by_riemann(False)
+        assert proof_by_riemann(True)  # will only be run if the previous test passes
 
 If the first test were to fail, then the second test would never be run.
 We would therefore not know the potentially useful results of the second
@@ -431,11 +433,11 @@ both will be run.
 
 .. code-block:: python
 
-  def test_proof_if_riemann_false():
-       assert proof_by_riemann(False)
+   def test_proof_if_riemann_false():
+        assert proof_by_riemann(False)
 
-  def test_proof_if_riemann_true():
-       assert proof_by_riemann(True)
+   def test_proof_if_riemann_true():
+        assert proof_by_riemann(True)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -444,9 +446,9 @@ tests for the same function, the preferred method is to use the
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth_value", [True, False])
-  def test_proof_if_riemann(truth_value):
-       assert proof_by_riemann(truth_value)
+   @pytest.mark.parametrize("truth_value", [True, False])
+   def test_proof_if_riemann(truth_value):
+        assert proof_by_riemann(truth_value)
 
 This code snippet will run ``proof_by_riemann(truth_value)`` for each
 ``truth_value`` in ``[True, False]``. Both of the above
@@ -459,9 +461,63 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-  @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-  def test_proof_if_riemann(truth_value, expected):
+   @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
+   def test_proof_if_riemann(truth_value, expected):
        assert proof_by_riemann(truth_value) == expected
+
+Test parametrization with argument unpacking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When the number of arguments passed to a function varies, we can use
+argument unpacking_ in conjunction with test parametrization.
+
+Suppose we want to test a function called ``add`` that accepts two
+positional arguments (``a`` and ``b``) and one optional keyword argument
+(``reverse_order``).
+
+.. code-block:: python
+
+   def add(a, b, reverse_order = False):
+       if reverse_order:
+           return a + b
+       return a + b
+
+Argument unpacking_ lets us provide positional arguments in a `tuple` or
+`list` (commonly referred to as :term:`args`) and keyword arguments in a
+`dict` (commonly referred to as :term:`kwargs`). Unpacking_ occurs when
+``args`` is preceded by ``*`` and ``kwargs`` is preceded by ``**``.
+
+.. code-block:: pycon
+
+   >>> args = ("1", "2")
+   >>> kwargs = {"reverse_order": True}
+   >>> add(*args, **kwargs)  # equivalent to add("1", "2", reverse_order=True)
+   '21'
+
+We want to test ``add`` for three cases:
+
+* ``reverse_order`` is `True`,
+* ``reverse_order`` is `False`, and
+* ``reverse_order`` is *not specified*.
+
+We can do this by parametrizing the test over ``args`` and ``kwargs``,
+and unpacking_ them inside of the test function.
+
+.. code-block:: python
+
+   @pytest.mark.parametrize(
+       "args, kwargs, expected",
+       [
+           # test that add("1", "2", reverse_order=False) == "12"
+           (["1", "2"], {"reverse_order": False}, "12"),
+           # test that add("1", "2", reverse_order=True) == "21"
+           (["1", "2"], {"reverse_order": True}, "21"),
+           # test that add("1", "2") == "12"
+           (["1", "2"], {}, "12"),  # if no keyword arguments, use an empty dict
+       ]
+   )
+   def test_add(args, kwargs, expected):
+       assert add(*args, **kwargs) == expected
 
 Fixtures
 --------
@@ -571,13 +627,14 @@ should be balanced with each other rather than absolute principles.
   sections of code before running tests, then we will have a much
   harder time isolating the section of code causing problems.
 
-* **Turn bugs into test cases** [Wilson2014]_. It is said that "every
-  every bug exists because of a missing test" [Bernstein2015]_. After
-  finding a bug, write a minimal failing test that reproduces that bug.
-  Then fix the bug to get the test to pass. Keeping the new test in the
-  test suite will prevent the same bug from being introduced again.
-  Because bugs tend to be clustered around each other, consider adding
-  tests related to the functionality affected by the bug.
+* **Turn bugs into test cases** :cite:p:`wilson:2014`. It is said that
+  "every every bug exists because of a missing test"
+  :cite:p:`bernstein:2015`. After finding a bug, write a minimal failing
+  test that reproduces that bug. Then fix the bug to get the test to
+  pass. Keeping the new test in the test suite will prevent the same bug
+  from being introduced again. Because bugs tend to be clustered around
+  each other, consider adding tests related to the functionality
+  affected by the bug.
 
 * **Make tests fast.** Tests are most valuable when they provide
   immediate feedback. A test suite that takes a long time to run
@@ -653,25 +710,7 @@ should be balanced with each other rather than absolute principles.
 
 * If the *act* phase of a |unit test| is more than a single line of
   code, consider revising the functionality being tested so that it can
-  be called in a single line of code [Khorikov2020]_.
-
-.. [Bernstein2015] D. S. Bernstein, `Beyond Legacy Code: Nine Practices
-   to Extend the Life (and Value) of Your Software
-   <https://pragprog.com/titles/dblegacy/beyond-legacy-code>`_
-   (Pragmatic Bookshelf, 2015, 1st ed.)
-
-.. [Khorikov2020] V. Khorikov, `Unit Testing Principles, Practices, and Patterns
-   <https://www.manning.com/books/unit-testing>`_ (Manning Press, 2020, 1st ed.)
-
-.. [Osherove2013] R. Osherove, `The Art of Unit Testing: With Examples in .NET
-   <https://www.manning.com/books/the-art-of-unit-testing-second-edition>`_
-   (Manning Press, 2013, 2nd ed.)
-
-.. [Wilson2014] G. Wilson, D. A. Aruliah, C. T. Brown, N. P. Chue Hong,
-   M. Davis, R. T. Guy, S. H. D. Haddock, K. D. Huff, I. M. Mitchell,
-   M. D. Plumbley, B. Waugh, E. P. White, P. Wilson, `Best practices for
-   scientific computing <https://doi.org/10.1371/journal.pbio.1001745>`_,
-   PLoS Biology, 12, 1, e1001745 (2014), doi: 10.1371/journal.pbio.1001745
+  be called in a single line of code :cite:p:`khorikov:2020`.
 
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
@@ -699,4 +738,5 @@ should be balanced with each other rather than absolute principles.
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com/

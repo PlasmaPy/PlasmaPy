@@ -1,5 +1,7 @@
 .. currentmodule:: plasmapy
 
+.. _glossary:
+
 ********
 Glossary
 ********
@@ -42,6 +44,32 @@ Glossary
 
    kwargs
       An abbreviation for `keyword arguments`_.
+
+   lite-function
+   lite-functions
+      A lite weight version of an existing `plasmapy` function,
+      typically a formulary function.  These functions are intended for
+      computational use where speed matters more than anything else, and
+      as such **all argument safeguards have been stripped away** to
+      leave the most fundamental calculation possible.  A few things
+      to know about lite-functions:
+
+      - Lite-functions are a flavor of existing `plasmapy`
+        functionality and are denoted with a trailing ``_lite`` to the
+        name. For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
+        lite-function associated with
+        `~plasmapy.formulary.speeds.thermal_speed`.
+      - Lite-functions are typically bound to their normal version as
+        the ``lite`` attribute.  For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` can be
+        accessed as ``thermal_speed.lite``.
+      - Lite-functions view all input and output arguments as being in
+        SI units.
+      - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
+        the user to pass in parameters with the correct units.
+      - When possible, lite-functions are decorated with `numba.jit`
+        (or the like) for an additional speed boost.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
@@ -88,11 +116,12 @@ Glossary
 
    unit test
       A **unit test** verifies a single unit of behavior, does it
-      quickly, and does it in isolation from other tests [Khorikov2020]_.
+      quickly, and does it in isolation from other tests
+      :cite:p:`khorikov:2020`.
 
       Unit tests are intended to provide fast feedback that help pinpoint
       the locations of errors. Unit tests often abide by the following
-      pattern [Osherove2013]_:
+      pattern :cite:p:`osherove:2013`:
 
       1. *Arrange*: gather inputs and get the system to the state in which
          the test is expected to run.

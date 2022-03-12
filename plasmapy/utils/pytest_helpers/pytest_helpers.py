@@ -218,7 +218,7 @@ def run_test(
     if kwargs is None:
         kwargs = {}
 
-    if not isinstance(args, tuple):
+    if not type(args) in [tuple, list]:
         args = (args,)
 
     if not callable(func):
@@ -663,7 +663,8 @@ def assert_can_handle_nparray(
 
     Examples
     --------
-    >>> from plasmapy.formulary.parameters import Alfven_speed, gyrofrequency
+    >>> from plasmapy.formulary.speeds import Alfven_speed
+    >>> from plasmapy.formulary.frequencies import gyrofrequency
     >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
