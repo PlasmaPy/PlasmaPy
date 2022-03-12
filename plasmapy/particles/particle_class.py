@@ -2246,13 +2246,12 @@ class CustomParticle(AbstractPhysicalParticle):
         and return `False` if ``other`` differs on any of these attributes,
         or an other type.
         """
+        same_symbol = self.symbol.__eq__(other.symbol)
+        same_mass = u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
+        same_charge = u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
 
         return (
-            (
-                self.symbol.__eq__(other.symbol)
-                and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
-                and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
-            )
+            same_symbol and same_mass and same_charge
             if isinstance(other, self.__class__)
             else NotImplemented
         )
