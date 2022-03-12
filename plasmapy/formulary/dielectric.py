@@ -302,5 +302,4 @@ def permittivity_1D_Maxwellian(
     alpha = np.sqrt(2) * (wp / (kWave * vTh)).to(u.dimensionless_unscaled)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = (omega / (kWave * vTh)).to(u.dimensionless_unscaled)
-    chi = alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
-    return chi
+    return alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv(zeta.value)
