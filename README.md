@@ -25,7 +25,7 @@
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
 [PlasmaPy](https://www.plasmapy.org/) is an open source, community-developed
-Python 3.7+ package for plasma science. PlasmaPy intends to be for plasma
+Python 3.8+ package for plasma science. PlasmaPy intends to be for plasma
 science what [Astropy](https://github.com/astropy/astropy) is for astronomy
 — a collection of functionality commonly used and shared between plasma
 scientists and researchers globally, running within and leveraging the
