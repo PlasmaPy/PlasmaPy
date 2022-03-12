@@ -147,7 +147,7 @@ class AbstractParticle(ABC):
 
         Only the ``"__init__"`` entry should be modified by the subclass.
         """
-        json_dictionary = {
+        return {
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
@@ -155,7 +155,6 @@ class AbstractParticle(ABC):
                 "__init__": {"args": (), "kwargs": {}},
             }
         }
-        return json_dictionary
 
     def __bool__(self):
         """
@@ -878,7 +877,7 @@ class Particle(AbstractPhysicalParticle):
         if self._attributes["charge number"] < 0:
             raise roman.OutOfRangeError("Cannot convert negative charges to Roman.")
 
-        symbol = self.isotope if self.isotope else self.element
+        symbol = self.isotope or self.element
         charge_number = self._attributes["charge number"]
         roman_charge = roman.to_roman(charge_number + 1)
         return f"{symbol} {roman_charge}"
@@ -932,13 +931,11 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
         if self.isotope == "D":
-            isotope_name = "deuterium"
+            return "deuterium"
         elif self.isotope == "T":
-            isotope_name = "tritium"
+            return "tritium"
         else:
-            isotope_name = f"{self.element_name}-{self.mass_number}"
-
-        return isotope_name
+            return f"{self.element_name}-{self.mass_number}"
 
     @property
     def charge_number(self) -> Integral:
@@ -1606,10 +1603,7 @@ class Particle(AbstractPhysicalParticle):
                 return arg
             if isinstance(arg, str):
                 return {arg}
-            if isinstance(arg[0], (tuple, list, set)):
-                return set(arg[0])
-            else:
-                return set(arg)
+            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
 
         if category_tuple and require:  # coverage: ignore
             raise ParticleError(
@@ -1747,7 +1741,7 @@ class Particle(AbstractPhysicalParticle):
         if n <= 0:
             raise ValueError("n must be a positive number.")
 
-        base_particle = self.isotope if self.isotope else self.element
+        base_particle = self.isotope or self.element
         new_charge_number = self.charge_number + n
 
         if inplace:
@@ -1820,7 +1814,7 @@ class Particle(AbstractPhysicalParticle):
         if n <= 0:
             raise ValueError("n must be a positive number.")
 
-        base_particle = self.isotope if self.isotope else self.element
+        base_particle = self.isotope or self.element
         new_charge_number = self.charge_number - n
 
         if inplace:
@@ -2253,12 +2247,14 @@ class CustomParticle(AbstractPhysicalParticle):
         or an other type.
         """
 
-        if not isinstance(other, self.__class__):
-            return NotImplemented
         return (
-            self.symbol.__eq__(other.symbol)
-            and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
-            and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
+            (
+                self.symbol.__eq__(other.symbol)
+                and u.isclose(self.mass, other.mass, equal_nan=True, rtol=0)
+                and u.isclose(self.charge, other.charge, equal_nan=True, rtol=0)
+            )
+            if isinstance(other, self.__class__)
+            else NotImplemented
         )
 
     def __hash__(self) -> int:
