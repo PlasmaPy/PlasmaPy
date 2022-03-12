@@ -41,8 +41,7 @@ def check_abundances_consistency(
 
 
 def has_attribute(attribute, tests_dict):
-    cases = [test for test in tests_dict if attribute in tests_dict[test]]
-    if cases:
+    if cases := [test for test in tests_dict if attribute in tests_dict[test]]:
         return cases
     else:
         raise ValueError(f"No cases with attribute {attribute}")
@@ -158,9 +157,7 @@ class TestIonizationStateCollection:
         input_particles = tests[test_name]["inputs"].keys()
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.symbol for p in particles}
-        actual_particles = {
-            particle for particle in self.instances[test_name].ionic_fractions
-        }
+        actual_particles = set(self.instances[test_name].ionic_fractions)
 
         assert actual_particles == expected_particles, (
             f"For test='{test_name}', the following should be equal:\n"
@@ -294,7 +291,7 @@ class TestIonizationStateCollection:
     def test_getitem_element_intcharge(self, test_name):
         instance = self.instances[test_name]
         for particle in instance.base_particles:
-            for int_charge in range(0, atomic_number(particle) + 1):
+            for int_charge in range(atomic_number(particle) + 1):
                 actual = instance[particle, int_charge].ionic_fraction
                 expected = instance.ionic_fractions[particle][int_charge]
                 # We only need to check if one is broken
@@ -669,7 +666,7 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail("Unable to set number density scaling factor attribute")
         if not u.quantity.allclose(self.instance.n0, self.new_n):
             pytest.fail("Number density scaling factor was not set correctly.")
-        if not self.instance.n0.unit == u.m ** -3:
+        if self.instance.n0.unit != u.m ** -3:
             pytest.fail("Incorrect units for new number density.")
 
     def test_resetting_valid_densities(self):
@@ -814,7 +811,7 @@ class TestIonizationStateCollectionDensityEqualities:
         provide ``number_densities`` is not equal to each instance that
         should not provide ``number_densities``.
         """
-        expect_equality = this[0:4] == that[0:4]
+        expect_equality = this[:4] == that[:4]
         are_equal = self.instances[this] == self.instances[that]
         if expect_equality != are_equal:
             print(f"{this} kwargs:\n {self.dict_of_kwargs[this]}\n")
