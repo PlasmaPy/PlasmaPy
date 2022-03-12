@@ -1,9 +1,9 @@
 import astropy.units as u
-import collections
 import itertools
 import numpy as np
 import pytest
 
+from astropy.tests.helper import assert_quantity_allclose
 from numbers import Real
 from typing import Dict
 
@@ -15,9 +15,9 @@ from plasmapy.particles import (
     mass_number,
     Particle,
     particle_symbol,
+    ParticleList,
 )
 from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
-from plasmapy.utils.pytest_helpers import run_test
 
 
 def check_abundances_consistency(
@@ -33,8 +33,7 @@ def check_abundances_consistency(
         f"log_abundances.keys(): {log_abundances.keys()}"
     )
 
-    for element in abundances.keys():
-        abundance_from_abundances = abundances[element]
+    for element, abundance_from_abundances in abundances.items():
         abundance_from_log_abundances = 10 ** log_abundances[element]
         assert np.isclose(
             abundance_from_abundances, abundance_from_log_abundances
@@ -42,7 +41,7 @@ def check_abundances_consistency(
 
 
 def has_attribute(attribute, tests_dict):
-    cases = [test for test in tests_dict.keys() if attribute in tests_dict[test].keys()]
+    cases = [test for test in tests_dict if attribute in tests_dict[test]]
     if cases:
         return cases
     else:
@@ -160,7 +159,7 @@ class TestIonizationStateCollection:
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.symbol for p in particles}
         actual_particles = {
-            particle for particle in self.instances[test_name].ionic_fractions.keys()
+            particle for particle in self.instances[test_name].ionic_fractions
         }
 
         assert actual_particles == expected_particles, (
@@ -546,7 +545,7 @@ class TestIonizationStateCollectionAttributes:
         assert np.allclose(
             self.new_fractions, resulting_fractions
         ), "Ionic fractions for H not set using __setitem__."
-        assert "He" in self.instance.ionic_fractions.keys(), (
+        assert "He" in self.instance.ionic_fractions, (
             "He is missing in ionic_fractions after __setitem__ was "
             "used to set H ionic fractions."
         )
@@ -586,8 +585,7 @@ class TestIonizationStateCollectionAttributes:
         new_abundances = {"H": 1, "He": 0.1, "Li": 1e-4, "Fe": 1e-5, "Au": 1e-8}
 
         log_new_abundances = {
-            element: np.log10(new_abundances[element])
-            for element in new_abundances.keys()
+            element: np.log10(new_abundances[element]) for element in new_abundances
         }
 
         try:
@@ -722,7 +720,7 @@ class TestIonizationStateCollectionAttributes:
             )
 
     def test_that_iron_ionic_fractions_are_still_undefined(self):
-        assert "Fe" in self.instance.ionic_fractions.keys()
+        assert "Fe" in self.instance.ionic_fractions
         iron_fractions = self.instance.ionic_fractions["Fe"]
         assert len(iron_fractions) == atomic_number("Fe") + 1
         assert np.all(np.isnan(iron_fractions))
@@ -739,75 +737,6 @@ class TestIonizationStateCollectionAttributes:
         assert self.instance.base_particles == list(
             self.instance.ionic_fractions.keys()
         )
-
-
-IE = collections.namedtuple("IE", ["inputs", "expected_exception"])
-
-tests_for_exceptions = {
-    "wrong type": IE({"inputs": None}, ParticleError),
-    "not normalized": IE(
-        {"inputs": {"He": [0.4, 0.5, 0.0]}, "tol": 1e-9}, ParticleError
-    ),
-    "negative ionfrac": IE({"inputs": {"H": [-0.1, 1.1]}}, ParticleError),
-    "ion": IE({"inputs": {"H": [0.1, 0.9], "He+": [0.0, 0.9, 0.1]}}, ParticleError),
-    "repeat elements": IE(
-        {"inputs": {"H": [0.1, 0.9], "hydrogen": [0.2, 0.8]}}, ParticleError
-    ),
-    "isotope of element": IE(
-        {"inputs": {"H": [0.1, 0.9], "D": [0.2, 0.8]}}, ParticleError
-    ),
-    "negative abundance": IE(
-        {
-            "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
-            "abundances": {"H": 1, "He": -0.1},
-        },
-        ParticleError,
-    ),
-    "imaginary abundance": IE(
-        {
-            "inputs": {"H": [0.1, 0.9], "He": [0.4, 0.5, 0.1]},
-            "abundances": {"H": 1, "He": 0.1j},
-        },
-        ParticleError,
-    ),
-    "wrong density units": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -2},
-            "abundances": {"H": 1, "He": 0.1},
-        },
-        ParticleError,
-    ),
-    "abundance redundance": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
-            "abundances": {"H": 1, "He": 0.1},
-        },
-        ParticleError,
-    ),
-    "abundance contradiction": IE(
-        {
-            "inputs": {"H": [10, 90] * u.m ** -3, "He": [0.1, 0.9, 0] * u.m ** -3},
-            "abundances": {"H": 1, "He": 0.11},
-        },
-        ParticleError,
-    ),
-    "kappa too small": IE({"inputs": ["H"], "kappa": 1.499999}, ParticleError),
-    "negative n": IE({"inputs": ["H"], "n0": -1 * u.cm ** -3}, ParticleError),
-    "negative T_e": IE({"inputs": ["H-1"], "T_e": -1 * u.K}, ParticleError),
-}
-
-
-@pytest.mark.parametrize("test_name", tests_for_exceptions.keys())
-def test_exceptions_upon_instantiation(test_name):
-    """
-    Test that appropriate exceptions are raised for inappropriate inputs
-    to IonizationStateCollection when first instantiated.
-    """
-    run_test(
-        IonizationStateCollection,
-        kwargs=tests_for_exceptions[test_name].inputs,
-        expected_outcome=tests_for_exceptions[test_name].expected_exception,
-    )
 
 
 class TestIonizationStateCollectionDensityEqualities:
@@ -828,7 +757,7 @@ class TestIonizationStateCollectionDensityEqualities:
         cls.n = 5.3 * u.m ** -3
         cls.number_densities = {
             element: cls.ionic_fractions[element] * cls.n * cls.abundances[element]
-            for element in cls.ionic_fractions.keys()
+            for element in cls.ionic_fractions
         }
 
         # The keys that begin with 'ndens' have enough information to
@@ -849,7 +778,7 @@ class TestIonizationStateCollectionDensityEqualities:
 
         cls.instances = {
             key: IonizationStateCollection(**cls.dict_of_kwargs[key])
-            for key in cls.dict_of_kwargs.keys()
+            for key in cls.dict_of_kwargs
         }
 
     @pytest.mark.parametrize("test_key", ["ndens1", "ndens2"])
@@ -925,3 +854,106 @@ def test_iteration_with_nested_iterator():
 @pytest.mark.xfail()
 def test_hydrogen_deuterium():
     instance = IonizationStateCollection(["H", "D"])
+
+
+example_ionic_fractions = [
+    ("H-1", [0, 1]),
+    ("H-1", [0.2, 0.8]),
+    ("He-4", [0.2, 0.3, 0.5]),
+]
+
+
+physical_properties = ["charge", "mass"]
+
+
+@pytest.mark.parametrize("include_neutrals", [True, False])
+@pytest.mark.parametrize("use_rms_mass", [False, True])
+@pytest.mark.parametrize("use_rms_charge", [False, True])
+@pytest.mark.parametrize("base_particle, ionic_fractions", example_ionic_fractions)
+@pytest.mark.parametrize("physical_type", physical_properties)
+def test_average_ion_consistency(
+    base_particle,
+    ionic_fractions,
+    include_neutrals,
+    use_rms_mass,
+    use_rms_charge,
+    physical_type,
+):
+    """
+    Make sure that the average ions returned from equivalent `IonizationState`
+    and `IonizationStateCollection` instances are consistent with each other.
+    """
+    ionization_state = IonizationState(base_particle, ionic_fractions)
+    ionization_state_collection = IonizationStateCollection(
+        {base_particle: ionic_fractions}
+    )
+
+    options = {
+        "include_neutrals": include_neutrals,
+        "use_rms_charge": use_rms_charge,
+        "use_rms_mass": use_rms_mass,
+    }
+
+    average_ion_from_ionization_state = ionization_state.average_ion(**options)
+    average_ion_from_ionization_state_collection = (
+        ionization_state_collection.average_ion(**options)
+    )
+
+    quantity_from_ion_state = getattr(average_ion_from_ionization_state, physical_type)
+    quantity_from_ion_collection = getattr(
+        average_ion_from_ionization_state_collection, physical_type
+    )
+
+    assert_quantity_allclose(
+        quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
+    )
+
+
+@pytest.mark.parametrize("physical_property", physical_properties)
+@pytest.mark.parametrize("use_rms", [True, False])
+@pytest.mark.parametrize("include_neutrals", [True, False])
+def test_comparison_to_equivalent_particle_list(
+    physical_property, use_rms, include_neutrals
+):
+    """
+    Test that `IonizationState.average_ion` gives consistent results with
+    `ParticleList.average_particle` when the ratios of different particles
+    is the same between the `IonizationState` and the `ParticleList`.
+    """
+
+    neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
+    ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
+    particles = ParticleList(neutrals + ions)
+
+    ionic_fractions = {
+        "H-1": [0.6, 0.4],
+        "He-4": [0.2, 0.3, 0.5],
+    }
+
+    abundances = {"H-1": 1, "He-4": 2}
+    ionization_state_collection = IonizationStateCollection(
+        ionic_fractions, abundances=abundances
+    )
+
+    kwarg = {f"use_rms_{physical_property}": True}
+    expected_average_particle = particles.average_particle(**kwarg)
+    expected_average_quantity = getattr(expected_average_particle, physical_property)
+
+    actual_average_particle = ionization_state_collection.average_ion(
+        include_neutrals=include_neutrals, **kwarg
+    )
+    actual_average_quantity = getattr(actual_average_particle, physical_property)
+
+    assert_quantity_allclose(actual_average_quantity, expected_average_quantity)
+
+
+def test_average_particle_exception():
+    """
+    Test that `IonizationStateCollection.average_ion` raises the
+    appropriate exception when abundances are undefined and there is more
+    than one base element or isotope.
+    """
+    ionization_states = IonizationStateCollection({"H": [1, 0], "He": [1, 0, 0]})
+
+    with pytest.raises(ParticleError):
+        ionization_states.average_ion()

@@ -1,4 +1,4 @@
-.. _plasmapy-contributor-guide:
+.. _contributor guide:
 
 *****************
 Contributor Guide
@@ -12,6 +12,7 @@ Contributor Guide
    workflow
    install_dev
    code_guide
+   changelog_guide
    testing_guide
    doc_guide
    release_guide

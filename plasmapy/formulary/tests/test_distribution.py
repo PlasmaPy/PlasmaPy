@@ -5,7 +5,9 @@ import pytest
 import scipy.integrate as spint
 
 from astropy import units as u
-from astropy.constants import c, e, eps0, k_B, m_e, m_p, mu0
+from astropy.constants import k_B, m_e
+
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 from ..distribution import (
     kappa_velocity_1D,
@@ -17,7 +19,6 @@ from ..distribution import (
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
 )
-from ..parameters import kappa_thermal_speed, thermal_speed
 
 
 class Test_Maxwellian_1D(object):

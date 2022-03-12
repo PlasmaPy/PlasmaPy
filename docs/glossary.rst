@@ -1,10 +1,13 @@
 .. currentmodule:: plasmapy
 
+.. _glossary:
+
 ********
 Glossary
 ********
 
 .. glossary::
+   :sorted:
 
    args
       An abbreviation for `positional arguments`_.
@@ -17,6 +20,21 @@ Glossary
    charge number
       The charge of a particle in units of elementary charge.
 
+   integration test
+      An **integration test** verifies that multiple software
+      components work together as intended.
+
+      Compared to a :term:`unit test`, an integration test is typically
+      harder to write, slower to run, more difficult to maintain, and
+      less useful at pinpointing the specific cause of a problem.
+      However, integration tests are able to find problems that unit
+      tests cannot. In particular, integration tests are able to find
+      problems at the interfaces between different modules. On average,
+      each integration test covers more lines of code than each related
+      :term:`unit test`. Because unit tests and integration tests
+      complement each other, both are important constituents of a test
+      suite.
+
    keyword-only
       An |argument| or |parameter| is *keyword-only* when the |argument|
       must be provided with the name of the corresponding |parameter|.
@@ -26,6 +44,32 @@ Glossary
 
    kwargs
       An abbreviation for `keyword arguments`_.
+
+   lite-function
+   lite-functions
+      A lite weight version of an existing `plasmapy` function,
+      typically a formulary function.  These functions are intended for
+      computational use where speed matters more than anything else, and
+      as such **all argument safeguards have been stripped away** to
+      leave the most fundamental calculation possible.  A few things
+      to know about lite-functions:
+
+      - Lite-functions are a flavor of existing `plasmapy`
+        functionality and are denoted with a trailing ``_lite`` to the
+        name. For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` is the
+        lite-function associated with
+        `~plasmapy.formulary.speeds.thermal_speed`.
+      - Lite-functions are typically bound to their normal version as
+        the ``lite`` attribute.  For example,
+        `~plasmapy.formulary.speeds.thermal_speed_lite` can be
+        accessed as ``thermal_speed.lite``.
+      - Lite-functions view all input and output arguments as being in
+        SI units.
+      - **UNITS ARE NOT VALIDATED BY THE FUNCTIONS.**  It is solely up to
+        the user to pass in parameters with the correct units.
+      - When possible, lite-functions are decorated with `numba.jit`
+        (or the like) for an additional speed boost.
 
    particle-like
       An `object` is *particle-like* if it is a |Particle| or
@@ -69,6 +113,30 @@ Glossary
       `numpy.number` types. Note that if a PlasmaPy function expects a
       dimensional |Quantity| and a real number is provided, then the
       real number is often assumed to have the appropriate SI units.
+
+   unit test
+      A **unit test** verifies a single unit of behavior, does it
+      quickly, and does it in isolation from other tests
+      :cite:p:`khorikov:2020`.
+
+      Unit tests are intended to provide fast feedback that help pinpoint
+      the locations of errors. Unit tests often abide by the following
+      pattern :cite:p:`osherove:2013`:
+
+      1. *Arrange*: gather inputs and get the system to the state in which
+         the test is expected to run.
+
+      2. *Act*: make the system under test undertake the operation that is
+         being tested.
+
+      3. *Assert*: verify that the actual outcome of the *act* phase matches
+         the expected outcome.
+
+      In a unit test for a function, the *arrange* phase involves
+      collecting or constructing the inputs for the function. The *act*
+      phase occurs when the function is called with those inputs. The
+      *assert* phase is when the value returned by the function is
+      compared to the expected result.
 
 .. |argument| replace:: :term:`argument`
 .. |parameter| replace:: :term:`parameter`
