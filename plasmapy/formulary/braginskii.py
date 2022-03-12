@@ -1244,6 +1244,8 @@ def _check_Z(allowed_Z, Z):
     for idx, allowed_Z_val in enumerate(allowed_Z):
         if Z == allowed_Z_val:
             Z_idx = idx
+    # at this point we have looped through allowed_Z and either found a match
+    # or not. If we haven't found a match and arbitrary Z aren't allowed, break
     if np.isnan(Z_idx):
         if arbitrary_Z_allowed:
             # return a Z_idx pointing to the 'arbitrary'
