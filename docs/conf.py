@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 #
 # PlasmaPy documentation build configuration file, created by
 # sphinx-quickstart on Wed May 31 18:16:46 2017.
@@ -375,6 +375,7 @@ nbsphinx_thumbnails = {
     "notebooks/plasma/grids_nonuniform": (
         "_static/notebook_images/nonuniform_grid_thumbnail.png"
     ),
+    "notebooks/getting_started/units": "_static/notebook_images/astropy_logo_notext.png",  # CC BY-SA
 }
 
 # adapted from

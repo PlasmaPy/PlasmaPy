@@ -32,11 +32,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -52,15 +52,10 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.7 with minimal dependencies
+        - name: Python 3.8 with minimal dependencies
           os: ubuntu-latest
-          python: 3.7
-          toxenv: py37-all-minimal
-
-        - name: Python 3.7
-          os: ubuntu-latest
-          python: 3.7
-          toxenv: py37-all
+          python: 3.8
+          toxenv: py38-all-minimal
 
         - name: Python 3.8, all tests, code coverage
           os: ubuntu-latest
@@ -86,11 +81,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python }}
     - name: Install Python dependencies
@@ -112,11 +107,11 @@ jobs:
       fail-fast: false
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2.3.2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
     - name: Install Python dependencies
@@ -132,15 +127,15 @@ jobs:
     - comprehensive-tests
     - documentation
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2.3.2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v3
       with:
-        python-version: 3.7
+        python-version: 3.8
     - name: Install requirements
       run: |
         pip install --progress-bar off --upgrade pip
