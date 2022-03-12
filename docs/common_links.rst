@@ -83,6 +83,7 @@
    used just before a period.
 
 .. |bibliography| replace:: :ref:`bibliography`\
+.. |coding guide| replace:: :ref:`code-development-guidelines`\
 .. |contributor guide| replace:: :ref:`contributor guide`\
 .. |documentation guide| replace:: :ref:`documentation guide`\
 .. |glossary| replace:: :ref:`glossary`\

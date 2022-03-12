@@ -1,1 +1,1 @@
-Overhauled the |code guide| in the |contributor guide|.
+Overhauled the |coding guide| in the |contributor guide|.
