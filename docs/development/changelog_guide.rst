@@ -1,3 +1,3 @@
-.. _Changelog Guide:
+.. _changelog guide:
 
 .. include:: ../../changelog/README.rst

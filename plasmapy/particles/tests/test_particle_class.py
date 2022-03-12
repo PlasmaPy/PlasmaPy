@@ -9,7 +9,9 @@ from astropy import constants as const
 from astropy import units as u
 from astropy.constants import c, e, m_e, m_n, m_p
 
-from plasmapy.particles import json_load_particle, json_loads_particle
+from plasmapy.particles import json_load_particle, json_loads_particle, molecule
+from plasmapy.particles._isotopes import data_about_isotopes
+from plasmapy.particles._special_particles import particle_zoo
 from plasmapy.particles.atomic import known_isotopes
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -22,13 +24,11 @@ from plasmapy.particles.exceptions import (
     ParticleError,
     ParticleWarning,
 )
-from plasmapy.particles.isotopes import _isotopes
 from plasmapy.particles.particle_class import (
     CustomParticle,
     DimensionlessParticle,
     Particle,
 )
-from plasmapy.particles.special_particles import ParticleZoo
 from plasmapy.utils import roman
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.exceptions import PlasmaPyFutureWarning
@@ -62,6 +62,45 @@ test_Particle_table = [
     (
         "p+",
         {},
+        {
+            "symbol": "p+",
+            "element": "H",
+            "element_name": "hydrogen",
+            "isotope": "H-1",
+            "isotope_name": "hydrogen-1",
+            "ionic_symbol": "p+",
+            "roman_symbol": "H-1 II",
+            "is_ion": True,
+            "mass": m_p,
+            "nuclide_mass": m_p,
+            "charge_number": 1,
+            "charge.value": e.si.value,
+            "spin": 1 / 2,
+            "half_life": np.inf * u.s,
+            "atomic_number": 1,
+            "mass_number": 1,
+            "lepton_number": 0,
+            "baryon_number": 1,
+            "__str__()": "p+",
+            "__repr__()": 'Particle("p+")',
+            'is_category("fermion")': True,
+            'is_category(["fermion"])': True,
+            'is_category({"fermion"})': True,
+            'is_category(any_of=("boson", "fermion"))': True,
+            'is_category(require=["boson", "fermion"])': False,
+            'is_category(("element", "isotope", "ion"))': True,
+            'is_category("charged")': True,
+            "periodic_table.group": 1,
+            "periodic_table.block": "s",
+            "periodic_table.period": 1,
+            "periodic_table.category": "nonmetal",
+            "binding_energy": 0 * u.J,
+            "recombine()": "H-1 0+",
+        },
+    ),
+    (
+        "H",
+        {"Z": 1, "mass_numb": 1},
         {
             "symbol": "p+",
             "element": "H",
@@ -518,7 +557,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
             except Exception:
                 errmsg += f"\n{call}.{key} raises an unexpected exception."
 
-    if len(errmsg) > 0:
+    if errmsg:
         raise Exception(f"Problems with {call}:{errmsg}")
 
 
@@ -545,56 +584,60 @@ def test_Particle_equivalent_cases(equivalent_particles):
     run_test_equivalent_calls(Particle, *equivalent_particles)
 
 
-# arg, kwargs, attribute, exception
+# args, kwargs, attribute, exception
 test_Particle_error_table = [
-    ("a", {}, "", InvalidParticleError),
-    ("d+", {"mass_numb": 9}, "", InvalidParticleError),
-    ("H", {"mass_numb": 99}, "", InvalidParticleError),
-    ("Au-818", {}, "", InvalidParticleError),
-    ("Au-12", {}, "", InvalidParticleError),
-    ("Au", {"mass_numb": 13}, "", InvalidParticleError),
-    ("Au", {"mass_numb": 921}, "", InvalidParticleError),
-    ("e-", {"Z": -1}, "", InvalidParticleError),
-    ("e-", {}, ".atomic_number", InvalidElementError),
-    ("alpha", {}, ".standard_atomic_weight", InvalidElementError),
-    ("Fe-56", {}, ".standard_atomic_weight", InvalidElementError),
-    ("e-", {}, ".standard_atomic_weight", InvalidElementError),
-    ("tau-", {}, ".element_name", InvalidElementError),
-    ("tau+", {}, ".atomic_number", InvalidElementError),
-    ("neutron", {}, ".atomic_number", InvalidElementError),
-    ("H", {"Z": 0}, ".mass_number", InvalidIsotopeError),
-    ("neutron", {}, ".mass_number", InvalidIsotopeError),
-    ("He", {"mass_numb": 4}, ".charge", ChargeError),
-    ("He", {"mass_numb": 4}, ".charge_number", ChargeError),
-    ("Fe", {}, ".spin", MissingParticleDataError),
-    ("nu_e", {}, ".mass", MissingParticleDataError),
-    ("Og", {}, ".standard_atomic_weight", MissingParticleDataError),
-    (Particle("C-14"), {"mass_numb": 13}, "", InvalidParticleError),
-    (Particle("Au 1+"), {"Z": 2}, "", InvalidParticleError),
-    ([], {}, "", TypeError),
-    ("Fe", {}, ".ionize()", ChargeError),
-    ("D", {}, ".recombine()", ChargeError),
-    ("Fe 26+", {}, ".ionize()", InvalidIonError),
-    ("Fe 6+", {}, ".ionize(-1)", ValueError),
-    ("Fe 25+", {}, ".recombine(0)", ValueError),
-    ("Fe 6+", {}, ".ionize(4.6)", TypeError),
-    ("Fe 25+", {}, ".recombine(8.2)", TypeError),
-    ("e-", {}, ".ionize()", InvalidElementError),
-    ("e+", {}, ".recombine()", InvalidElementError),
+    (["a"], {}, "", InvalidParticleError),
+    (["d+"], {"mass_numb": 9}, "", InvalidParticleError),
+    (["H"], {"mass_numb": 99}, "", InvalidParticleError),
+    (["Au-818"], {}, "", InvalidParticleError),
+    (["Au-12"], {}, "", InvalidParticleError),
+    (["Au"], {"mass_numb": 13}, "", InvalidParticleError),
+    (["Au"], {"mass_numb": 921}, "", InvalidParticleError),
+    (["e-"], {"Z": -1}, "", InvalidParticleError),
+    (["e-"], {}, ".atomic_number", InvalidElementError),
+    (["alpha"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["Fe-56"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["e-"], {}, ".standard_atomic_weight", InvalidElementError),
+    (["tau-"], {}, ".element_name", InvalidElementError),
+    (["tau+"], {}, ".atomic_number", InvalidElementError),
+    (["neutron"], {}, ".atomic_number", InvalidElementError),
+    (["H"], {"Z": 0}, ".mass_number", InvalidIsotopeError),
+    (["neutron"], {}, ".mass_number", InvalidIsotopeError),
+    (["He"], {"mass_numb": 4}, ".charge", ChargeError),
+    (["He"], {"mass_numb": 4}, ".charge_number", ChargeError),
+    (["Fe"], {}, ".spin", MissingParticleDataError),
+    (["nu_e"], {}, ".mass", MissingParticleDataError),
+    (["Og"], {}, ".standard_atomic_weight", MissingParticleDataError),
+    ([Particle("C-14")], {"mass_numb": 13}, "", InvalidParticleError),
+    ([Particle("Au 1+")], {"Z": 2}, "", InvalidParticleError),
+    ([[]], {}, "", TypeError),
+    (["Fe"], {}, ".ionize()", ChargeError),
+    (["D"], {}, ".recombine()", ChargeError),
+    (["Fe 26+"], {}, ".ionize()", InvalidIonError),
+    (["Fe 6+"], {}, ".ionize(-1)", ValueError),
+    (["Fe 25+"], {}, ".recombine(0)", ValueError),
+    (["Fe 6+"], {}, ".ionize(4.6)", TypeError),
+    (["Fe 25+"], {}, ".recombine(8.2)", TypeError),
+    (["e-"], {}, ".ionize()", InvalidElementError),
+    (["e+"], {}, ".recombine()", InvalidElementError),
+    (["H", 1], {}, "", TypeError),
+    (["H", 1, 1], {}, "", TypeError),
 ]
 
 
-@pytest.mark.parametrize("arg, kwargs, attribute, exception", test_Particle_error_table)
-def test_Particle_errors(arg, kwargs, attribute, exception):
+@pytest.mark.parametrize(
+    "args, kwargs, attribute, exception", test_Particle_error_table
+)
+def test_Particle_errors(args, kwargs, attribute, exception):
     """
     Test that the appropriate exceptions are raised during the creation
     and use of a `~plasmapy.particles.Particle` object.
     """
     with pytest.raises(exception):
-        exec(f"Particle(arg, **kwargs){attribute}")
+        exec(f"Particle(*args, **kwargs){attribute}")
         pytest.fail(
             f"The following command: "
-            f"\n\n  {call_string(Particle, arg, kwargs)}{attribute}\n\n"
+            f"\n\n  {call_string(Particle, args, kwargs)}{attribute}\n\n"
             f"did not raise a {exception.__name__} as expected"
         )
 
@@ -635,6 +678,18 @@ def test_Particle_cmp():
     assert electron != 1
 
     assert electron != "dfasdf"
+
+
+@pytest.mark.parametrize("particle", ["p+", "D+", "T+", "alpha"])
+def test_particle_equality_special_nuclides(particle):
+    particle_from_string = Particle(particle)
+    particle_from_numbers = Particle(
+        particle_from_string.element_name,
+        Z=particle_from_string.charge_number,
+        mass_numb=particle_from_string.mass_number,
+    )
+    assert particle_from_string == particle_from_numbers
+    assert particle_from_string._attributes == particle_from_numbers._attributes
 
 
 nuclide_mass_and_mass_equiv_table = [
@@ -710,7 +765,7 @@ def test_particle_half_life_string():
     """
 
     for isotope in known_isotopes():
-        half_life = _isotopes[isotope].get("half-life", None)
+        half_life = data_about_isotopes[isotope].get("half-life", None)
         if isinstance(half_life, str):
             break
 
@@ -763,7 +818,7 @@ def test_unary_operator_for_elements():
         Particle("C").antiparticle
 
 
-@pytest.fixture(params=ParticleZoo.everything)
+@pytest.fixture(params=particle_zoo.everything)
 def particle(request):
     return Particle(request.param)
 
@@ -921,14 +976,8 @@ customized_particle_tests = [
 @pytest.mark.parametrize("cls, kwargs, attr, expected", customized_particle_tests)
 def test_customized_particles(cls, kwargs, attr, expected):
     """Test the attributes of dimensionless and custom particles."""
-
-    if "mass" not in kwargs or "charge" not in kwargs:
-        with pytest.warns(MissingParticleDataWarning):
-            instance = cls(**kwargs)
-    else:
-        instance = cls(**kwargs)
+    instance = cls(**kwargs)
     value = getattr(instance, attr)
-
     if not u.isclose(value, expected, equal_nan=True):
         pytest.fail(
             f"{call_string(cls, kwargs=kwargs)}.{attr} should return a value "
@@ -946,9 +995,8 @@ def test_customized_particles(cls, kwargs, attr, expected):
     ],
 )
 def test_custom_particle_symbol(cls, symbol, expected):
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls(symbol=symbol)
-        assert instance.symbol == expected
+    instance = cls(symbol=symbol)
+    assert instance.symbol == expected
 
 
 customized_particle_errors = [
@@ -1038,8 +1086,7 @@ def test_customized_particle_repr(cls, kwargs, expected_repr):
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str):
     """Test that the symbol attribute cannot be set to something besides a string"""
-    with pytest.warns(MissingParticleDataWarning):
-        instance = cls()
+    instance = cls()
     with pytest.raises(TypeError):
         instance.symbol = not_a_str
 
@@ -1139,8 +1186,7 @@ def test_custom_particles_from_json_string(
     JSON representation"""
     if expected_exception is None:
         if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
+            instance = cls(**kwargs)
         else:
             instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
@@ -1172,11 +1218,7 @@ def test_custom_particles_from_json_file(cls, kwargs, json_string, expected_exce
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                instance = cls(**kwargs)
-        else:
-            instance = cls(**kwargs)
+        instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
         assert u.isclose(
@@ -1401,3 +1443,43 @@ def test_CustomParticle_cmp():
 
     assert not particle1 == 1
     assert particle1 != 1
+
+
+test_molecule_table = [
+    (2 * 126.90447 * u.u, 0 * u.C, "I2", "I2", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2 1+", None),
+    (2 * 126.90447 * u.u, e.si, "I2 1+", "I2", 1),
+    (2 * 126.90447 * u.u, e.si, "II 1+", "II", 1),
+]
+
+
+@pytest.mark.parametrize("m, Z, symbol, m_symbol, m_Z", test_molecule_table)
+def test_molecule(m, Z, symbol, m_symbol, m_Z):
+    """Test ``molecule`` function."""
+    assert CustomParticle(m, Z, symbol) == molecule(m_symbol, m_Z)
+
+
+test_molecule_error_table = [
+    ("Zz", None),
+    ("", None),
+    ("I2+", 2),
+    ("Iii", None),
+    ("e2H3", None),
+]
+
+
+@pytest.mark.parametrize("symbol, Z", test_molecule_error_table)
+def test_molecule_error(symbol, Z):
+    """Test the error raised in case of a bad molecule symbol."""
+    with pytest.raises(InvalidParticleError):
+        m = molecule(symbol, Z)
+
+
+def test_molecule_other():
+    """Test fallback to |Particle| object and warning in case of redundant charge."""
+    assert Particle("I") == molecule("I")
+
+    with pytest.warns(ParticleWarning):
+        assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
+            "I2 1+", Z=1
+        )

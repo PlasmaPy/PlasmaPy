@@ -131,7 +131,8 @@ from plasmapy.formulary.collisions import (
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )
-from plasmapy.formulary.parameters import _grab_charge, Hall_parameter
+from plasmapy.formulary.dimensionless import Hall_parameter
+from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
@@ -224,12 +225,12 @@ class ClassicalTransport:
 
     hall_e : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the electron Hall parameter.
-        If `None`, `~plasmapy.formulary.parameters.Hall_parameter` will
+        If `None`, `~plasmapy.formulary.dimensionless.Hall_parameter` will
         be used. Useful for comparing calculations.
 
     hall_i : `float` or dimensionless `~astropy.units.Quantity`, optional
         Force a particular value to be used for the ion Hall parameter. If
-        `None`, `~plasmapy.formulary.parameters.Hall_parameter` will be
+        `None`, `~plasmapy.formulary.dimensionless.Hall_parameter` will be
         used. Useful for comparing calculations.
 
     mu : `float` or dimensionless `~astropy.units.Quantity`, optional

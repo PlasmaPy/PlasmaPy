@@ -9,6 +9,7 @@ __all__ = [
     "DimensionlessParticle",
     "Particle",
     "ParticleLike",
+    "molecule",
 ]
 
 import astropy.constants as const
@@ -23,7 +24,7 @@ from datetime import datetime
 from numbers import Integral, Real
 from typing import Iterable, List, Optional, Set, Tuple, Union
 
-from plasmapy.particles.elements import _elements, _PeriodicTable
+from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -34,18 +35,6 @@ from plasmapy.particles.exceptions import (
     MissingParticleDataWarning,
     ParticleError,
     ParticleWarning,
-)
-from plasmapy.particles.isotopes import _isotopes
-from plasmapy.particles.parsing import (
-    _dealias_particle_aliases,
-    _invalid_particle_errmsg,
-    _parse_and_check_atomic_input,
-)
-from plasmapy.particles.special_particles import (
-    _antiparticles,
-    _Particles,
-    _special_ion_masses,
-    ParticleZoo,
 )
 from plasmapy.utils import roman
 from plasmapy.utils.decorators import deprecated
@@ -245,10 +234,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle| instance.
 
-    mass_numb : `int`, optional
+    mass_numb : `int`, optional, keyword-only
         The mass number of an isotope or nuclide.
 
-    Z : `int`, optional
+    Z : `int`, optional, keyword-only
         The charge number of the particle.
 
     Raises
@@ -421,9 +410,51 @@ class Particle(AbstractPhysicalParticle):
     ``'transition metal'``, ``'uncharged'``, and ``'unstable'``.
     """
 
-    @staticmethod
-    def _validate_arguments(argument, Z, mass_numb):
+    def __init__(
+        self,
+        argument: ParticleLike,
+        *_,
+        mass_numb: Integral = None,
+        Z: Integral = None,
+    ):
+
+        # TODO: Remove the following block during or after the 0.9.0 release
+
+        if _:
+            raise TypeError(
+                "The parameters mass_numb and Z to Particle are now "
+                "keyword-only [e.g., Particle('H', mass_numb=2, Z=1)]."
+            )
+
+        # If argument is a Particle instance, then construct a new
+        # Particle instance for the same particle.
+
+        if isinstance(argument, Particle):
+            argument = argument.symbol
+
+        self.__inputs = argument, mass_numb, Z
+
+        self._initialize_attributes_and_categories()
+        self._store_particle_identity()
+        self._assign_particle_attributes()
+        self._add_charge_information()
+        self._add_half_life_information()
+
+        # If __name__ is not defined here, then problems with the doc
+        # build arise related to the Particle instances that are
+        # defined in plasmapy/particles/__init__.py.
+
+        self.__name__ = self.__repr__()
+
+    def _initialize_attributes_and_categories(self):
+        """Create empty collections for attributes and categories."""
+        self._attributes = defaultdict(type(None))
+        self._categories = set()
+
+    def _validate_inputs(self):
         """Raise appropriate exceptions when inputs are invalid."""
+        argument, mass_numb, Z = self.__inputs
+
         if not isinstance(argument, (Integral, np.integer, str, Particle)):
             raise TypeError(
                 "The first positional argument when creating a "
@@ -437,37 +468,77 @@ class Particle(AbstractPhysicalParticle):
         if Z is not None and not isinstance(Z, Integral):
             raise TypeError("Z is not an integer.")
 
-    def _initialize_attrs_categories(self):
-        """Create empty collections for attributes & categories."""
+    def _store_particle_identity(self):
+        """Store the particle's symbol and identifying information."""
+        self._validate_inputs()
+        argument, mass_numb, Z = self.__inputs
+        symbol = _parsing.dealias_particle_aliases(argument)
+        if symbol in _special_particles.data_about_special_particles:
+            self._attributes["symbol"] = symbol
+        else:
+            self._store_identity_of_atom(argument)
 
-        self._attributes = defaultdict(type(None))
-        self._categories = set()
+    def _store_identity_of_atom(self, argument):
+        """
+        Store the particle's symbol, element, isotope, ion, mass number,
+        and charge number.
+        """
+        _, mass_numb, Z = self.__inputs
 
-    def _initialize_special_particle(self, particle_symbol, Z, mass_numb):
+        try:
+            information_about_atom = _parsing.parse_and_check_atomic_input(
+                argument,
+                mass_numb=mass_numb,
+                Z=Z,
+            )
+        except Exception as exc:
+            errmsg = _parsing.invalid_particle_errmsg(
+                argument, mass_numb=mass_numb, Z=Z
+            )
+            raise InvalidParticleError(errmsg) from exc
+
+        self._attributes["symbol"] = information_about_atom["symbol"]
+
+        for key in information_about_atom:
+            self._attributes[key] = information_about_atom[key]
+
+    def _assign_particle_attributes(self):
+        """Assign particle attributes and categories."""
+        if self.symbol in _special_particles.data_about_special_particles:
+            self._assign_special_particle_attributes()
+        else:
+            self._assign_atom_attributes()
+
+    def _assign_special_particle_attributes(self):
         """Initialize special particles."""
         attributes = self._attributes
         categories = self._categories
 
-        attributes["symbol"] = particle_symbol
+        for attribute in _special_particles.data_about_special_particles[self.symbol]:
+            attributes[attribute] = _special_particles.data_about_special_particles[
+                self.symbol
+            ][attribute]
 
-        for attribute in _Particles[particle_symbol].keys():
-            attributes[attribute] = _Particles[particle_symbol][attribute]
-
-        particle_taxonomy = ParticleZoo._taxonomy_dict
+        particle_taxonomy = _special_particles.particle_zoo._taxonomy_dict
         all_categories = particle_taxonomy.keys()
 
         for category in all_categories:
-            if particle_symbol in particle_taxonomy[category]:
+            if self.symbol in particle_taxonomy[category]:
                 categories.add(category)
 
         if attributes["name"] in _specific_particle_categories:
             categories.add(attributes["name"])
 
-        if particle_symbol == "p+":
+        # Protons are treated specially because they can be considered
+        # both as special particles and atomic particles.
+
+        if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
+        _, mass_numb, Z = self.__inputs
+
         if mass_numb is not None or Z is not None:
-            if particle_symbol == "p+" and (mass_numb == 1 or Z == 1):
+            if self.symbol == "p+" and (mass_numb == 1 or Z == 1):
                 warnings.warn(
                     "Redundant mass number or charge information.", ParticleWarning
                 )
@@ -479,21 +550,10 @@ class Particle(AbstractPhysicalParticle):
                     f"use:  Particle({repr(attributes['particle'])})"
                 )
 
-    def _initialize_atom(self, argument, Z, mass_numb):
-        """Assign attributes and categories to atoms."""
+    def _assign_atom_attributes(self):
+        """Assign attributes and categories to elements, isotopes, and ions."""
         attributes = self._attributes
         categories = self._categories
-
-        try:
-            nomenclature = _parse_and_check_atomic_input(
-                argument, mass_numb=mass_numb, Z=Z
-            )
-        except Exception as exc:
-            errmsg = _invalid_particle_errmsg(argument, mass_numb=mass_numb, Z=Z)
-            raise InvalidParticleError(errmsg) from exc
-
-        for key in nomenclature.keys():
-            attributes[key] = nomenclature[key]
 
         element = attributes["element"]
         isotope = attributes["isotope"]
@@ -508,10 +568,10 @@ class Particle(AbstractPhysicalParticle):
 
         # Element properties
 
-        Element = _elements[element]
+        this_element = _elements.data_about_elements[element]
 
-        attributes["atomic number"] = Element["atomic number"]
-        attributes["element name"] = Element["element name"]
+        attributes["atomic number"] = this_element["atomic number"]
+        attributes["element name"] = this_element["element name"]
 
         # Set the lepton number to zero for elements, isotopes, and
         # ions.  The lepton number will probably come up primarily
@@ -521,31 +581,31 @@ class Particle(AbstractPhysicalParticle):
 
         if isotope:
 
-            Isotope = _isotopes[isotope]
+            this_isotope = _isotopes.data_about_isotopes[isotope]
 
-            attributes["baryon number"] = Isotope["mass number"]
-            attributes["isotope mass"] = Isotope.get("mass", None)
-            attributes["isotopic abundance"] = Isotope.get("abundance", 0.0)
+            attributes["baryon number"] = this_isotope["mass number"]
+            attributes["isotope mass"] = this_isotope.get("mass", None)
+            attributes["isotopic abundance"] = this_isotope.get("abundance", 0.0)
 
-            if Isotope["stable"]:
+            if this_isotope["stable"]:
                 attributes["half-life"] = np.inf * u.s
             else:
-                attributes["half-life"] = Isotope.get("half-life", None)
+                attributes["half-life"] = this_isotope.get("half-life", None)
 
         if element and not isotope:
-            attributes["standard atomic weight"] = Element.get("atomic mass", None)
+            attributes["standard atomic weight"] = this_element.get("atomic mass", None)
 
-        if ion in _special_ion_masses.keys():
-            attributes["mass"] = _special_ion_masses[ion]
+        if ion in _special_particles.special_ion_masses:
+            attributes["mass"] = _special_particles.special_ion_masses[ion]
 
-        attributes["periodic table"] = _PeriodicTable(
-            group=Element["group"],
-            period=Element["period"],
-            block=Element["block"],
-            category=Element["category"],
+        attributes["periodic table"] = _elements.PeriodicTable(
+            group=this_element["group"],
+            period=this_element["period"],
+            block=this_element["block"],
+            category=this_element["category"],
         )
 
-        categories.add(Element["category"])
+        categories.add(this_element["category"])
 
     def _add_charge_information(self):
         """Assign attributes and categories related to charge information."""
@@ -568,38 +628,6 @@ class Particle(AbstractPhysicalParticle):
                 self._categories.add("stable")
             else:
                 self._categories.add("unstable")
-
-    def __init__(
-        self,
-        argument: ParticleLike,
-        mass_numb: Integral = None,
-        Z: Integral = None,
-    ):
-        """Instantiate a |Particle| object and set private attributes."""
-
-        # If argument is a Particle instance, then we will construct a
-        # new Particle instance for the same Particle (essentially a
-        # copy).
-
-        if isinstance(argument, Particle):
-            argument = argument.symbol
-
-        self._validate_arguments(argument, Z=Z, mass_numb=mass_numb)
-        self._initialize_attrs_categories()
-
-        particle_symbol = _dealias_particle_aliases(argument)
-
-        is_special_particle = particle_symbol in _Particles.keys()
-
-        if is_special_particle:
-            self._initialize_special_particle(particle_symbol, Z=Z, mass_numb=mass_numb)
-        else:
-            self._initialize_atom(particle_symbol, Z=Z, mass_numb=mass_numb)
-
-        self._add_charge_information()
-        self._add_half_life_information()
-
-        self.__name__ = self.__repr__()
 
     def __repr__(self) -> str:
         """
@@ -663,10 +691,10 @@ class Particle(AbstractPhysicalParticle):
         # TODO: create function in utils to account for equality between
         # defaultdicts, and implement it here
 
-        for attribute in self._attributes.keys():
+        for attribute in self._attributes:
             other._attributes[attribute]
 
-        for attribute in other._attributes.keys():
+        for attribute in other._attributes:
             self._attributes[attribute]
 
         same_attributes = self._attributes == other._attributes
@@ -768,8 +796,8 @@ class Particle(AbstractPhysicalParticle):
         >>> ~antineutron
         Particle("n")
         """
-        if self.symbol in _antiparticles.keys():
-            return Particle(_antiparticles[self.symbol])
+        if self.symbol in _special_particles.antiparticles:
+            return Particle(_special_particles.antiparticles[self.symbol])
         else:
             raise ParticleError(
                 "The unary operator can only be used for elementary "
@@ -1091,9 +1119,9 @@ class Particle(AbstractPhysicalParticle):
         if self.isotope == "H-1":
             return const.m_p
         elif self.isotope == "D":
-            return _special_ion_masses["D 1+"]
+            return _special_particles.special_ion_masses["D 1+"]
         elif self.isotope == "T":
-            return _special_ion_masses["T 1+"]
+            return _special_particles.special_ion_masses["T 1+"]
         elif self.symbol == "n":
             return const.m_n
 
@@ -1919,7 +1947,7 @@ class DimensionlessParticle(AbstractParticle):
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
         >>> import pytest
-        >>> with pytest.warns(MissingParticleDataWarning): dimensionless_particle = DimensionlessParticle(mass=1.0)
+        >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -1954,10 +1982,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The mass of a dimensionless particle must be a real "
                 f"number that is greater than or equal to zero, not: {m}"
             ) from None
-        if self._mass is np.nan:
-            warnings.warn(
-                "DimensionlessParticle mass set to NaN", MissingParticleDataWarning
-            )
 
     @charge.setter
     def charge(self, q: Optional[Union[Real, u.Quantity]]):
@@ -1968,10 +1992,6 @@ class DimensionlessParticle(AbstractParticle):
                 f"The charge of a dimensionless particle must be a real "
                 f"number, not: {q}"
             ) from None
-        if self._charge is np.nan:
-            warnings.warn(
-                "DimensionlessParticle charge set to NaN", MissingParticleDataWarning
-            )
 
     @property
     def symbol(self) -> str:
@@ -2070,8 +2090,18 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> custom_particle = CustomParticle(mass=1.2e-26 * u.kg, charge=9.2e-19 * u.C)
         >>> repr(custom_particle)
         'CustomParticle(mass=1.2...e-26 kg, charge=9.2...e-19 C)'
+
+        If present, the symbol is displayed as well.
+
+        >>> custom_particle = CustomParticle(mass=4.21e-25 * u.kg, charge=1.6e-19 * u.C, symbol="I2+")
+        >>> repr(custom_particle)
+        'CustomParticle(mass=4.21e-25 kg, charge=1.6e-19 C, symbol=I2+)'
         """
-        return f"CustomParticle(mass={self.mass}, charge={self.charge})"
+        return (
+            f"CustomParticle(mass={self.mass}, charge={self.charge})"
+            if self._symbol is None
+            else f"CustomParticle(mass={self.mass}, charge={self.charge}, symbol={self.symbol})"
+        )
 
     @property
     def json_dict(self) -> dict:
@@ -2091,7 +2121,7 @@ class CustomParticle(AbstractPhysicalParticle):
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
             'symbol': 'ξ'}}}}
         >>> import pytest
-        >>> with pytest.warns(MissingParticleDataWarning): custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
+        >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
             'module': 'plasmapy.particles.particle_class',
@@ -2116,9 +2146,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def charge(self, q: Optional[Union[u.Quantity, Real]]):
         if q is None:
             q = np.nan * u.C
-            warnings.warn(
-                "CustomParticle charge set to NaN C", MissingParticleDataWarning
-            )
         elif isinstance(q, str):
             q = u.Quantity(q)
 
@@ -2160,9 +2187,6 @@ class CustomParticle(AbstractPhysicalParticle):
     def mass(self, m: u.kg):
         if m is None:
             m = np.nan * u.kg
-            warnings.warn(
-                "CustomParticle mass set to NaN kg", MissingParticleDataWarning
-            )
         elif isinstance(m, str):
             m = u.Quantity(m)
         elif not isinstance(m, u.Quantity):
@@ -2208,12 +2232,12 @@ class CustomParticle(AbstractPhysicalParticle):
 
         If no symbol was defined, then return the value given by `repr`.
         """
-        return self._symbol
+        return repr(self) if self._symbol is None else self._symbol
 
     @symbol.setter
     def symbol(self, new_symbol: str):
         if new_symbol is None:
-            self._symbol = repr(self)
+            self._symbol = None
         elif isinstance(new_symbol, str):
             self._symbol = new_symbol
         else:
@@ -2242,7 +2266,91 @@ class CustomParticle(AbstractPhysicalParticle):
         Allow use of `hash` so that a |CustomParticle| instance may be used
         as a key in a `dict`.
         """
-        return hash((self.__repr__(), self.symbol))
+        return hash(self.__repr__())
+
+
+def molecule(
+    symbol: str, Z: Optional[Integral] = None
+) -> Union[Particle, CustomParticle]:
+    """
+    Parse a molecule symbol into a |CustomParticle| or |Particle|.
+
+    Parameters
+    ----------
+    symbol : 'str'
+        Symbol of the molecule to be parsed.
+
+    Z : 'Integral', optional
+        Charge number if not present in symbol.
+
+    Returns
+    -------
+        A |Particle| object if the input could be parsed as such,
+        or a |CustomParticle| with the provided symbol, charge,
+        and a mass corresponding to the sum of the molecule elements.
+
+    Raises
+    ------
+    'InvalidParticleError'
+        If ``symbol`` couldn't be parsed.
+
+    Warns
+    -----
+    `ParticleWarning`
+        If the charge is given both as an argument and in the symbol.
+
+    Examples
+    --------
+    >>> from plasmapy.particles import molecule
+    >>> molecule("I2")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=0.0 C, symbol=I2)
+
+    Charge information is given either within the symbol or as a second parameter.
+
+    >>> molecule("I2+")
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+
+    >>> molecule("I2", 1)
+    CustomParticle(mass=4.214596603223354e-25 kg, charge=1.602176634e-19 C, symbol=I2 1+)
+
+    Inputs that can be interpreted as |Particle| instances are returned as such.
+
+    >>> molecule("Xe")
+    Particle("Xe")
+
+    The given symbol is preserved in the |CustomParticle| instance. This permits
+    us to differentiate between isomers:
+
+    >>> molecule("CH4O2") == molecule("CH3OOH")
+    False
+    """
+    try:
+        return Particle(symbol, Z=Z)
+    except ParticleError:
+        element_dict, bare_symbol, Z = _parsing.parse_and_check_molecule_input(
+            symbol, Z
+        )
+        mass = 0 * u.kg
+        for element_symbol, amount in element_dict.items():
+            try:
+                element = Particle(element_symbol)
+            except ParticleError as e:
+                raise InvalidParticleError(
+                    f"Could not identify {element_symbol}."
+                ) from e
+            if not element.is_category("element"):
+                raise InvalidParticleError(
+                    f"Molecule symbol contains a particle that is not an element: {element.symbol}"
+                )
+            mass += amount * element.mass
+
+        if Z is None:
+            charge = 0 * u.C
+        else:
+            charge = Z * const.e.si
+            bare_symbol += f" {-Z}-" if Z < 0 else f" {Z}+"
+
+        return CustomParticle(mass=mass, charge=charge, symbol=bare_symbol)
 
 
 ParticleLike = Union[str, Integral, Particle, CustomParticle]
