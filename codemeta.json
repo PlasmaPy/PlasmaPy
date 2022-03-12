@@ -39,15 +39,15 @@
         "science"
     ],
     "programmingLanguage": [
-        "Python 3.7",
         "Python 3.8",
-        "Python 3.9"
+        "Python 3.9",
+        "Python 3.10"
     ],
     "operatingSystem": [
         "OS Independent"
     ],
     "softwareRequirements": [
-        "python >= 3.7",
+        "python >= 3.8",
         "astropy >= 4.0",
         "h5py >= 2.8",
         "lmfit >= 1.0.1",
