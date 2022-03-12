@@ -144,8 +144,6 @@ class IonizationStateCollection:
         kappa: Real = np.inf,
     ):
 
-        abundances_provided = abundances is not None or log_abundances is not None
-
         set_abundances = True
         if isinstance(inputs, dict):
             all_quantities = np.all(
@@ -159,6 +157,10 @@ class IonizationStateCollection:
                     raise ParticleError(
                         "Units must be inverse volume for number densities."
                     )
+                abundances_provided = (
+                    abundances is not None or log_abundances is not None
+                )
+
                 if abundances_provided:
                     raise ParticleError(
                         "Abundances cannot be provided if inputs "
@@ -167,7 +169,7 @@ class IonizationStateCollection:
                 set_abundances = False
 
         try:
-            self._pars = dict()
+            self._pars = {}
             self.T_e = T_e
             self.n0 = n0
             self.tol = tol
@@ -213,20 +215,15 @@ class IonizationStateCollection:
                     n_elem=np.sum(self.number_densities[particle]),
                     tol=self.tol,
                 )
-            else:
-                if not isinstance(int_charge, Integral):
-                    raise TypeError(
-                        f"{int_charge} is not a valid charge for {particle}."
-                    )
-                elif not 0 <= int_charge <= atomic_number(particle):
-                    raise ChargeError(
-                        f"{int_charge} is not a valid charge for {particle}."
-                    )
-                return IonicLevel(
-                    ion=particle_symbol(particle, Z=int_charge),
-                    ionic_fraction=self.ionic_fractions[particle][int_charge],
-                    number_density=self.number_densities[particle][int_charge],
-                )
+            if not isinstance(int_charge, Integral):
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+            elif not 0 <= int_charge <= atomic_number(particle):
+                raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+            return IonicLevel(
+                ion=particle_symbol(particle, Z=int_charge),
+                ionic_fraction=self.ionic_fractions[particle][int_charge],
+                number_density=self.number_densities[particle][int_charge],
+            )
         except Exception as exc:
             raise IndexError(errmsg) from exc
 
@@ -764,19 +761,14 @@ class IonizationStateCollection:
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
         """
-        log_abundances_dict = {}
-        for key in self.abundances.keys():
-            log_abundances_dict[key] = np.log10(self.abundances[key])
-        return log_abundances_dict
+        return {key: np.log10(self.abundances[key]) for key in self.abundances.keys()}
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
-                new_abundances_input = {}
-                for key in value.keys():
-                    new_abundances_input[key] = 10 ** value[key]
+                new_abundances_input = {key: 10 ** value[key] for key in value.keys()}
                 self.abundances = new_abundances_input
             except Exception:
                 raise ParticleError("Invalid log_abundances.") from None
@@ -978,11 +970,9 @@ class IonizationStateCollection:
         """
         separator_line = 64 * "-"
 
-        output = []
-
-        output.append(
+        output = [
             f"IonizationStateCollection instance for: {', '.join(self.base_particles)}"
-        )
+        ]
 
         # Get the ionic symbol with the corresponding ionic fraction and
         # number density (if available), but only for the most abundant
