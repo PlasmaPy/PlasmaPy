@@ -83,8 +83,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
     <Quantity 0.002182... m>
 
     """
-    lambda_D = np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
-    return lambda_D
+    return np.sqrt(eps0 * k_B * T_e / (n_e * e ** 2))
 
 
 lambdaD_ = Debye_length
@@ -271,9 +270,7 @@ def gyroradius(
 
     omega_ci = frequencies.gyrofrequency(B, particle)
 
-    r_Li = np.abs(Vperp) / omega_ci
-
-    return r_Li
+    return np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
