@@ -12,7 +12,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
-[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml)
+[![fortnightly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml)
 [![Style linters](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
@@ -25,7 +25,7 @@
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
 [PlasmaPy](https://www.plasmapy.org/) is an open source, community-developed
-Python 3.7+ package for plasma science. PlasmaPy intends to be for plasma
+Python 3.8+ package for plasma science. PlasmaPy intends to be for plasma
 science what [Astropy](https://github.com/astropy/astropy) is for astronomy
 — a collection of functionality commonly used and shared between plasma
 scientists and researchers globally, running within and leveraging the

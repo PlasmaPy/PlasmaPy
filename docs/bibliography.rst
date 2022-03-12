@@ -1,3 +1,5 @@
+.. _bibliography:
+
 ############
 Bibliography
 ############
