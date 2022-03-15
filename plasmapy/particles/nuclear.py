@@ -231,7 +231,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                 if particle.element and not particle.isotope:
                     raise ParticleError(errmsg)
 
-                [particles.append(particle) for _ in range(multiplier)]
+                particles += [particle] * multiplier
 
             except Exception:
                 raise ParticleError(
