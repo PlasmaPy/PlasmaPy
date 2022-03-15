@@ -945,10 +945,10 @@ class IonizationState:
 
         if not np.isnan(self.n_elem):
             attributes.extend(
-                (
+                [
                     f"n_elem = {self.n_elem.value:.2e} m**-3",
                     f"n_e = {self.n_e.value:.2e} m**-3",
-                )
+                ]
             )
 
         if not np.isnan(self.T_e):
