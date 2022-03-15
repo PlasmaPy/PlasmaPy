@@ -1,7 +1,14 @@
 # these are dependencies required to run package tests
 # ought to mirror 'tests' under options.extras_require in setup.cfg
 -r extras.txt
+dlint
+flake8
+flake8-absolute-import
+flake8-rst-docstrings
+flake8-use-fstring
 hypothesis
+pydocstyle
+pygments
 pytest >= 5.4.0
 pytest-regressions
 pytest-xdist
