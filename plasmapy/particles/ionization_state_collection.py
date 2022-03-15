@@ -215,6 +215,7 @@ class IonizationStateCollection:
                     n_elem=np.sum(self.number_densities[particle]),
                     tol=self.tol,
                 )
+
             if not isinstance(int_charge, Integral):
                 raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
             elif not 0 <= int_charge <= atomic_number(particle):
