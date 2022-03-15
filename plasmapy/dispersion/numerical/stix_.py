@@ -128,14 +128,10 @@ def stix(
 
     """
 
-    for arg_name in "B":
-        value = locals()[arg_name].squeeze()
-        if not (value.ndim == 0):
-            raise TypeError(
-                f"Argument '{arg_name}' must be a float or an integer."
-                f"shape {value.shape}."
-            )
-        locals()[arg_name] = value
+    if B.ndim != 0:
+        raise ValueError(
+            f"Argument 'B' must be a scalar, got array of shape {B.shape}."
+        )
 
     if omega_ions.ndim == 0 and len(ions) == 0:
         omega_int = True
