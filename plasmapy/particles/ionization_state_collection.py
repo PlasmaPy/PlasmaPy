@@ -762,14 +762,18 @@ class IonizationStateCollection:
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
         """
-        return {key: np.log10(self.abundances[key]) for key in self.abundances.keys()}
+        return {
+            atom: np.log10(abundance) for atom, abundance in self.abundances.items()
+        }
 
     @log_abundances.setter
     def log_abundances(self, value: Optional[Dict[str, Real]]):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
-                new_abundances_input = {key: 10 ** value[key] for key in value.keys()}
+                new_abundances_input = {
+                    atom: 10 ** log_abundance for atom, log_abundance in value.items()
+                }
                 self.abundances = new_abundances_input
             except Exception:
                 raise ParticleError("Invalid log_abundances.") from None
