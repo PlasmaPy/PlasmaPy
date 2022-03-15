@@ -6,29 +6,30 @@ channels:
 
 dependencies:
 - python=3.10
-- numpy >= 1.19.0
-- scipy >= 1.5.0
 - astropy >= 4.3.1
 - h5py >= 3.0.0
 - matplotlib >= 3.3.0
 - mpmath >= 1.2.1
+- numba
+- numpy >= 1.19.0
 - pandas >= 1.0.0
 - pillow
 - pip
+- scipy >= 1.5.0
 - xarray >= 0.15.0
-- numba
+
 - pip:
-  - hypothesis
   - docutils
-  - numpydoc
-  - pytest >= 5.4.0
+  - hypothesis
   - lmfit >= 1.0.0
+  - notebook
+  - numpydoc
+  - packaging
   - pygments >= 2.11.0
+  - pytest >= 5.4.0
+  - pytest-regressions
   - sphinx >= 3.2.0
   - sphinx-gallery
   - sphinx-hoverxref >= 1.0.0
   - sphinx_rtd_theme >= 1.0.0
   - towncrier >= 19.2.0
-  - pytest-regressions
-  - notebook
-  - packaging
