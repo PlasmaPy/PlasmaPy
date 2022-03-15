@@ -2,6 +2,6 @@
 # ought to mirror 'tests' under options.extras_require in setup.cfg
 -r extras.txt
 hypothesis
-pytest >= 5.1
+pytest >= 5.4.0
 pytest-regressions
 pytest-xdist
