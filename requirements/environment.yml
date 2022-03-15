@@ -1,35 +1,55 @@
-name: plasmapy
+name: plasmapyzzzzz
 
 channels:
 - astropy
 - conda-forge
 
 dependencies:
-- python=3.10
 - astropy >= 4.3.1
+- cached-property >= 1.5.2
+- dlint
+- docutils
+- flake8
+- flake8-rst-docstrings
+- flake8-use-fstring
 - h5py >= 3.0.0
+- hypothesis
+- ipykernel
+- ipywidgets
+- lmfit >= 1.0.0
 - matplotlib >= 3.3.0
 - mpmath >= 1.2.1
+- nbsphinx
+- notebook
 - numba
 - numpy >= 1.19.0
+- numpydoc
+- packaging
 - pandas >= 1.0.0
 - pillow
 - pip
+- pydocstyle
+- pygments >= 2.11.0
+- pytest >= 5.4.0
+- pytest-regressions
+- pytest-xdist
+- python=3.10
 - scipy >= 1.5.0
+- setuptools >= 41.2
+- setuptools_scm
+- sphinx >= 3.2.0
+- sphinxcontrib-bibtex
+- sphinx-copybutton
+- sphinx-gallery
+- sphinx_rtd_theme >= 1.0.0
+- towncrier >= 19.2.0
+- tox
+- tqdm >= 4.41.0
+- voila >= 0.2.15
+- wheel >= 0.29.0
 - xarray >= 0.15.0
 
 - pip:
-  - docutils
-  - hypothesis
-  - lmfit >= 1.0.0
-  - notebook
-  - numpydoc
-  - packaging
-  - pygments >= 2.11.0
-  - pytest >= 5.4.0
-  - pytest-regressions
-  - sphinx >= 3.2.0
-  - sphinx-gallery
+  - flake8-absolute-import
+  - sphinx-changelog
   - sphinx-hoverxref >= 1.0.0
-  - sphinx_rtd_theme >= 1.0.0
-  - towncrier >= 19.2.0
