@@ -55,20 +55,18 @@ class ParticleJSONDecoder(json.JSONDecoder):
             "DimensionlessParticle": DimensionlessParticle,
             "Particle": Particle,
         }
-        if "plasmapy_particle" in json_dict:
-            try:
-                pardict = json_dict["plasmapy_particle"]
-                partype = pardict["type"]
-                args = pardict["__init__"]["args"]
-                kwargs = pardict["__init__"]["kwargs"]
-                particle = particle_types[partype](*args, **kwargs)
-                return particle
-            except KeyError:
-                raise InvalidElementError(
-                    "json file does not define a valid plasmapy particle"
-                )
-        else:
+        if "plasmapy_particle" not in json_dict:
             return json_dict
+        try:
+            pardict = json_dict["plasmapy_particle"]
+            partype = pardict["type"]
+            args = pardict["__init__"]["args"]
+            kwargs = pardict["__init__"]["kwargs"]
+            return particle_types[partype](*args, **kwargs)
+        except KeyError:
+            raise InvalidElementError(
+                "json file does not define a valid plasmapy particle"
+            )
 
 
 def json_load_particle(fp, *, cls=ParticleJSONDecoder, **kwargs):

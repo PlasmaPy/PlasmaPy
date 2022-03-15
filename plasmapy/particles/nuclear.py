@@ -231,7 +231,7 @@ def nuclear_reaction_energy(*args, **kwargs):
                 if particle.element and not particle.isotope:
                     raise ParticleError(errmsg)
 
-                [particles.append(particle) for i in range(multiplier)]
+                particles += [particle] * multiplier
 
             except Exception:
                 raise ParticleError(
@@ -246,10 +246,7 @@ def nuclear_reaction_energy(*args, **kwargs):
         Find the total number of baryons minus the number of
         antibaryons in a list of particles.
         """
-        total_baryon_number = 0
-        for particle in particles:
-            total_baryon_number += particle.baryon_number
-        return total_baryon_number
+        return sum(particle.baryon_number for particle in particles)
 
     def total_charge(particles: List[Particle]) -> int:
         """
