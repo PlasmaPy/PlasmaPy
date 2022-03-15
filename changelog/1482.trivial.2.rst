@@ -1,0 +1,2 @@
+Updated :file:`docs/environment.yml` to make `pip` install all packages
+given via :file:`requirements.txt` when creating a Conda_ environment.
