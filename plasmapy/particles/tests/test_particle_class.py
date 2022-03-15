@@ -1439,7 +1439,6 @@ def test_CustomParticle_cmp():
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
     assert particle1 != 1
-    assert particle1 != 1
 
 
 test_molecule_table = [
