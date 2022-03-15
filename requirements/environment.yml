@@ -6,23 +6,23 @@ channels:
 
 dependencies:
 - python=3.10
-- numpy
-- scipy
+- numpy >= 1.19.0
+- scipy >= 1.5.0
 - astropy >= 4.3.1
 - h5py >= 3.0.0
 - matplotlib >= 3.3.0
-- mpmath
-- pandas
+- mpmath >= 1.2.1
+- pandas >= 1.0.0
 - pillow
 - pip
-- xarray
+- xarray >= 0.15.0
 - numba
 - pip:
   - hypothesis
   - docutils
   - numpydoc
-  - pytest
-  - lmfit
+  - pytest >= 5.4.0
+  - lmfit >= 1.0.0
   - pygments >= 2.11.0
   - sphinx >= 3.2.0
   - sphinx-gallery
