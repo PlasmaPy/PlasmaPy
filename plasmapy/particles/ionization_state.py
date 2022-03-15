@@ -381,10 +381,11 @@ class IonizationState:
                     number_density=self.number_densities[Z],
                     T_i=self.T_i[Z],
                 )
-            elif same_element and same_isotope:
-                raise ChargeError("No charge number provided.")
-            else:
+            elif not (same_element and same_isotope):
                 raise ParticleError("Inconsistent element or isotope.")
+            else:
+                raise ChargeError("No charge number provided.")
+
         return result
 
     def __setitem__(self, key, value):
