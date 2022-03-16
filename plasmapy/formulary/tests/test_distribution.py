@@ -21,7 +21,7 @@ from ..distribution import (
 )
 
 
-class Test_Maxwellian_1D(object):
+class Test_Maxwellian_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -198,7 +198,7 @@ class Test_Maxwellian_1D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_1D(object):
+class Test_Maxwellian_speed_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -327,7 +327,7 @@ class Test_Maxwellian_speed_1D(object):
         ), errStr
 
 
-class Test_Maxwellian_velocity_2D(object):
+class Test_Maxwellian_velocity_2D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -485,7 +485,7 @@ class Test_Maxwellian_velocity_2D(object):
 
 
 @pytest.mark.slow
-class Test_Maxwellian_speed_2D(object):
+class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -611,7 +611,7 @@ class Test_Maxwellian_speed_2D(object):
 
 
 @pytest.mark.slow
-class Test_Maxwellian_velocity_3D(object):
+class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -785,7 +785,7 @@ class Test_Maxwellian_velocity_3D(object):
         assert np.isclose(distFunc.value, testVal, rtol=1e-5, atol=0.0), errStr
 
 
-class Test_Maxwellian_speed_3D(object):
+class Test_Maxwellian_speed_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -910,7 +910,7 @@ class Test_Maxwellian_speed_3D(object):
             )
 
 
-class Test_kappa_velocity_1D(object):
+class Test_kappa_velocity_1D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
@@ -1137,7 +1137,7 @@ class Test_kappa_velocity_1D(object):
 
 
 @pytest.mark.slow
-class Test_kappa_velocity_3D(object):
+class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(self):
         """initializing parameters for tests"""
