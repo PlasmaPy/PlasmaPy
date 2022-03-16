@@ -20,34 +20,29 @@ test_files = [
 
 
 @pytest.mark.parametrize("filename,expected", test_files)
-def test_get_file(filename, expected):
+def test_get_file(filename, expected, tmp_path):
     """
     Test the get_file function
 
     """
     # Delete file if it already exists, so the test always downloads it
-    dl_path = os.path.join(downloader._DOWNLOADS_PATH, filename)
+    dl_path = os.path.join(tmp_path, filename)
     if os.path.exists(dl_path):
         os.remove(dl_path)
 
     if expected is not None:
         with pytest.raises(expected):
-            path = downloader.get_file(filename)
+            path = downloader.get_file(filename, directory=tmp_path)
 
     else:
         # Download data (or check that it already exists)
-        path = downloader.get_file(filename)
-
-        # For this one file, check that the contents are right manually
-        if filename == "NIST_PSTAR_aluminum.txt":
-            arr = np.loadtxt(path, skiprows=7)
-            assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
+        path = downloader.get_file(filename, directory=tmp_path)
 
         # Get the file again, already existing so it doesn't download it again
-        path = downloader.get_file(filename)
+        path = downloader.get_file(filename, directory=tmp_path)
 
 
-def test_get_file_NIST_PSTAR_datafile():
+def test_get_file_NIST_PSTAR_datafile(tmp_path):
     """
     Test the get_file function on a NIST PSTAR datafile
 
@@ -55,12 +50,12 @@ def test_get_file_NIST_PSTAR_datafile():
     filename = "NIST_PSTAR_aluminum.txt"
 
     # Delete file if it already exists, so the test always downloads it
-    dl_path = os.path.join(downloader._DOWNLOADS_PATH, filename)
+    dl_path = os.path.join(tmp_path, filename)
     if os.path.exists(dl_path):
         os.remove(dl_path)
 
     # Download data (or check that it already exists)
-    path = downloader.get_file(filename)
+    path = downloader.get_file(filename, directory=tmp_path)
 
     arr = np.loadtxt(path, skiprows=7)
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
