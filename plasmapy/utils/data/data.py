@@ -1,5 +1,6 @@
 """
-Contains functionality for downloading data from the PlasmaPy data repository.
+Contains functionality for downloading files from a URL. Intended for
+downloading files from the PlasmaPy data repository.
 
 """
 
@@ -20,9 +21,9 @@ _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 
 def get_file(basename, base_url=_BASE_URL):
-    """
-    Downloads a file with a given filename from the PlasmaPy/data
-    repository.
+    r"""
+    Downloads a file from a URL (if the file does not already exist) and
+    returns the full local path to the file.
 
     Parameters
     ----------
@@ -30,14 +31,16 @@ def get_file(basename, base_url=_BASE_URL):
         Name of the file to be downloaded (extension included).
 
     base_url : str, optional
-        The URL of the PlasmaPy data repository.
+        The base URL of the file to be downloaded. Defaults to the main
+        directory of the PlasmaPy data repository.
 
     Returns
     -------
     path : str
-        DESCRIPTION.
+        The full local path to the downloaded file.
 
     """
+
     if not "." in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 

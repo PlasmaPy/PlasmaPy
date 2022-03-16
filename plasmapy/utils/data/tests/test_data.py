@@ -18,7 +18,11 @@ test_files = [
 
 
 @pytest.mark.parametrize("filename,expected", test_files)
-def test_get_file_NIST_data(filename, expected):
+def test_get_file(filename, expected):
+    """
+    Test the get_file function
+
+    """
 
     # Delete file if it already exists, so the test always downloads it
     dl_path = os.path.join(data._DOWNLOADS_PATH, filename)
