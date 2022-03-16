@@ -98,11 +98,11 @@
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _BibTeX: http://www.bibtex.org
 .. _black: https://black.readthedocs.io
-.. _Conda: https://conda.io
+.. _Conda: https://docs.conda.io
 .. _CSS: https://en.wikipedia.org/wiki/CSS
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org
-.. _flake8: https://flake8.pycqa.org
+.. _flake8: https://flake8.pycqa.org/en/latest
 .. _git: https://git-scm.com
 .. _GitHub Actions: https://docs.github.com/en/actions
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
