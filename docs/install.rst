@@ -4,16 +4,16 @@
 Installing PlasmaPy
 *******************
 
-PlasmaPy requires Python_ 3.8 or newer.
-
-.. contents::
-   :local:
-
 .. note::
 
-   If you would like to contribute to PlasmaPy, please refer to the
-   instructions on :ref:`installing PlasmaPy for development
-   <install-plasmapy-dev>`.
+   - PlasmaPy requires Python_ 3.8 or newer.
+   - If you would like to contribute to PlasmaPy, please refer to the
+     instructions on :ref:`installing PlasmaPy for development
+     <install-plasmapy-dev>`.
+
+.. contents:: Contents
+   :local:
+
 
 .. _install-pip:
 
