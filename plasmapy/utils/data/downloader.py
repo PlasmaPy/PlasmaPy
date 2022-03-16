@@ -45,7 +45,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
     """
 
-    if not "." in str(basename):
+    if "." not in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
     if directory is None:
