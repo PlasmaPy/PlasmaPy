@@ -92,11 +92,6 @@ download a zip file.
    Cloning a repository with HTTPS as above is recommended, but you may
    also `clone a repository using SSH`_ as a more secure alternative.
 
-.. note::
-
-   The :ref:`contributing-to-plasmapy` guide has instructions on how to
-   fork a repository and create branches so that you may make pull requests.
-
 Building and installing
 -----------------------
 
@@ -116,6 +111,12 @@ If you expect to make any changes to code within PlasmaPy, instead run:
 The ``-e`` flag makes the installation editable and ``[developer]``
 indicates that all of the dependencies needed for developing PlasmaPy
 will be installed.
+
+.. note::
+
+   The :ref:`contributing-to-plasmapy` guide has instructions on how to
+   fork a repository and create branches so that you may make pull
+   requests.
 
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
