@@ -167,8 +167,8 @@
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
-.. _`docs/_static/sphinx_rtd_overrides.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/rtd_theme_overrides.css
-.. |docs/_static/sphinx_rtd_overrides.css| replace:: :file:`docs/_static/sphinx_rtd_overrides.css`
+.. _`docs/_static/plasmapy.css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/plasmapy.css
+.. |docs/_static/plasmapy.css| replace:: :file:`docs/_static/plasmapy.css`
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
 .. |docs/api_static| replace:: :file:`docs/api_static`
