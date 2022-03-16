@@ -1,23 +1,19 @@
 """
-Do
+Contains functionality for downloading data from the PlasmaPy data repository.
 
 """
 
 import os
+import requests
 
-from parfive import Downloader
 from urllib.parse import urljoin
 
 __all__ = ["get_file"]
 
-# TODO: the normal GitHub raw links seem to have an issue with file compression?
-# their Content-Type header seems to be incorrectly set to say they are using gzip, but the files disagree?
-# _BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
-# _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/sample-data/main/data/"
-
-# TODO: A more permanent fix for this issue?
-# This service fixes the GitHub headers...
-_BASE_URL = "https://gitcdn.link/repo/PlasmaPy/data/main/data/"
+# Note: GitHub links have a problem where the Content-Encoding is set to
+# 'gzip' but the file is not actually compressed. This header is just ignored
+# by the get_file function.
+_BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
 
 # TODO: use a config file variable to allow users to set a location for this folder?
 _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
@@ -49,18 +45,29 @@ def get_file(basename, base_url=_BASE_URL):
 
     # If file doesn't exist, download it
     if not os.path.exists(path):
-        url = urljoin(base_url, basename)
-        dl = Downloader(
-            overwrite=True, progress=True, headers={"Accept-Encoding": "identity"}
-        )
-        dl.enqueue_file(url, path=_DOWNLOADS_PATH, filename=basename)
-        results = dl.download()
 
-        # If an error is returned, raise an exception
-        if len(results.errors) > 0:
-            raise OSError(results.errors[0][2])
-        # Otherwise, the only element in results is the filepath
-        else:
-            path = results[0]
+        url = urljoin(base_url, basename)
+
+        # Get the requested content
+        r = requests.get(url)
+
+        # Validate that the content type matches one of the content types
+        # the module knows how to download.
+        #
+        # Missing files on GitHub will resolve to a 404 html page, so we use
+        # this as an indicator that the file may not exist.
+        allowed_types = ["text/plain; charset=utf-8", "image/png"]
+
+        if not r.headers["Content-Type"] in allowed_types:
+            raise OSError(
+                f"The requested file is not an allowed"
+                f"Content-Type: {r.headers['Content-Type']}."
+                "This may indicate that the file does not exist at "
+                "the URL provided."
+            )
+
+        # Write the content to disk
+        with open(path, "wb") as f:
+            f.write(r.content)
 
     return path
