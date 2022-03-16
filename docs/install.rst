@@ -4,6 +4,8 @@
 Installing PlasmaPy
 *******************
 
+.. contents::
+
 .. note::
 
    If you would like to contribute to PlasmaPy, please refer to the
@@ -14,6 +16,8 @@ Installing PlasmaPy
 
 Installing PlasmaPy
 ===================
+
+PlasmaPy requires Python_ 3.8 or newer.
 
 .. _install-pip:
 
@@ -57,7 +61,7 @@ by running:
 
 .. code:: bash
 
-    conda create -n env_name python=3.9 plasmapy -c conda-forge
+    conda create -n env_name python=3.10 plasmapy -c conda-forge
 
 where ``env_name`` is replaced by the name of the environment.
 To activate this environment, run:
