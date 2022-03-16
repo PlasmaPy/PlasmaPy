@@ -21,7 +21,7 @@ Installation with pip
 =====================
 
 To install the most recent release of `plasmapy` on PyPI_ with pip_ into
-an existing Python 3.8+ environment, run
+an existing Python 3.8+ environment, run:
 
 .. code:: bash
 
@@ -101,13 +101,13 @@ Building and installing
 -----------------------
 
 To install the downloaded version of PlasmaPy, enter the
-:file:`PlasmaPy` directory and run
+:file:`PlasmaPy` directory and run:
 
 .. code:: bash
 
    pip install .
 
-If you expect to make any changes to code within PlasmaPy,
+If you expect to make any changes to code within PlasmaPy, instead run:
 
 .. code:: bash
 
