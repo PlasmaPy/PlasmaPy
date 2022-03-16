@@ -180,7 +180,7 @@ developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
 
 Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
+<https://cbea.ms/git-commit>`_:
 
 * Separate subject from body with a blank line
 
