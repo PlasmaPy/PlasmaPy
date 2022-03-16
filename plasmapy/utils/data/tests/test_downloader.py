@@ -9,6 +9,8 @@ test_files = [
     ("NIST_PSTAR_aluminum.txt", None),
     # Test with a different file type
     ("plasmapy_logo.png", None),
+    # Test an h5 file
+    ("test.h5", None),
     # Test a file without an extension raises an exception
     ("missing_an_extension", ValueError),
     # Test that trying to download a file that doesn't exist raises an

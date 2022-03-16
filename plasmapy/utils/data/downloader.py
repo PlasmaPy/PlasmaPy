@@ -66,7 +66,14 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
         #
         # Missing files on GitHub will resolve to a 404 html page, so we use
         # this as an indicator that the file may not exist.
-        allowed_types = ["text/plain; charset=utf-8", "image/png"]
+        allowed_types = [
+            # Text files
+            "text/plain; charset=utf-8",
+            # Images
+            "image/png",
+            # HDF5 files
+            "application/octet-stream",
+        ]
 
         if not r.headers["Content-Type"] in allowed_types:
             raise OSError(
