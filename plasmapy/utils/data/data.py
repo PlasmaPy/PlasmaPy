@@ -46,7 +46,7 @@ def get_file(basename, base_url=_BASE_URL):
 
     path = os.path.join(_DOWNLOADS_PATH, basename)
 
-    # If file doesn't exist, download it
+    # If file doesn't exist locally, download it
     if not os.path.exists(path):
 
         url = urljoin(base_url, basename)

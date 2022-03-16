@@ -1,5 +1,5 @@
 """
-The data subpackage contains functionality for downloading and retrieving data files.
+The `plasmapy.data` subpackage contains functionality for downloading and retrieving data files.
 """
 __all__ = ["data"]
 
