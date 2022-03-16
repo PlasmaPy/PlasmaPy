@@ -342,7 +342,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/plasmapy.css|_ file contains `style
+The |docs/_static/css|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
