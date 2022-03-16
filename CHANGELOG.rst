@@ -325,7 +325,7 @@ Backwards Incompatible Changes
   for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
   `~plasmapy.formulary.collisions.impact_parameter`, and then propogated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
-- Add dependency ``pandas >= 1.0.0``.  Modify `xarray` dependency to be
+- Add dependency ``pandas >= 1.0.0``.  Modify |xarray|_ dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - The `~plasmapy.plasma.grids.AbstractGrid` property
   `~plasmapy.plasma.grids.AbstractGrid.grid` is now dimensioned (has units) and
