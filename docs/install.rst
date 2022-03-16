@@ -29,7 +29,7 @@ an existing Python 3.8+ environment, run
 
 .. note::
 
-   In some systems, it may be necessary to use ``pip3`` instead of ``pip``.
+   On some systems, it may be necessary to use ``pip3`` instead of ``pip``.
 
 .. _install-conda:
 
@@ -47,7 +47,7 @@ by running:
 
 .. code:: bash
 
-    conda create -n {env_name} python=3.10 plasmapy -c conda-forge
+    conda create -n env_name python plasmapy -c conda-forge
 
 where ``env_name`` is replaced by the name of the environment.
 To activate this environment, run:
@@ -100,16 +100,22 @@ download a zip file.
 Building and installing
 -----------------------
 
-In the ``PlasmaPy`` directory, run
+To install the downloaded version of PlasmaPy, enter the
+:file:`PlasmaPy` directory and run
 
 .. code:: bash
 
-   pip install -e .
+   pip install .
 
-where ``-e`` makes the installation editable.
+If you expect to make any changes to code within PlasmaPy,
 
-Note, however, that this does not download all the dependencies. Check the
-`requirements/requirements.txt` file for the current set.
+.. code:: bash
+
+   pip install -e .[developer]
+
+The ``-e`` flag makes the installation editable and ``[developer]``
+indicates that all of the dependencies needed for developing PlasmaPy
+will be installed.
 
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
