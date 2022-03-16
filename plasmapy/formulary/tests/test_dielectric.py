@@ -2,6 +2,7 @@
 dielectric.py"""
 
 import numpy as np
+import pytest
 
 from astropy import units as u
 
@@ -12,6 +13,7 @@ from ..dielectric import (
     cold_plasma_permittivity_LRP,
     cold_plasma_permittivity_SDP,
     permittivity_1D_Maxwellian,
+    permittivity_1D_Maxwellian_lite,
     RotatingTensorElements,
     StixTensorElements,
 )
@@ -113,44 +115,121 @@ class Test_ColdPlasmaPermittivity(object):
         assert S.shape == D.shape == P.shape == (50,)
 
 
-class Test_permittivity_1D_Maxwellian:
-    @classmethod
-    def setup_class(self):
-        """initializing parameters for tests"""
-        self.T = 30 * 11600 * u.K
-        self.n = 1e18 * u.cm ** -3
-        self.particle = "Ne"
-        self.z_mean = 8 * u.dimensionless_unscaled
-        self.vTh = thermal_speed(self.T, self.particle, method="most_probable")
-        self.omega = 5.635e14 * 2 * np.pi * u.rad / u.s
-        self.kWave = self.omega / self.vTh
-        self.True1 = (
-            -6.728092569241431e-08 + 5.760379561405176e-07j
-        ) * u.dimensionless_unscaled
+# Test values
+permitivity_1D_Maxwellian_args = [
+    # Test case 1
+    {
+        "T": 30 * 11600 * u.K,
+        "n": 1e18 * u.cm ** -3,
+        "particle": "Ne",
+        "z_mean": 8 * u.dimensionless_unscaled,
+        "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
+        "true": (-6.728092569241431e-08 + 5.760379561405176e-07j)
+        * u.dimensionless_unscaled,
+    },
+]
 
-    def test_known1(self):
+
+class Test_permittivity_1D_Maxwellian:
+    """
+    Test class for `plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.
+    Note: Testing of `permittivity_1D_Maxwellian_lite` is done in a
+    separate test class.
+    """
+
+    @pytest.mark.parametrize(
+        "bound_name, bound_attr",
+        [("lite", permittivity_1D_Maxwellian_lite)],
+    )
+    def test_lite_function_binding(self, bound_name, bound_attr):
+        """Test expected attributes are bound correctly."""
+        assert hasattr(permittivity_1D_Maxwellian, bound_name)
+        assert getattr(permittivity_1D_Maxwellian, bound_name) is bound_attr
+
+    def test_lite_function_marking(self):
         """
-        Tests Fermi_integral for expected value.
+        Test permittivity_1D_Maxwellian is marked as having a Lite-Function.
         """
-        methodVal = permittivity_1D_Maxwellian(
-            self.omega, self.kWave, self.T, self.n, self.particle, self.z_mean
+        assert hasattr(permittivity_1D_Maxwellian, "__bound_lite_func__")
+        assert isinstance(permittivity_1D_Maxwellian.__bound_lite_func__, dict)
+
+        for (
+            bound_name,
+            bound_origin,
+        ) in permittivity_1D_Maxwellian.__bound_lite_func__.items():
+            assert hasattr(permittivity_1D_Maxwellian, bound_name)
+
+            attr = getattr(permittivity_1D_Maxwellian, bound_name)
+            origin = f"{attr.__module__}.{attr.__name__}"
+            assert origin == bound_origin
+
+    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
+    def test_known(self, d):
+        """
+        Tests permittivity_1D_Maxwellian for expected value.
+        """
+
+        kWave = d["omega"] / thermal_speed(
+            d["T"], d["particle"], method="most_probable"
         )
-        testTrue = np.isclose(methodVal, self.True1, rtol=1e-6, atol=0.0)
-        errStr = f"Permittivity value should be {self.True1} and not {methodVal}."
+
+        methodVal = permittivity_1D_Maxwellian(
+            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
+        )
+        testTrue = np.isclose(methodVal, d["true"], rtol=1e-6, atol=0.0)
+        errStr = f"Permittivity value should be {d['true']} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
+    def test_fail(self, d):
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
-        fail1 = self.True1 + 1e-15
+        kWave = d["omega"] / thermal_speed(
+            d["T"], d["particle"], method="most_probable"
+        )
+
+        fail1 = d["true"] + 1e-15
         methodVal = permittivity_1D_Maxwellian(
-            self.omega, self.kWave, self.T, self.n, self.particle, self.z_mean
+            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
         )
         testTrue = not np.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
         errStr = (
             f"Permittivity value test gives {methodVal} "
             f"and should not be equal to {fail1}."
         )
+        assert testTrue, errStr
+
+
+class Test_permittivity_1D_Maxwellian_lite:
+    """Test class for `permittivity_1D_Maxwellian_lite`."""
+
+    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
+    def test_normal_vs_lite_values(self, d):
+        """
+        Test that permittivity_1D_Maxwellian_lite and
+        permittivity_1D_Maxwellian_lite calculate
+        the same values.
+        """
+
+        vTh = thermal_speed(d["T"], d["particle"], method="most_probable")
+        kWave = d["omega"] / vTh
+
+        methodVal = permittivity_1D_Maxwellian(
+            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
+        )
+
+        wp = plasma_frequency(d["n"], d["particle"], d["z_mean"])
+
+        methodVal_lite = permittivity_1D_Maxwellian_lite(
+            d["omega"].to(u.rad / u.s).value,
+            kWave.to(u.rad / u.m).value,
+            vTh.to(u.m / u.s).value,
+            wp.to(u.rad / u.s).value,
+        )
+
+        testTrue = np.isclose(methodVal, methodVal_lite, rtol=1e-6, atol=0.0)
+        errStr = "permittivity_1D_Maxwellian and "
+        "permittivity_1D_Maxwellian_lite do not agree."
         assert testTrue, errStr
