@@ -167,7 +167,7 @@
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
 
-.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_static/css
+.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
 .. |docs/_static/css| replace:: :file:`docs/_static/css`
 
 .. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
