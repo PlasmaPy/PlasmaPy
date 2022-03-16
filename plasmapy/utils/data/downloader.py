@@ -58,20 +58,18 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
         url = urljoin(base_url, basename)
 
-        # Get the requested content
-        r = requests.get(url)
+        reply = requests.get(url)
 
         # Missing files on GitHub will resolve to a 404 html page, so we use
         # this as an indicator that the file may not exist.
-        if "text/html" in r.headers["Content-Type"]:
+        if "text/html" in reply.headers["Content-Type"]:
             raise OSError(
                 "The requested URL returned an html file, which "
                 "likely indicates that the file does not exist at the "
                 "URL provided."
             )
 
-        # Write the content to disk
         with open(path, "wb") as f:
-            f.write(r.content)
+            f.write(reply.content)
 
     return path
