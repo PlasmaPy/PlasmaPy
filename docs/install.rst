@@ -4,7 +4,10 @@
 Installing PlasmaPy
 *******************
 
+PlasmaPy requires Python_ 3.8 or newer.
+
 .. contents::
+   :local:
 
 .. note::
 
@@ -12,21 +15,14 @@ Installing PlasmaPy
    instructions on :ref:`installing PlasmaPy for development
    <install-plasmapy-dev>`.
 
-.. _install-process:
-
-Installing PlasmaPy
-===================
-
-PlasmaPy requires Python_ 3.8 or newer.
-
 .. _install-pip:
 
 Installation with pip
----------------------
+=====================
 
-To install the most recent release of PlasmaPy on `PyPI`_
-with `pip`_ into an existing Python environment
-with both required and optional dependencies, run
+To install the most recent release of PlasmaPy on PyPI_ with pip_ into
+an existing Python environment with both required and optional
+dependencies, run
 
 .. code:: bash
 
@@ -47,7 +43,7 @@ using certain specialized functionality.
    In some systems, it may be necessary to use ``pip3`` instead of ``pip``.
 
 Installation with conda
------------------------
+=======================
 
 We recommend installing PlasmaPy from a Python environment
 created using Conda_.  Conda_ allows us to
