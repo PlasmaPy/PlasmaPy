@@ -20,36 +20,26 @@ PlasmaPy requires Python_ 3.8 or newer.
 Installation with pip
 =====================
 
-To install the most recent release of PlasmaPy on PyPI_ with pip_ into
-an existing Python environment with both required and optional
-dependencies, run
-
-.. code:: bash
-
-   pip install plasmapy[all]
-
-PlasmaPy may be installed with the required but not the optional dependencies
-with the following command, though this may result in an `ImportError` when
-using certain specialized functionality.
+To install the most recent release of `plasmapy` on PyPI_ with pip_ into
+an existing Python 3.8+ environment, run
 
 .. code:: bash
 
    pip install plasmapy
 
-.. _install-conda:
-
 .. note::
 
    In some systems, it may be necessary to use ``pip3`` instead of ``pip``.
 
+.. _install-conda:
+
 Installation with conda
 =======================
 
-We recommend installing PlasmaPy from a Python environment
-created using Conda_.  Conda_ allows us to
-create and switch between Python environments that are isolated from
-each other and the system installation (in contrast to `this xkcd
-<https://xkcd.com/1987>`_).
+Conda_ can also be used to install `plasmapy` into a Python environment.
+Conda_ allows us to create and switch between Python environments that
+are isolated from each other and the system installation (in contrast to
+`this xkcd <https://xkcd.com/1987>`_).
 
 After `installing conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_,
 create a PlasmaPy environment with all required and optional dependencies
@@ -57,7 +47,7 @@ by running:
 
 .. code:: bash
 
-    conda create -n env_name python=3.10 plasmapy -c conda-forge
+    conda create -n {env_name} python=3.10 plasmapy -c conda-forge
 
 where ``env_name`` is replaced by the name of the environment.
 To activate this environment, run:
@@ -81,7 +71,7 @@ downloaded `from PyPI`_ or `from Zenodo`_.
 Development version on GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you have `git`_ installed on your computer, you may clone
+If you have git_ installed on your computer, you may clone
 `PlasmaPy's GitHub repository`_ and access source code
 from the most recent development version by running:
 
@@ -89,9 +79,10 @@ from the most recent development version by running:
 
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
-The repository will be cloned inside a new subdirectory called ``PlasmaPy``.
+The repository will be cloned inside a new subdirectory called
+:file:`PlasmaPy`.
 
-If you do not have `git`_ installed on your computer, then you may download
+If you do not have git_ installed on your computer, then you may download
 the most recent source code from `PlasmaPy's GitHub repository`_ by
 selecting "Clone or Download", which will give you the option to
 download a zip file.
@@ -113,15 +104,9 @@ In the ``PlasmaPy`` directory, run
 
 .. code:: bash
 
-   pip install -e .[all]
+   pip install -e .
 
-where ``-e`` makes the installation editable and ``[all]`` will ensure that
-all optional dependencies are installed.  PlasmaPy could also be installed
-by running
-
-.. code:: bash
-
-   python setup.py install
+where ``-e`` makes the installation editable.
 
 Note, however, that this does not download all the dependencies. Check the
 `requirements/requirements.txt` file for the current set.
