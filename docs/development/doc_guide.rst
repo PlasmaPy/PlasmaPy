@@ -364,7 +364,7 @@ extensions:
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
-* |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
+* |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and

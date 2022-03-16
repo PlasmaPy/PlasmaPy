@@ -737,6 +737,6 @@ should be balanced with each other rather than absolute principles.
 .. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com/

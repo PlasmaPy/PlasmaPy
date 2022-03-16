@@ -135,7 +135,7 @@
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _pre-commit: https://pre-commit.com
-.. _pydocstyle: https://www.pydocstyle.org
+.. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org
 .. _pytest: https://docs.pytest.org
@@ -144,13 +144,13 @@
 .. _Read the Docs: https://readthedocs.org
 .. _reST: https://docutils.sourceforge.io/rst.html
 .. _reStructuredText (reST): https://docutils.sourceforge.io/rst.html
-.. _SciPy: https://www.scipy.org
+.. _SciPy: https://scipy.org
 .. _sphinx_automodapi: https://sphinx-automodapi.readthedocs.io
 .. _sphinx-build: https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 .. _Sphinx: https://www.sphinx-doc.org
 .. _suggestion box: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
-.. _towncrier: https://towncrier.readthedocs.io/en/actual-freaking-docs
-.. _tox: https://tox.readthedocs.io
+.. _towncrier: https://github.com/twisted/towncrier
+.. _tox: https://tox.wiki/en/latest
 .. _virtualenv: https://pypi.org/project/virtualenv
 .. _Wikipedia: https://www.wikipedia.org
 .. _Zenodo: https://zenodo.org
