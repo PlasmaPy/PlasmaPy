@@ -4,5 +4,6 @@ h5py >= 3.0.0
 lmfit >= 1.0.0
 mpmath >= 1.2.1
 numba
+pre-commit
 setuptools_scm
 tox
