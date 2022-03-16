@@ -1,2 +1,2 @@
 Removed the section on package requirements from the instructions on how
-to install PlasmaPy.
+to install `plasmapy`.
