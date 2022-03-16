@@ -61,26 +61,13 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
         # Get the requested content
         r = requests.get(url)
 
-        # Validate that the content type matches one of the content types
-        # the module knows how to download.
-        #
         # Missing files on GitHub will resolve to a 404 html page, so we use
         # this as an indicator that the file may not exist.
-        allowed_types = [
-            # Text files
-            "text/plain; charset=utf-8",
-            # Images
-            "image/png",
-            # HDF5 files
-            "application/octet-stream",
-        ]
-
-        if not r.headers["Content-Type"] in allowed_types:
+        if "text/html" in r.headers["Content-Type"]:
             raise OSError(
-                f"The requested file is not an allowed"
-                f"Content-Type: {r.headers['Content-Type']}."
-                "This may indicate that the file does not exist at "
-                "the URL provided."
+                "The requested URL returned an html file, which "
+                "likely indicates that the file does not exist at the "
+                "URL provided."
             )
 
         # Write the content to disk
