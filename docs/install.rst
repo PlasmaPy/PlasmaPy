@@ -10,29 +10,6 @@ Installing PlasmaPy
    instructions on :ref:`installing PlasmaPy for development
    <install-plasmapy-dev>`.
 
-.. _install-requirements:
-
-Requirements
-============
-
-PlasmaPy requires Python version 3.8 or newer.
-PlasmaPy requires the following packages for installation:
-
-- `NumPy`_ — 1.18.1 or newer
-- `SciPy`_ — 1.2 or newer
-- `Astropy`_ — 4.0 or newer
-- `pandas <https://pandas.pydata.org>`_ — 1.0 or newer
-- `xarray <https://xarray.pydata.org/en/stable>`_ — above 0.14
-- `tqdm <https://tqdm.github.io>`_ — 4.41 or newer
-- `cached_property <https://pypi.org/project/cached-property>`_ — 1.5.2 or newer
-
-PlasmaPy also depends on the following packages for optional features:
-
-- `h5py <https://www.h5py.org>`_ — 2.8 or newer
-- `lmfit <https://lmfit.github.io/lmfit-py>`_ — 1.0.1 or newer
-- matplotlib_ — 2.0 or newer
-- `mpmath <https://mpmath.org>`_ — 1.0 or newer
-
 .. _install-process:
 
 Installing PlasmaPy
