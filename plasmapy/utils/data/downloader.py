@@ -20,7 +20,7 @@ _BASE_URL = "https://github.com/PlasmaPy/sample-data/raw/main/data/"
 _DOWNLOADS_PATH = os.path.join(os.path.dirname(__file__), "downloads")
 
 
-def get_file(basename, base_url=_BASE_URL):
+def get_file(basename, base_url=_BASE_URL, directory=None):
     r"""
     Downloads a file from a URL (if the file does not already exist) and
     returns the full local path to the file.
@@ -34,6 +34,10 @@ def get_file(basename, base_url=_BASE_URL):
         The base URL of the file to be downloaded. Defaults to the main
         directory of the PlasmaPy data repository.
 
+    directory : str, optional
+        The full path to the desired download location. Defaults to the
+        default PlasmaPy data download directory.
+
     Returns
     -------
     path : str
@@ -44,7 +48,10 @@ def get_file(basename, base_url=_BASE_URL):
     if not "." in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
-    path = os.path.join(_DOWNLOADS_PATH, basename)
+    if directory is None:
+        directory = _DOWNLOADS_PATH
+
+    path = os.path.join(directory, basename)
 
     # If file doesn't exist locally, download it
     if not os.path.exists(path):
