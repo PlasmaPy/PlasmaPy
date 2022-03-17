@@ -486,8 +486,8 @@ def parse_and_check_molecule_input(argument: str, Z: Integral = None):
     Returns
     -------
     elements_dict : `dict`
-        A dictionary with identified element symbols as keys and amount
-        of each as values.
+        A dictionary with identified element symbols as keys and the number
+        of elements that make up the molecule as values.
 
     molecule_info : `str`
         The molecule symbol stripped of its charge.
