@@ -16,17 +16,17 @@ Installing PlasmaPy
 Installing Python
 =================
 
-PlasmaPy requires Python_ 3.8 or newer. If you do not have Python
+PlasmaPy requires Python_ 3.8 or newer. If you do not have Python_
 installed already, please follow these instructions to `download
 Python`_ and install it.
 
 .. tip::
 
-   If you have trouble installing PlasmaPy on the most recent version of
-   Python between October and ∼December (e.g., 3.11), try installing it
-   on the second most recent version (e.g., 3.10). New versions of
-   Python are released annually in October, and it sometimes takes time
-   before the scientific Python ecosystem catches up.
+   If you have trouble installing `plasmapy` on the most recent version
+   of Python_ between October and ∼December (e.g., 3.11 for 2022), try
+   installing it on the second most recent version (e.g., 3.10). New
+   versions of Python_ are released annually in October, and it can take
+   time for the scientific Python ecosystem to catch up.
 
 .. _install-pip:
 
@@ -49,20 +49,28 @@ On some systems, it might be necessary to use ``pip3`` instead of
 Installation with Conda
 =======================
 
-Conda_ can also be used to install `plasmapy` into a Python environment.
-Conda_ allows us to create and switch between Python environments that
-are isolated from each other and the system installation (in contrast to
-`this xkcd <https://xkcd.com/1987>`_).
+`plasmapy` can be installed into Python_ environments created by Conda_.
+Conda_ allows us to create and switch between Python_ environments that
+are isolated from each other and the system installation.
 
-After `installing conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_,
-create a PlasmaPy environment with all required and optional dependencies
-by running:
+After `installing Conda`_, `plasmapy` can be installed into an activated
+Conda_ environment by running:
+.. code-block:: bash
+
+   conda install plasmapy
+
+To install `plasmapy` into another existing Conda_ environment, append
+:samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
+is replaced with the name of the environment.
+
+To create a new environment with `plasmapy` installed in it, run:
 
 .. code-block:: bash
 
-    conda create -n env_name python plasmapy -c conda-forge
+    conda create -n env_name -c conda-forge plasmapy
 
-where ``env_name`` is replaced by the name of the environment.
+where :samp:`env_name` is replaced by the name of the environment.
+
 To activate this environment, run:
 
 .. code-block:: bash
@@ -104,7 +112,6 @@ going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
 create a subdirectory called :file:`PlasmaPy` that contains the source
 code.
 
-
 Building and installing
 -----------------------
 
@@ -136,5 +143,6 @@ will be installed.
 .. _download Python: https://www.python.org/downloads/
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
+.. _installing Conda:
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
