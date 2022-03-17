@@ -2334,11 +2334,11 @@ def molecule(
             except ParticleError as exc2:
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
-                ) from exc
+                ) from exc2
             if not element.is_category("element"):
                 raise InvalidParticleError(
                     f"Molecule symbol contains a particle that is not an element: {element.symbol}"
-                ) from exc2
+                ) from exc
 
             mass += amount * element.mass
 
