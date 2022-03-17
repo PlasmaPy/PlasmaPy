@@ -1384,7 +1384,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
     except Exception:
         raise u.UnitConversionError(errmsg)
 
-    beta = np.max(np.abs((V_over_c)))
+    beta = np.max(np.abs(V_over_c))
 
     if beta == np.inf:
         raise RelativityError(f"{funcname} is yielding an infinite velocity.")
