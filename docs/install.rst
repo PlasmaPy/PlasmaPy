@@ -6,14 +6,27 @@ Installing PlasmaPy
 
 .. note::
 
-   - PlasmaPy requires Python_ 3.8 or newer.
-   - If you would like to contribute to PlasmaPy, please refer to the
-     instructions on :ref:`installing PlasmaPy for development
-     <install-plasmapy-dev>`.
+   If you would like to contribute to PlasmaPy, please refer to the
+   instructions on :ref:`installing PlasmaPy for development
+   <install-plasmapy-dev>`.
 
 .. contents:: Contents
    :local:
 
+Installing Python
+=================
+
+PlasmaPy requires Python_ 3.8 or newer. If you do not have Python
+installed already, please follow these instructions to `download
+Python`_ and install it.
+
+.. tip::
+
+   If you have trouble installing PlasmaPy on the most recent version of
+   Python between October and ∼December (e.g., 3.11), try installing it
+   on the second most recent version (e.g., 3.10). New versions of
+   Python are released annually in October, and it sometimes takes time
+   before the scientific Python ecosystem catches up.
 
 .. _install-pip:
 
@@ -23,13 +36,13 @@ Installation with pip
 To install the most recent release of `plasmapy` on PyPI_ with pip_ into
 an existing Python 3.8+ environment, run:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install plasmapy
 
-.. note::
-
-   On some systems, it may be necessary to use ``pip3`` instead of ``pip``.
+On some systems, it might be necessary to use ``pip3`` instead of
+``pip``. For more detailed information, please refer to this tutorial on
+`installing packages`_.
 
 .. _install-conda:
 
@@ -45,14 +58,14 @@ After `installing conda <https://conda.io/projects/conda/en/latest/user-guide/in
 create a PlasmaPy environment with all required and optional dependencies
 by running:
 
-.. code:: bash
+.. code-block:: bash
 
     conda create -n env_name python plasmapy -c conda-forge
 
 where ``env_name`` is replaced by the name of the environment.
 To activate this environment, run:
 
-.. code:: bash
+.. code-block:: bash
 
    conda activate env_name
 
@@ -118,7 +131,10 @@ will be installed.
    fork a repository and create branches so that you may make pull
    requests.
 
+.. _Anaconda Navigator: https://www.anaconda.com/products/individual
+.. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
+.. _download Python: https://www.python.org/downloads/
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
-.. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
+.. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
