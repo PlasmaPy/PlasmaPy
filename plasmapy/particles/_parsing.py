@@ -480,7 +480,7 @@ def parse_and_check_molecule_input(argument: str, Z: Integral = None):
     argument : `str`
         The molecule symbol to be parsed.
 
-    Z : integer, optional
+    Z : `int`, optional
         The provided charge number.
 
     Returns

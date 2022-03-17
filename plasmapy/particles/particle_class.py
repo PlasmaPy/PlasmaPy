@@ -2276,7 +2276,7 @@ def molecule(
         ``"CO2"`` and CO\ :sup:`+` can be represented as ``"CO 1+"``,
         ``"CO +1"``, or ``"CO+"``.
 
-    Z : integer, optional
+    Z : `int`, optional
         The charge number if not present in the symbol.
 
     Returns
