@@ -33,7 +33,7 @@ an existing Python 3.8+ environment, run:
 
 .. _install-conda:
 
-Installation with conda
+Installation with Conda
 =======================
 
 Conda_ can also be used to install `plasmapy` into a Python environment.
@@ -56,20 +56,22 @@ To activate this environment, run:
 
    conda activate env_name
 
-Building and installing from source code
-========================================
+Installation from source code
+=============================
 
 Obtaining source code
 ---------------------
 
-Stable release
-^^^^^^^^^^^^^^
+Official releases
+^^^^^^^^^^^^^^^^^
 
-The source code for the most recent stable release of PlasmaPy can be
-downloaded `from PyPI`_ or `from Zenodo`_.
+A ZIP_ file containing the source code for official releases of
+`plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
 
-Development version on GitHub
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. Discuss unzipping here
+
+GitHub repository
+^^^^^^^^^^^^^^^^^
 
 If you have git_ installed on your computer, you may clone
 `PlasmaPy's GitHub repository`_ and access source code
@@ -84,13 +86,11 @@ The repository will be cloned inside a new subdirectory called
 
 If you do not have git_ installed on your computer, then you may download
 the most recent source code from `PlasmaPy's GitHub repository`_ by
-selecting "Clone or Download", which will give you the option to
-download a zip file.
+going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
+`Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
+create a subdirectory called :file:`PlasmaPy` that contains the source
+code.
 
-.. note::
-
-   Cloning a repository with HTTPS as above is recommended, but you may
-   also `clone a repository using SSH`_ as a more secure alternative.
 
 Building and installing
 -----------------------
@@ -121,3 +121,4 @@ will be installed.
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
+.. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
