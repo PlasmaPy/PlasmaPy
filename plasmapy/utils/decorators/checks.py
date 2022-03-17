@@ -263,7 +263,8 @@ class CheckValues(CheckBase):
                     # during subclassing)
                     out_checks[param.name][v_name] = v_default
 
-        if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
+        # Does `self.checks` indicate arguments not used by f?
+        if missing_params := list(set(self.checks) - set(out_checks)):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
