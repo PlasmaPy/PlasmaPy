@@ -59,3 +59,12 @@ def test_get_file_NIST_PSTAR_datafile(tmp_path):
 
     arr = np.loadtxt(path, skiprows=7)
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
+
+
+def test_get_file_default_directory():
+    """
+    Test the get_file function downloading to the default directory
+
+    """
+    path = downloader.get_file("NIST_PSTAR_aluminum.txt")
+    assert os.path.exists(path)
