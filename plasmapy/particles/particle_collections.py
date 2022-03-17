@@ -119,7 +119,7 @@ class ParticleList(collections.UserList):
         `list` containing `~plasmapy.particles.particle_class.Particle`
         and `~plasmapy.particles.particle_class.CustomParticle` instances.
         """
-        new_particles = list()
+        new_particles = []
         if particles is None:
             return new_particles
         for obj in particles:
@@ -474,7 +474,7 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope if particle.isotope else particle.element)
+    base_particle = Particle(particle.isotope or particle.element)
 
     if max_charge is None:
         max_charge = particle.atomic_number
