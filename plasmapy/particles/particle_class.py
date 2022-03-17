@@ -2331,14 +2331,14 @@ def molecule(
         for element_symbol, amount in element_dict.items():
             try:
                 element = Particle(element_symbol)
-            except ParticleError as exc:
+            except ParticleError as exc2:
                 raise InvalidParticleError(
                     f"Could not identify {element_symbol}."
                 ) from exc
             if not element.is_category("element"):
                 raise InvalidParticleError(
                     f"Molecule symbol contains a particle that is not an element: {element.symbol}"
-                ) from exc
+                ) from exc2
 
             mass += amount * element.mass
 
