@@ -415,6 +415,7 @@ class _IonBox(_ParticleBox):
         ion = Particle(value)
         if not ion.is_ion:
             raise ValueError(f"{ion} is not an ion")
+
         self.values_cont[self.property_name] = ion
         self.widget.layout.border = ""
         self.widget.description = ""
