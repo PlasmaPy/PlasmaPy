@@ -25,7 +25,7 @@ two_species = ["e", "D+"]
 three_species = ["e", "D+", "H+"]
 
 
-class Test_ColdPlasmaPermittivity(object):
+class Test_ColdPlasmaPermittivity:
     def test_proton_electron_plasma(self):
         """
         Test proton-electron plasma against the (approximate)
