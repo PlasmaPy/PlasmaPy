@@ -1,4 +1,3 @@
-Added ``dlint``, flake8_, ``flake8-absolute-import``,
-``flake8-rst-docstrings``, ``flake8-use-fstring``, pre-commit_,
-pydocstyle_, and pygments_ to test dependencies, but not
-install dependencies.
+Moved `h5py`, `lmfit`, |mpmath|_, and Numba_ from the ``extras``
+requirements category and into the ``install`` requirements category.
+These packages are now installed when running ``pip install plasmapy``.
