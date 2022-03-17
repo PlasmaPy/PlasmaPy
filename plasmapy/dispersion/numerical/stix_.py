@@ -5,19 +5,20 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
-import astropy.constants as const
+from astropy.constants.si import c
 import astropy.units as u
 import numpy as np
 
 from sympy import Symbol
 from sympy.solvers import solve
 
-from plasmapy.formulary import parameters as pfp
-from plasmapy.particles import Particle, ParticleList
+from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.utils.decorators import validate_quantities
 
+c_si_unitless = c.value
 
-@validate_quantities(B={"can_be_negative": False})
+
+@validate_quantities(B={"can_be_negative": False}, k={"can_be_negative": False})
 def stix(
     B: u.T,
     k: u.rad / u.m,
@@ -154,9 +155,9 @@ def stix(
 
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
-        raise TypeError(
+        raise ValueError(
             f"Argument 'k' needs to be a single value or a 1D array astropy Quantity,"
-            f"got a value of shape {k.shpae}."
+            f"got a value of shape {k.shape}."
         )
 
     omega_ions = omega_ions.squeeze()
@@ -177,12 +178,12 @@ def stix(
     k_dim = k.ndim
     if k_dim == 0:
         ck = np.zeros(1)
-        val = k * const.c
+        val = k * c_si_unitless
         ck[0] = val.value
     elif k_dim == 1:
         ck = np.zeros(len(k))
         for i in range(len(k)):
-            val = k[i] * const.c
+            val = k[i] * c_si_unitless
             ck[i] = val.value
     else:
         raise TypeError(
@@ -196,7 +197,7 @@ def stix(
 
     component_frequency = np.tile(0 * u.rad / u.s, sum_len)
     for i in range(sum_len):
-        component_frequency[i] = pfp.gyrofrequency(B=B, particle=ions[i], signed=True)
+        component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
 
     if omega_int is False:
         for i in range(sum_len):
@@ -243,7 +244,7 @@ def stix(
             sol_omega.append(val)
 
         omegas[i] = sol_omega
-        val = ck[i] / const.c.value
+        val = ck[i] / c_si_unitless
         omegas[val] = omegas.pop(i)
 
     return omegas

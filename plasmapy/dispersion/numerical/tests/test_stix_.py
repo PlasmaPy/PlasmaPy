@@ -23,7 +23,6 @@ class TestStix:
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "ions": {"not": "a particle"}}, TypeError),
