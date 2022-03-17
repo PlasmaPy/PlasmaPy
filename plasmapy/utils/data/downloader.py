@@ -36,7 +36,8 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
 
     directory : str, optional
         The full path to the desired download location. Defaults to the
-        default PlasmaPy data download directory.
+        default PlasmaPy data download directory:
+        plasmapy/utils/data/downloads/
 
     Returns
     -------
