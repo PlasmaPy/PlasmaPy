@@ -263,6 +263,7 @@ class CheckValues(CheckBase):
                     # during subclassing)
                     out_checks[param.name][v_name] = v_default
 
+        # Does `self.checks` indicate arguments not used by f?
         if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):
             params_str = ", ".join(missing_params)
             warnings.warn(
