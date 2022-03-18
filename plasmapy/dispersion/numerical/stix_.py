@@ -71,22 +71,31 @@ def stix(
     -----
     The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
     of :cite:t:`bellan:2012` presented here:
+
     .. math::
         (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
         PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
+
     where,
+
     .. math::
         \mathbf{n} = \frac{c \mathbf{k}}{\omega}
+
     .. math::
         S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
+
     .. math::
         P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
+
     .. math::
         D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
+
     Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
     as follows.
+
     .. math::
         R = S + D \hspace{1cm} L = S - D
+        
     The equation is valid for all :math:`\omega` and :math:`k`
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
     :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
