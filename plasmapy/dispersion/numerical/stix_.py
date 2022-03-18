@@ -106,6 +106,7 @@ def stix(
     >>> }
     >>> w = stix(**inputs)
     >>> print(w[0.001])
+
     """
 
     if B.ndim != 0:
