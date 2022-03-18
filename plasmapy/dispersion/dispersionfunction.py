@@ -109,6 +109,17 @@ def plasma_dispersion_func(
     >>> plasma_dispersion_func(-1.52+0.47j)
     (0.6088888957234254+0.33494583882874024j)
 
+    For user convience
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite`
+    is bound to this function and can be used as follows:
+
+    >>> plasma_dispersion_func.lite(0)
+    1.7724538509055159j
+    >>> plasma_dispersion_func.lite(1j)
+    0.757872156141312j
+    >>> plasma_dispersion_func.lite(-1.52+0.47j)
+    (0.6088888957234254+0.33494583882874024j)
+
     """
     if not isinstance(
         zeta, (numbers.Integral, numbers.Real, numbers.Complex, np.ndarray, u.Quantity)
@@ -214,6 +225,17 @@ def plasma_dispersion_func_deriv(
     >>> plasma_dispersion_func_deriv(1j)
     (-0.484255687717376...+0j)
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
+    (0.165871331498228...+0.445879788059350...j)
+
+    For user convience
+    `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
+    is bound to this function and can be used as follows:
+
+    >>> plasma_dispersion_func_deriv.lite(0)
+    (-2+0j)
+    >>> plasma_dispersion_func_deriv.lite(1j)
+    (-0.484255687717376...+0j)
+    >>> plasma_dispersion_func_deriv.lite(-1.52+0.47j)
     (0.165871331498228...+0.445879788059350...j)
 
     """
