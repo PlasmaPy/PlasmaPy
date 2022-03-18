@@ -51,7 +51,7 @@ def stix(
         Value of theta with respect to the magnetic field,
         :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
         radians.
-        
+
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
