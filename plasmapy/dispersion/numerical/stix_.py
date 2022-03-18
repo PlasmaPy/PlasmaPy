@@ -37,25 +37,25 @@ def stix(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-       Value of the magnitude of the magnetic field in units convertible
-       to :math:`T`.
+        Value of the magnitude of the magnetic field in units convertible
+        to :math:`T`.
     k : single value or 1 D array astropy `~astropy.units.Quantity`
-       Value of the wavenumber in units convertible to radians / m.
-    ions: single particle value or 1 D array of particles, ion(s) composing
+        Value of the wavenumber in units convertible to radians / m.
+        ions: single particle value or 1 D array of particles, ion(s) composing
         the plasma as expressed by chemical symbols.
-    omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
-       Frequency value for the associated ion in units convertible to
-       radians / s.
+        omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
+        Frequency value for the associated ion in units convertible to
+        radians / s.
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
-       Value of theta with respect to the magnetic field,
-       :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
-       radians.
+        Value of theta with respect to the magnetic field,
+        :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
+        radians.
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
-       Presents the wavenumber used to find the value(s) of the cold
-       plasma frequencies, (omega), dispersion solver(s) and then the
-       solutions themselves.
+        Presents the wavenumber used to find the value(s) of the cold
+        plasma frequencies, (omega), dispersion solver(s) and then the
+        solutions themselves.
     Raises
     ------
     `TypeError`
