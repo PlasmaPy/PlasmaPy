@@ -34,6 +34,7 @@ def stix(
     assumes a uniform magnetic field :math:`\mathbf{B_0}`, theta is the
     angle between the magnetic and the normal surface of the wave
     vector. For more information see the **Notes** section below.
+
     Parameters
     ----------
     B : `~astropy.units.Quantity`
@@ -50,23 +51,28 @@ def stix(
         Value of theta with respect to the magnetic field,
         :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
         radians.
+        
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
         Presents the wavenumber used to find the value(s) of the cold
         plasma frequencies, (omega), dispersion solver(s) and then the
         solutions themselves.
+
     Raises
     ------
     `TypeError`
         If the argument is of an invalid type.
-    `~astropy.units.UnitsError`
+        `~astropy.units.UnitsError`
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
+
     `ValueError`
         If the number of frequencies for each ion isn't the same.
+
     `NoConvergence`
         If a solution cannot be found and the convergence failed to root.
+
     Notes
     -----
     The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
