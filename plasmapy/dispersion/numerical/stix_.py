@@ -95,17 +95,17 @@ def stix(
     resonance :math:`S \to 0`.
     Example
     -------
-    >>>    from astropy import units as u
-    >>>    from plasmapy.dispersion.numerical.stix_ import stix
-    >>>    inputs = {
-    ...           "B": 8.3e-9 * u.T,
-    ...           "k": 0.001 * u.rad / u.m,
-    ...           "ions": [Particle("H+"), Particle("e-")],
-    ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
-    ...           "theta": 30 * u.deg,
-    >>>    }
-    >>>    w = stix(**inputs)
-    >>>    print(w[0.001])
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.numerical.stix_ import stix
+    >>> inputs = {
+    ...     "B": 8.3e-9 * u.T,
+    ...     "k": 0.001 * u.rad / u.m,
+    ...     "ions": [Particle("H+"), Particle("e-")],
+    ...     "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
+    ...     "theta": 30 * u.deg,
+    >>> }
+    >>> w = stix(**inputs)
+    >>> print(w[0.001])
     """
 
     if B.ndim != 0:
