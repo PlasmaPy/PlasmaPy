@@ -95,7 +95,7 @@ def stix(
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
-        
+
     The equation is valid for all :math:`\omega` and :math:`k`
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
     :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
