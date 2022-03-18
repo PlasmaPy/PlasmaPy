@@ -916,7 +916,7 @@ def get_electron_temperature(
     if bimaxwellian:
         max_exp_bias = np.max(exponential_section.bias)
         min_exp_bias = np.min(exponential_section.bias)
-        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - max_exp_bias)
+        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - min_exp_bias)
 
         initial_guess = [x0.to(u.V).value, 0.6, 2, 1]
 
