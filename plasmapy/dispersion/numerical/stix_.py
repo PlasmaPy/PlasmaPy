@@ -5,10 +5,10 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
-from astropy.constants.si import c
 import astropy.units as u
 import numpy as np
 
+from astropy.constants.si import c
 from sympy import Symbol
 from sympy.solvers import solve
 
