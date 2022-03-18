@@ -100,7 +100,7 @@ def stix(
     >>>    inputs = {
     ...           "B": 8.3e-9 * u.T,
     ...           "k": 0.001 * u.rad / u.m,
-    ...           "ions": ['e-','H+'],
+    ...           "ions": [Particle("H+"), Particle("e-")],
     ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
     ...           "theta": 30 * u.deg,
     >>>    }
