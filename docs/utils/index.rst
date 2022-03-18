@@ -28,9 +28,6 @@ Functionality contained in `~plasmapy.utils` includes:
 API
 ===
 
-.. automodapi:: plasmapy.utils.data
-   :include-heading:
-
 .. automodapi:: plasmapy.utils.decorators
    :include-heading:
 
@@ -44,4 +41,7 @@ API
    :include-heading:
 
 .. automodapi:: plasmapy.utils.calculator
+   :include-heading:
+
+.. automodapi:: plasmapy.utils.data
    :include-heading:
