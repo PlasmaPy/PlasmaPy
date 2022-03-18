@@ -13,6 +13,7 @@ from sympy import Symbol
 from sympy.solvers import solve
 
 from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 c_si_unitless = c.value
@@ -22,7 +23,7 @@ c_si_unitless = c.value
 def stix(
     B: u.T,
     k: u.rad / u.m,
-    ions: str,
+    ions: Particle,
     omega_ions: u.rad / u.s,
     theta: u.rad,
 ):
@@ -33,86 +34,65 @@ def stix(
     assumes a uniform magnetic field :math:`\mathbf{B_0}`, theta is the
     angle between the magnetic and the normal surface of the wave
     vector. For more information see the **Notes** section below.
-
     Parameters
     ----------
     B : `~astropy.units.Quantity`
        Value of the magnitude of the magnetic field in units convertible
        to :math:`T`.
-
     k : single value or 1 D array astropy `~astropy.units.Quantity`
        Value of the wavenumber in units convertible to radians / m.
-
-    ions: single string value or 1 D array string, ion(s) composing
+    ions: single particle value or 1 D array of particles, ion(s) composing
         the plasma as expressed by chemical symbols.
-
     omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
        Frequency value for the associated ion in units convertible to
        radians / s.
-
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
        Value of theta with respect to the magnetic field,
        :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
        radians.
-
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
        Presents the wavenumber used to find the value(s) of the cold
        plasma frequencies, (omega), dispersion solver(s) and then the
        solutions themselves.
-
     Raises
     ------
     `TypeError`
         If the argument is of an invalid type.
-
     `~astropy.units.UnitsError`
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
-
     `ValueError`
         If the number of frequencies for each ion isn't the same.
-
     `NoConvergence`
         If a solution cannot be found and the convergence failed to root.
-
     Notes
     -----
     The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
     of :cite:t:`bellan:2012` presented here:
-
     .. math::
         (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
         PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
-
     where,
-
     .. math::
         \mathbf{n} = \frac{c \mathbf{k}}{\omega}
-
     .. math::
         S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
-
     .. math::
         P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
-
     .. math::
         D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
-
     Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
     as follows.
-
     .. math::
         R = S + D \hspace{1cm} L = S - D
-
     The equation is valid for all :math:`\omega` and :math:`k`
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
     :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
     :math:`k \to 0` occurs when P, R or L cut off and predicts
     :math:`k \to \inf` for perpendicular propagation during wave
     resonance :math:`S \to 0`.
-
     Example
     -------
     >>>    from astropy import units as u
@@ -126,7 +106,6 @@ def stix(
     >>>    }
     >>>    w = stix(**inputs)
     >>>    print(w[0.001])
-
     """
 
     if B.ndim != 0:
@@ -142,15 +121,15 @@ def stix(
         lengths = min(len(omega_ions), len(ions))
     else:
         raise ValueError(
-            f"Argument 'omega_ions' and 'ions' need to be the same quantity type,"
-            f"got value of shape {omega_ions.shape} and {ions.shape}."
+            f"Argument 'omega_ions' and 'ions' need to be the same length,"
+            f"got value of shape {len(omega_ions)} and {len(ions)}."
         )
 
     for i in range(lengths):
-        if type(ions[i]) is not str:
+        if type(ions[i]) is not Particle:
             raise TypeError(
-                f"Argument 'ions[i]' need to be particles of string type"
-                f"got value of type {ions[i].type}."
+                f"Argument 'ions[i]' need to be particles of particle type"
+                f"got value of type {type(ions[i])}."
             )
 
     k = k.squeeze()
@@ -195,7 +174,7 @@ def stix(
 
     plasma_freq = np.zeros(sum_len)
 
-    component_frequency = np.tile(0 * u.rad / u.s, sum_len)
+    component_frequency = np.zeros(sum_len)
     for i in range(sum_len):
         component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
 
@@ -219,10 +198,10 @@ def stix(
     omegas = {}
 
     for i in range(sum_len):
-        S += (plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i].value ** 2)
+        S += (plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)
         P += (plasma_freq[i] / w) ** 2
-        D += ((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i].value ** 2)) * (
-            component_frequency[i].value / w
+        D += ((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)) * (
+            component_frequency[i] / w
         )
 
     R = S + D

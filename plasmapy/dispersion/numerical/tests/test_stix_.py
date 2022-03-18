@@ -29,7 +29,7 @@ class TestStix:
             ({**_kwargs_single_valued, "ions": "e-"}, ValueError),
             ({**_kwargs_single_valued, "omega_ions": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "omega_ions": 6 * u.rad / u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, ValueError),
+            ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, TypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
         ],
     )
