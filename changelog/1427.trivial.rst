@@ -1,0 +1,2 @@
+Added unit test cases for manual entry of vector values in order to improve code coverage
+in the null point finder.

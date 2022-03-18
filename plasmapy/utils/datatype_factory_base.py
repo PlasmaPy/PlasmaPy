@@ -83,11 +83,7 @@ class BasicRegistrationFactory:
         registry=None,
     ):
 
-        if registry is None:
-            self.registry = dict()
-        else:
-            self.registry = registry
-
+        self.registry = dict() if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
 
@@ -111,13 +107,9 @@ class BasicRegistrationFactory:
 
     def _check_registered_widget(self, *args, **kwargs):
 
-        candidate_widget_types = list()
-
-        for key in self.registry:
-
-            # Call the registered validation function for each registered class
-            if self.registry[key](*args, **kwargs):
-                candidate_widget_types.append(key)
+        candidate_widget_types = [
+            key for key in self.registry if self.registry[key](*args, **kwargs)
+        ]
 
         n_matches = len(candidate_widget_types)
 
@@ -177,21 +169,17 @@ class BasicRegistrationFactory:
             for vfunc_str in self.validation_functions:
                 if hasattr(WidgetType, vfunc_str):
                     vfunc = getattr(WidgetType, vfunc_str)
-
-                    # check if classmethod: stackoverflow #19227724
-                    _classmethod = (
+                    is_not_classmethod = not (
                         inspect.ismethod(vfunc) and vfunc.__self__ is WidgetType
                     )
-
-                    if _classmethod:
-                        self.registry[WidgetType] = vfunc
-                        found = True
-                        break
-                    else:
+                    if is_not_classmethod:
                         raise ValidationFunctionError(
                             f"{WidgetType.__name__}.{vfunc_str} must be a classmethod."
                         )
 
+                    self.registry[WidgetType] = vfunc
+                    found = True
+                    break
             if not found:
                 raise ValidationFunctionError(
                     "No proper validation function for class "
