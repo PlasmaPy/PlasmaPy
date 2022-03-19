@@ -15,18 +15,18 @@ jobs:
       uses: codelytv/pr-size-labeler@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        xs_label: 'size/very-small'
+        xs_label: size/very-small
         xs_max_size: '10'
-        s_label: 'size/small'
+        s_label: size/small
         s_max_size: '50'
-        m_label: 'size/medium'
+        m_label: size/medium
         m_max_size: '200'
-        l_label: 'size/large'
+        l_label: size/large
         l_max_size: '400'
-        xl_label: 'size/extra-large'
+        xl_label: size/extra-large
         fail_if_xl: 'false'
         message_if_xl: >
           'This PR exceeds the recommended size of less than 400 lines.
           Please make sure you are NOT addressing multiple issues with one PR.
           Note this PR might be rejected due to its size.'
-        github_api_url: 'api.github.com'
+        github_api_url: api.github.com
