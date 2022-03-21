@@ -150,7 +150,7 @@ def stix(
                 f"Argument 'ions[i]' need to be particles of particle type"
                 f"got value of type {type(ions[i])}."
             )
-        
+
     # validate k argument and dimension
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
@@ -213,7 +213,7 @@ def stix(
             f"got value of shape {omega_ions.shape}."
         )
 
-    #Stix method implemented
+    # Stix method implemented
     w = Symbol("w")
 
     S = 1
