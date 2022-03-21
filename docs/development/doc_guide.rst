@@ -943,7 +943,7 @@ Narrative documentation guidelines
   ``automodapi``, or the like, then it is required to create a stub file
   for that particular subpackage or module in |docs/api_static|_ . For
   example, the stub file for `plasmapy.particles.atomic` is placed at
-  :file:`docs/api_static/plasampy.particles.atomic.rst` and its contents
+  :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
   look like:
 
   .. code-block:: rst
