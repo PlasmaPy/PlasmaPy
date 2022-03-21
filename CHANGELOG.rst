@@ -323,7 +323,7 @@ Backwards Incompatible Changes
 - Renamed the available "methods" for computing the Coulomb logarithm in an attempt
   to make the names more explicit.  This is implemented using the ``method`` keyword
   for functions `~plasmapy.formulary.collisions.Coulomb_logarithm` and
-  `~plasmapy.formulary.collisions.impact_parameter`, and then propogated throughout
+  `~plasmapy.formulary.collisions.impact_parameter`, and then propagated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
 - Add dependency ``pandas >= 1.0.0``.  Modify `xarray` dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
@@ -414,7 +414,7 @@ Features
   `~plasmapy.particles.ParticleList`. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
 - Added method `~plasmapy.plasma.grids.AbstractGrid.require_quantities` to
   `~plasmapy.plasma.grids.AbstractGrid` that verifies a list of quantities is present
-  on the grid.  Method is also incorported into
+  on the grid.  Method is also incorporated into
   `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - Added the
   `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.add_wire_mesh()`

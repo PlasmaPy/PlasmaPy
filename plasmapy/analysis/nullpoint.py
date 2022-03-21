@@ -1015,7 +1015,7 @@ def _locate_null_point(vspace, cell, n, err):
         of the Newton-Raphson method is repeated.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
 
     Returns
@@ -1232,7 +1232,7 @@ def null_point_find(
         The default value is 500.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
         The default value is ``1e-10``.
 

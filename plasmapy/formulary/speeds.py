@@ -74,7 +74,7 @@ def Alfven_speed(
         Representation of the ion species (e.g., `'p'` for protons, `'D+'` for
         deuterium, `'He-4 +1'` for singly ionized helium-4, etc.). If no charge
         state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this paramter
+        ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
 
     z_mean : `~numbers.Real`, optional
@@ -623,7 +623,7 @@ def thermal_speed(
        |                           |    1                                          |
        +--------------+------------+---------------+---------------+---------------+
 
-    The coefficents can be directly retrieved using
+    The coefficients can be directly retrieved using
     `~plasmapy.formulary.speeds.thermal_speed_coefficients`.
 
         .. rubric:: The Methods
