@@ -5,14 +5,15 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
-from astropy.constants.si import c
 import astropy.units as u
 import numpy as np
 
+from astropy.constants.si import c
 from sympy import Symbol
 from sympy.solvers import solve
 
 from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 c_si_unitless = c.value
@@ -22,7 +23,7 @@ c_si_unitless = c.value
 def stix(
     B: u.T,
     k: u.rad / u.m,
-    ions: str,
+    ions: Particle,
     omega_ions: u.rad / u.s,
     theta: u.rad,
 ):
@@ -37,37 +38,32 @@ def stix(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-       Value of the magnitude of the magnetic field in units convertible
-       to :math:`T`.
-
+        Value of the magnitude of the magnetic field in units convertible
+        to :math:`T`.
     k : single value or 1 D array astropy `~astropy.units.Quantity`
-       Value of the wavenumber in units convertible to radians / m.
-
-    ions: single string value or 1 D array string, ion(s) composing
+        Value of the wavenumber in units convertible to radians / m.
+        ions: single particle value or 1 D array of particles, ion(s) composing
         the plasma as expressed by chemical symbols.
-
-    omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
-       Frequency value for the associated ion in units convertible to
-       radians / s.
-
+        omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
+        Frequency value for the associated ion in units convertible to
+        radians / s.
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
-       Value of theta with respect to the magnetic field,
-       :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
-       radians.
+        Value of theta with respect to the magnetic field,
+        :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
+        radians.
 
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
-       Presents the wavenumber used to find the value(s) of the cold
-       plasma frequencies, (omega), dispersion solver(s) and then the
-       solutions themselves.
+        Presents the wavenumber used to find the value(s) of the cold
+        plasma frequencies, (omega), dispersion solver(s) and then the
+        solutions themselves.
 
     Raises
     ------
     `TypeError`
         If the argument is of an invalid type.
-
-    `~astropy.units.UnitsError`
+        `~astropy.units.UnitsError`
         If the argument is a `~astropy.units.Quantity` but is not
         dimensionless.
 
@@ -112,20 +108,19 @@ def stix(
     :math:`k \to 0` occurs when P, R or L cut off and predicts
     :math:`k \to \inf` for perpendicular propagation during wave
     resonance :math:`S \to 0`.
-
     Example
     -------
-    >>>    from astropy import units as u
-    >>>    from plasmapy.dispersion.numerical.stix_ import stix
-    >>>    inputs = {
-    ...           "B": 8.3e-9 * u.T,
-    ...           "k": 0.001 * u.rad / u.m,
-    ...           "ions": ['e-','H+'],
-    ...           "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
-    ...           "theta": 30 * u.deg,
-    >>>    }
-    >>>    w = stix(**inputs)
-    >>>    print(w[0.001])
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.numerical.stix_ import stix
+    >>> inputs = {
+    ...     "B": 8.3e-9 * u.T,
+    ...     "k": 0.001 * u.rad / u.m,
+    ...     "ions": [Particle("H+"), Particle("e-")],
+    ...     "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
+    ...     "theta": 30 * u.deg,
+    >>> }
+    >>> w = stix(**inputs)
+    >>> print(w[0.001])
 
     """
 
@@ -144,16 +139,16 @@ def stix(
         lengths = min(len(omega_ions), len(ions))
     else:
         raise ValueError(
-            f"Argument 'omega_ions' and 'ions' need to be the same quantity type,"
-            f"got value of shape {omega_ions.shape} and {ions.shape}."
+            f"Argument 'omega_ions' and 'ions' need to be the same length,"
+            f"got value of shape {len(omega_ions)} and {len(ions)}."
         )
 
     # validate ion argument
     for i in range(lengths):
-        if type(ions[i]) is not str:
+        if type(ions[i]) is not Particle:
             raise TypeError(
-                f"Argument 'ions[i]' need to be particles of string type"
-                f"got value of type {ions[i].type}."
+                f"Argument 'ions[i]' need to be particles of particle type"
+                f"got value of type {type(ions[i])}."
             )
         
     # validate k argument and dimension
@@ -203,7 +198,7 @@ def stix(
 
     plasma_freq = np.zeros(sum_len)
 
-    component_frequency = np.tile(0 * u.rad / u.s, sum_len)
+    component_frequency = np.zeros(sum_len)
     for i in range(sum_len):
         component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
 
@@ -228,10 +223,10 @@ def stix(
     omegas = {}
 
     for i in range(sum_len):
-        S += (plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i].value ** 2)
+        S += (plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)
         P += (plasma_freq[i] / w) ** 2
-        D += ((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i].value ** 2)) * (
-            component_frequency[i].value / w
+        D += ((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)) * (
+            component_frequency[i] / w
         )
 
     R = S + D
