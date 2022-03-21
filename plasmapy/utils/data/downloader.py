@@ -49,7 +49,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
     if "." not in str(basename):
         raise ValueError(f"'filename' ({basename}) must include an extension.")
 
-    if directory is None:
+    if directory is None:  # coverage: ignore
         directory = _DOWNLOADS_PATH
 
     path = os.path.join(directory, basename)
