@@ -129,11 +129,13 @@ def stix(
 
     """
 
+    # validate B argument
     if B.ndim != 0:
         raise ValueError(
             f"Argument 'B' must be a scalar, got array of shape {B.shape}."
         )
 
+    # validate ion frequency(ies) and find dimension
     if omega_ions.ndim == 0 and len(ions) == 0:
         omega_int = True
         lengths = 1
@@ -146,13 +148,15 @@ def stix(
             f"got value of shape {omega_ions.shape} and {ions.shape}."
         )
 
+    # validate ion argument
     for i in range(lengths):
         if type(ions[i]) is not str:
             raise TypeError(
                 f"Argument 'ions[i]' need to be particles of string type"
                 f"got value of type {ions[i].type}."
             )
-
+        
+    # validate k argument and dimension
     k = k.squeeze()
     if not (k.ndim == 0 or k.ndim == 1):
         raise ValueError(
@@ -160,6 +164,7 @@ def stix(
             f"got a value of shape {k.shape}."
         )
 
+    # validate ion frequencies
     omega_ions = omega_ions.squeeze()
     if not (omega_ions.ndim == 0 or omega_ions.ndim == 1):
         raise TypeError(
@@ -167,6 +172,7 @@ def stix(
             f"1D array astropy Quantity, got value of shape {omega_ions.shape}."
         )
 
+    # validate theta value
     theta = theta.squeeze()
     theta = theta.to(u.radian)
     if not (theta.ndim == 0):
@@ -175,6 +181,7 @@ def stix(
             f"got value of shape {theta.shape}."
         )
 
+    # validate k arguement and find the dimension
     k_dim = k.ndim
     if k_dim == 0:
         ck = np.zeros(1)
@@ -191,6 +198,7 @@ def stix(
             f"got value of shape {k.shape}."
         )
 
+    # Generate frequencies from the given ions
     sum_len = lengths
 
     plasma_freq = np.zeros(sum_len)
@@ -210,6 +218,7 @@ def stix(
             f"got value of shape {omega_ions.shape}."
         )
 
+    #Stix method implemented
     w = Symbol("w")
 
     S = 1
@@ -232,6 +241,7 @@ def stix(
     B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
     C = P * R * L
 
+    # solve the stix equation for single k value or an array
     for i in range(len(ck)):
         eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
 
