@@ -25,8 +25,5 @@ jobs:
         l_max_size: '400'
         xl_label: size/extra-large
         fail_if_xl: 'false'
-        message_if_xl: >
-          'This PR exceeds the recommended size of less than 400 lines.
-          Please make sure you are NOT addressing multiple issues with one PR.
-          Note this PR might be rejected due to its size.'
+        message_if_xl: ''
         github_api_url: api.github.com
