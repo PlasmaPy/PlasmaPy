@@ -939,9 +939,9 @@ def get_electron_temperature(
 
     # Obtain the plasma parameters from the fit
     if not bimaxwellian:
-        slope = fit[2]
+        T0 = fit[2]
 
-        T_e = slope ** -1 * u.eV
+        T_e = T0 * u.eV
     else:
         x0, y0 = fit[0], fit[1]
         T0, Delta_T = [fit[2], fit[3]]
