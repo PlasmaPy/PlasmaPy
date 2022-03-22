@@ -1177,7 +1177,6 @@ def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
         using the Newton-Raphson method.
         The default value is ``1e-10``.
 
-
     Returns
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
