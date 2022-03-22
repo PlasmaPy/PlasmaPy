@@ -1157,7 +1157,7 @@ def _locate_null_point(vspace, cell, n, err):
 
 def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
     r"""
-    Returns an array of null point object, representing
+    Returns an array of null point objects, representing
     the null points of the given vector space.
 
     Parameters
