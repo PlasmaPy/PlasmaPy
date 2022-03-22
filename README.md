@@ -48,7 +48,7 @@
 [Python]: https://www.python.org
 [Suggestion box]: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 [this recent video]: https://youtu.be/E8RwQF5wcXM
-[Zoom link]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
+[Zoom]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
 
 [PlasmaPy] is an open source, community-developed [Python] 3.8+ package
 for plasma science. PlasmaPy intends to be for plasma science what
