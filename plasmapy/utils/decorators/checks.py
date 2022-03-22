@@ -18,6 +18,7 @@ import warnings
 
 from astropy import units as u
 from astropy.constants import c
+from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
 from typing import Any, Dict, List, Tuple, Union
@@ -28,14 +29,6 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
-
-try:
-    from astropy.units.equivalencies import Equivalency
-except ImportError:
-    # TODO: remove once we have dependency Astropy >= 3.2.1
-    # astropy defined the Equivalency class in v3.2.1
-    class Equivalency:
-        pass
 
 
 class CheckBase:
