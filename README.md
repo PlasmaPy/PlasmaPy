@@ -77,14 +77,13 @@ and you may access the [minutes and
 agendas](https://drive.google.com/drive/folders/0ByPG8nie6fTPV1FQUEkzMTgtRTg?usp=sharing).
 Any last minute changes will be discussed on
 [Matrix](https://app.element.io/app/#/room/#plasmapy:openastronomy.org).
-As of November 2021, our meetings are on Tuesdays at
-[19:00 UTC](http://time.unitarium.com/utc/7pm).
+As of March 2022, our meetings are on Tuesdays at 2 pm ET.
 Come discuss plasma software with us!
 
 ## [Weekly office hours](http://www.plasmapy.org/meetings/office_hours/)
 
 PlasmaPy's weekly [office hours](http://www.plasmapy.org/meetings/office_hours/)
-on Thursdays at [19:00 UTC](http://time.unitarium.com/utc/6pm)
+on Thursdays at 3 pm ET
 are an opportunity to chat with active members of the PlasmaPy
 community about the package and project.
 
