@@ -1326,7 +1326,7 @@ def uniform_nullpoint_find(
         of the given vector space.
 
     Notes
-    ----------
+    -----
     This method is described by :cite:t:`haynes:2007`.
 
     """
