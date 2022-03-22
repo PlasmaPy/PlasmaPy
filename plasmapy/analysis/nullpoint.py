@@ -11,6 +11,8 @@ __all__ = [
 import numpy as np
 import warnings
 
+from typing import Callable
+
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-15
 _MAX_RECURSION_LEVEL = 10
@@ -1155,7 +1157,7 @@ def _locate_null_point(vspace, cell, n, err):
     return null_point_find(**null_point_args)
 
 
-def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
+def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     r"""
     Returns an array of null point objects, representing
     the null points of the given vector space.
@@ -1168,7 +1170,7 @@ def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
 
-    MAX_ITERATIONS: int
+    maxiter: int
         The maximum iterations of the Newton-Raphson method.
         The default value is 500.
 
@@ -1190,7 +1192,7 @@ def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
             for k in range(len(vspace[0][0][0][0]) - 1):
                 if _reduction(vspace, [i, j, k]):
                     if _trilinear_analysis(vspace, [i, j, k]):
-                        loc = _locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
+                        loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                         if loc is not None:
                             p = NullPoint(loc, "N/A")
                             if p not in nullpoints:
@@ -1205,7 +1207,7 @@ def null_point_find(
     u_arr=None,
     v_arr=None,
     w_arr=None,
-    MAX_ITERATIONS=500,
+    maxiter=500,
     err=1e-10,
 ):
     r"""
@@ -1244,7 +1246,7 @@ def null_point_find(
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
-    MAX_ITERATIONS: int
+    maxiter: int
         The maximum iterations of the Newton-Raphson method.
         The default value is 500.
 
@@ -1257,7 +1259,7 @@ def null_point_find(
     Returns
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
-        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects 
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
         representing the nullpoints of the given vector space.
 
     Notes
@@ -1279,7 +1281,7 @@ def null_point_find(
         None,
         None,
     )
-    return _vspace_iterator(vspace, MAX_ITERATIONS, err)
+    return _vspace_iterator(vspace, maxiter, err)
 
 
 def uniform_nullpoint_find(
@@ -1288,7 +1290,7 @@ def uniform_nullpoint_find(
     z_range,
     func: Callable,
     precision=[0.05, 0.05, 0.05],
-    MAX_ITERATIONS=500,
+    maxiter=500,
     err=1e-10,
 ):
     r"""
@@ -1343,4 +1345,4 @@ def uniform_nullpoint_find(
         func,
         precision,
     )
-    return _vspace_iterator(vspace, MAX_ITERATIONS, err)
+    return _vspace_iterator(vspace, maxiter, err)
