@@ -5,14 +5,15 @@ import pytest
 from astropy import units as u
 
 from plasmapy.dispersion.numerical.stix_ import stix
+from plasmapy.particles import Particle
 
 
 class TestStix:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "k": 0.001 * u.rad / u.m,
-        "ions": ["e-", "H+"],
-        "omega_ions": [4.0e5, 2.0e5] * u.rad / u.s,
+        "species": [Particle("e-"), Particle("H+")],
+        "omega_species": [4.0e5, 2.0e5] * u.rad / u.s,
         "theta": 30 * u.deg,
     }
 
@@ -25,10 +26,13 @@ class TestStix:
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "ions": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "ions": "e-"}, ValueError),
-            ({**_kwargs_single_valued, "omega_ions": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "omega_ions": 6 * u.rad / u.s}, u.UnitTypeError),
+            ({**_kwargs_single_valued, "species": {"not": "a particle"}}, TypeError),
+            ({**_kwargs_single_valued, "species": Particle("e-")}, ValueError),
+            ({**_kwargs_single_valued, "omega_species": "wrong type"}, TypeError),
+            (
+                {**_kwargs_single_valued, "omega_species": 6 * u.m / u.s},
+                u.UnitTypeError,
+            ),
             ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, TypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
         ],
@@ -89,6 +93,3 @@ class TestStix:
     def test_warns(self, kwargs, _warning):
         with pytest.warns(_warning):
             stix(**kwargs)
-
-
-print("Out")

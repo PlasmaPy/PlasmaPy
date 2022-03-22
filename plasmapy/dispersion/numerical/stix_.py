@@ -13,7 +13,7 @@ from sympy import Symbol
 from sympy.solvers import solve
 
 from plasmapy.formulary.frequencies import gyrofrequency
-from plasmapy.particles import Particle
+from plasmapy.particles import Particle, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
 c_si_unitless = c.value
@@ -23,8 +23,8 @@ c_si_unitless = c.value
 def stix(
     B: u.T,
     k: u.rad / u.m,
-    ions: Particle,
-    omega_ions: u.rad / u.s,
+    species: Particle,
+    omega_species: u.rad / u.s,
     theta: u.rad,
 ):
     r"""
@@ -42,11 +42,14 @@ def stix(
         to :math:`T`.
     k : single value or 1 D array astropy `~astropy.units.Quantity`
         Value of the wavenumber in units convertible to radians / m.
-        ions: single particle value or 1 D array of particles, ion(s) composing
+
+    species: single particle value or 1 D array of particles, ion(s) composing
         the plasma as expressed by chemical symbols.
-        omega_ions: single value or 1 D array astropy `~astropy.units.Quantity`
+
+    omega_species: single value or 1 D array astropy `~astropy.units.Quantity`
         Frequency value for the associated ion in units convertible to
         radians / s.
+
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
         Value of theta with respect to the magnetic field,
         :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
@@ -76,11 +79,14 @@ def stix(
     Notes
     -----
     The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
-    of :cite:t:`bellan:2012` presented here:
+    of :cite:t:`bellan:2012` and is presented below. It is assumed that the zero-order
+    quantities are uniform in space and static in time; while the first-order quantities
+    are assumed to vary as :math:`e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)
+    \right ]}` :cite:t:`stix:1992`.
 
     .. math::
-        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}() +
-        PS(1 + \cos^{2}(theta))](ck/\omega)^{2} + PRL = 0
+        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}(\theta) +
+        PS(1 + \cos^{2}(\theta))](ck/\omega)^{2} + PRL = 0
 
     where,
 
@@ -96,6 +102,7 @@ def stix(
     .. math::
         D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
 
+    The Cold plasma assumption,
     Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
     as follows.
 
@@ -108,15 +115,17 @@ def stix(
     :math:`k \to 0` occurs when P, R or L cut off and predicts
     :math:`k \to \inf` for perpendicular propagation during wave
     resonance :math:`S \to 0`.
+
     Example
     -------
     >>> from astropy import units as u
+    >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.numerical.stix_ import stix
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "k": 0.001 * u.rad / u.m,
-    ...     "ions": [Particle("H+"), Particle("e-")],
-    ...     "omega_ions": [4.0e5,2.0e5] * u.rad / u.s,
+    ...     "species": [Particle("H+"), Particle("e-")],
+    ...     "omega_species": [4.0e5,2.0e5] * u.rad / u.s,
     ...     "theta": 30 * u.deg,
     >>> }
     >>> w = stix(**inputs)
@@ -130,25 +139,36 @@ def stix(
             f"Argument 'B' must be a scalar, got array of shape {B.shape}."
         )
 
+    # validate species argument
+    if isinstance(species, (list, tuple)):
+        species = ParticleList(species)
+    elif isinstance(species, (str, Particle)):
+        species = ParticleList([species])
+    else:
+        raise TypeError(
+            f"Argument 'species' must be a string, astropy particle or "
+            f"a list of either, instead got type {type(species)}"
+        )
+
     # validate ion frequency(ies) and find dimension
-    if omega_ions.ndim == 0 and len(ions) == 0:
+    if omega_species.ndim == 0 and len(species) == 1:
         omega_int = True
         lengths = 1
-    elif omega_ions.ndim == 1 and len(ions) == len(omega_ions):
+    elif omega_species.ndim == 1 and len(species) > 1:
         omega_int = False
-        lengths = min(len(omega_ions), len(ions))
+        lengths = min(len(omega_species), len(species))
     else:
         raise ValueError(
-            f"Argument 'omega_ions' and 'ions' need to be the same length,"
-            f"got value of shape {len(omega_ions)} and {len(ions)}."
+            f"Argument 'omega_ions' and 'ions' need to be the same length, "
+            f"got value of shape {len(omega_species)} and {len(species)}."
         )
 
     # validate ion argument
     for i in range(lengths):
-        if type(ions[i]) is not Particle:
+        if type(species[i]) is not Particle:
             raise TypeError(
-                f"Argument 'ions[i]' need to be particles of particle type"
-                f"got value of type {type(ions[i])}."
+                f"Argument 'ions[i]' need to be particle of particle type "
+                f"got value of type {type(species[i])}."
             )
 
     # validate k argument and dimension
@@ -160,11 +180,11 @@ def stix(
         )
 
     # validate ion frequencies
-    omega_ions = omega_ions.squeeze()
-    if not (omega_ions.ndim == 0 or omega_ions.ndim == 1):
+    omega_species = omega_species.squeeze()
+    if not (omega_species.ndim == 0 or omega_species.ndim == 1):
         raise TypeError(
             f"Argument 'omega_e' needs to be a single value or a single valued "
-            f"1D array astropy Quantity, got value of shape {omega_ions.shape}."
+            f"1D array astropy Quantity, got value of shape {omega_species.shape}."
         )
 
     # validate theta value
@@ -176,7 +196,7 @@ def stix(
             f"got value of shape {theta.shape}."
         )
 
-    # validate k arguement and find the dimension
+    # validate k argument and find the dimension
     k_dim = k.ndim
     if k_dim == 0:
         ck = np.zeros(1)
@@ -200,17 +220,19 @@ def stix(
 
     component_frequency = np.zeros(sum_len)
     for i in range(sum_len):
-        component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
+        component_frequency[i] = gyrofrequency(
+            B=B, particle=species[i], signed=True
+        ).value
 
     if omega_int is False:
         for i in range(sum_len):
-            plasma_freq[i] = float(omega_ions[i].value)
+            plasma_freq[i] = float(omega_species[i].value)
     elif omega_int is True:
-        plasma_freq[0] = float(omega_ions.value)
+        plasma_freq[0] = float(omega_species.value)
     else:
         raise TypeError(
-            f"Argument 'omega_ions', quantity type could not be determined,"
-            f"got value of shape {omega_ions.shape}."
+            f"Argument 'omega_species', quantity type could not be determined,"
+            f"got value of shape {omega_species.shape}."
         )
 
     # Stix method implemented
@@ -236,10 +258,12 @@ def stix(
     B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
     C = P * R * L
 
+    print("Note: Solution computation time may vary.")
+
     # solve the stix equation for single k value or an array
     for i in range(len(ck)):
         eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
-
+        print(eq)
         sol = solve(eq, w, warn=True)
 
         sol_omega = []
