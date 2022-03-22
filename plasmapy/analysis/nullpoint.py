@@ -1173,7 +1173,7 @@ def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
         The default value is 500.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
         The default value is ``1e-10``.
 
