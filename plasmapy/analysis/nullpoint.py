@@ -1163,7 +1163,7 @@ def _vspace_iterator(vspace, MAX_ITERATIONS=500, err=1e-10):
     Parameters
     ----------
     vspace: array_like
-        The vector space as constructed by the vector_space function which is
+        The vector space as constructed by the ``_vector_space`` function which is
         A 1 by 3 array with the first element containing the coordinates,
         the second element containing the vector values,
         and the third element containing the delta values for each dimension.
