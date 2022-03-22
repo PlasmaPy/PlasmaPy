@@ -1284,10 +1284,10 @@ def null_point_find(
 
 
 def uniform_nullpoint_find(
-    x_range=[0, 1],
-    y_range=[0, 1],
-    z_range=[0, 1],
-    func=(lambda x, y, z: [x, y, z]),
+    x_range,
+    y_range,
+    z_range,
+    func: Callable,
     precision=[0.05, 0.05, 0.05],
     MAX_ITERATIONS=500,
     err=1e-10,
