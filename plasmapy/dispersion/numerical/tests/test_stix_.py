@@ -53,21 +53,21 @@ class TestStix:
                 {**_kwargs_single_valued, "k": [10, 20, 30] * u.rad / u.m},
                 {"shape": (3,)},
             ),
-            ({**_kwargs_single_valued, "ions": "He+"}, {"shape": ()}),
+            ({**_kwargs_single_valued, "species": "He+"}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
-                    "ions": "He+",
-                    "omega_ions": [1] * u.rad / u.s,
+                    "species": "He+",
+                    "omega_species": [1] * u.rad / u.s,
                 },
                 {"shape": (1,)},
             ),
-            ({**_kwargs_single_valued, "ions": "He+"}, {"shape": ()}),
+            ({**_kwargs_single_valued, "species": "He+"}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
-                    "ions": ["He+", "H+"],
-                    "omega_ions": [1, 2] * u.rad / u.s,
+                    "species": ["He+", "H+"],
+                    "omega_species": [1, 2] * u.rad / u.s,
                 },
                 {"shape": (2,)},
             ),
