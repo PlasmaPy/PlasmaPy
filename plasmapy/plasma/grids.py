@@ -9,6 +9,7 @@ __all__ = [
 ]
 
 import astropy.units as u
+import contextlib
 import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
@@ -1016,14 +1017,10 @@ class AbstractGrid(ABC):
         # If not persistent, clear the cached properties so they are re-created
         # when called below
         if not persistent:
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._interp_quantities
-            except AttributeError:
-                pass
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._interp_units
-            except AttributeError:
-                pass
 
         return pos, args, persistent
 
@@ -1422,10 +1419,8 @@ class NonUniformCartesianGrid(AbstractGrid):
         # _persistant_interpolator_setup function because it is unique
         # to this non_uniform grid.
         if not persistent:
-            try:
+            with contextlib.suppress(AttributeError):
                 del self._nearest_neighbor_interpolator
-            except AttributeError:
-                pass
 
         pts0 = self.pts0.to(u.m).value
         pts1 = self.pts1.to(u.m).value
