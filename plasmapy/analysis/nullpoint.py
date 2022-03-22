@@ -1258,8 +1258,8 @@ def null_point_find(
     Returns
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
-            An array of NullPoint objects representing the nullpoints
-            of the given vector space.
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects 
+        representing the nullpoints of the given vector space.
 
     Notes
     -------
