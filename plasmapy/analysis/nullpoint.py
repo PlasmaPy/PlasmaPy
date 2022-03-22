@@ -1292,8 +1292,8 @@ def uniform_nullpoint_find(
     err=1e-10,
 ):
     r"""
-    Returns an array of nullpoint object, representing
-    the nullpoints of the given vector space.
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
+    the null points of the given vector space.
 
     Parameters
     ----------
