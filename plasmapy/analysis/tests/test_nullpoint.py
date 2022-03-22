@@ -287,7 +287,6 @@ def test_null_point_find3():
     loc3 = npoints3[0].loc.reshape(1, 3)
     assert len(npoints3) == 1
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
-    assert npoints3[0].get_type() == "N/A"
 
 
 def test_null_point_find4():
@@ -364,5 +363,9 @@ def test_null_point_find8():
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
+    type1 = npoints8[0].type
+    type2 = npoints8[1].type
+    assert type1 == "Spiral null"
+    assert type2 == "Spiral null"
     assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)

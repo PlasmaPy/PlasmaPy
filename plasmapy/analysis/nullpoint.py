@@ -44,13 +44,13 @@ class NullPoint(Point):
 
     def __init__(self, null_loc, type):
         super().__init__(null_loc)
-        self.type = type
+        self._type = type
 
     def get_type(self):
         r"""
         Returns the type of the null point object.
         """
-        return self.type
+        return self._type
 
     def __eq__(self, point):
         r"""
@@ -63,6 +63,8 @@ class NullPoint(Point):
             + (self.loc[2] - point.loc[2]) ** 2
         )
         return np.isclose(d, 0, atol=_EQUALITY_ATOL)
+
+    type = property(get_type)
 
 
 def _vector_space(
@@ -1157,6 +1159,84 @@ def _locate_null_point(vspace, cell, n, err):
     return null_point_find(**null_point_args)
 
 
+def _classify_null_point(vspace, cell, loc):
+    r"""
+    Return the coordinates of a null point within
+    a given grid cell in a vector space using the
+    Newton-Rapshon method.
+    Multiple initial positions are tried until either
+    one converges inside a the grid cell, or the maximum
+    iteration is reached.
+    If neither occurs, more starting positions are tried,
+    by breaking up the cell into 8 smaller sub-grid cells,
+    until one starting position does converge or stop inside
+    the grid cell.
+    This process is repeated a finite amount of times, after which
+    the function returns None.
+
+    Parameters
+    ----------
+
+    vspace: array_like
+        The vector space as constructed by the vector_space function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    cell: array_like of integers
+        A grid cell, represented by a 1 by 3 array
+        of integers, which correspond to a grid cell
+        in the vector space.
+
+    Returns
+    -------
+    string
+        A string describing the null point type.
+    NoneType
+        None if the divergence of the given vector space
+        does not equal to zero.
+
+    Notes
+    -----
+    This method is described by :cite:t:`parnell:1996`.
+
+    """
+    jcb = _trilinear_jacobian(vspace, cell)
+    M = jcb(loc[0], loc[1], loc[2])
+    if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
+        return None
+    R = -1.0 * np.linalg.det(M)
+    Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
+    discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
+    determinant = -1.0 * R
+    if discriminant < 0:
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Continuous potential X-points"
+            else:
+                null_point_type = "Improper radial null"
+        else:
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Continuous X-points"
+            else:
+                null_point_type = "Skewed improper null"
+    elif np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
+            null_point_type = "Proper radial null"
+        else:
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            else:
+                null_point_type = "Critical spiral null"
+
+    else:
+        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            null_point_type = "Continuous concentric ellipses"
+        else:
+            null_point_type = "Spiral null"
+    return null_point_type
+
+
 def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     r"""
     Returns an array of null point objects, representing
@@ -1193,8 +1273,9 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
                 if _reduction(vspace, [i, j, k]):
                     if _trilinear_analysis(vspace, [i, j, k]):
                         loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
+                        null_type = _classify_null_point(vspace, [i, j, k], loc)
                         if loc is not None:
-                            p = NullPoint(loc, "N/A")
+                            p = NullPoint(loc, null_type)
                             if p not in nullpoints:
                                 nullpoints.append(p)
     return nullpoints
