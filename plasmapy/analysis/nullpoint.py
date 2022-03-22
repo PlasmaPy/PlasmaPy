@@ -1262,7 +1262,7 @@ def null_point_find(
         representing the nullpoints of the given vector space.
 
     Notes
-    -------
+    -----
     This method is described by :cite:t:`haynes:2007`.
 
     """
