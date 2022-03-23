@@ -98,6 +98,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Nicolas Lequette <https://github.com/Quettle>`__
 * `Tomas Stinson <https://github.com/14tstinson>`__
 * `Anna Lanteri <https://github.com/alanteriBW>`__
+* `Leo Murphy <https://github.com/LeoMurphyWM24>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision
