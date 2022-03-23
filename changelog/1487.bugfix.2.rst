@@ -1,0 +1,1 @@
+Changed `~plasmapy.diagnostics.langmuir.get_electron_temperature` to return inverse slope parameter instead of reciprocal of inverse slope parameter in non-bimaxwellian case. Now returns correct eletron temperature in eV instead of reciprocal of correct electron temperature.
