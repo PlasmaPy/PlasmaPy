@@ -1,0 +1,1 @@
+Changed ``max_exp_bias - max_exp_bias`` to ``max_exp_bias - min_exp_bias`` inside `~plasmapy.diagnostics.langmuir.get_electron_temperature` when creating guess parameters for bimaxwellian fit function. Improves accuracy of piecewise linear fit.
