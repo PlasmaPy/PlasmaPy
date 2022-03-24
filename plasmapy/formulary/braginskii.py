@@ -1249,13 +1249,12 @@ def _check_Z(allowed_Z, Z):
             Z_idx = idx
     # at this point we have looped through allowed_Z and either found a match
     # or not. If we haven't found a match and arbitrary Z aren't allowed, break
-    if np.isnan(Z_idx) and not arbitrary_Z_allowed:
-        raise utils.PhysicsError(f"{Z} is not an allowed Z value")
-    elif np.isnan(Z_idx):  # allowed arbitrary Z
-        # return a Z_idx pointing to the 'arbitrary'
-        Z_idx = the_arbitrary_idx
-    else:  # allowed Z
-        pass
+    if np.isnan(Z_idx):
+        if arbitrary_Z_allowed:
+            # return a Z_idx pointing to the 'arbitrary'
+            Z_idx = the_arbitrary_idx
+        else:
+            raise utils.PhysicsError(f"{Z} is not an allowed Z value")
     # we have got the Z_idx we want. return
     return Z_idx
 
