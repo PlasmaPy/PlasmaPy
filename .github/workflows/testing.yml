@@ -101,7 +101,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: ${{ not contains( github.event.pull_request.labels.*.name, 'GA Skip Documentation') }}
+    if: ${{ !(contains( github.event.pull_request.labels.*.name, 'GA Skip Documentation')) }}
     name: Documentation
     runs-on: ubuntu-latest
     strategy:
