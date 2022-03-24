@@ -1,2 +1,2 @@
-Used `contextlib.suppress` to suppress exceptions, instead of `try` &
-`except` blocks.
+Used `contextlib.suppress` to suppress exceptions, instead of ``try`` &
+``except`` blocks.
