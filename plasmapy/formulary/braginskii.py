@@ -1379,7 +1379,9 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     hall = float(hall)
 
     if field_orientation in ["parallel", "par"]:
-        return 3.906
+        kappa_par_coeff_0 = 3.906
+        kappa_par = kappa_par_coeff_0
+        return kappa_par
 
     delta_1 = 2.70
     delta_0 = 0.677
