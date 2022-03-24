@@ -29,6 +29,7 @@
 [citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
 [code of conduct]: http://docs.plasmapy.org/en/stable/CODE_OF_CONDUCT.html
 [collaborative award]: https://doi.org/10.5281/zenodo.2633286
+[command line]: https://tutorial.djangogirls.org/en/intro_to_command_line/
 [community meetings]: https://www.plasmapy.org/meetings/weekly
 [contributor guide]: https://docs.plasmapy.org/en/latest/development/index.html
 [Cyberinfrastructure for Sustained Scientific Innovation]: https://beta.nsf.gov/funding/opportunities/cyberinfrastructure-sustained-scientific-innovation-cssi
@@ -67,7 +68,7 @@ and shared between plasma scientists and researchers globally, running
 within and leveraging the open source scientific Python ecosystem. The
 goals of PlasmaPy are more thoroughly described in [this video]. Current
 functionality is described in [PlasmaPy's online documentation], and
-many of our recent presentations are available in the [PlasmaPy
+many of our recent presentations are available from the [PlasmaPy
 Community on Zenodo].
 
 If you are interested in contributing, please check out our [contributor
@@ -76,11 +77,13 @@ issues] in our GitHub repository. New contributors are very welcome!
 
 ## Installation
 
-If you have [installed Python], you can install PlasmaPy from [pip] via:
+If you have [installed Python], you can install PlasmaPy with [pip] by
+running:
 ```Shell
 pip install plasmapy
 ```
-On some systems, it may be necessary to use `pip3` instead of `pip`.
+from the [command line]. On some systems, it may be necessary to use
+`pip3` instead of `pip`.
 
 If you have [installed Conda], then you can also install PlasmaPy by
 running:
@@ -172,9 +175,8 @@ computational magnetohydrodynamics.
 
 ## License
 
-PlasmaPy is permissively licensed under a
-[3-clause BSD license with added protections
-against software patents](LICENSE.md).
+PlasmaPy is permissively licensed under a [3-clause BSD license with
+added protections against software patents](LICENSE.md).
 
 ## Citing PlasmaPy
 
