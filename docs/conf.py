@@ -29,7 +29,6 @@ sys.path.insert(0, os.path.abspath("."))
 from plasmapy import __version__ as release  # noqa
 
 # -- General configuration ------------------------------------------------
-
 autosummary_generate = True
 automodapi_custom_groups = {
     "aliases": {
@@ -135,6 +134,7 @@ hoverxref_intersphinx = [
 ]
 
 autoclass_content = "both"
+autodoc_typehints_format = "short"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
