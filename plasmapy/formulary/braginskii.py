@@ -472,7 +472,8 @@ class ClassicalTransport:
             self.T_e, self.n_e, self.ion, self.coulomb_log_ei, self.V_ei
         )
 
-        return alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
+        alpha = alpha_hat / (self.n_e * e ** 2 * tau_e / m_e)
+        return alpha
 
     @property
     def thermoelectric_conductivity(self):
@@ -546,7 +547,8 @@ class ClassicalTransport:
         tau_i = 1 / fundamental_ion_collision_freq(
             self.T_i, self.n_i, self.ion, self.coulomb_log_ii, self.V_ii
         )
-        return kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
+        kappa = kappa_hat * (self.n_i * k_B ** 2 * self.T_i * tau_i / self.m_i)
+        return kappa
 
     @property
     @validate_quantities
@@ -610,7 +612,8 @@ class ClassicalTransport:
         tau_e = 1 / fundamental_electron_collision_freq(
             self.T_e, self.n_e, self.ion, self.coulomb_log_ei, self.V_ei
         )
-        return kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
+        kappa = kappa_hat * (self.n_e * k_B ** 2 * self.T_e * tau_e / m_e)
+        return kappa
 
     @property
     @validate_quantities
@@ -1278,7 +1281,8 @@ def _nondim_tc_e_spitzer(Z):
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
-    return (64 / np.pi) * delta_T * (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
+    kappa = (64 / np.pi) * delta_T * (5 / 3 - (gamma_T * delta_E) / (delta_T * gamma_E))
+    return kappa
 
 
 def _nondim_resist_spitzer(Z, field_orientation):
@@ -1310,8 +1314,8 @@ def _nondim_tec_spitzer(Z):
     This result is for parallel field or unmagnetized plasma only.
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
-    #    beta = 0.703
-    return 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
+    beta = 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
+    return beta
 
 
 def _nondim_tc_e_braginskii(hall, Z, field_orientation):
@@ -1396,6 +1400,9 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
         return kappa_cross
 
     if field_orientation == "all":
+        kappa_par_coeff_0 = 3.906
+        kappa_par = kappa_par_coeff_0
+
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
         kappa_perp = (kappa_perp_coeff_2 * hall ** 2 + kappa_perp_coeff_0) / Delta
@@ -1405,7 +1412,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
         kappa_cross = (
             kappa_cross_coeff_3 * hall ** 3 + kappa_cross_coeff_1 * hall
         ) / Delta
-        return np.array((3.906, kappa_perp, kappa_cross))
+        return np.array((kappa_par, kappa_perp, kappa_cross))
 
 
 def _nondim_visc_e_braginskii(hall, Z):
