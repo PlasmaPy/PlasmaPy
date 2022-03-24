@@ -1,5 +1,6 @@
 import astropy.units as u
 import collections
+import itertools
 import numpy as np
 import pytest
 
@@ -84,7 +85,7 @@ def test_ionic_fraction_comparison_with_different_ions(ion1, ion2):
     ionic_fraction_1 = IonicLevel(ion=ion1, ionic_fraction=fraction)
     ionic_fraction_2 = IonicLevel(ion=ion2, ionic_fraction=fraction)
 
-    assert (ionic_fraction_1 == ionic_fraction_2) is False
+    assert ionic_fraction_1 != ionic_fraction_2
 
 
 def test_ionization_state_ion_input_error():
@@ -229,12 +230,12 @@ class Test_IonizationState:
         Test that comparisons of `IonizationState` instances for
         different elements does not fail.
         """
-        assert not (self.instances["Li"] == self.instances["H"])
+        assert self.instances["Li"] != self.instances["H"]
 
     @pytest.mark.parametrize("test_name", test_names)
     def test_iteration(self, test_name: str):
         """Test that `IonizationState` instances iterate impeccably."""
-        states = [state for state in self.instances[test_name]]
+        states = list(self.instances[test_name])
 
         charge_numbers = [state.charge_number for state in states]
         ionic_fractions = np.array([state.ionic_fraction for state in states])
@@ -272,7 +273,7 @@ class Test_IonizationState:
             Particle(base_symbol, Z=charge) for charge in charge_numbers
         ]
         expected_symbols = [particle.ionic_symbol for particle in expected_particles]
-        if not ionic_symbols == expected_symbols:
+        if ionic_symbols != expected_symbols:
             errors.append(
                 f"The resulting ionic symbols are {ionic_symbols}, "
                 f"which are not equal to the expected ionic symbols of "
@@ -489,11 +490,7 @@ def test_IonizationState_base_particles_from_ion_input(ion):
     ionization_state = IonizationState(ion)
     ion_particle = Particle(ion)
 
-    if ion_particle.isotope:
-        expected_base_particle = ion_particle.isotope
-    else:
-        expected_base_particle = ion_particle.element
-
+    expected_base_particle = ion_particle.isotope or ion_particle.element
     if expected_base_particle != ionization_state.base_particle:
         pytest.fail(
             f"The expected base particle was {expected_base_particle}, "
@@ -503,7 +500,6 @@ def test_IonizationState_base_particles_from_ion_input(ion):
 
 expected_properties = {
     "T_e": 5000.0 * u.K,
-    "tol": 2e-14,
     "isotope": "He-4",
     "element": "He",
     "atomic_number": 2,
@@ -529,8 +525,7 @@ def instance():
         "n_elem": 1e13 * u.cm ** -3,
     }
 
-    instance = IonizationState(**kwargs)
-    return instance
+    return IonizationState(**kwargs)
 
 
 @pytest.mark.parametrize("key", expected_properties)
@@ -729,9 +724,8 @@ def test_iteration_with_nested_iterator():
     hydrogen = IonizationState("p+", n_elem=1e20 * u.m ** -3, T_e=10 * u.eV)
 
     i = 0
-    for fraction in hydrogen:
-        for fraction2 in hydrogen:
-            i += 1
+    for _, __ in itertools.product(hydrogen, hydrogen):
+        i += 1
     assert i == 4
 
 

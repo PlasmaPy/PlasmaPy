@@ -277,7 +277,7 @@ def particle_input(
                     annotated_argnames = annotations[argname]
                     expected_params = len(annotated_argnames)
                     received_params = len(arguments[argname])
-                    if not expected_params == received_params:
+                    if expected_params != received_params:
                         raise ValueError(
                             f"Number of parameters allowed in the tuple "
                             f"({expected_params} parameters) are "
@@ -364,8 +364,6 @@ def particle_input(
 
                 for pos, argval in enumerate(argval_tuple):
                     should_be_particle = argname in args_to_become_particles
-                    already_particle = isinstance(argval, Particle)
-
                     # If the argument is not annotated with Particle, then we just
                     # pass it through to the new keywords without doing anything.
 
@@ -392,6 +390,8 @@ def particle_input(
                         particle = None
                     else:
                         params = (argval, Z, mass_numb)
+                        already_particle = isinstance(argval, Particle)
+
                         particle = get_particle(
                             argname, params, already_particle, funcname
                         )
