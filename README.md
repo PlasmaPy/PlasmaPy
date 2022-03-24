@@ -84,8 +84,8 @@ issues] in our GitHub repository. New contributors are very welcome!
 
 ## Installation
 
-If you have [installed Python], you can install PlasmaPy with [pip] by
-running:
+If you have [installed Python] (version 3.8 or newer), you can install
+PlasmaPy with [pip] by running:
 ```Shell
 pip install plasmapy
 ```
