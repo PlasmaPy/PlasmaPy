@@ -812,7 +812,14 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    coeff = np.sqrt((kappa - 3 / 2) / kappa) if method == "most_probable" else 1
+    if method == "most_probable":
+        # thermal velocity of Kappa distribution function is just Maxwellian
+        # thermal speed modulated by the following factor.
+        # This is only true for "most probable" case. RMS and mean
+        # magnitude velocities are same as Maxwellian.
+        coeff = np.sqrt((kappa - 3 / 2) / kappa)
+    else:
+        coeff = 1
     return vth * coeff
 
 
