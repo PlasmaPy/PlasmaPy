@@ -4,6 +4,7 @@
 docutils
 ipykernel
 ipywidgets
+jinja2 != 3.1
 nbsphinx
 numpydoc
 pillow
