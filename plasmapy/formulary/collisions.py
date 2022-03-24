@@ -656,7 +656,12 @@ def impact_parameter_perp(
     """
     # boiler plate checks
     T, masses, charges, reduced_mass, V = _boilerPlate(T=T, species=species, V=V)
-    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
+    # Corresponds to a deflection of 90°s, which is valid when
+    # classical effects dominate.
+    # !!!Note: an average ionization parameter will have to be
+    # included here in the future
+    bPerp = charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V ** 2)
+    return bPerp
 
 
 @validate_quantities(
@@ -1020,6 +1025,8 @@ def collision_frequency(
         # need to also correct mass in collision radius from reduced
         # mass to electron mass
         bPerp = impact_parameter_perp(T=T, species=species, V=V) * reduced_mass / m_e
+        # !!! may also need to correct Coulomb logarithm to be
+        # electron-electron version !!!
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
@@ -1030,7 +1037,11 @@ def collision_frequency(
     cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
-    return n * sigma * V * cou_log
+    # collision frequency where Coulomb logarithm accounts for
+    # small angle collisions, which are more frequent than large
+    # angle collisions.
+    freq = n * sigma * V * cou_log
+    return freq
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
