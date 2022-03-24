@@ -717,7 +717,7 @@ class ClassicalTransport:
                 eta_hat[3] * common_factor / self.hall_e,
                 eta_hat[4] * common_factor / self.hall_e,
             )
-        if eta1[0].unit == eta1[2].unit == eta1[4].unit:
+        if eta1[0].unit == eta1[2].unit and eta1[2].unit == eta1[4].unit:
             unit_val = eta1[0].unit
             eta = (
                 np.array(
@@ -743,13 +743,11 @@ class ClassicalTransport:
         dict
 
         """
-        d = {
-            "resistivity": self.resistivity,
-            "thermoelectric conductivity": self.thermoelectric_conductivity,
-            "electron thermal conductivity": self.electron_thermal_conductivity,
-            "electron viscosity": self.electron_viscosity,
-        }
-
+        d = {}
+        d["resistivity"] = self.resistivity
+        d["thermoelectric conductivity"] = self.thermoelectric_conductivity
+        d["electron thermal conductivity"] = self.electron_thermal_conductivity
+        d["electron viscosity"] = self.electron_viscosity
         if self.model != "spitzer":
             d["ion thermal conductivity"] = self.ion_thermal_conductivity
             d["ion viscosity"] = self.ion_viscosity
@@ -1143,7 +1141,7 @@ def _nondim_thermal_conductivity(
     be ions.
     """
     if _is_electron(particle):
-        if model in ["spitzer-harm", "spitzer"]:
+        if model == "spitzer-harm" or model == "spitzer":
             kappa_hat = _nondim_tc_e_spitzer(Z)
         elif model == "braginskii":
             kappa_hat = _nondim_tc_e_braginskii(hall, Z, field_orientation)
@@ -1153,18 +1151,19 @@ def _nondim_thermal_conductivity(
             raise ValueError(
                 f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
             )
-    elif model == "braginskii":
-        kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
-    elif model == "ji-held":
-        kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
-    elif model in ["spitzer-harm", "spitzer"]:
-        raise NotImplementedError(
-            "Ion thermal conductivity is not implemented in the Spitzer model."
-        )
     else:
-        raise ValueError(
-            f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
-        )
+        if model == "braginskii":
+            kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
+        elif model == "ji-held":
+            kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
+        elif model == "spitzer-harm" or model == "spitzer":
+            raise NotImplementedError(
+                "Ion thermal conductivity is not implemented in the Spitzer model."
+            )
+        else:
+            raise ValueError(
+                f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
+            )
     return kappa_hat
 
 
@@ -1184,16 +1183,17 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
             eta_hat = _nondim_visc_e_ji_held(hall, Z)
         else:
             raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
-    elif model == "braginskii":
-        eta_hat = _nondim_visc_i_braginskii(hall)
-    elif model == "ji-held":
-        eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
-    elif model in ["spitzer-harm", "spitzer"]:
-        raise NotImplementedError(
-            "Ion viscosity is not implemented in the Spitzer model."
-        )
     else:
-        raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
+        if model == "braginskii":
+            eta_hat = _nondim_visc_i_braginskii(hall)
+        elif model == "ji-held":
+            eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
+        elif model == "spitzer-harm" or model == "spitzer":
+            raise NotImplementedError(
+                "Ion viscosity is not implemented in the Spitzer model."
+            )
+        else:
+            raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
     return eta_hat
 
 
@@ -1204,7 +1204,7 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
     """
-    if model in ["spitzer-harm", "spitzer"]:
+    if model == "spitzer-harm" or model == "spitzer":
         alpha_hat = _nondim_resist_spitzer(Z, field_orientation)
     elif model == "braginskii":
         alpha_hat = _nondim_resist_braginskii(hall, Z, field_orientation)
@@ -1222,7 +1222,7 @@ def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
     """
-    if model in ["spitzer-harm", "spitzer"]:
+    if model == "spitzer-harm" or model == "spitzer":
         beta_hat = _nondim_tec_spitzer(Z)
     elif model == "braginskii":
         beta_hat = _nondim_tec_braginskii(hall, Z, field_orientation)
@@ -1249,12 +1249,13 @@ def _check_Z(allowed_Z, Z):
             Z_idx = idx
     # at this point we have looped through allowed_Z and either found a match
     # or not. If we haven't found a match and arbitrary Z aren't allowed, break
-    if np.isnan(Z_idx):
-        if arbitrary_Z_allowed:
-            # return a Z_idx pointing to the 'arbitrary'
-            Z_idx = the_arbitrary_idx
-        else:
-            raise utils.PhysicsError(f"{Z} is not an allowed Z value")
+    if np.isnan(Z_idx) and not arbitrary_Z_allowed:
+        raise utils.PhysicsError(f"{Z} is not an allowed Z value")
+    elif np.isnan(Z_idx):  # allowed arbitrary Z
+        # return a Z_idx pointing to the 'arbitrary'
+        Z_idx = the_arbitrary_idx
+    else:  # allowed Z
+        pass
     # we have got the Z_idx we want. return
     return Z_idx
 
@@ -1294,12 +1295,12 @@ def _nondim_resist_spitzer(Z, field_orientation):
     in Physics of Fully Ionized Gases, Spitzer.
     """
     alpha_perp = 1
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         return alpha_perp
 
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     alpha_par = (3 * np.pi / 32) * (1 / gamma_E)
-    if field_orientation in ["parallel", "par"]:
+    if field_orientation == "parallel" or field_orientation == "par":
         return alpha_par
     #        alpha_par = 0.5064 # Z = 1
 
@@ -1315,6 +1316,7 @@ def _nondim_tec_spitzer(Z):
     """
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     beta = 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
+    #    beta = 0.703
     return beta
 
 
@@ -1342,11 +1344,11 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     gamma_0 = gamma_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
 
-    if field_orientation in ["parallel", "par"]:
+    if field_orientation == "parallel" or field_orientation == "par":
         kappa_par = gamma_0
         return kappa_par
 
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         kappa_perp = (gamma_1_prime[Z_idx] * hall ** 2 + gamma_0_prime[Z_idx]) / Delta
         return kappa_perp
 
@@ -1378,7 +1380,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     # instead of an int
     hall = float(hall)
 
-    if field_orientation in ["parallel", "par"]:
+    if field_orientation == "parallel" or field_orientation == "par":
         kappa_par_coeff_0 = 3.906
         kappa_par = kappa_par_coeff_0
         return kappa_par
@@ -1387,7 +1389,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     delta_0 = 0.677
     Delta = hall ** 4 + delta_1 * hall ** 2 + delta_0
 
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
         kappa_perp = (kappa_perp_coeff_2 * hall ** 2 + kappa_perp_coeff_0) / Delta
@@ -1515,11 +1517,11 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     alpha_0 = 1 - alpha_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall ** 4 + delta_1[Z_idx] * hall ** 2 + delta_0[Z_idx]
 
-    if field_orientation in ["parallel", "par"]:
+    if field_orientation == "parallel" or field_orientation == "par":
         alpha_par = alpha_0
         return alpha_par
 
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         alpha_perp = (
             1 - (alpha_1_prime[Z_idx] * hall ** 2 + alpha_0_prime[Z_idx]) / Delta
         )
@@ -1568,11 +1570,11 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
     #    beta_0 = 0.7110
 
-    if field_orientation in ["parallel", "par"]:
+    if field_orientation == "parallel" or field_orientation == "par":
         beta_par = beta_0
         return beta_par
 
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         beta_perp = (beta_1_prime[Z_idx] * hall ** 2 + beta_0_prime[Z_idx]) / Delta
         return beta_perp
 
@@ -2045,13 +2047,13 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
     #    K = 2  # 2x2 moments, equivalent to original Braginskii
     #    K = 3  # 3x3 moments
 
-    if K == 2:
-        Delta_par_i1 = 1 + 13.50 * zeta + 36.46 * zeta ** 2
-        kappa_par_i = (5.524 + 30.38 * zeta) / Delta_par_i1
-    elif K == 3:
+    if K == 3:
         Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta ** 2 + 346.9 * zeta ** 3
         kappa_par_i = (5.586 + 101.7 * zeta + 289.1 * zeta ** 2) / Delta_par_i1
-    if field_orientation in ["parallel", "par"]:
+    elif K == 2:
+        Delta_par_i1 = 1 + 13.50 * zeta + 36.46 * zeta ** 2
+        kappa_par_i = (5.524 + 30.38 * zeta) / Delta_par_i1
+    if field_orientation == "parallel" or field_orientation == "par":
         return kappa_par_i / np.sqrt(2)
 
     if K == 3:
@@ -2083,16 +2085,10 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
             (np.sqrt(2) + 15 / 2 * zeta) * r ** 2
             + 0.1693 * kappa_par_i * Delta_par_i1 ** 2
         ) / Delta_perp_i1
-    if field_orientation in ["perpendicular", "perp"]:
+    if field_orientation == "perpendicular" or field_orientation == "perp":
         return kappa_perp_i / np.sqrt(2)
 
-    if K == 2:
-        kappa_cross_i = (
-            r
-            * (5 / 2 * r ** 2 + 2.323 + 22.73 * zeta + 62.5 * zeta ** 2)
-            / Delta_perp_i1
-        )
-    elif K == 3:
+    if K == 3:
         kappa_cross_i = (
             r
             * (
@@ -2104,6 +2100,12 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
                 + 2155 * zeta ** 3
                 + 3063 * zeta ** 4
             )
+            / Delta_perp_i1
+        )
+    elif K == 2:
+        kappa_cross_i = (
+            r
+            * (5 / 2 * r ** 2 + 2.323 + 22.73 * zeta + 62.5 * zeta ** 2)
             / Delta_perp_i1
         )
     if field_orientation == "cross":
@@ -2139,7 +2141,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_0_i = (1.365 + 16.75 * zeta + 35.84 * zeta ** 2) / Delta_par_i2
 
         def Delta_perp_i2(r, zeta, Delta_par_i2):
-            return (
+            Delta_perp_i2 = (
                 r ** 6
                 + (4.391 + 26.69 * zeta + 56 * zeta ** 2) * r ** 4
                 + (
@@ -2152,22 +2154,24 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                 * r ** 2
                 + 0.4483 * Delta_par_i2 ** 2
             )
+            return Delta_perp_i2
 
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
         def f_eta_2(r, zeta, Delta_perp_i2):
-            return (
+            eta_2_i = (
                 (3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 4
                 + (2.680 + 25.98 * zeta + 90.71 * zeta ** 2 + 104 * zeta ** 3) * r ** 2
                 + 0.4483 * eta_0_i * Delta_par_i2 ** 2
             ) / Delta_perp_i2
+            return eta_2_i
 
         eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
         eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
 
         def f_eta_4(r, zeta, Delta_perp_i2):
-            return (
+            eta_4_i = (
                 r
                 * (
                     r ** 4
@@ -2180,6 +2184,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                 )
                 / Delta_perp_i2
             )
+            return eta_4_i
 
         eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)
         eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
@@ -2189,20 +2194,22 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
         eta_0_i = (1.357 + 5.243 * zeta) / Delta_par_i2
 
         def Delta_perp_i2(r, zeta, Delta_par_i2):
-            return (
+            Delta_perp_i2 = (
                 r ** 4
                 + (2.023 + 11.68 * zeta + 20 * zeta ** 2) * r ** 2
                 + 0.5820 * Delta_par_i2 ** 2
             )
+            return Delta_perp_i2
 
         Delta_perp_i2_24 = Delta_perp_i2(r, zeta, Delta_par_i2)
         Delta_perp_i2_13 = Delta_perp_i2(r13, zeta, Delta_par_i2)
 
         def f_eta_2(r, zeta, Delta_perp_i2):
-            return (
+            eta_2_i = (
                 (3 / 5 * np.sqrt(2) + 2 * zeta) * r ** 2
                 + 0.5820 * eta_0_i * Delta_par_i2 ** 2
             ) / Delta_perp_i2
+            return eta_2_i
 
         eta_2_i = f_eta_2(r, zeta, Delta_perp_i2_24)
         eta_1_i = f_eta_2(r13, zeta, Delta_perp_i2_13)
@@ -2213,7 +2220,10 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                 + (2.023 + 11.68 * zeta + 20 * zeta ** 2) * r ** 2
                 + 0.5820 * Delta_par_i2 ** 2
             )
-            return r * (r ** 2 + 1.188 + 8.283 * zeta + 16 * zeta ** 2) / Delta_perp_i2
+            eta_4_i = (
+                r * (r ** 2 + 1.188 + 8.283 * zeta + 16 * zeta ** 2) / Delta_perp_i2
+            )
+            return eta_4_i
 
         eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)
         eta_3_i = f_eta_4(r13, zeta, Delta_perp_i2_13)
