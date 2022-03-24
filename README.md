@@ -23,6 +23,7 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Open Source Helpers](https://www.codetriage.com/plasmapy/plasmapy/badges/users.svg)](https://www.codetriage.com/plasmapy/plasmapy)
 
+[Anaconda Navigator]: https://docs.anaconda.com/anaconda/navigator/index.html
 [Astropy]: https://www.astropy.org
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
 [citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
@@ -55,6 +56,8 @@
 [PlasmaPy's online documentation]: https://docs.plasmapy.org
 [Python]: https://www.python.org
 [Smithsonian Institution]: https://www.si.edu
+[submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Bug_report.md
+[submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=&template=Feature_request.md
 [Suggestion box]: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 [team@plasmapy.org]: mailto:team@plasmapy.org
 [this video]: https://youtu.be/E8RwQF5wcXM
@@ -69,6 +72,11 @@ goals of PlasmaPy are more thoroughly described in [this video]. Current
 functionality is described in [PlasmaPy's online documentation], and
 many of our recent presentations are available from the [PlasmaPy
 Community on Zenodo].
+
+Please [submit a feature request] if you have an idea for new
+functionality. PlasmaPy is community-driven, and feature requests really
+help guide the direction of software development. Please also [submit a
+bug report] if you notice any bugs.
 
 If you are interested in contributing, please check out our [contributor
 guide] and [code of conduct]. There are also a number of [good first
@@ -89,6 +97,11 @@ running:
 ```Shell
 conda install -c conda-forge plasmapy
 ```
+PlasmaPy can also be installed using [Anaconda Navigator] if
+`conda-forge` is added as a channel.
+
+<!--Need more info on Anaconda Navigator!-->
+
 To contribute to the package or use the most recent version, check out
 our instructions on [installing PlasmaPy from source].
 
