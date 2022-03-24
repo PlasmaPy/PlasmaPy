@@ -74,7 +74,7 @@ with the processed results.
 
 from sphinx.application import Sphinx
 
-from . import core, generate
+from docs.plasmapy_sphinx.automodsumm import core, generate
 
 
 def setup(app: Sphinx):
