@@ -1033,7 +1033,6 @@ def collision_frequency(
         # thermal velocity
         V = _replaceNanVwithThermalV(V, T, reduced_mass)
         bPerp = impact_parameter_perp(T=T, species=species, V=V)
-    # Coulomb logarithm
     cou_log = Coulomb_logarithm(T, n, species, z_mean, V=V, method=method)
     # collisional cross section
     sigma = Coulomb_cross_section(bPerp)
