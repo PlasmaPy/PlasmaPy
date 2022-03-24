@@ -13,7 +13,6 @@
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
 [![fortnightly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/fortnightly.yml)
-[![Style linters](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linters.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
