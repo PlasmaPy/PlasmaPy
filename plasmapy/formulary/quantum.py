@@ -590,3 +590,14 @@ def _chemical_potential_interp(n_e, T):
         "and https://github.com/astropy/astropy/issues/9721 "
         "for progress in fixing it."
     )
+    A = 0.25945
+    B = 0.072
+    b = 0.858
+    theta = k_B * T / Fermi_energy(n_e)
+    term1 = -3 / 2 * np.log(theta)
+    term2 = np.log(4 / (3 * np.sqrt(np.pi)))
+    term3num = A * theta ** (-b - 1) + B * theta ** (-(b + 1) / 2)
+    term3den = 1 + A * theta ** (-b)
+    term3 = term3num / term3den
+    beta_mu = term1 + term2 + term3
+    return beta_mu.to(u.dimensionless_unscaled)
