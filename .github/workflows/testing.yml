@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "Label is '${{ env.SKIP_DOCUMENTATION_LABEL }}'"
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
-          echo "SKIP_DOCUMENTATION=$(SKIP)" >> $GITHUB_SKIP
+          echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_SKIP
           if [[ $SKIP ]]; then
             echo "1"
             echo "dSKIP=1" >> $GITHUB_ENV 
