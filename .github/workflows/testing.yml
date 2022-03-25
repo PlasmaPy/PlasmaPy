@@ -183,7 +183,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == false }}
+    if: !needs.skips-allowed.outputs.SKIP_DOCUMENTATION
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
