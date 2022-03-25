@@ -9,6 +9,12 @@ on:
     tags:
     - v*
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
   workflow_dispatch:
 
 env:
