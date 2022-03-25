@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  SKIP_DOCUMENTATION_LABEL: 'GA Skip Documentation'
+  SKIP_DOCUMENTATION_LABEL: 'GA Skip: Documentation'
   SKIP_COMPREHENSIVE_LABEL: 'GA Skip: Comprehensive Tests'
   SKIPS_ALLOWED_LABEL: 'GA Skip: Merge Allowed'
 
@@ -53,7 +53,7 @@ jobs:
       - name: Skip Tests Allowed? ${{ env.SKIPS_ALLOWED }}
         run: |
           echo "Is skipping tests allowed: ${{ env.SKIPS_ALLOWED }}"
-          if ${{ !env.SKIPS_ALLOWED && env.SKIPS_DONE}}; then
+          if ${{ !(env.SKIPS_ALLOWED) && env.SKIPS_DONE}}; then
             echo "Some tests are skipped, but skipping needs to be removed before merging!!"
             exit 1
           fi
