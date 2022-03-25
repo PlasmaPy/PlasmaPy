@@ -39,11 +39,11 @@ jobs:
         run: |
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
           echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
-          echo "::set-output name=SKIP_DOCUMENTATION::${{ env.SKIP_DOCUMENTATION }}"
+          echo "::set-output name=SKIP_DOCUMENTATION::${SKIP}"
 
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_COMPREHENSIVE_LABEL) }}
           echo "SKIP_COMPREHENSIVE=${SKIP}" >> $GITHUB_ENV
-          echo "::set-output name=SKIP_COMPREHENSIVE::${{ env.SKIP_COMPREHENSIVE }}"
+          echo "::set-output name=SKIP_COMPREHENSIVE::${SKIP}"
 
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIPS_ALLOWED_LABEL) }}
           echo "SKIPS_ALLOWED=${SKIP}" >> $GITHUB_ENV
