@@ -164,7 +164,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: ${{ always() }}
+    if: always()
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
@@ -173,8 +173,8 @@ jobs:
     steps:
     - name: Play
       run: |
-        echo "RUN doc == ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
-        echo "RUN comp == ${{ !needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
+        echo "SKIP doc == ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
+        echo "SKIP comp == ${{ needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
     - name: Checkout code
       uses: actions/checkout@v3
       with:
