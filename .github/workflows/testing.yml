@@ -94,7 +94,7 @@ jobs:
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
   comprehensive-tests:
-    if: ${{ ! env.SKIP_COMPREHENSIVE }}
+    if: ${{ env.SKIP_COMPREHENSIVE }}
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     needs: initial-tests
