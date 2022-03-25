@@ -19,7 +19,6 @@ on:
 
 jobs:
   skips-allowed:
-    if: ${{ github.event_name == 'pull_request' }}
     name: Determine CI Skipping
     runs-on: ubuntu-latest
 
@@ -44,6 +43,7 @@ jobs:
     steps:
       - name: Determine Skips
         id: step1
+        if: ${{ env.IS_PR }}
         run: |
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
           echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
