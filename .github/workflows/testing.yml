@@ -174,7 +174,9 @@ jobs:
     - name: Play
       run: |
         echo "SKIP doc == ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
+        echo "RUN doc == ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
         echo "SKIP comp == ${{ needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
+        echo "RUN comp == ${{ !needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
     - name: Checkout code
       uses: actions/checkout@v3
       with:
