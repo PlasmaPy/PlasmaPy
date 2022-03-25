@@ -34,16 +34,14 @@ jobs:
           echo "Label is '${{ env.SKIP_DOCUMENTATION_LABEL }}'"
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
           echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
-          if [[ $SKIP ]]; then
-            echo "1"
-            echo "dSKIP=1" >> $GITHUB_ENV 
-          else
-            echo "2"
-            echo "dSKIP=2" >> $GITHUB_ENV
-          fi
-      - name: Skip Documentation?
+          SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_COMPREHENSIVE_LABEL) }}
+          echo "SKIP_COMPREHENSIVE=${SKIP}" >> $GITHUB_ENV
+      - name: Skip Documentation? ${{ env.SKIP_DOCUMENTATION }}
         run: |
           echo "Documentation can be skipped: ${{ env.SKIP_DOCUMENTATION }}"
+      - name: Skip Comprehensive Tests? ${{ env.SKIP_COMPREHENSIVE }}
+        run: |
+          echo "Comprehensive tests can be skipped: ${{ env.SKIP_COMPREHENSIVE }}"
 
 #      - name: Were tests skipped?
 #        run: echo ${{ env.SKIPS_DONE }}
