@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Skip Documentation?
+      - name: Determine Skips
         run: |
           echo "Label is '${{ env.SKIP_DOCUMENTATION_LABEL }}'"
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
@@ -40,6 +40,8 @@ jobs:
             echo "2"
             echo "dSKIP=2" >> $GITHUB_ENV
           fi
+      - name: Skip Documentation?
+        run: |
           echo "Documentation can be skipped: ${{ env.dSKIP }}"
 
 #      - name: Were tests skipped?
