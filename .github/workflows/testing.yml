@@ -34,8 +34,13 @@ jobs:
     name: Skipping and Merge Allowed?
     runs-on: ubuntu-latest
 
+    outputs:
+      SKIP_DOCUMENTATION: ${{ steps.step1.outputs.SKIP_DOCUMENTATION }}
+      SKIP_COMPREHENSIVE: ${{ steps.step1.outputs.SKIP_COMPREHENSIVE }}
+
     steps:
       - name: Determine Skips
+        id: step1
         run: |
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
           echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
