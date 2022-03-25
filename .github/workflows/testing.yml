@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  SKIP_DOCUMENTATION_LABEL: 'GA Skip: Documentation'
+  SKIP_DOCUMENTATION_LABEL: 'GA Skip Documentation'
   SKIP_COMPREHENSIVE_LABEL: 'GA Skip: Comprehensive Tests'
   SKIPS_ALLOWED_LABEL: 'GA Skip: Merge Allowed'
 
