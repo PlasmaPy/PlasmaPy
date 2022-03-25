@@ -165,8 +165,7 @@ jobs:
         file: ./coverage.xml
   documentation:
     if: |
-      ( ${{ needs.skips-allowed.results == 'success' }} ||
-      ${{ needs.skips-allowed.results == 'failure' }} ) &&
+      ( ${{ success() }} || ${{ failure() }} ) &&
       ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == false }}
     needs: skips-allowed
     name: Documentation
