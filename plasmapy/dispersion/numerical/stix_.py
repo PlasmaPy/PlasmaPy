@@ -19,7 +19,10 @@ from plasmapy.utils.decorators import validate_quantities
 c_si_unitless = c.value
 
 
-@validate_quantities(B={"can_be_negative": False}, k={"can_be_negative": False})
+@validate_quantities(
+    B={"can_be_negative": False},
+    k={"can_be_negative": False, "equivalencies": u.spectral()},
+)
 def stix(
     B: u.T,
     k: u.rad / u.m,
@@ -154,7 +157,7 @@ def stix(
     if omega_species.ndim == 0 and len(species) == 1:
         omega_int = True
         lengths = 1
-    elif omega_species.ndim == 1 and len(species) > 1:
+    elif omega_species.ndim == 1 and len(species) >= 1:
         omega_int = False
         lengths = min(len(omega_species), len(species))
     else:
@@ -263,7 +266,7 @@ def stix(
     # solve the stix equation for single k value or an array
     for i in range(len(ck)):
         eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
-        print(eq)
+
         sol = solve(eq, w, warn=True)
 
         sol_omega = []

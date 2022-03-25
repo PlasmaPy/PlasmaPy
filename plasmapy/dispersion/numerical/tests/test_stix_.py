@@ -1,4 +1,5 @@
 """Test functinality of Stix in `plasmapy.dispersion.numerical.stix_`."""
+import astropy
 import numpy as np
 import pytest
 
@@ -27,7 +28,6 @@ class TestStix:
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "species": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "species": Particle("e-")}, ValueError),
             ({**_kwargs_single_valued, "omega_species": "wrong type"}, TypeError),
             (
                 {**_kwargs_single_valued, "omega_species": 6 * u.m / u.s},
@@ -47,29 +47,29 @@ class TestStix:
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, {"shape": ()}),
             (
                 {**_kwargs_single_valued, "k": [10] * u.rad / u.m},
-                {"shape": (1,)},
+                {"shape": ()},
             ),
             (
                 {**_kwargs_single_valued, "k": [10, 20, 30] * u.rad / u.m},
-                {"shape": (3,)},
+                {"shape": ()},
             ),
-            ({**_kwargs_single_valued, "species": "He+"}, {"shape": ()}),
+            ({**_kwargs_single_valued, "species": ["He+", "e-"]}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
-                    "species": "He+",
+                    "species": ["He+"],
                     "omega_species": [1] * u.rad / u.s,
                 },
-                {"shape": (1,)},
+                {"shape": ()},
             ),
-            ({**_kwargs_single_valued, "species": "He+"}, {"shape": ()}),
+            ({**_kwargs_single_valued, "species": ["He+", "e-"]}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
                     "species": ["He+", "H+"],
                     "omega_species": [1, 2] * u.rad / u.s,
                 },
-                {"shape": (2,)},
+                {"shape": ()},
             ),
         ],
     )
@@ -79,15 +79,19 @@ class TestStix:
 
         assert isinstance(w, dict)
 
-        for val in w.values():
-            assert isinstance(val, u.Quantity)
-            assert val.unit == u.rad / u.s
-            assert val.shape == expected["shape"]
+        for key in w.keys():
+            print(key)
+            for val in w[key]:
+                print(val)
+                assert isinstance(val, u.Quantity)
+                assert val.unit == u.rad / u.s
+
+        assert np.shape(w) == expected["shape"]
 
     @pytest.mark.parametrize(
         "kwargs, _warning",
         [
-            ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, u.UnitTypeError),
+            ({**_kwargs_single_valued, "k": 0 * u.s / u.m}, u.UnitTypeError),
         ],
     )
     def test_warns(self, kwargs, _warning):
