@@ -24,6 +24,7 @@ env:
 
 jobs:
   initial-tests:
+    if: false
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -55,6 +56,7 @@ jobs:
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
   comprehensive-tests:
+    if: false
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     needs: initial-tests
