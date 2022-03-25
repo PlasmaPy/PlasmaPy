@@ -12,8 +12,6 @@ on:
   workflow_dispatch:
 
 env:
-  if: ${{ github.event_name == 'pull_request' }}
-
   SKIP_DOCUMENTATION_LABEL: 'GA Skip: Documentation'
   SKIP_COMPREHENSIVE_LABEL: 'GA Skip: Comprehensive Tests'
   SKIPS_ALLOWED_LABEL: 'GA Skip: Merge Allowed'
@@ -22,9 +20,28 @@ env:
   SKIP_COMPREHENSIVE: false
   SKIPS_ALLOWED: false
 
-  SKIPS_DONE: "${{ env.SKIP_DOCUMENTATION }}"
+  SKIPS_DONE: false
 
 jobs:
+  skips-allowed:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Merge Allowed?
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Skip Documentation?
+        run: |
+          echo ${{ env.SKIP_DOCUMENTATION_LABEL }}
+          echo contains(github.event.pull_request.labels.*.name, ${{ env.SKIP_DOCUMENTATION_LABEL }})
+#      - name: Were tests skipped?
+#        run: echo ${{ env.SKIPS_DONE }}
+#      - name: Is skipping allowed?
+#        run: |
+#          echo ${{ env.SKIPS_ALLOWED }}
+#          if ${{ env.SKIPS_DONE && !env.SKIPS_ALLOWED }}; then
+#            exit 1
+#          fi
+
   initial-tests:
     if: false
     name: ${{ matrix.name }}
@@ -172,17 +189,3 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_access_token }}
-
-  skips-allowed:
-    name: Skipping Tests Allowed?
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Were tests skipped?
-        run: echo ${{ env.SKIPS_DONE }}
-      - name: Is skipping allowed?
-        run: |
-          echo ${{ env.SKIPS_ALLOWED }} 
-          if ${{ env.SKIPS_DONE && !env.SKIPS_ALLOWED }}; then
-            exit 1
-          fi
