@@ -53,7 +53,7 @@ jobs:
       - name: Skip Tests Allowed? ${{ env.SKIPS_ALLOWED }}
         run: |
           echo "Is skipping tests allowed: ${{ env.SKIPS_ALLOWED }}"
-          FAIL=${{  !env.SKIPS_ALLOWED }}
+          FAIL=${{ env.SKIPS_ALLOWED }}
           if [[ FAIL ]]; then
             echo "Some tests are skipped, but skipping needs to be removed before merging!!"
             exit 1
