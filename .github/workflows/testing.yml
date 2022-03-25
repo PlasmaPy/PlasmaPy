@@ -175,6 +175,7 @@ jobs:
 
     steps:
       - name: Were tests skipped? ${{ env.SKIPS_DONE }}
+        run: echo ${{ env.SKIPS_DONE }}
       - name: Is skipping allowed? $${ env.SKIPS_ALLOWED }}
         run: |
           if ${{ env.SKIPS_DONE && !env.SKIPS_ALLOWED }}; then
