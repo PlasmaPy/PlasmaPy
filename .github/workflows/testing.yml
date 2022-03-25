@@ -17,16 +17,16 @@ on:
       - unlabeled
   workflow_dispatch:
 
-env:
-  SKIP_DOCUMENTATION_LABEL: 'GA Skip Documentation'
-  SKIP_COMPREHENSIVE_LABEL: 'GA Skip Comprehensive Tests'
-  SKIPS_ALLOWED_LABEL: 'GA Skip Merge Allowed'
-
-  SKIP_DOCUMENTATION: false
-  SKIP_COMPREHENSIVE: false
-  SKIPS_ALLOWED: false
-
-  SKIPS_DONE: false
+#env:
+#  SKIP_DOCUMENTATION_LABEL: 'GA Skip Documentation'
+#  SKIP_COMPREHENSIVE_LABEL: 'GA Skip Comprehensive Tests'
+#  SKIPS_ALLOWED_LABEL: 'GA Skip Merge Allowed'
+#
+#  SKIP_DOCUMENTATION: false
+#  SKIP_COMPREHENSIVE: false
+#  SKIPS_ALLOWED: false
+#
+#  SKIPS_DONE: false
 
 jobs:
   skips-allowed:
@@ -34,11 +34,27 @@ jobs:
     name: Determine CI Skipping
     runs-on: ubuntu-latest
 
+    env:
+      IS_PR: ${{ github.event_name == 'pull_request' }}
+      SKIP_DOCUMENTATION_LABEL: 'GA Skip Documentation'
+      SKIP_COMPREHENSIVE_LABEL: 'GA Skip Comprehensive Tests'
+      SKIPS_ALLOWED_LABEL: 'GA Skip Merge Allowed'
+
+      SKIP_DOCUMENTATION: false
+      SKIP_COMPREHENSIVE: false
+      SKIPS_ALLOWED: false
+
+      SKIPS_DONE: false
+
     outputs:
-      SKIP_DOCUMENTATION: ${{ steps.step1.outputs.SKIP_DOCUMENTATION }}
-      SKIP_COMPREHENSIVE: ${{ steps.step1.outputs.SKIP_COMPREHENSIVE }}
-      SKIPS_ALLOWED: ${{ steps.step1.outputs.SKIPS_ALLOWED }}
-      SKIPS_DONE: ${{ steps.step_skip_done.outputs.SKIPS_DONE }}
+#      SKIP_DOCUMENTATION: ${{ steps.step1.outputs.SKIP_DOCUMENTATION }}
+#      SKIP_COMPREHENSIVE: ${{ steps.step1.outputs.SKIP_COMPREHENSIVE }}
+#      SKIPS_ALLOWED: ${{ steps.step1.outputs.SKIPS_ALLOWED }}
+#      SKIPS_DONE: ${{ steps.step_skip_done.outputs.SKIPS_DONE }}
+      SKIP_DOCUMENTATION: ${{ env.SKIP_DOCUMENTATION }}
+      SKIP_COMPREHENSIVE: ${{ env.SKIP_COMPREHENSIVE }}
+      SKIPS_ALLOWED: ${{ env.SKIPS_ALLOWED }}
+      SKIPS_DONE: ${{ env.SKIPS_DONE }}
 
     steps:
       - name: Determine Skips
@@ -190,12 +206,6 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - name: RUN ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == 'false' }}
-      run: |
-        echo "SKIP doc == ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
-        echo "RUN doc == ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
-        echo "SKIP comp == ${{ needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
-        echo "RUN comp == ${{ !needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
     - name: Checkout code
       uses: actions/checkout@v3
       with:
