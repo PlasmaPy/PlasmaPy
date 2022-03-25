@@ -62,8 +62,6 @@ jobs:
           fi
 
   initial-tests:
-    if: ${{ always() }}
-    needs: skips-allowed
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -98,7 +96,8 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
-    needs: initial-tests
+    if: ${{ needs.initial-tests.results == 'failure' || needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}
+    needs: [initial-tests, skips-allowed]
 
     strategy:
       fail-fast: false
