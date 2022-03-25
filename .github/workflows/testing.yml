@@ -173,8 +173,8 @@ jobs:
     steps:
     - name: Play
       run: |
-        echo "skip doc == ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
-        echo "skip comp == ${{ needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
+        echo "RUN doc == ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
+        echo "RUN comp == ${{ !needs.skips-allowed.outputs.SKIP_COMPREHENSIVE }}"
     - name: Checkout code
       uses: actions/checkout@v3
       with:
