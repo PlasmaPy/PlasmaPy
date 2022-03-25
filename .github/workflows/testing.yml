@@ -31,12 +31,13 @@ env:
 jobs:
   skips-allowed:
     if: ${{ github.event_name == 'pull_request' }}
-    name: Skipping and Merge Allowed?
+    name: Determine CI Skipping
     runs-on: ubuntu-latest
 
     outputs:
       SKIP_DOCUMENTATION: ${{ steps.step1.outputs.SKIP_DOCUMENTATION }}
       SKIP_COMPREHENSIVE: ${{ steps.step1.outputs.SKIP_COMPREHENSIVE }}
+      SKIPS_ALLOWED: ${{ steps.step1.outputs.SKIPS_ALLOWED }}
 
     steps:
       - name: Determine Skips
@@ -52,6 +53,7 @@ jobs:
 
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIPS_ALLOWED_LABEL) }}
           echo "SKIPS_ALLOWED=${SKIP}" >> $GITHUB_ENV
+          echo "::set-output name=SKIPS_ALLOWED::${SKIP}"
       - name: Skip Documentation? ${{ env.SKIP_DOCUMENTATION }}
         run: |
           echo "Documentation can be skipped: ${{ env.SKIP_DOCUMENTATION }}"
@@ -69,6 +71,9 @@ jobs:
     name: Skipping and Merge Allowed?
     runs-on: ubuntu-latest
     needs: skips-allowed
+
+    env:
+      SKIPS_ALLOWED: ${{ needs.skips-allowed.outputs.SKIPS_ALLOWED }}
 
     steps:
       - name: Skip Tests Allowed? ${{ env.SKIPS_ALLOWED }}
