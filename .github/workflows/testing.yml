@@ -68,6 +68,7 @@ jobs:
           fi
 
   initial-tests:
+    if: false
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -158,7 +159,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}
+    if: ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
