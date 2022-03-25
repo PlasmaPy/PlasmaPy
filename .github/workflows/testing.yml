@@ -34,9 +34,9 @@ jobs:
           echo "Label is '${{ env.SKIP_DOCUMENTATION_LABEL }}'"
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
           if [[ $SKIP ]]; then
-            echo "dSKIP=true" >> $GITHUB_ENV 
+            echo "dSKIP='true'" >> $GITHUB_ENV 
           else
-            echo "dSKIP=false" >> $GITHUB_ENV
+            echo "dSKIP='false'" >> $GITHUB_ENV
           fi
           echo "Documentation can be skipped: ${{ env.dSKIP }}"
 
