@@ -44,6 +44,7 @@ jobs:
           if ${{ env.SKIP_DOCUMENTATION }}; then
             echo "SKIPS_DONE=true" >> $GITHUB_ENV
           fi
+          echo "::set-output name=SKIP_DOCUMENTATION::$SKIP_DOCUMENTATION"
       - name: Skip Comprehensive Tests? ${{ env.SKIP_COMPREHENSIVE }}
         run: |
           echo "Comprehensive tests can be skipped: ${{ env.SKIP_COMPREHENSIVE }}"
@@ -97,7 +98,6 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
 
-    if: ${{ env.SKIP_DOCUMENTATION }}
     needs: initial-tests
 
     strategy:
@@ -153,7 +153,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: ${{ always() }}
+    if: ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
