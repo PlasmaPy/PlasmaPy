@@ -31,8 +31,9 @@ jobs:
     steps:
       - name: Skip Documentation?
         run: |
-          echo ${{ env.SKIP_DOCUMENTATION_LABEL }}
-          echo ${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
+          echo "Label is ${{ env.SKIP_DOCUMENTATION_LABEL }}"
+          SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_DOCUMENTATION_LABEL) }}
+          echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
 #      - name: Were tests skipped?
 #        run: echo ${{ env.SKIPS_DONE }}
 #      - name: Is skipping allowed?
