@@ -64,6 +64,13 @@ jobs:
           if ${{ env.SKIP_COMPREHENSIVE }}; then
             echo "SKIPS_DONE=true" >> $GITHUB_ENV
           fi
+
+  mergeble-with-skips:
+    name: Skipping and Merge Allowed?
+    runs-on: ubuntu-latest
+    needs: skips-allowed
+
+    steps:
       - name: Skip Tests Allowed? ${{ env.SKIPS_ALLOWED }}
         run: |
           echo "Is skipping tests allowed: ${{ env.SKIPS_ALLOWED }}"
@@ -164,9 +171,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: |
-      ( ${{ success() }} || ${{ failure() }} ) &&
-      ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == false }}
+    if: ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == false }}
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
