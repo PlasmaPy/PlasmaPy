@@ -190,7 +190,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - name: RUN ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}
+    - name: RUN ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION == 'false' }}
       run: |
         echo "SKIP doc == ${{ needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
         echo "RUN doc == ${{ !needs.skips-allowed.outputs.SKIP_DOCUMENTATION }}"
