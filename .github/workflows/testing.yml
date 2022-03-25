@@ -11,6 +11,17 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  if: ${{ github.event_name == 'pull_request' }}
+  SKIP_DOCUMENTATION_LABEL: 'GA Skip: Documentation'
+  SKIP_COMPREHENSIVE_LABEL: 'GA Skip: Comprehensive Tests'
+  SKIPS_ALLOWED_LABEL: 'GA Skip: Merge Allowed'
+
+  SKIP_DOCUMENTATION: false
+  SKIP_COMPREHENSIVE: false
+  SKIPS_ALLOWED: false
+  SKIPS_DONE: SKIP_DOCUMENTATION || SKIP_COMPREHENSIV
+
 jobs:
   initial-tests:
     name: ${{ matrix.name }}
@@ -157,3 +168,15 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_access_token }}
+
+  skips-allowed:
+    name: Skipping Tests Allowed? ${{ env.SKIPS_ALLOWED }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Were tests skipped? ${{ env.SKIPS_DONE }}
+      - name: Is skipping allowed? $${ env.SKIPS_ALLOWED }}
+        run: |
+          if ${{ env.SKIPS_DONE && !env.SKIPS_ALLOWED }}; then
+            exit 1
+          fi
