@@ -36,7 +36,7 @@ jobs:
           echo "SKIP_DOCUMENTATION=${SKIP}" >> $GITHUB_ENV
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_COMPREHENSIVE_LABEL) }}
           echo "SKIP_COMPREHENSIVE=${SKIP}" >> $GITHUB_ENV
-          SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIP_ALLOWED_LABEL) }}
+          SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIPS_ALLOWED_LABEL) }}
           echo "SKIPS_ALLOWED=${SKIP}" >> $GITHUB_ENV
       - name: Skip Documentation? ${{ env.SKIP_DOCUMENTATION }}
         run: |
