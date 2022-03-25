@@ -164,7 +164,7 @@ jobs:
       with:
         file: ./coverage.xml
   documentation:
-    if: always()
+    if: always() && !needs.skips-allowed.outputs.SKIP_DOCUMENTATION
     needs: skips-allowed
     name: Documentation
     runs-on: ubuntu-latest
