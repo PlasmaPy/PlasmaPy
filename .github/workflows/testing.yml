@@ -43,7 +43,7 @@ jobs:
           fi
       - name: Skip Documentation?
         run: |
-          echo "Documentation can be skipped: ${{ env.dSKIP }}"
+          echo "Documentation can be skipped: ${{ env.SKIP_DOCUMENTATION }}"
 
 #      - name: Were tests skipped?
 #        run: echo ${{ env.SKIPS_DONE }}
