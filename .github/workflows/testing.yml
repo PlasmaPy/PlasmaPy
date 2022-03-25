@@ -25,7 +25,7 @@ env:
 jobs:
   skips-allowed:
     if: ${{ github.event_name == 'pull_request' }}
-    name: Merge Allowed?
+    name: Skipping and Merge Allowed?
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +55,7 @@ jobs:
           echo "Is skipping tests allowed: ${{ env.SKIPS_ALLOWED }}"
           FAIL=${{ ! env.SKIPS_ALLOWED && env.SKIPS_DONE}}
           echo $FAIL
-          if $FAIL; then
+          if [ '${FAIL}' == true ]; then
             echo "Some tests are skipped, but skipping needs to be removed before merging!!"
             exit 1
           fi
@@ -96,7 +96,10 @@ jobs:
   comprehensive-tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+
+    if: ${{ env.SKIP_DOCUMENTATION }}
     needs: initial-tests
+
     strategy:
       fail-fast: false
       matrix:
