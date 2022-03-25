@@ -20,7 +20,7 @@ env:
   SKIP_DOCUMENTATION: false
   SKIP_COMPREHENSIVE: false
   SKIPS_ALLOWED: false
-  SKIPS_DONE: $SKIP_DOCUMENTATION || $SKIP_COMPREHENSIVE
+  SKIPS_DONE: false || true
 
 jobs:
   initial-tests:
