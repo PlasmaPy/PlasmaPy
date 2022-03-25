@@ -38,6 +38,7 @@ jobs:
       SKIP_DOCUMENTATION: ${{ steps.step1.outputs.SKIP_DOCUMENTATION }}
       SKIP_COMPREHENSIVE: ${{ steps.step1.outputs.SKIP_COMPREHENSIVE }}
       SKIPS_ALLOWED: ${{ steps.step1.outputs.SKIPS_ALLOWED }}
+      SKIPS_DONE: ${{ steps.step_skip_done.outputs.SKIPS_DONE }}
 
     steps:
       - name: Determine Skips
@@ -54,6 +55,7 @@ jobs:
           SKIP=${{ contains(github.event.pull_request.labels.*.name, env.SKIPS_ALLOWED_LABEL) }}
           echo "SKIPS_ALLOWED=${SKIP}" >> $GITHUB_ENV
           echo "::set-output name=SKIPS_ALLOWED::${SKIP}"
+
       - name: Skip Documentation? ${{ env.SKIP_DOCUMENTATION }}
         run: |
           echo "Documentation can be skipped: ${{ env.SKIP_DOCUMENTATION }}"
@@ -66,6 +68,10 @@ jobs:
           if ${{ env.SKIP_COMPREHENSIVE }}; then
             echo "SKIPS_DONE=true" >> $GITHUB_ENV
           fi
+      - name: Set SKIPS_DONE
+        id: step_skip_done
+        run: |
+          echo "::set-output name=SKIPS_DONE::${{ env.SKIPS_DONE }}"
 
   mergeble-with-skips:
     name: Skipping and Merge Allowed?
@@ -74,6 +80,7 @@ jobs:
 
     env:
       SKIPS_ALLOWED: ${{ needs.skips-allowed.outputs.SKIPS_ALLOWED }}
+      SKIPS_DONE: ${{ needs.skips-allowed.outputs.SKIPS_DONE }}
 
     steps:
       - name: Skip Tests Allowed? ${{ env.SKIPS_ALLOWED }}
