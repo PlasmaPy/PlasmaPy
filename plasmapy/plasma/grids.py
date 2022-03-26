@@ -1084,7 +1084,7 @@ class CartesianGrid(AbstractGrid):
         This is a standard ray-box intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
-        # Caclulate the minimum and maximum of each
+        # Calculate the minimum and maximum of each
         Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
         Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
         Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)
@@ -1356,7 +1356,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         This is a standard ray-box intersection algorithm.
         """
         p1, p2 = p1.si.value, p2.si.value
-        # Caclulate the minimum and maximum of each
+        # Calculate the minimum and maximum of each
         Ax, Bx = np.min(self.pts0.si.value), np.max(self.pts0.si.value)
         Ay, By = np.min(self.pts1.si.value), np.max(self.pts1.si.value)
         Az, Bz = np.min(self.pts2.si.value), np.max(self.pts2.si.value)

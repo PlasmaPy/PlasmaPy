@@ -593,7 +593,7 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
                    requires that `nparticles` be a perfect square. If it is not,
@@ -686,7 +686,7 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unpreturbed,they will form a uniform pattern
                    on the detection plane.
 
