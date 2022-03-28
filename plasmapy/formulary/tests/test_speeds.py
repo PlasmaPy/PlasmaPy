@@ -219,7 +219,7 @@ class TestAlfvenSpeed:
         ],
     )
     def test_nan_values(self, args, kwargs, nan_mask):
-        """Input scenarios that leat to `numpy.nan` values being returned."""
+        """Input scenarios that lead to `numpy.nan` values being returned."""
         val = Alfven_speed(*args, **kwargs)
         if np.isscalar(val.value):
             assert np.isnan(val)

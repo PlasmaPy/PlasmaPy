@@ -407,7 +407,7 @@ class CircularWire(Wire):
         self._current_u = current.unit
 
         # parametric equation
-        # find other two axises in the disc plane
+        # find other two axes in the disc plane
         z = np.array([0, 0, 1])
         axis_x = np.cross(z, self.normal)
         axis_y = np.cross(self.normal, axis_x)
