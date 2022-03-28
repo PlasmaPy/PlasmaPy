@@ -55,7 +55,7 @@ def deBroglie_wavelength(V: u.m / u.s, particle) -> u.m:
 
     particle : `str`, `~plasmapy.particles.particle_class.Particle`, or `~astropy.units.Quantity`
         An instance of `~plasmapy.particles.particle_class.Particle`, or
-        an equvalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
+        an equivalent representation (e.g., ``'e'``, ``'p'``, ``'D+'``, or
         ``'He-4 1+'``), for the particle of interest, or the particle
         mass in units convertible to kg.  If a
         `~plasmapy.particles.particle_class.Particle` instance is given, then the

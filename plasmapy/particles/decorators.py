@@ -354,7 +354,7 @@ def particle_input(
                 raw_argval = arguments[argname]
                 if isinstance(raw_argval, (tuple, list)):
                     # Input argument value is a tuple or list
-                    # of correspoding particles or atomic values.
+                    # of corresponding particles or atomic values.
                     argval_tuple = raw_argval
                     particles = []
                 else:

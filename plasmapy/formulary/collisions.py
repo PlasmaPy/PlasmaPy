@@ -1283,7 +1283,7 @@ def fundamental_ion_collision_freq(
     Equations (2.36) and (2.122) in :cite:t:`callen:unpublished` provide
     the original source used to implement this formula, however, in our
     implementation we use the very same process that leads to the
-    fundamental electron collison rate (2.17), gaining simply a
+    fundamental electron collision rate (2.17), gaining simply a
     different coefficient:
 
     .. math::
