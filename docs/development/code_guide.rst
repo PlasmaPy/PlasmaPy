@@ -48,7 +48,7 @@ PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://peps.python.org/pep-0008>`__.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and
@@ -180,7 +180,7 @@ developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
 
 Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
+<https://cbea.ms/git-commit>`_:
 
 * Separate subject from body with a blank line
 

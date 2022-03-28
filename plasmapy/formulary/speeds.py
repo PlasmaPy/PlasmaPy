@@ -671,8 +671,7 @@ def thermal_speed(
 
         - **NRL Formulary** ``method = "nrl"``
 
-          The `NRL Plasma Formulary
-          <https://www.nrl.navy.mil/ppd/content/nrl-plasma-formulary>`_
+          The NRL Plasma Formulary :cite:p:`nrlformulary:2019`
           uses the square root of the Normal distribution's variance
           as the expression for thermal speed.
 
