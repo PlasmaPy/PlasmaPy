@@ -213,6 +213,7 @@ linkcheck_allowed_redirects = {
     r"https://.+": r".+(google|github).+[lL]ogin.+",  # some links require logins
     r"https://jinja\.palletsprojects\.com": r"https://jinja\.palletsprojects\.com/.+",
     r"https://pip\.pypa\.io": r"https://pip\.pypa\.io/en/.+",
+    r"https://www.python.org/dev/peps/pep.+": "https://peps.python.org/pep.+",
 }
 
 linkcheck_anchors = True
