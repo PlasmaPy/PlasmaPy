@@ -34,3 +34,14 @@ def read_requirements_txt_file(prefix: str, requirements_directory: str) -> List
     with open(filename) as file:
         lines_of_file = file.readlines()
     return [line.strip() for line in lines_of_file if line[0].isalpha()]
+
+
+def get_requirements_from_txt() -> Dict[str, str]:
+    """
+    Get the requirements from the .txt files in the requirements
+    directory.
+    """
+    return {
+        prefix: read_requirements_txt_file(prefix, requirements_directory)
+        for prefix in requirements_prefixes
+    }
