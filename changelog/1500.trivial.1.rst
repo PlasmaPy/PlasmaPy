@@ -1,0 +1,3 @@
+Added tests to verify that the requirements given in the :file:`.txt`
+files in the :file:`requirements` directory are consistent with the
+requirements given in :file:`setup.cfg` and :file:`pyproject.toml`.
