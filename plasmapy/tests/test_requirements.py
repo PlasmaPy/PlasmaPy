@@ -1,9 +1,17 @@
 """Tests for the consistency of requirements."""
 
-from typing import List
+import os
+
+from typing import Dict, List
+
+import plasmapy
+
+base_directory = os.path.realpath(f"{plasmapy.__path__[0]}/..")
+requirements_directory = f"{base_directory}/requirements"
+requirements_prefixes = ("build", "docs", "extras", "install", "tests")
 
 
-def _read_requirements_txt_file(prefix: str, requirements_directory: str) -> List[str]:
+def read_requirements_txt_file(prefix: str, requirements_directory: str) -> List[str]:
     """
     Read in a text file containing requirements.
 
