@@ -2,6 +2,7 @@
 
 import os
 import setuptools
+import toml
 
 from typing import Dict, List
 
@@ -57,3 +58,9 @@ def get_requirements_from_setup_cfg() -> Dict[str, str]:
         "install": configuration["options"]["install_requires"],
         "tests": configuration["options"]["extras_require"]["tests"],
     }
+
+
+def get_requirements_from_pyproject_toml() -> Dict[str, str]:
+    """Get the requirements that are contained in pyproject.toml."""
+    pyproject_toml = toml.load(f"{base_directory}/pyproject.toml")
+    return {"build": pyproject_toml["build-system"]["requires"]}
