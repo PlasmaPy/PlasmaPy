@@ -1,6 +1,7 @@
 """Tests for the consistency of requirements."""
 
 import os
+import setuptools
 
 from typing import Dict, List
 
@@ -44,4 +45,15 @@ def get_requirements_from_txt() -> Dict[str, str]:
     return {
         prefix: read_requirements_txt_file(prefix, requirements_directory)
         for prefix in requirements_prefixes
+    }
+
+
+def get_requirements_from_setup_cfg() -> Dict[str, str]:
+    """Get the requirements that are contained in setup.cfg."""
+    configuration = setuptools.config.read_configuration(f"{base_directory}/setup.cfg")
+    return {
+        "docs": configuration["options"]["extras_require"]["docs"],
+        "extras": configuration["options"]["extras_require"]["extras"],
+        "install": configuration["options"]["install_requires"],
+        "tests": configuration["options"]["extras_require"]["tests"],
     }
