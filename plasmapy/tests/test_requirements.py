@@ -64,26 +64,3 @@ def get_requirements_from_pyproject_toml() -> Dict[str, Set[str]]:
     """Get the requirements that are contained in pyproject.toml."""
     pyproject_toml = toml.load(f"{base_directory}/pyproject.toml")
     return {"build": set(pyproject_toml["build-system"]["requires"])}
-
-
-def get_requirements_dict() -> Dict[str, Dict[str, Set[str]]]:
-
-    requirements_from_txt = get_requirements_from_txt()
-    requirements_from_pyproject_toml = get_requirements_from_pyproject_toml()
-    requirements_from_setup_cfg = get_requirements_from_setup_cfg()
-
-    requirements = {
-        prefix: {f"requirements/{prefix}.txt": requirements_from_txt[prefix]}
-        for prefix in requirements_from_txt
-    }
-
-    file_requirements_pairs = [
-        ("pyproject.toml", requirements_from_pyproject_toml),
-        ("setup.cfg", requirements_from_setup_cfg),
-    ]
-
-    for file, req in file_requirements_pairs:
-        for prefix in req:
-            requirements[prefix][file] = req[prefix]
-
-    return requirements
