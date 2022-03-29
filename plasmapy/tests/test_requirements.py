@@ -64,3 +64,32 @@ def get_requirements_from_pyproject_toml() -> Dict[str, Set[str]]:
     """Get the requirements that are contained in pyproject.toml."""
     pyproject_toml = toml.load(f"{base_directory}/pyproject.toml")
     return {"build": set(pyproject_toml["build-system"]["requires"])}
+
+
+def get_requirements_errmsg(prefix: str, req1, file1: str, req2, file2: str):
+    """
+    Return an appropriate error message for an inconsistency in the
+    `prefix` requirements provided by `req1` in `file1` and `req2` in
+    `file2`.
+
+    If there are no inconsistencies, then return an empty string (which
+    will evaluate to `False` in a conditional).
+    """
+    req1 = set(req1)
+    req2 = set(req2)
+
+    error_messages = []
+
+    if in_1_but_not_2 := req1 - req2:
+        error_messages.append(
+            f"The following {prefix} requirements are in {file1} but "
+            f"not {file2}: {in_1_but_not_2}."
+        )
+
+    if in_2_but_not_1 := req2 - req1:
+        error_messages.append(
+            f"The following {prefix} requirements are in {file2} but "
+            f"not {file1}: {in_2_but_not_1}."
+        )
+
+    return "".join(error_messages).strip()
