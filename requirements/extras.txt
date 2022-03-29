@@ -1,5 +1,6 @@
 # these are "extra" dependencies to run advanced package features
 # ought to mirror 'extras' under options.extras_require in setup.cfg
+codespell
 pre-commit
 setuptools_scm
 tox
