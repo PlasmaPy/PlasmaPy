@@ -259,12 +259,8 @@ def hirose(
 
     # Polynomial coefficients where x in 'cx' represents the order of the term
 
-    # c3 must be an astropy.units.quantiy.Quantity type.
-    # Typing "1" doesn't work since it's an int, "A ** 0" gives astropy units.
-    # May be simpler way to change to proper type.
-
     c3 = A ** 0
-    c2 = -A * (1 + D) + B + C
+    c2 = -A * (1 + D) - B - C
     c1 = A * (2 * B + C + B * D)
     c0 = -B * A ** 2
 
