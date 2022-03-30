@@ -10,11 +10,14 @@ import warnings
 from astropy.constants.si import c
 from typing import Union
 
-from plasmapy.formulary import parameters as pfp
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
+from plasmapy.formulary.speeds import Alfven_speed, ion_sound_speed
 from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import ChargeError
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning
+
+c_si_unitless = c.value
 
 
 @validate_quantities(
@@ -229,18 +232,18 @@ def hirose(
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
         n_e = z_mean * n_i
-        c_s = pfp.ion_sound_speed(
+        c_s = ion_sound_speed(
             T_e=T_e,
-            T_i=0 * u.K,
+            T_i=0,
             ion=ion,
             n_e=n_e,
             gamma_e=gamma_e,
             gamma_i=gamma_i,
             z_mean=z_mean,
         ).value
-        v_A = pfp.Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
-        omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
-        omega_pi = pfp.plasma_frequency(n=n_i, particle=ion).value
+        v_A = Alfven_speed(B, n_i, ion=ion, z_mean=z_mean).value
+        omega_ci = gyrofrequency(B=B, particle=ion, signed=False, Z=z_mean).value
+        omega_pi = plasma_frequency(n=n_i, particle=ion).value
 
     # strip units from select input args
     k = k.value
