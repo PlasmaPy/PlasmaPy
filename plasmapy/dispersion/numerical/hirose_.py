@@ -233,7 +233,7 @@ def hirose(
         n_e = z_mean * n_i
         c_s = ion_sound_speed(
             T_e=T_e,
-            T_i=0,
+            T_i=0 * u.K,
             ion=ion,
             n_e=n_e,
             gamma_e=gamma_e,
