@@ -271,7 +271,7 @@ def hirose(
     acoustic_mode = []
 
     # If a single k value is given
-    if np.isscalar(k.value) == True:
+    if np.isscalar(k.value):
 
         w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
         fast_mode = np.max(w)
