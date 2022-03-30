@@ -148,6 +148,7 @@ def hirose(
     ...    "T_e": 1.6e6 * u.K,
     ...    "ion": Particle("p+"),
     ...}
+
     >>> omegas = hirose(**inputs)
     >>> omegas
     {'fast_mode': <Quantity [7.12646288e+01, 7.13838935e+11] rad / s>,
