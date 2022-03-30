@@ -172,7 +172,7 @@ def hirose(
     # validate z_mean
     if z_mean is None:
         try:
-            z_mean = abs(ion.integer_charge)
+            z_mean = abs(ion.charge_number)
         except ChargeError:
             z_mean = 1
     else:
@@ -214,7 +214,7 @@ def hirose(
             f" got array of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError("Argument 'k' can not be a or have negative values.")
+        raise ValueError("Argument 'k' can not be 0 or have negative values.")
 
     # validate argument theta
     theta = theta.squeeze()
@@ -255,7 +255,7 @@ def hirose(
     A = (kz * v_A) ** 2
     B = (k * c_s) ** 2
     C = (k * v_A) ** 2
-    D = ((k * c) / omega_pi) ** 2
+    D = ((k * c_si_unitless) / omega_pi) ** 2
 
     # Polynomial coefficients where x in 'cx' represents the order of the term
 
@@ -274,7 +274,7 @@ def hirose(
     acoustic_mode = []
 
     # If a single k value is given
-    if np.isscalar(k.value):
+    if np.isscalar(k):
 
         w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
         fast_mode = np.max(w)
@@ -286,7 +286,7 @@ def hirose(
         # a0*x^3 + a1*x^2 + a2*x^3 + a3 = 0
         for (a0, a1, a2, a3) in zip(c3, c2, c1, c0):
 
-            w = np.emath.sqrt(np.roots([a0.value, a1.value, a2.value, a3.value]))
+            w = np.emath.sqrt(np.roots([a0, a1, a2, a3]))
             fast_mode.append(np.max(w))
             alfven_mode.append(np.median(w))
             acoustic_mode.append(np.min(w))
