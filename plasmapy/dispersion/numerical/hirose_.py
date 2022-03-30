@@ -123,7 +123,7 @@ def hirose(
         \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
         \cos \theta &= \frac{k_z}{k} \\
         \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
-    
+
     :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
     sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
