@@ -42,7 +42,7 @@ def hirose(
     r"""
     Calculate the two fluid dispersion relation presented by
     :cite:t:`hirose:2004`, and discussed by :cite:t:`bellan:2012`.
-    This is a numberical solver of equation 7 in :cite:t:`bellan:2012`.
+    This is a numerical solver of equation 7 in :cite:t:`bellan:2012`.
     See the **Notes** section below for additional details.
 
     Parameters
@@ -113,12 +113,14 @@ def hirose(
 
     Notes
     -----
-    Solves equation 7 in Bellan2012JGR (originally from Hirose2004)
+    The dispersion relation presented in :cite:t:`hirose:2004`
+    (equation 7 in :cite:t:`bellan:2012`) is:
+
     .. math::
-        \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right) &
-        \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right) &
-        + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right) &
-        \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2 &
+        \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right)
+        \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right)
+        + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
+        = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
         \left(\omega^2 - k^2 c_{\rm s}^2 \right)
     where
 
@@ -130,15 +132,14 @@ def hirose(
     :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
     :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
     sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
-    :math:`\omega_{\rm pe}` is the electron plasma frequency. In the
+    :math:`\omega_{\rm pi}` is the ion plasma frequency. In the
     derivation of this relation Hirose assumed low-frequency waves
     :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
-    :math:`mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
+    :math:`\mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
 
     This routine solves for ω for given :math:`k` values by numerically
     solving for the roots of the above expression.
 
-    #This Example needs to be udpdate with hirose eqn numbers!!!
     Examples
     --------
     >>> from astropy import units as u
@@ -153,9 +154,9 @@ def hirose(
     ... }
     >>> omegas = hirose(**inputs)
     >>> omegas
-    {'fast_mode': <Quantity [7.12646288e+01, 7.13838935e+11] rad / s>,
-     'alfven_mode': <Quantity [7.96179537e-01, 1.14921892e+03] rad / s>,
-     'acoustic_mode': <Quantity [0.00995224, 0.68834011] rad / s>}
+    {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
+    'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
+    'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
     """
 
     # validate argument ion
