@@ -110,37 +110,38 @@ def hirose(
         `astropy.units.Quantity` (i.e. an array).
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
-
-    Notes
-    -----
-    The dispersion relation presented in :cite:t:`hirose:2004`
-    (equation 7 in :cite:t:`bellan:2012`) is:
-
-    .. math::
-        \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right)
-        \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right)
-        + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
-        = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
-        \left(\omega^2 - k^2 c_{\rm s}^2 \right)
-
-    where
-
-    .. math::
-        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
-        \cos \theta &= \frac{k_z}{k} \\
-        \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
-
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
-    :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
-    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
-    :math:`\omega_{\rm pi}` is the ion plasma frequency. In the
-    derivation of this relation Hirose assumed low-frequency waves
-    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
-    :math:`\mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
-
-    This routine solves for ω for given :math:`k` values by numerically
-    solving for the roots of the above expression.
     """
+
+    # Notes
+    # -----
+    # The dispersion relation presented in :cite:t:`hirose:2004`
+    # (equation 7 in :cite:t:`bellan:2012`) is:
+
+    # .. math::
+    #     \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right)
+    #     \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right)
+    #     + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
+    #     = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
+    #     \left(\omega^2 - k^2 c_{\rm s}^2 \right)
+
+    # where
+
+    # .. math::
+    #     \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
+    #     \cos \theta &= \frac{k_z}{k} \\
+    #     \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
+
+    # :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    # :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
+    # sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
+    # :math:`\omega_{\rm pi}` is the ion plasma frequency. In the
+    # derivation of this relation Hirose assumed low-frequency waves
+    # :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
+    # :math:`\mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
+
+    # This routine solves for ω for given :math:`k` values by numerically
+    # solving for the roots of the above expression.
+    # """
     # Examples
     # --------
     # >>> from astropy import units as u
