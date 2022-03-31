@@ -173,10 +173,7 @@ class IonicLevel:
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
     def number_density(self, n: u.m ** -3):
-        if n is None:
-            self._number_density = np.nan * u.m ** -3
-        else:
-            self._number_density = n
+        self._number_density = np.nan * u.m ** -3 if n is None else n
 
     @property
     def T_i(self) -> u.K:
@@ -295,18 +292,15 @@ class IonizationState:
         self._number_of_particles = particle.atomic_number + 1
 
         if particle.is_ion or particle.is_category(require=("uncharged", "element")):
-            if ionic_fractions is None:
-                ionic_fractions = np.zeros(self._number_of_particles)
-                ionic_fractions[particle.charge_number] = 1.0
-                particle = Particle(
-                    particle.isotope if particle.isotope else particle.element
-                )
-            else:
+            if ionic_fractions is not None:
                 raise ParticleError(
                     "The ionic fractions must not be specified when "
                     "the input particle to IonizationState is an ion."
                 )
 
+            ionic_fractions = np.zeros(self._number_of_particles)
+            ionic_fractions[particle.charge_number] = 1.0
+            particle = Particle(particle.isotope or particle.element)
         self._particle = particle
 
         try:
@@ -356,7 +350,7 @@ class IonizationState:
                     number_density=self.number_densities[val],
                     T_i=self.T_i[val],
                 )
-                for val in range(0, self._number_of_particles)[value]
+                for val in range(self._number_of_particles)[value]
             ]
 
         if isinstance(value, Integral) and 0 <= value <= self.atomic_number:
@@ -387,11 +381,11 @@ class IonizationState:
                     number_density=self.number_densities[Z],
                     T_i=self.T_i[Z],
                 )
+            elif not (same_element and same_isotope):
+                raise ParticleError("Inconsistent element or isotope.")
             else:
-                if not same_element or not same_isotope:
-                    raise ParticleError("Inconsistent element or isotope.")
-                elif not has_charge_info:
-                    raise ChargeError("No charge number provided.")
+                raise ChargeError("No charge number provided.")
+
         return result
 
     def __setitem__(self, key, value):
@@ -709,7 +703,7 @@ class IonizationState:
     @property
     def base_particle(self) -> str:
         """The symbol of the element or isotope."""
-        return self.isotope if self.isotope else self.element
+        return self.isotope or self.element
 
     def to_list(self) -> ParticleList:
         """
@@ -951,8 +945,13 @@ class IonizationState:
             # TODO add T_i somewhere around here, probably
 
         if not np.isnan(self.n_elem):
-            attributes.append(f"n_elem = {self.n_elem.value:.2e} m**-3")
-            attributes.append(f"n_e = {self.n_e.value:.2e} m**-3")
+            attributes.extend(
+                [
+                    f"n_elem = {self.n_elem.value:.2e} m**-3",
+                    f"n_e = {self.n_e.value:.2e} m**-3",
+                ]
+            )
+
         if not np.isnan(self.T_e):
             attributes.append(f"T_e = {self.T_e.value:.2f} K")
         if np.isfinite(self.kappa):
