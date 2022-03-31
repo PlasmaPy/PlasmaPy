@@ -251,46 +251,35 @@ def hirose(
     # Parameter kz
     kz = np.cos(theta) * k
 
-    # Parameters sigma, D, and F to simplify equation 7
+    # Define helpful parameters
     A = (kz * v_A) ** 2
     B = (k * c_s) ** 2
     C = (k * v_A) ** 2
     D = ((k * c_si_unitless) / omega_pi) ** 2
 
-    # Polynomial coefficients where x in 'cx' represents the order of the term
-
+    # Polynomial coefficients: c3*x^6 + c2*x^4 + c1*x^2 + c0
     c3 = A ** 0
     c2 = -A * (1 + D) - B - C
     c1 = A * (2 * B + C + B * D)
     c0 = -B * A ** 2
 
-    omega = {}
-    fast_mode = []
-    alfven_mode = []
-    acoustic_mode = []
+    # Find roots of polynomial
+    coefficients = np.array([c3, c2, c1, c0], ndmin=2)
+    nroots = coefficients.shape[0] - 1 # 3
+    nks = coefficients.shape[1]
+    roots = np.empty((nroots, nks), dtype=np.complex128)
+    for ii in range(nks):
+        roots[:, ii] = np.roots(coefficients[:, ii])[:]
 
-    # If a single k value is given
-    if np.isscalar(k):
+    roots = np.sqrt(roots)
+    roots = np.sort(roots, axis=0)
 
-        w = np.emath.sqrt(np.roots([c3.value, c2.value, c1.value, c0.value]))
-        fast_mode = np.max(w)
-        alfven_mode = np.median(w)
-        acoustic_mode = np.min(w)
-
-    # If mutliple k values are given
-    else:
-        # a0*x^3 + a1*x^2 + a2*x^3 + a3 = 0
-        for (a0, a1, a2, a3) in zip(c3, c2, c1, c0):
-
-            w = np.emath.sqrt(np.roots([a0, a1, a2, a3]))
-            fast_mode.append(np.max(w))
-            alfven_mode.append(np.median(w))
-            acoustic_mode.append(np.min(w))
-
-    omega["fast_mode"] = fast_mode * u.rad / u.s
-    omega["alfven_mode"] = alfven_mode * u.rad / u.s
-    omega["acoustic_mode"] = acoustic_mode * u.rad / u.s
+    omegas = {
+        "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
+        "alfven_mode": roots[1, :].squeeze() * u.rad / u.s,
+        "acoustic_mode": roots[0, :].squeeze() * u.rad / u.s,
+    }
 
     # Ti is assumed to be 0 for this eqn
 
-    return omega
+    return omegas
