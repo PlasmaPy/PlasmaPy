@@ -120,56 +120,55 @@ def hirose(
 
     ValueError
         If ``k`` or ``theta`` are not single valued or a 1-D array.
+
+    Notes
+    -----
+    The dispersion relation presented in :cite:t:`hirose:2004`
+    (equation 7 in :cite:t:`bellan:2012`) is:
+
+    .. math::
+        \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right)
+        \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right)
+        + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
+        = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
+        \left(\omega^2 - k^2 c_{\rm s}^2 \right)
+
+    where
+
+    .. math::
+        \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
+        \cos \theta &= \frac{k_z}{k} \\
+        \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
+
+    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
+    sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
+    :math:`\omega_{\rm pi}` is the ion plasma frequency. In the
+    derivation of this relation Hirose assumed low-frequency waves
+    :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
+    :math:`\mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
+
+    This routine solves for ω for given :math:`k` values by numerically
+    solving for the roots of the above expression.
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from plasmapy.dispersion.numerical import hirose_
+    >>> inputs = {
+    ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
+    ...    "theta": 30 * u.deg,
+    ...    "B": 8.3e-9 * u.T,
+    ...    "n_i": 5 * u.m ** -3,
+    ...    "T_e": 1.6e6 * u.K,
+    ...    "ion": Particle("p+"),
+    ... }
+    >>> omegas = hirose(**inputs)
+    >>> omegas
+    {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
+    'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
+    'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
     """
-
-    # Notes
-    # -----
-    # The dispersion relation presented in :cite:t:`hirose:2004`
-    # (equation 7 in :cite:t:`bellan:2012`) is:
-
-    # .. math::
-    #     \left(\omega^2 - k_{\rm z}^2 v_{\rm A}^2 \right)
-    #     \left(\omega^4 - \omega^2 k^2 \left(c_{\rm s}^2 + v_{\rm A}^2 \right)
-    #     + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
-    #     = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
-    #     \left(\omega^2 - k^2 c_{\rm s}^2 \right)
-
-    # where
-
-    # .. math::
-    #     \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
-    #     \cos \theta &= \frac{k_z}{k} \\
-    #     \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
-
-    # :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
-    # :math:`v_{\rm A}` is the Alfvén velocity, :math:`c_{\rm s}` is the
-    # sound speed, :math:`\omega_{\rm ci}` is the ion gyrofrequency, and
-    # :math:`\omega_{\rm pi}` is the ion plasma frequency. In the
-    # derivation of this relation Hirose assumed low-frequency waves
-    # :math:`\omega / \omega_{\rm ci} \ll 1`, no D.C. electric field
-    # :math:`\mathbf{E_o}=0`, and cold ions :math:`T_{i}=0`.
-
-    # This routine solves for ω for given :math:`k` values by numerically
-    # solving for the roots of the above expression.
-    # """
-    # Examples
-    # --------
-    # >>> from astropy import units as u
-    # >>> from plasmapy.dispersion.numerical import hirose_
-    # >>> inputs = {
-    # ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
-    # ...    "theta": 30 * u.deg,
-    # ...    "B": 8.3e-9 * u.T,
-    # ...    "n_i": 5 * u.m ** -3,
-    # ...    "T_e": 1.6e6 * u.K,
-    # ...    "ion": Particle("p+"),
-    # ... }
-    # >>> omegas = hirose(**inputs)
-    # >>> omegas
-    # {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
-    # 'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
-    # 'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
-    # """
 
     # validate argument ion
     if not isinstance(ion, Particle):
