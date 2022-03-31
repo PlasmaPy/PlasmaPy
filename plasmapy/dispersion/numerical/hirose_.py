@@ -265,7 +265,7 @@ def hirose(
 
     # Find roots of polynomial
     coefficients = np.array([c3, c2, c1, c0], ndmin=2)
-    nroots = coefficients.shape[0] - 1 # 3
+    nroots = coefficients.shape[0] - 1  # 3
     nks = coefficients.shape[1]
     roots = np.empty((nroots, nks), dtype=np.complex128)
     for ii in range(nks):
