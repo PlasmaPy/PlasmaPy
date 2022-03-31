@@ -236,6 +236,7 @@ def hirose(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."
         )
+
     # Single k value case
     if np.isscalar(k.value):
         k = np.array([k.value]) * u.rad / u.m
