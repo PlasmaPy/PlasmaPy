@@ -249,7 +249,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     z_mean : `~numbers.Real`, optional
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  Typically, the charge state will be
-        dervied from the ``particle`` argument, but this keyword will
+        derived from the ``particle`` argument, but this keyword will
         override that behavior.
 
     Returns
@@ -305,7 +305,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
-    For user convienence
+    For user convenience
     `~plasmapy.formulary.frequencies.plasma_frequency_lite` is bound to
     this function and can be used as follows.
 
@@ -407,7 +407,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
 
-    The lower hybrid frequency consitutes a resonance for electromagnetic
+    The lower hybrid frequency constitutes a resonance for electromagnetic
     waves in magnetized plasmas, namely for the X-mode. These are waves
     with their wave electric field being perpendicular to the background
     magnetic field. For the lower hybrid frequency, ion and electron

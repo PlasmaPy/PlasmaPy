@@ -27,8 +27,8 @@ class BasePlasma(ABC):
     # This class is supposed to declare abstract methods (@abstractmethod or
     # @abstractproperty as appropriate) that are common in most plasmas
     # (like `electronTemperature`, `ionTemperature`,
-    # `electronDensitry`, `ionDensity`, `averageIonization`, etc.)
-    # where as `GenericPlasma` class will hold the definitions for these
+    # `electronDensity`, `ionDensity`, `averageIonization`, etc.)
+    # whereas `GenericPlasma` class will hold the definitions for these
     # abstract methods.
 
     # For reference, see
