@@ -139,25 +139,25 @@ def hirose(
 
     This routine solves for ω for given :math:`k` values by numerically
     solving for the roots of the above expression.
-
-    Examples
-    --------
-    >>> from astropy import units as u
-    >>> from plasmapy.dispersion.numerical import hirose_
-    >>> inputs = {
-    ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
-    ...    "theta": 30 * u.deg,
-    ...    "B": 8.3e-9 * u.T,
-    ...    "n_i": 5 * u.m ** -3,
-    ...    "T_e": 1.6e6 * u.K,
-    ...    "ion": Particle("p+"),
-    ... }
-    >>> omegas = hirose(**inputs)
-    >>> omegas
-    {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
-    'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
-    'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
     """
+    # Examples
+    # --------
+    # >>> from astropy import units as u
+    # >>> from plasmapy.dispersion.numerical import hirose_
+    # >>> inputs = {
+    # ...    "k": np.logspace(-7,-2,2) * u.rad / u.m,
+    # ...    "theta": 30 * u.deg,
+    # ...    "B": 8.3e-9 * u.T,
+    # ...    "n_i": 5 * u.m ** -3,
+    # ...    "T_e": 1.6e6 * u.K,
+    # ...    "ion": Particle("p+"),
+    # ... }
+    # >>> omegas = hirose(**inputs)
+    # >>> omegas
+    # {'fast_mode': <Quantity [1.51090997e+01+0.j, 1.27144874e+11+0.j] rad / s>,
+    # 'alfven_mode': <Quantity [6.68925078e-01+0.j, 1.14921912e+03+0.j] rad / s>,
+    # 'acoustic_mode': <Quantity [0.0017725 +0.j, 0.12260315+0.j] rad / s>}
+    # """
 
     # validate argument ion
     if not isinstance(ion, Particle):
