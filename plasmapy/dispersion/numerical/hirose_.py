@@ -122,6 +122,7 @@ def hirose(
         + k^2 v_{\rm A}^2 k_{\rm z}^2 c_{\rm s}^2 \right)
         = \frac{k^2 c^2}{\omega_{\rm pi}^2} \omega^2 v_{\rm A}^2 k_{\rm z}^2
         \left(\omega^2 - k^2 c_{\rm s}^2 \right)
+
     where
 
     .. math::
