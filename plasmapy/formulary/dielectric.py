@@ -4,9 +4,7 @@ __all__ = [
     "cold_plasma_permittivity_LRP",
     "permittivity_1D_Maxwellian",
 ]
-
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
-
 
 import numbers
 import numpy as np
