@@ -364,15 +364,13 @@ def permittivity_1D_Maxwellian(
     >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
     """
-    # thermal velocity
-    vTh = thermal_speed(T=T, particle=particle, method="most_probable")
-    # plasma frequency
-    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean)
+    vth = thermal_speed(T=T, particle=particle, method="most_probable").value
+    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
 
     chi = permittivity_1D_Maxwellian_lite(
-        omega.to(u.rad / u.s),
-        kWave.to(u.rad / u.m),
-        vTh.to(u.m / u.s),
-        wp.to(u.rad / u.s),
+        omega.value,
+        kWave.value,
+        vth,
+        wp,
     )
-    return chi
+    return chi * u.dimensionless_unscaled
