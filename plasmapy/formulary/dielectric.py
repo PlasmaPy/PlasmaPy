@@ -352,17 +352,28 @@ def permittivity_1D_Maxwellian(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from astropy.constants import c
     >>> from numpy import pi
+    >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'
     >>> z_mean = 8 * u.dimensionless_unscaled
-    >>> vTh = thermal_speed(T, particle, method="most_probable")
+    >>> vth = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
-    >>> kWave = omega / vTh
-    >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
+    >>> k_wave = omega / vth
+    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
+
+    For user convience
+    `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite`
+    is bound to this function and can be used as follows:
+
+    >>> from plasmapy.formulary import plasma_frequency
+    >>> wp = plasma_frequency(n, particle, z_mean=z_mean)
+    >>> permittivity_1D_Maxwellian.lite(
+    ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
+    ... )
+    (-6.72809...e-08+5.76037...e-07j)
     """
     vth = thermal_speed(T=T, particle=particle, method="most_probable").value
     wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
