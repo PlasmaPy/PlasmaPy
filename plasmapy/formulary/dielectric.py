@@ -248,6 +248,24 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
+    See Also
+    --------
+    ~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.formulary import thermal_speed, plasma_frequency
+    >>> T = 30 * u.eV
+    >>> n = 1e18 * u.cm**-3
+    >>> particle = "Ne"
+    >>> z_mean = 8
+    >>> omega = 3.541e15  # in rad/s
+    >>> vth = thermal_speed(T=T, particle=particle).value
+    >>> wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    >>> k_wave = omega / vth
+    >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
+    (-6.72647...e-08+5.75899...e-07j)
     """
 
     # scattering parameter alpha.
