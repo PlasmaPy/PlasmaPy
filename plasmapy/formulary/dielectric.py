@@ -289,27 +289,27 @@ def permittivity_1D_Maxwellian(
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    Compute the classical dielectric permittivity for a 1D Maxwellian plasma.
+    Compute the classical dielectric permittivity for a 1D Maxwellian
+    plasma.
 
-    This function can calculate both the ion and electron permittivities.
-    No additional effects are considered (e.g. magnetic fields, relativistic
-    effects, strongly coupled regime, etc.).
+    This function can calculate both the ion and electron
+    permittivities.  No additional effects are considered (e.g.
+    magnetic fields, relativistic effects, strongly coupled regime, etc.).
 
     Parameters
     ----------
     omega : `~astropy.units.Quantity`
-        The frequency in rad/s of the electromagnetic wave propagating
+        The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
     kWave : `~astropy.units.Quantity`
-        The corresponding wavenumber, in rad/m, of the electromagnetic wave
-        propagating through the plasma. This is often modulated by the
-        dispersion of the plasma or by relativistic effects. See em_wave.py
-        for ways to calculate this.
+        The corresponding wavenumber, in rad/m, of the electromagnetic
+        wave propagating through the plasma.
 
     T : `~astropy.units.Quantity`
-        The plasma temperature — this can be either the electron or the ion
-        temperature, but should be consistent with density and particle.
+        The plasma temperature — this can be either the electron or the
+        ion temperature, but should be consistent with density and
+        particle.
 
     n : `~astropy.units.Quantity`
         The plasma density — this can be either the electron or the ion
@@ -318,7 +318,7 @@ def permittivity_1D_Maxwellian(
     particle : `str`
         The plasma particle species.
 
-    z_mean : `str`
+    z_mean : `~numbers.Real`
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 
