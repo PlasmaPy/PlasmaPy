@@ -115,27 +115,26 @@ class Test_ColdPlasmaPermittivity:
         assert S.shape == D.shape == P.shape == (50,)
 
 
-# Test values
-permitivity_1D_Maxwellian_args = [
-    # Test case 1
-    {
-        "T": 30 * 11600 * u.K,
-        "n": 1e18 * u.cm ** -3,
-        "particle": "Ne",
-        "z_mean": 8 * u.dimensionless_unscaled,
-        "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
-        "true": (-6.728092569241431e-08 + 5.760379561405176e-07j)
-        * u.dimensionless_unscaled,
-    },
-]
-
-
 class Test_permittivity_1D_Maxwellian:
     """
     Test class for `plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.
     Note: Testing of `permittivity_1D_Maxwellian_lite` is done in a
     separate test class.
     """
+    # cases to be used for the test methods
+    cases = [
+        (
+            {
+                "T": 30 * 11600 * u.K,
+                "n": 1e18 * u.cm ** -3,
+                "particle": "Ne",
+                "z_mean": 8 * u.dimensionless_unscaled,
+                "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
+            },
+            (-6.728092569241431e-08 + 5.760379561405176e-07j) * u.dimensionless_unscaled,
+        ),
+
+    ]
 
     @pytest.mark.parametrize(
         "bound_name, bound_attr",
@@ -163,24 +162,22 @@ class Test_permittivity_1D_Maxwellian:
             origin = f"{attr.__module__}.{attr.__name__}"
             assert origin == bound_origin
 
-    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
-    def test_known(self, d):
+    @pytest.mark.parametrize("kwargs, expected", cases)
+    def test_known(self, kwargs, expected):
         """
         Tests permittivity_1D_Maxwellian for expected value.
         """
 
-        kWave = d["omega"] / thermal_speed(
-            d["T"], d["particle"], method="most_probable"
+        vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
+        kwargs["kWave"] = kwargs["omega"] / vth
+
+        val = permittivity_1D_Maxwellian(**kwargs)
+        assert (
+            np.isclose(val, expected, rtol=1e-6, atol=0.0),
+            f"Permittivity value should be {expected} and not {val}.",
         )
 
-        methodVal = permittivity_1D_Maxwellian(
-            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
-        )
-        testTrue = np.isclose(methodVal, d["true"], rtol=1e-6, atol=0.0)
-        errStr = f"Permittivity value should be {d['true']} and not {methodVal}."
-        assert testTrue, errStr
-
-    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
+    @pytest.mark.parametrize("d", cases)
     def test_fail(self, d):
         """
         Tests if test_known1() would fail if we slightly adjusted the
@@ -205,7 +202,7 @@ class Test_permittivity_1D_Maxwellian:
 class Test_permittivity_1D_Maxwellian_lite:
     """Test class for `permittivity_1D_Maxwellian_lite`."""
 
-    @pytest.mark.parametrize("d", permitivity_1D_Maxwellian_args)
+    @pytest.mark.parametrize("d", Test_permittivity_1D_Maxwellian.cases)
     def test_normal_vs_lite_values(self, d):
         """
         Test that permittivity_1D_Maxwellian_lite and
@@ -213,19 +210,19 @@ class Test_permittivity_1D_Maxwellian_lite:
         the same values.
         """
 
-        vTh = thermal_speed(d["T"], d["particle"], method="most_probable")
-        kWave = d["omega"] / vTh
+        vth = thermal_speed(d["T"], d["particle"], method="most_probable")
+        k_wave = d["omega"] / vth
 
         methodVal = permittivity_1D_Maxwellian(
-            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
+            d["omega"], k_wave, d["T"], d["n"], d["particle"], d["z_mean"]
         )
 
         wp = plasma_frequency(d["n"], d["particle"], d["z_mean"])
 
         methodVal_lite = permittivity_1D_Maxwellian_lite(
             d["omega"].to(u.rad / u.s).value,
-            kWave.to(u.rad / u.m).value,
-            vTh.to(u.m / u.s).value,
+            k_wave.to(u.rad / u.m).value,
+            vth.to(u.m / u.s).value,
             wp.to(u.rad / u.s).value,
         )
 
