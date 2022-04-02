@@ -1,2 +1,3 @@
-Created lite functions for `plasmapy.formularly.dielectric.permittivity_1D_Maxwellian`
-called `plasmapy.formularly.dielectric.permittivity_1D_Maxwellian_lite`.
+Created :term:`lite-function`
+`plasmapy.formuarly.dielectric.permittivity_1D_Maxwellian_lite` for
+`plasmapy.formuarly.dielectric.permittivity_1D_Maxwellian`.
