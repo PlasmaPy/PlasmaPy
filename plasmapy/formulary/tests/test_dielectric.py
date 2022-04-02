@@ -199,31 +199,27 @@ class Test_permittivity_1D_Maxwellian:
 class Test_permittivity_1D_Maxwellian_lite:
     """Test class for `permittivity_1D_Maxwellian_lite`."""
 
-    @pytest.mark.parametrize("d", Test_permittivity_1D_Maxwellian.cases)
-    def test_normal_vs_lite_values(self, d):
+    @pytest.mark.parametrize("kwargs, expected", Test_permittivity_1D_Maxwellian.cases)
+    def test_normal_vs_lite_values(self, kwargs, expected):
         """
-        Test that permittivity_1D_Maxwellian_lite and
-        permittivity_1D_Maxwellian_lite calculate
-        the same values.
+        Test that `permittivity_1D_Maxwellian_lite` and
+        `permittivity_1D_Maxwellian` calculate the same values.
         """
 
-        vth = thermal_speed(d["T"], d["particle"], method="most_probable")
-        k_wave = d["omega"] / vth
+        wp = plasma_frequency(kwargs["n"], kwargs["particle"], kwargs["z_mean"])
+        vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
+        kwargs["kWave"] = kwargs["omega"] / vth
 
-        methodVal = permittivity_1D_Maxwellian(
-            d["omega"], k_wave, d["T"], d["n"], d["particle"], d["z_mean"]
+        val = permittivity_1D_Maxwellian(**kwargs)
+        val_lite = permittivity_1D_Maxwellian_lite(
+            kwargs["omega"].value,
+            kwargs["kWave"].to(u.rad / u.m).value,
+            vth.value,
+            wp.value,
         )
 
-        wp = plasma_frequency(d["n"], d["particle"], d["z_mean"])
-
-        methodVal_lite = permittivity_1D_Maxwellian_lite(
-            d["omega"].to(u.rad / u.s).value,
-            k_wave.to(u.rad / u.m).value,
-            vth.to(u.m / u.s).value,
-            wp.to(u.rad / u.s).value,
+        assert (
+            np.isclose(val, val_lite, rtol=1e-6, atol=0.0),
+            "'permittivity_1D_Maxwellian' and 'permittivity_1D_Maxwellian_lite' "
+            "do not agree.",
         )
-
-        testTrue = np.isclose(methodVal, methodVal_lite, rtol=1e-6, atol=0.0)
-        errStr = "permittivity_1D_Maxwellian and "
-        "permittivity_1D_Maxwellian_lite do not agree."
-        assert testTrue, errStr
