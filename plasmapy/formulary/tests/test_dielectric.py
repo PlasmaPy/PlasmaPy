@@ -177,26 +177,23 @@ class Test_permittivity_1D_Maxwellian:
             f"Permittivity value should be {expected} and not {val}.",
         )
 
-    @pytest.mark.parametrize("d", cases)
-    def test_fail(self, d):
+    @pytest.mark.parametrize("kwargs, expected", cases)
+    def test_fail(self, kwargs, expected):
         """
-        Tests if test_known1() would fail if we slightly adjusted the
+        Tests if `test_known` would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
-        kWave = d["omega"] / thermal_speed(
-            d["T"], d["particle"], method="most_probable"
-        )
+        vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
+        kwargs["kWave"] = kwargs["omega"] / vth
 
-        fail1 = d["true"] + 1e-15
-        methodVal = permittivity_1D_Maxwellian(
-            d["omega"], kWave, d["T"], d["n"], d["particle"], d["z_mean"]
+        val = permittivity_1D_Maxwellian(**kwargs)
+
+        expected += 1e-15
+        assert (
+            not np.isclose(val, expected, rtol=1e-16, atol=0.0),
+            f"Permittivity value test gives {val} and should not be "
+            f"equal to {expected}.",
         )
-        testTrue = not np.isclose(methodVal, fail1, rtol=1e-16, atol=0.0)
-        errStr = (
-            f"Permittivity value test gives {methodVal} "
-            f"and should not be equal to {fail1}."
-        )
-        assert testTrue, errStr
 
 
 class Test_permittivity_1D_Maxwellian_lite:
