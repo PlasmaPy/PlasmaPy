@@ -121,6 +121,7 @@ class Test_permittivity_1D_Maxwellian:
     Note: Testing of `permittivity_1D_Maxwellian_lite` is done in a
     separate test class.
     """
+
     # cases to be used for the test methods
     cases = [
         (
@@ -131,9 +132,9 @@ class Test_permittivity_1D_Maxwellian:
                 "z_mean": 8 * u.dimensionless_unscaled,
                 "omega": 5.635e14 * 2 * np.pi * u.rad / u.s,
             },
-            (-6.728092569241431e-08 + 5.760379561405176e-07j) * u.dimensionless_unscaled,
+            (-6.728092569241431e-08 + 5.760379561405176e-07j)
+            * u.dimensionless_unscaled,
         ),
-
     ]
 
     @pytest.mark.parametrize(
