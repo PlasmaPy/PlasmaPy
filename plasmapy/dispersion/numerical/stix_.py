@@ -12,7 +12,7 @@ from astropy.constants.si import c
 from sympy import Symbol
 from sympy.solvers import solve
 
-from plasmapy.formulary.frequencies import gyrofrequency
+from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle, ParticleList
 from plasmapy.utils.decorators import validate_quantities
 
@@ -21,13 +21,14 @@ c_si_unitless = c.value
 
 @validate_quantities(
     B={"can_be_negative": False},
+    n_i={"can_be_negative": False},
     k={"can_be_negative": False, "equivalencies": u.spectral()},
 )
 def stix(
     B: u.T,
     k: u.rad / u.m,
-    species: Particle,
-    omega_species: u.rad / u.s,
+    ions: Particle,
+    n_i: u.m ** -3,
     theta: u.rad,
 ):
     r"""
@@ -46,12 +47,12 @@ def stix(
     k : single value or 1 D array astropy `~astropy.units.Quantity`
         Value of the wavenumber in units convertible to radians / m.
 
-    species: single particle value or 1 D array of particles, ion(s) composing
+    ions: single particle value or 1 D array of particles, ion(s) composing
         the plasma as expressed by chemical symbols.
 
-    omega_species: single value or 1 D array astropy `~astropy.units.Quantity`
-        Frequency value for the associated ion in units convertible to
-        radians / s.
+    n_i: single value or 1 D array astropy `~astropy.units.Quantity`
+        Density value for the associated ion in units convertible to
+        m\ :sup:`-3`.
 
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
         Value of theta with respect to the magnetic field,
@@ -127,8 +128,8 @@ def stix(
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "k": 0.001 * u.rad / u.m,
-    ...     "species": [Particle("H+"), Particle("e-")],
-    ...     "omega_species": [4.0e5,2.0e5] * u.rad / u.s,
+    ...     "ions": [Particle("H+"), Particle("e-")],
+    ...     "n_i": [4.0e5,2.0e5] * u.m**-3,
     ...     "theta": 30 * u.deg,
     >>> }
     >>> w = stix(**inputs)
@@ -142,37 +143,40 @@ def stix(
             f"Argument 'B' must be a scalar, got array of shape {B.shape}."
         )
 
-    # validate species argument
-    if isinstance(species, (list, tuple)):
-        species = ParticleList(species)
-    elif isinstance(species, (str, Particle)):
-        species = ParticleList([species])
-    else:
-        raise TypeError(
-            f"Argument 'species' must be a string, astropy particle or "
-            f"a list of either, instead got type {type(species)}"
+    # validate ions argument
+    if not isinstance(ions, (list, tuple)):
+        ions = [ions]
+    ions = ParticleList(ions)
+
+    if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):
+        raise ValueError(f"The particle passed for 'ions' must only be positive. {failed}")
+
+    # validate n_i argument
+    if not (n_i.ndim == 0 or n_i.ndim == 1):
+        raise ValueError(
+            f"Argument 'n_i' must be a float or an array of floats,"
+            f" instead got shape of {n_i.shape}"
         )
 
-    # validate ion frequency(ies) and find dimension
-    if omega_species.ndim == 0 and len(species) == 1:
+    # find dimension and validate
+    if n_i.ndim == 0 and len(ions) == 1:
         omega_int = True
         lengths = 1
-    elif omega_species.ndim == 1 and len(species) >= 1:
+    elif n_i.ndim == 1 and len(ions) >= 1:
         omega_int = False
-        lengths = min(len(omega_species), len(species))
+        lengths = min(len(n_i), len(ions))
     else:
         raise ValueError(
-            f"Argument 'omega_ions' and 'ions' need to be the same length, "
-            f"got value of shape {len(omega_species)} and {len(species)}."
+            f"Argument 'n_i' and 'ions' need to be the same length, "
+            f"got value of shape {len(n_i)} and {len(ions)}."
         )
 
-    # validate ion argument
+    species = ions + [Particle("e-")]
+    arg_ = 0
     for i in range(lengths):
-        if type(species[i]) is not Particle:
-            raise TypeError(
-                f"Argument 'ions[i]' need to be particle of particle type "
-                f"got value of type {type(species[i])}."
-            )
+        arg_ = arg_ + n_i[i].val
+    arg_ = arg_ * u.m ** -3
+    n_i.append(arg_)
 
     # validate k argument and dimension
     k = k.squeeze()
@@ -182,13 +186,17 @@ def stix(
             f"got a value of shape {k.shape}."
         )
 
-    # validate ion frequencies
-    omega_species = omega_species.squeeze()
-    if not (omega_species.ndim == 0 or omega_species.ndim == 1):
+    # validate ion densities
+    n_i = n_i.squeeze()
+    if not (n_i.ndim == 0 or n_i.ndim == 1):
         raise TypeError(
             f"Argument 'omega_e' needs to be a single value or a single valued "
-            f"1D array astropy Quantity, got value of shape {omega_species.shape}."
+            f"1D array astropy Quantity, got value of shape {n_i.shape}."
         )
+
+    for density in n_i:
+        arg_ = plasma_frequency(density)
+        density = arg_
 
     # validate theta value
     theta = theta.squeeze()
@@ -223,19 +231,17 @@ def stix(
 
     component_frequency = np.zeros(sum_len)
     for i in range(sum_len):
-        component_frequency[i] = gyrofrequency(
-            B=B, particle=species[i], signed=True
-        ).value
+        component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
 
     if omega_int is False:
         for i in range(sum_len):
-            plasma_freq[i] = float(omega_species[i].value)
+            plasma_freq[i] = float(n_i[i].value)
     elif omega_int is True:
-        plasma_freq[0] = float(omega_species.value)
+        plasma_freq[0] = float(n_i.value)
     else:
         raise TypeError(
-            f"Argument 'omega_species', quantity type could not be determined,"
-            f"got value of shape {omega_species.shape}."
+            f"Argument 'n_i', quantity type could not be determined,"
+            f"got value of shape {n_i.shape}."
         )
 
     # Stix method implemented
@@ -248,11 +254,11 @@ def stix(
     omegas = {}
 
     for i in range(sum_len):
-        S += (plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)
-        P += (plasma_freq[i] / w) ** 2
-        D += ((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)) * (
-            component_frequency[i] / w
-        )
+        S += 0#(plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)
+        P += 0#(plasma_freq[i] / w) ** 2
+        D += 0#((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)) * (
+            #component_frequency[i] / w
+        #)
 
     R = S + D
     L = S - D

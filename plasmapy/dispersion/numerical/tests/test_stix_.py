@@ -1,5 +1,4 @@
 """Test functinality of Stix in `plasmapy.dispersion.numerical.stix_`."""
-import astropy
 import numpy as np
 import pytest
 
@@ -13,8 +12,8 @@ class TestStix:
     _kwargs_single_valued = {
         "B": 8.3e-9 * u.T,
         "k": 0.001 * u.rad / u.m,
-        "species": [Particle("e-"), Particle("H+")],
-        "omega_species": [4.0e5, 2.0e5] * u.rad / u.s,
+        "ions": [Particle("e-"), Particle("H+")],
+        "n_i": [4.0e5, 2.0e5] * u.m ** -3,
         "theta": 30 * u.deg,
     }
 
@@ -27,10 +26,10 @@ class TestStix:
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "species": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "omega_species": "wrong type"}, TypeError),
+            ({**_kwargs_single_valued, "ions": {"not": "a particle"}}, TypeError),
+            ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
             (
-                {**_kwargs_single_valued, "omega_species": 6 * u.m / u.s},
+                {**_kwargs_single_valued, "n_i": 6 * u.m / u.s},
                 u.UnitTypeError,
             ),
             ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, TypeError),
@@ -53,21 +52,21 @@ class TestStix:
                 {**_kwargs_single_valued, "k": [10, 20, 30] * u.rad / u.m},
                 {"shape": ()},
             ),
-            ({**_kwargs_single_valued, "species": ["He+", "e-"]}, {"shape": ()}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
-                    "species": ["He+"],
-                    "omega_species": [1] * u.rad / u.s,
+                    "ions": ["He+"],
+                    "n_i": [1] * u.rad / u.s,
                 },
                 {"shape": ()},
             ),
-            ({**_kwargs_single_valued, "species": ["He+", "e-"]}, {"shape": ()}),
+            ({**_kwargs_single_valued, "ions": ["He+", "e-"]}, {"shape": ()}),
             (
                 {
                     **_kwargs_single_valued,
-                    "species": ["He+", "H+"],
-                    "omega_species": [1, 2] * u.rad / u.s,
+                    "ions": ["He+", "H+"],
+                    "n_i": [1, 2] * u.rad / u.s,
                 },
                 {"shape": ()},
             ),
