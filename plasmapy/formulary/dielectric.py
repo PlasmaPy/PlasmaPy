@@ -4,9 +4,7 @@ __all__ = [
     "cold_plasma_permittivity_LRP",
     "permittivity_1D_Maxwellian",
 ]
-
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
-
 
 import numbers
 import numpy as np
@@ -14,7 +12,7 @@ import numpy as np
 from astropy import units as u
 from collections import namedtuple
 
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv
+from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv_lite
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import (
@@ -217,53 +215,65 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
 
 @preserve_signature
-def permittivity_1D_Maxwellian_lite(
-    omega: numbers.Real,
-    kWave: numbers.Real,
-    vTh: numbers.Real,
-    wp: numbers.Real,
-) -> numbers.Real:
+def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     r"""
-
-    The ":term:`lite-function`" version of
-    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`.  Performs the
-    same calculations as
-    `~plasmapy.formulary.dialectric.permittivity_1D_Maxwellian`, but is
-    intended for computational use and, thus, has data conditioning safeguards
-    removed.
+    The :term:`lite-function` version of
+    `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`.
+    Performs the same calculations as
+    `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian`, but is
+    intended for computational use and, thus, has data conditioning
+    safeguardsremoved.
 
     Parameters
     ----------
-    omega : `~numbers.Real`
-        The frequency in rad/s of the electromagnetic wave propagating
+    omega : :term:`numpy:array_like` of real positive values
+        The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
-    kWave : `~numbers.Real`
-        The corresponding wavenumber, in rad/m, of the electromagnetic wave
-        propagating through the plasma. This is often modulated by the
-        dispersion of the plasma or by relativistic effects. See em_wave.py
-        for ways to calculate this.
+    kWave : :term:`numpy:array_like` of real values
+        The corresponding wavenumber, in rad/m, of the electromagnetic
+        wave propagating through the plasma.
 
-    vTh : `~numbers.Real`
-        The thermal speed, in m/s.
+    vth : `~numbers.Real`
+        The 3D, most probable thermal speed, in m/s. (i.e. it includes
+        the factor of √2, see
+        :ref:`thermal speed notes <thermal-speed-notes>`)
 
     wp : `~numbers.Real`
         The plasma frequency, in rad/s.
 
     Returns
     -------
-    chi : `~numbers.Real`
+    chi : :term:`numpy:array_like` of complex values
         The ion or the electron dielectric permittivity of the plasma.
         This is a dimensionless quantity.
 
+    See Also
+    --------
+    ~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.formulary import thermal_speed, plasma_frequency
+    >>> T = 30 * u.eV
+    >>> n = 1e18 * u.cm**-3
+    >>> particle = "Ne"
+    >>> z_mean = 8
+    >>> omega = 3.541e15  # in rad/s
+    >>> vth = thermal_speed(T=T, particle=particle).value
+    >>> wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    >>> k_wave = omega / vth
+    >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
+    (-6.72647...e-08+5.75899...e-07j)
     """
 
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
-    alpha = np.sqrt(2) * wp / (kWave * vTh)
+    alpha = np.sqrt(2) * wp / (kWave * vth)
     # The dimensionless phase velocity of the propagating EM wave.
-    zeta = omega / (kWave * vTh)
-    return alpha ** 2 * (-1 / 2) * plasma_dispersion_func_deriv.lite(zeta)
+    zeta = omega / (kWave * vth)
+    return -0.5 * (alpha ** 2) * plasma_dispersion_func_deriv_lite(zeta)
 
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)
@@ -279,27 +289,27 @@ def permittivity_1D_Maxwellian(
     z_mean: u.dimensionless_unscaled = None,
 ) -> u.dimensionless_unscaled:
     r"""
-    Compute the classical dielectric permittivity for a 1D Maxwellian plasma.
+    Compute the classical dielectric permittivity for a 1D Maxwellian
+    plasma.
 
-    This function can calculate both the ion and electron permittivities.
-    No additional effects are considered (e.g. magnetic fields, relativistic
-    effects, strongly coupled regime, etc.).
+    This function can calculate both the ion and electron
+    permittivities.  No additional effects are considered (e.g.
+    magnetic fields, relativistic effects, strongly coupled regime, etc.).
 
     Parameters
     ----------
     omega : `~astropy.units.Quantity`
-        The frequency in rad/s of the electromagnetic wave propagating
+        The frequency, in rad/s, of the electromagnetic wave propagating
         through the plasma.
 
     kWave : `~astropy.units.Quantity`
-        The corresponding wavenumber, in rad/m, of the electromagnetic wave
-        propagating through the plasma. This is often modulated by the
-        dispersion of the plasma or by relativistic effects. See em_wave.py
-        for ways to calculate this.
+        The corresponding wavenumber, in rad/m, of the electromagnetic
+        wave propagating through the plasma.
 
     T : `~astropy.units.Quantity`
-        The plasma temperature — this can be either the electron or the ion
-        temperature, but should be consistent with density and particle.
+        The plasma temperature — this can be either the electron or the
+        ion temperature, but should be consistent with density and
+        particle.
 
     n : `~astropy.units.Quantity`
         The plasma density — this can be either the electron or the ion
@@ -308,7 +318,7 @@ def permittivity_1D_Maxwellian(
     particle : `str`
         The plasma particle species.
 
-    z_mean : `str`
+    z_mean : `~numbers.Real`
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 
@@ -342,27 +352,36 @@ def permittivity_1D_Maxwellian(
     Examples
     --------
     >>> from astropy import units as u
-    >>> from astropy.constants import c
     >>> from numpy import pi
+    >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
     >>> particle = 'Ne'
     >>> z_mean = 8 * u.dimensionless_unscaled
-    >>> vTh = thermal_speed(T, particle, method="most_probable")
+    >>> vth = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
-    >>> kWave = omega / vTh
-    >>> permittivity_1D_Maxwellian(omega, kWave, T, n, particle, z_mean)
+    >>> k_wave = omega / vth
+    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
+
+    For user convience
+    `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite`
+    is bound to this function and can be used as follows:
+
+    >>> from plasmapy.formulary import plasma_frequency
+    >>> wp = plasma_frequency(n, particle, z_mean=z_mean)
+    >>> permittivity_1D_Maxwellian.lite(
+    ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
+    ... )
+    (-6.72809...e-08+5.76037...e-07j)
     """
-    # thermal velocity
-    vTh = thermal_speed(T=T, particle=particle, method="most_probable")
-    # plasma frequency
-    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean)
+    vth = thermal_speed(T=T, particle=particle, method="most_probable").value
+    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
 
     chi = permittivity_1D_Maxwellian_lite(
-        omega.to(u.rad / u.s),
-        kWave.to(u.rad / u.m),
-        vTh.to(u.m / u.s),
-        wp.to(u.rad / u.s),
+        omega.value,
+        kWave.value,
+        vth,
+        wp,
     )
-    return chi
+    return chi * u.dimensionless_unscaled

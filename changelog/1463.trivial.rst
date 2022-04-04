@@ -1,0 +1,2 @@
+Applied automated refactorings from `Sourcery <https://sourcery.ai/>`__
+to `plasmapy.utils`.
