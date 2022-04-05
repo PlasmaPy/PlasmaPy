@@ -1,1 +1,1 @@
-Added ``toml`` to the ``tests`` category of requirements.
+Added ``tomli`` to the ``tests`` category of requirements.

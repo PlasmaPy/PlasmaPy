@@ -5,4 +5,4 @@ hypothesis
 pytest >= 5.1
 pytest-regressions
 pytest-xdist
-toml
+tomli
