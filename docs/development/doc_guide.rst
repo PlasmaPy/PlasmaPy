@@ -653,17 +653,15 @@ faithfully represent the behavior of the code.
 
    def double(x):
        """
-       Examples
-       ========
        >>> double(4)  # this line is tested that it matches the output below
        8
        """
        return 2 * x
 
-An ellipsis (``...``) can be used to denote that the actual and expected
-outputs should only be compared to the available precision. This
-capability is needed for functions in `plasmapy.formulary` that depend
-on fundamental constants from that may be updated periodically.
+An ellipsis (``...``) denotes that the actual and expected outputs
+should only be compared to the available precision. This capability is
+needed for functions in `plasmapy.formulary` that depend on fundamental
+constants that are occasionally revised.
 
 .. code-block:: python
 
