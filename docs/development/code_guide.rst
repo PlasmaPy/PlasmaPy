@@ -4,46 +4,28 @@
 Coding Guide
 ************
 
-This page describes a set of common conventions, guidelines, and
-strategies for contributing code to PlasmaPy. The goal of this guide is
-not so much to enforce a common coding style, but rather to provide a
-framework that helps us work together as a community. Having a
-consistent coding style makes it less difficult to read code written by
-a range of contributors. The particulars of the coding style do not
-matter as much as consistency.
+This page describes common conventions, guidelines, and strategies for
+contributing code to PlasmaPy. Having a shared coding style makes it
+easier to understand code written by a range of contributors. The
+purposes of this guide are to provide a common framework that helps us
+build a package together as a community and to share lessons learned by
+PlasmaPy contributors over time. The particulars of the coding style do
+not matter as much as readability and consistency.
 
 These guidelines are not rigid. There will be times when it is better to
-partially rather than completely follow these guidelines. For example,
-PlasmaPy usually follows the :pep:`8` style guide for Python code. This
-guide indicates that variable names should be lowercase, with words
-separated by underscores. However, the magnetic field is generally
-denoted in uppercase as ``B`` to follow the conventions used in plasma
-science.
-
-.. important::
-
-   These guidelines can (and should!) be refined by the community as we
-   collectively learn new practices and our shared coding style changes.
-   To propose a minor change to these guidelines, please submit a pull
-   request. To propose a significant change, please raise an issue
-   and/or bring this up at a community meeting for a discussion first.
+partially rather than completely follow these guidelines. This guide can
+(and should!) be refined by the PlasmaPy community as we collectively
+learn new practices and our shared coding style changes. Changes to this
+guide can be proposed by submitting a pull request and/or bringing the
+topic up for discussion at a community meeting.
 
 Automatic code formatters
 =========================
 
-PlasmaPy makes heavy use of automatic code formatters such as black_ and
+PlasmaPy makes use of automatic code formatters such as black_ and
 isort_. Using these tools helps us maintain a common code style without
 having to spend excessive time worrying about the formatting of a
 particular chunk of code or the order of import statements.
-
-The use of automatic code formatters can be considered analogous to the
-effects of using the `Imperius Curse <>`__ described in the novel *Harry
-Potter and the Something or Other*:
-
-   It was the most wonderful feeling. Harry felt a floating sensation as
-   every thought and worry in his head was wiped gently away, leaving
-   nothing but a vague, untraceable happiness. He stood there feeling
-   immensely relaxed, only dimly aware of everyone watching him.
 
 Names
 =====
