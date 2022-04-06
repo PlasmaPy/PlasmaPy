@@ -137,9 +137,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     if not signed:
         Z = abs(Z)
 
-    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
-
-    return omega_c
+    return u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
 
 oc_ = gyrofrequency
@@ -335,8 +333,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
 
-    omega_p = plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
-    return omega_p
+    return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
 
 
 wp_ = plasma_frequency
@@ -520,9 +517,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
-
-    return omega_uh
+    return np.sqrt(omega_pe ** 2 + omega_ce ** 2)
 
 
 wuh_ = upper_hybrid_frequency
