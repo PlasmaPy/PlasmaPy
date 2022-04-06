@@ -47,8 +47,11 @@ def stix(
     k : single value or 1 D array astropy `~astropy.units.Quantity`
         Value of the wavenumber in units convertible to radians / m.
 
-    ions: single particle value or 1 D array of particles, ion(s) composing
-        the plasma as expressed by chemical symbols.
+    ions: a single or `list` of :term:`particle-like` object(s)
+        epresentation of the ion species (e.g., ``"p"`` for protons,
+        ``"D+"`` for deuterium, ``["H+", "He+"]`` for hydrogen and
+        helium, etc.).  The charge state for each species must be
+        specified.
 
     n_i: single value or 1 D array astropy `~astropy.units.Quantity`
         Density value for the associated ion in units convertible to
