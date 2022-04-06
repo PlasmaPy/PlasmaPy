@@ -43,10 +43,11 @@ def stix(
     Parameters
     ----------
     B : `~astropy.units.Quantity`
-        Value of the magnitude of the magnetic field in units convertible
-        to :math:`T`.
-    k : single value or 1 D array astropy `~astropy.units.Quantity`
-        Value of the wavenumber in units convertible to radians / m.
+        The magnetic field magnitude in units convertible to T.
+
+    k : `~astropy.units.Quantity`, single valued or 1-D array
+        Wavenumber in units convertible to rad/m.  Either single
+        valued or 1-D array of length :math:`N`.
 
     ions: a single or `list` of :term:`particle-like` object(s)
         epresentation of the ion species (e.g., ``"p"`` for protons,
