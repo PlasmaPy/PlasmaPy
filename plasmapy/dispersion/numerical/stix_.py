@@ -58,10 +58,11 @@ def stix(
         Ion number density in units convertible to m\ :sup:`-3`.  Must
         be single valued or equal length to ``ions``.
 
-    theta: single value or 1 D array astropy `~astropy.units.Quantity`
-        Value of theta with respect to the magnetic field,
-        :math:`\cos^{-1}(k_z/k)`, must be in units convertible to
-        radians.
+    theta: `~astropy.units.Quantity`, single valued or 1-D array
+        The angle of propagation of the wave with respect to the
+        magnetic field, :math:`\cos^{-1}(k_z / k)`, in units convertible
+        to radians.  Either single valued or 1-D array of size
+        :math:`M`.
 
     Returns
     -------
