@@ -15,17 +15,37 @@ not matter as much as readability and consistency.
 These guidelines are not rigid. There will be times when it is better to
 partially rather than completely follow these guidelines. This guide can
 (and should!) be refined by the PlasmaPy community as we collectively
-learn new practices and our shared coding style changes. Changes to this
-guide can be proposed by submitting a pull request and/or bringing the
-topic up for discussion at a community meeting.
+learn new practices and our shared coding style changes. Revisions to
+this guide can be proposed by submitting a pull request and/or bringing
+the topic up for discussion at a community meeting.
 
 Automatic code formatters
 =========================
 
+PlasmaPy uses the pre-commit_ framework to automatically apply a
+consistent style using tools such as black_, isort_, and flake8_.
+
+.. code-block:: bash
+
+   pip install pre-commit
+   pre-commit install
+
+PlasmaPy uses pre-commit_ to reformat code
+
+PlasmaPy makes use of automatic code formatters and linters that are
+enabled through pre-commit_.
+
+
+
+To add a
+
+
 PlasmaPy makes use of automatic code formatters such as black_ and
-isort_. Using these tools helps us maintain a common code style without
+isort_ that are enabled through pre-commit_. Using these tools helps us maintain a common code style without
 having to spend excessive time worrying about the formatting of a
 particular chunk of code or the order of import statements.
+
+
 
 Names
 =====
