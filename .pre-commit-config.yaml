@@ -51,6 +51,7 @@ repos:
     args:
     - --nbqa-mutate
 
+
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.1.0
   hooks:
