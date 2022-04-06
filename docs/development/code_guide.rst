@@ -192,20 +192,13 @@ Equations and physical formulae
 Temperature/energy equivalency
 ------------------------------
 
-
-
 Comments
 ========
-
-
 
 * Remove commented out code before merging a pull request.
 
 Error messages
 ==============
-
-
-
 
 Coding style
 ============
@@ -265,7 +258,6 @@ Coding style
 .. note::
 
    Add the license for the google style guide, maybe?
-
 
 Dependencies
 ============

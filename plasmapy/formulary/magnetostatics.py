@@ -129,11 +129,10 @@ class GeneralWire(Wire):
             self.parametric_eq = parametric_eq
         else:
             raise ValueError("Argument parametric_eq should be a callable")
-        if t1 < t2:
-            self.t1 = t1
-            self.t2 = t2
-        else:
+        if t1 >= t2:
             raise ValueError(f"t1={t1} is not smaller than t2={t2}")
+        self.t1 = t1
+        self.t2 = t2
         self.current = current.value
         self._current_u = current.unit
 
@@ -407,7 +406,7 @@ class CircularWire(Wire):
         self._current_u = current.unit
 
         # parametric equation
-        # find other two axises in the disc plane
+        # find other two axes in the disc plane
         z = np.array([0, 0, 1])
         axis_x = np.cross(z, self.normal)
         axis_y = np.cross(self.normal, axis_x)
@@ -423,18 +422,17 @@ class CircularWire(Wire):
         self.axis_y = axis_y
 
         def curve(t):
-            if isinstance(t, np.ndarray):
-                t = np.expand_dims(t, 0)
-                axis_x_mat = np.expand_dims(axis_x, 1)
-                axis_y_mat = np.expand_dims(axis_y, 1)
-                return self.radius * (
-                    np.matmul(axis_x_mat, np.cos(t)) + np.matmul(axis_y_mat, np.sin(t))
-                ) + np.expand_dims(self.center, 1)
-            else:
+            if not isinstance(t, np.ndarray):
                 return (
                     self.radius * (np.cos(t) * axis_x + np.sin(t) * axis_y)
                     + self.center
                 )
+            t = np.expand_dims(t, 0)
+            axis_x_mat = np.expand_dims(axis_x, 1)
+            axis_y_mat = np.expand_dims(axis_y, 1)
+            return self.radius * (
+                np.matmul(axis_x_mat, np.cos(t)) + np.matmul(axis_y_mat, np.sin(t))
+            ) + np.expand_dims(self.center, 1)
 
         self.curve = curve
 
