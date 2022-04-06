@@ -676,7 +676,7 @@ constants that are occasionally revised.
 
 To skip the execution of a line of code in a docstring during tests, end
 the line with ``# doctest: +SKIP``. This is appropriate for lines where
-the output is expected to vary or where an exception is raised.
+the output varies or an exception is raised.
 
 .. code-block:: python
 
