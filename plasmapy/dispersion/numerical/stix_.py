@@ -54,9 +54,9 @@ def stix(
         helium, etc.).  The charge state for each species must be
         specified.
 
-    n_i: single value or 1 D array astropy `~astropy.units.Quantity`
-        Density value for the associated ion in units convertible to
-        m\ :sup:`-3`.
+    n_i: `~astropy.units.Quantity`, single valud or 1-D array
+        Ion number density in units convertible to m\ :sup:`-3`.  Must
+        be single valued or equal length to ``ions``.
 
     theta: single value or 1 D array astropy `~astropy.units.Quantity`
         Value of theta with respect to the magnetic field,
