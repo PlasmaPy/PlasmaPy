@@ -85,10 +85,11 @@ def stix(
 
     Notes
     -----
-    The cold plasma function is defined by :cite:t:`stringer:1963`, this is equation  8
-    of :cite:t:`bellan:2012` and is presented below. It is assumed that the zero-order
-    quantities are uniform in space and static in time; while the first-order quantities
-    are assumed to vary as :math:`e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)
+    The cold plasma function is defined by :cite:t:`stringer:1963`,
+    this is equation 8 of :cite:t:`bellan:2012` and is presented below.
+    It is assumed that the zero-order quantities are uniform in space
+    and static in time; while the first-order quantities are assumed to
+    vary as :math:`e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)
     \right ]}` :cite:t:`stix:1992`.
 
     .. math::
