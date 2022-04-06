@@ -96,8 +96,10 @@ def stix(
     \right ]}` :cite:t:`stix:1992`.
 
     .. math::
-        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4} - [RL\sin^{2}(\theta) +
-        PS(1 + \cos^{2}(\theta))](ck/\omega)^{2} + PRL = 0
+        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4}
+            - [
+                RL\sin^{2}(\theta) + PS(1 + \cos^{2}(\theta))
+            ](ck/\omega)^{2} + PRL = 0
 
     where,
 
