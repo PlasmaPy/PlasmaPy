@@ -645,7 +645,7 @@ Doctests
 ~~~~~~~~
 
 PlasmaPy's test suite runs code examples in docstrings to verify that
-the expected output in in the docstring matches the actual output from
+the expected output in the docstring matches the actual output from
 running the code. These doctests_ verify that docstring examples
 faithfully represent the behavior of the code.
 
@@ -660,14 +660,10 @@ faithfully represent the behavior of the code.
        """
        return 2 * x
 
-Many of the functions in `plasmapy.formulary` depend on fundamental
-constants. Because the recommended values for these constants are
-periodically updated in `astropy.constants`, the output of these
-functions may change slightly. Similarly, when using floating point
-arithmetic, there will occasionally be a slight difference in the final
-digit due to `roundoff error`_. In situations like these, an ellipsis
-(``...``) may be used to denote that the actual and expected outputs
-should only be compared to the available precision.
+An ellipsis (``...``) can be used to denote that the actual and expected
+outputs should only be compared to the available precision. This
+capability is needed for functions in `plasmapy.formulary` that depend
+on fundamental constants from that may be updated periodically.
 
 .. code-block:: python
 
