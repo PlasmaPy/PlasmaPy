@@ -108,7 +108,9 @@ def stix(
         P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
 
     .. math::
-        D = \sum \frac{\omega_{c\sigma}}{\omega} \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2} }
+        D = \sum_{\sigma}
+            \frac{\omega_{c\sigma}}{\omega}
+            \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2}}
 
     The Cold plasma assumption,
     Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
