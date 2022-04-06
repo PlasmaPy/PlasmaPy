@@ -32,12 +32,13 @@ def stix(
     theta: u.rad,
 ):
     r"""
-    Calculate the cold plasma function solution by using :cite:t:`bellan:2012`,
-    this uses the numerical method to find (:math:`\omega`) dispersion
-    relation provided by :cite:t:`stringer:1963`. This dispersion relation also
-    assumes a uniform magnetic field :math:`\mathbf{B_0}`, theta is the
-    angle between the magnetic and the normal surface of the wave
-    vector. For more information see the **Notes** section below.
+    Calculate the cold plasma function solution by using
+    :cite:t:`bellan:2012`, this uses the numerical method to find
+    (:math:`\omega`) dispersion relation provided by
+    :cite:t:`stringer:1963`. This dispersion relation also assumes
+    uniform magnetic field :math:`\mathbf{B_0}`, theta is the angle
+    between the magnetic and the normal surface of the wave vector.
+    For more information see the **Notes** section below.
 
     Parameters
     ----------
