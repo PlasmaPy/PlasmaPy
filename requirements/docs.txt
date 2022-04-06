@@ -4,11 +4,12 @@
 docutils
 ipykernel
 ipywidgets
+jinja2 != 3.1
 nbsphinx
 numpydoc
 pillow
 pygments >= 2.11.0
-sphinx >= 3.2.0
+sphinx >= 4.4
 sphinx-changelog
 sphinx-copybutton
 sphinx-gallery

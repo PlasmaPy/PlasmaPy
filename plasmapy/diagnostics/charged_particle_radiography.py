@@ -132,7 +132,7 @@ class Tracker:
         # self.grid is the grid object
         self.grid = grid
         # self.grid_arr is the grid positions in si units. This is created here
-        # so that it isn't continously called later
+        # so that it isn't continuously called later
         self.grid_arr = grid.grid.to(u.m).value
 
         self.verbose = verbose
@@ -593,7 +593,7 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
                    requires that `nparticles` be a perfect square. If it is not,
@@ -686,7 +686,7 @@ class Tracker:
                 - 'monte-carlo': velocities will be chosen randomly,
                     such that the flux per solid angle is uniform.
 
-                - 'uniform': velocities will be distrbuted such that,
+                - 'uniform': velocities will be distributed such that,
                    left unpreturbed,they will form a uniform pattern
                    on the detection plane.
 
@@ -980,7 +980,7 @@ class Tracker:
         ----------
 
         dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertable to seconds.
+            An explicitly set timestep in units convertible to seconds.
             Setting this optional keyword overrules the adaptive time step
             capability and forces the use of this timestep throughout. If a tuple
             of timesteps is provided, the adaptive timstep will be clamped
@@ -1311,7 +1311,7 @@ def synthetic_radiograph(
         and maximum values included in both the horizontal and vertical
         directions in the detector plane coordinates. Shape is
         ``((hmin, hmax), (vmin, vmax))``. If not specified, the size will be
-        set to include all particles on the detector. Units must be convertable
+        set to include all particles on the detector. Units must be convertible
         to meters.
 
     bins : array of integers, shape ``(2)``
@@ -1383,7 +1383,7 @@ def synthetic_radiograph(
     elif not isinstance(size, u.Quantity):
         raise TypeError(
             "Argument `size` must be an astropy.units.Quantity object with "
-            "units convertable to meters."
+            "units convertible to meters."
         )
     elif not size.unit.is_equivalent(u.m):
         raise ValueError("Argument `size` must have units convertible to meters.")

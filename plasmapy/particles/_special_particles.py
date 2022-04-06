@@ -171,10 +171,7 @@ def create_particles_dict() -> Dict[str, dict]:
         ("antineutron", "antineutron"),
     ]
 
-    particles = dict()
-
-    for particle in particle_zoo.everything:
-        particles[particle] = dict()
+    particles = {particle: {} for particle in particle_zoo.everything}
 
     for symbol, name in symbols_and_names:
         particles[symbol]["name"] = name

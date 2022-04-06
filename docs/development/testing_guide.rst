@@ -719,7 +719,7 @@ should be balanced with each other rather than absolute principles.
 .. _Codecov: https://about.codecov.io
 .. _`code coverage`: https://en.wikipedia.org/wiki/Code_coverage
 .. _`coverage.py`: https://coverage.readthedocs.io
-.. _`create a pull request`: https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
+.. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
 .. _`f-strings`: https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings
 .. _`grouped into classes`: https://docs.pytest.org/en/latest/getting-started.html#group-multiple-tests-in-a-class
@@ -737,6 +737,6 @@ should be balanced with each other rather than absolute principles.
 .. _`test-driven development`: https://en.wikipedia.org/wiki/Test-driven_development
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.readthedocs.io/en/latest/config.html?highlight=py37#tox-environments
+.. _`tox environments`: https://tox.wiki/en/latest/config.html#tox-environments
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com/
