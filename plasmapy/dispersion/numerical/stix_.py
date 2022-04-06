@@ -84,7 +84,8 @@ def stix(
         If the number of frequencies for each ion isn't the same.
 
     `NoConvergence`
-        If a solution cannot be found and the convergence failed to root.
+        If a solution cannot be found and the convergence failed to
+        root.
 
     Notes
     -----
