@@ -20,6 +20,28 @@ global _recursion_level
 _recursion_level = 0
 
 
+class NullPointError(Exception):
+    pass
+
+
+class NullPointWarning(UserWarning):
+    pass
+
+
+class NonZeroDivergence(NullPointError):
+    def __init__(self):
+        super().__init__(
+            "Gauss's law for magnetism does not hold for the provided magnetic field."
+        )
+
+
+class MultipleNullPoints(NullPointWarning):
+    def __init__(self):
+        super().__init__(
+            "Multiple null points suspected. Trilinear method may not work as intended."
+        )
+
+
 class Point:
     """
     Abstract class for defining a point in 3D space.
@@ -946,7 +968,7 @@ def _trilinear_analysis(vspace, cell):
 
     # Check Grid Resolution
     if len(BxByEndpoints) == 0 and len(BxBzEndpoints) == 0 and len(ByBzEndpoints) == 0:
-        warnings.warn("Possible Lack of Grid Resolution")
+        raise MultipleNullPoints()
         return False
 
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
@@ -959,31 +981,29 @@ def _trilinear_analysis(vspace, cell):
             index = 1
         elif curve_name == "z":
             index = 2
-        if (
-            np.sign(
-                tlApprox(
-                    curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
-                )[index]
-            )
-            * np.sign(
-                tlApprox(
-                    curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
-                )[index]
-            )
-            > 0
+
+        first_endpoint = tlApprox(
+            curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
+        )[index]
+        second_endpoint = tlApprox(
+            curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
+        )[index]
+        if np.isclose(first_endpoint, 0, atol=_EQUALITY_ATOL) or np.isclose(
+            second_endpoint, 0, atol=_EQUALITY_ATOL
         ):
+            return True
+        if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
             return False
         else:
             return True
 
-    if (
-        (not endpoint_sign_check(BxByEndpoints, "z"))
-        or (not endpoint_sign_check(BxBzEndpoints, "y"))
-        or (not endpoint_sign_check(ByBzEndpoints, "x"))
-    ):
-        return False
-    else:
+    A = endpoint_sign_check(BxByEndpoints, "z")
+    B = endpoint_sign_check(BxBzEndpoints, "y")
+    C = endpoint_sign_check(ByBzEndpoints, "x")
+    if A and B and C:
         return True
+    else:
+        return False
 
 
 def _locate_null_point(vspace, cell, n, err):
@@ -1126,18 +1146,21 @@ def _locate_null_point(vspace, cell, n, err):
             Bx0 = np.array([locx, locy, locz])
             Bx0 = Bx0.reshape(3, 1)
             prev_norm = np.linalg.norm(x0)
-            # Too many null points if the jacobian is zero
+            # Too many null points if the determinant of the jacobian is zero
             if np.isclose(
                 np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
             ):
-                warnings.warn("Multiple null points")
-                return None
+                warnings.warn(
+                    "Multiple null points suspected. Trilinear method may not work as intended.",
+                    MultipleNullPoints,
+                )
+
             # Adjust position
             x0 = np.subtract(
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
-            if np.abs(norm - prev_norm) < err and in_bound(x0):
+            if np.abs((norm - prev_norm) / (prev_norm)) < err and in_bound(x0):
                 return x0
         if in_bound(x0):
             warnings.warn("Max Iterations Reached")
@@ -1204,7 +1227,8 @@ def _classify_null_point(vspace, cell, loc):
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
-        return None
+        raise NonZeroDivergence()
+    eigen_vals, eigen_vectors = np.linalg.eig(M)
     R = -1.0 * np.linalg.det(M)
     Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
@@ -1289,11 +1313,15 @@ def null_point_find(
     v_arr=None,
     w_arr=None,
     maxiter=500,
-    err=1e-10,
+    err=1e-4,
 ):
     r"""
     Returns an array of nullpoint object, representing
     the nullpoints of the given vector space.
+
+    .. note::
+       Please note that this functionality is still under development
+       and the API may change in future releases.
 
     Parameters
     ----------
@@ -1372,11 +1400,15 @@ def uniform_nullpoint_find(
     func: Callable,
     precision=[0.05, 0.05, 0.05],
     maxiter=500,
-    err=1e-10,
+    err=1e-4,
 ):
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
     the null points of the given vector space.
+
+    .. note::
+       Please note that this functionality is still under development
+       and the API may change in future releases.
 
     Parameters
     ----------
@@ -1401,6 +1433,15 @@ def uniform_nullpoint_find(
         A 1 by 3 array containing the approximate precision values for each dimension,
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
+
+    maxiter: int
+        The maximum iterations of the Newton-Raphson method.
+        The default value is 500.
+
+    err: float
+        The threshold/error that determines if convergence has occured
+        using the Newton-Raphson method.
+        The default value is ``1e-4``.
 
     Returns
     -------

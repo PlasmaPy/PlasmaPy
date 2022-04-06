@@ -1,6 +1,7 @@
 """
 Tests for the null point finder class defined in `plasmapy.analysis.nullpoint`.
 """
+import math
 import numpy as np
 import pytest
 
@@ -14,7 +15,11 @@ from plasmapy.analysis.nullpoint import (
     _trilinear_jacobian,
     _vector_space,
     _vspace_iterator,
+    MultipleNullPoints,
+    NonZeroDivergence,
     null_point_find,
+    NullPointError,
+    NullPointWarning,
     trilinear_approx,
     uniform_nullpoint_find,
 )
@@ -353,9 +358,9 @@ def test_null_point_find8():
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
     nullpoint8_args = {
-        "x_range": [-6, 6],
+        "x_range": [5, 6],
         "y_range": [-6, 6],
-        "z_range": [-6, 6],
+        "z_range": [5, 6],
         "precision": [0.3, 0.3, 0.3],
         "func": vspace_func_7,
     }
@@ -369,3 +374,71 @@ def test_null_point_find8():
     assert type2 == "Spiral null"
     assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
+
+
+# Testing null point types
+def field1(x, y, z):
+    return [x, 2 * y, -3 * z]
+
+
+def test_null_point_find9():
+    nullpoint9_args = {
+        "x_range": [-0.5, 0.5],
+        "y_range": [-0.5, 0.5],
+        "z_range": [-0.5, 0.5],
+        "precision": [0.03, 0.03, 0.03],
+        "func": field1,
+    }
+    npoints = uniform_nullpoint_find(**nullpoint9_args)
+    assert (npoints[0].type) == "Improper radial null"
+
+
+#####
+def field2(x, y, z):
+    return [y * z, -x * z, x * y]
+
+
+def test_null_point_find10():
+    nullpoint10_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.03, 0.03, 0.03],
+        "func": field2,
+    }
+    npoints = uniform_nullpoint_find(**nullpoint10_args)
+
+    assert (npoints[0].type) == "Continuous X-points"
+
+
+def field3(x, y, z):
+    return [y * z, x * z, x * y]
+
+
+def test_null_point_find11():
+    nullpoint11_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.03, 0.03, 0.03],
+        "func": field3,
+    }
+    npoints = uniform_nullpoint_find(**nullpoint11_args)
+
+    assert (npoints[0].type) == "Continuous potential X-points"
+
+
+def field4(x, y, z):
+    return [x, y, z]
+
+
+def test_null_point_find12():
+    nullpoint12_args = {
+        "x_range": [-0.1, 0.1],
+        "y_range": [-0.1, 0.1],
+        "z_range": [-0.1, 0.1],
+        "precision": [0.03, 0.03, 0.03],
+        "func": field4,
+    }
+    with pytest.raises(NonZeroDivergence):
+        npoints = uniform_nullpoint_find(**nullpoint12_args)
