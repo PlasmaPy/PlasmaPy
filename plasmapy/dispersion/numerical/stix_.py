@@ -66,9 +66,11 @@ def stix(
     Returns
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
-        Presents the wavenumber used to find the value(s) of the cold
-        plasma frequencies, (omega), dispersion solver(s) and then the
-        solutions themselves.
+        A dictionary of computed wave frequencies in units rad/s.  The
+        dictionary contains three keys: ``"fast_mode"`` for the fast
+        mode, ``"alfven_mode"`` for the Alfvén mode, and
+        ``"acoustic_mode"`` for the ion-acoustic mode.  The value for
+        each key will be a :math:`N x M` array.
 
     Raises
     ------
