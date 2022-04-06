@@ -117,9 +117,9 @@ def stix(
             \frac{\omega_{c\sigma}}{\omega}
             \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2}}
 
-    The Cold plasma assumption,
-    Following on section 1.6 of :cite:t:`bellan:2012` expresses following derived quantities
-    as follows.
+    The Cold plasma assumption, Following on section 1.6 of
+    :cite:t:`bellan:2012` expresses following derived quantities as
+    follows.
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
