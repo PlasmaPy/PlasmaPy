@@ -110,7 +110,7 @@ def stix(
         S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
 
     .. math::
-        P = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} }
+        P = 1 - \sum_{\sigma} \frac{\omega^{2}_{p\sigma}}{\omega^{2}}
 
     .. math::
         D = \sum_{\sigma}
