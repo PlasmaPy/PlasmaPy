@@ -1,3 +1,0 @@
-Set the maximum version of ``click`` to be less than ``8.1`` in the
-pre-commit_ configuration for compatibility with black_ version
-``21.12b0``.
