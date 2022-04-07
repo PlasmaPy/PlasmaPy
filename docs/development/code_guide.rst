@@ -296,7 +296,42 @@ Temperature/energy equivalency
 Comments
 ========
 
+Comments are not inherently good. As code evolves, an unmaintained
+comment may become outdated or get separated from the section of code
+that it was meant to describe. Cryptic comments may end up confusing
+contributors. In the worst case, an unmaintained comment may contain
+inaccurate or misleading information. At the same time, a well-placed
+comment can prevent future frustrations.
+
+.. Need to keep working on this section a bit more...
+
+* Refactor code to make it more readable, rather than explaining how it
+  works.
+
+* When a comment is used to define the variable, try renaming the
+  variable to encode its meaning and intent.
+
+* Use comments to communicate information that you wish you knew before
+  starting to work on a particular section of code, including
+  information that took some time to learn.
+
+* Use comments to communicate information that the code cannot,
+  such as why an alternative approach was *not* taken.
+
+* Include enough contextual information that the comment will ideally
+  make sense even if it is displaced from the code it was originally
+  describing.
+
+* Use comments to include references to books or articles that describe
+  the equation, algorithm, or software design pattern that is being
+  implemented.
+
+* Include enough contextual information in the comment for a new user
+  to be able to understand it.
+
 * Remove commented out code before merging a pull request.
+
+* When updating code, be sure to update the comments too!
 
 Error messages
 ==============
