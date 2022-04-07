@@ -30,7 +30,7 @@ repos:
     - python
 
 - repo: https://github.com/psf/black
-  rev: 22.3.0
+  rev: 21.12.b0
   hooks:
   - id: black
 
