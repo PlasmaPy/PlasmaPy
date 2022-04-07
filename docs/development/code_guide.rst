@@ -22,8 +22,6 @@ pull request or bringing up an idea at a community meeting.
 Integrated development environments
 ===================================
 
-.. Move this section to a page on getting set up to contribute?
-
 An `integrated development environment`_ (IDE) is an application that
 includes multiple tools needed for software development, such as a
 source code editor, test automation tools, and a debugger. Commonly used
@@ -33,10 +31,10 @@ IDEs usually take some time and effort to learn, but eventually make
 code development much easier. If are learning how to make a contribution
 to an open source project for the first time, you might find it easier
 to use a plain text editor that you are familiar with (e.g., Notepad++,
-Sublime Text, emacs, or vi/vim) fo the time being. Alternatively, you
-can do a web search for documentation or videos on :samp:`how to
-contribute to a GitHub project with {name of IDE}`. In the long run, we
-highly recommend taking the time to learn how to use an IDE.
+Sublime Text, emacs, or vi/vim) for the moment. Alternatively, you can
+find tutorials or videos online for how to contribute to an open source
+project with most common IDEs. In the long run, taking the time to learn
+how to use an IDE is well worth it.
 
 .. _Atom: https://atom.io
 .. _integrated development environment: https://en.wikipedia.org/wiki/Integrated_development_environment
@@ -97,6 +95,7 @@ commands again. Alternatively, the |pre-commit|_ hooks can be skipped
 using ``git commit --no-verify`` instead.
 
 The |pre-commit|_ configuration is given in |.pre-commit-config.yaml|_.
+
 After adding or updating |pre-commit|_ hooks, run the following command to
 apply the changes to all files.
 
@@ -190,14 +189,27 @@ purpose of code.
 Imports
 =======
 
-* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_ hook.
+* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_
+  hook.
 
-* Use absolute imports (e.g., ``from plasmapy.particles import
-  Particle``) rather than relative imports (e.g., ``from ..particles
-  import Particle``).
+* Use absolute imports (e.g., ``from plasmapy.particles import Particle``)
+  rather than relative imports (e.g., ``from ..particles import Particle``).
 
 * Avoid using star imports (e.g., ``from package.subpackage import *``)
   except in special situations.
+
+* Importing a package, subpackage, or module rather than an individual
+  code object has the benefit that the namespace provides helpful
+  contextual information that can make code more understandable. For
+  example, using ``json.loads`` is more understandable than using only
+  ``loads``.
+
+  For frequently used objects (e.g., |Particle|), using the full
+  namespace will increase the clutter of the code without providing
+  commensurately more information. This is also true for objects used as
+  type hint annotations.  For example, ``Optional[Union[Real, Complex]``
+  is more understandable than
+  ``typing.Optional[typing.Union[numbers.Real, numbers.Complex]]``.
 
 * Use standard abbreviations for imported packages.
 
@@ -223,31 +235,26 @@ Units
      >>> 5 * u.m / u.s
      <Quantity 5. m / s>
 
-* Use SI units within PlasmaPy, except if there is strong justification
-  otherwise.
+  Non-standard unit conversions can be made using |equivalencies|.
 
-  * Example notebooks may occasionally use non-SI units.
+* Use SI units within PlasmaPy, except when there is a strong reason to
+  use CGS or other units.
 
-* Use |Unit| annotations for arguments and return values.
+  * Example notebooks should occasionally use non-SI units.
 
-  .. code-block::
-
-     @validate_quantities(
-         n={"can_be_negative": False},
-         validations_on_return={"equivalencies": u.dimensionless_angles()},
-     )
-     @particles.particle_input(require="charged")
-     def inertial_length(n: u.m ** -3, ...) -> u.m:
-         ...
-
-* Use the `~plasmapy.utils.decorators.validators.validate_quantities`
-  decorator to validate |Quantity| arguments and return values.
+* Use |Unit| annotations with the |validate_quantities| decorator to
+  validate |Quantity| arguments and return values.
 
   .. code-block:: python
 
      from plasmapy.utils.decorators.validators import validate_quantities
 
-     @validate_quantities
+     @validate_quantities(
+        n={"can_be_negative": False},
+        validations_on_return={"equivalencies": u.dimensionless_angles()},
+     )
+     def inertial_length(n: u.m ** -3, ...) -> u.m:
+         ...
 
 * Avoid using electron-volts as a unit of temperature within PlasmaPy,
   but allow arguments provided to a function
@@ -260,6 +267,11 @@ Units
   performance.
 
 .. _performance tips: https://docs.astropy.org/en/stable/units/index.html#performance-tips
+
+Particles
+=========
+
+* Use the |particle_input| decorator...
 
 Equations and physical formulae
 ===============================
@@ -344,11 +356,62 @@ Coding style
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
   these parameters should be make :term:`keyword-only`.
 
+* When designing a class, a comparison for equality should return
+  `False` rather than raise an exception.
+
 .. note::
 
    Add the license for the google style guide, maybe?
 
-Dependencies
+Requirements
 ============
 
-* Follow the
+* Package requirements are specified in multiple locations that need to
+  be updated simultaneously.
+
+  - The |requirements|_ directory contains multiple text files that
+    contain build, installation, testing, documentation, and extra
+    requirements.
+
+  - The ``build-system.requires`` section of |pyproject.toml|_ includes
+    the requirements for building PlasmaPy.  This section should mirror
+    :file:`requirements/build.txt`.
+
+  - |setup.cfg|_ includes sections for the install, docs, tests, and
+    extra requirements that should mirror the corresponding files in
+    the |requirements|_ directory.
+
+  - :file:`requirements/environment.yml` contains a Conda_ environment
+    for PlasmaPy.
+
+  - The :file:`tox.ini` file contains a testing environment for the
+    minimal dependencies.
+
+* Each release of `plasmapy` should support all minor versions of
+  Python that have been released in the prior 42 months, and all minor
+  versions of `numpy` that have been released in the last 24 months.
+  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
+  the scientific Python ecosystem, and has been adopted by upstream
+  packages such as `numpy`, `matplotlib`, and `astropy`.
+
+  - Tools like pyupgrade_ may be used to automatically upgrade the code
+    base to the minimum supported version of Python for the next
+    release.
+
+* In general, it is preferable to support minor releases of dependencies
+  from the last ≲ 24 months, unless there is a new feature in a
+  dependency that would be beneficial for `plasmapy` development.
+
+* Avoid setting maximum requirements such as ``sphinx <= 2.4.4`` because
+  this can lead to version conflicts when PlasmaPy is installed
+  alongside other packages. Instead it is preferable to update
+  `plasmapy` to be compatible with the newest versions of each of its
+  dependencies.
+
+* Minor versions of Python are generally released in October of each
+  year. However, it may take a few months before packages like NumPy_
+  and Numba_ become compatible with the newest minor version of Python_.
+
+.. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _pyupgrade: https://github.com/asottile/pyupgrade
