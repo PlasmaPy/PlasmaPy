@@ -108,7 +108,8 @@ def stix(
         \mathbf{n} = \frac{c \mathbf{k}}{\omega}
 
     .. math::
-        S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega^{2}_{c\sigma}}
+        S = 1 - \sum \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
+            \omega^{2}_{c\sigma}}
 
     .. math::
         P = 1 - \sum_{\sigma} \frac{\omega^{2}_{p\sigma}}{\omega^{2}}
@@ -116,7 +117,8 @@ def stix(
     .. math::
         D = \sum_{\sigma}
             \frac{\omega_{c\sigma}}{\omega}
-            \frac{\omega^{2}_{p\sigma}}{\omega^{2} - \omega_{c\sigma}^{2}}
+            \frac{\omega^{2}_{p\sigma}}{\omega^{2} -
+            \omega_{c\sigma}^{2}}
 
     The Cold plasma assumption, Following on section 1.6 of
     :cite:t:`bellan:2012` expresses following derived quantities as
@@ -156,8 +158,8 @@ def stix(
 
     if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):
         raise ValueError(
-            f"Particle(s) passed to 'ions' must be a positively charged "
-            f"ion. The following particle(s) is(are) not allowed "
+            f"Particle(s) passed to 'ions' must be a positively charged"
+            f" ion. The following particle(s) is(are) not allowed "
             f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
         )
 
@@ -204,7 +206,7 @@ def stix(
             f"Argument 'k' can not a or have negative value"
         )
     if np.isscalar(k.value):
-        k = np.array() * u.rad / u.m
+        k = np.array(k) * u.rad / u.m
 
     # validate theta value
     theta = theta.squeeze()
@@ -214,12 +216,17 @@ def stix(
             f"Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {k.shape}."
         )
+    elif theta.ndim == 1 and theta.size != len(k):
+        raise ValueError(
+            f"Argument 'theta' and 'k' need to be the same length, got"
+            f" value of shape {len(k)} and {len(theta.shape)}."
+        )
 
     wps = []
     wcs = []
 
     for par, dens in zip(species, densities.tolist()):
-        wps.append(plasma_frequency(B=B, particle=par).value)
+        wps.append(plasma_frequency(n=dens, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
     wps = np.array(wps)
     wcs = np.array(wcs)
@@ -233,7 +240,7 @@ def stix(
 
     omegas = {}
 
-    for i in range(len(dens)):
+    for i in range(len(species)):
         S += 0  # (wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)
         P += 0  # (wps[i] / w) ** 2
         D += 0  # ((wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)) * (
