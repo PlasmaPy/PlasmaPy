@@ -135,6 +135,7 @@
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _pre-commit: https://pre-commit.com
+.. _`pre-commit.ci`: https://pre-commit.ci
 .. _pydocstyle: https://www.pydocstyle.org
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org
