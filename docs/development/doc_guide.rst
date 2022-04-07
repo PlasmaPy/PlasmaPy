@@ -342,7 +342,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize Sphinx_ behavior. The documentation for Sphinx_ lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/sphinx_rtd_overrides.css|_ file contains `style
+The |docs/_static/css|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -364,7 +364,7 @@ extensions:
 * |sphinx_copybutton|_ to add a "copy" button for code blocks.
 * |sphinx_gallery.load_style|_ for using sphinx-gallery styles.
 * |IPython.sphinxext.ipython_console_highlighting|_.
-* |sphinx_changelog|_ for rendering `towncrier`_ changelogs.
+* |sphinx_changelog|_ for rendering towncrier_ changelogs.
 * |sphinx-hoverxref|_ for showing floating windows on cross references
   of the documentation.
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
@@ -943,7 +943,7 @@ Narrative documentation guidelines
   ``automodapi``, or the like, then it is required to create a stub file
   for that particular subpackage or module in |docs/api_static|_ . For
   example, the stub file for `plasmapy.particles.atomic` is placed at
-  :file:`docs/api_static/plasampy.particles.atomic.rst` and its contents
+  :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
   look like:
 
   .. code-block:: rst

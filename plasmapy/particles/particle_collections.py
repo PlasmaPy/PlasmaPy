@@ -4,6 +4,7 @@ __all__ = ["ionic_levels", "ParticleList"]
 
 import astropy.units as u
 import collections
+import contextlib
 import numpy as np
 
 from numbers import Integral
@@ -148,10 +149,8 @@ class ParticleList(collections.UserList):
         if isinstance(other, ParticleList):
             return other
 
-        try:
+        with contextlib.suppress(TypeError, InvalidParticleError):
             return ParticleList(other)
-        except (InvalidParticleError, TypeError):
-            pass
 
         try:
             return ParticleList([other])
