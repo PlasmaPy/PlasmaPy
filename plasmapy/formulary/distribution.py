@@ -861,9 +861,8 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
         v = v.to(u.m / u.s)
         # catching case where drift velocities have default values, they
         # need to be assigned units
-        if v_drift == 0:
-            if not isinstance(v_drift, u.quantity.Quantity):
-                v_drift = v_drift * u.m / u.s
+        if v_drift == 0 and not isinstance(v_drift, u.quantity.Quantity):
+            v_drift = v_drift * u.m / u.s
         # checking units of drift velocities
         v_drift = v_drift.to(u.m / u.s)
         # convert temperature to kelvin
