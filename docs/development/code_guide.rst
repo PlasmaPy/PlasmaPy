@@ -308,6 +308,42 @@ comment can prevent future frustrations.
 * Refactor code to make it more readable, rather than explaining how it
   works.
 
+* When a comment is used as the header for a section of code, consider
+  taking that code and making a function out of it. For example, we
+  might start out with a function that includes multiple lines of code
+  for each step.
+
+  .. code-block:: python
+
+     def analyze_experiment(data):
+         # Step 1: calibrate the data
+         ...
+         # Step 2: normalize the data
+         ...
+
+  We can apply the extract function refactoring pattern by creating a
+  separate function for each of these steps.
+
+  .. code-block:: python
+
+     def calibrate_data(data):
+         ...
+         return calibrated_data
+
+     def normalized_data(data):
+         ...
+         return normalized_data
+
+     def analyze_experiment(data):
+         calibrated_data = calibrate_data(data)
+         normalized_data = normalize_data(calibrated_data)
+
+.. discuss advantages and tradeoffs of the extract method refactoring pattern
+
+.. disadvantages:
+    - might not work cleanly if the steps are highly interrelated
+    - the separate steps are displaced from each other
+
 * When a comment is used to define the variable, try renaming the
   variable to encode its meaning and intent.
 
