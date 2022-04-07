@@ -4,11 +4,14 @@ __all__ = [
     "Point",
     "NullPoint",
     "null_point_find",
+    "uniform_nullpoint_find",
     "trilinear_approx",
 ]
 
 import numpy as np
 import warnings
+
+from typing import Callable
 
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-15
@@ -1015,7 +1018,7 @@ def _locate_null_point(vspace, cell, n, err):
         of the Newton-Raphson method is repeated.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
 
     Returns
@@ -1154,19 +1157,57 @@ def _locate_null_point(vspace, cell, n, err):
     return null_point_find(**null_point_args)
 
 
+def _vspace_iterator(vspace, maxiter=500, err=1e-10):
+    r"""
+    Returns an array of null point objects, representing
+    the null points of the given vector space.
+
+    Parameters
+    ----------
+    vspace: array_like
+        The vector space as constructed by the ``_vector_space`` function which is
+        A 1 by 3 array with the first element containing the coordinates,
+        the second element containing the vector values,
+        and the third element containing the delta values for each dimension.
+
+    maxiter: int
+        The maximum iterations of the Newton-Raphson method.
+        The default value is 500.
+
+    err: float
+        The threshold/error that determines if convergence has occurred
+        using the Newton-Raphson method.
+        The default value is ``1e-10``.
+
+    Returns
+    -------
+    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
+        representing the nullpoints of the given vector space.
+
+    """
+    nullpoints = []
+    for i in range(len(vspace[0][0]) - 1):
+        for j in range(len(vspace[0][0][0]) - 1):
+            for k in range(len(vspace[0][0][0][0]) - 1):
+                if _reduction(vspace, [i, j, k]):
+                    if _trilinear_analysis(vspace, [i, j, k]):
+                        loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
+                        if loc is not None:
+                            p = NullPoint(loc, "N/A")
+                            if p not in nullpoints:
+                                nullpoints.append(p)
+    return nullpoints
+
+
 def null_point_find(
     x_arr=None,
     y_arr=None,
     z_arr=None,
-    x_range=[0, 1],
-    y_range=[0, 1],
-    z_range=[0, 1],
     u_arr=None,
     v_arr=None,
     w_arr=None,
-    func=(lambda x, y, z: [x, y, z]),
-    precision=[0.05, 0.05, 0.05],
-    MAX_ITERATIONS=500,
+    maxiter=500,
     err=1e-10,
 ):
     r"""
@@ -1190,18 +1231,6 @@ def null_point_find(
         If not given, then range values are used to construct a
         uniform array on that interval.
 
-    x_range: array_like
-        A 1 by 2 array containing the range of x-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
-
-    y_range: array_like
-        A 1 by 2 array containing the range of y-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
-
-    z_range: array_like
-        A 1 by 2 array containing the range of z-values for the vector spaces.
-        If not given, the default interval [0,1] is assumed.
-
     u_arr: array_like
         A 3D array containing the x-component of the vector values for the vector
         space. If not given, the vector values are generated over the vector space
@@ -1217,6 +1246,71 @@ def null_point_find(
         space. If not given, the vector values are generated over the vector space
         using the function func.
 
+    maxiter: int
+        The maximum iterations of the Newton-Raphson method.
+        The default value is 500.
+
+    err: float
+        The threshold/error that determines if convergence has occurred
+        using the Newton-Raphson method.
+        The default value is ``1e-10``.
+
+
+    Returns
+    -------
+    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
+        representing the nullpoints of the given vector space.
+
+    Notes
+    -----
+    This method is described by :cite:t:`haynes:2007`.
+
+    """
+    # Constructing the vspace
+    vspace = _vector_space(
+        x_arr,
+        y_arr,
+        z_arr,
+        None,
+        None,
+        None,
+        u_arr,
+        v_arr,
+        w_arr,
+        None,
+        None,
+    )
+    return _vspace_iterator(vspace, maxiter, err)
+
+
+def uniform_nullpoint_find(
+    x_range,
+    y_range,
+    z_range,
+    func: Callable,
+    precision=[0.05, 0.05, 0.05],
+    maxiter=500,
+    err=1e-10,
+):
+    r"""
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
+    the null points of the given vector space.
+
+    Parameters
+    ----------
+    x_range: array_like
+        A 1 by 2 array containing the range of x-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
+    y_range: array_like
+        A 1 by 2 array containing the range of y-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
+    z_range: array_like
+        A 1 by 2 array containing the range of z-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
     func: <class 'function'>
         A function that takes in 3 arguments, respectively representing a x, y, and z
         coordinate of a point and returns the vector value for that point in the form
@@ -1227,50 +1321,28 @@ def null_point_find(
         in the case where uniform arrays are being used.
         The default value is [0.05, 0.05, 0.05].
 
-    MAX_ITERATIONS: int
-        The maximum iterations of the Newton-Raphson method.
-        The default value is 500.
-
-    err: float
-        The threshold/error that determines if convergence has occured
-        using the Newton-Raphson method.
-        The default value is ``1e-10``.
-
-
     Returns
     -------
     array_like of `~plasmapy.analysis.nullpoint.NullPoint`
-        An array of NullPoint objects representing the nullpoints
-        of the given vector space.
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects representing
+        the nullpoints of the given vector space.
 
     Notes
     -----
     This method is described by :cite:t:`haynes:2007`.
+
     """
-    # Constructing the vspace
     vspace = _vector_space(
-        x_arr,
-        y_arr,
-        z_arr,
+        None,
+        None,
+        None,
         x_range,
         y_range,
         z_range,
-        u_arr,
-        v_arr,
-        w_arr,
+        None,
+        None,
+        None,
         func,
         precision,
     )
-
-    nullpoints = []
-    for i in range(len(vspace[0][0]) - 1):
-        for j in range(len(vspace[0][0][0]) - 1):
-            for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):
-                    if _trilinear_analysis(vspace, [i, j, k]):
-                        loc = _locate_null_point(vspace, [i, j, k], MAX_ITERATIONS, err)
-                        if loc is not None:
-                            p = NullPoint(loc, "N/A")
-                            if p not in nullpoints:
-                                nullpoints.append(p)
-    return nullpoints
+    return _vspace_iterator(vspace, maxiter, err)

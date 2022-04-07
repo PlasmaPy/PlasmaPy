@@ -84,7 +84,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Antoine Tavant <https://github.com/antoinetavant>`__
 * `Thomas Ulrich <https://github.com/Elfhelm>`__
 * `Thomas Varnish <https://github.com/tvarnish>`__
-* `Anthony Vo <https://github.com/anthony-vo>`__
+* `Tien Vo <https://github.com/tien-vo>`__
 * `Sixue Xu <https://github.com/hzxusx>`__
 * `Carol Zhang <https://github.com/carolyz>`__
 * `Cody Skinner <https://github.com/cskinner74>`__
@@ -98,6 +98,7 @@ in parentheses are `ORCID author identifiers <https://orcid.org>`__.
 * `Nicolas Lequette <https://github.com/Quettle>`__
 * `Tomas Stinson <https://github.com/14tstinson>`__
 * `Anna Lanteri <https://github.com/alanteriBW>`__
+* `Leo Murphy <https://github.com/LeoMurphyWM24>`__
 
 
 This list contains contributors to PlasmaPy's core package and vision
