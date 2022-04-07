@@ -43,14 +43,12 @@ highly recommend taking the time to learn how to use an IDE.
 .. _PyCharm: https://www.jetbrains.com/pycharm
 .. _Visual Studio Code: https://code.visualstudio.com
 
-Automatic code formatters
-=========================
+Pre-commit
+==========
 
-.. Move this to a page on getting set up to contribute?
-
-PlasmaPy uses the pre-commit_ framework to perform validations and
+PlasmaPy uses the |pre-commit|_ framework to perform validations and
 automatically apply a consistent style to code contributions. Using
-pre-commit_ helps us find errors and shortens code reviews. PlasmaPy's
+|pre-commit|_ helps us find errors and shortens code reviews. PlasmaPy's
 pre-commit suite includes hooks such as:
 
 * ``check-ast`` to verify that the Python code is valid.
@@ -59,14 +57,15 @@ pre-commit suite includes hooks such as:
 * isort_ to sort imports.
 * nbqa_ to format notebooks.
 
-Most of the changes required by pre-commit_ can be applied
+Most of the changes required by |pre-commit|_ can be applied
 automatically. To apply these changes in a pull request, add a comment
 that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
 the changes`_ from GitHub to your computer with ``git pull``.
 
+.. _nbqa: https://nbqa.readthedocs.io
 .. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
 
-To enable pre-commit_ locally, open a terminal, enter the directory of
+To enable |pre-commit|_ locally, open a terminal, enter the directory of
 the PlasmaPy repository, and run:
 
 .. code-block:: bash
@@ -75,8 +74,8 @@ the PlasmaPy repository, and run:
    pre-commit install
 
 Now suppose we added some trailing whitespace to :file:`some_file.py`
-and attempted to commit it. If pre-commit_ has been installed, then the
-``trailing-whitespace`` hook will cause pre-commit_ to fail while
+and attempted to commit it. If |pre-commit|_ has been installed, then
+the ``trailing-whitespace`` hook will cause |pre-commit|_ to fail while
 modifying :file:`some_file.py` to remove the trailing whitespace.
 
 .. code-block:: console
@@ -89,16 +88,16 @@ modifying :file:`some_file.py` to remove the trailing whitespace.
    - files were modified by this hook
 
 At this point it will be necessary to run these two commands again to
-commit the changes. The changes made by pre-commit_ will be unstaged and
-thus could be seen by running ``git diff``. Sometimes pre-commit_ will
+commit the changes. The changes made by |pre-commit|_ will be unstaged and
+thus could be seen by running ``git diff``. Sometimes |pre-commit|_ will
 not be able to automatically fix the files, such as when there are
 syntax errors in Python code. In these cases, the files will need to be
 changed manually before running the ``git add`` and ``git commit``
-commands again. Alternatively, the pre-commit_ hooks can be skipped
-using :samp:`git commit --no-verify"` instead.
+commands again. Alternatively, the |pre-commit|_ hooks can be skipped
+using ``git commit --no-verify`` instead.
 
-The pre-commit_ configuration is given in |.pre-commit-config.yaml|_.
-After adding or updating pre-commit_ hooks, run the following command to
+The |pre-commit|_ configuration is given in |.pre-commit-config.yaml|_.
+After adding or updating |pre-commit|_ hooks, run the following command to
 apply the changes to all files.
 
 .. code-block:: bash
@@ -191,7 +190,7 @@ purpose of code.
 Imports
 =======
 
-* PlasmaPy uses isort_ to sort import statements via a pre-commit_ hook.
+* PlasmaPy uses isort_ to sort import statements via a |pre-commit|_ hook.
 
 * Use absolute imports (e.g., ``from plasmapy.particles import
   Particle``) rather than relative imports (e.g., ``from ..particles
