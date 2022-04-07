@@ -24,7 +24,7 @@ then that role is used for cross-referencing the declared item.  For example,
 """
 from sphinx.application import Sphinx
 
-from docs.plasmapy_sphinx.directives import confval, event
+from . import confval, event
 
 
 def setup(app: Sphinx) -> None:

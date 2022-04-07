@@ -20,7 +20,7 @@ from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
 from typing import Any, Dict, List, Union
 
-from docs.plasmapy_sphinx.utils import templates_dir
+from ..utils import templates_dir
 
 if False:
     # noqa
@@ -400,8 +400,8 @@ class GenDocsFromAutomodsumm:
                   :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
         """
 
-        from docs.plasmapy_sphinx.autodoc.automodapi import AutomodapiOptions
-        from docs.plasmapy_sphinx.automodsumm.core import AutomodsummOptions
+        from ..autodoc.automodapi import AutomodapiOptions
+        from .core import AutomodsummOptions
 
         documented = []  # type: List[AutomodsummEntry]
 

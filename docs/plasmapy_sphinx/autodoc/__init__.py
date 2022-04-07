@@ -57,7 +57,7 @@ to control the default behavior Sphinx and Sphinx extension packages like
 """
 from sphinx.application import Sphinx
 
-from docs.plasmapy_sphinx.autodoc import automodapi
+from . import automodapi
 
 
 def setup(app: Sphinx):

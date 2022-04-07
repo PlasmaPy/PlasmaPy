@@ -67,7 +67,7 @@ The Rundown
 
 from sphinx.application import Sphinx
 
-from docs.plasmapy_sphinx import autodoc, automodsumm, directives, utils
+from . import autodoc, automodsumm, directives, utils
 
 
 def setup(app: Sphinx):
