@@ -137,9 +137,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
     if not signed:
         Z = abs(Z)
 
-    omega_c = u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
-
-    return omega_c
+    return u.rad * (Z * e * np.abs(B) / m).to(1 / u.s)
 
 
 oc_ = gyrofrequency
@@ -249,7 +247,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     z_mean : `~numbers.Real`, optional
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  Typically, the charge state will be
-        dervied from the ``particle`` argument, but this keyword will
+        derived from the ``particle`` argument, but this keyword will
         override that behavior.
 
     Returns
@@ -305,7 +303,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     >>> plasma_frequency(1e19*u.m**-3, 'e-', to_hz=True)
     <Quantity 2.83930...e+10 Hz>
 
-    For user convienence
+    For user convenience
     `~plasmapy.formulary.frequencies.plasma_frequency_lite` is bound to
     this function and can be used as follows.
 
@@ -335,8 +333,7 @@ def plasma_frequency(n: u.m ** -3, particle: Particle, z_mean=None) -> u.rad / u
     except Exception:
         raise ValueError(f"Invalid particle, {particle}, in plasma_frequency.")
 
-    omega_p = plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
-    return omega_p
+    return plasma_frequency_lite(n=n, mass=m, z_mean=Z) * u.rad / u.s
 
 
 wp_ = plasma_frequency
@@ -407,7 +404,7 @@ def lower_hybrid_frequency(B: u.T, n_i: u.m ** -3, ion: Particle) -> u.rad / u.s
     :math:`ω_{ce}` is the electron gyrofrequency, and
     :math:`ω_{pi}` is the ion plasma frequency.
 
-    The lower hybrid frequency consitutes a resonance for electromagnetic
+    The lower hybrid frequency constitutes a resonance for electromagnetic
     waves in magnetized plasmas, namely for the X-mode. These are waves
     with their wave electric field being perpendicular to the background
     magnetic field. For the lower hybrid frequency, ion and electron
@@ -520,9 +517,7 @@ def upper_hybrid_frequency(B: u.T, n_e: u.m ** -3) -> u.rad / u.s:
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
-    omega_uh = np.sqrt(omega_pe ** 2 + omega_ce ** 2)
-
-    return omega_uh
+    return np.sqrt(omega_pe ** 2 + omega_ce ** 2)
 
 
 wuh_ = upper_hybrid_frequency

@@ -343,7 +343,7 @@ class AbstractFitFunction(ABC):
     def root_solve(self, x0):
         """
         Solve for the root of the fit function (i.e. :math:`f(x_r) = 0`).  This
-        mehtod used `scipy.optimize.fsolve` to find the function roots.
+        method used `scipy.optimize.fsolve` to find the function roots.
 
         Parameters
         ----------
@@ -1052,7 +1052,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             `AbstractFitFunction`.
 
         *kwargs
-            Not needed.  This is to ensure signature compability with
+            Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
         Returns

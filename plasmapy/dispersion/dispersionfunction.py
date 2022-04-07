@@ -109,7 +109,7 @@ def plasma_dispersion_func(
     >>> plasma_dispersion_func(-1.52+0.47j)
     (0.6088888957234254+0.33494583882874024j)
 
-    For user convience
+    For user convenience
     `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_lite`
     is bound to this function and can be used as follows:
 
@@ -227,7 +227,7 @@ def plasma_dispersion_func_deriv(
     >>> plasma_dispersion_func_deriv(-1.52+0.47j)
     (0.165871331498228...+0.445879788059350...j)
 
-    For user convience
+    For user convenience
     `~plasmapy.dispersion.dispersionfunction.plasma_dispersion_func_deriv_lite`
     is bound to this function and can be used as follows:
 

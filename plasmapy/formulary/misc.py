@@ -43,14 +43,7 @@ def _grab_charge(ion: Particle, z_mean=None):
         of ``ion``.
 
     """
-    if z_mean is None:
-        # warnings.warn("No z_mean given, defaulting to atomic charge",
-        #               PhysicsWarning)
-        Z = particles.charge_number(ion)
-    else:
-        # using average ionization provided by user
-        Z = z_mean
-    return Z
+    return particles.charge_number(ion) if z_mean is None else z_mean
 
 
 @validate_quantities(
@@ -117,8 +110,7 @@ def Bohm_diffusion(T_e: u.K, B: u.T) -> u.m ** 2 / u.s:
         The Bohm diffusion coefficient in meters squared per second.
 
     """
-    D_B = k_B * T_e / (16 * e * B)
-    return D_B
+    return k_B * T_e / (16 * e * B)
 
 
 DB_ = Bohm_diffusion
