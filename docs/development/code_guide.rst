@@ -322,7 +322,8 @@ comment can prevent future frustrations.
          ...
 
   We can apply the extract function refactoring pattern by creating a
-  separate function for each of these steps.
+  separate function for each of these steps. The name of each function
+  can often be very close to the comment.
 
   .. code-block:: python
 
@@ -340,9 +341,22 @@ comment can prevent future frustrations.
 
 .. discuss advantages and tradeoffs of the extract method refactoring pattern
 
+.. advantages:
+    - can get to shorter functions that do one thing with no side effects
+    - more readable code
+    - more reusable code
+    - easier to test the multiple smaller functions
+    - for each function, need to keep fewer things in our brain
+    - final function does not need to change if the low level details change
+    - reduces need for comments
+
 .. disadvantages:
-    - might not work cleanly if the steps are highly interrelated
-    - the separate steps are displaced from each other
+    - the separate steps are displaced from each other, so it can be
+      harder to see how the implementation details work with each other
+
+.. caveats
+    - might not work cleanly if the steps are highly coupled (i.e. if
+      intermediate variables are used for each step).
 
 * When a comment is used to define the variable, try renaming the
   variable to encode its meaning and intent.
