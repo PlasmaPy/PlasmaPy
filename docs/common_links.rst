@@ -57,6 +57,12 @@
 
 .. |ParticleTracker| replace:: :class:`~plasmapy.simulation.particletracker.ParticleTracker`
 
+.. --------------
+.. plasmapy.utils
+.. --------------
+
+.. |validate_quantities| replace:: :func:`~plasmapy.utils.decorators.validators.validate_quantities`
+
 .. ------------------
 .. NumPy replacements
 .. ------------------
@@ -197,6 +203,12 @@
 
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`requirements`: https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements
+.. |requirements| replace:: :file:`requirements`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
