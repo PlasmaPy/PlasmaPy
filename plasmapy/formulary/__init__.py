@@ -6,6 +6,8 @@ __all__ = []
 __aliases__ = []
 __lite_funcs__ = []
 
+import contextlib
+
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
 from plasmapy.formulary.dielectric import *
@@ -52,15 +54,11 @@ for modname in (
     except KeyError:  # coverage: ignore
         continue
 
-    try:
+    with contextlib.suppress(AttributeError):
         __aliases__.extend(obj.__aliases__)
-    except AttributeError:
-        pass
 
-    try:
+    with contextlib.suppress(AttributeError):
         __lite_funcs__.extend(obj.__lite_funcs__)
-    except AttributeError:
-        pass
 
 __aliases__ = list(sorted(set(__aliases__)))
 __lite_funcs__ = list(sorted(set(__lite_funcs__)))
