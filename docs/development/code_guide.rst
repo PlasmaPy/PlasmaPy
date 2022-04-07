@@ -235,7 +235,7 @@ Units
      >>> 5 * u.m / u.s
      <Quantity 5. m / s>
 
-  Non-standard unit conversions can be made using |equivalencies|.
+  Non-standard unit conversions can be made using equivalencies_.
 
 * Use SI units within PlasmaPy, except when there is a strong reason to
   use CGS or other units.
