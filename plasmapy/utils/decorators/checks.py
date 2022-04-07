@@ -18,6 +18,7 @@ import warnings
 
 from astropy import units as u
 from astropy.constants import c
+from astropy.units.equivalencies import Equivalency
 from functools import reduce
 from operator import add
 from typing import Any, Dict, List, Tuple, Union
@@ -28,14 +29,6 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
-
-try:
-    from astropy.units.equivalencies import Equivalency
-except ImportError:
-    # TODO: remove once we have dependency Astropy >= 3.2.1
-    # astropy defined the Equivalency class in v3.2.1
-    class Equivalency:
-        pass
 
 
 class CheckBase:
@@ -264,10 +257,7 @@ class CheckValues(CheckBase):
                     out_checks[param.name][v_name] = v_default
 
         # Does `self.checks` indicate arguments not used by f?
-        missing_params = [
-            param for param in set(self.checks.keys()) - set(out_checks.keys())
-        ]
-        if len(missing_params) > 0:
+        if missing_params := list(set(self.checks) - set(out_checks)):
             params_str = ", ".join(missing_params)
             warnings.warn(
                 PlasmaPyWarning(
@@ -311,17 +301,7 @@ class CheckValues(CheckBase):
         ckeys.remove("none_shall_pass")
         ckeys = ("none_shall_pass",) + tuple(ckeys)
         for ckey in ckeys:
-            if ckey == "none_shall_pass":
-                if arg is None and arg_checks[ckey]:
-                    break
-                elif arg is None:
-                    raise ValueError(f"{valueerror_msg} Nones.")
-
-            elif ckey == "can_be_negative":
-                if not arg_checks[ckey] and np.any(arg < 0):
-                    raise ValueError(f"{valueerror_msg} negative numbers.")
-
-            elif ckey == "can_be_complex":
+            if ckey == "can_be_complex":
                 if not arg_checks[ckey] and np.any(np.iscomplexobj(arg)):
                     raise ValueError(f"{valueerror_msg} complex numbers.")
 
@@ -333,9 +313,19 @@ class CheckValues(CheckBase):
                 if not arg_checks["can_be_nan"] and np.any(np.isnan(arg)):
                     raise ValueError(f"{valueerror_msg} NaNs.")
 
+            elif ckey == "can_be_negative":
+                if not arg_checks[ckey] and np.any(arg < 0):
+                    raise ValueError(f"{valueerror_msg} negative numbers.")
+
             elif ckey == "can_be_zero":
                 if not arg_checks[ckey] and np.any(arg == 0):
                     raise ValueError(f"{valueerror_msg} zeros.")
+
+            elif ckey == "none_shall_pass":
+                if arg is None and arg_checks[ckey]:
+                    break
+                elif arg is None:
+                    raise ValueError(f"{valueerror_msg} Nones.")
 
 
 class CheckUnits(CheckBase):
@@ -1387,7 +1377,7 @@ def _check_relativistic(V, funcname, betafrac=0.05):
     except Exception:
         raise u.UnitConversionError(errmsg)
 
-    beta = np.max(np.abs((V_over_c)))
+    beta = np.max(np.abs(V_over_c))
 
     if beta == np.inf:
         raise RelativityError(f"{funcname} is yielding an infinite velocity.")

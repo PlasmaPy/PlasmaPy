@@ -245,7 +245,7 @@ def test_add_particle_list_and_particle(various_particles):
     """
     new_particle_list = various_particles + electron
     assert new_particle_list[-1] == electron
-    assert new_particle_list[0:-1] == various_particles
+    assert new_particle_list[:-1] == various_particles
     assert isinstance(new_particle_list, ParticleList)
 
 

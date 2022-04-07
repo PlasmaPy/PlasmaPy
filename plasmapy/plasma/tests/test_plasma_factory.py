@@ -15,7 +15,7 @@ def h5(request):
     h5.close()
 
 
-class TestPlasma(object):
+class TestPlasma:
     def test_patters(self):
         # Input data whose specific subclass cannot be known
         generic = plasmapy.plasma.Plasma(blablobleh="spam")

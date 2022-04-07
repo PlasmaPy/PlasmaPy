@@ -916,7 +916,7 @@ def get_electron_temperature(
     if bimaxwellian:
         max_exp_bias = np.max(exponential_section.bias)
         min_exp_bias = np.min(exponential_section.bias)
-        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - max_exp_bias)
+        x0 = min_exp_bias + 2 / 3 * (max_exp_bias - min_exp_bias)
 
         initial_guess = [x0.to(u.V).value, 0.6, 2, 1]
 
@@ -939,9 +939,9 @@ def get_electron_temperature(
 
     # Obtain the plasma parameters from the fit
     if not bimaxwellian:
-        slope = fit[2]
+        T0 = fit[2]
 
-        T_e = slope ** -1 * u.eV
+        T_e = T0 * u.eV
     else:
         x0, y0 = fit[0], fit[1]
         T0, Delta_T = [fit[2], fit[3]]
