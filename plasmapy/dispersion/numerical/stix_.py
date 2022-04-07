@@ -25,11 +25,11 @@ c_si_unitless = c.value
     k={"can_be_negative": False, "equivalencies": u.spectral()},
 )
 def stix(
-        B: u.T,
-        k: u.rad / u.m,
-        ions: Particle,
-        n_i: u.m ** -3,
-        theta: u.rad,
+    B: u.T,
+    k: u.rad / u.m,
+    ions: Particle,
+    n_i: u.m ** -3,
+    theta: u.rad,
 ):
     r"""
     Calculate the cold plasma function solution by using
@@ -174,13 +174,13 @@ def stix(
             f"Argument 'n_i' and 'ions' need to be the same length, got"
             f" value of shape {len(ions)} and {len(n_i.shape)}."
         )
-    
+
     n_i = n_i.value
     if n_i.ndim == 0:
         n_i = np.array([n_i] * len(ions))
     elif n_i.size == 1:
         n_i = np.repeat(n_i, len(ions))
-        
+
     species = ions + [Particle("e-")]
     densities = np.zeros(n_i.size + 1)
     densities[:-1] = n_i
@@ -202,9 +202,7 @@ def stix(
             f"got a value of shape {k.shape}."
         )
     if np.any(k <= 0):
-        raise ValueError(
-            f"Argument 'k' can not a or have negative value"
-        )
+        raise ValueError(f"Argument 'k' can not a or have negative value")
     if np.isscalar(k.value):
         k = np.array(k) * u.rad / u.m
 
@@ -230,7 +228,7 @@ def stix(
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
     wps = np.array(wps)
     wcs = np.array(wcs)
-    
+
     # Stix method implemented
     w = Symbol("w")
 
@@ -258,7 +256,7 @@ def stix(
 
     # solve the stix equation for single k value or an array
     for i in range(len(k)):
-        eq = A * ((c.value*k[i] / w) ** 4) - B * ((c.value*k[i] / w) ** 2) + C
+        eq = A * ((c.value * k[i] / w) ** 4) - B * ((c.value * k[i] / w) ** 2) + C
 
         sol = solve(eq, w, warn=True)
 
