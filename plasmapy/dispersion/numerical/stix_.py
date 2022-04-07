@@ -25,11 +25,11 @@ c_si_unitless = c.value
     k={"can_be_negative": False, "equivalencies": u.spectral()},
 )
 def stix(
-    B: u.T,
-    k: u.rad / u.m,
-    ions: Particle,
-    n_i: u.m ** -3,
-    theta: u.rad,
+        B: u.T,
+        k: u.rad / u.m,
+        ions: Particle,
+        n_i: u.m ** -3,
+        theta: u.rad,
 ):
     r"""
     Calculate the cold plasma function solution by using
@@ -69,10 +69,8 @@ def stix(
     -------
     omegas : Dict[`str`, `~astropy.units.Quantity`]
         A dictionary of computed wave frequencies in units rad/s.  The
-        dictionary contains three keys: ``"fast_mode"`` for the fast
-        mode, ``"alfven_mode"`` for the Alfvén mode, and
-        ``"acoustic_mode"`` for the ion-acoustic mode.  The value for
-        each key will be a :math:`N x M` array.
+        dictionary contains keys for each wave number, this will return
+        an array  of value :math:`K x 4`.
 
     Raises
     ------
@@ -151,46 +149,48 @@ def stix(
 
     """
 
-    # validate B argument
-    if B.ndim != 0:
-        raise ValueError(
-            f"Argument 'B' must be a scalar, got array of shape {B.shape}."
-        )
-
     # validate ions argument
     if not isinstance(ions, (list, tuple)):
         ions = [ions]
     ions = ParticleList(ions)
 
     if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):
-        raise ValueError(f"The particle passed for 'ions' must only be positive. {failed}")
+        raise ValueError(
+            f"Particle(s) passed to 'ions' must be a positively charged "
+            f"ion. The following particle(s) is(are) not allowed "
+            f"{[ion for ion, fail in zip(ions, failed) if not fail]}"
+        )
 
     # validate n_i argument
-    if not (n_i.ndim == 0 or n_i.ndim == 1):
+    if n_i.ndim not in (0, 1):
         raise ValueError(
-            f"Argument 'n_i' must be a float or an array of floats,"
-            f" instead got shape of {n_i.shape}"
+            f"Argument 'n_i' must be a single valued or a 1D array of "
+            f"size 1 or {len(ions)}, instead got shape of {n_i.shape}"
         )
-
-    # find dimension and validate
-    if n_i.ndim == 0 and len(ions) == 1:
-        omega_int = True
-        lengths = 1
-    elif n_i.ndim == 1 and len(ions) >= 1:
-        omega_int = False
-        lengths = min(len(n_i), len(ions))
-    else:
+    elif n_i.ndim == 1 and n_i.size != len(ions):
         raise ValueError(
-            f"Argument 'n_i' and 'ions' need to be the same length, "
-            f"got value of shape {len(n_i)} and {len(ions)}."
+            f"Argument 'n_i' and 'ions' need to be the same length, got"
+            f" value of shape {len(ions)} and {len(n_i.shape)}."
         )
-
+    
+    n_i = n_i.value
+    if n_i.ndim == 0:
+        n_i = np.array([n_i] * len(ions))
+    elif n_i.size == 1:
+        n_i = np.repeat(n_i, len(ions))
+        
     species = ions + [Particle("e-")]
-    arg_ = 0
-    for i in range(lengths):
-        arg_ = arg_ + n_i[i].val
-    arg_ = arg_ * u.m ** -3
-    n_i.append(arg_)
+    densities = np.zeros(n_i.size + 1)
+    densities[:-1] = n_i
+    densities[-1] = np.sum(n_i * ions.charge_number)
+
+    # validate B argument
+    B = B.squeeze()
+    if B.ndim != 0:
+        raise ValueError(
+            f"Argument 'B' must be single valued and not an array of"
+            f" shape  {B.shape}."
+        )
 
     # validate k argument and dimension
     k = k.squeeze()
@@ -199,65 +199,31 @@ def stix(
             f"Argument 'k' needs to be a single value or a 1D array astropy Quantity,"
             f"got a value of shape {k.shape}."
         )
-
-    # validate ion densities
-    n_i = n_i.squeeze()
-    if not (n_i.ndim == 0 or n_i.ndim == 1):
-        raise TypeError(
-            f"Argument 'omega_e' needs to be a single value or a single valued "
-            f"1D array astropy Quantity, got value of shape {n_i.shape}."
+    if np.any(k <= 0):
+        raise ValueError(
+            f"Argument 'k' can not a or have negative value"
         )
-
-    for density in n_i:
-        arg_ = plasma_frequency(density)
-        density = arg_
+    if np.isscalar(k.value):
+        k = np.array() * u.rad / u.m
 
     # validate theta value
     theta = theta.squeeze()
     theta = theta.to(u.radian)
-    if not (theta.ndim == 0):
+    if theta.ndim not in (0, 1):
         raise TypeError(
-            f"Argument 'theta' needs to be a single value astropy Quantity,"
-            f"got value of shape {theta.shape}."
+            f"Argument 'theta' needs to be a single value or 1D array "
+            f" astropy Quantity, got array of shape {k.shape}."
         )
 
-    # validate k argument and find the dimension
-    k_dim = k.ndim
-    if k_dim == 0:
-        ck = np.zeros(1)
-        val = k * c_si_unitless
-        ck[0] = val.value
-    elif k_dim == 1:
-        ck = np.zeros(len(k))
-        for i in range(len(k)):
-            val = k[i] * c_si_unitless
-            ck[i] = val.value
-    else:
-        raise TypeError(
-            f"Argument 'k' needs to be a single value or 1D array astropy Quantity,"
-            f"got value of shape {k.shape}."
-        )
+    wps = []
+    wcs = []
 
-    # Generate frequencies from the given ions
-    sum_len = lengths
-
-    plasma_freq = np.zeros(sum_len)
-
-    component_frequency = np.zeros(sum_len)
-    for i in range(sum_len):
-        component_frequency[i] = gyrofrequency(B=B, particle=ions[i], signed=True).value
-
-    if omega_int is False:
-        for i in range(sum_len):
-            plasma_freq[i] = float(n_i[i].value)
-    elif omega_int is True:
-        plasma_freq[0] = float(n_i.value)
-    else:
-        raise TypeError(
-            f"Argument 'n_i', quantity type could not be determined,"
-            f"got value of shape {n_i.shape}."
-        )
-
+    for par, dens in zip(species, densities.tolist()):
+        wps.append(plasma_frequency(B=B, particle=par).value)
+        wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
+    wps = np.array(wps)
+    wcs = np.array(wcs)
+    
     # Stix method implemented
     w = Symbol("w")
 
@@ -267,12 +233,12 @@ def stix(
 
     omegas = {}
 
-    for i in range(sum_len):
-        S += 0#(plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)
-        P += 0#(plasma_freq[i] / w) ** 2
-        D += 0#((plasma_freq[i] ** 2) / (w ** 2 + component_frequency[i] ** 2)) * (
-            #component_frequency[i] / w
-        #)
+    for i in range(len(dens)):
+        S += 0  # (wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)
+        P += 0  # (wps[i] / w) ** 2
+        D += 0  # ((wps[i] ** 2) / (w ** 2 + wcs[i] ** 2)) * (
+        # wcs[i] / w
+        # )
 
     R = S + D
     L = S - D
@@ -284,8 +250,8 @@ def stix(
     print("Note: Solution computation time may vary.")
 
     # solve the stix equation for single k value or an array
-    for i in range(len(ck)):
-        eq = A * ((ck[i] / w) ** 4) - B * ((ck[i] / w) ** 2) + C
+    for i in range(len(k)):
+        eq = A * ((c.value*k[i] / w) ** 4) - B * ((c.value*k[i] / w) ** 2) + C
 
         sol = solve(eq, w, warn=True)
 
@@ -296,7 +262,7 @@ def stix(
             sol_omega.append(val)
 
         omegas[i] = sol_omega
-        val = ck[i] / c_si_unitless
+        val = k[i]
         omegas[val] = omegas.pop(i)
 
     return omegas

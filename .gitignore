@@ -140,3 +140,4 @@ auto_examples
 plasmapy/version.py
 tags
 docs/notebooks/*.md
+plasmapy/dispersion/numerical/main.py
