@@ -4,54 +4,115 @@
 Coding Guide
 ************
 
-This page describes common conventions, guidelines, and strategies for
+This guide describes common conventions, guidelines, and strategies for
 contributing code to PlasmaPy. Having a shared coding style makes it
 easier to understand code written by a range of contributors. The
-purposes of this guide are to provide a common framework that helps us
-build a package together as a community and to share lessons learned by
-PlasmaPy contributors over time. The particulars of the coding style do
-not matter as much as readability and consistency.
+purpose of this guide is not to provide a set of rigid guidelines that
+must be adhered to, but rather to provide a common framework that helps
+us to develop the package together as a community. The particulars of
+the coding style are not as important as readability, maintainability,
+and consistency. There will be times when it is better to partially
+rather than completely follow these guidelines.
 
-These guidelines are not rigid. There will be times when it is better to
-partially rather than completely follow these guidelines. This guide can
-(and should!) be refined by the PlasmaPy community as we collectively
-learn new practices and our shared coding style changes. Revisions to
-this guide can be proposed by submitting a pull request and/or bringing
-the topic up for discussion at a community meeting.
+This guide can (and should!) be regularly refined by the PlasmaPy
+community as we collectively learn new practices and our shared coding
+style changes. Revisions to this guide can be proposed by submitting a
+pull request or bringing up an idea at a community meeting.
+
+Integrated development environments
+===================================
+
+.. Move this section to a page on getting set up to contribute?
+
+An `integrated development environment`_ (IDE) is an application that
+includes multiple tools needed for software development, such as a
+source code editor, test automation tools, and a debugger. Commonly used
+IDEs for Python include PyCharm_, `Visual Studio Code`_, and Atom_.
+
+IDEs usually take some time and effort to learn, but eventually make
+code development much easier. If are learning how to make a contribution
+to an open source project for the first time, you might find it easier
+to use a plain text editor that you are familiar with (e.g., Notepad++,
+Sublime Text, emacs, or vi/vim) fo the time being. Alternatively, you
+can do a web search for documentation or videos on :samp:`how to
+contribute to a GitHub project with {name of IDE}`. In the long run, we
+highly recommend taking the time to learn how to use an IDE.
+
+.. _Atom: https://atom.io
+.. _integrated development environment: https://en.wikipedia.org/wiki/Integrated_development_environment
+.. _PyCharm: https://www.jetbrains.com/pycharm
+.. _Visual Studio Code: https://code.visualstudio.com
 
 Automatic code formatters
 =========================
 
-PlasmaPy uses the pre-commit_ framework to automatically apply a
-consistent style using tools such as black_, isort_, and flake8_.
+.. Move this to a page on getting set up to contribute?
+
+PlasmaPy uses the pre-commit_ framework to perform validations and
+automatically apply a consistent style to code contributions. Using
+pre-commit_ helps us find errors and shortens code reviews. PlasmaPy's
+pre-commit suite includes hooks such as:
+
+* ``check-ast`` to verify that the Python code is valid.
+* ``trailing-whitespace`` to remove trailing whitespace.
+* black_ to format code.
+* isort_ to sort imports.
+* nbqa_ to format notebooks.
+
+Most of the changes required by pre-commit_ can be applied
+automatically. To apply these changes in a pull request, add a comment
+that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
+the changes`_ from GitHub to your computer with ``git pull``.
+
+.. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
+
+To enable pre-commit_ locally, open a terminal, enter the directory of
+the PlasmaPy repository, and run:
 
 .. code-block:: bash
 
    pip install pre-commit
    pre-commit install
 
-PlasmaPy uses pre-commit_ to reformat code
+Now suppose we added some trailing whitespace to :file:`some_file.py`
+and attempted to commit it. If pre-commit_ has been installed, then the
+``trailing-whitespace`` hook will cause pre-commit_ to fail while
+modifying :file:`some_file.py` to remove the trailing whitespace.
 
-PlasmaPy makes use of automatic code formatters and linters that are
-enabled through pre-commit_.
+.. code-block:: console
 
+   $ git add some_file.py
+   $ git commit -m "Add trailing whitespace"
+   Trim Trailing Whitespace.................................................Failed
+   - hook id: trailing-whitespace
+   - exit code: 1
+   - files were modified by this hook
 
+At this point it will be necessary to run these two commands again to
+commit the changes. The changes made by pre-commit_ will be unstaged and
+thus could be seen by running ``git diff``. Sometimes pre-commit_ will
+not be able to automatically fix the files, such as when there are
+syntax errors in Python code. In these cases, the files will need to be
+changed manually before running the ``git add`` and ``git commit``
+commands again. Alternatively, the pre-commit_ hooks can be skipped
+using :samp:`git commit --no-verify"` instead.
 
-To add a
+The pre-commit_ configuration is given in |.pre-commit-config.yaml|_.
+After adding or updating pre-commit_ hooks, run the following command to
+apply the changes to all files.
 
+.. code-block:: bash
 
-PlasmaPy makes use of automatic code formatters such as black_ and
-isort_ that are enabled through pre-commit_. Using these tools helps us maintain a common code style without
-having to spend excessive time worrying about the formatting of a
-particular chunk of code or the order of import statements.
-
-
+   pre-commit run --all-files
 
 Names
 =====
 
-* Except as described below, use :pep:`8` conventions for naming
-  variables, functions, classes, and constants.
+Names are the most fundamental means of communicating the intent and
+purpose of code.
+
+* Use :pep:`8` conventions for naming variables, functions, classes, and
+  constants (except as described later in this section).
 
   - Use lowercase words separated by underscores for function and
     variable names (e.g., ``function_name`` and ``variable_name``).
@@ -130,14 +191,14 @@ Names
 Imports
 =======
 
-* Use absolute imports (e.g., ``from plasmapy.particles import Particle``).
-  Relative imports (e.g., ``from ..particles import Particle``) are
-  not recommended because they
+* PlasmaPy uses isort_ to sort import statements via a pre-commit_ hook.
 
-* Avoid using star imports
+* Use absolute imports (e.g., ``from plasmapy.particles import
+  Particle``) rather than relative imports (e.g., ``from ..particles
+  import Particle``).
 
-Do not use star imports (e.g., ``from package.subpackage import *``)
-  because
+* Avoid using star imports (e.g., ``from package.subpackage import *``)
+  except in special situations.
 
 * Use standard abbreviations for imported packages.
 
@@ -157,10 +218,37 @@ Units
 * PlasmaPy uses |astropy.units| to give physical units to values in the
   form of a |Quantity|.
 
-* Use SI units within PlasmaPy, except when there is a strong
-  justification to do otherwise.
+  .. code-block:: pycon
 
-  * Example notebooks may use non-SI units infrequently.
+     >>> import astropy.units as u
+     >>> 5 * u.m / u.s
+     <Quantity 5. m / s>
+
+* Use SI units within PlasmaPy, except if there is strong justification
+  otherwise.
+
+  * Example notebooks may occasionally use non-SI units.
+
+* Use |Unit| annotations for arguments and return values.
+
+  .. code-block::
+
+     @validate_quantities(
+         n={"can_be_negative": False},
+         validations_on_return={"equivalencies": u.dimensionless_angles()},
+     )
+     @particles.particle_input(require="charged")
+     def inertial_length(n: u.m ** -3, ...) -> u.m:
+         ...
+
+* Use the `~plasmapy.utils.decorators.validators.validate_quantities`
+  decorator to validate |Quantity| arguments and return values.
+
+  .. code-block:: python
+
+     from plasmapy.utils.decorators.validators import validate_quantities
+
+     @validate_quantities
 
 * Avoid using electron-volts as a unit of temperature within PlasmaPy,
   but allow arguments provided to a function
@@ -178,7 +266,7 @@ Equations and physical formulae
 ===============================
 
 * Physical formulae should be inputted without first evaluating all of
-  the physical constants.  For example, the following line of code
+  the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
 >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
@@ -186,7 +274,7 @@ Equations and physical formulae
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
->>> omega_ce = (e * B) / (m_e * c)       # doctest: +SKIP
+>>> omega_ce = B * e / (m_e * c)       # doctest: +SKIP
 
   The origins of numerical coefficients in formulae should be
   documented.
