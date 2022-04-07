@@ -48,7 +48,7 @@ PlasmaPy Code Style Guide, codified
 -----------------------------------
 
 * PlasmaPy follows the `PEP8 Style Guide for Python Code
-  <https://www.python.org/dev/peps/pep-0008/>`_.  This style choice
+  <https://peps.python.org/pep-0008>`__.  This style choice
   helps ensure that the code will be consistent and readable.
 
   * Line lengths should be chosen to maximize the readability and
@@ -168,7 +168,7 @@ GitHub, you are ready to make a pull request.  Go to your fork of
 PlasmaPy in GitHub.  Select "Compare and pull request".  Add a
 descriptive title and some details about your changes.  Then select
 "Create pull request".  Other contributors will then have a chance to
-review the code and offer contructive suggestions.  You can continue
+review the code and offer constructive suggestions.  You can continue
 to edit the pull request by changing the corresponding branch on your
 PlasmaPy fork on GitHub.  After a pull request is merged into the
 code, you may delete the branch you created for that pull request.
@@ -180,7 +180,7 @@ developers and to our future selves.  They provide insight into why we
 chose a particular implementation, and help us avoid past mistakes.
 
 Suggestions on `how to write a git commit message
-<https://chris.beams.io/posts/git-commit/>`_:
+<https://cbea.ms/git-commit>`_:
 
 * Separate subject from body with a blank line
 
