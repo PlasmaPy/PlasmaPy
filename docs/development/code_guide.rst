@@ -284,130 +284,6 @@ Equations and physical formulae
 Temperature/energy equivalency
 ------------------------------
 
-Comments
-========
-
-Comments are not inherently good. As code evolves, an unmaintained
-comment may become outdated or get separated from the section of code
-that it was meant to describe. Cryptic comments may end up confusing
-contributors. In the worst case, an unmaintained comment may contain
-inaccurate or misleading information. At the same time, a well-placed
-comment can prevent future frustrations.
-
-.. Need to keep working on this section a bit more...
-
-* Refactor code to make it more readable, rather than explaining how it
-  works.
-
-* When a comment is used as the header for a section of code, consider
-  taking that code and making a function out of it. For example, we
-  might start out with a function that includes multiple lines of code
-  for each step.
-
-  .. code-block:: python
-
-     def analyze_experiment(data):
-         # Step 1: calibrate the data
-         ...
-         # Step 2: normalize the data
-         ...
-
-  We can apply the extract function refactoring pattern by creating a
-  separate function for each of these steps. The name of each function
-  can often be very close to the comment.
-
-  .. code-block:: python
-
-     def calibrate_data(data):
-         ...
-         return calibrated_data
-
-     def normalized_data(data):
-         ...
-         return normalized_data
-
-     def analyze_experiment(data):
-         calibrated_data = calibrate_data(data)
-         normalized_data = normalize_data(calibrated_data)
-
-.. discuss advantages and tradeoffs of the extract method refactoring pattern
-
-.. advantages:
-    - can get to shorter functions that do one thing with no side effects
-    - more readable code
-    - more reusable code
-    - easier to test the multiple smaller functions
-    - for each function, need to keep fewer things in our brain
-    - final function does not need to change if the low level details change
-    - reduces need for comments
-
-.. disadvantages:
-    - the separate steps are displaced from each other, so it can be
-      harder to see how the implementation details work with each other
-
-.. caveats
-    - might not work cleanly if the steps are highly coupled (i.e. if
-      intermediate variables are used for each step).
-
-* When a comment is used to define the variable, try renaming the
-  variable to encode its meaning and intent.
-
-* Use comments to communicate information that you wish you knew before
-  starting to work on a particular section of code, including
-  information that took some time to learn.
-
-* Use comments to communicate information that the code cannot,
-  such as why an alternative approach was *not* taken.
-
-* Include enough contextual information that the comment will ideally
-  make sense even if it is displaced from the code it was originally
-  describing.
-
-* Use comments to include references to books or articles that describe
-  the equation, algorithm, or software design pattern that is being
-  implemented.
-
-* Include enough contextual information in the comment for a new user
-  to be able to understand it.
-
-* Remove commented out code before merging a pull request.
-
-* When updating code, be sure to update the comments too!
-
-Error messages
-==============
-
-Error messages are a vital but underappreciated form of documentation.
-A good error message can help someone pinpoint the source of a problem
-in seconds, while a cryptic or missing error message can lead to hours
-of frustration.
-
-* Use error messages to indicate the source of the problem while
-  providing enough information for the user to fix it. Make sure that it
-  is clear what the user should do next.
-
-* Include diagnostic information when appropriate. For example, if an
-  operation is being performed on every point in a grid, include the
-  coordinates where the error happened.
-
-* Write error messages that are concise when possible, as users often
-  skim long error messages.
-
-* Avoid including information that is irrelevant to the source of the
-  problem.
-
-* Write error messages in language that is plain enough to be
-  understandable to someone who is undertaking their first research
-  project.
-
-  - If necessary, technical information may be placed after a plain
-    language summary statement.
-
-  - Alternatively, an error message may reference a docstring or a page
-    in the narrative documentation.
-
-* Write error messages that are friendly, supportive, and helpful. Error
-  message should never be condescending or blame the user.
 
 Coding style
 ============
@@ -475,6 +351,120 @@ Coding style
   loops: ``squares_of_even_numbers = [x**2 for x in range(20) if x % 2 == 0]``.
 
 * In most cases, global variables should be avoided.
+
+
+Comments
+========
+
+Comments are not inherently good. As code evolves, an unmaintained
+comment may become outdated or get separated from the section of code
+that it was meant to describe. Cryptic comments may end up confusing
+contributors. In the worst case, an unmaintained comment may contain
+inaccurate or misleading information. At the same time, a well-placed
+comment can prevent future frustrations.
+
+* Refactor code to make it more readable, rather than explaining how it
+  works.
+
+* When a comment is used to define the variable, try renaming the
+  variable to encode its meaning and intent.
+
+* Use comments to communicate information that you wish you knew before
+  starting to work on a particular section of code, including
+  information that took some time to learn.
+
+* Use comments to communicate information that the code cannot,
+  such as why an alternative approach was *not* taken.
+
+* Include enough contextual information that the comment will ideally
+  make sense even if it is displaced from the code it was originally
+  describing.
+
+* Use comments to include references to books or articles that describe
+  the equation, algorithm, or software design pattern that is being
+  implemented.
+
+* Include enough contextual information in the comment for a new user
+  to be able to understand it.
+
+* Remove commented out code before merging a pull request.
+
+* When updating code, be sure to update the comments too!
+
+* When a comment is used as the header for a section of code, consider
+  extracting that section of code into. For example, we
+  might start out with a function that includes multiple lines of code
+  for each step.
+
+  .. code-block:: python
+
+     def analyze_experiment(data):
+         # Step 1: calibrate the data
+         ...
+         # Step 2: normalize the data
+         ...
+
+  We can apply the `extract function refactoring pattern`_ by creating a
+  separate function for each of these steps. The name of each function
+  can often be very close to the comment.
+
+  .. code-block:: python
+
+     def calibrate_data(data):
+         ...
+         return calibrated_data
+
+     def normalized_data(data):
+         ...
+         return normalized_data
+
+     def analyze_experiment(data):
+         calibrated_data = calibrate_data(data)
+         normalized_data = normalize_data(calibrated_data)
+
+  This refactoring strategy is appropriate for long functions where the
+  different steps can be cleanly separated from each other. This pattern
+  leads to functions that are shorter, more focused, more reusable, and
+  easier to test. The original function no longer includes
+  implementation details, and thus gives a high level view of what the
+  function is doing. This pattern might not be appropriate if the
+  different sections of code are intertwined with each other, like if
+  both sections use the same intermediate variables.
+
+Error messages
+==============
+
+Error messages are a vital but underappreciated form of documentation.
+A good error message can help someone pinpoint the source of a problem
+in seconds, while a cryptic or missing error message can lead to hours
+of frustration.
+
+* Use error messages to indicate the source of the problem while
+  providing enough information for the user to fix it. Make sure that it
+  is clear what the user should do next.
+
+* Include diagnostic information when appropriate. For example, if an
+  operation is being performed on every point in a grid, include the
+  coordinates where the error happened.
+
+* Write error messages that are concise when possible, as users often
+  skim long error messages.
+
+* Avoid including information that is irrelevant to the source of the
+  problem.
+
+* Write error messages in language that is plain enough to be
+  understandable to someone who is undertaking their first research
+  project.
+
+  - If necessary, technical information may be placed after a plain
+    language summary statement.
+
+  - Alternatively, an error message may reference a docstring or a page
+    in the narrative documentation.
+
+* Write error messages that are friendly, supportive, and helpful. Error
+  message should never be condescending or blame the user.
 
 Requirements
 ============
