@@ -5,6 +5,8 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
+from typing import List, Union, Any
+
 import astropy.units as u
 import numpy as np
 
@@ -131,7 +133,7 @@ def stix(
     providing that :math:`\frac{\omega}{k_{z}} >> \nu_{Te}` with
     :math:`\nu_{Ti}` and :math:`k_{x}r_{Le,i} << 1`.  The prediction of
     :math:`k \to 0` occurs when P, R or L cut off and predicts
-    :math:`k \to \inf` for perpendicular propagation during wave
+    :math:`k \to \infty` for perpendicular propagation during wave
     resonance :math:`S \to 0`.
 
     Example
@@ -142,7 +144,7 @@ def stix(
     >>> inputs = {
     ...     "B": 8.3e-9 * u.T,
     ...     "k": 0.001 * u.rad / u.m,
-    ...     "ions": [Particle("H+"), Particle("e-")],
+    ...     "ions": [Particle("H+"), Particle("He+")],
     ...     "n_i": [4.0e5,2.0e5] * u.m**-3,
     ...     "theta": 30 * u.deg,
     >>> }
@@ -204,7 +206,7 @@ def stix(
     if np.any(k <= 0):
         raise ValueError(f"Argument 'k' can not a or have negative value")
     if np.isscalar(k.value):
-        k = np.array(k) * u.rad / u.m
+        k = np.array([k.value]) * u.rad / u.m
 
     # validate theta value
     theta = theta.squeeze()
@@ -214,17 +216,19 @@ def stix(
             f"Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {k.shape}."
         )
-    elif theta.ndim == 1 and theta.size != len(k):
-        raise ValueError(
-            f"Argument 'theta' and 'k' need to be the same length, got"
-            f" value of shape {len(k)} and {len(theta.shape)}."
-        )
+    #elif theta.ndim == 1 and theta.size != len(k):
+    #    raise ValueError(
+    #        f"Argument 'theta' and 'k' need to be the same length, got"
+    #        f" value of shape {len(k)} and {len(theta.shape)}."
+    #    )
+    if np.isscalar(theta.value):
+        theta = np.array([theta.value]) * u.rad
 
     wps = []
     wcs = []
 
     for par, dens in zip(species, densities.tolist()):
-        wps.append(plasma_frequency(n=dens, particle=par).value)
+        wps.append(plasma_frequency(n=dens*u.m**-3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
     wps = np.array(wps)
     wcs = np.array(wcs)
@@ -248,26 +252,32 @@ def stix(
     R = S + D
     L = S - D
 
-    A = S * (np.sin(theta.value) ** 2) + P * (np.cos(theta.value) ** 2)
-    B = R * L * (np.sin(theta.value) ** 2) + P * S * (1 + np.cos(theta.value) ** 2)
-    C = P * R * L
+    A = []
+    B = []
+    C = []
+
+    for i in range(len(k)):
+        A.append(S * (np.sin(theta[i].value) ** 2) + P * (np.cos(theta[i].value) ** 2))
+        B.append(R * L * (np.sin(theta[i].value) ** 2) + P * S * (1 + np.cos(theta[i].value) ** 2))
+        C.append(P * R * L)
 
     print("Note: Solution computation time may vary.")
 
     # solve the stix equation for single k value or an array
     for i in range(len(k)):
-        eq = A * ((c.value * k[i] / w) ** 4) - B * ((c.value * k[i] / w) ** 2) + C
+        omegas[k[i]] = {}
+        for j in range(len(k)):
+            eq = A[j] * ((c_si_unitless * k[i].value / w) ** 4) - B[j] * ((c_si_unitless * k[i].value / w) ** 2) + C[j]
 
-        sol = solve(eq, w, warn=True)
+            sol = solve(eq, w, warn=True)
 
-        sol_omega = []
+            sol_omega_co = []
+            for k in range(len(sol)):
+                val = complex(sol[k]) * u.rad / u.s
+                sol_omega_co.append(val)
 
-        for j in range(len(sol)):
-            val = complex(sol[j]) * u.rad / u.s
-            sol_omega.append(val)
-
-        omegas[i] = sol_omega
-        val = k[i]
-        omegas[val] = omegas.pop(i)
+            omegas[k[i]][theta[j]] = sol_omega_co
+        omegas[k[i]] = omegas[k[i]].pop(i)
+        print(f"{((i+j+k) / (2*len(k)+len(sol))) * 100:.2f} %", end="\r")
 
     return omegas
