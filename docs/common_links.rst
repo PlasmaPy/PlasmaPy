@@ -136,7 +136,6 @@
 .. _PlasmaPy's documentation: https://docs.plasmapy.org/en/stable
 .. _PlasmaPy's GitHub repository: https://github.com/PlasmaPy/plasmapy
 .. _PlasmaPy's Matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
-.. _pre-commit: https://pre-commit.com
 .. _pydocstyle: https://www.pydocstyle.org/en/stable
 .. _pygments: https://pygments.org
 .. _PyPI: https://pypi.org
@@ -192,6 +191,12 @@
 
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
+
+.. _pre-commit: https://pre-commit.com
+.. |pre-commit| replace:: ``pre-commit``
+
+.. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
+.. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
 .. |setup.cfg| replace:: :file:`setup.cfg`
