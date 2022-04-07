@@ -36,11 +36,6 @@ find tutorials or videos online for how to contribute to an open source
 project with most common IDEs. In the long run, taking the time to learn
 how to use an IDE is well worth it.
 
-.. _Atom: https://atom.io
-.. _integrated development environment: https://en.wikipedia.org/wiki/Integrated_development_environment
-.. _PyCharm: https://www.jetbrains.com/pycharm
-.. _Visual Studio Code: https://code.visualstudio.com
-
 Pre-commit
 ==========
 
@@ -59,9 +54,6 @@ Most of the changes required by |pre-commit|_ can be applied
 automatically. To apply these changes in a pull request, add a comment
 that says ``pre-commit.ci autofix``. After doing this, be sure to `pull
 the changes`_ from GitHub to your computer with ``git pull``.
-
-.. _nbqa: https://nbqa.readthedocs.io
-.. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
 
 To enable |pre-commit|_ locally, open a terminal, enter the directory of
 the PlasmaPy repository, and run:
@@ -266,7 +258,6 @@ Units
 * Use operations between |Quantity| objects except when needed for
   performance.
 
-.. _performance tips: https://docs.astropy.org/en/stable/units/index.html#performance-tips
 
 Particles
 =========
@@ -534,6 +525,13 @@ Requirements
   year. However, it may take a few months before packages like NumPy_
   and Numba_ become compatible with the newest minor version of Python_.
 
+.. _Atom: https://atom.io
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _integrated development environment: https://en.wikipedia.org/wiki/Integrated_development_environment
+.. _nbqa: https://nbqa.readthedocs.io
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _performance tips: https://docs.astropy.org/en/stable/units/index.html#performance-tips
+.. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
+.. _PyCharm: https://www.jetbrains.com/pycharm
 .. _pyupgrade: https://github.com/asottile/pyupgrade
+.. _Visual Studio Code: https://code.visualstudio.com
