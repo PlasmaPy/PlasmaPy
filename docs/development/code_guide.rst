@@ -301,6 +301,38 @@ Comments
 Error messages
 ==============
 
+Error messages are a vital but underappreciated form of documentation.
+A good error message can help someone pinpoint the source of a problem
+in seconds, while a cryptic or missing error message can lead to hours
+of frustration.
+
+* Use error messages to indicate the source of the problem while
+  providing enough information for the user to fix it. Make sure that it
+  is clear what the user should do next.
+
+* Include diagnostic information when appropriate. For example, if an
+  operation is being performed on every point in a grid, include the
+  coordinates where the error happened.
+
+* Write error messages that are concise when possible, as users often
+  skim long error messages.
+
+* Avoid including information that is irrelevant to the source of the
+  problem.
+
+* Write error messages in language that is plain enough to be
+  understandable to someone who is undertaking their first research
+  project.
+
+  - If necessary, technical information may be placed after a plain
+    language summary statement.
+
+  - Alternatively, an error message may reference a docstring or a page
+    in the narrative documentation.
+
+* Write error messages that are friendly, supportive, and helpful. Error
+  message should never be condescending or blame the user.
+
 Coding style
 ============
 
@@ -362,6 +394,11 @@ Coding style
 .. note::
 
    Add the license for the google style guide, maybe?
+
+* List and dictionary comprehensions should be used for simple ``for``
+  loops: ``squares_of_even_numbers = [x**2 for x in range(20) if x % 2 == 0]``.
+
+* In most cases, global variables should be avoided.
 
 Requirements
 ============
