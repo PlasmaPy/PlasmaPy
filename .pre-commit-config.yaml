@@ -34,6 +34,8 @@ repos:
   rev: 21.12b0
   hooks:
   - id: black
+    additional_dependencies:
+    - click<8.1  # remove this when black is next updated
 
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 0.8.0
@@ -41,6 +43,7 @@ repos:
   - id: nbqa-black
     additional_dependencies:
     - black==21.12b0
+    - click<8.1  # remove this when black is next updated
     args:
     - --nbqa-mutate
   - id: nbqa-isort
