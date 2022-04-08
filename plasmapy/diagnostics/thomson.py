@@ -54,7 +54,7 @@ def spectral_density_lite(
     ion_vel=None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
-    inst_fcn_arr=None,
+    instr_func_arr=None,
 ):
 
     r"""
@@ -123,7 +123,7 @@ def spectral_density_lite(
         Defaults to [0, 1, 0] which, along with the default `probe_vec`,
         corresponds to a 90 degree scattering angle geometry.
 
-    inst_fcn_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
+    instr_func_arr : `~numpy.ndarray`, shape (Nwavelengths,) optional
 
         The insturment function evaluated at a linearly spaced range of
         wavelengths ranging from :math:`-W` to :math:`W`, where
@@ -249,8 +249,8 @@ def spectral_density_lite(
     Skw = np.real(np.sum(econtr, axis=0) + np.sum(icontr, axis=0))
 
     # Apply an insturment function if one is provided
-    if inst_fcn_arr is not None:
-        Skw = np.convolve(Skw, inst_fcn_arr, mode="same")
+    if instr_func_arr is not None:
+        Skw = np.convolve(Skw, instr_func_arr, mode="same")
 
     return np.mean(alpha), Skw
 
@@ -276,7 +276,7 @@ def spectral_density(
     ion_vel: u.m / u.s = None,
     probe_vec=np.array([1, 0, 0]),
     scatter_vec=np.array([0, 1, 0]),
-    inst_fcn=None,
+    instr_func=None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
     Calculate the spectral density function for Thomson scattering of a
@@ -361,7 +361,7 @@ def spectral_density(
         Defaults to [0, 1, 0] which, along with the default `probe_vec`,
         corresponds to a 90 degree scattering angle geometry.
 
-    inst_fcn : function
+    instr_func : function
         A function representing the instrument function that takes an `~astropy.units.Quantity`
         of wavelengths (centered on zero) and returns the instrument point
         spread function. The resulting array will be convolved with the
@@ -480,15 +480,15 @@ def spectral_density(
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
 
     # Apply the insturment function
-    if inst_fcn is not None and callable(inst_fcn):
+    if instr_func is not None and callable(instr_func):
         # Create an array of wavelengths of the same size as wavelengths
         # but centered on zero
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
-        inst_fcn_arr = inst_fcn(eval_w)
-        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
+        instr_func_arr = instr_func(eval_w)
+        instr_func_arr *= 1 / np.sum(instr_func_arr)
     else:
-        inst_fcn_arr = None
+        instr_func_arr = None
 
     alpha, Skw = spectral_density_lite(
         wavelengths.to(u.m).value,
@@ -504,7 +504,7 @@ def spectral_density(
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        inst_fcn_arr=inst_fcn_arr,
+        instr_func_arr=instr_func_arr,
     )
 
     return alpha, Skw * u.s / u.rad
@@ -575,7 +575,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     electron_vdir = settings["electron_vdir"]
     ion_vdir = settings["ion_vdir"]
     probe_wavelength = settings["probe_wavelength"]
-    inst_fcn_arr = settings["inst_fcn_arr"]
+    instr_func_arr = settings["instr_func_arr"]
 
     # LOAD FROM PARAMS
     n = params["n"]
@@ -608,7 +608,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         ion_vel=ion_vel,
         probe_vec=probe_vec,
         scatter_vec=scatter_vec,
-        inst_fcn_arr=inst_fcn_arr,
+        instr_func_arr=instr_func_arr,
     )
 
     model_Skw *= 1 / np.max(model_Skw)
@@ -641,7 +641,7 @@ def spectral_density_model(wavelengths, settings, params):
         and may contain the following optional variables
             - electron_vdir : (e#, 3) array of electron velocity unit vectors
             - ion_vdir : (e#, 3) array of ion velocity unit vectors
-            - inst_fcn : A function that takes a wavelength u.Quantity array
+            - instr_func : A function that takes a wavelength u.Quantity array
                         and represents a spectrometer insturment function.
 
         These quantities cannot be varied during the fit.
@@ -786,16 +786,16 @@ def spectral_density_model(wavelengths, settings, params):
     norm = np.linalg.norm(settings["ion_vdir"], axis=-1)
     settings["ion_vdir"] = settings["ion_vdir"] / norm[:, np.newaxis]
 
-    if "inst_fcn" not in list(settings.keys()):
-        settings["inst_fcn_arr"] = None
+    if "instr_func" not in list(settings.keys()):
+        settings["instr_func_arr"] = None
     else:
-        # Create inst fcn array from inst_fcn
-        inst_fcn = settings["inst_fcn"]
+        # Create inst fcn array from instr_func
+        instr_func = settings["instr_func"]
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
-        inst_fcn_arr = inst_fcn(eval_w * u.m)
-        inst_fcn_arr *= 1 / np.sum(inst_fcn_arr)
-        settings["inst_fcn_arr"] = inst_fcn_arr
+        instr_func_arr = instr_func(eval_w * u.m)
+        instr_func_arr *= 1 / np.sum(instr_func_arr)
+        settings["instr_func_arr"] = instr_func_arr
 
     # TODO: raise an exception if the number of any of the ion or electron
     # quantities isn't consistent with the number of that species defined
