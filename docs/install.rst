@@ -22,11 +22,11 @@ Python`_ and install it.
 
 .. tip::
 
-   If you have trouble installing `plasmapy` on the most recent version
-   of Python_ between October and ∼December (e.g., 3.11 for 2022), try
-   installing it on the second most recent version (e.g., 3.10). New
-   versions of Python_ are released annually in October, and it can take
-   time for the scientific Python ecosystem to catch up.
+   New versions of Python_ are released annually in October, and it can
+   take a few months for the scientific Python ecosystem to catch up. If
+   you have trouble installing `plasmapy` on the most recent Python_
+   version (e.g., 3.11 in late 2022), then try installing it on the
+   second most recent version (e.g., 3.10).
 
 .. _install-pip:
 
@@ -49,15 +49,18 @@ On some systems, it might be necessary to use ``pip3`` instead of
 Installation with Conda
 =======================
 
-`plasmapy` can be installed into Python_ environments created by Conda_.
-Conda_ allows us to create and switch between Python_ environments that
-are isolated from each other and the system installation.
+Conda_ is a package management system and environment manager that is
+commonly used in the scientific Python_ ecosystem. Conda_ allows us to
+create and switch between Python_ environments that are isolated from
+each other and the system installation. Conda_ can also be used for
+packages written in languages other than Python_.
 
-After `installing Conda`_, `plasmapy` can be installed into an activated
-Conda_ environment by running:
+After `installing Conda`_ or miniconda_, `plasmapy` can be installed
+into an activated Conda_ environment by opening a terminal and running:
+
 .. code-block:: bash
 
-   conda install plasmapy
+   conda install -c conda-forge plasmapy
 
 To install `plasmapy` into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
@@ -77,6 +80,8 @@ To activate this environment, run:
 
    conda activate env_name
 
+.. _miniconda: https://docs.conda.io/en/latest/miniconda.html
+
 Installation from source code
 =============================
 
@@ -94,9 +99,9 @@ A ZIP_ file containing the source code for official releases of
 GitHub repository
 ^^^^^^^^^^^^^^^^^
 
-If you have git_ installed on your computer, you may clone
-`PlasmaPy's GitHub repository`_ and access source code
-from the most recent development version by running:
+If you have git_ installed on your computer, you may clone `PlasmaPy's
+GitHub repository`_ and access the source code from the most recent
+development version by running:
 
 .. code:: bash
 
