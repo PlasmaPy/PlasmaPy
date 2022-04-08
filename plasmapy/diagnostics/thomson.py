@@ -27,10 +27,10 @@ from plasmapy.utils.decorators import (
     validate_quantities,
 )
 
-_c = const.c.si.value  # Make sure C is in SI units
-_e = const.e.si.value
-_m_p = const.m_p.si.value
-_m_e = const.m_e.si.value
+c_si_unitless = const.c.si.value
+e_si_unitless = const.e.si.value
+m_p_si_unitless = const.m_p.si.value
+m_e_si_unitless = const.m_e.si.value
 
 
 # TODO: interface for inputting a multi-species configuration could be
@@ -673,26 +673,35 @@ def spectral_density_model(wavelengths, settings, params):
 
     """
 
-    # **********************
-    # Required settings and parameters
-    # **********************
-    req_settings = ["probe_wavelength", "probe_vec", "scatter_vec", "ion_species"]
-    for k in req_settings:
-        if k not in list(settings.keys()):
-            raise KeyError(f"{k} was not provided in settings, but is required.")
+    # required settings
+    if (
+        not_defined := {
+            "probe_wavelength",
+            "probe_vec",
+            "scatter_vec",
+            "ion_species",
+        }
+        - set(settings)
+    ):
+        raise ValueError(
+            f"Setting(s) {not_defined} was(were) not provided in kwarg 'settings', "
+            f"but is(are) required."
+        )
 
-    req_params = ["n"]
-    for k in req_params:
-        if k not in list(params.keys()):
-            raise KeyError(f"{k} was not provided in parameters, but is required.")
+    # required parameters
+    if not_defined := {"n"} - set(params):
+        raise ValueError(
+            f"Parameter(s) {not_defined} was(were) not provided in kwarg 'params', "
+            f"but is(are) required."
+        )
 
     # **********************
     # Count number of populations
     # **********************
-    if "efract_0" not in list(params.keys()):
+    if "efract_0" not in params:
         params.add("efract_0", value=1.0, vary=False)
 
-    if "ifract_0" not in list(params.keys()):
+    if "ifract_0" not in params:
         params.add("ifract_0", value=1.0, vary=False)
 
     num_e = _count_populations_in_params(params, "efract")
@@ -701,77 +710,70 @@ def spectral_density_model(wavelengths, settings, params):
     # **********************
     # Required settings and parameters per population
     # **********************
-    req_params = ["Te"]
-    for p in req_params:
-        for e in range(num_e):
-            k = p + "_" + str(e)
-            if k not in list(params.keys()):
-                raise KeyError(f"{p} was not provided in parameters, but is required.")
-
-    req_params = ["Ti"]
-    for p in req_params:
-        for i in range(num_i):
-            k = p + "_" + str(i)
-            if k not in list(params.keys()):
-                raise KeyError(f"{p} was not provided in parameters, but is required.")
+    for p, nums in zip(["Te", "Ti"], [num_e, num_i]):
+        for num in range(nums):
+            key = p + "_" + str(num)
+            if key not in params:
+                raise ValueError(
+                    f"{p} was not provided in kwarg 'parameters', but is required."
+                )
 
     # Create arrays of ion Z and mu from particles given
     # Create arrays of ion Z and mass from particles given
     ion_z = np.zeros(num_i)
-    ion_mass = np.zeros(num_i) * u.kg
+    ion_mass = np.zeros(num_i)
     for i, species in enumerate(settings["ion_species"]):
         particle = Particle(species)
         ion_z[i] = particle.charge_number
-        ion_mass[i] = particle_mass(particle)
+        ion_mass[i] = particle_mass(particle).value
     settings["ion_z"] = ion_z
-    settings["ion_mass"] = ion_mass.to(u.kg).value
+    settings["ion_mass"] = ion_mass
 
     # Automatically add an expression to the last efract parameter to
     # indicate that it depends on the others (so they sum to 1.0)
     # The resulting expression for the last of three will look like
     # efract_2.expr = "1.0 - efract_0 - efract_1"
     if num_e > 1:
-        nums = ["efract_" + str(i) for i in range(num_e - 1)]
-        nums.insert(0, "1.0")
-        params["efract_" + str(num_e - 1)].expr = " - ".join(nums)
+        nums = ["1.0"] + [f"efract_{i}" for i in range(num_e - 1)]
+        params[f"efract_{num_e - 1}"].expr = " - ".join(nums)
 
     if num_i > 1:
-        nums = ["ifract_" + str(i) for i in range(num_i - 1)]
-        nums.insert(0, "1.0")
-        params["ifract_" + str(num_i - 1)].expr = " - ".join(nums)
+        nums = ["1.0"] + [f"ifract_{i}" for i in range(num_i - 1)]
+        params[f"ifract_{num_i - 1}"].expr = " - ".join(nums)
 
     # **************
     # Electron velocity
     # **************
-    electron_speed = np.zeros([num_e])
-    for e in range(num_e):
-        k = "electron_speed_" + str(e)
-        if k in list(params.keys()):
-            electron_speed[e] = params[k].value
+    electron_speed = np.zeros(num_e)
+    for num in range(num_e):
+        k = f"electron_speed_{num}"
+        if k in params:
+            electron_speed[num] = params[k].value
         else:
             # electron_speed[e] = 0 already
             params.add(k, value=0, vary=False)
 
-    if "electron_vdir" not in list(settings.keys()):
+    if "electron_vdir" not in settings:
         if np.all(electron_speed == 0):
             # vdir is arbitrary in this case because vel is zero
             settings["electron_vdir"] = np.ones([num_e, 3])
         else:
             raise ValueError(
-                "electron_vdir must be set if electron_speeds " "are not all zero."
+                "Key 'electron_vdir' must be defined in kwarg 'settings' if "
+                "any electron population has a non-zero speed (i.e. any "
+                "params['electron_speed_<#>'] is non-zero)."
             )
-    # Normalize vdir
     norm = np.linalg.norm(settings["electron_vdir"], axis=-1)
     settings["electron_vdir"] = settings["electron_vdir"] / norm[:, np.newaxis]
 
     # **************
     # Ion velocity
     # **************
-    ion_speed = np.zeros([num_i])
-    for i in range(num_i):
-        k = "ion_speed_" + str(i)
-        if k in list(params.keys()):
-            ion_speed[i] = params[k].value
+    ion_speed = np.zeros(num_i)
+    for num in range(num_i):
+        k = f"ion_speed_{num}"
+        if k in params:
+            ion_speed[num] = params[k].value
         else:
             # ion_speed[i] = 0 already
             params.add(k, value=0, vary=False)
@@ -781,12 +783,16 @@ def spectral_density_model(wavelengths, settings, params):
             # vdir is arbitrary in this case because vel is zero
             settings["ion_vdir"] = np.ones([num_i, 3])
         else:
-            raise ValueError("ion_vdir must be set if ion_speeds " "are not all zero.")
-    # Normalize vdir
+            raise ValueError(
+                "Key 'ion_vdir' must be defined in kwarg 'settings' if "
+                "any ion population has a non-zero speed (i.e. any "
+                "params['ion_speed_<#>'] is non-zero)."
+            )
     norm = np.linalg.norm(settings["ion_vdir"], axis=-1)
     settings["ion_vdir"] = settings["ion_vdir"] / norm[:, np.newaxis]
 
-    if "instr_func" not in list(settings.keys()):
+
+    if "instr_func" not in settings:
         settings["instr_func_arr"] = None
     else:
         # Create inst fcn array from instr_func
@@ -798,18 +804,13 @@ def spectral_density_model(wavelengths, settings, params):
         settings["instr_func_arr"] = instr_func_arr
 
     # TODO: raise an exception if the number of any of the ion or electron
-    # quantities isn't consistent with the number of that species defined
-    # by ifract or efract.
+    #       quantities isn't consistent with the number of that species defined
+    #       by ifract or efract.
 
-    # Create a lmfit.Model
-    # nan_policy='omit' automatically ignores NaN values in data, allowing those
-    # to be used to represnt regions of missing data
-    # the "settings" dict is an additional kwarg that will be passed to the model function on every call
-    model = Model(
+    # Create and return the lmfit.Model
+    return Model(
         _spectral_density_model,
         independent_vars=["wavelengths"],
         nan_policy="omit",
         settings=settings,
     )
-
-    return model
