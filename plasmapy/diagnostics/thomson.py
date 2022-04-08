@@ -34,9 +34,9 @@ m_e_si_unitless = const.m_e.si.value
 
 
 # TODO: interface for inputting a multi-species configuration could be
-# simplified using the plasmapy.classes.plasma_base class if that class
-# included ion and electron drift velocities and information about the ion
-# atomic species.
+#     simplified using the plasmapy.classes.plasma_base class if that class
+#     included ion and electron drift velocities and information about the ion
+#     atomic species.
 
 
 @preserve_signature
@@ -160,9 +160,9 @@ def spectral_density_lite(
 
     # Calculate plasma parameters
     # Temperatures here in K!
-    th_coef = thermal_speed_coefficients("most_probable", 3)
-    vTe = thermal_speed.lite(Te, _m_e, th_coef)
-    vTi = thermal_speed.lite(Ti, ion_mass, th_coef)
+    coefs = thermal_speed_coefficients("most_probable", 3)
+    vTe = thermal_speed.lite(Te, m_e_si_unitless, coefs)
+    vTi = thermal_speed.lite(Ti, ion_mass, coefs)
     zbar = np.sum(ifract * ion_z)
 
     # Compute electron and ion densities
@@ -170,20 +170,20 @@ def spectral_density_lite(
     ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
-    wpe = plasma_frequency.lite(n, _m_e, 1)
+    wpe = plasma_frequency.lite(n, m_e_si_unitless, 1)
 
     # Convert wavelengths to angular frequencies (electromagnetic waves, so
     # phase speed is c)
-    ws = 2 * np.pi * _c / wavelengths
-    wl = 2 * np.pi * _c / probe_wavelength
+    ws = 2 * np.pi * c_si_unitless / wavelengths
+    wl = 2 * np.pi * c_si_unitless / probe_wavelength
 
     # Compute the frequency shift (required by energy conservation)
     w = ws - wl
 
     # Compute the wavenumbers in the plasma
     # See Sheffield Sec. 1.8.1 and Eqs. 5.4.1 and 5.4.2
-    ks = np.sqrt(ws ** 2 - wpe ** 2) / _c
-    kl = np.sqrt(wl ** 2 - wpe ** 2) / _c
+    ks = np.sqrt(ws ** 2 - wpe ** 2) / c_si_unitless
+    kl = np.sqrt(wl ** 2 - wpe ** 2) / c_si_unitless
 
     # Compute the wavenumber shift (required by momentum conservation)\
     # Eq. 1.7.10 in Sheffield
@@ -209,7 +209,7 @@ def spectral_density_lite(
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
     for i, fract in enumerate(efract):
-        wpe = plasma_frequency.lite(ne[i], _m_e, 1)
+        wpe = plasma_frequency.lite(ne[i], m_e_si_unitless, 1)
         chiE[i, :] = permittivity_1D_Maxwellian.lite(w_e[i, :], k, vTe[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
@@ -251,7 +251,6 @@ def spectral_density_lite(
     # Apply an insturment function if one is provided
     if instr_func_arr is not None:
         Skw = np.convolve(Skw, instr_func_arr, mode="same")
-
     return np.mean(alpha), Skw
 
 
@@ -481,11 +480,20 @@ def spectral_density(
 
     # Apply the insturment function
     if instr_func is not None and callable(instr_func):
+
         # Create an array of wavelengths of the same size as wavelengths
         # but centered on zero
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w)
+
+        if type(instr_func_arr) != np.ndarray:
+            raise ValueError(
+                "instr_func must be a function that returns a "
+                "np.ndarray, but the provided function returns "
+                f" a {type(instr_func_arr)}"
+            )
+
         instr_func_arr *= 1 / np.sum(instr_func_arr)
     else:
         instr_func_arr = None
@@ -642,7 +650,8 @@ def spectral_density_model(wavelengths, settings, params):
             - electron_vdir : (e#, 3) array of electron velocity unit vectors
             - ion_vdir : (e#, 3) array of ion velocity unit vectors
             - instr_func : A function that takes a wavelength u.Quantity array
-                        and represents a spectrometer insturment function.
+                        and returns a spectrometer insturment function as an
+                        `numpy.ndarray`.
 
         These quantities cannot be varied during the fit.
 
@@ -791,15 +800,22 @@ def spectral_density_model(wavelengths, settings, params):
     norm = np.linalg.norm(settings["ion_vdir"], axis=-1)
     settings["ion_vdir"] = settings["ion_vdir"] / norm[:, np.newaxis]
 
-
-    if "instr_func" not in settings:
+    if "instr_func" not in settings or settings["instr_func"] is None:
         settings["instr_func_arr"] = None
     else:
-        # Create inst fcn array from instr_func
+        # Create instr_func array from instr_func
         instr_func = settings["instr_func"]
         wspan = (np.max(wavelengths) - np.min(wavelengths)) / 2
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w * u.m)
+
+        if type(instr_func_arr) != np.ndarray:
+            raise ValueError(
+                "instr_func must be a function that returns a "
+                "np.ndarray, but the provided function returns "
+                f" a {type(instr_func_arr)}"
+            )
+
         instr_func_arr *= 1 / np.sum(instr_func_arr)
         settings["instr_func_arr"] = instr_func_arr
 

@@ -14,15 +14,29 @@ from plasmapy.diagnostics import thomson
 from plasmapy.particles import Particle, particle_mass
 
 
-def example_inst_fcn(w):
+def example_instr_func(w):
     """
     Example insturment function for use in testing
+    """
+    sigma = 0.5 * u.nm
+    arg = (w / sigma).to(u.dimensionless_unscaled).value
+    inst = np.exp(-(arg ** 2))
+    inst *= 1 / np.sum(inst)
+    return inst
+
+
+def example_invalid_instr_func(w):
+    """
+    Example insturment function for use in testing
+
+    This insturment function is invalid because it does not return a plain
+    np.ndarray.
     """
     sigma = 0.5 * u.nm
     arg = (w / sigma).to(u.dimensionless_unscaled)
     inst = np.exp(-(arg ** 2))
     inst *= 1 / np.sum(inst)
-    return inst
+    return inst * u.m
 
 
 def width_at_value(x, y, val):
@@ -480,7 +494,7 @@ def test_thomson_with_insturment_function(single_species_collective_args):
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
     alpha, Skw_with = thomson.spectral_density(
-        *args, **kwargs, inst_fcn=example_inst_fcn
+        *args, **kwargs, instr_func=example_instr_func
     )
 
     alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
@@ -489,6 +503,19 @@ def test_thomson_with_insturment_function(single_species_collective_args):
     w1 = width_at_value(wavelengths.value, Skw_with.value, 2e-13)
     w2 = width_at_value(wavelengths.value, Skw_without.value, 2e-13)
     assert w1 > w2
+
+
+def test_thomson_with_invalid_insturment_function(single_species_collective_args):
+    """
+    Verifies that an exception is raised if the provided insturment function
+    does not return a np.ndarray
+    """
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+
+    with pytest.raises(ValueError):
+        alpha, Skw_with = thomson.spectral_density(
+            *args, **kwargs, instr_func=example_invalid_instr_func
+        )
 
 
 def test_param_to_array_fcns():
@@ -564,11 +591,15 @@ def run_fit(
     electron_speed = thomson._params_to_array(params, "electron_speed")
     ion_speed = thomson._params_to_array(params, "ion_speed")
 
+    if "instr_func" not in skeys:
+        settings["instr_func"] = None
+
     # LOAD FROM SETTINGS
     ion_species = settings["ion_species"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     probe_wavelength = settings["probe_wavelength"]
+    instr_func = settings["instr_func"]
 
     try:
         electron_vdir = settings["electron_vdir"]
@@ -597,6 +628,7 @@ def run_fit(
         scatter_vec=scatter_vec,
         electron_vel=electron_vel * u.m / u.s,
         ion_vel=ion_vel * u.m / u.s,
+        instr_func=instr_func,
     )
 
     data = Skw
@@ -654,7 +686,7 @@ def spectral_density_model_settings_params(kwargs):
         "ion_species",
         "electron_vdir",
         "ion_vdir",
-        "inst_fcn",
+        "instr_func",
     ]
 
     params = Parameters()
@@ -901,7 +933,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params):
     run_fit(wavelengths, params, settings)
 
 
-def test_fit_iaw_inst_fcn(iaw_single_species_settings_params):
+def test_fit_iaw_instr_func(iaw_single_species_settings_params):
     """
     Tests fitting with an insturment function
 
@@ -911,7 +943,7 @@ def test_fit_iaw_inst_fcn(iaw_single_species_settings_params):
         iaw_single_species_settings_params
     )
 
-    settings["inst_fcn"] = example_inst_fcn
+    settings["instr_func"] = example_instr_func
 
     run_fit(wavelengths, params, settings)
 
@@ -931,6 +963,24 @@ def test_fit_noncollective_single_species(noncollective_single_species_settings_
     )
 
     run_fit(wavelengths, params, settings)
+
+
+def test_fit_with_instr_func(epw_single_species_settings_params):
+    """
+
+    This test checks that fitting works with an insturment function
+
+    It specifically tests the case where a notch is being used in the filter,
+    because this can cause a potential error with the insturment function.
+
+    """
+    wavelengths, params, settings = spectral_density_model_settings_params(
+        epw_single_species_settings_params
+    )
+
+    settings["instr_func"] = example_instr_func
+
+    run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
 def test_fit_with_minimal_parameters():
@@ -1011,15 +1061,35 @@ def test_fit_with_minimal_parameters():
             ValueError,
             "not provided in settings, but is required",
         ),
-        ({"scatter_vec": None}, ValueError, "not provided in settings, but is required"),
+        (
+            {"scatter_vec": None},
+            ValueError,
+            "not provided in settings, but is required",
+        ),
         ({"probe_vec": None}, ValueError, "not provided in settings, but is required"),
-        ({"ion_species": None}, ValueError, "not provided in settings, but is required"),
+        (
+            {"ion_species": None},
+            ValueError,
+            "not provided in settings, but is required",
+        ),
         # Required parameters
         ({"n": None}, ValueError, "was not provided in parameters, but is required."),
-        ({"Te_0": None}, ValueError, "was not provided in parameters, but is required."),
+        (
+            {"Te_0": None},
+            ValueError,
+            "was not provided in parameters, but is required.",
+        ),
         # Two ion temps are required for this multi-ion example
-        ({"Ti_0": None}, ValueError, "was not provided in parameters, but is required."),
-        ({"Ti_1": None}, ValueError, "was not provided in parameters, but is required."),
+        (
+            {"Ti_0": None},
+            ValueError,
+            "was not provided in parameters, but is required.",
+        ),
+        (
+            {"Ti_1": None},
+            ValueError,
+            "was not provided in parameters, but is required.",
+        ),
         # If speed is not zero, vdir must be set
         (
             {
