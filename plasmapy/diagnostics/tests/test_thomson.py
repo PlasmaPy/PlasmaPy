@@ -498,7 +498,7 @@ def test_param_to_array_fcns():
     """
     params = Parameters()
 
-    # Create two groups of test variabels, one scalars and one vectors
+    # Create two groups of test variables, one of scalars and one of vectors
     prefix = "Te"
     for i in range(3):
         params.add(prefix + f"_{i}", value=2)
@@ -978,14 +978,14 @@ def test_fit_with_minimal_parameters():
 
     # Try creating model: will raise exception because required values
     # are missing in settings, eg. 'probe_wavelength'
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
     # Add back in the required values
     settings["probe_wavelength"] = probe_wavelength.to(u.m).value
 
     # Still raises an exception because Te_0 is still missing
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         model = thomson.spectral_density_model(wavelengths, settings, params)
 
     params.add("n", value=n.to(u.m ** -3).value, vary=False)
@@ -1008,18 +1008,18 @@ def test_fit_with_minimal_parameters():
         # Required settings
         (
             {"probe_wavelength": None},
-            KeyError,
+            ValueError,
             "not provided in settings, but is required",
         ),
-        ({"scatter_vec": None}, KeyError, "not provided in settings, but is required"),
-        ({"probe_vec": None}, KeyError, "not provided in settings, but is required"),
-        ({"ion_species": None}, KeyError, "not provided in settings, but is required"),
+        ({"scatter_vec": None}, ValueError, "not provided in settings, but is required"),
+        ({"probe_vec": None}, ValueError, "not provided in settings, but is required"),
+        ({"ion_species": None}, ValueError, "not provided in settings, but is required"),
         # Required parameters
-        ({"n": None}, KeyError, "was not provided in parameters, but is required."),
-        ({"Te_0": None}, KeyError, "was not provided in parameters, but is required."),
+        ({"n": None}, ValueError, "was not provided in parameters, but is required."),
+        ({"Te_0": None}, ValueError, "was not provided in parameters, but is required."),
         # Two ion temps are required for this multi-ion example
-        ({"Ti_0": None}, KeyError, "was not provided in parameters, but is required."),
-        ({"Ti_1": None}, KeyError, "was not provided in parameters, but is required."),
+        ({"Ti_0": None}, ValueError, "was not provided in parameters, but is required."),
+        ({"Ti_1": None}, ValueError, "was not provided in parameters, but is required."),
         # If speed is not zero, vdir must be set
         (
             {
