@@ -17,16 +17,16 @@ Installing Python
 =================
 
 PlasmaPy requires Python_ 3.8 or newer. If you do not have Python_
-installed already, please follow these instructions to `download
-Python`_ and install it.
+installed already, here are the instructions to `download Python`_ and
+install it.
 
 .. tip::
 
    New versions of Python_ are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
    you have trouble installing `plasmapy` on the most recent Python_
-   version (e.g., 3.11 in late 2022), then try installing it on the
-   second most recent version (e.g., 3.10).
+   version between October and ∼December, then try installing it on the
+   second most recent version.
 
 .. _install-pip:
 
@@ -122,7 +122,7 @@ installation process.
 To test the installation, click on the :guilabel:`▶` icon that should be
 present next to the activated environment, and select
 :guilabel:`Open terminal`. Enter ``python`` in the terminal, and then
-``import plasmapy``.
+``import plasmapy`` to make sure it works.
 
 Installation from source code
 =============================
