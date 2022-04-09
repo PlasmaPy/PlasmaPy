@@ -109,6 +109,7 @@ First, go to the :guilabel:`Environments` tab and select
 :guilabel:`Add`, enter ``https://conda.anaconda.org/conda-forge``, and
 click on :guilabel:`Update channels` and then :guilabel:`Update index`.
 
+.. Is conda-forge now being added by default?
 .. Is clicking on `Update index` actually necessary?
 
 Next, while on the :guilabel:`Environments` tab, select the environment
@@ -118,9 +119,10 @@ a new environment. In the search bar, enter ``plasmapy``. Click on the
 checkbox next to ``plasmapy``, and select :guilabel:`Apply` to begin the
 installation process.
 
-To test the installation, click on the ▶ icon that should be present
-next to the activated environment, and select :guilabel:`Open terminal`.
-Enter ``python`` in the terminal, and then ``import plasmapy``.
+To test the installation, click on the :guilabel:`▶` icon that should be
+present next to the activated environment, and select
+:guilabel:`Open terminal`. Enter ``python`` in the terminal, and then
+``import plasmapy``.
 
 Installation from source code
 =============================
