@@ -5,22 +5,59 @@ Coding Guide
 ************
 
 This guide describes common conventions, guidelines, and strategies for
-contributing code to PlasmaPy. Having a shared coding style makes it
-easier to understand code written by a range of contributors. The
-purpose of this guide is not to provide a set of rigid guidelines that
-must be adhered to, but rather to provide a common framework that helps
-us to develop the package together as a community. The particulars of
-the coding style are not as important as readability, maintainability,
-and consistency. There will be times when it is better to partially
-rather than completely follow these guidelines.
+contributing code to PlasmaPy. The purpose of this guide is not to
+provide a set of rigid guidelines that must be adhered to, but rather to
+provide a common framework that helps us develop PlasmaPy together as a
+community.
+
+Having a shared coding style makes it easier to understand code written
+by multiple contributors. The particulars of the coding style are not as
+important as readability, maintainability, and consistency.
 
 This guide can (and should!) be regularly refined by the PlasmaPy
 community as we collectively learn new practices and our shared coding
-style changes. Revisions to this guide can be proposed by submitting a
-pull request or bringing up an idea at a community meeting.
+style changes. Please feel free to propose revisions to this guide by
+submitting a pull request or bringing up an idea at a community meeting.
+
+Python resources
+================
+
+.. This could go on a separate resources page
+
+* `Python's documentation`_ is the ``GOTO`` place to look up different
+  aspects of the Python_ language.
+
+* The `Python Tutorial`_ provides a thorough introduction to the
+  language.
+
+* The `Python Standard Library`_ contains numerous components. Some of
+  the ones used in PlasmaPy are:
+
+  - `collections` — Container datatypes
+  - `collections.abc` — Abstract base classes
+  - `contextlib` — Utilities for ``with`` statement contexts
+  - `dataclasses` — Data classes
+  - `functools` — Higher-order functions and operations on callable objects
+  - `glob` — Unix style pathname pattern expansion
+  - `inspect` — Inspect live objects
+  - `itertools` — Functions creating iterators for efficient looping
+  - `json` — JSON encoder and decoder
+  - `numbers` — Numeric abstract base classes, often used for type hint annotations
+  - `os` — Miscellaneous operating system interfaces
+  - `pdb` — The Python debugger
+  - `re` — Regular expression operations
+  - `string` — Common string operations
+  - `sys` — System-specific parameters and functions
+  - `typing` — Support for type hints
+  - `warnings` — Warning control
+
+.. _Python Standard Library: https://docs.python.org/3/library/
+.. _Python Tutorial: https://docs.python.org/3/tutorial/index.html
 
 Integrated development environments
 ===================================
+
+.. Move this section to page on getting set up to contribute
 
 An `integrated development environment`_ (IDE) is an application that
 includes multiple tools needed for software development, such as a
@@ -32,12 +69,14 @@ code development much easier. If are learning how to make a contribution
 to an open source project for the first time, you might find it easier
 to use a plain text editor that you are familiar with (e.g., Notepad++,
 Sublime Text, emacs, or vi/vim) for the moment. Alternatively, you can
-find tutorials or videos online for how to contribute to an open source
+find tutorials or videos online for how to contribute to a GitHub
 project with most common IDEs. In the long run, taking the time to learn
 how to use an IDE is well worth it.
 
 Pre-commit
 ==========
+
+.. Move this section to page on getting set up to contribute
 
 PlasmaPy uses the |pre-commit|_ framework to perform validations and
 automatically apply a consistent style to code contributions. Using
@@ -98,11 +137,19 @@ apply the changes to all files.
 Names
 =====
 
-Names are the most fundamental means of communicating the intent and
-purpose of code.
+Names are our most fundamental means of communicating the intent and
+purpose of code. Judicious choices of names can greatly improve the
+understandability of code, while inadequate naming can obfuscate what
+the code is supposed to be doing.
+
+* Most IDEs have a built-in tool for simultaneously renaming all
+  instances of a variable throughout a project, which can save a lot of
+  time. For example, a `rename refactoring in PyCharm`_ can be done with
+  :kbd:`Shift+F6` on Windows or Linux and :kbd:`⇧F6` or :kbd:`⌥⌘R` on
+  macOS.
 
 * Use :pep:`8` conventions for naming variables, functions, classes, and
-  constants (except as described later in this section).
+  constants (except as described later in this list).
 
   - Use lowercase words separated by underscores for function and
     variable names (e.g., ``function_name`` and ``variable_name``).
@@ -118,38 +165,54 @@ purpose of code.
   standard usage in plasma science.  For example, use ``B`` for magnetic
   field strength and ``T`` for temperature.
 
-* Append ``_e`` to the name of a :term:`parameter` to indicate that it
-  refers to electrons and ``_i`` to indicate that it refers to ions
-  (e.g., ``T_e`` and ``T_i``).
+* Functions based on plasma parameters that are named after people may
+  be capitalized (e.g., ``Alfven_speed`` and ``Debye_length``).
 
-* Python allows alphanumeric Unicode characters to be used in variable
+* Append ``_e`` to the name of a :term:`parameter` to indicate that it
+  refers to electrons, ``_i`` to indicate that it refers to ions, and
+  ``_p`` to indicate that it refers to protons (e.g., ``T_e`` and
+  ``T_i``, and ``T_p``).
+
+* Only ASCII_ characters should be used in code that is part of the
+  public API_.
+
+* Python allows alphanumeric Unicode characters to be used in object
   names (e.g., ``πλάσμα`` or ``φυσική``). These characters may be used
   for internal code when doing so improves readability (i.e. to match a
-  symbol used in a paper or a standard symbol). Because non-ASCII
+  symbol used in a paper or a standard symbol). Because non-\ ASCII_
   characters are often difficult to enter on a keyboard, they should be
   avoided in sections of code that are under active development by
-  multiple contributors. However, do not include non-ASCII characters in
-  code that is part of the public API.
+  multiple contributors.
 
-* If a quantity has several names, then the function name should be
-  the one that provides the most physical insight into what the
-  quantity represents.  For example, ``gyrofrequency`` indicates
+* If a plasma parameter has multiple names, then the function name
+  should be the one that provides the most physical insight into what
+  the quantity represents.  For example, ``gyrofrequency`` indicates
   gyration, whereas ``Larmor_frequency`` indicates that this frequency
-  is somehow related to someone named Larmor.  Similarly, using
-  ``omega_ce`` as a function name will make the code less readable to
-  people who are unfamiliar with this particular notation.
+  is somehow related to someone named Larmor.
 
-* Use names that are pronounceable and searchable.
+* Avoid naming functions by spelling out the name of the Greek
+  character, as in
+
+  * Similarly, using ``omega_ce`` as a function name will make the code
+    less readable to people who are unfamiliar with this particular
+    notation.
+
+* Choose names that are pronounceable so that they are easier to
+  remember and more compatible with screen reader (text-to-speech)
+  technology.
+
+* Choose names that are searchable (i.e. doing a web search for a name
+  results in helpful
 
 * Avoid potentially ambiguous names such as ``temp`` and ``t``.
 
-* To mark that an object is not part of PlasmaPy's public API, begin its
+* To mark that an object is not part of PlasmaPy's public API_, begin its
   name with a leading underscore (e.g., ``_private_variable``. Private
   variables should not be included in ``__all__``.
 
 * In most situations, avoid single character variable names. Single
   character variable names may be used for standard plasma physics
-  symbols (i.e., ``B``) or as indices in `for` loops (though more
+  symbols (i.e., ``B``) or as indices in ``for`` loops (though more
   descriptive names are preferred).
 
 * Intermediate variable names can provide additional context and
@@ -169,14 +232,23 @@ purpose of code.
 
      if point_in_grid_cell: ...
 
+* In general, avoid encoding type information in a variable name.
+
 * Avoid unnecessary abbreviations, as these can make code more difficult
   to read. Clarity is more important than brevity, except for code that
-  is frequently used interactively.
+  is used frequently and interactively (e.g., :command:`ls` or
+  :command:`cd` in the Unix shell).
 
 .. tip::
 
    Measure the length of a variable not by the number of characters, but
    rather by the time needed to understand its meaning.
+
+   By this measure, |cggglm|_ is significantly longer than
+   ``solve_gauss_markov_linear_model``.
+
+.. _cggglm: http://www.netlib.org/lapack/explore-html/d9/d98/group__complex_o_t_h_e_reigen_ga4be128ffc05552459683f0aade5a7937.html
+.. |cggglm| replace:: ``cggglm``
 
 Imports
 =======
@@ -218,7 +290,7 @@ Imports
 Units
 =====
 
-* PlasmaPy uses |astropy.units| to give physical units to values in the
+* PlasmaPy uses |astropy.units|_ to give physical units to values in the
   form of a |Quantity|.
 
   .. code-block:: pycon
@@ -227,12 +299,11 @@ Units
      >>> 5 * u.m / u.s
      <Quantity 5. m / s>
 
-  Non-standard unit conversions can be made using equivalencies_.
+  Using |astropy.units| improves compatibility with Python packages in
+  adjacent fields such as astronomy and heliophysics.
 
-* Use SI units within PlasmaPy, except when there is a strong reason to
-  use CGS or other units.
-
-  * Example notebooks should occasionally use non-SI units.
+* Use SI units within PlasmaPy, unless there is a strong justification
+  to do otherwise. Example notebooks may use other unit systems.
 
 * Use |Unit| annotations with the |validate_quantities| decorator to
   validate |Quantity| arguments and return values.
@@ -248,8 +319,18 @@ Units
      def inertial_length(n: u.m ** -3, ...) -> u.m:
          ...
 
-* Avoid using electron-volts as a unit of temperature within PlasmaPy,
-  but allow arguments provided to a function
+* Avoid using electron-volts as a unit of temperature within PlasmaPy
+  because it is defined as a unit of energy. However, functions in
+  `plasmapy.formulary` and elsewhere should accept temperatures in units
+  of electron-volts, which can be done using |validate_quantities|.
+
+* Non-standard unit conversions can be made using equivalencies_ such
+  as `~astropy.units.temperature_energy`.
+
+  .. code-block:: pycon
+
+     >>> (1 * u.eV).to(u.K, equivalencies=u.temperature_energy())
+     11604.518...
 
 * Do not capitalize the names of units except at the beginning of a
   sentence, including when they are named after a person (except for
@@ -258,11 +339,39 @@ Units
 * Use operations between |Quantity| objects except when needed for
   performance.
 
+* To improve performance in |Quantity| operations,
 
 Particles
 =========
 
-* Use the |particle_input| decorator...
+* The |Particle| class provides an object-oriented interface for
+  accessing basic particle data. |Particle| accepts
+  :term:`particle-like` inputs.
+
+  .. code-block:: pycon
+
+     >>> from plasmapy.particles import Particle
+     >>> alpha = Particle("He-4 2+")
+     >>> alpha.mass
+     <Quantity 6.6446...e-27 kg>
+     >>> alpha.charge
+     <Quantity 3.20435...e-19 C>
+
+* The |particle_input| decorator can automatically transform a
+  :term:`particle-like` :term:`argument` into a |Particle| instance, if
+  the corresponding :term:`parameter` is decorated with |Particle|.
+
+  .. code-block::
+
+     from plasmapy.particles import particle_input, Particle
+
+     @particle_input
+     def recombine(ion: Particle):
+          # ion is now a Particle instance
+          return ion.recombine()
+
+  The documentation for |particle_input| describes ways to ensure that
+  the particle meets certain categorization criteria.
 
 Equations and physical formulae
 ===============================
@@ -271,28 +380,25 @@ Equations and physical formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
->>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
+  .. code-block:: pycon
+
+     >>> omega_ce = 1.76e7*(B/u.G)*u.rad/u.s   # doctest: +SKIP
 
   In contrast, the following line of code shows the exact formula
   which makes the code much more readable.
 
->>> omega_ce = B * e / (m_e * c)       # doctest: +SKIP
+  .. code-block:: pycon
 
-  The origins of numerical coefficients in formulae should be
-  documented.
+     >>> omega_ce = B * e / (m_e * c)  # doctest: +SKIP
 
-Temperature/energy equivalency
-------------------------------
+* The origins of numerical coefficients in formulae should generally be
+  described in comments or in the docstring.
 
+* References for equations should be included in the |bibliography|, as
+  described in the |documentation guide|.
 
 Coding style
 ============
-
-* Do not include any significant implementation code in
-  :file:`__init__.py` files. Put any substantial functionality into a
-  separate file.
-
-* Use the `property` :term:`decorator` instead of getters and setters.
 
 * Use formatted string literals (f-strings) instead of legacy formatting
   for strings.
@@ -318,56 +424,171 @@ Coding style
      >>> function()
      ['x', 'x']
 
+* Use the `property` :term:`decorator` instead of getters and setters.
+
 * Limit usage of `lambda` functions to one-liners. For anything longer
-  than that, use a nested function.
+  than that, define a function with ``def`` instead.
 
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
   we cannot tell which is the electron temperature and which is the ion
   temperature without going to the function itself.
 
-  .. code-block:: pycon
+  .. code-block:: python
 
      f(1e6 * u.K, 2e6 * u.K)
 
   Spell out the :term:`parameter` names to improve readability and
   reduce the likelihood of errors.
 
-  .. code-block::
+  .. code-block:: python
 
      f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
 
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
   these parameters should be make :term:`keyword-only`.
 
-* When designing a class, a comparison for equality should return
-  `False` rather than raise an exception.
-
-.. note::
-
-   Add the license for the google style guide, maybe?
+* The ``__eq__`` and ``__ne__`` methods of a class should not raise
+  exceptions. If the comparison for equality is being made between
+  objects of different types, these methods should return `False`
+  instead. This behavior is for consistency with operations like
+  ``1 == "1"`` which will return `False`.
 
 * List and dictionary comprehensions should be used for simple ``for``
-  loops: ``squares_of_even_numbers = [x**2 for x in range(20) if x % 2 == 0]``.
+  loops, like:
 
-* In most cases, global variables should be avoided.
+  .. code-block:: pycon
 
+     >>> [x ** 2 for x in range(17) if x % 2 == 0]
+     [0, 4, 16, 36, 64, 100, 144, 196, 256]
+     >>> {x: x ** 2 for x in range(17) if x % 2 == 0}
+     {0: 0, 2: 4, 4: 16, 6: 36, 8: 64, 10: 100, 12: 144, 14: 196, 16: 256}
+
+* Avoid using global variables.
+
+* Avoid putting any significant implementation code in
+  :file:`__init__.py` files. Implementation details should be contained
+  in a different file, and then imported into :file:`__init__.py`.
+
+Aliases
+=======
+
+An :term:`alias` is an abbreviated version of a commonly used function
+that is intended for interactive use. For example,
+`~plasmapy.formulary.speeds.va_` is an alias to
+`~plasmapy.formulary.speeds.Alfven_speed`.
+
+* Aliases should only be defined for the most commonly used functions.
+
+* An alias should be defined immediately after the original function.
+
+* The name of an alias should in some way indicate what the alias is
+  for. For example, `~plasmapy.formulary.lengths.cwp_` is a shortcut for
+  for :math:`c/ω_p`\ .
+
+* The name of an alias should end with a trailing underscore.
+
+* Each alias should have a one-line docstring that refers users to the
+  original function.
+
+* The name of the main function should be included in ``__all__`` near
+  the top of each module, and the name of the alias should be included
+  in ``__aliases__``, which will then get appended to ``__all__``.
+
+Here is a sketch of an implementation of
+`~plasmapy.formulary.lengths.lambdaD_` as an alias for
+`~plasmapy.formulary.lengths.Debye_length` from
+`plasmapy.formulary.lengths`:
+
+.. code-block:: python
+
+   __all__ = ["Debye_length"]
+   __aliases__ = ["lambdaD_"]
+
+   __all__ += __aliases__
+
+   def Debye_length(...):
+       ...
+
+   lambdaD_ = Debye_length
+   """Alias to `~plasmapy.formulary.lengths.Debye_length`."""
+
+Lite Functions
+==============
+
+Most functions in `plasmapy.formulary` use |astropy.units|_ to attach
+units to values in the form of a |Quantity|, and also perform checks to
+make sure that each :term:`argument` that is provided to a function is
+valid. The use of |Quantity| operations and validations do not have a
+noticeable performance penalty during typical interactive use, but the
+performance penalty can become substantial for numerically intensive
+applications.
+
+A :term:`lite-function` is a lite weight version of another
+`plasmapy` function. Most lite-functions are defined in
+`plasmapy.formulary`.
+
+* The name of each lite-function should end with ``_lite``. For example,
+  `~plasmapy.formulary.speeds.thermal_speed_lite` is the lite-function
+  associated with `~plasmapy.formulary.speeds.thermal_speed`.
+
+* Lite-functions assume the appropriate SI units for any numbers.
+
+* Lite-functions should be defined immediately before the normal version
+  of the function.
+
+* Lite-functions are bound to their normal version as the ``lite``
+  attribute using the `~plasmapy.utils.decorators.bind_lite_func`
+  decorator.
+
+* A lite-function should usually be decorated with `numba.njit` (or the
+  like) as a just-in-time compiler. If a decorator from `numba` is not
+  able to be used, then it might be possible to use Cython_.
+
+Here is a sketch of an implementation of a lite-function:
+
+.. code-block:: python
+
+   __all__ = ["plasma_frequency"]
+   __lite_funcs__ = ["plasma_frequency_lite"]
+
+   from numba import njit
+
+   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+
+   __all__ += __lite_funcs__
+
+   @preserve_signature
+   @njit
+   def plasma_frequency_lite(n, ...) -> Real:
+       ...
+
+   @bind_lite_func(plasma_frequency_lite)
+   def plasma_frequency(n, ...):
+       ...
 
 Comments
 ========
 
-Comments are not inherently good. As code evolves, an unmaintained
-comment may become outdated or get separated from the section of code
-that it was meant to describe. Cryptic comments may end up confusing
-contributors. In the worst case, an unmaintained comment may contain
-inaccurate or misleading information. At the same time, a well-placed
-comment can prevent future frustrations.
+A well-placed and well-written comment can prevent future frustrations.
+However, comments are not inherent good. As code evolves, an
+unmaintained comment may become outdated or get separated from the
+section of code that it was meant to describe. Cryptic comments may end
+up confusing contributors. In the worst case, an unmaintained comment
+may contain inaccurate or misleading information.
 
 * Refactor code to make it more readable, rather than explaining how it
   works.
 
-* When a comment is used to define the variable, try renaming the
+* When a comment is used to define a variable, try renaming the
   variable to encode its meaning and intent.
+
+  .. code-block:: python
+
+     # collision frequency
+     nu = 1e6 * u.s ** -1
+
+     collision_frequency = 1e6 * u.s ** -1
 
 * Use comments to communicate information that you wish you knew before
   starting to work on a particular section of code, including
@@ -497,13 +718,14 @@ Requirements
   the scientific Python ecosystem, and has been adopted by upstream
   packages such as `numpy`, `matplotlib`, and `astropy`.
 
-  - Tools like pyupgrade_ may be used to automatically upgrade the code
-    base to the minimum supported version of Python for the next
-    release.
+  .. tip::
+
+     Tools like pyupgrade_ help automatically upgrade the code base to
+     the minimum supported version of Python for the next release.
 
 * In general, it is preferable to support minor releases of dependencies
   from the last ≲ 24 months, unless there is a new feature in a
-  dependency that would be beneficial for `plasmapy` development.
+  dependency that would be greatly beneficial for `plasmapy` development.
 
 * Avoid setting maximum requirements such as ``sphinx <= 2.4.4`` because
   this can lead to version conflicts when PlasmaPy is installed
@@ -515,8 +737,10 @@ Requirements
   year. However, it may take a few months before packages like NumPy_
   and Numba_ become compatible with the newest minor version of Python_.
 
+.. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _Atom: https://atom.io
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _extract function refactoring pattern: https://refactoring.guru/extract-method
 .. _integrated development environment: https://en.wikipedia.org/wiki/Integrated_development_environment
 .. _nbqa: https://nbqa.readthedocs.io
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
@@ -524,4 +748,5 @@ Requirements
 .. _pull the changes: https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository#pulling-changes-from-a-remote-repository
 .. _PyCharm: https://www.jetbrains.com/pycharm
 .. _pyupgrade: https://github.com/asottile/pyupgrade
+.. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
 .. _Visual Studio Code: https://code.visualstudio.com
