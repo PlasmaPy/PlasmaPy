@@ -75,7 +75,6 @@
 .. Astropy replacements
 .. --------------------
 
-.. |astropy.units| replace:: https://docs.astropy.org/en/stable/units/index.html
 .. |Quantity| replace:: :class:`~astropy.units.Quantity`
 .. |Time| replace:: :class:`~astropy.time.Time`
 .. |TimeDelta| replace:: :class:`~astropy.time.TimeDelta`
@@ -101,6 +100,7 @@
 .. Websites
 .. --------
 
+.. _API: https://en.wikipedia.org/wiki/API
 .. _Astropy docs: https://docs.astropy.org
 .. _Astropy: https://www.astropy.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
@@ -170,6 +170,9 @@
    formatted like a file but will be a link. In the text, these get used
    with the syntax for a substitution followed by an underscore to
    indicate that it's for a link: |docs/_static|_
+
+.. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
+.. |astropy.units| replace:: `astropy.units`
 
 .. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static| replace:: :file:`docs/_static`
