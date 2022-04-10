@@ -10,9 +10,9 @@ Glossary
    :sorted:
 
    alias
-      An abbreviated version of a commonly used function from
-      `plasmapy.formulary`. Aliases are named with a trailing underscore
-      (e.g., `~plasmapy.formulary.speeds.cs_`).
+      An abbreviated version of a commonly used function that is
+      intended primarily for interactive use. Aliases are named with a
+      trailing underscore (e.g., `~plasmapy.formulary.speeds.cs_`).
 
    args
       An abbreviation for `positional arguments`_.
