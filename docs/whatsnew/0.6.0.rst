@@ -129,10 +129,9 @@ Features
 - Added method `~plasmapy.plasma.grids.AbstractGrid.require_quantities` to
   `~plasmapy.plasma.grids.AbstractGrid` that verifies a list of quantities is present
   on the grid.  Method is also incorporated into
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
+  ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph``. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - Added the
-  `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph.add_wire_mesh()`
-  method to `~plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`
+  ``add_wire_mesh()`` method to ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`
   to allow the creation of synthetic proton radiographs that include a wire mesh
   reference grid. (`#1049 <https://github.com/plasmapy/plasmapy/pull/1049>`__)
 - Created a function, `~plasmapy.formulary.mathematics.rot_a_to_b`, that calculates
