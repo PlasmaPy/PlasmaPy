@@ -68,7 +68,7 @@ class AbstractFitFunction(ABC):
 
     def __call__(self, x, x_err=None, reterr=False):
         """
-        Direct call of the fit function :math:`f(x)``.
+        Direct call of the fit function :math:`f(x)`.
 
         Parameters
         ----------
@@ -517,7 +517,7 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         y: array_like
-            dependent variables corresponding to `:math:``x``
+            dependent variables corresponding to :math:`x`
 
         """
         x = self._check_x(x)
