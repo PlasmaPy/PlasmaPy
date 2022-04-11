@@ -137,7 +137,7 @@ class BasicRegistrationFactory:
         """Register a widget with the factory.
 
         If `validation_function` is not specified, tests `WidgetType` for
-        existence of any function in in the list `self.validation_functions`,
+        existence of any function in the list `self.validation_functions`,
         which is a list of strings which must be callable class attribute
 
         Parameters

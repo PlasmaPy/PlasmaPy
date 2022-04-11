@@ -1849,7 +1849,7 @@ class DimensionlessParticle(AbstractParticle):
     See Also
     --------
     ~plasmapy.particles.particle_class.Particle
-    ~plasmapy.particles.CustomParticle
+    ~plasmapy.particles.particle_class.CustomParticle
 
     Notes
     -----
@@ -2244,7 +2244,7 @@ class CustomParticle(AbstractPhysicalParticle):
         This method will return `True` if ``other`` is an identical
         |CustomParticle| instance with the same mass charge and symbol,
         and return `False` if ``other`` differs on any of these attributes,
-        or an other type.
+        or another type.
         """
 
         if not isinstance(other, self.__class__):
