@@ -1,5 +1,5 @@
 """
-Common distribution functions for plasmas, such as the Maxwelian or
+Common distribution functions for plasmas, such as the Maxwellian or
 Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
@@ -148,8 +148,8 @@ def Maxwellian_velocity_2D(
     distribution in 2D.
 
     Return the probability density function for finding a particle with
-    velocity components `vx` and `vy` in m/s in an equilibrium plasma of
-    temperature `T` which follows the 2D Maxwellian distribution function.
+    velocity components ``vx`` and ``vy`` in m/s in an equilibrium plasma of
+    temperature ``T`` which follows the 2D Maxwellian distribution function.
     This function assumes Cartesian coordinates.
 
     Parameters
@@ -662,8 +662,8 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
+        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`
@@ -762,8 +762,8 @@ def Maxwellian_speed_3D(v, T, particle="e", v_drift=0, vTh=np.nan, units="units"
 
 def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="units"):
     r"""
-    Return the probability density at the velocity `v` in m/s
-    to find a particle `particle` in a plasma of temperature `T`
+    Return the probability density at the velocity ``v`` in m/s
+    to find a particle ``particle`` in a plasma of temperature ``T``
     following the Kappa distribution function in 1D. The slope of the
     tail of the Kappa distribution function is set by 'kappa', which
     must be greater than :math:`1/2`.
@@ -783,8 +783,8 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
         than :math:`3/2`.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., `'p` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for :math:`He_4^{+1}`
+        Representation of the particle species(e.g., ``'p`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`, optional
@@ -792,7 +792,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
 
     vTh : `~astropy.units.Quantity`, optional
         Thermal velocity (most probable) in m/s. This is used for
-        optimization purposes to avoid re-calculating `vTh`, for example
+        optimization purposes to avoid re-calculating ``vTh``, for example
         when integrating over velocity-space.
 
     units : `str`, optional
