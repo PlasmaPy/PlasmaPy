@@ -299,6 +299,8 @@ nitpick_ignore_regex = [
     (python_role, "Real"),
     (python_role, "iterable"),
     (python_role, "key"),
+    (python_role, "_pytest.*"),
+    (python_role, "Failed"),
     # most of the following should be removable after plasmapy_sphinx
     # is moved to its own package
     (python_role, "automod.*"),
