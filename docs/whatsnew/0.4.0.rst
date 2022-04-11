@@ -38,7 +38,7 @@ Features
 - Create :func:`~plasmapy.formulary.relativity.relativistic_energy` function, which uses the established :func:`~plasmapy.formulary.relativity.Lorentz_factor` function to aid in the calculation of the relativistic energy of an object. (`#805 <https://github.com/plasmapy/plasmapy/pull/805>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Reynolds_number` function. (`#815 <https://github.com/plasmapy/plasmapy/pull/815>`__)
 - Create :func:`~plasmapy.formulary.dimensionless.Mag_Reynolds` function. (`#820 <https://github.com/plasmapy/plasmapy/pull/820>`__)
-- Create ``~plasmapy.formulary.parameters.Bohm_diffusion`` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
+- Create ``plasmapy.formulary.parameters.Bohm_diffusion`` function. (`#830 <https://github.com/plasmapy/plasmapy/pull/830>`__)
 - Added a new diagnostics module ``thomson`` containing a function
   ``spectral_density`` that calculates Thomson scattering spectra for
   Maxwellian plasmas in both the collective and non-collective regimes. As
