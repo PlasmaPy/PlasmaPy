@@ -119,6 +119,7 @@ intersphinx_mapping = {
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
+    "mpmath": ("https://mpmath.org/doc/current/", None),
 }
 hoverxref_intersphinx = [
     "readthedocs",
@@ -270,22 +271,36 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+# Specify patterns to ignore when doing a nitpicky documentation build.
+# These may include common expressions like "real number" as well as
+# workarounds
+
+python_role = "py:.*"
+
 nitpick_ignore_regex = [
-    ("py:.*", "array_like"),
-    ("py:.*", "optional"),
-    ("py:.*", "keyword-only"),
-    ("py:.*", "IPython.sphinxext.ipython_console_highlighting"),
-    ("py:.*", "nbsphinx"),
-    ("py:.*", ".*integer.*"),
-    ("py:.*", ".*real number.*"),
-    ("py:.*", "sphinx"),
-    ("py:.*", "sphinx_changelog"),
-    ("py:.*", "sphinxcontrib-bibtex"),
-    ("py:.*", "sphinx_copybutton"),
-    ("py:.*", "sphinx_gallery.load_style"),
-    ("py:.*", "sphinx-hoverxref"),
-    ("py:.*", "Unit.*"),
-    ("py:.*", "xarray"),
+    (python_role, "and"),
+    (python_role, "array_like"),
+    (python_role, "callable"),
+    (python_role, "dictionary.*"),
+    (python_role, "function"),
+    (python_role, "optional"),
+    (python_role, "keyword-only"),
+    (python_role, "IPython.sphinxext.ipython_console_highlighting"),
+    (python_role, "nbsphinx"),
+    (python_role, "or"),
+    (python_role, ".*integer.*"),
+    (python_role, ".*real number.*"),
+    (python_role, ".*Unit.*"),
+    (python_role, "xarray"),
+    # for plasmapy_sphinx
+    (python_role, "automod.*"),
+    (python_role, "Builder"),
+    (python_role, "docutils.*"),
+    (python_role, "level"),
+    (python_role, "py"),
+    (python_role, ".*member.*"),
+    (python_role, "OptionSpec"),
+    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in common_links.rst
 ]
 
 # -- Options for HTML output ----------------------------------------------
