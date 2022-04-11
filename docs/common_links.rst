@@ -209,3 +209,6 @@
 
 .. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
 .. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
+
+.. _xarray: https://docs.xarray.dev
+.. |xarray| replace:: `xarray`
