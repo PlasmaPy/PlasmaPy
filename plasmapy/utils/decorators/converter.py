@@ -37,9 +37,9 @@ def angular_freq_to_hz(fn):
     Notes
     -----
     * If `~plasmapy.utils.decorators.converted.angular_freq_to_hz` is used with decorator
-      :func:`~plasmapy.utils.decorators.validate_quantities`, then
+      :func:`~plasmapy.utils.decorators.validators.validate_quantities`, then
       `angular_freq_to_hz` should be used inside
-      :func:`~plasmapy.utils.decorators.validate_quantities` but special
+      :func:`~plasmapy.utils.decorators.validators.validate_quantities` but special
       consideration is needed for setup.  The following is an example of an
       appropriate setup::
 

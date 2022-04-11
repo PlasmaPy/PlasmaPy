@@ -439,7 +439,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     -----
     * Validation of function arguments ``*args`` and ``**kwargs`` is not supported.
     * `None` values will pass when `None` is included in the list of specified units,
-      is set as a default value for the function argument, or `none_shall_pass` is
+      is set as a default value for the function argument, or ``none_shall_pass`` is
       set to `True`.  If ``none_shall_pass`` is doubly/triply defined through the
       mentioned options, then they all must be consistent with each other.
     * If units are not specified in ``validations``, then the decorator will attempt
