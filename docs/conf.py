@@ -199,7 +199,7 @@ exclude_patterns = [
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-default_role = "obj"
+default_role = "py:obj"
 
 # Customizations for make linkcheck using regular expressions
 linkcheck_allowed_redirects = {
