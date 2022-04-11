@@ -290,6 +290,7 @@ nitpick_ignore_regex = [
     (python_role, "or"),
     (python_role, ".*integer.*"),
     (python_role, ".*real number.*"),
+    (python_role, ".*representation.*"),
     (python_role, ".*Unit.*"),
     (python_role, "xarray"),
     # most of the following should be removable after plasmapy_sphinx
