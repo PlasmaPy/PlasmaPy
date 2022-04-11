@@ -635,7 +635,8 @@ def run_fit(
     if notch is not None:
         x0 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[0]))
         x1 = np.argmin(np.abs(wavelengths.to(u.m).value * 1e9 - notch[1]))
-        data[x0:x1] = np.nan
+        data = np.delete(data, np.arange(x0, x1))
+        wavelengths = np.delete(wavelengths, np.arange(x0, x1))
 
     data *= 1 + np.random.normal(loc=0, scale=noise_amp, size=wavelengths.size)
     data *= 1 / np.nanmax(data)
@@ -980,7 +981,11 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
 
     settings["instr_func"] = example_instr_func
 
-    run_fit(wavelengths, params, settings, notch=(531, 533))
+    # Warns that data should not include any NaNs
+    # This is taken care of in run_fit by deleting the notch region rather than
+    # replacing it with np.NaN
+    with pytest.warns(UserWarning, match="If an insturment function is included"):
+        run_fit(wavelengths, params, settings, notch=(531, 533))
 
 
 def test_fit_with_minimal_parameters():

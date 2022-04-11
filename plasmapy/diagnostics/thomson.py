@@ -13,6 +13,7 @@ import astropy.units as u
 import numbers
 import numpy as np
 import re
+import warnings
 
 from lmfit import Model
 from typing import List, Tuple, Union
@@ -680,27 +681,33 @@ def spectral_density_model(wavelengths, settings, params):
     Spectral density (optimization function)
 
 
+    Notes
+    -----
+
+    If an insturment function is included, the data should not include any
+    `numpy.nan` values - instead regions with no data should be removed from
+    both the data and wavelength arrays using `numpy.delete`.
+
     """
 
     # required settings
-    if (
-        not_defined := {
-            "probe_wavelength",
-            "probe_vec",
-            "scatter_vec",
-            "ion_species",
-        }
-        - set(settings)
-    ):
+    req_settings = {
+        "probe_wavelength",
+        "probe_vec",
+        "scatter_vec",
+        "ion_species",
+    }
+    if req_settings - set(settings) != set():
         raise ValueError(
-            f"Setting(s) {not_defined} was(were) not provided in kwarg 'settings', "
+            f"Setting(s) {req_settings - set(settings)} was(were) not provided in kwarg 'settings', "
             f"but is(are) required."
         )
 
     # required parameters
-    if not_defined := {"n"} - set(params):
+    req_params = {"n"}
+    if req_params - set(params) != set():
         raise ValueError(
-            f"Parameter(s) {not_defined} was(were) not provided in kwarg 'params', "
+            f"Parameter(s) {req_params} was(were) not provided in kwarg 'params', "
             f"but is(are) required."
         )
 
@@ -818,6 +825,14 @@ def spectral_density_model(wavelengths, settings, params):
 
         instr_func_arr *= 1 / np.sum(instr_func_arr)
         settings["instr_func_arr"] = instr_func_arr
+
+        warnings.warn(
+            "If an insturment function is included, the data "
+            "should not include any `numpy.nan` values. "
+            "Instead regions with no data should be removed from "
+            "both the data and wavelength arrays using "
+            " `numpy.delete`."
+        )
 
     # TODO: raise an exception if the number of any of the ion or electron
     #       quantities isn't consistent with the number of that species defined
