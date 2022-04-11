@@ -317,7 +317,7 @@ class Tracker:
             The size of the mesh grid (in the mesh plane). If one value
             is provided, the mesh is circular and the value provided is
             interpreted as the diameter. If two values are provided, the
-            mesh is rectangular and they the values are interpreted as the
+            mesh is rectangular and the values are interpreted as the
             width and height respectively.
 
         nwires : Tuple of 1 or 2 ints, or a single int
@@ -334,7 +334,7 @@ class Tracker:
             direction on the mesh plane. Modifying this vector can rotate the
             mesh in the plane or tilt the mesh plane relative to the
             source-detector axis. By default, ``mesh_hdir`` is set equal to
-            `detector_hdir` (see `detector_hdir` keyword in ``__init__``).
+            ``detector_hdir`` (see ``detector_hdir`` keyword in ``__init__``).
 
         mesh_vdir : `numpy.ndarray`, shape (3), optional
             A unit vector (in Cartesian coordinates) defining the vertical
@@ -583,7 +583,7 @@ class Tracker:
             Units must be convertible to radians.
 
         particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -690,9 +690,9 @@ class Tracker:
                    left unpreturbed,they will form a uniform pattern
                    on the detection plane.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
