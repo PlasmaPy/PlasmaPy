@@ -85,9 +85,10 @@ def run_test(
     ----------
     func: callable, list, or tuple
         The callable to be tested.  The first (and sole) argument to
-        `~plasmapy.utils.pytest_helpers.run_test` may alternatively be a
-        `list` or `tuple` containing these arguments (optionally
-        omitting ``kwargs`` if the `len` returns 3).
+        `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+        may alternatively be a `list` or `tuple` containing these
+        arguments (optionally omitting ``kwargs`` if the `len` returns
+        3).
 
     args: tuple or object
         The positional arguments to ``func``.
@@ -142,19 +143,19 @@ def run_test(
 
     Examples
     --------
-    The simplest way to use `~plasmapy.utils.run_test` is with inputs
-    for the function to be tests, the positional arguments in a `tuple`
-    or `list`, the keyword arguments in a `dict`, and then finally the
-    expected result or outcome.
+    The simplest way to use `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+    is with inputs for the function to be tests, the positional arguments
+    in a `tuple` or `list`, the keyword arguments in a `dict`, and then
+    finally the expected result or outcome.
 
     >>> args = tuple()
     >>> kwargs = dict()
     >>> run_test(lambda: 0, args, kwargs, 0)
 
     If ``expected`` is an exception or warning, then
-    `~plasmapy.utils.pytest_helpers.run_test` will raise an exception if
-    the expected exception is not raised or the expected warning is not
-    issued.
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test` will raise
+    an exception if the expected exception is not raised or the expected
+    warning is not issued.
 
     >>> from warnings import warn
 
@@ -164,9 +165,9 @@ def run_test(
     >>> def raise_exception(): raise RuntimeError
     >>> run_test(raise_exception, args, kwargs, RuntimeError)
 
-    For warnings, `~plasmapy.utils.pytest_helpers.run_test` can accept a
-    `tuple` of two items where the first item is the expected result and
-    the second item is the expected warning.
+    For warnings, `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test`
+    can accept a `tuple` of two items where the first item is the
+    expected result and the second item is the expected warning.
 
     .. code-block:: python
 
@@ -185,8 +186,8 @@ def run_test(
     >>> run_test(inputs)
 
     If the `tuple` or `list` has a length of ``3``, then
-    `~plasmapy.utils.pytest_helpers.run_test` assumes that ``kwargs`` is
-    missing.
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test` assumes
+    that ``kwargs`` is missing.
 
     >>> inputs_without_kwargs = [return_arg, 42, 42]
     >>> run_test(inputs_without_kwargs)
@@ -448,9 +449,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     Examples
     --------
     There are several possible formats that can be accepted by this
-    `~plasmapy.utils.run_test_equivalent_calls` to test that different
-    combinations of functions (or other callable objects), positional
-    arguments, and keyword arguments return equivalent results.
+    `~plasmapy.utils.pytest_helpers.pytest_helpers.run_test_equivalent_calls`
+    to test that different combinations of functions (or other callable
+    objects), positional arguments, and keyword arguments return
+    equivalent results.
 
     To test a single function that takes a single positional argument,
     then ``test_inputs`` may be the function followed by an arbitrary
