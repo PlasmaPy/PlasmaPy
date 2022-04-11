@@ -422,7 +422,7 @@ class AbstractFitFunction(ABC):
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
-        the attributes :attr:`parameters`, :attr:`parameters_err`, and
+        the attributes :attr:`params`, :attr:`params_err`, and
         :attr:`rsq`.
 
         The results of `scipy.optimize.curve_fit` can be obtained via
@@ -590,11 +590,11 @@ class Linear(AbstractFitFunction):
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`params_err`.
         """
         m, b = self.params
 
@@ -618,7 +618,7 @@ class Linear(AbstractFitFunction):
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes
-        :attr:`parameters`, :attr:`parameters_err`, and :attr:`rsq`.
+        :attr:`params`, :attr:`params_err`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
         :attr:`curve_fit_results`.
@@ -767,11 +767,11 @@ class Exponential(AbstractFitFunction):
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`params_err`.
         """
 
         return _RootResults(np.nan, np.nan)
@@ -1058,11 +1058,11 @@ class ExponentialPlusOffset(AbstractFitFunction):
         Returns
         -------
         root: float
-            The root value for the given fit :attr:`parameters`.
+            The root value for the given fit :attr:`params`.
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`parameters` and :attr:`parameters_err`.
+            :attr:`params` and :attr:`params_err`.
         """
         a, alpha, b = self.params
         a_err, b_err, c_err = self.param_errors
