@@ -25,8 +25,8 @@ class ParticleTracker:
         Plasma from which fields can be pulled.
 
     type : `str`
-        Particle type. See `plasmapy.particles.ParticleLike` for suitable
-        arguments. The default is a proton.
+        Particle type. See `plasmapy.particles.particle_class.ParticleLike`
+        for suitable arguments. The default is a proton.
 
     n_particles : `int`
         Number of macroparticles. The default is a single particle.
