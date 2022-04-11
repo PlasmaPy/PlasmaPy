@@ -500,7 +500,7 @@ def spectral_density(
                 "The shape of the array returned from the "
                 f"instr_func ({instr_func_arr.shape}) "
                 "does not match the shape of the wavelengths "
-                "array ({wavelengths.shape})."
+                f"array ({wavelengths.shape})."
             )
 
         instr_func_arr *= 1 / np.sum(instr_func_arr)
@@ -838,7 +838,7 @@ def spectral_density_model(wavelengths, settings, params):
                 "The shape of the array returned from the "
                 f"instr_func ({instr_func_arr.shape}) "
                 "does not match the shape of the wavelengths "
-                "array ({wavelengths.shape})."
+                f"array ({wavelengths.shape})."
             )
 
         instr_func_arr *= 1 / np.sum(instr_func_arr)
