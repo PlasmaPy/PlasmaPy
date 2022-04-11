@@ -61,7 +61,8 @@ Defined in `plasmapy.plasma.sources` are a set of
 `~plasmapy.plasma.plasma_base.GenericPlasma` subclasses which convert the
 keyword arguments data to the standard
 `~plasmapy.plasma.plasma_base.GenericPlasma` interface. These subclasses also
-provide a method, which describes to the `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory
+provide a method, which describes to the
+`Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory
 which the data match its plasma data structure.
 
 .. automodapi:: plasmapy.plasma
