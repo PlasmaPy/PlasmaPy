@@ -457,8 +457,6 @@ def Mag_Reynolds(U: u.m / u.s, L: u.m, sigma: u.S / u.m) -> u.dimensionless_unsc
     `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
 
-
-
     Examples
     --------
     >>> import astropy.units as u
