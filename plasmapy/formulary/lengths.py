@@ -74,7 +74,7 @@ def Debye_length(T_e: u.K, n_e: u.m ** -3) -> u.m:
 
     See Also
     --------
-    Debye_number
+    ~plasmapy.formulary.dimensionless.Debye_number
 
     Examples
     --------
