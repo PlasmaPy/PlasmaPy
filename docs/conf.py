@@ -119,8 +119,8 @@ intersphinx_mapping = {
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numba": ("https://numba.readthedocs.io/en/stable/", None),
-    "mpmath": ("https://mpmath.org/doc/current/", None),
 }
+
 hoverxref_intersphinx = [
     "readthedocs",
     "python",
