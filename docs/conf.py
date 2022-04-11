@@ -292,7 +292,9 @@ nitpick_ignore_regex = [
     (python_role, ".*real number.*"),
     (python_role, ".*representation.*"),
     (python_role, ".*Unit.*"),
+    (python_role, "shape.*"),
     (python_role, "xarray"),
+    (python_role, "array .*"),
     # most of the following should be removable after plasmapy_sphinx
     # is moved to its own package
     (python_role, "automod.*"),
