@@ -1778,10 +1778,10 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        ~plasmapy.particles.InvalidElementError
+        ~plasmapy.particles.exceptions.InvalidElementError
             If the |Particle| is not an element.
 
-        ~plasmapy.particles.ChargeError
+        ~plasmapy.particles.exceptions.ChargeError
             If no charge information for the |Particle| object is
             specified.
 
@@ -2442,8 +2442,8 @@ instances, are particle-like.
 
 See Also
 --------
-Particle
-CustomParticle
+~plasmapy.particles.particle_class.Particle
+~plasmapy.particles.particle_class.CustomParticle
 ~plasmapy.particles.decorators.particle_input
 
 Examples
