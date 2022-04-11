@@ -25,7 +25,7 @@ def example_instr_func(w):
     return inst
 
 
-def example_invalid_instr_func(w):
+def example_invalid_instr_func_bad_type(w):
     """
     Example insturment function for use in testing
 
@@ -37,6 +37,27 @@ def example_invalid_instr_func(w):
     inst = np.exp(-(arg ** 2))
     inst *= 1 / np.sum(inst)
     return inst * u.m
+
+
+def example_invalid_instr_func_bad_shape(w):
+    """
+    Example insturment function for use in testing
+
+    This insturment function is invalid because it returns an array of a
+    different shape than the provided wavelength array
+    """
+    sigma = 0.5 * u.nm
+    arg = (w / sigma).to(u.dimensionless_unscaled)
+    inst = np.exp(-(arg ** 2))
+    inst *= 1 / np.sum(inst)
+    return inst[2:]
+
+
+# A list of invalid insturment functions
+invalid_instr_func_list = [
+    (example_invalid_instr_func_bad_type),
+    (example_invalid_instr_func_bad_shape),
+]
 
 
 def width_at_value(x, y, val):
@@ -505,16 +526,20 @@ def test_thomson_with_insturment_function(single_species_collective_args):
     assert w1 > w2
 
 
-def test_thomson_with_invalid_insturment_function(single_species_collective_args):
+@pytest.mark.parametrize("instr_func", invalid_instr_func_list)
+def test_thomson_with_invalid_insturment_function(
+    instr_func,
+    single_species_collective_args,
+):
     """
     Verifies that an exception is raised if the provided insturment function
-    does not return a np.ndarray
+    is invalid.
     """
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
     with pytest.raises(ValueError):
         alpha, Skw_with = thomson.spectral_density(
-            *args, **kwargs, instr_func=example_invalid_instr_func
+            *args, **kwargs, instr_func=example_invalid_instr_func_bad_type
         )
 
 
@@ -985,6 +1010,22 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
     # This is taken care of in run_fit by deleting the notch region rather than
     # replacing it with np.NaN
     with pytest.warns(UserWarning, match="If an insturment function is included"):
+        run_fit(wavelengths, params, settings, notch=(531, 533))
+
+
+@pytest.mark.parametrize("instr_func", invalid_instr_func_list)
+def test_fit_with_invalid_instr_func(instr_func, epw_single_species_settings_params):
+    """
+    Verifies that an exception is raised if the provided insturment function
+    is invalid.
+    """
+    wavelengths, params, settings = spectral_density_model_settings_params(
+        epw_single_species_settings_params
+    )
+
+    settings["instr_func"] = instr_func
+
+    with pytest.raises(ValueError):
         run_fit(wavelengths, params, settings, notch=(531, 533))
 
 

@@ -495,6 +495,14 @@ def spectral_density(
                 f" a {type(instr_func_arr)}"
             )
 
+        if wavelengths.shape != instr_func_arr.shape:
+            raise ValueError(
+                "The shape of the array returned from the "
+                f"instr_func ({instr_func_arr.shape}) "
+                "does not match the shape of the wavelengths "
+                "array ({wavelengths.shape})."
+            )
+
         instr_func_arr *= 1 / np.sum(instr_func_arr)
     else:
         instr_func_arr = None
@@ -823,6 +831,14 @@ def spectral_density_model(wavelengths, settings, params):
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
                 f" a {type(instr_func_arr)}"
+            )
+
+        if wavelengths.shape != instr_func_arr.shape:
+            raise ValueError(
+                "The shape of the array returned from the "
+                f"instr_func ({instr_func_arr.shape}) "
+                "does not match the shape of the wavelengths "
+                "array ({wavelengths.shape})."
             )
 
         instr_func_arr *= 1 / np.sum(instr_func_arr)
