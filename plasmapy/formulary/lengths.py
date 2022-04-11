@@ -122,8 +122,8 @@ def gyroradius(
         The magnetic field magnitude in units convertible to tesla.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., `'p'` for protons, `'D+'`
-        for deuterium, or `'He-4 +1'` for singly ionized helium-4).  If no
+        Representation of the particle species (e.g., ``'p'`` for protons, ``'D+'``
+        for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).  If no
         charge state information is provided, then the particles are assumed
         to be singly charged.
 
@@ -136,7 +136,7 @@ def gyroradius(
 
     T_i : `~astropy.units.Quantity`, optional, keyword-only
         The particle temperature in units convertible to kelvin.
-        Note: Deprecated. Use T instead.
+        Note: Deprecated. Use ``T`` instead.
 
     Returns
     -------

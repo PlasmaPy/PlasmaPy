@@ -102,7 +102,7 @@ def gyrofrequency(B: u.T, particle: Particle, signed=False, Z=None) -> u.rad / u
 
     The recommended way to convert from angular frequency to frequency
     is to use an equivalency between cycles per second and hertz, as
-    Astropy's `~astropy.units.dimensionles_angles` equivalency does not
+    Astropy's `~astropy.units.dimensionless_angles` equivalency does not
     account for the factor of :math:`2π` needed during this conversion.  The
     `~astropy.units.dimensionless_angles` equivalency is appropriate
     when dividing a velocity by an angular frequency to get a length scale.
