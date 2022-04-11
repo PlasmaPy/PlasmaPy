@@ -28,7 +28,7 @@ analyzing data.  Diagnostics try to enhance the analysis workflow by focusing
 on some of following key areas...
 
 #. A more human-friendly way of managing data by building an interface around
-   `xarray` arrays and datasets via custom diagnostic accessors.
+   |xarray|_ arrays and datasets via custom diagnostic accessors.
 
    - |xarray|_ provides labelled multi-dimensional arrays and datasets.
    - Diagnostics self-manage the computed analysis data within a |xarray|_
