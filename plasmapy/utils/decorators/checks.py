@@ -60,7 +60,7 @@ class CheckBase:
 
 class CheckValues(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the values of input and return
+    A decorator class to 'check' — limit/control — the values of input and return
     arguments to a function or method.
 
     Parameters
@@ -330,7 +330,7 @@ class CheckValues(CheckBase):
 
 class CheckUnits(CheckBase):
     """
-    A decorator class to 'check' -- limit/control -- the units of input and return
+    A decorator class to 'check' — limit/control — the units of input and return
     arguments to a function or method.
 
     Parameters
