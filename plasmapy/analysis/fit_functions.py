@@ -1,5 +1,5 @@
 """
-`FitFunction` classes designed to assist in curve fitting of swept Langmuir
+``FitFunction`` classes designed to assist in curve fitting of swept Langmuir
 traces.
 """
 __all__ = [
@@ -220,7 +220,7 @@ class AbstractFitFunction(ABC):
     def FitParamTuple(self):
         """
         A `~collections.namedtuple` used for attributes :attr:`params` and
-        :attr:`param_errors`.  The attribute :attr:`parameter_names` defines
+        :attr:`param_errors`.  The attribute :attr:`param_names` defines
         the tuple field names.
         """
         return self._FitParamTuple
@@ -422,7 +422,7 @@ class AbstractFitFunction(ABC):
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
-        the attributes :attr:`params`, :attr:`params_err`, and
+        the attributes :attr:`params`, :attr:`param_errors`, and
         :attr:`rsq`.
 
         The results of `scipy.optimize.curve_fit` can be obtained via
@@ -594,7 +594,7 @@ class Linear(AbstractFitFunction):
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`params` and :attr:`params_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         m, b = self.params
 
@@ -618,7 +618,7 @@ class Linear(AbstractFitFunction):
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes
-        :attr:`params`, :attr:`params_err`, and :attr:`rsq`.
+        :attr:`params`, :attr:`param_errors`, and :attr:`rsq`.
 
         The results of `scipy.stats.linregress` can be obtained via
         :attr:`curve_fit_results`.
@@ -771,7 +771,7 @@ class Exponential(AbstractFitFunction):
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`params` and :attr:`params_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
 
         return _RootResults(np.nan, np.nan)
@@ -1062,7 +1062,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
 
         err: float
             The uncertainty in the calculated root for the given fit
-            :attr:`params` and :attr:`params_err`.
+            :attr:`params` and :attr:`param_errors`.
         """
         a, alpha, b = self.params
         a_err, b_err, c_err = self.param_errors
