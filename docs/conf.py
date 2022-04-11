@@ -273,7 +273,7 @@ hoverxref_role_types = {
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
-# workarounds
+# workarounds for nested inline literals as defined in docs/common_links.py
 
 python_role = "py:.*"
 
@@ -292,7 +292,8 @@ nitpick_ignore_regex = [
     (python_role, ".*real number.*"),
     (python_role, ".*Unit.*"),
     (python_role, "xarray"),
-    # for plasmapy_sphinx
+    # most of the following should be removable after plasmapy_sphinx
+    # is moved to its own package
     (python_role, "automod.*"),
     (python_role, "Builder"),
     (python_role, "docutils.*"),
