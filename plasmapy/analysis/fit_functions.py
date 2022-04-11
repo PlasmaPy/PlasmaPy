@@ -633,7 +633,7 @@ class Linear(AbstractFitFunction):
             The dependent data associated with ``xdata``.
 
         **kwargs
-            Any keywords accepted by `scipy.stats.linregress.curve_fit`.
+            Any keywords accepted by `scipy.optimize.curve_fit`.
 
         """
         results = linregress(xdata, ydata)
