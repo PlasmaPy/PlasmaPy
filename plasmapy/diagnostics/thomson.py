@@ -699,7 +699,8 @@ def spectral_density_model(wavelengths, settings, params):
     }
     if req_settings - set(settings) != set():
         raise ValueError(
-            f"Setting(s) {req_settings - set(settings)} was(were) not provided in kwarg 'settings', "
+            f"Setting(s) {req_settings - set(settings)} was(were) not "
+            "provided in kwarg 'settings', "
             f"but is(are) required."
         )
 
@@ -707,7 +708,8 @@ def spectral_density_model(wavelengths, settings, params):
     req_params = {"n"}
     if req_params - set(params) != set():
         raise ValueError(
-            f"Parameter(s) {req_params} was(were) not provided in kwarg 'params', "
+            f"Parameter(s) {req_params - set(params)} was(were) not "
+            " provided in kwarg 'params', "
             f"but is(are) required."
         )
 
