@@ -858,7 +858,7 @@ class Particle(AbstractPhysicalParticle):
         The roman numeral represents one plus the charge number. Raise
         `~plasmapy.particles.exceptions.ChargeError` if no charge has
         been specified and
-        `~plasmapy.utils.roman.OutOfRangeError` if the charge is
+        `~plasmapy.utils.exceptions.OutOfRangeError` if the charge is
         negative.
 
         Examples
