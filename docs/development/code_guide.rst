@@ -22,7 +22,7 @@ submitting a pull request or bringing up an idea at a community meeting.
 Python resources
 ================
 
-.. This could go on a separate resources page
+.. This section could be moved to a separate page on resources.
 
 * `Python's documentation`_ is the ``GOTO`` place to look up different
   aspects of the Python_ language.
@@ -162,7 +162,7 @@ the code is supposed to be doing.
     (e.g., ``CONSTANT`` or ``CONSTANT_NAME``).
 
 * Use a capital letter for a :term:`parameter` when it matches the
-  standard usage in plasma science.  For example, use ``B`` for magnetic
+  standard usage in plasma science. For example, use ``B`` for magnetic
   field strength and ``T`` for temperature.
 
 * Functions based on plasma parameters that are named after people may
@@ -186,7 +186,7 @@ the code is supposed to be doing.
 
 * If a plasma parameter has multiple names, then the function name
   should be the one that provides the most physical insight into what
-  the quantity represents.  For example, ``gyrofrequency`` indicates
+  the quantity represents. For example, ``gyrofrequency`` indicates
   gyration, whereas ``Larmor_frequency`` indicates that this frequency
   is somehow related to someone named Larmor.
 
@@ -271,7 +271,7 @@ Imports
   For frequently used objects (e.g., |Particle|), using the full
   namespace will increase the clutter of the code without providing
   commensurately more information. This is also true for objects used as
-  type hint annotations.  For example, ``Optional[Union[Real, Complex]``
+  type hint annotations. For example, ``Optional[Union[Real, Complex]``
   is more understandable than
   ``typing.Optional[typing.Union[numbers.Real, numbers.Complex]]``.
 
@@ -417,8 +417,8 @@ Coding style
   .. code:: pycon
 
      >>> def function(l=[]):
-     ...    l.append("x")
-     ...    print(l)
+     ...     l.append("x")
+     ...     print(l)
      >>> function()
      ['x']
      >>> function()
@@ -426,8 +426,10 @@ Coding style
 
 * Use the `property` :term:`decorator` instead of getters and setters.
 
-* Limit usage of `lambda` functions to one-liners. For anything longer
-  than that, define a function with ``def`` instead.
+* Only use `lambda` functions for one-liners that are only used near
+  where they are defined (e.g., when defining the default factory for a
+  `~collections.defaultdict`). For anything longer than one line, define
+  a define a function with ``def`` instead.
 
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
@@ -446,7 +448,13 @@ Coding style
      f(T_i = 1e6 * u.K, T_e = 2e6 * u.K)
 
   Similarly, when a function has parameters named ``T_e`` and ``T_i``,
-  these parameters should be make :term:`keyword-only`.
+  these parameters should be make :term:`keyword-only` to avoid
+  ambiguity and reduce the chance of errors.
+
+  .. code-block::
+
+     def f(*, T_i, T_e):
+         ...
 
 * The ``__eq__`` and ``__ne__`` methods of a class should not raise
   exceptions. If the comparison for equality is being made between
@@ -495,23 +503,21 @@ that is intended for interactive use. For example,
   the top of each module, and the name of the alias should be included
   in ``__aliases__``, which will then get appended to ``__all__``.
 
-Here is a sketch of an implementation of
-`~plasmapy.formulary.lengths.lambdaD_` as an alias for
-`~plasmapy.formulary.lengths.Debye_length` from
-`plasmapy.formulary.lengths`:
+Here is a minimal example of an alias ``f_`` that would be for
+``plasmapy.subpackage.module.function``.
 
 .. code-block:: python
 
-   __all__ = ["Debye_length"]
-   __aliases__ = ["lambdaD_"]
+   __all__ = ["function"]
+   __aliases__ = ["f_"]
 
    __all__ += __aliases__
 
-   def Debye_length(...):
+   def function():
        ...
 
-   lambdaD_ = Debye_length
-   """Alias to `~plasmapy.formulary.lengths.Debye_length`."""
+   f_ = function
+   """Alias to `~plasmapy.subpackage.module.function`."""
 
 Lite Functions
 ==============
@@ -524,15 +530,16 @@ noticeable performance penalty during typical interactive use, but the
 performance penalty can become substantial for numerically intensive
 applications.
 
-A :term:`lite-function` is a lite weight version of another
-`plasmapy` function. Most lite-functions are defined in
-`plasmapy.formulary`.
+A :term:`lite-function` is a lite weight version of another `plasmapy`
+function. Most lite-functions are defined in `plasmapy.formulary`.
 
-* The name of each lite-function should end with ``_lite``. For example,
+* The name of each lite-function should be the name of the original
+  function with ``_lite`` appended at the end. For example,
   `~plasmapy.formulary.speeds.thermal_speed_lite` is the lite-function
   associated with `~plasmapy.formulary.speeds.thermal_speed`.
 
-* Lite-functions assume the appropriate SI units for any numbers.
+* Lite-functions assume SI units for all of arguments that represent
+  physical quantities.
 
 * Lite-functions should be defined immediately before the normal version
   of the function.
@@ -541,30 +548,38 @@ A :term:`lite-function` is a lite weight version of another
   attribute using the `~plasmapy.utils.decorators.bind_lite_func`
   decorator.
 
+* Each lite-function should be decorated with
+  `~plasmapy.utils.decorators.preserve_signature`.
+
 * A lite-function should usually be decorated with `numba.njit` (or the
   like) as a just-in-time compiler. If a decorator from `numba` is not
   able to be used, then it might be possible to use Cython_.
 
-Here is a sketch of an implementation of a lite-function:
+The following is a minimal implementation of a lite-function.
 
 .. code-block:: python
 
-   __all__ = ["plasma_frequency"]
-   __lite_funcs__ = ["plasma_frequency_lite"]
+   __all__ = ["function"]
+   __lite_funcs__ = ["function_lite"]
 
    from numba import njit
-
+   from numbers import Real
    from plasmapy.utils.decorators import bind_lite_func, preserve_signature
 
    __all__ += __lite_funcs__
 
    @preserve_signature
    @njit
-   def plasma_frequency_lite(n, ...) -> Real:
+   def function_lite(v: Real) -> Real:
+       """
+       The lite-function which accepts and returns real numbers in
+       assumed SI units.
+       """
        ...
 
-   @bind_lite_func(plasma_frequency_lite)
-   def plasma_frequency(n, ...):
+   @bind_lite_func(function_lite)
+   def function(v):
+       """A function that accepts and returns Quantity arguments."""
        ...
 
 Comments
@@ -698,7 +713,7 @@ Requirements
     requirements.
 
   - The ``build-system.requires`` section of |pyproject.toml|_ includes
-    the requirements for building PlasmaPy.  This section should mirror
+    the requirements for building PlasmaPy. This section should mirror
     :file:`requirements/build.txt`.
 
   - |setup.cfg|_ includes sections for the install, docs, tests, and

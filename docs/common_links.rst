@@ -108,6 +108,7 @@
 .. _black: https://black.readthedocs.io
 .. _Conda: https://docs.conda.io
 .. _CSS: https://en.wikipedia.org/wiki/CSS
+.. _Cython: https://cython.org/
 .. _docstring: https://en.wikipedia.org/wiki/Docstring
 .. _DOI: https://www.doi.org
 .. _flake8: https://flake8.pycqa.org/en/latest
