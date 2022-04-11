@@ -92,12 +92,9 @@ The :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` class is a
 basic structure to contain just plasma parameter information about a
 plasma with no associated spatial or temporal scales.  To initialize a
 :class:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob` system, call
-it with arguments: electron temperature
-:attr:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob.T_e`,
-and electron density :attr:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob.n_e`.
-You may also optionally define the ionization,
-:attr:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob.Z`, and relevant plasma
-particle, :attr:`~plasmapy.plasma.sources.plasmablob.PlasmaBlob.particle`.
+it with arguments: electron temperature (``T_e``) and electron density
+(``n_e``). You may also optionally define the ionization (``Z``), and
+relevant plasma particle (``particle``).
 
 .. note::
 
