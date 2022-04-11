@@ -850,7 +850,7 @@ def kappa_velocity_1D(v, T, kappa, particle="e", v_drift=0, vTh=np.nan, units="u
     See Also
     --------
     kappa_velocity_3D
-    kappa_thermal_speed
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
@@ -997,7 +997,7 @@ def kappa_velocity_3D(
     See Also
     --------
     kappa_velocity_1D
-    kappa_thermal_speed
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
 
     Examples
     --------
