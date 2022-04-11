@@ -1263,7 +1263,7 @@ def check_relativistic(func=None, betafrac=0.05):
 
     betafrac : float, optional
         The minimum fraction of the speed of light that will raise a
-        `~plasmapy.utils.RelativityWarning`. Defaults to 5%.
+        `~plasmapy.utils.exceptions.RelativityWarning`. Defaults to 5%.
 
     Returns
     -------
@@ -1297,7 +1297,7 @@ def check_relativistic(func=None, betafrac=0.05):
     ... def speed():
     ...     return 1 * u.m / u.s
 
-    Passing in a custom `betafrac`:
+    Passing in a custom ``betafrac``:
 
     >>> @check_relativistic(betafrac=0.01)
     ... def speed():
