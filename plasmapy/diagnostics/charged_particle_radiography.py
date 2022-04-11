@@ -102,7 +102,7 @@ class Tracker:
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
         can also be specified in cartesian, cylindrical, or spherical
-        coordinates (see the `source` keyword).
+        coordinates (see the ``source`` keyword).
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -333,14 +333,14 @@ class Tracker:
             A unit vector (in Cartesian coordinates) defining the horizontal
             direction on the mesh plane. Modifying this vector can rotate the
             mesh in the plane or tilt the mesh plane relative to the
-            source-detector axis. By default, `mesh_hdir` is set equal to
-            `detector_hdir` (see `detector_hdir` keyword in `__init__`).
+            source-detector axis. By default, ``mesh_hdir`` is set equal to
+            `detector_hdir` (see `detector_hdir` keyword in ``__init__``).
 
         mesh_vdir : `numpy.ndarray`, shape (3), optional
             A unit vector (in Cartesian coordinates) defining the vertical
             direction on the mesh plane. Modifying this vector can tilt the
-            mesh relative to the source-detector axis. By default, `mesh_vdir`
-            is defined to be perpendicular to `mesh_hdir` and the detector
+            mesh relative to the source-detector axis. By default, ``mesh_vdir``
+            is defined to be perpendicular to ``mesh_hdir`` and the detector
             plane normal (such that the mesh is parallel to the detector plane).
 
         Raises
@@ -582,7 +582,7 @@ class Tracker:
             guess will be made based on the size of the grid.
             Units must be convertible to radians.
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
             Representation of the particle species as either a `Particle` object
             or a string representation. The default particle is protons.
 
@@ -596,13 +596,13 @@ class Tracker:
                 - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
-                   requires that `nparticles` be a perfect square. If it is not,
-                   `nparticles` will be set as the largest perfect square smaller
-                   than the provided `nparticles`.
+                   requires that ``nparticles`` be a perfect square. If it is not,
+                   ``nparticles`` will be set as the largest perfect square smaller
+                   than the provided ``nparticles``.
 
-            Simulations run in the `uniform` mode will imprint a grid pattern
+            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is `monte-carlo`
+            smaller number of particles. The default is ``'monte-carlo'``.
 
 
         """
@@ -675,8 +675,8 @@ class Tracker:
         v: `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : ~plasmapy.particles.Particle or string representation of same, optional
-            Representation of the particle species as either a `Particle` object
+        particle : ~plasmapy.particles.particle_class.Particle or string representation of same, optional
+            Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
 
         distribution: str
@@ -1000,7 +1000,7 @@ class Tracker:
 
         Returns
         -------
-        None.
+        None
 
         """
 
