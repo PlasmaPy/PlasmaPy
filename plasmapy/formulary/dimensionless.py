@@ -403,7 +403,7 @@ def Reynolds_number(
 
     Returns
     -------
-    Re: `~astropy.Quantity`
+    Re: `~astropy.units.Quantity`
         Dimensionless quantity.
 
     """
