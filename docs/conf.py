@@ -270,6 +270,11 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+nitpick_ignore = [
+    ("py:obj", "optional"),
+    ("py:obj", "keyword-only"),
+]
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
