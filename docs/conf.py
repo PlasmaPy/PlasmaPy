@@ -270,9 +270,22 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
-nitpick_ignore = [
-    ("py:obj", "optional"),
-    ("py:obj", "keyword-only"),
+nitpick_ignore_regex = [
+    ("py:.*", "array_like"),
+    ("py:.*", "optional"),
+    ("py:.*", "keyword-only"),
+    ("py:.*", "IPython.sphinxext.ipython_console_highlighting"),
+    ("py:.*", "nbsphinx"),
+    ("py:.*", ".*integer.*"),
+    ("py:.*", ".*real number.*"),
+    ("py:.*", "sphinx"),
+    ("py:.*", "sphinx_changelog"),
+    ("py:.*", "sphinxcontrib-bibtex"),
+    ("py:.*", "sphinx_copybutton"),
+    ("py:.*", "sphinx_gallery.load_style"),
+    ("py:.*", "sphinx-hoverxref"),
+    ("py:.*", "Unit.*"),
+    ("py:.*", "xarray"),
 ]
 
 # -- Options for HTML output ----------------------------------------------
