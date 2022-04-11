@@ -117,7 +117,7 @@ def Coulomb_logarithm(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1127,7 +1127,7 @@ def fundamental_electron_collision_freq(
     coulomb_log : `float` or dimensionless `~astropy.units.Quantity`, optional
         Option to specify a Coulomb logarithm of the electrons on the
         ions.  If not specified, the Coulomb log will is calculated
-        using the `~plasmapy.formulary.Coulomb_logarithm` function.
+        using the `~plasmapy.formulary.collisions.Coulomb_logarithm` function.
 
     coulomb_log_method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The
@@ -1430,7 +1430,7 @@ def mean_free_path(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
@@ -1682,7 +1682,7 @@ def mobility(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    : `~plasmapy.utils.RelativityWarning`
+    : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
     Notes
