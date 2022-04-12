@@ -364,7 +364,7 @@ def permittivity_1D_Maxwellian(
     >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, z_mean)
     <Quantity -6.72809...e-08+5.76037...e-07j>
 
-    For user convience
+    For user convenience
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite`
     is bound to this function and can be used as follows:
 
