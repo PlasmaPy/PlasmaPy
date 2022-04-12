@@ -317,8 +317,11 @@ nitpick_ignore_regex = [
     (python_role, "OptionSpec"),
     (python_role, "py"),
     (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
-    # the following are patterns that should be addressed in the future
+    # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
+    (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
+    (python_role, "plasmapy.particles.particle_collections"),
+    (python_role, "plasmapy.utils.decorators.lite_func"),
 ]
 
 # -- Options for HTML output ----------------------------------------------

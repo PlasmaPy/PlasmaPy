@@ -109,8 +109,7 @@ Writing a new Plasma subclass
 -----------------------------
 
 Any subclass of `~plasmapy.plasma.plasma_base.GenericPlasma` which defines a
-method named `~plasmapy.plasma.plasma_base.GenericPlasma.is_datasource_for` will
-automatically be registered with the
+method named ``is_datasource_for`` will automatically be registered with the
 `Plasma <plasmapy.plasma.plasma_factory.PlasmaFactory>` factory. The
 ``is_datasource_for`` method describes the form of the data for which
 the `~plasmapy.plasma.plasma_base.GenericPlasma` subclass is valid. For example,
