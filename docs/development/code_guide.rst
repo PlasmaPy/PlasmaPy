@@ -337,9 +337,14 @@ Units
   "degree Celsius").
 
 * Use operations between |Quantity| objects except when needed for
-  performance.
+  performance. To improve performance in |Quantity| operations, check
+  out
 
-* To improve performance in |Quantity| operations,
+* All units packages available in Python have some limitations. For
+  example, some NumPy and SciPy operations silently drop units. Many of
+  the limitations of Python units packages are being resolved over time,
+  but many of the limitations still exist and require changes in
+  upstream packages.
 
 Particles
 =========
@@ -396,6 +401,29 @@ Equations and physical formulae
 
 * References for equations should be included in the |bibliography|, as
   described in the |documentation guide|.
+
+
+
+Angular Frequencies
+===================
+
+Unit conversions involving angles must be treated with care.  Angles
+are dimensionless but do have units.  Angular velocity is often given
+in units of radians per second, though dimensionally this is
+equivalent to inverse seconds.  Astropy will treat radians
+dimensionlessly when using the ``dimensionless_angles`` equivalency,
+but ``dimensionless_angles`` does not account for the multiplicative
+factor of ``2*pi`` that is used when converting between frequency (1 /
+s) and angular frequency (rad / s).  An explicit way to do this
+conversion is to set up an equivalency between cycles/s and Hz:
+
+>>> from astropy import units as u
+>>> f_ce = omega_ce.to(u.Hz, equivalencies=[(u.cy/u.s, u.Hz)])   # doctest: +SKIP
+
+However, ``dimensionless_angles`` does work when dividing a velocity
+by an angular frequency to get a length scale:
+
+>>> d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())    # doctest: +SKIP
 
 Coding style
 ============
@@ -751,6 +779,41 @@ Requirements
 * Minor versions of Python are generally released in October of each
   year. However, it may take a few months before packages like NumPy_
   and Numba_ become compatible with the newest minor version of Python_.
+
+
+.. Need to update the following section, or move it to doc_guide.rst
+   The example_notebook link is used in doc_guide.rst.
+
+.. _example_notebooks:
+
+Examples
+========
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+
+Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
+of their mature ecosystems. They are located in `docs/notebooks`_. |nbsphinx|_
+takes care of executing them at documentation build time and including them
+in the documentation.
+
+Please note that it is necessary to store notebooks with their outputs stripped
+(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All Output -> Clear" option in the "classic" Jupyter Notebook). This accomplishes two goals:
+
+1. helps with versioning the notebooks, as binary image data is not stored in
+   the notebook
+2. signals |nbsphinx|_ that it should execute the notebook.
+
+.. note::
+
+  In the future, verifying and running this step may be automated via a GitHub bot.
+  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
+
+If you have an example notebook that includes packages unavailable in the
+documentation building environment (e.g., `bokeh`) or runs some heavy
+computation that should not be executed on every commit, *keep the outputs in
+the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
+`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _Atom: https://atom.io
