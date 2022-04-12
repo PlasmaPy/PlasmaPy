@@ -127,17 +127,17 @@ present next to the activated environment, and select
 Installation from source code
 =============================
 
-Obtaining source code
----------------------
-
-Official releases
-^^^^^^^^^^^^^^^^^
+Obtaining official releases
+---------------------------
 
 A ZIP_ file containing the source code for official releases of
 `plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
 
-GitHub repository
-^^^^^^^^^^^^^^^^^
+Alternatively, official releases since 0.7.0 can be downloaded from
+`PlasmaPy's GitHub Repository`_ by using the :guilabel:`Releases` tab.
+
+Obtaining source code from GitHub
+---------------------------------
 
 If you have git_ installed on your computer, you may clone `PlasmaPy's
 GitHub repository`_ and access the source code from the most recent
