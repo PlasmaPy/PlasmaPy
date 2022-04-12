@@ -279,26 +279,24 @@ python_role = "py:.*"
 
 nitpick_ignore_regex = [
     (python_role, "and"),
+    (python_role, "array .*"),
     (python_role, "array_like"),
     (python_role, "callable"),
     (python_role, "dictionary.*"),
     (python_role, "function"),
-    (python_role, "optional"),
-    (python_role, "keyword-only"),
-    (python_role, "IPython.sphinxext.ipython_console_highlighting"),
-    (python_role, "nbsphinx"),
-    (python_role, "or"),
     (python_role, ".*integer.*"),
-    (python_role, ".*real number.*"),
-    (python_role, ".*representation.*"),
-    (python_role, ".*Unit.*"),
-    (python_role, "u\..*"),
-    (python_role, "shape.*"),
-    (python_role, "xarray"),
-    (python_role, "array .*"),
-    (python_role, "Real"),
     (python_role, "iterable"),
     (python_role, "key"),
+    (python_role, "keyword-only"),
+    (python_role, ".* object"),
+    (python_role, "optional"),
+    (python_role, "or"),
+    (python_role, "Real"),
+    (python_role, ".*real number.*"),
+    (python_role, ".*representation.*"),
+    (python_role, "shape.*"),
+    (python_role, "u\..*"),
+    (python_role, ".*Unit.*"),
     # pytest helpers
     (python_role, "_pytest.*"),
     (python_role, "Failed"),
@@ -306,16 +304,21 @@ nitpick_ignore_regex = [
     (python_role, "2 ints"),
     (python_role, "a single int"),
     (python_role, "Tuple of 1"),
-    # most of the following should be removable after plasmapy_sphinx
-    # is moved to its own package
+    # for reST workarounds defined in docs/common_links.rst
+    (python_role, "IPython.sphinxext.ipython_console_highlighting"),
+    (python_role, "nbsphinx"),
+    (python_role, "xarray"),
+    # plasmapy_sphinx
     (python_role, "automod.*"),
     (python_role, "Builder"),
     (python_role, "docutils.*"),
     (python_role, "level"),
-    (python_role, "py"),
     (python_role, ".*member.*"),
     (python_role, "OptionSpec"),
-    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in common_links.rst
+    (python_role, "py"),
+    (python_role, "[Ss]phinx.*"),  # also for reST workarounds in docs/common_links.rst
+    # the following are patterns that should be addressed in the future
+    (python_role, "json.decoder.JSONDecoder"),
 ]
 
 # -- Options for HTML output ----------------------------------------------
