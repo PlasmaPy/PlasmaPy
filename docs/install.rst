@@ -60,8 +60,8 @@ For more detailed information, please refer to this tutorial on
 
 .. _install-conda:
 
-Installation with Conda
-=======================
+Installing PlasmaPy with Conda
+==============================
 
 Conda_ is a package management system and environment manager that is
 commonly used in the scientific Python_ ecosystem. Conda_ lets us create
@@ -138,8 +138,8 @@ present next to the activated environment, and select
 :guilabel:`Open terminal`. Enter ``python`` in the terminal, and then
 ``import plasmapy`` to make sure it works.
 
-Installation from source code
-=============================
+Installing PlasmaPy from source code
+====================================
 
 Obtaining official releases
 ---------------------------
