@@ -6,7 +6,9 @@ and online at https://docs.plasmapy.org (accessible also using the
 """
 __all__ = [
     "online_help",
+    "analysis",
     "diagnostics",
+    "dispersion",
     "formulary",
     "particles",
     "plasma",
