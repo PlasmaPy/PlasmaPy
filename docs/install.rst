@@ -63,7 +63,7 @@ into an activated Conda_ environment by opening a terminal and running:
    conda install -c conda-forge plasmapy
 
 Here ``-c conda-forge`` indicates that `plasmapy` should be installed
-from conda-forge_.
+from the conda-forge_ channel.
 
 To install `plasmapy` into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
@@ -75,7 +75,7 @@ To create a new environment with `plasmapy` installed in it, run:
 
     conda create -n env_name -c conda-forge plasmapy
 
-where :samp:`env_name` is replaced by the name of the environment. To
+where :samp:`{env_name}` is replaced by the name of the environment. To
 activate this environment, run:
 
 .. code-block:: bash
