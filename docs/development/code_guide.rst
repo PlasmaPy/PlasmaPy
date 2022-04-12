@@ -18,13 +18,13 @@ TL;DR: use pre-commit
 
 PlasmaPy has a configuration for the `pre-commit framework
 <https://pre-commit.com/>`_ that takes care of style mostly automatically.
-Install it with `pip install pre-commit`, then use `pre-commit install` within
+Install it with ``pip install pre-commit``, then use ``pre-commit install`` within
 the repository.
 
 This will cause pre-commit to download the right versions of linters we use,
 then run an automated style checking suite on every commit.  Do note that this
-works better with a `git add`, then `git commit` workflow than a `git commit
--a` workflow — that way, you can check via `git diff` what the automated
+works better with a ``git add``, then ``git commit`` workflow than a ``git commit
+-a`` workflow — that way, you can check via ``git diff`` what the automated
 changes actually did.
 
 Note that the "Style linters / pre-commit (pull_request)" part of our
@@ -42,7 +42,7 @@ It includes
 * isort_ to automatically sort imports.
 * `nbqa <https://github.com/nbQA-dev/nbQA>`_ to automatically apply the above
   to example notebooks as well.
-* a few tools for `requirements.txt`, `.yml` files and the like.
+* a few tools for :file:`requirements.txt`, :file:`.yml` files and the like.
 
 PlasmaPy Code Style Guide, codified
 -----------------------------------
@@ -79,7 +79,7 @@ PlasmaPy Code Style Guide, codified
   imports such as ``from ..particles import Particle``.
 
 * Use ``Optional[type]`` for type hinted keyword arguments with a
-  default value of ``None``.
+  default value of `None`.
 
 * There should be at least one pun per 1284 lines of code.
 
@@ -106,9 +106,9 @@ branch for the specific feature that you would like to work on:
 
   git branch *your-new-feature*
 
-Descriptive branch names such as `grad-shafranov` or
-`adding-eigenfunction-poetry` are helpful, while vague names like
-`edits` are considered harmful.  After creating your branch locally,
+Descriptive branch names such as ``grad-shafranov`` or
+``adding-eigenfunction-poetry`` are helpful, while vague names like
+``edits`` are considered harmful.  After creating your branch locally,
 let your fork of PlasmaPy know about it by running:
 
 .. code-block:: bash
