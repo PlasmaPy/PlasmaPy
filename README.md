@@ -40,6 +40,7 @@
 [good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22
 [Google Summer of Code]: https://summerofcode.withgoogle.com
 [hack week]: https://doi.org/10.1073/pnas.1717196115
+[how to install plasmapy]: https://docs.plasmapy.org/en/stable/install.html
 [installed Conda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 [installed Python]: https://wiki.python.org/moin/BeginnersGuide/Download
 [installing PlasmaPy from source]: http://docs.plasmapy.org/en/latest/install.html#building-and-installing-from-source-code
@@ -76,7 +77,7 @@ Community on Zenodo].
 Please [submit a feature request] if you have an idea for new
 functionality. PlasmaPy is community-driven, and feature requests really
 help guide the direction of software development. Please also [submit a
-bug report] if you notice any bugs.
+bug report] if you notice any bugs. Feedback really helps!
 
 If you are interested in contributing, please check out our [contributor
 guide] and [code of conduct]. There are also a number of [good first
@@ -92,18 +93,17 @@ pip install plasmapy
 from the [command line]. On some systems, it may be necessary to use
 `pip3` instead of `pip`.
 
-If you have [installed Conda], then you can also install PlasmaPy by
-running:
+If you have [installed Conda], then you can also install PlasmaPy into
+an activated Conda environment by running:
 ```Shell
 conda install -c conda-forge plasmapy
 ```
 PlasmaPy can also be installed using [Anaconda Navigator] if
 `conda-forge` is added as a channel.
 
-<!--Need more info on Anaconda Navigator!-->
-
-To contribute to the package or use the most recent version, check out
-our instructions on [installing PlasmaPy from source].
+Please check out our documetation for more information on [how to
+install PlasmaPy]. To contribute to the package or use the most recent
+version, check out our instructions on [installing PlasmaPy from source].
 
 ## Events
 
@@ -119,7 +119,7 @@ channel. The most up-to-date information about these meetings is on the
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to Python
 and plasma science. If you'd like to learn more about PlasmaPy, our
-office hours are one of the best places to start. As of March 2022,
+office hours are one of the best places to start. As of April 2022,
 our office hours are on Thursdays at 2 pm Eastern. Please feel free to
 come by!
 
@@ -128,13 +128,13 @@ come by!
 PlasmaPy's weekly [community meetings] are a place to talk about
 code development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go to.
-As of March 2022, community meetings are on Tuesdays at 2 pm Eastern.
+As of April 2022, community meetings are on Tuesdays at 2 pm Eastern.
 
 ### Project meetings
 
 PlasmaPy's weekly project meetings are a place to discuss education,
 outreach, and project coordination. Topics might range from creating
-educational notebooks to organizing community events. As of March 2022,
+educational notebooks to organizing community events. As of April 2022,
 project meetings are held on Wednesdays at 3 pm Eastern.
 
 ### Working group meetings
@@ -164,9 +164,8 @@ channel; Gitter uses a bridge to link the two.
 
 ### GitHub discussions
 
-We're now trying out [GitHub discussions] for more varied topics that
-aren't exactly issues with the existing code base. It's a great place to
-suggest ideas, bring up discussion topics, and ask questions.
+We're trying out [GitHub discussions] as a place to suggest ideas,
+bring up discussion topics, and ask questions.
 
 ### Mailing list
 
@@ -206,7 +205,7 @@ documentation for more detailed [citation instructions].
 
 Early development on PlasmaPy was supported in part by the U.S.
 [Department of Energy], the [Smithsonian Institution], [NASA], and
-[Google Summer of  Code]. Ongoing PlasmaPy development is being
+[Google Summer of Code]. Ongoing PlasmaPy development is being
 supported through a [collaborative award] from the [Cyberinfrastructure
 for Sustained Scientific Innovation] program of the U.S. [National
 Science Foundation].
