@@ -16,7 +16,9 @@ Installing PlasmaPy
 Installing Python
 =================
 
-PlasmaPy requires Python_ 3.8 or newer. If you do not have Python_
+.. |minpython| replace:: 3.8
+
+PlasmaPy requires Python_ |minpython| or newer. If you do not have Python_
 installed already, here are the instructions to `download Python`_ and
 install it.
 
@@ -30,18 +32,30 @@ install it.
 
 .. _install-pip:
 
-Installation with pip
-=====================
+Installing PlasmaPy with pip
+============================
 
 To install the most recent release of `plasmapy` on PyPI_ with pip_ into
-an existing Python 3.8+ environment, run:
+an existing Python_ |minpython|+ environment on macOS or Linux, open a
+terminal and run:
 
 .. code-block:: bash
 
-   pip install plasmapy
+   python -m pip install plasmapy
 
-On some systems, it might be necessary to use ``pip3`` instead of
-``pip``. For more detailed information, please refer to this tutorial on
+On some systems, it might be necessary to specify the Python_ version
+number by using ``python3`` or ``python3.10`` instead of ``python``.
+
+To install PlasmaPy on Windows, run:
+
+.. code-block:: bash
+
+   py -3.10 -m pip install plasmapy
+
+The version of Python_ may be changed from ``3.10`` to another supported
+Python |minpython|+ release that has been installed on your computer.
+
+For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
 .. _install-conda:
