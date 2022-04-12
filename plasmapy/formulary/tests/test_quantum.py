@@ -4,9 +4,7 @@ import pytest
 
 from astropy.constants import c
 
-from plasmapy.utils.exceptions import RelativityError
-
-from ..quantum import (
+from plasmapy.formulary.quantum import (
     _chemical_potential_interp,
     chemical_potential,
     deBroglie_wavelength,
@@ -18,6 +16,7 @@ from ..quantum import (
     Thomas_Fermi_length,
     Wigner_Seitz_radius,
 )
+from plasmapy.utils.exceptions import RelativityError
 
 
 def test_deBroglie_wavelength():
