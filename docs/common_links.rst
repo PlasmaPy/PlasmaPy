@@ -125,6 +125,7 @@
 .. _Numba: https://numba.pydata.org/
 .. _numpydoc: https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard
 .. _NumPy: https://numpy.org
+.. _OpenPMD: https://www.openpmd.org/
 .. _pandas: https://pandas.pydata.org
 .. _persistent identifier: https://en.wikipedia.org/wiki/Persistent_identifier
 .. _pip: https://pip.pypa.io
