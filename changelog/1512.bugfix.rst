@@ -1,0 +1,2 @@
+The `~plasmapy.analysis` and `~plasmapy.dispersion` subpackages are now
+directly imported in `plasmapy.__init__`.
