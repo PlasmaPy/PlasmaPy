@@ -8,7 +8,6 @@ flake8-rst-docstrings
 flake8-use-fstring
 hypothesis
 pydocstyle
-pygments >= 2.11.0
 pytest >= 5.4.0
 pytest-regressions
 pytest-xdist
