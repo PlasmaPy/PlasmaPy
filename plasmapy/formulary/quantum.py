@@ -14,10 +14,10 @@ __all__ = [
 __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
-import lmfit
 import numpy as np
 
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+from lmfit import minimize, Parameters
 
 from plasmapy import particles
 from plasmapy.formulary import mathematics
