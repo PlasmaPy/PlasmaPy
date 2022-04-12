@@ -200,7 +200,7 @@
 .. _nbsphinx: https://nbsphinx.readthedocs.io
 .. |nbsphinx| replace:: `nbsphinx`
 
-.. _numba: https://numba.pydata.org/
+.. _numba: https://numba.readthedocs.io
 .. |numba| replace:: `numba`
 
 .. _`setup.cfg`: https://github.com/PlasmaPy/PlasmaPy/blob/main/setup.cfg
