@@ -49,7 +49,7 @@ class HDF5Reader(GenericPlasma):
         Path to HDF5 file.
 
     **kwargs
-        Any keyword accepted by `GenericPlasma`.
+        Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
 
     """
 
