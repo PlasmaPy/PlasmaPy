@@ -308,7 +308,7 @@ nitpick_ignore_regex = [
     (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
     (python_role, "lmfit"),
-    (python_role, "mpfit"),
+    (python_role, "mpmath"),
     (python_role, "nbsphinx"),
     (python_role, "xarray"),
     # plasmapy_sphinx
