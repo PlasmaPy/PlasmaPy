@@ -7,9 +7,7 @@ import scipy.integrate as spint
 from astropy import units as u
 from astropy.constants import k_B, m_e
 
-from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
-
-from ..distribution import (
+from plasmapy.formulary.distribution import (
     kappa_velocity_1D,
     kappa_velocity_3D,
     Maxwellian_1D,
@@ -19,6 +17,7 @@ from ..distribution import (
     Maxwellian_velocity_2D,
     Maxwellian_velocity_3D,
 )
+from plasmapy.formulary.speeds import kappa_thermal_speed, thermal_speed
 
 
 class Test_Maxwellian_1D:
