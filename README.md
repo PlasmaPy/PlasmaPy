@@ -101,7 +101,7 @@ conda install -c conda-forge plasmapy
 PlasmaPy can also be installed using [Anaconda Navigator] if
 `conda-forge` is added as a channel.
 
-Please check out our documetation for more information on [how to
+Please check out our documentation for more information on [how to
 install PlasmaPy]. To contribute to the package or use the most recent
 version, check out our instructions on [installing PlasmaPy from source].
 
