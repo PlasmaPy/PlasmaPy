@@ -305,7 +305,10 @@ nitpick_ignore_regex = [
     (python_role, "a single int"),
     (python_role, "Tuple of 1"),
     # for reST workarounds defined in docs/common_links.rst
+    (python_role, "h5py"),
     (python_role, "IPython.sphinxext.ipython_console_highlighting"),
+    (python_role, "lmfit"),
+    (python_role, "mpfit"),
     (python_role, "nbsphinx"),
     (python_role, "xarray"),
     # plasmapy_sphinx
