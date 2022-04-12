@@ -200,6 +200,12 @@ will be installed.
 
 .. note::
 
+   If you noticed any places where the installation instructions could
+   be improved or have become out of date, please `create an issue`_ on
+   `PlasmaPy's GitHub repository`_. It would really help!
+
+.. tip::
+
    The :ref:`contributing-to-plasmapy` guide has instructions on how to
    fork a repository and create branches so that you may make
    contributions via pull requests.
