@@ -287,3 +287,4 @@ def stix(
         print(f"{((i+j+k) / (2*len(k)+len(sol))) * 100:.2f} %", end="\r")
 
     return omegas
+
