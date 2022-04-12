@@ -57,6 +57,9 @@ class HDF5Reader(GenericPlasma):
     def __init__(self, hdf5, **kwargs):
         super().__init__(**kwargs)
 
+        if not os.path.isfile(hdf5):
+            raise FileNotFoundError(f"Could not find file: '{hdf5}'")
+
         h5 = h5py.File(hdf5, "r")
         self.h5 = h5
 
