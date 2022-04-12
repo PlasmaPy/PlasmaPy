@@ -14,6 +14,7 @@ __all__ = [
 __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
+import lmfit
 import numpy as np
 
 from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
@@ -493,13 +494,6 @@ def chemical_potential(n_e: u.m ** -3, T: u.K) -> u.dimensionless_unscaled:
 
     # setting parameters for fitting along with bounds
     alphaGuess = 1 * u.dimensionless_unscaled
-    try:
-        from lmfit import minimize, Parameters
-    except ImportError as e:
-        from plasmapy.optional_deps import lmfit_import_error
-
-        raise lmfit_import_error from e
-
     params = Parameters()
     params.add("alpha", value=alphaGuess, min=0.0)
     # calling minimize function from lmfit to fit by minimizing the residual
