@@ -1,0 +1,2 @@
+Added Stix cold plasma numerical solver to the dispersion package.
+
