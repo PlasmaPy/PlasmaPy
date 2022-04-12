@@ -299,8 +299,13 @@ nitpick_ignore_regex = [
     (python_role, "Real"),
     (python_role, "iterable"),
     (python_role, "key"),
+    # pytest helpers
     (python_role, "_pytest.*"),
     (python_role, "Failed"),
+    # charged_particle_radiography
+    (python_role, "2 ints"),
+    (python_role, "a single int"),
+    (python_role, "Tuple of 1"),
     # most of the following should be removable after plasmapy_sphinx
     # is moved to its own package
     (python_role, "automod.*"),
