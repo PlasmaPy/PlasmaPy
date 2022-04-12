@@ -16,8 +16,6 @@ Installing PlasmaPy
 Installing Python
 =================
 
-.. |minpython| replace:: 3.8
-
 PlasmaPy requires Python_ |minpython| or newer. If you do not have Python_
 installed already, here are the instructions to `download Python`_ and
 install it.
@@ -110,13 +108,22 @@ activated Conda_ environment, run:
    with ``conda update conda`` or checking out these tips for
    `improving Conda performance`_.
 
-Installation with Anaconda Navigator
-====================================
+Installing PlasmaPy with Anaconda Navigator
+===========================================
 
-`Anaconda Navigator`_ is installed automatically with newer versions of
-Conda_. If you are using Miniconda_ or a different Conda_ environment,
-you can install it with ``conda install anaconda-navigator``. After that
-it can be opened by entering ``anaconda-navigator`` in the terminal.
+.. note::
+
+   This section contains instructions on how to install PlasmaPy with
+   `Anaconda Navigator`_ at the time of writing. For the most up-to-date
+   information, please go to the official documentation on `installing
+   Anaconda Navigator`_ and `managing packages`_.
+
+`Anaconda Navigator`_ is a graphical user interface (GUI) for Conda_
+that can be used to install Python packages. It is installed
+automatically with newer versions of Conda_. If you are using Miniconda_
+or a different Conda_ environment, you can install it with
+``conda install anaconda-navigator``. After that it can be opened by
+entering ``anaconda-navigator`` in the terminal.
 
 First, go to the :guilabel:`Environments` tab and select
 :guilabel:`Channels`. If ``conda-forge`` is not listed, then go to
@@ -204,7 +211,9 @@ will be installed.
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.1436011
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
+.. _installing Anaconda Navigator: https://docs.anaconda.com/anaconda/navigator/install/
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
+.. _managing packages: https://docs.anaconda.com/anaconda/navigator/tutorials/manage-packages/#installing-a-package
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
