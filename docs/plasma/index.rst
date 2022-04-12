@@ -36,7 +36,7 @@ Plasma objects are constructed using the special factory class
 The result of a call to `~plasmapy.plasma.plasma_factory.Plasma` will be either
 a `~plasmapy.plasma.plasma_base.GenericPlasma` object, or a subclass of
 `~plasmapy.plasma.plasma_base.GenericPlasma` which deals with a specific type of
-data, e.g. `~plasmapy.plasma.sources.plasma_blob.PlasmaBlob` or
+data, e.g. `~plasmapy.plasma.sources.plasmablob.PlasmaBlob` or
 `~plasmapy.plasma.sources.plasma3d.Plasma3D` (see :ref:`plasma-sources` to see
 a list of all of them).
 
