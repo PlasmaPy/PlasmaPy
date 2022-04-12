@@ -28,7 +28,16 @@ if sys.version_info < (3, 8):  # coverage: ignore
 # ----------------------------------------------------------------------------
 import pkg_resources
 
-from plasmapy import diagnostics, formulary, particles, plasma, simulation, utils
+from plasmapy import (
+    analysis,
+    diagnostics,
+    dispersion,
+    formulary,
+    particles,
+    plasma,
+    simulation,
+    utils,
+)
 
 # define version
 try:
