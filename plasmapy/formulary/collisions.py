@@ -1642,7 +1642,7 @@ def mobility(
     V : `~astropy.units.Quantity`, optional
         The relative velocity between particles. If not provided,
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
-        `μ` is the reduced mass.
+        :math:`μ` is the reduced mass.
 
     method : `str`, optional
         The method by which to compute the Coulomb logarithm.  The

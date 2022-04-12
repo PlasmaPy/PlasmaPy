@@ -137,9 +137,8 @@ class BasicRegistrationFactory:
         """Register a widget with the factory.
 
         If ``validation_function`` is not specified, tests ``WidgetType`` for
-        existence of any function in the list
-        `~plasmapy.utils.database_factory_base.BasicRegistrationFactory.validation_functions`,
-        which is a list of strings which must be callable class attribute
+        existence of any function in the ``validation_functions`` attribute,
+        which is a list of strings which must be callable class attributes.
 
         Parameters
         ----------
