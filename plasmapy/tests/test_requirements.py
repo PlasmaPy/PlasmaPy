@@ -63,7 +63,8 @@ def get_requirements_from_setup_cfg() -> Dict[str, Set[str]]:
 
 def get_requirements_from_pyproject_toml() -> Dict[str, Set[str]]:
     """Get the requirements that are contained in pyproject.toml."""
-    pyproject_toml = tomli.load(f"{base_directory}/pyproject.toml")
+    with open(f"{base_directory}/pyproject.toml", "rb") as pyproject:
+        pyproject_toml = tomli.load(pyproject)
     return {"build": set(pyproject_toml["build-system"]["requires"])}
 
 
