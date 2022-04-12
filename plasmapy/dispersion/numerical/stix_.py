@@ -5,14 +5,13 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
-from typing import List, Union, Any
-
 import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import c
 from sympy import Symbol
 from sympy.solvers import solve
+from typing import Any, List, Union
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle, ParticleList
@@ -216,7 +215,7 @@ def stix(
             f"Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {k.shape}."
         )
-    #elif theta.ndim == 1 and theta.size != len(k):
+    # elif theta.ndim == 1 and theta.size != len(k):
     #    raise ValueError(
     #        f"Argument 'theta' and 'k' need to be the same length, got"
     #        f" value of shape {len(k)} and {len(theta.shape)}."
@@ -228,7 +227,7 @@ def stix(
     wcs = []
 
     for par, dens in zip(species, densities.tolist()):
-        wps.append(plasma_frequency(n=dens*u.m**-3, particle=par).value)
+        wps.append(plasma_frequency(n=dens * u.m ** -3, particle=par).value)
         wcs.append(gyrofrequency(B=B, particle=par, signed=False).value)
     wps = np.array(wps)
     wcs = np.array(wcs)
@@ -258,7 +257,10 @@ def stix(
 
     for i in range(len(k)):
         A.append(S * (np.sin(theta[i].value) ** 2) + P * (np.cos(theta[i].value) ** 2))
-        B.append(R * L * (np.sin(theta[i].value) ** 2) + P * S * (1 + np.cos(theta[i].value) ** 2))
+        B.append(
+            R * L * (np.sin(theta[i].value) ** 2)
+            + P * S * (1 + np.cos(theta[i].value) ** 2)
+        )
         C.append(P * R * L)
 
     print("Note: Solution computation time may vary.")
@@ -267,7 +269,11 @@ def stix(
     for i in range(len(k)):
         omegas[k[i]] = {}
         for j in range(len(k)):
-            eq = A[j] * ((c_si_unitless * k[i].value / w) ** 4) - B[j] * ((c_si_unitless * k[i].value / w) ** 2) + C[j]
+            eq = (
+                A[j] * ((c_si_unitless * k[i].value / w) ** 4)
+                - B[j] * ((c_si_unitless * k[i].value / w) ** 2)
+                + C[j]
+            )
 
             sol = solve(eq, w, warn=True)
 

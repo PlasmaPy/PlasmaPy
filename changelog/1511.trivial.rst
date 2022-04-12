@@ -1,2 +1,1 @@
 Note: SymPy is now a required package.
-
