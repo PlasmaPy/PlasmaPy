@@ -21,7 +21,7 @@ class ParticleTracker:
 
     Parameters
     ----------
-    plasma : `Plasma`
+    plasma : Plasma object
         Plasma from which fields can be pulled.
 
     type : `str`
@@ -258,7 +258,7 @@ class ParticleTracker:
         ----------
         plot : `str`, optional
             Enable plotting of position component x, y, z for each of these
-            letters included in `plot`.
+            letters included in ``plot``.
         """
         import matplotlib.pyplot as plt
 
