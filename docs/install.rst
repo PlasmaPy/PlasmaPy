@@ -34,7 +34,7 @@ Installing PlasmaPy with pip
 ============================
 
 To install the most recent release of `plasmapy` on PyPI_ with pip_ into
-an existing Python_ |minpython|+ environment on macOS or Linux, open a
+an existing Python_ |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
 .. code-block:: bash
@@ -51,7 +51,7 @@ To install PlasmaPy on Windows, run:
    py -3.10 -m pip install plasmapy
 
 The version of Python_ may be changed from ``3.10`` to another supported
-Python |minpython|+ release that has been installed on your computer.
+Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
