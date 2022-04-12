@@ -348,7 +348,7 @@ Please note that it is necessary to store notebooks with their outputs stripped
   Currently, reviewers should ensure that submitted notebooks have outputs stripped.
 
 If you have an example notebook that includes packages unavailable in the
-documentation building environment (e.g., `bokeh`) or runs some heavy
+documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
 the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
 `preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
