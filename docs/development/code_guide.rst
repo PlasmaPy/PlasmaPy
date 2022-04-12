@@ -83,7 +83,7 @@ PlasmaPy Code Style Guide, codified
 
 * There should be at least one pun per 1284 lines of code.
 
-* Avoid using `lambda` to define functions, as this notation may be
+* Avoid using ``lambda`` to define functions, as this notation may be
   unfamiliar to newcomers to Python.
 
 Branches, commits, and pull requests
@@ -350,8 +350,8 @@ Please note that it is necessary to store notebooks with their outputs stripped
 If you have an example notebook that includes packages unavailable in the
 documentation building environment (e.g., ``bokeh``) or runs some heavy
 computation that should not be executed on every commit, *keep the outputs in
-the notebook* but store it in the repository with a `preexecuted_` prefix, e.g.
-`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
+the notebook* but store it in the repository with a ``preexecuted_`` prefix, e.g.
+:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`.
 
 Benchmarks
 ==========
