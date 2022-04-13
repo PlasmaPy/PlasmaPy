@@ -1,1 +1,2 @@
-Updated the :ref:`Cold-Magnetized-Plasma-Dielectric-Permittivity-Tensor` notebook.
+Updated the cold magnetized plasma dielectric permittivity tensor
+notebook.
