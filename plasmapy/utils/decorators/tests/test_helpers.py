@@ -4,7 +4,7 @@ import pytest
 
 from unittest import mock
 
-from ..helpers import modify_docstring, preserve_signature
+from plasmapy.utils.decorators.helpers import modify_docstring, preserve_signature
 
 
 # --------------------------------------------------------------------------------------
