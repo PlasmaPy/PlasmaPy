@@ -42,7 +42,8 @@
 [hack week]: https://doi.org/10.1073/pnas.1717196115
 [how to install plasmapy]: https://docs.plasmapy.org/en/stable/install.html
 [installed Conda]: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
-[installed Python]: https://wiki.python.org/moin/BeginnersGuide/Download
+[download and install Python]: https://wiki.python.org/moin/BeginnersGuide/Download
+[installing PlasmaPy]: https://docs.plasmapy.org/en/latest/install.html
 [installing PlasmaPy from source]: http://docs.plasmapy.org/en/latest/install.html#building-and-installing-from-source-code
 [Mailing list]: https://groups.google.com/forum/#!forum/plasmapy
 [Matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
@@ -85,21 +86,34 @@ issues] in our GitHub repository. New contributors are very welcome!
 
 ## Installation
 
-If you have [installed Python] (version 3.8 or newer), you can install
-PlasmaPy with [pip] by running:
+PlasmaPy requires Python 3.8 or newer. If you do not have Python
+installed already, here are the instructions to [download and install
+Python].
+
+To install `plasmapy` on macOS or Linux, open a terminal and run:
 ```Shell
-pip install plasmapy
+python -m pip install plasmapy
 ```
-from the [command line]. On some systems, it may be necessary to use
-`pip3` instead of `pip`.
+On some systems, it might be necessary to specify the Python version
+number, for example by using `python3` or `python3.10` instead of
+`python`.
+
+To install `plasmapy` on Windows, open a terminal and run
+```Shell
+py -3.10 -m pip install plasmapy
+```
+The `3.10` may be replaced by any version of Python that is supported by
+PlasmaPy.
 
 If you have [installed Conda], then you can also install PlasmaPy into
 an activated Conda environment by running:
 ```Shell
 conda install -c conda-forge plasmapy
 ```
-PlasmaPy can also be installed using [Anaconda Navigator] if
+PlasmaPy can also be installed using [Anaconda Navigator] so long as
 `conda-forge` is added as a channel.
+
+Check out our instructions on [installing PlasmaPy] for more details.
 
 Please check out our documentation for more information on [how to
 install PlasmaPy]. To contribute to the package or use the most recent
