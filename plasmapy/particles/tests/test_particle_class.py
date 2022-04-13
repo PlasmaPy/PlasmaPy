@@ -1185,10 +1185,7 @@ def test_custom_particles_from_json_string(
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
     if expected_exception is None:
-        if "mass" not in kwargs or "charge" not in kwargs:
-            instance = cls(**kwargs)
-        else:
-            instance = cls(**kwargs)
+        instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
         assert u.isclose(
             instance.mass, instance_from_json.mass, equal_nan=True
@@ -1441,7 +1438,6 @@ def test_CustomParticle_cmp():
     ), "CustomParticle instances that should be equal are not."
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
-    assert not particle1 == 1
     assert particle1 != 1
 
 

@@ -324,7 +324,7 @@ Trivial/Internal Changes
   radians. (`#1301 <https://github.com/plasmapy/plasmapy/pull/1301>`__)
 - Replaced usage of ``distutils.version.StrictVersion`` with
   ``packaging.version.Version`` because ``distutils`` has been deprecated.
-  As part of this change, `packaging <https://packaging.pypa.io>`__ has been
+  As part of this change, `packaging <https://packaging.pypa.io/en/latest>`__ has been
   added as a dependency. (`#1306 <https://github.com/plasmapy/plasmapy/pull/1306>`__)
 - Increased the minimum version of matplotlib to 3.3.0 and updated
   `plasmapy.diagnostics.langmuir.swept_probe_analysis` to be compatible

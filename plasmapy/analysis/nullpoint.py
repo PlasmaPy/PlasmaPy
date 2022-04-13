@@ -1040,7 +1040,7 @@ def _locate_null_point(vspace, cell, n, err):
         of the Newton-Raphson method is repeated.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
 
     Returns
@@ -1180,8 +1180,8 @@ def _locate_null_point(vspace, cell, n, err):
     }
 
     return null_point_find(**null_point_args)
-
-
+  
+  
 def _classify_null_point(vspace, cell, loc):
     r"""
     Return the coordinates of a null point within
@@ -1260,7 +1260,7 @@ def _classify_null_point(vspace, cell, loc):
             null_point_type = "Spiral null"
     return null_point_type
 
-
+  
 def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     r"""
     Returns an array of null point objects, representing
@@ -1439,9 +1439,73 @@ def uniform_nullpoint_find(
         The default value is 500.
 
     err: float
-        The threshold/error that determines if convergence has occured
+        The threshold/error that determines if convergence has occurred
         using the Newton-Raphson method.
         The default value is ``1e-4``.
+
+    Returns
+    -------
+    array_like of `~plasmapy.analysis.nullpoint.NullPoint`
+        An array of `~plasmapy.analysis.nullpoint.NullPoint` objects
+        representing the nullpoints of the given vector space.
+
+    Notes
+    -----
+    This method is described by :cite:t:`haynes:2007`.
+
+    """
+    vspace = _vector_space(
+        x_arr,
+        y_arr,
+        z_arr,
+        None,
+        None,
+        None,
+        u_arr,
+        v_arr,
+        w_arr,
+        None,
+        None,
+    )
+    return _vspace_iterator(vspace, maxiter, err)
+
+
+def uniform_nullpoint_find(
+    x_range,
+    y_range,
+    z_range,
+    func: Callable,
+    precision=[0.05, 0.05, 0.05],
+    maxiter=500,
+    err=1e-10,
+):
+    r"""
+    Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects, representing
+    the null points of the given vector space.
+
+    Parameters
+    ----------
+    x_range: array_like
+        A 1 by 2 array containing the range of x-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
+    y_range: array_like
+        A 1 by 2 array containing the range of y-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
+    z_range: array_like
+        A 1 by 2 array containing the range of z-values for the vector spaces.
+        If not given, the default interval [0,1] is assumed.
+
+    func: <class 'function'>
+        A function that takes in 3 arguments, respectively representing a x, y, and z
+        coordinate of a point and returns the vector value for that point in the form
+        of a 1 by 3 array.
+
+    precision: array_like
+        A 1 by 3 array containing the approximate precision values for each dimension,
+        in the case where uniform arrays are being used.
+        The default value is [0.05, 0.05, 0.05].
 
     Returns
     -------

@@ -524,10 +524,10 @@ def run_test_equivalent_calls(*test_inputs, require_same_type: bool = True):
     test_cases = []
 
     for inputs in test_inputs:
-        test_case = {}
-
-        test_case["function"] = func if func else inputs[0]
-        test_case["args"] = inputs[0] if func else inputs[1]
+        test_case = {
+            "function": func or inputs[0],
+            "args": inputs[0] if func else inputs[1],
+        }
 
         if not isinstance(test_case["args"], (list, tuple)):
             test_case["args"] = [test_case["args"]]
@@ -663,8 +663,7 @@ def assert_can_handle_nparray(
 
     Examples
     --------
-    >>> from plasmapy.formulary.speeds import Alfven_speed
-    >>> from plasmapy.formulary.frequencies import gyrofrequency
+    >>> from plasmapy.formulary import Alfven_speed, gyrofrequency
     >>> assert_can_handle_nparray(Alfven_speed)
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
