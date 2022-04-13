@@ -1234,7 +1234,15 @@ def _classify_null_point(vspace, cell, loc):
     Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
     determinant = -1.0 * R
-    if discriminant < 0:
+    if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
+            null_point_type = "Proper radial null"
+        else:
+            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+            else:
+                null_point_type = "Critical spiral null"
+    elif discriminant < 0:
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
             if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
                 null_point_type = "Continuous potential X-points"
@@ -1245,15 +1253,6 @@ def _classify_null_point(vspace, cell, loc):
                 null_point_type = "Continuous X-points"
             else:
                 null_point_type = "Skewed improper null"
-    elif np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
-        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
-            null_point_type = "Proper radial null"
-        else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
-            else:
-                null_point_type = "Critical spiral null"
-
     else:
         if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
             null_point_type = "Continuous concentric ellipses"
