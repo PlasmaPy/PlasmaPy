@@ -21,7 +21,7 @@ from plasmapy.analysis.nullpoint import (
     NullPointError,
     NullPointWarning,
     trilinear_approx,
-    uniform_nullpoint_find,
+    uniform_null_point_find,
 )
 
 # Defining tolerance level for tests where the accuracy
@@ -255,7 +255,7 @@ def test_null_point_find1():
         "precision": [0.1, 0.1, 0.1],
         "func": vspace_func_1,
     }
-    npoints = uniform_nullpoint_find(**nullpoint_args)
+    npoints = uniform_null_point_find(**nullpoint_args)
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -304,7 +304,7 @@ def test_null_point_find4():
         "precision": [0.07, 0.003, 0.07],
         "func": vspace_func_3,
     }
-    npoints4 = uniform_nullpoint_find(**nullpoint4_args)
+    npoints4 = uniform_null_point_find(**nullpoint4_args)
     first_loc4 = npoints4[0].loc.reshape(1, 3)
     second_loc4 = npoints4[1].loc.reshape(1, 3)
     assert len(npoints4) == 2
@@ -322,7 +322,7 @@ def test_null_point_find5():
         "precision": [0.01, 0.01, 0.01],
         "func": vspace_func_4,
     }
-    npoints5 = uniform_nullpoint_find(**nullpoint5_args)
+    npoints5 = uniform_null_point_find(**nullpoint5_args)
     assert len(npoints5) == 0
 
 
@@ -336,7 +336,7 @@ def test_null_point_find6():
         "precision": [0.08, 0.08, 0.08],
         "func": vspace_func_5,
     }
-    npoints6 = uniform_nullpoint_find(**nullpoint6_args)
+    npoints6 = uniform_null_point_find(**nullpoint6_args)
     assert len(npoints6) == 0
 
 
@@ -350,7 +350,7 @@ def test_null_point_find7():
         "precision": [1, 1, 1],
         "func": vspace_func_6,
     }
-    npoints7 = uniform_nullpoint_find(**nullpoint7_args)
+    npoints7 = uniform_null_point_find(**nullpoint7_args)
     assert len(npoints7) == 0
 
 
@@ -364,7 +364,7 @@ def test_null_point_find8():
         "precision": [0.3, 0.3, 0.3],
         "func": vspace_func_7,
     }
-    npoints8 = uniform_nullpoint_find(**nullpoint8_args)
+    npoints8 = uniform_null_point_find(**nullpoint8_args)
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
@@ -389,7 +389,7 @@ def test_null_point_find9():
         "precision": [0.03, 0.03, 0.03],
         "func": field1,
     }
-    npoints = uniform_nullpoint_find(**nullpoint9_args)
+    npoints = uniform_null_point_find(**nullpoint9_args)
     assert (npoints[0].type) == "Improper radial null"
 
 
@@ -406,7 +406,7 @@ def test_null_point_find10():
         "precision": [0.03, 0.03, 0.03],
         "func": field2,
     }
-    npoints = uniform_nullpoint_find(**nullpoint10_args)
+    npoints = uniform_null_point_find(**nullpoint10_args)
 
     assert (
         npoints[0].type
@@ -425,7 +425,7 @@ def test_null_point_find11():
         "precision": [0.03, 0.03, 0.03],
         "func": field3,
     }
-    npoints = uniform_nullpoint_find(**nullpoint11_args)
+    npoints = uniform_null_point_find(**nullpoint11_args)
 
     assert (npoints[0].type) == "Proper radial null"
 
@@ -443,4 +443,4 @@ def test_null_point_find12():
         "func": field4,
     }
     with pytest.raises(NonZeroDivergence):
-        npoints = uniform_nullpoint_find(**nullpoint12_args)
+        npoints = uniform_null_point_find(**nullpoint12_args)

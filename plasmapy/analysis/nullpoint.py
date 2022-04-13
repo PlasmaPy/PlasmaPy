@@ -4,7 +4,7 @@ __all__ = [
     "Point",
     "NullPoint",
     "null_point_find",
-    "uniform_nullpoint_find",
+    "uniform_null_point_find",
     "trilinear_approx",
 ]
 
@@ -1393,7 +1393,7 @@ def null_point_find(
     return _vspace_iterator(vspace, maxiter, err)
 
 
-def uniform_nullpoint_find(
+def uniform_null_point_find(
     x_range,
     y_range,
     z_range,
