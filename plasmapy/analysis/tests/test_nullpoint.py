@@ -408,7 +408,9 @@ def test_null_point_find10():
     }
     npoints = uniform_nullpoint_find(**nullpoint10_args)
 
-    assert (npoints[0].type) == "Continuous X-points"
+    assert (
+        npoints[0].type
+    ) == "Anti-parallel lines with null plane OR Planes of parabolae with null line"
 
 
 def field3(x, y, z):
