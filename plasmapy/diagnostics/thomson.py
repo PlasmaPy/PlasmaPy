@@ -47,16 +47,16 @@ def spectral_density_lite(
     n: numbers.Real,
     Te: np.ndarray,
     Ti: np.ndarray,
-    efract: np.ndarray = np.array([1.0]),
-    ifract: np.ndarray = np.array([1.0]),
-    ion_z=np.array([1]),
-    ion_mass=np.array([1]),
-    electron_vel=None,
-    ion_vel=None,
-    probe_vec=np.array([1, 0, 0]),
-    scatter_vec=np.array([0, 1, 0]),
-    instr_func_arr=None,
-):
+    efract: np.ndarray = None,
+    ifract: np.ndarray = None,
+    ion_z: np.ndarray = None,
+    ion_mass: np.ndarray = None,
+    electron_vel: np.ndarray = None,
+    ion_vel: np.ndarray = None,
+    probe_vec: np.ndarray = None,
+    scatter_vec: np.ndarray = None,
+    instr_func_arr: np.ndarray = None,
+) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
 
     r"""
 
@@ -150,6 +150,24 @@ def spectral_density_lite(
 
 
     """
+
+    if efract is None:
+        efract = np.array([1.0])
+
+    if ifract is None:
+        ifract = np.array([1.0])
+
+    if ion_z is None:
+        ion_z = np.array([1])
+
+    if ion_mass is None:
+        ion_mass = np.array([1])
+
+    if probe_vec is None:
+        probe_vec = np.array([1, 0, 0])
+
+    if scatter_vec is None:
+        scatter_vec = np.array([0, 1, 0])
 
     if electron_vel is None:
         electron_vel = np.zeros([efract.size, 3])
@@ -274,8 +292,8 @@ def spectral_density(
     ion_species: Union[str, List[str], Particle, List[Particle]] = "p",
     electron_vel: u.m / u.s = None,
     ion_vel: u.m / u.s = None,
-    probe_vec=np.array([1, 0, 0]),
-    scatter_vec=np.array([0, 1, 0]),
+    probe_vec=None,
+    scatter_vec=None,
     instr_func=None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
     r"""
@@ -404,6 +422,12 @@ def spectral_density(
         ifract = np.ones(1)
     else:
         ifract = np.asarray(ifract, dtype=np.float64)
+
+    if probe_vec is None:
+        probe_vec = np.array([1, 0, 0])
+
+    if scatter_vec is None:
+        scatter_vec = np.array([0, 1, 0])
 
     # If electron velocity is not specified, create an array corresponding
     # to zero drift
