@@ -16,7 +16,7 @@ import re
 import warnings
 
 from lmfit import Model
-from typing import List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 from plasmapy.formulary.dielectric import permittivity_1D_Maxwellian
 from plasmapy.formulary.frequencies import plasma_frequency
@@ -533,25 +533,34 @@ def spectral_density(
 # ***************************************************************************
 
 
-def _count_populations_in_params(params, prefix):
+def _count_populations_in_params(params: Dict[str, Any], prefix: str):
     """
-    Counts the number of entries matching the pattern prefix_i in a
-    list of keys
+    Counts the number of items in the ``params`` `dict` with a key
+    that starts with the string defined by ``prefix``.
     """
-    keys = list(params.keys())
-    return len(re.findall(prefix, ",".join(keys)))
+    return len([key for key in params if key.startswith(prefix)])
 
 
-def _params_to_array(params, prefix, vector=False):
+def _params_to_array(
+    params: Dict[str, Any], prefix: str, vector: bool = False
+) -> numpy.ndarray:
     """
-    Takes a list of parameters and returns an array of the values corresponding
-    to a key, based on the following naming convention:
+    Constructs an array from the values contained in the dictionary
+    ``params`` associated with keys starting with the prefix defined
+    by ``prefix``.
 
-    Each parameter should be named prefix_i
-    Where i is an integer (starting at 0)
+    If ``vector == False``, then values for keys matching the
+    expression `prefix_[0-9]+` are gathered into a 1D array.
 
-    This function allows lmfit.Parameter inputs to be converted into the
-    array-type inputs required by the spectral density function
+    If ``vector == True``, then values for keys matching the
+    expression `prefix_[xyz]_[0-9]+` are gathered into a 2D array of
+    shape ``(N, 3)``.
+
+    Notes
+    -----
+    This function allows `lmfit.parameter.Parameter` inputs to be
+    converted into the array-type inputs required by the spectral
+    density function.
 
     """
 
