@@ -533,17 +533,20 @@ def spectral_density(
 # ***************************************************************************
 
 
-def _count_populations_in_params(params: Dict[str, Any], prefix: str):
+def _count_populations_in_params(params: Dict[str, Any], prefix: str) -> int:
     """
-    Counts the number of items in the ``params`` `dict` with a key
-    that starts with the string defined by ``prefix``.
+    Counts the number of electron or ion populations in a ``params`` `dict`.
+
+    The number of populations is determined by counting the number of items in
+    the ``params`` `dict` with a key that starts with the string defined by
+    ``prefix``.
     """
     return len([key for key in params if key.startswith(prefix)])
 
 
 def _params_to_array(
     params: Dict[str, Any], prefix: str, vector: bool = False
-) -> numpy.ndarray:
+) -> np.ndarray:
     """
     Constructs an array from the values contained in the dictionary
     ``params`` associated with keys starting with the prefix defined
