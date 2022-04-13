@@ -14,7 +14,7 @@ import warnings
 from typing import Callable
 
 # Declare Constants & global variables
-_EQUALITY_ATOL = 1e-15
+_EQUALITY_ATOL = 1e-10
 _MAX_RECURSION_LEVEL = 10
 global _recursion_level
 _recursion_level = 0
@@ -1234,6 +1234,7 @@ def _classify_null_point(vspace, cell, loc):
     Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
     determinant = -1.0 * R
+    print(discriminant)
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
             null_point_type = "Proper radial null"
