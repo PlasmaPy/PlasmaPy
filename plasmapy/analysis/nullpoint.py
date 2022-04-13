@@ -1234,9 +1234,8 @@ def _classify_null_point(vspace, cell, loc):
     Q = 0.5 * (np.trace(M) ** 2 - np.trace(np.matmul(M, M)))
     discriminant = (Q ** 3 / 27.0) + (R ** 2 / 4.0)
     determinant = -1.0 * R
-    print(discriminant)
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
-        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
+        if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
             if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):

@@ -427,7 +427,7 @@ def test_null_point_find11():
     }
     npoints = uniform_nullpoint_find(**nullpoint11_args)
 
-    assert (npoints[0].type) == "Continuous potential X-points"
+    assert (npoints[0].type) == "Proper radial null"
 
 
 def field4(x, y, z):
