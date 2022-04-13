@@ -47,7 +47,7 @@ def example_invalid_instr_func_bad_shape(w):
     different shape than the provided wavelength array
     """
     sigma = 0.5 * u.nm
-    arg = (w / sigma).to(u.dimensionless_unscaled)
+    arg = (w / sigma).to(u.dimensionless_unscaled).value
     inst = np.exp(-(arg ** 2))
     inst *= 1 / np.sum(inst)
     return inst[2:]
@@ -216,6 +216,33 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum):
     )
 
 
+def test_spectral_density_minimal_arguments(single_species_collective_args):
+    """
+    Check that spectral density runs with minimal arguments
+    """
+    wavelengths = single_species_collective_args["wavelengths"]
+    args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
+
+    # Delete the arguments that have default values
+    optional_keys = [
+        "efract",
+        "ifract",
+        "ion_species",
+        "electron_vel",
+        "ion_vel",
+        "probe_vec",
+        "scatter_vec",
+        "instr_func",
+    ]
+    for key in optional_keys:
+        if key in kwargs.keys():
+            del kwargs[key]
+
+    alpha, Skw = thomson.spectral_density(*args, **kwargs)
+
+    return (alpha, wavelengths, Skw)
+
+
 def test_single_species_collective_lite(single_species_collective_args):
 
     # Make a copy of the input args
@@ -230,6 +257,29 @@ def test_single_species_collective_lite(single_species_collective_args):
     assert np.isclose(alpha1, alpha2)
 
     assert np.allclose(Skw1.to(u.s / u.rad).value, Skw2)
+
+
+def test_spectral_density_lite_minimal_arguments(single_species_collective_args):
+    lite_kwargs = args_to_lite_args(single_species_collective_args)
+    args, kwargs = spectral_density_args_kwargs(lite_kwargs)
+
+    # Delete the arguments that have default values
+    optional_keys = [
+        "efract",
+        "ifract",
+        "ion_z",
+        "ion_mass",
+        "electron_vel",
+        "ion_vel",
+        "probe_vec",
+        "scatter_vec",
+        "instr_func_arr",
+    ]
+    for key in optional_keys:
+        if key in kwargs.keys():
+            del kwargs[key]
+
+    alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
 
 
 @pytest.fixture()
@@ -537,10 +587,10 @@ def test_thomson_with_invalid_insturment_function(
     """
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
+    kwargs["instr_func"] = instr_func
+
     with pytest.raises(ValueError):
-        alpha, Skw_with = thomson.spectral_density(
-            *args, **kwargs, instr_func=example_invalid_instr_func_bad_type
-        )
+        alpha, Skw_with = thomson.spectral_density(*args, **kwargs)
 
 
 def test_param_to_array_fcns():
@@ -1014,19 +1064,19 @@ def test_fit_with_instr_func(epw_single_species_settings_params):
 
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
-def test_fit_with_invalid_instr_func(instr_func, epw_single_species_settings_params):
+def test_fit_with_invalid_instr_func(instr_func, iaw_single_species_settings_params):
     """
     Verifies that an exception is raised if the provided insturment function
     is invalid.
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
-        epw_single_species_settings_params
+        iaw_single_species_settings_params
     )
 
     settings["instr_func"] = instr_func
 
     with pytest.raises(ValueError):
-        run_fit(wavelengths, params, settings, notch=(531, 533))
+        run_fit(wavelengths, params, settings)
 
 
 def test_fit_with_minimal_parameters():
