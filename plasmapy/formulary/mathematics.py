@@ -79,8 +79,7 @@ def Fermi_integral(
 
     if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
         arg = -np.exp(x)
-        integral = -1 * complex(polylog(j + 1, arg))
-        return integral
+        return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):
         integral_arr = np.zeros_like(x, dtype="complex")
         for idx, val in enumerate(x):

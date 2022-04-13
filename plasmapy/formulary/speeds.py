@@ -174,8 +174,7 @@ def Alfven_speed(
             density, "e", z_ratio=z_mean
         )
 
-    V_A = np.abs(B) / np.sqrt(mu0 * rho)
-    return V_A
+    return np.abs(B) / np.sqrt(mu0 * rho)
 
 
 va_ = Alfven_speed
@@ -820,7 +819,6 @@ def kappa_thermal_speed(
         coeff = np.sqrt((kappa - 3 / 2) / kappa)
     else:
         coeff = 1
-
     return vth * coeff
 
 
