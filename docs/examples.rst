@@ -49,8 +49,13 @@ Formulary
 
    notebooks/formulary/*
 
-.. Particles
-   ---------
+Particles
+---------
+
+.. nbgallery::
+   :glob:
+
+   notebooks/particles/*
 
 Simulation
 ----------
