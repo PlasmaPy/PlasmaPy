@@ -1728,10 +1728,11 @@ class Particle(AbstractPhysicalParticle):
                 f"neutral atom or ion."
             )
         if not self.is_category(any_of={"charged", "uncharged"}):
-            raise ChargeError(
-                f"Cannot ionize {self.symbol} because its charge is not specified."
-            )
-        if self.charge_number == self.atomic_number:
+            assumed_charge_number = 0
+        else:
+            assumed_charge_number = self.charge_number
+
+        if assumed_charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
@@ -1742,7 +1743,7 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope or self.element
-        new_charge_number = self.charge_number + n
+        new_charge_number = assumed_charge_number + n
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
