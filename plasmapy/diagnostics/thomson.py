@@ -314,14 +314,15 @@ def spectral_density(
         \bigg ( \frac{\omega}{k} \bigg )
 
     where :math:`\chi_e` is the electron component susceptibility of the
-    plasma and :math:`\epsilon = 1 + \sum_e \chi_e + \sum_i \chi_i` is the total
-    plasma dielectric  function (with :math:`\chi_i` being the ion component
-    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
-    is the scattering wavenumber, :math:`\omega` is the scattering frequency,
-    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
-    distribution functions respectively. In this function the electron and ion
-    velocity distribution functions are assumed to be Maxwellian, making this
-    function equivalent to Eq. 3.4.6 in `Sheffield`_.
+    plasma and :math:`\epsilon = 1 + \sum_e \chi_e + \sum_i \chi_i` is
+    the total plasma dielectric  function (with :math:`\chi_i` being the
+    ion component of the susceptibility), :math:`Z_i` is the charge of
+    each ion, :math:`k` is the scattering wavenumber, :math:`\omega` is
+    the scattering frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}`
+    are the electron and ion velocity distribution functions
+    respectively. In this function the electron and ion velocity
+    distribution functions are assumed to be Maxwellian, making this
+    function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011:ch3`.
 
     Parameters
     ----------
@@ -400,15 +401,11 @@ def spectral_density(
     -----
 
     For details, see "Plasma Scattering of Electromagnetic Radiation" by
-    Sheffield et al. `ISBN 978\\-0123748775`_. This code is a modified version
-    of the program described therein.
+    :cite:t:`sheffield:2011`. This code is a modified version of the
+    program described therein.
 
-    For a concise summary of the relevant physics, see Chapter 5 of Derek
-    Schaeffer's thesis, DOI: `10.5281/zenodo.3766933`_.
-
-    .. _`ISBN 978\\-0123748775`: https://www.sciencedirect.com/book/9780123748775/plasma-scattering-of-electromagnetic-radiation
-    .. _`10.5281/zenodo.3766933`: https://doi.org/10.5281/zenodo.3766933
-    .. _`Sheffield`: https://doi.org/10.1016/B978-0-12-374877-5.00003-8
+    For a concise summary of the relevant physics, see Chapter 5 of
+    the :cite:t:`schaeffer:2014` thesis.
     """
 
     # Validate efract
