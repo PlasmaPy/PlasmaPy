@@ -257,10 +257,10 @@ def stix(
         rhs_eq = -P * (n ** 2 - R) * (n ** 2 - L)
         arg_ = simplify((lhs_eq + rhs_eq).value)
         eq.append(arg_)
-        #print(eq[i])
+        # print(eq[i])
         sol = solve(eq[i], n, warn=True)
         sol_omega[theta[i].value] = sol
-        #print(sol_omega)
+        # print(sol_omega)
         for j in range(len(sol_omega)):
             sol_omega[theta[i].value][j] = (
                 (c_si_unitless * k[i]) / sol_omega[theta[i].value][j]
