@@ -1,6 +1,6 @@
 """
-Defines the Thomson scattering analysis module as
-part of the diagnostics package.
+Defines the Thomson scattering analysis module as part of
+`plasmapy.diagnostics`.
 """
 
 __all__ = [
@@ -306,23 +306,22 @@ def spectral_density(
     is assumed to be quasi-neutral)
 
     .. math::
-        S(k,\omega) = \sum_e \frac{2\pi}{k}
-        \bigg |1 - \frac{\chi_e}{\epsilon} \bigg |^2
-        f_{e0,e} \bigg (\frac{\omega}{k} \bigg ) +
-        \sum_i \frac{2\pi Z_i}{k}
-        \bigg |\frac{\chi_e}{\epsilon} \bigg |^2 f_{i0,i}
-        \bigg ( \frac{\omega}{k} \bigg )
+        S(k,ω) = \sum_e \frac{2π}{k}
+        \bigg |1 - \frac{χ_e}{ε} \bigg |^2
+        f_{e0,e} \bigg (\frac{ω}{k} \bigg ) +
+        \sum_i \frac{2π Z_i}{k}
+        \bigg |\frac{χ_e}{ε} \bigg |^2 f_{i0,i}
+        \bigg ( \frac{ω}{k} \bigg )
 
-    where :math:`\chi_e` is the electron component susceptibility of the
-    plasma and :math:`\epsilon = 1 + \sum_e \chi_e + \sum_i \chi_i` is
-    the total plasma dielectric  function (with :math:`\chi_i` being the
-    ion component of the susceptibility), :math:`Z_i` is the charge of
-    each ion, :math:`k` is the scattering wavenumber, :math:`\omega` is
-    the scattering frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}`
-    are the electron and ion velocity distribution functions
-    respectively. In this function the electron and ion velocity
-    distribution functions are assumed to be Maxwellian, making this
-    function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011:ch3`.
+    where :math:`χ_e` is the electron component susceptibility of the
+    plasma and :math:`ε = 1 + \sum_e χ_e + \sum_i χ_i` is the total
+    plasma dielectric  function (with :math:`χ_i` being the ion component
+    of the susceptibility), :math:`Z_i` is the charge of each ion, :math:`k`
+    is the scattering wavenumber, :math:`ω` is the scattering frequency,
+    and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the electron and ion velocity
+    distribution functions respectively. In this function the electron and ion
+    velocity distribution functions are assumed to be Maxwellian, making this
+    function equivalent to Eq. 3.4.6 in :cite:t:`sheffield:2011`\ .
 
     Parameters
     ----------
@@ -336,7 +335,7 @@ def spectral_density(
 
     n : `~astropy.units.Quantity`
         Mean (0th order) density of all plasma components combined.
-        (convertible to cm^-3.)
+        (convertible to cm\ :sup:`-3`)
 
     Te : `~astropy.units.Quantity`, shape (Ne, )
         Temperature of each electron component. Shape (Ne, ) must be equal to the
@@ -356,10 +355,10 @@ def spectral_density(
         of the ion population number density to the total ion number density.
         Must sum to 1.0. Default is a single ion species.
 
-    ion_species : str or `~plasmapy.particles.Particle`, shape (Ni, ), optional
-        A list or single instance of `~plasmapy.particles.Particle`, or strings
-        convertible to `~plasmapy.particles.Particle`. Default is ``'H+'``
-        corresponding to a single species of hydrogen ions.
+    ion_species : `str` or `~plasmapy.particles.particle_class.Particle`, shape (Ni, ), optional
+        A list or single instance of `~plasmapy.particles.Particle`, or
+        strings convertible to `~plasmapy.particles.particle_class.Particle`.
+        Default is ``'H+'`` corresponding to a single species of hydrogen ions.
 
     electron_vel : `~astropy.units.Quantity`, shape (Ne, 3), optional
         Velocity of each electron population in the rest frame. (convertible to m/s)
@@ -378,7 +377,7 @@ def spectral_density(
     scatter_vec : float `~numpy.ndarray`, shape (3, )
         Unit vector pointing from the scattering volume to the detector.
         Defaults to [0, 1, 0] which, along with the default `probe_vec`,
-        corresponds to a 90 degree scattering angle geometry.
+        corresponds to a 90° scattering angle geometry.
 
     instr_func : function
         A function representing the instrument function that takes an `~astropy.units.Quantity`
@@ -388,13 +387,13 @@ def spectral_density(
 
     Returns
     -------
-    alpha : float
-        Mean scattering parameter, where `alpha` > 1 corresponds to collective
-        scattering and `alpha` < 1 indicates non-collective scattering. The
-        scattering parameter is calculated based on the total plasma density n.
+    alpha : `float`
+        Mean scattering parameter, where ``alpha`` > 1 corresponds to collective
+        scattering and ``alpha`` < 1 indicates non-collective scattering. The
+        scattering parameter is calculated based on the total plasma density ``n``.
 
     Skw : `~astropy.units.Quantity`
-        Computed spectral density function over the input `wavelengths` array
+        Computed spectral density function over the input ``wavelengths`` array
         with units of s/rad.
 
     Notes
