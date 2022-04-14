@@ -5,14 +5,13 @@ solutions to the Stix cold plasma function.
 
 __all__ = ["stix"]
 
-from typing import List, Union, Any
-
 import astropy.units as u
 import numpy as np
 
 from astropy.constants.si import c
-from sympy import Symbol, simplify
+from sympy import simplify, Symbol
 from sympy.solvers import solve
+from typing import Any, List, Union
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle, ParticleList
@@ -27,11 +26,11 @@ c_si_unitless = c.value
     k={"can_be_negative": False, "equivalencies": u.spectral()},
 )
 def stix(
-        B: u.T,
-        k: u.rad / u.m,
-        ions: Particle,
-        n_i: u.m ** -3,
-        theta: u.rad,
+    B: u.T,
+    k: u.rad / u.m,
+    ions: Particle,
+    n_i: u.m ** -3,
+    theta: u.rad,
 ):
     r"""
     Calculate the cold plasma function solution by using
@@ -240,14 +239,10 @@ def stix(
     P = 1
     D = 0
 
-    omegas = {}
-
     for i in range(len(species)):
         S -= (wps[i] ** 2) / (n ** 2 + wcs[i] ** 2)
         P -= (wps[i] / n) ** 2
-        D += ((wps[i] ** 2) / (n ** 2 + wcs[i] ** 2)) * (
-         wcs[i] / n
-        )
+        D += ((wps[i] ** 2) / (n ** 2 + wcs[i] ** 2)) * (wcs[i] / n)
 
     R = S + D
     L = S - D
@@ -262,11 +257,13 @@ def stix(
         rhs_eq = -P * (n ** 2 - R) * (n ** 2 - L)
         arg_ = simplify((lhs_eq + rhs_eq).value)
         eq.append(arg_)
-        print(eq[i])
+        #print(eq[i])
         sol = solve(eq[i], n, warn=True)
         sol_omega[theta[i].value] = sol
-        print(sol_omega)
+        #print(sol_omega)
         for j in range(len(sol_omega)):
-            sol_omega[theta[i].value][j] = ((c_si_unitless * k[i]) / sol_omega[theta[i].value][j])*(u.s**-1)
+            sol_omega[theta[i].value][j] = (
+                (c_si_unitless * k[i]) / sol_omega[theta[i].value][j]
+            ) * (u.s ** -1)
 
     return sol_omega
