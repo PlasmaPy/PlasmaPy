@@ -583,7 +583,7 @@ class Linear(AbstractFitFunction):
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature comparability with
             `AbstractFitFunction`.
 
@@ -633,7 +633,7 @@ class Linear(AbstractFitFunction):
             The dependent data associated with ``xdata``.
 
         **kwargs
-            Any keywords accepted by `scipy.optimize.curve_fit`.
+            Any keywords accepted by `scipy.stats.linregress`.
 
         """
         results = linregress(xdata, ydata)
@@ -760,7 +760,7 @@ class Exponential(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
@@ -1051,7 +1051,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
-        *kwargs
+        **kwargs
             Not needed.  This is to ensure signature compatibility with
             `AbstractFitFunction`.
 
