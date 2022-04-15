@@ -1680,6 +1680,10 @@ class Particle(AbstractPhysicalParticle):
         |Particle|.  If ``inplace`` is `True`, then replace the current
         |Particle| with the newly ionized |Particle|.
 
+        New in version 0.8.0: If the |Particle| instance has no charge
+        information (e.g. `Particle("Li")`), it is assumed to be electrically
+        neutral.
+
         Parameters
         ----------
         n : positive integer
@@ -1702,10 +1706,6 @@ class Particle(AbstractPhysicalParticle):
         `~plasmapy.particles.exceptions.InvalidElementError`
             If the |Particle| is not an element.
 
-        `~plasmapy.particles.exceptions.ChargeError`
-            If no charge information for the |Particle| object is
-            specified.
-
         `~plasmapy.particles.exceptions.InvalidIonError`
             If there are less than ``n`` remaining bound electrons.
 
@@ -1720,6 +1720,8 @@ class Particle(AbstractPhysicalParticle):
         >>> helium_particle.ionize(n=2, inplace=True)
         >>> helium_particle
         Particle("He-4 2+")
+        >>> Particle("Li").ionize(3)
+        Particle("Li 3+")
 
         """
         if not self.element:
@@ -1728,10 +1730,11 @@ class Particle(AbstractPhysicalParticle):
                 f"neutral atom or ion."
             )
         if not self.is_category(any_of={"charged", "uncharged"}):
-            raise ChargeError(
-                f"Cannot ionize {self.symbol} because its charge is not specified."
-            )
-        if self.charge_number == self.atomic_number:
+            assumed_charge_number = 0
+        else:
+            assumed_charge_number = self.charge_number
+
+        if assumed_charge_number == self.atomic_number:
             raise InvalidIonError(
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
@@ -1742,7 +1745,7 @@ class Particle(AbstractPhysicalParticle):
             raise ValueError("n must be a positive number.")
 
         base_particle = self.isotope or self.element
-        new_charge_number = self.charge_number + n
+        new_charge_number = assumed_charge_number + n
 
         if inplace:
             self.__init__(base_particle, Z=new_charge_number)
