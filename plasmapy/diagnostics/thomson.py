@@ -52,14 +52,15 @@ def spectral_density_lite(
     n: numbers.Real,
     Te: np.ndarray,
     Ti: np.ndarray,
-    efract: np.ndarray = None,
-    ifract: np.ndarray = None,
-    ion_z: np.ndarray = None,
-    ion_mass: np.ndarray = None,
-    electron_vel: np.ndarray = None,
-    ion_vel: np.ndarray = None,
-    probe_vec: np.ndarray = None,
-    scatter_vec: np.ndarray = None,
+    *,
+    efract: np.ndarray,
+    ifract: np.ndarray,
+    ion_z: np.ndarray,
+    ion_mass: np.ndarray,
+    electron_vel: np.ndarray,
+    ion_vel: np.ndarray,
+    probe_vec: np.ndarray,
+    scatter_vec: np.ndarray,
     instr_func_arr: np.ndarray = None,
 ) -> Tuple[Union[np.floating, np.ndarray], np.ndarray]:
 
@@ -453,13 +454,7 @@ def spectral_density(
     if Ti.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Ti.size != len(ion_species), assume same temp. for all species
-        Ti = (
-            np.array(
-                [
-                    Ti.value,
-                ]
-            )
-            * Ti.unit
+        Ti = np.array([Ti.value]) * Ti.unit
         )
 
     # Make sure the sizes of ion_species, ifract, ion_vel, and Ti all match
@@ -478,14 +473,7 @@ def spectral_density(
     if Te.size == 1:
         # If a single quantity is given, put it in an array so it's iterable
         # If Te.size != len(efract), assume same temp. for all species
-        Te = (
-            np.array(
-                [
-                    Te.value,
-                ]
-            )
-            * Te.unit
-        )
+        Te = np.array([Te.value]) * Te.unit
 
     # Make sure the sizes of efract, electron_vel, and Te all match
     if (electron_vel.shape[0] != efract.size) or (Te.size != efract.size):
