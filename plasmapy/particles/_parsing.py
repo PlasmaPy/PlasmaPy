@@ -424,8 +424,7 @@ def parse_and_check_atomic_input(
                 ParticleWarning,
             )
 
-    if Z_from_arg is not None:
-        Z = Z_from_arg
+    Z = 0 if Z_from_arg is None else Z_from_arg
 
     if isinstance(Z, Integral):
         if Z > _elements.data_about_elements[element]["atomic number"]:
