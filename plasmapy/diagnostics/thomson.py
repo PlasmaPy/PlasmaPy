@@ -7,6 +7,7 @@ __all__ = [
     "spectral_density",
     "spectral_density_model",
 ]
+__lite_funcs__ = ["spectral_density_lite"]
 
 import astropy.constants as const
 import astropy.units as u
@@ -27,6 +28,8 @@ from plasmapy.utils.decorators import (
     preserve_signature,
     validate_quantities,
 )
+
+__all__ += __lite_funcs__
 
 c_si_unitless = const.c.si.value
 e_si_unitless = const.e.si.value
