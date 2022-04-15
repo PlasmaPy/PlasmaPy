@@ -13,7 +13,6 @@ import astropy.constants as const
 import astropy.units as u
 import numbers
 import numpy as np
-import re
 import warnings
 
 from lmfit import Model
